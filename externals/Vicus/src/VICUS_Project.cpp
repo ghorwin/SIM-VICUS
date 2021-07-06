@@ -1363,6 +1363,58 @@ bool Project::createIdealHeatingCooling(const VICUS::ZoneIdealHeatingCooling * i
 	return true;
 }
 
+// assume that setpoints hold 4 values lower and upper value for heating (value 1. and 2.) and cooling (value 3. and 4.)
+bool calculateSupplyTemperature(const std::vector<double> &supplySetpoints,const std::vector<double> &outdoorSetpoints,
+								const std::vector<double> &outdoorTemperatureSpline, std::vector<double> &supplyTemperature){
+	if(supplySetpoints.size() != outdoorSetpoints.size() && supplySetpoints.size() == 4)
+		return false;
+
+
+	double lowerSupplyHeatLimit = std::min<double>(supplySetpoints[0], supplySetpoints[1]);
+	double upperSupplyHeatLimit = std::max<double>(supplySetpoints[0], supplySetpoints[1]);
+	double lowerSupplyCoolLimit = std::min<double>(supplySetpoints[2], supplySetpoints[3]);
+	double upperSupplyCoolLimit = std::max<double>(supplySetpoints[2], supplySetpoints[3]);
+
+	double lowerOutHeatLimit = std::min<double>(outdoorSetpoints[0], outdoorSetpoints[1]);
+	double upperOutHeatLimit = std::max<double>(outdoorSetpoints[0], outdoorSetpoints[1]);
+	double lowerOutCoolLimit = std::min<double>(outdoorSetpoints[2], outdoorSetpoints[3]);
+	double upperOutCoolLimit = std::max<double>(outdoorSetpoints[2], outdoorSetpoints[3]);
+
+	if(upperOutHeatLimit > lowerOutCoolLimit)
+		return false;
+
+	supplyTemperature.clear();
+
+	double deltaX = outdoorSetpoints[0] - outdoorSetpoints[1];
+	double mHeat = 0;
+	if(deltaX != 0)
+		mHeat = (supplySetpoints[0] - supplySetpoints[1]) / deltaX;
+	double nHeat = mHeat * supplySetpoints[0] - outdoorSetpoints[0];
+
+	deltaX = outdoorSetpoints[2] - outdoorSetpoints[3];
+	double mCool = 0;
+	if(deltaX != 0)
+		mCool = (supplySetpoints[2] - supplySetpoints[3]) / deltaX;
+	double nCool = mCool * supplySetpoints[2] - outdoorSetpoints[3];
+
+	for(unsigned int i=0; i<outdoorTemperatureSpline.size(); ++i){
+		double tOut = outdoorTemperatureSpline[i];
+		double tSupply;
+		if(tOut <= lowerOutHeatLimit)
+			tSupply = lowerSupplyHeatLimit;
+		else if(tOut > lowerOutHeatLimit && tOut <= upperOutHeatLimit)
+			tSupply = mHeat * tOut + nHeat;
+		else if(tOut > upperOutHeatLimit && tOut < lowerOutCoolLimit)
+			tSupply = upperSupplyHeatLimit;
+		else if(tOut >= lowerOutCoolLimit && tOut < upperOutCoolLimit)
+			tSupply = mCool * tOut + nCool;
+		else
+			tSupply = upperSupplyCoolLimit;
+		supplyTemperature.push_back(tSupply);
+	}
+	return true;
+}
+
 //#define test01
 void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateBuildingProjectData);
@@ -1645,6 +1697,13 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		}
 	}
 
+	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
+	IBK::LinearSpline outdoorTemp;
+	//first vector -> timepoints; second temperature in C
+	outdoorTemp.setValues(std::vector<double>{0,100,200,300,400,8760}, std::vector<double>{-10,-10,0,0,15,30});
+	outdoorTemp.m_extrapolationMethod = IBK::LinearSpline::EM_Constant;
+
+
 	//loop for zone templates
 	for (const std::pair<unsigned int,std::map< double,  std::vector<unsigned int>>> &ob : zoneTemplateIdToAreaToRoomIds) {
 		//take zone template
@@ -1906,6 +1965,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		}
 		// *** check for ideal heating and cooling in zone template ***
 
+
 		VICUS::ZoneTemplate::SubTemplateType type;
 		if(zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat] != VICUS::INVALID_ID){
 			const VICUS::ZoneControlThermostat * thermo =  element(m_embeddedDB.m_zoneControlThermostats,
@@ -2003,22 +2063,26 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 											//dazu muss die klimadatei geparst werden die lufttemperatur ermitteln
 											//dann mit den punkten für heiz und kühllastkurve die fluidtemperaturen ermitteln
 											//und einen jahreszeitplan rausschreiben
+											//TODO Dirk Name herausfinden
+
+											std::vector<double> supplyTemperatureVec;
+											calculateSupplyTemperature(shSys->m_heatingCoolingCurvePoints.m_values.at("Tsupply"),
+																	   shSys->m_heatingCoolingCurvePoints.m_values.at("Tout"),
+																	   outdoorTemp.y(), supplyTemperatureVec);
+
+											NANDRAD::LinearSplineParameter tSupply("FluidSupplyTemperature",NANDRAD::LinearSplineParameter::I_LINEAR,
+																				   outdoorTemp.x(), supplyTemperatureVec,
+																				   IBK::Unit("h"),IBK::Unit("K"));
+											p.m_schedules.m_annualSchedules[idealPipe.m_constructionObjectList].push_back(tSupply);
 										}
 									}
 									break;
-
 								}
-
-
 							}
-
-
 						}
 					}
 				}
-
 			}
-
 		}
 
 		// *** infiltration and ventilation ***
