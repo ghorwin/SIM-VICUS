@@ -47,6 +47,7 @@ public:
 			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
 			break;
 			case VICUS::ZoneTemplate::ST_Infiltration:
+			//	subTemplate = Project::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_VentilationNatural:
 			break;
@@ -88,6 +89,24 @@ public:
 	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
 };
 
+class VentilationModelGenerator : public ModelGeneratorBase {
+public:
+	VentilationModelGenerator(const VICUS::Project * pro) :
+		ModelGeneratorBase(pro)
+	{}
+
+	void generate(const VICUS::Room * r, QStringList & errorStack, const Project *pro);
+
+	// All definition lists below have the same size and share the same index
+
+	std::vector<NANDRAD::NaturalVentilationModel>	m_natVentObjects;
+	std::vector<NANDRAD::ObjectList>				m_objLists;
+	std::vector<std::string>						m_objListNames;
+
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+};
 
 
 void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const {
@@ -125,9 +144,10 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	// process all zones
 	InternalLoadsModelGenerator internalLoads(this);
+	VentilationModelGenerator ventilation(this);
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, errorStack);
-//		infiltration.generate(r, errorStack);
+//		ventilation.generate(r, errorStack);
 //		idealHeating.generate(r, errorStack);
 	}
 	if (!errorStack.isEmpty())	return;
@@ -177,7 +197,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 		bool isZoneOk = true;
 		try {
-			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+			r->m_para[VICUS::Room::P_Area].checkedValue("Area", "m2", "m2", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 		} catch (...) {
 			errorStack.append(tr("Zone #%1 '%2' does not have a valid area defined.").arg(r->m_id).arg(r->m_displayName));
 			isZoneOk = false;
@@ -417,6 +437,245 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 			// add all definitions
 			m_internalLoadObjects.push_back(internalLoadsModel);
+			m_schedules.push_back(scheds);
+			m_objLists.push_back(ol);
+			m_objListNames.push_back(ol.m_name);
+		}
+	}
+}
+
+void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack, const VICUS::Project * pro) {
+	FUNCID("VentilationModelGenerator::generate");
+
+	// check if we have a zone template with id to infiltration or ventilation
+
+	// InternalLoad holds data for sub templates ST_IntLoadPerson, ST_IntLoadEquipment or ST_IntLoadLighting
+	// we check if at least one of those is defined
+	const Infiltration						* infiltration = nullptr;
+	const VentilationNatural				* ventilation  = nullptr;
+	const ZoneControlNaturalVentilation		* ctrlVentilation = nullptr;
+	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+
+	unsigned int idSubTempInf = INVALID_ID;
+	unsigned int idSubTempVent = INVALID_ID;
+
+	VICUS::Database<Schedule> scheduleDB(0);
+	// Schedule DB ID test has been done already
+	scheduleDB.setData(m_project->m_embeddedDB.m_schedules);
+
+	try {
+		if (zoneTemplate == nullptr)
+			throw IBK::Exception( qApp->tr("Invalid zone template ID #%1 referenced from zone #%2 '%3'.").arg(r->m_idZoneTemplate)
+			  .arg(r->m_id).arg(r->m_displayName).toStdString(), FUNC_ID);
+
+		// check if subType exists
+		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural];
+		idSubTempVent = subTempId;
+		if (subTempId != INVALID_ID){
+			ventilation = Project::element(pro->m_embeddedDB.m_ventilationNatural, subTempId);
+			if (ventilation == nullptr || !ventilation->isValid(scheduleDB))
+				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
+									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+		}
+	}
+	catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	try {
+		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration];
+		idSubTempInf = subTempId;
+		if (subTempId != INVALID_ID){
+			infiltration = Project::element(pro->m_embeddedDB.m_infiltration, subTempId);
+			if (infiltration == nullptr || !infiltration->isValid())
+				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+		}
+	}
+	catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	try {
+		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_ControlNaturalVentilation];
+		if (subTempId != INVALID_ID){
+			ctrlVentilation = Project::element(pro->m_embeddedDB.m_zoneControlVentilationNatural, subTempId);
+			if (ctrlVentilation == nullptr || !ctrlVentilation->isValid())
+				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+		}
+	}
+	catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+		//infiltration = findZoneSubTemplate<Infiltration>(r, VICUS::ZoneTemplate::ST_Infiltration);
+		//ventilation  = findZoneSubTemplate<VentilationNatural>(r, VICUS::ZoneTemplate::ST_VentilationNatural);
+
+
+	// no model defined?
+	if (infiltration == nullptr && ventilation == nullptr )
+		return;
+
+	//which system we have?
+	//1. only infiltration
+	//2. only ventilation
+	//3. infiltration and ventilation
+	enum VentiType{
+		V_Infiltration,
+		V_Ventilation,
+		V_InfAndVenti,
+	};
+	bool isInf = idSubTempInf != VICUS::INVALID_ID;
+	bool isVenti = idSubTempVent != VICUS::INVALID_ID;
+	VentiType ventiType;
+	if(isInf && !isVenti)				ventiType = V_Infiltration;
+	else if(!isInf && isVenti)			ventiType = V_Ventilation;
+	else if(isInf && isVenti)			ventiType = V_InfAndVenti;
+
+	NANDRAD::NaturalVentilationModel natVentMod;
+	natVentMod.m_id = Project::uniqueId(m_natVentObjects);
+	natVentMod.m_displayName = zoneTemplate->m_displayName.string();
+	//TODO id and display name
+
+	//if we have a controlling than add control parameter
+	if(ctrlVentilation != nullptr){
+		//set all control values
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
+										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
+										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
+										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
+										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
+		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+										   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+	}
+
+	switch(ventiType){
+		case VentiType::V_Infiltration:{
+			natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
+			switch(infiltration->m_airChangeType){
+				case VICUS::Infiltration::AC_normal:{
+					NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+													   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+													   infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+				}break;
+				case VICUS::Infiltration::AC_n50:{
+					double val = infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+					val *= infiltration->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+					NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+													   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+													   val);
+				}break;
+				case VICUS::Infiltration::NUM_AC:	//only for compiler
+				break;
+			}
+		}
+		break;
+		case VentiType::V_Ventilation:{
+			if(ctrlVentilation == nullptr)
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+			else{
+
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+				NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+												   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+												   0);
+			}
+		}
+		break;
+		case VentiType::V_InfAndVenti:{
+			if(ctrlVentilation == nullptr)
+				//create in schedule a infiltration + ventilation
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+			else{
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+				switch(infiltration->m_airChangeType){
+					case VICUS::Infiltration::AC_normal:{
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+														   infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
+					}break;
+					case VICUS::Infiltration::AC_n50:{
+						double val = infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
+						val *= infiltration->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
+						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+														   NANDRAD::NaturalVentilationModel::P_VentilationRate,
+														   val);
+					}break;
+					case VICUS::Infiltration::NUM_AC:	//only for compiler
+					break;
+				}
+			}
+		}
+		break;
+	}
+
+	// *** schedules ***
+	// schedule generation:
+	//
+	// 1. create basic schedule (name?)
+	std::vector<NANDRAD::Schedule> scheds;
+	VICUS::Schedule combinedSchedule;
+	if(ventiType != V_Infiltration){
+		const Schedule * ventSched = scheduleDB[ventilation->m_scheduleId];
+		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].value);
+		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
+			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].value;
+			if(infiltration->m_airChangeType == Infiltration::AC_n50)
+				infVal *= infiltration->m_para[Infiltration::P_ShieldingCoefficient].value;
+			combinedSchedule.add(infVal);
+		}
+		std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
+											NANDRAD::NaturalVentilationModel::P_VentilationRate) + "Schedule [1/h]";
+		combinedSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
+	}
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
+		return;
+
+	// now we have a valid schedule group, yet without object list name
+
+	// Now we check if we have already an natural ventilation model object with exactly the same parameters (except ID and name).
+	// Then, we also compare the matching schedule (the natural ventilation model object and corresponding schedule have same ID).
+	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
+	// otherwise we add value and schedule definitions and generate a new object list.
+
+	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
+		if (m_natVentObjects[i].equal(natVentMod) &&
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
+		{
+			// insert our zone ID in object list
+			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+		}
+		else {
+			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("Ventilation-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			natVentMod.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_natVentObjects.push_back(natVentMod);
 			m_schedules.push_back(scheds);
 			m_objLists.push_back(ol);
 			m_objListNames.push_back(ol.m_name);

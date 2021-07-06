@@ -56,9 +56,13 @@ public:
 	};
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks parameters for valid values. */
 	void checkParameters() const;
+
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
+	bool equal(const NaturalVentilationModel & other) const;
 
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;		// XML:A:required
