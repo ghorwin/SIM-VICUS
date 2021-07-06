@@ -81,9 +81,6 @@ public:
 	/*! Returns true if schedule is a whole year schedule (startDay = 0 and endDay = 364). */
 	bool isWholeYearSchedule() const {return m_startDayOfTheYear == 0 && m_endDayOfTheYear == 364; }
 
-	/*! Comparies objects by parametrization. */
-	bool equal(const Schedule & other) const;
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Type of day this schedule is defined for. */

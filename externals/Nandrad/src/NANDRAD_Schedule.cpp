@@ -65,14 +65,5 @@ void Schedule::prepareCalculation() {
 	}
 }
 
-
-bool Schedule::equal(const Schedule & other) const {
-	// TODO  Dirk
-	return false;
-}
-
-
-
-
 } // namespace NANDRAD
 

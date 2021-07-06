@@ -547,8 +547,21 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 
 
 bool Schedules::equalSchedules(const std::vector<Schedule> & first, const std::vector<Schedule> & second) {
-	// TODO Dirk
-	return false;
+	if(first.size() != second.size())
+		return false;
+
+	for(const NANDRAD::Schedule &schedA : first) {
+		int counter = 0;
+		for(const NANDRAD::Schedule &schedB : second) {
+			if(schedA == schedB){
+				++counter;
+			}
+		}
+		if(counter != 1)
+			return false;
+	}
+
+	return true;
 }
 
 

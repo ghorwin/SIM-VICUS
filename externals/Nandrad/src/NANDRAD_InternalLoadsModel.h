@@ -61,7 +61,7 @@ public:
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;
 
-	/*! Comparies objects by physical parametrization (excluding ID and displayname). */
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
 	bool equal(const InternalLoadsModel & other) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
