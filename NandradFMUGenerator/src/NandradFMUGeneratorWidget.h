@@ -159,6 +159,7 @@ private:
 	/*! Holds all _available_ output variable definitions. */
 	std::vector<NANDRAD::FMIVariableDefinition>		m_availableOutputVariables;
 
+	std::map<std::string, std::pair<std::string, std::string> > m_variableInfoMap;
 };
 
 #endif // NandradFMUGeneratorWidgetH

@@ -161,6 +161,9 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 		v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
 	m_ui->tabWidget->setCurrentIndex(0);
+
+	// variable units/descriptions that are used as input vars, yet no matching output vars
+	m_variableInfoMap["Zone.WindowSolarRadiationFluxSum"] = std::make_pair("W", "Sum of solar radiation loads through all windows");
 }
 
 
@@ -677,13 +680,20 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	// now we set units and descriptions in input variables that match output variables
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
 		// lookup matching output variable by name
-		for (std::vector<NANDRAD::FMIVariableDefinition>::const_iterator it = m_availableOutputVariables.begin();
-			 it != m_availableOutputVariables.end(); ++it)
+		std::vector<NANDRAD::FMIVariableDefinition>::const_iterator it = m_availableOutputVariables.begin();
+		for (; it != m_availableOutputVariables.end(); ++it)
 		{
 			if (var.m_varName == it->m_varName) {
 				var.m_unit = it->m_unit;
 				var.m_fmiVarDescription = it->m_fmiVarDescription;
 				break;
+			}
+		}
+		if (it == m_availableOutputVariables.end()) {
+			std::map<std::string, std::pair<std::string, std::string> >::const_iterator varInfoIt = m_variableInfoMap.find(var.m_varName);
+			if (varInfoIt != m_variableInfoMap.end()) {
+				var.m_unit = varInfoIt->second.first;
+				var.m_fmiVarDescription = varInfoIt->second.second;
 			}
 		}
 	}
