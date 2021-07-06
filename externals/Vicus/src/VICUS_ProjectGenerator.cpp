@@ -16,8 +16,7 @@ public:
 		m_project(pro)
 	{}
 
-	template <typename T>
-	const T * findZoneSubTemplate(const Room * r, VICUS::ZoneTemplate::SubTemplateType subType) {
+	const AbstractDBElement * findZoneSubTemplate(const Room * r, VICUS::ZoneTemplate::SubTemplateType subType) {
 		FUNCID(ModelGeneratorBase::findZoneSubTemplate);
 		if (r->m_idZoneTemplate == VICUS::INVALID_ID)
 			return nullptr;
@@ -32,7 +31,7 @@ public:
 		if (zoneTemplate->m_idReferences[subType] == INVALID_ID)
 			return nullptr;
 
-		const T * subTemplate = nullptr;
+		const AbstractDBElement * subTemplate = nullptr;
 		switch (subType) {
 			case VICUS::ZoneTemplate::ST_IntLoadPerson:
 			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
@@ -47,7 +46,7 @@ public:
 			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
 			break;
 			case VICUS::ZoneTemplate::ST_Infiltration:
-			//	subTemplate = Project::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
+				subTemplate = Project::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_VentilationNatural:
 			break;
@@ -232,9 +231,9 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	const InternalLoad * intLoadEquipment = nullptr;
 	const InternalLoad * intLoadLighting = nullptr;
 	try {
-		intLoadPerson = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadPerson);
-		intLoadEquipment = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadEquipment);
-		intLoadLighting = findZoneSubTemplate<InternalLoad>(r, VICUS::ZoneTemplate::ST_IntLoadLighting);
+		intLoadPerson = dynamic_cast<const InternalLoad*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_IntLoadPerson));
+		intLoadEquipment = dynamic_cast<const InternalLoad*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_IntLoadEquipment));
+		intLoadLighting = dynamic_cast<const InternalLoad*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_IntLoadLighting));
 	}
 	catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
