@@ -1,6 +1,7 @@
 #include "VICUS_Project.h"
 
 #include <NANDRAD_Project.h>
+#include <IBK_algorithm.h>
 
 namespace VICUS {
 
@@ -77,34 +78,50 @@ public:
 
 	QStringList errorStack;
 
+	// All definition lists below have the same size and share the same index
+	// i.e. m_internalLoadObjects[3] references m_objLists[3] and
+	//      m_schedules[3] corresponds also to m_objLists[3]
+
 	std::vector<NANDRAD::InternalLoadsModel>		m_internalLoadObjects;
 	std::vector<NANDRAD::ObjectList>				m_objLists;
-	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+	std::vector<std::string>						m_objListNames;
 
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
 };
 
 
 
 void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const {
 
-	// mandatory input data checks
-
-	// we rely on unique IDs being used in the VICUS model
-	// hence, we first check for IDs and inform user about duplicate ID
-
-	std::set<unsigned int> idSet;
-
-	// *** Zones ***
-
-	std::vector<const VICUS::Room *> zones;
-	generateNandradZones(zones, idSet, p, errorStack);
-	if (!errorStack.isEmpty())	return;
-
+	// First mandatory input data checks.
+	// We rely on unique IDs being used in the VICUS model
+	// Hence, we first check for IDs and inform user about duplicate ID.
 
 	// *** Schedules ***
 
 	// check for unique IDs
-	// TODO
+	std::set<unsigned int> scheduleIdSet;
+	try {
+		checkForUniqueIDs(m_embeddedDB.m_schedules, scheduleIdSet);
+	} catch (...) {
+		errorStack.append(tr("Duplicate schedule IDs found."));
+		return;
+	}
+	for (const Schedule & sched : m_embeddedDB.m_schedules) {
+		if (!sched.isValid())
+			errorStack.append(tr("Schedule #%1 '%2'.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
+	}
+	if (!errorStack.isEmpty())	return;
+
+
+	// *** Zones ***
+
+	std::set<unsigned int> idSet;
+	std::vector<const VICUS::Room *> zones;
+	generateNandradZones(zones, idSet, p, errorStack);
+	if (!errorStack.isEmpty())	return;
 
 
 	// *** Models based on zone templates ***
@@ -114,6 +131,14 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, errorStack);
 	}
+	if (!errorStack.isEmpty())	return;
+
+	// transfer data to project
+	p.m_models.m_internalLoadsModels = internalLoads.m_internalLoadObjects;
+	p.m_objectLists.insert(p.m_objectLists.end(), internalLoads.m_objLists.begin(), internalLoads.m_objLists.end());
+	for (unsigned int i=0; i<internalLoads.m_schedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
+
 
 }
 
@@ -375,12 +400,25 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
 		{
 			// insert our zone ID in object list
+			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 		}
 		else {
 			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			internalLoadsModel.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_internalLoadObjects.push_back(internalLoadsModel);
+			m_schedules.push_back(scheds);
+			m_objLists.push_back(ol);
+			m_objListNames.push_back(ol.m_name);
 		}
 	}
-
 }
 
 } // namespace VICUS
