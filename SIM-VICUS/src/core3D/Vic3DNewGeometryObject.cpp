@@ -33,6 +33,7 @@
 #include <QtExt_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
+
 #include <IBK_physics.h>
 
 #include "SVProjectHandler.h"
@@ -161,11 +162,11 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				}
 				IBKMK::Vector3D a = m_vertexList.front();
 				IBKMK::Vector3D b = m_vertexList.back();
-				IBKMK::Vector3D c = p;
+				IBKMK::Vector3D c = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
 				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
 				// Note: the vertex list will still only contain 3 points!
-				m_vertexList.push_back(p);
+				m_vertexList.push_back(c);
 			}
 			else {
 				m_vertexList.push_back(p);
@@ -275,6 +276,30 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			// any change to the previously stored point?
 			if (m_localCoordinateSystemPosition == newPoint)
 				return;
+
+			// if we have already 2 points, we try to compute a valid plane geometry (temporary) from the new point
+			if (m_vertexList.size() == 2) {
+				IBKMK::Polygon3D d;
+				d.setVertexes(m_vertexList);
+				d.addVertex(QtExt::QVector2IBKVector(p));
+				if (d.isValid()) {
+					// now compute orthogonal vector to first segment and normal of plane
+					IBKMK::Vector3D first = m_vertexList[0] - m_vertexList[1];
+					IBKMK::Vector3D second;
+					first.crossProduct(d.normal(), second); // second = n x first
+					second.normalize();
+					qDebug() << QtExt::IBKVector2QVector(first) << QtExt::IBKVector2QVector(d.normal()) << QtExt::IBKVector2QVector(second);
+					// compute projection onto line, starting at m_vertexList[1]
+
+					// vector from new point to starting point
+					IBKMK::Vector3D v = d.vertexes()[2] - d.vertexes()[1];
+					// offset
+					double scale = v.scalarProduct(second);
+					IBKMK::Vector3D L = second*scale + d.vertexes()[1];
+					newPoint = QtExt::IBKVector2QVector(L);
+					qDebug() << QtExt::IBKVector2QVector(v) << scale << QtExt::IBKVector2QVector(L) << newPoint;
+				}
+			}
 
 			// store new position
 			m_localCoordinateSystemPosition = newPoint;
