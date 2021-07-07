@@ -229,11 +229,7 @@ $t$ & $s$ & Zeit
 
 \begin_layout Plain Layout
 
-$
-\backslash
-vartheta$ & $^
-\backslash
-circ C$ & Temperatur
+$T$ & $K$ & Temperatur
 \backslash
 
 \backslash
@@ -242,9 +238,7 @@ circ C$ & Temperatur
 
 \begin_layout Plain Layout
 
-$
-\backslash
-vartheta_{op}$ & $^
+$T_{op}$ & $^
 \backslash
 circ C$ & Empfindungstemperatur 
 \backslash
@@ -255,18 +249,7 @@ circ C$ & Empfindungstemperatur
 
 \begin_layout Plain Layout
 
-$
-\backslash
-vartheta_{rad}$ & $K$ & Strahlungstemperatur
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$T$ & $K$ & Thermodynamische Temperatur
+$T_{rad}$ & $K$ & Strahlungstemperatur
 \backslash
 
 \backslash
@@ -362,7 +345,7 @@ $d$ & $m$ & Dicke einer Konstruktionsschicht
 
 \begin_layout Plain Layout
 
-$L_W$ & $m$ & Wanddicke
+$l$ & $m$ & Länge
 \backslash
 
 \backslash
@@ -449,6 +432,28 @@ dot{Q}$ & $W = J/s$ & Wärmestrom
 \begin_layout Plain Layout
 
 $q$ & $W/m^2$ & Wärmestromdichte
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{m}$ &$kg/s$ & Massestrom 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+dot{v}$ &$m/s$ & Strömungsgeschwindigkeit 
 \backslash
 
 \backslash
@@ -643,7 +648,7 @@ psi_Z$ & Physikalische Größe einer Zone
 
 $
 \backslash
-psi_e$ & Physikalische Größe der außenliegenden Umgebung
+psi_A$ & Physikalische Größe der außenliegenden Umgebung
 \backslash
 
 \backslash
@@ -676,6 +681,17 @@ psi_F$ & Physikalische Größe einer Fensterinnenoberfläche
 
 $
 \backslash
+psi_{AL}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
 psi_{H}$ & Physikalische Größe ideale Zonenheizung
 \backslash
 
@@ -688,17 +704,6 @@ psi_{H}$ & Physikalische Größe ideale Zonenheizung
 $
 \backslash
 psi_{C}$ & Physikalische Größe ideale Zonenkühlung
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-psi_{AB}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
 \backslash
 
 \backslash
@@ -764,7 +769,7 @@ psi_{cond}$ & Transportstrom/-dichte durch Wärmeleitung
 
 $
 \backslash
-psi_N$ &  Physikalische Größe durch natürliche Lüftung
+psi_V$ &  Physikalische Größe durch natürliche Lüftung
 \backslash
 
 \backslash
@@ -810,6 +815,61 @@ $
 \backslash
 psi_NW$ &  Physikalische Größe durch Gesamtheit aller Netzwerkelemente in
  einer Zone/Wand
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_sup$ &  Physikalische Größe im Vorlauf eines Rohrs
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_pipe$ &  Physikalische Größe eines Rohrs
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_air$ &  Physikalische Größe der Luft
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_water$ &  Physikalische Größe von Wasser
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_set$ &  Physikalische Setpoint-Größe
 \backslash
 
 \backslash
@@ -864,7 +924,7 @@ In the case of building simulation we interpret the room as a zone node
  Consequently, zone energy transport mechanisms are considered as transient
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{N}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
+\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
 +\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
@@ -872,7 +932,7 @@ In the case of building simulation we interpret the room as a zone node
 
 Internal energy changes with time due to natural ventilation heat loads
  
-\begin_inset Formula $\dot{Q}_{N}$
+\begin_inset Formula $\dot{Q}_{V}$
 \end_inset
 
 , heat conduction fluxes through the surrounding wall constructions 
@@ -939,7 +999,7 @@ The wall constructions are considered as one dimensional multilayered compound
  denoting the the internal energy density as solution quantity.
 \begin_inset Formula 
 \begin{eqnarray*}
-\frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q+\dot{u}_{AB}
+\frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q+\dot{u}_{AL}
 \end{eqnarray*}
 
 \end_inset
@@ -1007,7 +1067,7 @@ The convective heat transfer between the wall surface and the room air is
 \begin_inset Formula 
 \begin{eqnarray*}
 q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{R}-\vartheta_{W,i}\right)\\
-q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}
+q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}+q_{LWRad,W}
 \end{eqnarray*}
 
 \end_inset
@@ -1097,7 +1157,7 @@ Field condition for thermal active wall elements
 Representing thermal active construction elements field conditions are defined
  at a construction layer of a wall.
  The heating gains 
-\begin_inset Formula $\dot{Q}_{AB}$
+\begin_inset Formula $\dot{Q}_{AL}$
 \end_inset
 
  are assumed to be equally distributed at the wall corresponding active
@@ -1111,14 +1171,14 @@ Representing thermal active construction elements field conditions are defined
 
 .
  They correspond to the heat source 
-\begin_inset Formula $\dot{u}_{AB}$
+\begin_inset Formula $\dot{u}_{AL}$
 \end_inset
 
 .
  
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{u}_{AB} & = & \frac{\dot{Q}_{AB}}{A_{W}d}
+\dot{u}_{AL} & = & \frac{\dot{Q}_{AL}}{A_{W}d}
 \end{eqnarray*}
 
 \end_inset
@@ -1217,8 +1277,8 @@ The mean radiant temperature
  and radiant temperature.
 \begin_inset Formula 
 \begin{align*}
-\vartheta_{rad}=\frac{\sum_{i}A_{W,i}\cdot\vartheta_{W,si}+\sum_{i}A_{F,i}\cdot\vartheta_{F,i}}{\sum_{i}A_{W,i}}\\
-\vartheta_{op}=\frac{\vartheta_{Z}+\vartheta_{rad}}{2}
+T_{rad}=\frac{\sum_{i}A_{W,i}\cdot T_{W,ii}+\sum_{i}A_{F,i}\cdot T_{F,i}}{\sum_{i}A_{W,i}}\\
+T_{op}=\frac{T_{Z}+T_{rad}}{2}
 \end{align*}
 
 \end_inset
@@ -1227,7 +1287,7 @@ The mean radiant temperature
 \end_layout
 
 \begin_layout Subsubsection*
-Window 
+Fenster 
 \end_layout
 
 \begin_layout Standard
@@ -1237,16 +1297,16 @@ We use a steady state monolayer window model and caclculate the transmitted
 \end_inset
 
  as well as heat loads by heat transmission through the window 
-\begin_inset Formula $\dot{Q}_{Trans,F,i}$
+\begin_inset Formula $\dot{Q}_{cond,F,i}$
 \end_inset
 
 .
  Assuming a conservation of the normal heat transmission flux density 
-\begin_inset Formula $\dot{q}_{F,trans,i}$
+\begin_inset Formula $q_{F,trans,i}$
 \end_inset
 
  we are able to predict the window surface temperature 
-\begin_inset Formula $\vartheta_{F,i}$
+\begin_inset Formula $T_{F,i}$
 \end_inset
 
  by use of heat transfer coefficient 
@@ -1261,8 +1321,9 @@ We use a steady state monolayer window model and caclculate the transmitted
 \begin_inset Formula 
 \begin{eqnarray*}
 \dot{Q}_{SWRad,i} & = & z_{F,i}\left(t\right)\,\tau_{F,i}\,f_{F,i}\,q_{rad,\alpha\beta,i}\left(t\right)A_{F,i}\\
-\dot{Q}_{F,cond,i} & = & U_{F,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)A_{F,i}\\
-\vartheta_{F,i} & = & \vartheta_{Z}+\frac{1}{\alpha_{F,i}}\dot{q}_{F,trans,i}
+q_{F,trans,i} & = & U_{F,i}\left(T_{A}\left(t\right)-T_{Z}\right)\\
+\dot{Q}_{F,cond,i} & = & q_{F,cond,i}A_{F,i}\\
+T_{F,i} & = & T_{Z}+\frac{1}{\alpha_{F,i}}q_{F,cond,i}
 \end{eqnarray*}
 
 \end_inset
@@ -1385,8 +1446,8 @@ The occupancy of a room describes different usage scenarios with the help
 \begin_inset Formula 
 \begin{align*}
 \dot{Q}_{P} & =N_{P}f_{P}\left(t\right)\left(\dot{Q}_{act}-\dot{Q}_{loss}\right)\\
-\dot{Q}_{E} & =f_{E}\left(t\right)\dot{q}_{elec}A_{Z}\\
-\dot{Q}_{L} & =f_{L}\left(t\right)\dot{q}_{light}A_{Z}
+\dot{Q}_{E} & =f_{E}\left(t\right)q_{elec}A_{Z}\\
+\dot{Q}_{L} & =f_{L}\left(t\right)q_{light}A_{Z}
 \end{align*}
 
 \end_inset
@@ -1464,7 +1525,7 @@ Convective loads
 \end_layout
 
 \begin_layout Subsubsection*
-Ideal heating and cooling 
+Ideale Heizung/Kühlung
 \end_layout
 
 \begin_layout Standard
@@ -1493,7 +1554,7 @@ An ideal heating model can be activated for each space type by choosing
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{C}\right)\right)\\
+\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
 \dot{Q}_{H} & =\min\left(10000,\dot{Q}_{H,nominal}\right)
 \end{align*}
 
@@ -1504,7 +1565,7 @@ Currently, cooling control is only allowed with respect to zone air temperature.
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{C,nominal} & =\min\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{Z}\right)\right)\\
+\dot{Q}_{C,nominal} & =\min\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
 \dot{Q}_{C} & =\max\left(-10000,\dot{Q}_{C,nominal}\right)
 \end{align*}
 
@@ -1514,7 +1575,7 @@ Currently, cooling control is only allowed with respect to zone air temperature.
 \end_layout
 
 \begin_layout Subsubsection*
-Thermal active construction element (generic model)
+Ideales Flächenheizelement
 \end_layout
 
 \begin_layout Standard
@@ -1542,8 +1603,8 @@ An thermal active element is defined as a heat source inside a construction
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(\vartheta_{Set}(t)-\vartheta_{C}\right)\right)\\
-\dot{Q}_{AB} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
+\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
+\dot{Q}_{AL} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
 \end{align*}
 
 \end_inset
@@ -1552,7 +1613,71 @@ An thermal active element is defined as a heat source inside a construction
 \end_layout
 
 \begin_layout Subsubsection*
-Natural ventilation (generic models)
+Ideales Rohrregisterelement
+\end_layout
+
+\begin_layout Standard
+An thermal active element is defined as a heat source inside a construction
+ layer.
+ Per default the heating power is limited by a maximum value 
+\begin_inset Formula $\dot{Q}_{H,max}$
+\end_inset
+
+ that correlates with real performance.
+ We describe the operation of the heating element as an ideal P-control
+ for control tempertaure 
+\begin_inset Formula $\vartheta_{C}$
+\end_inset
+
+, set point temperature 
+\begin_inset Formula $\vartheta_{Set}(t)$
+\end_inset
+
+ and slope 
+\begin_inset Formula $k_{P}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{m}_{H} & =\begin{cases}
+\min\left(\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{AL}\\
+0 & T_{sup}<T_{AL}
+\end{cases}\\
+\dot{m}_{C} & =\begin{cases}
+\min\left(\max\left(0,k_{P}\left(T_{Z}-T_{set}(t)\right)\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{AL}\\
+0 & T_{sup}>T_{AL}
+\end{cases}\\
+\dot{m}_{water} & =\max\left(\dot{m}_{H},\dot{m}_{C}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\dot{Q}_{AL} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}C_{p,water}}\right)\right)\left(T_{sup}-T_{AL}\right)
+\end{eqnarray*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+U_{total}=\frac{l_{pipe}}{\frac{1}{\alpha_{I}d_{I}\Pi}+\frac{1}{U_{pipe}}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Natürliche Lüftung
 \end_layout
 
 \begin_layout Standard
@@ -1560,16 +1685,12 @@ At the current delevpment state (passive operation of teh building with
  ideal loads calculations) we take into consideration air conditioning due
  to natural ventilation and air exchange by infiltration.
  The corresponding air change rate for natural ventilation 
-\begin_inset Formula $n_{L}(t)$
+\begin_inset Formula $n_{V}(t)$
 \end_inset
 
  correlates to user behaviour and needs to be provided by the schedules.
  The same way of parametrization is used for the infiltration air change
- rates 
-\begin_inset Formula $n_{I}(t)$
-\end_inset
-
-.
+ rates.
  The supply air mass flux corresponds both to air change rate and zone volume
  
 \begin_inset Formula $V_{R}$
@@ -1577,19 +1698,29 @@ At the current delevpment state (passive operation of teh building with
 
 .
  We assume an ideal homogenious zone air temperature with mass density 
-\begin_inset Formula $\rho_{Air}$
+\begin_inset Formula $\rho_{air}$
 \end_inset
 
  and heat capacity 
-\begin_inset Formula $c_{Air}$
+\begin_inset Formula $c_{air}$
 \end_inset
 
 .
  
 \begin_inset Formula 
 \begin{align*}
-\dot{m}_{N} & =\rho_{Air}\,n_{N}(t)\,V_{Z}\\
-\dot{m}_{I} & =\rho_{Air}\,n_{I}\,V_{Z}
+n_{V}(t) & =\begin{cases}
+n_{V,basic}(t)+n_{V,comf}(t) & T_{min}-\Delta T\leq T_{Z}\leq T_{max}+\Delta T,v_{air}\leq v_{air,max}\\
+n_{V,basic}(t) & sonst
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\dot{m}_{V} & =\rho_{air}\,n_{V}(t)\,V_{Z}
 \end{align*}
 
 \end_inset
@@ -1600,11 +1731,11 @@ At the current delevpment state (passive operation of teh building with
 \begin_layout Standard
 Our assumtions allow the calculation of enthalpy fluxes for the incoming
  and outgoing air with unique temperatures 
-\begin_inset Formula $\vartheta_{e}\left(t\right)$
+\begin_inset Formula $T_{A}\left(t\right)$
 \end_inset
 
  and 
-\begin_inset Formula $\vartheta_{Z}$
+\begin_inset Formula $T_{Z}$
 \end_inset
 
 .
@@ -1613,13 +1744,16 @@ Our assumtions allow the calculation of enthalpy fluxes for the incoming
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{N} & =\dot{m}_{N}\,c_{Air}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)\\
-\dot{Q}_{I} & =\dot{m}_{I}\,c_{Air}\left(\vartheta_{e}\left(t\right)-\vartheta_{Z}\right)
+\dot{Q}_{V} & =\dot{m}_{V}\,c_{air}\left(T_{A}\left(t\right)-T_{Z}\right)
 \end{align*}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Komfortlüftung:
 \end_layout
 
 \end_body
