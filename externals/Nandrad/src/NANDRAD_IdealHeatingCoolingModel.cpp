@@ -39,7 +39,16 @@ void IdealHeatingCoolingModel::checkParameters() const {
 											   "Kp value for PI controller.");
 	if (!m_para[P_Ki].name.empty())
 		m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true,
-											   "Ki value for PI controller.");
+								  "Ki value for PI controller.");
+}
+
+bool IdealHeatingCoolingModel::equal(const IdealHeatingCoolingModel & other) const {
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+	return true;
 }
 
 

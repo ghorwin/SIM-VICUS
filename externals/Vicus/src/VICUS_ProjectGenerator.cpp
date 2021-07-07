@@ -57,6 +57,7 @@ public:
 				subTemplate = Project::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
@@ -287,11 +288,6 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 }
 
 
-bool Project::addIds(unsigned int vicusId, unsigned int nandradId){
-	if(findVicusId(vicusId)){
-
-	}
-}
 
 bool Project::findVicusId(unsigned int &vicusId)const{
 	if(m_vicusToNandrad.find(vicusId) != m_vicusToNandrad.end())
@@ -309,12 +305,6 @@ bool Project::findNandradId(unsigned int &nandradId)const{
 	}
 }
 
-unsigned int Project::freeVicusId(const std::set<unsigned int> &idSet){
-	unsigned int id=1; //we dont use ZERO !!!
-	//std::map<unsigned int, unsigned int> &vicusToNandrad
-	id = Project::uniqueId<unsigned int>(idSet);
-
-}
 
 
 void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
@@ -1303,6 +1293,95 @@ void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) 
 			// add all definitions
 			m_thermostats.push_back(thermo);
 			m_schedules.push_back(scheds);
+			m_objLists.push_back(ol);
+			m_objListNames.push_back(ol.m_name);
+		}
+	}
+}
+
+void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & errorStack)
+{
+
+	// check if we have a zone template with id to ideal heating cooling
+
+	const ZoneIdealHeatingCooling				* idealHeatingCooling = nullptr;
+
+	try {
+		idealHeatingCooling = dynamic_cast<const ZoneIdealHeatingCooling*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_IdealHeatingCooling));
+	}  catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+
+	// no model defined?
+	if (idealHeatingCooling == nullptr)
+		return;
+
+	if (!idealHeatingCooling->isValid()){
+		errorStack.append(qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+							  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_IdealHeatingCooling])
+							  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)));
+		return;
+	}
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
+		return;
+
+
+	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
+
+	//idealHeatCool.m_id
+	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
+
+	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())
+		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+									NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea,
+									idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_HeatingLimit].value);
+	else
+		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+									NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea, 0);
+	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea].empty())
+		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+									   NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea,
+									   idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_CoolingLimit].value);
+	else
+		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+									NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea, 0);
+
+
+
+	// *** schedules ***
+	// schedule generation:
+	//
+	// 1. create basic schedule (name?)
+
+
+	// now we have a valid schedule group, yet without object list name
+
+	// Now we check if we have already an thermostat model object with exactly the same parameters (except ID and name, object list).
+	// Then, we also compare the matching schedule (the thermostat model object and corresponding schedule have same ID).
+	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
+	// otherwise we add model and schedule definitions and generate a new object list.
+
+	for (unsigned int i=0; i<m_idealHeatingCoolings.size(); ++i) {
+		if (m_idealHeatingCoolings[i].equal(idealHeatCool) )
+			// insert our zone ID in object list
+			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+		else {
+			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("IdealHeatCool-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			idealHeatCool.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_idealHeatingCoolings.push_back(idealHeatCool);
 			m_objLists.push_back(ol);
 			m_objListNames.push_back(ol.m_name);
 		}

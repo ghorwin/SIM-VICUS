@@ -24,7 +24,7 @@
 */
 
 #include "VICUS_Schedule.h"
-
+#include <algorithm>
 namespace VICUS {
 
 

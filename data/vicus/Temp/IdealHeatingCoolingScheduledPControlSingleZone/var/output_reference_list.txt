@@ -1,0 +1,52 @@
+Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
+ConstructionInstance.ElementTemperature           	101                 	0,1                 	C         	Finite-volume mean element temperature
+ConstructionInstance.FluxHeatConductionA          	101                 	                    	W         	Heat conduction flux across interface A (into construction)
+ConstructionInstance.FluxHeatConductionB          	101                 	                    	W         	Heat conduction flux across interface B (into construction)
+ConstructionInstance.FluxShortWaveRadiationA      	101                 	                    	W         	Short wave radiation flux across interface A (into construction)
+ConstructionInstance.FluxShortWaveRadiationB      	101                 	                    	W         	Short wave radiation flux across interface B (into construction)
+ConstructionInstance.SolarRadiationFluxA          	101                 	                    	W/m2      	Solar radiation flux density into surface A
+ConstructionInstance.SolarRadiationFluxB          	101                 	                    	W/m2      	Solar radiation flux density into surface B
+ConstructionInstance.SurfaceTemperatureA          	101                 	                    	C         	Surface temperature at interface A
+ConstructionInstance.SurfaceTemperatureB          	101                 	                    	C         	Surface temperature at interface B
+ConstructionInstance.ThermalLoad                  	101                 	0,1                 	W         	Optional field fluxes for all material layers with given layer index
+Location.AirPressure                              	0                   	                    	Pa        	Air pressure.
+Location.Albedo                                   	0                   	                    	---       	Albedo value of the surrounding [0..1].
+Location.AzimuthAngle                             	0                   	                    	Deg       	Solar azimuth (0 - north).
+Location.CO2Concentration                         	0                   	                    	---       	Ambient CO2 concentration.
+Location.CO2Density                               	0                   	                    	kg/m3     	Ambient CO2 density.
+Location.DeclinationAngle                         	0                   	                    	Deg       	Solar declination (0 - north).
+Location.ElevationAngle                           	0                   	                    	Deg       	Solar elevation (0 - at horizont, 90 - directly above).
+Location.LWSkyRadiation                           	0                   	                    	W/m2      	Long wave sky radiation.
+Location.Latitude                                 	0                   	                    	Deg       	Latitude.
+Location.Longitude                                	0                   	                    	Deg       	Longitude.
+Location.MoistureDensity                          	0                   	                    	kg/m3     	Ambient moisture density.
+Location.RelativeHumidity                         	0                   	                    	%         	Relative humidity.
+Location.SWRadDiffuseHorizontal                   	0                   	                    	W/m2      	Diffuse short-wave radiation flux density on horizontal surface.
+Location.SWRadDirectNormal                        	0                   	                    	W/m2      	Direct short-wave radiation flux density in normal direction.
+Location.Temperature                              	0                   	                    	C         	Outside temperature.
+Location.VaporPressure                            	0                   	                    	Pa        	Ambient vapor pressure.
+Location.WindDirection                            	0                   	                    	Deg       	Wind direction (0 - north).
+Location.WindVelocity                             	0                   	                    	m/s       	Wind velocity.
+Model.CoolingControlValue                         	1001                	1                   	---       	Cooling control signal
+Model.HeatingControlValue                         	1001                	1                   	---       	Heating control signal
+Model.IdealCoolingLoad                            	4001                	1                   	W         	Ideal convective cooling load
+Model.IdealHeatingLoad                            	4001                	1                   	W         	Ideal convective heat load
+Model.ThermostatCoolingSetpoint                   	1001                	1                   	C         	Cooling setpoint
+Model.ThermostatHeatingSetpoint                   	1001                	1                   	C         	Heating setpoint
+Model.VentilationHeatFlux                         	501                 	1                   	W         	Natural ventilation/infiltration heat flux
+Model.VentilationRate                             	501                 	1                   	1/h       	Natural ventilation/infiltration air change rate
+Zone.AirTemperature                               	1                   	                    	C         	Room air temperature.
+Zone.CompleteThermalLoad                          	1                   	                    	W         	Sum of all thermal fluxes into the room and energy sources
+Zone.ConstructionHeatConductionLoad               	1                   	                    	W         	Sum of heat conduction fluxes from construction surfaces into the room
+Zone.ConvectiveEquipmentHeatLoad                  	1                   	                    	W         	Equipment heat load inside the room
+Zone.ConvectiveLightingHeatLoad                   	1                   	                    	W         	Lighting heat load inside the room
+Zone.ConvectivePersonHeatLoad                     	1                   	                    	W         	Person heat load inside the room
+Zone.CoolingSetpointSchedule                      	1                   	                    	C         	Schedule parameter: 'CoolingSetpointSchedule'
+Zone.HeatingSetpointSchedule                      	1                   	                    	C         	Schedule parameter: 'HeatingSetpointSchedule'
+Zone.IdealCoolingLoad                             	1                   	                    	W         	Ideal cooling load (positive)
+Zone.IdealHeatingLoad                             	1                   	                    	W         	Ideal heating load
+Zone.NetworkHeatLoad                              	1                   	                    	W         	Sum of heat load from components of a hydraulic network into the room (only the fraction applied to room volume)
+Zone.OperativeTemperature                         	1                   	                    	C         	Operative temperature
+Zone.VentilationHeatLoad                          	1                   	                    	W         	Natural ventilation/infiltration heat flux into the room
+Zone.WindowHeatConductionLoad                     	1                   	                    	W         	Sum of heat conduction fluxes through windows into the room
+Zone.WindowSolarRadiationLoad                     	1                   	                    	W         	Sum of solar radiation fluxes through windows into the room (only the fraction applied to room volume)

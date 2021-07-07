@@ -48,6 +48,9 @@ public:
 	/*! Checks parameters for valid values. */
 	void checkParameters() const;
 
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
+	bool equal(const IdealHeatingCoolingModel & other) const;
+
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required
 	/*! Some display/comment name for this model (optional). */
