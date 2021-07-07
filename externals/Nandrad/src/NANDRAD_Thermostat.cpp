@@ -44,6 +44,22 @@ void Thermostat::checkParameters() const {
 
 }
 
+bool Thermostat::equal(const Thermostat &other) const {
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	if(m_modelType != other.m_modelType ||
+			m_controllerType != other.m_controllerType ||
+			m_temperatureType != other.m_temperatureType ||
+			m_referenceZoneId != other.m_referenceZoneId)
+		return false;
+
+	return true;
+}
+
 
 } // namespace NANDRAD
 

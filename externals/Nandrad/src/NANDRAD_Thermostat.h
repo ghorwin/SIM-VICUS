@@ -40,7 +40,7 @@ public:
 		/*! Setpoints are constant parameters. */
 		MT_Constant,					// Keyword: Constant				'Constant set points'
 		/*! Setpoints are provided as 'HeatingSetPointSchedule' and 'CoolingSetPointSchedule' schedule parameter. */
-		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ste points'
+		MT_Scheduled,					// Keyword: Scheduled				'Scheduled set points'
 		NUM_MT
 	};
 
@@ -77,6 +77,9 @@ public:
 
 	/*! Checks parameters for valid values. */
 	void checkParameters() const;
+
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
+	bool equal(const Thermostat & other) const;
 
 	/*! Unique ID-number for this ventilation rate model. */
 	unsigned int						m_id = NANDRAD::INVALID_ID;						// XML:A:required

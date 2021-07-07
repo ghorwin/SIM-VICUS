@@ -45,6 +45,7 @@ public:
 			case VICUS::ZoneTemplate::ST_IntLoadOther:
 			break;
 			case VICUS::ZoneTemplate::ST_ControlThermostat:
+				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
 				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
@@ -1198,6 +1199,112 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 			winG.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC]= w.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC];
 
 			m_windowGlazingSystems.push_back(winG);
+		}
+	}
+}
+
+void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) {
+
+	FUNCID("ThermostatModelGenerator::generate");
+
+	// check if we have a zone template with id to infiltration or ventilation
+
+	const ZoneControlThermostat				* thermostat = nullptr;
+
+	try {
+		thermostat = dynamic_cast<const ZoneControlThermostat*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlThermostat));
+	}  catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+
+	// no model defined?
+	if (thermostat == nullptr)
+		return;
+
+	if (!thermostat->isValid(m_scheduleDB)){
+		errorStack.append(qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+							  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
+							  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)));
+		return;
+	}
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
+		return;
+
+
+	NANDRAD::Thermostat thermo;
+
+	//thermo.m_id
+	thermo.m_displayName = "Thermostat_" + zoneTemplate->m_displayName.string();
+	thermo.m_controllerType = thermostat->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
+				NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
+	thermo.m_modelType = NANDRAD::Thermostat::MT_Scheduled;		// only this is provided by GUI
+	thermo.m_temperatureType = thermostat->m_controlValue == VICUS::ZoneControlThermostat::CV_AirTemperature ?
+				NANDRAD::Thermostat::TT_AirTemperature : NANDRAD::Thermostat::TT_OperativeTemperature;
+
+	NANDRAD::KeywordList::setParameter(thermo.m_para, "Thermostat::para_t",
+									   NANDRAD::Thermostat::P_TemperatureTolerance,
+									   thermostat->m_para[ZoneControlThermostat::P_Tolerance].value);
+
+
+
+	// *** schedules ***
+	// schedule generation:
+	//
+	// 1. create basic schedule (name?)
+	std::vector<NANDRAD::Schedule> scheds;
+	VICUS::Schedule s;
+
+	const Schedule * heatSched = m_scheduleDB[thermostat->m_heatingSetpointScheduleId];
+	const Schedule * coolSched = m_scheduleDB[thermostat->m_coolingSetpointScheduleId];
+
+	if(heatSched != nullptr)
+		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
+	else{
+		s.createConstSchedule(200);
+		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
+	}
+
+	if(coolSched != nullptr)
+		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
+	else{
+		s.createConstSchedule(-100);
+		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
+	}
+
+	// now we have a valid schedule group, yet without object list name
+
+	// Now we check if we have already an thermostat model object with exactly the same parameters (except ID and name, object list).
+	// Then, we also compare the matching schedule (the thermostat model object and corresponding schedule have same ID).
+	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
+	// otherwise we add model and schedule definitions and generate a new object list.
+
+	for (unsigned int i=0; i<m_thermostats.size(); ++i) {
+		if (m_thermostats[i].equal(thermo) &&
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
+		{
+			// insert our zone ID in object list
+			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+		}
+		else {
+			// append definitions and create new object list
+			NANDRAD::ObjectList ol;
+			ol.m_name = IBK::pick_name("Thermostat-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			ol.m_filterID.m_ids.insert(r->m_id);
+
+			// set object list in new definition
+			thermo.m_zoneObjectList = ol.m_name;
+
+			// add all definitions
+			m_thermostats.push_back(thermo);
+			m_schedules.push_back(scheds);
+			m_objLists.push_back(ol);
+			m_objListNames.push_back(ol.m_name);
 		}
 	}
 }
