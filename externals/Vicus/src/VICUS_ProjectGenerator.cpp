@@ -13,8 +13,11 @@ inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
 class ModelGeneratorBase {
 public:
 	ModelGeneratorBase(const VICUS::Project * pro) :
-		m_project(pro)
-	{}
+		m_project(pro),
+		m_scheduleDB(0)
+	{
+		m_scheduleDB.setData(pro->m_embeddedDB.m_schedules);
+	}
 
 	const AbstractDBElement * findZoneSubTemplate(const Room * r, VICUS::ZoneTemplate::SubTemplateType subType) {
 		FUNCID(ModelGeneratorBase::findZoneSubTemplate);
@@ -44,11 +47,13 @@ public:
 			case VICUS::ZoneTemplate::ST_ControlThermostat:
 			break;
 			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
+				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_Infiltration:
 				subTemplate = Project::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_VentilationNatural:
+				subTemplate = Project::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
 			break;
@@ -63,7 +68,10 @@ public:
 		return subTemplate;
 	}
 
-	const VICUS::Project * m_project;
+	const VICUS::Project *			m_project;
+	VICUS::Database<Schedule>		m_scheduleDB;
+
+	std::map<unsigned int, unsigned int>	m_vicusToNandradIds;
 };
 
 
@@ -94,7 +102,7 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, QStringList & errorStack, const Project *pro);
+	void generate(const VICUS::Room * r, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 
@@ -107,8 +115,106 @@ public:
 	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
 };
 
+class ThermostatModelGenerator : public ModelGeneratorBase{
+	ThermostatModelGenerator(const VICUS::Project * pro) :
+			ModelGeneratorBase(pro)
+		{}
 
-void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const {
+	void generate(const VICUS::Room * r, QStringList & errorStack);
+
+	// All definition lists below have the same size and share the same index
+
+	std::vector<NANDRAD::Thermostat>	m_thermostats;
+	std::vector<NANDRAD::ObjectList>	m_objLists;
+	std::vector<std::string>			m_objListNames;
+
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+};
+
+class IdealHeatingCoolingModelGenerator : public ModelGeneratorBase{
+	IdealHeatingCoolingModelGenerator(const VICUS::Project * pro) :
+		ModelGeneratorBase(pro)
+	{}
+
+	void generate(const VICUS::Room * r, QStringList & errorStack);
+
+	// All definition lists below have the same size and share the same index
+
+	std::vector<NANDRAD::IdealHeatingCoolingModel>	m_idealHeatingCoolings;
+	std::vector<NANDRAD::ObjectList>				m_objLists;
+	std::vector<std::string>						m_objListNames;
+
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	//std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+};
+
+class IdealSurfaceHeatingCoolingModelGenerator : public ModelGeneratorBase{
+	IdealSurfaceHeatingCoolingModelGenerator(const VICUS::Project * pro) :
+		ModelGeneratorBase(pro)
+	{}
+
+	void generate(const VICUS::Room * r, QStringList & errorStack);
+
+	// All definition lists below have the same size and share the same index
+
+	std::vector<NANDRAD::IdealSurfaceHeatingCoolingModel>	m_idealSurfaceHeatingCoolings;
+	std::vector<NANDRAD::IdealPipeRegisterModel>			m_idealPipeRegister;
+	std::vector<NANDRAD::ObjectList>						m_objLists;
+	std::vector<std::string>								m_objListNames;
+
+	// Object list name = schedule group name is not stored, since it matches the respective object list
+	// name in m_objLists
+	//std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+};
+
+class DataSurfaceHeating {
+public:
+	DataSurfaceHeating(unsigned int controlledZoneId, unsigned int surfaceHeatingModelId):
+		m_controlledZoneId(controlledZoneId),
+		m_surfaceHeatingModelId(surfaceHeatingModelId)
+	{}
+
+	unsigned int					m_controlledZoneId;
+	unsigned int					m_surfaceHeatingModelId;
+};
+
+class ConstructionInstanceModelGenerator : public ModelGeneratorBase {
+public:
+
+	ConstructionInstanceModelGenerator(const VICUS::Project *pro):
+		ModelGeneratorBase(pro)
+	{}
+
+	void generate(const std::vector<ComponentInstance> &componentInstances, QStringList &errorStack,
+				  std::map<unsigned int, unsigned int> &vicusToNandradIds, std::set<unsigned int> &idSet);
+
+	void generateMaterials();
+	void generateConstructions(QStringList &errorStack);
+
+
+
+	std::vector<DataSurfaceHeating>					m_surfaceHeatingData;
+
+	std::vector<NANDRAD::ConstructionInstance>		m_constructionInstances;
+	std::vector<NANDRAD::Material>					m_materials;
+	std::vector<NANDRAD::ConstructionType>			m_constructions;
+	std::vector<NANDRAD::WindowGlazingSystem>		m_windowGlazingSystems;
+
+private:
+
+	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
+												  unsigned int interfaceID,  QStringList &errorStack,
+												  bool takeASide = true) const;
+
+	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
+					  const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet) const;
+};
+
+
+void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -118,6 +224,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	// check for unique IDs
 	std::set<unsigned int> scheduleIdSet;
+	std::map<unsigned int, unsigned int> vicusToNandradIds;
 	try {
 		checkForUniqueIDs(m_embeddedDB.m_schedules, scheduleIdSet);
 	} catch (...) {
@@ -135,9 +242,18 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	std::set<unsigned int> idSet;
 	std::vector<const VICUS::Room *> zones;
-	generateNandradZones(zones, idSet, p, errorStack);
+	generateNandradZones(zones, idSet, p, errorStack, vicusToNandradIds);
+
 	if (!errorStack.isEmpty())	return;
 
+	// *** Create Construction Instances, Constructions (opak & tranparent) and materials ***
+
+	ConstructionInstanceModelGenerator constrInstaModelGenerator(this);
+	constrInstaModelGenerator.generate(m_componentInstances, errorStack, vicusToNandradIds, idSet);
+	constrInstaModelGenerator.generateMaterials();
+	constrInstaModelGenerator.generateConstructions(errorStack);
+
+	if (!errorStack.isEmpty())	return;
 
 	// *** Models based on zone templates ***
 
@@ -146,11 +262,10 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	VentilationModelGenerator ventilation(this);
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, errorStack);
-//		ventilation.generate(r, errorStack);
+		ventilation.generate(r, errorStack);
 //		idealHeating.generate(r, errorStack);
 	}
 	if (!errorStack.isEmpty())	return;
-
 
 	// transfer data to project
 
@@ -160,14 +275,51 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	for (unsigned int i=0; i<internalLoads.m_schedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
 
+	// *** Ventilation ***
+	//TODO Katja
+
+	// *** Construction Instances, Constructions (opak & tranparent) and materials ***
+	//TODO Katja
+
 	// *** ...
+
+}
+
+
+bool Project::addIds(unsigned int vicusId, unsigned int nandradId){
+	if(findVicusId(vicusId)){
+
+	}
+}
+
+bool Project::findVicusId(unsigned int &vicusId)const{
+	if(m_vicusToNandrad.find(vicusId) != m_vicusToNandrad.end())
+		return true;
+	return false;
+}
+
+bool Project::findNandradId(unsigned int &nandradId)const{
+	for(std::map<unsigned int, unsigned int>::const_iterator it = m_vicusToNandrad.begin();
+															 it != m_vicusToNandrad.end();
+															 ++it){
+		if(it->second == nandradId)
+			return true;
+
+	}
+}
+
+unsigned int Project::freeVicusId(const std::set<unsigned int> &idSet){
+	unsigned int id=1; //we dont use ZERO !!!
+	//std::map<unsigned int, unsigned int> &vicusToNandrad
+	id = Project::uniqueId<unsigned int>(idSet);
 
 }
 
 
 void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 								   std::set<unsigned int> & idSet,
-								   NANDRAD::Project & p, QStringList & errorStack) const
+								   NANDRAD::Project & p, QStringList & errorStack,
+								   std::map<unsigned int, unsigned int> &vicusToNandradIds)const
 {
 	// collect a list of zone references for further processing
 
@@ -189,6 +341,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 		// first create a NANDRAD zone for the room
 		NANDRAD::Zone z;
 		z.m_id = r->m_id;
+		vicusToNandradIds[r->m_id] = r->m_id;
 		z.m_displayName = r->m_displayName.toStdString();
 
 		// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
@@ -270,10 +423,6 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	if (!dc.m_values.m_values.empty())
 		scheds.push_back(allDays);
 
-	VICUS::Database<Schedule> scheduleDB(0);
-	// Schedule DB ID test has been done already
-	scheduleDB.setData(m_project->m_embeddedDB.m_schedules);
-
 	// initialize load fractions with 0
 	double personRadiationFraction = 0;
 	double equipmentRadiationFraction = 0;
@@ -284,7 +433,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	// *** Person loads (category = IC_Person)***
 
 	if (intLoadPerson != nullptr) {
-		if (!intLoadPerson->isValid(scheduleDB)) {
+		if (!intLoadPerson->isValid(m_scheduleDB)) {
 			errorStack.append(qApp->tr("Invalid parameters in internal loads model #%1 '%2'").arg(intLoadPerson->m_id)
 							  .arg(MultiLangString2QString(intLoadPerson->m_displayName)) );
 		}
@@ -311,8 +460,8 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 			// - retrieve schedules referenced via m_occupancyScheduleId and m_activityScheduleId
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * activitySchedule = scheduleDB[intLoadPerson->m_activityScheduleId];
-			const Schedule * occupancySchedule = scheduleDB[intLoadPerson->m_occupancyScheduleId];
+			const Schedule * activitySchedule = m_scheduleDB[intLoadPerson->m_activityScheduleId];
+			const Schedule * occupancySchedule = m_scheduleDB[intLoadPerson->m_occupancyScheduleId];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = activitySchedule->multiply(*occupancySchedule);
 			combinedSchedule = combinedSchedule.multiply(personPerArea);
@@ -326,7 +475,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	// *** Equipment loads (category = IC_ElectricEquiment )***
 
 	if (intLoadEquipment != nullptr) {
-		if (!intLoadEquipment->isValid(scheduleDB)) {
+		if (!intLoadEquipment->isValid(m_scheduleDB)) {
 			errorStack.append(qApp->tr("Invalid parameters in internal loads model #%1 '%2'").arg(intLoadEquipment->m_id)
 							  .arg(MultiLangString2QString(intLoadEquipment->m_displayName)) );
 		}
@@ -349,7 +498,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 			// - retrieve schedules referenced via
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * powerManagementSchedule = scheduleDB[intLoadEquipment->m_powerManagementScheduleId];
+			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadEquipment->m_powerManagementScheduleId];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
@@ -362,7 +511,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	// *** Lighting loads (category = IC_Lighting )***
 
 	if (intLoadLighting != nullptr) {
-		if (!intLoadLighting->isValid(scheduleDB)) {
+		if (!intLoadLighting->isValid(m_scheduleDB)) {
 			errorStack.append(qApp->tr("Invalid parameters in internal loads model #%1 '%2'").arg(intLoadLighting->m_id)
 							  .arg(MultiLangString2QString(intLoadLighting->m_displayName)) );
 		}
@@ -385,7 +534,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 			// - retrieve schedules referenced via
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * powerManagementSchedule = scheduleDB[intLoadLighting->m_powerManagementScheduleId];
+			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadLighting->m_powerManagementScheduleId];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
@@ -443,7 +592,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	}
 }
 
-void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack, const VICUS::Project * pro) {
+void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack) {
 	FUNCID("VentilationModelGenerator::generate");
 
 	// check if we have a zone template with id to infiltration or ventilation
@@ -453,30 +602,26 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 	const Infiltration						* infiltration = nullptr;
 	const VentilationNatural				* ventilation  = nullptr;
 	const ZoneControlNaturalVentilation		* ctrlVentilation = nullptr;
-	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 
 	unsigned int idSubTempInf = INVALID_ID;
 	unsigned int idSubTempVent = INVALID_ID;
 
-	VICUS::Database<Schedule> scheduleDB(0);
-	// Schedule DB ID test has been done already
-	scheduleDB.setData(m_project->m_embeddedDB.m_schedules);
+	try {
+		infiltration = dynamic_cast<const Infiltration*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_Infiltration));
+		ventilation = dynamic_cast<const VentilationNatural*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_VentilationNatural));
+		ctrlVentilation = dynamic_cast<const ZoneControlNaturalVentilation*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlNaturalVentilation));
+	}  catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
+
+	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 
 	try {
-		if (zoneTemplate == nullptr)
-			throw IBK::Exception( qApp->tr("Invalid zone template ID #%1 referenced from zone #%2 '%3'.").arg(r->m_idZoneTemplate)
-			  .arg(r->m_id).arg(r->m_displayName).toStdString(), FUNC_ID);
-
-		// check if subType exists
-		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural];
-		idSubTempVent = subTempId;
-		if (subTempId != INVALID_ID){
-			ventilation = Project::element(pro->m_embeddedDB.m_ventilationNatural, subTempId);
-			if (ventilation == nullptr || !ventilation->isValid(scheduleDB))
-				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
-									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-		}
+		if (ventilation == nullptr || !ventilation->isValid(m_scheduleDB))
+			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
+								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
 	}
 	catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
@@ -484,15 +629,10 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 	}
 
 	try {
-		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration];
-		idSubTempInf = subTempId;
-		if (subTempId != INVALID_ID){
-			infiltration = Project::element(pro->m_embeddedDB.m_infiltration, subTempId);
-			if (infiltration == nullptr || !infiltration->isValid())
-				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-		}
+		if (infiltration == nullptr || !infiltration->isValid())
+			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
 	}
 	catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
@@ -500,25 +640,40 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 	}
 
 	try {
-		unsigned int subTempId = zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_ControlNaturalVentilation];
-		if (subTempId != INVALID_ID){
-			ctrlVentilation = Project::element(pro->m_embeddedDB.m_zoneControlVentilationNatural, subTempId);
-			if (ctrlVentilation == nullptr || !ctrlVentilation->isValid())
-				throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-									  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-									  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-		}
+		if (ctrlVentilation == nullptr || !ctrlVentilation->isValid())
+			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
 	}
 	catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
 		return;
 	}
-		//infiltration = findZoneSubTemplate<Infiltration>(r, VICUS::ZoneTemplate::ST_Infiltration);
-		//ventilation  = findZoneSubTemplate<VentilationNatural>(r, VICUS::ZoneTemplate::ST_VentilationNatural);
-
 
 	// no model defined?
 	if (infiltration == nullptr && ventilation == nullptr )
+		return;
+
+	if(ventilation != nullptr  && ventilation->isValid(m_scheduleDB))
+			errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+								  .arg(ventilation->m_id)
+							   .arg(zoneTemplate->m_id)
+							   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
+
+	if(infiltration != nullptr  && infiltration->isValid())
+		errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+						   .arg(infiltration->m_id)
+						   .arg(zoneTemplate->m_id)
+						   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
+
+	if(ctrlVentilation != nullptr  && ctrlVentilation->isValid())
+		errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+						   .arg(ctrlVentilation->m_id)
+						   .arg(zoneTemplate->m_id)
+						   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
 		return;
 
 	//which system we have?
@@ -547,16 +702,16 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 		//set all control values
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
 										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
@@ -565,6 +720,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
 	}
 
+	//now add other parameter
 	switch(ventiType){
 		case VentiType::V_Infiltration:{
 			natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
@@ -590,7 +746,6 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 			if(ctrlVentilation == nullptr)
 				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
 			else{
-
 				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
 				NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 												   NANDRAD::NaturalVentilationModel::P_VentilationRate,
@@ -600,7 +755,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 		break;
 		case VentiType::V_InfAndVenti:{
 			if(ctrlVentilation == nullptr)
-				//create in schedule a infiltration + ventilation
+				//create one schedule with summed value of infiltration + ventilation
 				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
 			else{
 				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
@@ -632,7 +787,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 	std::vector<NANDRAD::Schedule> scheds;
 	VICUS::Schedule combinedSchedule;
 	if(ventiType != V_Infiltration){
-		const Schedule * ventSched = scheduleDB[ventilation->m_scheduleId];
+		const Schedule * ventSched = m_scheduleDB[ventilation->m_scheduleId];
 		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].value);
 		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
 			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].value;
@@ -651,10 +806,10 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 
 	// now we have a valid schedule group, yet without object list name
 
-	// Now we check if we have already an natural ventilation model object with exactly the same parameters (except ID and name).
+	// Now we check if we have already an natural ventilation model object with exactly the same parameters (except ID and name, object list).
 	// Then, we also compare the matching schedule (the natural ventilation model object and corresponding schedule have same ID).
 	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
-	// otherwise we add value and schedule definitions and generate a new object list.
+	// otherwise we add model and schedule definitions and generate a new object list.
 
 	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
 		if (m_natVentObjects[i].equal(natVentMod) &&
@@ -681,6 +836,373 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack,
 		}
 	}
 }
+
+void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
+								const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet) const{
+
+	double embArea = 0;
+	// get area of surface
+	double areaA = ci.m_sideASurface->geometry().area();
+
+	for(const SubSurface &ss : subSurfs){
+		NANDRAD::EmbeddedObject emb;
+		emb.m_id = Project::uniqueId(idSet);
+		idSet.insert(emb.m_id);	//add new id to set
+		//get surface are of emb. obj.
+		NANDRAD::KeywordList::setParameter(emb.m_para, "EmbeddedObject::para_t",
+										   NANDRAD::EmbeddedObject::P_Area, ss.m_polygon2D.area());
+		embArea += ss.m_polygon2D.area();
+		if(embArea > areaA){
+			errorStack << qApp->tr("Area of sub surfaces is bigger than area of parent surface #%1, '%2'.").arg(ci.m_sideASurface->m_id)
+						  .arg(ci.m_sideASurface->m_displayName);
+			continue;
+		}
+		emb.m_displayName = ss.m_displayName.toStdString();
+
+		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
+		//find sub surface component instance
+		for(const VICUS::SubSurfaceComponentInstance &ssci : m_project->m_subSurfaceComponentInstances){
+			if(ssci.m_sideASurfaceID == ss.m_id || ssci.m_sideBSurfaceID == ss.m_id){
+				subSurfaceComponentId = ssci.m_subSurfaceComponentID;
+
+				break;
+			}
+		}
+		if(subSurfaceComponentId == VICUS::INVALID_ID){
+			errorStack << qApp->tr("No component was assigned to the SubSurface #%1 with name '%2'. Sub surface is not exported.")
+						  .arg(ss.m_id).arg(ss.m_displayName);
+			continue;
+		}
+		bool foundSubSurfComp = false;
+		//search for sub surface component
+		for(const VICUS::SubSurfaceComponent &ssc : m_project->m_embeddedDB.m_subSurfaceComponents){
+			if(ssc.m_id == subSurfaceComponentId){
+				foundSubSurfComp = true;
+				//only simple windows are supported now
+				if(ssc.m_type == VICUS::SubSurfaceComponent::CT_Window){
+					//ssc.m_idConstructionType
+					if(ssc.m_idWindow == VICUS::INVALID_ID){
+						errorStack << qApp->tr("The sub surface component with #%1 and name '%2' has no valid window id. Sub surface #%3 is not exported.")
+									  .arg(ssc.m_id).arg(QString::fromStdString(ssc.m_displayName.string())).arg(ss.m_id);
+						break;
+					}
+					bool foundWindow =false;
+					//search for the window
+					for(const VICUS::Window &winV : m_project->m_embeddedDB.m_windows){
+						if(winV.m_id == ssc.m_idWindow){
+							if(winV.m_idGlazingSystem == VICUS::INVALID_ID){
+								errorStack << qApp->tr("The window with #%1 and name '%2' has no valid glazing system. Sub surface #%3 is not exported.")
+											  .arg(winV.m_id).arg(QString::fromStdString(winV.m_displayName.string())).arg(ss.m_id);
+								break;
+							}
+							//save id for glazing system later
+							emb.m_window.m_glazingSystemId = winV.m_idGlazingSystem;
+							foundWindow = true;
+							break;
+						}
+					}
+				}
+				else{
+					errorStack << qApp->tr("The sub surface component with #%1 and name '%2' is not supported by the export.")
+								  .arg(ssc.m_id).arg(QString::fromStdString(ssc.m_displayName.string()));
+					continue;
+				}
+			}
+		}
+		if(!foundSubSurfComp){
+			errorStack << qApp->tr("No component was found for the sub surface with #%1 and name '%2'. No export of this sub surface.")
+						  .arg(ss.m_id).arg(ss.m_displayName);
+			continue;
+		}
+		//add emb. obj. to nandrad project
+		cinst.m_embeddedObjects.push_back(emb);
+		//TODO Dirk Frame einbauen sobald verfügbar
+		//TODO Dirk Divider einbauen sobald verfügbar
+	}
+}
+
+NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
+//											  std::vector<IdMap> &maps,
+											  unsigned int interfaceID,
+											  QStringList &errorStack, bool takeASide) const
+{
+	// no boundary condition ID? -> no interface
+	if (bcID == VICUS::INVALID_ID)
+		return NANDRAD::Interface();
+
+	const VICUS::Surface * s;
+	if(takeASide)
+		s = ci.m_sideASurface;
+	else
+		s = ci.m_sideBSurface;
+
+	// lookup boundary condition definition in embedded database
+	const VICUS::BoundaryCondition * bc = Project::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
+	if (bc == nullptr){
+		errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
+				.arg(ci.m_componentID).arg(s->m_id));
+		return NANDRAD::Interface();
+	}
+	if (!bc->isValid())
+		errorStack.append(qApp->tr("Boundary condition #%1 has invalid/incomplete parameters.").arg(bc->m_id));
+
+	// do we have a surface to a zone?
+	if (s != nullptr) {
+		// get the zone that this interface is connected to
+		const VICUS::Object * obj = s->m_parent;
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
+		if (room == nullptr){
+			errorStack.append(qApp->tr("Component instance #%1 references surface %2, which is not associated to a zone.")
+					.arg(ci.m_id).arg(s->m_id));
+			return NANDRAD::Interface();
+		}
+
+		// generate a new interface to the zone, which always only includes heat conduction
+		NANDRAD::Interface iface;
+		iface.m_id = interfaceID;
+		iface.m_zoneId = room->m_id;	//we can take the room id directly, because we dont have duplicates
+
+		// only transfer heat conduction parameters
+		iface.m_heatConduction = bc->m_heatConduction;
+		return iface;
+	}
+	else {
+		// no surface? must be an interface to the outside
+
+		// generate a new interface to the zone, which always only includes heat conduction
+		NANDRAD::Interface iface;
+		iface.m_id = interfaceID;
+		iface.m_zoneId = 0; // outside zone
+		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_solarAbsorption = bc->m_solarAbsorption;
+		iface.m_longWaveEmission = bc->m_longWaveEmission;
+		return iface;
+	}
+}
+
+void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentInstance> &componentInstances,
+												  QStringList &errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds,
+												  std::set<unsigned int> &idSet) {
+	// now process all components and generate construction instances
+	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
+		// Note: component ID may be invalid or component may have been deleted from DB already
+		const VICUS::Component * comp = Project::element(m_project->m_embeddedDB.m_components, compInstaVicus.m_componentID);
+		if (comp == nullptr){
+			errorStack.append(qApp->tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
+							 .arg(compInstaVicus.m_componentID).arg(compInstaVicus.m_id));
+			continue;
+		}
+		// now generate a construction instance
+		NANDRAD::ConstructionInstance constrInstNandrad;
+		//search for a free id
+		constrInstNandrad.m_id = Project::uniqueId(idSet);//compInstaVicus.m_id;
+		//now add id to Set
+		idSet.insert(constrInstNandrad.m_id);
+
+		// store reference to construction type (i.e. to be generated from component)
+		constrInstNandrad.m_constructionTypeId = comp->m_idConstruction;
+
+		// set construction instance parameters, area, orientation etc.
+		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+		double area = 0;
+
+		bool bothSidesHasSurfaces = false;
+		// we have either one or two surfaces associated
+		if (compInstaVicus.m_sideASurface != nullptr) {
+			// get area of surface A
+			area = compInstaVicus.m_sideASurface->geometry().area();
+			// do we have surfaces at both sides?
+			if (compInstaVicus.m_sideBSurface != nullptr) {
+				// have both
+				bothSidesHasSurfaces = true;
+				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
+				// check if both areas are approximately the same
+				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
+					errorStack.append(qApp->tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
+						   "areas %3 and %4 m2.")
+								  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_sideASurfaceID).arg(compInstaVicus.m_sideBSurfaceID)
+								  .arg(area).arg(areaB));
+				}
+
+				// if we have both surfaces, then this is an internal construction and orientation/inclination are
+				// not important and we just don't set these
+
+				/// TODO Dirk : do we need to also store a displayname for each component instance/construction instance?
+				///             We could also name internal walls automatically using zone names, such as
+				///				"Wall between 'Bath' and 'Kitchen'".
+				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2'")
+						.arg(compInstaVicus.m_sideASurface->m_displayName).arg(compInstaVicus.m_sideBSurface->m_displayName).toStdString();
+			}
+			else {
+
+				// we only have side A, take orientation and inclination from side A
+				const VICUS::Surface * s = compInstaVicus.m_sideASurface;
+
+				// set parameters
+				NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
+				NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+												   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
+
+				constrInstNandrad.m_displayName = compInstaVicus.m_sideASurface->m_displayName.toStdString();
+			}
+			// set area parameter (computed from side A, but if side B is given as well, the area is the same
+			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			//for the first time we support only sub surfaces to outside air
+			if(!bothSidesHasSurfaces){
+				// sub surface
+				const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideASurface->subSurfaces();
+				if(subSurfs.size()>0){
+					//we have sub surfaces
+					exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet);
+				}
+			}
+		}
+		else {
+			// we must have a side B surface, otherwise this is an invalid component instance
+			if (compInstaVicus.m_sideBSurface == nullptr){
+				errorStack.append(qApp->tr("Component instance #%1 does neither reference a valid surface on side A nor on side B.")
+									  .arg(compInstaVicus.m_id));
+				continue;
+			}
+
+			const VICUS::Surface * s = compInstaVicus.m_sideBSurface;
+
+			// set parameters
+			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Inclination, s->geometry().inclination());
+			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Orientation, s->geometry().orientation());
+
+			// set area parameter
+			area = compInstaVicus.m_sideBSurface->geometry().area();
+			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
+											   NANDRAD::ConstructionInstance::P_Area, area);
+
+			constrInstNandrad.m_displayName = compInstaVicus.m_sideBSurface->m_displayName.toStdString();
+			// sub surface
+			const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideBSurface->subSurfaces();
+			if(subSurfs.size()>0){
+				//we have sub surfaces
+				exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet);
+			}
+		}
+
+		// now generate interfaces
+		constrInstNandrad.m_interfaceA = generateInterface(compInstaVicus, comp->m_idSideABoundaryCondition, 1, errorStack, true);
+		constrInstNandrad.m_interfaceB = generateInterface(compInstaVicus, comp->m_idSideBBoundaryCondition, 2, errorStack, false);
+
+		// add to list of construction instances
+		m_constructionInstances.push_back(constrInstNandrad);
+
+
+		//create surface heating system data
+		if(compInstaVicus.m_surfaceHeatingControlZoneID != INVALID_ID && compInstaVicus.m_surfaceHeatingID != INVALID_ID){
+			//get an area check for surface heating systems
+			if(area <= 1e-4){
+				errorStack.append(qApp->tr("Component instance #%1 area is too small. No surface heating/cooling export possible.")
+									  .arg(compInstaVicus.m_id));
+				continue;
+			}
+			m_surfaceHeatingData.push_back(DataSurfaceHeating(compInstaVicus.m_surfaceHeatingControlZoneID, compInstaVicus.m_surfaceHeatingID));
+//			unsigned int zoneId = INVALID_ID;
+
+//			int posDataSH = -1;
+//			for(unsigned int i=0; i<m_surfaceSystems.size(); ++i){
+//				if(m_surfaceSystems[i].m_zoneId == compInstaVicus.m_surfaceHeatingControlZoneID){
+//					//found zone id
+//					posDataSH = (int)i;
+//					zoneId = compInstaVicus.m_surfaceHeatingControlZoneID;
+//					break;
+//				}
+//			}
+
+//			if(zoneId != INVALID_ID){
+//				//add new element
+//				if(posDataSH == -1){
+//					m_surfaceSystems.push_back(DataSurfaceHeating());
+//					posDataSH = m_surfaceSystems.size()-1;
+//					m_surfaceSystems.back().m_zoneId = zoneId;
+//				}
+//				DataSurfaceHeating &dsh = m_surfaceSystems[posDataSH];
+//				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_contructionInstanceIds.push_back(cinst.m_id);
+//				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_areaToIds[area*10000].push_back(cinst.m_id);
+//			}
+//			else{
+//				//todo errorstack füllen
+//			}
+		}
+
+	}
+
+}
+
+void ConstructionInstanceModelGenerator::generateMaterials() {
+	// we have constructions and materials already in the embedded database, so we can just copy them over
+	for (const VICUS::Material & m : m_project->m_embeddedDB.m_materials) {
+		NANDRAD::Material matdata;
+
+		matdata.m_id = m.m_id;
+		matdata.m_displayName = m.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+
+		// now transfer parameters - fortunately, they have the same keywords, what a coincidence :-)
+		matdata.m_para[NANDRAD::Material::P_Density] = m.m_para[VICUS::Material::P_Density];
+		matdata.m_para[NANDRAD::Material::P_HeatCapacity] = m.m_para[VICUS::Material::P_HeatCapacity];
+		matdata.m_para[NANDRAD::Material::P_Conductivity] = m.m_para[VICUS::Material::P_Conductivity];
+
+		// addConstruction to material list
+		m_materials.push_back(matdata);
+	}
+}
+
+void ConstructionInstanceModelGenerator::generateConstructions(QStringList &errorStack) {
+
+	for (const VICUS::Construction & c : m_project->m_embeddedDB.m_constructions) {
+		// now create a construction type
+		NANDRAD::ConstructionType conType;
+		conType.m_id = c.m_id;
+		conType.m_displayName = c.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+		unsigned int counter=0;
+		for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
+			NANDRAD::MaterialLayer mlayer;
+			mlayer.m_matId = counter++;
+			mlayer.m_thickness = ml.m_thickness.value;
+			conType.m_materialLayers.push_back(mlayer);
+		}
+
+		// add to construction type list
+		m_constructions.push_back(conType);
+	}
+
+	for(const VICUS::WindowGlazingSystem &w : m_project->m_embeddedDB.m_windowGlazingSystems){
+		if(w.m_modelType != VICUS::WindowGlazingSystem::MT_Simple){
+			errorStack << qApp->tr("The window glazing system with #%1 and name '%2' is not supported by the export.")
+						  .arg(w.m_id).arg(QString::fromStdString(w.m_displayName.string()));
+			continue;
+		}
+		else{
+			NANDRAD::WindowGlazingSystem winG;
+			if(!w.isValid()){
+				errorStack << qApp->tr("The window glazing system with #%1 and name '%2' is not valid. Export failed.")
+							  .arg(w.m_id).arg(QString::fromStdString(w.m_displayName.string()));
+				continue;
+			}
+			winG.m_displayName = w.m_displayName.string();
+			winG.m_id = w.m_id;
+			winG.m_modelType = NANDRAD::WindowGlazingSystem::MT_Simple;
+			NANDRAD::KeywordList::setParameter(winG.m_para, "WindowGlazingSystem::para_t",
+											   NANDRAD::WindowGlazingSystem::P_ThermalTransmittance,
+											   w.uValue());
+			winG.m_splinePara[NANDRAD::WindowGlazingSystem::SP_SHGC]= w.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC];
+
+			m_windowGlazingSystems.push_back(winG);
+		}
+	}
+}
+
+
 
 } // namespace VICUS
 

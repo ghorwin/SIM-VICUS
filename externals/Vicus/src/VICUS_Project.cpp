@@ -2268,8 +2268,6 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 		p.m_constructionTypes.push_back(conType);
 	}
 
-
-
 	for(const VICUS::WindowGlazingSystem &w : m_embeddedDB.m_windowGlazingSystems){
 		if(w.m_modelType != VICUS::WindowGlazingSystem::MT_Simple){
 			errorStack << tr("The window glazing system with #%1 and name '%2' is not supported by the export.")

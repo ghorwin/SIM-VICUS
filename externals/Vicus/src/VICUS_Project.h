@@ -153,6 +153,13 @@ public:
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
 
+	bool addIds(unsigned int vicusId, unsigned int nandradId);
+
+	bool findVicusId(unsigned int &vicusId)const;
+
+	bool findNandradId(unsigned int &nandradId)const;
+
+	unsigned int freeVicusId(const std::set<unsigned int> &idSet);
 
 	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
 
@@ -187,10 +194,11 @@ public:
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const;
+	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack)const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
 
-	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet, NANDRAD::Project & p, QStringList & errorStack) const;
+	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
+							  NANDRAD::Project & p, QStringList & errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -234,6 +242,16 @@ public:
 	/*! Function to generate unique ID (const-version). */
 	template <typename T>
 	static unsigned int uniqueId(const std::vector<T>& vec) {
+		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
+			if (std::find(vec.begin(), vec.end(), id) == vec.end())
+				return id;
+		}
+		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	}
+
+	/*! Function to generate unique ID (const-version). */
+	template <typename T>
+	static unsigned int uniqueId(const std::set<T>& vec) {
 		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
 			if (std::find(vec.begin(), vec.end(), id) == vec.end())
 				return id;
@@ -449,7 +467,7 @@ private:
 	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
 	static unsigned int uniqueIdWithPredef2(IdSpaces idSpace, unsigned int id, std::vector<IdMap> &maps, bool makeNewId = false);
 
-
+	std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
 
 
 };
