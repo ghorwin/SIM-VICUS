@@ -48,6 +48,20 @@
 
 % Zur Verwendung des Grad-Zeichens auf deutschen Tastaturen
 \DeclareUnicodeCharacter{00B0}{^\circ}
+
+\usepackage{babel}
+\usepackage{listings}
+\lstset{basicstyle={\scriptsize\ttfamily},
+breakatwhitespace=false,
+breaklines=false,
+captionpos=b,
+commentstyle={\ttfamily\itshape\color{dark-gray}},
+language={C++},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+tabsize=4,
+texcl=true}
 \end_preamble
 \options fleqn
 \use_default_options true
@@ -55,7 +69,7 @@
 pdfform
 \end_modules
 \maintain_unincluded_children false
-\language english
+\language ngerman
 \language_package default
 \inputencoding auto
 \fontencoding global
@@ -76,6 +90,7 @@ pdfform
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement t
 \paperfontsize default
 \spacing single
 \use_hyperref true

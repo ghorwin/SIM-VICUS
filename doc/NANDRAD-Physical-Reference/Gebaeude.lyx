@@ -48,11 +48,28 @@
 
 % Zur Verwendung des Grad-Zeichens auf deutschen Tastaturen
 \DeclareUnicodeCharacter{00B0}{^\circ}
+
+\usepackage{babel}
+\usepackage{listings}
+\lstset{basicstyle={\scriptsize\ttfamily},
+breakatwhitespace=false,
+breaklines=false,
+captionpos=b,
+commentstyle={\ttfamily\itshape\color{dark-gray}},
+language={C++},
+showspaces=false,
+showstringspaces=false,
+showtabs=false,
+tabsize=4,
+texcl=true}
 \end_preamble
 \options fleqn
 \use_default_options true
+\begin_modules
+pdfform
+\end_modules
 \maintain_unincluded_children false
-\language english
+\language ngerman
 \language_package default
 \inputencoding auto
 \fontencoding global
@@ -69,11 +86,13 @@
 \use_microtype false
 \use_dash_ligatures true
 \graphics default
-\default_output_format default
+\default_output_format pdf2
 \output_sync 0
 \bibtex_command default
 \index_command default
+\float_placement t
 \paperfontsize default
+\spacing single
 \use_hyperref true
 \pdf_title "NANDRAD Modelgleichungen"
 \pdf_author "Anne Paepcke, Andreas Nicolai, Dirk Weiß"
@@ -123,7 +142,7 @@
 \defskip smallskip
 \is_math_indent 0
 \math_numbering_side default
-\quotes_style english
+\quotes_style german
 \dynamic_quotes 0
 \papercolumns 1
 \papersides 2
@@ -269,7 +288,7 @@ varrho$ & $kg/m^3$ & Massedichte, bezogen auf Einheitsvolumen
 
 \begin_layout Plain Layout
 
-$c$ & $J/kgK$ & Spezifische Wärmekapazität
+$C_P$ & $J/kgK$ & Spezifische Wärmekapazität
 \backslash
 
 \backslash
@@ -346,6 +365,26 @@ $d$ & $m$ & Dicke einer Konstruktionsschicht
 \begin_layout Plain Layout
 
 $l$ & $m$ & Länge
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+rho$ & $m^3/s$ & Massendichte
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$C_P$ & $J/kgK$ & Spezifische Wärmekapazität
 \backslash
 
 \backslash
@@ -681,7 +720,18 @@ psi_F$ & Physikalische Größe einer Fensterinnenoberfläche
 
 $
 \backslash
-psi_{AL}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
+psi_{m}$ & Physikalische Größe des Wandmaterials
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+$
+\backslash
+psi_{ab}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
 \backslash
 
 \backslash
@@ -858,7 +908,7 @@ psi_air$ &  Physikalische Größe der Luft
 
 $
 \backslash
-psi_water$ &  Physikalische Größe von Wasser
+psi_water$ & Physikalische Größe von Wasser
 \backslash
 
 \backslash
@@ -885,77 +935,77 @@ end{longtable}
 
 \end_inset
 
-The governing equations contain both dynamic and algebraic balance equations.
- Dynamic thermal zone air and construction balance consider thermal storage
- of zone air, furniture and wall constructions.
- All related heat gains and boundary conditions are encapsulated into algebraic
- model equations.
- We seperately treat heat gains inside the zone, at inside and outside surfaces
- (index 
-\begin_inset Formula $si$
-\end_inset
 
-) and inside the construction (index 
-\begin_inset Formula $i$
-\end_inset
-
-).
- 
 \end_layout
 
 \begin_layout Subsubsection*
-Zone air balance
+Raumbilanz
 \end_layout
 
 \begin_layout Standard
-In the case of building simulation we interpret the room as a zone node
- owning a mean air temperature 
-\begin_inset Formula $T$
+Die Simulation deutet einen Raum/eine Zone als Raumluftknoten mit mittlerer
+ Temperatur 
+\begin_inset Formula $T_{Z}$
 \end_inset
 
- and internal energy 
-\begin_inset Formula $Q_{R}$
+ und innerer Energie 
+\begin_inset Formula $Q_{Z}$
 \end_inset
 
 .
- The room is filled with dry air.
- Further, furnishings significantly increase the thermal storage capability
- of the zone volume.
- Consequently, zone energy transport mechanisms are considered as transient
+ Dabei enthält die innerer Energie sowohl die Wärmekapazität trockener Luft
+ als auch zusätzliche Speichkapazität 
+\begin_inset Formula $C_{mass}$
+\end_inset
+
+
+\begin_inset Formula $\left[J/K\right]$
+\end_inset
+
+ durch Einrichtungsgegenenstände und eventuell vernachlässigter Innenwände.
+ 
+\begin_inset Formula 
+\[
+Q_{Z}=\left(\rho_{air}C_{P}V_{Z}+C_{mass}\right)T_{Z}
+\]
+
+\end_inset
+
+Um dem mitunter signifikanten thermischen Speicherverhalten gerecht zu werden,
+ wird die Raumbilanz instationär gelöst:
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
+\frac{\text{d}Q_{Z}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
 +\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
 \end_inset
 
-Internal energy changes with time due to natural ventilation heat loads
- 
+Dabei finden Wärmequellen und Wärmesenken durch natürliche Lüftung 
 \begin_inset Formula $\dot{Q}_{V}$
 \end_inset
 
-, heat conduction fluxes through the surrounding wall constructions 
+, Wärmeströme durch Leitung über die Raumbegrenzungswände 
 \begin_inset Formula $\dot{Q}_{W,cond,i}$
 \end_inset
 
-, transmission fluxes through windows 
+, Wärmetransmissionsströme durch Fenster 
 \begin_inset Formula $\dot{Q}_{F,cond,i}$
 \end_inset
 
-, internal cooling loads 
+, interne Kühllasten 
 \begin_inset Formula $\dot{Q}_{C,i}$
 \end_inset
 
-, convective heating loads 
+ und Wärmelasten 
 \begin_inset Formula $\dot{Q}_{H,i}$
 \end_inset
 
-, conctively transfered gains of incoming short wave radiation 
+, Wärme infolge der Sonneneinstrahlung durch Fenster 
 \begin_inset Formula $\gamma_{conv}\dot{Q}_{F,SWRad,i}$
 \end_inset
 
- and convective person, equipment and lighting loads 
+ und konvektive Lasten durch Personen, elektrische Geräte und Licht 
 \begin_inset Formula $\dot{Q}_{P,conv}$
 \end_inset
 
@@ -967,57 +1017,207 @@ Internal energy changes with time due to natural ventilation heat loads
 \begin_inset Formula $\dot{Q}_{L,conv}$
 \end_inset
 
- and 
+ und 
 \begin_inset Formula $\dot{Q}_{NW}$
 \end_inset
 
 .
- Short wave radiation heat gains on single wall surfaces and the related
- increased heat transfer due to air convection is included in the coefficient
- 
+ Es wird hierbei angenommen, dass die kurzwellige Strahlung durch Fensterflächen
+ anteilig mit dem Faktor 
 \begin_inset Formula $\gamma_{SWRad,conv}$
 \end_inset
 
-.
- In detail, this factor denotes the rate of short wave radiation that is
- converted into convective heat gains
+ in konvektiv übertragene Wärme umgewandelt wird.
 \end_layout
 
 \begin_layout Subsubsection*
-Wall balance
+Wandbilanz
 \end_layout
 
 \begin_layout Standard
-The wall constructions are considered as one dimensional multilayered compound
- structures of different materials over the wall thickness.
- Each material itself is treated as continuum allowing thermal storage and
- conduction heat transfer.
- These requirements are satisfied by the transient heat equation with 
+Die Wände werden aufgefasst als eindimensionaler Verbund verschiedener Materials
+chichten.
+ Dabei findet Wärmetransport durch Wärmeleitung (Wärmestromdichte 
+\begin_inset Formula $q_{cond}$
+\end_inset
+
+) durch das Material statt.
+ Dabei werden die Wärmespeichereffekte der Wände durch eine dynamische Bilanz
+ berücksichtigt.
+ Um die Tempertaurverteilung voraussagen zu können, wird die Bilanz eindimension
+al raumaufgelöst nach der innere Energiedichte 
 \begin_inset Formula $u$
 \end_inset
 
- denoting the the internal energy density as solution quantity.
+ gelöst.
 \begin_inset Formula 
 \begin{eqnarray*}
-\frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q+\dot{u}_{AL}
+\frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q_{cond}+\dot{u}_{ab}\\
+u & = & \rho_{m}C_{P,m}\left(T-T_{ref}\right)+u_{ref}
 \end{eqnarray*}
 
 \end_inset
 
-Transient changes of internal energy density at an infinte small volume
- are caused by thermal transport processes at the volume boundaries, in
- the case of a porous dry material we consider the conductivity heat flux
- density 
-\begin_inset Formula $q$
+Zusätzlich zu den Wärmetransportströmen sind innere Wärmequellen 
+\begin_inset Formula $\dot{u}_{AL}$
+\end_inset
+
+ innerhalb thermisch aktiver Konstruktionsschichten zulässig.
+\lang american
+
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Graphics
+	filename images/Construction1.eps
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename images/Construction2.eps
+	scale 50
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+protect
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Wand mit aktiv geheizter Konstruktionsssch
+\lang american
+icht (links) und Modelläquivalent (rechts).
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:ModelEquations:ActiveElement"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+Zur Lösung der Bilamnzgleichungen werden die Wände durch die Wanddicke hinweg
+ durch eine Finite-Volumen-Methode diskretisiert.
+ Dabei entstehen 
+\begin_inset Formula $n$
+\end_inset
+
+ diskrete Teilvolumina 
+\begin_inset Formula $V_{k}$
+\end_inset
+
+ mit Dicke 
+\begin_inset Formula $\Delta x_{k}$
+\end_inset
+
+, an deren Rändern die Wärmeleitungsströme 
+\begin_inset Formula $q_{cond,k}$
+\end_inset
+
+ und 
+\begin_inset Formula $q_{cond,k+1}$
+\end_inset
+
+ sowie Quelldichten innerhalb aktiver Bauteile, bilanziert werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\partial u_{k}}{\partial t} & = & \frac{A_{W}}{V_{k}}\left(q_{cond,k}-q_{cond,k+1}\right)+\dot{u}_{ab,k}=\frac{1}{\Delta x_{k}}\left(q_{cond,k}-q_{cond,k+1}\right)+\dot{u}_{ab,k}\\
+q_{cond,k} & = & \lambda\frac{T_{k}-T_{k-1}}{\frac{1}{2}\left(\Delta x_{k-1}+\Delta x_{k}\right)}\\
+\dot{u}_{ab,k} & = & \frac{\dot{Q}_{ab}|_{V_{k}}}{V_{k}}
+\end{eqnarray*}
+
+\end_inset
+
+Die Wärmeleitung an der rechten und linken Kante wird hierbei mit Hilfe
+ des Temperatur ermittelt, genähert über den Differenzenquotienten zwischen
+ den Nachbarelementen 
+\begin_inset Formula $V_{k}$
+\end_inset
+
+ und 
+\begin_inset Formula $V_{k-1}$
+\end_inset
+
+, beziehungsweise 
+\begin_inset Formula $V_{k+1}$
+\end_inset
+
+ und 
+\begin_inset Formula $V_{k}$
 \end_inset
 
 .
- Further, for the purpose of active building component modelling we consider
- heat sources inside a construction layer 
-\begin_inset Formula $\dot{u}_{AB}$
+ Die innere Quelldichte 
+\begin_inset Formula $\dot{u}_{ab,k}$
+\end_inset
+
+ innerhalb eines jeden Diskretisierungsvolumens wird als einheitlich über
+ jede aktive Konstruktionsschicht angenommen und korrespondiert zu einer
+ von außen vorgegebenen Heiz- odert Kühllast 
+\begin_inset Formula $\dot{Q}_{ab}$
 \end_inset
 
 .
+ An den Außenkanten gelten die Randbedingungen für die Wand.
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{cond,0} & = & q_{W,i}\\
+q_{cond,n} & = & q_{W,j}
+\end{eqnarray*}
+
+\end_inset
+
+Entscheidend für die Ermittlung von Randbedingungen sind die Wandoberflächentemp
+eraturen 
+\begin_inset Formula $T_{W,i}$
+\end_inset
+
+ und 
+\begin_inset Formula $T_{W,j}$
+\end_inset
+
+, die durch konstante Interpolation mit den Werten der Randelemente gleichgesetz
+t werden.
+ 
+\begin_inset Formula 
+\begin{eqnarray*}
+T_{W,i} & = & T_{0}\\
+T_{W,j} & = & T_{n-1}
+\end{eqnarray*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
@@ -1066,7 +1266,7 @@ The convective heat transfer between the wall surface and the room air is
  
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{R}-\vartheta_{W,i}\right)\\
+q_{conv,W,i} & = & \alpha_{W,i}\left(T_{Z}-T_{W,i}\right)\\
 q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}+q_{LWRad,W}
 \end{eqnarray*}
 
@@ -1122,7 +1322,7 @@ Thermal conditions at the outside wall surfaces are affected by the heat
  denoting the solar adsorbtion coefficient.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{e}\left(t\right)-\vartheta_{W,i}\right)\\
+q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{A}\left(t\right)-\vartheta_{W,i}\right)\\
 q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}
 \end{eqnarray*}
 
@@ -1178,7 +1378,7 @@ Representing thermal active construction elements field conditions are defined
  
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{u}_{AL} & = & \frac{\dot{Q}_{AL}}{A_{W}d}
+\dot{u}_{ab} & = & \frac{\dot{Q}_{ab}}{A_{W}d}
 \end{eqnarray*}
 
 \end_inset
@@ -1604,7 +1804,7 @@ An thermal active element is defined as a heat source inside a construction
 \begin_inset Formula 
 \begin{align*}
 \dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
-\dot{Q}_{AL} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
+\dot{Q}_{ab} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
 \end{align*}
 
 \end_inset
@@ -1642,12 +1842,12 @@ An thermal active element is defined as a heat source inside a construction
 \begin_inset Formula 
 \begin{align*}
 \dot{m}_{H} & =\begin{cases}
-\min\left(\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{AL}\\
-0 & T_{sup}<T_{AL}
+\min\left(\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{ab}\\
+0 & T_{sup}<T_{ab}
 \end{cases}\\
 \dot{m}_{C} & =\begin{cases}
-\min\left(\max\left(0,k_{P}\left(T_{Z}-T_{set}(t)\right)\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{AL}\\
-0 & T_{sup}>T_{AL}
+\min\left(\max\left(0,k_{P}\left(T_{Z}-T_{set}(t)\right)\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{ab}\\
+0 & T_{sup}>T_{ab}
 \end{cases}\\
 \dot{m}_{water} & =\max\left(\dot{m}_{H},\dot{m}_{C}\right)
 \end{align*}
@@ -1660,7 +1860,7 @@ An thermal active element is defined as a heat source inside a construction
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{Q}_{AL} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}C_{p,water}}\right)\right)\left(T_{sup}-T_{AL}\right)
+\dot{Q}_{ab} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}C_{p,water}}\right)\right)\left(T_{sup}-T_{ab}\right)
 \end{eqnarray*}
 
 \end_inset
