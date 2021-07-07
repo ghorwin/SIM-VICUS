@@ -1188,11 +1188,11 @@ Die Wärmeleitung an der rechten und linken Kante wird hierbei mit Hilfe
 \end_inset
 
 .
- An den Außenkanten gelten die Randbedingungen für die Wand.
+ An den Außenkanten gelten die Randbedingungen für die Wand:
 \begin_inset Formula 
 \begin{eqnarray*}
 q_{cond,0} & = & q_{W,i}\\
-q_{cond,n} & = & q_{W,j}
+q_{cond,n} & = & -q_{W,j}
 \end{eqnarray*}
 
 \end_inset
@@ -1221,20 +1221,20 @@ T_{W,j} & = & T_{n-1}
 \end_layout
 
 \begin_layout Subsubsection*
-Boundary condition model for wall inside surfaces
+Randbedingungen für Innenwände
 \end_layout
 
 \begin_layout Standard
-At the inside wall surface several heat tranfer mechanisms are present:
- the convective heat transfer between wall surface and room air 
+An innenseitigen Wandoberflächen setzt sich der Gesamteintrag aus den Wärmestrom
+dichten infolge konvektiven Austausches mit der Raumluft 
 \begin_inset Formula $q_{conv,W,i}$
 \end_inset
 
-, heat gains due to short wave radiation heat flux densities 
+ und Einträgen aus Wärmestrahlung auf die Oberflächen 
 \begin_inset Formula $q_{rad,W,i}$
 \end_inset
 
- .
+ zusammen.
  
 \begin_inset Formula 
 \begin{eqnarray*}
@@ -1243,39 +1243,30 @@ q_{W,i} & = & q_{conv,W,i}+q_{rad,W,i}
 
 \end_inset
 
-The convective heat transfer between the wall surface and the room air is
- considered as a boundary layer phenomena beeing caused by the temperature
- gradient between mean room air 
-\begin_inset Formula $\vartheta_{R}$
+Der konvektive Wärmeaustausche mit der Raumluft wird angetrieben durch den
+ Gradienten zwischen Raumlufttemperatur
+\begin_inset Formula $T_{Z}$
 \end_inset
 
- and wall surface temperature 
-\begin_inset Formula $\vartheta_{W,i}$
+ und Wandoberflächentemperatur 
+\begin_inset Formula $T_{W,i}$
 \end_inset
 
 .
- At the current model state the heat transfer coefficient 
+ Der Wärmeübergangskoeffizient 
 \begin_inset Formula $\alpha_{W,i}$
 \end_inset
 
- both includes convective mechanisms as well as the long wave radiation
- heat transfer to other surfaces.
- The latter transport mechanism kleads to a componsation of temperature
- gradients between different wall surfaces and is approximately described
- by heat exchange between the walls and the mean room air temperature between.
- 
-\begin_inset Formula 
-\begin{eqnarray*}
-q_{conv,W,i} & = & \alpha_{W,i}\left(T_{Z}-T_{W,i}\right)\\
-q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}+q_{LWRad,W}
-\end{eqnarray*}
-
+ enthält dabei den rein konvektiven Anteil, sowie einen Aufschlag aufgrund
+ von Wärmestrahlung zwischen unterschiedlich temperierten Wänden, der nicht
+ detailliert abgebildet wird.
+ Die tatsächlich als Wärmestrahlung berücksichtigen Lastdichten wird durch
+ in Wärmestrahlung umgewandelte Sonneneinstrahlung (
+\begin_inset Formula $q_{LWRad,W}$
 \end_inset
 
-We assume a uniform distribution of long wave and short wave radiation loads
- at all internal wall surfaces.
- The entries result from radiant loads from persons, equipment and lighting
- 
+), Strahlungslasten durch Personenbelegung, elektrische Geräte und Beleuchtung
+ ( 
 \begin_inset Formula $q_{P,W}$
 \end_inset
 
@@ -1283,61 +1274,62 @@ We assume a uniform distribution of long wave and short wave radiation loads
 \begin_inset Formula $q_{E,W}$
 \end_inset
 
- and 
+,
 \begin_inset Formula $q_{L,W}$
 \end_inset
 
-.
+) verursacht.
+ Diese Wärmestromdichten werden als gleichverteilt über alle Wandoberflächen
+ angenommen.
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{conv,W,i} & = & \alpha_{W,i}\left(T_{Z}-T_{W,i}\right)\\
+q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}
+\end{eqnarray*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsubsection*
-Boundary condition model for wall outside surfaces
+Randbedingungen für Außenwände
 \end_layout
 
 \begin_layout Standard
-Thermal conditions at the outside wall surfaces are affected by the heat
- exchange with ambient air with temperature 
-\begin_inset Formula $\vartheta_{e}$
+An Außenwänden liegt die Außenlufttemperatur 
+\begin_inset Formula $T_{A}$
 \end_inset
 
- as well as gains by direct and diffuse solar radiation (radiant energy
- flux density 
+ an und sorgt für konvektiven Wärmeaustasuch mit der Wandoberfläche.
+ Zusätzlich wreden Wärmeeintrage durch Solarstrahlung (Strahlungsstromdichte
+ 
 \begin_inset Formula $q_{rad,\alpha\beta}$
 \end_inset
 
-).
- These effects are lead to heat fluxes with respect to convective heat transfer
- 
-\begin_inset Formula $q_{conv,W,i}$
-\end_inset
-
- and adsorbed radiation gains 
-\begin_inset Formula $q_{SWRad,W,i}$
-\end_inset
-
- with 
+) an der Wandoberfläche adsorbiert.
+ Dabei bezeichne
 \begin_inset Formula $a_{W,i}$
 \end_inset
 
- denoting the solar adsorbtion coefficient.
+ den Absorptionskoeffizienten der Wand für Solarstrahlung.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,i} & = & \alpha_{W,i}\left(\vartheta_{A}\left(t\right)-\vartheta_{W,i}\right)\\
+q_{conv,W,i} & = & \alpha_{W,i}\left(T_{A}\left(t\right)-T_{W,i}\right)\\
 q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}
 \end{eqnarray*}
 
 \end_inset
 
-Regarding the lack of information due to the building environment long wave
- radiation heat gains are not taken into account.
+
 \end_layout
 
 \begin_layout Subsubsection*
-Boundary condition model for adiabatic wall surfaces
+Randbedingungen für adiabate Oberflächen
 \end_layout
 
 \begin_layout Standard
-Adiabtic wall surfaces do not provide heat fluxes.
+An adiabaten Wandoberflächen verschwinden alle Wärmeströme.
 \begin_inset Formula 
 \begin{eqnarray*}
 q_{conv,W,i} & = & 0\\
