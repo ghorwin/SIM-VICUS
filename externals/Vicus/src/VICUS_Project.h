@@ -153,13 +153,7 @@ public:
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
 
-
-
-	bool findVicusId(unsigned int &vicusId)const;
-
-	bool findNandradId(unsigned int &nandradId)const;
-
-
+<
 
 	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
 
