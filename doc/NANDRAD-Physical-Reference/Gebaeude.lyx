@@ -162,28 +162,58 @@ Gebäudemodellgleichungen
 \end_layout
 
 \begin_layout Standard
+
+\lang american
+\begin_inset Tabular
+<lyxtabular version="3" rows="41" columns="3">
+<features islongtable="true" longtabularalignment="center">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row endlastfoot="true">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Symbol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Einheit
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Beschreibung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row endlastfoot="true">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
 \begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-begin{longtable}{lll}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-Symbol & Basiseinheit & Beschreibung 
-\backslash
-
-\backslash
-
-\end_layout
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -192,6 +222,12 @@ Symbol & Basiseinheit & Beschreibung
 toprule
 \end_layout
 
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
 \begin_layout Plain Layout
 
 
@@ -199,381 +235,17 @@ toprule
 endfirsthead
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
 
-\end_layout
+
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
 
 
 \backslash
 bottomrule
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-caption{Symbolverzeichnis}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-endlastfoot
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$t$ & $s$ & Zeit 
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$T$ & $K$ & Temperatur
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$T_{op}$ & $^
-\backslash
-circ C$ & Empfindungstemperatur 
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$T_{rad}$ & $K$ & Strahlungstemperatur
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-varrho$ & $kg/m^3$ & Massedichte, bezogen auf Einheitsvolumen
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$C_P$ & $J/kgK$ & Spezifische Wärmekapazität
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-lambda$ & $W/mK$ & Wärmeleitfähigkeit
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-alpha$ & $W/m^2K$ & Wärmeübergangskoeffizient
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$a$ & $[0..1]$ & Absorptionskoeffizient für kurzwelligige Solarstrahlung
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$A$ & $m^2$ & Fläche
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$A_Z$ & $m^2$ & Zonengrundfläche
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$V$ & $m^3$ & Volumen
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$d$ & $m$ & Dicke einer Konstruktionsschicht
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$l$ & $m$ & Länge
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-rho$ & $m^3/s$ & Massendichte
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$C_P$ & $J/kgK$ & Spezifische Wärmekapazität
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-gamma_{SWRad,conv}$ & $[0..1]$ & Anteil der in konvektive Wärme umgewandelter
- kurzwelliger Strahlungslast
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$f$ & $[0..1]$ & Rahmenanteil von Fenstern
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$z$ & $[0..1]$ & Verschattungsfaktor von Fenstern
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$U$ & $W/m^2K$ & Wärmetransmissionskoeffizient, äußerer U-Wert
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$n_N$ & $1/s$ & Luftwechselrate für natürliche Lüftung
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$N_P$ & & Maximale Personenbelegung eines Raumes
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$f_P$ & $[0..1]$ & Anteil der ausgenutzten maximalen Personenbelegung
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{Q}$ & $W = J/s$ & Wärmestrom
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$q$ & $W/m^2$ & Wärmestromdichte
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{m}$ &$kg/s$ & Massestrom 
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{v}$ &$m/s$ & Strömungsgeschwindigkeit 
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$q_{rad,
-\backslash
-alpha
-\backslash
-beta}$ & $W/m^2$ & Globale Solarstrahlung auf eine geneigte Oberfläche
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{u}$ & $W/m^3$ & Volumenbezogene Wärmequelle
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{Q}_{act}$ & $W$ & Personenlast
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{Q}_{loss}$ & $W$ & Thermische Verluste durch Personen
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{q}_{elec}$ & $W/m^2$ & Zonengrundflächenbezogene maximale Wärmelast
- durch elektrische Geräte
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-$
-\backslash
-dot{q}_{lights}$ & $W/m^2$ & Zonengrundflächenbezogene maximale Wärmelast
- durch Beleuchtung
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-end{longtable}
 \end_layout
 
 \end_inset
@@ -581,29 +253,1635 @@ end{longtable}
 
 \end_layout
 
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row endlastfoot="true" caption="true">
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Symbolverzeichnis
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="none" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="none" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $t$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Zeit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $T$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Temperatur
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $T_{op}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Empfindungstemperatur
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $T_{rad}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Strahlungstemperatur
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\varrho$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $kg/m^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Massendichte per Einheitsvolumen
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $c$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $J/kgK$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Spezifische Wärmekapazität
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $C_{M}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $J/K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmekapazität thermischer Massen im Raum
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\lambda$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/mK$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmeleitfähigkeit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\alpha$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmeünbergangskoeffizient
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $a$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Absorptionskoeffizient für kurzwelligige Solarstrahlung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $A$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Fläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $A_{R}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Zonengrundfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $V$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $m^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Volumen
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $d$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Dicke (einer Konstruktionsschicht)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $l$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $m$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Länge
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\gamma_{conv}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Anteil der in konvektive Wärme umgewandelten Last
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\gamma_{rad}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Anteil der in Strahlungswärme umgewandelten Last
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\theta$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..\Pi]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Sonneneinfallwinkel auf eine geneigte Fläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $g$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Energiedurchlassgrad von Fenstern
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $z$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Verschattungsfaktor von Fenstern
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $U$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}K$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Wärmetransmissionskoeffizient, innerer U-Wert
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $n$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $1/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Luftwechselrate
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{m}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $kg/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Massestrom
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $v$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+\begin_inset Formula $m/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Strömungsgeschwindigkeit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $N_{P}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Maximale Personenbelegung eines Raumes
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $f_{P}(t)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Personenbelegungsdichte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $f_{E}(t)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Nutzungsanteil elektrischer Geräte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $f_{L}(t)$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $[0..1]$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Lichtnutzungsanteil
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{Q}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W=J/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmestrom
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmestromdichte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q_{rad,i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Globale Solarstrahlung auf eine geneigte Fläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q_{rad,dir,i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Direkte Solarstrahlung auf eine geneigte Fläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q_{rad,diff,i}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Diffuse Solarstrahlung auf eine Fläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{u}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Volumenbezogene Wärmequelldichte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{Q}_{act}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Personenlast
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{Q}_{loss}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Thermische Verluste durch Personen
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{u}_{elec}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Zonengrundflächenbezogene maximale Wärmelast durch elektrische Geräte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{u}_{lights}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Zonengrundflächenbezogene maximale Wärmelast durch Beleuchtung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
+
+\lang american
+\begin_inset Tabular
+<lyxtabular version="3" rows="34" columns="2">
+<features islongtable="true" longtabularalignment="center">
+<column alignment="left" valignment="top">
+<column alignment="left" valignment="top">
+<row endlastfoot="true">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Symbol
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Beschreibung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row endlastfoot="true">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
 \begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-begin{longtable}{ll}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-Symbol & Becshreibung 
-\backslash
-
-\backslash
-
-\end_layout
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -612,20 +1890,45 @@ Symbol & Becshreibung
 toprule
 \end_layout
 
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
 \begin_layout Plain Layout
 
 
 \backslash
 endfirsthead
-\backslash
+\end_layout
 
-\backslash
+\end_inset
+
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
 \end_layout
+
+\end_inset
+</cell>
+</row>
+<row endlastfoot="true">
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset ERT
+status collapsed
 
 \begin_layout Plain Layout
 
@@ -634,304 +1937,806 @@ endfirsthead
 bottomrule
 \end_layout
 
-\begin_layout Plain Layout
+\end_inset
 
-
-\backslash
-
-\backslash
 
 \end_layout
 
-\begin_layout Plain Layout
-
-
-\backslash
-caption{Indexliste}
-\end_layout
-
-\begin_layout Plain Layout
-
-
-\backslash
-endlastfoot
-\end_layout
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
 \end_layout
 
-\begin_layout Plain Layout
-
-$
-\backslash
-psi$ & Abstrakte physikalische Größe
-\backslash
-
-\backslash
-
-\end_layout
+\end_inset
+</cell>
+</row>
+<row endlastfoot="true" caption="true">
+<cell multicolumn="1" alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_Z$ & Physikalische Größe einer Zone
-\backslash
-
-\backslash
-
-\end_layout
+\lang american
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_A$ & Physikalische Größe der außenliegenden Umgebung
-\backslash
+\lang american
+Indexliste
+\end_layout
 
-\backslash
+\end_inset
+
 
 \end_layout
+
+\end_inset
+</cell>
+<cell multicolumn="2" alignment="none" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_W$ & Physikalische Größe einer Wandoberfläche
-\backslash
-
-\backslash
-
 \end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_F$ & Physikalische Größe einer Fensterinnenoberfläche
-\backslash
+\lang american
+\begin_inset Formula $\psi$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Abstrakte physikalische Größe
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{m}$ & Physikalische Größe des Wandmaterials
-\backslash
+\lang american
+\begin_inset Formula $\psi_{air}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft der Luft
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{ab}$ & Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
-\backslash
+\lang american
+\begin_inset Formula $\psi_{water}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft von Wasser
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{H}$ & Physikalische Größe ideale Zonenheizung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{R}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe eines Raumes/einer Zone
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{C}$ & Physikalische Größe ideale Zonenkühlung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{A}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft der außenliegenden Umgebung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{conv}$ & Konvektiver Transportstrom/-dichte
-\backslash
+\lang american
+\begin_inset Formula $\psi_{hemis}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft der Hemisphäre
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{rad}$ & Transportstrom/-dichte durch langwellige und kurzwellige Strahlung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{W}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe einer Wandoberfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{SWRad}$ & Transportstrom/-dichte durch kurzwellige Strahlung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{F}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe eines Fensters
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{LWRad}$ & Transportstrom/-dichte durch langwellige Strahlung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{FR}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe einers Fensterinnenoberfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_{cond}$ & Transportstrom/-dichte durch Wärmeleitung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{FA}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe einer Fensteraußenoberfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_V$ &  Physikalische Größe durch natürliche Lüftung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{m}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Materialeigenschaft einer Konstruktionsschicht
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_P$ &  Physikalische Größe durch Personenbelegung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{g}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft der Fensterglasfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_E$ &  Physikalische Größe durch elektrische Geräte
-\backslash
+\lang american
+\begin_inset Formula $\psi_{f}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft des Fensterrahmens
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_L$ &  Physikalische Größe durch Beleuchtung
-\backslash
+\lang american
+\begin_inset Formula $\psi_{d}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft der Fenstersprossen
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_NW$ &  Physikalische Größe durch Gesamtheit aller Netzwerkelemente in
- einer Zone/Wand
-\backslash
+\lang american
+\begin_inset Formula $\psi_{H}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch ideale Zonenheizung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_sup$ &  Physikalische Größe im Vorlauf eines Rohrs
-\backslash
+\lang american
+\begin_inset Formula $\psi_{C}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch ideale Zonenkühlung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_pipe$ &  Physikalische Größe eines Rohrs
-\backslash
+\lang american
+\begin_inset Formula $\psi_{ab}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_air$ &  Physikalische Größe der Luft
-\backslash
+\lang american
+\begin_inset Formula $\psi_{conv}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Konvektiver Transportstrom/-dichte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_water$ & Physikalische Größe von Wasser
-\backslash
+\lang american
+\begin_inset Formula $\psi_{rad}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Transportstrom/-dichte durch langwellige und kurzwellige Strahlung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
-$
-\backslash
-psi_set$ &  Physikalische Setpoint-Größe
-\backslash
+\lang american
+\begin_inset Formula $\psi_{LWRad}$
+\end_inset
 
-\backslash
 
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Transportstrom/-dichte durch langwellige Strahlung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
 
 \begin_layout Plain Layout
 
+\lang american
+\begin_inset Formula $\psi_{SWRad}$
+\end_inset
 
-\backslash
-end{longtable}
+
 \end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Transportstrom/-dichte durch kurzwellige Strahlung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{cond}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Transportstrom/-dichte durch Wärmeleitung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{V}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch natürliche Lüftung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{P}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch Personenbelegung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{E}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch elektrische Geräte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{L}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch Beleuchtung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{NW}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe durch Gesamtheit aller Netzwerkelemente in einer Zone/Wand
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{sup}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe im Vorlaufes eines Rohrs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{pipe}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Eigenschaft eines Rohrs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{set}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Setpoint-Größe
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
 
 \end_inset
 
@@ -945,17 +2750,17 @@ Raumbilanz
 \begin_layout Standard
 Die Simulation deutet einen Raum/eine Zone als Raumluftknoten mit mittlerer
  Temperatur 
-\begin_inset Formula $T_{Z}$
+\begin_inset Formula $T_{R}$
 \end_inset
 
  und innerer Energie 
-\begin_inset Formula $Q_{Z}$
+\begin_inset Formula $Q_{R}$
 \end_inset
 
 .
  Dabei enthält die innerer Energie sowohl die Wärmekapazität trockener Luft
  als auch zusätzliche Speichkapazität 
-\begin_inset Formula $C_{mass}$
+\begin_inset Formula $C_{M}$
 \end_inset
 
 
@@ -964,18 +2769,22 @@ Die Simulation deutet einen Raum/eine Zone als Raumluftknoten mit mittlerer
 
  durch Einrichtungsgegenenstände und eventuell vernachlässigter Innenwände.
  
+\lang american
+
 \begin_inset Formula 
 \[
-Q_{Z}=\left(\rho_{air}C_{P}V_{Z}+C_{mass}\right)T_{Z}
+Q_{R}=\left(c_{air}\rho_{air}V_{R}+C_{M}\right)T_{R}
 \]
 
 \end_inset
 
+
+\lang ngerman
 Um dem mitunter signifikanten thermischen Speicherverhalten gerecht zu werden,
  wird die Raumbilanz instationär gelöst:
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{Z}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
+\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
 +\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
@@ -1053,7 +2862,7 @@ al raumaufgelöst nach der innere Energiedichte
 \begin_inset Formula 
 \begin{eqnarray*}
 \frac{\partial u}{\partial t} & = & -\frac{\partial}{\partial x}q_{cond}+\dot{u}_{ab}\\
-u & = & \rho_{m}C_{P,m}\left(T-T_{ref}\right)+u_{ref}
+u & = & \rho_{m}c_{m}\left(T-T_{ref}\right)+u_{ref}
 \end{eqnarray*}
 
 \end_inset
@@ -1245,7 +3054,7 @@ q_{W,i} & = & q_{conv,W,i}+q_{rad,W,i}
 
 Der konvektive Wärmeaustausche mit der Raumluft wird angetrieben durch den
  Gradienten zwischen Raumlufttemperatur
-\begin_inset Formula $T_{Z}$
+\begin_inset Formula $T_{R}$
 \end_inset
 
  und Wandoberflächentemperatur 
@@ -1283,7 +3092,7 @@ Der konvektive Wärmeaustausche mit der Raumluft wird angetrieben durch den
  angenommen.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{conv,W,i} & = & \alpha_{W,i}\left(T_{Z}-T_{W,i}\right)\\
+q_{conv,W,i} & = & \alpha_{W,i}\left(T_{R}-T_{W,i}\right)\\
 q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}
 \end{eqnarray*}
 
@@ -1342,61 +3151,26 @@ q_{rad,W,i} & = & 0
 \end_layout
 
 \begin_layout Subsubsection*
-Field condition for thermal active wall elements
+Verteilung kurzwelliger Strahlungslasten durch Fenster
 \end_layout
 
 \begin_layout Standard
-Representing thermal active construction elements field conditions are defined
- at a construction layer of a wall.
- The heating gains 
-\begin_inset Formula $\dot{Q}_{AL}$
-\end_inset
-
- are assumed to be equally distributed at the wall corresponding active
- layer with longitudal area 
-\begin_inset Formula $A_{W}$
-\end_inset
-
- and thickness 
-\begin_inset Formula $d$
-\end_inset
-
-.
- They correspond to the heat source 
-\begin_inset Formula $\dot{u}_{AL}$
-\end_inset
-
-.
+Die Summe aller kurzwelligen Strahlungslasten durch Fenster eines Raumes
  
-\begin_inset Formula 
-\begin{eqnarray*}
-\dot{u}_{ab} & = & \frac{\dot{Q}_{ab}}{A_{W}d}
-\end{eqnarray*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection*
-Distribution of short wave radiation gains
-\end_layout
-
-\begin_layout Standard
-Non-geometric models usually do not provide information for the distribution
- of radiation gains.
- The assumption of an equally distributed radiation intensity on all wall
- surfaces 
-\begin_inset Formula $q_{SWRad,W}$
-\end_inset
-
- therefore is a suitable approach.
- The incoming short wave radiation 
 \begin_inset Formula $\sum\limits _{k}^{n_{F}}\dot{Q}_{SWRad,k}$
 \end_inset
 
- includes the rate of energy that is convectively transfered into the room.
- This amount needs to be excluded from short wave radiation balance.
+ wird anteilig in langwellige Lasten 
+\begin_inset Formula $q_{LWRad,W}$
+\end_inset
+
+ umgewandelt.
+ Der Strahlungsanteil wird anzüglich des konvektiven Anteils 
+\begin_inset Formula $\gamma_{SWRad,conv}$
+\end_inset
+
+ ermittelt und gleichmäßig auf alle Wandinnenoberflächen verteilt.
+ 
 \begin_inset Formula 
 \begin{align*}
 q_{LWRad,W} & =\frac{\left(1-\gamma_{SWRad,conv}\right)\sum\limits _{i}^{n_{F}}\dot{Q}_{SWRad,i}}{\sum\limits _{i}^{n_{W}}A_{W,i}}
@@ -1404,27 +3178,26 @@ q_{LWRad,W} & =\frac{\left(1-\gamma_{SWRad,conv}\right)\sum\limits _{i}^{n_{F}}\
 
 \end_inset
 
-
-\begin_inset Formula $\sum\limits _{j}A_{W,j}$
+Die Summe 
+\begin_inset Formula $\sum\limits _{i}A_{W,i}$
 \end_inset
 
- denotes the sum of internal netto wall surfaces.
+ wichtet hierbei alle Wandnettooberflächen, also ohne Berücksichtigung von
+ Fensterflächen.
 \end_layout
 
 \begin_layout Subsubsection*
-Distribution of occupancy radiation gains
+Verteilung langwelliger interner Strahlungslasten
 \end_layout
 
 \begin_layout Standard
-No geometrical information is required for the calculation of long wave
- radiation gains from persons, technical equipment and lighing 
+Analog werden langwellige Lasten durch ANwesenheit, elektrische Geräte und
+ Beleuchtung 
 \begin_inset Formula $\dot{Q}_{P,E,L}$
 \end_inset
 
-.
- Therefore, the assumption of uniformely distributed radiation gains appears
- as a permissible compromise.
- We obtain a uniform radiant flux density at all wall surfaces 
+ auf alle Wandoberflächen gleichverteilt mit der einheitlichen Wärmestromdichte
+ 
 \begin_inset Formula $q_{P,E,L,W}$
 \end_inset
 
@@ -1441,36 +3214,32 @@ q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,LWRad}}{\sum\limits _{i}^{n_{W}}A_{W,i}}
 \end_layout
 
 \begin_layout Subsubsection*
-Thermal comfort 
+Thermische Behaglichkeit 
 \end_layout
 
 \begin_layout Standard
-The mean radiant temperature 
-\begin_inset Formula $\vartheta_{rad}$
+Als Größen für die thermische Behaglichkeit werden Strahlungstemperatur
+ 
+\begin_inset Formula $T_{rad}$
 \end_inset
 
- and the operative temperature 
-\begin_inset Formula $\vartheta_{op}$
+ und Empfindungstemperatur 
+\begin_inset Formula $T_{op}$
 \end_inset
 
- are denote parameters for thermal comfort.
- Approximately we use an area weighted average of all wall and window inside
- surface temperatures with 
+ berechnet.
+ Die Strahlungstemperatur wird dabei als gewichtetes Mittel aller Wand-
+ und Fensterflächen
 \begin_inset Formula $\sum_{i}A_{W,i}+\sum_{i}A_{F,i}$
 \end_inset
 
- denoting the sum of all inside brutto surface areas (including the window
- areas).
- Operative temperature is considered as arithmetic mean of room air temperature
- 
-\begin_inset Formula $\vartheta_{R}$
-\end_inset
-
- and radiant temperature.
+ gedeutet.
+ Die Empfindungstemperatur entspricht dem arithmetischen Mittel zwischen
+ Raumluft- und Strahlungstemperatur.
 \begin_inset Formula 
 \begin{align*}
-T_{rad}=\frac{\sum_{i}A_{W,i}\cdot T_{W,ii}+\sum_{i}A_{F,i}\cdot T_{F,i}}{\sum_{i}A_{W,i}}\\
-T_{op}=\frac{T_{Z}+T_{rad}}{2}
+T_{rad}=\frac{\sum_{i}A_{W,i}\cdot T_{W,ii}+\sum_{i}A_{F,i}\cdot T_{FI,i}}{\sum_{i}A_{W,i}+\sum_{i}A_{F,i}}\\
+T_{op}=\frac{T_{R}+T_{rad}}{2}
 \end{align*}
 
 \end_inset
@@ -1483,39 +3252,115 @@ Fenster
 \end_layout
 
 \begin_layout Standard
-We use a steady state monolayer window model and caclculate the transmitted
- solar radiation heat gains 
+Fensterflächen werden als durchlässig für kurzwellige Strahlung 
 \begin_inset Formula $\dot{Q}_{SWRad,F,i}$
 \end_inset
 
- as well as heat loads by heat transmission through the window 
+ und Wärmekonvektion/Wärmeleitung 
 \begin_inset Formula $\dot{Q}_{cond,F,i}$
 \end_inset
 
+ erachtet und als wird als Einscheibenmodell abstrahiert.
+ Die solare Strahlungsstromdichte (direkt 
+\begin_inset Formula $q_{rad,direct,i}$
+\end_inset
+
+ und diffus 
+\begin_inset Formula $q_{rad,diffuse,i}$
+\end_inset
+
+) wird abgemindert mit dem einheitlichen Energiedurchlasssgrad 
+\begin_inset Formula $g$
+\end_inset
+
+, welcher für die gesamte Fensterfläche und Fensterdicke gilt und somit
+ die Undurchlässigkeit von Fensterrahmen und Fenstersprossen bereits berücksicht
+igt.
+ Hierbei ist der Durchlassgrad für direkte Sonneneinstrahlung abhängig vom
+ Sonneneinfallswinkel 
+\begin_inset Formula $\theta$
+\end_inset
+
 .
- Assuming a conservation of the normal heat transmission flux density 
-\begin_inset Formula $q_{F,trans,i}$
+ Zusätzlich wird die Minderung durch Verschattung durch den Verschattungsfaktor
+ 
+\begin_inset Formula $z$
 \end_inset
 
- we are able to predict the window surface temperature 
-\begin_inset Formula $T_{F,i}$
+ berücksichtigt.
+ Die Stromrichtig zeigt von außen ins Rauminnere.
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{F,SWRad,i} & = & z_{F,i}\,\left(g\left(\theta\right)q_{rad,direct,i}\left(t\right)+g_{hemis}q_{rad,diffuse,i}\left(t\right)\right)\\
+\dot{Q}_{F,SWRad,i} & = & q_{F,SWRad,i}A_{F,i}
+\end{eqnarray*}
+
 \end_inset
 
- by use of heat transfer coefficient 
-\begin_inset Formula $\alpha_{F,i}$
+Die Wärmetransmission durch Wärmeleiteitung und und Scheibenzwischenraumkonvekti
+on wird ebenso als Einscheibenmodell abstrahiert.
+ Es werden allerdings die Durchlassgrade der Scheibenverglasung 
+\begin_inset Formula $U_{g,i}$
 \end_inset
 
-.
- We assume the heat transfer between surface and wall to be independent
- from the surface material and we simply copy the corresponding heat transfer
- coefficient from the properties of the surrounding wall surface.
+, des Fensterrahmens 
+\begin_inset Formula $U_{f,i}$
+\end_inset
+
+ und der Fenstersprossen 
+\begin_inset Formula $U_{d,i}$
+\end_inset
+
+ unterschieden.
+ Zusätzlich ist der Wärmeübergang zum Raum und zur Außenumgebung, charakterisier
+t durch die Wärmeübergangskoeffizienten 
+\begin_inset Formula $\alpha_{FR,i}$
+\end_inset
+
+ und 
+\begin_inset Formula $\alpha_{FA,i}$
+\end_inset
+
+, zu berücksichtigen.
+ Unter der Annahme einer konstanten Wärmestromdichte über die Fensterdicke
+ können die Innen- und Außenoberflächentemperaturen der Fensterscheiben
+ 
+\begin_inset Formula $T_{FR}$
+\end_inset
+
+ und 
+\begin_inset Formula $T_{FA}$
+\end_inset
+
+ direkt ermittelt werden.
  
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{Q}_{SWRad,i} & = & z_{F,i}\left(t\right)\,\tau_{F,i}\,f_{F,i}\,q_{rad,\alpha\beta,i}\left(t\right)A_{F,i}\\
-q_{F,trans,i} & = & U_{F,i}\left(T_{A}\left(t\right)-T_{Z}\right)\\
-\dot{Q}_{F,cond,i} & = & q_{F,cond,i}A_{F,i}\\
-T_{F,i} & = & T_{Z}+\frac{1}{\alpha_{F,i}}q_{F,cond,i}
+q_{g,cond,i} & = & \frac{1}{\frac{1}{\alpha_{FR,i}}+\frac{1}{U_{g,i}}+\frac{1}{\alpha_{FA}}}\left(T_{A}\left(t\right)-T_{Z}\right)\\
+T_{FR,i} & = & T_{R}-\frac{1}{\alpha_{FR,i}}q_{g,cond,i}\\
+T_{FA,i} & = & T_{A}+\frac{1}{\alpha_{AR,i}}q_{g,cond,i}
+\end{eqnarray*}
+
+\end_inset
+
+Der gesamte Wärmedurchgang erhöht flächengewichtet sich um die Wärmeleitung
+ durch den Fensterrahmen 
+\begin_inset Formula $q_{f,cond,i}$
+\end_inset
+
+ und die Fenstersprossen 
+\begin_inset Formula $q_{d,cond,i}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+q_{f,cond,i} & = & \frac{1}{\frac{1}{\alpha_{FR,i}}+\frac{1}{U_{f,i}}+\frac{1}{\alpha_{FA}}}\left(T_{A}\left(t\right)-T_{Z}\right)\\
+q_{d,cond,i} & = & \frac{1}{\frac{1}{\alpha_{FR,i}}+\frac{1}{U_{d,i}}+\frac{1}{\alpha_{FA}}}\left(T_{A}\left(t\right)-T_{Z}\right)\\
+\dot{Q}_{F,cond,i} & = & q_{g,cond,i}A_{g,i}+q_{f,cond,i}A_{f,i}+q_{d,cond,i}A_{d,i}
 \end{eqnarray*}
 
 \end_inset
