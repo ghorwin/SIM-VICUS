@@ -59,7 +59,7 @@ bool SurfaceHeating::isValid() const {
 			}  catch (...) {
 				return false;
 			}
-
+			//TODO Katja Pipes prüfen
 			if(m_idPipe == VICUS::INVALID_ID)
 				return false;
 
