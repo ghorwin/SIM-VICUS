@@ -1561,8 +1561,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 	}
 }
 
-void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & errorStack)
-{
+void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & errorStack) {
 
 	// check if we have a zone template with id to ideal heating cooling
 
@@ -1648,5 +1647,8 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & e
 			m_objListNames.push_back(ol.m_name);
 		}
 	}
+}
+
+
 } // namespace VICUS
 
