@@ -165,7 +165,7 @@ Gebäudemodellgleichungen
 
 \lang american
 \begin_inset Tabular
-<lyxtabular version="3" rows="41" columns="3">
+<lyxtabular version="3" rows="40" columns="3">
 <features islongtable="true" longtabularalignment="center">
 <column alignment="left" valignment="top">
 <column alignment="left" valignment="top">
@@ -1278,7 +1278,7 @@ Strömungsgeschwindigkeit
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $N_{P}$
+\begin_inset Formula $q_{person}(t)$
 \end_inset
 
 
@@ -1291,6 +1291,11 @@ Strömungsgeschwindigkeit
 
 \begin_layout Plain Layout
 
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
 \end_layout
 
 \end_inset
@@ -1299,7 +1304,9 @@ Strömungsgeschwindigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-Maximale Personenbelegung eines Raumes
+
+\lang american
+Personenwärmelast pro Zonengrundfläche
 \end_layout
 
 \end_inset
@@ -1312,7 +1319,7 @@ Maximale Personenbelegung eines Raumes
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $f_{P}(t)$
+\begin_inset Formula $q_{elec}(t)$
 \end_inset
 
 
@@ -1326,7 +1333,7 @@ Maximale Personenbelegung eines Raumes
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $[0..1]$
+\begin_inset Formula $W/m^{2}$
 \end_inset
 
 
@@ -1340,48 +1347,7 @@ Maximale Personenbelegung eines Raumes
 \begin_layout Plain Layout
 
 \lang american
-Personenbelegungsdichte
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $f_{E}(t)$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $[0..1]$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-Nutzungsanteil elektrischer Geräte
+Wärmelast elektrischer Geräte pro Zonengrundfläche
 \end_layout
 
 \end_inset
@@ -1394,7 +1360,7 @@ Nutzungsanteil elektrischer Geräte
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $f_{L}(t)$
+\begin_inset Formula $q_{light}(t)$
 \end_inset
 
 
@@ -1408,7 +1374,7 @@ Nutzungsanteil elektrischer Geräte
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $[0..1]$
+\begin_inset Formula $W/m^{2}$
 \end_inset
 
 
@@ -1422,7 +1388,7 @@ Nutzungsanteil elektrischer Geräte
 \begin_layout Plain Layout
 
 \lang american
-Lichtnutzungsanteil
+Lichtlast pro Zonengrundfläche
 \end_layout
 
 \end_inset
@@ -3288,10 +3254,11 @@ igt.
 \end_inset
 
  berücksichtigt.
+ Dieser kann eine Konstante sein oder geregelt werden.
  Die Stromrichtig zeigt von außen ins Rauminnere.
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{F,SWRad,i} & = & z_{F,i}\,\left(g\left(\theta\right)q_{rad,direct,i}\left(t\right)+g_{hemis}q_{rad,diffuse,i}\left(t\right)\right)\\
+q_{F,SWRad,i} & = & z_{F,i}\,\left(g\left(\theta_{i}\right)q_{rad,direct,i}+g_{hemis}q_{rad,diffuse,i}\right)\\
 \dot{Q}_{F,SWRad,i} & = & q_{F,SWRad,i}A_{F,i}
 \end{eqnarray*}
 
@@ -3369,29 +3336,15 @@ q_{d,cond,i} & = & \frac{1}{\frac{1}{\alpha_{FR,i}}+\frac{1}{U_{d,i}}+\frac{1}{\
 \end_layout
 
 \begin_layout Subsubsection*
-Constant shading 
+Klimaberechnung
 \end_layout
 
 \begin_layout Standard
-We allow a constant coefficient as well as an incidence angle dependent
- shading coefficient 
-\begin_inset Formula $z_{F,i}\left(t\right)$
+Das CCM Klimamodul stellt interpolierte Werte für die Außentempertaur 
+\begin_inset Formula $T_{A}\left(t\right)$
 \end_inset
 
-.
- We use a linear spline interpolation to describe the latter dependency.
-\end_layout
-
-\begin_layout Subsubsection*
-Climatic model
-\end_layout
-
-\begin_layout Standard
-The CCM climate module provides an ambient temperature 
-\begin_inset Formula $\vartheta_{e}\left(t\right)$
-\end_inset
-
- and the direct/diffuse solar radiation at a given surface 
+ und die direkte/diffuse kurzwellige Solarstrahlung 
 \begin_inset Formula $q_{rad,direct,i}\left(t\right)$
 \end_inset
 
@@ -3399,31 +3352,40 @@ The CCM climate module provides an ambient temperature
 \begin_inset Formula $q_{rad,diffuse,i}\left(t\right)$
 \end_inset
 
-.
- Default implementation assumes free view of each external wall and window
- surface towards the surrounding ground or hemisphere.
+ für alle geneigten Wand- oder Fensterflächen, sowie den Sonneneinstrahlwinkel
  
+\begin_inset Formula $\theta_{i}$
+\end_inset
+
+.
+ Die Globalstrahlung 
+\begin_inset Formula $q_{rad,i}$
+\end_inset
+
+ setzt sich dabei zusammen aus den kurzwelligen direkten und diffusen Anteilen.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{rad,i}(t) & = & q_{rad,direct,i}\left(t\right)+q_{rad,diffuse,i}\left(t\right)
+q_{rad,direct,i} & = & q_{rad,direct,i}\left(t\right)\\
+q_{rad,diffuse,i} & = & q_{rad,diffuse,i}\left(t\right)\\
+q_{rad,i} & = & q_{rad,direct,i}+q_{rad,diffuse,i}
 \end{eqnarray*}
 
 \end_inset
 
-With respect to external objects shading current wall or window, the user
- can reference time dependend shading factors 
+Optional können externe Verschattungsobjekte mittels eines zeitabhängigen
+ Verschattungsfaktors 
 \begin_inset Formula $z_{W,i}\left(t\right)$
 \end_inset
 
- defined for period of one year.
- In this case, direct solar radiation on the surface is reduced.
+ über das gesamte Jahr zur Verfügung gestellt werden.
+ Diese vermindern die einfallende Direktstrahlung.
  
 \begin_inset Formula 
 \begin{eqnarray*}
-q_{rad,i}(t) & =z_{W,i}(t) & q_{rad,direct,i}\left(t\right)+q_{rad,diffuse,si}\left(t\right)
+q_{rad,direct,i} & = & z_{W,i}(t)q_{rad,direct,i}\left(t\right)
 \end{eqnarray*}
 
 \end_inset
@@ -3432,66 +3394,41 @@ q_{rad,i}(t) & =z_{W,i}(t) & q_{rad,direct,i}\left(t\right)+q_{rad,diffuse,si}\l
 \end_layout
 
 \begin_layout Subsubsection*
-Occupancy 
+Innere Lasten 
 \end_layout
 
 \begin_layout Standard
-The occupancy of a room describes different usage scenarios with the help
- of schedules.
- We consider loads from the presence of persons, the usage of electric equipment
- and lighting.
- For this purpose we make up the balance between heat gains from person
- activity 
-\begin_inset Formula $\dot{Q}_{act}$
+Innere Lasten werden durch Zeitpläne erfasst.
+ Dabei werden Personenlasten 
+\begin_inset Formula $q_{person}\left(t\right)$
 \end_inset
 
- and heat reduction by persons 
-\begin_inset Formula $\dot{Q}_{loss}$
+, Lasten durch elektrische Geräte 
+\begin_inset Formula $q_{elec}\left(t\right)$
 \end_inset
 
- in the case the person adsorbes energy for a maximum occupancy of 
-\begin_inset Formula $N_{P}$
+ und Lichtlasten 
+\begin_inset Formula $q_{light}\left(t\right)$
 \end_inset
 
- users, heat gains (per floor area) by electric equipment 
-\begin_inset Formula $\dot{q}_{elec}$
-\end_inset
-
- and lighting 
-\begin_inset Formula $\dot{q}_{light}$
+ bezogen auf die Zonengrundfläche berücksichtigt.
+ Die Lasten sind korrellieren somit mit der Raumgrundfläche 
+\begin_inset Formula $A_{R}$
 \end_inset
 
 .
- All these quantities correlate to the maximum usage of the zone and are
- classified as constant space type properties.
- The dynamic of usage scenario is reached by reducing the maximujm occupancy
- with the ratios 
-\begin_inset Formula $f_{P}\left(t\right)$
-\end_inset
-
-, 
-\begin_inset Formula $f_{E}\left(t\right)$
-\end_inset
-
- and 
-\begin_inset Formula $f_{L}\left(t\right)$
-\end_inset
-
-.
- Consequently, these factors refer to scheduled quantities.
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{P} & =N_{P}f_{P}\left(t\right)\left(\dot{Q}_{act}-\dot{Q}_{loss}\right)\\
-\dot{Q}_{E} & =f_{E}\left(t\right)q_{elec}A_{Z}\\
-\dot{Q}_{L} & =f_{L}\left(t\right)q_{light}A_{Z}
+\dot{Q}_{P} & =q_{person}\left(t\right)A_{R}\\
+\dot{Q}_{E} & =q_{elec}\left(t\right)A_{R}\\
+\dot{Q}_{L} & =q_{light}\left(t\right)A_{R}
 \end{align*}
 
 \end_inset
 
-Each load is both transfered convectively to the room air and as long wave
- radiation towards the wall surfaces.
- We define ratios for the long wave radiation part of each load 
+Die Wärmeabgabe erfolgt sowohl konvektiv als auch durch Wärmestrahlung.
+ Die entsprechenden Lastanteile werden durch die Faktiren 
 \begin_inset Formula $\gamma_{P,rad}$
 \end_inset
 
@@ -3499,27 +3436,23 @@ Each load is both transfered convectively to the room air and as long wave
 \begin_inset Formula $\gamma_{E,rad}$
 \end_inset
 
- and 
+ und 
 \begin_inset Formula $\gamma_{L,rad}$
 \end_inset
 
-.
- The lighting loads additionally provide a ratio 
-\begin_inset Formula $\gamma_{L,visib}$
-\end_inset
-
- of energy that is emitted by visible light.
- 
+ angegegen.
+ Hierbei wird davon ausgegangen, dass sichtbares Licht in langwellige Strahlung
+ umgewandelt wird.
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{P,conv} & =\left(1-\gamma_{P,rad}\right)\dot{Q}_{P}\\
-\dot{Q}_{E,conv} & =\left(1-\gamma_{E,rad}\right)\dot{Q}_{E}\\
-\dot{Q}_{L,conv} & =\left(1-\gamma_{L,rad}\right)\dot{Q}_{E}
+\dot{Q}_{P,rad} & =\gamma_{P,rad}\dot{Q}_{P}\\
+\dot{Q}_{E,rad} & =\gamma_{E,rad}\dot{Q}_{E}\\
+\dot{Q}_{L,rad} & =\gamma_{L,rad}\dot{Q}_{L}
 \end{align*}
 
 \end_inset
 
-Convective loads 
+Die verbleibenden Lasten 
 \begin_inset Formula $\dot{Q}_{P,conv}$
 \end_inset
 
@@ -3527,38 +3460,102 @@ Convective loads
 \begin_inset Formula $\dot{Q}_{E,conv}$
 \end_inset
 
- and 
+ und 
 \begin_inset Formula $\dot{Q}_{L,conv}$
 \end_inset
 
- are obtained by excluding the energy that is comitted by long wave radiation
- 
-\begin_inset Formula $\dot{Q}_{P,rad}$
-\end_inset
-
-, 
-\begin_inset Formula $\dot{Q}_{E,rad}$
-\end_inset
-
- and 
-\begin_inset Formula $\dot{Q}_{L,rad}$
-\end_inset
-
- as well as the visible lighting energy.
- While convective loads have an effect on room air balance radiant loads
- are distributed towards the wall surfaces.
- Currently the balance of visible light is ignored.
+werden folglich konvektiv an den Raum abgegeben.
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{P,rad} & =\gamma_{P,rad}\dot{Q}_{P}\\
-\dot{Q}_{E,rad} & =\gamma_{E,rad}\dot{Q}_{E}\\
-\dot{Q}_{L,rad} & =\gamma_{L,rad}\dot{Q}_{E}
+\dot{Q}_{P,conv} & =\left(1-\gamma_{P,rad}\right)\dot{Q}_{P}\\
+\dot{Q}_{E,conv} & =\left(1-\gamma_{E,rad}\right)\dot{Q}_{E}\\
+\dot{Q}_{L,conv} & =\left(1-\gamma_{L,rad}\right)\dot{Q}_{L}
 \end{align*}
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Subsubsection*
+Natürliche Lüftung
+\end_layout
+
+\begin_layout Standard
+At the current delevpment state (passive operation of teh building with
+ ideal loads calculations) we take into consideration air conditioning due
+ to natural ventilation and air exchange by infiltration.
+ The corresponding air change rate for natural ventilation 
+\begin_inset Formula $n_{V}(t)$
+\end_inset
+
+ correlates to user behaviour and needs to be provided by the schedules.
+ The same way of parametrization is used for the infiltration air change
+ rates.
+ The supply air mass flux corresponds both to air change rate and zone volume
+ 
+\begin_inset Formula $V_{R}$
+\end_inset
+
+.
+ We assume an ideal homogenious zone air temperature with mass density 
+\begin_inset Formula $\rho_{air}$
+\end_inset
+
+ and heat capacity 
+\begin_inset Formula $c_{air}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{align*}
+n_{V}(t) & =\begin{cases}
+n_{V,basic}(t)+n_{V,comf}(t) & T_{min}-\Delta T\leq T_{Z}\leq T_{max}+\Delta T,v_{air}\leq v_{air,max}\\
+n_{V,basic}(t) & sonst
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+\dot{m}_{V} & =\rho_{air}\,n_{V}(t)\,V_{Z}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Our assumtions allow the calculation of enthalpy fluxes for the incoming
+ and outgoing air with unique temperatures 
+\begin_inset Formula $T_{A}\left(t\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $T_{Z}$
+\end_inset
+
+.
+ These enthalpy fluxes strongly effect room energy balance and must be taken
+ into consideration.
+ 
+\begin_inset Formula 
+\begin{align*}
+\dot{Q}_{V} & =\dot{m}_{V}\,c_{air}\left(T_{A}\left(t\right)-T_{Z}\right)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Komfortlüftung:
 \end_layout
 
 \begin_layout Subsubsection*
@@ -3714,83 +3711,17 @@ U_{total}=\frac{l_{pipe}}{\frac{1}{\alpha_{I}d_{I}\Pi}+\frac{1}{U_{pipe}}}
 \end_layout
 
 \begin_layout Subsubsection*
-Natürliche Lüftung
+Verschattungsregelung
 \end_layout
 
 \begin_layout Standard
-At the current delevpment state (passive operation of teh building with
- ideal loads calculations) we take into consideration air conditioning due
- to natural ventilation and air exchange by infiltration.
- The corresponding air change rate for natural ventilation 
-\begin_inset Formula $n_{V}(t)$
-\end_inset
-
- correlates to user behaviour and needs to be provided by the schedules.
- The same way of parametrization is used for the infiltration air change
- rates.
- The supply air mass flux corresponds both to air change rate and zone volume
- 
-\begin_inset Formula $V_{R}$
+We allow a constant coefficient as well as an incidence angle dependent
+ shading coefficient 
+\begin_inset Formula $z_{F,i}\left(t\right)$
 \end_inset
 
 .
- We assume an ideal homogenious zone air temperature with mass density 
-\begin_inset Formula $\rho_{air}$
-\end_inset
-
- and heat capacity 
-\begin_inset Formula $c_{air}$
-\end_inset
-
-.
- 
-\begin_inset Formula 
-\begin{align*}
-n_{V}(t) & =\begin{cases}
-n_{V,basic}(t)+n_{V,comf}(t) & T_{min}-\Delta T\leq T_{Z}\leq T_{max}+\Delta T,v_{air}\leq v_{air,max}\\
-n_{V,basic}(t) & sonst
-\end{cases}
-\end{align*}
-
-\end_inset
-
-
-\begin_inset Formula 
-\begin{align*}
-\dot{m}_{V} & =\rho_{air}\,n_{V}(t)\,V_{Z}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Our assumtions allow the calculation of enthalpy fluxes for the incoming
- and outgoing air with unique temperatures 
-\begin_inset Formula $T_{A}\left(t\right)$
-\end_inset
-
- and 
-\begin_inset Formula $T_{Z}$
-\end_inset
-
-.
- These enthalpy fluxes strongly effect room energy balance and must be taken
- into consideration.
- 
-\begin_inset Formula 
-\begin{align*}
-\dot{Q}_{V} & =\dot{m}_{V}\,c_{air}\left(T_{A}\left(t\right)-T_{Z}\right)
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Komfortlüftung:
+ We use a linear spline interpolation to describe the latter dependency.
 \end_layout
 
 \end_body
