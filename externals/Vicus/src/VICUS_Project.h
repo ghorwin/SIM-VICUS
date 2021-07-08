@@ -153,8 +153,6 @@ public:
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
 
-<
-
 	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
 
 	/*! This exception class extends IBK::Exception by additional members
