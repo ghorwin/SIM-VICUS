@@ -53,6 +53,10 @@ public:
 	/*! Checks for valid and required parameters (value ranges). */
 	void checkParameters(int networkModelType);
 
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
+	bool equal(const HydraulicFluid & other) const;
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Display name of fluid. */
