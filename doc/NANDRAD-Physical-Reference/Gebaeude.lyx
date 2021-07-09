@@ -1278,7 +1278,7 @@ Strömungsgeschwindigkeit
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $q_{person}(t)$
+\begin_inset Formula $q_{person}$
 \end_inset
 
 
@@ -1319,7 +1319,7 @@ Personenwärmelast pro Zonengrundfläche
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $q_{elec}(t)$
+\begin_inset Formula $q_{elec}$
 \end_inset
 
 
@@ -1360,7 +1360,7 @@ Wärmelast elektrischer Geräte pro Zonengrundfläche
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $q_{light}(t)$
+\begin_inset Formula $q_{light}$
 \end_inset
 
 
@@ -3901,19 +3901,133 @@ Regler
 \end_layout
 
 \begin_layout Standard
-P
+Alle Regler berechnen ein Regelsignal 
+\begin_inset Formula $y$
+\end_inset
+
+ zu gegebener Regelabweichung 
+\begin_inset Formula $e$
+\end_inset
+
+.
+ Dabei werden verschiedene Regelstrategien angeboten.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Digitaler Regler
 \end_layout
 
 \begin_layout Standard
-PI
+Der digitale Regler gibt als Antwort ein Binärsignal zurück.
+ 
+\begin_inset Formula 
+\begin{align*}
+y & =\begin{cases}
+1 & e>0\\
+0 & e\leq0
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Digitaler Regler mit Hysterese
 \end_layout
 
 \begin_layout Standard
-Digial 
+Eine Erweiterung stellt der digitale Regler mit Hystere dar.
+ Hierbei ist das Regelsignal 
+\begin_inset Formula $y_{t}$
+\end_inset
+
+ abhängig vom vergangenen Wert 
+\begin_inset Formula $y_{t-1}$
+\end_inset
+
+ und wird hierbei innerhalb eines festgelegten Toleranzbandes 
+\begin_inset Formula $e_{tol}$
+\end_inset
+
+ auf dem alten Wert festgehalten.
+\begin_inset Formula 
+\begin{align*}
+y_{t} & =\begin{cases}
+1 & e>e_{tol}\\
+0 & e<-e_{tol}\\
+y_{t-1} & -e_{tol}\leq e\leq e_{tol}
+\end{cases}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+P-Regler
 \end_layout
 
 \begin_layout Standard
-Digital mit Hysterese
+Der P-Regler berücksichtigt ein lineares Regelglied 
+\begin_inset Formula $k_{P}$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{align*}
+y & =k_{P}e
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+PI-Regler
+\end_layout
+
+\begin_layout Standard
+Der PI-Regler berücksichtigt neben dem linearen Glied 
+\begin_inset Formula $k_{P}$
+\end_inset
+
+ die integral gemittelte Gesamtabweichung 
+\begin_inset Formula $e_{int}$
+\end_inset
+
+ mit Regelparameter 
+\begin_inset Formula $k_{I}$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray*}
+y & = & k_{P}e+k_{I}\int_{0}^{t}e
+\end{eqnarray*}
+
+\end_inset
+
+Um das Integralglied zu ermitteln, wird die Abweichung 
+\begin_inset Formula $e_{int}$
+\end_inset
+
+ als transiente Lösungsgröße in das zeitabhängige gesamte Lösungsverfahren
+ integriert und durch Zeitintegrationsverfahren gelöst.
+ Es ergibt sich das modifizierte System:
+\begin_inset Formula 
+\begin{eqnarray*}
+\frac{\text{d}e_{int}}{\text{d}t} & = & e\\
+y & = & k_{P}e+k_{I}e_{int}
+\end{eqnarray*}
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -3962,9 +4076,6 @@ Summationsmodell
 Das Summationsmodell sammelt die Wärmeeinträge in alle aktiven Wandkonstruktions
 schichten und ermöglicht damit eine Gesamtbilanzierung.
  Es können auch ausgewählte Wände in ein Modell zusammengefasst werden.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \[
 \dot{Q}_{sum}=\sum_{i}^{n_{ab}}\dot{Q}_{ab}
@@ -3996,7 +4107,7 @@ z, ohne dass hierfür genaue Verteilstränge bekannt sein müssen.
 
  ermittelt unter der ANnahme, dass keinerlei thermische Verzögerungseffekte
  auftreten.
- In diesem Fall ist die Tempertaurdifferenz proportional zur abgegebenen
+ In diesem Fall ist die Temperaturdifferenz proportional zur abgegebenen
  Wärmemenge aller beteiligten Heizelemente.
 \begin_inset Formula 
 \[
