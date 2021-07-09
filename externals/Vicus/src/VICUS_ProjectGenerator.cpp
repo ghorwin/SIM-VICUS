@@ -732,7 +732,21 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 		return;
 	}
 
+	// no ventilation defined?
+	if (ventilation == nullptr && infiltration == nullptr && ctrlVentilation == nullptr)
+		return;
+
 	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+	try {
+		if (infiltration == nullptr || !infiltration->isValid())
+			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+	}
+	catch (IBK::Exception & ex) {
+		errorStack.append( QString::fromStdString(ex.what()) );
+		return;
+	}
 
 	try {
 		if (ventilation == nullptr || !ventilation->isValid(m_scheduleDB))
@@ -745,16 +759,6 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 		return;
 	}
 
-	try {
-		if (infiltration == nullptr || !infiltration->isValid())
-			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-	}
-	catch (IBK::Exception & ex) {
-		errorStack.append( QString::fromStdString(ex.what()) );
-		return;
-	}
 
 	try {
 		if (ctrlVentilation == nullptr || !ctrlVentilation->isValid())
@@ -1312,7 +1316,7 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 			unsigned int counter=0;
 			for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
 				NANDRAD::MaterialLayer mlayer;
-				mlayer.m_matId = counter++;
+				mlayer.m_matId = ml.m_matId;
 				mlayer.m_thickness = ml.m_thickness.value;
 				conType.m_materialLayers.push_back(mlayer);
 			}
