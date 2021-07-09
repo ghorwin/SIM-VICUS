@@ -27,7 +27,7 @@
 
 
 double VICUS::NetworkPipe::calculateUValue() const {
-//TODO Dirk U-Wert berechnen für Pipe
+//TODO Hauke U-Wert berechnen für Pipe
 	return 1;
 }
 

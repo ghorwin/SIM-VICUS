@@ -1519,18 +1519,18 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 					length = area / pipeSpacing / (double)numberPipes;
 				}
 				const VICUS::NetworkPipe * pipe = Project::element(m_project->m_embeddedDB.m_pipes, surfSys->m_idPipe);
-				double insideDiameter = pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value - 2 *
-						pipe->m_para[VICUS::NetworkPipe::P_ThicknessWall].value;
+				double insideDiameter = pipe->insideDiameter();
 				if(!pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].empty())
 					insideDiameter -= 2* pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
 
 				//TODO Hauke check in pipe.isValid that innerDiameter > 0
-				double conversionMMToM = 1e-6;
-				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * conversionMMToM * 0.25 *
+				double conversionMMToM = 1e-3;
+				insideDiameter *= conversionMMToM;
+				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * 0.25 *
 						surfSys->m_para[VICUS::SurfaceHeating::P_MaxFluidVelocity].value *
 						fluid.m_para[VICUS::NetworkFluid::P_Density].value;
 
-				double uValue = 1; //TODO Hauke implement a funktion in network pipe for u value
+				double uValue = pipe->calculateUValue();
 
 				NANDRAD::KeywordList::setIntPara(nandradSys.m_intPara, "IdealSurfaceHeatingCoolingModel::intPara_t",
 												 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes, numberPipes);
@@ -1542,7 +1542,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 												   NANDRAD::IdealPipeRegisterModel::P_MaxMassFlux, maxMassFlux);
 
 				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
-												   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, insideDiameter);
+												   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, insideDiameter/conversionMMToM);
 
 				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
 												   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, uValue);

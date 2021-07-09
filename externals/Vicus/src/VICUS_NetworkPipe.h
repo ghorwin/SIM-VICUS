@@ -62,7 +62,10 @@ public:
 		return m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value;
 	}
 
+	/*! Calculates the u value in W/m2K. */
 	double calculateUValue() const;
+
+	/*! Return the pipe inside diameter in mm. */
 	double insideDiameter() const;
 
 	/*! Checks if all parameters are valid. */
