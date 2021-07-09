@@ -1801,7 +1801,7 @@ Regelgröße
 
 \lang american
 \begin_inset Tabular
-<lyxtabular version="3" rows="35" columns="2">
+<lyxtabular version="3" rows="36" columns="2">
 <features islongtable="true" longtabularalignment="center">
 <column alignment="left" valignment="top">
 <column alignment="left" valignment="top">
@@ -2662,6 +2662,31 @@ Thermostatgröße
 
 \begin_layout Plain Layout
 Physikalische Größe im Vorlaufes eines Rohrs
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\psi_{ret}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Physikalische Größe im Rücklauf eines Rohrs
 \end_layout
 
 \end_inset
@@ -3809,7 +3834,7 @@ ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
 \begin_inset Formula $T_{R}$
 \end_inset
 
- vorgegeben, wleche gegen einen Sollwert 
+ vorgegeben, wleche gegen einen zeitplanbasierten Sollwert 
 \begin_inset Formula $T_{H,set}(t)$
 \end_inset
 
@@ -3933,8 +3958,54 @@ T_{op}=\frac{T_{R}+T_{rad}}{2}
 Summationsmodell
 \end_layout
 
+\begin_layout Standard
+Das Summationsmodell sammelt die Wärmeeinträge in alle aktiven Wandkonstruktions
+schichten und ermöglicht damit eine Gesamtbilanzierung.
+ Es können auch ausgewählte Wände in ein Modell zusammengefasst werden.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\dot{Q}_{sum}=\sum_{i}^{n_{ab}}\dot{Q}_{ab}
+\]
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsubsection
 Fluidadaptermodell
+\end_layout
+
+\begin_layout Standard
+Das Fluidadaptermodell dient der Übersetzung von Wärmeströmen in eine Fluidbilan
+z, ohne dass hierfür genaue Verteilstränge bekannt sein müssen.
+ Zu einem vorgegebenen Massestrom 
+\begin_inset Formula $\dot{m}_{water}$
+\end_inset
+
+ und einer Vorlauftemperatur 
+\begin_inset Formula $T_{sup}$
+\end_inset
+
+ wird eine Temperatur im Rücklauf 
+\begin_inset Formula $T_{ret}$
+\end_inset
+
+ ermittelt unter der ANnahme, dass keinerlei thermische Verzögerungseffekte
+ auftreten.
+ In diesem Fall ist die Tempertaurdifferenz proportional zur abgegebenen
+ Wärmemenge aller beteiligten Heizelemente.
+\begin_inset Formula 
+\[
+T_{ret}=T_{sup}-\frac{\dot{Q}_{sum}}{\dot{m}_{water}c_{water}}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \end_body
