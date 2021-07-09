@@ -2724,7 +2724,7 @@ Physikalische Setpoint-Größe
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 Raumbilanz
 \end_layout
 
@@ -2820,7 +2820,7 @@ Dabei finden Wärmequellen und Wärmesenken durch natürliche Lüftung
  in konvektiv übertragene Wärme umgewandelt wird.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 Wandbilanz
 \end_layout
 
@@ -3010,7 +3010,7 @@ T_{W,j} & = & T_{n-1}
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Randbedingungen für Innenwände
 \end_layout
 
@@ -3082,7 +3082,7 @@ q_{rad,W,i} & = & q_{LWRad,W}+q_{P,W}+q_{E,W}+q_{L,W}
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Randbedingungen für Außenwände
 \end_layout
 
@@ -3114,7 +3114,7 @@ q_{rad,W,i} & = & a_{W,i}q_{SWRad,i}
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Randbedingungen für adiabate Oberflächen
 \end_layout
 
@@ -3131,7 +3131,7 @@ q_{rad,W,i} & = & 0
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Verteilung kurzwelliger Strahlungslasten durch Fenster
 \end_layout
 
@@ -3167,7 +3167,7 @@ Die Summe
  Fensterflächen.
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Verteilung langwelliger interner Strahlungslasten
 \end_layout
 
@@ -3194,41 +3194,7 @@ q_{P,E,L,W} & =\frac{\dot{Q}_{P,E,L,LWRad}}{\sum\limits _{i}^{n_{W}}A_{W,i}}
 
 \end_layout
 
-\begin_layout Subsubsection*
-Thermische Behaglichkeit 
-\end_layout
-
-\begin_layout Standard
-Als Größen für die thermische Behaglichkeit werden Strahlungstemperatur
- 
-\begin_inset Formula $T_{rad}$
-\end_inset
-
- und Empfindungstemperatur 
-\begin_inset Formula $T_{op}$
-\end_inset
-
- berechnet.
- Die Strahlungstemperatur wird dabei als gewichtetes Mittel aller Wand-
- und Fensterflächen
-\begin_inset Formula $\sum_{i}A_{W,i}+\sum_{i}A_{F,i}$
-\end_inset
-
- gedeutet.
- Die Empfindungstemperatur entspricht dem arithmetischen Mittel zwischen
- Raumluft- und Strahlungstemperatur.
-\begin_inset Formula 
-\begin{align*}
-T_{rad}=\frac{\sum_{i}A_{W,i}\cdot T_{W,ii}+\sum_{i}A_{F,i}\cdot T_{FI,i}}{\sum_{i}A_{W,i}+\sum_{i}A_{F,i}}\\
-T_{op}=\frac{T_{R}+T_{rad}}{2}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection*
+\begin_layout Subsection
 Fenster 
 \end_layout
 
@@ -3350,7 +3316,7 @@ q_{d,cond,i} & = & \frac{1}{\frac{1}{\alpha_{FR,i}}+\frac{1}{U_{d,i}}+\frac{1}{\
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
 Klimaberechnung
 \end_layout
 
@@ -3408,7 +3374,11 @@ q_{rad,direct,i} & = & z_{W,i}(t)q_{rad,direct,i}\left(t\right)
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
+Raum- und Oberflächenlasten
+\end_layout
+
+\begin_layout Subsubsection
 Innere Lasten 
 \end_layout
 
@@ -3493,7 +3463,7 @@ werden folglich konvektiv an den Raum abgegeben.
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Natürliche Lüftung
 \end_layout
 
@@ -3607,7 +3577,7 @@ trom
  
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Ideale Heizung/Kühlung
 \end_layout
 
@@ -3661,7 +3631,11 @@ y_{C} & =\min\left(\max\left(0,k_{P}y_{C,therm}+k_{I}\int_{0}^{t}y_{C,therm}\rig
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsection
+Lasten in aktiven Konstruktionsschichten
+\end_layout
+
+\begin_layout Subsubsection
 Ideales Flächenheizelement
 \end_layout
 
@@ -3691,7 +3665,7 @@ y_{C} & =\min\left(\max\left(0,y_{C,therm}\right),1\right)\\
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Ideales Rohrregisterelement
 \end_layout
 
@@ -3764,9 +3738,6 @@ e Lösung für die Wärmeabgabe im Rohr angegeben werden.
 \end_inset
 
  Parallelstränge zu verteilen.
-\end_layout
-
-\begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
 \dot{Q}_{ab} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}c_{water}}\right)\right)\left(T_{sup}-T_{ab}\right)
@@ -3809,6 +3780,9 @@ chkeitskennzahl für Rohrströmung
 \end_inset
 
  im Verhältnis.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
 \alpha_{I}=Nu\,\frac{\lambda_{water}}{d_{I}}
@@ -3819,39 +3793,11 @@ chkeitskennzahl für Rohrströmung
 
 \end_layout
 
-\begin_layout Subsubsection*
-Thermostat
+\begin_layout Subsection
+Kontrollelemente
 \end_layout
 
-\begin_layout Standard
-Thermostate stellen einen Zusammenhang zwischen Heizkörpern und Temperaturregelu
-ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
- oder zentral).
- Als Stellgröße ist jeweils eine Raumlufttemperatur 
-\begin_inset Formula $T_{R}$
-\end_inset
-
- vorgegeben, wleche gegen einen Sollwert 
-\begin_inset Formula $T_{H,set}(t)$
-\end_inset
-
- für den Heizfall und 
-\begin_inset Formula $T_{C,set}(t)$
-\end_inset
-
- für den Kühlfall abgeglichen wird.
-\begin_inset Formula 
-\begin{align*}
-e_{H,therm} & =T_{H,set}(t)-T_{R}\\
-e_{C,therm} & =T_{R}-T_{C,set}(t)
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
 Verschattungsregelung
 \end_layout
 
@@ -3893,7 +3839,39 @@ z_{F,i} & =y_{Z}
 
 \end_layout
 
-\begin_layout Subsubsection*
+\begin_layout Subsubsection
+Thermostat
+\end_layout
+
+\begin_layout Standard
+Thermostate stellen einen Zusammenhang zwischen Heizkörpern und Temperaturregelu
+ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
+ oder zentral).
+ Als Stellgröße ist jeweils eine Raumlufttemperatur 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ vorgegeben, wleche gegen einen Sollwert 
+\begin_inset Formula $T_{H,set}(t)$
+\end_inset
+
+ für den Heizfall und 
+\begin_inset Formula $T_{C,set}(t)$
+\end_inset
+
+ für den Kühlfall abgeglichen wird.
+\begin_inset Formula 
+\begin{align*}
+e_{H,therm} & =T_{H,set}(t)-T_{R}\\
+e_{C,therm} & =T_{R}-T_{C,set}(t)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
 Regler
 \end_layout
 
@@ -3911,6 +3889,52 @@ Digial
 
 \begin_layout Standard
 Digital mit Hysterese
+\end_layout
+
+\begin_layout Subsection
+Auswertemodelle
+\end_layout
+
+\begin_layout Subsubsection
+Thermische Behaglichkeit 
+\end_layout
+
+\begin_layout Standard
+Als Größen für die thermische Behaglichkeit werden Strahlungstemperatur
+ 
+\begin_inset Formula $T_{rad}$
+\end_inset
+
+ und Empfindungstemperatur 
+\begin_inset Formula $T_{op}$
+\end_inset
+
+ berechnet.
+ Die Strahlungstemperatur wird dabei als gewichtetes Mittel aller Wand-
+ und Fensterflächen
+\begin_inset Formula $\sum_{i}A_{W,i}+\sum_{i}A_{F,i}$
+\end_inset
+
+ gedeutet.
+ Die Empfindungstemperatur entspricht dem arithmetischen Mittel zwischen
+ Raumluft- und Strahlungstemperatur.
+\begin_inset Formula 
+\begin{align*}
+T_{rad}=\frac{\sum_{i}A_{W,i}\cdot T_{W,ii}+\sum_{i}A_{F,i}\cdot T_{FI,i}}{\sum_{i}A_{W,i}+\sum_{i}A_{F,i}}\\
+T_{op}=\frac{T_{R}+T_{rad}}{2}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Summationsmodell
+\end_layout
+
+\begin_layout Subsubsection
+Fluidadaptermodell
 \end_layout
 
 \end_body
