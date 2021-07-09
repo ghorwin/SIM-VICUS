@@ -108,7 +108,8 @@ public:
 	void checkAndInitialize(const std::string & expectedName,
 							const IBK::Unit & targetXUnit, const IBK::Unit & targetYUnit,
 							const IBK::Unit & limitYUnit, double minYVal, bool isGreaterEqual,
-							double maxYVal, bool isLessEqual, const char * const errmsg);
+							double maxYVal, bool isLessEqual, const char * const errmsg, bool skipUnitChecks=false);
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

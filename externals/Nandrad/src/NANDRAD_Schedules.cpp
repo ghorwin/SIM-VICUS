@@ -190,6 +190,11 @@ void Schedules::readXML(const TiXmlElement * element) {
 											 .arg("Invalid data in 'AnnualSchedule' tag."), FUNC_ID);
 					}
 
+					// all checks will be skipped, if a file name was given: only reads the file and converts to base units
+					// TODO Andreas: should there be another possibility of reading tsv file and convert units?
+					// We need to pass dummy units here ...
+					spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
+
 					// check that x value unit is indeed convertible to time
 					if (spl.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
 						throw IBK::Exception(IBK::FormatString("Invalid data in 'AnnualSchedule' tag, expected time "
