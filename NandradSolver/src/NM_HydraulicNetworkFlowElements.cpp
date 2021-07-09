@@ -32,6 +32,7 @@
 #include "NM_ThermalNetworkFlowElements.h"
 
 #define PI				3.141592653589793238
+#define MASS_FLUX_SCALE 1000.0
 
 
 namespace NANDRAD_MODEL {
@@ -607,12 +608,12 @@ void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::cons
 
 double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const
 {
-	return mdot - *m_massFluxRef;
+	return MASS_FLUX_SCALE*(mdot - *m_massFluxRef);
 }
 
 void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/, double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
-	df_dmdot = 1.0;
+	df_dmdot = MASS_FLUX_SCALE;
 	df_dp_inlet = 0.0;
 	df_dp_outlet = 0.0;
 }
