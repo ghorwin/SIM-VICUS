@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 14:15:07 2021</Created>
-		<LastEdited>Mo. Juli 5 13:45:41 2021</LastEdited>
+		<LastEdited>Fr. Juli 9 14:30:14 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>2.65327 -22.4646 23.2492</CameraTranslation>
+			<CameraTranslation>7.2668 -9.68142 11.3501</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.885603</Wp>
-				<X>-0.43744</X>
-				<Y>-0.0761208</Y>
-				<Z>-0.136113</Z>
+				<Wp>-0.872169</Wp>
+				<X>-0.321901</X>
+				<Y>-0.13808</Y>
+				<Z>-0.341465</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -61,7 +61,7 @@
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
-							<Room id="35" displayName="TF04.1">
+							<Room id="35" displayName="TF04.2">
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
@@ -126,14 +126,6 @@
 				</Material>
 			</Materials>
 			<Constructions>
-				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer matId="10002">
-							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
 				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
@@ -142,18 +134,26 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
+				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>

@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 10:16:20 2021</Created>
-		<LastEdited>Mi. Juni 30 11:29:20 2021</LastEdited>
+		<LastEdited>Fr. Juli 9 14:09:05 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>13.4713 -15.9131 16.5298</CameraTranslation>
+			<CameraTranslation>13.5669 -13.853 19.1963</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.887454</Wp>
-				<X>0.424201</X>
-				<Y>0.0768432</Y>
-				<Z>0.162919</Z>
+				<Wp>0.90295</Wp>
+				<X>0.383957</X>
+				<Y>0.0757119</Y>
+				<Z>0.177465</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -223,15 +223,6 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
-				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-				</Material>
 				<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster" color="#bbbbcf">
 					<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
 					<Manufacturer>generic</Manufacturer>
@@ -241,39 +232,20 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 				</Material>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
 			</Materials>
 			<Constructions>
 				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10002">
-							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer matId="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer matId="10002">
-							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
 						<MaterialLayer matId="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
@@ -287,15 +259,43 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
+				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Außendämmung) |EN: [SimQuality] TF03 Construction 3 (outside insulated wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Innendämmung) |EN: [SimQuality] TF03 Construction 4 (inside insulated wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>

@@ -2,8 +2,12 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. Juli 8 12:45:45 2021</Created>
-		<LastEdited>Do. Juli 8 13:23:35 2021</LastEdited>
+		<LastEdited>Fr. Juli 9 13:57:25 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -27,7 +31,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF06-WaermeleitungStrahlung/Aufgabenstellung/Wetterdaten/SIMQ_TF06_Klima.epw</ClimateFilePath>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -45,12 +49,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-5.29773 -11.8841 9.46228</CameraTranslation>
+			<CameraTranslation>-7.13561 -10.3775 11.6743</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.829351</Wp>
-				<X>0.520095</X>
-				<Y>-0.107086</Y>
-				<Z>-0.173804</Z>
+				<Wp>0.810614</Wp>
+				<X>0.508716</X>
+				<Y>-0.154153</Y>
+				<Z>-0.245651</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -97,12 +101,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1001" sideASurfaceID="11" />
-			<ComponentInstance id="3" componentID="1001" sideASurfaceID="12" />
-			<ComponentInstance id="4" componentID="1001" sideASurfaceID="13" />
-			<ComponentInstance id="5" componentID="1001" sideASurfaceID="14" />
-			<ComponentInstance id="6" componentID="1001" sideASurfaceID="15" />
-			<ComponentInstance id="7" componentID="1001" sideASurfaceID="16" />
+			<ComponentInstance id="2" componentID="1013" sideASurfaceID="11" />
+			<ComponentInstance id="3" componentID="1013" sideASurfaceID="12" />
+			<ComponentInstance id="4" componentID="1013" sideASurfaceID="13" />
+			<ComponentInstance id="5" componentID="1013" sideASurfaceID="14" />
+			<ComponentInstance id="6" componentID="1013" sideASurfaceID="15" />
+			<ComponentInstance id="7" componentID="1013" sideASurfaceID="16" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -127,25 +131,28 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1004" displayName="EN: [SimQuality] TF06 Outside conditions (heat conduction and short wave radiation) |DE: [SimQuality] TF03 Außenbedingungen (Wärmeleitung und kurzwellige Strahlung)">
+					<Color>#e7feff</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-					<Color>#204a87</Color>
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+				<Component id="1013" displayName="DE: [SimQuality] Komponente für TF06 |EN: [SimQuality] Component for TF06" color="#f57900">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1001</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+					<IdSideBBoundaryCondition>1004</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 		</EmbeddedDatabase>

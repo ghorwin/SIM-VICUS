@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 14:15:07 2021</Created>
-		<LastEdited>Mo. Juli 5 13:43:54 2021</LastEdited>
+		<LastEdited>Fr. Juli 9 14:25:50 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-3.06879 7.12636 13.7093</CameraTranslation>
+			<CameraTranslation>-2.5223 13.7372 11.5807</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.214041</Wp>
-				<X>0.094246</X>
-				<Y>-0.398989</Y>
-				<Z>-0.88661</Z>
+				<Wp>0.193987</Wp>
+				<X>0.109061</X>
+				<Y>-0.477785</Y>
+				<Z>-0.849803</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -97,12 +97,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1001" sideASurfaceID="36" />
+			<ComponentInstance id="2" componentID="1014" sideASurfaceID="36" />
 			<ComponentInstance id="3" componentID="1002" sideASurfaceID="37" />
 			<ComponentInstance id="4" componentID="1002" sideASurfaceID="38" />
-			<ComponentInstance id="5" componentID="1001" sideASurfaceID="39" />
+			<ComponentInstance id="5" componentID="1014" sideASurfaceID="39" />
 			<ComponentInstance id="6" componentID="1002" sideASurfaceID="40" />
-			<ComponentInstance id="7" componentID="1001" sideASurfaceID="41" />
+			<ComponentInstance id="7" componentID="1014" sideASurfaceID="41" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -134,26 +134,26 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+				<Construction id="1010" displayName="DE: [SimQuality] TF04 Konstruktionstyp 1 (Betonwand) halbe Wanddicke |EN: [SimQuality] TF04 Construction 1 (concrete wall) half thickness" color="#ff5aaa">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
 						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
-					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
@@ -164,11 +164,10 @@
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+				<Component id="1014" displayName="DE: [SimQuality] Komponente für TF04 Innenwand (adiabat) |EN: [SimQuality] Component for TF04 partition (adiabatic) " color="#5a6eff">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1001</IdConstruction>
+					<IdConstruction>1010</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 		</EmbeddedDatabase>
