@@ -165,7 +165,7 @@ Gebäudemodellgleichungen
 
 \lang american
 \begin_inset Tabular
-<lyxtabular version="3" rows="40" columns="3">
+<lyxtabular version="3" rows="42" columns="3">
 <features islongtable="true" longtabularalignment="center">
 <column alignment="left" valignment="top">
 <column alignment="left" valignment="top">
@@ -349,6 +349,88 @@ Symbolverzeichnis
 
 \lang american
 Zeit
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $Q$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $J$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Innere Energie
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $u$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $J/m^{3}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Innere Energiedichte
 \end_layout
 
 \end_inset
@@ -676,7 +758,7 @@ Wärmeleitfähigkeit
 \begin_layout Plain Layout
 
 \lang american
-Wärmeünbergangskoeffizient
+Wärmeübergangskoeffizient
 \end_layout
 
 \end_inset
@@ -1272,6 +1354,88 @@ Strömungsgeschwindigkeit
 </cell>
 </row>
 <row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $\dot{Q}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W=J/s$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmestrom/Wärmeleistung
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Wärmestromdichte
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text
 
@@ -1471,88 +1635,6 @@ Maximale Heizlast per Zonengrundfläche
 
 \lang american
 Maximale HeizlastKühlleistung per Zonengrundfläche
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $\dot{Q}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W=J/s$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-Wärmestrom/Wärmeleistung
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $q$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W/m^{2}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-Wärmestromdichte
 \end_layout
 
 \end_inset
