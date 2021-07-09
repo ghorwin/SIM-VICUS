@@ -43,6 +43,7 @@ public:
 	};
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks parameters for valid values. */
 	void checkParameters(const std::vector<NANDRAD::Zone> & zones);

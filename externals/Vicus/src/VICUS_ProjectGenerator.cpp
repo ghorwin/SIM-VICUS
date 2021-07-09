@@ -268,7 +268,46 @@ public:
 	void generateMaterials();
 	void generateConstructions(QStringList &errorStack);
 
+	struct ActiveLayer{
 
+		//ActiveLayer (unsigned int vicusConstructionId, unsigned int )
+
+		unsigned int								m_vicusConstructionId;	//this is the id of the construction (VICUS)
+		std::vector<unsigned int>					m_nandradConstructionTypeId;	//new id is set to get a unique construction type id WITH active layer for NANDRAD
+		//all types of this construction with active layers; -1 -> no active layer otherwise this is the layer index
+		std::vector<int>							m_activeLayers;
+	};
+
+
+	unsigned int getNandradConstructionTypeId(unsigned int vicusConstructionId, int activeLayerIdx = -1){
+		//search if this construction is already included,
+		//check if active layer idx also included
+		for(unsigned int i=0; i<m_constructionTypeData.size(); ++i){
+			ActiveLayer &aL = m_constructionTypeData[i];
+			if(aL.m_vicusConstructionId == vicusConstructionId){
+				for(unsigned int j=0; j<aL.m_activeLayers.size(); ++j){
+					//if we find an active layer we also have a nandrad construction type id already
+					if(aL.m_activeLayers[j] == activeLayerIdx)
+						return aL.m_nandradConstructionTypeId[j];
+				}
+
+				//we found no active layer so add the layer and get a new id for nandrad
+				aL.m_activeLayers.push_back(activeLayerIdx);
+				aL.m_nandradConstructionTypeId.push_back(checkFreeId(1));
+				return aL.m_nandradConstructionTypeId.back();
+			}
+		}
+		//so we found nothing --> add all ...
+		//add this construction type data
+		ActiveLayer actLayer;
+		actLayer.m_activeLayers.push_back(activeLayerIdx);
+		actLayer.m_nandradConstructionTypeId.push_back(checkFreeId(1));
+		actLayer.m_vicusConstructionId = vicusConstructionId;
+		m_constructionTypeData.push_back(actLayer);
+		return 	actLayer.m_nandradConstructionTypeId.back();
+	}
+
+	std::vector<ActiveLayer>						m_constructionTypeData;
 
 	std::vector<DataSurfaceHeating>					m_surfaceHeatingData;
 
@@ -285,6 +324,19 @@ private:
 
 	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
 					  const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet) const;
+
+	// get free id for new nandrad construction types
+	unsigned int checkFreeId(unsigned int id){
+
+		for(unsigned int i=0; i<m_constructionTypeData.size(); ++i){
+			ActiveLayer &aL = m_constructionTypeData[i];
+			for(unsigned int j=0; j<aL.m_nandradConstructionTypeId.size(); ++j){
+				if(aL.m_nandradConstructionTypeId[j] == id)
+					return checkFreeId(++id);
+			}
+		}
+		return id;
+	}
 };
 
 
@@ -342,10 +394,12 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	InternalLoadsModelGenerator internalLoads(this);
 	VentilationModelGenerator ventilation(this);
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
+	ThermostatModelGenerator thermostats(this);
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, errorStack);
 		ventilation.generate(r, errorStack);
 		idealHeatCool.generate(r, errorStack);
+		thermostats.generate(r, errorStack);
 	}
 	if (!errorStack.isEmpty())	return;
 
@@ -361,7 +415,10 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	//TODO Katja
 
 	// *** Construction Instances, Constructions (opak & tranparent) and materials ***
-	//TODO Katja
+	p.m_constructionInstances = constrInstaModelGenerator.m_constructionInstances;
+	p.m_constructionTypes = constrInstaModelGenerator.m_constructions;
+	p.m_materials = constrInstaModelGenerator.m_materials;
+	p.m_windowGlazingSystems = constrInstaModelGenerator.m_windowGlazingSystems;
 
 	// *** Ideal surface heating cooling ... ***
 	p.m_models.m_idealSurfaceHeatingCoolingModels = idealSurfaceHeatCoolGenerator.m_idealSurfaceHeatingCoolings;
@@ -979,7 +1036,6 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 }
 
 NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
-//											  std::vector<IdMap> &maps,
 											  unsigned int interfaceID,
 											  QStringList &errorStack, bool takeASide) const
 {
@@ -1055,9 +1111,6 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		constrInstNandrad.m_id = Project::uniqueId(idSet);//compInstaVicus.m_id;
 		//now add id to Set
 		idSet.insert(constrInstNandrad.m_id);
-
-		// store reference to construction type (i.e. to be generated from component)
-		constrInstNandrad.m_constructionTypeId = comp->m_idConstruction;
 
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
@@ -1151,10 +1204,8 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		constrInstNandrad.m_interfaceA = generateInterface(compInstaVicus, comp->m_idSideABoundaryCondition, 1, errorStack, true);
 		constrInstNandrad.m_interfaceB = generateInterface(compInstaVicus, comp->m_idSideBBoundaryCondition, 2, errorStack, false);
 
-		// add to list of construction instances
-		m_constructionInstances.push_back(constrInstNandrad);
 
-
+		int activeLayerIdx = -1;
 		//create surface heating system data
 		if(compInstaVicus.m_surfaceHeatingControlZoneID != INVALID_ID && compInstaVicus.m_surfaceHeatingID != INVALID_ID){
 			//get an area check for surface heating systems
@@ -1166,7 +1217,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			m_surfaceHeatingData.push_back(DataSurfaceHeating(compInstaVicus.m_surfaceHeatingControlZoneID,
 															  compInstaVicus.m_surfaceHeatingID, constrInstNandrad.m_id,
 															  area));
-
+			activeLayerIdx = (int)comp->m_activeLayerIndex;
 //			bool isAdded = false;
 //			for(unsigned int i=0; m_surfaceHeatingData.size(); ++i){
 //				if(m_surfaceHeatingData[i].m_controlledZoneId == compInstaVicus.m_surfaceHeatingControlZoneID){
@@ -1207,6 +1258,12 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 //			}
 		}
 
+
+		// store reference to construction type (i.e. to be generated from component)
+		constrInstNandrad.m_constructionTypeId = getNandradConstructionTypeId(comp->m_idConstruction, activeLayerIdx);
+		// add to list of construction instances
+		m_constructionInstances.push_back(constrInstNandrad);
+
 	}
 
 }
@@ -1232,20 +1289,38 @@ void ConstructionInstanceModelGenerator::generateMaterials() {
 void ConstructionInstanceModelGenerator::generateConstructions(QStringList &errorStack) {
 
 	for (const VICUS::Construction & c : m_project->m_embeddedDB.m_constructions) {
-		// now create a construction type
-		NANDRAD::ConstructionType conType;
-		conType.m_id = c.m_id;
-		conType.m_displayName = c.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
-		unsigned int counter=0;
-		for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
-			NANDRAD::MaterialLayer mlayer;
-			mlayer.m_matId = counter++;
-			mlayer.m_thickness = ml.m_thickness.value;
-			conType.m_materialLayers.push_back(mlayer);
+
+		ActiveLayer actLayer;
+		//check if we have more construction with different active layers
+		for(unsigned int i=0; i<m_constructionTypeData.size(); ++i){
+			const ActiveLayer &aL = m_constructionTypeData[i];
+			if(aL.m_vicusConstructionId == c.m_id){
+				actLayer = aL;
+				break;
+			}
 		}
 
-		// add to construction type list
-		m_constructions.push_back(conType);
+		//create a new construction type for each active layer
+		for(unsigned int i=0; i<actLayer.m_activeLayers.size(); ++i){
+			// now create a construction type
+			NANDRAD::ConstructionType conType;
+			conType.m_id = actLayer.m_nandradConstructionTypeId[i];			//c.m_id;
+			conType.m_displayName = c.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
+			unsigned int counter=0;
+			for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
+				NANDRAD::MaterialLayer mlayer;
+				mlayer.m_matId = counter++;
+				mlayer.m_thickness = ml.m_thickness.value;
+				conType.m_materialLayers.push_back(mlayer);
+			}
+			if(actLayer.m_activeLayers[i] != -1)
+				conType.m_activeLayerIndex = (unsigned int)actLayer.m_activeLayers[i];
+
+			// add to construction type list
+			m_constructions.push_back(conType);
+
+		}
+
 	}
 
 	for(const VICUS::WindowGlazingSystem &w : m_project->m_embeddedDB.m_windowGlazingSystems){
@@ -1307,7 +1382,7 @@ void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) 
 
 	NANDRAD::Thermostat thermo;
 
-	//thermo.m_id
+	thermo.m_id = Project::uniqueId(m_thermostats);
 	thermo.m_displayName = "Thermostat_" + zoneTemplate->m_displayName.string();
 	thermo.m_controllerType = thermostat->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
 				NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
@@ -1516,8 +1591,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(ideal.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			ideal.m_id = Project::uniqueId(idSet);
-			idSet.insert(ideal.m_id);
+			ideal.m_id = Project::uniqueId(m_idealSurfaceHeatingCoolings);
 
 			// set object list in new definition
 			ideal.m_constructionObjectList= ol.m_name;
@@ -1547,8 +1621,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(pipReg.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			pipReg.m_id = Project::uniqueId(idSet);
-			idSet.insert(pipReg.m_id);
+			pipReg.m_id = Project::uniqueId(m_idealPipeRegister);
 
 			// set object list in new definition
 			pipReg.m_constructionObjectList= ol.m_name;
@@ -1593,8 +1666,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & e
 
 
 	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
-
-	//idealHeatCool.m_id
+	idealHeatCool.m_id = Project::uniqueId(m_idealHeatingCoolings);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
 	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())
@@ -1640,6 +1712,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & e
 
 			// set object list in new definition
 			idealHeatCool.m_zoneObjectList = ol.m_name;
+
 
 			// add all definitions
 			m_idealHeatingCoolings.push_back(idealHeatCool);
