@@ -412,7 +412,10 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 		p.m_schedules.m_scheduleGroups[internalLoads.m_objLists[i].m_name] = internalLoads.m_schedules[i];
 
 	// *** Ventilation ***
-	//TODO Katja
+	p.m_models.m_naturalVentilationModels = ventilation.m_natVentObjects;
+	p.m_objectLists.insert(p.m_objectLists.end(), ventilation.m_objLists.begin(), ventilation.m_objLists.end());
+	for (unsigned int i=0; i<ventilation.m_schedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[ventilation.m_objLists[i].m_name] = ventilation.m_schedules[i];
 
 	// *** Construction Instances, Constructions (opak & tranparent) and materials ***
 	p.m_constructionInstances = constrInstaModelGenerator.m_constructionInstances;
