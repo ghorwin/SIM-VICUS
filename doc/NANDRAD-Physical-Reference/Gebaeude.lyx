@@ -1395,6 +1395,88 @@ Lichtlast pro Zonengrundfläche
 </cell>
 </row>
 <row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q_{H,max}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Maximale Heizlast per Zonengrundfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $q_{C,max}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+\begin_inset Formula $W/m^{2}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
+Maximale HeizlastKühlleistung per Zonengrundfläche
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
 <cell alignment="left" valignment="top" usebox="none">
 \begin_inset Text
 
@@ -1429,7 +1511,7 @@ Lichtlast pro Zonengrundfläche
 \begin_layout Plain Layout
 
 \lang american
-Wärmestrom
+Wärmestrom/Wärmeleistung
 \end_layout
 
 \end_inset
@@ -1641,13 +1723,13 @@ Volumenbezogene Wärmequelldichte
 </cell>
 </row>
 <row>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $\dot{Q}_{act}$
+\begin_inset Formula $e$
 \end_inset
 
 
@@ -1655,40 +1737,33 @@ Volumenbezogene Wärmequelldichte
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W$
-\end_inset
-
 
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
-Personenlast
+Regelabweichung
 \end_layout
 
 \end_inset
 </cell>
 </row>
 <row>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
 
 \lang american
-\begin_inset Formula $\dot{Q}_{loss}$
+\begin_inset Formula $y$
 \end_inset
 
 
@@ -1696,105 +1771,20 @@ Personenlast
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W$
-\end_inset
-
 
 \end_layout
 
 \end_inset
 </cell>
-<cell alignment="left" valignment="top" usebox="none">
+<cell alignment="center" valignment="top" usebox="none">
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
-Thermische Verluste durch Personen
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $\dot{u}_{elec}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W/m^{2}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Zonengrundflächenbezogene maximale Wärmelast durch elektrische Geräte
-\end_layout
-
-\end_inset
-</cell>
-</row>
-<row>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $\dot{u}_{lights}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-
-\lang american
-\begin_inset Formula $W/m^{2}$
-\end_inset
-
-
-\end_layout
-
-\end_inset
-</cell>
-<cell alignment="left" valignment="top" usebox="none">
-\begin_inset Text
-
-\begin_layout Plain Layout
-Zonengrundflächenbezogene maximale Wärmelast durch Beleuchtung
+Regelgröße
 \end_layout
 
 \end_inset
@@ -1811,7 +1801,7 @@ Zonengrundflächenbezogene maximale Wärmelast durch Beleuchtung
 
 \lang american
 \begin_inset Tabular
-<lyxtabular version="3" rows="34" columns="2">
+<lyxtabular version="3" rows="35" columns="2">
 <features islongtable="true" longtabularalignment="center">
 <column alignment="left" valignment="top">
 <column alignment="left" valignment="top">
@@ -2634,6 +2624,31 @@ Physikalische Größe durch Gesamtheit aller Netzwerkelemente in einer Zone/Wand
 \begin_layout Plain Layout
 
 \lang american
+\begin_inset Formula $\psi_{therm}$
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Thermostatgröße
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\lang american
 \begin_inset Formula $\psi_{sup}$
 \end_inset
 
@@ -2750,7 +2765,7 @@ Um dem mitunter signifikanten thermischen Speicherverhalten gerecht zu werden,
  wird die Raumbilanz instationär gelöst:
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}+\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
+\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}-\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
 +\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
@@ -2768,7 +2783,7 @@ Dabei finden Wärmequellen und Wärmesenken durch natürliche Lüftung
 \begin_inset Formula $\dot{Q}_{F,cond,i}$
 \end_inset
 
-, interne Kühllasten 
+, interne Kühlleistungen 
 \begin_inset Formula $\dot{Q}_{C,i}$
 \end_inset
 
@@ -3483,46 +3498,78 @@ Natürliche Lüftung
 \end_layout
 
 \begin_layout Standard
-At the current delevpment state (passive operation of teh building with
- ideal loads calculations) we take into consideration air conditioning due
- to natural ventilation and air exchange by infiltration.
- The corresponding air change rate for natural ventilation 
-\begin_inset Formula $n_{V}(t)$
+Die natürliche Lüftung wird mittels der Luftwechselrate 
+\begin_inset Formula $n_{V,basic}(t)$
 \end_inset
 
- correlates to user behaviour and needs to be provided by the schedules.
- The same way of parametrization is used for the infiltration air change
- rates.
- The supply air mass flux corresponds both to air change rate and zone volume
- 
-\begin_inset Formula $V_{R}$
+ zeitplanbasiertasiert und volumenunabhängig definiert.
+ Optional kommt ein Anteil an Komfortlüftung 
+\begin_inset Formula $n_{V,comf}(t)$
 \end_inset
 
-.
- We assume an ideal homogenious zone air temperature with mass density 
-\begin_inset Formula $\rho_{air}$
+ , der allerdings an Bedingungen gebunden ist: die Außentemperatur 
+\begin_inset Formula $T_{A}$
 \end_inset
 
- and heat capacity 
-\begin_inset Formula $c_{air}$
+ darf einen definierten MInimalwert 
+\begin_inset Formula $T_{A,min}$
 \end_inset
 
-.
- 
+ nicht unetrschreiten und einen Maximalwert 
+\begin_inset Formula $T_{A,max}$
+\end_inset
+
+ nicht überschreiten, die Windgeschwindigkeit 
+\begin_inset Formula $v_{air}$
+\end_inset
+
+ muss innerhalb der Grenze einer Maximalgeschwindigkeit 
+\begin_inset Formula $v_{air,max}$
+\end_inset
+
+ sein, die Raumlufttemperatur muss sich mit einer Toleranz 
+\begin_inset Formula $\Delta T$
+\end_inset
+
+ innerhalb der Grenzwerte 
+\begin_inset Formula $T_{min}$
+\end_inset
+
+ und 
+\begin_inset Formula $T_{max}$
+\end_inset
+
+ bewegen.
+ Die Grenzwerte sind wahlweise zeitplanbasiert oder als konstant anzunehmen.
 \begin_inset Formula 
 \begin{align*}
-n_{V}(t) & =\begin{cases}
-n_{V,basic}(t)+n_{V,comf}(t) & T_{min}-\Delta T\leq T_{Z}\leq T_{max}+\Delta T,v_{air}\leq v_{air,max}\\
+n_{V} & =\begin{cases}
+n_{V,basic}(t)+n_{V,comf}(t) & T_{min}(t)-\Delta T\leq T_{Z}\leq T_{max}(t)+\Delta T,\\
+ & T_{A,min}\leq T_{A}\leq T_{A,max},v_{air}\leq v_{air,max}(t)\\
 n_{V,basic}(t) & sonst
 \end{cases}
 \end{align*}
 
 \end_inset
 
+Die Luftwechselrate ist bezogen auf das Raumluftvolumen 
+\begin_inset Formula $V_{R}$
+\end_inset
 
+und erlaubt Aufschluss über den Luftmasseaustauschstrom zwischen Raum- und
+ Außenluft 
+\begin_inset Formula $\dot{m}_{V}$
+\end_inset
+
+ (mit Luftmassendichte 
+\begin_inset Formula $\rho_{air}$
+\end_inset
+
+).
+ 
 \begin_inset Formula 
 \begin{align*}
-\dot{m}_{V} & =\rho_{air}\,n_{V}(t)\,V_{Z}
+\dot{m}_{V} & =\rho_{air}\,n_{V}\,V
 \end{align*}
 
 \end_inset
@@ -3531,19 +3578,20 @@ n_{V,basic}(t) & sonst
 \end_layout
 
 \begin_layout Standard
-Our assumtions allow the calculation of enthalpy fluxes for the incoming
- and outgoing air with unique temperatures 
+Luftmassen mit Außenlufttemperatur 
 \begin_inset Formula $T_{A}\left(t\right)$
 \end_inset
 
- and 
+ und Raumlufttemperatur 
 \begin_inset Formula $T_{Z}$
 \end_inset
 
+ werden folglich ausgetauscht und führen in der Raumbilanz zu einem Bilanzwärmes
+trom 
+\begin_inset Formula $\dot{Q}_{V}$
+\end_inset
+
 .
- These enthalpy fluxes strongly effect room energy balance and must be taken
- into consideration.
- 
 \begin_inset Formula 
 \begin{align*}
 \dot{Q}_{V} & =\dot{m}_{V}\,c_{air}\left(T_{A}\left(t\right)-T_{Z}\right)
@@ -3552,10 +3600,11 @@ Our assumtions allow the calculation of enthalpy fluxes for the incoming
 \end_inset
 
 
-\end_layout
+\begin_inset Formula $c_{air}$
+\end_inset
 
-\begin_layout Standard
-Komfortlüftung:
+ bezeichnet hierbei die spezifische Wärmekapazität der Luft.
+ 
 \end_layout
 
 \begin_layout Subsubsection*
@@ -3563,44 +3612,48 @@ Ideale Heizung/Kühlung
 \end_layout
 
 \begin_layout Standard
-An ideal heating model can be activated for each space type by choosing
- a control temperature 
-\begin_inset Formula $\vartheta_{C}$
+Ideale Heizung und Kühlung agieren als PI-Regler.
+ Dabei wird die Temperaturabweichung stellvertretend durch ein Thermostat
+ ausgewertet, welches die Kontrollwerte 
+\begin_inset Formula $y_{H,therm}$
 \end_inset
 
- (air or operative temperature).
- We simply use a P-control model with linear slope 
-\begin_inset Formula $k_{P}$
+ und 
+\begin_inset Formula $y_{C,therm}$
 \end_inset
 
- and set point temperature 
-\begin_inset Formula $\vartheta_{Set}$
+, jeweils für Heizung und Kühlung, zurückliefert.
+ Der Kontrollwert wirdals Stellgröße interpretiert und zusätzlich durch
+ ein Integralglied 
+\begin_inset Formula $k_{I}$
 \end_inset
 
-.
- Set point temperature is considered to be related to the usage scenario
- of the zone and defined via schedules.
- For the purpose of robustness we bound the heating loads 
-\begin_inset Formula $\dot{Q}_{H}$
+ geglättet.
+ Das Ergebnis wird als Anteil der maximal möglichen Heizlast gedeutet, die
+ als grundflächenbezogene Dichte 
+\begin_inset Formula $q_{H,max}$
 \end_inset
 
- to upper and lower limits.
+ vorgegeben ist.
  
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
-\dot{Q}_{H} & =\min\left(10000,\dot{Q}_{H,nominal}\right)
+y_{H} & =\min\left(\max\left(0,k_{P}y_{H,therm}+k_{I}\int_{0}^{t}y_{H,therm}\right),1\right)\\
+\dot{Q}_{H} & =y_{H}\,q_{H,max}\,A_{R}
 \end{align*}
 
 \end_inset
 
-Currently, cooling control is only allowed with respect to zone air temperature.
- Consequently, cooling only convective cooling is taken into account.
- 
+
+\end_layout
+
+\begin_layout Standard
+Auf analoge Weise wird die Kühlleistung ermittelt, allerdings auf Basis
+ eines unabhängigen Thermostatkontrollsignals.
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{C,nominal} & =\min\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
-\dot{Q}_{C} & =\max\left(-10000,\dot{Q}_{C,nominal}\right)
+y_{C} & =\min\left(\max\left(0,k_{P}y_{C,therm}+k_{I}\int_{0}^{t}y_{C,therm}\right),1\right)\\
+\dot{Q}_{C} & =y_{C}\,q_{C,max}\,A_{R}
 \end{align*}
 
 \end_inset
@@ -3613,32 +3666,24 @@ Ideales Flächenheizelement
 \end_layout
 
 \begin_layout Standard
-An thermal active element is defined as a heat source inside a construction
- layer.
- Per default the heating power is limited by a maximum value 
-\begin_inset Formula $\dot{Q}_{H,max}$
+Auf analoge Art können aktive Konstruktionsschichten ideal beheizt werden.
+ Grundlage dafür ist wiederum die Anbindung an eine Thermostatkontrolle
+ mit den Kontrollwerten 
+\begin_inset Formula $y_{H,therm}$
 \end_inset
 
- that correlates with real performance.
- We describe the operation of the heating element as an ideal P-control
- for control tempertaure 
-\begin_inset Formula $\vartheta_{C}$
-\end_inset
-
-, set point temperature 
-\begin_inset Formula $\vartheta_{Set}(t)$
-\end_inset
-
- and slope 
-\begin_inset Formula $k_{P}$
+ und 
+\begin_inset Formula $y_{C,therm}$
 \end_inset
 
 .
- 
+ Die Kühlleistung ist als negative Last zu werten, und es wird davon ausgegangen
+, das nur eine der beiden Modi, Heizen oder Kühlen, aktiv ist.
 \begin_inset Formula 
 \begin{align*}
-\dot{Q}_{H,nominal} & =\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right)\\
-\dot{Q}_{ab} & =\min\left(\dot{Q}_{H,max},\dot{Q}_{H,nominal}\right)
+y_{H} & =\min\left(\max\left(0,y_{H,therm}\right),1\right)\\
+y_{C} & =\min\left(\max\left(0,y_{C,therm}\right),1\right)\\
+\dot{Q}_{AB} & =\left(y_{H}\,q_{H,max}-y_{C}\,q_{C,max}\right)A_{R}
 \end{align*}
 
 \end_inset
@@ -3651,36 +3696,36 @@ Ideales Rohrregisterelement
 \end_layout
 
 \begin_layout Standard
-An thermal active element is defined as a heat source inside a construction
- layer.
- Per default the heating power is limited by a maximum value 
-\begin_inset Formula $\dot{Q}_{H,max}$
+Das ideale Rohrregisterelement berücksichtigt im Gegensatz zum idealen Flächenhe
+izelement Eiegnschaften der Wärmeübergabe des Wassers im Rohr.
+ Geregelt wird ein Ventil, welches den Massestrom 
+\begin_inset Formula $\dot{m}_{water}$
 \end_inset
 
- that correlates with real performance.
- We describe the operation of the heating element as an ideal P-control
- for control tempertaure 
-\begin_inset Formula $\vartheta_{C}$
+ ausgehend vom maximal möglichen
+\begin_inset Formula $\dot{m}_{max}$
 \end_inset
 
-, set point temperature 
-\begin_inset Formula $\vartheta_{Set}(t)$
+ entsprechend verringert, sobald die Thermostatsollwerte erreicht sind.
+ Zu beachten ist hierbei, dass nur bei einer Vorlauftemperatur 
+\begin_inset Formula $T_{sup}$
 \end_inset
 
- and slope 
-\begin_inset Formula $k_{P}$
+, die höher ist als die aktive Schichttemperatur 
+\begin_inset Formula $T_{ab}$
 \end_inset
 
-.
- 
+, tatsächlich ein Aufheizeffekt erzielt werden kann.
+ Bei der Kühlung verhält es sich umgekehrt.
+ Heiz- und Kühllastfall schließen einander aus.
 \begin_inset Formula 
 \begin{align*}
 \dot{m}_{H} & =\begin{cases}
-\min\left(\max\left(0,k_{P}\left(T_{set}(t)-T_{Z}\right)\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{ab}\\
+\min\left(\max\left(0,y_{H,therm}\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{ab}\\
 0 & T_{sup}<T_{ab}
 \end{cases}\\
 \dot{m}_{C} & =\begin{cases}
-\min\left(\max\left(0,k_{P}\left(T_{Z}-T_{set}(t)\right)\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{ab}\\
+\min\left(\max\left(0,y_{C,therm}\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{ab}\\
 0 & T_{sup}>T_{ab}
 \end{cases}\\
 \dot{m}_{water} & =\max\left(\dot{m}_{H},\dot{m}_{C}\right)
@@ -3688,22 +3733,118 @@ An thermal active element is defined as a heat source inside a construction
 
 \end_inset
 
+Die Wärmeabgabe hängt stark von den Medien- und Rohreiegenschaften ab.
+ Ausgehend von der Vorstellung einer konstanten umgebenden Schichttemperatur
+ 
+\begin_inset Formula $T_{ab}$
+\end_inset
 
+ und unter Vernachlässigung thermischer Verzögerungseffekte kann eine analytisch
+e Lösung für die Wärmeabgabe im Rohr angegeben werden.
+ Enstcheidend für die Stäärke der Wärmeabgabe ist die dimensionslose Anzahl
+ der Übertragungseinheiten 
+\begin_inset Formula $\frac{U_{total}}{\dot{m}_{water}/n_{pipe}C_{p,water}}$
+\end_inset
+
+, welche Wärmedurchgangswert 
+\begin_inset Formula $U_{total}$
+\end_inset
+
+ zu Massestrom 
+\begin_inset Formula $\dot{m}_{water}$
+\end_inset
+
+ und Wärmekapazität 
+\begin_inset Formula $c_{water}$
+\end_inset
+
+ ins Verhältnis setzt.
+ Zusätzlich erlaubt das Modell, den Massestrom auf 
+\begin_inset Formula $n_{pipe}$
+\end_inset
+
+ Parallelstränge zu verteilen.
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \begin{eqnarray*}
-\dot{Q}_{ab} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}C_{p,water}}\right)\right)\left(T_{sup}-T_{ab}\right)
+\dot{Q}_{ab} & = & \dot{m}_{water}C_{p,water}\left(1-\exp\left(-\frac{U_{total}}{\dot{m}_{water}/n_{pipe}c_{water}}\right)\right)\left(T_{sup}-T_{ab}\right)
 \end{eqnarray*}
 
 \end_inset
 
+Der eindimensional rotationssymmetrische Wärmedurchgangswert 
+\begin_inset Formula $U_{total}$
+\end_inset
 
+ setzt sich aus dem Wärmedurchgang durch das Rohrwandmaterial ( Wärmedurchgangsw
+ert 
+\begin_inset Formula $U_{pipe}$
+\end_inset
+
+) und der Wärmeübertragung im Rohrinneren (Wärmeübergangskoeffizient 
+\begin_inset Formula $\alpha_{I}$
+\end_inset
+
+ und Rohrinnendurchmesser 
+\begin_inset Formula $d_{I}$
+\end_inset
+
+) zusammen.
 \begin_inset Formula 
 \[
 U_{total}=\frac{l_{pipe}}{\frac{1}{\alpha_{I}d_{I}\Pi}+\frac{1}{U_{pipe}}}
 \]
+
+\end_inset
+
+Der innere Wärmeübergang quer zum strömenden Fluid steht durch die Nusselt-Ähnli
+chkeitskennzahl für Rohrströmung 
+\begin_inset Formula $Nu$
+\end_inset
+
+ zur Wärmeleitfähigkeit im Medium 
+\begin_inset Formula $\lambda_{water}$
+\end_inset
+
+ im Verhältnis.
+\begin_inset Formula 
+\[
+\alpha_{I}=Nu\,\frac{\lambda_{water}}{d_{I}}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Thermostat
+\end_layout
+
+\begin_layout Standard
+Thermostate stellen einen Zusammenhang zwischen Heizkörpern und Temperaturregelu
+ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
+ oder zentral).
+ Als Stellgröße ist jeweils eine Raumlufttemperatur 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ vorgegeben, wleche gegen einen Sollwert 
+\begin_inset Formula $T_{H,set}(t)$
+\end_inset
+
+ für den Heizfall und 
+\begin_inset Formula $T_{C,set}(t)$
+\end_inset
+
+ für den Kühlfall abgeglichen wird.
+\begin_inset Formula 
+\begin{align*}
+e_{H,therm} & =T_{H,set}(t)-T_{R}\\
+e_{C,therm} & =T_{R}-T_{C,set}(t)
+\end{align*}
 
 \end_inset
 
@@ -3715,13 +3856,61 @@ Verschattungsregelung
 \end_layout
 
 \begin_layout Standard
-We allow a constant coefficient as well as an incidence angle dependent
- shading coefficient 
-\begin_inset Formula $z_{F,i}\left(t\right)$
+Die Verschattungsregelung erfolgt nach der aktuellen solaren Einstrahldichte
+ 
+\begin_inset Formula $q_{rad,j}$
 \end_inset
 
 .
- We use a linear spline interpolation to describe the latter dependency.
+ Diese kann von der aktuellen Fläche, aber auch von beliebigen Außensensoren
+ bezogen werden.
+ Geregelt wird nach einem digitalen Regler mit Hysterese, der für einen
+ maximalen Verschattungsgrad bei einer überschrittenen maximalen Sonneneinstrahl
+ung 
+\begin_inset Formula $q_{max,j}$
+\end_inset
+
+, gleichzeitig für das Deaktivieren der Verschattung bei zu minimaler Sonneneins
+trahlung 
+\begin_inset Formula $q_{min,j}$
+\end_inset
+
+ sorgt.
+ Das Toleranzband 
+\begin_inset Formula $e_{tol}$
+\end_inset
+
+ bewegt sich exakt zwischen diesen beiden Zuständen.
+\begin_inset Formula 
+\begin{align*}
+e_{Z} & =q_{rad,j}-\frac{1}{2}\left(q_{max,j}+q_{min,j}\right)\\
+e_{tol} & =\frac{1}{2}\left(q_{max,j}+q_{min,j}\right)\\
+z_{F,i} & =y_{Z}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection*
+Regler
+\end_layout
+
+\begin_layout Standard
+P
+\end_layout
+
+\begin_layout Standard
+PI
+\end_layout
+
+\begin_layout Standard
+Digial 
+\end_layout
+
+\begin_layout Standard
+Digital mit Hysterese
 \end_layout
 
 \end_body
