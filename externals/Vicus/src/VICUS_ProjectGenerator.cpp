@@ -733,7 +733,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 	}
 
 	// no ventilation defined?
-	if (ventilation == nullptr && infiltration == nullptr && ctrlVentilation == nullptr)
+	if (ventilation == nullptr && infiltration == nullptr)
 		return;
 
 	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
@@ -770,10 +770,6 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 		errorStack.append( QString::fromStdString(ex.what()) );
 		return;
 	}
-
-	// no model defined?
-	if (infiltration == nullptr && ventilation == nullptr )
-		return;
 
 	if(ventilation != nullptr  && ventilation->isValid(m_scheduleDB))
 			errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
