@@ -3657,7 +3657,7 @@ Auf analoge Art können aktive Konstruktionsschichten ideal beheizt werden.
 \begin{align*}
 y_{H} & =\min\left(\max\left(0,y_{H,therm}\right),1\right)\\
 y_{C} & =\min\left(\max\left(0,y_{C,therm}\right),1\right)\\
-\dot{Q}_{AB} & =\left(y_{H}\,q_{H,max}-y_{C}\,q_{C,max}\right)A_{R}
+\dot{Q}_{ab} & =\left(y_{H}\,q_{H,max}-y_{C}\,q_{C,max}\right)A_{R}
 \end{align*}
 
 \end_inset
@@ -3798,6 +3798,38 @@ Kontrollelemente
 \end_layout
 
 \begin_layout Subsubsection
+Thermostat
+\end_layout
+
+\begin_layout Standard
+Thermostate stellen einen Zusammenhang zwischen Heizkörpern und Temperaturregelu
+ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
+ oder zentral).
+ Als Stellgröße ist jeweils eine Raumlufttemperatur 
+\begin_inset Formula $T_{R}$
+\end_inset
+
+ vorgegeben, wleche gegen einen Sollwert 
+\begin_inset Formula $T_{H,set}(t)$
+\end_inset
+
+ für den Heizfall und 
+\begin_inset Formula $T_{C,set}(t)$
+\end_inset
+
+ für den Kühlfall abgeglichen wird.
+\begin_inset Formula 
+\begin{align*}
+e_{H,therm} & =T_{H,set}(t)-T_{R}\\
+e_{C,therm} & =T_{R}-T_{C,set}(t)
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
 Verschattungsregelung
 \end_layout
 
@@ -3832,38 +3864,6 @@ trahlung
 e_{Z} & =q_{rad,j}-\frac{1}{2}\left(q_{max,j}+q_{min,j}\right)\\
 e_{tol} & =\frac{1}{2}\left(q_{max,j}+q_{min,j}\right)\\
 z_{F,i} & =y_{Z}
-\end{align*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Subsubsection
-Thermostat
-\end_layout
-
-\begin_layout Standard
-Thermostate stellen einen Zusammenhang zwischen Heizkörpern und Temperaturregelu
-ng her und erlauben somit eine Vielzahl an Steurungsmöglichkeiten (lokal
- oder zentral).
- Als Stellgröße ist jeweils eine Raumlufttemperatur 
-\begin_inset Formula $T_{R}$
-\end_inset
-
- vorgegeben, wleche gegen einen Sollwert 
-\begin_inset Formula $T_{H,set}(t)$
-\end_inset
-
- für den Heizfall und 
-\begin_inset Formula $T_{C,set}(t)$
-\end_inset
-
- für den Kühlfall abgeglichen wird.
-\begin_inset Formula 
-\begin{align*}
-e_{H,therm} & =T_{H,set}(t)-T_{R}\\
-e_{C,therm} & =T_{R}-T_{C,set}(t)
 \end{align*}
 
 \end_inset
