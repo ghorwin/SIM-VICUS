@@ -2339,7 +2339,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 		const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, it->first);
 
-		if (comp->m_scheduleIds.empty())
+		if (comp->m_scheduleIds.empty() &&
+		// THIS IS JUST TEMPORARY !!!!
+				comp->m_modelType != VICUS::NetworkComponent::MT_ConstantMassFluxPump)
 			continue;
 
 		// create and add object list
