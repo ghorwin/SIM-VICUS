@@ -31,7 +31,7 @@ namespace VICUS {
 
 
 
-bool SurfaceHeating::isValid() const {
+bool SurfaceHeating::isValid(const Database<NetworkPipe> & pipeDB) const {
 	if(m_id == INVALID_ID)
 		return false;
 
@@ -59,8 +59,9 @@ bool SurfaceHeating::isValid() const {
 			}  catch (...) {
 				return false;
 			}
-			//TODO Katja Pipes prüfen
-			if(m_idPipe == VICUS::INVALID_ID)
+
+			const NetworkPipe * pipe = pipeDB[m_idPipe];
+			if(pipe == nullptr || !pipe->isValid())
 				return false;
 
 			if(m_heatingCoolingCurvePoints.m_values.size() != 2)

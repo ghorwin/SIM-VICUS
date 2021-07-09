@@ -35,6 +35,8 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_Database.h"
+#include "VICUS_NetworkPipe.h"
 
 namespace VICUS {
 
@@ -77,7 +79,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<NetworkPipe> & pipeDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

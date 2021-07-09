@@ -1474,7 +1474,9 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 		const SurfaceHeating * surfSys =
 				Project::element(m_project->m_embeddedDB.m_surfaceHeatings, dsh.m_heatingSystemId);
-		if(surfSys == nullptr || !surfSys->isValid()){
+		VICUS::Database<NetworkPipe> pipeDB(0);
+		pipeDB.setData(m_project->m_embeddedDB.m_pipes);
+		if(surfSys == nullptr || !surfSys->isValid(pipeDB)){
 			errorStack.append(qApp->tr("Invalid surface heating/cooling system #%1 referenced from room #%2.")
 							  .arg(dsh.m_heatingSystemId)
 							  .arg(dsh.m_controlledZoneId)
