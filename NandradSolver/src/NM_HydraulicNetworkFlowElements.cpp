@@ -171,7 +171,7 @@ void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	// for negative mass flow: Reynolds number is positive, velocity and pressure loss are negative
 	double fluidDensity = m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4);
+	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4.0);
 	double Re = std::abs(velocity) * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(*m_fluidTemperatureRef);
 	double zeta = m_length / m_diameter * FrictionFactorSwamee(Re, m_diameter, m_roughness);
 
@@ -179,7 +179,7 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	if (m_controlElement != nullptr)
 		zeta += zetaControlled();
 
-	return zeta * fluidDensity / 2 * std::abs(velocity) * velocity;
+	return zeta * fluidDensity / 2.0 * std::abs(velocity) * velocity;
 }
 
 
@@ -210,8 +210,7 @@ double HNPipeElement::zetaControlled() const {
 
 	// get control value for cooling
 	if (m_coolingThermostatControlValueRef != nullptr) {
-		// TODO : wie bei der heizung
-		// same as for heating
+		// TODO : same as for heating
 		coolingControlValue = std::min(std::max(*m_coolingThermostatControlValueRef, 0.0), 1.0);
 		double e = (1.0 - coolingControlValue);
 		coolingControlValue = m_controlElement->m_maximumControllerResultValue * e;
