@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 22:34:24 2021</Created>
-		<LastEdited>Mo. Juli 5 16:48:58 2021</LastEdited>
+		<LastEdited>Mo. Juli 5 17:06:51 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -27,7 +27,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF05-Lueftung/Aufgabenstellung/Wetterdaten/SIMQ_TF05_Klima.epw</ClimateFilePath>
+			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF05-Lueftung/Aufgabenstellung/Wetterdaten/SIMQ_Potsdam.epw</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
