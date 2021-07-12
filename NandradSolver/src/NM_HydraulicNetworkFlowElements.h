@@ -227,6 +227,25 @@ private:
 }; // HNConstantPressurePump
 
 
+/*! Valve model with fixed constant pressure head */
+class HNConstantPressureLossValve: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
+
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+private:
+
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! Value of pressure loss [Pa] */
+	double							m_pressureLoss = -999;
+}; // HNConstantPressureLossValve
+
+
+
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
 class HNConstantMassFluxPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:

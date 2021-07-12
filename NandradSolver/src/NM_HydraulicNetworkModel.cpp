@@ -155,6 +155,15 @@ void HydraulicNetworkModel::setup() {
 
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+			{
+				// create  model
+				HNConstantPressureLossValve * valveElement = new HNConstantPressureLossValve(e.m_id, *e.m_component);
+				// add to flow elements
+				m_p->m_flowElements.push_back(valveElement); // transfer ownership
+				m_pumpElements.push_back(valveElement);
+			} break;
+
 			case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler :
 			{
 				// create pressure loss flow element - controller is set up later

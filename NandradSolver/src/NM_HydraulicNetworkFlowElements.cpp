@@ -569,6 +569,31 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 }
 
 
+
+// *** HNConstantPressureLossValve ***
+
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
+m_id(id)
+{
+m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+}
+
+double HNConstantPressureLossValve::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
+{
+	return p_inlet - p_outlet - m_pressureLoss;
+}
+
+void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+
+
 // *** HNConstantMassFluxPump ***
 
 HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component):
@@ -622,6 +647,7 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 {
 	m_pressureHead = p_outlet - p_inlet;
 }
+
 
 
 // *** HNControlledPump ***
@@ -845,6 +871,7 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
+
 
 
 

@@ -116,6 +116,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {};
 			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+			case MT_ConstantPressureLossValve:
+				return {P_PressureLoss};
 			case MT_ControlledPump:
 			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT:
@@ -144,6 +146,8 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_HeatPumpRealSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case MT_ConstantPressureLossValve:
+				return {P_PressureLoss, P_Volume};
 			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT: ;
 		}
@@ -170,6 +174,7 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 		case MT_DynamicPipe:
 		case MT_SimplePipe:
 		case MT_ControlledValve:
+		case MT_ConstantPressureLossValve:
 		case NUM_MT: ;
 			return {};
 	}
@@ -188,7 +193,8 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_PressureLossCoefficient:
 		case P_Volume:
 		case P_MaximumHeatingPower:
-		case P_PipeMaxDiscretizationWidth:{
+		case P_PipeMaxDiscretizationWidth:
+		case P_PressureLoss: {
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
