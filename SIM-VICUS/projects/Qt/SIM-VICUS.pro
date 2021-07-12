@@ -186,8 +186,6 @@ SOURCES += \
 								../../src/SVDebugApplication.cpp \
 								../../src/SVGeometryView.cpp \
 								../../src/SVImportIDFDialog.cpp \
-								../../src/SVInternalLoadsPersonDetailedWidget.cpp \
-								../../src/SVInternalLoadsPersonManagerWidget.cpp \
 								../../src/SVLCA.cpp \
 								../../src/SVLocalCoordinateView.cpp \
 								../../src/SVLogFileDialog.cpp \
@@ -341,8 +339,6 @@ HEADERS  += \
 								../../src/SVDebugApplication.h \
 								../../src/SVGeometryView.h \
 								../../src/SVImportIDFDialog.h \
-								../../src/SVInternalLoadsPersonDetailedWidget.h \
-								../../src/SVInternalLoadsPersonManagerWidget.h \
 								../../src/SVLCA.h \
 								../../src/SVLocalCoordinateView.h \
 								../../src/SVLogFileDialog.h \
@@ -418,8 +414,6 @@ FORMS    += \
 								../../src/SVDBZoneTemplateEditDialog.ui \
 								../../src/SVDBZoneTemplateEditWidget.ui \
 								../../src/SVImportIDFDialog.ui \
-								../../src/SVInternalLoadsPersonDetailedWidget.ui \
-								../../src/SVInternalLoadsPersonManagerWidget.ui \
 								../../src/SVLocalCoordinateView.ui \
 								../../src/SVLogFileDialog.ui \
 								../../src/SVMainWindow.ui \
