@@ -33,7 +33,7 @@ bool Triangulation::setPoints(const std::vector<IBK::point2D<double> > & points,
 	m_triangles.resize(cdt.triangles.size());
 	for (unsigned int i=0; i<cdt.triangles.size(); ++i) {
 		const CDT::VerticesArr3 & t = cdt.triangles[i].vertices;
-		m_triangles[i] = triangle_t(t[0], t[1], t[2]);
+		m_triangles[i] = triangle_t((unsigned int)t[0], (unsigned int)t[1], (unsigned int)t[2]);
 	}
 
 	return true;

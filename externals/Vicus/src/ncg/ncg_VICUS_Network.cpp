@@ -169,6 +169,7 @@ void Network::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Network");
 	parent->LinkEndChild(e);
 

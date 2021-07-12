@@ -9,3 +9,5 @@
 /ThermostatControlledPipeRegister/
 /ControlledPumpPipeRegister/
 /ConstantMassFluxThermostatControlledPipeRegister/
+/ControlledPumpMassFluxScheduled/
+/ThermostatControlledIdealParallelPipeRegister/

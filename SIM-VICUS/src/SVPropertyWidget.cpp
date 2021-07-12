@@ -94,16 +94,9 @@ void SVPropertyWidget::onViewStateChanged() {
 	// now show the respective property widget
 	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 	switch (m) {
-		case SVViewState::PM_EditGeometry :
-		case SVViewState::PM_AddGeometry : {
+		case SVViewState::PM_AddEditGeometry :
 			showPropertyWidget<SVPropEditGeometry>(M_Geometry);
-
-			// Note: we do not use the slot for SVViewState::PM_AddGeometry; instead we just show a different tab
-			if (m == SVViewState::PM_EditGeometry)
-				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentPage(SVPropEditGeometry::O_EditGeometry);
-			else
-				qobject_cast<SVPropEditGeometry *>(m_propWidgets[M_Geometry])->setCurrentPage(SVPropEditGeometry::O_AddGeometry);
-		} break;
+		break;
 
 		case SVViewState::PM_VertexList:
 			showPropertyWidget<SVPropVertexListWidget>(M_VertexListWidget);

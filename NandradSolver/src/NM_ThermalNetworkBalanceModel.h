@@ -165,11 +165,6 @@ private:
 		unsigned int						m_zoneId = NANDRAD::INVALID_ID;
 		/*! Heat flux (sum) of *all* flow elements into selected zone. */
 		double								m_zoneHeatLoad = -999;
-		/*! Reference to temperatures of selected zone.
-			The pointer is stored here during initialization and then distributed to all flow elements that
-			require this temperature.
-		*/
-		const double						*m_zoneTemperatureRef = nullptr;
 	};
 
 	/*!	Struct stores information needed for exchange between ThermalNetworkBalanceModel and ConstructionBalanceModels.
@@ -190,11 +185,6 @@ private:
 		unsigned int						m_constructionInstanceId = NANDRAD::INVALID_ID;
 		/*! Heat flux into (the one and only) active layer if the selected construction instance. */
 		double								m_activeLayerHeatLoad = -999;
-		/*! Reference to mean temperature (the one and only) active layer of the selected construction instance.
-			The pointer is stored here during initialization and then distributed to all flow elements that
-			require this temperature.
-		*/
-		const double*						m_activeLayerTemperatureRef = nullptr;
 	};
 
 

@@ -77,7 +77,7 @@ LinearSpline::LinearSpline() :
 }
 
 unsigned int LinearSpline::size()  const {
-	return m_y.size();
+	return (unsigned int)m_y.size();
 }
 
 

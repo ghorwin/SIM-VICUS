@@ -124,6 +124,7 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ZoneControlThermostat");
 	parent->LinkEndChild(e);
 

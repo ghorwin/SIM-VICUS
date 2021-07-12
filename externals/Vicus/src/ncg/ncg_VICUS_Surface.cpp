@@ -61,7 +61,9 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SubSurfaces") {
+			if (cName == "DisplayColor")
+				m_displayColor.setNamedColor(QString::fromStdString(c->GetText()));
+			else if (cName == "SubSurfaces") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -90,6 +92,7 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 }
 
 TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Surface");
 	parent->LinkEndChild(e);
 
@@ -99,6 +102,8 @@ TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Surface().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (m_displayColor.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "DisplayColor", nullptr, std::string(), m_displayColor.name().toStdString());
 
 	m_polygon3D.writeXML(e);
 

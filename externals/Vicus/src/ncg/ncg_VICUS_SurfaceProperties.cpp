@@ -103,6 +103,7 @@ void SurfaceProperties::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * SurfaceProperties::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("SurfaceProperties");
 	parent->LinkEndChild(e);
 

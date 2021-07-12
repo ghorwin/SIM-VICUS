@@ -793,9 +793,9 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 	// TODO : use controller object here
 
 	// if controller deviation is <= 0,  return 0
-	if (e <= 0) {
-		return 0;
-	}
+//	if (e <= 0) {
+//		return 0;
+//	}
 
 	double pressHeadControlled = 0;
 	double pressHeadMax = m_controlElement->m_maximumControllerResultValue;
@@ -821,6 +821,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 	return pressHeadControlled;
 }
+
 
 void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
 	if (m_controlElement == nullptr)

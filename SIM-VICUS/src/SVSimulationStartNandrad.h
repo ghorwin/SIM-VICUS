@@ -38,6 +38,7 @@ class SVSimulationPerformanceOptions;
 class SVSimulationLocationOptions;
 class SVSimulationOutputOptions;
 class SVSimulationModelOptions;
+class SVSimulationShadingOptions;
 class SVSimulationRunRequestDialog;
 class SVSimulationNetworkOptions;
 
@@ -61,7 +62,7 @@ public:
 	explicit SVSimulationStartNandrad(QWidget *parent = nullptr);
 	~SVSimulationStartNandrad();
 
-	int edit();
+	int edit(bool fmiExport = false);
 
 	/*! Returns a copy of the locally modified version of the project. */
 	const VICUS::Project & localProject() const { return m_localProject; }
@@ -117,6 +118,8 @@ private:
 	SVSimulationModelOptions		*m_simulationModelOptions = nullptr;
 	/*! Page with newtork options */
 	SVSimulationNetworkOptions		*m_simulationNetworkOptions = nullptr;
+	/*! Page with shading calculation options. */
+	SVSimulationShadingOptions		*m_simulationShadingOptions = nullptr;
 
 	SVSimulationRunRequestDialog	*m_simulationRunRequestDialog = nullptr;
 

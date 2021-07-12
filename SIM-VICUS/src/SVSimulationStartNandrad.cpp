@@ -41,6 +41,7 @@
 #include "SVSimulationLocationOptions.h"
 #include "SVSimulationOutputOptions.h"
 #include "SVSimulationModelOptions.h"
+#include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
@@ -123,6 +124,12 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationNetworkOptions);
 		m_ui->tabNetworkOptions->setLayout(h);
 	}
+	{
+		m_simulationShadingOptions = new SVSimulationShadingOptions(this, m_localProject.m_simulationParameter, m_localProject.m_location);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationShadingOptions);
+		m_ui->tabShadingCalculation->setLayout(h);
+	}
 }
 
 
@@ -131,7 +138,7 @@ SVSimulationStartNandrad::~SVSimulationStartNandrad() {
 }
 
 
-int SVSimulationStartNandrad::edit() {
+int SVSimulationStartNandrad::edit(bool fmiExport) {
 
 	m_solverExecutable = SVSettings::nandradSolverExecutable();
 
@@ -197,10 +204,32 @@ int SVSimulationStartNandrad::edit() {
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
 	m_simulationNetworkOptions->updateUi();
-
+	m_simulationShadingOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();
+
+	// do we have any selected surfaces?
+	std::vector<const VICUS::Surface*> sel;
+	project().selectedSurfaces(sel, VICUS::Project::SG_Building);
+	if (sel.empty()) {
+		m_ui->radioButtonEntireProject->setEnabled(false);
+		m_ui->radioButtonSelectedGeometry->setEnabled(false);
+		m_ui->radioButtonEntireProject->setChecked(true);
+	}
+	else {
+		m_ui->radioButtonEntireProject->setEnabled(true);
+		m_ui->radioButtonSelectedGeometry->setEnabled(true);
+		m_ui->radioButtonSelectedGeometry->setChecked(true);
+	}
+
+
+	if (fmiExport) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "FMUExportInfoMessage", tr("FMU Export"),
+			tr("Adjust the simulation parameters in this dialog as needed, test-initialize the simulation and "
+			   "then start the FMU generation process by pressing 'Export FMU...'")
+			);
+	}
 
 	return exec();
 	// if dialog was confirmed, data is transfered into project
@@ -356,12 +385,14 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	// generate NANDRAD project
 	NANDRAD::Project p;
 
+	QStringList errorStack;
+
 	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
 		//add default placeholder
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-		m_localProject.generateNandradProject(p);
+		m_localProject.generateNandradProject(p, errorStack);
 	}
 	catch (VICUS::Project::ConversionError & ex) {
 		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"), ex.what());
@@ -457,3 +488,5 @@ void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int i
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 	startSimulation(true);
 }
+
+

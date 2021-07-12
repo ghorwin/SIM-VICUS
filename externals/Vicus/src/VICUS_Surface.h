@@ -49,10 +49,8 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	/*! Update surface colors based on orientation of associated plane geometry.
-		Color is only updated if current color is QColor::Invalid.
-	*/
-	void updateColor();
+	/*! Sets default surface color based on inclination of associated plane geometry. */
+	void initializeColorBasedOnInclination();
 
 	/*! Creates a copy of the surface object but with a new unique ID. */
 	Surface clone() const;
@@ -90,6 +88,8 @@ public:
 	*/
 	//:inherited	bool				m_visible = true;			// XML:A
 
+	/*! The color to be used when rendering the surface in regular mode (not in false-color mode). */
+	QColor								m_displayColor;				// XML:E
 
 	// *** Runtime Variables ***
 
@@ -99,6 +99,7 @@ public:
 		Color is not a regular property of a surface, but rather of the associated parameter elements.
 	*/
 	mutable QColor						m_color; // Note: mutable so that it can be modified on const project
+
 
 	/*! Runtime-only pointer to the associated component instance (or nullptr, if surface
 		is not yet connected to any component. This would be considered an incomplete

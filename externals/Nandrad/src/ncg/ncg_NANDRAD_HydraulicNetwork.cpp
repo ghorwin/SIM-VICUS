@@ -160,6 +160,7 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 }
 
 TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("HydraulicNetwork");
 	parent->LinkEndChild(e);
 

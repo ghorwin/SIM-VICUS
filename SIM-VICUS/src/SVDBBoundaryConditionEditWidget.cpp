@@ -52,22 +52,22 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
 	for (unsigned int i=0; i <= NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
 		m_ui->comboBoxHeatTransferCoeffModelType->addItem(QString("%1 [%2]")
-			.arg(NANDRAD::KeywordListQt::Description("InterfaceHeatConduction::modelType_t", (int)i))
-			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i)), i);
+														  .arg(NANDRAD::KeywordListQt::Description("InterfaceHeatConduction::modelType_t", (int)i))
+														  .arg(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i)), i);
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	for(unsigned int i=0; i <= NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
 		m_ui->comboBoxLWModelType->addItem(QString("%1 [%2]")
-			.arg(NANDRAD::KeywordListQt::Description("InterfaceLongWaveEmission::modelType_t", (int)i))
-			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i)), i);
+										   .arg(NANDRAD::KeywordListQt::Description("InterfaceLongWaveEmission::modelType_t", (int)i))
+										   .arg(NANDRAD::KeywordListQt::Keyword("InterfaceLongWaveEmission::modelType_t", (int)i)), i);
 	m_ui->comboBoxLWModelType->blockSignals(false);
 
 	m_ui->comboBoxSWModelType->blockSignals(true);
 	for(unsigned int i=0; i <= NANDRAD::InterfaceSolarAbsorption::NUM_MT; ++i)
 		m_ui->comboBoxSWModelType->addItem(QString("%1 [%2]")
-			.arg(NANDRAD::KeywordListQt::Description("InterfaceSolarAbsorption::modelType_t", (int)i))
-			.arg(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i)), i);
+										   .arg(NANDRAD::KeywordListQt::Description("InterfaceSolarAbsorption::modelType_t", (int)i))
+										   .arg(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i)), i);
 	m_ui->comboBoxSWModelType->blockSignals(false);
 
 
@@ -172,33 +172,30 @@ void SVDBBoundaryConditionEditWidget::on_lineEditName_editingFinished() {
 void SVDBBoundaryConditionEditWidget::on_lineEditHeatTransferCoefficient_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditHeatTransferCoefficient->isValid() ) {
-		double val = m_ui->lineEditHeatTransferCoefficient->value();
-		// update database but only if different from original
-		if (m_current->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].empty() ||
+	double val = m_ui->lineEditHeatTransferCoefficient->value();
+	// update database but only if different from original
+	if (m_current->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].empty() ||
 			val != m_current->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value)
-		{
-			NANDRAD::KeywordList::setParameter(m_current->m_heatConduction.m_para,
-				"InterfaceHeatConduction::para_t", NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient, val);
-			modelModify();
-		}
+	{
+		NANDRAD::KeywordList::setParameter(m_current->m_heatConduction.m_para,
+										   "InterfaceHeatConduction::para_t", NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient, val);
+		modelModify();
 	}
+
 }
 
 
 void SVDBBoundaryConditionEditWidget::on_lineEditSolarAbsorptionCoefficient_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditSolarAbsorptionCoefficient->isValid() ) {
-		double val = m_ui->lineEditSolarAbsorptionCoefficient->value();
-		// update database but only if different from original
-		if (m_current->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].empty() ||
+	double val = m_ui->lineEditSolarAbsorptionCoefficient->value();
+	// update database but only if different from original
+	if (m_current->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].empty() ||
 			val != m_current->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value)
-		{
-			NANDRAD::KeywordList::setParameter(m_current->m_solarAbsorption.m_para,
-				"InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, val);
-			modelModify();
-		}
+	{
+		NANDRAD::KeywordList::setParameter(m_current->m_solarAbsorption.m_para,
+										   "InterfaceSolarAbsorption::para_t", NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient, val);
+		modelModify();
 	}
 }
 
@@ -206,16 +203,13 @@ void SVDBBoundaryConditionEditWidget::on_lineEditSolarAbsorptionCoefficient_edit
 void SVDBBoundaryConditionEditWidget::on_lineEditLongWaveEmissivity_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditLongWaveEmissivity->isValid() ) {
-		double val = m_ui->lineEditLongWaveEmissivity->value();
-		// update database but only if different from original
-		if (m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].empty() ||
-			val != m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value)
-		{
-			NANDRAD::KeywordList::setParameter(m_current->m_longWaveEmission.m_para,
-				"InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, val);
-			modelModify();
-		}
+	double val = m_ui->lineEditLongWaveEmissivity->value();
+	// update database but only if different from original
+	if (m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].empty() ||
+			val != m_current->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value) {
+		NANDRAD::KeywordList::setParameter(m_current->m_longWaveEmission.m_para,
+										   "InterfaceLongWaveEmission::para_t", NANDRAD::InterfaceLongWaveEmission::P_Emissivity, val);
+		modelModify();
 	}
 }
 

@@ -99,6 +99,7 @@ void IdealSurfaceHeatingCoolingModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * IdealSurfaceHeatingCoolingModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("IdealSurfaceHeatingCoolingModel");
 	parent->LinkEndChild(e);
 

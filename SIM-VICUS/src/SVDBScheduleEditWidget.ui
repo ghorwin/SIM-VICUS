@@ -276,14 +276,14 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton">
+             <widget class="QPushButton" name="pushButtonSelectWeekDays">
               <property name="text">
                <string>Select all week days</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButton_2">
+             <widget class="QPushButton" name="pushButtonSelectWeekEnds">
               <property name="text">
                <string>Select all week end days</string>
               </property>
@@ -314,8 +314,8 @@
               <item>
                <widget class="QToolButton" name="toolButtonBackward">
                 <property name="icon">
-                 <iconset resource="../resources/SIM-VICUS.qrc">
-                  <normaloff>:/gfx/actions/24x24/undo.png</normaloff>:/gfx/actions/24x24/undo.png</iconset>
+                 <iconset resource="../resources/qdarkstyle/style.qrc">
+                  <normaloff>:/qss_icons/rc/arrow_left_focus.png</normaloff>:/qss_icons/rc/arrow_left_focus.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -328,8 +328,22 @@
               <item>
                <widget class="QToolButton" name="toolButtonForward">
                 <property name="icon">
+                 <iconset resource="../resources/qdarkstyle/style.qrc">
+                  <normaloff>:/qss_icons/rc/arrow_right_focus.png</normaloff>:/qss_icons/rc/arrow_right_focus.png</iconset>
+                </property>
+                <property name="iconSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QToolButton" name="toolButtonAddCurrentDailyCycle">
+                <property name="icon">
                  <iconset resource="../resources/SIM-VICUS.qrc">
-                  <normaloff>:/gfx/actions/24x24/redo.png</normaloff>:/gfx/actions/24x24/redo.png</iconset>
+                  <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
                 </property>
                 <property name="iconSize">
                  <size>
@@ -352,6 +366,19 @@
                  </size>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>17</width>
+                  <height>30</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -397,6 +424,7 @@
  </customwidgets>
  <resources>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/qdarkstyle/style.qrc"/>
  </resources>
  <connections/>
 </ui>

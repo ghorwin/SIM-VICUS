@@ -120,6 +120,7 @@ void Construction::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Construction");
 	parent->LinkEndChild(e);
 

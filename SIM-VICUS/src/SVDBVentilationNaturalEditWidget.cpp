@@ -103,6 +103,7 @@ void SVDBVentilationNaturalEditWidget::updateInput(int id) {
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
+	m_ui->toolButtonSelectSchedule->setEnabled(!isbuiltIn);
 	m_ui->lineEditScheduleName->setEnabled(!isbuiltIn);
 
 	m_ui->lineEditAirChangeRate->setEnabled(!isbuiltIn);
@@ -117,7 +118,7 @@ void SVDBVentilationNaturalEditWidget::on_lineEditName_editingFinished() {
 	}
 }
 
-void SVDBVentilationNaturalEditWidget::on_lineEditAirChangeRate_editingFinished() {
+void SVDBVentilationNaturalEditWidget::on_lineEditAirChangeRate_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
 	//change this only:
@@ -125,15 +126,13 @@ void SVDBVentilationNaturalEditWidget::on_lineEditAirChangeRate_editingFinished(
 	VICUS::VentilationNatural::para_t paraName = VICUS::VentilationNatural::P_AirChangeRate;
 	std::string keywordList = "VentilationNatural::para_t";
 
-	if(lineEdit->isValid()){
-		double val = lineEdit->value();
+	double val = lineEdit->value();
 
-		if (m_current->m_para[paraName].empty() ||
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, keywordList.c_str(), paraName, val);
+		modelModify();
 	}
 }
 

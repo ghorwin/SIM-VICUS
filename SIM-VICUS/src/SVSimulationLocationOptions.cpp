@@ -101,26 +101,75 @@ SVSimulationLocationOptions::~SVSimulationLocationOptions() {
 void SVSimulationLocationOptions::updateUi() {
 	m_ui->tableViewClimateFiles->resizeColumnsToContents();
 
-	if (m_location->m_para[NANDRAD::Location::P_Albedo].name.empty())
-		m_location->m_para[NANDRAD::Location::P_Albedo].set("Albedo", 0.2, "---");
+	// *** input data check ***
 
+	// user may have invalid units or value ranges in project file
+
+	if (m_location->m_para[NANDRAD::Location::P_Albedo].name.empty() ||
+		m_location->m_para[NANDRAD::Location::P_Albedo].IO_unit.base_id() != IBK::Unit("---").base_id())
+	{
+		// set/fix Albedo
+		m_location->m_para[NANDRAD::Location::P_Albedo].set("Albedo", 0.2, "---");
+	}
 	m_ui->comboBoxAlbedo->setValue(m_location->m_para[NANDRAD::Location::P_Albedo].value);
+
+	int index = m_location->m_timeZone+12;
+	// fix invalid time zone in project file
+	if (index < 0 || index > 24) {
+		index = 13; // UTC+1 as default fall-back
+		m_location->m_timeZone = index - 12;
+	}
+	m_ui->comboBoxTimeZone->setCurrentIndex(index);
+
+	// Latitude is optional, but if given, must have the correct unit
+	if (!m_location->m_para[NANDRAD::Location::P_Latitude].name.empty() &&
+		m_location->m_para[NANDRAD::Location::P_Latitude].IO_unit.base_id() != IBK::Unit("Deg").base_id())
+	{
+		NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Latitude, 51.1);
+	}
+
+	// Longitude is optional, but if given, must have the correct unit
+	if (!m_location->m_para[NANDRAD::Location::P_Longitude].name.empty() &&
+		m_location->m_para[NANDRAD::Location::P_Longitude].IO_unit.base_id() != IBK::Unit("Deg").base_id())
+	{
+		NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Longitude, 13.1);
+	}
+
+
+	// *** now populate the user interface ***
+
+
+	// update rules for location input widget:
+	//
+	// - if latitude and longitude are stored in location (the default), we
+	//   initially assume a custom location; this gives us always defined and available
+	//   location data for other calculations (like shading)
+	// - if additionally a climate data file is given, we update the data in updateLocationInfo()
+	// - there, if latitute and longitude from file match our current "custom" input, we toggle back
+	//   to "from climate file"
+
 	m_ui->checkBoxCustomLocation->blockSignals(true);
 	// if both latitude and longitude are given, we have a custom climate location
 	if (!m_location->m_para[NANDRAD::Location::P_Latitude].name.empty() &&
 		!m_location->m_para[NANDRAD::Location::P_Longitude].name.empty())
 	{
 		m_ui->checkBoxCustomLocation->setChecked(true);
+		// input data checks have been done already
+		m_ui->lineEditLatitude->setValue(m_location->m_para[NANDRAD::Location::P_Latitude].get_value("Deg"));
+		m_ui->lineEditLongitude->setValue(m_location->m_para[NANDRAD::Location::P_Longitude].get_value("Deg"));
+		m_ui->comboBoxTimeZone->setCurrentIndex(m_location->m_timeZone+12);
 	}
 	else {
+		m_ui->checkBoxCustomLocation->setChecked(false);
 		// no custom location? clear location and latitude parameters
 		m_location->m_para[NANDRAD::Location::P_Latitude].clear();
 		m_location->m_para[NANDRAD::Location::P_Longitude].clear();
-		m_ui->checkBoxCustomLocation->setChecked(false);
 	}
 	m_ui->checkBoxCustomLocation->blockSignals(false);
-	on_checkBoxCustomLocation_toggled(m_ui->checkBoxCustomLocation->isChecked());
+	on_checkBoxCustomLocation_toggled(m_ui->checkBoxCustomLocation->isChecked()); // only updates enabled/disabled states
 
+
+	// do we have a climate file path given?
 	if (m_location->m_climateFilePath.isValid()) {
 		// is the referenced file in the climate database?
 		QModelIndex idx;
@@ -140,13 +189,14 @@ void SVSimulationLocationOptions::updateUi() {
 			}
 		}
 		if (idx.isValid()) {
+			m_ui->radioButtonFromDB->blockSignals(true);
 			m_ui->radioButtonFromDB->setChecked(true);
+			m_ui->radioButtonFromDB->blockSignals(false);
 			m_ui->filepathClimateDataFile->blockSignals(true);
 			m_ui->filepathClimateDataFile->setFilename("");
 			m_ui->filepathClimateDataFile->blockSignals(false);
 
 			// convert to proxy-index
-			m_ui->tableViewClimateFiles->blockSignals(true);
 			QModelIndex proxy = m_filterModel->mapFromSource(idx);
 			// if not visible, reset all filters and convert to proxy index again
 			if (!proxy.isValid()) {
@@ -154,27 +204,30 @@ void SVSimulationLocationOptions::updateUi() {
 			}
 			proxy = m_filterModel->mapFromSource(idx);
 			// select row
+
+			m_ui->tableViewClimateFiles->selectionModel()->blockSignals(true);
 			m_ui->tableViewClimateFiles->setCurrentIndex(proxy);
-			m_ui->tableViewClimateFiles->blockSignals(false);
+			m_ui->tableViewClimateFiles->selectionModel()->blockSignals(false);
 
-			// manually trigger the currentChanged() signal
-			onCurrentIndexChanged(proxy, QModelIndex());
-
+			// Note: update of location info is done through on_radioButtonFromDB_toggled() call below
 		}
 		else {
+			m_ui->radioButtonFromDB->blockSignals(true); // slot is connected to first radio button, so block this
+			m_ui->radioButtonFromFile->setChecked(true);
+			m_ui->radioButtonFromDB->blockSignals(false);
 			// file is not contained in the database or user database, assume absolute file path
 			m_ui->filepathClimateDataFile->blockSignals(true);
 			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(m_location->m_climateFilePath.str()));
-			// try to read the user-defined climate data file - if this fails, the m_userClimateFile info structure
-			// will be empty
-			updateUserClimateFileInfo();
-			// now update the
-			updateLocationInfo(&m_userClimateFile, false); // false = no database file
 			m_ui->filepathClimateDataFile->blockSignals(false);
+
+			// Note: update of location info is done through on_radioButtonFromDB_toggled() call below
 		}
 	}
 	else {
+		// no climate file path, but we assume that user wants to use DB climate
+		m_ui->radioButtonFromDB->blockSignals(true);
 		m_ui->radioButtonFromDB->setChecked(true);
+		m_ui->radioButtonFromDB->blockSignals(false);
 	}
 	on_radioButtonFromDB_toggled(m_ui->radioButtonFromDB->isChecked());
 }
@@ -200,16 +253,13 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 			m_location->m_climateFilePath = climateInfoPtr->m_absoluteFilePath.toStdString();
 	}
 
-	// update info text on climate location
+	// clear info text on climate location
 	m_ui->textBrowserDescription->clear();
-	// default values for location
-	m_ui->lineEditLatitude->setValue(51.1);
-	m_ui->lineEditLongitude->setValue(13.1);
-	m_ui->comboBoxTimeZone->setCurrentIndex(13);
 
-	if (climateInfoPtr == nullptr) {
+	// no valid climate data selected, bail out
+	if (climateInfoPtr == nullptr)
 		return;
-	}
+
 	QString infoText;
 	infoText = "<html><body>";
 	if (climateInfoPtr->m_name.isEmpty()) {
@@ -241,19 +291,38 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	f.setPointSizeF(f.pointSizeF()*0.8);
 	m_ui->textBrowserDescription->setFont(f);
 
-	// also update the location line edits
-	m_ui->lineEditLatitude->setValue(climateInfoPtr->m_latitudeInDegree);
-	m_ui->lineEditLongitude->setValue(climateInfoPtr->m_longitudeInDegree);
+	// check if location in DB file matches our custom location, and switch back to "from DB" mode in this case
 
-	// we also want to update the NANDRAD::Location (needed for shading calculation)
-	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Longitude, climateInfoPtr->m_longitudeInDegree);
-	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Latitude, climateInfoPtr->m_latitudeInDegree);
-	m_location->m_timeZone = climateInfoPtr->m_timeZone;
+	IBK::Parameter longFromDB("Longitude", climateInfoPtr->m_longitudeInDegree, "Deg");
+	IBK::Parameter latFromDB("Latitude", climateInfoPtr->m_latitudeInDegree, "Deg");
+	int timeZoneFromDB = climateInfoPtr->m_timeZone;
 
-	int index = climateInfoPtr->m_timeZone+12;
-	if (index < 0 || index > 24)
-		index = 12;
-	m_ui->comboBoxTimeZone->setCurrentIndex(index);
+	// we compare with some rounding tolerance (deg->rad conversion)
+	if (IBK::near_equal(longFromDB.value, m_location->m_para[NANDRAD::Location::P_Longitude].value) &&
+		IBK::near_equal(latFromDB.value, m_location->m_para[NANDRAD::Location::P_Latitude].value) &&
+		timeZoneFromDB == m_location->m_timeZone)
+	{
+		m_ui->checkBoxCustomLocation->setChecked(false);
+	}
+
+	// if we do not have custom climate, transfer data from selected climate location to our location object and UI
+	if (!m_ui->checkBoxCustomLocation->isChecked()) {
+		// we also want to update the NANDRAD::Location (needed for shading calculation)
+		NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Longitude, climateInfoPtr->m_longitudeInDegree);
+		NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t", NANDRAD::Location::P_Latitude, climateInfoPtr->m_latitudeInDegree);
+		// guard against invalid data in climate data file
+		int index = climateInfoPtr->m_timeZone + 12;
+		// fix invalid time zone in project file
+		if (index < 0 || index > 24) {
+			index = 13; // UTC+1 as default fall-back
+			m_location->m_timeZone = index - 12;
+		}
+
+		// Note : latitude and longitude may also be invalid in project file, but that will be checked in the solver
+		m_ui->lineEditLatitude->setValue(climateInfoPtr->m_latitudeInDegree);
+		m_ui->lineEditLongitude->setValue(climateInfoPtr->m_longitudeInDegree);
+		m_ui->comboBoxTimeZone->setCurrentIndex(m_location->m_timeZone + 12);
+	}
 }
 
 
@@ -278,6 +347,7 @@ void SVSimulationLocationOptions::storeCustomLocationInputs(){
 									   NANDRAD::Location::P_Latitude, m_ui->lineEditLatitude->value());
 	NANDRAD::KeywordList::setParameter(m_location->m_para, "Location::para_t",
 									   NANDRAD::Location::P_Longitude, m_ui->lineEditLongitude->value());
+	m_location->m_timeZone = m_ui->comboBoxTimeZone->currentData().toInt();
 }
 
 
@@ -312,6 +382,7 @@ void SVSimulationLocationOptions::on_filepathClimateDataFile_editingFinished() {
 	updateLocationInfo(&m_userClimateFile, false);
 }
 
+
 void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked) {
 	m_ui->lineEditLatitude->setEnabled(checked);
 	m_ui->lineEditLongitude->setEnabled(checked);
@@ -319,13 +390,4 @@ void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked
 	m_ui->labelLatitude->setEnabled(checked);
 	m_ui->labelLongitude->setEnabled(checked);
 	m_ui->labelTimeZone->setEnabled(checked);
-	if (checked) {
-		storeCustomLocationInputs();
-	}
-	else {
-		// no custom location - clear custom inputs
-		m_location->m_para[NANDRAD::Location::P_Altitude].clear();
-		m_location->m_para[NANDRAD::Location::P_Latitude].clear();
-		m_location->m_para[NANDRAD::Location::P_Longitude].clear();
-	}
 }

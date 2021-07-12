@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -32,6 +32,7 @@
 namespace VICUS {
 
 class Surface;
+class Room;
 
 /*! Defines a construction/component of the building.
 	It is basically just a connection data member and does not hold any
@@ -63,14 +64,20 @@ public:
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
 	unsigned int						m_sideBSurfaceID = INVALID_ID;		// XML:A
 
+	/*! ID of surface heating definition, to be used when component has active layer. */
+	unsigned int						m_surfaceHeatingID				= INVALID_ID;	// XML:E
+	/*! ID of zone containing thermostat for control of surface heating. */
+	unsigned int						m_surfaceHeatingControlZoneID	= INVALID_ID;	// XML:E
 
 	// *** RUNTIME VARIABLES ***
 
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used
 	// to quicky travers the data model.
 
-	VICUS::Surface		*m_sideASurface		= nullptr;
-	VICUS::Surface		*m_sideBSurface		= nullptr;
+	VICUS::Surface		*m_sideASurface					= nullptr;
+	VICUS::Surface		*m_sideBSurface					= nullptr;
+
+	VICUS::Room			*m_surfaceHeatingControlZone	= nullptr;
 };
 
 } // namespace VICUS

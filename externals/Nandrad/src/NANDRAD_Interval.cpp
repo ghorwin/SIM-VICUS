@@ -71,7 +71,7 @@ void Interval::checkParameters() const {
 		if (!m_para[Interval::P_Start].name.empty()
 			&& endtime <= m_para[Interval::P_Start].value)
 		{
-			throw IBK::Exception( IBK::FormatString( "End time point preceedes Start time point "
+			throw IBK::Exception( IBK::FormatString( "End time point precedes Start time point "
 													 "in Interval, but End time point must be past the Start time."), FUNC_ID);
 		}
 	}

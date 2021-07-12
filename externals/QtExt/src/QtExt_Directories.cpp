@@ -1,12 +1,10 @@
 /*	QtExt - Qt-based utility classes and functions (extends Qt library)
 
-	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
 
 	Primary authors:
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Heiko Fechner
-
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -17,6 +15,7 @@
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 	Lesser General Public License for more details.
+
 */
 
 #include "QtExt_Directories.h"
@@ -224,22 +223,18 @@ bool Directories::checkForWriteAccess(const QString & newFileName) {
 QString Directories::updateFilePath() {
 	// In user-data-dir 'updates' check for
 #ifdef _WIN32
-	QDir userDir(Directories::userDataDir() + "/updates");
-
-#ifdef _WIN64
-	QString updateFile = userDir.absoluteFilePath("update_win64.exe");
-#else
-	QString updateFile = userDir.absoluteFilePath("update.exe");
-#endif
-	return updateFile;
+	// on Windows, we store user data unter %HOME%/AppData/Local
+	QString fname = QDir::toNativeSeparators(QDir::home().absolutePath() + "/AppData/Local/" + appname + "/updates");
+	return fname;
 #elif defined(Q_OS_MAC)
 	// "version" will be replaced by new version number
-	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)+"/" + appname + "_version.dmg";
+	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 #else
 	// "version" will be replaced by new version number
-	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation)+"/" + appname + "_version.7z";
+	return QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
 #endif
 }
+
 
 // helper function to remove a complete directory hierarchie
 bool Directories::removeDirRecursively(const QString & directory) {

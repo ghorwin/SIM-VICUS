@@ -111,6 +111,7 @@ void Material::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Material::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Material");
 	parent->LinkEndChild(e);
 

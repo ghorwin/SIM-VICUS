@@ -78,13 +78,13 @@ void QuantityManager::read(const std::string & data) {
 			IBK::IBK_Message(IBK::FormatString("Replacing quantity '%1::%2' with new definition.\n")
 							 .arg(Quantity::type2string(qd.m_type))
 							 .arg(qd.m_name), IBK::MSG_PROGRESS, "QuantityManager::read" ,1);
-			m_quantities[idx] = qd;
+			m_quantities[(unsigned int)idx] = qd;
 		}
 		else {
 			// add quantity to list
 			m_quantities.push_back(qd);
 			// add new reference to global index map
-			m_globalIndexMap[ std::make_pair(qd.m_type, qd.m_name)]= m_quantities.size()-1;
+			m_globalIndexMap[ std::make_pair(qd.m_type, qd.m_name)]= (unsigned int)(m_quantities.size()-1);
 		}
 	}
 }
@@ -155,12 +155,12 @@ int QuantityManager::index(const IBK::Quantity & quantity) const {
 	if (it == m_globalIndexMap.end())
 		return -1;
 	else
-		return it->second;
+		return (int)it->second;
 }
 
 
 const Quantity & QuantityManager::quantity(IBK::Quantity::type_t t, const std::string & quantityName) const {
-	return m_quantities[index( IBK::Quantity(t, quantityName) ) ];
+	return m_quantities[(unsigned int)index( IBK::Quantity(t, quantityName) ) ];
 }
 
 
@@ -210,7 +210,7 @@ void QuantityManager::addQuantity(const IBK::Quantity & quantity) {
 		throw IBK::Exception( IBK::FormatString("Quantity with ID name '%1' already exists in list.")
 			.arg(quantity.m_name), "[QuantityManager::addQuantity]" );
 	m_quantities.push_back(quantity);
-	m_globalIndexMap[ std::make_pair(quantity.m_type, quantity.m_name)] = m_quantities.size()-1;
+	m_globalIndexMap[ std::make_pair(quantity.m_type, quantity.m_name)] = (unsigned int)(m_quantities.size()-1);
 }
 
 

@@ -63,7 +63,8 @@ SVWelcomeScreen::SVWelcomeScreen(QWidget *parent) :
 			this, SLOT(onAnchorClicked(QUrl)));
 	connect(m_autoUpdater, SIGNAL(updateInfoRetrieved(int, QString)),
 			this, SLOT(onUpdateInfoRetrieved(int, QString)) );
-	m_autoUpdater->checkForUpdateInfo(UPDATE_FILE_URL,
+	if (UPDATE_FILE_URL != QString("..."))
+		m_autoUpdater->checkForUpdateInfo(UPDATE_FILE_URL,
 									  VICUS::LONG_VERSION, false, QString(), QString());
 }
 

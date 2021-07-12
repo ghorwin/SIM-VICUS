@@ -49,7 +49,7 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Update widget with this. */
 	void updateInput(int id) override;
 
 private slots:
@@ -58,7 +58,7 @@ private slots:
 	void on_comboBoxControllerType_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditTolerance_editingFinished();
+	void on_lineEditTolerance_editingFinishedSuccessfully();
 	void on_toolButtonSelectHeatingSchedule_clicked();
 	void on_toolButtonSelectCoolingSchedule_clicked();
 	void on_toolButtonRemoveHeatingSetpointSchedule_clicked();

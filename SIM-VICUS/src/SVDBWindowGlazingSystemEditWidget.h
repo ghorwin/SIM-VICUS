@@ -72,7 +72,7 @@ private slots:
 	void on_lineEditSHGC_editingFinished();
 	void on_pushButtonWindowColor_colorChanged();
 
-	void on_lineEditUValue_editingFinished();
+	void on_lineEditUValue_editingFinishedSuccessfully();
 
 	void on_comboBoxType_currentIndexChanged(int index);
 

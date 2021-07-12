@@ -78,6 +78,7 @@ void SubSurface::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("SubSurface");
 	parent->LinkEndChild(e);
 

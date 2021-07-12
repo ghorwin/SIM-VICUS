@@ -50,6 +50,7 @@
 #include <VICUS_VentilationNatural.h>
 #include <VICUS_ZoneTemplate.h>
 #include <VICUS_Project.h>
+#include <VICUS_SurfaceHeating.h>
 
 #include <VICUS_Database.h>
 
@@ -85,6 +86,7 @@ public:
 		DT_ZoneIdealHeatingCooling,
 		DT_Infiltration,
 		DT_VentilationNatural,
+		DT_SurfaceHeating,
 		NUM_DT // used for "all"
 	};
 
@@ -130,6 +132,9 @@ public:
 
 	/*! Map of all database subsurface-components. */
 	VICUS::Database<VICUS::SubSurfaceComponent>			m_subSurfaceComponents;
+
+	/*! Map of all database surface heating elements. */
+	VICUS::Database<VICUS::SurfaceHeating>				m_surfaceHeatings;
 
 	/*! Map of all database pipes */
 	VICUS::Database<VICUS::NetworkPipe>					m_pipes;

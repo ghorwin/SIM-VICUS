@@ -131,23 +131,228 @@ void NewSubSurfaceObject::destroy() {
 }
 
 
-void NewSubSurfaceObject::createByPercentage(const std::vector<const VICUS::Surface *> & sel,
-											 double w, double h, double sillHeight, double distance, double percentage,
-											 unsigned int baseLineOffset)
-{
-	// populate PlaneGeometry-object
-}
+void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
+	// populate PlaneGeometry-objects
+
+	m_generatedSurfaces.clear();
+
+	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
+
+	for (const VICUS::Surface* s : sel) {
+		const VICUS::PlaneGeometry &surfacePoly = s->geometry();
+		m_generatedSurfaces.push_back(surfacePoly);
+
+		//get normal
+		IBKMK::Vector3D n = surfacePoly.normal();
+		double lowestZ = std::numeric_limits<unsigned int>::max();
+		if(n.m_z == 1 || n.m_z == -1){
+			//now we have a flat roof or floor
+			//so we need a ground line
+			//TODO Dirk
+		}
+		else{
+			//we take the ground line from the lowest z-value
+			//We assume that there is a baseline with the point that has the smallest z-value
+		}
+
+		//we assume that the local coordinate system is ok and we take the x-axis as baseline
+		const std::vector<IBKMK::Vector2D> & vertexes2D = surfacePoly.polygon().polyline().vertexes();
+
+		double xMin = std::numeric_limits<double>::max();
+		double yMin = xMin;
+		double xMax = std::numeric_limits<double>::min();
+		double yMax = xMax;
+
+		for(unsigned int i=0; i<vertexes2D.size(); ++i){
+			const IBKMK::Vector2D & pt = vertexes2D[i];
+			//find highest/lowest point (x- and y-values)
+			if(pt.m_x < xMin)	xMin = pt.m_x;
+			if(pt.m_y < yMin)	yMin = pt.m_y;
+			if(pt.m_x > xMax)	xMax = pt.m_x;
+			if(pt.m_y > yMax)	yMax = pt.m_y;
+		}
+		//now we have the bounding box
+		double hSurf = yMax - yMin;
+		double wSurf = xMax - xMin;
+		double minDistance = 0.01; //this is the minimum distance
+
+		if(hSurf <= minDistance * 2 || wSurf <= minDistance * 2){
+			// area too small kick out this surface
+			continue;
+		}
+
+		//window definitions
+		double hPre = inputData.m_height;
+		double wPre = inputData.m_width;
+		double hPreSill = inputData.m_windowSillHeight;
+		double distWin = inputData.m_distance;
+		double hMax = hSurf - 2 * minDistance;
+		double wMax = wSurf - 2 * minDistance;
+		double frac = inputData.m_percentage/100;
+
+		//vector for window geometry
+		std::vector<VICUS::Polygon2D> windows;
+		if(inputData.m_byPercentage){
+			if(frac > 1 || frac <=0 ){
+				//throw IBK::Exception("Percentage value is out of range!");
+			}
+			//area of the surface
+			double surfA = surfacePoly.area(); //kann sein dass das durch hPre * wPre ersetzt werden muss -> testen
+			double surfWinA = surfA * frac;
+
+			if(hMax<hPre)	hPre = hMax;
+			if(wMax<wPre)	wPre = wMax;
+			if(hPreSill < minDistance)	hPreSill = minDistance;
 
 
-void NewSubSurfaceObject::createWithOffset(const std::vector<const VICUS::Surface *> & sel,
-										   double w, double h, double sillHeight, double distance, double offset,
-										   unsigned int baseLineOffset)
-{
-	// populate PlaneGeometry-object
+			double count2 = (wSurf - minDistance) / (wPre + minDistance);
+			int count = (int)std::floor(count2);
+
+			double surfWinA2 = count * hMax * wPre;														//calc with predefined width
+			double surfWinMaxA2 = count2 * hMax * wPre;
+			double surfWinA3 = hPre * (wSurf - minDistance * (count + 1));								//calc with predefined height
+			double surfWinA4 = (hMax - minDistance - hPreSill) * (wSurf - minDistance * (count +1));	//calc with predefined sill height
+
+			double height = hPre;
+			double width = wPre;
+			double sillHeight = hPreSill;
+
+			enum Priority{
+				Height,
+				Width,
+				SillHeight,
+				Distance
+			};
+
+			Priority prio = Height;
+
+			if(inputData.m_priorities[0] == 1)	prio = Width;
+			if(inputData.m_priorities[1] == 1)	prio = Height;
+			if(inputData.m_priorities[2] == 1)	prio = SillHeight;
+			if(inputData.m_priorities[3] == 1)	prio = Distance;
+
+			switch(prio){
+				case Height:{
+					if (surfWinA3 >= surfWinA) {
+						//height = hPre;
+						//width = surfWinA / (count * height);
+						count = (int)std::floor(surfWinA / (height * wPre));
+						if (count == 0)
+							count = 1;
+						width = surfWinA / (count * height);
+					}
+					else {
+						width = (wSurf - (count + 1) * minDistance) / count;
+						height = std::min(surfWinA / (width * count), hMax);
+					}
+				}
+				break;
+				case Width:{
+					if (surfWinA2>= surfWinA) {
+						//width = wPre;
+						height = surfWinA / (count * width);
+						count = (int)std::floor(surfWinA / (width * height));
+						if (count == 0)
+							count = 1;
+						height = std::min(surfWinA / (count * width), hMax);
+					}
+					else {
+						height = hMax;
+						width = surfWinMaxA2 / (hMax * count);
+					}
+				}
+				break;
+				case SillHeight:{
+					if (surfWinA4 >= surfWinA) {
+						height = hPre;
+						width = surfWinA / (count * height);
+					}
+					else {
+						width = (wSurf - (count + 1) * minDistance) / count;
+						height = std::min(surfWinA / (width * count), hMax);
+					}
+				}
+				break;
+			}
+			//check sill height
+			if( hSurf - height -minDistance < hPreSill)
+				sillHeight = hSurf - height - minDistance;
+			else
+				sillHeight = hPreSill;
+
+			double dist = (wSurf - count * width) / (count /*+ 1*/);		//testen ob hier die +1 hin muss!!!
+
+			//now create the windows
+			for (unsigned int i=0; i<count; ++i){
+				VICUS::Polygon2D poly1;
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
+				windows.push_back(poly1);
+			}
+		}
+		else{
+			//now create the windows
+			double dist = inputData.m_baseLineOffset;
+			for (unsigned int i=0; i<inputData.m_maxHoleCount; ++i){
+				VICUS::Polygon2D poly1;
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
+				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
+				windows.push_back(poly1);
+			}
+
+		}
+		// add the windows to the surface
+		m_generatedSurfaces.back().setHoles(windows);
+
+		// Note: invalid hole polygons (i.e. overlapping, or outside surface polygon) will still be added
+		//       as hole polygons, yet their triangulation data -> holeTriangulationData()[holeIdx] will be empty.
+		//       This way the renderer can distinguish between valid hole geometries and invalid geometries.
+		//       Invalid geometries are drawn with red outline.
+	}
+
+	updateBuffers();
 }
 
 
 void NewSubSurfaceObject::updateBuffers() {
+	m_indexBufferData.clear();
+	m_vertexBufferData.clear();
+	m_colorBufferData.clear();
+
+	// populate buffers
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	// buffer layout:
+	// 1 - opaque polygon geometry of all surfaces
+	// 2 - transparent polygon geometry of all surfaces (i.e. existing holes/windows)
+	// 3 - polygon outline lines
+
+	// first we store the opaque geometry
+	for (const VICUS::PlaneGeometry & geometry : m_generatedSurfaces) {
+		// change color depending on visibility state and selection state
+		QColor col("#8040d0");
+		// first add the plane regular
+		addPlane(geometry.triangulationData(), col, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData, false);
+		// then add the plane again inverted
+		addPlane(geometry.triangulationData(), col, currentVertexIndex, currentElementIndex, m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+		// for now leave out the holes
+		// TODO : draw previously existing holes
+	}
+
+	m_lineIndex = currentElementIndex;
+	m_transparentStartIndex = currentElementIndex;
+	// now we add vertexes of the polygon outline and the outlines of the holes
+	// first we store the opaque geometry
+	for (const VICUS::PlaneGeometry & geometry : m_generatedSurfaces) {
+
+	}
+
 	if (m_indexBufferData.empty())
 		return;
 
@@ -167,15 +372,19 @@ void NewSubSurfaceObject::updateBuffers() {
 }
 
 
+
 void NewSubSurfaceObject::renderOpaque() {
-	if (m_vertexBufferData.empty())
+	if (m_indexBufferData.empty())
 		return;
 
-	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
-	// now draw the opaque
-	glDrawElements(GL_LINES, m_lineIndex, GL_UNSIGNED_INT,
-				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_lineIndex)) );
+
+	// first render opaque polygon
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT, nullptr);
+
+	// here we render the lines around the sub-surfaces; invalid surfaces get a red line
+//	glDrawElements(GL_LINES, (GLsizei)m_lineIndex, GL_UNSIGNED_INT,
+//				   (const GLvoid*)(sizeof(GLuint) * (unsigned long)((GLsizei)m_indexBufferData.size() - m_transparentStartIndex)) );
 	// release buffers again
 	m_vao.release();
 }
@@ -187,10 +396,14 @@ void NewSubSurfaceObject::renderTransparent() {
 	//   shader program has already transform uniform set
 	//   glDisable(GL_CULL_FACE);
 
+	return;
 	// the render code below is the same for all geometry types, since only the index buffer is used
 	if (!m_indexBufferData.empty()) {
 		// bind all buffers ("position", "normal" and "color" arrays)
 		m_vao.bind();
+
+		glDrawElements(GL_TRIANGLES, (GLsizei)(m_lineIndex - m_transparentStartIndex),
+			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
 
 		// put OpenGL in offset mode
 		glEnable(GL_POLYGON_OFFSET_FILL);

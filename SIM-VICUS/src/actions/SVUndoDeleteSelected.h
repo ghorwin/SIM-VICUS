@@ -34,18 +34,18 @@
 class SVUndoDeleteSelected : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoDeleteSelected)
 public:
-	SVUndoDeleteSelected(const QString & label, const std::vector<unsigned int> & objectIDsToBeRemoved);
+	SVUndoDeleteSelected(const QString & label, const std::set<const VICUS::Object*> & objectIDsToBeRemoved);
 
 	virtual void undo();
 	virtual void redo();
 
 private:
 
-	/*! Stores the unique IDs of all selected items. */
-	const std::set<unsigned int>						m_selectedIDs;
 
 	/*! Stores vector of component instances. */
 	std::vector<VICUS::ComponentInstance>				m_compInstances;
+	/*! Stores vector of sub-surface component instances. */
+	std::vector<VICUS::SubSurfaceComponentInstance>		m_subCompInstances;
 	/*! Stores vector of buildings. */
 	std::vector<VICUS::Building>						m_buildings;
 	/*! Stores vector of anonymous surfaces. */

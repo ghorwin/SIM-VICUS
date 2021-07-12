@@ -35,52 +35,7 @@
       <string>Sub-Surfaces (windows/doors)</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="5" column="1">
-       <widget class="QPushButton" name="pushButtonCycleBaseline">
-        <property name="text">
-         <string>Adjust baseline</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="4">
-       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>Type:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QRadioButton" name="radioButtonSubSurfaceTypeWindow">
-          <property name="text">
-           <string>Window</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QRadioButton" name="radioButtonSubSurfaceTypeDoor">
-          <property name="text">
-           <string>Door/opaque sub-surface</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_7">
-          <property name="text">
-           <string>Component:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBoxSubSurfaceComponent"/>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0" colspan="4">
+      <item row="3" column="0" colspan="3">
        <widget class="QTabWidget" name="tabWidgetWindow">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -133,7 +88,11 @@
            <widget class="QtExt::ValidatingLineEdit" name="lineEditWindowOffset"/>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="spinBox"/>
+           <widget class="QSpinBox" name="spinBoxMaxHoleCount">
+            <property name="minimum">
+             <number>1</number>
+            </property>
+           </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_9">
@@ -153,33 +112,45 @@
         </widget>
        </widget>
       </item>
-      <item row="4" column="3">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+      <item row="4" column="0" colspan="3">
+       <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QRadioButton" name="radioButtonSubSurfaceTypeWindow">
+          <property name="text">
+           <string>Window</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QRadioButton" name="radioButtonSubSurfaceTypeDoor">
+          <property name="text">
+           <string>Door/opaque sub-surface</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Component:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="comboBoxSubSurfaceComponent"/>
+        </item>
+       </layout>
       </item>
-      <item row="5" column="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>294</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="1" column="0" colspan="4">
+      <item row="1" column="0" colspan="3">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="2">
          <widget class="QLabel" name="label_5">
@@ -266,7 +237,7 @@
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditWindowWidthDistance"/>
+         <widget class="QtExt::ValidatingLineEdit" name="lineEditWindowDistance"/>
         </item>
         <item row="4" column="2">
          <widget class="QSpinBox" name="spinBoxWindowWidthDistance">
@@ -284,11 +255,37 @@
        </layout>
       </item>
       <item row="5" column="2">
-       <widget class="QPushButton" name="pushButton">
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="6" column="0">
+       <widget class="QPushButton" name="pushButtonCreate">
         <property name="text">
          <string>Create</string>
         </property>
        </widget>
+      </item>
+      <item row="6" column="1" colspan="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>294</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </widget>
@@ -300,6 +297,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

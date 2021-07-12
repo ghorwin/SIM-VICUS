@@ -49,7 +49,7 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Update widget with this. */
 	void updateInput(int id) override;
 
 private slots:
@@ -57,12 +57,12 @@ private slots:
 	void on_comboBoxMethod_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditNorth_editingFinished();
-	void on_lineEditEast_editingFinished();
-	void on_lineEditWest_editingFinished();
-	void on_lineEditSouth_editingFinished();
-	void on_lineEditHorizontal_editingFinished();
-	void on_lineEditDeadBand_editingFinished();
+	void on_lineEditNorth_editingFinishedSuccessfully();
+	void on_lineEditEast_editingFinishedSuccessfully();
+	void on_lineEditWest_editingFinishedSuccessfully();
+	void on_lineEditSouth_editingFinishedSuccessfully();
+	void on_lineEditHorizontal_editingFinishedSuccessfully();
+	void on_lineEditDeadBand_editingFinishedSuccessfully();
 
 private:
 

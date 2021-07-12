@@ -45,6 +45,8 @@
 #include "SVUndoModifySubSurfaceComponentInstances.h"
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVPropSurfaceHeatingDelegate.h"
+#include "SVUndoModifyComponentInstances.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	QWidget(parent),
@@ -57,6 +59,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
 	m_ui->verticalLayoutZoneTemplates->setMargin(0);
+	m_ui->verticalLayoutSurfaceHeating->setMargin(0);
 
 	// configure tables
 	m_ui->tableWidgetComponents->setColumnCount(2);
@@ -90,6 +93,23 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetSurfaceHeating->setColumnCount(5);
+	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
+	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(1,20);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(2,100);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(3,120);
+	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetSurfaceHeating->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableWidgetSurfaceHeating->setSelectionBehavior(QAbstractItemView::SelectItems);
+
+	// Mind: parent of the item delegate must be its widget!
+	m_ui->tableWidgetSurfaceHeating->setItemDelegate(new SVPropSurfaceHeatingDelegate(m_ui->tableWidgetSurfaceHeating));
 
 	// init widget to correct initial state
 	m_ui->labelComponentSelection->setEnabled(false);
@@ -130,6 +150,7 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(3); break;
 		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(4); break;
 		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
+		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -142,9 +163,14 @@ void SVPropBuildingEditWidget::onModified(int modificationType, ModificationInfo
 		case SVProjectHandler::BuildingGeometryChanged:
 		case SVProjectHandler::BuildingTopologyChanged: // used when zone templates are assigned
 		case SVProjectHandler::ComponentInstancesModified:
+		case SVProjectHandler::SubSurfaceComponentInstancesModified:
 		case SVProjectHandler::NodeStateModified:
 
 			updateUi(); // we do not change the property type here
+		break;
+
+		case SVProjectHandler::ObjectRenamed: // we only show zone names in surface heating
+			updateSurfaceHeatingPage();
 		break;
 
 		// nothing to do for the remaining modification types
@@ -628,7 +654,7 @@ void SVPropBuildingEditWidget::updateUi() {
 			QTableWidgetItem * item = new QTableWidgetItem();
 			// special handling for components with "invalid" component id
 			if (it->first == nullptr)
-				item->setBackground(QColor(255,128,128));
+				item->setBackground(QColor(64,64,64));
 			else
 				item->setBackground(it->first->m_color);
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
@@ -806,7 +832,7 @@ void SVPropBuildingEditWidget::updateUi() {
 			QTableWidgetItem * item = new QTableWidgetItem();
 			// special handling for zone template with "invalid" id
 			if (it->first == nullptr)
-				item->setBackground(QColor(255,128,128));
+				item->setBackground(QColor(64,64,64));
 			else
 				item->setBackground(it->first->m_color);
 			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
@@ -862,6 +888,124 @@ void SVPropBuildingEditWidget::updateUi() {
 		// update table related button states
 		on_tableWidgetZoneTemplates_itemSelectionChanged();
 	}
+
+	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
+	// populate table with all components that are currently selected by filter
+	// we only show assigned components with active layers
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// populate combo box with components
+	m_ui->comboBoxSurfaceHeatingComponentFilter->blockSignals(true);
+	unsigned int currentComponent = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt(); // unique ID of currently selected component
+	int selectedIndex = -1;
+	m_ui->comboBoxSurfaceHeatingComponentFilter->clear();
+	m_ui->comboBoxSurfaceHeatingComponentFilter->addItem(tr("All components"), VICUS::INVALID_ID);
+	for (const auto & compEntry : db.m_components) {
+		if (compEntry.second.m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+		if (compEntry.second.m_id == currentComponent)
+			selectedIndex = m_ui->comboBoxSurfaceHeatingComponentFilter->count();
+		m_ui->comboBoxSurfaceHeatingComponentFilter->addItem( QtExt::MultiLangString2QString(compEntry.second.m_displayName), compEntry.second.m_id);
+	}
+	if (selectedIndex == -1)
+		m_ui->comboBoxSurfaceHeatingComponentFilter->setCurrentIndex(0);
+	else
+		m_ui->comboBoxSurfaceHeatingComponentFilter->setCurrentIndex(selectedIndex);
+	m_ui->comboBoxSurfaceHeatingComponentFilter->blockSignals(false);
+
+	m_ui->tableWidgetSurfaceHeating->blockSignals(true);
+	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetSurfaceHeating->setRowCount(0);
+
+
+
+	// process all component instances
+	unsigned int componentFilterID = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt();
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// skip all without components - these should be removed as invalid from the start
+		const VICUS::Component * comp = db.m_components[ci.m_componentID];
+		if (comp == nullptr)
+			continue;
+		// skip all that do not have active layers
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+
+		// skip if not in combo box filter
+		if (componentFilterID != VICUS::INVALID_ID && comp->m_id != componentFilterID)
+			continue;
+
+		// add new row
+		int row = m_ui->tableWidgetSurfaceHeating->rowCount();
+		m_ui->tableWidgetSurfaceHeating->setRowCount(row + 1);
+
+		// look-up surface heating system
+		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+
+
+		// column 0 - valid icon, also stores unique ID of this component instance
+
+		QTableWidgetItem * item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled);
+		item->setData(Qt::UserRole, ci.m_id);
+		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions))
+			item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
+		else
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 0, item);
+
+		// column 1 - color of heating
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled);
+		if (surfHeat == nullptr)
+			item->setBackground(QColor(64,64,64));
+		else
+			item->setBackground(surfHeat->m_color);
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 1, item);
+
+		// column 2 - heating name
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+		if (surfHeat == nullptr) {
+			item->setText("---");
+			item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		}
+		else {
+			item->setText(QtExt::MultiLangString2QString(surfHeat->m_displayName));
+			item->setData(Qt::UserRole, surfHeat->m_id);
+		}
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 2, item);
+
+		// column 3 - control zone ID name
+		item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+		if (ci.m_surfaceHeatingControlZone == nullptr)
+			item->setText("---");
+		else {
+			item->setText(ci.m_surfaceHeatingControlZone->m_displayName);
+			item->setData(Qt::UserRole, ci.m_surfaceHeatingControlZone->m_id);
+		}
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 3, item);
+
+		// column 4 - surface names
+
+		QString surfaceNames;
+		if (ci.m_sideASurface != nullptr)
+			surfaceNames = ci.m_sideASurface->m_displayName;
+		surfaceNames += "/";
+		if (ci.m_sideBSurface != nullptr)
+			surfaceNames += ci.m_sideBSurface->m_displayName;
+
+		item = new QTableWidgetItem(surfaceNames);
+		item->setFlags(Qt::ItemIsEnabled);
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
+	}
+	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
+	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
 }
 
 
@@ -1317,3 +1461,102 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemClicked(QTableWid
 }
 
 
+void SVPropBuildingEditWidget::on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int /*index*/) {
+	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
+	if (item->column() == 2 || item->column() == 3) {
+		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
+		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
+		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+		for (unsigned int i=0; i<cis.size(); ++i)
+			if (cis[i].m_id == ciID) {
+				if (item->column() == 2)
+					cis[i].m_surfaceHeatingID = item->data(Qt::UserRole).toUInt();
+				else
+					cis[i].m_surfaceHeatingControlZoneID = item->data(Qt::UserRole).toUInt();
+				break;
+			}
+		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
+		undo->push();
+	}
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonRemoveSurfaceHeating_clicked() {
+	// process all selected elements, modify component instances and issue undo action
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+	for (int row=0; row<m_ui->tableWidgetSurfaceHeating->rowCount(); ++row) {
+		// is any of the two editable cells selected?
+		if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected() ||
+			m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
+		{
+			// get unique ID of component instance
+			QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(row, 0);
+			unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
+			// find matching component instance
+			for (unsigned int i=0; i<cis.size(); ++i)
+				if (cis[i].m_id == ciID) {
+					if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected())
+						cis[i].m_surfaceHeatingID = VICUS::INVALID_ID;
+					if (m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
+						cis[i].m_surfaceHeatingControlZoneID = VICUS::INVALID_ID;
+					break;
+				}
+		}
+	}
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heating assignment"), cis);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
+	// popup surface heating DB dialog and if user selects one, assign it to all selected component instances
+	unsigned int selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(VICUS::INVALID_ID);
+	if (selectedID == VICUS::INVALID_ID)
+		return;
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, inform the user
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		if (comp == nullptr) {
+			QMessageBox::critical(this, QString(), tr("One or more of the selected surfaces have no valid component, yet."));
+			return;
+		}
+		// inform if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID) {
+			QMessageBox::critical(this, QString(), tr("One or more of the selected components have no active layer set (needed for surface conditioning systems)."));
+			return;
+		}
+		// now get room associated with selected component
+		const VICUS::Surface * s = ci.m_sideASurface;
+		if (s == nullptr)
+			s = ci.m_sideBSurface;
+		Q_ASSERT(s != nullptr);
+		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(s->m_parent);
+		ci.m_surfaceHeatingID = selectedID;
+		ci.m_surfaceHeatingControlZoneID = room->m_id;
+	}
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
+	undo->push();
+}
+
+void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(int /*currentRow*/, int /*currentColumn*/, int previousRow, int previousColumn) {
+	QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(previousRow, previousColumn);
+	if (item != nullptr)
+		m_ui->tableWidgetSurfaceHeating->closePersistentEditor(item);
+}

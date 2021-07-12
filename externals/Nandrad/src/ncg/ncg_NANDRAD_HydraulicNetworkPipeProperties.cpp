@@ -85,6 +85,7 @@ void HydraulicNetworkPipeProperties::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * HydraulicNetworkPipeProperties::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("HydraulicNetworkPipeProperties");
 	parent->LinkEndChild(e);
 

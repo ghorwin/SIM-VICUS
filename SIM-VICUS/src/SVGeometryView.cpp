@@ -75,6 +75,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_toolBar = new QToolBar(this);
 	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 	m_toolBar->setMaximumHeight(32);
+	m_toolBar->layout()->setMargin(0);
 
 //	m_dockWidget = new QWidget(this);
 //	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -84,6 +85,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	vbLay->addWidget(m_sceneViewContainerWidget);
 	vbLay->addWidget(m_toolBar);
 	vbLay->setMargin(0);
+	vbLay->setSpacing(0);
 
 	QWidget* w = new QWidget(this);
 	w->setLayout(vbLay);
@@ -104,7 +106,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	hlay->setMargin(0);
 	hlay->setSpacing(0);
 	hlay->addWidget(m_splitter);
-	m_splitter->setCollapsible(0, false);
+	m_splitter->setCollapsible(0, true);
 	m_splitter->setCollapsible(1, true);
 	m_splitter->setStretchFactor(0,1);
 	m_splitter->setStretchFactor(1,0);
@@ -210,12 +212,14 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 
 		// *** F4 - toggle "align coordinate system" mode ****
 		case Qt::Key_F4 :
-			m_sceneView->toggleAlignCoordinateSystem();
+			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
+				m_sceneView->toggleAlignCoordinateSystem();
 		break;
 
 		// *** F5 - toggle "move local coordinate system" mode ****
 		case Qt::Key_F5 :
-			m_sceneView->toggleTranslateCoordinateSystem();
+			if (m_actionlocalCoordinateSystemCoordinates->isVisible())
+				m_sceneView->toggleTranslateCoordinateSystem();
 		break;
 
 		default:
@@ -253,17 +257,22 @@ void SVGeometryView::onViewStateChanged() {
 
 	m_actionCoordinateInput->setVisible(lockVisible);
 
-	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
+	bool localCoordinateSystemVisible =
+	(vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
 		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
-	{
-		m_actionlocalCoordinateSystem->setVisible(true);
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
+
+	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+		localCoordinateSystemVisible = false;
+
+	if (localCoordinateSystemVisible) {
+		m_actionlocalCoordinateSystemCoordinates->setVisible(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
 		m_localCoordinateSystemView->setMoveCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
 	}
 	else {
-		m_actionlocalCoordinateSystem->setVisible(false);
+		m_actionlocalCoordinateSystemCoordinates->setVisible(false);
 	}
 }
 
@@ -304,16 +313,12 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 
 void SVGeometryView::coordinateInputFinished() {
 	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
-	// (if possible); or if in zoneFloor mode, the zoneFloor mode is completed
+	// (if possible)
 
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	if (m_lineEditCoordinateInput->text().trimmed().isEmpty()) {
 		if (po->planeGeometry().isValid()) {
-			if (po->newGeometryMode() == Vic3D::NewGeometryObject::NGM_ZoneFloor) {
-				SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonFloorDone_clicked();
-			}
-			else
-				po->finish();
+//			SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonCompletePolygon_clicked();
 		}
 		else
 			QMessageBox::critical(this, QString(), tr("Invalid polygon (must be planar and not winding)."));
@@ -480,6 +485,6 @@ void SVGeometryView::setupToolBar() {
 
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
-	m_actionlocalCoordinateSystem = m_toolBar->addWidget(m_localCoordinateSystemView);
+	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
 }
 

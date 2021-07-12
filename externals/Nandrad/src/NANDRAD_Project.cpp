@@ -52,10 +52,11 @@ void checkForUniqueIDs(const std::vector<T> & vec, const char * const typeIDStri
 
 /*! Test function that checks that all objects in the given vector have different m_id parameters.
 	This function accepts comparison between other geometric objects and fills id space in usedIDs
-	container*/
+	container.
+*/
 template <typename T>
 void checkForUniqueGeometryIDs(const std::vector<T> & vec, std::set<unsigned int> & usedIDs) {
-	FUNCID(NANDRAD::checkForUniqueIDs);
+	FUNCID(NANDRAD::checkForUniqueGeometryIDs);
 
 	for (const T & t : vec) {
 		if (usedIDs.find(t.m_id) != usedIDs.end())

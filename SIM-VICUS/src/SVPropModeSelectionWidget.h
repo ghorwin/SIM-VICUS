@@ -70,6 +70,12 @@ public:
 	void viewStateProperties(SVViewState & vs) const;
 
 	unsigned int currentNetworkId() const;
+	
+	/*! Sets a meaningful view state based on current's property widget appearance, and whether we have selection or not.
+		This function is called when we turn off any intermediate modes, like "align coordinate system"-mode.
+	*/
+	void setDefaultViewState();
+
 
 public slots:
 	/*! Connected to SVProjectHandler::modified() */

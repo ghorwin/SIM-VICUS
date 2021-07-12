@@ -1,0 +1,93 @@
+2021-07-07 11:50:19	[Progress]	[main]                                          	NANDRAD Solver
+2021-07-07 11:50:19	[Progress]	[main]                                          	All rights reserved.
+2021-07-07 11:50:19	[Progress]	[main]                                          	
+2021-07-07 11:50:19	[Progress]	[main]                                          	The NANDRAD/SIM-VICUS Development Team.
+2021-07-07 11:50:19	[Progress]	[main]                                          	Core developers:
+2021-07-07 11:50:19	[Progress]	[main]                                          	Andreas Nicolai and Anne Paepcke
+2021-07-07 11:50:19	[Progress]	[main]                                          	Contact: 
+2021-07-07 11:50:19	[Progress]	[main]                                          	  andreas.nicolai [at] tu-dresden.de
+2021-07-07 11:50:19	[Progress]	[main]                                          	  anne.paepcke [at] tu-dresden.de
+2021-07-07 11:50:19	[Progress]	[main]                                          	
+2021-07-07 11:50:19	[Progress]	[Version::printCompilerVersion]                 	Compiled with Visual Studio 2015
+2021-07-07 11:50:19	[Progress]	[ModelImpl::printVersionStrings]                	
+2021-07-07 11:50:19	[Progress]	[ModelImpl::printVersionStrings]                	NANDRAD version                                  1.999.0
+2021-07-07 11:50:19	[Progress]	[ModelImpl::printVersionStrings]                	IBK library version                              4.3.0
+2021-07-07 11:50:19	[Progress]	[ModelImpl::printVersionStrings]                	CCM library version                              1.1.0
+2021-07-07 11:50:19	[Progress]	[SolverControlFramework::printVersionInfo]      	Integrator Framework Version                     0.9.6
+2021-07-07 11:50:19	[Progress]	[SolverControlFramework::printVersionInfo]      	SUNDIALS Release Version                         2.6.2
+2021-07-07 11:50:19	[Progress]	[main]                                          	
+2021-07-07 11:50:19	[Progress]	[NandradModel::init]                            	Project file:         'C:/svn/SIM-VICUS/data/vicus/Temp/SingleZoneSingleOutdoorsConstructionWithShwRad2.nandrad'
+2021-07-07 11:50:19	[Progress]	[NandradModel::init]                            	Output root dir:      'C:/svn/SIM-VICUS/data/vicus/Temp/SingleZoneSingleOutdoorsConstructionWithShwRad2'
+2021-07-07 11:50:19	[Progress]	[NandradModel::init]                            	Reading project file
+2021-07-07 11:50:19	[Progress]	[Project::mergeSameConstructions]               	Merging redundant construction instances
+2021-07-07 11:50:19	[Progress]	[NandradModel::init]                            	Initializing model
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverParameter]             	  Initializing Solver Parameter
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverParameter]             	    Auto-selecting KLU as linear equation system solver.
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSimulationParameter]         	  Initializing Simulation Parameter
+2021-07-07 11:50:19	[Progress]	[NandradModel::initClimateData]                 	  Initializing Climatic Data
+2021-07-07 11:50:19	[Progress]	[Loads::setup]                                  	    Reading climate data file 'C:/svn/SIM-VICUS/data/vicus/Temp/climate/DEU_Potsdam_60.c6b'
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSchedules]                   	  Initializing Schedules
+2021-07-07 11:50:19	[Progress]	[NandradModel::initZones]                       	  Initializing Zones
+2021-07-07 11:50:19	[Progress]	[NandradModel::initWallsAndInterfaces]          	  Initializing Constructions and Interfaces
+2021-07-07 11:50:19	[Progress]	[NandradModel::initModels]                      	  Initializing Models
+2021-07-07 11:50:19	[Progress]	[NandradModel::initObjectLists]                 	  Initializing Object Lists
+2021-07-07 11:50:19	[Progress]	[NandradModel::initOutputs]                     	  Initializing Outputs
+2021-07-07 11:50:19	[Progress]	[OutputHandler::setup]                          	    Initializing output grids
+2021-07-07 11:50:19	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'hourly'
+2021-07-07 11:50:19	[Progress]	[OutputHandler::setup]                          	      Checking output grid 'semihourly'
+2021-07-07 11:50:19	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model results
+2021-07-07 11:50:19	[Progress]	[NandradModel::initModelDependencies]           	  Initializing all model input references
+2021-07-07 11:50:19	[Progress]	[NandradModel::initModelGraph]                  	  Creating Dependency Graph for 3 State-Dependent Models
+2021-07-07 11:50:19	[Progress]	[NandradModel::initOutputReferenceList]         	  Initializing Output Quantity List
+2021-07-07 11:50:19	[Progress]	[NandradModel::initOutputReferenceList]         	  Writing Variable - Displayname Mapping Table
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverVariables]             	  Initializing Solver Variables
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverVariables]             	    61 unknowns
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverMatrix]                	  Creating Jacobian matrix pattern
+2021-07-07 11:50:19	[Progress]	[NandradModel::initSolverMatrix]                	    Composing dependency pattern
+2021-07-07 11:50:19	[Progress]	[main]                                          	Model initialization complete, duration: 250 ms
+2021-07-07 11:50:19	[Progress]	[main]                                          	
+2021-07-07 11:50:19	[Progress]	[main]                                          	Creating solver framework
+2021-07-07 11:50:19	[Progress]	[NandradModel::integratorInterface]             	
+2021-07-07 11:50:19	[Progress]	[NandradModel::integratorInterface]             	Creating Integrator
+2021-07-07 11:50:19	[Progress]	[NandradModel::integratorInterface]             	  Using CVODE integrator.
+2021-07-07 11:50:19	[Progress]	[NandradModel::lesInterface]                    	
+2021-07-07 11:50:19	[Progress]	[NandradModel::lesInterface]                    	Creating Linear Equation Solver Modules
+2021-07-07 11:50:19	[Progress]	[NandradModel::lesInterface]                    	  Number of unknowns: 61
+2021-07-07 11:50:19	[Progress]	[NandradModel::lesInterface]                    	  Using generic KLU solver!
+2021-07-07 11:50:19	[Progress]	[IntegratorSundialsCVODE::init]                 	Initializing CVODE integrator
+2021-07-07 11:50:19	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting NonlinConvCoef to 0.1.
+2021-07-07 11:50:19	[Progress]	[IntegratorSundialsCVODE::init]                 	  Setting MaxNonLinIters (maxcor) to 3.
+2021-07-07 11:50:19	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing Jacobian implementation
+2021-07-07 11:50:19	[Progress]	[JacobianSparseCSR::init]                       	  SparseMatrix: generating color arrays
+2021-07-07 11:50:19	[Progress]	[JacobianSparseCSR::init]                       	    3 colors
+2021-07-07 11:50:19	[Progress]	[IntegratorSundialsCVODE::init]                 	  Initializing LES solver implementation
+2021-07-07 11:50:19	[Progress]	[SolverControlFramework::run]                   	
+2021-07-07 11:50:19	[Progress]	[SolverControlFramework::run]                   	Running solver from time t=0 (10.06.01  0:00:00)
+2021-07-07 11:50:19	[Progress]	[OutputHandler::writeOutputs]                   	Creating output files:
+2021-07-07 11:50:19	[Progress]	[OutputFile::createFile]                        	  states_hourly.tsv    : 1 values
+2021-07-07 11:50:19	[Progress]	[OutputFile::createFile]                        	  loads_hourly.tsv     : 2 values
+2021-07-07 11:50:19	[Progress]	[OutputFile::createFile]                        	  states_semihourly.tsv : 4 values
+2021-07-07 11:50:19	[Progress]	[OutputFile::createFile]                        	  fluxes_semihourly.tsv : 8 values
+2021-07-07 11:50:19	[Progress]	[SolverFeedback::writeFeedback]                 	Simtime     Simdate           Realtime    MeanSpeed    CurrentSpeed ETC
+2021-07-07 11:50:19	[Progress]	[SolverFeedback::writeFeedback]                 	 2.146 d    12.06.01  3:30:00  0.500 s     4.289 d/s    4.591 d/s    1.711 s
+2021-07-07 11:50:20	[Progress]	[SolverFeedback::writeFeedback]                 	 4.479 d    14.06.01 11:30:00  1.003 s     4.465 d/s    4.617 d/s    1.196 s
+2021-07-07 11:50:20	[Progress]	[SolverFeedback::writeFeedback]                 	 6.813 d    16.06.01 19:30:00  1.507 s     4.520 d/s    4.620 d/s    0.690 s
+2021-07-07 11:50:21	[Progress]	[SolverFeedback::writeFeedback]                 	 9.208 d    19.06.01  5:00:00  2.008 s     4.586 d/s    4.662 d/s    0.170 s
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	Solver statistics
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	Wall clock time                            =    2.274 s   
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Output writing                  =    0.408 s    (17.95 %)    
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	Framework: Step-completed calculations     =    0.024 s    ( 1.07 %)    
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Steps                          =                             16426
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton iterations              =                             29256
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Newton convergence failures    =                                47
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Error test failures            =                              3642
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: Function evaluation (Newton)   =    1.233 s    (54.22 %)     29257
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES setup                      =    0.239 s    (10.50 %)      8505
+2021-07-07 11:50:21	[Progress]	[IntegratorSundialsCVODE::writeMetrics]         	Integrator: LES solve                      =    0.087 s    ( 3.84 %)     29256
+2021-07-07 11:50:21	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Jacobian matrix evaluations           =                               388
+2021-07-07 11:50:21	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Matrix factorization                  =    0.059 s    ( 2.62 %)      8505
+2021-07-07 11:50:21	[Progress]	[LESInterfaceDirect::writeMetrics]              	LES: Function evaluation (Jacobian gen.)   =    0.051 s    ( 2.26 %)      1164
+2021-07-07 11:50:21	[Progress]	[SolverControlFramework::writeStatistics]       	------------------------------------------------------------------------------

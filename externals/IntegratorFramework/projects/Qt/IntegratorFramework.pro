@@ -70,7 +70,6 @@ SOURCES += \
 	../../src/SOLFRA_OutputScheduler.cpp \
 	../../src/SOLFRA_PrecondILU.cpp \
 	../../src/SOLFRA_PrecondILUT.cpp \
-	../../src/SOLFRA_PrecondInterface.cpp \
 	../../src/SOLFRA_SolverControlFramework.cpp \
 	../../src/SOLFRA_SolverFeedback.cpp
 

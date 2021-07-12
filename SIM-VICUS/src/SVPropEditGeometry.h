@@ -168,6 +168,7 @@ private slots:
 	void on_pushButtonAddPolygon_clicked();
 	void on_pushButtonAddRect_clicked();
 	void on_pushButtonAddZone_clicked();
+	void on_pushButtonAddRoof_clicked();
 	void on_pushButtonAddWindow_clicked();
 
 	// all line edit specific functions
@@ -220,6 +221,7 @@ private slots:
 
 	void on_pushButtonFlipNormals_clicked();
 
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -228,7 +230,7 @@ private:
 		This function switches also between AddGeometry and EditGeometry mode, when first selection is made or
 		everything is deselected.
 	*/
-	void update();
+	void updateUi();
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);

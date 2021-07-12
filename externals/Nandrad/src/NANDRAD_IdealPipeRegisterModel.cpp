@@ -82,6 +82,28 @@ void IdealPipeRegisterModel::checkParameters(const std::vector<NANDRAD::Zone> &z
 	m_fluid.checkParameters(HydraulicNetwork::MT_ThermalHydraulicNetwork);
 }
 
+bool IdealPipeRegisterModel::equal(const IdealPipeRegisterModel &other) const {
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_IP; ++i){
+		if(m_intPara[i] != other.m_intPara[i])
+			return false;
+	}
+
+	if(m_thermostatZoneId != other.m_thermostatZoneId ||
+			m_modelType != other.m_modelType ||
+			!m_fluid.equal(other.m_fluid))
+		return false;
+
+	return true;
+}
+
 
 } // namespace NANDRAD
 

@@ -74,6 +74,7 @@ HEADERS += \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
+	../../src/VICUS_SurfaceHeating.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -117,12 +118,14 @@ SOURCES += \
 	../../src/VICUS_Polygon2D.cpp \
 	../../src/VICUS_Polygon3D.cpp \
 	../../src/VICUS_Project.cpp \
+	../../src/VICUS_ProjectGenerator.cpp \
 	../../src/VICUS_Schedule.cpp \
 	../../src/VICUS_ScheduleInterval.cpp \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_Surface.cpp \
+	../../src/VICUS_SurfaceHeating.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
 	../../src/VICUS_Window.cpp \
 	../../src/VICUS_WindowGlazingSystem.cpp \
@@ -148,6 +151,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
 	../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
+	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
@@ -162,6 +166,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
+	../../src/ncg/ncg_VICUS_SurfaceHeating.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \

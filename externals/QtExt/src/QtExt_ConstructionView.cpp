@@ -1,3 +1,23 @@
+/*	QtExt - Qt-based utility classes and functions (extends Qt library)
+
+	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
+
+	Primary authors:
+	  Heiko Fechner
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+
+	This library is free software; you can redistribute it and/or
+	modify it under the terms of the GNU Lesser General Public
+	License as published by the Free Software Foundation; either
+	version 3 of the License, or (at your option) any later version.
+
+	This library is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+	Lesser General Public License for more details.
+
+*/
+
 #include "QtExt_ConstructionView.h"
 
 #include <QSvgGenerator>
@@ -77,7 +97,7 @@ void ConstructionView::resizeEvent( QResizeEvent * event) {
 	if( std::abs(diffSize.width()) > m_margins - 1 ||  std::abs(diffSize.height()) > m_margins - 1) {
 		QRect frame(QPoint(0,0), event->size());
 		frame = frame.adjusted(m_margins, m_margins, m_margins * -1, m_margins * -1);
-		m_diagramScene->setup(frame, m_device, m_resolution, m_inputData);
+		m_diagramScene->setup(frame, m_device, m_resolution, m_inputData, m_leftSideLabel, m_rightSideLabel);
 	}
 }
 
@@ -99,7 +119,7 @@ void ConstructionView::print(QPrinter* printer) {
 	QPainter painter;
 	painter.begin(printer);
 	ConstructionGraphicsScene sketch(true, printer);
-	sketch.setup(frame, printer, 1.0, m_inputData);
+	sketch.setup(frame, printer, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 	painter.end();
@@ -119,7 +139,7 @@ QPixmap ConstructionView::createPixmap() {
 	painter.begin(&pixmap);
 
 	ConstructionGraphicsScene sketch(true, &pixmap);
-	sketch.setup(frame, &pixmap, 1.0, m_inputData);
+	sketch.setup(frame, &pixmap, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 
@@ -146,7 +166,7 @@ void ConstructionView::createSvg(QIODevice * outputDevice) {
 	QPainter painter;
 	painter.begin(&generator);
 	ConstructionGraphicsScene sketch(true, &generator);
-	sketch.setup(frame, &generator, 1.0, m_inputData);
+	sketch.setup(frame, &generator, 1.0, m_inputData, m_leftSideLabel, m_rightSideLabel);
 
 	sketch.render(&painter);
 	painter.end();

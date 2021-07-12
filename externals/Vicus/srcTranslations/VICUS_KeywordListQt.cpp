@@ -155,6 +155,11 @@ KeywordListQt::KeywordListQt() {
 	tr("ID of zone containing thermostat");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
+	tr("Proportional value of controller");
+	tr("Integral value of controller");
+	tr("Differential value of controller");
+	tr("Pipe length");
+	tr("Number of parallel pipes");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");
@@ -175,6 +180,13 @@ KeywordListQt::KeywordListQt() {
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");
+	tr("Heating limit");
+	tr("Cooling limit");
+	tr("Pipe spacing");
+	tr("Maximum fluid velocity");
+	tr("Temperature difference between supply and return fluid temperature");
+	tr("Ideal surface conditioning");
+	tr("Water-based surface conditioning");
 	tr("Specularity of the material.");
 	tr("Roughness of the material.");
 	tr("Plastic");

@@ -227,7 +227,7 @@ void read_string_list_binary( std::istream &in,
 				// if line doesn't contain end marker append to list
 				// otherwise break execution now
 				// append string to the string list
-				unsigned int comparisonLimiter = lastLineTokens.size();
+				unsigned int comparisonLimiter = (unsigned int)lastLineTokens.size();
 				for ( unsigned int r = 0; r < comparisonLimiter; ++r ){
 
 					std::string::size_type pos = line.find( lastLineTokens[r] );
@@ -365,7 +365,7 @@ void read_string_vector_binary( std::istream &in,
 				// if line doesn't contain end marker append to list
 				// otherwise break execution now
 				// append string to the string list
-				unsigned int comparisonLimiter = lastLineTokens.size();
+				unsigned int comparisonLimiter = (unsigned int)lastLineTokens.size();
 				for ( unsigned int r = 0; r < comparisonLimiter; ++r ){
 
 					std::string::size_type pos = line.find( lastLineTokens[r] );

@@ -26,6 +26,7 @@
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_HydraulicNetworkModelPrivate.h"
 #include "NM_ThermalNetworkBalanceModel.h"
+#include "NM_ThermalNetworkFlowElements.h"
 #include "NM_ThermalNetworkStatesModel.h"
 
 #include "NM_KeywordList.h"
@@ -321,32 +322,48 @@ void ThermalNetworkBalanceModel::inputReferences(std::vector<InputReference> & i
 	// register reference
 	inputRefs.push_back(inputRef);
 
-	// request zone air temperatures
-	if (!m_zoneProperties.empty()) {
-		InputReference inputRef;
-		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-		inputRef.m_name = std::string("AirTemperature");
-		inputRef.m_required = true;
-		for (const ZoneProperties &zoneProp : m_zoneProperties) {
-			inputRef.m_id = zoneProp.m_zoneId;
-			inputRefs.push_back(inputRef);
-		}
-	}
-	// request construction layer temperatures
-	if (!m_activeProperties.empty()) {
-		InputReference inputRef;
-		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		inputRef.m_name = std::string("ActiveLayerTemperature");
-		inputRef.m_required = true;
-		for (const ActiveLayerProperties &actLayerProp : m_activeProperties) {
-			inputRef.m_id = actLayerProp.m_constructionInstanceId;
-			inputRefs.push_back(inputRef);
+
+	std::vector<InputReference> modelInputRefs;
+	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
+	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
+		m_statesModel->m_p->m_flowElements[i]->inputReferences(modelInputRefs);
+
+	// Note: for constant and spline requests, we provide respective pointers by ThermalNetworkStatesModel. For
+	//       requests of results from other models, we redirect references accordingly, for example to zone air and
+	//       active layer temperature (by renaming requested quantities and source objects)
+	if (!m_zoneProperties.empty() || !m_activeProperties.empty()) {
+
+		// filter input references to heat exchange temperatur
+		for (unsigned int i = 0; i < modelInputRefs.size(); ++i) {
+			InputReference &inputRef = modelInputRefs[i];
+			// skip uninteresting references
+			if (inputRef.m_name.m_name != "HeatExchangeTemperature")
+				continue;
+			// find flow element properties
+			std::vector<FlowElementProperties>::const_iterator fIt =
+					std::find(m_flowElementProperties.begin(), m_flowElementProperties.end(), inputRef.m_id);
+
+			IBK_ASSERT(fIt != m_flowElementProperties.end());
+
+			// we assign a zone
+			if(fIt->m_zoneProperties != nullptr) {
+				// redirect to zone air temperature
+				inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+				inputRef.m_id = fIt->m_zoneProperties->m_zoneId;
+				inputRef.m_name = QuantityName("AirTemperature");
+			}
+			// we assign an active construction layer
+			else if(fIt->m_activeLayerProperties != nullptr) {
+				// redirect to zone air temperature
+				inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+				inputRef.m_id = fIt->m_activeLayerProperties->m_constructionInstanceId;
+				inputRef.m_name = QuantityName("ActiveLayerTemperature");
+			}
 		}
 	}
 
-	// loop over all elements and ask them to request individual inputs, for example scheduled quantities
-	for (unsigned int i = 0; i < m_statesModel->m_p->m_flowElements.size(); ++i)
-		m_statesModel->m_p->m_flowElements[i]->inputReferences(inputRefs);
+	// add to global list
+	inputRefs.insert(inputRefs.end(), modelInputRefs.begin(), modelInputRefs.end());
 
 }
 
@@ -356,49 +373,13 @@ void ThermalNetworkBalanceModel::setInputValueRefs(const std::vector<QuantityDes
 {
 	// layout of resultValueRefs vector:
 	// 0                                 - FluidMassFluxes
-	// 1..m_zoneProperties.size()        - AirTemperature
-	// ...m_activeProperties.size()      - ActiveLayerTemperature
 	// ...elements                       - ..
 
 	// copy references into mass flux vector
 	m_statesModel->m_p->m_fluidMassFluxes = resultValueRefs[0];
 
-	// set zone temparture references inside network
+	//
 	unsigned int resultValIdx = 1;
-	for (std::list<ZoneProperties>::iterator it = m_zoneProperties.begin();
-		 it != m_zoneProperties.end(); ++it)
-	{
-		// set reference to zone temperature
-		it->m_zoneTemperatureRef = resultValueRefs[resultValIdx++];
-	}
-
-	// set active layer references inside network
-	for (std::list<ActiveLayerProperties>::iterator it = m_activeProperties.begin();
-		 it != m_activeProperties.end(); ++it)
-	{
-		// set reference to zone temperature
-		it->m_activeLayerTemperatureRef = resultValueRefs[resultValIdx++];
-	}
-
-	// now transfer stored references to elements
-	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
-		const FlowElementProperties &elemProp = m_flowElementProperties[i];
-
-		// do we have a zone temperature dependence?
-		if (elemProp.m_zoneProperties != nullptr) {
-			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
-					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
-			IBK_ASSERT(fe != nullptr);
-			fe->m_heatExchangeValueRef = elemProp.m_zoneProperties->m_zoneTemperatureRef;
-		}
-		// or do we have an active layer temperature dependence?
-		else if (elemProp.m_activeLayerProperties != nullptr) {
-			ThermalNetworkAbstractFlowElementWithHeatLoss *fe =
-					dynamic_cast<ThermalNetworkAbstractFlowElementWithHeatLoss *>(m_statesModel->m_p->m_flowElements[i]);
-			IBK_ASSERT(fe != nullptr);
-			fe->m_heatExchangeValueRef = elemProp.m_activeLayerProperties->m_activeLayerTemperatureRef;
-		}
-	}
 
 	// resultValIdx now points to the first input reference past the active layer/zone temperatures
 

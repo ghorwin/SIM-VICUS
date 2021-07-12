@@ -27,8 +27,10 @@
 #define SVChartUtilsH
 
 class QwtPlot;
+class QwtPlotCurve;
 
 void configureChart(QwtPlot * plot);
 
+QwtPlotCurve * addConfiguredCurve(QwtPlot * plot);
 
 #endif // SVChartUtilsH

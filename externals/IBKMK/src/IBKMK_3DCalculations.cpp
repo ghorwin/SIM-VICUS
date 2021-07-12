@@ -194,7 +194,7 @@ static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline) {
 		return false;
 
 	const double eps = 1e-4;
-	unsigned int polySize = polyline.size();
+	unsigned int polySize = (unsigned int)polyline.size();
 
 	for(unsigned int idx=0; idx<polySize; ++idx){
 		unsigned int idx0 = idx-1;
@@ -235,6 +235,35 @@ void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon) {
 	bool tryAgain =true;
 	while (tryAgain)
 		tryAgain = eleminateColinearPtsHelper(polygon);
+}
+
+
+bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
+		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist)
+{
+	// plane is given by offset 'a' and normal vector 'normal'.
+	// line is given by point 'p' and its line vector 'd'
+
+	// first the normal test
+
+	double d_dot_normal = d.scalarProduct(normal);
+	double angle = d_dot_normal/d.magnitude();
+	// line parallel to plane? no intersection
+	if (angle < 1e-8 && angle > -1e-8)
+		return false;
+
+	// Condition 1: same direction of normal vectors?
+	if (angle >= 0)
+		return false; // no intersection possible
+
+	double t = (a - p).scalarProduct(normal) / d_dot_normal;
+
+	// now determine location on plane
+	IBKMK::Vector3D x0 = p + t*d;
+
+	intersectionPoint = x0;
+	dist = t;
+	return true;
 }
 
 

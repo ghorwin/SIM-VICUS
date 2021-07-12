@@ -95,6 +95,7 @@ void VentilationNatural::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * VentilationNatural::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("VentilationNatural");
 	parent->LinkEndChild(e);
 

@@ -116,6 +116,7 @@ void Window::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Window::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Window");
 	parent->LinkEndChild(e);
 

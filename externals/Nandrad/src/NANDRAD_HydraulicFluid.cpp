@@ -64,4 +64,18 @@ void HydraulicFluid::checkParameters(int networkModelType) {
 
 }
 
+bool HydraulicFluid::equal(const HydraulicFluid &other) const {
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	if(m_kinematicViscosity != other.m_kinematicViscosity)
+		return false;
+
+	return true;
+}
+
 } // namespace NANDRAD

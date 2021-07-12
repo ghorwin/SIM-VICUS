@@ -36,3 +36,26 @@ vs.m_propertyWidgetMode = PM_EditGeometry;
 SVViewStateHandler::instance().setViewState(vs);
 ----
 
+
+## `ViewMode`
+
+Umschalten erfolgt durch Modusauswahl-Schaltflächen in der linken Toolbar
+
+- `VM_GeometryEditMode` - wenn Geometrie bearbeitet wird; Geometrie wird mit definierten Oberflächen/Materialfarben dargestellt
+- `VM_PropertyEditMode` - beim Eigenschaften ansehen/bearbeiten; Geometrie wird mit Falschfarben je nach Modus dargestellt
+
+Beim Umschalten zwischen den Modi wird die Geometrie neu eingefärbt und gezeichnet.
+
+Im `VM_PropertyEditMode`: `NUM_OM` + `NUM_L` und `PropertyWidgetMode` wird je nach Auswahl im `SVPropModeSelectionWidget` gesetzt, genau wie
+`ObjectColorMode`.
+
+
+
+(ACHTUNG: Shortcuts zum Ändern des SceneOperationMode deaktivieren!)
+
+Beim Einschalten des `VM_GeometryEditMode` wird unterschieden:
+
+- Es gibt eine Auswahl von Flächen, dann: `OM_SelectedGeometry` + `PM_EditGeometry`
+- 
+
+

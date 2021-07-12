@@ -36,7 +36,7 @@
 //@reference: https://www.cs.cmu.edu/~quake/robust.html
 
 namespace  predicates {
-	//@brief: geometric predicates using arbitrary precision arithmetic 
+	//@brief: geometric predicates using arbitrary precision arithmetic
 	//@note : these are provided primarily for illustrative purposes and adaptive routines should be preferred
 	namespace exact {
 		//@brief   : determine if the 2d point c is above, on, or below the line defined by a and b
@@ -88,7 +88,7 @@ namespace  predicates {
 		//@return  : determinant of {{ax - dx, ay - dy, az - dz}, {bx - dx, by - dy, bz - dz}, {cx - dx, cy - dy, cz - dz}}
 		//@note    : positive, 0, negative result for c above, on, or below the plane defined by a, b, and c
 		template <typename T> T orient3d(T const*const pa, T const*const pb, T const*const pc, T const*const pd);
-		
+
 		//@brief   : determine if the 3d point e is inside, on, or outside the sphere defined by a, b, c, and d
 		//@param pa: pointer to a as {x, y, z}
 		//@param pb: pointer to b as {x, y, z}
@@ -298,8 +298,8 @@ namespace detail {
 
 	#ifdef PREDICATES_CXX11_IS_SUPPORTED
 	template <typename T> struct use_fma {static const bool value = (std::is_same<T, float>::value       && fp_fast_fmaf) ||
-	                                                                (std::is_same<T, double>::value      && fp_fast_fma)  ||
-	                                                                (std::is_same<T, long double>::value && fp_fast_fmal);};
+																	(std::is_same<T, double>::value      && fp_fast_fma)  ||
+																	(std::is_same<T, long double>::value && fp_fast_fmal);};
 	#endif
 
 	//@brief  : helper function to sort by absolute value
@@ -368,7 +368,7 @@ namespace detail {
 				if(T(0) != Q) h[hIndex++] = Q;
 				return hIndex;
 			}
-		
+
 		public:
 			//roundoff error of x = a + b
 			static inline T PlusTail(const T a, const T b, const T x) {
@@ -601,7 +601,7 @@ namespace detail {
 	template <typename T>
 	const T& Epsilon()
 	{
-		static const T epsilon = 
+		static const T epsilon = (T)
 #ifdef PREDICATES_CXX11_IS_SUPPORTED
 			std::exp2(-std::numeric_limits<T>::digits);
 #else
@@ -692,8 +692,8 @@ namespace detail {
 			const T clift = cdx * cdx + cdy * cdy;
 			T det = alift * (bdxcdy - cdxbdy) + blift * (cdxady - adxcdy) + clift * (adxbdy - bdxady);
 			const T permanent = (std::abs(bdxcdy) + std::abs(cdxbdy)) * alift
-			                  + (std::abs(cdxady) + std::abs(adxcdy)) * blift
-			                  + (std::abs(adxbdy) + std::abs(bdxady)) * clift;
+							  + (std::abs(cdxady) + std::abs(adxcdy)) * blift
+							  + (std::abs(adxbdy) + std::abs(bdxady)) * clift;
 			T errbound = Constants<T>::iccerrboundA * permanent;
 			if(std::abs(det) >= std::abs(errbound)) return det;
 
@@ -718,11 +718,11 @@ namespace detail {
 
 			errbound = Constants<T>::iccerrboundC * permanent + Constants<T>::resulterrbound * std::abs(det);
 			det += ((adx * adx + ady * ady) * ((bdx * cdytail + cdy * bdxtail) - (bdy * cdxtail + cdx * bdytail))
-			    +   (bdx * cdy - bdy * cdx) *  (adx * adxtail + ady * adytail) * T(2))
-			    +  ((bdx * bdx + bdy * bdy) * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail))
-			    +   (cdx * ady - cdy * adx) *  (bdx * bdxtail + bdy * bdytail) * T(2))
-			    +  ((cdx * cdx + cdy * cdy) * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail))
-			    +   (adx * bdy - ady * bdx) *  (cdx * cdxtail + cdy * cdytail) * T(2));
+				+   (bdx * cdy - bdy * cdx) *  (adx * adxtail + ady * adytail) * T(2))
+				+  ((bdx * bdx + bdy * bdy) * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail))
+				+   (cdx * ady - cdy * adx) *  (bdx * bdxtail + bdy * bdytail) * T(2))
+				+  ((cdx * cdx + cdy * cdy) * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail))
+				+   (adx * bdy - ady * bdx) *  (cdx * cdxtail + cdy * cdytail) * T(2));
 			if(std::abs(det) >= std::abs(errbound)) return det;
 			return exact::incircle(ax, ay, bx, by, cx, cy, dx, dy);
 		}
@@ -782,21 +782,21 @@ namespace detail {
 
 			errbound = Constants<T>::o3derrboundC * permanent + Constants<T>::resulterrbound * std::abs(det);
 			det += (adz * ((bdx * cdytail + cdy * bdxtail) - (bdy * cdxtail + cdx * bdytail)) + adztail * (bdx * cdy - bdy * cdx))
-			    +  (bdz * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail)) + bdztail * (cdx * ady - cdy * adx))
-			    +  (cdz * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail)) + cdztail * (adx * bdy - ady * bdx));
+				+  (bdz * ((cdx * adytail + ady * cdxtail) - (cdy * adxtail + adx * cdytail)) + bdztail * (cdx * ady - cdy * adx))
+				+  (cdz * ((adx * bdytail + bdy * adxtail) - (ady * bdxtail + bdx * adytail)) + cdztail * (adx * bdy - ady * bdx));
 			if(std::abs(det) >= std::abs(errbound)) return det;
 
 			const detail::Expansion<T, 8> bct = detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(bdxtail, cdy, bdytail, cdx) + detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(cdytail, bdx, cdxtail, bdy);
 			const detail::Expansion<T, 8> cat = detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(cdxtail, ady, cdytail, adx) + detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(adytail, cdx, adxtail, cdy);
 			const detail::Expansion<T, 8> abt = detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(adxtail, bdy, adytail, bdx) + detail::ExpansionBase<T>::TwoTwoDiffZeroCheck(bdytail, adx, bdxtail, ady);
 			const detail::Expansion<T, 192> fin2 = fin1 + bct * adz + cat * bdz + abt * cdz + bc * adztail + ca * bdztail + ab * cdztail
-			                                     + detail::ExpansionBase<T>::ThreeProd( adxtail, bdytail, cdz) + detail::ExpansionBase<T>::ThreeProd( adxtail, bdytail, cdztail)
-			                                     + detail::ExpansionBase<T>::ThreeProd(-adxtail, cdytail, bdz) + detail::ExpansionBase<T>::ThreeProd(-adxtail, cdytail, bdztail)
-			                                     + detail::ExpansionBase<T>::ThreeProd( bdxtail, cdytail, adz) + detail::ExpansionBase<T>::ThreeProd( bdxtail, cdytail, adztail)
-			                                     + detail::ExpansionBase<T>::ThreeProd(-bdxtail, adytail, cdz) + detail::ExpansionBase<T>::ThreeProd(-bdxtail, adytail, cdztail)
-			                                     + detail::ExpansionBase<T>::ThreeProd( cdxtail, adytail, bdz) + detail::ExpansionBase<T>::ThreeProd( cdxtail, adytail, bdztail)
-			                                     + detail::ExpansionBase<T>::ThreeProd(-cdxtail, bdytail, adz) + detail::ExpansionBase<T>::ThreeProd(-cdxtail, bdytail, adztail)
-			                                     + bct * adztail + cat * bdztail + abt * cdztail;
+												 + detail::ExpansionBase<T>::ThreeProd( adxtail, bdytail, cdz) + detail::ExpansionBase<T>::ThreeProd( adxtail, bdytail, cdztail)
+												 + detail::ExpansionBase<T>::ThreeProd(-adxtail, cdytail, bdz) + detail::ExpansionBase<T>::ThreeProd(-adxtail, cdytail, bdztail)
+												 + detail::ExpansionBase<T>::ThreeProd( bdxtail, cdytail, adz) + detail::ExpansionBase<T>::ThreeProd( bdxtail, cdytail, adztail)
+												 + detail::ExpansionBase<T>::ThreeProd(-bdxtail, adytail, cdz) + detail::ExpansionBase<T>::ThreeProd(-bdxtail, adytail, cdztail)
+												 + detail::ExpansionBase<T>::ThreeProd( cdxtail, adytail, bdz) + detail::ExpansionBase<T>::ThreeProd( cdxtail, adytail, bdztail)
+												 + detail::ExpansionBase<T>::ThreeProd(-cdxtail, bdytail, adz) + detail::ExpansionBase<T>::ThreeProd(-cdxtail, bdytail, adztail)
+												 + bct * adztail + cat * bdztail + abt * cdztail;
 			return fin2.mostSignificant();
 		}
 
@@ -867,9 +867,9 @@ namespace detail {
 				const T bexdeyplus = std::abs(bexdey);
 				const T dexbeyplus = std::abs(dexbey);
 				permanent = ((cexdeyplus + dexceyplus) * bezplus + (dexbeyplus + bexdeyplus) * cezplus + (bexceyplus + cexbeyplus) * dezplus) * alift
-				          + ((dexaeyplus + aexdeyplus) * cezplus + (aexceyplus + cexaeyplus) * dezplus + (cexdeyplus + dexceyplus) * aezplus) * blift
-				          + ((aexbeyplus + bexaeyplus) * dezplus + (bexdeyplus + dexbeyplus) * aezplus + (dexaeyplus + aexdeyplus) * bezplus) * clift
-				          + ((bexceyplus + cexbeyplus) * aezplus + (cexaeyplus + aexceyplus) * bezplus + (aexbeyplus + bexaeyplus) * cezplus) * dlift;
+						  + ((dexaeyplus + aexdeyplus) * cezplus + (aexceyplus + cexaeyplus) * dezplus + (cexdeyplus + dexceyplus) * aezplus) * blift
+						  + ((aexbeyplus + bexaeyplus) * dezplus + (bexdeyplus + dexbeyplus) * aezplus + (dexaeyplus + aexdeyplus) * bezplus) * clift
+						  + ((bexceyplus + cexbeyplus) * aezplus + (cexaeyplus + aexceyplus) * bezplus + (aexbeyplus + bexaeyplus) * cezplus) * dlift;
 				const T errbound = Constants<T>::isperrboundA * permanent;
 				if(std::abs(det) >= std::abs(errbound)) return det;
 			}
@@ -906,9 +906,9 @@ namespace detail {
 			const T deytail = detail::ExpansionBase<T>::MinusTail(pd[1], pe[1], dey);
 			const T deztail = detail::ExpansionBase<T>::MinusTail(pd[2], pe[2], dez);
 			if (T(0) == aextail && T(0) == aeytail && T(0) == aeztail &&
-			    T(0) == bextail && T(0) == beytail && T(0) == beztail &&
-			    T(0) == cextail && T(0) == ceytail && T(0) == ceztail &&
-			    T(0) == dextail && T(0) == deytail && T(0) == deztail) return det;
+				T(0) == bextail && T(0) == beytail && T(0) == beztail &&
+				T(0) == cextail && T(0) == ceytail && T(0) == ceztail &&
+				T(0) == dextail && T(0) == deytail && T(0) == deztail) return det;
 
 			errbound = Constants<T>::isperrboundC * permanent + Constants<T>::resulterrbound * std::abs(det);
 			const T abeps = (aex * beytail + bey * aextail) - (aey * bextail + bex * aeytail);
@@ -924,13 +924,13 @@ namespace detail {
 			const T ac3 = ac.mostSignificant();
 			const T bd3 = bd.mostSignificant();
 			det += ( ( (bex * bex + bey * bey + bez * bez) * ((cez * daeps + dez * aceps + aez * cdeps) + (ceztail * da3 + deztail * ac3 + aeztail * cd3))
-			         + (dex * dex + dey * dey + dez * dez) * ((aez * bceps - bez * aceps + cez * abeps) + (aeztail * bc3 - beztail * ac3 + ceztail * ab3)) )
-			       - ( (aex * aex + aey * aey + aez * aez) * ((bez * cdeps - cez * bdeps + dez * bceps) + (beztail * cd3 - ceztail * bd3 + deztail * bc3))
-			         + (cex * cex + cey * cey + cez * cez) * ((dez * abeps + aez * bdeps + bez * daeps) + (deztail * ab3 + aeztail * bd3 + beztail * da3)) ) )
-			    + T(2) * ( ( (bex * bextail + bey * beytail + bez * beztail) * (cez * da3 + dez * ac3 + aez * cd3)
-			               + (dex * dextail + dey * deytail + dez * deztail) * (aez * bc3 - bez * ac3 + cez * ab3))
-			             - ( (aex * aextail + aey * aeytail + aez * aeztail) * (bez * cd3 - cez * bd3 + dez * bc3)
-			               + (cex * cextail + cey * ceytail + cez * ceztail) * (dez * ab3 + aez * bd3 + bez * da3)));
+					 + (dex * dex + dey * dey + dez * dez) * ((aez * bceps - bez * aceps + cez * abeps) + (aeztail * bc3 - beztail * ac3 + ceztail * ab3)) )
+				   - ( (aex * aex + aey * aey + aez * aez) * ((bez * cdeps - cez * bdeps + dez * bceps) + (beztail * cd3 - ceztail * bd3 + deztail * bc3))
+					 + (cex * cex + cey * cey + cez * cez) * ((dez * abeps + aez * bdeps + bez * daeps) + (deztail * ab3 + aeztail * bd3 + beztail * da3)) ) )
+				+ T(2) * ( ( (bex * bextail + bey * beytail + bez * beztail) * (cez * da3 + dez * ac3 + aez * cd3)
+						   + (dex * dextail + dey * deytail + dez * deztail) * (aez * bc3 - bez * ac3 + cez * ab3))
+						 - ( (aex * aextail + aey * aeytail + aez * aeztail) * (bez * cd3 - cez * bd3 + dez * bc3)
+						   + (cex * cextail + cey * ceytail + cez * ceztail) * (dez * ab3 + aez * bd3 + bez * da3)));
 			if(std::abs(det) >= std::abs(errbound)) return det;
 			return exact::insphere(pa, pb, pc, pd, pe);
 		}

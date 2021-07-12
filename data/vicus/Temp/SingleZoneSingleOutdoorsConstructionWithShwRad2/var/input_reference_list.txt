@@ -1,0 +1,16 @@
+Variable name                                     	Source object id(s) 	Vector indexes/ids  
+ConstructionInstance.FluxHeatConductionA          	2,11                	
+ConstructionInstance.FluxShortWaveRadiationA      	2,11                	
+ConstructionInstance.FluxShortWaveRadiationB      	2,11                	
+ConstructionInstance.SolarRadiationFluxA          	2,11                	
+ConstructionInstance.SolarRadiationFluxB          	2,11                	
+ConstructionInstance.SurfaceTemperatureA          	2,11                	
+ConstructionInstance.SurfaceTemperatureB          	2,11                	
+EmbeddedObject.FluxHeatConductionA                	1000                	
+EmbeddedObject.FluxShortWaveRadiationA            	1000                	
+EmbeddedObject.SurfaceTemperatureA                	1000                	
+Location.SWRadDiffuseHorizontal                   	0                   	
+Location.SWRadDirectNormal                        	0                   	
+Location.Temperature                              	0                   	
+Zone.AirTemperature                               	1                   	
+Zone.WindowSolarRadiationFluxSum                  	1                   	

@@ -103,6 +103,7 @@ void Schedule::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("Schedule");
 	parent->LinkEndChild(e);
 

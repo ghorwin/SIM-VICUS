@@ -130,6 +130,7 @@ void IdealPipeRegisterModel::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * IdealPipeRegisterModel::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("IdealPipeRegisterModel");
 	parent->LinkEndChild(e);
 

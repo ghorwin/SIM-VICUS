@@ -63,6 +63,24 @@ namespace Vic3D {
 class NewSubSurfaceObject {
 public:
 
+	/*! Encapsulates all data needed for window generation. */
+	struct WindowComputationData {
+		WindowComputationData() {
+			for (int i=0; i<4; ++i)  m_priorities[i] = i+1;
+		}
+
+		int		m_priorities[4];		// Priority (width, height, sill height, distance between windows) das gibt die Priorität von Höhe, Breite, Brüstungshöhe und Fensterzwischenabstand an
+		double	m_width = 1.2;			// Window width in m
+		double	m_height = 1.6;			// Window height in m
+		double	m_windowSillHeight = 0.5; // Window sill height in m
+		double	m_distance = 0.6;		// Distance between two windows in m
+		bool	m_byPercentage = true;	// Mode window wall ratio (true) or geometry mode (false)
+		double	m_percentage = 60;		// Mode window wall ratio in percent 0..100
+		double	m_baseLineOffset = 0.3; // Das ist meiner Meinung nach Quark oder soll das der Erstabstand sein? in m
+
+		unsigned int m_maxHoleCount = 4; // max number of holes/windows
+	};
+
 	NewSubSurfaceObject();
 
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current.
@@ -76,14 +94,20 @@ public:
 
 	// Functions related to modifying the stored geometry
 
-	/*! This function clears the current buffer and vertex lists. */
-	void createByPercentage(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double percentage, unsigned int baseLineOffset);
-	void createWithOffset(const std::vector<const VICUS::Surface*> & sel, double w, double h, double sillHeight, double distance, double offset, unsigned int baseLineOffset);
+	void clear() { generateSubSurfaces(std::vector<const VICUS::Surface*>(), WindowComputationData());  }
+
+	/*! This function pupulates/updates m_surfaceGeometries based on the currently selected surfaces and
+		parametrization data.
+	*/
+	void generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();
 	/*! Renders transparent parts of geometry. */
 	void renderTransparent();
+
+	/*! Gives read-only access to generated geometries. */
+	const std::vector<VICUS::PlaneGeometry> & generatedSurfaces() const { return m_generatedSurfaces; }
 
 private:
 	/*! Populates the color and vertex buffer with data for the "last segment" line and the polygon.
@@ -97,9 +121,14 @@ private:
 	*/
 	void updateBuffers();
 
+	/*! Creates windows for one surface. */
+	void createWindows(VICUS::Surface &s);
 
-	/*! Stores the current geometry of the painted polygon or floor polygon. */
-	VICUS::PlaneGeometry			m_planeGeometry;
+
+	/*! Stores the modified geometries of the selected surfaces with windows.
+		These are then drawn with this object.
+	*/
+	std::vector<VICUS::PlaneGeometry>	m_generatedSurfaces;
 
 	/*! This list holds all points a the drawing method (even points of collinear segments).
 		This list may not give a valid polygon or a polygon at all.
@@ -113,8 +142,12 @@ private:
 	/*! Index buffer on CPU memory. */
 	std::vector<GLuint>				m_indexBufferData;
 
-	/*! Startindex for line vertex numbers. */
-	int								m_lineIndex = 0;
+	/*! Start element index for transparent planes. */
+	unsigned int					m_transparentStartIndex = 0;
+
+	/*! Start element index for line numbers. */
+	unsigned int					m_lineIndex = 0;
+
 
 	/*! VertexArrayObject, references the vertex, color and index buffers. */
 	QOpenGLVertexArrayObject		m_vao;

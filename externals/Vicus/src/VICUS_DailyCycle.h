@@ -68,9 +68,7 @@ public:
 	*/
 	std::vector<int>		m_dayTypes;																// XML:E
 
-	/*! Vector with time points. First value must always be 0.
-		TODO Andreas welches Zeitformat hatte wir definiert? Stunden Minuten Sekunden?
-	*/
+	/*! Vector with time points. First value must always be 0 h. */
 	std::vector<double>		m_timePoints;															// XML:E
 
 	/*! Vector with corresponding values (same size as m_timePoints vector).

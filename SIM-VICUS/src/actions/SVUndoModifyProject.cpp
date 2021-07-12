@@ -38,6 +38,7 @@ void SVUndoModifyProject::undo() {
 
 	// exchange Project
 	std::swap( theProject(), m_project );
+	theProject().updatePointers();
 
 	// tell project that the grid has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::AllModified);

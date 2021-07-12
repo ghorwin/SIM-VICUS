@@ -49,18 +49,20 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Update widget with this. */
 	void updateInput(int id) override;
 
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxMethod_currentIndexChanged(int index);
-	void on_lineEditPower_editingFinished();
+	void on_lineEditPower_editingFinishedSuccessfully();
 	void on_pushButtonColor_colorChanged();
 	void on_toolButtonSelectSchedule_clicked();
-	void on_lineEditConvectiveFactor_editingFinished();
-	void on_lineEditLatentFactor_editingFinished();
-	void on_lineEditLossFactor_editingFinished();
+	void on_lineEditConvectiveFactor_editingFinishedSuccessfully();
+	void on_lineEditLatentFactor_editingFinishedSuccessfully();
+	void on_lineEditLossFactor_editingFinishedSuccessfully();
+
+	void on_toolButtonRemovePowerManagementSchedule_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

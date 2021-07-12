@@ -67,9 +67,6 @@ public:
 	*/
 	void setViewState(const SVViewState & newViewState);
 
-	/*! Restores the last viewstate that was set before the current view state. */
-	void restoreLastViewState();
-
 	/*! Call this function after modifying database elements that affect coloring. This is needed since
 		scene view and property widgets only listen to project data changes, and database elements do not belong
 		to the project.
@@ -140,8 +137,6 @@ private:
 
 	/*! Contains the current view state. */
 	SVViewState							m_viewState;
-	/*! Contains the previous view state (so that is can be restored when an interleaving mode has ended). */
-	SVViewState							m_previousViewState;
 };
 
 #endif // SVViewStateHandlerH

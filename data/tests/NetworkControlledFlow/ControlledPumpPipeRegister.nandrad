@@ -174,8 +174,7 @@
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
 								<Values>
-									SupplyTemperatureSchedule [C]:35;
-									MassFluxSchedule [kg/s]:0.02
+									SupplyTemperatureSchedule [C]:35
 								</Values>
 							</DailyCycle>
 						</DailyCycles>
@@ -232,12 +231,6 @@
 				<OutputDefinition>
 					<Quantity>FluidTemperature</Quantity>
 					<ObjectListName>Flow elements</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-
-				<OutputDefinition>
-					<Quantity>MixedReturnTemperature</Quantity>
-					<ObjectListName>Adapter</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 				

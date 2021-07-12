@@ -167,6 +167,9 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
+	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 }
 
 
@@ -243,14 +246,18 @@ void SVDBSubSurfaceComponentEditWidget::on_pushButtonFalseColor_clicked() {
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 }
-void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditA_clicked() {
+
+
+void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideA_clicked() {
 
 	m_current->m_idSideABoundaryCondition = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditB_clicked() {
+
+
+void SVDBSubSurfaceComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked() {
 
 	m_current->m_idSideBBoundaryCondition = VICUS::INVALID_ID;
 

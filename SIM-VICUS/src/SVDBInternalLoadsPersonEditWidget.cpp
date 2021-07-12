@@ -50,7 +50,7 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PCM; ++i) {
 		m_ui->comboBoxPersonMethod->addItem(QString("%1").arg(VICUS::KeywordListQt::Description("InternalLoad::PersonCountMethod", (int)i)));
-			//.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PersonCountMethod", (int)i)), i);
+		//.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PersonCountMethod", (int)i)), i);
 	}
 	m_ui->comboBoxPersonMethod->blockSignals(false);
 
@@ -145,6 +145,8 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
 	m_ui->lineEditActivityScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditOccupancyScheduleName->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemoveActivitySchedule->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemoveOccupancySchedule->setEnabled(!isbuiltIn);
 
 }
 
@@ -186,42 +188,38 @@ void SVDBInternalLoadsPersonEditWidget::on_comboBoxPersonMethod_currentIndexChan
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinished() {
+void SVDBInternalLoadsPersonEditWidget::on_lineEditPersonCount_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditPersonCount->isValid() ) {
-		double val = m_ui->lineEditPersonCount->value();
-		// update database but only if different from original
-		VICUS::InternalLoad::para_t paraName;
-		switch (m_current->m_personCountMethod) {
-			case VICUS::InternalLoad::PCM_PersonPerArea:				paraName = VICUS::InternalLoad::P_PersonPerArea;	break;
-			case VICUS::InternalLoad::PCM_AreaPerPerson:				paraName = VICUS::InternalLoad::P_AreaPerPerson;	break;
-			case VICUS::InternalLoad::PCM_PersonCount:					paraName = VICUS::InternalLoad::P_PersonCount;		break;
-			case VICUS::InternalLoad::NUM_PCM:							paraName = VICUS::InternalLoad::NUM_P;				break;
-		}
-		if (m_current->m_para[paraName].empty() ||
+	double val = m_ui->lineEditPersonCount->value();
+	// update database but only if different from original
+	VICUS::InternalLoad::para_t paraName;
+	switch (m_current->m_personCountMethod) {
+		case VICUS::InternalLoad::PCM_PersonPerArea:				paraName = VICUS::InternalLoad::P_PersonPerArea;	break;
+		case VICUS::InternalLoad::PCM_AreaPerPerson:				paraName = VICUS::InternalLoad::P_AreaPerPerson;	break;
+		case VICUS::InternalLoad::PCM_PersonCount:					paraName = VICUS::InternalLoad::P_PersonCount;		break;
+		case VICUS::InternalLoad::NUM_PCM:							paraName = VICUS::InternalLoad::NUM_P;				break;
+	}
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
+		modelModify();
 	}
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinished() {
+void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditConvectiveFactor->isValid() ) {
-		double val = m_ui->lineEditConvectiveFactor->value();
-		// update database but only if different from original
-		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_ConvectiveHeatFactor;
-		if (m_current->m_para[paraName].empty() ||
+	double val = m_ui->lineEditConvectiveFactor->value();
+	// update database but only if different from original
+	VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_ConvectiveHeatFactor;
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
+		modelModify();
 	}
 }
 
@@ -237,7 +235,7 @@ void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_occupancyScheduleId);
-	if (m_current->m_occupancyScheduleId != newId) {
+	if (newId != VICUS::INVALID_ID && m_current->m_occupancyScheduleId != newId) {
 		m_current->m_occupancyScheduleId = newId;
 		modelModify();
 	}
@@ -248,7 +246,7 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_activityScheduleId);
-	if (m_current->m_activityScheduleId != newId) {
+	if (newId != VICUS::INVALID_ID && m_current->m_activityScheduleId != newId) {
 		m_current->m_activityScheduleId = newId;
 		modelModify();
 	}
@@ -259,5 +257,21 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 void SVDBInternalLoadsPersonEditWidget::modelModify() {
 	m_db->m_internalLoads.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	updateInput((int)m_current->m_id);
+}
+
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveOccupancySchedule_clicked() {
+
+	m_current->m_occupancyScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+
+void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveActivitySchedule_clicked() {
+
+	m_current->m_activityScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
 	updateInput((int)m_current->m_id);
 }

@@ -30,9 +30,7 @@
 namespace VICUS {
 
 
-bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const
-{
-	///TODO DIRK/KATJA
+bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 	if(m_id == INVALID_ID)
 		return false;
 

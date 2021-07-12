@@ -49,6 +49,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
@@ -187,6 +188,7 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 				case BT_BoundaryConditions:		vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
 				case BT_FloorManager:			vs.m_objectColorMode = SVViewState::OCM_None; break;
 				case BT_ZoneTemplates:			vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
+				case BT_SurfaceHeating:			vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
 			}
 		break;
 
@@ -216,6 +218,52 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 unsigned int SVPropModeSelectionWidget::currentNetworkId() const
 {
 	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
+}
+
+
+void SVPropModeSelectionWidget::setDefaultViewState() {
+	// this function is called when we return from any intermediate mode like "align
+	// coordinate system" mode and get back to what we where doing before
+
+	// if we are in geometry mode, we need to distinguish between PlaceVertex mode or SelectedGeometry mode
+	// or NUM mode (nothing)
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+		// we always have scene operation mode none
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+		SVViewStateHandler::instance().setViewState(vs);
+		return;
+	}
+
+	switch (vs.m_propertyWidgetMode) {
+		case SVViewState::PM_AddEditGeometry:
+		case SVViewState::PM_SiteProperties:
+		case SVViewState::PM_BuildingProperties:
+		case SVViewState::PM_NetworkProperties: {
+			// do we have any selected geometries
+			std::set<const VICUS::Object *> sel;
+			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+			if (sel.empty())
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			else
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+		}
+
+		case SVViewState::PM_VertexList:
+			vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+
+		case SVViewState::PM_AddSubSurfaceGeometry:
+			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+			SVViewStateHandler::instance().setViewState(vs);
+			return;
+	}
+
 }
 
 

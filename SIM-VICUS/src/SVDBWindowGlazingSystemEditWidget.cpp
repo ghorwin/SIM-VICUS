@@ -315,13 +315,11 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC_editingFinished(){
 	// only for button create SHGC ....
 }
 
-void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinished(){
+void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
-	if(m_ui->lineEditUValue->isValid()){
 		VICUS::KeywordList::setParameter(m_current->m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m_ui->lineEditUValue->value());
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
-	}
 }
 
 void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int index) {

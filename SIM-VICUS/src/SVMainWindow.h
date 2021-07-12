@@ -55,7 +55,7 @@ class SVNetworkEditDialog;
 class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
-class SVShadingCalculationDialog;
+class SVSimulationShadingOptions;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -164,6 +164,8 @@ public:
 	SVDatabaseEditDialog *dbNetworkControllerEditDialog();
 	/*! Returns the sub network edit dialog. */
 	SVDatabaseEditDialog *dbSubNetworkEditDialog();
+	/*! Returns the surface heating system edit dialog. */
+	SVDatabaseEditDialog *dbSurfaceHeatingSystemEditDialog();
 
 	/*! Returns the pointer to the Start Simulation Nandrad Widget */
 	SVSimulationStartNandrad * simulationStartNandrad() const;
@@ -232,6 +234,7 @@ private slots:
 	void onFixProjectAfterRead();
 	void onStyleChanged();
 
+	void onDockWidgetToggled(bool);
 
 	// all menu action slots below
 
@@ -241,11 +244,10 @@ private slots:
 	void on_actionFileSaveAs_triggered();
 	void on_actionFileReload_triggered();
 	void on_actionFileImportEneryPlusIDF_triggered();
-	void on_actionFileExport_triggered();
-	void on_actionFileExportFMU_triggered();
-	void on_actionFileExportNANDRAD_triggered();
 	void on_actionFileOpenProjectDir_triggered();
 	void on_actionFileClose_triggered();
+	void on_actionFileExportProjectPackage_triggered();
+	void on_actionFileExportView3D_triggered();
 	void on_actionFileQuit_triggered();
 
 	void on_actionEditTextEditProject_triggered();
@@ -274,21 +276,33 @@ private slots:
 	void on_actionDBInfiltration_triggered();
 	void on_actionDBVentilationNatural_triggered();
 
+	void on_actionDBSurfaceHeatingSystems_triggered();
+
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 	void on_actionDBFluids_triggered();
 
 
 	void on_actionBuildingFloorManager_triggered();
+	void on_actionBuildingSurfaceHeatings_triggered();
+
 
 	void on_actionNetworkImport_triggered();
 
-	void on_actionViewExternalPostProcessing_triggered();
-	void on_actionViewCCMeditor_triggered();
+
+	void on_actionToolsExternalPostProcessing_triggered();
+	void on_actionToolsCCMeditor_triggered();
+
+
 	void on_actionViewToggleGeometryMode_triggered();
 	void on_actionViewToggleParametrizationMode_triggered();
+	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+	void on_actionViewResetView_triggered();
+
 
 	void on_actionSimulationNANDRAD_triggered();
+	void on_actionSimulationExportFMI_triggered();
+
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
@@ -297,15 +311,6 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
-
-	void on_actionViewShowSurfaceNormals_toggled(bool visible);
-
-	void on_actionResetView_triggered();
-
-	void on_actionExportView3D_triggered();
-
-	void on_actionCalculateShadingFactors_triggered();
-
 
 
 	void on_actionDBControllers_triggered();
@@ -346,9 +351,6 @@ private:
 	/*! This will start the processing of the thread pool.
 		If a thread is currently running, the call is ignored. */
 	void processThread();
-
-	/*! Caches visibility information of dock widgets. */
-	void storeDockWidgetVisibility();
 
 	/*! Tests of file is a project package, and if yes, asks user to select an extraction
 		directory, imports the project and adjusts filename to point to the extracted
@@ -428,7 +430,7 @@ private:
 	SVSimulationStartNetworkSim	*m_simulationStartNetworkSim							= nullptr;
 
 	/*! FMI Export dialog. */
-	SVShadingCalculationDialog	*m_shadingCalculationDialog								= nullptr;
+	SVSimulationShadingOptions	*m_shadingCalculationDialog								= nullptr;
 
 
 	/*! Contains the 3D scene view (and tool buttons and stuff). */
@@ -467,6 +469,7 @@ private:
 	SVDatabaseEditDialog				*m_dbZoneIdealHeatingCoolingEditDialog			= nullptr;
 	SVDatabaseEditDialog				*m_dbInfiltrationEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbVentilationNaturalEditDialog				= nullptr;
+	SVDatabaseEditDialog				*m_dbVSurfaceHeatingSystemEditDialog			= nullptr;
 
 	// special edit dialogs
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;

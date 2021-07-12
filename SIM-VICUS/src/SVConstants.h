@@ -86,7 +86,9 @@ enum BuildingPropertyTypes {
 	/*! Floor manager. */
 	BT_FloorManager,
 	/*! Zone templates. */
-	BT_ZoneTemplates
+	BT_ZoneTemplates,
+	/*! Surface heating */
+	BT_SurfaceHeating
 };
 
 /*! \file SVConstants.h

@@ -72,4 +72,15 @@
 		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 	</Component>
+	<Component id="1013" displayName="DE: [SimQuality] Komponente für TF06 |EN: [SimQuality] Component for TF06" color="#f57900">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1001</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1004</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1014" displayName="DE: [SimQuality] Komponente für TF04 Innenwand (adiabat) |EN: [SimQuality] Component for TF04 partition (adiabatic) " color="#5a6eff">
+		<Type>OutsideWall</Type>
+		<IdConstruction>1010</IdConstruction>
+		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+	</Component>
 </Components>

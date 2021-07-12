@@ -93,6 +93,7 @@ void ZoneIdealHeatingCooling::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ZoneIdealHeatingCooling::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ZoneIdealHeatingCooling");
 	parent->LinkEndChild(e);
 

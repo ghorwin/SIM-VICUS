@@ -271,7 +271,7 @@ void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
 	// get glazing system edit dialog from mainwindow
 	SVDatabaseEditDialog * glazSysEditDialog = SVMainWindow::instance().dbWindowGlazingSystemEditDialog();
 	unsigned int conId = glazSysEditDialog->select(m_current->m_idGlazingSystem);
-	if (conId != m_current->m_idGlazingSystem) {
+	if (conId !=  VICUS::INVALID_ID && conId != m_current->m_idGlazingSystem) {
 		m_current->m_idGlazingSystem = conId;
 		modelModify(); // tell model that we changed the data
 
@@ -297,7 +297,7 @@ void SVDBWindowEditWidget::on_toolButtonSelectFrameMaterial_clicked(){
 	// get material edit dialog from mainwindow
 	SVDatabaseEditDialog * matEditDialog = SVMainWindow::instance().dbMaterialEditDialog();
 	unsigned int matId = matEditDialog->select(m_current->m_frame.m_idMaterial);
-	if (matId != m_current->m_frame.m_idMaterial) {
+	if (matId !=  VICUS::INVALID_ID && matId != m_current->m_frame.m_idMaterial) {
 		m_current->m_frame.m_idMaterial = matId;
 		modelModify(); // tell model that we changed the data,
 
@@ -310,7 +310,7 @@ void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
 	// get material edit dialog from mainwindow
 	SVDatabaseEditDialog * matEditDialog = SVMainWindow::instance().dbMaterialEditDialog();
 	unsigned int matId = matEditDialog->select(m_current->m_divider.m_idMaterial);
-	if (matId != m_current->m_divider.m_idMaterial) {
+	if (matId !=  VICUS::INVALID_ID && matId != m_current->m_divider.m_idMaterial) {
 		m_current->m_divider.m_idMaterial = matId;
 		modelModify(); // tell model that we changed the data
 
@@ -319,27 +319,24 @@ void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
 
 }
 
-void SVDBWindowEditWidget::on_lineEditFrameMaterialThickness_editingFinished(){
+void SVDBWindowEditWidget::on_lineEditFrameMaterialThickness_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
-	if(m_ui->lineEditFrameMaterialThickness->isValid()){
 		VICUS::KeywordList::setParameter(m_current->m_frame.m_para, "WindowFrame::para_t", VICUS::WindowFrame::P_Thickness, m_ui->lineEditFrameMaterialThickness->value());
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
-	}
+
 }
 
-void SVDBWindowEditWidget::on_lineEditDividerMaterialThickness_editingFinished(){
+void SVDBWindowEditWidget::on_lineEditDividerMaterialThickness_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
-	if(m_ui->lineEditDividerMaterialThickness->isValid()){
 		VICUS::KeywordList::setParameter(m_current->m_divider.m_para, "WindowDivider::para_t", VICUS::WindowDivider::P_Thickness, m_ui->lineEditDividerMaterialThickness->value());
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
-	}
+
 }
 
-void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinished() {
+void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
-	if(m_ui->lineEditDividerInput->isValid()){
 		bool isModi = true;
 		if(m_current->m_methodDivider == VICUS::Window::M_ConstantWidth)
 			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, m_ui->lineEditDividerInput->value());
@@ -351,12 +348,10 @@ void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinished() {
 			modelModify(); // tell model that we changed the data
 			updateInput((int)m_current->m_id);
 		}
-	}
 }
 
-void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinished() {
+void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
-	if(m_ui->lineEditFrameInput->isValid()){
 		bool isModi = true;
 		if(m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
 			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, m_ui->lineEditFrameInput->value());
@@ -368,7 +363,6 @@ void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinished() {
 			modelModify(); // tell model that we changed the data
 			updateInput((int)m_current->m_id);
 		}
-	}
 }
 
 void SVDBWindowEditWidget::on_comboBoxFrameMethod_currentIndexChanged(int index) {

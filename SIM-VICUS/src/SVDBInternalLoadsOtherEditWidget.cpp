@@ -50,8 +50,8 @@ SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *pare
 
 	for (unsigned int i=0; i<VICUS::InternalLoad::NUM_PM; ++i) {
 		m_ui->comboBoxMethod->addItem(QString("%1 [%2]")
-			.arg(VICUS::KeywordListQt::Description("InternalLoad::PowerMethod", (int)i))
-			.arg(VICUS::KeywordListQt::Keyword("InternalLoad::PowerMethod", (int)i)), i);
+									  .arg(VICUS::KeywordListQt::Description("InternalLoad::PowerMethod", (int)i))
+									  .arg(VICUS::KeywordListQt::Keyword("InternalLoad::PowerMethod", (int)i)), i);
 	}
 	m_ui->comboBoxMethod->blockSignals(false);
 
@@ -132,6 +132,7 @@ void SVDBInternalLoadsOtherEditWidget::updateInput(int id) {
 	m_ui->lineEditPower->setEnabled(!isbuiltIn);
 	m_ui->lineEditManagementScheduleName->setEnabled(!isbuiltIn);
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
+	m_ui->toolButtonRemovePowerManagementSchedule->setEnabled(!isbuiltIn);
 	//m_ui->lineEditLatentFactor->setEnabled(!isbuiltIn);
 	//m_ui->lineEditLossFactor->setEnabled(!isbuiltIn);
 }
@@ -162,43 +163,39 @@ void SVDBInternalLoadsOtherEditWidget::on_comboBoxMethod_currentIndexChanged(int
 }
 
 
-void SVDBInternalLoadsOtherEditWidget::on_lineEditPower_editingFinished() {
+void SVDBInternalLoadsOtherEditWidget::on_lineEditPower_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditPower->isValid() ) {
-		double val = m_ui->lineEditPower->value();
-		VICUS::InternalLoad::para_t paraName;
-		// update database but only if different from original
-		switch (m_current->m_powerMethod){
-			case VICUS::InternalLoad::PowerMethod::PM_PowerPerArea:		paraName = VICUS::InternalLoad::P_PowerPerArea;	break;
-			case VICUS::InternalLoad::PowerMethod::PM_Power:			paraName = VICUS::InternalLoad::P_Power;		break;
+	double val = m_ui->lineEditPower->value();
+	VICUS::InternalLoad::para_t paraName;
+	// update database but only if different from original
+	switch (m_current->m_powerMethod){
+		case VICUS::InternalLoad::PowerMethod::PM_PowerPerArea:		paraName = VICUS::InternalLoad::P_PowerPerArea;	break;
+		case VICUS::InternalLoad::PowerMethod::PM_Power:			paraName = VICUS::InternalLoad::P_Power;		break;
 			//this should not happen
-			case VICUS::InternalLoad::NUM_PM:	break;
-		}
+		case VICUS::InternalLoad::NUM_PM:	break;
+	}
 
-		if (m_current->m_para[paraName].empty() ||
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
+		modelModify();
 	}
 }
 
 
-void SVDBInternalLoadsOtherEditWidget::on_lineEditConvectiveFactor_editingFinished() {
+void SVDBInternalLoadsOtherEditWidget::on_lineEditConvectiveFactor_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
-	if ( m_ui->lineEditConvectiveFactor->isValid() ) {
-		double val = m_ui->lineEditConvectiveFactor->value();
-		// update database but only if different from original
-		VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_ConvectiveHeatFactor;
-		if (m_current->m_para[paraName].empty() ||
+	double val = m_ui->lineEditConvectiveFactor->value();
+	// update database but only if different from original
+	VICUS::InternalLoad::para_t paraName = VICUS::InternalLoad::P_ConvectiveHeatFactor;
+	if (m_current->m_para[paraName].empty() ||
 			val != m_current->m_para[paraName].value)
-		{
-			VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
-			modelModify();
-		}
+	{
+		VICUS::KeywordList::setParameter(m_current->m_para, "InternalLoad::para_t", paraName, val);
+		modelModify();
 	}
 }
 
@@ -243,9 +240,17 @@ void SVDBInternalLoadsOtherEditWidget::on_pushButtonColor_colorChanged() {
 void SVDBInternalLoadsOtherEditWidget::on_toolButtonSelectSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_powerManagementScheduleId);
-	if (m_current->m_powerManagementScheduleId != newId) {
+	if (newId != VICUS::INVALID_ID &&m_current->m_powerManagementScheduleId != newId) {
 		m_current->m_powerManagementScheduleId = newId;
 		modelModify();
 	}
+	updateInput((int)m_current->m_id);
+}
+
+void SVDBInternalLoadsOtherEditWidget::on_toolButtonRemovePowerManagementSchedule_clicked() {
+
+	m_current->m_powerManagementScheduleId = VICUS::INVALID_ID;
+
+	modelModify();
 	updateInput((int)m_current->m_id);
 }

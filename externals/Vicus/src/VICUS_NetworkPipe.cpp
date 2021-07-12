@@ -27,8 +27,21 @@
 
 #include "VICUS_KeywordList.h"
 
-bool VICUS::NetworkPipe::isValid() const
-{
+double VICUS::NetworkPipe::calculateUValue() const {
+//TODO Hauke U-Wert berechnen für Pipe
+	return 1;
+}
+
+double VICUS::NetworkPipe::insideDiameter() const {
+	double thickness = m_para[P_ThicknessWall].value;
+
+	if(!m_para[P_ThicknessInsulation].empty())
+		thickness += m_para[P_ThicknessInsulation].value;
+
+	return (m_para[P_DiameterOutside].value - thickness);
+}
+
+bool VICUS::NetworkPipe::isValid() const {
 	if (m_id == INVALID_ID)
 		return false;
 

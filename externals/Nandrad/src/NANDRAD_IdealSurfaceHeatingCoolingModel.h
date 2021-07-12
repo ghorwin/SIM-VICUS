@@ -43,9 +43,13 @@ public:
 	};
 
 	NANDRAD_READWRITE
+	NANDRAD_COMPARE_WITH_ID
 
 	/*! Checks parameters for valid values. */
 	void checkParameters(const std::vector<NANDRAD::Zone> & zones);
+
+	/*! Comparies objects by physical parametrization (excluding ID and displayname and object list). */
+	bool equal(const IdealSurfaceHeatingCoolingModel & other) const;
 
 	/*! Unique ID-number for this model. */
 	unsigned int		m_id = NANDRAD::INVALID_ID;					// XML:A:required

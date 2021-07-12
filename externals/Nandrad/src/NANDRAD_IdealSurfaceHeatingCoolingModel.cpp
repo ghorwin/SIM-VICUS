@@ -70,6 +70,19 @@ void IdealSurfaceHeatingCoolingModel::checkParameters(const std::vector<NANDRAD:
 
 }
 
+bool IdealSurfaceHeatingCoolingModel::equal(const IdealSurfaceHeatingCoolingModel &other) const {
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	if(m_thermostatZoneId != other.m_thermostatZoneId)
+		return false;
+
+	return true;
+}
+
 
 } // namespace NANDRAD
 

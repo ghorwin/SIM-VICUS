@@ -65,8 +65,5 @@ void Schedule::prepareCalculation() {
 	}
 }
 
-
-
-
 } // namespace NANDRAD
 

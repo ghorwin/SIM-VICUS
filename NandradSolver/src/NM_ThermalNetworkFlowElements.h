@@ -53,34 +53,35 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
-		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
-		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
-		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
-		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
-		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_velocity);
-		valRefs.push_back(&m_volumeFlow);
-		valRefs.push_back(&m_viscosity);
-		valRefs.push_back(&m_reynolds);
-		valRefs.push_back(&m_prandtl);
-		valRefs.push_back(&m_nusselt);
-		valRefs.push_back(&m_UAValue);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs. */
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Overloaded from ThermalNetworkAbstractFlowElement::setInflowTemperature().
 		This is the actual calculation function.
 	*/
 	void setInflowTemperature(double Tinflow) override;
 
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+
 
 private:
+
+	/*! Id number of flow element. */
+	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Value reference to external temperature. */
+	const double					*m_heatExchangeTemperatureRef = nullptr;
 
 	/*! pipe length in [m] */
 	double							m_length = -999;
@@ -133,6 +134,8 @@ private:
 
 	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
 	double							m_outerHeatTransferCoefficient = -999;
+
+	friend class ThermalNetworkBalanceModel;
 };
 
 
@@ -193,55 +196,51 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override {
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
-		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
-		quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
-		quantities.push_back(QuantityDescription("Reynolds","---","Reynolds number", false));
-		quantities.push_back(QuantityDescription("Prandtl","---","Prandtl number", false));
-		quantities.push_back(QuantityDescription("Nusselt","---","Nusselt number", false));
-		quantities.push_back(QuantityDescription("ThermalTransmittance","W/K","Total thermal transmittance of fluid and pipe wall", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_volumeFlow);
-		valRefs.push_back(&m_velocity);
-		valRefs.push_back(&m_viscosity);
-		valRefs.push_back(&m_reynolds);
-		valRefs.push_back(&m_prandtl);
-		valRefs.push_back(&m_nusselt);
-		valRefs.push_back(&m_UAValue);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs. */
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const override { return m_nVolumes;}
 
 	/*! Function for setting initial temperature
 	 * for each model.*/
-	virtual void setInitialTemperature(double T0) override;
+	void setInitialTemperature(double T0) override;
 
 	/*! Function for retrieving initial states.*/
-	virtual void initialInternalStates(double *y0) override;
+	void initialInternalStates(double *y0) override;
 
 	/*! Function for setting internal states.*/
-	virtual void setInternalStates(const double *y) override;
+	void setInternalStates(const double *y) override;
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
-	virtual void internalDerivatives(double *ydot) override;
+	void internalDerivatives(double *ydot) override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
-	virtual double outflowTemperature() const override;
+	double outflowTemperature() const override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
-	virtual void setInflowTemperature(double Tinflow) override;
+	void setInflowTemperature(double Tinflow) override;
 
 	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
-	virtual void dependencies(const double *ydot, const double *y,
-							  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
-							  std::vector<std::pair<const double *, const double *> > & ) const override;
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
 
 private:
+
+	/*! Id number of flow element. */
+	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Value reference to external temperature. */
+	const double					*m_heatExchangeTemperatureRef = nullptr;
 
 	/*! Number of discretization volumes */
 	unsigned int					m_nVolumes;
@@ -309,6 +308,8 @@ private:
 
 	/*! Total thermal transmittance multiplied with the surface area of a pipe segment in [W/K]. */
 	double							m_UAValue = -999;
+
+	friend class ThermalNetworkBalanceModel;
 };
 
 
@@ -325,16 +326,10 @@ public:
 				  const NANDRAD::HydraulicFluid & fluid);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
-		quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_volumeFlow);
-		valRefs.push_back(&m_velocity);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	/*! Function retrieving number of internal states.*/
 	unsigned int nInternalStates() const override { return m_nVolumes; }
@@ -391,16 +386,10 @@ public:
 							  const double * pressureHeadRef);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("ElectricalPower","W","Requested electrical power for current working point", false));
-		quantities.push_back(QuantityDescription("MechanicalPower","W","Mechanical power for current working point", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_electricalPower);
-		valRefs.push_back(&m_mechanicalPower);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
@@ -442,10 +431,30 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
+	TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs. */
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+
+protected:
+
+	/*! Id number of flow element. */
+	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Value reference to external temperature. */
+	const double					*m_heatExchangeHeatLossRef = nullptr;
+
 };
 
 
@@ -453,35 +462,18 @@ public:
 
 // **** TNHeatPumpIdealCarnot ***
 
-class TNHeatPumpIdealCarnot : public TNElementWithExternalHeatLoss { // NO KEYWORDS
+class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpIdealCarnot(unsigned int flowElementId,
-						  const NANDRAD::HydraulicFluid & fluid,
+	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
 						  const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
-		quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
-		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
-		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
-		quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
-		quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
-		quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_COP);
-		valRefs.push_back(&m_electricalPower);
-		valRefs.push_back(&m_condenserHeatFlux);
-		valRefs.push_back(&m_evaporatorHeatFlux);
-		valRefs.push_back(&m_evaporatorMeanTemperature);
-		valRefs.push_back(&m_condenserMeanTemperature);
-		valRefs.push_back(&m_temperatureDifference);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
@@ -499,16 +491,24 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
 
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+
 private:
 	/*! Cached parametrization for heat pump flow element. */
 	const NANDRAD::HydraulicNetworkElement	*m_flowElement = nullptr;
 
+	/*! Value reference to condenser heat flux. */
+	const double							*m_heatExchangeCondensorHeatLossRef = nullptr;
+
+	/*! Value reference to evaporator temperature. */
+	const double							*m_heatExchangeEvaporatorTemperatureRef = nullptr;
+
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserMeanTemperatureRef = nullptr;
 	const double							*m_condenserOutletSetpointRef = nullptr;
-
-	/*! Id number of flow element. */
-	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
 	/*! Mean condenser temperature [K], can also be used as output */
 	double									m_condenserMeanTemperature = 999;
@@ -544,35 +544,18 @@ private:
 
 // **** TNHeatPumpReal ***
 
-class TNHeatPumpReal : public TNElementWithExternalHeatLoss { // NO KEYWORDS
+class TNHeatPumpReal : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpReal(unsigned int flowElementId,
-						  const NANDRAD::HydraulicFluid & fluid,
-						  const NANDRAD::HydraulicNetworkElement & e);
+	TNHeatPumpReal(const NANDRAD::HydraulicFluid & fluid,
+				   const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
-		quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
-		quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
-		quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
-		quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
-		quantities.push_back(QuantityDescription("CondenserOutletTemperature", "C", "Outlet temperature of condenser", false));
-		quantities.push_back(QuantityDescription("EvaporatorInletTemperature", "C", "Inlet temperature of Evaporator", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_COP);
-		valRefs.push_back(&m_electricalPower);
-		valRefs.push_back(&m_condenserHeatFlux);
-		valRefs.push_back(&m_evaporatorHeatFlux);
-		valRefs.push_back(&m_temperatureDifference);
-		valRefs.push_back(&m_condenserOutletTemperature);
-		valRefs.push_back(&m_evaporatorInletTemperature);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
 	void setInflowTemperature(double Tinflow) override;
@@ -597,9 +580,6 @@ private:
 	/*! Temperatures from schedules [K] which will be set through input references */
 	const double							*m_condenserOutletSetpointRef = nullptr;
 	const double							*m_onOffSignalRef = nullptr;
-
-	/*! Id number of flow element. */
-	unsigned int							m_flowElementId = NANDRAD::INVALID_ID;
 
 	/*! Actual heating power of heat pump (condenser) in [W] */
 	double									m_condenserHeatFlux = 999999;
@@ -646,14 +626,10 @@ public:
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Publishes individual model quantities via descriptions. */
-	void modelQuantities(std::vector<QuantityDescription> &quantities) const override{
-		quantities.push_back(QuantityDescription("HeatLoss", "W", "Heat loss of element", false));
-	}
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
 	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
-	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override {
-		valRefs.push_back(&m_heatLoss);
-	}
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
 
 private:
 	unsigned int	m_id = NANDRAD::INVALID_ID;

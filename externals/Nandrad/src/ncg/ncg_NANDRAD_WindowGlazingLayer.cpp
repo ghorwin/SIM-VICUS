@@ -113,6 +113,7 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
+	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("WindowGlazingLayer");
 	parent->LinkEndChild(e);
 

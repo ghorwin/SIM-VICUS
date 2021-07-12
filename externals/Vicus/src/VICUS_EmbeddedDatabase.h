@@ -49,6 +49,7 @@
 #include "VICUS_ZoneControlShading.h"
 #include "VICUS_ZoneControlNaturalVentilation.h"
 #include "VICUS_ZoneTemplate.h"
+#include "VICUS_SurfaceHeating.h"
 
 namespace VICUS {
 
@@ -81,6 +82,9 @@ public:
 
 	/*! Map of all database subsurface components (holes/windows...). */
 	std::vector<VICUS::SubSurfaceComponent>				m_subSurfaceComponents;				// XML:E
+
+	/*! Map of all database subsurface components (holes/windows...). */
+	std::vector<VICUS::SurfaceHeating>					m_surfaceHeatings;					// XML:E
 
 	/*! Map of all database pipes */
 	std::vector<VICUS::NetworkPipe>						m_pipes;							// XML:E

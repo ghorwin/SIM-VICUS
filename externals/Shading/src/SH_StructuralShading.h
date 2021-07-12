@@ -22,11 +22,10 @@
 
 #include <IBK_LinearSpline.h>
 #include <IBK_Time.h>
+#include <IBK_NotificationHandler.h>
 
 #include <IBKMK_Vector3D.h>
-
-#include "SH_SunShadingAlgorithm.h"
-#include "SH_Polygon.h"
+#include <IBKMK_Polygon3D.h>
 
 namespace SH {
 
@@ -43,31 +42,15 @@ public:
 class StructuralShading  {
 public:
 
-	struct Location {
-
-		Location() {}
-
-		Location (int timeZone, double longitudeInDeg, double latitudeInDeg) :
-			m_timeZone(timeZone),
-			m_longitudeInDeg(longitudeInDeg),
-			m_latitudeInDeg(latitudeInDeg)
-		{}
-
-		int					m_timeZone = 99;
-		double				m_longitudeInDeg;
-		double				m_latitudeInDeg;
-	};
-
-
 	struct SunPosition {
 
-		SunPosition(double secOfYear, double azi, double alti):
+		SunPosition(unsigned int secOfYear, double azi, double alti):
 			m_secOfYear(secOfYear),
 			m_azimuth(azi),
 			m_altitude(alti)
 		{}
 
-		IBKMK::Vector3D calcNormal(){
+		IBKMK::Vector3D calcNormal() const {
 			IBKMK::Vector3D sunNormal ( std::cos(m_altitude)*std::sin(m_azimuth),
 										std::cos(m_altitude)*std::cos(m_azimuth),
 										std::sin(m_altitude) );
@@ -80,62 +63,103 @@ public:
 		double				m_altitude;							///< in rad
 	};
 
-	StructuralShading() :
-		m_gridWidth(0.1),
-		m_sunConeDeg(3.0)
-	{}
+	StructuralShading() : m_startTime(2007,0) {}
 
-	StructuralShading(int timeZone, double longitudeInDeg, double latitudeInDeg, double gridWidth, double sunConeDeg) :
-		m_location( Location(timeZone, longitudeInDeg, latitudeInDeg ) ),
-		m_gridWidth(gridWidth),
-		m_sunConeDeg(sunConeDeg)
-	{ }
+	/*! Specifies location and pre-calculates sun positions and map for "similar sun positions".
+		\todo param
+	*/
+	void initializeShadingCalculation(int timeZone, double longitudeInDeg, double latitudeInDeg,
+					 const IBK::Time & startTime, unsigned int duration, unsigned int samplingPeriod,
+					 double sunConeDeg = 3);
 
 	/*! Initializes all variables for shading calculation such as obstacles and sun positions
 		\param obstacles vector with all obstacle interfaces
 	*/
-	void initializeShadingCalculation(const std::vector<std::vector<IBKMK::Vector3D> > &obstacles);
+	void setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > & surfaces, const std::vector<std::vector<IBKMK::Vector3D> > & obstacles);
+	void setGeometry(const std::vector<IBKMK::Polygon3D> & surfaces, const std::vector<IBKMK::Polygon3D> & obstacles);
 
-	/*! Sets the calculation period
+	/*! Calculates the shading factors for the given period
 		\param duration Duration of period in seconds
-	*/
-	void setCalculationPeriod(IBK::Time startTime, double duration );
 
-	/*! Calculates the shading factors for the given period */
-	void calculateShadingFactors(Notification * notify);
+		\todo param + units!
+		duration + sampling period in seconds
+
+		start time and duration = whole number multiple of samplingPeriod; if not -> warning issued
+	*/
+	void calculateShadingFactors(Notification * notify, double gridWidth = 0.1);
+
+
+
+	// *** functions to retrieve calculation results
+
+	const std::vector<SunPosition> & sunPositions() const { return m_sunPositions; }
 
 	/*! Exports Shading Factors to a TSV-File */
-	void writeShadingFactorsToTSV(const IBK::Path &path);
+	void writeShadingFactorsToTSV(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs);
 
 	/*! Exports Shading Factors to a DataIO-File */
-	void writeShadingFactorsToDataIO(const IBK::Path &path, bool isBinary = true);
+	void writeShadingFactorsToDataIO(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs, bool isBinary = true);
 
-	std::vector<SunPosition> sunPositions() const;
-
-	std::vector<Polygon>								m_obstacles;						///< Shading obstacles
-
-	std::vector<Polygon>								m_surfaces;							///< Shading surface
 
 private:
 
-	void createSunNormals(std::vector<SunPosition>& sunPositions);
+	/*! Updates vector m_sunPositions based on current input data (location, time, ...). */
+	void createSunNormals();
 
-	Location											m_location;							///< Location object
+	/*! Tries to find similar normal vector in m_sunConeNormals that is within the same sun cone with inside angle m_sunConeDeg.
+		\param sunNormal			normal vector of sun beam ( pointing from window to sun )
+		\return Returns -1 if no sun cone was found and a new entry needs to be recorded
+				Returns -2 if sun does not shine on the surface ( vector between normals is bigger than 90 Deg )
+				Otherwise returns index of existing sunConeNormal.
+	*/
+	int findSimilarNormals(const IBKMK::Vector3D &sunNormal) const;
+
+	// ** input variables **
+
+	int													m_timeZone = 13;
+	double												m_longitudeInDeg = 13;
+	double												m_latitudeInDeg = 51;
+	/*! Minimum sun cone (half inner angle) used for shading calculation in [Deg].
+		All normals within the same code are treated as one and calculation is one done once for all those sun positions.
+	*/
+	double												m_sunConeDeg = 3;
 
 	IBK::Time											m_startTime;
+	unsigned int										m_duration = 365*24*3600;				/// Duration in [s]
+	unsigned int										m_samplingPeriod = 3600;			/// Sampling peroid/step size in [s]
 
-	double												m_periodInSec;
+	std::vector<IBKMK::Polygon3D>						m_obstacles;						///< Shading obstacles
 
-	std::vector<SunPosition>							m_sunPositions;						///< vector with all sun positions
-
-	std::map<unsigned int, std::vector<unsigned int>>	m_timepointToAllEqualTimepoints; 	///< we store all time points that already have a time point with a similar sun
+	std::vector<IBKMK::Polygon3D>						m_surfaces;							///< Shading surface
 
 	double												m_gridWidth;						///< Grid width in m used for shading calculation
 
-	double												m_sunConeDeg;						///< minimum sun cone angle used for shading calculation in Degree
 
-	SunShadingAlgorithm									m_shading;							///< Object for shading calculation
+	std::vector<SunPosition>							m_sunPositions;						///< Vector with all sun positions (size = number of sampling intervals)
+	/*! Vector with cached normal vectors for each sun cone (size = number of cones, i.e. sufficiently different normal vectors */
+	std::vector<IBKMK::Vector3D>						m_sunConeNormals;
 
+	/*! Shading factors for each sunCone and surface.
+		\code
+		m_shadingFactors[sunConeIndex][surfaceIndex] = ... ; // shading factor of surface and sun cone
+
+		// writing shading factors to file
+		//
+		for (sunConeIndex : m_sunConeNormals.size())
+		  for (surfIndex : m_surfaces.size())
+			// get shading factor
+			sf = m_shadingFactors[sunConeIndex][surfIndex]
+			// write for each original sun position index
+			for (sunPosIndex : m_indexesOfSimilarNormals[sunConeIndex])
+			  data[sunPosIndex][surfIndex] = sf
+		\endcode
+	*/
+	std::vector< std::vector<double> >					m_shadingFactors;
+
+	/*! Vector stores indexes of sun positions with similar normals to m_sunConeNormals. Size and indexes match those of m_sunConeNormals. */
+	std::vector<std::vector<unsigned int> >				m_indexesOfSimilarNormals;
+
+//	SunShadingAlgorithm									m_shading;							///< Object for shading calculation
 };
 
 } // namespace TH

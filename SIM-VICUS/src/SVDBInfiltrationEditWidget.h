@@ -49,7 +49,7 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Sets up the widget for a infiltration with a given ID. */
 	void updateInput(int id) override;
 
 private slots:
@@ -57,8 +57,8 @@ private slots:
 	void on_comboBoxMethod_currentIndexChanged(int index);
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditShieldCoefficient_editingFinished();
-	void on_lineEditAirChangeRate_editingFinished();
+	void on_lineEditShieldCoefficient_editingFinishedSuccessfully();
+	void on_lineEditAirChangeRate_editingFinishedSuccessfully();
 
 
 private:

@@ -457,8 +457,8 @@ bool SVProjectHandler::read(const QString & fname) {
 
 		m_lastReadTime = QFileInfo(fname).lastModified();
 
-		//update the colors
-		//if project has invalid colors nothing is drawn ...
+		// update the colors
+		// if project has invalid colors nothing is drawn ...
 		updateSurfaceColors();
 
 		// after reading the project file, we should update the views
@@ -719,6 +719,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// TODO Dirk, mind renamed schedule IDs in all sub template models
+	//      also, mind renamed sub-template models in zone templates
+
 	// InternalLoad
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
 	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {
@@ -880,7 +883,9 @@ void SVProjectHandler::updateSurfaceColors() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			for (VICUS::Room &r : bl.m_rooms) {
 				for (VICUS::Surface &s : r.m_surfaces) {
-					s.updateColor();
+					if (!s.m_displayColor.isValid())
+						s.initializeColorBasedOnInclination();
+					s.m_color = s.m_displayColor;
 					for (const VICUS::SubSurface &sub : s.subSurfaces()) {
 						const_cast<VICUS::SubSurface &>(sub).updateColor();
 					}

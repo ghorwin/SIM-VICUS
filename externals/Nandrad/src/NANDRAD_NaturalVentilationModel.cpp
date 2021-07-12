@@ -76,6 +76,20 @@ void NaturalVentilationModel::checkParameters() const {
 
 }
 
+bool NaturalVentilationModel::equal(const NaturalVentilationModel &other) const {
+
+	//check parameters
+	for(unsigned int i=0; i<NUM_P; ++i){
+		if(m_para[i] != other.m_para[i])
+			return false;
+	}
+
+	if(m_modelType != other.m_modelType)
+		return false;
+
+	return true;
+}
+
 
 } // namespace NANDRAD
 

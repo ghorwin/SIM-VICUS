@@ -105,6 +105,7 @@ void ZoneControlNaturalVentilation::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * ZoneControlNaturalVentilation::writeXML(TiXmlElement * parent) const {
+	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("ZoneControlNaturalVentilation");
 	parent->LinkEndChild(e);
 

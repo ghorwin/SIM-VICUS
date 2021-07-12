@@ -177,8 +177,22 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 		if (validUValue)
 			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(true);
+		m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
+		m_ui->checkBoxActiveLayerEnabled->setChecked(m_current->m_activeLayerIndex != VICUS::INVALID_ID);
+		m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+		m_ui->spinBoxActiveLayerIndex->blockSignals(true);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
+		m_ui->spinBoxActiveLayerIndex->setMaximum(con->m_materialLayers.size());
+		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
+			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex);
+		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
 	}
 	else {
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
+		m_ui->checkBoxActiveLayerEnabled->setChecked(false);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setValue(0);
 		m_ui->lineEditUValue->setText("---");
 		m_ui->lineEditConstructionName->setText("");
 	}
@@ -191,6 +205,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideBName->setEnabled(isEditable);
+	m_ui->toolButtonRemoveConstruction->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideA->setEnabled(isEditable);
+	m_ui->toolButtonRemoveBoundaryConditionSideB->setEnabled(isEditable);
 	m_ui->pushButtonDaylight->setEnabled(isEditable);
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
@@ -232,7 +249,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectConstruction_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDatabaseEditDialog * conEditDialog = SVMainWindow::instance().dbConstructionEditDialog();
 	unsigned int conId = conEditDialog->select(m_current->m_idConstruction);
-	if (conId != m_current->m_idConstruction) {
+	if (conId != VICUS::INVALID_ID && conId != m_current->m_idConstruction) {
 		m_current->m_idConstruction = conId;
 		modelModify();
 	}
@@ -244,7 +261,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideAName_clic
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideABoundaryCondition);
-	if (bcId != m_current->m_idSideABoundaryCondition) {
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideABoundaryCondition) {
 		m_current->m_idSideABoundaryCondition = bcId;
 		modelModify();
 	}
@@ -256,7 +273,7 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 	// get boundary condition edit dialog from mainwindow
 	SVDatabaseEditDialog * bcEditDialog = SVMainWindow::instance().dbBoundaryConditionEditDialog();
 	unsigned int bcId = bcEditDialog->select(m_current->m_idSideBBoundaryCondition);
-	if (bcId != m_current->m_idSideBBoundaryCondition) {
+	if (bcId != VICUS::INVALID_ID && bcId != m_current->m_idSideBBoundaryCondition) {
 		m_current->m_idSideBBoundaryCondition = bcId;
 		modelModify();
 	}
@@ -274,10 +291,12 @@ void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
 
 }
 
+
 void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
 
 void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
 
@@ -286,17 +305,40 @@ void SVDBComponentEditWidget::on_toolButtonRemoveConstruction_clicked() {
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditA_clicked() {
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideA_clicked() {
 
 	m_current->m_idSideABoundaryCondition = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
 }
-void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditB_clicked() {
+
+
+void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked() {
 
 	m_current->m_idSideBBoundaryCondition = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked) {
+	m_ui->spinBoxActiveLayerIndex->setEnabled(checked);
+	if (checked) {
+		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value();
+		modelModify();
+	}
+	else {
+		m_current->m_activeLayerIndex = VICUS::INVALID_ID;
+		modelModify();
+	}
+}
+
+
+void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) {
+	m_current->m_activeLayerIndex = (unsigned int)arg1;
+	modelModify();
 }

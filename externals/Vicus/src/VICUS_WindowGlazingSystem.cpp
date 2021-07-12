@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -63,7 +63,7 @@ AbstractDBElement::ComparisonResult WindowGlazingSystem::equal(const AbstractDBE
 	return Equal;
 }
 
-double WindowGlazingSystem::uValue() {
+double WindowGlazingSystem::uValue() const {
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
 			return m_para[P_ThermalTransmittance].get_value();
@@ -79,7 +79,7 @@ double WindowGlazingSystem::uValue() {
 	return -1;
 }
 
-double WindowGlazingSystem::SHGC() {
+double WindowGlazingSystem::SHGC() const{
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
 			return m_splinePara[SP_SHGC].m_values.value(0);

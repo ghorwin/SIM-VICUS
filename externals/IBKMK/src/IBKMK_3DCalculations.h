@@ -82,6 +82,16 @@ double lineToLineDistance(const Vector3D & a1, const Vector3D & d1,
 bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3D & p, double r,
 						   double & lineFactor, Vector3D & lotpoint);
 
+/*! Calculates intersection of a line with a plane.
+	Plane is given by offset 'a' and normal vector 'normal'.
+	Line is given by point 'p' and its line vector 'd'.
+	\return Returns false, if either line is parallel to plane (normal vector and line vector are perpendicular),
+		or if normal vector and line vector point into the same direction. Otherwise returns true and the intersection
+		point in 'intersectionPoint' and the line factor 'dist'.
+*/
+bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
+						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist);
+
 /*! This function computes the projection of a point p in a plane (given by offset 'a' and 'normal' vector).
 	Returns projected point coordinates.
 */

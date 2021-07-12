@@ -389,9 +389,10 @@ int IdealPipeRegisterModel::update() {
 			// compute exponential decay of thermal mass (analytical soluation for heat
 			// loss over a pipe with constant environmental temperature
 			double thermalMassDecay = heatingMassFlow * m_fluidHeatCapacity *
-					(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow) * m_fluidHeatCapacity ) ) );
+					(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow/ m_nParallelPipes)
+								* m_fluidHeatCapacity ) ) );
 			// calculate heat gain in [W]
-			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay ;
 		}
 	}
 	// cooling is requested
@@ -429,7 +430,8 @@ int IdealPipeRegisterModel::update() {
 
 			// compute exponential decay of thermal mass
 			double thermalMassDecay = coolingMassFlow * m_fluidHeatCapacity *
-					(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow) * m_fluidHeatCapacity ) ) );
+					(1. - std::exp(-UAValueTotal / (std::fabs(coolingMassFlow/ m_nParallelPipes) *
+								m_fluidHeatCapacity ) ) );
 
 			// calculate heat loss in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;

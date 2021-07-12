@@ -49,19 +49,19 @@ public:
 	/*! Needs to be called once, before the widget is being used. */
 	void setup(SVDatabase * db, SVAbstractDatabaseTableModel * dbModel) override;
 
-	/*! Sets up the widget for a Schedule with a given ID. */
+	/*! Update widget with this. */
 	void updateInput(int id) override;
 
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditTemperatureAirOutsideMaximum_editingFinished();
-	void on_lineEditTemperatureAirOutsideMinimum_editingFinished();
-	void on_lineEditTemperatureAirRoomMaximum_editingFinished();
-	void on_lineEditTemperatureAirRoomMinimum_editingFinished();
-	void on_lineEditTemperatureDifference_editingFinished();
-	void on_lineEditWindSpeedMax_editingFinished();
+	void on_lineEditTemperatureAirOutsideMaximum_editingFinishedSuccessfully();
+	void on_lineEditTemperatureAirOutsideMinimum_editingFinishedSuccessfully();
+	void on_lineEditTemperatureAirRoomMaximum_editingFinishedSuccessfully();
+	void on_lineEditTemperatureAirRoomMinimum_editingFinishedSuccessfully();
+	void on_lineEditTemperatureDifference_editingFinishedSuccessfully();
+	void on_lineEditWindSpeedMax_editingFinishedSuccessfully();
 
 private:
 

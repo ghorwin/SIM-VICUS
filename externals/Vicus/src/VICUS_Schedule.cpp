@@ -24,8 +24,70 @@
 */
 
 #include "VICUS_Schedule.h"
-
+#include <algorithm>
 namespace VICUS {
+
+
+/* Returns the possible merged day types. If no merge is possible returns dts. */
+std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts){
+//	unsigned int weekDayCount=0, weekEndCount=0;
+//	bool hasHoli = false;
+	std::set<int> dtSet,weekDaySet,weekEndSet,holiSet;
+	for(int v : dts){
+		if(v == NANDRAD::Schedule::ST_MONDAY ||
+				v == NANDRAD::Schedule::ST_TUESDAY ||
+				v == NANDRAD::Schedule::ST_WEDNESDAY ||
+				v == NANDRAD::Schedule::ST_THURSDAY ||
+				v == NANDRAD::Schedule::ST_FRIDAY)
+			weekDaySet.insert(v);
+		else if(v == NANDRAD::Schedule::ST_SATURDAY ||
+				v == NANDRAD::Schedule::ST_SUNDAY)
+			weekEndSet.insert(v);
+		else if(v == NANDRAD::Schedule::ST_HOLIDAY)
+			holiSet.insert(v);
+		dtSet.insert(v);
+	}
+
+	std::vector<NANDRAD::Schedule::ScheduledDayType> schedDts;
+	if(!holiSet.empty())
+		schedDts.push_back(NANDRAD::Schedule::ST_HOLIDAY);
+
+	//AllDays
+	if(weekDaySet.size() + weekEndSet.size() == 7)
+		return std::vector<NANDRAD::Schedule::ScheduledDayType> {NANDRAD::Schedule::ST_ALLDAYS};
+	//WeekDay
+	else if(weekDaySet.size() == 5){
+		//on pos 1 can be holiday -> swap weekday to pos 1
+		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKDAY);
+		switch (weekEndSet.size()) {
+			case 0:		return schedDts;
+			case 1:{
+				for(int val : weekEndSet)
+					schedDts.push_back((NANDRAD::Schedule::ScheduledDayType)val);
+				std::swap(schedDts[1], schedDts.back());
+				return schedDts;
+			}
+		}
+	}
+	//WeekEnd
+	else if(weekEndSet.size() == 2){
+		//on pos 1 can be holiday -> swap weekend to pos 1
+		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKEND);
+		if(weekDaySet.empty())
+			return schedDts;
+		else{
+			for (int i : weekDaySet)
+				schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
+			std::swap(schedDts[1], schedDts.back());
+			return schedDts;
+		}
+	}
+	//no merge possible
+	schedDts.clear();
+	for (int i : dts)
+		schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
+	return schedDts;
+}
 
 bool Schedule::isValid() const {
 
@@ -192,6 +254,79 @@ void Schedule::createConstSchedule(double val) {
 	m_periods.push_back(si);
 }
 
+void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const {
+	if(m_periods.empty())
+		return;
+
+	for(unsigned int i=0; i<m_periods.size(); ++i){
+		const ScheduleInterval &si = m_periods[i];
+		int dayCount =0;
+		int startDay = si.m_intervalStartDay%7;		// 0 -> Monday, 1 -> Tuesday, ... , 6 -> Sunday
+		//find next period to get the size of days
+		if(i+1 == m_periods.size()){
+			//now we have last period
+			dayCount = 365 - (int)si.m_intervalStartDay;
+		}
+		else{
+			dayCount = (int)m_periods[i+1].m_intervalStartDay - (int)si.m_intervalStartDay;
+		}
+		int endDayFirstWeek = std::min(7, startDay + dayCount);
+		//get week time and data points
+		std::vector<double> tp, d, tpSum, dSum;
+		si.createWeekDataVector(tp,d);
+		if(tp.empty())
+			continue;
+
+		int addedDays = 0;
+		int weekCount = si.m_intervalStartDay/7  ;
+
+		//add first days to fill up current week
+		if(startDay > 0 ){
+			for(unsigned int n=0; n<tp.size(); ++n){
+				if(tp[n] >= endDayFirstWeek * 24 )
+					break;
+				addedDays = tp[n] / 24 - startDay;
+				if(tp[n] >= startDay * 24){
+					timepoints.push_back(tp[n] + weekCount*7*24);
+					data.push_back(d[n]);
+				}
+			}
+		}
+		//no days left take next period
+		if(addedDays > dayCount)
+			continue;
+		weekCount = (dayCount- addedDays)/7  ;
+		int weekOfYear = (si.m_intervalStartDay + addedDays )/7;
+
+		for(unsigned int n=0; n<weekCount; ++n){
+			++weekOfYear;
+			std::vector<double> newTps = tp;
+			for(unsigned int j=0; j<newTps.size(); ++j)
+				newTps[j] += weekOfYear * 24 * 7;
+			timepoints.insert(timepoints.end(), newTps.begin(), newTps.end());
+			data.insert(data.end(), d.begin(), d.end());
+			addedDays += 7;
+		}
+		if(weekOfYear>0){
+			++weekOfYear;
+			++addedDays;
+		}
+		//check if we have days left
+		if(addedDays > dayCount)
+			continue;
+
+		//add left days to timepoints/data vector
+		int addedDays2=0;
+		for(unsigned int n=0; n<tp.size(); ++n){
+			addedDays2 = tp[n] / 24;
+			if(addedDays2 >= dayCount - addedDays)
+				break;
+			timepoints.push_back(tp[n] + weekOfYear*7*24);
+			data.push_back(d[n]);
+		}
+	}
+}
+
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
 	if (otherSched  == nullptr)
@@ -212,6 +347,124 @@ AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *oth
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+
+void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const {
+	if (scheduleGroup.empty()){
+		// create for each period a new NANDRAD schedule
+		for (unsigned int i=0; i<m_periods.size(); ++i){
+			const ScheduleInterval &period = m_periods[i];
+			// find day types for NANDRAD schedule
+			for (unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const DailyCycle &dc = period.m_dailyCycles[j];
+
+				// merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
+
+				// create for each day type in merge vector a new NANDRAD schedule
+				for (NANDRAD::Schedule::ScheduledDayType dt : dts){
+					NANDRAD::Schedule s;
+					//set up start day
+					if (period.m_intervalStartDay > 0)
+						s.m_startDayOfTheYear = period.m_intervalStartDay;
+					// set up end day
+					// search in next period for a start day
+					if (i+1 < m_periods.size())
+						s.m_endDayOfTheYear = m_periods[i+1].m_intervalStartDay - 1;
+					s.m_type = dt;
+					NANDRAD::DailyCycle dcNANDRAD;
+					dcNANDRAD.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Constant;
+					dcNANDRAD.m_timePoints = dc.m_timePoints;
+					dcNANDRAD.m_values.m_values[varName] = dc.m_values;
+					s.m_dailyCycles.push_back(dcNANDRAD);
+					scheduleGroup.push_back(s);
+				}
+			}
+		}
+	}
+	else {
+		for (unsigned int i=0; i<m_periods.size(); ++i){
+			const VICUS::ScheduleInterval &period = m_periods[i];
+
+			for (unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
+
+				// merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
+
+				// loop over all day types of vicus schedule
+				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+
+					bool valuesAdded = false;
+					// check if a period with equal start+end date exists
+					for(NANDRAD::Schedule &schedNandrad : scheduleGroup){
+
+						//now check day types of vicus schedule with nandrad schedule
+						//for a nandrad schedule following properties must be equal
+						// * day type
+						// * start day
+						// * end day
+						// if this is all equal we can add the timepoint and values to an existing daily cycle with same interpolation method
+						// otherwise we add a new daily cycle to the daily cylce vector
+
+						if(dt == schedNandrad.m_type &&
+								schedNandrad.m_startDayOfTheYear == period.m_intervalStartDay &&
+								((i+1<m_periods.size() && schedNandrad.m_endDayOfTheYear == m_periods[i+1].m_intervalStartDay-1) ||
+																		schedNandrad.m_endDayOfTheYear == 364)){
+							//now check if we have daily cylces with equal properties to:
+							// * interpolation method
+							// * time points
+							for(NANDRAD::DailyCycle &dcNandrad : schedNandrad.m_dailyCycles){
+								if( ( (dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Constant && !m_useLinearInterpolation) ||
+										(dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Linear && m_useLinearInterpolation) ) &&
+										dcNandrad.m_timePoints == dc.m_timePoints){
+									// now we can add the data
+									dcNandrad.m_values.m_values[varName] = dc.m_values;
+									valuesAdded = true;
+									break;
+								}
+							}
+							//nothing found to add data
+							//create a new daily cycle
+							if(!valuesAdded){
+								NANDRAD::DailyCycle newDcNandrad;
+								newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+								newDcNandrad.m_timePoints = dc.m_timePoints;
+								newDcNandrad.m_values.m_values[varName] = dc.m_values;
+								schedNandrad.m_dailyCycles.push_back(newDcNandrad);
+								valuesAdded = true;
+							}
+						}
+						if(valuesAdded)
+							break;
+					}
+					//no schedule found
+					//so add a new one
+					if(!valuesAdded){
+						NANDRAD::Schedule newNandradSched;
+						newNandradSched.m_startDayOfTheYear = period.m_intervalStartDay;
+						if(i+1<m_periods.size())
+							newNandradSched.m_endDayOfTheYear = m_periods[i+1].m_intervalStartDay - 1;
+
+						//create daily cyle
+						NANDRAD::DailyCycle newDcNandrad;
+						newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+						newDcNandrad.m_timePoints = dc.m_timePoints;
+						newDcNandrad.m_values.m_values[varName] = dc.m_values;
+						//add daily cycle to schedule
+						newNandradSched.m_dailyCycles.push_back(newDcNandrad);
+
+						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dts){
+							newNandradSched.m_type = dtNandrad;
+							//add schedule to schedule group
+							scheduleGroup.push_back(newNandradSched);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 

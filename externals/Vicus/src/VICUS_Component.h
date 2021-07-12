@@ -113,6 +113,12 @@ public:
 		TODO Dirk, kann das weg?
 	*/
 	unsigned int					m_idSurfaceProperty = INVALID_ID;			// XML:E
+
+	/*! Identifies the layer of the construction (counting from side A, from index 0), that shall be used
+		for floor heating/cooling.
+	*/
+	unsigned int					m_activeLayerIndex = INVALID_ID;			// XML:E
+
 };
 
 } // namespace VICUS

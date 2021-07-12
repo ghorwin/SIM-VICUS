@@ -40,8 +40,8 @@
 
 const int MARGIN_LEFT = 50;
 const int MARGIN_TOP = 10;
-int MARGIN_RIGHT = 20;
-int MARGIN_BOTTOM = 25;
+static int MARGIN_RIGHT = 20;
+static int MARGIN_BOTTOM = 25;
 
 QRectF SVDBDailyCycleInputWidget::m_clippingRect;
 
@@ -61,8 +61,8 @@ SVDBDailyCycleInputWidget::SVDBDailyCycleInputWidget(QWidget *parent)
 
 	// set some default values
 	m_values = std::vector<double>(24,18);
-	m_minValLimit = m_minVal = 10;
-	m_maxValLimit = m_maxVal = 20;
+	m_minValLimit = m_minVal = 0;
+	m_maxValLimit = m_maxVal = 1;
 	m_ignoreNodeMovement = true;
 
 	QFontMetrics fm(font());
@@ -304,9 +304,12 @@ void SVDBDailyCycleInputWidget::resizeEvent(QResizeEvent * ) {
 			m_nodes[i]->adjustEdges(m_nodes[i]->pos());
 		}
 	} // end initial setup
+
 	// adjust labels
+	m_yLabels[0]->setPlainText( QString("%L1").arg(m_maxVal));
 	m_yLabels[0]->setPos(MARGIN_LEFT - m_yLabels[0]->boundingRect().width() - 2,
 						 MARGIN_TOP - m_yLabels[0]->boundingRect().height()/2.0);
+	m_yLabels[1]->setPlainText( QString("%L1").arg(m_minVal));
 	m_yLabels[1]->setPos(MARGIN_LEFT - m_yLabels[1]->boundingRect().width() - 2,
 						 MARGIN_TOP + chart_height - m_yLabels[1]->boundingRect().height()/2.0);
 	// only turn on every 4th label if column widths are small
@@ -396,8 +399,6 @@ void SVDBDailyCycleInputWidget::rescaleMaxMinValues() {
 		m_minVal = minVal;
 		m_maxVal = maxVal;
 	}
-	m_yLabels[1]->setPlainText( QString("%L1").arg(m_minVal));
-	m_yLabels[0]->setPlainText( QString("%L1").arg(m_maxVal));
 	resizeEvent(nullptr);
 }
 

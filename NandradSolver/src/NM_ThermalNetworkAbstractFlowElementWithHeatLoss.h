@@ -46,9 +46,6 @@ public:
 		This is a loss, i.e. positive means reduction of energy in flow element.
 	*/
 	double							m_heatLoss = 0.0; // Important: initialize with 0, since some models may never change it!
-
-	/*! Value reference to external quantity. */
-	const double					*m_heatExchangeValueRef = nullptr;
 };
 
 

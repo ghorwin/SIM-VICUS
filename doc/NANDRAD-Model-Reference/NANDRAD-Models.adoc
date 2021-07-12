@@ -847,5 +847,5 @@ Das Modell hat eine einzige Ergebnisgröße:
 
 [CAUTION]
 ====
-Der Wärmeentzug aus dem Versorgungsstrang erfolgt unabhängig eventueller physikalischer Grenzen. So kann in der Realität die Rücklauftemperatur niemals unterhalb der Raum-/Konstruktionstemperatur sinken. Entsprechend sollten nachfolgende Modelle diese Temperatur nur für Regelungen als Sensorgröße behandeln und ggfs. auf sinnvolle Wertebereiche begrenzen.
+Der Wärmeentzug aus dem Versorgungsstrang erfolgt unabhängig eventueller physikalischer Grenzen. In der Realität die Rücklauftemperatur niemals unterhalb der Raum-/Konstruktionstemperatur sinken.  Bei Einsatz dieses Modells ist zwar die Energiebilanz stets erfüllt, aber die Rücklauftemperatur kann sehr niedrig werden. Entsprechend sollten nachfolgende Modelle diese Temperatur nur für Regelungen als Sensorgröße behandeln und ggfs. auf sinnvolle Wertebereiche begrenzen.
 ====

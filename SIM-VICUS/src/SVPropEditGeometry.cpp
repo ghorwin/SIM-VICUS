@@ -175,7 +175,6 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 	m_normal = normal.normalized();
 
 	m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
-
 	// positive y Richtung = Norden = Orientation 0°
 	// positive x Richtung = Osten = Orientation 90°
 
@@ -186,33 +185,34 @@ void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
 void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
 	switch (modType) {
-	case SVProjectHandler::BuildingGeometryChanged:
-	case SVProjectHandler::NodeStateModified:
-		// when the building geometry has changed, we need to update the geometrical info
-		// in the widget based on the current selection
-		// also, we assume any change in node states (visibility/selection) may impact our local
-		// coordinate system position
-		update(); // this might update the location of the local coordinate system!
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NodeStateModified:
+			// When the building geometry has changed, we need to update the geometrical info
+			// in the widget based on the current selection.
+
+			// Also, if the selection has changed, we need to distinguish between no selection and selection
+			// and update the buttons accordingly.
+			updateUi();
 		break;
 
-	default: ; // just to make compiler happy
+		default: ; // just to make compiler happy
 	}
 }
 
 
 void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
-		m_ui->pushButtonEdit->setEnabled(true);
-	}
-	else {
+	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
 		setCurrentPage(O_AddGeometry);
 		m_ui->pushButtonEdit->setEnabled(false);
 		// clear current selection transformation matrix
 		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	}
-
-	updateCoordinateSystemLook();
+	else {
+		m_ui->pushButtonEdit->setEnabled(true);
+		updateCoordinateSystemLook();
+	}
 }
 
 
@@ -250,8 +250,6 @@ void SVPropEditGeometry::on_pushButtonAddRect_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonAddZone_clicked() {
-	// reset new polygon object and set it into zone floor drawing mode
-	SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_ZoneFloor);
 	// signal, that we want to start adding a new polygon
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
@@ -259,7 +257,20 @@ void SVPropEditGeometry::on_pushButtonAddZone_clicked() {
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
 	// clear vertex list in property widget
-	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_ZoneFloor);
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Zone);
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
+}
+
+
+void SVPropEditGeometry::on_pushButtonAddRoof_clicked() {
+	// signal, that we want to start adding a new polygon
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_PlaceVertex;
+	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
+	// now tell all UI components to toggle their view state
+	SVViewStateHandler::instance().setViewState(vs);
+	// clear vertex list in property widget
+	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Roof);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
 
@@ -278,13 +289,11 @@ void SVPropEditGeometry::on_lineEditX_editingFinished() {
 	on_lineEditX_returnPressed();
 }
 
-void SVPropEditGeometry::on_lineEditY_editingFinished()
-{
+void SVPropEditGeometry::on_lineEditY_editingFinished() {
 	on_lineEditY_returnPressed();
 }
 
-void SVPropEditGeometry::on_lineEditZ_editingFinished()
-{
+void SVPropEditGeometry::on_lineEditZ_editingFinished() {
 	on_lineEditZ_returnPressed();
 }
 
@@ -322,6 +331,8 @@ void SVPropEditGeometry::translate() {
 
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Translated geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
 
@@ -353,11 +364,12 @@ void SVPropEditGeometry::scale() {
 			}
 			VICUS::Surface modS(*s);
 
+			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
+
 			// We update the floor area
-			if (modS.geometry().normal().m_z < -0.707)
+			if (modS.m_parent != nullptr && modS.geometry().normal().m_z < -0.707)
 				VICUS::KeywordList::setParameter(dynamic_cast<VICUS::Room*>(modS.m_parent)->m_para, "Room::para_t", VICUS::Room::P_Area, modS.geometry().area() );
 
-			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -370,9 +382,10 @@ void SVPropEditGeometry::scale() {
 		return;
 
 
-
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Scaled geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
 
@@ -415,8 +428,12 @@ void SVPropEditGeometry::rotate() {
 	if (modifiedSurfaces.empty())
 		return;
 
+	blockSignals(true);
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	blockSignals(false);
 }
 
 
@@ -441,9 +458,10 @@ int SVPropEditGeometry::requestCopyOperation(QWidget * parent, const QString & t
 		return 2;
 }
 
+
 // *** private functions ***
 
-void SVPropEditGeometry::update() {
+void SVPropEditGeometry::updateUi() {
 
 	// update our selection lists
 	std::set<const VICUS::Object*> sel;
@@ -481,11 +499,7 @@ void SVPropEditGeometry::update() {
 			if (sub->m_selected && sub->m_visible)
 				m_selSubSurfaces.push_back(sub);
 		}
-		// TODO Stephan
 	}
-
-	// we get the view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
 
 	// enable copy functions only if respective objects are selected
 	m_ui->pushButtonCopySurfaces->setEnabled(!m_selSurfaces.empty());
@@ -494,15 +508,8 @@ void SVPropEditGeometry::update() {
 //	m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
 //	m_ui->pushButtonCopyBuilding->setEnabled(false);
 
+	// handling if surfaces are selected
 	if (!m_selSurfaces.empty()) {
-		// adjust the view state to show selected geometry (i.e. local coordinate system is visible)
-		// and edit geometry property widget (makes us visible), but only, if we are in
-		// geometry editing mode
-		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-			vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-			vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
-		}
 
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
@@ -513,25 +520,39 @@ void SVPropEditGeometry::update() {
 			m_ui->labelIndication->setText(tr("z-Axis:"));
 			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
-		// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_boundingBoxCenter);
 
-		// update local coordinates
-		Vic3D::Transform3D t;
-		t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-		setCoordinates( t ); // calls updateInputs() internally
-
-		// update scaling factor
-		SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+		// enable "add subsurface" button
+		m_ui->pushButtonAddWindow->setEnabled(true);
 	}
 	else {
-		// only switch view state back to "Add geometry", when we are in geometry mode
-		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-			vs.m_sceneOperationMode = SVViewState::NUM_OM;
-			vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
-			SVViewStateHandler::instance().setViewState(vs);
+		m_ui->pushButtonAddWindow->setEnabled(false);
+
+		// handling if only sub-surfaces are selected
+		if (!m_selSubSurfaces.empty()) {
+
+			if ( m_selSubSurfaces.size() == 1 ) {
+				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
+				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
+				m_ui->labelIndication->setText(tr("Normal:"));
+				setRotation(s->geometry().normal() );
+			}
+			else {
+				m_ui->labelIndication->setText(tr("z-Axis:"));
+				setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+			}
 		}
 	}
+
+
+	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
+	m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+	// position local coordinate system, but only if we are showing the edit page
+	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+
+	// update local coordinates
+	Vic3D::Transform3D t;
+	t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	setCoordinates( t ); // calls updateInputs() internally
 
 }
 
@@ -865,6 +886,8 @@ void SVPropEditGeometry::showDeg(const bool & show) {
 
 void SVPropEditGeometry::showRotation(const bool & abs) {
 	// we show all that is necessary for absolute Rotation Mode
+	m_ui->lineEditOrientation->blockSignals(true);
+	m_ui->lineEditInclination->blockSignals(true);
 	if ( abs ) {
 		m_ui->widgetXYZ->hide();
 		m_ui->widgetRota->show();
@@ -873,6 +896,8 @@ void SVPropEditGeometry::showRotation(const bool & abs) {
 		m_ui->widgetXYZ->show();
 		m_ui->widgetRota->hide();
 	}
+	m_ui->lineEditOrientation->blockSignals(false);
+	m_ui->lineEditInclination->blockSignals(false);
 }
 
 
@@ -1117,11 +1142,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
 					// rotate to
-					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
+					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
 
 					Vic3D::Transform3D rota;
 					// we now also have to find the angle between both normals
-					rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
+
+					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
+
+					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
 					QQuaternion centerRota = rota.rotation();
@@ -1705,5 +1733,8 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// create undo-action
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Flipped normal vectors"), modifiedSurfaces );
 	undo->push();
+	// reset local transformation matrix
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
+
 

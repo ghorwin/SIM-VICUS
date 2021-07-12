@@ -47,27 +47,22 @@ public:
 
 	/*! Basic parameters. */
 	enum para_t {
-		//thermal paramters
 		/*! Person Count. */
-		///TODO Einheit "Pers" muss aufgenommen werden
-		P_PersonCount,					// Keyword: PersonCount				[-]		'Person Count.'
+		P_PersonCount,					// Keyword: PersonCount				[-]			'Person count'
 		/*! Person per area. */
-		///TODO Einheit "Pers/m2" muss aufgenommen werden
-		P_PersonPerArea,				// Keyword: PersonPerArea			[Person/m2]	'Person per area.'
+		P_PersonPerArea,				// Keyword: PersonPerArea			[Person/m2]	'Person per area'
 		/*! Area per person. */
-		///TODO Einheit "m2/Pers muss aufgenommen werden
-		P_AreaPerPerson,				// Keyword: AreaPerPerson			[m2/Person]	'Area per person.'
+		P_AreaPerPerson,				// Keyword: AreaPerPerson			[m2/Person]	'Area per person'
 		/*! Power. */
-		P_Power,						// Keyword: Power					[W]		'Power.'
+		P_Power,						// Keyword: Power					[W]			'Power'
 		/*! Power per Area. */
-		P_PowerPerArea,					// Keyword: PowerPerArea			[W/m2]	'Power per area.'
+		P_PowerPerArea,					// Keyword: PowerPerArea			[W/m2]		'Power per area'
 		/*! Convective Heat Factor. */
-		P_ConvectiveHeatFactor,			// Keyword: ConvectiveHeatFactor	[---]	'Convective Heat Factor.'
+		P_ConvectiveHeatFactor,			// Keyword: ConvectiveHeatFactor	[---]		'Convective heat factor'
 		/*! Latent Heat Factor. */
-		P_LatentHeatFactor,				// Keyword: LatentHeatFactor		[---]	'Latent Heat Factor.'
+		P_LatentHeatFactor,				// Keyword: LatentHeatFactor		[---]		'Latent heat factor'
 		/*! Loss Heat Factor. */
-		P_LossHeatFactor,				// Keyword: LossHeatFactor			[---]	'Loss Heat Factor.'
-
+		P_LossHeatFactor,				// Keyword: LossHeatFactor			[---]		'Loss heat factor'
 		NUM_P
 	};
 

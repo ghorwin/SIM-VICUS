@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.4">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="1">.</SubDir>
+			<SubDir Color="#ffaa00" Checked="1">Simple</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">Simple/fmus/IdealHeaterCoolerFixedMassFlow/resources</SubDir>
+			<SubDir Color="#7141d1" Checked="1">Simple/slaves/IdealHeaterCoolerFixedMassFlow</SubDir>
+			<ExpandedSubDir>Simple/fmus</ExpandedSubDir>
+			<ExpandedSubDir>Simple/fmus/IdealHeaterCoolerFixedMassFlow</ExpandedSubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+			<ExpandedSubDir>Simple</ExpandedSubDir>
+			<ExpandedSubDir>Simple/slaves</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="-1" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

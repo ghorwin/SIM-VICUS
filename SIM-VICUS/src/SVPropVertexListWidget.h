@@ -56,7 +56,6 @@ public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
 
-
 	/*! Sets up the widget to be used for creating geometry of a given type.
 		\param newGeometryType A type as declared in NewGeometryObject::NewGeometryMode
 	*/
@@ -64,9 +63,6 @@ public:
 
 	/*! Updates the component combo boxes (this needs to be done whenever the component DB has been changed). */
 	void updateComponentComboBoxes();
-
-	/*! Updates the subsurface.component combo boxes (this needs to be done whenever the subsurface component DB has been changed). */
-	void updateSubSurfaceComponentComboBoxes();
 
 	/*! Appends a new vertex to the list of vertexes in the table widget.
 		Called from NewGeometryObject.
@@ -78,85 +74,119 @@ public:
 	*/
 	void removeVertex(unsigned int idx);
 
-	/*! Transfers the distance into the respective line widget. */
-	void setExtrusionDistance(double dist);
+	/*! Called from NewGeometryWidget with new zone height, to be shown in respective line widget. */
+	void setZoneHeight(double dist);
+
+	/*! If we are in "draw polygon mode" and completing is possible, do it (same as clicking on "Complete polygon" button).
+		This function is called globally, when user presses Return while drawing.
+	*/
+	bool completePolygonIfPossible();
 
 public slots:
 
 	/*! Connected to SVProjectHandler::modified().
-		Updates the building, building level and zone combo boxes with data from the project.
-		This function does nothing, if the widget is currently inactive/invisible.
+		Updates the building, building level and zone combo boxes with data from the project, if these were only
+		renamed. Otherwise the new geometry operation is aborted.
 	*/
 	void onModified( int modificationType, ModificationInfo * data );
 
-	/*! Called, when user starts with a new polygon/geometry. */
-	void clearPolygonVertexList();
-
-	/*! Finishes the geometry and creates the undo action to modify the
-		project.
-	*/
-	void on_pushButtonFinish_clicked();
-
-	/*! Switches from floor polygon mode to extrusion mode. */
-	void on_pushButtonFloorDone_clicked();
-
 private slots:
+
+	// page vertexes
+
 	void on_pushButtonDeleteLast_clicked();
-
 	void on_tableWidgetVertexes_itemSelectionChanged();
-
-	void on_pushButtonCancel_clicked();
-
 	void on_pushButtonDeleteSelected_clicked();
+	void on_pushButtonCompletePolygon_clicked();
 
+	/*! This slot is called from all cancel buttons in all widgets. It basically
+		aborts the current operation, clears the new geometry widget and aborts the widget. */
+	void onCancel();
+
+	/*! This slot is called from all edit component tool buttons.
+		It updates all component combo boxes after DB dialog has finished.
+	*/
 	void onEditComponents();
 
-	void on_toolButtonAddBuilding_clicked();
 
-	void on_toolButtonAddBuildingLevel_clicked();
+	// page surfaces
 
+	void on_toolButtonAddBuilding_clicked(); // also used by zone/roof pages
+	void on_toolButtonAddBuildingLevel_clicked(); // also used by zone/roof pages
 	void on_toolButtonAddZone_clicked();
-
 	void on_checkBoxAnnonymousGeometry_stateChanged(int arg1);
-
 	void on_comboBoxBuilding_currentIndexChanged(int index);
-
 	void on_comboBoxBuildingLevel_currentIndexChanged(int index);
+	void on_pushButtonCreateSurface_clicked();
 
+
+	// page zone
 
 	void on_lineEditZoneHeight_editingFinishedSuccessfully();
-
 	void on_pushButtonPickZoneHeight_clicked();
+	void on_comboBoxBuilding2_currentIndexChanged(int index);
+	void on_comboBoxBuildingLevel2_currentIndexChanged(int index);
+	void on_pushButtonCreateZone_clicked();
+
+
+	// page roof
+
+	void on_comboBoxBuilding3_currentIndexChanged(int index);
+	void on_comboBoxBuildingLevel3_currentIndexChanged(int index);
+	void on_lineEditRoofHeight_editingFinishedSuccessfully();
+	void on_comboBoxRoofType_currentIndexChanged(int index);
+	void on_radioButtonRoofHeight_toggled(bool checked);
+	void on_checkBoxFlapTile_toggled(bool checked);
+	void on_pushButtonCreateRoof_clicked();
+
+	void on_pushButtonRotateFloorPolygon_clicked();
 
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
 
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
-	void updateEnabledStates();
+	void updateSurfacePageState();
+
+	/*! Populates the combo box with components of matching type:
+		0 - wall
+		1 - floor
+		2 - roof/ceiling
+		-1 - all
+	*/
+	void updateComponentComboBox(QComboBox * combo, int type);
 
 	bool reselectById(QComboBox * combo, int id) const;
 
 	/*! Updates the content of the building combo box with data from the project.
 		The current item is kept (identified via unique ID), if it still exists after the update.
-		If the current item changed, the function updateBuildingLevelsComboBox() will be called to update
-		the dependent combo boxes.
+		You should call updateBuildingLevelsComboBox afterwards to update the available options.
 	*/
-	void updateBuildingComboBox();
-
-	/*! Updates the content of the building levels combo box with data from the project.
-		The current item is kept (identified via unique ID), if it still exists after the update.
-		If the current item changed, the function updateZoneComboBox() will be called to update
-		the dependent combo boxes.
-	*/
-	void updateBuildingLevelsComboBox();
+	void updateBuildingComboBox(QComboBox * combo);
 
 	/*! Updates the content of the building levels combo box with data from the project.
 		The current item is kept (identified via unique ID), if it still exists after the update.
 	*/
-	void updateZoneComboBox();
+	void updateBuildingLevelsComboBox(QComboBox * combo, const QComboBox * buildingCombo);
+
+	/*! Updates the content of the building levels combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+	*/
+	void updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo);
+
+	/*! Takes modified input data from widget and transfers it to the new geometry object. */
+	void updateRoofGeometry();
 
 	Ui::SVPropVertexListWidget	*m_ui;
+
+	/*! What kind of geometry is being created.
+		\note In two-stage processes, it does not always correspond to the geometry mode set in the
+		new geometry object.
+	*/
+	int							m_geometryMode;
+
+	/*! If true, user requested rotation of polygon. */
+	bool						m_polygonRotation = false;
 };
 
 

@@ -30,6 +30,8 @@
 
 #include <QItemDelegate>
 
+#include <QtExt_Locale.h>
+
 #include "SVDatabase.h"
 #include "SVStyle.h"
 
@@ -38,40 +40,32 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	m_ui(new Ui::SVDBScheduleDailyCycleEditWidget){
 	m_ui->setupUi(this);
 
-
-	//add header to day cycle table
+	// add header to day cycle table
 	m_ui->tableWidgetDayCycle->setColumnCount(2);
-	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Time")));
-	m_ui->tableWidgetDayCycle->setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Value")));
+	m_ui->tableWidgetDayCycle->setHorizontalHeaderLabels(QStringList() << tr("Time") << tr("Value") );
 
-//	m_ui->tableWidgetDayCycle->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-//	m_ui->tableWidgetDayCycle->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-
-	//set all table items in day cycle
+	// set all table items in day cycle
 	m_ui->tableWidgetDayCycle->setRowCount(24);
-
 
 	m_delegate = new QItemDelegate();
 	m_ui->tableWidgetDayCycle->blockSignals(true);
-	for(unsigned int i=0; i<24; ++i){
-		QString time = i < 10 ? "0" + QString::number(i) : QString::number(i);
-		time += ":00 - ";
-		time += i+1 < 10 ? "0" + QString::number(i+1) : QString::number(i+1);
-		time += ":00";
+	for (int i=0; i<24; ++i){
+		QString time = QString("%1:00").arg(i,2,10,QChar('0'));
 
-		m_ui->tableWidgetDayCycle->setItem(i,0, new QTableWidgetItem(time));
-		m_ui->tableWidgetDayCycle->item(i,0)->setFlags(m_ui->tableWidgetDayCycle->item(i,0)->flags() & ~Qt::ItemIsEditable);
-		m_ui->tableWidgetDayCycle->item(i,0)->setTextAlignment(Qt::AlignCenter);
+		QTableWidgetItem * item = new QTableWidgetItem(time);
+		m_ui->tableWidgetDayCycle->setItem(i,0, item);
+		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable);
+		item->setTextAlignment(Qt::AlignCenter);
 
-
-		QTableWidgetItem *item = new QTableWidgetItem("0");
+		item = new QTableWidgetItem();
+		item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		m_ui->tableWidgetDayCycle->setItem(i,1, item);
+		// value column is populated in updateUi()
 	}
 	m_ui->tableWidgetDayCycle->blockSignals(false);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetDayCycle);
 	m_ui->tableWidgetDayCycle->setSortingEnabled(false);
-
 	m_ui->tableWidgetDayCycle->setSelectionBehavior(QAbstractItemView::SelectRows);
 	m_ui->tableWidgetDayCycle->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
@@ -82,15 +76,16 @@ SVDBScheduleDailyCycleEditWidget::SVDBScheduleDailyCycleEditWidget(QWidget *pare
 	m_ui->tableWidgetDayCycle->setColumnWidth(1, width-100);
 }
 
+
 SVDBScheduleDailyCycleEditWidget::~SVDBScheduleDailyCycleEditWidget(){
 	delete m_ui;
 }
 
 
-
 void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVDatabase *db, bool isEditable){
 	m_dailyCycle = dc;
 	m_db = db;
+	m_isEditable = isEditable;
 
 	// if dc == nullptr, clear inputs and return
 	if (dc == nullptr) {
@@ -102,47 +97,27 @@ void SVDBScheduleDailyCycleEditWidget::updateInput(VICUS::DailyCycle *dc, SVData
 		return;
 	}
 
-	//timepoints in seconds
-	//set values
-
-	if(m_dailyCycle->m_timePoints.empty()){
-		m_dailyCycle->m_timePoints.push_back(0);
+	// if daily cycle is still empty, add a default value
+	if (m_dailyCycle->m_timePoints.empty()) {
+		m_dailyCycle->m_timePoints.push_back(0); // timepoints in seconds
 		m_dailyCycle->m_values.push_back(0);
 		modelModify();
 	}
-	m_ui->tableWidgetDayCycle->blockSignals(true);
-	//check time point in schedule interval and write the table values
-	for (unsigned int j=0;j<24 ; ++j) {
-		double currTP = j/**3600*/;
-		double val=0;
-		for (unsigned int i=0; i<dc->m_timePoints.size(); ++i) {
-			double intervalTp = dc->m_timePoints[i];
-			if(currTP>=intervalTp)
-				val=dc->m_values[i];
-			else
-				break;
-		}
-		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString::number(val,'g', 3));
-		m_ui->tableWidgetDayCycle->item(j, 1)->setTextAlignment(Qt::AlignCenter);
 
-		if(!isEditable)
-			m_ui->tableWidgetDayCycle->item(j,1)->setFlags(m_ui->tableWidgetDayCycle->item(j,1)->flags() ^ Qt::ItemIsEditable);
-	}
-	m_ui->tableWidgetDayCycle->blockSignals(false);
+	// fill in table and widget
+	updateTable(true);
 }
 
 
-void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int row, int /*column*/)
-{
-	if(m_dailyCycle == nullptr)
+void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int row, int /*column*/) {
+	if (m_dailyCycle == nullptr)
 		return;
 
-	//validate input
+	// validate input
 	bool ok;
-	m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble(&ok);
-	if(!ok){
+	double currVal = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(row,1)->text(), &ok);
+	if (!ok){
 		m_ui->tableWidgetDayCycle->blockSignals(true);
-		//m_ui->tableWidgetDayCycle->item(row,1)->setText("0");
 		m_ui->tableWidgetDayCycle->setFocus();
 		m_ui->tableWidgetDayCycle->setCurrentCell(row,1);
 		m_ui->tableWidgetDayCycle->blockSignals(false);
@@ -154,37 +129,99 @@ void SVDBScheduleDailyCycleEditWidget::on_tableWidgetDayCycle_cellChanged(int ro
 	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetDayCycle->selectedRanges();
 
 	for (int i=0; i<range.size(); ++i) {
-		// can we hav two ranges?
+		// can we have two ranges?
 		int topRow = range[i].topRow();
-		unsigned int bottomRow = static_cast<unsigned int>(range[i].bottomRow()+1);
-		double currVal = m_ui->tableWidgetDayCycle->item(row,1)->text().toDouble();
+		int bottomRow = range[i].bottomRow()+1;
 
-		for (size_t j=topRow; j<bottomRow; ++j) {
+		for (int j=topRow; j<bottomRow; ++j) {
 			m_ui->tableWidgetDayCycle->blockSignals(true);
-			m_ui->tableWidgetDayCycle->item(j,1)->setText(QString::number(currVal) );
+			m_ui->tableWidgetDayCycle->item(j,1)->setText(QString("%L1").arg(currVal) );
 			m_ui->tableWidgetDayCycle->blockSignals(false);
 		}
 	}
 
-	std::vector<double> timepoints(1,0), values(1, m_ui->tableWidgetDayCycle->item(0,1)->text().toDouble());
+	double val = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(0,1)->text(), &ok);
+	// add first value and time "0 h" to vector
+	std::vector<double> timepoints(1,0);
+	std::vector<double> values(1, val);
 	unsigned int lastIdx=0;
-	for(unsigned int i=1; i<(unsigned int)m_ui->tableWidgetDayCycle->rowCount(); ++i){
-		double currVal = m_ui->tableWidgetDayCycle->item(i,1)->text().toDouble();
-		if(IBK::nearly_equal<3>(values[lastIdx],currVal))
+
+	// process all subsequent values but only add those that differ in value
+	for (int i=1; i<m_ui->tableWidgetDayCycle->rowCount(); ++i) {
+		val = QtExt::Locale().toDoubleWithFallback(m_ui->tableWidgetDayCycle->item(i,1)->text(), &ok);
+		// TODO Dirk: check accuracy should be related to nominal quantity magnitude
+		if (IBK::nearly_equal<3>(values[lastIdx],val))
 			continue;
-		timepoints.push_back(i/**3600*/);
-		values.push_back(currVal);
+		timepoints.push_back(i); // in hours
+		values.push_back(val);
 		++lastIdx;
 	}
 
 	m_dailyCycle->m_timePoints.swap(timepoints);
 	m_dailyCycle->m_values.swap(values);
 
+	// update preview
+	updateTable(true);
 	//set database to modified
 	modelModify();
 }
 
+
 void SVDBScheduleDailyCycleEditWidget::modelModify() {
 	m_db->m_schedules.m_modified = true;
+	emit dataChanged();
+}
 
+
+void SVDBScheduleDailyCycleEditWidget::on_dailyCycleInputWidget_valueChanged() {
+	// get values from widget
+	std::vector<double> vals = m_ui->dailyCycleInputWidget->values();
+	// process all 24 values and whenever the value changes, insert a new time point and value pair
+	std::vector<double> tp, data;
+	tp.push_back(0);
+	data.push_back(vals[0]);
+	for (unsigned int i=1; i<24; ++i) {
+		if (vals[i] == data.back())
+			continue;
+		tp.push_back(i);
+		data.push_back(vals[i]);
+	}
+	m_dailyCycle->m_timePoints.swap(tp);
+	m_dailyCycle->m_values.swap(data);
+
+	// fill in table
+	updateTable(false);
+	modelModify();
+}
+
+
+void SVDBScheduleDailyCycleEditWidget::updateTable(bool updateDailyCycleWidget) {
+	std::vector<double> hourlyValues;
+	m_ui->tableWidgetDayCycle->blockSignals(true);
+	// check time point in schedule interval and write the table values
+	for (int j=0; j<24; ++j) {
+		double currTP = j/**3600*/;
+		double val=0;
+		for (unsigned int i=0; i<m_dailyCycle->m_timePoints.size(); ++i) {
+			double intervalTp = m_dailyCycle->m_timePoints[i];
+			if (currTP>=intervalTp)
+				val=m_dailyCycle->m_values[i];
+			else
+				break;
+		}
+		hourlyValues.push_back(val);
+		// TODO Dirk: value formatting should/may depend on quantity being edited
+		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString("%L1").arg(val, 0, 'g', 3));
+		m_ui->tableWidgetDayCycle->item(j, 1)->setTextAlignment(Qt::AlignCenter);
+
+		if (m_isEditable)
+			m_ui->tableWidgetDayCycle->item(j,1)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
+		else
+			m_ui->tableWidgetDayCycle->item(j,1)->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+	}
+	m_ui->tableWidgetDayCycle->blockSignals(false);
+
+	if (updateDailyCycleWidget)
+		m_ui->dailyCycleInputWidget->setValues(hourlyValues);
+	// TODO Dirk: adjust min/max values based on edited quantity
 }

@@ -52,6 +52,11 @@ public:
 	virtual void deserializeFMUstate(void * FMUstate);
 
 
+	/*! Called from fmi2FreeInstance() in CoSimulation at the end of simulation.
+		Writes outputs.
+	*/
+	virtual void finish();
+
 	/*! The actual model that contains all the physics. */
 	NandradModelFMU		m_model;
 

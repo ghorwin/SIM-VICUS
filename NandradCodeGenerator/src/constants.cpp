@@ -420,6 +420,7 @@ const char * const CPP_READWRITE_HEADER =
 
 const char * const CPP_WRITEXML =
 		"TiXmlElement * ${CLASSNAME}::writeXML${PRIVATE}(TiXmlElement * parent) const {\n"
+		"${MANDATORY_INVALID_ID_CHECK}"
 		"	TiXmlElement * e = new TiXmlElement(\"${CLASSNAME}\");\n"
 		"	parent->LinkEndChild(e);\n\n"
 		"${COMMENTS}${ATTRIBUTES}${CHILD_ELEMENTS}"

@@ -1,12 +1,10 @@
 /*	QtExt - Qt-based utility classes and functions (extends Qt library)
 
-	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
 
 	Primary authors:
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 	  Heiko Fechner
-
-	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
+	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
 
 	This library is free software; you can redistribute it and/or
 	modify it under the terms of the GNU Lesser General Public
@@ -17,6 +15,7 @@
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 	Lesser General Public License for more details.
+
 */
 
 #ifndef QtExt_LanguageHandlerH
