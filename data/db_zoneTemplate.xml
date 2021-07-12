@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <ZoneTemplates>
+	<ZoneTemplate id="8000" displayName="DE: SimQuality_TF05.2 |EN: SimQuality_TF05.2;" color="#5aff82">
+		<NaturalVentilation>15001</NaturalVentilation>
+	</ZoneTemplate>
 	<ZoneTemplate id="8001" displayName="DE: SimQuality_TF08.1 |EN: SimQuality_TF08.1;" color="#5a6eff">
 		<IntLoadEquipment>7001</IntLoadEquipment>
+	</ZoneTemplate>
+	<ZoneTemplate id="8002" displayName="DE: SimQuality_TF05.3 |EN: SimQuality_TF05.3;" color="#5aff82">
+		<NaturalVentilation>15002</NaturalVentilation>
 	</ZoneTemplate>
 </ZoneTemplates>

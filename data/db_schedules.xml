@@ -14,4 +14,50 @@
 			</ScheduleInterval>
 		</Periods>
 	</Schedule>
+	<Schedule id="6002" displayName="DE: TF05.2 |EN: TF05.2">
+		<UseLinearInterpolation>0</UseLinearInterpolation>
+		<Periods>
+			<ScheduleInterval displayName="TF05.2" intervalStartDay="0">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+						<TimePoints>0</TimePoints>
+						<Values>1</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+		</Periods>
+	</Schedule>
+	<Schedule id="6003" displayName="DE: TF05.3 |EN: TF05.3;">
+		<UseLinearInterpolation>0</UseLinearInterpolation>
+		<Periods>
+			<ScheduleInterval intervalStartDay="0">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>8,9,3,4,5,6,7,10</DayTypes>
+						<TimePoints>0</TimePoints>
+						<Values>0.25</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="EN: increasedAirchange" intervalStartDay="151">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+						<TimePoints>0,6,20</TimePoints>
+						<Values>1,0.25,1</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+			<ScheduleInterval displayName="EN: lowAirchange" intervalStartDay="273">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+						<TimePoints>0</TimePoints>
+						<Values>0.25</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+		</Periods>
+	</Schedule>
 </Schedules>

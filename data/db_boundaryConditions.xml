@@ -33,4 +33,13 @@
 			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 		</InterfaceSolarAbsorption>
 	</BoundaryCondition>
+	<BoundaryCondition id="1005" displayName="DE: [SimQuality] TF08 (innen mit langwelliger Strahlung) |EN: [SimQuality] TF08 with Emissivity;">
+		<Color>#5aff82</Color>
+		<InterfaceHeatConduction modelType="Constant">
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">1</IBK:Parameter>
+		</InterfaceLongWaveEmission>
+	</BoundaryCondition>
 </BoundaryConditions>
