@@ -169,6 +169,10 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->toolButtonAddPeriod->setEnabled(m_isEditable);
 	m_ui->toolButtonCopyPeriod->setEnabled(m_isEditable);
 	m_ui->toolButtonRemovePeriode->setEnabled(m_isEditable);
+	m_ui->radioButtonLinear->setEnabled(m_isEditable);
+	m_ui->radioButtonConstant->setEnabled(m_isEditable);
+	m_ui->pushButtonSelectWeekDays->setEnabled(m_isEditable);
+	m_ui->pushButtonSelectWeekEnds->setEnabled(m_isEditable);
 }
 
 
