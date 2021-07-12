@@ -1084,6 +1084,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 
 		// only transfer heat conduction parameters
 		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_solarAbsorption = bc->m_solarAbsorption;
+		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;
 	}
 	else {
