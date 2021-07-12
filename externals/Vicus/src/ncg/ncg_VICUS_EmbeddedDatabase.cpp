@@ -124,6 +124,18 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "SurfaceHeatings") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SurfaceHeating")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::SurfaceHeating obj;
+					obj.readXML(c2);
+					m_surfaceHeatings.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "Pipes") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -401,6 +413,18 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::SubSurfaceComponent>::const_iterator it = m_subSurfaceComponents.begin();
 			it != m_subSurfaceComponents.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_surfaceHeatings.empty()) {
+		TiXmlElement * child = new TiXmlElement("SurfaceHeatings");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::SurfaceHeating>::const_iterator it = m_surfaceHeatings.begin();
+			it != m_surfaceHeatings.end(); ++it)
 		{
 			it->writeXML(child);
 		}

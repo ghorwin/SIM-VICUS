@@ -257,7 +257,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Incomplete LU preconditioner");
 	tr("Automatic selection of preconditioner");
 	tr("Constant set points");
-	tr("Scheduled ste points");
+	tr("Scheduled set points");
 	tr("Heating set point");
 	tr("Cooling set point");
 	tr("Control tolerance for temperatures");

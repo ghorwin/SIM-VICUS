@@ -1885,7 +1885,7 @@ namespace NANDRAD {
 			case 70 :
 			switch (t) {
 				case 0 : return "Constant set points";
-				case 1 : return "Scheduled ste points";
+				case 1 : return "Scheduled set points";
 			} break;
 			// Thermostat::para_t
 			case 71 :
