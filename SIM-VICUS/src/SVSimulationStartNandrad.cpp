@@ -43,10 +43,10 @@
 #include "SVSimulationModelOptions.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
+#include "SVSimulationNetworkOptions.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVUndoModifyProject.h"
-#include "SVSimulationNetworkOptions.h"
 
 SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	QDialog(parent),
@@ -119,16 +119,16 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		m_ui->tabSimOptions->setLayout(h);
 	}
 	{
-		m_simulationNetworkOptions = new SVSimulationNetworkOptions(this, m_localProject.m_geometricNetworks);
-		QHBoxLayout * h = new QHBoxLayout;
-		h->addWidget(m_simulationNetworkOptions);
-		m_ui->tabNetworkOptions->setLayout(h);
-	}
-	{
 		m_simulationShadingOptions = new SVSimulationShadingOptions(this, m_localProject.m_simulationParameter, m_localProject.m_location);
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationShadingOptions);
 		m_ui->tabShadingCalculation->setLayout(h);
+	}
+	{
+		m_simulationNetworkOptions = new SVSimulationNetworkOptions(this, m_localProject.m_geometricNetworks);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationNetworkOptions);
+		m_ui->tabNetworkSettings->setLayout(h);
 	}
 }
 
@@ -203,8 +203,8 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	m_simulationLocationOptions->updateUi();
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
-	m_simulationNetworkOptions->updateUi();
 	m_simulationShadingOptions->updateUi();
+	m_simulationNetworkOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();
