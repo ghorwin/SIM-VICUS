@@ -211,7 +211,7 @@ void SVDBScheduleDailyCycleEditWidget::updateTable(bool updateDailyCycleWidget) 
 		}
 		hourlyValues.push_back(val);
 		// TODO Dirk: value formatting should/may depend on quantity being edited
-		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString("%L1").arg(val, 0, 'g', 3));
+		m_ui->tableWidgetDayCycle->item(j, 1)->setText(QString("%L1").arg(val, 0, 'g', 5));
 		m_ui->tableWidgetDayCycle->item(j, 1)->setTextAlignment(Qt::AlignCenter);
 
 		if (m_isEditable)
