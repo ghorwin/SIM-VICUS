@@ -50,7 +50,13 @@
 		<MaterialKind>NaturalStoneMasonry</MaterialKind>
 		<MaterialLayers>
 			<MaterialLayer matId="10003">
-				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+				<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10003">
+				<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+			</MaterialLayer>
+			<MaterialLayer matId="10003">
+				<IBK:Parameter name="Thickness" unit="m">0.13</IBK:Parameter>
 			</MaterialLayer>
 			<MaterialLayer matId="10002">
 				<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>

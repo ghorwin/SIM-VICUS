@@ -47,6 +47,7 @@
 		<IdConstruction>1005</IdConstruction>
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+		<ActiveLayerIndex>1</ActiveLayerIndex>
 	</Component>
 	<Component id="1009" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
 		<Type>OutsideWall</Type>
