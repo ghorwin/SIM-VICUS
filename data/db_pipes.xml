@@ -136,44 +136,5 @@
 		<IBK:Parameter name="ThicknessInsulation" unit="mm">0</IBK:Parameter>
 		<IBK:Parameter name="ThermalConductivityInsulation" unit="mm">0</IBK:Parameter>
 	</NetworkPipe>
-	<NetworkPipe id="1000001" displayName="DESTETST 21 x 1" color="#ff8215" categoryName="DESTETST">
-		<IBK:Parameter name="DiameterOutside" unit="mm">21</IBK:Parameter>
-		<IBK:Parameter name="ThicknessWall" unit="mm">1</IBK:Parameter>
-		<IBK:Parameter name="RoughnessWall" unit="mm">0.05</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">1000</IBK:Parameter>
-		<IBK:Parameter name="ThicknessInsulation" unit="mm">45</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.035</IBK:Parameter>
-	</NetworkPipe>
-	<NetworkPipe id="1000002" displayName="DESTETST 26 x 1" color="#c56110" categoryName="DESTETST">
-		<IBK:Parameter name="DiameterOutside" unit="mm">26</IBK:Parameter>
-		<IBK:Parameter name="ThicknessWall" unit="mm">1</IBK:Parameter>
-		<IBK:Parameter name="RoughnessWall" unit="mm">0.05</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">1000</IBK:Parameter>
-		<IBK:Parameter name="ThicknessInsulation" unit="mm">42.5</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.035</IBK:Parameter>
-	</NetworkPipe>
-	<NetworkPipe id="1000003" displayName="DESTETST 33 x 1" color="#96470b" categoryName="DESTETST">
-		<IBK:Parameter name="DiameterOutside" unit="mm">33</IBK:Parameter>
-		<IBK:Parameter name="ThicknessWall" unit="mm">1</IBK:Parameter>
-		<IBK:Parameter name="RoughnessWall" unit="mm">0.05</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">1000</IBK:Parameter>
-		<IBK:Parameter name="ThicknessInsulation" unit="mm">46.5</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.035</IBK:Parameter>
-	</NetworkPipe>
-	<NetworkPipe id="1000004" displayName="DESTETST 41 x 1" color="#763608" categoryName="DESTETST">
-		<IBK:Parameter name="DiameterOutside" unit="mm">41</IBK:Parameter>
-		<IBK:Parameter name="ThicknessWall" unit="mm">1</IBK:Parameter>
-		<IBK:Parameter name="RoughnessWall" unit="mm">0.05</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">1000</IBK:Parameter>
-		<IBK:Parameter name="ThicknessInsulation" unit="mm">42.5</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.035</IBK:Parameter>
-	</NetworkPipe>
-	<NetworkPipe id="1000005" displayName="DESTETST 51 x 1" color="#502405" categoryName="DESTETST">
-		<IBK:Parameter name="DiameterOutside" unit="mm">51</IBK:Parameter>
-		<IBK:Parameter name="ThicknessWall" unit="mm">1</IBK:Parameter>
-		<IBK:Parameter name="RoughnessWall" unit="mm">0.05</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityWall" unit="W/mK">1000</IBK:Parameter>
-		<IBK:Parameter name="ThicknessInsulation" unit="mm">45</IBK:Parameter>
-		<IBK:Parameter name="ThermalConductivityInsulation" unit="W/mK">0.035</IBK:Parameter>
-	</NetworkPipe>
+
 </NetworkPipes>

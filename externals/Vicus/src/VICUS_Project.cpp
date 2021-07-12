@@ -2205,8 +2205,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 		if (dInsulation>0 && lambdaInsulation>0){
 			UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / pipe->diameterInside())
-						+ 1/lambdaInsulation *
-						  IBK::f_log((da + 2*dInsulation) / da) );
+						+ 1/lambdaInsulation * IBK::f_log((da + 2*dInsulation) / da) );
 		}
 		else {
 			UValue = 2*PI/ ( lambdaWall * IBK::f_log(da / pipe->diameterInside()) );
