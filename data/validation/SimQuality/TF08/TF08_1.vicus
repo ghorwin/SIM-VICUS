@@ -2,8 +2,12 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Juli 9 12:55:52 2021</Created>
-		<LastEdited>Sa. Juli 10 10:13:36 2021</LastEdited>
+		<LastEdited>Mo. Juli 12 10:16:56 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -27,7 +31,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF08-InterneLasten/Aufgabenstellung/Wetterdaten/SimQuality_TF08_Klima.epw</ClimateFilePath>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-10-TRY-2010__Hof__Jahr_00000K0_00567m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -45,12 +49,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-0.681457 -8.60671 8.27299</CameraTranslation>
+			<CameraTranslation>-0.521884 -8.89271 8.03654</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.849883</Wp>
-				<X>0.505659</X>
-				<Y>-0.0758861</Y>
-				<Z>-0.127464</Z>
+				<Wp>0.846497</Wp>
+				<X>0.513712</X>
+				<Y>-0.0724911</Y>
+				<Z>-0.119522</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -62,7 +66,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="30" displayName="TF08.1">
-								<IdZoneTemplate>80014</IdZoneTemplate>
+								<IdZoneTemplate>80015</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
@@ -154,13 +158,13 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
@@ -192,7 +196,7 @@
 				</Schedule>
 			</Schedules>
 			<InternalLoads>
-				<InternalLoad id="70004" displayName="DE: TF08.1 |EN: &lt;new internal load model&gt;" color="#5aff82">
+				<InternalLoad id="70011" displayName="DE: TF08.1 |EN: &lt;new internal load model&gt;" color="#5aff82">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>Power</PowerMethod>
 					<PowerManagementScheduleId>60011</PowerManagementScheduleId>
@@ -203,8 +207,8 @@
 				</InternalLoad>
 			</InternalLoads>
 			<ZoneTemplates>
-				<ZoneTemplate id="80014" displayName="DE: SimQuality_TF08.1 |EN: &lt;new zone template&gt;" color="#5a6eff">
-					<IntLoadEquipment>70004</IntLoadEquipment>
+				<ZoneTemplate id="80015" displayName="DE: SimQuality_TF08.1 |EN: &lt;new zone template&gt;" color="#5a6eff">
+					<IntLoadEquipment>70011</IntLoadEquipment>
 				</ZoneTemplate>
 			</ZoneTemplates>
 		</EmbeddedDatabase>
