@@ -1090,24 +1090,6 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 }
 
 
-void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
-	if (m_simulationStartNetworkSim == nullptr)
-		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		if (!saveProject())
-			return;
-	}
-	if (project().m_geometricNetworks.empty()) {
-		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
-		return;
-	}
-
-	m_simulationStartNetworkSim->edit();
-}
-
-
 void SVMainWindow::on_actionSimulationExportFMI_triggered() {
 	// we require a saved project with at least one network definition
 	if (SVProjectHandler::instance().projectFile().isEmpty()) {
