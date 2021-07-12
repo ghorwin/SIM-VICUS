@@ -2,11 +2,11 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Juli 9 12:55:52 2021</Created>
-		<LastEdited>Mo. Juli 12 10:16:56 2021</LastEdited>
+		<LastEdited>Mo. Juli 12 13:31:09 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+		<Placeholder name="Database">/home/uni/Schreibtisch/svn/SIM-VICUS/data</Placeholder>
 	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
@@ -111,15 +111,6 @@
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
-				<Material id="10003" displayName="de: [SimQuality] Stein |en: [SimQuality] Stone" color="#8f5902">
-					<Notes>en:Used in SimQuality test cases (TF8).|de:Verwendung in SimQuality (TF8).</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>NaturalStones</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
-				</Material>
 				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
 					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
 					<Manufacturer>generic</Manufacturer>
@@ -137,6 +128,15 @@
 					<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+				</Material>
+				<Material id="10003" displayName="de: [SimQuality] Stein |en: [SimQuality] Stone" color="#8f5902">
+					<Notes>en:Used in SimQuality test cases (TF8).|de:Verwendung in SimQuality (TF8).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>NaturalStones</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
@@ -179,38 +179,6 @@
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
-			<Schedules>
-				<Schedule id="60011" displayName="DE: TF08.1 |EN: &lt;new schedule&gt;">
-					<UseLinearInterpolation>0</UseLinearInterpolation>
-					<Periods>
-						<ScheduleInterval intervalStartDay="0">
-							<DailyCycles>
-								<DailyCycle>
-									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
-									<TimePoints>0</TimePoints>
-									<Values>1</Values>
-								</DailyCycle>
-							</DailyCycles>
-						</ScheduleInterval>
-					</Periods>
-				</Schedule>
-			</Schedules>
-			<InternalLoads>
-				<InternalLoad id="70011" displayName="DE: TF08.1 |EN: &lt;new internal load model&gt;" color="#5aff82">
-					<Category>ElectricEquiment</Category>
-					<PowerMethod>Power</PowerMethod>
-					<PowerManagementScheduleId>60011</PowerManagementScheduleId>
-					<IBK:Parameter name="Power" unit="W">400</IBK:Parameter>
-					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
-					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
-					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
-				</InternalLoad>
-			</InternalLoads>
-			<ZoneTemplates>
-				<ZoneTemplate id="80015" displayName="DE: SimQuality_TF08.1 |EN: &lt;new zone template&gt;" color="#5a6eff">
-					<IntLoadEquipment>70011</IntLoadEquipment>
-				</ZoneTemplate>
-			</ZoneTemplates>
 		</EmbeddedDatabase>
 		<FMIDescription />
 	</Project>

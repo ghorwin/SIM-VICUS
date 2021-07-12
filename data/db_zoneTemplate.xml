@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ZoneTemplates>
+	<ZoneTemplate id="8001" displayName="DE: SimQuality_TF08.1 |EN: SimQuality_TF08.1;" color="#5a6eff">
+		<IntLoadEquipment>7001</IntLoadEquipment>
+	</ZoneTemplate>
+</ZoneTemplates>

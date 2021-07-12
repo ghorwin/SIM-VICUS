@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Schedules>
+	<Schedule id="6001" displayName="DE: ElectricEquipment TF08.1 |EN: ElectricEquipment TF08.1;">
+		<UseLinearInterpolation>0</UseLinearInterpolation>
+		<Periods>
+			<ScheduleInterval intervalStartDay="0">
+				<DailyCycles>
+					<DailyCycle>
+						<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+						<TimePoints>0</TimePoints>
+						<Values>1</Values>
+					</DailyCycle>
+				</DailyCycles>
+			</ScheduleInterval>
+		</Periods>
+	</Schedule>
+</Schedules>

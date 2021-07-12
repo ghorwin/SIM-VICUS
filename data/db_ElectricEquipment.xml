@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<InternalLoads>
+	<InternalLoad id="7001" displayName="DE: TF08.1 |EN: TF08.1;" color="#5aff82">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>Power</PowerMethod>
+		<PowerManagementScheduleId>6001</PowerManagementScheduleId>
+		<IBK:Parameter name="Power" unit="W">400</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+</InternalLoads>

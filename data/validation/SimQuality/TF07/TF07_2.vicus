@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. Juli 8 16:56:27 2021</Created>
-		<LastEdited>Do. Juli 8 19:33:23 2021</LastEdited>
+		<LastEdited>Mo. Juli 12 13:04:04 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>3.20182 -10.0116 3.10651</CameraTranslation>
+			<CameraTranslation>5.61512 -7.53104 7.72026</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.778184</Wp>
-				<X>0.626943</X>
-				<Y>0.0230284</Y>
-				<Z>0.0285946</Z>
+				<Wp>0.890237</Wp>
+				<X>0.41234</X>
+				<Y>0.080198</Y>
+				<Z>0.176064</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -110,7 +110,7 @@
 			<ComponentInstance id="7" componentID="1004" sideASurfaceID="16" />
 		</ComponentInstances>
 		<SubSurfaceComponentInstances>
-			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="160007" sideASurfaceID="40" />
+			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="10003" sideASurfaceID="40" />
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -146,23 +146,23 @@
 				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer matId="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						<MaterialLayer matId="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
 			</Constructions>
 			<Windows>
-				<Window id="30005" displayName="DE: WindowTF07.2" idGlazingSystem="300005" color="#5aff82" methodFrame="None" methodDivider="None" />
+				<Window id="3003" displayName="DE: WindowTF07.2" idGlazingSystem="3003" color="#5ac5ff" methodFrame="None" methodDivider="None" />
 			</Windows>
 			<WindowGlazingSystems>
-				<WindowGlazingSystem id="300005" displayName="DE: TF07.2_MIG_winkelunabhängig" color="#5a6eff" modelType="Simple">
+				<WindowGlazingSystem id="3003" displayName="DE: TF07.2_MIG_winkelunabhängig" color="#5a6eff" modelType="Simple">
 					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 						<X unit="Deg">0 90 </X>
@@ -171,13 +171,13 @@
 				</WindowGlazingSystem>
 			</WindowGlazingSystems>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
@@ -193,9 +193,9 @@
 				</Component>
 			</Components>
 			<SubSurfaceComponents>
-				<SubSurfaceComponent id="160007" displayName="DE: FensterTF07.2 |EN: WindowTF07.2;" color="#a25aff">
+				<SubSurfaceComponent id="10003" displayName="DE: FensterTF07.2 |EN: WindowTF07.2;" color="#a25aff">
 					<Type>Window</Type>
-					<IdWindow>30005</IdWindow>
+					<IdWindow>3003</IdWindow>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</SubSurfaceComponent>

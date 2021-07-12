@@ -7,4 +7,25 @@
 			<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
 		</LinearSplineParameter>
 	</WindowGlazingSystem>
+	<WindowGlazingSystem id="3002" displayName="DE: TF07.1_Doppelscheibenverglasung |EN: Double-layer glazing" color="#4FF709" modelType="Simple">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+			<X unit="Deg">0 90 </X>
+			<Y unit="---">0 0 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+	<WindowGlazingSystem id="3003" displayName="DE: TF07.2_MIG_winkelunabhängig" color="#5a6eff" modelType="Simple">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+			<X unit="Deg">0 90 </X>
+			<Y unit="---">0.6 0.6 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
+	<WindowGlazingSystem id="3004" displayName="DE: TF07.3_MIG_winkelabhängig" color="#e6ff5a" modelType="Simple">
+		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
+		<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+			<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+			<Y unit="---">0.6 0.6 0.6 0.6 0.588 0.564 0.516 0.414 0.222 0 </Y>
+		</LinearSplineParameter>
+	</WindowGlazingSystem>
 </WindowGlazingSystems>
