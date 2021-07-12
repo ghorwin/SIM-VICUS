@@ -683,29 +683,32 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
 	// otherwise we add load and schedule definitions and generate a new object list.
 
+	bool foundModel = false;
 	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
 		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
 			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
 		{
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+			foundModel = true;
+			break;
 		}
-		else {
-			// append definitions and create new object list
-			NANDRAD::ObjectList ol;
-			ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ol.m_filterID.m_ids.insert(r->m_id);
+	}
+	if(!foundModel) {
+		// append definitions and create new object list
+		NANDRAD::ObjectList ol;
+		ol.m_name = IBK::pick_name("InternalLoads-" + zt->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ol.m_filterID.m_ids.insert(r->m_id);
 
-			// set object list in new definition
-			internalLoadsModel.m_zoneObjectList = ol.m_name;
+		// set object list in new definition
+		internalLoadsModel.m_zoneObjectList = ol.m_name;
 
-			// add all definitions
-			m_internalLoadObjects.push_back(internalLoadsModel);
-			m_schedules.push_back(scheds);
-			m_objLists.push_back(ol);
-			m_objListNames.push_back(ol.m_name);
-		}
+		// add all definitions
+		m_internalLoadObjects.push_back(internalLoadsModel);
+		m_schedules.push_back(scheds);
+		m_objLists.push_back(ol);
+		m_objListNames.push_back(ol.m_name);
 	}
 }
 
@@ -928,29 +931,32 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 	// If this schedule is also identitical to our generated schedule, we simply extend the object list by our zone ID
 	// otherwise we add model and schedule definitions and generate a new object list.
 
+	bool foundModel = false;
 	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
 		if (m_natVentObjects[i].equal(natVentMod) &&
 			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
 		{
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
+			foundModel = true;
+			break;
 		}
-		else {
-			// append definitions and create new object list
-			NANDRAD::ObjectList ol;
-			ol.m_name = IBK::pick_name("Ventilation-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ol.m_filterID.m_ids.insert(r->m_id);
+	}
+	if(!foundModel) {
+		// append definitions and create new object list
+		NANDRAD::ObjectList ol;
+		ol.m_name = IBK::pick_name("Ventilation-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ol.m_filterID.m_ids.insert(r->m_id);
 
-			// set object list in new definition
-			natVentMod.m_zoneObjectList = ol.m_name;
+		// set object list in new definition
+		natVentMod.m_zoneObjectList = ol.m_name;
 
-			// add all definitions
-			m_natVentObjects.push_back(natVentMod);
-			m_schedules.push_back(scheds);
-			m_objLists.push_back(ol);
-			m_objListNames.push_back(ol.m_name);
-		}
+		// add all definitions
+		m_natVentObjects.push_back(natVentMod);
+		m_schedules.push_back(scheds);
+		m_objLists.push_back(ol);
+		m_objListNames.push_back(ol.m_name);
 	}
 }
 
