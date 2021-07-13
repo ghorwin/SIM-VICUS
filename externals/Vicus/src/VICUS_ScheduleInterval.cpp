@@ -284,7 +284,14 @@ void ScheduleInterval::createWeekDataVector(std::vector<double> &timepoints, std
 			}
 		}
 	}
-	//now the data vector contains all data for a week starting at monday
+
+	// special handling for empty daily cycles
+	if (timepoints.empty()) {
+		timepoints.push_back(0);
+		data.push_back(0);
+	}
+
+	// now the data vector contains all data for a week starting at monday
 }
 
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {

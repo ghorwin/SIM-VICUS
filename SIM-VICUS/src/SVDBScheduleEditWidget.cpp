@@ -251,6 +251,13 @@ void SVDBScheduleEditWidget::updateDiagram() {
 		timepoints.swap(timepointsCopy);
 		data.swap(dataCopy);
 	}
+	else {
+		// special handling for time series with just one point (constant schedule for all days)
+		if (timepoints.size() == 1) {
+			timepoints.push_back(7);
+			data.push_back(data.back());
+		}
+	}
 
 	// update diagram
 	m_curve->setSamples(&timepoints[0], &data[0], timepoints.size());
