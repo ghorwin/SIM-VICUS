@@ -35,8 +35,8 @@ bool HydraulicNetworkPipeProperties::operator!=(const HydraulicNetworkPipeProper
 
 
 void HydraulicNetworkPipeProperties::checkParameters(int networkModelType) const {
-
 	FUNCID(HydraulicNetworkPipeProperties::checkParameters);
+
 	// check for mandatory and required parameters, check value ranges
 	m_para[P_PipeRoughness].checkedValue("PipeRoughness", "m", "m", 0.0, false, std::numeric_limits<double>::max(), true,
 							"Pipe roughness must be > 0 mm.");

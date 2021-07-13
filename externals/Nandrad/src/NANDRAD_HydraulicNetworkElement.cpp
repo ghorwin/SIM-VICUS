@@ -43,8 +43,8 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 	KeywordList::setParameter(m_para, "HydraulicNetworkElement::para_t", P_Length, length);
 }
 
-bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) const
-{
+
+bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) const {
 	// check ids
 	if (m_id != other.m_id ||
 		m_inletNodeId != other.m_inletNodeId ||
@@ -73,8 +73,7 @@ bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) c
 }
 
 
-void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const Project & prj)
-{
+void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const Project & prj) {
 	FUNCID(HydraulicNetworkElement::checkParameters);
 
 	// retrieve network component

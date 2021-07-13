@@ -71,6 +71,9 @@ public:
 	NANDRAD_COMP(Schedules)
 
 
+	/*! Checks given parameters and initializes all linear splines given as tsv-files. */
+	void checkParameters();
+
 	/*! This function does all the work in the actual schedule-by-daily-cycle implementation.
 		It constructs a linear spline for cyclic annual use by processing all days of the year,
 		looking up the respective parameter and combining day cycle values.
