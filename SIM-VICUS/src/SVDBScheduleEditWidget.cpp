@@ -532,12 +532,12 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_cellChanged(int row, int colu
 	size_t colIdx = (size_t)column;
 	size_t schedIdx = (size_t)row;
 
-	if (colIdx != 1)
+	if (colIdx != 2)
 		return; // we only want to set the display name to our data object
 
 	// TODO : Language handling
 	QString periodName = m_ui->tableWidgetPeriods->item(schedIdx, colIdx)->text();
-	m_current->m_periods[schedIdx].m_displayName.setString(periodName.toStdString(), "de");
+	m_current->m_periods[schedIdx].m_displayName.setEncodedString(periodName.toStdString());
 	modelModify();
 }
 
@@ -658,6 +658,10 @@ void SVDBScheduleEditWidget::updateDailyCycleSelectButtons() {
 		}
 		// any days free?
 		enableButton = enableButton && !m_currentInterval->freeDayTypes().empty();
+
+		// if dataset cannot be modified, we may not add another daily cycle
+		if (m_current->m_builtIn)
+			enableButton = false;
 		// check all check boxes and if we find one that is enabled and checked we have a modified
 		m_ui->toolButtonAddCurrentDailyCycle->setEnabled(enableButton);
 		m_ui->toolButtonForward->setEnabled(false);
@@ -734,10 +738,12 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 	// get index of currently edited item
 	int currentIdx = m_ui->tableWidgetPeriods->currentRow(); // Must be != -1
 	Q_ASSERT(currentIdx != -1);
+	m_ui->tableWidgetPeriods->blockSignals(true);
 	if (m_current->m_periods[(unsigned int)currentIdx].isValid())
 		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
 	else
 		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	// since this function is called whenever the data was added, we also need to inform the model about our modification
 	modelModify();
