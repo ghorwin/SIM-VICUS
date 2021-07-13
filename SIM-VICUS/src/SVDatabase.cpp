@@ -181,22 +181,24 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// create sets for objects that are referenced from other objects
-	std::set<const VICUS::Material *>				referencedMaterials;
-	std::set<const VICUS::Construction *>			referencedConstructions;
-	std::set<const VICUS::Window *>					referencedWindows;
-	std::set<const VICUS::WindowGlazingSystem *>	referencedGlazingSystems;
-	std::set<const VICUS::BoundaryCondition *>		referencedBC;
-	std::set<const VICUS::Component *>				referencedComponents;
-	std::set<const VICUS::SubSurfaceComponent *>	referencedSubSurfaceComponents;
-	std::set<const VICUS::SurfaceHeating *>			referencedSurfaceHeatings;
-	std::set<const VICUS::Schedule *>				referencedSchedule;
-	std::set<const VICUS::InternalLoad *>			referencedInternalLoads;
-	std::set<const VICUS::ZoneControlThermostat *>	referencedThermostats;
-	std::set<const VICUS::ZoneIdealHeatingCooling *> referencedIdealHeatCool;
-	std::set<const VICUS::VentilationNatural *>		referencedVentilation;
-	std::set<const VICUS::Infiltration *>			referencedInfiltration;
-	std::set<const VICUS::ZoneTemplate *>			referencedZoneTemplates;
+	std::set<const VICUS::Material *>					referencedMaterials;
+	std::set<const VICUS::Construction *>				referencedConstructions;
+	std::set<const VICUS::Window *>						referencedWindows;
+	std::set<const VICUS::WindowGlazingSystem *>		referencedGlazingSystems;
+	std::set<const VICUS::BoundaryCondition *>			referencedBC;
+	std::set<const VICUS::Component *>					referencedComponents;
+	std::set<const VICUS::SubSurfaceComponent *>		referencedSubSurfaceComponents;
+	std::set<const VICUS::SurfaceHeating *>				referencedSurfaceHeatings;
+	std::set<const VICUS::Schedule *>					referencedSchedule;
+	std::set<const VICUS::InternalLoad *>				referencedInternalLoads;
+	std::set<const VICUS::ZoneControlThermostat	*>		referencedThermostats;
+	std::set<const VICUS::ZoneIdealHeatingCooling *>	referencedIdealHeatCool;
+	std::set<const VICUS::VentilationNatural *>			referencedVentilation;
+	std::set<const VICUS::Infiltration *>				referencedInfiltration;
+	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
+	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedCtrlNaturalVentilation;
 
+	//std::set<const VICUS::NetworkPipe*>					referencedPipes;
 
 	// we first collect all objects that are not referenced themselves
 	// then, we collect objects that are referenced from an already collected object
@@ -220,6 +222,9 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 		// do we have surface heating referenced?
 		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_surfaceHeatingID]);
+//		for(VICUS::NetworkPipe &pipe : p.m_pipes){
+//			referencedPipes.insert()
+//		}
 	}
 
 	// *** sub-surface components ***
@@ -337,6 +342,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 
 	// TODO m_pipes
+	//storeVector(p.m_embeddedDB.m_pipes, refer
 	// TODO m_fluids
 	// TODO m_networkComponents
 	// TODO m_EPDElements
@@ -351,6 +357,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatCool);
 
 	// TODO m_zoneControlVentilationNaturals
+	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, referencedCtrlNaturalVentilation);
 
 	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
 	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);

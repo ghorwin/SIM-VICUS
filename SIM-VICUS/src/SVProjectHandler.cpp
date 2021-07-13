@@ -628,6 +628,29 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 	SVDatabase & db = SVSettings::instance().m_db; // readibility-improvement
 
+
+	// network pipes
+	std::map<unsigned int, unsigned int> pipesIDMap;
+	for (VICUS::NetworkPipe & e : m_project->m_embeddedDB.m_pipes) {
+
+		importDBElement(e, db.m_pipes, pipesIDMap,
+						"Pipe '%1' with #%2 imported -> new ID #%3.\n",
+						"Pipe '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+	// network fluids
+	std::map<unsigned int, unsigned int> fluidsIDMap;
+	for (VICUS::NetworkFluid & e : m_project->m_embeddedDB.m_fluids) {
+
+		importDBElement(e, db.m_fluids, fluidsIDMap,
+						"Fluid '%1' with #%2 imported -> new ID #%3.\n",
+						"Fluid '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+
+
 	// materials
 	std::map<unsigned int, unsigned int> materialIDMap; // newID = materialIDMap[oldID];
 	for (VICUS::Material & e : m_project->m_embeddedDB.m_materials) {
@@ -708,6 +731,19 @@ bool SVProjectHandler::importEmbeddedDB() {
 			"Sub-surface component '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
+
+	// surface heating
+	std::map<unsigned int, unsigned int> surfaceHeatingIDMap;
+	for (VICUS::SurfaceHeating& e : m_project->m_embeddedDB.m_surfaceHeatings) {
+
+		replaceID(e.m_idPipe, pipesIDMap);
+
+		importDBElement(e, db.m_surfaceHeatings, surfaceHeatingIDMap,
+						"Surface heating '%1' with #%2 imported -> new ID #%3.\n",
+						"Surface heating '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
 
 	// schedules
 	std::map<unsigned int, unsigned int> schedulesIDMap;
@@ -816,25 +852,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
-	// network pipes
-	std::map<unsigned int, unsigned int> pipesIDMap;
-	for (VICUS::NetworkPipe & e : m_project->m_embeddedDB.m_pipes) {
 
-		importDBElement(e, db.m_pipes, pipesIDMap,
-						"Pipe '%1' with #%2 imported -> new ID #%3.\n",
-						"Pipe '%1' with #%2 exists already -> ID #%3.\n"
-		);
-	}
-
-	// network fluids
-	std::map<unsigned int, unsigned int> fluidsIDMap;
-	for (VICUS::NetworkFluid & e : m_project->m_embeddedDB.m_fluids) {
-
-		importDBElement(e, db.m_fluids, fluidsIDMap,
-						"Fluid '%1' with #%2 imported -> new ID #%3.\n",
-						"Fluid '%1' with #%2 exists already -> ID #%3.\n"
-		);
-	}
 
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
@@ -855,6 +873,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !zoneTemplatesIDMap.empty();
 	idsModified |= !pipesIDMap.empty();
 	idsModified |= !fluidsIDMap.empty();
+	idsModified |= !surfaceHeatingIDMap.empty();
 	return idsModified;
 }
 
