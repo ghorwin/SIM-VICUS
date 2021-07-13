@@ -259,6 +259,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// *** SurfaceHeating and Pipes ***
 	for (const VICUS::SurfaceHeating * sh : referencedSurfaceHeatings) {
+		if (sh == nullptr) continue;
 		referencedNetworkPipes.insert(m_pipes[sh->m_idPipe]);
 	}
 
@@ -274,10 +275,12 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	// referenced from constructions and window (frame+divider)
 
 	for (const VICUS::Construction * c : referencedConstructions) {
+		if (c == nullptr) continue;
 		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
 			referencedMaterials.insert(m_materials[ml.m_matId]);
 	}
 	for (const VICUS::Window * c : referencedWindows) {
+		if (c == nullptr) continue;
 		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]);
 		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]);
 	}
@@ -317,7 +320,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 					break;
 				}
 			}
-			else if(thermo != nullptr){
+			else if(thermo != nullptr) {
 				referencedThermostats.insert(thermo);
 
 				referencedSchedule.insert(m_schedules[thermo->m_heatingSetpointScheduleId]);
