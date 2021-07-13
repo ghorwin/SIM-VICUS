@@ -725,7 +725,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// InternalLoad
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
 	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {
-
+		replaceID(e.m_activityScheduleId, schedulesIDMap);
+		replaceID(e.m_occupancyScheduleId, schedulesIDMap);
+		replaceID(e.m_powerManagementScheduleId, schedulesIDMap);
 		importDBElement(e, db.m_internalLoads, internalLoadIDMap,
 			"Internal loads '%1' with #%2 imported -> new ID #%3.\n",
 			"Internal loads '%1' with #%2 exists already -> ID #%3.\n"
@@ -735,7 +737,6 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// infiltration
 	std::map<unsigned int, unsigned int> infiltrationIDMap;
 	for (VICUS::Infiltration & e : m_project->m_embeddedDB.m_infiltration) {
-
 		importDBElement(e, db.m_infiltration, infiltrationIDMap,
 						"Infiltration '%1' with #%2 imported -> new ID #%3.\n",
 						"Infiltration '%1' with #%2 exists already -> ID #%3.\n"
@@ -745,6 +746,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// ventilation
 	std::map<unsigned int, unsigned int> ventilationIDMap;
 	for (VICUS::VentilationNatural & e : m_project->m_embeddedDB.m_ventilationNatural) {
+		replaceID(e.m_scheduleId, schedulesIDMap);
 
 		importDBElement(e, db.m_ventilationNatural, ventilationIDMap,
 						"Natural ventilation '%1' with #%2 imported -> new ID #%3.\n",
@@ -755,7 +757,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// zone control thermostat
 	std::map<unsigned int, unsigned int> thermostatIDMap;
 	for (VICUS::ZoneControlThermostat & e : m_project->m_embeddedDB.m_zoneControlThermostats) {
-
+		replaceID(e.m_heatingSetpointScheduleId,schedulesIDMap);
+		replaceID(e.m_coolingSetpointScheduleId,schedulesIDMap);
 		importDBElement(e, db.m_zoneControlThermostat, thermostatIDMap,
 						"Thermostat '%1' with #%2 imported -> new ID #%3.\n",
 						"Thermostat '%1' with #%2 exists already -> ID #%3.\n"
@@ -795,6 +798,17 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// zone templates
 	std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
 	for (VICUS::ZoneTemplate & e : m_project->m_embeddedDB.m_zoneTemplates) {
+
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson], internalLoadIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment], internalLoadIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting], internalLoadIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_Infiltration], infiltrationIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_VentilationNatural], ventilationIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat], thermostatIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_ControlNaturalVentilation], ventilationCtrlIDMap);
+		//TODO Dirk Shading implementieren
+		//replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_Control], );
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling], idealHeatingCoolingIDMap);
 
 		importDBElement(e, db.m_zoneTemplates, zoneTemplatesIDMap,
 						"Zone template '%1' with #%2 imported -> new ID #%3.\n",
