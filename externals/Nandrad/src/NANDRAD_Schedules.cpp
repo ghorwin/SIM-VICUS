@@ -51,7 +51,7 @@ void Schedules::checkParameters() {
 		for (NANDRAD::LinearSplineParameter & spl : it->second) {
 			try {
 				// all checks will be skipped, if a file name was given: only reads the file and converts to base units.
-				// Since we skip the unit check, we need to pass dummy units here ...
+				// Since we skip the unit check, we need to pass dummy units here, that are, however, baseSI units ...
 				spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error initializing annual spline schedule data for schedule '%1'.")

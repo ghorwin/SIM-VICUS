@@ -84,6 +84,9 @@ void Schedules::setup(NANDRAD::Project &project) {
 	m_objectLists = &project.m_objectLists;
 	m_schedules = &project.m_schedules;
 
+	// run general input data checks
+	project.m_schedules.checkParameters();
+
 	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
 	for (std::map<std::string, std::vector<NANDRAD::Schedule> >::iterator schedGroupIT = project.m_schedules.m_scheduleGroups.begin();
 		 schedGroupIT != project.m_schedules.m_scheduleGroups.end(); ++schedGroupIT)
@@ -176,9 +179,9 @@ void Schedules::setup(NANDRAD::Project &project) {
 
 		// iterate over all splines for that object list
 		const std::vector<NANDRAD::LinearSplineParameter> &splines = itAnnualSched->second;
-		for (const NANDRAD::LinearSplineParameter &spl: splines){
+		for (const NANDRAD::LinearSplineParameter &spl: splines) {
 
-			// NOTE: for the splines checkAndInitialize was called already
+			// NOTE: for the splines checkAndInitialize was called already, and referenced tsv-files have been read already
 
 			// check for correct spelling and unit of scheduled quantity
 			KnownQuantities k;
@@ -208,11 +211,8 @@ void Schedules::setup(NANDRAD::Project &project) {
 			m_valueSpline.push_back(spl.m_values);
 			// and initialize memory for corresponding result values
 			m_results.push_back(0);
-
 		}
-
 	}
-
 }
 
 
