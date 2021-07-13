@@ -208,11 +208,11 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
 	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedCtrlNaturalVentilation;
 
-	std::set<const VICUS::NetworkPipe*>				referencedNetworkPipes;
-	std::set<const VICUS::NetworkComponent *>		referencedNetworkComponents;
-	std::set<const VICUS::NetworkController *>		referencedNetworkControllers;
-	std::set<const VICUS::SubNetwork *>				referencedSubNetworks;
-	std::set<const VICUS::NetworkFluid *>			referencedNetworkFluids;
+	std::set<const VICUS::NetworkPipe*>					referencedNetworkPipes;
+	std::set<const VICUS::NetworkComponent *>			referencedNetworkComponents;
+	std::set<const VICUS::NetworkController *>			referencedNetworkControllers;
+	std::set<const VICUS::SubNetwork *>					referencedSubNetworks;
+	std::set<const VICUS::NetworkFluid *>				referencedNetworkFluids;
 
 
 	// we first collect all objects that are not referenced themselves
@@ -256,6 +256,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
 	}
 
+	// *** surface heatings ***
+	for (const VICUS::SurfaceHeating * sh : referencedSurfaceHeatings) {
+		referencedNetworkPipes.insert(m_pipes[sh->m_idPipe]);
+	}
 
 	// *** zone templates ***
 
@@ -263,7 +267,6 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (const VICUS::Room &  r : bl.m_rooms)
 				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);	// bad/missing IDs yield a nullptr
-	referencedZoneTemplates.erase(nullptr);
 
 	// *** materials ***
 	//
@@ -346,21 +349,18 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 		// fluids
 		const VICUS::NetworkFluid * f = m_fluids[net.m_fluidID];
-		if (f != nullptr)
-			referencedNetworkFluids.insert(f);
+		referencedNetworkFluids.insert(f);
 
 		// pipes
 		for (const VICUS::NetworkEdge &edge: net.m_edges){
 			const VICUS::NetworkPipe * p = m_pipes[edge.m_pipeId];
-			if (p != nullptr)
-				referencedNetworkPipes.insert(p);
+			referencedNetworkPipes.insert(p);
 		}
 
 		// sub networks
 		for (const VICUS::NetworkNode &node: net.m_nodes){
 			const VICUS::SubNetwork * sub = m_subNetworks[node.m_subNetworkId];
-			if (sub != nullptr)
-				referencedSubNetworks.insert(sub);
+			referencedSubNetworks.insert(sub);
 		}
 	}
 
@@ -370,14 +370,11 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 		// network components
 		const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
-		if (comp != nullptr)
-			referencedNetworkComponents.insert(comp);
+		referencedNetworkComponents.insert(comp);
 
 		// network controllers
 		const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
-		if (ctrl != nullptr)
-			referencedNetworkControllers.insert(ctrl);
-		}
+		referencedNetworkControllers.insert(ctrl);
 	}
 
 	// iterate through components
@@ -386,8 +383,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// schedules
 		for (unsigned int i: comp->m_scheduleIds){
 			const VICUS::Schedule *sched = m_schedules[i];
-			if (sched != nullptr)
-				referencedSchedule.insert(sched);
+			referencedSchedule.insert(sched);
 		}
 	}
 
@@ -419,7 +415,6 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatCool);
 
-	// TODO m_zoneControlVentilationNaturals
 	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, referencedCtrlNaturalVentilation);
 
 	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
