@@ -9,4 +9,13 @@
 	<ZoneTemplate id="8002" displayName="DE: SimQuality_TF05.3 |EN: SimQuality_TF05.3;" color="#5aff82">
 		<NaturalVentilation>15002</NaturalVentilation>
 	</ZoneTemplate>
+	<ZoneTemplate id="8003" displayName="DE: SimQuality_TF08.3 |EN: SimQuality_TF08.3;" color="#f57900">
+		<IntLoadEquipment>7003</IntLoadEquipment>
+	</ZoneTemplate>
+	<ZoneTemplate id="8004" displayName="DE: SimQuality_TF08.2 |EN: SimQuality_TF08.2;" color="#e6ff5a">
+		<IntLoadEquipment>7002</IntLoadEquipment>
+	</ZoneTemplate>
+	<ZoneTemplate id="8005" displayName="DE: SimQuality_TF08.4 |EN: SimQuality_TF08.4;" color="#a25aff">
+		<IntLoadEquipment>70012</IntLoadEquipment>
+	</ZoneTemplate>
 </ZoneTemplates>

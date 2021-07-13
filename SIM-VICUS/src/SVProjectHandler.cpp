@@ -709,6 +709,19 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+	// surface heating
+	std::map<unsigned int, unsigned int> surfaceHeatingIDMap;
+	for (VICUS::SurfaceHeating& e : m_project->m_embeddedDB.m_surfaceHeatings) {
+
+		replaceID(e.m_idPipe, pipesIDMap);
+
+		importDBElement(e, db.m_surfaceHeatings, surfaceHeatingIDMap,
+						"Surface heating '%1' with #%2 imported -> new ID #%3.\n",
+						"Surface heating '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
+
 	// schedules
 	std::map<unsigned int, unsigned int> schedulesIDMap;
 	for (VICUS::Schedule & e : m_project->m_embeddedDB.m_schedules) {
@@ -816,6 +829,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+
 	// network pipes
 	std::map<unsigned int, unsigned int> pipesIDMap;
 	for (VICUS::NetworkPipe & e : m_project->m_embeddedDB.m_pipes) {
@@ -835,6 +849,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 						"Fluid '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
+
+
 
 	// network components
 	std::map<unsigned int, unsigned int> netComponentsIDMap;
@@ -857,7 +873,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
-	// network components
+	// network subnetwork-components
 	std::map<unsigned int, unsigned int> subNetworksIDMap;
 	for (VICUS::SubNetwork & e : m_project->m_embeddedDB.m_subNetworks) {
 
@@ -887,9 +903,11 @@ bool SVProjectHandler::importEmbeddedDB() {
 	idsModified |= !zoneTemplatesIDMap.empty();
 	idsModified |= !pipesIDMap.empty();
 	idsModified |= !fluidsIDMap.empty();
+	idsModified |= !surfaceHeatingIDMap.empty();
 	idsModified |= !netComponentsIDMap.empty();
 	idsModified |= !netControllersIDMap.empty();
 	idsModified |= !subNetworksIDMap.empty();
+
 	return idsModified;
 }
 
