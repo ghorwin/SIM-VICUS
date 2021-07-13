@@ -360,21 +360,24 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// sub networks
 		for (const VICUS::NetworkNode &node: net.m_nodes){
 			const VICUS::SubNetwork * sub = m_subNetworks[node.m_subNetworkId];
-			referencedSubNetworks.insert(sub);
+			if (sub != nullptr)
+				referencedSubNetworks.insert(sub);
 		}
 	}
 
 	// iterate through collected sub networks
-	for (const VICUS::SubNetwork *sub: referencedSubNetworks){
+	for (const VICUS::SubNetwork *sub: referencedSubNetworks) {
 		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
 
-		// network components
-		const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
-		referencedNetworkComponents.insert(comp);
+			// network components
+			const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
+			if (comp != nullptr)
+				referencedNetworkComponents.insert(comp);
 
-		// network controllers
-		const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
-		referencedNetworkControllers.insert(ctrl);
+			// network controllers
+			const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
+			referencedNetworkControllers.insert(ctrl);
+		}
 	}
 
 	// iterate through components
