@@ -215,7 +215,7 @@
 				</Component>
 			</Components>
 			<Schedules>
-				<Schedule id="100001" displayName="DE: TF10.2 Heizsollwert |EN: &lt;new schedule&gt;">
+				<Schedule id="60020" displayName="DE: TF10.2 Heizsollwert |EN: &lt;new schedule&gt;">
 					<UseLinearInterpolation>1</UseLinearInterpolation>
 					<Periods>
 						<ScheduleInterval intervalStartDay="0">
@@ -229,11 +229,143 @@
 						</ScheduleInterval>
 					</Periods>
 				</Schedule>
+				<Schedule id="60017" displayName="DE: TF10.1 Kühlsollwert (Thermostat) |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>1</UseLinearInterpolation>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>20,20</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="32">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>20.5,32</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="33">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,5</TimePoints>
+									<Values>32.5,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="34">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>35,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="114">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,17,18</TimePoints>
+									<Values>35,35,10</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="115">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>10,10</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="149">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,1</TimePoints>
+									<Values>10,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="150">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>35,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="210">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,1</TimePoints>
+									<Values>35,17</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="211">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>17,17</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="282">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0,12,13</TimePoints>
+									<Values>17,17,10</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="283">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>10,10</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="303">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0,19</TimePoints>
+									<Values>11.25,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+						<ScheduleInterval displayName="EN: New interval" intervalStartDay="304">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>8,9,3,4,5,6,7</DayTypes>
+									<TimePoints>0,23</TimePoints>
+									<Values>35,35</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
 			</Schedules>
 			<ZoneControlThermostats>
 				<ZoneControlThermostat id="110005" displayName="DE: TF10.2 Thermostat |EN: &lt;new zone control thermostat model&gt;" color="#5a6eff">
 					<ControlValue>AirTemperature</ControlValue>
-					<HeatingSetpointScheduleId>100001</HeatingSetpointScheduleId>
+					<HeatingSetpointScheduleId>60020</HeatingSetpointScheduleId>
+					<CoolingSetpointScheduleId>60017</CoolingSetpointScheduleId>
 					<ControllerType>Analog</ControllerType>
 					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
 				</ZoneControlThermostat>
