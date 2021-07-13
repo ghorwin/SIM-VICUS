@@ -162,8 +162,6 @@ Gebäudemodellgleichungen
 \end_layout
 
 \begin_layout Standard
-
-\lang american
 \begin_inset Tabular
 <lyxtabular version="3" rows="42" columns="3">
 <features islongtable="true" longtabularalignment="center">
@@ -175,8 +173,6 @@ Gebäudemodellgleichungen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Symbol
 \end_layout
 
@@ -186,8 +182,6 @@ Symbol
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Einheit
 \end_layout
 
@@ -197,8 +191,6 @@ Einheit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Beschreibung
 \end_layout
 
@@ -210,8 +202,6 @@ Beschreibung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset ERT
 status collapsed
 
@@ -279,8 +269,6 @@ bottomrule
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -318,8 +306,6 @@ Symbolverzeichnis
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $t$
 \end_inset
 
@@ -332,8 +318,6 @@ Symbolverzeichnis
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $s$
 \end_inset
 
@@ -346,8 +330,6 @@ Symbolverzeichnis
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Zeit
 \end_layout
 
@@ -359,8 +341,6 @@ Zeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $Q$
 \end_inset
 
@@ -373,8 +353,6 @@ Zeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $J$
 \end_inset
 
@@ -387,8 +365,6 @@ Zeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Innere Energie
 \end_layout
 
@@ -400,8 +376,6 @@ Innere Energie
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $u$
 \end_inset
 
@@ -414,8 +388,6 @@ Innere Energie
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $J/m^{3}$
 \end_inset
 
@@ -428,8 +400,6 @@ Innere Energie
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Innere Energiedichte
 \end_layout
 
@@ -441,8 +411,6 @@ Innere Energiedichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $T$
 \end_inset
 
@@ -455,8 +423,6 @@ Innere Energiedichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $K$
 \end_inset
 
@@ -469,8 +435,6 @@ Innere Energiedichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Temperatur
 \end_layout
 
@@ -482,8 +446,6 @@ Temperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $T_{op}$
 \end_inset
 
@@ -496,8 +458,6 @@ Temperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $K$
 \end_inset
 
@@ -510,8 +470,6 @@ Temperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Empfindungstemperatur
 \end_layout
 
@@ -523,8 +481,6 @@ Empfindungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $T_{rad}$
 \end_inset
 
@@ -537,8 +493,6 @@ Empfindungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $K$
 \end_inset
 
@@ -551,8 +505,6 @@ Empfindungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Strahlungstemperatur
 \end_layout
 
@@ -564,8 +516,6 @@ Strahlungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\varrho$
 \end_inset
 
@@ -578,8 +528,6 @@ Strahlungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $kg/m^{3}$
 \end_inset
 
@@ -592,8 +540,6 @@ Strahlungstemperatur
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Massendichte per Einheitsvolumen
 \end_layout
 
@@ -605,8 +551,6 @@ Massendichte per Einheitsvolumen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $c$
 \end_inset
 
@@ -619,8 +563,6 @@ Massendichte per Einheitsvolumen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $J/kgK$
 \end_inset
 
@@ -633,8 +575,6 @@ Massendichte per Einheitsvolumen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Spezifische Wärmekapazität
 \end_layout
 
@@ -646,8 +586,6 @@ Spezifische Wärmekapazität
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $C_{M}$
 \end_inset
 
@@ -660,8 +598,6 @@ Spezifische Wärmekapazität
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $J/K$
 \end_inset
 
@@ -674,8 +610,6 @@ Spezifische Wärmekapazität
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmekapazität thermischer Massen im Raum
 \end_layout
 
@@ -687,8 +621,6 @@ Wärmekapazität thermischer Massen im Raum
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\lambda$
 \end_inset
 
@@ -701,8 +633,6 @@ Wärmekapazität thermischer Massen im Raum
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/mK$
 \end_inset
 
@@ -715,8 +645,6 @@ Wärmekapazität thermischer Massen im Raum
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmeleitfähigkeit
 \end_layout
 
@@ -728,8 +656,6 @@ Wärmeleitfähigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\alpha$
 \end_inset
 
@@ -742,8 +668,6 @@ Wärmeleitfähigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}K$
 \end_inset
 
@@ -756,8 +680,6 @@ Wärmeleitfähigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmeübergangskoeffizient
 \end_layout
 
@@ -769,8 +691,6 @@ Wärmeübergangskoeffizient
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $a$
 \end_inset
 
@@ -783,8 +703,6 @@ Wärmeübergangskoeffizient
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..1]$
 \end_inset
 
@@ -808,8 +726,6 @@ Absorptionskoeffizient für kurzwelligige Solarstrahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $A$
 \end_inset
 
@@ -822,8 +738,6 @@ Absorptionskoeffizient für kurzwelligige Solarstrahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $m^{2}$
 \end_inset
 
@@ -836,8 +750,6 @@ Absorptionskoeffizient für kurzwelligige Solarstrahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Fläche
 \end_layout
 
@@ -849,8 +761,6 @@ Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $A_{R}$
 \end_inset
 
@@ -863,8 +773,6 @@ Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $m^{2}$
 \end_inset
 
@@ -877,8 +785,6 @@ Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Zonengrundfläche
 \end_layout
 
@@ -890,8 +796,6 @@ Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $V$
 \end_inset
 
@@ -904,8 +808,6 @@ Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $m^{3}$
 \end_inset
 
@@ -918,8 +820,6 @@ Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Volumen
 \end_layout
 
@@ -931,8 +831,6 @@ Volumen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $d$
 \end_inset
 
@@ -945,8 +843,6 @@ Volumen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $m$
 \end_inset
 
@@ -982,8 +878,6 @@ Dicke (einer Konstruktionsschicht)
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $m$
 \end_inset
 
@@ -1007,8 +901,6 @@ Länge
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\gamma_{conv}$
 \end_inset
 
@@ -1021,8 +913,6 @@ Länge
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..1]$
 \end_inset
 
@@ -1046,8 +936,6 @@ Anteil der in konvektive Wärme umgewandelten Last
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\gamma_{rad}$
 \end_inset
 
@@ -1060,8 +948,6 @@ Anteil der in konvektive Wärme umgewandelten Last
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..1]$
 \end_inset
 
@@ -1085,8 +971,6 @@ Anteil der in Strahlungswärme umgewandelten Last
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\theta$
 \end_inset
 
@@ -1099,8 +983,6 @@ Anteil der in Strahlungswärme umgewandelten Last
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..\Pi]$
 \end_inset
 
@@ -1124,8 +1006,6 @@ Sonneneinfallwinkel auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $g$
 \end_inset
 
@@ -1138,8 +1018,6 @@ Sonneneinfallwinkel auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..1]$
 \end_inset
 
@@ -1163,8 +1041,6 @@ Energiedurchlassgrad von Fenstern
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $z$
 \end_inset
 
@@ -1177,8 +1053,6 @@ Energiedurchlassgrad von Fenstern
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $[0..1]$
 \end_inset
 
@@ -1202,8 +1076,6 @@ Verschattungsfaktor von Fenstern
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $U$
 \end_inset
 
@@ -1216,8 +1088,6 @@ Verschattungsfaktor von Fenstern
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}K$
 \end_inset
 
@@ -1241,8 +1111,6 @@ Wärmetransmissionskoeffizient, innerer U-Wert
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $n$
 \end_inset
 
@@ -1255,8 +1123,6 @@ Wärmetransmissionskoeffizient, innerer U-Wert
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $1/s$
 \end_inset
 
@@ -1269,8 +1135,6 @@ Wärmetransmissionskoeffizient, innerer U-Wert
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Luftwechselrate
 \end_layout
 
@@ -1282,8 +1146,6 @@ Luftwechselrate
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\dot{m}$
 \end_inset
 
@@ -1296,8 +1158,6 @@ Luftwechselrate
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $kg/s$
 \end_inset
 
@@ -1310,8 +1170,6 @@ Luftwechselrate
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Massestrom
 \end_layout
 
@@ -1358,8 +1216,6 @@ Strömungsgeschwindigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\dot{Q}$
 \end_inset
 
@@ -1372,8 +1228,6 @@ Strömungsgeschwindigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W=J/s$
 \end_inset
 
@@ -1386,8 +1240,6 @@ Strömungsgeschwindigkeit
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmestrom/Wärmeleistung
 \end_layout
 
@@ -1399,8 +1251,6 @@ Wärmestrom/Wärmeleistung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q$
 \end_inset
 
@@ -1413,8 +1263,6 @@ Wärmestrom/Wärmeleistung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1427,8 +1275,6 @@ Wärmestrom/Wärmeleistung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmestromdichte
 \end_layout
 
@@ -1440,8 +1286,6 @@ Wärmestromdichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{person}$
 \end_inset
 
@@ -1454,8 +1298,6 @@ Wärmestromdichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1468,8 +1310,6 @@ Wärmestromdichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Personenwärmelast pro Zonengrundfläche
 \end_layout
 
@@ -1481,8 +1321,6 @@ Personenwärmelast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{elec}$
 \end_inset
 
@@ -1495,8 +1333,6 @@ Personenwärmelast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1509,8 +1345,6 @@ Personenwärmelast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Wärmelast elektrischer Geräte pro Zonengrundfläche
 \end_layout
 
@@ -1522,8 +1356,6 @@ Wärmelast elektrischer Geräte pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{light}$
 \end_inset
 
@@ -1536,8 +1368,6 @@ Wärmelast elektrischer Geräte pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1550,8 +1380,6 @@ Wärmelast elektrischer Geräte pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Lichtlast pro Zonengrundfläche
 \end_layout
 
@@ -1563,8 +1391,6 @@ Lichtlast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{H,max}$
 \end_inset
 
@@ -1577,8 +1403,6 @@ Lichtlast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1591,8 +1415,6 @@ Lichtlast pro Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Maximale Heizlast per Zonengrundfläche
 \end_layout
 
@@ -1604,8 +1426,6 @@ Maximale Heizlast per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{C,max}$
 \end_inset
 
@@ -1618,8 +1438,6 @@ Maximale Heizlast per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1632,8 +1450,6 @@ Maximale Heizlast per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Maximale HeizlastKühlleistung per Zonengrundfläche
 \end_layout
 
@@ -1645,8 +1461,6 @@ Maximale HeizlastKühlleistung per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{rad,i}$
 \end_inset
 
@@ -1659,8 +1473,6 @@ Maximale HeizlastKühlleistung per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1673,8 +1485,6 @@ Maximale HeizlastKühlleistung per Zonengrundfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Globale Solarstrahlung auf eine geneigte Fläche
 \end_layout
 
@@ -1686,8 +1496,6 @@ Globale Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{rad,dir,i}$
 \end_inset
 
@@ -1700,8 +1508,6 @@ Globale Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1714,8 +1520,6 @@ Globale Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Direkte Solarstrahlung auf eine geneigte Fläche
 \end_layout
 
@@ -1727,8 +1531,6 @@ Direkte Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $q_{rad,diff,i}$
 \end_inset
 
@@ -1741,8 +1543,6 @@ Direkte Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{2}$
 \end_inset
 
@@ -1755,8 +1555,6 @@ Direkte Solarstrahlung auf eine geneigte Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Diffuse Solarstrahlung auf eine Fläche
 \end_layout
 
@@ -1768,8 +1566,6 @@ Diffuse Solarstrahlung auf eine Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\dot{u}$
 \end_inset
 
@@ -1782,8 +1578,6 @@ Diffuse Solarstrahlung auf eine Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $W/m^{3}$
 \end_inset
 
@@ -1796,8 +1590,6 @@ Diffuse Solarstrahlung auf eine Fläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Volumenbezogene Wärmequelldichte
 \end_layout
 
@@ -1809,8 +1601,6 @@ Volumenbezogene Wärmequelldichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $e$
 \end_inset
 
@@ -1843,8 +1633,6 @@ Regelabweichung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $y$
 \end_inset
 
@@ -1880,8 +1668,6 @@ Regelgröße
 \end_layout
 
 \begin_layout Standard
-
-\lang american
 \begin_inset Tabular
 <lyxtabular version="3" rows="36" columns="2">
 <features islongtable="true" longtabularalignment="center">
@@ -1892,8 +1678,6 @@ Regelgröße
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Symbol
 \end_layout
 
@@ -1903,8 +1687,6 @@ Symbol
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 Beschreibung
 \end_layout
 
@@ -1916,8 +1698,6 @@ Beschreibung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset ERT
 status collapsed
 
@@ -1963,8 +1743,6 @@ endfirsthead
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset ERT
 status collapsed
 
@@ -1997,8 +1775,6 @@ bottomrule
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
@@ -2029,8 +1805,6 @@ Indexliste
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi$
 \end_inset
 
@@ -2054,8 +1828,6 @@ Abstrakte physikalische Größe
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{air}$
 \end_inset
 
@@ -2079,8 +1851,6 @@ Physikalische Eigenschaft der Luft
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{water}$
 \end_inset
 
@@ -2104,8 +1874,6 @@ Physikalische Eigenschaft von Wasser
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{R}$
 \end_inset
 
@@ -2129,8 +1897,6 @@ Physikalische Größe eines Raumes/einer Zone
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{A}$
 \end_inset
 
@@ -2154,8 +1920,6 @@ Physikalische Eigenschaft der außenliegenden Umgebung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{hemis}$
 \end_inset
 
@@ -2179,8 +1943,6 @@ Physikalische Eigenschaft der Hemisphäre
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{W}$
 \end_inset
 
@@ -2204,8 +1966,6 @@ Physikalische Größe einer Wandoberfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{F}$
 \end_inset
 
@@ -2229,8 +1989,6 @@ Physikalische Größe eines Fensters
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{FR}$
 \end_inset
 
@@ -2254,8 +2012,6 @@ Physikalische Größe einers Fensterinnenoberfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{FA}$
 \end_inset
 
@@ -2279,8 +2035,6 @@ Physikalische Größe einer Fensteraußenoberfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{m}$
 \end_inset
 
@@ -2304,8 +2058,6 @@ Materialeigenschaft einer Konstruktionsschicht
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{g}$
 \end_inset
 
@@ -2329,8 +2081,6 @@ Physikalische Eigenschaft der Fensterglasfläche
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{f}$
 \end_inset
 
@@ -2354,8 +2104,6 @@ Physikalische Eigenschaft des Fensterrahmens
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{d}$
 \end_inset
 
@@ -2379,8 +2127,6 @@ Physikalische Eigenschaft der Fenstersprossen
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{H}$
 \end_inset
 
@@ -2404,8 +2150,6 @@ Physikalische Größe durch ideale Zonenheizung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{C}$
 \end_inset
 
@@ -2429,8 +2173,6 @@ Physikalische Größe durch ideale Zonenkühlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{ab}$
 \end_inset
 
@@ -2454,8 +2196,6 @@ Physikalische Größe innerhalb einer aktiven Konstruktionsschicht
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{conv}$
 \end_inset
 
@@ -2479,8 +2219,6 @@ Konvektiver Transportstrom/-dichte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{rad}$
 \end_inset
 
@@ -2504,8 +2242,6 @@ Transportstrom/-dichte durch langwellige und kurzwellige Strahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{LWRad}$
 \end_inset
 
@@ -2529,8 +2265,6 @@ Transportstrom/-dichte durch langwellige Strahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{SWRad}$
 \end_inset
 
@@ -2554,8 +2288,6 @@ Transportstrom/-dichte durch kurzwellige Strahlung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{cond}$
 \end_inset
 
@@ -2579,8 +2311,6 @@ Transportstrom/-dichte durch Wärmeleitung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{V}$
 \end_inset
 
@@ -2604,8 +2334,6 @@ Physikalische Größe durch natürliche Lüftung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{P}$
 \end_inset
 
@@ -2629,8 +2357,6 @@ Physikalische Größe durch Personenbelegung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{E}$
 \end_inset
 
@@ -2654,8 +2380,6 @@ Physikalische Größe durch elektrische Geräte
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{L}$
 \end_inset
 
@@ -2679,8 +2403,6 @@ Physikalische Größe durch Beleuchtung
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{NW}$
 \end_inset
 
@@ -2704,8 +2426,6 @@ Physikalische Größe durch Gesamtheit aller Netzwerkelemente in einer Zone/Wand
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{therm}$
 \end_inset
 
@@ -2729,8 +2449,6 @@ Thermostatgröße
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{sup}$
 \end_inset
 
@@ -2754,8 +2472,6 @@ Physikalische Größe im Vorlaufes eines Rohrs
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{ret}$
 \end_inset
 
@@ -2779,8 +2495,6 @@ Physikalische Größe im Rücklauf eines Rohrs
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{pipe}$
 \end_inset
 
@@ -2804,8 +2518,6 @@ Physikalische Eigenschaft eines Rohrs
 \begin_inset Text
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Formula $\psi_{set}$
 \end_inset
 
@@ -2857,8 +2569,6 @@ Die Simulation deutet einen Raum/eine Zone als Raumluftknoten mit mittlerer
 
  durch Einrichtungsgegenenstände und eventuell vernachlässigter Innenwände.
  
-\lang american
-
 \begin_inset Formula 
 \[
 Q_{R}=\left(c_{air}\rho_{air}V_{R}+C_{M}\right)T_{R}
@@ -2866,14 +2576,12 @@ Q_{R}=\left(c_{air}\rho_{air}V_{R}+C_{M}\right)T_{R}
 
 \end_inset
 
-
-\lang ngerman
 Um dem mitunter signifikanten thermischen Speicherverhalten gerecht zu werden,
  wird die Raumbilanz instationär gelöst:
 \begin_inset Formula 
 \begin{align*}
-\frac{\text{d}Q_{R}}{\text{d}t}=\dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}-\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
-+\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
+\frac{\text{d}Q_{R}}{\text{d}t}= & \dot{Q}_{V}+\sum\limits _{i}^{n_{F}}\dot{Q}_{F,cond,i}+\sum\limits _{i}^{n_{W}}\dot{Q}_{W,cond,i}-\sum\limits _{i}^{n_{C}}\dot{Q}_{C,i}+\sum\limits _{i}^{n_{H}}\dot{Q}_{H,i}\\
+ & +\gamma_{SWRad,conv}\sum\limits _{i}^{n_{F}}\dot{Q}_{F,SWRad,i}+\dot{Q}_{P,conv}+\dot{Q}_{E,conv}+\dot{Q}_{L,conv}+\dot{Q}_{NW,i}
 \end{align*}
 
 \end_inset
@@ -2960,8 +2668,6 @@ Zusätzlich zu den Wärmetransportströmen sind innere Wärmequellen
 \end_inset
 
  innerhalb thermisch aktiver Konstruktionsschichten zulässig.
-\lang american
-
 \begin_inset Float figure
 placement H
 wide false
@@ -2969,8 +2675,6 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-
-\lang american
 \begin_inset Graphics
 	filename images/Construction1.eps
 	scale 50
@@ -3001,9 +2705,8 @@ protect
 \begin_inset Caption Standard
 
 \begin_layout Plain Layout
-Wand mit aktiv geheizter Konstruktionsssch
-\lang american
-icht (links) und Modelläquivalent (rechts).
+Wand mit aktiv geheizter Konstruktionssschicht (links) und Modelläquivalent
+ (rechts).
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:ModelEquations:ActiveElement"
