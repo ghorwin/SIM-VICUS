@@ -78,7 +78,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		else
 			m_para[P_FractionOfMotorInefficienciesToFluidStream].value = 1; // set default value
 
-		// for MT_SupplyTemperatureAdapter, initialize zeta and diameter with defaults
+		// for MT_IdealHeaterCooler, initialize zeta and diameter with defaults
 		if (m_modelType == MT_IdealHeaterCooler) {
 			m_para[P_HydraulicDiameter].value=1;
 			m_para[P_PressureLossCoefficient].value=0;
@@ -190,12 +190,16 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 	switch (numPara) {
 		// value must be >0
 		case P_HydraulicDiameter:
-		case P_PressureLossCoefficient:
 		case P_Volume:
 		case P_MaximumHeatingPower:
-		case P_PipeMaxDiscretizationWidth:
-		case P_PressureLoss: {
+		case P_PipeMaxDiscretizationWidth: {
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			break;
+		}
+		// value must be >= 0
+		case P_PressureLoss:
+		case P_PressureLossCoefficient:{
+			para.checkedValue(name, unit, unit, 0, true, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
 		// value must be >0 and <1
