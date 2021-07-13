@@ -217,6 +217,9 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		referencedConstructions.insert(m_constructions[c->m_idConstruction]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
 		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
+
+		// do we have surface heating referenced?
+		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_surfaceHeatingID]);
 	}
 
 	// *** sub-surface components ***
