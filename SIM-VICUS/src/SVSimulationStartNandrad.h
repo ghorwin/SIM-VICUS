@@ -98,6 +98,9 @@ private:
 	*/
 	bool startSimulation(bool testInit);
 
+	/*! Generates a NANDRAD project. */
+	bool generateNANDRAD(QString & resultPath);
+
 	Ui::SVSimulationStartNandrad	*m_ui;
 
 	/*! Local copy of our project data, modified in dialog and synced with global

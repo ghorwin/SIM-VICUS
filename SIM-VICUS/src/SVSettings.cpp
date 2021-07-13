@@ -350,6 +350,14 @@ QString SVSettings::nandradSolverExecutable() {
 	return solverExecutable;
 }
 
+QString SVSettings::nandradFMUGeneratorExecutable() {
+	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradFMUGenerator").filePath();
+#ifdef WIN32
+	solverExecutable += ".exe";
+#endif // WIN32
+	return solverExecutable;
+}
+
 QString SVSettings::view3dExecutable() {
 	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/View3D").filePath();
 #ifdef WIN32

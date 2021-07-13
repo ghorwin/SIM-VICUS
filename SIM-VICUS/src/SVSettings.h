@@ -169,6 +169,9 @@ public:
 	/*! Returns path to NANDRAD solver executable. */
 	static QString nandradSolverExecutable();
 
+	/*! Returns path to NANDRAD FMU Generator executable. */
+	static QString nandradFMUGeneratorExecutable();
+
 	/*! Returns path to View3D solver executable. */
 	static QString view3dExecutable();
 
