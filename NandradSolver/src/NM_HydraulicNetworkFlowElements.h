@@ -182,9 +182,6 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
-	/*! The calculated temperature difference */
-	double							m_temperatureDifference = -999;
-
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
 									*m_controlElement = nullptr;
