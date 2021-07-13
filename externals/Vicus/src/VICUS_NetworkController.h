@@ -15,18 +15,16 @@
 namespace VICUS {
 
 /*! This class is a copy of NANDRAD::HydraulicNetworkControlElement with some added members, methods
- * to make it usable as a class for the VICUS Database.
- * NOTE: Other options like deriving it from the base class doesnt really bring a benefit since we need
- * all the declarations for the code generator anyway.
- * Also making a child element of type NANDRAD::HydraulicNetworkControlElement does not work, since we want to have
- * uniform member names like 'm_id' and 'm_displayName' for the DB read/write process with template functions
- * This this should be the best solution ...
- */
+	to make it usable as a class for the VICUS Database.
 
+	NOTE: Other options like deriving it from the base class doesnt really bring a benefit since we need
+	all the declarations for the code generator anyway.
+	Also making a child element of type NANDRAD::HydraulicNetworkControlElement does not work, since we want to have
+	uniform member names like 'm_id' and 'm_displayName' for the DB read/write process with template functions
+	This this should be the best solution ...
+*/
 class NetworkController: public AbstractDBElement {
-
 public:
-	NetworkController();
 
 	/*! Defines variability options for set point values. */
 	enum ModelType {

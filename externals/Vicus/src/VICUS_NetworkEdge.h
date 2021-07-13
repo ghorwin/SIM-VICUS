@@ -46,9 +46,8 @@ namespace VICUS {
 	for the heat exchange models are stored in m_para.
 
 
+	TODO Hauke, Dokumentation der Memberfunktionen!
 */
-
-
 class NetworkEdge : public Object {
 public:
 
@@ -62,8 +61,8 @@ public:
 
 	VICUS_READWRITE
 
-	NetworkEdge()
-	{}
+	NetworkEdge() = default;
+
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
 		m_supply(supply),
 		m_pipeId(pipeId),
@@ -78,6 +77,8 @@ public:
 	void setInletOutletNode(std::set<const NetworkNode*> & visitedNodes,
 					std::set<NetworkEdge*> & orderedEdges);
 
+	// TODO Hauke, Vergleichsoperatoren sollten immer das ganze Objekt vergleichen - eher dann eine andere Funktion verwenden
+	//             mit eigenem Namen
 	bool operator==(const NetworkEdge &e2){
 		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
 	}
@@ -91,29 +92,29 @@ public:
 
 	unsigned neighbourNode(unsigned nodeId) const;
 
-	double length() const;
+	double length() const {	return m_length; }
 
 	void setLengthFromCoordinates();
 
-	unsigned int nodeId1() const;
+	unsigned int nodeId1() const { return m_nodeId1; }
 
 	// sets nodeId and pointer to the node and calculates the new length of this edge
 	void setNodeId1(unsigned int nodeId1, NetworkNode *node1);
 
-	unsigned int nodeId2() const;
+	unsigned int nodeId2() const {return m_nodeId2; }
 
 	// sets nodeId and pointer to the node and calculates the new length of this edge
 	void setNodeId2(unsigned int nodeId2);
 
 
-	/*! returns the corresponding NetworkComponent model type based on the PipeModel */
+	/*! Returns the corresponding NetworkComponent model type based on the PipeModel. */
 	NetworkComponent::ModelType networkComponentModelType() const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Defines which pipe model will be instantiated in NANDRAD */
-	PipeModel											m_pipeModel = PM_DynamicPipe;		// XML:A
+	PipeModel											m_pipeModel = PM_DynamicPipe;	// XML:A
 
 	/*! If true, nodes of type Building can connect to this edge.
 		This is used for the automatic algorithm that connects buildings with the network */
@@ -124,10 +125,7 @@ public:
 
 	//:inherited	QString								m_displayName;					// XML:A
 
-	/*! Whether the node is visible or not.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
+	/*! Whether the node is visible or not. */
 	//:inherited	bool								m_visible = true;				// XML:A
 
 	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
@@ -136,14 +134,14 @@ public:
 
 	// *** RUNTIME VARIABLES ***
 
-	/*! The radius used for the visualization of this edge in the 3D scene
+	/*! The radius [m] used for the visualization of this edge in the 3D scene
 		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
 	*/
 	mutable double										m_visualizationRadius;
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor										m_color;
 
-	/*! heating demand of all connected buildings */
+	/*! Heating demand of all connected buildings [W] */
 	double												m_maxHeatingDemand = 0;
 
 	NetworkNode											* m_node1 = nullptr;
@@ -162,10 +160,7 @@ private:
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
 	double												m_length = 0;					// XML:E
-
-
 };
-
 
 } // namespace VICUS
 

@@ -212,21 +212,21 @@ public:
 	*/
 	std::vector<NetworkNode>				m_nodes;									// XML:E
 
-	/*! vector with edges */
+	/*! Vector with edges */
 	std::vector<NetworkEdge>				m_edges;									// XML:E
 
 	/*! List of pipes (ids) that may be used in this network. */
 	std::vector<unsigned int>				m_availablePipes;							// XML:E
 
-	/*! origin of the network */
+	/*! Origin of the network. */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E
 
-	/*! hydraulic sub networks in the Network */
+	/*! Hydraulic sub networks in the network. */
 	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
 
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 
-	/*! Network Parameters (e.g. for pipe sizing algorithm) */
+	/*! Network parameters (e.g. for pipe sizing algorithm) */
 	IBK::Parameter							m_para[NUM_P];								// XML:E
 
 	double									m_scaleNodes = 30;							// XML:E
@@ -235,7 +235,7 @@ public:
 
 	ModelType								m_modelType = MT_ThermalHydraulicNetwork;	// XML:A
 
-	/*! determines if this network is currently selected for simulation */
+	/*! Determines if this network is currently selected for simulation */
 	unsigned int							m_selectedForSimulation = false;			// XML:E
 
 

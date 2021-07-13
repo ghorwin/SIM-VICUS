@@ -1454,10 +1454,10 @@ namespace NANDRAD {
 				case 4 : return "Pump efficiency";
 				case 5 : return "Fraction of pump heat loss due to inefficiency that heats up the fluid";
 				case 6 : return "Water or air volume of the component";
-				case 7 : return "Maximum width of discretized volumes in pipe";
+				case 7 : return "Maximum width/length of discretized volumes in pipe";
 				case 8 : return "Carnot efficiency eta";
 				case 9 : return "Maximum heating power";
-				case 10 : return "Pressure loss for Valve";
+				case 10 : return "Pressure loss for valve";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :

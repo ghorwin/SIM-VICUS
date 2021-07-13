@@ -52,8 +52,8 @@ Network::Network() {
 	setDefaultSizingParams();
 }
 
-Network Network::copyWithBaseParameters()
-{
+
+Network Network::copyWithBaseParameters() {
 	Network copy = *this;
 	copy.m_edges.clear();
 	copy.m_nodes.clear();
@@ -71,6 +71,7 @@ Network Network::copyWithBaseParameters()
 //	copy.availablePipes = orig.availablePipes;
 
 }
+
 
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 

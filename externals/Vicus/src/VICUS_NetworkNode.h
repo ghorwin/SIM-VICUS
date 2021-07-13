@@ -57,7 +57,7 @@ public:
 		NUM_NT
 	};
 
-	NetworkNode() {}
+	NetworkNode() = default;
 
 	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
 		m_id(id),
@@ -121,25 +121,22 @@ public:
 	/*! Heating demand.	*/
 	IBK::Parameter								m_maxHeatingDemand;										// XML:E
 
-	/*! reference id to a VICUS::SubNetwork */
+	/*! Reference id to a VICUS::SubNetwork */
 	unsigned int								m_subNetworkId = INVALID_ID;							// XML:A
 
 	//:inherited	QString						m_displayName;											// XML:A
 
 	NANDRAD::HydraulicNetworkHeatExchange		m_heatExchange;											// XML:E
 
-	/*! Whether the node is visible or not
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool						m_visible = true;									// XML:A
+	/*! Whether the node is visible or not. */
+	//:inherited	bool						m_visible = true;										// XML:A
 
 	// *** RUNTIME VARIABLES ***
 
-	/*! pointers to adjacent edges */
+	/*! Pointers to adjacent edges */
 	std::vector<NetworkEdge*>					m_edges;
 
-	/*! The radius used for the visualization of this node in the 3D scene
+	/*! The radius used for the visualization of this node in the 3D scene [m].
 		Updated whenever the scale factor Network::m_scaleNodes changes.
 	*/
 	mutable double								m_visualizationRadius;
@@ -147,11 +144,11 @@ public:
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor								m_color;
 
-	/*! used in dijkstra algorithm */
+	/*! Used in dijkstra algorithm. */
 	double										m_distanceToStart = (std::numeric_limits<double>::max)();
 	NetworkNode *								m_predecessor = nullptr;
 
-	/*! defines wether this node is a dead end */
+	/*! Defines wether this node is a dead end. */
 	bool										m_isDeadEnd = false;
 
 

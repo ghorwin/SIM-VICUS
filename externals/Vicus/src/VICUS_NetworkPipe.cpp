@@ -24,33 +24,35 @@
 */
 
 #include "VICUS_NetworkPipe.h"
-
 #include "VICUS_KeywordList.h"
 
-double VICUS::NetworkPipe::calculateUValue() const {
+namespace VICUS {
+
+double NetworkPipe::calculateUValue() const {
 //TODO Hauke U-Wert berechnen für Pipe
 	return 1;
 }
 
-double VICUS::NetworkPipe::insideDiameter() const {
+
+double NetworkPipe::insideDiameter() const {
 	double thickness = m_para[P_ThicknessWall].value;
 
-	if(!m_para[P_ThicknessInsulation].empty())
+	if (!m_para[P_ThicknessInsulation].empty())
 		thickness += m_para[P_ThicknessInsulation].value;
 
 	return (m_para[P_DiameterOutside].value - thickness);
 }
 
-bool VICUS::NetworkPipe::isValid() const {
+
+bool NetworkPipe::isValid() const {
 	if (m_id == INVALID_ID)
 		return false;
 
-	for (unsigned int i=0; i<NUM_P; ++i){
-		bool zeroAllowed = para_t(i) == P_ThicknessInsulation;
-		int ii = (int)i;
+	for (int i=0; i<NUM_P; ++i){
+		bool zeroAllowed = (para_t(i) == P_ThicknessInsulation);
 		try {
-			m_para[i].checkedValue(KeywordList::Keyword("NetworkPipe::para_t", ii), KeywordList::Unit("NetworkPipe::para_t", ii),
-								   KeywordList::Unit("NetworkPipe::para_t", ii), 0, zeroAllowed, std::numeric_limits<double>::max(),
+			m_para[i].checkedValue(KeywordList::Keyword("NetworkPipe::para_t", i), KeywordList::Unit("NetworkPipe::para_t", i),
+								   KeywordList::Unit("NetworkPipe::para_t", i), 0, zeroAllowed, std::numeric_limits<double>::max(),
 								   false, nullptr);
 		} catch (...) {
 			return false;
@@ -60,21 +62,24 @@ bool VICUS::NetworkPipe::isValid() const {
 	return true;
 }
 
-VICUS::AbstractDBElement::ComparisonResult VICUS::NetworkPipe::equal(const VICUS::AbstractDBElement *other) const {
+
+VICUS::AbstractDBElement::ComparisonResult NetworkPipe::equal(const VICUS::AbstractDBElement *other) const {
 	const NetworkPipe * otherNetPipe = dynamic_cast<const NetworkPipe*>(other);
 	if (otherNetPipe == nullptr)
 		return Different;
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
-		if(m_para[i] != otherNetPipe->m_para[i])
+	for (unsigned int i=0; i<NUM_P; ++i){
+		if (m_para[i] != otherNetPipe->m_para[i])
 			return Different;
 	}
 
 	//check meta data
-	if(m_displayName != otherNetPipe->m_displayName || m_color != otherNetPipe->m_color
+	if (m_displayName != otherNetPipe->m_displayName || m_color != otherNetPipe->m_color
 			|| m_categoryName != otherNetPipe->m_categoryName)
 		return OnlyMetaDataDiffers;
 
 	return Equal;
 }
+
+} // namespace VICUS
