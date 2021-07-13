@@ -662,11 +662,22 @@ TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowEl
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
 
+void TNElementWithExternalHeatLoss::modelQuantities(std::vector<QuantityDescription> &quantities) const
+{
+	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+}
+
+void TNElementWithExternalHeatLoss::modelQuantityValueRefs(std::vector<const double *> &valRefs) const
+{
+	valRefs.push_back(&m_temperatureDifference);
+}
+
 
 void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	// set heat loss
 	IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
 	m_heatLoss = *m_heatExchangeHeatLossRef;
+	m_temperatureDifference = m_heatLoss / (m_massFlux * m_fluidHeatCapacity);
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }

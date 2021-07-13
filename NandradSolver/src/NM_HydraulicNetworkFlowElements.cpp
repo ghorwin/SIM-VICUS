@@ -348,8 +348,6 @@ void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription
 		return;
 	// calculate zetaControlled value for valve
 	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
-	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
-		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
 }
 
 
@@ -358,8 +356,6 @@ void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double
 		return;
 	// calculate zetaControlled value for valve
 	valRefs.push_back(&m_zetaControlled);
-	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference)
-		valRefs.push_back(&m_temperatureDifference);
 }
 
 
@@ -499,21 +495,8 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
-		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference: {
-			IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
-			// compute current temperature for given heat loss and mass flux
-			// Mind: access m_heatExchangeValueRef and not m_heatLoss here!
-			m_temperatureDifference = *m_heatExchangeHeatLossRef/(mdot*m_fluidHeatCapacity);
-			m_zetaControlled = zetaControlled(mdot);
-		} break;
-
-		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
-			IBK_ASSERT(m_followingFlowElementFluidTemperatureRef != nullptr);
-			// compute current temperature difference of following element
-			m_temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
-			m_zetaControlled = zetaControlled(mdot);
-		} break;
-
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
 			m_zetaControlled = zetaControlled(mdot);
 		break;

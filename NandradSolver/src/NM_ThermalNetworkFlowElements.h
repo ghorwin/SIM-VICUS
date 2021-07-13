@@ -433,6 +433,12 @@ public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
 
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
 
@@ -455,6 +461,8 @@ protected:
 	/*! Value reference to external temperature. */
 	const double					*m_heatExchangeHeatLossRef = nullptr;
 
+	/*! Temperature difference across flow element [K]. */
+	double									m_temperatureDifference = 999;
 };
 
 
