@@ -322,8 +322,6 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 
 
-
-
 	// *** transfer collected objects to project's embedded database ***
 
 	storeVector(p.m_embeddedDB.m_materials, referencedMaterials);
@@ -354,6 +352,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
 	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
+	storeVector(p.m_embeddedDB.m_surfaceHeatings, referencedSurfaceHeatings);
 
 }
 
