@@ -73,6 +73,7 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 	m_shading(new SH::StructuralShading)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayout->setMargin(0);
 
 	m_ui->lineEditSunCone->setup(0, 45, tr("Half-angle of sun cone must be > 0 Deg!"), false, true);
 	m_ui->lineEditGridSize->setup(0, 1000, tr("Grid size must be > 0 m!"), false, true);

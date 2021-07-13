@@ -492,4 +492,6 @@ void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 	startSimulation(true);
 }
 
+void SVSimulationStartNandrad::on_pushButtonExportFMU_clicked() {
 
+}

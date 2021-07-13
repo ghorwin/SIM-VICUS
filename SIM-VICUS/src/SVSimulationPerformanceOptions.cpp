@@ -40,7 +40,7 @@ SVSimulationPerformanceOptions::SVSimulationPerformanceOptions(QWidget *parent, 
 {
 	m_ui->setupUi(this);
 
-	m_ui->gridLayout->setMargin(0);
+	m_ui->verticalLayout->setMargin(0);
 
 	for (int i=0; i<NANDRAD::SolverParameter::NUM_I; ++i )
 		m_ui->comboBoxIntegrator->addItem( QString("%1 [%2]")
@@ -169,12 +169,6 @@ void SVSimulationPerformanceOptions::updateUi() {
 	m_ui->lineEditMinDT->blockSignals(false);
 	m_ui->lineEditInitialDT->blockSignals(false);
 
-	// special handling for CVODE integrator
-	m_ui->checkBoxDisableKinsolLineSearch->setEnabled(m_solverParams->m_integrator == NANDRAD::SolverParameter::I_CVODE);
-	m_ui->checkBoxDisableKinsolLineSearch->blockSignals(true);
-	m_ui->checkBoxDisableKinsolLineSearch->setChecked( m_solverParams->m_flag[NANDRAD::SolverParameter::F_KinsolDisableLineSearch].isEnabled());
-	m_ui->checkBoxDisableKinsolLineSearch->blockSignals(false);
-
 	// update enabled-state of widgets
 	currentIndexChanged(0);
 }
@@ -186,17 +180,16 @@ void SVSimulationPerformanceOptions::currentIndexChanged(int /*index*/) {
 	m_solverParams->m_lesSolver = (NANDRAD::SolverParameter::lesSolver_t)m_ui->comboBoxLesSolver->currentIndex();
 	m_solverParams->m_preconditioner = (NANDRAD::SolverParameter::precond_t)m_ui->comboBoxPreCond->currentIndex();
 
-	// special handling for CVODE integrator
-	m_ui->checkBoxDisableKinsolLineSearch->setEnabled(m_solverParams->m_integrator == NANDRAD::SolverParameter::I_CVODE);
-
 	bool haveIterative = m_solverParams->m_lesSolver == NANDRAD::SolverParameter::LES_GMRES ||
 			m_solverParams->m_lesSolver == NANDRAD::SolverParameter::LES_BiCGStab ||
 			m_solverParams->m_lesSolver == NANDRAD::SolverParameter::NUM_LES;
 
-	m_ui->lineEditIterative->setEnabled(haveIterative);
-	m_ui->lineEditMaxKry->setEnabled(haveIterative);
-	m_ui->lineEditPreILU->setEnabled(haveIterative);
-	m_ui->comboBoxPreCond->setEnabled(haveIterative);
+	bool haveLES = (m_solverParams->m_integrator != NANDRAD::SolverParameter::I_ExplicitEuler);
+	m_ui->groupBox_2->setEnabled(haveLES);
+
+	if (!haveLES)
+		haveIterative = false;
+	m_ui->groupBox_3->setEnabled(haveIterative);
 }
 
 

@@ -37,6 +37,7 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_outputs(&outputs)
 {
 	m_ui->setupUi(this);
+	m_ui->verticalLayoutOutputs->setMargin(0);
 
 	m_ui->tableWidgetOutputGrids->setColumnCount(4);
 	m_ui->tableWidgetOutputGrids->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Intervals") << tr("Start") << tr("End") );
