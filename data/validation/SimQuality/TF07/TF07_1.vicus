@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Do. Juli 8 16:56:27 2021</Created>
-		<LastEdited>Fr. Juli 9 12:55:17 2021</LastEdited>
+		<LastEdited>Mo. Juli 12 16:25:33 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>4.22736 -4.57462 1.65925</CameraTranslation>
+			<CameraTranslation>12.9661 -17.0745 5.69739</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.741671</Wp>
-				<X>0.652865</X>
-				<Y>0.101647</Y>
-				<Z>0.115479</Z>
+				<Wp>0.792872</Wp>
+				<X>0.516958</X>
+				<Y>0.176236</Y>
+				<Z>0.270233</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -146,23 +146,23 @@
 				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer matId="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						<MaterialLayer matId="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
 			</Constructions>
 			<Windows>
-				<Window id="3002" displayName="DE: WindowTF07.1" idGlazingSystem="300004" color="#99ff9a" methodFrame="None" methodDivider="None" />
+				<Window id="3002" displayName="DE: WindowTF07.1" idGlazingSystem="3002" color="#bb40bf" methodFrame="None" methodDivider="None" />
 			</Windows>
 			<WindowGlazingSystems>
-				<WindowGlazingSystem id="300004" displayName="DE: TF07.1_Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
+				<WindowGlazingSystem id="3002" displayName="DE: TF07.1_Doppelscheibenverglasung |EN: Double-layer glazing" color="#4ff709" modelType="Simple">
 					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 						<X unit="Deg">0 90 </X>
@@ -171,13 +171,13 @@
 				</WindowGlazingSystem>
 			</WindowGlazingSystems>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
