@@ -281,6 +281,7 @@ namespace VICUS {
 				case 8 : return "HeatPumpRealSourceSide";
 				case 9 : return "ControlledValve";
 				case 10 : return "IdealHeaterCooler";
+				case 11 : return "ConstantPressureLossValve";
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -295,6 +296,7 @@ namespace VICUS {
 				case 7 : return "PipeMaxDiscretizationWidth";
 				case 8 : return "CarnotEfficiency";
 				case 9 : return "MaximumHeatingPower";
+				case 10 : return "PressureLoss";
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -732,6 +734,7 @@ namespace VICUS {
 				case 8 : return "HeatPumpRealSourceSide";
 				case 9 : return "ControlledValve";
 				case 10 : return "IdealHeaterCooler";
+				case 11 : return "ConstantPressureLossValve";
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -746,6 +749,7 @@ namespace VICUS {
 				case 7 : return "PipeMaxDiscretizationWidth";
 				case 8 : return "CarnotEfficiency";
 				case 9 : return "MaximumHeatingPower";
+				case 10 : return "PressureLoss";
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -1184,6 +1188,7 @@ namespace VICUS {
 				case 8 : return "On-off-type heat pump based on polynoms, installed at source side";
 				case 9 : return "Valve with associated control model";
 				case 10 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
+				case 11 : return "Valve with constant pressure loss";
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -1198,6 +1203,7 @@ namespace VICUS {
 				case 7 : return "Maximum width/length of discretized volumes in pipe";
 				case 8 : return "Carnot efficiency eta";
 				case 9 : return "Maximum heating power";
+				case 10 : return "Pressure loss for Valve";
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -1635,6 +1641,7 @@ namespace VICUS {
 				case 8 : return "";
 				case 9 : return "";
 				case 10 : return "";
+				case 11 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -1649,6 +1656,7 @@ namespace VICUS {
 				case 7 : return "m";
 				case 8 : return "---";
 				case 9 : return "W";
+				case 10 : return "Pa";
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -2086,6 +2094,7 @@ namespace VICUS {
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
 				case 10 : return "#FFFFFF";
+				case 11 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -2100,6 +2109,7 @@ namespace VICUS {
 				case 7 : return "#FFFFFF";
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -2537,6 +2547,7 @@ namespace VICUS {
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
+				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 18 :
@@ -2551,6 +2562,7 @@ namespace VICUS {
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::ModelType
 			case 19 :
@@ -2848,9 +2860,9 @@ namespace VICUS {
 			// Network::para_t
 			case 16 : return 7;
 			// NetworkComponent::ModelType
-			case 17 : return 11;
+			case 17 : return 12;
 			// NetworkComponent::para_t
-			case 18 : return 10;
+			case 18 : return 11;
 			// NetworkController::ModelType
 			case 19 : return 2;
 			// NetworkController::ControlledProperty
@@ -2966,9 +2978,9 @@ namespace VICUS {
 			// Network::para_t
 			case 16 : return 6;
 			// NetworkComponent::ModelType
-			case 17 : return 10;
+			case 17 : return 11;
 			// NetworkComponent::para_t
-			case 18 : return 9;
+			case 18 : return 10;
 			// NetworkController::ModelType
 			case 19 : return 1;
 			// NetworkController::ControlledProperty
