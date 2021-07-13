@@ -1560,7 +1560,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_NetworkSubNetworks:
 					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					break;
 				}
@@ -1624,7 +1624,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_Network:
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkComponents:
+					case SVViewState::OCM_NetworkSubNetworks:
 					case SVViewState::OCM_SurfaceHeating:
 					break;
 				} // switch
@@ -1659,7 +1659,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 		case SVViewState::OCM_Network:
 		case SVViewState::OCM_NetworkNode:
 		case SVViewState::OCM_NetworkEdge:
-		case SVViewState::OCM_NetworkComponents:
+		case SVViewState::OCM_NetworkHeatExchange:
+		case SVViewState::OCM_NetworkSubNetworks:
 			for (const VICUS::Network & net: p.m_geometricNetworks){
 
 				switch (ocm) {
@@ -1672,29 +1673,27 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							else // Building
 								node.m_color = QColor(0, 107, 179); // blue
 						}
-					}
-					break;
+					} break;
 					case SVViewState::OCM_NetworkEdge: {
 						for (const VICUS::NetworkEdge & edge: net.m_edges){
 							unsigned int id = edge.m_pipeId;
 							if (db.m_pipes[id] != nullptr)
 								edge.m_color = db.m_pipes[id]->m_color;
 						}
-					}
-					break;
-					case SVViewState::OCM_NetworkComponents: {
-						for (const VICUS::NetworkEdge & edge: net.m_edges){
-							unsigned int id = edge.m_componentId;
-							if (db.m_networkComponents[id] != nullptr)
-								edge.m_color = db.m_networkComponents[id]->m_color;
-						}
+					} break;
+					case SVViewState::OCM_NetworkHeatExchange: {
+						for (const VICUS::NetworkEdge & edge: net.m_edges)
+							edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
+						for (const VICUS::NetworkNode & node: net.m_nodes)
+							node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
+					} break;
+					case SVViewState::OCM_NetworkSubNetworks: {
 						for (const VICUS::NetworkNode & node: net.m_nodes){
-							unsigned int id = node.m_componentId;
-							if (db.m_networkComponents[id] != nullptr)
-								node.m_color = db.m_networkComponents[id]->m_color;
+							unsigned int id = node.m_subNetworkId;
+							if (db.m_subNetworks[id] != nullptr)
+								node.m_color = db.m_subNetworks[id]->m_color;
 						}
-					}
-					break;
+					} break;
 
 						// rest only to avoid compiler warnings
 					case SVViewState::OCM_None:

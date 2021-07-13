@@ -27,6 +27,7 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
+#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -49,8 +50,18 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "supply")
+			if (attribName == "pipeModel")
+				try {
+					m_pipeModel = (PipeModel)KeywordList::Enumeration("NetworkEdge::PipeModel", attrib->ValueStr());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
+				}
+			else if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "pipeId")
+				m_pipeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
@@ -69,13 +80,9 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "PipeId")
-				m_pipeId = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "ComponentId")
-				m_componentId = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "Length")
+			if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "NetworkHeatExchange")
+			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -95,8 +102,12 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkEdge");
 	parent->LinkEndChild(e);
 
+	if (m_pipeModel != NUM_PM)
+		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
+	if (m_pipeId != VICUS::INVALID_ID)
+		e->SetAttribute("pipeId", IBK::val2string<unsigned int>(m_pipeId));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkEdge().m_visible)
@@ -105,10 +116,6 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("nodeId1", IBK::val2string<unsigned int>(m_nodeId1));
 	if (m_nodeId2 != VICUS::INVALID_ID)
 		e->SetAttribute("nodeId2", IBK::val2string<unsigned int>(m_nodeId2));
-	if (m_pipeId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "PipeId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipeId));
-	if (m_componentId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "ComponentId", nullptr, std::string(), IBK::val2string<unsigned int>(m_componentId));
 
 	m_heatExchange.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));

@@ -7,585 +7,800 @@
     <x>0</x>
     <y>0</y>
     <width>616</width>
-    <height>1306</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>
-    <widget class="QGroupBox" name="groupBoxProperties">
-     <property name="title">
-      <string>Properties</string>
+    <widget class="QStackedWidget" name="stackedWidget">
+     <property name="currentIndex">
+      <number>3</number>
      </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Nodes</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="labelNodeCount">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Edges</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLabel" name="labelEdgeCount">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>Total length</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="labelTotalLength">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="labelNetworkConnected">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelNetworkName">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_12">
-        <property name="text">
-         <string>Fluid</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLabel" name="labelFluidName">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QWidget" name="pageNetwork">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QGroupBox" name="groupBoxProperties">
+         <property name="title">
+          <string>Properties</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_3">
+            <property name="text">
+             <string>Nodes</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLabel" name="labelNodeCount">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Edges</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLabel" name="labelEdgeCount">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Total length</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLabel" name="labelTotalLength">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelNetworkConnected">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelNetworkName">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Fluid</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLabel" name="labelFluidName">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxEditNetwork">
+         <property name="title">
+          <string>Edit Network</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout">
+          <item>
+           <widget class="QPushButton" name="pushButtonGenerateIntersections">
+            <property name="text">
+             <string>generate intersections</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonConnectBuildings">
+            <property name="text">
+             <string>connect buildings</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonReduceDeadEnds">
+            <property name="text">
+             <string>reduce dead ends</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonReduceRedundantNodes">
+            <property name="text">
+             <string>reduce redundant nodes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonSimplify">
+            <property name="text">
+             <string>simplify</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonSelectPipes">
+            <property name="text">
+             <string>select pipes...</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonSelectFluid">
+            <property name="text">
+             <string>select fluid...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxSizePipes">
+         <property name="title">
+          <string>Size pipe dimensions</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Maximum pressure [Pa/m]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxMaximumPressureLoss">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <double>100000000.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>10.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Temperature setpoint [C]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureSetpoint">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="minimum">
+               <double>-100.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>100.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Temperature difference [K]</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureDifference">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="minimum">
+               <double>0.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>100.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QFormLayout" name="formLayout_3">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>Smallest pipe diameter</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="labelSmallestDiameter">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Largest pipe diameter</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="labelLargestDiameter">
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButtonSizePipeDimensions">
+            <property name="text">
+             <string>size pipes</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBoxVisualisation">
+            <property name="title">
+             <string>Visualisation</string>
+            </property>
+            <layout class="QFormLayout" name="formLayout_6">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_20">
+               <property name="text">
+                <string>Scale Nodes</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QSlider" name="horizontalSliderScaleNodes">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="singleStep">
+                <number>1</number>
+               </property>
+               <property name="pageStep">
+                <number>10</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_21">
+               <property name="text">
+                <string>Scale Edges</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QSlider" name="horizontalSliderScaleEdges">
+               <property name="minimum">
+                <number>1</number>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageNode">
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QGroupBox" name="groupBoxNode">
+         <property name="title">
+          <string>Edit Node</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_15">
+            <property name="text">
+             <string>Node id</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelNodeId">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_19">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_13">
+            <property name="text">
+             <string>Maximum heating demand [W]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_14">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="comboBoxNodeType"/>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_17">
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_18">
+              <property name="text">
+               <string>y</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageEdge">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <widget class="QGroupBox" name="groupBoxEdge">
+         <property name="title">
+          <string>Edit Edge</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="checkBoxSupplyPipe">
+            <property name="text">
+             <string>supply pipe</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLabel" name="labelPipeLength">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Length</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLineEdit" name="lineEditEdgeDisplayName"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxCurrentPipes">
+         <property name="title">
+          <string>Pipes used in current project</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pushButtonEditPipe">
+            <property name="text">
+             <string>Edit...</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetPipes"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxSelectedPipe">
+         <property name="title">
+          <string>Selected Pipe</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="1" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignPipe">
+              <property name="text">
+               <string>Assign pipe...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>558</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelSelectedPipe">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>TextLabel</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Selected:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageSubNetwork">
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="groupBoxCurrentSubNetworks">
+         <property name="title">
+          <string>Sub networks used in current project</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="1" column="0">
+           <widget class="QPushButton" name="pushButtonEditSubNetworks">
+            <property name="text">
+             <string>Edit...</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetSubNetworks"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxSelectedSubNetwork">
+         <property name="title">
+          <string>Selected sub network</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="1" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignSubNetwork">
+              <property name="text">
+               <string>Assign sub network...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_5">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>558</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="labelSelectedSubNetwork">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_16">
+            <property name="text">
+             <string>Selected:</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="pageHeatExchange">
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <widget class="QGroupBox" name="groupBoxHeatExchange">
+         <property name="title">
+          <string>Heat Exchange</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="5" column="0">
+           <widget class="QLabel" name="labelZoneId">
+            <property name="text">
+             <string>Zone Id</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelHeatFlux">
+            <property name="text">
+             <string>Heat flux [W]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelDataFile">
+            <property name="text">
+             <string>Data file</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelHXTransferCoefficient">
+            <property name="text">
+             <string>External heat transfer coefficient [W/m²K]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="comboBoxZoneId"/>
+          </item>
+          <item row="2" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
+          </item>
+          <item row="3" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelTemperature">
+            <property name="text">
+             <string>Temperature [C]</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxCurrentSubNetworks_2">
+         <property name="title">
+          <string>Heat Exchange Types used in current project</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0" colspan="2">
+           <widget class="QTableWidget" name="tableWidgetHeatExchange"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
     </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxEditNetwork">
-     <property name="title">
-      <string>Edit Network</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QPushButton" name="pushButtonGenerateIntersections">
-        <property name="text">
-         <string>generate intersections</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonConnectBuildings">
-        <property name="text">
-         <string>connect buildings</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonReduceDeadEnds">
-        <property name="text">
-         <string>reduce dead ends</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonReduceRedundantNodes">
-        <property name="text">
-         <string>reduce redundant nodes</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonSimplify">
-        <property name="text">
-         <string>simplify</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonSelectPipes">
-        <property name="text">
-         <string>select pipes...</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonSelectFluid">
-        <property name="text">
-         <string>select fluid...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxSizePipes">
-     <property name="title">
-      <string>Size pipe dimensions</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <layout class="QFormLayout" name="formLayout_2">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>Maximum pressure [Pa/m]</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBoxMaximumPressureLoss">
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>100000000.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>10.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Temperature setpoint [C]</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureSetpoint">
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="minimum">
-           <double>-100.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>100.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>Temperature difference [K]</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="doubleSpinBoxTemperatureDifference">
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="minimum">
-           <double>0.000000000000000</double>
-          </property>
-          <property name="maximum">
-           <double>100.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QFormLayout" name="formLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>Smallest pipe diameter</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QLabel" name="labelSmallestDiameter">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Largest pipe diameter</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QLabel" name="labelLargestDiameter">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonSizePipeDimensions">
-        <property name="text">
-         <string>size pipes</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxVisualisation">
-     <property name="title">
-      <string>Visualisation</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_6">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_20">
-        <property name="text">
-         <string>Scale Nodes</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QSlider" name="horizontalSliderScaleNodes">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="singleStep">
-         <number>1</number>
-        </property>
-        <property name="pageStep">
-         <number>10</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_21">
-        <property name="text">
-         <string>Scale Edges</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSlider" name="horizontalSliderScaleEdges">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxNode">
-     <property name="title">
-      <string>Edit Node</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_15">
-        <property name="text">
-         <string>Node id</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="labelNodeId">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_13">
-        <property name="text">
-         <string>Maximum heating demand [W]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeMaxHeatingDemand"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_14">
-        <property name="text">
-         <string>Type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="comboBoxNodeType"/>
-      </item>
-      <item row="4" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="label_17">
-          <property name="text">
-           <string>x</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeX"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_18">
-          <property name="text">
-           <string>y</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeY"/>
-        </item>
-       </layout>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_19">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxEdge">
-     <property name="title">
-      <string>Edit Edge</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="checkBoxSupplyPipe">
-        <property name="text">
-         <string>supply pipe</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLabel" name="labelPipeLength">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_16">
-        <property name="text">
-         <string>Pipe geometry</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_11">
-        <property name="text">
-         <string>Length</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEditEdgeDisplayName"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_22">
-        <property name="text">
-         <string>Name</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QComboBox" name="comboBoxPipeDB"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxComponent">
-     <property name="title">
-      <string>Component</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_6">
-      <item>
-       <widget class="QComboBox" name="comboBoxComponent"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonEditComponents">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxHeatExchange">
-     <property name="title">
-      <string>Heat Exchange</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_4">
-      <item row="1" column="0">
-       <widget class="QLabel" name="labelHeatFlux">
-        <property name="text">
-         <string>Heat flux [W]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditHeatFlux"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="labelDataFile">
-        <property name="text">
-         <string>Data file</string>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameTSVFile" native="true"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="labelFMUFile">
-        <property name="text">
-         <string>FMU file</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QtExt::BrowseFilenameWidget" name="widgetBrowseFileNameFMU" native="true"/>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="labelZoneId">
-        <property name="text">
-         <string>Zone Id</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="comboBoxZoneId"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="labelTemperature">
-        <property name="text">
-         <string>Temperature [C]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditTemperature"/>
-      </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="comboBoxHeatExchangeType"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="labelHXTransferCoefficient">
-        <property name="text">
-         <string>External heat transfer coefficient [W/m²K]</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditHXTransferCoefficient"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QGroupBox" name="groupBoxController">
-     <property name="title">
-      <string>Controller</string>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QComboBox" name="comboBoxController"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonEditController">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>69</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>

@@ -32,6 +32,7 @@
 #include "NM_ThermalNetworkFlowElements.h"
 
 #define PI				3.141592653589793238
+#define MASS_FLUX_SCALE 1000.0
 
 
 namespace NANDRAD_MODEL {
@@ -171,7 +172,7 @@ void HNPipeElement::partials(double mdot, double p_inlet, double p_outlet,
 double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	// for negative mass flow: Reynolds number is positive, velocity and pressure loss are negative
 	double fluidDensity = m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4);
+	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4.0);
 	double Re = std::abs(velocity) * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(*m_fluidTemperatureRef);
 	double zeta = m_length / m_diameter * FrictionFactorSwamee(Re, m_diameter, m_roughness);
 
@@ -179,7 +180,7 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	if (m_controlElement != nullptr)
 		zeta += zetaControlled();
 
-	return zeta * fluidDensity / 2 * std::abs(velocity) * velocity;
+	return zeta * fluidDensity / 2.0 * std::abs(velocity) * velocity;
 }
 
 
@@ -210,8 +211,7 @@ double HNPipeElement::zetaControlled() const {
 
 	// get control value for cooling
 	if (m_coolingThermostatControlValueRef != nullptr) {
-		// TODO : wie bei der heizung
-		// same as for heating
+		// TODO : same as for heating
 		coolingControlValue = std::min(std::max(*m_coolingThermostatControlValueRef, 0.0), 1.0);
 		double e = (1.0 - coolingControlValue);
 		coolingControlValue = m_controlElement->m_maximumControllerResultValue * e;
@@ -569,6 +569,31 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 }
 
 
+
+// *** HNConstantPressureLossValve ***
+
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
+m_id(id)
+{
+m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+}
+
+double HNConstantPressureLossValve::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
+{
+	return p_inlet - p_outlet - m_pressureLoss;
+}
+
+void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+
+
 // *** HNConstantMassFluxPump ***
 
 HNConstantMassFluxPump::HNConstantMassFluxPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component):
@@ -608,12 +633,12 @@ void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::cons
 
 double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const
 {
-	return mdot - *m_massFluxRef;
+	return MASS_FLUX_SCALE*(mdot - *m_massFluxRef);
 }
 
 void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/, double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
-	df_dmdot = 1.0;
+	df_dmdot = MASS_FLUX_SCALE;
 	df_dp_inlet = 0.0;
 	df_dp_outlet = 0.0;
 }
@@ -622,6 +647,7 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 {
 	m_pressureHead = p_outlet - p_inlet;
 }
+
 
 
 // *** HNControlledPump ***
@@ -804,6 +830,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
 			// relate controller error e to zeta
 			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+
 			// apply clipping (only when pressureHeadMax > 0)
 			if (y > pressHeadMax && pressHeadMax > 0)
 				pressHeadControlled = pressHeadMax;
@@ -816,6 +843,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 	}
+
 
 	return pressHeadControlled;
 }
@@ -843,6 +871,7 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
+
 
 
 

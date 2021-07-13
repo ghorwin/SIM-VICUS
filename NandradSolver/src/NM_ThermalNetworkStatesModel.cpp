@@ -264,7 +264,15 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve: {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
+					TNHeatPumpReal * element = new TNHeatPumpReal(m_network->m_fluid, e);
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // no heat loss
+				} break;
+
+
+				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve: {
 					TNAdiabaticElement * element = new TNAdiabaticElement( m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
@@ -275,13 +283,6 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					TNIdealHeaterCooler * element = new TNIdealHeaterCooler(e.m_id, m_network->m_fluid);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // add nullptr
-				} break;
-
-
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
-					TNHeatPumpReal * element = new TNHeatPumpReal(m_network->m_fluid, e);
-					m_p->m_flowElements.push_back(element); // transfer ownership
-					m_p->m_heatLossElements.push_back(element); // no heat loss
 				} break;
 
 				case NANDRAD::HydraulicNetworkComponent::NUM_MT:

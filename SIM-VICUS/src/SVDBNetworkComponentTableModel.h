@@ -27,7 +27,6 @@
 #define SVDBNetworkComponentTableModelH
 
 #include "SVAbstractDatabaseEditWidget.h"
-
 #include "SVDatabase.h"
 
 

@@ -25,19 +25,19 @@
 #include <IBK_assert.h>
 
 /*! Reynolds number where flow switches from laminar to transition state. */
-#define RE_LAMINAR		1700
+#define RE_LAMINAR		1700.0
 
 /*! Reynolds number where flow switches from transition state to turbulent */
-#define RE_TURBULENT	4000
+#define RE_TURBULENT	4000.0
 
 namespace NANDRAD_MODEL {
 
 
 double FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness){
 	if (reynolds < RE_LAMINAR)
-		return 64/reynolds;
+		return 64.0/reynolds;
 	else if (reynolds < RE_TURBULENT){
-		double fLam = 64/RE_LAMINAR; // f(RE_LAMINAR)
+		double fLam = 64.0/RE_LAMINAR; // f(RE_LAMINAR)
 		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
 		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
 		// now interpolate linearly between fLam and fTurb
@@ -78,7 +78,7 @@ double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const
 	if (reynolds <=0)
 		return 3.66; // for velocity=0
 	else
-		return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1/3) - 0.7, 3.0) , 1/3);
+		return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1.0/3.0) - 0.7, 3.0) , 1.0/3.0);
 }
 
 double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho)

@@ -168,8 +168,51 @@ void Schedules::setup(NANDRAD::Project &project) {
 	}
 
 
-	/// \todo setup annual splines: remember to set default interpolation and wrap modes to LINEAR und CYCLIC when not specified
-	///		in the project file
+	// setup annual splines
+	for (auto itAnnualSched = m_schedules->m_annualSchedules.begin(); itAnnualSched!=m_schedules->m_annualSchedules.end(); ++itAnnualSched){
+		// get object list name
+		const std::string & objectListName = itAnnualSched->first;
+		objectListByName(objectListName); // tests for existence and throws exception in case of missing schedule
+
+		// iterate over all splines for that object list
+		const std::vector<NANDRAD::LinearSplineParameter> &splines = itAnnualSched->second;
+		for (const NANDRAD::LinearSplineParameter &spl: splines){
+
+			// NOTE: for the splines checkAndInitialize was called already
+
+			// check for correct spelling and unit of scheduled quantity
+			KnownQuantities k;
+			try {
+				k = (KnownQuantities)NANDRAD_MODEL::KeywordList::Enumeration("Schedules::KnownQuantities", spl.m_name);
+			}
+			catch (...) {
+				throw IBK::Exception(IBK::FormatString("Unknown/undefined (perhaps misspelled) scheduled quantity '%1'.")
+									 .arg(spl.m_name), FUNC_ID);
+			}
+
+			// check unit
+			IBK::Unit requestedUnit;
+			try {
+				requestedUnit = IBK::Unit(NANDRAD_MODEL::KeywordList::Unit("Schedules::KnownQuantities", k));
+			} catch (...) {
+				throw IBK::Exception(IBK::FormatString("ERROR: missing/invalid unit in 'Schedules::KnownQuantities' keyword list!"), FUNC_ID);
+			}
+			if (requestedUnit.base_id() != spl.m_yUnit.base_id())
+				throw IBK::Exception(IBK::FormatString("Expected '%1' unit for scheduled quantity '%2', but "
+													   "got '%3' (not convertible).")
+									 .arg(requestedUnit).arg(spl.m_name).arg(spl.m_yUnit), FUNC_ID);
+
+			m_variableNames.push_back(objectListName + "::" + spl.m_name);
+			m_variableUnits.push_back(spl.m_yUnit);
+			// now generate the linear splines
+			m_valueSpline.push_back(spl.m_values);
+			// and initialize memory for corresponding result values
+			m_results.push_back(0);
+
+		}
+
+	}
+
 }
 
 
@@ -200,13 +243,19 @@ const double * Schedules::resolveResultReference(const InputReference & valueRef
 
 	// similar for other schedules/reference types
 
-	std::string objectListName;
+	// collect all schedule group names
+	std::set<std::string> scheduleGroupNames;
+	for (auto schedGrp : m_schedules->m_scheduleGroups)
+		scheduleGroupNames.insert(schedGrp.first);
+	for (auto annualSched : m_schedules->m_annualSchedules)
+		scheduleGroupNames.insert(annualSched.first);
+
+
 	// find the object list that contains the requested object
-	// first search the schedule groups
-	for (auto schedGrp : m_schedules->m_scheduleGroups) {
-		const NANDRAD::ObjectList * objList = objectListByName(schedGrp.first);
+	for (const std::string &schedName : scheduleGroupNames) {
+		const NANDRAD::ObjectList * objList = objectListByName(schedName);
 		IBK_ASSERT(objList != nullptr);
-		objectListName = objList->m_name;
+		std::string objectListName = objList->m_name;
 		// correct reference type?
 		if (objList->m_referenceType != valueRef.m_referenceType)
 			continue; // not our input reference

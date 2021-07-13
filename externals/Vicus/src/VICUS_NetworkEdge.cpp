@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -25,10 +25,10 @@
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkLine.h"
+#include "VICUS_Project.h"
 
 #include <IBK_assert.h>
 
-#include "VICUS_Project.h"
 
 namespace VICUS {
 
@@ -95,6 +95,19 @@ void NetworkEdge::setNodeId2(unsigned int nodeId2)
 {
 	m_nodeId2 = nodeId2;
 	setLengthFromCoordinates();
+}
+
+
+NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const
+{
+	switch (m_pipeModel) {
+		case PM_SimplePipe:
+			return NetworkComponent::MT_SimplePipe;
+		case PM_DynamicPipe:
+			return NetworkComponent::MT_DynamicPipe;
+		case NUM_PM:
+			return NetworkComponent::NUM_MT;
+	}
 }
 
 

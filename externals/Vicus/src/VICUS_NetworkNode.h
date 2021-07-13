@@ -29,9 +29,8 @@
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
-#include "VICUS_NetworkHeatExchange.h"
 
-#include "NANDRAD_HydraulicNetworkElement.h"
+#include <NANDRAD_HydraulicNetworkHeatExchange.h>
 
 #include <vector>
 #include <set>
@@ -64,7 +63,7 @@ public:
 		m_id(id),
 		m_position(v),
 		m_type(type),
-		m_maxHeatingDemand(heatDemand)
+		m_maxHeatingDemand("MaxHeatingDemand", heatDemand, "W")
 	{}
 
 	/*! check connectivity of graph trhough recursive search */
@@ -113,53 +112,47 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int					m_id  = INVALID_ID;												// XML:A:required
-	IBKMK::Vector3D					m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);				// XML:E:required
-	NodeType						m_type = NUM_NT;												// XML:A:required
+	unsigned int								m_id  = INVALID_ID;										// XML:A:required
 
-	/*! Heating demand.
-		\todo refactor to IBK::Parameter
-	*/
-	double							m_maxHeatingDemand = 0;											// XML:A
+	IBKMK::Vector3D								m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 
-	/*! reference id to a hydraulic component in the catalog */
-	unsigned int					m_componentId = INVALID_ID;										// XML:A
+	NodeType									m_type = NUM_NT;										// XML:A:required
 
-	/*! reference id to a plant (hydraulic network) */
-	unsigned int					m_subNetworkId = INVALID_ID;									// XML:A
+	/*! Heating demand.	*/
+	IBK::Parameter								m_maxHeatingDemand;										// XML:E
 
-	/*! reference id to NetworkController */
-	unsigned int					m_controllerId = INVALID_ID;									// XML:A
+	/*! reference id to a VICUS::SubNetwork */
+	unsigned int								m_subNetworkId = INVALID_ID;							// XML:A
 
-	//:inherited	QString			m_displayName;													// XML:A
+	//:inherited	QString						m_displayName;											// XML:A
 
-	NetworkHeatExchange				m_heatExchange;													// XML:E
+	NANDRAD::HydraulicNetworkHeatExchange		m_heatExchange;											// XML:E
 
 	/*! Whether the node is visible or not
 		Note: keep the next line - this will cause the code generator to create serialization code
 			  for the inherited m_visible variable.
 	*/
-	//:inherited	bool							m_visible = true;								// XML:A
+	//:inherited	bool						m_visible = true;									// XML:A
 
 	// *** RUNTIME VARIABLES ***
 
 	/*! pointers to adjacent edges */
-	std::vector<NetworkEdge*>		m_edges;
+	std::vector<NetworkEdge*>					m_edges;
 
 	/*! The radius used for the visualization of this node in the 3D scene
 		Updated whenever the scale factor Network::m_scaleNodes changes.
 	*/
-	mutable double					m_visualizationRadius;
+	mutable double								m_visualizationRadius;
 
 	/*! Color to be used for displaying (visible) nodes. */
-	mutable QColor					m_color;
+	mutable QColor								m_color;
 
 	/*! used in dijkstra algorithm */
-	double							m_distanceToStart = (std::numeric_limits<double>::max)();
-	NetworkNode *					m_predecessor = nullptr;
+	double										m_distanceToStart = (std::numeric_limits<double>::max)();
+	NetworkNode *								m_predecessor = nullptr;
 
 	/*! defines wether this node is a dead end */
-	bool							m_isDeadEnd = false;
+	bool										m_isDeadEnd = false;
 
 
 };

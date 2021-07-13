@@ -47,6 +47,8 @@ SVDatabase::SVDatabase() :
 	m_pipes(USER_ID_SPACE_START*100),
 	m_fluids(USER_ID_SPACE_START*1001),
 	m_networkComponents(USER_ID_SPACE_START*1002),
+	m_networkControllers(USER_ID_SPACE_START*1003),
+	m_subNetworks(USER_ID_SPACE_START*1004),
 	m_EPDElements(USER_ID_SPACE_START),
 	m_schedules(6*USER_ID_SPACE_START),
 	m_internalLoads(7*USER_ID_SPACE_START),
@@ -79,6 +81,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_pipes.readXML(					dbDir / "db_pipes.xml", "NetworkPipes", "NetworkPipe", true);
 		m_fluids.readXML(					dbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", true);
 		m_networkComponents.readXML(		dbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", true);
+		m_networkControllers.readXML(		dbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkController", true);
+		m_subNetworks.readXML		(		dbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", true);
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
@@ -86,7 +90,7 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_zoneControlShading.readXML(		dbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", true);
 		m_zoneIdealHeatingCooling.readXML(	dbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", true);
 		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
-		m_ventilationNatural.readXML(				dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
+		m_ventilationNatural.readXML(		dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 
 	}
@@ -119,6 +123,10 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_fluids.readXML(					userDbDir / "db_fluids.xml", "NetworkFluids", "NetworkFluid", false);
 	if (t == NUM_DT || t == DT_NetworkComponents)
 		m_networkComponents.readXML(		userDbDir / "db_networkComponents.xml", "NetworkComponents", "NetworkComponent", false);
+	if (t == NUM_DT || t == DT_NetworkControllers)
+		m_networkControllers.readXML(		userDbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkController", false);
+	if (t == NUM_DT || t == DT_SubNetworks)
+		m_subNetworks.readXML(				userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -156,6 +164,8 @@ void SVDatabase::writeDatabases() const {
 	m_pipes.writeXML(				userDbDir / "db_pipes.xml", "NetworkPipes");
 	m_fluids.writeXML(				userDbDir / "db_fluids.xml", "NetworkFluids");
 	m_networkComponents.writeXML(	userDbDir / "db_networkComponents.xml", "NetworkComponents");
+	m_networkControllers.writeXML(	userDbDir / "db_networkControllers.xml", "NetworkControllers");
+	m_subNetworks.writeXML		(	userDbDir / "db_subNetworks.xml", "SubNetworks");
 	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
 	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
@@ -196,6 +206,12 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::VentilationNatural *>		referencedVentilation;
 	std::set<const VICUS::Infiltration *>			referencedInfiltration;
 	std::set<const VICUS::ZoneTemplate *>			referencedZoneTemplates;
+
+	std::set<const VICUS::NetworkPipe*>				referencedNetworkPipes;
+	std::set<const VICUS::NetworkComponent *>		referencedNetworkComponents;
+	std::set<const VICUS::NetworkController *>		referencedNetworkControllers;
+	std::set<const VICUS::SubNetwork *>				referencedSubNetworks;
+	std::set<const VICUS::NetworkFluid *>			referencedNetworkFluids;
 
 
 	// we first collect all objects that are not referenced themselves
@@ -324,6 +340,55 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	}
 
 
+	// iterate through networks
+	for (const VICUS::Network &net: p.m_geometricNetworks){
+
+		// fluids
+		const VICUS::NetworkFluid * f = m_fluids[net.m_fluidID];
+		if (f != nullptr)
+			referencedNetworkFluids.insert(f);
+
+		// pipes
+		for (const VICUS::NetworkEdge &edge: net.m_edges){
+			const VICUS::NetworkPipe * p = m_pipes[edge.m_pipeId];
+			if (p != nullptr)
+				referencedNetworkPipes.insert(p);
+		}
+
+		// sub networks
+		for (const VICUS::NetworkNode &node: net.m_nodes){
+			const VICUS::SubNetwork * sub = m_subNetworks[node.m_subNetworkId];
+			if (sub != nullptr)
+				referencedSubNetworks.insert(sub);
+		}
+	}
+
+	// iterate through collected sub networks
+	for (const VICUS::SubNetwork *sub: referencedSubNetworks){
+		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+
+		// network components
+		const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
+		if (comp != nullptr)
+			referencedNetworkComponents.insert(comp);
+
+		// network controllers
+		const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
+		if (ctrl != nullptr)
+			referencedNetworkControllers.insert(ctrl);
+		}
+	}
+
+	// iterate through components
+	for (const VICUS::NetworkComponent *comp: referencedNetworkComponents){
+
+		// schedules
+		for (unsigned int i: comp->m_scheduleIds){
+			const VICUS::Schedule *sched = m_schedules[i];
+			if (sched != nullptr)
+				referencedSchedule.insert(sched);
+		}
+	}
 
 	// *** transfer collected objects to project's embedded database ***
 
@@ -335,10 +400,13 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_components, referencedComponents);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, referencedSubSurfaceComponents);
 
+	storeVector(p.m_embeddedDB.m_networkComponents, referencedNetworkComponents);
+	storeVector(p.m_embeddedDB.m_fluids, referencedNetworkFluids);
+	storeVector(p.m_embeddedDB.m_pipes, referencedNetworkPipes);
+	storeVector(p.m_embeddedDB.m_networkControllers, referencedNetworkControllers);
+	storeVector(p.m_embeddedDB.m_subNetworks, referencedSubNetworks);
 
-	// TODO m_pipes
-	// TODO m_fluids
-	// TODO m_networkComponents
+
 	// TODO m_EPDElements
 
 	storeVector(p.m_embeddedDB.m_schedules, referencedSchedule);

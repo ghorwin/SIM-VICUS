@@ -27,7 +27,6 @@
 #define SVPropNetworkEditWidgetH
 
 #include <QWidget>
-#include <QMap>
 
 #include <VICUS_Network.h>
 
@@ -56,13 +55,13 @@ public:
 	*/
 	void setPropertyMode(int propertyIndex);
 
-	void showNetworkProperties();
-
-	void showNodeProperties();
-
-	void showEdgeProperties();
-
-	void showComponentProperties();
+	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
+		This can be due to user interaction with the scene, or because objects were added/deleted or
+		because a project was newly loaded.
+		In any case, the currently shown input widgets must be updated according to the current
+		selection in the project.
+	*/
+	void selectionChanged(unsigned int networkId);
 
 public slots:
 
@@ -77,8 +76,6 @@ private slots:
 
 	void on_lineEditNodeY_editingFinished();
 
-	void on_comboBoxPipeDB_activated(int index);
-
 	void on_checkBoxSupplyPipe_clicked();
 
 	void on_pushButtonSizePipeDimensions_clicked();
@@ -91,8 +88,6 @@ private slots:
 
 	void on_pushButtonReduceRedundantNodes_clicked();
 
-	void on_pushButtonEditComponents_clicked();
-
 	void on_lineEditHeatFlux_editingFinished();
 
 	void on_lineEditNodeMaxHeatingDemand_editingFinished();
@@ -102,8 +97,6 @@ private slots:
 	void on_horizontalSliderScaleEdges_valueChanged(int value);
 
 	void on_pushButtonSelectPipes_clicked();
-
-	void on_comboBoxComponent_currentIndexChanged(int index);
 
 	void on_lineEditNodeDisplayName_editingFinished();
 
@@ -119,37 +112,30 @@ private slots:
 
 	void on_pushButtonSelectFluid_clicked();
 
-	void on_pushButtonEditController_clicked();
+	void on_pushButtonAssignPipe_clicked();
 
+	void on_pushButtonEditPipe_clicked();
+
+	void on_pushButtonEditSubNetworks_clicked();
+
+	void on_pushButtonAssignSubNetwork_clicked();
 
 private:
-	/*! This function is called whenever the current selection of edges/nodes/objects has changed.
-		This can be due to user interaction with the scene, or because objects were added/deleted or
-		because a project was newly loaded.
-		In any case, the currently shown input widgets must be updated according to the current
-		selection in the project.
-	*/
-	void selectionChanged();
 
-	void setupComboBoxComponents();
-
-	void setupComboboxPipeDB();
-
-	void setupComboboxHeatExchangeType();
-
-	void updateSizingParams();
-
+	/*! Update information related to one or multiple nodes
+	 */
 	void updateNodeProperties();
 
+	/*! Update information related to one or multiple edges
+	 */
 	void updateEdgeProperties();
 
+	/*! Update all information that can be updated when knowing only the network,
+	 * no edge/node need to be selected here
+	 */
 	void updateNetworkProperties();
 
-	void updateHeatExchangeWidgets();
-
-	void updateControllerCombobox();
-
-	void modifyStatus();
+	void updateHeatExchangeProperties();
 
 	void modifySizingParams();
 
@@ -159,17 +145,11 @@ private:
 
 	void setAllEnabled(bool enabled);
 
-	void setAllHeatExchangeWidgetsVisible(bool visible);
-
-	const VICUS::NetworkComponent *currentComponent();
-
 	QString largestDiameter() const;
 
 	QString smallestDiameter() const;
 
 	void modifyHeatExchangeProperties();
-
-	void modifyController();
 
 	/*! modifies the given property of selected edge(s).
 	 * Encapsulates the process of retrieving the according edge and conducting the undo */
@@ -206,6 +186,7 @@ private:
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
+
 };
 
 

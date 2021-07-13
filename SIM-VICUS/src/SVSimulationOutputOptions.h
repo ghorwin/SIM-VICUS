@@ -52,6 +52,8 @@ public:
 private slots:
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
 
+	void on_checkBoxDefaultNetworkOutputs_toggled(bool checked);
+
 private:
 	Ui::SVSimulationOutputOptions		*m_ui;
 	VICUS::Outputs						*m_outputs;

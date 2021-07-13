@@ -66,6 +66,8 @@ SVPropModeSelectionWidget::~SVPropModeSelectionWidget() {
 
 
 void SVPropModeSelectionWidget::setBuildingPropertyType(BuildingPropertyTypes pt) {
+	// This function is triggered from main window, when the building property type combo box
+	// shall be modified program-wise and not by user with mouse click
 	m_ui->pushButtonSite->blockSignals(true);
 	m_ui->pushButtonNetwork->blockSignals(true);
 	m_ui->pushButtonBuilding->blockSignals(true);
@@ -104,39 +106,52 @@ void SVPropModeSelectionWidget::onModified(int modificationType, ModificationInf
 
 void SVPropModeSelectionWidget::selectionChanged() {
 	if (m_ui->pushButtonNetwork->isChecked()) {
-		// now check the selected objects and if we have only nodes - go to node edit more,
-		// if we have only edges - go to edge edit mode
+		// update combo box with network selection, based on current selection
 
-//		std::set<const VICUS::Object*> objs;
-//		project().selectObjects(objs, VICUS::Project::SG_Network, true, true);
-//		bool haveNode = false;
-//		bool haveNetwork = false;
-//		blockSignals(true);
-//		for (const VICUS::Object* o : objs) {
-//			if (dynamic_cast<const VICUS::Network*>(o) != nullptr){
-//				m_ui->comboBoxNetworkProperties->setCurrentIndex(0);
-//				haveNetwork = true;
-//				break;
-//			}
-//		}
-//		if (!haveNetwork){
-//			for (const VICUS::Object* o : objs) {
-//				if (dynamic_cast<const VICUS::NetworkNode*>(o) != nullptr){
-//					m_ui->comboBoxNetworkProperties->setCurrentIndex(1);
-//					break;
-//				}
-//				if (dynamic_cast<const VICUS::NetworkEdge*>(o) != nullptr){
-//					m_ui->comboBoxNetworkProperties->setCurrentIndex(2);
-//					break;
-//				}
-//			}
-//		}
-//		blockSignals(false);
+		// get list of selected network-related objects
+		std::set<const VICUS::Object*> sel;
+		project().selectObjects(sel, VICUS::Project::SG_Network, true, true);
+
+		std::set<const VICUS::Network*> selectedNetworks;
+		// for all objects follow parent links up to top level and if this is a network, remember network in set of network objets
+		for (const VICUS::Object* o : sel) {
+			if (o->m_parent == nullptr) {
+				const VICUS::Network* n = dynamic_cast<const VICUS::Network*>(o);
+				Q_ASSERT(n != nullptr);
+				selectedNetworks.insert(n);
+			}
+			else {
+				const VICUS::Network* n = dynamic_cast<const VICUS::Network*>(o->m_parent);
+				Q_ASSERT(n != nullptr);
+				selectedNetworks.insert(n);
+			}
+		}
+
+		// rules:
+
+		// no network selected -> show all available networks and let user select one
+		// 1 network selected -> show network name and disable combo box
+		// more networks selected -> clear combo box and disable
+
+		m_ui->comboBoxSelectedNetwork->blockSignals(true);
+		m_ui->comboBoxSelectedNetwork->clear();
+		if (selectedNetworks.empty()) {
+			for (const VICUS::Network & n : project().m_geometricNetworks)
+				m_ui->comboBoxSelectedNetwork->addItem(n.m_displayName, n.m_id);
+			m_ui->comboBoxSelectedNetwork->setEnabled(true);
+		}
+		else if (selectedNetworks.size() == 1) {
+			m_ui->comboBoxSelectedNetwork->addItem((*selectedNetworks.begin())->m_displayName, (*selectedNetworks.begin())->m_id);
+			m_ui->comboBoxSelectedNetwork->setEnabled(false);
+		}
+		else {
+			m_ui->comboBoxSelectedNetwork->setEnabled(false);
+		}
+		m_ui->comboBoxSelectedNetwork->blockSignals(false);
+
+		// if selected network has changed (due to modification in combo box), also update the rest of the view
 		updateViewState();
 	}
-
-	// TODO : what about building editing default mode?
-
 }
 
 
@@ -189,12 +204,20 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 				case 2 : vs.m_objectColorMode = SVViewState::OCM_NetworkEdge; break;
 
 				// component: show network component association
-				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkComponents; break;
+				case 3 : vs.m_objectColorMode = SVViewState::OCM_NetworkSubNetworks; break;
+
+				// component: show network component association
+				case 4 : vs.m_objectColorMode = SVViewState::OCM_NetworkHeatExchange; break;
 			}
 		break;
 
 		default:; // just to make compiler happy
 	}
+}
+
+unsigned int SVPropModeSelectionWidget::currentNetworkId() const
+{
+	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
 }
 
 
@@ -317,8 +340,13 @@ void SVPropModeSelectionWidget::updateViewState() {
 	// user has selected a property in the combo box, property combo was changed due to selection change)
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	viewStateProperties(vs);
+	viewStateProperties(vs); // select correct coloring mode based on current selection in combo box and type buttons
 
 	// now set the new viewstate to update property widgets and scene coloring at the same time
 	SVViewStateHandler::instance().setViewState(vs);
+}
+
+void SVPropModeSelectionWidget::on_comboBoxSelectedNetwork_currentIndexChanged(int /*index*/)
+{
+	updateViewState();
 }

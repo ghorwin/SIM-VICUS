@@ -65,13 +65,13 @@ public:
 
 	/*! Parameters for the element . */
 	enum para_t {
-		P_Length,						// Keyword: Length									[m]		'Pipe length'
+		P_Length,						// Keyword: Length						[m]		'Pipe length'
 		NUM_P
 	};
 
 	/*! Whole number parameters. */
 	enum intPara_t {
-		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes								'Number of parallel pipes'
+		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes					'Number of parallel pipes'
 		NUM_IP
 	};
 
@@ -80,6 +80,8 @@ public:
 
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
+
+	bool operator!=(const HydraulicNetworkElement &other) const;
 
 	/*! Checks for valid and required parameters (value ranges).
 		If referenced TSV file is given, this is read and checked and data is transferred into

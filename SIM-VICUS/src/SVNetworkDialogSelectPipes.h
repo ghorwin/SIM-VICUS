@@ -46,8 +46,20 @@ public:
 
 	void edit(VICUS::Network &network);
 
+private slots:
+	void on_pushButtonAdd_clicked();
+
+	void on_pushButtonRemove_clicked();
+
 private:
-	Ui::SVNetworkDialogSelectPipes *m_ui;
+
+	/*! updates the right table widget which contains the current selection */
+	void updateNetworkTableWidget();
+
+	Ui::SVNetworkDialogSelectPipes		*m_ui;
+
+	/*! stores the current selection */
+	std::vector<unsigned int>			m_selectedPipeIds;
 };
 
 #endif // SVDialogSelectNetworkPipesH

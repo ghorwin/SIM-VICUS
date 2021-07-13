@@ -124,6 +124,18 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "SurfaceHeatings") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SurfaceHeating")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::SurfaceHeating obj;
+					obj.readXML(c2);
+					m_surfaceHeatings.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "Pipes") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -157,6 +169,30 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					VICUS::NetworkComponent obj;
 					obj.readXML(c2);
 					m_networkComponents.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "NetworkControllers") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "NetworkController")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::NetworkController obj;
+					obj.readXML(c2);
+					m_networkControllers.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "SubNetworks") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SubNetwork")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::SubNetwork obj;
+					obj.readXML(c2);
+					m_subNetworks.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -383,6 +419,18 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 	}
 
 
+	if (!m_surfaceHeatings.empty()) {
+		TiXmlElement * child = new TiXmlElement("SurfaceHeatings");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::SurfaceHeating>::const_iterator it = m_surfaceHeatings.begin();
+			it != m_surfaceHeatings.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
 	if (!m_pipes.empty()) {
 		TiXmlElement * child = new TiXmlElement("Pipes");
 		e->LinkEndChild(child);
@@ -413,6 +461,30 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::NetworkComponent>::const_iterator it = m_networkComponents.begin();
 			it != m_networkComponents.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_networkControllers.empty()) {
+		TiXmlElement * child = new TiXmlElement("NetworkControllers");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::NetworkController>::const_iterator it = m_networkControllers.begin();
+			it != m_networkControllers.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_subNetworks.empty()) {
+		TiXmlElement * child = new TiXmlElement("SubNetworks");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::SubNetwork>::const_iterator it = m_subNetworks.begin();
+			it != m_subNetworks.end(); ++it)
 		{
 			it->writeXML(child);
 		}

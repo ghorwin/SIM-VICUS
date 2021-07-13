@@ -169,7 +169,8 @@ public:
 		OCM_Network			=	0x1000,
 		OCM_NetworkNode,
 		OCM_NetworkEdge,
-		OCM_NetworkComponents
+		OCM_NetworkHeatExchange,
+		OCM_NetworkSubNetworks,
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the

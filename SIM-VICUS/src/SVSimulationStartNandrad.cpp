@@ -43,6 +43,7 @@
 #include "SVSimulationModelOptions.h"
 #include "SVSimulationShadingOptions.h"
 #include "SVSimulationRunRequestDialog.h"
+#include "SVSimulationNetworkOptions.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVUndoModifyProject.h"
@@ -123,6 +124,12 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationShadingOptions);
 		m_ui->tabShadingCalculation->setLayout(h);
 	}
+	{
+		m_simulationNetworkOptions = new SVSimulationNetworkOptions(this, m_localProject.m_geometricNetworks);
+		QHBoxLayout * h = new QHBoxLayout;
+		h->addWidget(m_simulationNetworkOptions);
+		m_ui->tabNetworkSettings->setLayout(h);
+	}
 }
 
 
@@ -197,6 +204,7 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 	m_simulationOutputOptions->updateUi();
 	m_simulationModelOptions->updateUi();
 	m_simulationShadingOptions->updateUi();
+	m_simulationNetworkOptions->updateUi();
 
 	updateTimeFrameEdits();
 	updateCmdLine();

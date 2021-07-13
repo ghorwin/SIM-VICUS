@@ -27,14 +27,38 @@
 #include "ui_SVNetworkDialogSelectPipes.h"
 
 #include "SVSettings.h"
+#include "SVStyle.h"
 
 #include <VICUS_Network.h>
+
+#include <QTableWidgetItem>
+
+#include <QtExt_Conversions.h>
 
 SVNetworkDialogSelectPipes::SVNetworkDialogSelectPipes(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVNetworkDialogSelectPipes)
 {
 	m_ui->setupUi(this);
+
+	// setup table widgets
+	m_ui->tableWidgetDatabase->setColumnCount(2);
+	m_ui->tableWidgetDatabase->setHorizontalHeaderLabels(QStringList() << QString() << tr("Database"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetDatabase);
+	m_ui->tableWidgetDatabase->setSortingEnabled(false);
+	m_ui->tableWidgetDatabase->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetDatabase->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetDatabase->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetDatabase->setSelectionMode(QTableWidget::ExtendedSelection);
+
+	m_ui->tableWidgetNetwork->setColumnCount(2);
+	m_ui->tableWidgetNetwork->setHorizontalHeaderLabels(QStringList() << QString() << tr("Current Network"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetNetwork);
+	m_ui->tableWidgetNetwork->setSortingEnabled(false);
+	m_ui->tableWidgetNetwork->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableWidgetNetwork->horizontalHeader()->resizeSection(0,20);
+	m_ui->tableWidgetNetwork->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetNetwork->setSelectionMode(QTableWidget::ExtendedSelection);
 }
 
 SVNetworkDialogSelectPipes::~SVNetworkDialogSelectPipes()
@@ -44,16 +68,125 @@ SVNetworkDialogSelectPipes::~SVNetworkDialogSelectPipes()
 
 void SVNetworkDialogSelectPipes::edit(VICUS::Network &network)
 {
-	if (exec() == QDialog::Accepted){
+	// title of right table
+	m_ui->tableWidgetNetwork->setHorizontalHeaderLabels(QStringList() << QString() <<
+														QString("Network: %1").arg(network.m_displayName));
 
-		// TODO Hauke: implement list widget
+	const SVDatabase & db = SVSettings::instance().m_db;
 
-		// add all pipes
-		network.m_availablePipes.clear();
-		const SVDatabase & db = SVSettings::instance().m_db;
-		for (auto pipe = db.m_pipes.begin(); pipe != db.m_pipes.end(); ++pipe)
-			network.m_availablePipes.push_back(pipe->second.m_id);
+	//  *** Update database table widget ***
+	m_ui->tableWidgetDatabase->clearContents();
+	m_ui->tableWidgetDatabase->setRowCount(db.m_pipes.size());
+	int row = 0;
+	for (auto it = db.m_pipes.begin(); it != db.m_pipes.end(); ++it, ++row){
 
+		// color
+		QTableWidgetItem * item = new QTableWidgetItem();
+		item->setBackground(it->second.m_color);
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		m_ui->tableWidgetDatabase->setItem(row, 0, item);
+
+		// pipe name
+		item = new QTableWidgetItem();
+		auto t = it->second.m_displayName;
+		item->setText(QtExt::MultiLangString2QString(it->second.m_displayName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, it->second.m_id);
+		m_ui->tableWidgetDatabase->setItem(row, 1, item);
 	}
 
+	// we copy the currently available pipes list
+	m_selectedPipeIds = network.m_availablePipes;
+
+	//  Update network table widget
+	updateNetworkTableWidget();
+
+	// if accepted, copy the selected pipes back
+	if (exec() == QDialog::Accepted){
+		network.m_availablePipes = m_selectedPipeIds;
+	}
 }
+
+
+void SVNetworkDialogSelectPipes::on_pushButtonAdd_clicked()
+{
+	QList<QTableWidgetItem*> itemList = m_ui->tableWidgetDatabase->selectedItems();
+
+	for (QTableWidgetItem *itemName: itemList){
+		// get pipe id
+		unsigned int id = itemName->data(Qt::UserRole).toUInt();
+		// check if it is already in availablePipes, if not add it
+		if (std::find(m_selectedPipeIds.begin(), m_selectedPipeIds.end(), id) == m_selectedPipeIds.end())
+			m_selectedPipeIds.push_back(id);
+	}
+
+	updateNetworkTableWidget();
+}
+
+
+void SVNetworkDialogSelectPipes::on_pushButtonRemove_clicked()
+{
+	QList<QTableWidgetItem*> itemList = m_ui->tableWidgetNetwork->selectedItems();
+
+	// get all ids that shall be removed
+	std::vector<unsigned int> removedIds;
+	for (QTableWidgetItem *itemName: itemList){
+		unsigned int id = itemName->data(Qt::UserRole).toUInt();
+		removedIds.push_back(id);
+	}
+
+	// create new vector and add only ids which shall not be removed
+	std::vector<unsigned int> tmp;
+	for (unsigned int id: m_selectedPipeIds){
+		if (std::find(removedIds.begin(), removedIds.end(), id) == removedIds.end())
+			tmp.push_back(id);
+	}
+
+	m_selectedPipeIds = tmp;
+
+	updateNetworkTableWidget();
+}
+
+
+void SVNetworkDialogSelectPipes::updateNetworkTableWidget()
+{
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	m_ui->tableWidgetNetwork->clearContents();
+	m_ui->tableWidgetNetwork->setRowCount(m_selectedPipeIds.size());
+	int row = 0;
+	for (unsigned int id: m_selectedPipeIds){
+
+		// color
+		const VICUS::NetworkPipe * pipe = db.m_pipes[id];
+		QTableWidgetItem * item = new QTableWidgetItem();
+		if (pipe == nullptr){
+			item->setBackground(QColor(64,64,64));
+		}
+		else{
+			item->setBackground(pipe->m_color);
+		}
+		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		m_ui->tableWidgetNetwork->setItem(row, 0, item);
+
+		// pipe name
+		item = new QTableWidgetItem();
+		if (pipe == nullptr){
+			item->setText(tr("<invalid pipe id>"));
+			item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		}
+		else{
+			item->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			item->setData(Qt::UserRole, pipe->m_id);
+		}
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetNetwork->setItem(row, 1, item);
+
+		++row;
+	}
+
+	// deselect previously selected pipes (more user-friendly for multi-selection mode)
+	m_ui->tableWidgetDatabase->clearSelection();
+}
+

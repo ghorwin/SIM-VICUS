@@ -47,6 +47,12 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else if (attribName == "heatExchangeElementId")
+				m_heatExchangeElementId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -61,9 +67,9 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "NetworkElement")
+					if (c2Name != "HydraulicNetworkElement")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NetworkElement obj;
+					NANDRAD::HydraulicNetworkElement obj;
 					obj.readXML(c2);
 					m_elements.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -89,12 +95,18 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
+	if (m_heatExchangeElementId != VICUS::INVALID_ID)
+		e->SetAttribute("heatExchangeElementId", IBK::val2string<unsigned int>(m_heatExchangeElementId));
 
 	if (!m_elements.empty()) {
 		TiXmlElement * child = new TiXmlElement("Elements");
 		e->LinkEndChild(child);
 
-		for (std::vector<NetworkElement>::const_iterator it = m_elements.begin();
+		for (std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator it = m_elements.begin();
 			it != m_elements.end(); ++it)
 		{
 			it->writeXML(child);

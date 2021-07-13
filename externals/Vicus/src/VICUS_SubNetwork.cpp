@@ -1,5 +1,7 @@
 #include "VICUS_SubNetwork.h"
 
+#include "VICUS_Project.h"
+
 #include <NANDRAD_HydraulicNetworkElement.h>
 
 namespace VICUS {
@@ -7,6 +9,77 @@ namespace VICUS {
 SubNetwork::SubNetwork()
 {
 
+}
+
+bool SubNetwork::isValid(const Database<NetworkComponent> &compDB,
+						 const Database<NetworkController> &ctrlDB,
+						 const Database<Schedule> &scheduleDB) const
+{
+	if (m_elements.empty())
+		return false;
+
+	for (const NANDRAD::HydraulicNetworkElement &e: m_elements){
+		// chekc if we have valid ids
+		if (e.m_id == INVALID_ID ||
+			e.m_componentId == INVALID_ID ||
+			e.m_inletNodeId == INVALID_ID ||
+			e.m_outletNodeId == INVALID_ID)
+			return false;
+
+		// check if the component exists in DB
+		if (compDB[e.m_componentId] == nullptr)
+			return false;
+		else{
+			if (!compDB[e.m_componentId]->isValid(scheduleDB))
+				return false;
+		}
+
+		// if controller id exists, it must also reference a valid controller in DB
+		if (e.m_controlElementId != INVALID_ID){
+			if (ctrlDB[e.m_controlElementId] == nullptr)
+				return false;
+			else {
+				if (!ctrlDB[e.m_controlElementId]->isValid(scheduleDB))
+					return false;
+			}
+		}
+	}
+
+	return true;
+}
+
+
+AbstractDBElement::ComparisonResult SubNetwork::equal(const AbstractDBElement *other) const
+{
+	const SubNetwork * otherSub = dynamic_cast<const SubNetwork*>(other);
+	if (otherSub == nullptr)
+		return Different;
+
+	if (m_elements.size() != otherSub->m_elements.size())
+		return Different;
+
+	for (unsigned int i=0; i<m_elements.size(); ++i){
+		if (m_elements[i] != otherSub->m_elements[i])
+			return Different;
+	}
+
+	//check meta data
+	if (m_displayName != otherSub->m_displayName ||
+		m_color != otherSub->m_color)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
+const NetworkComponent * SubNetwork::heatExchangeComponent(const Database<NetworkComponent> &compDB) const
+{
+	const NANDRAD::HydraulicNetworkElement *elem = Project::element(m_elements, m_heatExchangeElementId);
+	if (elem == nullptr)
+		return nullptr;
+
+	unsigned int compId = elem->m_componentId;
+
+	return compDB[compId];
 }
 
 

@@ -43,6 +43,35 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 	KeywordList::setParameter(m_para, "HydraulicNetworkElement::para_t", P_Length, length);
 }
 
+bool HydraulicNetworkElement::operator!=(const HydraulicNetworkElement &other) const
+{
+	// check ids
+	if (m_id != other.m_id ||
+		m_inletNodeId != other.m_inletNodeId ||
+		m_outletNodeId != other.m_outletNodeId ||
+		m_componentId != other.m_componentId ||
+		m_controlElementId != other.m_controlElementId ||
+		m_pipePropertiesId != other.m_pipePropertiesId)
+
+		return true;
+
+	// chekc parameters
+	for (unsigned int i=0; i<NUM_P; ++i){
+		if (m_para[i] != other.m_para[i])
+			return true;
+	}
+
+	for (unsigned int i=0; i<NUM_IP; ++i){
+		if (m_intPara[i] != other.m_intPara[i])
+			return true;
+	}
+
+	if	(m_heatExchange != other.m_heatExchange)
+		return true;
+
+	return false;
+}
+
 
 void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const Project & prj)
 {

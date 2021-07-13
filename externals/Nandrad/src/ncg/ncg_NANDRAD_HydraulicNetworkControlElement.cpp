@@ -58,7 +58,7 @@ void HydraulicNetworkControlElement::readXML(const TiXmlElement * element) {
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
-					m_modelType = (modelType_t)KeywordList::Enumeration("HydraulicNetworkControlElement::modelType_t", attrib->ValueStr());
+					m_modelType = (ModelType)KeywordList::Enumeration("HydraulicNetworkControlElement::ModelType", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -135,7 +135,7 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkControlElement::modelType_t",  m_modelType));
+		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkControlElement::ModelType",  m_modelType));
 	if (m_controllerType != NUM_CT)
 		e->SetAttribute("controllerType", KeywordList::Keyword("HydraulicNetworkControlElement::ControllerType",  m_controllerType));
 	if (m_controlledProperty != NUM_CP)

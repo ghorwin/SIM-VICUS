@@ -31,9 +31,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
-#include "VICUS_NetworkHeatExchange.h"
-
-#include <NANDRAD_HydraulicNetworkComponent.h>
+#include "VICUS_NetworkComponent.h"
 
 #include <vector>
 #include <set>
@@ -49,8 +47,16 @@ namespace VICUS {
 
 
 */
+
+
 class NetworkEdge : public Object {
 public:
+
+	enum PipeModel {
+		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
+		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
+		NUM_PM
+	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -99,18 +105,22 @@ public:
 	// sets nodeId and pointer to the node and calculates the new length of this edge
 	void setNodeId2(unsigned int nodeId2);
 
+
+	/*! returns the corresponding NetworkComponent model type based on the PipeModel */
+	NetworkComponent::ModelType networkComponentModelType() const;
+
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! If false, this is a branch. */
+	/*! Defines which pipe model will be instantiated in NANDRAD */
+	PipeModel											m_pipeModel = PM_DynamicPipe;		// XML:A
+
+	/*! If true, nodes of type Building can connect to this edge.
+		This is used for the automatic algorithm that connects buildings with the network */
 	bool												m_supply;						// XML:A
 
 	/*! ID of pipe in database */
-	unsigned int										m_pipeId = INVALID_ID;			// XML:E
-
-	/*! ID of component parameters. */
-	unsigned int										m_componentId = INVALID_ID;		// XML:E
-
-	NetworkHeatExchange									m_heatExchange;					// XML:E
+	unsigned int										m_pipeId = INVALID_ID;			// XML:A
 
 	//:inherited	QString								m_displayName;					// XML:A
 
@@ -118,7 +128,11 @@ public:
 		Note: keep the next line - this will cause the code generator to create serialization code
 			  for the inherited m_visible variable.
 	*/
-	//:inherited	bool												m_visible = true;		// XML:A
+	//:inherited	bool								m_visible = true;				// XML:A
+
+	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
+	NANDRAD::HydraulicNetworkHeatExchange				m_heatExchange;					// XML:E
+
 
 	// *** RUNTIME VARIABLES ***
 
@@ -132,11 +146,12 @@ public:
 	/*! heating demand of all connected buildings */
 	double												m_maxHeatingDemand = 0;
 
-	NetworkNode									* m_node1 = nullptr;
-	NetworkNode									* m_node2 = nullptr;
+	NetworkNode											* m_node1 = nullptr;
+	NetworkNode											* m_node2 = nullptr;
 
-	unsigned int								m_nodeIdInlet = INVALID_ID;
-	unsigned int								m_nodeIdOutlet = INVALID_ID;
+	unsigned int										m_nodeIdInlet = INVALID_ID;
+	unsigned int										m_nodeIdOutlet = INVALID_ID;
+
 
 private:
 

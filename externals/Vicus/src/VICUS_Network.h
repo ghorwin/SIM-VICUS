@@ -44,7 +44,6 @@
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include "VICUS_Object.h"
-#include "VICUS_NetworkController.h"
 
 namespace IBK {
 	class Path;
@@ -62,6 +61,13 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! The various types (equations) of the hydraulic component. */
+	enum ModelType {
+		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Only Hydraulic calculation with constant temperature'
+		MT_ThermalHydraulicNetwork,			// Keyword: ThermalHydraulicNetwork			'Thermo-hydraulic calculation'
+		NUM_MT
+	};
+
 	enum NetworkType {
 		NET_SinglePipe,						// Keyword: SinglePipe
 		NET_DoublePipe,						// Keyword: DoublePipe
@@ -75,6 +81,7 @@ public:
 		P_ReferencePressure,				// Keyword: ReferencePressure					[Pa]	'Reference pressure applied to reference element'
 		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature				[C]		'Fluid temperature for hydraulic calculation, else initial temperature'
 		P_InitialFluidTemperature,			// Keyword: InitialFluidTemperature				[C]		'Initial Fluid temperature for thermo-hydraulic calculation'
+		P_MaxPipeDiscretization,			// Keyword: MaxPipeDiscretization				[m]		'Maximum discretization step for dynamic pipe model'
 		NUM_P
 	};
 
@@ -226,7 +233,10 @@ public:
 
 	double									m_scaleEdges = 30;							// XML:E
 
-	std::vector<VICUS::NetworkController>	m_controllers;								// XML:E
+	ModelType								m_modelType = MT_ThermalHydraulicNetwork;	// XML:A
+
+	/*! determines if this network is currently selected for simulation */
+	unsigned int							m_selectedForSimulation = false;			// XML:E
 
 
 	/*! Stores visibility information for this network.
@@ -245,6 +255,15 @@ public:
 	*/
 	IBK::rectangle<double>					m_extends;
 
+
+	// *** STATIC FUNCTIONS
+
+	/*! returns a specific color for each heat exchange type */
+	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
+
+
+
+
 private:
 
 	/*! add node to network based on coordinates and type and return the node id.
@@ -252,7 +271,8 @@ private:
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
 	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
-	/*! addNode using Node constructor */
+	/*! addNode using Node constructor for convenience,
+	 * does only copy position, type and maxHeatingDemand */
 	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
 	/*! Calculates Reynolds number of a moving fluid.

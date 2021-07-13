@@ -138,7 +138,7 @@ TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent) const {
 
 void LinearSplineParameter::checkAndInitialize(const std::string & expectedName, const IBK::Unit & targetXUnit, const IBK::Unit & targetYUnit,
 											   const IBK::Unit & limitYUnit, double minYVal, bool isGreaterEqual,
-											   double maxYVal, bool isLessEqual, const char * const errmsg)
+											   double maxYVal, bool isLessEqual, const char * const errmsg, bool skipUnitChecks)
 {
 	FUNCID(LinearSplineParameter::checkAndInitialize);
 
@@ -148,8 +148,8 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 	if (m_name.empty())
 		throw IBK::Exception(IBK::FormatString("Linear spline parameter '%1' is missing/undefined.").arg(expectedName), FUNC_ID);
 
-	// check 1: check if name is correct
-	if (m_name != expectedName)
+	// check 1: check if name is correct (if no expected name was given, skip this check
+	if (!expectedName.empty() && m_name != expectedName)
 		throw IBK::Exception(IBK::FormatString("Name '%1' expected, but '%2' given.").arg(expectedName).arg(m_name), FUNC_ID);
 
 	// check 2: either tsvFile or values can exist
@@ -158,6 +158,10 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 
 	// if there is a valid tsv-file: read it and set values
 	if (m_tsvFile.isValid()) {
+
+		if (!m_tsvFile.exists())
+			throw IBK::Exception(IBK::FormatString("File '%1' could not be found.").arg(m_tsvFile.str()), FUNC_ID);
+
 		// extract column identifier, if any
 		std::string fpath = m_tsvFile.str();
 		unsigned int colIndex = 1; // 1 means "first data column" (actually 2nd column in file, with 0-based index 1)
@@ -165,7 +169,7 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		if (pos != std::string::npos) {
 			try {
 				colIndex = IBK::string2val<unsigned int>(fpath.substr(pos+1));
-			} catch (IBK::Exception & ex) {
+			} catch (...) {
 				throw IBK::Exception(IBK::FormatString("Malformed file name '%1' (invalid column indicator).").arg(m_tsvFile.str()), FUNC_ID);
 			}
 			fpath = fpath.substr(0, pos);
@@ -188,33 +192,36 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		m_xUnit = IBK::Unit(reader.m_units[0]);
 		m_yUnit = IBK::Unit(reader.m_units[colIndex]);
 		m_values.setValues(reader.colData(0), reader.colData(colIndex));
+
 	}
 
-	// argument checks
-	if (targetXUnit.id() != targetXUnit.base_id() ||
-		targetYUnit.id() != targetYUnit.base_id())
-	{
-		throw IBK::Exception("Target units must be base SI units.", FUNC_ID);
-	}
-	if (targetYUnit.base_id() != limitYUnit.base_id())
-		throw IBK::Exception(IBK::FormatString("Incompatible y target unit '%1' and limit unit '%2'.")
-							 .arg(targetYUnit).arg(limitYUnit), FUNC_ID);
-
-	// now check m_xUnit and m_yUnit
-
-	// check 2: units convertible?
-	if (targetXUnit.base_id() != m_xUnit.base_id())
-		throw IBK::Exception( IBK::FormatString("Mismatching x units, cannot convert from '%1' to '%2'.")
-							  .arg(m_xUnit.name()).arg(targetXUnit).arg(suffix), FUNC_ID);
-	if (targetYUnit.base_id() != m_yUnit.base_id())
-		throw IBK::Exception( IBK::FormatString("Mismatching y units, cannot convert from '%1' to '%2'.")
-							  .arg(m_yUnit.name()).arg(targetYUnit).arg(suffix), FUNC_ID);
-
-	// check 3: convert to base unit
+	// convert to base units
 	convert2BaseUnits(); // throws an exception if invalid
 	// and update units if successful
-	m_xUnit = targetXUnit;
-	m_yUnit = targetYUnit;
+	m_xUnit = m_xUnit.base_unit();
+	m_yUnit = m_yUnit.base_unit();
+
+	// argument checks
+	if (!skipUnitChecks){
+		if (targetXUnit.id() != targetXUnit.base_id() ||
+			targetYUnit.id() != targetYUnit.base_id())
+		{
+			throw IBK::Exception("Target units must be base SI units.", FUNC_ID);
+		}
+		if (targetYUnit.base_id() != limitYUnit.base_id())
+			throw IBK::Exception(IBK::FormatString("Incompatible y target unit '%1' and limit unit '%2'.")
+								 .arg(targetYUnit).arg(limitYUnit), FUNC_ID);
+
+		// now check m_xUnit and m_yUnit
+
+		// check 2: units convertible?
+		if (targetXUnit.base_id() != m_xUnit.base_id())
+			throw IBK::Exception( IBK::FormatString("Mismatching x units, cannot convert from '%1' to '%2'.")
+								  .arg(m_xUnit.name()).arg(targetXUnit).arg(suffix), FUNC_ID);
+		if (targetYUnit.base_id() != m_yUnit.base_id())
+			throw IBK::Exception( IBK::FormatString("Mismatching y units, cannot convert from '%1' to '%2'.")
+								  .arg(m_yUnit.name()).arg(targetYUnit).arg(suffix), FUNC_ID);
+	}
 
 	// check 4: range check?
 //	for (double d : m_values.y()) {

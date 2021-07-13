@@ -54,6 +54,7 @@ KeywordListQt::KeywordListQt() {
 	tr("On-off-type heat pump based on polynoms, installed at source side");
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
+	tr("Valve with constant pressure loss");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
@@ -64,6 +65,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
+	tr("Pressure loss for Valve");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
@@ -257,7 +259,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Incomplete LU preconditioner");
 	tr("Automatic selection of preconditioner");
 	tr("Constant set points");
-	tr("Scheduled ste points");
+	tr("Scheduled set points");
 	tr("Heating set point");
 	tr("Cooling set point");
 	tr("Control tolerance for temperatures");

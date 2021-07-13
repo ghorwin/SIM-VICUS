@@ -68,13 +68,14 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 				case ColId					: return it->first;
 				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
 					// Note: description is too long here for "Type"
-				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType", it->second.m_modelType);
+				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType",
+																				 it->second.m_modelType);
 			}
 		} break;
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid())
+				if (it->second.isValid(m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -144,6 +145,7 @@ void SVDBNetworkComponentTableModel::resetModel() {
 QModelIndex SVDBNetworkComponentTableModel::addNewItem() {
 	VICUS::NetworkComponent c;
 	c.m_displayName.setEncodedString("en:<new component type>");
+	c.m_modelType = VICUS::NetworkComponent::MT_HeatExchanger;
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_networkComponents.add( c );
 	endInsertRows();

@@ -50,7 +50,7 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditWallRoughness->setup(0, std::numeric_limits<double>::max(), tr("Roughness"), false, true);
 	m_ui->lineEditWallThickness->setup(0, std::numeric_limits<double>::max(), tr("Wall thickness"), false, true);
 	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), false, true);
-	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), false, true);
+	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
 }
 
 
@@ -133,7 +133,9 @@ void SVDBPipeEditWidget::updateInput(int id) {
 void SVDBPipeEditWidget::on_lineEditName_editingFinished() {
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_displayName != m_ui->lineEditName->string()) {
-		m_current->m_displayName = IBK::MultiLanguageString(nameFromData(*m_current));
+		IBK::MultiLanguageString str;
+		str.setString(nameFromData(*m_current), "en");
+		m_current->m_displayName = str;
 		modelModify();
 	}
 }

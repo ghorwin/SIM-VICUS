@@ -82,7 +82,12 @@ PRE_TARGETDEPS += \
 SOURCES += \
 								../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 								../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+								../../src/SVDBNetworkControllerEditWidget.cpp \
+								../../src/SVDBNetworkControllerTableModel.cpp \
+								../../src/SVDBSubNetworkEditWidget.cpp \
+								../../src/SVDBSubNetworkTableModel.cpp \
 								../../src/SVPropSurfaceHeatingDelegate.cpp \
+								../../src/SVSimulationNetworkOptions.cpp \
 								../../src/SVSimulationShadingOptions.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
@@ -194,7 +199,6 @@ SOURCES += \
 								../../src/SVMessageHandler.cpp \
 								../../src/SVNavigationTreeItemDelegate.cpp \
 								../../src/SVNavigationTreeWidget.cpp \
-								../../src/SVNetworkControllerDialog.cpp \
 								../../src/SVNetworkDialogSelectPipes.cpp \
 								../../src/SVNetworkImportDialog.cpp \
 								../../src/SVPostProcBindings.cpp \
@@ -221,7 +225,6 @@ SOURCES += \
 								../../src/SVSimulationPerformanceOptions.cpp \
 								../../src/SVSimulationRunRequestDialog.cpp \
 								../../src/SVSimulationStartNandrad.cpp \
-								../../src/SVSimulationStartNetworkSim.cpp \
 								../../src/SVSmartSelectDialog.cpp \
 								../../src/SVStyle.cpp \
 								../../src/SVThreadBase.cpp \
@@ -232,7 +235,12 @@ SOURCES += \
 								../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+								../../src/SVDBNetworkControllerEditWidget.h \
+								../../src/SVDBNetworkControllerTableModel.h \
+								../../src/SVDBSubNetworkEditWidget.h \
+								../../src/SVDBSubNetworkTableModel.h \
 								../../src/SVPropSurfaceHeatingDelegate.h \
+								../../src/SVSimulationNetworkOptions.h \
 								../../src/SVSimulationShadingOptions.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
@@ -347,7 +355,6 @@ HEADERS  += \
 								../../src/SVMessageHandler.h \
 								../../src/SVNavigationTreeItemDelegate.h \
 								../../src/SVNavigationTreeWidget.h \
-								../../src/SVNetworkControllerDialog.h \
 								../../src/SVNetworkDialogSelectPipes.h \
 								../../src/SVNetworkImportDialog.h \
 								../../src/SVPostProcBindings.h \
@@ -374,7 +381,6 @@ HEADERS  += \
 								../../src/SVSimulationPerformanceOptions.h \
 								../../src/SVSimulationRunRequestDialog.h \
 								../../src/SVSimulationStartNandrad.h \
-								../../src/SVSimulationStartNetworkSim.h \
 								../../src/SVSmartSelectDialog.h \
 								../../src/SVStyle.h \
 								../../src/SVThreadBase.h \
@@ -386,6 +392,8 @@ HEADERS  += \
 
 FORMS    += \
 								../../src/SVAboutDialog.ui \
+								../../src/SVDBNetworkControllerEditWidget.ui \
+								../../src/SVDBSubNetworkEditWidget.ui \
 								../../src/SVDatabaseEditDialog.ui \
 								../../src/SVDBBoundaryConditionEditWidget.ui \
 								../../src/SVDBComponentEditWidget.ui \
@@ -418,7 +426,6 @@ FORMS    += \
 								../../src/SVLogFileDialog.ui \
 								../../src/SVMainWindow.ui \
 								../../src/SVNavigationTreeWidget.ui \
-								../../src/SVNetworkControllerDialog.ui \
 								../../src/SVNetworkDialogSelectPipes.ui \
 								../../src/SVNetworkImportDialog.ui \
 								../../src/SVPreferencesDialog.ui \
@@ -435,12 +442,12 @@ FORMS    += \
 								../../src/SVScheduleHolidayWidget.ui \
 								../../src/SVSimulationLocationOptions.ui \
 								../../src/SVSimulationModelOptions.ui \
+								../../src/SVSimulationNetworkOptions.ui \
 								../../src/SVSimulationOutputOptions.ui \
 								../../src/SVSimulationPerformanceOptions.ui \
 								../../src/SVSimulationRunRequestDialog.ui \
 								../../src/SVSimulationShadingOptions.ui \
 								../../src/SVSimulationStartNandrad.ui \
-								../../src/SVSimulationStartNetworkSim.ui \
 								../../src/SVSmartSelectDialog.ui \
 								../../src/SVWelcomeScreen.ui
 

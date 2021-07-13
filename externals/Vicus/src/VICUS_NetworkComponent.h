@@ -35,6 +35,9 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_Database.h"
+#include "VICUS_Schedule.h"
+
+#include <NANDRAD_HydraulicNetworkComponent.h>
 
 namespace VICUS {
 
@@ -59,7 +62,7 @@ public:
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
 		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
-		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Adapter model that provides a defined supply temperature to the network and calculates the heat loss/gain'
+		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		NUM_MT
 	};
 
@@ -81,40 +84,50 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
-	VICUS_COMPARE_WITH_ID
 	VICUS_COMP(NetworkComponent)
+	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
-	// *** PUBLIC MEMBER VARIABLES ***
+	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
+
+	/*! Display name. */
+	IBK::MultiLanguageString			m_displayName;										// XML:A
+
+	/*! False color. */
+	QColor								m_color;											// XML:A
+
+	/*! Notes. */
+	IBK::MultiLanguageString			m_notes;											// XML:E
+
+	/*! Manufacturer. */
+	IBK::MultiLanguageString			m_manufacturer;										// XML:E
+
+	/*! Data source. */
+	IBK::MultiLanguageString			m_dataSource;										// XML:E
+
+	/*! Schedules for this component */
+	std::vector<unsigned int>			m_scheduleIds;										// XML:E
+
+
+	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***
 
 	/*! Unique ID for this component. */
-	unsigned int					m_id				= VICUS::INVALID_ID;			// XML:A:required
+	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
 
 	/*! Model type. */
-	ModelType						m_modelType			= MT_SimplePipe;				// XML:A:required
+	ModelType						m_modelType		= NUM_MT;							// XML:A:required
 
 	/*! Parameters of the flow component. */
 	IBK::Parameter					m_para[NUM_P];										// XML:E
 
-	/*! Display name. */
-	IBK::MultiLanguageString		m_displayName;										// XML:A
+	/*! Array parameters of the flow component */
+	NANDRAD::DataTable				m_polynomCoefficients;								// XML:E
 
-	/*! False color. */
-	QColor							m_color;											// XML:A
-
-	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;											// XML:E
-
-	/*! Manufacturer. */
-	IBK::MultiLanguageString		m_manufacturer;										// XML:E
-
-	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;										// XML:E
 };
 
 } // namespace VICUS

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>405</width>
-    <height>151</height>
+    <width>415</width>
+    <height>184</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,24 +83,7 @@
       </item>
       <item row="1" column="0" colspan="4">
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0">
-         <widget class="QLabel" name="labelBuildingProperties">
-          <property name="text">
-           <string>Object properties:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="comboBoxBuildingProperties"/>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="labelNetworkProperties">
-          <property name="text">
-           <string>Object properties:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
+        <item row="2" column="1">
          <widget class="QComboBox" name="comboBoxNetworkProperties">
           <item>
            <property name="text">
@@ -119,10 +102,42 @@
           </item>
           <item>
            <property name="text">
-            <string>Component</string>
+            <string>SubNetwork</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>HeatExchange</string>
            </property>
           </item>
          </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="comboBoxBuildingProperties"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="labelNetworkProperties">
+          <property name="text">
+           <string>Object properties:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="labelBuildingProperties">
+          <property name="text">
+           <string>Object properties:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="labelSelectedNetwork">
+          <property name="text">
+           <string>Network:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboBoxSelectedNetwork"/>
         </item>
        </layout>
       </item>

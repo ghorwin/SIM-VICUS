@@ -26,22 +26,22 @@
 #include "SVDBNetworkComponentEditWidget.h"
 #include "ui_SVDBNetworkComponentEditWidget.h"
 
-#include <VICUS_KeywordList.h>
-#include <VICUS_KeywordListQt.h>
-#include <VICUS_NetworkComponent.h>
-
-#include <NANDRAD_HydraulicNetworkComponent.h>
-#include <NANDRAD_KeywordList.h>
-
-#include <QtExt_LanguageHandler.h>
-#include "QtExt_Locale.h"
-#include <SVConstants.h>
-
 #include "SVSettings.h"
 #include "SVDBNetworkComponentTableModel.h"
 #include "SVDatabaseEditDialog.h"
 #include "SVMainWindow.h"
 #include "SVStyle.h"
+#include <SVConstants.h>
+
+#include <VICUS_NetworkComponent.h>
+#include <VICUS_KeywordListQt.h>
+
+#include <NANDRAD_HydraulicNetworkComponent.h>
+
+#include <QtExt_LanguageHandler.h>
+#include <QtExt_Locale.h>
+#include <QtExt_Conversions.h>
+
 
 SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -74,23 +74,6 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->tableWidgetParameters->setSortingEnabled(false);
 
 	updateInput(-1);
-
-	// check if enums are identical
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter == (int)VICUS::NetworkComponent::P_HydraulicDiameter);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient == (int)VICUS::NetworkComponent::P_PressureLossCoefficient);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PressureHead == (int)VICUS::NetworkComponent::P_PressureHead);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency == (int)VICUS::NetworkComponent::P_PumpEfficiency);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_Volume == (int)VICUS::NetworkComponent::P_Volume);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth == (int)VICUS::NetworkComponent::P_PipeMaxDiscretizationWidth);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency == (int)VICUS::NetworkComponent::P_CarnotEfficiency);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower == (int)VICUS::NetworkComponent::P_MaximumHeatingPower);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_P == (int)VICUS::NetworkComponent::NUM_P);
-
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_SimplePipe == (int)VICUS::NetworkComponent::MT_SimplePipe);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe == (int)VICUS::NetworkComponent::MT_DynamicPipe);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump == (int)VICUS::NetworkComponent::MT_ConstantPressurePump);
-	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger == (int)VICUS::NetworkComponent::MT_HeatExchanger);
-//	Q_ASSERT(NANDRAD::HydraulicNetworkComponent::NUM_MT == (int)VICUS::NetworkComponent::NUM_MT);
 }
 
 
@@ -108,7 +91,7 @@ void SVDBNetworkComponentEditWidget::setup(SVDatabase * db, SVAbstractDatabaseTa
 void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	FUNCID(SVDBNetworkComponentEditWidget::updateInput);
 
-	m_currentComponent = nullptr; // disable edit triggers
+	m_current = nullptr; // disable edit triggers
 
 	if (id == -1) {
 		// disable all controls - note: this does not disable signals of the components below
@@ -116,6 +99,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 		// clear input controls
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
+		m_ui->lineEditSchedule1->clear();
+		m_ui->lineEditSchedule2->clear();
 
 		// construction property info fields
 		m_ui->comboBoxComponentType->blockSignals(true);
@@ -129,7 +114,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	setEnabled(true);
 
 	VICUS::NetworkComponent * comp = const_cast<VICUS::NetworkComponent*>(m_db->m_networkComponents[(unsigned int)id]);
-	m_currentComponent = comp;
+	m_current = comp;
 
 	// now update the GUI controls
 	m_ui->lineEditName->setString(comp->m_displayName);
@@ -140,17 +125,37 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->blockSignals(false);
 
 	m_ui->pushButtonComponentColor->blockSignals(true);
-	m_ui->pushButtonComponentColor->setColor(m_currentComponent->m_color);
+	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
 	m_ui->pushButtonComponentColor->blockSignals(false);
+
+	// NOTE: we assume that ModelType enums are the same in both objects!
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
+			NANDRAD::HydraulicNetworkComponent::ModelType(m_current->m_modelType);
+
+	// enable schedules tool buttons (based on required schedules)
+	std::vector<std::string> reqScheduleNames = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(nandradModelType);
+	m_ui->groupBoxSchedules->setEnabled(!reqScheduleNames.empty());
+	m_ui->toolButtonSchedule1->setEnabled(reqScheduleNames.size()==1 || reqScheduleNames.size()==2);
+	m_ui->toolButtonSchedule2->setEnabled(reqScheduleNames.size()==2);
+
+	// update Schedule names (based on existing schedules)
+
+	if (m_current->m_scheduleIds.size()>0){
+		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[0]] != nullptr);
+		m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
+											 m_db->m_schedules[m_current->m_scheduleIds[0]]->m_displayName));
+	}
+	if (m_current->m_scheduleIds.size()>1){
+		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[1]] != nullptr);
+		m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
+											 m_db->m_schedules[m_current->m_scheduleIds[1]]->m_displayName));
+	}
+
 
 	// populate table widget with properties
 	m_ui->tableWidgetParameters->clearContents();
 
 	// only insert parameters that are actually needed for the current model type
-
-	// NOTE: we assume that ModelType enums are the same in both objects!
-	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = (NANDRAD::HydraulicNetworkComponent::ModelType)m_currentComponent->m_modelType;
-
 	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
 
@@ -172,10 +177,10 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 			// Mind: unit conversion needed if keyword-list unit does not match base SI unit
 			//       but add check if there is no value yet
-			if (m_currentComponent->m_para[paraVec[i]].name.empty())
+			if (m_current->m_para[paraVec[i]].name.empty())
 				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
 			else
-				item = new QTableWidgetItem(QString("%L1").arg(m_currentComponent->m_para[paraVec[i]].get_value(ioUnit)));
+				item = new QTableWidgetItem(QString("%L1").arg(m_current->m_para[paraVec[i]].get_value(ioUnit)));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 			m_ui->tableWidgetParameters->setItem((int)i, 1, item);
 		}
@@ -188,43 +193,95 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
-//	m_ui->lineEditName->setReadOnly(!isEditable);
-//	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
-//	m_ui->comboBoxComponentType->setEnabled(!isEditable);
-//	m_ui->tableWidgetParameters->setEnabled(!isEditable);
+	m_ui->lineEditName->setReadOnly(!isEditable);
+	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
 
 }
 
 
 void SVDBNetworkComponentEditWidget::on_lineEditName_editingFinished(){
-	Q_ASSERT(m_currentComponent != nullptr);
+	Q_ASSERT(m_current != nullptr);
 
-	if (m_currentComponent->m_displayName != m_ui->lineEditName->string()) {
-		m_currentComponent->m_displayName = m_ui->lineEditName->string();
+	if (m_current->m_displayName != m_ui->lineEditName->string()) {
+		m_current->m_displayName = m_ui->lineEditName->string();
 		modelModify();
 	}
 }
 
 
 void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChanged(int /*index*/) {
-	if (m_currentComponent == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
+	if (m_current == nullptr) return; // m_current is nullptr, when nothing is selected and controls are defaulted to "empty"
 
-	VICUS::NetworkComponent::ModelType ct = static_cast<VICUS::NetworkComponent::ModelType>(m_ui->comboBoxComponentType->currentData().toInt());
-	if (ct != m_currentComponent->m_modelType) {
-		m_currentComponent->m_modelType = ct;
+	VICUS::NetworkComponent::ModelType ct = VICUS::NetworkComponent::ModelType(
+													m_ui->comboBoxComponentType->currentData().toUInt());
+	if (ct != m_current->m_modelType) {
+		m_current->m_modelType = ct;
 		modelModify();
-		updateInput((int)m_currentComponent->m_id);
+		updateInput((int)m_current->m_id);
 	}
 }
 
 
 void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
-	Q_ASSERT(m_currentComponent != nullptr);
+	Q_ASSERT(m_current != nullptr);
 
-	if (m_currentComponent->m_color != m_ui->pushButtonComponentColor->color()) {
-		m_currentComponent->m_color = m_ui->pushButtonComponentColor->color();
+	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
+		m_current->m_color = m_ui->pushButtonComponentColor->color();
 		modelModify();
 	}
+}
+
+
+void SVDBNetworkComponentEditWidget::on_toolButtonSchedule1_clicked()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	// open schedule edit dialog in selection mode
+	unsigned int id = 0;
+	if (m_current->m_scheduleIds.size()>0)
+		id = m_current->m_scheduleIds[0];
+
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(id);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
+	// else if we have a new id set it
+	if (id != newId) {
+		if (m_current->m_scheduleIds.size()>0)
+			m_current->m_scheduleIds[0] = newId;
+		else
+			m_current->m_scheduleIds.push_back(newId);
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBNetworkComponentEditWidget::on_toolButtonSchedule2_clicked()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	// open schedule edit dialog in selection mode
+	unsigned int id = 0;
+	if (m_current->m_scheduleIds.size()==2)
+		id = m_current->m_scheduleIds[1];
+
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(id);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
+	if (id != newId) {
+		if (m_current->m_scheduleIds.size()==2)
+			m_current->m_scheduleIds[1] = newId;
+		else
+			m_current->m_scheduleIds.push_back(newId);
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
 }
 
 
@@ -243,13 +300,13 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 		errMsg = "Only numbers allowed!";
 
 	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
-	VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(
-												VICUS::KeywordList::Enumeration("NetworkComponent::para_t", parName));
+	NANDRAD::HydraulicNetworkComponent::para_t paraNum = NANDRAD::HydraulicNetworkComponent::para_t(
+												VICUS::KeywordListQt::Enumeration("NetworkComponent::para_t", parName));
 
 	// now do parameter specific checks
 	if (ok){
-		IBK::Parameter parameter(VICUS::KeywordList::Keyword("NetworkComponent::para_t", paraNum), val,
-								 VICUS::KeywordList::Unit("NetworkComponent::para_t", paraNum));
+		IBK::Parameter parameter(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", paraNum), val,
+								 VICUS::KeywordListQt::Unit("NetworkComponent::para_t", paraNum));
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
 		} catch (IBK::Exception &ex) {
@@ -261,11 +318,11 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	// modify item and show message box
 	if (!ok){
 		m_ui->tableWidgetParameters->blockSignals(true);
-		if (m_currentComponent->m_para[paraNum].empty())
+		if (m_current->m_para[paraNum].empty())
 			m_ui->tableWidgetParameters->item(row, column)->setText("");
 		else
 			m_ui->tableWidgetParameters->item(row, column)->setText(QString("%1")
-																	.arg(m_currentComponent->m_para[paraNum].value));
+																	.arg(m_current->m_para[paraNum].value));
 		m_ui->tableWidgetParameters->blockSignals(false);
 		QMessageBox msgBox(QMessageBox::Critical, "Invalid Value", errMsg, QMessageBox::Ok, this);
 		msgBox.exec();
@@ -273,14 +330,12 @@ void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int ro
 	}
 
 	// finally set value
-	VICUS::KeywordList::setParameter(m_currentComponent->m_para, "NetworkComponent::para_t", paraNum, val);
+	VICUS::KeywordList::setParameter(m_current->m_para, "NetworkComponent::para_t", paraNum, val);
 	modelModify();
 }
 
 void SVDBNetworkComponentEditWidget::modelModify() {
 	m_db->m_networkComponents.m_modified = true;
-	m_dbModel->setItemModified(m_currentComponent->m_id);
+	m_dbModel->setItemModified(m_current->m_id);
 
 }
-
-

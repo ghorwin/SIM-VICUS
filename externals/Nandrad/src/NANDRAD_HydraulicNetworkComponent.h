@@ -49,6 +49,7 @@ public:
 		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
+		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
 		NUM_MT
 	};
 
@@ -64,6 +65,7 @@ public:
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
+		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for Valve'
 		NUM_P
 	};
 
@@ -105,6 +107,8 @@ public:
 		\param networkModelType Identifies network model (HydraulicNetwork::ModelType).
 	*/
 	static std::vector<unsigned int> requiredParameter(const ModelType modelType, int networkModelType);
+
+	static std::vector<std::string> requiredScheduleNames(const ModelType modelType);
 
 	/*! Helper function that implements specific rules for testing a single parameter.
 		This is useful if the same parameter is used by several models and we want to avoid implementing

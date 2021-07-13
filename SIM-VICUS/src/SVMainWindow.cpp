@@ -89,7 +89,6 @@
 #include "SVDBZoneTemplateEditDialog.h"
 
 #include "SVSimulationStartNandrad.h"
-#include "SVSimulationStartNetworkSim.h"
 #include "SVDBInternalLoadsTableModel.h"
 
 #include "SVGeometryView.h"
@@ -279,6 +278,20 @@ SVDatabaseEditDialog *SVMainWindow::dbFluidEditDialog()
 	return m_dbFluidEditDialog;
 }
 
+SVDatabaseEditDialog *SVMainWindow::dbNetworkControllerEditDialog()
+{
+	if (m_dbNetworkControllerEditDialog == nullptr)
+		m_dbNetworkControllerEditDialog = SVDatabaseEditDialog::createNetworkControllerEditDialog(this);
+	return m_dbNetworkControllerEditDialog;
+}
+
+SVDatabaseEditDialog *SVMainWindow::dbSubNetworkEditDialog()
+{
+	if (m_dbSubNetworkEditDialog == nullptr)
+		m_dbSubNetworkEditDialog = SVDatabaseEditDialog::createSubNetworkEditDialog(this);
+	return m_dbSubNetworkEditDialog;
+}
+
 SVDatabaseEditDialog *SVMainWindow::dbScheduleEditDialog() {
 	if (m_dbScheduleEditDialog == nullptr)
 		m_dbScheduleEditDialog = SVDatabaseEditDialog::createScheduleEditDialog(this);
@@ -463,6 +476,17 @@ void SVMainWindow::on_actionDBFluids_triggered()
 void SVMainWindow::on_actionDBHydraulicComponents_triggered() {
 	dbNetworkComponentEditDialog()->edit();
 }
+
+void SVMainWindow::on_actionDBControllers_triggered()
+{
+	dbNetworkControllerEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBSub_networks_triggered()
+{
+	dbSubNetworkEditDialog()->edit();
+}
+
 
 // *** protected functions ***
 
@@ -1063,24 +1087,6 @@ void SVMainWindow::on_actionSimulationNANDRAD_triggered() {
 		SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Updated simulation parameters"), m_simulationStartNandrad->localProject());
 		undo->push();
 	}
-}
-
-
-void SVMainWindow::on_actionSimulationHydraulicNetwork_triggered() {
-	if (m_simulationStartNetworkSim == nullptr)
-		m_simulationStartNetworkSim = new SVSimulationStartNetworkSim(this);
-	// we require a saved project with at least one network definition
-	if (SVProjectHandler::instance().projectFile().isEmpty()) {
-		QMessageBox::critical(this, QString(), tr("The project must be saved, first!"));
-		if (!saveProject())
-			return;
-	}
-	if (project().m_geometricNetworks.empty()) {
-		QMessageBox::critical(this, QString(), tr("You need to define at least one network!"));
-		return;
-	}
-
-	m_simulationStartNetworkSim->edit();
 }
 
 

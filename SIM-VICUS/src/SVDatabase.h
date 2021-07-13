@@ -38,6 +38,8 @@
 #include <VICUS_NetworkPipe.h>
 #include <VICUS_NetworkFluid.h>
 #include <VICUS_NetworkComponent.h>
+#include <VICUS_NetworkController.h>
+#include <VICUS_SubNetwork.h>
 #include <VICUS_EPDDataset.h>
 #include <VICUS_Schedule.h>
 #include <VICUS_InternalLoad.h>
@@ -73,6 +75,8 @@ public:
 		DT_Pipes,
 		DT_Fluids,
 		DT_NetworkComponents,
+		DT_NetworkControllers,
+		DT_SubNetworks,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneTemplates,
@@ -140,6 +144,12 @@ public:
 
 	/*! Map of all hydraulic network components */
 	VICUS::Database<VICUS::NetworkComponent>			m_networkComponents;
+
+	/*! Map of all hydraulic network controllers */
+	VICUS::Database<VICUS::NetworkController>			m_networkControllers;
+
+	/*! Map of all hydraulic sub networks */
+	VICUS::Database<VICUS::SubNetwork>					m_subNetworks;
 
 	/*! Map of all database EPD elements */
 	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;

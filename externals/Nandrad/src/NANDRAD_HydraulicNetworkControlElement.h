@@ -24,10 +24,10 @@ public:
 	NANDRAD_COMP(HydraulicNetworkControlElement)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(const std::vector<NANDRAD::Zone> &zones);
+	void checkParameters(const std::vector<NANDRAD::Zone> *zones) const;
 
 	/*! Defines variability options for set point values. */
-	enum modelType_t {
+	enum ModelType {
 		MT_Constant,					// Keyword: Constant				'Set points are given as constant parameters'
 		/*! Generates 'TemperatureDifferenceSetpointSchedule' or 'MassFluxSetpointSchedule' depending on
 			controlled property for each network element that uses this controller.
@@ -78,7 +78,7 @@ public:
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
 	/*! Determines variability of setpoint parameters. */
-	modelType_t						m_modelType;									// XML:A:required
+	ModelType						m_modelType = NUM_MT;							// XML:A:required
 
 	/*! Controller type (P, PI, ...) */
 	ControllerType					m_controllerType = NUM_CT;						// XML:A
