@@ -227,6 +227,13 @@ void SVDBScheduleEditWidget::updateDiagram() {
 	Q_ASSERT(m_currentInterval != nullptr);
 
 	m_currentInterval->createWeekDataVector(timepoints, data);
+
+	//make a zero schedule
+	if(timepoints.empty()){
+		//timepoints.push_back(0);
+		//data.push_back(0);
+	}
+
 	// convert time points to days
 	for (double & d : timepoints)
 		d /= 24;
@@ -250,8 +257,10 @@ void SVDBScheduleEditWidget::updateDiagram() {
 	}
 
 	// copy data to schedule
-	m_curve->setSamples(&timepoints[0], &data[0], timepoints.size());
-	m_ui->plotWidget->replot();
+	if(!timepoints.empty()){
+		m_curve->setSamples(&timepoints[0], &data[0], timepoints.size());
+		m_ui->plotWidget->replot();
+	}
 }
 
 
