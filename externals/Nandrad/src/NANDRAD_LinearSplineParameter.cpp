@@ -159,8 +159,7 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 	// if there is a valid tsv-file: read it and set values
 	if (m_tsvFile.isValid()) {
 
-		if (!m_tsvFile.exists())
-			throw IBK::Exception(IBK::FormatString("File '%1' could not be found.").arg(m_tsvFile.str()), FUNC_ID);
+		// Note: we may have a path like '/data/tsv/values.tsv?3' with column indiator
 
 		// extract column identifier, if any
 		std::string fpath = m_tsvFile.str();
