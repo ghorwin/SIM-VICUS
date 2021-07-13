@@ -72,7 +72,7 @@ public:
 
 
 	/*! Checks given parameters and initializes all linear splines given as tsv-files. */
-	void checkParameters();
+	void checkParameters(const std::map<std::string, IBK::Path> &placeholders);
 
 	/*! This function does all the work in the actual schedule-by-daily-cycle implementation.
 		It constructs a linear spline for cyclic annual use by processing all days of the year,

@@ -85,7 +85,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 	m_schedules = &project.m_schedules;
 
 	// run general input data checks
-	project.m_schedules.checkParameters();
+	project.m_schedules.checkParameters(project.m_placeholders);
 
 	// loop over all daily cycle schedules and all linear spline schedules and remember the object lists
 	for (std::map<std::string, std::vector<NANDRAD::Schedule> >::iterator schedGroupIT = project.m_schedules.m_scheduleGroups.begin();

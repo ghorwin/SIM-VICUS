@@ -46,7 +46,7 @@
 					<ScheduleGroup objectList="All zones">
 					
 						<AnnualSchedule name="PersonHeatLoadPerAreaSchedule" interpolation="linear">
-							<TSVFile>C:\Daten\git\SIMVICUS\data\tests\Schedules\input\PersonHeatLoadPerAreaSchedule.tsv</TSVFile>						
+							<TSVFile>$(Project Directory)\input\PersonHeatLoadPerAreaSchedule.tsv</TSVFile>						
 						</AnnualSchedule>
 						
 						<AnnualSchedule name="VentilationRateSchedule" interpolation="linear">
