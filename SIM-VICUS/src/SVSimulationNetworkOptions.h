@@ -9,8 +9,9 @@ namespace Ui {
 class SVSimulationNetworkOptions;
 }
 
-class SVSimulationNetworkOptions : public QWidget
-{
+
+/*! Option page for network simulation. */
+class SVSimulationNetworkOptions : public QWidget {
 	Q_OBJECT
 
 public:

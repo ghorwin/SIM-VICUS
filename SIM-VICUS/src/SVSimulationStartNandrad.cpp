@@ -130,6 +130,9 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationNetworkOptions);
 		m_ui->tabNetworkSettings->setLayout(h);
 	}
+
+	// start with initial page, always
+	m_ui->tabWidget->setCurrentIndex(0);
 }
 
 

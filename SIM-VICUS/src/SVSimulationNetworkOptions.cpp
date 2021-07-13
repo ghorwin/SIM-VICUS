@@ -28,20 +28,23 @@ SVSimulationNetworkOptions::SVSimulationNetworkOptions(QWidget *parent, std::vec
 												 NANDRAD::HydraulicNetwork::MT_ThermalHydraulicNetwork));
 }
 
-SVSimulationNetworkOptions::~SVSimulationNetworkOptions()
-{
+
+SVSimulationNetworkOptions::~SVSimulationNetworkOptions() {
 	delete m_ui;
 }
 
-void SVSimulationNetworkOptions::updateUi()
-{
-	if (m_networks->size()==0)
-		return;
+
+void SVSimulationNetworkOptions::updateUi() {
 
 	// populate networks combobox
+	m_ui->comboBoxNetwork->blockSignals(true);
 	m_ui->comboBoxNetwork->clear();
+	m_ui->comboBoxNetwork->addItem(tr("None"), VICUS::INVALID_ID);
 	for (VICUS::Network n : *m_networks)
 		m_ui->comboBoxNetwork->addItem(n.m_displayName, n.m_id);
+	m_ui->comboBoxNetwork->blockSignals(false);
+
+	return; // TODO Hauke, rewrite
 
 	// find currently selected network (for now we select the first one with this flag)
 	m_currentId = VICUS::INVALID_ID;
@@ -70,8 +73,9 @@ void SVSimulationNetworkOptions::updateUi()
 }
 
 
-void SVSimulationNetworkOptions::modify()
-{
+void SVSimulationNetworkOptions::modify() {
+	return; // TODO Hauke, rewrite
+
 	// get selected network
 	VICUS::Network *network = VICUS::Project::element(*m_networks, m_currentId);
 	if (network == nullptr)
@@ -100,8 +104,10 @@ void SVSimulationNetworkOptions::modify()
 	undo->push(); // modifies project and updates views
 }
 
-void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/)
-{
+
+void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
+	return; // TODO Hauke, rewrite
+
 	// set selected flag for all networks
 	m_currentId = m_ui->comboBoxNetwork->currentData().toUInt();
 	unsigned int i=0;
@@ -117,26 +123,26 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/)
 	updateUi();
 }
 
-void SVSimulationNetworkOptions::on_comboBoxModelType_activated(int /*index*/)
-{
+
+void SVSimulationNetworkOptions::on_comboBoxModelType_activated(int /*index*/) {
 	modify();
 	updateUi();
 }
 
-void SVSimulationNetworkOptions::on_lineEditDefaultFluidTemperature_editingFinished()
-{
+
+void SVSimulationNetworkOptions::on_lineEditDefaultFluidTemperature_editingFinished() {
 	modify();
 	updateUi();
 }
 
-void SVSimulationNetworkOptions::on_lineEditReferencePressure_editingFinished()
-{
+
+void SVSimulationNetworkOptions::on_lineEditReferencePressure_editingFinished() {
 	modify();
 	updateUi();
 }
 
-void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinished()
-{
+
+void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinished() {
 	modify();
 	updateUi();
 }
