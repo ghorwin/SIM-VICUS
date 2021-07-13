@@ -225,8 +225,7 @@ void Network::setDefaultColors() const
 }
 
 
-QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType)
-{
+QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType) {
 	switch (heatExchangeType) {
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 			return QColor("#8E1517");
@@ -247,6 +246,7 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 			return QColor("#5B4869");
 	}
+	return Qt::red;
 }
 
 

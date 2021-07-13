@@ -175,9 +175,8 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 		case MT_ControlledValve:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT: ;
-			return {};
 	}
-
+	return {};
 }
 
 

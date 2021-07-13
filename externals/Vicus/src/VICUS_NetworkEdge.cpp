@@ -94,9 +94,9 @@ NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const {
 			return NetworkComponent::MT_SimplePipe;
 		case PM_DynamicPipe:
 			return NetworkComponent::MT_DynamicPipe;
-		case NUM_PM:
-			return NetworkComponent::NUM_MT;
+		case NUM_PM: ;
 	}
+	return NetworkComponent::NUM_MT;
 }
 
 
