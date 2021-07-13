@@ -3,12 +3,7 @@
 namespace VICUS {
 
 
-NetworkController::NetworkController()
-{
-}
-
-bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const
-{
+bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 	// call check function of NANDRAD::HydraulicNetworkControlElement
 	try {
 		// TODO Hauke:
@@ -31,8 +26,7 @@ bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const
 }
 
 
-AbstractDBElement::ComparisonResult NetworkController::equal(const VICUS::AbstractDBElement *other) const
-{
+AbstractDBElement::ComparisonResult NetworkController::equal(const VICUS::AbstractDBElement *other) const {
 	const NetworkController * otherCtrl = dynamic_cast<const NetworkController*>(other);
 	if (otherCtrl == nullptr)
 		return Different;
@@ -47,13 +41,13 @@ AbstractDBElement::ComparisonResult NetworkController::equal(const VICUS::Abstra
 		|| m_maximumControllerResultValue < otherCtrl->m_maximumControllerResultValue)
 		return Different;
 
-	for(unsigned int i=0; i<NANDRAD::HydraulicNetworkControlElement::NUM_P; ++i){
-		if(m_para[i] != otherCtrl->m_para[i])
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkControlElement::NUM_P; ++i) {
+		if (m_para[i] != otherCtrl->m_para[i])
 			return Different;
 	}
 
-	for(unsigned int i=0; i<NANDRAD::HydraulicNetworkControlElement::NUM_ID; ++i){
-		if(m_idReferences[i] != otherCtrl->m_idReferences[i])
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkControlElement::NUM_ID; ++i) {
+		if (m_idReferences[i] != otherCtrl->m_idReferences[i])
 			return Different;
 	}
 
@@ -128,7 +122,7 @@ void NetworkController::checkParameters() const {
 	catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, "Missing/invalid parameters.", FUNC_ID);
 	}
-};
+}
 
 
 } // namespace VICUS

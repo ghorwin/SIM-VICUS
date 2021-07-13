@@ -62,10 +62,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump efficiency");
 	tr("Fraction of pump heat loss due to inefficiency that heats up the fluid");
 	tr("Water or air volume of the component");
-	tr("Maximum width of discretized volumes in pipe");
+	tr("Maximum width/length of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
-	tr("Pressure loss for Valve");
+	tr("Pressure loss for valve");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

@@ -31,7 +31,8 @@ namespace NANDRAD {
 
 void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, IBK::Path> &placeholders,
 												   const std::vector<Zone> &zones,
-												   const std::vector<ConstructionInstance> &conInstances) {
+												   const std::vector<ConstructionInstance> &conInstances)
+{
 	FUNCID(HydraulicNetworkHeatExchange::checkParameters);
 
 	// check parameters required for thermal balances/heat exchange
@@ -143,7 +144,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 		} // switch
 
 	} catch (IBK::Exception & ex) {
-		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model %1.")
+		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
 			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)),
 			 FUNC_ID);
 	}
@@ -151,8 +152,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 
 
-bool HydraulicNetworkHeatExchange::operator!=(const HydraulicNetworkHeatExchange &other) const
-{
+bool HydraulicNetworkHeatExchange::operator!=(const HydraulicNetworkHeatExchange &other) const {
 	if (m_modelType != other.m_modelType)
 		return true;
 

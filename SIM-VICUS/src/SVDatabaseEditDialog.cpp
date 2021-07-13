@@ -148,8 +148,6 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 	split->addWidget(m_editWidgetContainerWidget);
 	split->setCollapsible(0, false);
 	split->setCollapsible(1, false);
-	QSize ewSize = editWidget->sizeHint();
-	editWidget->setMinimumWidth(ewSize.width());
 	m_ui->verticalLayout->insertWidget(0, split);
 
 	QVBoxLayout * verticalLay = new QVBoxLayout(m_editWidgetContainerWidget);

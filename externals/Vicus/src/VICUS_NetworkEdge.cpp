@@ -42,8 +42,8 @@ void NetworkEdge::collectConnectedNodes(std::set<const NetworkNode *> & connecte
 	m_node2->collectConnectedEdges(connectedNodes, connectedEdge);
 }
 
-void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges)
-{
+
+void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) {
 	// first store ourselves as connected
 	orderedEdges.insert(this);
 	// now ask our nodes to collect their connected elements
@@ -61,7 +61,7 @@ unsigned NetworkEdge::neighbourNode(unsigned nodeId) const{
 }
 
 
-NetworkNode * NetworkEdge::neighbourNode(const NetworkNode *node) const{
+NetworkNode * NetworkEdge::neighbourNode(const NetworkNode *node) const {
 	IBK_ASSERT(node->m_id == m_nodeId1 || node->m_id == m_nodeId2);
 	if (node->m_id == m_nodeId1)
 		return m_node2;
@@ -69,50 +69,35 @@ NetworkNode * NetworkEdge::neighbourNode(const NetworkNode *node) const{
 		return m_node1;
 }
 
-void NetworkEdge::setLengthFromCoordinates(){
+
+void NetworkEdge::setLengthFromCoordinates() {
 	m_length = NetworkLine(*this).length();
 }
 
-unsigned int NetworkEdge::nodeId1() const
-{
-	return m_nodeId1;
-}
 
-
-void NetworkEdge::setNodeId1(unsigned int nodeId1, NetworkNode *node1)
-{
+void NetworkEdge::setNodeId1(unsigned int nodeId1, NetworkNode *node1) {
 	m_nodeId1 = nodeId1;
 	m_node1 = node1;  // set pointer, so that setLengthFromCoordinates works
 	setLengthFromCoordinates();
 }
 
-unsigned int NetworkEdge::nodeId2() const
-{
-	return m_nodeId2;
-}
 
-void NetworkEdge::setNodeId2(unsigned int nodeId2)
-{
+void NetworkEdge::setNodeId2(unsigned int nodeId2) {
 	m_nodeId2 = nodeId2;
 	setLengthFromCoordinates();
 }
 
 
-NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const
-{
+NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const {
 	switch (m_pipeModel) {
 		case PM_SimplePipe:
 			return NetworkComponent::MT_SimplePipe;
 		case PM_DynamicPipe:
 			return NetworkComponent::MT_DynamicPipe;
-		case NUM_PM:
-			return NetworkComponent::NUM_MT;
+		case NUM_PM: ;
 	}
+	return NetworkComponent::NUM_MT;
 }
 
-
-double NetworkEdge::length() const{
-	return m_length;
-}
 
 } // namspace VICUS

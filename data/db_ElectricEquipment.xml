@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<InternalLoads>
+	<InternalLoad id="7001" displayName="DE: TF08.1 |EN: TF08.1;" color="#5aff82">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>Power</PowerMethod>
+		<PowerManagementScheduleId>6001</PowerManagementScheduleId>
+		<IBK:Parameter name="Power" unit="W">400</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="7002" displayName="DE: TF08.2 radiativ |EN: TF08.2 radiativ" color="#ff5aaa">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>Power</PowerMethod>
+		<PowerManagementScheduleId>6004</PowerManagementScheduleId>
+		<IBK:Parameter name="Power" unit="W">400</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="7003" displayName="DE: TF08.3 |EN: TF08.3;" color="#ac66ff">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>Power</PowerMethod>
+		<PowerManagementScheduleId>6005</PowerManagementScheduleId>
+		<IBK:Parameter name="Power" unit="W">1000</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+	<InternalLoad id="7004" displayName="DE: TF08.4 radiativ |EN: TF08.4 radiativ;" color="#5affde">
+		<Category>ElectricEquiment</Category>
+		<PowerMethod>Power</PowerMethod>
+		<PowerManagementScheduleId>6005</PowerManagementScheduleId>
+		<IBK:Parameter name="Power" unit="W">1000</IBK:Parameter>
+		<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+		<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+	</InternalLoad>
+</InternalLoads>

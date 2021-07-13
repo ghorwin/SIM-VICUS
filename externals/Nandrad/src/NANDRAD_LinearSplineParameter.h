@@ -95,9 +95,11 @@ public:
 	/*! Function to check for correct parametrization of linear spline parameters.
 		This function checks if the spline is actually defined, i.e. m_name is not empty.
 		Then it tests, wether there is a valid tsv-filepath given, reads the according file and sets m_values and the units
-		If no file was given, it tests, if the x and y value units can be converted to targetX and targetY units.
+		Then it is checked if the x and y value units can be converted to targetX and targetY units. This can be skipped by
+		setting skipUnitChecks to true, which may be useful if the target units are not yet known.
 		These target units must be SI base units.
 		It then converts the input data into the target (base SI) units, using the convert2BaseUnits() function.
+
 		Note: the m_xUnit and m_yUnit members are not modified here!
 		Then, the spline is generated, hereby testing for monotonically increasing x-values.
 		Finally, the y-value ranges are being checked.

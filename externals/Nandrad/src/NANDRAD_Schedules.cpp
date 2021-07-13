@@ -41,6 +41,38 @@ void Schedules::initDefaults() {
 				NANDRAD::KeywordList::Keyword("Schedules::flag_t", F_EnableCyclicSchedules), true);
 }
 
+void Schedules::checkParameters() {
+	FUNCID(Schedules::checkParameters);
+
+	// process all annual splines
+	for (std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >::iterator it = m_annualSchedules.begin();
+		 it != m_annualSchedules.end(); ++it)
+	{
+		for (NANDRAD::LinearSplineParameter & spl : it->second) {
+			try {
+				// all checks will be skipped, if a file name was given: only reads the file and converts to base units.
+				// Since we skip the unit check, we need to pass dummy units here, that are, however, baseSI units ...
+				spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception(ex, IBK::FormatString("Error initializing annual spline schedule data for schedule '%1'.")
+									 .arg(spl.m_name), FUNC_ID);
+			}
+
+			// still we check that x value unit is indeed convertible to time
+			if (spl.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS) {
+				if (spl.m_tsvFile.isValid())
+					throw IBK::Exception(IBK::FormatString("Invalid time unit in tsv-file '%1' got '%2'")
+										 .arg(spl.m_tsvFile).arg(spl.m_xUnit.name()), FUNC_ID);
+				else
+					throw IBK::Exception(IBK::FormatString("Invalid time unit in 'AnnualSchedule' of schedule '%1'")
+										 .arg(spl.m_tsvFile), FUNC_ID);
+			}
+		}
+	}
+	// now all linear splines (annual data) are properly initialized - unit check and variable name check is done
+	// when schedule object is initialized
+}
+
 
 void Schedules::readXML(const TiXmlElement * element) {
 	FUNCID(Schedules::readXML);
@@ -183,23 +215,14 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c3); // also creates the spline and thus, does monotonic x-value checking
+						spl.readXML(c3);	// also creates the spline and thus, does monotonic x-value checking, but not if
+											// data is in tsv-file
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
 											 .arg("Invalid data in 'AnnualSchedule' tag."), FUNC_ID);
 					}
 
-					// all checks will be skipped, if a file name was given: only reads the file and converts to base units
-					// TODO Andreas: should there be another possibility of reading tsv file and convert units?
-					// We need to pass dummy units here ...
-					spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
-
-					// check that x value unit is indeed convertible to time
-					if (spl.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
-						throw IBK::Exception(IBK::FormatString("Invalid data in 'AnnualSchedule' tag, expected time "
-															   "unit as unit for x-values, but got '%1'")
-											 .arg(spl.m_xUnit.name()), FUNC_ID);
 					schedules.push_back(spl);
 
 					c3 = c3->NextSiblingElement();

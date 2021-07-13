@@ -151,7 +151,7 @@ void SVDBVentilationNaturalEditWidget::on_pushButtonColor_colorChanged() {
 void SVDBVentilationNaturalEditWidget::on_toolButtonSelectSchedule_clicked() {
 	// open schedule edit dialog in selection mode
 	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_scheduleId);
-	if (m_current->m_scheduleId != newId) {
+	if (newId != VICUS::INVALID_ID && m_current->m_scheduleId != newId) {
 		m_current->m_scheduleId = newId;
 		modelModify();
 	}

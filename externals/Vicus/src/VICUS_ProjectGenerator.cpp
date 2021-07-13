@@ -85,7 +85,7 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 	// i.e. m_internalLoadObjects[3] references m_objLists[3] and
@@ -106,7 +106,7 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 
@@ -125,7 +125,7 @@ public:
 			ModelGeneratorBase(pro)
 		{}
 
-	void generate(const VICUS::Room * r, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 
@@ -144,7 +144,7 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::Room * r, QStringList & errorStack);
+	void generate(const VICUS::Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 
@@ -182,7 +182,7 @@ public:
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const std::vector<DataSurfaceHeating> &dataSurfaceHeating, std::set<unsigned int> &idSet,  QStringList & errorStack);
+	void generate(const std::vector<DataSurfaceHeating> &dataSurfaceHeating, std::vector<unsigned int> &usedModelIds,  QStringList & errorStack);
 
 	// All definition lists below have the same size and share the same index
 
@@ -366,6 +366,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	// *** Zones ***
 
+	std::vector<unsigned int> usedModelIds;
 	std::set<unsigned int> idSet;
 	std::vector<const VICUS::Room *> zones;
 	generateNandradZones(zones, idSet, p, errorStack, vicusToNandradIds);
@@ -386,7 +387,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	//TODO Dirk add annual schedules to nandrad
 	IdealSurfaceHeatingCoolingModelGenerator idealSurfaceHeatCoolGenerator(this);
-	idealSurfaceHeatCoolGenerator.generate(constrInstaModelGenerator.m_surfaceHeatingData, idSet, errorStack);
+	idealSurfaceHeatCoolGenerator.generate(constrInstaModelGenerator.m_surfaceHeatingData, usedModelIds, errorStack);
 
 	// *** Models based on zone templates ***
 
@@ -396,10 +397,10 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
 	ThermostatModelGenerator thermostats(this);
 	for (const VICUS::Room * r : zones) {
-		internalLoads.generate(r, errorStack);
-		ventilation.generate(r, errorStack);
-		idealHeatCool.generate(r, errorStack);
-		thermostats.generate(r, errorStack);
+		internalLoads.generate(r, usedModelIds, errorStack);
+		ventilation.generate(r, usedModelIds, errorStack);
+		idealHeatCool.generate(r, usedModelIds, errorStack);
+		thermostats.generate(r, usedModelIds, errorStack);
 	}
 	if (!errorStack.isEmpty())	return;
 
@@ -417,6 +418,16 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	for (unsigned int i=0; i<ventilation.m_schedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[ventilation.m_objLists[i].m_name] = ventilation.m_schedules[i];
 
+	// *** Thermostat ***
+	p.m_models.m_thermostats = thermostats.m_thermostats;
+	p.m_objectLists.insert(p.m_objectLists.end(), thermostats.m_objLists.begin(), thermostats.m_objLists.end());
+	for (unsigned int i=0; i<thermostats.m_schedules.size(); ++i)
+		p.m_schedules.m_scheduleGroups[thermostats.m_objLists[i].m_name] = thermostats.m_schedules[i];
+
+	// *** Ideal heating cooling ***
+	p.m_models.m_idealHeatingCoolingModels = idealHeatCool.m_idealHeatingCoolings;
+	p.m_objectLists.insert(p.m_objectLists.end(), idealHeatCool.m_objLists.begin(), idealHeatCool.m_objLists.end());
+
 	// *** Construction Instances, Constructions (opak & tranparent) and materials ***
 	p.m_constructionInstances = constrInstaModelGenerator.m_constructionInstances;
 	p.m_constructionTypes = constrInstaModelGenerator.m_constructions;
@@ -428,8 +439,6 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_models.m_idealPipeRegisterModels = idealSurfaceHeatCoolGenerator.m_idealPipeRegister;
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListsSurface.begin(), idealSurfaceHeatCoolGenerator.m_objListsSurface.end());
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListsPipe.begin(), idealSurfaceHeatCoolGenerator.m_objListsPipe.end());
-
-
 }
 
 
@@ -492,7 +501,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 }
 
 
-void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorStack) {
+void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack) {
 	// check if we have a zone template with id to internal loads
 
 	// InternalLoad holds data for sub templates ST_IntLoadPerson, ST_IntLoadEquipment or ST_IntLoadLighting
@@ -669,7 +678,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 
 	// generate NANDRAD::InternalLoads object
 	NANDRAD::InternalLoadsModel internalLoadsModel;
-	internalLoadsModel.m_id = Project::uniqueId(m_internalLoadObjects);
+	internalLoadsModel.m_id = Project::uniqueIdWithPredef(usedModelIds, 1);  /*Project::uniqueId(m_internalLoadObjects)*/;
 	const VICUS::ZoneTemplate * zt = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 	internalLoadsModel.m_displayName = zt->m_displayName.string();
 	internalLoadsModel.m_modelType = NANDRAD::InternalLoadsModel::MT_Scheduled;
@@ -686,8 +695,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_internalLoadObjects.size(); ++i) {
 		if (m_internalLoadObjects[i].equal(internalLoadsModel) &&
-			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
-		{
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
@@ -712,7 +720,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, QStringList & errorSt
 	}
 }
 
-void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack) {
+void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
 	FUNCID("VentilationModelGenerator::generate");
 
 	// check if we have a zone template with id to infiltration or ventilation
@@ -813,7 +821,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 	else if(isInf && isVenti)			ventiType = V_InfAndVenti;
 
 	NANDRAD::NaturalVentilationModel natVentMod;
-	natVentMod.m_id = Project::uniqueId(m_natVentObjects);
+	natVentMod.m_id = Project::uniqueIdWithPredef(usedModelIds, 1);
 	natVentMod.m_displayName = zoneTemplate->m_displayName.string();
 	//TODO id and display name
 
@@ -934,8 +942,7 @@ void VentilationModelGenerator::generate(const Room *r, QStringList &errorStack)
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
 		if (m_natVentObjects[i].equal(natVentMod) &&
-			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
-		{
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
@@ -1086,6 +1093,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 
 		// only transfer heat conduction parameters
 		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_solarAbsorption = bc->m_solarAbsorption;
+		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;
 	}
 	else {
@@ -1358,7 +1367,7 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 	}
 }
 
-void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) {
+void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
 
 	// check if we have a zone template with id to thermostat
 
@@ -1391,7 +1400,7 @@ void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) 
 
 	NANDRAD::Thermostat thermo;
 
-	thermo.m_id = Project::uniqueId(m_thermostats);
+	thermo.m_id = Project::uniqueIdWithPredef(usedModelIds, thermostat->m_id);
 	thermo.m_displayName = "Thermostat_" + zoneTemplate->m_displayName.string();
 	thermo.m_controllerType = thermostat->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
 				NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
@@ -1438,33 +1447,32 @@ void ThermostatModelGenerator::generate(const Room *r, QStringList &errorStack) 
 	bool foundModel=false;
 	for (unsigned int i=0; i<m_thermostats.size(); ++i) {
 		if (m_thermostats[i].equal(thermo) &&
-			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) )
-		{
+			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
 			break;
 		}
 	}
-		if(!foundModel) {
-			// append definitions and create new object list
-			NANDRAD::ObjectList ol;
-			ol.m_name = IBK::pick_name("Thermostat-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ol.m_filterID.m_ids.insert(r->m_id);
+	if(!foundModel) {
+		// append definitions and create new object list
+		NANDRAD::ObjectList ol;
+		ol.m_name = IBK::pick_name("Thermostat-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ol.m_filterID.m_ids.insert(r->m_id);
 
-			// set object list in new definition
-			thermo.m_zoneObjectList = ol.m_name;
+		// set object list in new definition
+		thermo.m_zoneObjectList = ol.m_name;
 
-			// add all definitions
-			m_thermostats.push_back(thermo);
-			m_schedules.push_back(scheds);
-			m_objLists.push_back(ol);
-			m_objListNames.push_back(ol.m_name);
-		}
+		// add all definitions
+		m_thermostats.push_back(thermo);
+		m_schedules.push_back(scheds);
+		m_objLists.push_back(ol);
+		m_objListNames.push_back(ol.m_name);
+	}
 }
 
-void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSurfaceHeating> &dataSurfaceHeating, std::set<unsigned int> &idSet,  QStringList &errorStack) {
+void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSurfaceHeating> &dataSurfaceHeating, std::vector<unsigned int> &usedModelIds, QStringList &errorStack) {
 
 	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
 	IBK::LinearSpline outdoorTemp;
@@ -1604,7 +1612,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(ideal.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			ideal.m_id = Project::uniqueId(m_idealSurfaceHeatingCoolings);
+			ideal.m_id = Project::uniqueIdWithPredef(usedModelIds, ideal.m_id);
 
 			// set object list in new definition
 			ideal.m_constructionObjectList= ol.m_name;
@@ -1634,7 +1642,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(pipReg.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			pipReg.m_id = Project::uniqueId(m_idealPipeRegister);
+			pipReg.m_id = Project::uniqueIdWithPredef(usedModelIds, pipReg.m_id);
 
 			// set object list in new definition
 			pipReg.m_constructionObjectList= ol.m_name;
@@ -1647,7 +1655,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 	}
 }
 
-void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & errorStack) {
+void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsigned int> &usedModelIds,  QStringList & errorStack) {
 
 	// check if we have a zone template with id to ideal heating cooling
 
@@ -1679,7 +1687,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & e
 
 
 	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
-	idealHeatCool.m_id = Project::uniqueId(m_idealHeatingCoolings);
+	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,idealHeatCool.m_id);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
 	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())
@@ -1713,29 +1721,30 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r, QStringList & e
 	// otherwise we add model and schedule definitions and generate a new object list.
 	bool foundModel=false;
 	for (unsigned int i=0; i<m_idealHeatingCoolings.size(); ++i) {
-		if (m_idealHeatingCoolings[i].equal(idealHeatCool) )
+		if (m_idealHeatingCoolings[i].equal(idealHeatCool) ){
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
 			break;
-			}
-
-		if (!foundModel) {
-			// append definitions and create new object list
-			NANDRAD::ObjectList ol;
-			ol.m_name = IBK::pick_name("IdealHeatCool-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ol.m_filterID.m_ids.insert(r->m_id);
-
-			// set object list in new definition
-			idealHeatCool.m_zoneObjectList = ol.m_name;
-
-
-			// add all definitions
-			m_idealHeatingCoolings.push_back(idealHeatCool);
-			m_objLists.push_back(ol);
-			m_objListNames.push_back(ol.m_name);
 		}
+	}
+
+
+	if (!foundModel) {
+		// append definitions and create new object list
+		NANDRAD::ObjectList ol;
+		ol.m_name = IBK::pick_name("IdealHeatCool-" + zoneTemplate->m_displayName.string(), m_objListNames.begin(), m_objListNames.end());
+		ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		ol.m_filterID.m_ids.insert(r->m_id);
+
+		// set object list in new definition
+		idealHeatCool.m_zoneObjectList = ol.m_name;
+
+		// add all definitions
+		m_idealHeatingCoolings.push_back(idealHeatCool);
+		m_objLists.push_back(ol);
+		m_objListNames.push_back(ol.m_name);
+	}
 
 }
 

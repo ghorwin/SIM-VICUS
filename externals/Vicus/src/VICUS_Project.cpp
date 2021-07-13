@@ -2664,7 +2664,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	for (const VICUS::NetworkEdge *edge: orderedEdges) {
 
 		// check and transform pipe model type
-		NANDRAD::HydraulicNetworkComponent::ModelType pipeModelType;
+		NANDRAD::HydraulicNetworkComponent::ModelType pipeModelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;
 		switch (edge->m_pipeModel ) {
 			case VICUS::NetworkEdge::PM_SimplePipe:{
 				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_SimplePipe;

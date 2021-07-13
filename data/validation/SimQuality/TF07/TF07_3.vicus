@@ -85,7 +85,7 @@
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>1 0 0, 3 0 0, 3 0 3, 1 0 3</Polygon3D>
 										<SubSurfaces>
-											<SubSurface id="40" displayName="WindowTF07.2">
+											<SubSurface id="40" displayName="WindowTF07.3">
 												<Polygon2D>0.1 0.1, 1.9 0.1, 1.9 2.9, 0.1 2.9</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
@@ -110,7 +110,7 @@
 			<ComponentInstance id="7" componentID="1004" sideASurfaceID="16" />
 		</ComponentInstances>
 		<SubSurfaceComponentInstances>
-			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="160003" sideASurfaceID="40" />
+			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="10002" sideASurfaceID="40" />
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -159,10 +159,10 @@
 				</Construction>
 			</Constructions>
 			<Windows>
-				<Window id="30006" displayName="DE: WindowTF07.3" idGlazingSystem="300006" color="#ff5aaa" methodFrame="None" methodDivider="None" />
+				<Window id="3004" displayName="DE: WindowTF07.3" idGlazingSystem="3004" color="#ff5aaa" methodFrame="None" methodDivider="None" />
 			</Windows>
 			<WindowGlazingSystems>
-				<WindowGlazingSystem id="300006" displayName="DE: TF07.3_MIG_winkelabhängig" color="#e6ff5a" modelType="Simple">
+				<WindowGlazingSystem id="3004" displayName="DE: TF07.3_MIG_winkelabhängig" color="#e6ff5a" modelType="Simple">
 					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
 					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
 						<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
@@ -193,9 +193,9 @@
 				</Component>
 			</Components>
 			<SubSurfaceComponents>
-				<SubSurfaceComponent id="160003" displayName="DE: FensterTF07.3 |EN: WindowTF07.3;" color="#f3ff99">
+				<SubSurfaceComponent id="10002" displayName="DE: FensterTF07.3 |EN: WindowTF07.3;" color="#f3ff99">
 					<Type>Window</Type>
-					<IdWindow>30006</IdWindow>
+					<IdWindow>3004</IdWindow>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</SubSurfaceComponent>

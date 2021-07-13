@@ -28,8 +28,6 @@ namespace VICUS {
 class SubNetwork : public AbstractDBElement {
 public:
 
-	SubNetwork();
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
@@ -44,7 +42,10 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
-	/*! Access function to the component of the heat exchanging element */
+	/*! Access function to the component of the heat exchanging element.
+		Returns pointer to database network component. Returns nullptr if there is no such element
+		or the reference is invalid.
+	*/
 	const NetworkComponent * heatExchangeComponent(const Database<NetworkComponent> &compDB) const;
 
 	/*! Unique ID of the sub-network. */

@@ -67,8 +67,9 @@ public:
 	/*! Create a schedule interval with a constant value for all days. */
 	void createConstScheduleInterval(double val = 0);
 
-	/*! Create a value vector for each hour of a week.
-		The week starts at monday and ends at sunday.
+	/*! Create a set of time points and corresponding values for an entire week.
+		The week starts at monday and ends at sunday. The spacing between time points is arbitrary.
+		The generated vectors are guaranteed to have at least one point each.
 	*/
 	void createWeekDataVector(std::vector<double> &timepoints, std::vector<double> &data) const;
 

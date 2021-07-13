@@ -156,8 +156,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 }
 
 
-std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const HydraulicNetworkComponent::ModelType modelType)
-{
+std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const HydraulicNetworkComponent::ModelType modelType) {
 	switch (modelType)	{
 		case MT_HeatPumpIdealCarnotSourceSide:
 			return {"CondenserMeanTemperatureSchedule [C]"};
@@ -176,9 +175,8 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 		case MT_ControlledValve:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT: ;
-			return {};
 	}
-
+	return {};
 }
 
 

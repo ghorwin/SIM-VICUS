@@ -6,7 +6,7 @@
 
 namespace NANDRAD {
 
-void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::Zone> *zones) const {
+void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & zones) const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
 	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
@@ -35,14 +35,11 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<NANDRAD::
 					throw IBK::Exception("Missing 'ThermostatZoneId' for controlled property 'ThermostatValue'!", FUNC_ID);
 
 				// check validity of thermostat zone
-				if (zones != nullptr){
-					std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones->begin(), zones->end(),
-																				   m_idReferences[ID_ThermostatZoneId]);
+				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_idReferences[ID_ThermostatZoneId]);
 
-					if (zone_it == zones->end())
-						throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
-											 .arg(m_idReferences[ID_ThermostatZoneId]), FUNC_ID);
-				}
+				if (zone_it == zones.end())
+					throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
+										 .arg(m_idReferences[ID_ThermostatZoneId]), FUNC_ID);
 			} break;
 
 			case CP_MassFlux : {

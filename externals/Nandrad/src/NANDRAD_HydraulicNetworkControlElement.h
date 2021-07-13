@@ -24,7 +24,7 @@ public:
 	NANDRAD_COMP(HydraulicNetworkControlElement)
 
 	/*! Checks for valid and required parameters (value ranges). */
-	void checkParameters(const std::vector<NANDRAD::Zone> *zones) const;
+	void checkParameters(const std::vector<NANDRAD::Zone> &zones) const;
 
 	/*! Defines variability options for set point values. */
 	enum ModelType {

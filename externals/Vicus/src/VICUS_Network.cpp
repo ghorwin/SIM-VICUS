@@ -52,8 +52,8 @@ Network::Network() {
 	setDefaultSizingParams();
 }
 
-Network Network::copyWithBaseParameters()
-{
+
+Network Network::copyWithBaseParameters() {
 	Network copy = *this;
 	copy.m_edges.clear();
 	copy.m_nodes.clear();
@@ -71,6 +71,7 @@ Network Network::copyWithBaseParameters()
 //	copy.availablePipes = orig.availablePipes;
 
 }
+
 
 unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 
@@ -224,8 +225,7 @@ void Network::setDefaultColors() const
 }
 
 
-QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType)
-{
+QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType) {
 	switch (heatExchangeType) {
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 			return QColor("#8E1517");
@@ -246,6 +246,7 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 		case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 			return QColor("#5B4869");
 	}
+	return Qt::red;
 }
 
 

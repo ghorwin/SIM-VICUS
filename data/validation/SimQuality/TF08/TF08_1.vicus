@@ -2,12 +2,8 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Fr. Juli 9 12:55:52 2021</Created>
-		<LastEdited>Mo. Juli 12 10:16:56 2021</LastEdited>
+		<LastEdited>Di. Juli 13 13:59:38 2021</LastEdited>
 	</ProjectInfo>
-	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
-	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
-	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
 			<Integrator>CVODE</Integrator>
@@ -31,7 +27,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-10-TRY-2010__Hof__Jahr_00000K0_00567m.c6b</ClimateFilePath>
+			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF08-InterneLasten/Aufgabenstellung/Wetterdaten/SimQuality_TF08_Klima.epw</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -66,7 +62,7 @@
 						<Height>2.7</Height>
 						<Rooms>
 							<Room id="30" displayName="TF08.1">
-								<IdZoneTemplate>80015</IdZoneTemplate>
+								<IdZoneTemplate>8001</IdZoneTemplate>
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 								<Surfaces>
@@ -146,7 +142,13 @@
 					<MaterialKind>NaturalStoneMasonry</MaterialKind>
 					<MaterialLayers>
 						<MaterialLayer matId="10003">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+							<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10003">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer matId="10003">
+							<IBK:Parameter name="Thickness" unit="m">0.13</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer matId="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
@@ -177,10 +179,11 @@
 					<IdConstruction>1005</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+					<ActiveLayerIndex>1</ActiveLayerIndex>
 				</Component>
 			</Components>
 			<Schedules>
-				<Schedule id="60011" displayName="DE: TF08.1 |EN: &lt;new schedule&gt;">
+				<Schedule id="6001" displayName="DE: TF08.1 ElectricEquipment |EN: TF08.1 ElectricEquipment;">
 					<UseLinearInterpolation>0</UseLinearInterpolation>
 					<Periods>
 						<ScheduleInterval intervalStartDay="0">
@@ -196,19 +199,19 @@
 				</Schedule>
 			</Schedules>
 			<InternalLoads>
-				<InternalLoad id="70011" displayName="DE: TF08.1 |EN: &lt;new internal load model&gt;" color="#5aff82">
+				<InternalLoad id="7001" displayName="DE: TF08.1 konvectiv |EN: TF08.1 convectiv;" color="#5aff82">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>Power</PowerMethod>
-					<PowerManagementScheduleId>60011</PowerManagementScheduleId>
+					<PowerManagementScheduleId>6001</PowerManagementScheduleId>
 					<IBK:Parameter name="Power" unit="W">400</IBK:Parameter>
-					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>
 					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
 					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
 				</InternalLoad>
 			</InternalLoads>
 			<ZoneTemplates>
-				<ZoneTemplate id="80015" displayName="DE: SimQuality_TF08.1 |EN: &lt;new zone template&gt;" color="#5a6eff">
-					<IntLoadEquipment>70011</IntLoadEquipment>
+				<ZoneTemplate id="8001" displayName="DE: SimQuality_TF08.1 |EN: &lt;new zone template&gt;" color="#5a6eff">
+					<IntLoadEquipment>7001</IntLoadEquipment>
 				</ZoneTemplate>
 			</ZoneTemplates>
 		</EmbeddedDatabase>

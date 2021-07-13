@@ -74,11 +74,11 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return Different;
 
 	//check parameters
-	for(unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
-		if(m_para[i] != otherNetComp->m_para[i])
+	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
+		if (m_para[i] != otherNetComp->m_para[i])
 			return Different;
 	}
-	if(m_modelType != otherNetComp->m_modelType)
+	if (m_modelType != otherNetComp->m_modelType)
 		return Different;
 
 	// check data table
@@ -86,7 +86,7 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return Different;
 
 	//check meta data
-	if(m_displayName != otherNetComp->m_displayName ||
+	if (m_displayName != otherNetComp->m_displayName ||
 			m_color != otherNetComp->m_color ||
 			m_dataSource != otherNetComp->m_dataSource ||
 			m_manufacturer != otherNetComp->m_manufacturer ||
