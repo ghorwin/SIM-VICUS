@@ -556,15 +556,19 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 // *** HNConstantPressureLossValve ***
 
 HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
-m_id(id)
+	m_id(id)
 {
-m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
 }
 
-double HNConstantPressureLossValve::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
-{
-	return p_inlet - p_outlet - m_pressureLoss;
+
+double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	if (mdot >= 0)
+		return p_inlet - p_outlet - m_pressureLoss;
+	else
+		return p_inlet - p_outlet + m_pressureLoss;
 }
+
 
 void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
 										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
