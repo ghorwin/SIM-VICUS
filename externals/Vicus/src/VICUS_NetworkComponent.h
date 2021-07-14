@@ -80,6 +80,8 @@ public:
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for Valve'
+		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
+		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
 		NUM_P
 	};
 

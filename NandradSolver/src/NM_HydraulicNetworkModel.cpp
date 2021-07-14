@@ -131,7 +131,8 @@ void HydraulicNetworkModel::setup() {
 					throw IBK::Exception("Flow element component of type 'ControlledPump' requires mass flow controller.", FUNC_ID);
 
 				// create pump model
-				HNControlledPump * pumpElement = new HNControlledPump(e.m_id, e.m_controlElement);
+				HNControlledPump * pumpElement = new HNControlledPump(e.m_id, *e.m_component, e.m_controlElement,
+																	  m_hydraulicNetwork->m_fluid);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pumpElement, e);
 				// add to flow elements

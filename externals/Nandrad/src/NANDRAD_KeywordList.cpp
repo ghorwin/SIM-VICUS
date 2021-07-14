@@ -219,6 +219,8 @@ namespace NANDRAD {
 				case 8 : return "CarnotEfficiency";
 				case 9 : return "MaximumHeatingPower";
 				case 10 : return "PressureLoss";
+				case 11 : return "MaximumPressureHead";
+				case 12 : return "PumpMaximumElectricalPower";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -838,6 +840,8 @@ namespace NANDRAD {
 				case 8 : return "CarnotEfficiency";
 				case 9 : return "MaximumHeatingPower";
 				case 10 : return "PressureLoss";
+				case 11 : return "MaximumPressureHead";
+				case 12 : return "PumpMaximumElectricalPower";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -1458,6 +1462,8 @@ namespace NANDRAD {
 				case 8 : return "Carnot efficiency eta";
 				case 9 : return "Maximum heating power";
 				case 10 : return "Pressure loss for valve";
+				case 11 : return "Maximum pressure head at point of minimal mass flow of pump";
+				case 12 : return "Maximum electrical power at point of optimal operation of pump";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -2077,6 +2083,8 @@ namespace NANDRAD {
 				case 8 : return "---";
 				case 9 : return "W";
 				case 10 : return "Pa";
+				case 11 : return "Pa";
+				case 12 : return "W";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -2696,6 +2704,8 @@ namespace NANDRAD {
 				case 8 : return "#FFFFFF";
 				case 9 : return "#FFFFFF";
 				case 10 : return "#FFFFFF";
+				case 11 : return "#FFFFFF";
+				case 12 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -3315,6 +3325,8 @@ namespace NANDRAD {
 				case 8 : return std::numeric_limits<double>::quiet_NaN();
 				case 9 : return std::numeric_limits<double>::quiet_NaN();
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
+				case 11 : return std::numeric_limits<double>::quiet_NaN();
+				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -3871,7 +3883,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 12;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 11;
+			case 10 : return 13;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 : return 2;
 			// HydraulicNetworkControlElement::ControlledProperty
@@ -4047,7 +4059,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 11;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 10;
+			case 10 : return 12;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 : return 1;
 			// HydraulicNetworkControlElement::ControlledProperty

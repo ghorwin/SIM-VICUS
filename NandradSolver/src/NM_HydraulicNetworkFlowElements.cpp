@@ -635,13 +635,19 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 
 // *** HNControlledPump ***
 
-HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkControlElement *controlElement) :
+HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+								   const NANDRAD::HydraulicNetworkControlElement *controlElement,
+								   const NANDRAD::HydraulicFluid & fluid) :
 	m_controlElement(controlElement),
 	m_id(id)
 {
 	// initialize setpoint references, in case of scheduled setpoints pointer will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
 	m_massFluxSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
+	m_eta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
+	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
+	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
+	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 
@@ -770,12 +776,12 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 
 			// compute control error
+			// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
+			// we stop it by returning pressHeadControlled = 0
+			// NOTE: we DONT do this for option CP_MassFlux !!!
 			e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
 			if (e <= 0)
 				return 0;
-			// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
-			// we stop it by returning 0
-			//    -> pressHeadControlled = 0
 			// if temperature difference is larger than the required difference (positive e), we gradually increase
 			// mass flow by increasing pressure head of pump
 			//    -> pressHeadControlled = Kp*e (see below)
@@ -792,7 +798,6 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			// compute controller error
 			e = mdotSetpoint - mdot;
 			// if e is > 0 if our mass flux is below the limit (we need to increase mass flux by increasing pressure head)
-			// if e <= 0, our mass flux is too large, we turn it off
 		} break;
 
 		// not possible combinations
@@ -802,20 +807,12 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 	}
 
 	// TODO : use controller object here
-
 	double pressHeadControlled = 0;
-	double pressHeadMax = m_controlElement->m_maximumControllerResultValue;
-
 	switch (m_controlElement->m_controllerType) {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
 			// relate controller error e to zeta
-			const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+			pressHeadControlled = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
 
-			// apply clipping (only when pressureHeadMax > 0)
-			if (y > pressHeadMax && pressHeadMax > 0)
-				pressHeadControlled = pressHeadMax;
-			else
-				pressHeadControlled = y;
 		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
@@ -823,6 +820,20 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 	}
+
+	// Clipping of pressure head
+	// in case m_maxPressureHeadMinFlow or m_maxElectricalPower <=0, we dont apply clipping
+	if (m_maxPressureHeadMinFlow > 0 && m_maxElectricalPower > 0){
+		// calculation of actual maximum pressure head which depends on mass flux
+		// --> point of maximum volume flow (at minimum pressure head)
+		const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
+		// --> pressHeadMax = f (V_dot)
+		double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
+		// apply clipping
+		if (pressHeadControlled > pressHeadMax)
+			pressHeadControlled = pressHeadMax;
+	}
+
 
 	return pressHeadControlled;
 }

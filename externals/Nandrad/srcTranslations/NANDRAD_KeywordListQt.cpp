@@ -66,6 +66,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
 	tr("Pressure loss for valve");
+	tr("Maximum pressure head at point of minimal mass flow of pump");
+	tr("Maximum electrical power at point of optimal operation of pump");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

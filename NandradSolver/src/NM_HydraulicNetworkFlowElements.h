@@ -289,7 +289,9 @@ private:
 class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkControlElement *controlElement);
+	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+					 const NANDRAD::HydraulicNetworkControlElement *controlElement,
+					 const NANDRAD::HydraulicFluid & fluid);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -342,6 +344,18 @@ private:
 	const double					*m_temperatureDifferenceSetpointRef = nullptr;
 	/*! the calculated temperature difference */
 	double							m_temperatureDifference = -999;
+	/*! fluid density in kg/m3 */
+	double							m_density = -999;
+	/*! efficiency of pump in - */
+	double							m_eta = -999;
+	/*! maximum electrical power (in optimal operation point)  in W */
+	double							m_maxElectricalPower = -999;
+	/*! maximum pressure head at point of minimal mass flow in Pa */
+	double							m_maxPressureHeadMinFlow = -999;
+
+
+
+
 
 }; // HNControlledPump
 
