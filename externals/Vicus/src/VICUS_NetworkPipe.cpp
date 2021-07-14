@@ -34,13 +34,10 @@ double NetworkPipe::calculateUValue() const {
 }
 
 
-double NetworkPipe::insideDiameter() const {
-	double thickness = m_para[P_ThicknessWall].value;
-
-	if (!m_para[P_ThicknessInsulation].empty())
-		thickness += m_para[P_ThicknessInsulation].value;
-
-	return (m_para[P_DiameterOutside].value - thickness);
+double NetworkPipe::diameterInside() const {
+	// This function is only to be called when isValid() returns true. Hence, all parameters are present with
+	// valid values.
+	return (m_para[P_DiameterOutside].value - m_para[P_ThicknessWall].value);
 }
 
 
@@ -68,18 +65,31 @@ VICUS::AbstractDBElement::ComparisonResult NetworkPipe::equal(const VICUS::Abstr
 	if (otherNetPipe == nullptr)
 		return Different;
 
-	//check parameters
+	// check parameters
 	for (unsigned int i=0; i<NUM_P; ++i){
 		if (m_para[i] != otherNetPipe->m_para[i])
 			return Different;
 	}
 
-	//check meta data
-	if (m_displayName != otherNetPipe->m_displayName || m_color != otherNetPipe->m_color
-			|| m_categoryName != otherNetPipe->m_categoryName)
+	// check meta data
+	if (m_displayName != otherNetPipe->m_displayName ||
+			m_color != otherNetPipe->m_color ||
+			m_categoryName != otherNetPipe->m_categoryName)
+
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+
+IBK::MultiLanguageString NetworkPipe::nameFromData() const {
+	// process all languages in category and generate matching names
+
+	// TODO Hauke, this needs re-thinking
+	IBK::FormatString str = IBK::FormatString("%1 %2 x %3").arg(m_categoryName.string(IBK::MultiLanguageString::m_language, "en"))
+			.arg(m_para[VICUS::NetworkPipe::P_DiameterOutside].value*1000, 0, 'f', 0)
+			.arg(m_para[VICUS::NetworkPipe::P_ThicknessWall].value*1000, 0, 'f', 0);
+	return IBK::MultiLanguageString(str.str());
 }
 
 } // namespace VICUS

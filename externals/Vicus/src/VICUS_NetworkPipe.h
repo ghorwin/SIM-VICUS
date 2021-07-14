@@ -40,15 +40,16 @@
 
 namespace VICUS {
 
-class NetworkPipe: public AbstractDBElement {
+class NetworkPipe : public AbstractDBElement {
 public:
 
-	enum para_t{
-		P_DiameterOutside,					// Keyword: DiameterOutside						[mm]	'Outer diameter'
+	enum para_t {
+		/*! This is the diameter of the pipe, not including any insulation around it. */
+		P_DiameterOutside,					// Keyword: DiameterOutside						[mm]	'Outer diameter (not including optional insulation)'
 		P_ThicknessWall,					// Keyword: ThicknessWall						[mm]	'Pipe wall thickness'
 		P_RoughnessWall,					// Keyword: RoughnessWall						[mm]	'Pipe wall surface roughness'
 		P_ThermalConductivityWall,			// Keyword: ThermalConductivityWall				[W/mK]	'Thermal conductivity of pipe wall'
-		P_ThicknessInsulation,				// Keyword: ThicknessInsulation					[mm]	'Insulation thickness'
+		P_ThicknessInsulation,				// Keyword: ThicknessInsulation					[mm]	'Thickness of insulation around pipe'
 		P_ThermalConductivityInsulation,	// Keyword: ThermalConductivityInsulation		[W/mK]	'Thermal conductivity of insulation'
 		NUM_P
 	};
@@ -58,21 +59,22 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	double diameterInside() const{
-		return m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value;
-	}
-
-	/*! Calculates the u value in W/m2K. */
+	/*! Calculates the effective U-value per m length of pipe in [W/mK]. */
 	double calculateUValue() const;
 
-	/*! Return the pipe inside diameter in mm. */
-	double insideDiameter() const;
+	/*! Returns the inner pipe diameter in [m].
+		\warning Parameters are not checked for validity. If used unchecked, result may be negative or zero.
+	*/
+	double diameterInside() const;
 
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	/*! Generates a display name from category and entered pipe dimensions. */
+	IBK::MultiLanguageString nameFromData() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -83,8 +85,10 @@ public:
 	/*! Identification color. */
 	QColor								m_color;						// XML:A
 
-	std::string							m_categoryName;					// XML:A
+	/*! A custom category name. */
+	IBK::MultiLanguageString			m_categoryName;					// XML:A
 
+	/*! Pipe parameters. */
 	IBK::Parameter						m_para[NUM_P];					// XML:E
 
 };

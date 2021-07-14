@@ -35,6 +35,7 @@
 #include <VICUS_KeywordListQt.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include <NANDRAD_KeywordList.h>
 
@@ -65,13 +66,10 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 	switch (role) {
 		case Qt::DisplayRole : {
 			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
-
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-				case Category				: return QString::fromStdString(it->second.m_categoryName);
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
+				case Category				: return QtExt::MultiLangString2QString(it->second.m_categoryName);
 			}
 		} break;
 
@@ -145,14 +143,18 @@ void SVDBPipeTableModel::resetModel() {
 
 QModelIndex SVDBPipeTableModel::addNewItem() {
 	VICUS::NetworkPipe pipe;
-	pipe.m_displayName.setEncodedString("en:<new pipe>");
 
-	pipe.m_para[VICUS::NetworkPipe::P_RoughnessWall].value = 7e-6;
-	pipe.m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value = 0.4;
-	pipe.m_para[VICUS::NetworkPipe::P_DiameterOutside].value = 0;
-	pipe.m_para[VICUS::NetworkPipe::P_ThicknessWall].value = 0;
-	pipe.m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value = 0;
-	pipe.m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value = 0;
+	// Mind: use the values in units as defined in the keyword list!
+
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside, 16);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall, 4);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_RoughnessWall, 7e-3);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall, 0.8);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessInsulation, 0);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation, 0.8);
+
+	pipe.m_categoryName.setEncodedString("PE");
+	pipe.m_displayName = pipe.nameFromData();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_pipes.add( pipe );

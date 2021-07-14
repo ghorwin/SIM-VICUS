@@ -1262,11 +1262,11 @@ namespace VICUS {
 			// NetworkPipe::para_t
 			case 27 :
 			switch (t) {
-				case 0 : return "Outer diameter";
+				case 0 : return "Outer diameter (not including optional insulation)";
 				case 1 : return "Pipe wall thickness";
 				case 2 : return "Pipe wall surface roughness";
 				case 3 : return "Thermal conductivity of pipe wall";
-				case 4 : return "Insulation thickness";
+				case 4 : return "Thickness of insulation around pipe";
 				case 5 : return "Thermal conductivity of insulation";
 			} break;
 			// Outputs::flag_t

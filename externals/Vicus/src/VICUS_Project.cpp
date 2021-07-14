@@ -2004,7 +2004,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
 																		   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->calculateUValue());
 										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
-																		   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->insideDiameter());
+																		   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->diameterInside());
 										idealPipe.m_thermostatZoneId = dsh.m_zoneId;
 										idealPipe.m_fluid = hyFluid;
 
