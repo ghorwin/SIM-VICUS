@@ -40,78 +40,83 @@
 				</InternalLoadsModel>
 			</InternalLoadsModels>
 		</Models>
+
+		<!-- We define different annual schedules, some spline data directly in XML tags, some
+			 externally referenced in TSV files. -->
 		<Schedules>
-		
+
 				<AnnualSchedules>
 					<ScheduleGroup objectList="All zones">
-					
-						<AnnualSchedule name="PersonHeatLoadPerAreaSchedule" interpolation="linear">
-							<TSVFile>$(Project Directory)\input\PersonHeatLoadPerAreaSchedule.tsv</TSVFile>						
+
+						<AnnualSchedule name="PersonHeatLoadPerAreaSchedule">
+							<TSVFile>$(Project Directory)/input/PersonHeatLoadPerAreaSchedule.tsv</TSVFile>
 						</AnnualSchedule>
-						
-						<AnnualSchedule name="VentilationRateSchedule" interpolation="linear">
+
+						<AnnualSchedule name="VentilationRateSchedule">
 							<X unit="d">120 125 127 130 </X>
 							<Y unit="1/h">0.5 0.5 1 1 </Y>
 						</AnnualSchedule>
-						
-						<AnnualSchedule name="LightingHeatLoadPerAreaSchedule" interpolation="linear">
+
+						<AnnualSchedule name="LightingHeatLoadPerAreaSchedule">
 							<X unit="d">0 365 </X>
-							<Y unit="W/m2">0 0 </Y>
+							<Y unit="W/m2">0 200 </Y>
 						</AnnualSchedule>
-						
-						<AnnualSchedule name="EquipmentHeatLoadPerAreaSchedule" interpolation="linear">
+
+						<AnnualSchedule name="EquipmentHeatLoadPerAreaSchedule">
 							<X unit="d">0 365 </X>
-							<Y unit="W/m2">0 0 </Y>
+							<Y unit="W/m2">200 0 </Y>
 						</AnnualSchedule>
-						
+
 					</ScheduleGroup>
 				</AnnualSchedules>
-			
 		</Schedules>
+
+
 		<Outputs>
 			<TimeUnit>h</TimeUnit>
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>VentilationRate[1]</Quantity>
 					<ObjectListName>Ventilation models</ObjectListName>
-					<GridName>10 mins</GridName>
+					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>10 mins</GridName>
+					<GridName>hourly</GridName>
 				</OutputDefinition>
 
 				<OutputDefinition>
 					<Quantity>VentilationHeatLoad</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>10 mins</GridName>
+					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 				<OutputDefinition>
 					<Quantity>PersonHeatLoadPerAreaSchedule</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>10 mins</GridName>
+					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
+
 				<OutputDefinition>
 					<Quantity>EquipmentHeatLoadPerAreaSchedule</Quantity>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>10 mins</GridName>
+					<GridName>hourly</GridName>
 				</OutputDefinition>
-				
 			</Definitions>
+
 			<Grids>
-				<OutputGrid name="10 mins">
+				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">10</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
 			</Grids>
 		</Outputs>
+
 		<ObjectLists>
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
