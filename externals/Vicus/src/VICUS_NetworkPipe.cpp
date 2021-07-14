@@ -30,7 +30,9 @@
 
 namespace VICUS {
 
-double NetworkPipe::calculateUValue() const {
+double NetworkPipe::UValue() const {
+	// This function is only to be called when isValid() returns true. Hence, all parameters are present with
+	// valid values.
 
 	// some references for readability improvement
 	// all in SI units here (length unit "m")

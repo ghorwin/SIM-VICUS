@@ -340,7 +340,7 @@ void SVNavigationTreeWidget::on_actionSmartSelect_triggered() {
 	// show smart select dialog
 	if (m_smartSelectDialog == nullptr)
 		m_smartSelectDialog = new SVSmartSelectDialog(this);
-	m_smartSelectDialog->exec(); // selection undo actions are created in the dialog, nothing else to do here
+	m_smartSelectDialog->select(); // selection undo actions are created in the dialog, nothing else to do here
 }
 
 

@@ -1986,12 +1986,16 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										p.m_models.m_idealSurfaceHeatingCoolingModels.push_back(surfSysNandrad);
 									}
 									break;
-									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
-										//get pipe data
 
+									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
+										// get pipe data
 										const VICUS::NetworkPipe * pipe = element(m_embeddedDB.m_pipes, shSys->m_idPipe);
 										if(pipe == nullptr){
-											//todo errorstack
+											// TODO Dirk, error handling errorstack
+											continue;
+										}
+										if (!pipe->isValid()) {
+											// TODO Dirk, error handling errorstack
 											continue;
 										}
 
@@ -2471,9 +2475,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	}
 
 	// --> transfer
-	for(unsigned int pipeId: pipeIds){
+	for(unsigned int pipeId: pipeIds) {
 		const VICUS::NetworkPipe *pipe = element(m_embeddedDB.m_pipes, pipeId);
-		Q_ASSERT(pipe != nullptr);
+		if (pipe == nullptr) {
+			// TODO Hauke, error handling
+			continue;
+		}
+		if (!pipe->isValid()) {
+			// TODO Hauke, error handling
+			continue;
+		}
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 

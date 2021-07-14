@@ -28,12 +28,17 @@
 
 #include <QPushButton>
 #include <QDialogButtonBox>
+
 #include <VICUS_KeywordList.h>
 #include <VICUS_NetworkNode.h>
 #include <VICUS_Project.h>
 
+#include <QtExt_Conversions.h>
+
 #include "SVProjectHandler.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVDatabase.h"
+#include "SVSettings.h"
 
 SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	QDialog(parent),
@@ -41,7 +46,8 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->verticalLayoutNetwork->setMargin(0);
+	m_ui->verticalLayoutNetwork->setContentsMargins(0,6,0,0);
+	m_ui->gridLayoutBuildings->setContentsMargins(0,6,0,0);
 
 	QPushButton * btn = new QPushButton(tr("Select"));
 	m_ui->buttonBox->addButton(btn, QDialogButtonBox::NoRole);
@@ -76,11 +82,107 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(false);
 	m_ui->lineEditLengthAbove->setEnabled(false);
 	m_ui->lineEditLengthBelow->setEnabled(false);
+
+	// populate static options
+	m_options.m_options.resize(2);
+
+	FilterOption & components = m_options.m_options[0];
+	components.m_name = tr("Components");
+	components.m_options.resize(3);
+
+	components.m_options[0].m_name = tr("Outside walls");
+	components.m_options[1].m_name = tr("Inside walls");
+	components.m_options[2].m_name = tr("Windows");
+
+	FilterOption & thermalElements = m_options.m_options[1];
+	thermalElements.m_name = tr("Thermal elements");
+
 }
 
 
 SVSmartSelectDialog::~SVSmartSelectDialog() {
 	delete m_ui;
+}
+
+
+void SVSmartSelectDialog::select() {
+
+	// populate dynamic elements
+	FilterOption & outsideWalls = m_options.m_options[0].m_options[0];
+	outsideWalls.m_options.clear();
+	FilterOption & insideWalls = m_options.m_options[0].m_options[1];
+	insideWalls.m_options.clear();
+	FilterOption & windows = m_options.m_options[0].m_options[2];
+	windows.m_options.clear();
+
+	// process data structure and populate options
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		const VICUS::Component * comp = db.m_components[ci.m_componentID];
+		if (comp == nullptr)
+			continue;
+		switch (comp->m_type) {
+			case VICUS::Component::CT_OutsideWall:
+				outsideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_OutsideWallToGround:
+				outsideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_InsideWall:
+				insideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_FloorToCellar:
+			break;
+			case VICUS::Component::CT_FloorToAir:
+			break;
+			case VICUS::Component::CT_FloorToGround:
+			break;
+			case VICUS::Component::CT_Ceiling:
+			break;
+			case VICUS::Component::CT_SlopedRoof:
+			break;
+			case VICUS::Component::CT_FlatRoof:
+			break;
+			case VICUS::Component::CT_ColdRoof:
+			break;
+			case VICUS::Component::CT_WarmRoof:
+			break;
+			case VICUS::Component::CT_Miscellaneous:
+			break;
+			case VICUS::Component::NUM_CT: break;
+		}
+	}
+
+	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+		const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+		if (comp == nullptr)
+			continue;
+		switch (comp->m_type) {
+			case VICUS::SubSurfaceComponent::CT_Window:
+				windows.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::SubSurfaceComponent::CT_Door:
+			break;
+			case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+			break;
+			case VICUS::SubSurfaceComponent::NUM_CT:
+			break;
+		}
+	}
+
+
+	m_selections.push_back(0);
+	m_selections.push_back(1);
+
+	updateButtonGrid();
+
+	// everything else is done inside the dialog
+	exec();
 }
 
 
@@ -196,22 +298,79 @@ void SVSmartSelectDialog::on_comboBoxNodeType_currentIndexChanged(int index)
 }
 
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1)
-{
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1) {
 	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1) {
 	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthBelow_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxLengthBelow_stateChanged(int arg1) {
 	m_ui->lineEditLengthBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1) {
 	m_ui->lineEditLengthAbove->setEnabled(arg1);
+}
+
+
+void SVSmartSelectDialog::on_pushButtonReset_clicked() {
+	// reset current hierarchy level to 0
+	m_selections.clear();
+	updateButtonGrid();
+}
+
+
+void SVSmartSelectDialog::onSelectionButtonPressed() {
+	QPushButton * btn = qobject_cast<QPushButton *>(sender());
+	Q_ASSERT(btn != nullptr);
+
+	// determine level and reduce selection accordingly
+	unsigned int buttonLevel = 0;
+	for (;buttonLevel < m_selectionButtons.size(); ++buttonLevel)
+		if (m_selectionButtons[buttonLevel] == btn)
+			break;
+
+	if (buttonLevel+1 == m_selectionButtons.size()) {
+		m_selectionButtons.back()->setDown(true);
+		return;
+	}
+	m_selections.resize(buttonLevel+1);
+	updateButtonGrid();
+}
+
+
+void SVSmartSelectDialog::updateButtonGrid() {
+	// Mind: it may be the case that we cannot follow all selections through, if
+	//       dynamic options have disappeared sind last call
+
+	qDeleteAll(m_selectionButtons);
+	m_selectionButtons.clear();
+
+	FilterOption * option = &m_options;
+	std::vector<unsigned int> validSelections;
+	for (unsigned int i=0; i<m_selections.size(); ++i) {
+		unsigned int selectedIndex = m_selections[i];
+		if (selectedIndex >= option->m_options.size())
+			break; // not available, skip
+		validSelections.push_back(selectedIndex);
+		option = &option->m_options[selectedIndex];
+		// create push button
+		QPushButton * button = new QPushButton(option->m_name);
+		// connect clicked signal
+		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onSelectionButtonPressed);
+		m_ui->horizontalLayoutBreadCrums->insertWidget(m_ui->horizontalLayoutBreadCrums->count()-1, button);
+		m_selectionButtons.push_back(button);
+	}
+	m_selections.swap(validSelections);
+
+	if (!m_selectionButtons.empty()) {
+		m_selectionButtons.back()->setDown(true);
+	}
+
+	// now update button grid
 }
