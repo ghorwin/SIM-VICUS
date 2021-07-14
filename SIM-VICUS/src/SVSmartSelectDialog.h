@@ -62,8 +62,10 @@ private slots:
 
 	void on_pushButtonReset_clicked();
 
-	/*! Triggered when any of the filter/selection buttons has been pressed. */
+	/*! Triggered when any of the bread crumb buttons has been pressed. */
 	void onSelectionButtonPressed();
+	/*! Triggered when any of the filter buttons has been pressed. */
+	void onOptionButtonPressed();
 
 private:
 	/*! Based on available options and current m_selections info, the button grid is updated. */
@@ -91,6 +93,8 @@ private:
 	std::vector<unsigned int>	m_selections;
 	/*! The push buttons in the bread crumbs layout (owned). */
 	std::vector<QPushButton*>	m_selectionButtons;
+
+	std::vector<QPushButton*>	m_optionButtons;
 };
 
 #endif // SVSmartSelectDialogH

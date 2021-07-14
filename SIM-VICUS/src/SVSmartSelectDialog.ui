@@ -31,9 +31,9 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayoutBuildings">
        <item row="1" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
+        <layout class="QVBoxLayout" name="verticalLayoutOptions">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="pushButtonDummy">
            <property name="text">
             <string>PushButton</string>
            </property>

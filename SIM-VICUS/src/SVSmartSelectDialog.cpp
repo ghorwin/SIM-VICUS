@@ -97,10 +97,13 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	FilterOption & thermalElements = m_options.m_options[1];
 	thermalElements.m_name = tr("Thermal elements");
 
+	delete m_ui->pushButtonDummy;
 }
 
 
 SVSmartSelectDialog::~SVSmartSelectDialog() {
+	qDeleteAll(m_selectionButtons);
+	qDeleteAll(m_optionButtons);
 	delete m_ui;
 }
 
@@ -118,10 +121,11 @@ void SVSmartSelectDialog::select() {
 	// process data structure and populate options
 	const SVDatabase & db = SVSettings::instance().m_db;
 
-	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-		const VICUS::Component * comp = db.m_components[ci.m_componentID];
-		if (comp == nullptr)
-			continue;
+	std::set<const VICUS::Component *> components;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
+		components.insert(db.m_components[ci.m_componentID]);
+	for (const VICUS::Component * comp : components) {
+		if (comp == nullptr) continue;
 		switch (comp->m_type) {
 			case VICUS::Component::CT_OutsideWall:
 				outsideWalls.m_options.push_back(
@@ -157,10 +161,11 @@ void SVSmartSelectDialog::select() {
 		}
 	}
 
-	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
-		const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
-		if (comp == nullptr)
-			continue;
+	std::set<const VICUS::SubSurfaceComponent *> subSurfaceComponents;
+	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances)
+		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_subSurfaceComponentID]);
+	for (const VICUS::SubSurfaceComponent * comp : subSurfaceComponents) {
+		if (comp == nullptr) continue;
 		switch (comp->m_type) {
 			case VICUS::SubSurfaceComponent::CT_Window:
 				windows.m_options.push_back(
@@ -175,10 +180,6 @@ void SVSmartSelectDialog::select() {
 		}
 	}
 
-
-	m_selections.push_back(0);
-	m_selections.push_back(1);
-
 	updateButtonGrid();
 
 	// everything else is done inside the dialog
@@ -189,7 +190,20 @@ void SVSmartSelectDialog::select() {
 void SVSmartSelectDialog::onSelectClicked() {
 	// evaluate selection and create undo action for the selection
 	if (m_ui->tabWidgetGroup->currentIndex() == 0) {
-		// TODO Dirk : Building object selections
+		// do we have a component selected?
+		FilterOption * option = &m_options;
+		for (unsigned int i=0; i<m_selections.size(); ++i) {
+			unsigned int selectedIndex = m_selections[i];
+			if (selectedIndex >= option->m_options.size())
+				break; // not available, skip
+			option = &option->m_options[selectedIndex];
+		}
+		if (option->m_dbElement == nullptr) {
+			QMessageBox::critical(this, QString(), tr("Not a valid filter selection!"));
+			return;
+		}
+		// now determine all surfaces that are associated with this component
+		// TODO :
 	}
 	else {
 
@@ -344,6 +358,22 @@ void SVSmartSelectDialog::onSelectionButtonPressed() {
 }
 
 
+void SVSmartSelectDialog::onOptionButtonPressed() {
+	QPushButton * btn = qobject_cast<QPushButton *>(sender());
+	Q_ASSERT(btn != nullptr);
+
+	// determine level and reduce selection accordingly
+	unsigned int buttonLevel = 0;
+	for (;buttonLevel < m_optionButtons.size(); ++buttonLevel)
+		if (m_optionButtons[buttonLevel] == btn)
+			break;
+
+	// append selection
+	m_selections.push_back(buttonLevel);
+	updateButtonGrid();
+}
+
+
 void SVSmartSelectDialog::updateButtonGrid() {
 	// Mind: it may be the case that we cannot follow all selections through, if
 	//       dynamic options have disappeared sind last call
@@ -373,4 +403,15 @@ void SVSmartSelectDialog::updateButtonGrid() {
 	}
 
 	// now update button grid
+	qDeleteAll(m_optionButtons);
+	m_optionButtons.clear();
+
+	// based on the currently selected hierarchy level 'option', populate buttons
+	for (FilterOption & o : option->m_options) {
+		QPushButton * button = new QPushButton(o.m_name);
+		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onOptionButtonPressed);
+		m_ui->verticalLayoutOptions->insertWidget(m_ui->verticalLayoutOptions->count()-1, button);
+		m_optionButtons.push_back(button);
+	}
+
 }
