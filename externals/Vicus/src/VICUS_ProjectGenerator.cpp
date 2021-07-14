@@ -1737,7 +1737,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 
 	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
-	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,idealHeatCool.m_id);
+	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,r->m_id);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
 	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())
