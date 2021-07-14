@@ -561,9 +561,12 @@ m_id(id)
 m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
 }
 
-double HNConstantPressureLossValve::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const
+double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const
 {
-	return p_inlet - p_outlet - m_pressureLoss;
+	if (mdot >= 0)
+		return p_inlet - p_outlet - m_pressureLoss;
+	else
+		return p_inlet - p_outlet + m_pressureLoss;
 }
 
 void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
