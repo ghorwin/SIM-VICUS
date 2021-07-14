@@ -65,38 +65,6 @@ void SVSimulationNetworkOptions::updateUi() {
 }
 
 
-//void SVSimulationNetworkOptions::modify() {
-//	return; // TODO Hauke, rewrite
-
-//	// get selected network
-//	VICUS::Network *network = VICUS::Project::element(*m_networks, m_currentId);
-//	if (network == nullptr)
-//		return;
-
-//	// set model type
-//	network->m_modelType = VICUS::Network::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
-
-//	// set params
-//	if (m_ui->lineEditReferencePressure->isValid())
-//		VICUS::KeywordList::setParameter(network->m_para, "Network::para_t", VICUS::Network::P_ReferencePressure,
-//										 m_ui->lineEditReferencePressure->value());
-//	if (m_ui->lineEditDefaultFluidTemperature->isValid()){
-//		network->m_para[VICUS::Network::P_DefaultFluidTemperature] =
-//				IBK::Parameter("DefaultFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
-//		network->m_para[VICUS::Network::P_InitialFluidTemperature] =
-//				IBK::Parameter("InitialFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
-//	}
-
-//	if (m_ui->lineEditMaxPipeDiscretization->isValid())
-//		VICUS::KeywordList::setParameter(network->m_para, "Network::para_t", VICUS::Network::P_MaxPipeDiscretization,
-//										 m_ui->lineEditMaxPipeDiscretization->value());
-
-//	unsigned int networkIndex = std::distance(&m_networks->front(), VICUS::Project::element(*m_networks, m_currentId));
-//	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network properties updated"), networkIndex, *network);
-//	undo->push(); // modifies project and updates views
-//}
-
-
 void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 	// none selected?
 
@@ -144,20 +112,33 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 
 
 void SVSimulationNetworkOptions::on_comboBoxModelType_activated(int /*index*/) {
-	// TODO : Update current network's data
+	Q_ASSERT(m_current!=nullptr);
+	m_current->m_modelType = VICUS::Network::ModelType(m_ui->comboBoxModelType->currentData().toUInt());
 }
 
 
 void SVSimulationNetworkOptions::on_lineEditDefaultFluidTemperature_editingFinished() {
-	// TODO : Update current network's data
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditDefaultFluidTemperature->isValid()){
+		m_current->m_para[VICUS::Network::P_DefaultFluidTemperature] =
+						IBK::Parameter("DefaultFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
+		m_current->m_para[VICUS::Network::P_InitialFluidTemperature] =
+					IBK::Parameter("InitialFluidTemperature", m_ui->lineEditDefaultFluidTemperature->value(), IBK::Unit("C"));
+	}
 }
 
 
 void SVSimulationNetworkOptions::on_lineEditReferencePressure_editingFinished() {
-	// TODO : Update current network's data
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditReferencePressure->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_ReferencePressure,
+											 m_ui->lineEditReferencePressure->value());
 }
 
 
 void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinished() {
-	// TODO : Update current network's data
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditMaxPipeDiscretization->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_MaxPipeDiscretization,
+											 m_ui->lineEditMaxPipeDiscretization->value());
 }

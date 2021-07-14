@@ -103,6 +103,13 @@
    <header location="global">QtExt_ValidatingLineEdit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>comboBoxNetwork</tabstop>
+  <tabstop>comboBoxModelType</tabstop>
+  <tabstop>lineEditDefaultFluidTemperature</tabstop>
+  <tabstop>lineEditReferencePressure</tabstop>
+  <tabstop>lineEditMaxPipeDiscretization</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
