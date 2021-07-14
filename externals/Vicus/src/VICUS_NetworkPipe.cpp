@@ -72,8 +72,8 @@ bool NetworkPipe::isValid() const {
 		}
 	}
 
-	//check if inside diameter is greater zero
-	if(diameterInside() <= 0)
+	// check if inside diameter is greater zero
+	if (diameterInside() <= 0)
 		return false;
 
 	return true;
