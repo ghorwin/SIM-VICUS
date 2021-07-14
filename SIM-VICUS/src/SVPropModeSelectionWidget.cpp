@@ -83,6 +83,8 @@ void SVPropModeSelectionWidget::setBuildingPropertyType(BuildingPropertyTypes pt
 	m_ui->comboBoxBuildingProperties->blockSignals(true);
 	m_ui->comboBoxBuildingProperties->setCurrentIndex( m_ui->comboBoxBuildingProperties->findData(pt) );
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
+
+	updateWidgetVisibility();
 }
 
 
@@ -330,6 +332,9 @@ void SVPropModeSelectionWidget::updateWidgetVisibility() {
 	m_ui->labelNetworkProperties->setVisible(showNetworkProps);
 	m_ui->comboBoxNetworkProperties->setVisible(showNetworkProps);
 
+	m_ui->labelSelectedNetwork->setVisible(showNetworkProps);
+	m_ui->comboBoxSelectedNetwork->setVisible(showNetworkProps);
+
 	m_ui->labelBuildingProperties->setVisible(showBuildingProps);
 	m_ui->comboBoxBuildingProperties->setVisible(showBuildingProps);
 }
@@ -346,7 +351,7 @@ void SVPropModeSelectionWidget::updateViewState() {
 	SVViewStateHandler::instance().setViewState(vs);
 }
 
-void SVPropModeSelectionWidget::on_comboBoxSelectedNetwork_currentIndexChanged(int /*index*/)
-{
+
+void SVPropModeSelectionWidget::on_comboBoxSelectedNetwork_currentIndexChanged(int /*index*/) {
 	updateViewState();
 }

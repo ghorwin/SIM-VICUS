@@ -40,8 +40,7 @@ SVSimulationModelOptions::SVSimulationModelOptions(QWidget *parent,
 	m_location(&location)
 {
 	m_ui->setupUi(this);
-
-	m_ui->mainLayout->setMargin(0);
+	m_ui->verticalLayout->setMargin(0);
 
 	// populate combo box with solar distribution model options
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);

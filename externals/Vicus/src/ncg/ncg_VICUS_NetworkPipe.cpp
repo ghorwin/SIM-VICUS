@@ -52,7 +52,7 @@ void NetworkPipe::readXML(const TiXmlElement * element) {
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "categoryName")
-				m_categoryName = attrib->ValueStr();
+				m_categoryName.setEncodedString(attrib->ValueStr());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -102,7 +102,7 @@ TiXmlElement * NetworkPipe::writeXML(TiXmlElement * parent) const {
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_categoryName.empty())
-		e->SetAttribute("categoryName", m_categoryName);
+		e->SetAttribute("categoryName", m_categoryName.encodedString());
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

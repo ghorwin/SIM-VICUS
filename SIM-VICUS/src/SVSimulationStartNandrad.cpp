@@ -130,6 +130,9 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		h->addWidget(m_simulationNetworkOptions);
 		m_ui->tabNetworkSettings->setLayout(h);
 	}
+
+	// start with initial page, always
+	m_ui->tabWidget->setCurrentIndex(0);
 }
 
 
@@ -380,43 +383,9 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 
 
 bool SVSimulationStartNandrad::startSimulation(bool testInit) {
-	// compose NANDRAD project file and start simulation
-
-	// generate NANDRAD project
-	NANDRAD::Project p;
-
-	QStringList errorStack;
-
-	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
-	try {
-		//add default placeholder
-		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
-		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-		m_localProject.generateNandradProject(p, errorStack);
-	}
-	catch (VICUS::Project::ConversionError & ex) {
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"), ex.what());
-		switch (ex.m_errorType) {
-			case VICUS::Project::ConversionError::ET_MissingClimate :
-				m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
-			break;
-		}
+	QString resultPath;
+	if (!generateNANDRAD(resultPath))
 		return false;
-	}
-	catch (IBK::Exception & ex) {
-		// just show a generic error message
-		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
-							  tr("An error occurred during NANDRAD project generation. See log for details."));
-		return false;
-	}
-
-	// save project
-	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
-	/// TODO : check if project file was correctly written
-
-	QString resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
-	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(resultPath);
 	IBK::Path resultDir(resultPath.toStdString());
 
 	bool cleanDir = false;
@@ -480,6 +449,48 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 }
 
 
+bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
+	// compose NANDRAD project file and start simulation
+
+	// generate NANDRAD project
+	NANDRAD::Project p;
+
+	QStringList errorStack;
+
+	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
+	try {
+		//add default placeholder
+		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
+		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
+		m_localProject.generateNandradProject(p, errorStack);
+	}
+	catch (VICUS::Project::ConversionError & ex) {
+		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"), ex.what());
+		switch (ex.m_errorType) {
+			case VICUS::Project::ConversionError::ET_MissingClimate :
+				m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
+			break;
+		}
+		return false;
+	}
+	catch (IBK::Exception & ex) {
+		// just show a generic error message
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
+							  tr("An error occurred during NANDRAD project generation. See log for details."));
+		return false;
+	}
+
+	// save project
+	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
+	/// TODO : check if project file was correctly written
+
+	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
+	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(resultPath);
+	return true;
+}
+
+
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
 }
@@ -490,3 +501,18 @@ void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 }
 
 
+void SVSimulationStartNandrad::on_pushButtonExportFMU_clicked() {
+	QString resultPath;
+	if (!generateNANDRAD(resultPath)) {
+		return;
+	}
+	// launch external FMU generator tool
+	QStringList cmdArgs;
+
+	QString generatorExecutable = SVSettings::nandradFMUGeneratorExecutable();
+	bool success = SVSettings::startProcess(generatorExecutable, cmdArgs, m_nandradProjectFilePath, SVSettings::TE_None);
+	if (!success) {
+		QMessageBox::critical(this, QString(), tr("Could not run FMU Generator '%1'").arg(generatorExecutable));
+		return;
+	}
+}

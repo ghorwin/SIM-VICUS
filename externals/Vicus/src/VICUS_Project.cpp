@@ -2340,12 +2340,14 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	for (const VICUS::Network &net: m_geometricNetworks){
 		if (net.m_selectedForSimulation){
 			networkId = net.m_id;
+			// TODO Hauke, multiple (connected) networks?
 			break;
 		}
 	}
-	// if there is no network selected return
-	if(element(m_geometricNetworks, networkId) == nullptr)
-		throw IBK::Exception("There is no network selected for simulation", FUNC_ID);
+	// if there is no network selected return - this is not an error, but the usual case for simple building energy
+	// simulations
+	if (element(m_geometricNetworks, networkId) == nullptr)
+		return;
 
 	const VICUS::Network vicusNetwork = *element(m_geometricNetworks, networkId);
 

@@ -49,7 +49,7 @@ SVDatabase::SVDatabase() :
 	m_networkComponents(USER_ID_SPACE_START*1002),
 	m_networkControllers(USER_ID_SPACE_START*1003),
 	m_subNetworks(USER_ID_SPACE_START*1004),
-	m_EPDElements(USER_ID_SPACE_START),
+//	m_EPDElements(USER_ID_SPACE_START),
 	m_schedules(6*USER_ID_SPACE_START),
 	m_internalLoads(7*USER_ID_SPACE_START),
 	m_zoneControlThermostat(11*USER_ID_SPACE_START),
@@ -86,11 +86,11 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_schedules.readXML(				dbDir / "db_schedules.xml", "Schedules", "Schedule", true);
 		m_internalLoads.readXML(			dbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", true);
 		m_zoneControlThermostat.readXML(	dbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", true);
-		m_zoneControlVentilationNatural.readXML(	dbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", true);
 		m_zoneControlShading.readXML(		dbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", true);
+		m_zoneControlVentilationNatural.readXML(	dbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", true);
 		m_zoneIdealHeatingCooling.readXML(	dbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", true);
-		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_ventilationNatural.readXML(		dbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", true);
+		m_infiltration.readXML(				dbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", true);
 		m_zoneTemplates.readXML(			dbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", true);
 
 	}
@@ -133,16 +133,16 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_internalLoads.readXML(			userDbDir / "db_internalLoads.xml", "InternalLoads", "InternalLoad", false);
 	if (t == NUM_DT || t == DT_ZoneControlThermostat)
 		m_zoneControlThermostat.readXML(	userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats", "ZoneControlThermostat", false);
-	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
-		m_zoneControlVentilationNatural.readXML(	userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneControlShading)
 		m_zoneControlShading.readXML(		userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings", "ZoneControlShading", false);
+	if (t == NUM_DT || t == DT_ZoneControlNaturalVentilation)
+		m_zoneControlVentilationNatural.readXML(	userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals", "ZoneControlVentilationNatural", false);
 	if (t == NUM_DT || t == DT_ZoneIdealHeatingCooling)
 		m_zoneIdealHeatingCooling.readXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings", "ZoneIdealHeatingCooling", false);
-	if (t == NUM_DT || t == DT_Infiltration)
-		m_infiltration.readXML(				userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_VentilationNatural)
 		m_ventilationNatural.readXML(		userDbDir / "db_ventilationNatural.xml", "VentilationNaturals", "VentilationNatural", false);
+	if (t == NUM_DT || t == DT_Infiltration)
+		m_infiltration.readXML(				userDbDir / "db_infiltration.xml", "Infiltrations", "Infiltration", false);
 	if (t == NUM_DT || t == DT_ZoneTemplates)
 		m_zoneTemplates.readXML(			userDbDir / "db_zoneTemplates.xml", "ZoneTemplates", "ZoneTemplate", false);
 }
@@ -169,13 +169,12 @@ void SVDatabase::writeDatabases() const {
 	m_schedules.writeXML(			userDbDir / "db_schedules.xml", "Schedules");
 	m_internalLoads.writeXML(		userDbDir / "db_internalLoads.xml", "InternalLoads");
 	m_zoneControlThermostat.writeXML(userDbDir / "db_zoneControlThermostat.xml", "ZoneControlThermostats");
-	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
 	m_zoneControlShading.writeXML(	userDbDir / "db_zoneControlShading.xml", "ZoneControlShadings");
+	m_zoneControlVentilationNatural.writeXML(userDbDir / "db_zoneControlVentilationNatural.xml", "ZoneControlVentilationNaturals");
 	m_zoneIdealHeatingCooling.writeXML(	userDbDir / "db_zoneIdealHeatingCooling.xml", "ZoneIdealHeatingCoolings");
-	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_ventilationNatural.writeXML(	userDbDir / "db_ventilationNatural.xml", "VentilationNaturals");
+	m_infiltration.writeXML(		userDbDir / "db_infiltration.xml", "Infiltrations");
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
-
 }
 
 
@@ -188,6 +187,7 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 		if (c != nullptr) vec.push_back(*c);
 }
 
+
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// create sets for objects that are referenced from other objects
@@ -199,20 +199,22 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::Component *>					referencedComponents;
 	std::set<const VICUS::SubSurfaceComponent *>		referencedSubSurfaceComponents;
 	std::set<const VICUS::SurfaceHeating *>				referencedSurfaceHeatings;
-	std::set<const VICUS::Schedule *>					referencedSchedule;
-	std::set<const VICUS::InternalLoad *>				referencedInternalLoads;
-	std::set<const VICUS::ZoneControlThermostat *>		referencedThermostats;
-	std::set<const VICUS::ZoneIdealHeatingCooling *> 	referencedIdealHeatCool;
-	std::set<const VICUS::VentilationNatural *>			referencedVentilation;
-	std::set<const VICUS::Infiltration *>				referencedInfiltration;
-	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
-	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedCtrlNaturalVentilation;
 
 	std::set<const VICUS::NetworkPipe*>					referencedNetworkPipes;
+	std::set<const VICUS::NetworkFluid *>				referencedNetworkFluids;
 	std::set<const VICUS::NetworkComponent *>			referencedNetworkComponents;
 	std::set<const VICUS::NetworkController *>			referencedNetworkControllers;
 	std::set<const VICUS::SubNetwork *>					referencedSubNetworks;
-	std::set<const VICUS::NetworkFluid *>				referencedNetworkFluids;
+
+	std::set<const VICUS::Schedule *>					referencedSchedule;
+	std::set<const VICUS::InternalLoad *>				referencedInternalLoads;
+	std::set<const VICUS::ZoneControlThermostat *>		referencedThermostats;
+	std::set<const VICUS::ZoneControlShading *>			referencedControlShading;
+	std::set<const VICUS::VentilationNatural *>			referencedVentilation;
+	std::set<const VICUS::ZoneIdealHeatingCooling *> 	referencedIdealHeatingCooling;
+	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedControlNaturalVentilation;
+	std::set<const VICUS::Infiltration *>				referencedInfiltration;
+	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
 
 
 	// we first collect all objects that are not referenced themselves
@@ -220,126 +222,119 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	// this is continued until we have collected all objects that are used somewhere in the
 	// project
 
+	// Note: we lookup database elements by ID. If ID is INVALID_ID or if the database element
+	//       is missing, the lookup call returns a nullptr. This may hence appear also in
+	//       the referencedXXX vector. When later a referenced element is processed, we need
+	//       to check for nullptr before de-referencing it.
 
-	// *** components ***
 
-	for (VICUS::ComponentInstance & ci : p.m_componentInstances) {
-		const VICUS::Component * c = m_components[ci.m_componentID]; // bad/missing IDs yield a nullptr
+	// *** ComponentInstance and Component ***
+	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
+		const VICUS::Component * c = m_components[ci.m_componentID];
+		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_surfaceHeatingID]);
 		if (c == nullptr) continue;
 
 		referencedComponents.insert(c);
-
-		// *** everything referenced from components: constructions, bc, ... ***
-
-		referencedConstructions.insert(m_constructions[c->m_idConstruction]); // bad/missing IDs yield a nullptr
-		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
-		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
-
-		// do we have surface heating referenced?
-		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_surfaceHeatingID]);
+		referencedConstructions.insert(m_constructions[c->m_idConstruction]);
+		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]);
+		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]);
 	}
 
-	// *** sub-surface components ***
+	// *** SubSurfaceComponentInstance, SubSurfaceComponent, Window and WindowGlazingSystems ***
 	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances) {
-		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_subSurfaceComponentID]; // bad/missing IDs yield a nullptr
+		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+		referencedSubSurfaceComponents.insert(c);
 		if (c == nullptr) continue;
 
-		referencedSubSurfaceComponents.insert(c);
+		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]);
+		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]);
 
 		// collect referenced windows
 		const VICUS::Window * w = m_windows[c->m_idWindow];
 		if (w == nullptr) continue;
 
 		referencedWindows.insert(w);
-		referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]); // bad/missing IDs yield a nullptr
-		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]); // bad/missing IDs yield a nullptr
-		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]); // bad/missing IDs yield a nullptr
+		referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]);
 	}
 
-	// *** surface heatings ***
+	// *** SurfaceHeating and Pipes ***
 	for (const VICUS::SurfaceHeating * sh : referencedSurfaceHeatings) {
+		if (sh == nullptr) continue;
 		referencedNetworkPipes.insert(m_pipes[sh->m_idPipe]);
 	}
 
-	// *** zone templates ***
-
+	// *** ZoneTemplate ***
 	for (const VICUS::Building & b : p.m_buildings)
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (const VICUS::Room &  r : bl.m_rooms)
-				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);	// bad/missing IDs yield a nullptr
+				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);
 
-	// *** materials ***
+
+	// *** Materials ***
 	//
 	// referenced from constructions and window (frame+divider)
 
 	for (const VICUS::Construction * c : referencedConstructions) {
+		if (c == nullptr) continue;
 		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
-			referencedMaterials.insert(m_materials[ml.m_matId]); // bad/missing IDs yield a nullptr
+			referencedMaterials.insert(m_materials[ml.m_matId]);
 	}
 	for (const VICUS::Window * c : referencedWindows) {
-		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]); // bad/missing IDs yield a nullptr
-		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]); // bad/missing IDs yield a nullptr
+		if (c == nullptr) continue;
+		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]);
+		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]);
 	}
 
 
 	// *** everything that is referenced from zone templates
 
-	// TODO Dirk, Review and check for completeness!
-
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
-		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i){
+		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i) {
 			IDType idType = zt->m_idReferences[i];
 			const VICUS::InternalLoad *intLoad = m_internalLoads[idType];
 			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[idType];
 			const VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
 			const VICUS::Infiltration *inf = m_infiltration[idType];
 			const VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
-			if (intLoad	!= nullptr){
+			if (intLoad	!= nullptr) {
 				referencedInternalLoads.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
-				switch (tempType){
-					case VICUS::ZoneTemplate::ST_IntLoadPerson:{
-						const VICUS::Schedule *sched = m_schedules[intLoad->m_activityScheduleId];
-						if(sched != nullptr)
-							referencedSchedule.insert(sched);
-						const VICUS::Schedule * sched2 = m_schedules[intLoad->m_occupancyScheduleId];
-						if(sched2 != nullptr)
-							referencedSchedule.insert(sched2);
-					}break;
-					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-					case VICUS::ZoneTemplate::ST_IntLoadLighting:
-					case VICUS::ZoneTemplate::ST_IntLoadOther:{
-						///TODO Katja
-						const VICUS::Schedule *sched = m_schedules[intLoad->m_powerManagementScheduleId];
-						if(sched != nullptr)
-							referencedSchedule.insert(sched);
-					}	break;
-					case VICUS::ZoneTemplate::NUM_ST:
+				switch (tempType) {
+					case VICUS::ZoneTemplate::ST_IntLoadPerson:
+						referencedSchedule.insert(m_schedules[intLoad->m_activityScheduleId]);
+						referencedSchedule.insert(m_schedules[intLoad->m_occupancyScheduleId]);
 					break;
 
+					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+					case VICUS::ZoneTemplate::ST_IntLoadLighting:
+					case VICUS::ZoneTemplate::ST_IntLoadOther:
+						referencedSchedule.insert(m_schedules[intLoad->m_powerManagementScheduleId]);
+					break;
+
+					case VICUS::ZoneTemplate::ST_ControlThermostat:
+					case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
+					case VICUS::ZoneTemplate::ST_Infiltration:
+					case VICUS::ZoneTemplate::ST_VentilationNatural:
+					case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+					case VICUS::ZoneTemplate::NUM_ST:
+					break;
 				}
 			}
-			else if(thermo != nullptr){
+			else if(thermo != nullptr) {
 				referencedThermostats.insert(thermo);
 
-				const VICUS::Schedule *sched = m_schedules[thermo->m_heatingSetpointScheduleId];
-				if(sched != nullptr)
-					referencedSchedule.insert(sched);
-				const VICUS::Schedule * sched2 = m_schedules[thermo->m_coolingSetpointScheduleId];
-				if(sched2 != nullptr)
-					referencedSchedule.insert(sched2);
+				referencedSchedule.insert(m_schedules[thermo->m_heatingSetpointScheduleId]);
+				referencedSchedule.insert(m_schedules[thermo->m_coolingSetpointScheduleId]);
 			}
-			else if (inf != nullptr){
+			else if (inf != nullptr) {
 				referencedInfiltration.insert(inf);
 			}
-			else if (ventiNat != nullptr){
+			else if (ventiNat != nullptr) {
 				referencedVentilation.insert(ventiNat);
-				const VICUS::Schedule *sched = m_schedules[ventiNat->m_scheduleId];
-				if(sched != nullptr)
-					referencedSchedule.insert(sched);
+				referencedSchedule.insert(m_schedules[ventiNat->m_scheduleId]);
 			}
 			else if(idealHeatCool != nullptr)
-				referencedIdealHeatCool.insert(idealHeatCool);
+				referencedIdealHeatingCooling.insert(idealHeatCool);
 		}
 	}
 
@@ -348,47 +343,37 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	for (const VICUS::Network &net: p.m_geometricNetworks){
 
 		// fluids
-		const VICUS::NetworkFluid * f = m_fluids[net.m_fluidID];
-		referencedNetworkFluids.insert(f);
+		referencedNetworkFluids.insert(m_fluids[net.m_fluidID]);
 
 		// pipes
-		for (const VICUS::NetworkEdge &edge: net.m_edges){
-			const VICUS::NetworkPipe * p = m_pipes[edge.m_pipeId];
-			referencedNetworkPipes.insert(p);
-		}
+		for (const VICUS::NetworkEdge &edge: net.m_edges)
+			referencedNetworkPipes.insert(m_pipes[edge.m_pipeId]);
 
 		// sub networks
-		for (const VICUS::NetworkNode &node: net.m_nodes){
-			const VICUS::SubNetwork * sub = m_subNetworks[node.m_subNetworkId];
-			if (sub != nullptr)
-				referencedSubNetworks.insert(sub);
-		}
+		for (const VICUS::NetworkNode &node: net.m_nodes)
+			referencedSubNetworks.insert(m_subNetworks[node.m_subNetworkId]);
 	}
 
 	// iterate through collected sub networks
 	for (const VICUS::SubNetwork *sub: referencedSubNetworks) {
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+		if (sub == nullptr) continue;
 
-			// network components
-			const VICUS::NetworkComponent * comp = m_networkComponents[el.m_componentId];
-			if (comp != nullptr)
-				referencedNetworkComponents.insert(comp);
-
-			// network controllers
-			const VICUS::NetworkController * ctrl = m_networkControllers[el.m_controlElementId];
-			referencedNetworkControllers.insert(ctrl);
+		// components and controllers referenced from elements
+		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements) {
+			referencedNetworkComponents.insert(m_networkComponents[el.m_componentId]);
+			referencedNetworkControllers.insert(m_networkControllers[el.m_controlElementId]);
 		}
 	}
 
 	// iterate through components
-	for (const VICUS::NetworkComponent *comp: referencedNetworkComponents){
+	for (const VICUS::NetworkComponent *comp: referencedNetworkComponents) {
+		if (comp == nullptr) continue;
 
 		// schedules
-		for (unsigned int i: comp->m_scheduleIds){
-			const VICUS::Schedule *sched = m_schedules[i];
-			referencedSchedule.insert(sched);
-		}
+		for (unsigned int i: comp->m_scheduleIds)
+			referencedSchedule.insert(m_schedules[i]);
 	}
+
 
 	// *** transfer collected objects to project's embedded database ***
 
@@ -399,32 +384,23 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_boundaryConditions, referencedBC);
 	storeVector(p.m_embeddedDB.m_components, referencedComponents);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, referencedSubSurfaceComponents);
+	storeVector(p.m_embeddedDB.m_surfaceHeatings, referencedSurfaceHeatings);
 
-	storeVector(p.m_embeddedDB.m_networkComponents, referencedNetworkComponents);
-	storeVector(p.m_embeddedDB.m_fluids, referencedNetworkFluids);
 	storeVector(p.m_embeddedDB.m_pipes, referencedNetworkPipes);
+	storeVector(p.m_embeddedDB.m_fluids, referencedNetworkFluids);
+	storeVector(p.m_embeddedDB.m_networkComponents, referencedNetworkComponents);
 	storeVector(p.m_embeddedDB.m_networkControllers, referencedNetworkControllers);
 	storeVector(p.m_embeddedDB.m_subNetworks, referencedSubNetworks);
-
-
-	// TODO m_EPDElements
 
 	storeVector(p.m_embeddedDB.m_schedules, referencedSchedule);
 	storeVector(p.m_embeddedDB.m_internalLoads, referencedInternalLoads);
 	storeVector(p.m_embeddedDB.m_zoneControlThermostats, referencedThermostats);
-
-
-	// TODO m_zoneControlShadings
-
-	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatCool);
-
-	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, referencedCtrlNaturalVentilation);
-
+	storeVector(p.m_embeddedDB.m_zoneControlShading, referencedControlShading);
+	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, referencedControlNaturalVentilation);
+	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatingCooling);
 	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
 	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
-	storeVector(p.m_embeddedDB.m_surfaceHeatings, referencedSurfaceHeatings);
-
 }
 
 

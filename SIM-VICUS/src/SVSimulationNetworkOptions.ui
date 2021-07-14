@@ -6,71 +6,93 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>935</width>
-    <height>286</height>
+    <width>1148</width>
+    <height>438</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Network to simulate</string>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Hydraulic network model options</string>
      </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Reference pressure [Pa]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboBoxNetwork"/>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditReferencePressure">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Type of simulation:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBoxModelType"/>
+      </item>
+      <item row="4" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxPipeDiscretization">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Default/initial fluid temperature [C]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Network to simulate:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Maximum pipe discretization length [m]:</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QComboBox" name="comboBoxNetwork"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Type of simulation</string>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="comboBoxModelType"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Default/Initial fluid temperature [C]</string>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Reference Pressure [Pa]</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditReferencePressure">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Max Pipe Discretization Width [m]</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxPipeDiscretization">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>

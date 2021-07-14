@@ -86,6 +86,8 @@ private slots:
 
 	void on_pushButtonTestInit_clicked();
 
+	void on_pushButtonExportFMU_clicked();
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();
@@ -95,6 +97,9 @@ private:
 		Returns false if some error occurred during creation of the NANDRAD project.
 	*/
 	bool startSimulation(bool testInit);
+
+	/*! Generates a NANDRAD project. */
+	bool generateNANDRAD(QString & resultPath);
 
 	Ui::SVSimulationStartNandrad	*m_ui;
 

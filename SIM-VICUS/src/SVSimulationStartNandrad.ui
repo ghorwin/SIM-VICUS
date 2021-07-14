@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>958</width>
-    <height>810</height>
+    <width>1179</width>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabSimStart">
       <attribute name="title">
@@ -113,7 +113,7 @@
           <item row="1" column="0">
            <widget class="QRadioButton" name="radioButtonSelectedGeometry">
             <property name="text">
-             <string>Simulation selected geometry only</string>
+             <string>Simulate selected geometry only</string>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -298,11 +298,84 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButtonTestInit">
-            <property name="text">
-             <string>Test initialization of simulation model</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QPushButton" name="pushButtonTestInit">
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Test initialization of simulation model</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/32x32/info_32x32.png</normaloff>:/gfx/actions/32x32/info_32x32.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonRun">
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Start simulation</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/64x64/Wavy_checkered_flag.svg</normaloff>:/gfx/actions/64x64/Wavy_checkered_flag.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="default">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonExportFMU">
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Export FMU...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/32x32/FMI_32x32.png</normaloff>:/gfx/actions/32x32/FMI_32x32.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>32</width>
+                <height>32</height>
+               </size>
+              </property>
+              <property name="default">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -343,22 +416,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pushButtonRun">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Start simulation</string>
-       </property>
-       <property name="default">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QPushButton" name="pushButtonShowScreenLog">
        <property name="text">
@@ -402,6 +459,8 @@
    <header location="global">QtExt_ParameterEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

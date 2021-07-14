@@ -152,7 +152,7 @@ public:
 	VICUS::Database<VICUS::SubNetwork>					m_subNetworks;
 
 	/*! Map of all database EPD elements */
-	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
+//	VICUS::Database<VICUS::EPDDataset>					m_EPDElements;
 
 	/*! Map of all database schedules */
 	VICUS::Database<VICUS::Schedule>					m_schedules;

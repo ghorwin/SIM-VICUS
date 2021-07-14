@@ -25,13 +25,12 @@
 
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_KeywordList.h"
+#include <IBK_physics.h>
 
-#define PI				3.141592653589793238
 
 namespace VICUS {
 
-double NetworkPipe::UValue() const {
-
+double NetworkPipe::calculateUValue() const {
 	// some references for readability improvement
 	// all in SI units here (length unit "m")
 	const double &dInsulation = m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
@@ -41,12 +40,18 @@ double NetworkPipe::UValue() const {
 
 	double UValue;
 	if (dInsulation > 0)
-		UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside())
+		UValue = 2*IBK::PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside())
 						+ 1/lambdaInsulation * IBK::f_log((da + 2*dInsulation) / da) );
 	else
-		UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside()) );
+		UValue = 2*IBK::PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside()) );
 
 	return UValue;
+}
+
+
+double NetworkPipe::diameterInside() const {
+	return (m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value);
+
 }
 
 
@@ -65,6 +70,10 @@ bool NetworkPipe::isValid() const {
 		}
 	}
 
+	//check if inside diameter is greater zero
+	if(diameterInside() <= 0)
+		return false;
+
 	return true;
 }
 
@@ -74,18 +83,31 @@ VICUS::AbstractDBElement::ComparisonResult NetworkPipe::equal(const VICUS::Abstr
 	if (otherNetPipe == nullptr)
 		return Different;
 
-	//check parameters
+	// check parameters
 	for (unsigned int i=0; i<NUM_P; ++i){
 		if (m_para[i] != otherNetPipe->m_para[i])
 			return Different;
 	}
 
-	//check meta data
-	if (m_displayName != otherNetPipe->m_displayName || m_color != otherNetPipe->m_color
-			|| m_categoryName != otherNetPipe->m_categoryName)
+	// check meta data
+	if (m_displayName != otherNetPipe->m_displayName ||
+			m_color != otherNetPipe->m_color ||
+			m_categoryName != otherNetPipe->m_categoryName)
+
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+
+IBK::MultiLanguageString NetworkPipe::nameFromData() const {
+	// process all languages in category and generate matching names
+
+	// TODO Hauke, this needs re-thinking
+	IBK::FormatString str = IBK::FormatString("%1 %2 x %3").arg(m_categoryName.string(IBK::MultiLanguageString::m_language, "en"))
+			.arg(m_para[VICUS::NetworkPipe::P_DiameterOutside].value*1000, 0, 'f', 0)
+			.arg(m_para[VICUS::NetworkPipe::P_ThicknessWall].value*1000, 0, 'f', 0);
+	return IBK::MultiLanguageString(str.str());
 }
 
 } // namespace VICUS

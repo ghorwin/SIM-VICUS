@@ -55,12 +55,12 @@ public:
 
 private slots:
 	void on_lineEditName_editingFinished();
-	void on_lineEditOuterDiameter_editingFinished();
-	void on_lineEditWallThickness_editingFinished();
-	void on_lineEditWallLambda_editingFinished();
-	void on_lineEditWallRoughness_editingFinished();
-	void on_lineEditInsulationThickness_editingFinished();
-	void on_lineEditInsulationLambda_editingFinished();
+	void on_lineEditOuterDiameter_editingFinishedSuccessfully();
+	void on_lineEditWallThickness_editingFinishedSuccessfully();
+	void on_lineEditWallLambda_editingFinishedSuccessfully();
+	void on_lineEditWallRoughness_editingFinishedSuccessfully();
+	void on_lineEditInsulationThickness_editingFinishedSuccessfully();
+	void on_lineEditInsulationLambda_editingFinishedSuccessfully();
 	void on_pushButtonPipeColor_colorChanged();
 	void on_lineEditCategory_editingFinished();
 
@@ -68,7 +68,8 @@ private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
 
-	std::string nameFromData(const VICUS::NetworkPipe & current);
+	/*! Updates the pipe name from entered data, if auto naming is enabled. */
+	void updateNameFromData();
 
 	Ui::SVDBPipeEditWidget	*m_ui;
 
@@ -83,6 +84,12 @@ private:
 		A nullptr pointer means that there is no material to edit.
 	*/
 	VICUS::NetworkPipe		*m_current;
+
+	/*! For newly created pipes we set this to true and generate the name automatically based on
+		entered pipe dimensions. As soon as the user has entered a custom name, we set this to
+		false so that the name is no longer updated.
+	*/
+	bool					m_autoNameGeneration = true;
 };
 
 

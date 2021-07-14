@@ -50,12 +50,9 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label_13">
      <property name="text">
-      <string>Category</string>
+      <string>Category:</string>
      </property>
     </widget>
-   </item>
-   <item row="0" column="2" colspan="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="label_7">
@@ -111,16 +108,6 @@
    <item row="7" column="2">
     <widget class="QtExt::ValidatingLineEdit" name="lineEditInsulationLambda"/>
    </item>
-   <item row="0" column="4">
-    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="3">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -163,7 +150,27 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QLineEdit" name="lineEditCategory"/>
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditCategory"/>
+   </item>
+   <item row="0" column="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -186,7 +193,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>lineEditName</tabstop>
-  <tabstop>pushButtonPipeColor</tabstop>
   <tabstop>lineEditCategory</tabstop>
   <tabstop>lineEditOuterDiameter</tabstop>
   <tabstop>lineEditWallThickness</tabstop>
