@@ -311,8 +311,11 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 			TiXmlElement * g = new TiXmlElement("ScheduleGroup");
 			c->LinkEndChild(g);
 			g->SetAttribute("objectList", svec.first);
-			for (const NANDRAD::LinearSplineParameter & s : svec.second)
-				s.writeXML(g, "AnnualSchedule");
+			for (const NANDRAD::LinearSplineParameter & s : svec.second) {
+				TiXmlElement * splTag = s.writeXML(g);
+				// Mind: we expect an 'AnnualSchedule' tag instead of 'LinearSplineParameter'
+				splTag->ToElement()->SetValue("AnnualSchedule");
+			}
 		}
 	}
 

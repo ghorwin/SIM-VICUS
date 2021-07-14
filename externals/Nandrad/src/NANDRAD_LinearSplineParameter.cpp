@@ -111,9 +111,8 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 }
 
 
-TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent, std::string tagName) const {
-
-	TiXmlElement * e = new TiXmlElement(tagName);
+TiXmlElement * LinearSplineParameter::writeXML(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("LinearSplineParameter");
 	parent->LinkEndChild(e);
 
 	if (!m_name.empty())

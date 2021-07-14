@@ -88,8 +88,7 @@ public:
 	}
 
 	void readXML(const TiXmlElement * element);
-	/* Write fundtion. Note, that we allow to define an alternative tagname (such as 'AnnualSchedule')*/
-	TiXmlElement * writeXML(TiXmlElement * parent, std::string tagName = "LinearSplineParameter") const;
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	NANDRAD_COMP(LinearSplineParameter)
 
