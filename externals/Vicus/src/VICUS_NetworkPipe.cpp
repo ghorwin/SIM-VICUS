@@ -26,21 +26,27 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_KeywordList.h"
 
+#define PI				3.141592653589793238
+
 namespace VICUS {
 
-double NetworkPipe::calculateUValue() const {
-//TODO Hauke U-Wert berechnen für Pipe
-	return 1;
-}
+double NetworkPipe::UValue() const {
 
+	// some references for readability improvement
+	// all in SI units here (length unit "m")
+	const double &dInsulation = m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
+	const double &lambdaInsulation = m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
+	const double &da = m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
+	const double &lambdaWall = m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
 
-double NetworkPipe::insideDiameter() const {
-	double thickness = m_para[P_ThicknessWall].value;
+	double UValue;
+	if (dInsulation > 0)
+		UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside())
+						+ 1/lambdaInsulation * IBK::f_log((da + 2*dInsulation) / da) );
+	else
+		UValue = 2*PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside()) );
 
-	if (!m_para[P_ThicknessInsulation].empty())
-		thickness += m_para[P_ThicknessInsulation].value;
-
-	return (m_para[P_DiameterOutside].value - thickness);
+	return UValue;
 }
 
 
