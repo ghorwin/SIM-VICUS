@@ -53,9 +53,7 @@ double NetworkPipe::UValue() const {
 
 
 double NetworkPipe::diameterInside() const {
-	// This function is only to be called when isValid() returns true. Hence, all parameters are present with
-	// valid values.
-	return (m_para[P_DiameterOutside].value - m_para[P_ThicknessWall].value);
+	return (m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value);
 }
 
 
@@ -73,6 +71,10 @@ bool NetworkPipe::isValid() const {
 			return false;
 		}
 	}
+
+	//check if inside diameter is greater zero
+	if(diameterInside() <= 0)
+		return false;
 
 	return true;
 }

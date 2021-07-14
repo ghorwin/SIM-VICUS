@@ -305,14 +305,14 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		e->LinkEndChild(c);
 		for (const std::pair<const std::string, std::vector<NANDRAD::LinearSplineParameter> > & svec : m_annualSchedules) {
 			// create tags like
-			// <AnnualSchedule objectList="objectListName">
+			// <ScheduleGroup objectList="objectListName">
 			//   ...
-			// </AnnualSchedule>
-			TiXmlElement * g = new TiXmlElement("AnnualSchedule");
+			// </ScheduleGroup>
+			TiXmlElement * g = new TiXmlElement("ScheduleGroup");
 			c->LinkEndChild(g);
 			g->SetAttribute("objectList", svec.first);
 			for (const NANDRAD::LinearSplineParameter & s : svec.second)
-				s.writeXML(g);
+				s.writeXML(g, "AnnualSchedule");
 		}
 	}
 
