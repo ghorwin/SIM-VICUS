@@ -28,7 +28,7 @@
 			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="201">
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
-				<HydraulicFluid displayName="Water">
+				<HydraulicFluid id="1" displayName="Water">
 					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
@@ -62,6 +62,23 @@
 				</Elements>
 			</HydraulicNetwork>
 		</HydraulicNetworks>
+		
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Pump">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<!-- We turn the pump on at 8 and off at 11 -->
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,8,11</TimePoints>
+								<Values>PressureHeadSchedule [Pa]:0,1000,0;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
 		
 		<Outputs>
 			<Definitions>
