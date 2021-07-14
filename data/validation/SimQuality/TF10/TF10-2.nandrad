@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+		<Placeholder name="User Database">/home/dirk/.local/share/SIM-VICUS</Placeholder>
+	</DirectoryPlaceholders>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>/home/dirk/ownCloudSimQuality/SimQuality/AP4/TF10-PassiveKuehlung/Aufgabenstellung/Wetterdaten/SIMQ_TF10_KlimaA.epw</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<Zones>
+			<Zone id="31" displayName="TF10.2" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="1" displayName="Floor">
+				<ConstructionTypeId>1</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="2" displayName="Ceiling">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="3" displayName="East">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="4" displayName="North">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">2.924025466e-10</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="5" displayName="West">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			<ConstructionInstance id="6" displayName="South">
+				<ConstructionTypeId>2</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="1" zoneId="31">
+					<!--Interface to 'TF10.2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="2" displayName="[SimQuality] TF03 Konstruktionstyp 4 (Außendämmung)">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2" matId="10000" />
+					<MaterialLayer thickness="0.1" matId="10002" />
+					<MaterialLayer thickness="0.005" matId="10001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<ConstructionType id="1" displayName="[SimQuality] TF08">
+				<ActiveLayerIndex>1</ActiveLayerIndex>
+				<MaterialLayers>
+					<MaterialLayer thickness="0.05" matId="10003" />
+					<MaterialLayer thickness="0.02" matId="10003" />
+					<MaterialLayer thickness="0.13" matId="10003" />
+					<MaterialLayer thickness="0.1" matId="10002" />
+					<MaterialLayer thickness="0.005" matId="10001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="10003" displayName="[SimQuality] Stein">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="10002" displayName="[SimQuality] Dämmung">
+				<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+			<Material id="10001" displayName="[SimQuality] Putz">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+			<Material id="10000" displayName="[SimQuality] Beton">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+		</Materials>
+		<Schedules>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Thermostat-TF10-2 Template">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0</TimePoints>
+								<Values>HeatingSetpointSchedule [C]:100;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0</TimePoints>
+								<Values>CoolingSetpointSchedule [C]:200;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+			<AnnualSchedules>
+				<ScheduleGroup objectList="Supply Temperature and mass flux1">
+					<AnnualSchedule name="SupplyTemperatureSchedule" interpolationMethod="linear">
+						<X unit="h">0 	743	773	2754	2755	3576	3577	5040	5041	6780	6781	7271	7291	8760</X>
+						<Y unit="C">20 	20 	35  35 		10 		10 		35 		35 		17	 	17		10 		10 		35 		35</Y>
+					</AnnualSchedule>
+					<AnnualSchedule name="MaxMassFluxSchedule" interpolationMethod="linear">
+						<X unit="h">0 8760 </X>
+						<Y unit="kg/s">0.2 0.2 </Y>
+					</AnnualSchedule>
+				</ScheduleGroup>
+			</AnnualSchedules>
+		</Schedules>
+		<Models>
+			<Thermostats>
+				<Thermostat id="110005" displayName="Thermostat_TF10-2 Template" modelType="Scheduled">
+					<ZoneObjectList>Thermostat-TF10-2 Template</ZoneObjectList>
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.1</IBK:Parameter>
+					<TemperatureType>AirTemperature</TemperatureType>
+					<ControllerType>Analog</ControllerType>
+				</Thermostat>
+			</Thermostats>
+			<IdealPipeRegisterModels>
+				<IdealPipeRegisterModel id="1" displayName="Underfloor heating" modelType="Scheduled">
+					<HydraulicFluid displayName="Water">
+						<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+						<IBK:Parameter name="Conductivity" unit="W/mK">0.556</IBK:Parameter>
+						<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+							<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+							<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+						</LinearSplineParameter>
+					</HydraulicFluid>
+					<ConstructionObjectList>Ideal Pipe Register Construction Instance Underfloor heating</ConstructionObjectList>
+					<ThermostatZoneId>31</ThermostatZoneId>
+					<IBK:Parameter name="MaxMassFlux" unit="kg/s">0.200659806</IBK:Parameter>
+					<IBK:Parameter name="PipeLength" unit="m">100</IBK:Parameter>
+					<IBK:Parameter name="PipeInnerDiameter" unit="mm">16</IBK:Parameter>
+					<IBK:Parameter name="UValuePipeWall" unit="W/mK">11.82618908</IBK:Parameter>
+					<IBK:IntPara name="NumberParallelPipes">1</IBK:IntPara>
+				</IdealPipeRegisterModel>
+			</IdealPipeRegisterModels>
+		</Models>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>NetworkHeatLoad</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureA</Quantity>
+					<ObjectListName>Ideal Pipe Register Construction Instance Underfloor heating</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SurfaceTemperatureB</Quantity>
+					<ObjectListName>Ideal Pipe Register Construction Instance Underfloor heating</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ActiveLayerTemperature</Quantity>
+					<ObjectListName>Ideal Pipe Register Construction Instance Underfloor heating</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<ObjectListName>Ideal Pipe Register Construction Instance Underfloor heating</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>SupplyTemperatureSchedule</Quantity>
+					<ObjectListName>Ideal Pipe Register Construction Instance Underfloor heating</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>MassFlux</Quantity>
+					<ObjectListName>All models</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>Temperature</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Thermostat-TF10-2 Template">
+				<FilterID>31</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Ideal Pipe Register Construction Instance Underfloor heating">
+				<FilterID>1</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Supply Temperature and mass flux1">
+				<FilterID>1</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All models">
+				<FilterID>*</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		<FMIDescription />
+	</Project>
+</NandradProject>
