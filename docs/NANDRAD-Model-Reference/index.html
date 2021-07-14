@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (21.06.2021)</span>
+<span id="revnumber">version 0.2 (14.07.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -286,12 +286,13 @@ table {
 <li><a href="#_modelltyp_constantpressurepump">18.4.3. Modelltyp: ConstantPressurePump</a></li>
 <li><a href="#_modelltyp_constantmassfluxpump">18.4.4. Modelltyp: ConstantMassFluxPump</a></li>
 <li><a href="#_modelltyp_controlledpump">18.4.5. Modelltyp: ControlledPump</a></li>
-<li><a href="#_modelltyp_heatexchanger">18.4.6. ModellTyp: HeatExchanger</a></li>
-<li><a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.7. ModellTyp: HeatPumpIdealCarnotSourceSide</a></li>
-<li><a href="#_modelltyp_heatpumpidealcarnotsupplyside">18.4.8. ModellTyp: HeatPumpIdealCarnotSupplySide</a></li>
-<li><a href="#HydraulicElement_HeatPumpRealSourceSide">18.4.9. Modelltyp: HeatPumpRealSourceSide</a></li>
-<li><a href="#HydraulicElement_ControlledValve">18.4.10. Modelltyp: ControlledValve</a></li>
-<li><a href="#HydraulicElement_IdealHeaterCooler">18.4.11. Modelltyp: IdealHeaterCooler</a></li>
+<li><a href="#HydraulicElement_ConstantPressureLossValve">18.4.6. Modelltyp: ConstantPressureLossValve</a></li>
+<li><a href="#HydraulicElement_ControlledValve">18.4.7. Modelltyp: ControlledValve</a></li>
+<li><a href="#_modelltyp_heatexchanger">18.4.8. ModellTyp: HeatExchanger</a></li>
+<li><a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.9. ModellTyp: HeatPumpIdealCarnotSourceSide</a></li>
+<li><a href="#_modelltyp_heatpumpidealcarnotsupplyside">18.4.10. ModellTyp: HeatPumpIdealCarnotSupplySide</a></li>
+<li><a href="#HydraulicElement_HeatPumpRealSourceSide">18.4.11. Modelltyp: HeatPumpRealSourceSide</a></li>
+<li><a href="#HydraulicElement_IdealHeaterCooler">18.4.12. Modelltyp: IdealHeaterCooler</a></li>
 </ul>
 </li>
 <li><a href="#NetworkElements">18.5. Strömungselemente</a>
@@ -7718,7 +7719,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect2">
 <h3 id="NetworkPipeProperties">18.3. Rohreigenschaften</h3>
 <div class="paragraph">
-<p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
+<p>Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden im XML-tag <code>HydraulicNetworkPipeProperties</code> im Katalog <code>PipeProperties</code> mit eindeutigen IDs aufgelistet.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 62. Definition von Rohreigenschaften</div>
@@ -7902,7 +7903,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <p>Die <code>DynamicPipe</code> ist ein detailliertes Rohrmodell, bei dem das Rohr entlang der Rohrlänge räumlich diskretisiert wird.</p>
 </div>
 <div class="paragraph">
-<p>Es werden die folgenden Parameter benötigt</p>
+<p>Es werden die folgenden Parameter benötigt:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -7935,7 +7936,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect3">
 <h4 id="_modelltyp_constantpressurepump">18.4.3. Modelltyp: ConstantPressurePump</h4>
 <div class="paragraph">
-<p>Diese Komponente stellt prägt eine Druckdifferenz unabhängig vom Massenstrom auf (eine idealisierte, druckgeregelte Pumpe). Für das Model <code>ConstantPressurePump</code> werden diese Parameter benötigt:</p>
+<p>Diese Komponente prägt eine Druckdifferenz unabhängig vom Massenstrom auf (entspricht einer idealisierten, druckgeregelten Pumpe). Für das Model <code>ConstantPressurePump</code> werden diese Parameter benötigt:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -8132,7 +8133,103 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="sect3">
-<h4 id="_modelltyp_heatexchanger">18.4.6. ModellTyp: HeatExchanger</h4>
+<h4 id="HydraulicElement_ConstantPressureLossValve">18.4.6. Modelltyp: ConstantPressureLossValve</h4>
+<div class="paragraph">
+<p>Dieses Modell bildet ein Ventil ab, welches unabhängig vom Massenstrom einen konstanten Druckverlust erzeugt.</p>
+</div>
+<div class="paragraph">
+<p>Für das Model <code>ConstantPressureLossValve</code> werden diese Parameter benötigt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Einheit</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Wertebereich</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureLoss</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vorgegebener Druckverlust des Ventils</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&gt;=&#160;0</p></td>
+<td class="tableblock halign-center valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluidvolumen des Ventils</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="HydraulicElement_ControlledValve">18.4.7. Modelltyp: ControlledValve</h4>
+<div class="paragraph">
+<p>Ein Ventil, welches nach bestimmten Kriterien geregelt wird. Letztlich ist dies ein normales Druckverlustelement, bei dem der letztlich wirksame Druckverlust dynamisch geregelt wird.</p>
+</div>
+<div class="paragraph">
+<p>Für das Model <code>ControlledValve</code> werden diese Parameter benötigt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Einheit</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Wertebereich</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HydraulicDiameter</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureLossCoefficient</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Effektiver Druckverlustbeiwert</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluidvolumen im Wärmetauscher</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Ein durchströmtes Element, welches eine Komponente von Modelltyp <code>ControlledValve</code> verwendet, referenziert in der Regel (aber nicht zwingend) ein Kontrollelement (siehe <a href="#NetworkControlElements">Section 18.8</a>). Diese Massenstromkontroller erhöhen den Basisdruckverlustbeiwert. Ohne ein Kontrollelement verhält sich das <code>ControlledValve</code> einfach wie eine normales, druckverlustbehaftetes Element im Strömungsnetzwerk.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_modelltyp_heatexchanger">18.4.8. ModellTyp: HeatExchanger</h4>
 <div class="paragraph">
 <p>Das Model <code>HeatExchanger</code> ist ein einfacher Wärmeübertrager, welcher mit dem Fluid einen vorgegebenen Wärmestrom austauscht. Es werden diese Parameter benötigt:</p>
 </div>
@@ -8179,7 +8276,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </table>
 </div>
 <div class="sect3">
-<h4 id="HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.7. ModellTyp: HeatPumpIdealCarnotSourceSide</h4>
+<h4 id="HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.9. ModellTyp: HeatPumpIdealCarnotSourceSide</h4>
 <div class="paragraph">
 <p>Das Model <code>HeatPumpIdealCarnotSourceSide</code> ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Section 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.</p>
 </div>
@@ -8283,16 +8380,16 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="sect3">
-<h4 id="_modelltyp_heatpumpidealcarnotsupplyside">18.4.8. ModellTyp: HeatPumpIdealCarnotSupplySide</h4>
+<h4 id="_modelltyp_heatpumpidealcarnotsupplyside">18.4.10. ModellTyp: HeatPumpIdealCarnotSupplySide</h4>
 <div class="paragraph">
 <p>Das Model <code>HeatPumpIdealCarnotSupplySide</code> ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Section 18.6</a>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung <code>CondenserOutletSetpointSchedule</code> angegeben werden.</p>
 </div>
 <div class="paragraph">
-<p>Die benötigten Parameter sind identisch mit dem Modell <a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">Section 18.4.7</a> und in <a href="#Parameter_HeatPumpIdealCarnotSourceSide">[Parameter_HeatPumpIdealCarnotSourceSide]</a> gegeben.</p>
+<p>Die benötigten Parameter sind identisch mit dem Modell <a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">Section 18.4.9</a> und in <a href="#Parameter_HeatPumpIdealCarnotSourceSide">[Parameter_HeatPumpIdealCarnotSourceSide]</a> gegeben.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="HydraulicElement_HeatPumpRealSourceSide">18.4.9. Modelltyp: HeatPumpRealSourceSide</h4>
+<h4 id="HydraulicElement_HeatPumpRealSourceSide">18.4.11. Modelltyp: HeatPumpRealSourceSide</h4>
 <div class="paragraph">
 <p>Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert.</p>
 </div>
@@ -8384,16 +8481,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="sect3">
-<h4 id="HydraulicElement_ControlledValve">18.4.10. Modelltyp: ControlledValve</h4>
-<div class="paragraph">
-<p>Ein Ventil, welches nach bestimmten Kriterien geregelt wird.</p>
-</div>
-<div class="paragraph">
-<p>TODO : Andreas</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="HydraulicElement_IdealHeaterCooler">18.4.11. Modelltyp: IdealHeaterCooler</h4>
+<h4 id="HydraulicElement_IdealHeaterCooler">18.4.12. Modelltyp: IdealHeaterCooler</h4>
 <div class="paragraph">
 <p>Dieses Modell ermöglicht das präzise Vorgeben einer Medientemperatur in einem Strömungselement und der Berechnung der für die Temperaturänderung benötigten Heiz-/Kühlenergie.</p>
 </div>
@@ -9868,8 +9956,8 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (21.06.2021)<br>
-Last updated 2021-06-21 15:01:53 +0200
+Version 0.2 (14.07.2021)<br>
+Last updated 2021-07-14 21:06:01 +0200
 </div>
 </div>
 <style>

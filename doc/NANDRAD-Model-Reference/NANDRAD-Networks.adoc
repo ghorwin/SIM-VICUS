@@ -187,7 +187,7 @@ Desweiteren gibt es noch temperaturabhängige Parameter, welche in linear interp
 [[NetworkPipeProperties]]
 ## Rohreigenschaften
 
-Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden in XML-tags we `HydraulicNetworkPipeProperties` im Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
+Die Rohreigenschaften legen die physikalische/geometrischen Eigenschaften eines Rohrtyps fest. Diese werden im XML-tag `HydraulicNetworkPipeProperties` im Katalog `PipeProperties` mit eindeutigen IDs aufgelistet. 
 
 .Definition von Rohreigenschaften
 ====
@@ -282,7 +282,7 @@ Für das Model `SimplePipe` werden keine weiteren Parameter benötigt.
 
 Die `DynamicPipe` ist ein detailliertes Rohrmodell, bei dem das Rohr entlang der Rohrlänge räumlich diskretisiert wird. 
 
-Es werden die folgenden Parameter benötigt
+Es werden die folgenden Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
@@ -294,7 +294,7 @@ Es werden die folgenden Parameter benötigt
 
 ### Modelltyp: ConstantPressurePump
 
-Diese Komponente stellt prägt eine Druckdifferenz unabhängig vom Massenstrom auf (eine idealisierte, druckgeregelte Pumpe). Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
+Diese Komponente prägt eine Druckdifferenz unabhängig vom Massenstrom auf (entspricht einer idealisierten, druckgeregelten Pumpe). Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
@@ -377,7 +377,7 @@ Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkont
 [[HydraulicElement_ConstantPressureLossValve]]
 ### Modelltyp: ConstantPressureLossValve
 
-Dieses Modell bildet ein Ventil ab, welches unabhängig vom Massenstrom, einen konstanten Druckverlust erzeugt.
+Dieses Modell bildet ein Ventil ab, welches unabhängig vom Massenstrom einen konstanten Druckverlust erzeugt.
 
 Für das Model `ConstantPressureLossValve` werden diese Parameter benötigt:
 
@@ -392,11 +392,19 @@ Für das Model `ConstantPressureLossValve` werden diese Parameter benötigt:
 [[HydraulicElement_ControlledValve]]
 ### Modelltyp: ControlledValve
 
-Ein Ventil, welches nach bestimmten Kriterien geregelt wird. 
+Ein Ventil, welches nach bestimmten Kriterien geregelt wird. Letztlich ist dies ein normales Druckverlustelement, bei dem der letztlich wirksame Druckverlust dynamisch geregelt wird.
 
-TODO : Andreas
+Für das Model `ControlledValve` werden diese Parameter benötigt:
 
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
 
+Ein durchströmtes Element, welches eine Komponente von Modelltyp `ControlledValve` verwendet, referenziert in der Regel (aber nicht zwingend) ein Kontrollelement (siehe <<NetworkControlElements>>). Diese Massenstromkontroller erhöhen den Basisdruckverlustbeiwert. Ohne ein Kontrollelement verhält sich das `ControlledValve` einfach wie eine normales, druckverlustbehaftetes Element im Strömungsnetzwerk.
 
 
 ### ModellTyp: HeatExchanger
@@ -809,7 +817,6 @@ ID-Referenzen:
 | `ZoneId` | Referenz zur Zone | `Zone` | `TemperatureZone`
 | `ConstructionInstanceId` | Referenz zu beheizter/gekühlter Konstruktion | `ConstructionInstance` | `TemperatureConstructionLayer`
 |====================
-
 
 ## Regelung von Strömungselementen
 
