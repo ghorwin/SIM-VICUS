@@ -1544,7 +1544,6 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 				if(!pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].empty())
 					insideDiameter -= 2* pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
 
-				//TODO Hauke check in pipe.isValid that innerDiameter > 0
 				double conversionMMToM = 1e-3;
 				insideDiameter *= conversionMMToM;
 				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * 0.25 *
