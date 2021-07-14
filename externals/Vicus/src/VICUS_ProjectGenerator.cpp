@@ -234,27 +234,27 @@ bool IdealSurfaceHeatingCoolingModelGenerator::calculateSupplyTemperature(const 
 	double mHeat = 0;
 	if(deltaX != 0)
 		mHeat = (supplySetpoints[0] - supplySetpoints[1]) / deltaX;
-	double nHeat = mHeat * supplySetpoints[0] - outdoorSetpoints[0];
+	double nHeat =  supplySetpoints[0] - mHeat * outdoorSetpoints[0];
 
 	deltaX = outdoorSetpoints[2] - outdoorSetpoints[3];
 	double mCool = 0;
 	if(deltaX != 0)
 		mCool = (supplySetpoints[2] - supplySetpoints[3]) / deltaX;
-	double nCool = mCool * supplySetpoints[2] - outdoorSetpoints[3];
+	double nCool = supplySetpoints[2] - mCool * outdoorSetpoints[2];
 
 	for(unsigned int i=0; i<outdoorTemperatureSpline.size(); ++i){
 		double tOut = outdoorTemperatureSpline[i];
 		double tSupply;
 		if(tOut <= lowerOutHeatLimit)
-			tSupply = lowerSupplyHeatLimit;
+			tSupply = upperSupplyHeatLimit;
 		else if(tOut > lowerOutHeatLimit && tOut <= upperOutHeatLimit)
 			tSupply = mHeat * tOut + nHeat;
 		else if(tOut > upperOutHeatLimit && tOut < lowerOutCoolLimit)
-			tSupply = upperSupplyHeatLimit;
+			tSupply = lowerSupplyHeatLimit;
 		else if(tOut >= lowerOutCoolLimit && tOut < upperOutCoolLimit)
 			tSupply = mCool * tOut + nCool;
 		else
-			tSupply = upperSupplyCoolLimit;
+			tSupply = lowerSupplyCoolLimit;
 		supplyTemperature.push_back(tSupply);
 	}
 	return true;
@@ -1485,7 +1485,11 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
 	IBK::LinearSpline outdoorTemp;
 	//first vector -> timepoints; second temperature in C
-	outdoorTemp.setValues(std::vector<double>{0,100,200,300,400,8760}, std::vector<double>{-10,-10,0,0,15,30});
+	std::vector<double> timepoints{0,100,200,300,400,500,600,700,800,900,1000,
+												  1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
+												  2900,8760};
+	std::vector<double> datapoints{-20,-15,-14,-10,-5,0,5,10,15,20,21,22,23,24,25,26,27,28,29,30,31,35,40};
+	outdoorTemp.setValues(timepoints, datapoints);
 	outdoorTemp.m_extrapolationMethod = IBK::LinearSpline::EM_Constant;
 
 	std::vector<NANDRAD::IdealSurfaceHeatingCoolingModel>	idealSurfHeatCool;
