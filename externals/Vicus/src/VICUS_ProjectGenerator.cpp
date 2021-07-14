@@ -1551,7 +1551,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 						surfSys->m_para[VICUS::SurfaceHeating::P_MaxFluidVelocity].value *
 						fluid.m_para[VICUS::NetworkFluid::P_Density].value;
 
-				double uValue = pipe->calculateUValue();
+				double uValue = pipe->UValue();
 
 				NANDRAD::KeywordList::setIntPara(nandradSys.m_intPara, "IdealSurfaceHeatingCoolingModel::intPara_t",
 												 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes, numberPipes);

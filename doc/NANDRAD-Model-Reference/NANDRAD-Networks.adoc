@@ -374,6 +374,31 @@ Die Parameter und Attribute der `ControlledPump` Definition entsprechen denen de
 Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkontrollmodells, welches vom Netzwerelement im Attribut `controlElementId` referenziert wird (siehe auch <<NetworkControlElements>>).
 
 
+[[HydraulicElement_ConstantPressureLossValve]]
+### Modelltyp: ConstantPressureLossValve
+
+Dieses Modell bildet ein Ventil ab, welches unabhängig vom Massenstrom, einen konstanten Druckverlust erzeugt.
+
+Für das Model `ConstantPressureLossValve` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PressureLoss` | Pa | Vorgegebener Druckverlust des Ventils | >={nbsp}0  | 
+| `Volume` | m3 | Fluidvolumen des Ventils | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+
+[[HydraulicElement_ControlledValve]]
+### Modelltyp: ControlledValve
+
+Ein Ventil, welches nach bestimmten Kriterien geregelt wird. 
+
+TODO : Andreas
+
+
+
+
 ### ModellTyp: HeatExchanger
 
 Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem Fluid einen vorgegebenen Wärmestrom austauscht. Es werden diese Parameter benötigt:
@@ -500,14 +525,6 @@ Weitere benötigte Parameter sind:
 </Schedule>
 ----
 ====
-
-
-[[HydraulicElement_ControlledValve]]
-### Modelltyp: ControlledValve
-
-Ein Ventil, welches nach bestimmten Kriterien geregelt wird. 
-
-TODO : Andreas
 
 
 [[HydraulicElement_IdealHeaterCooler]]

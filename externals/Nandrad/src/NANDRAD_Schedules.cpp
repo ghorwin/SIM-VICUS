@@ -41,7 +41,7 @@ void Schedules::initDefaults() {
 				NANDRAD::KeywordList::Keyword("Schedules::flag_t", F_EnableCyclicSchedules), true);
 }
 
-void Schedules::checkParameters() {
+void Schedules::checkParameters(const std::map<std::string, IBK::Path> &placeholders) {
 	FUNCID(Schedules::checkParameters);
 
 	// process all annual splines
@@ -50,6 +50,7 @@ void Schedules::checkParameters() {
 	{
 		for (NANDRAD::LinearSplineParameter & spl : it->second) {
 			try {
+				spl.m_tsvFile = spl.m_tsvFile.withReplacedPlaceholders(placeholders);
 				// all checks will be skipped, if a file name was given: only reads the file and converts to base units.
 				// Since we skip the unit check, we need to pass dummy units here, that are, however, baseSI units ...
 				spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
