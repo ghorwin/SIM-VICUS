@@ -771,12 +771,14 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 			// compute control error
 			e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
+			if (e <= 0)
+				return 0;
 			// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
 			// we stop it by returning 0
 			//    -> pressHeadControlled = 0
 			// if temperature difference is larger than the required difference (positive e), we gradually increase
 			// mass flow by increasing pressure head of pump
-			//    -> pressHeadControlled = e*Kp
+			//    -> pressHeadControlled = Kp*e (see below)
 		} break;
 
 
@@ -801,11 +803,6 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 	// TODO : use controller object here
 
-	// if controller deviation is <= 0,  return 0
-//	if (e <= 0) {
-//		return 0;
-//	}
-
 	double pressHeadControlled = 0;
 	double pressHeadMax = m_controlElement->m_maximumControllerResultValue;
 
@@ -826,7 +823,6 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 	}
-
 
 	return pressHeadControlled;
 }
