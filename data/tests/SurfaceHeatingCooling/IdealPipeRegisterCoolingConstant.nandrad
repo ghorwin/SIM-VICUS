@@ -10,9 +10,9 @@
 			<ClimateFilePath>${Project Directory}/../climate/Constant_Plus58C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">22</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>

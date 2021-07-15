@@ -356,11 +356,11 @@ int IdealPipeRegisterModel::update() {
 	double *surfaceLoadPtr = m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr();
 	double *returnTemp = m_vectorValuedResults[VVR_ReturnTemperature].dataPtr();
 
-	// set initial heat load and mass flux to 0, and initialize return temperature
+	// set initial heat load and mass flux to 0, and initialize return temperature with layer temperature
 	std::memset(massFluxPtr, 0.0, nTargets * sizeof (double) );
 	std::memset(surfaceLoadPtr, 0.0, nTargets * sizeof (double) );
 	for (unsigned int i = 0; i < nTargets; ++i)
-		returnTemp[i] = *m_supplyTemperatureRefs[i];
+		returnTemp[i] = *m_activeLayerTemperatureRefs[i];
 
 	// Both heating and cooling may request a positive mass flux
 	// anyhow, we demand for a supply temperature > layer temperature in the case
@@ -410,7 +410,7 @@ int IdealPipeRegisterModel::update() {
 			// calculate heat gain in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay ;
 			// calculate return temperature =  W / (kg/s * J/kgK) = W / (W / K) = K
-			returnTemp[i] = supplyTemperature + surfaceLoadPtr[i]/(heatingMassFlow*m_fluidHeatCapacity);
+			returnTemp[i] = supplyTemperature - surfaceLoadPtr[i]/(heatingMassFlow*m_fluidHeatCapacity);
 		}
 	}
 	// cooling is requested
@@ -452,7 +452,7 @@ int IdealPipeRegisterModel::update() {
 			// calculate heat loss in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
 			// calculate return temperature =  W / (kg/s * J/kgK) = W / (W / K) = K
-			returnTemp[i] = supplyTemperature + surfaceLoadPtr[i]/(coolingMassFlow*m_fluidHeatCapacity);
+			returnTemp[i] = supplyTemperature - surfaceLoadPtr[i]/(coolingMassFlow*m_fluidHeatCapacity);
 		}
 	}
 

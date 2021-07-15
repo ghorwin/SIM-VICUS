@@ -186,6 +186,11 @@ void SVSmartSelectDialog::select() {
 	exec();
 }
 
+//void SVSmartSelectDialog::collectComponents(FilterOption * option,
+//											std::vector<const VICUS::Component*> & components,
+//											std::vector<const VICUS::SubSurfaceComponent*> & subSurfaceComponents
+//	);
+
 
 void SVSmartSelectDialog::onSelectClicked() {
 	// evaluate selection and create undo action for the selection
@@ -198,6 +203,19 @@ void SVSmartSelectDialog::onSelectClicked() {
 				break; // not available, skip
 			option = &option->m_options[selectedIndex];
 		}
+
+		// collect list of selected components or subsurface components
+		std::vector<const VICUS::Component*> components;
+		std::vector<const VICUS::SubSurfaceComponent*> subSurfaceComponents;
+
+		// we process recursively all selected "options" and gather components and sub-surface-components
+		// in case of windows (or other derived quantities), we lookup the referencing components/sub-surface components
+
+//		collectComponents(option);
+
+
+
+
 		if (option->m_dbElement == nullptr) {
 			QMessageBox::critical(this, QString(), tr("Not a valid filter selection!"));
 			return;

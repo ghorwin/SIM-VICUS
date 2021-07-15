@@ -10,9 +10,9 @@
 			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">26</IBK:Parameter>
 			<Interval>
-				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
 				<DistributionType>AreaWeighted</DistributionType>
@@ -78,7 +78,7 @@
 					<!-- Heating starts below 22 C -->
 					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
 					<!-- Cooling starts above 26 C -->
-					<IBK:Parameter name="CoolingSetpoint" unit="C">26</IBK:Parameter>
+					<IBK:Parameter name="CoolingSetpoint" unit="C">50</IBK:Parameter>
 					<!-- P-controller is accurate to 0.2 K -->
 					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
 					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
@@ -150,6 +150,12 @@
 				
 				<OutputDefinition>
 					<Quantity>MassFlux[3001]</Quantity>
+					<ObjectListName>Register Model</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>ReturnTemperature[3001]</Quantity>
 					<ObjectListName>Register Model</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
