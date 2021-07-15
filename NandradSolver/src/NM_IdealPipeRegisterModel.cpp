@@ -392,12 +392,14 @@ int IdealPipeRegisterModel::update() {
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
 			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-			double velocity = std::fabs(heatingMassFlow)/(m_fluidVolume * m_fluidDensity);
+
+			double velocity = std::fabs(heatingMassFlow)/(m_fluidCrossSection*m_fluidDensity);
 			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			// UAValueTotal has W/K, basically the specific heat loss over pipe surface per Kelvin temperature difference
+			// (including transfer coefficients) x pipe length.
 			double UAValueTotal = m_length /
 					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
 					+ 1.0 / m_UValuePipeWall );
@@ -434,7 +436,7 @@ int IdealPipeRegisterModel::update() {
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
 			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-			double velocity = std::fabs(coolingMassFlow)/(m_fluidVolume * m_fluidDensity);
+			double velocity = std::fabs(coolingMassFlow)/(m_fluidCrossSection * m_fluidDensity);
 			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
