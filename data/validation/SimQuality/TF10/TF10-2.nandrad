@@ -15,7 +15,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/dirk/ownCloudSimQuality/SimQuality/AP4/TF10-PassiveKuehlung/Aufgabenstellung/Wetterdaten/SIMQ_TF10_KlimaA.epw</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/SIMQ_TF10_KlimaA.epw</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>

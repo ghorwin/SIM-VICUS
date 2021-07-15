@@ -114,6 +114,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "MassFlux";
 				case 1 : return "ActiveLayerThermalLoad";
+				case 2 : return "ReturnTemperature";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -316,6 +317,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "MassFlux";
 				case 1 : return "ActiveLayerThermalLoad";
+				case 2 : return "ReturnTemperature";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -519,6 +521,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "Controlled mass flow";
 				case 1 : return "Active layer thermal load";
+				case 2 : return "Return temperature from pipe register";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -721,6 +724,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "kg/s";
 				case 1 : return "W";
+				case 2 : return "C";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -923,6 +927,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -1125,6 +1130,7 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 :
@@ -1299,7 +1305,7 @@ namespace NANDRAD_MODEL {
 			// IdealHeatingCoolingModel::VectorValuedResults
 			case 5 : return 2;
 			// IdealPipeRegisterModel::VectorValuedResults
-			case 6 : return 2;
+			case 6 : return 3;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 : return 1;
 			// InternalLoadsModel::VectorValuedResults
@@ -1351,7 +1357,7 @@ namespace NANDRAD_MODEL {
 			// IdealHeatingCoolingModel::VectorValuedResults
 			case 5 : return 1;
 			// IdealPipeRegisterModel::VectorValuedResults
-			case 6 : return 1;
+			case 6 : return 2;
 			// IdealSurfaceHeatingCoolingModel::VectorValuedResults
 			case 7 : return 0;
 			// InternalLoadsModel::VectorValuedResults

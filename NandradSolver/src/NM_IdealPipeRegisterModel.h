@@ -54,6 +54,8 @@ public:
 		VVR_MassFlux,					// Keyword: MassFlux						[kg/s]	'Controlled mass flow'
 		/*! Heat load into active layer, positive heating, negative cooling */
 		VVR_ActiveLayerThermalLoad,		// Keyword: ActiveLayerThermalLoad			[W]		'Active layer thermal load'
+		/*! Return temperature from pipe register */
+		VVR_ReturnTemperature,			// Keyword: ReturnTemperature				[C]		'Return temperature from pipe register'
 		NUM_VVR
 	};
 
