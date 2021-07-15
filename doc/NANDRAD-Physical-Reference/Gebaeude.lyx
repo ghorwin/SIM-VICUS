@@ -3504,14 +3504,8 @@ izelement Eiegnschaften der Wärmeübergabe des Wassers im Rohr.
  Heiz- und Kühllastfall schließen einander aus.
 \begin_inset Formula 
 \begin{align*}
-\dot{m}_{H} & =\begin{cases}
-\min\left(\max\left(0,y_{H,therm}\right),1\right)\dot{m}_{max} & T_{sup}\geq T_{ab}\\
-0 & T_{sup}<T_{ab}
-\end{cases}\\
-\dot{m}_{C} & =\begin{cases}
-\min\left(\max\left(0,y_{C,therm}\right),1\right)\dot{m}_{max} & T_{sup}\leq T_{ab}\\
-0 & T_{sup}>T_{ab}
-\end{cases}\\
+\dot{m}_{H} & =\min\left(\max\left(0,y_{H,therm}\right),1\right)\dot{m}_{max}\\
+\dot{m}_{C} & =\min\left(\max\left(0,y_{C,therm}\right),1\right)\dot{m}_{max}\\
 \dot{m}_{water} & =\max\left(\dot{m}_{H},\dot{m}_{C}\right)
 \end{align*}
 
