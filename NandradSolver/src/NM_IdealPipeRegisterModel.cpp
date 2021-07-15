@@ -23,6 +23,8 @@
 
 #include <IBK_Exception.h>
 #include <IBK_physics.h>
+#include <IBK_messages.h>
+
 
 #include <NANDRAD_IdealPipeRegisterModel.h>
 #include <NANDRAD_ObjectList.h>
@@ -362,8 +364,6 @@ int IdealPipeRegisterModel::update() {
 			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature < supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if (layerTemperature >= supplyTemperature)
-				continue; // skip, layer too warm
 
 			double heatingMassFlow = heatingControlValue * *m_maxMassFlowRefs[i];
 			// skip 0 mass flow
@@ -404,8 +404,6 @@ int IdealPipeRegisterModel::update() {
 			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature > supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if (layerTemperature <= supplyTemperature)
-				continue; // skip, layer too cold
 
 			double coolingMassFlow = coolingControlValue * *m_maxMassFlowRefs[i];
 			// skip 0 mass flow
