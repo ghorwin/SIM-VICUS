@@ -67,6 +67,7 @@ double NusseltNumber(const double &reynolds, const double &prandtl, const double
 double NusseltNumberTurbulent(const double &reynolds, const double &prandtl, const double &l, const double &d)
 {
 	IBK_ASSERT(reynolds>0);
+	// Equation 25, VDI-Wärmeatlas (11. Auflage), Kapitel B2, Page 28
 	double zeta = std::pow(1.8 * std::log10(reynolds) - 1.5, -2.0);
 	return zeta / 8. * reynolds*prandtl /
 		(1. + 12.7 * std::sqrt(zeta / 8.) * (std::pow(prandtl, 0.6667) - 1.)) *
