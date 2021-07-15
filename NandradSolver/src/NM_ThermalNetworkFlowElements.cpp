@@ -188,7 +188,7 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 	m_inflowTemperature = Tinflow;
 
 	// calculate inner heat transfer coefficient
-	const double velocity = std::fabs(m_massFlux)/(m_fluidVolume * m_fluidDensity);
+	const double velocity = std::fabs(m_massFlux)/(m_fluidCrossSection * m_fluidDensity);
 	const double viscosity = m_fluidViscosity.value(m_meanTemperature);
 	const double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 	const double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
