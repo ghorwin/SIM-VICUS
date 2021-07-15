@@ -32,7 +32,6 @@
 #include "NM_ThermalNetworkFlowElements.h"
 
 #define PI				3.141592653589793238
-#define MASS_FLUX_SCALE 1000.0
 
 
 namespace NANDRAD_MODEL {
@@ -534,8 +533,8 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 
 
 void HNConstantPressurePump::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// TODO Andreas: this is an undocumented, automatic override and could lead to problems.
-	//       It should be replaced by another flow element called "ScheduledPressurePump" or something like this
+	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
+	//       a warning is added about this in the model description.
 	InputReference inputRef;
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	inputRef.m_name = std::string("PressureHeadSchedule");
@@ -610,28 +609,30 @@ void HNConstantMassFluxPump::inputReferences(std::vector<InputReference> &inputR
 	inputRefs.push_back(ref);
 }
 
-void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt)
-{
+
+void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
 	// overwrite scheduled mass flux
 	if(*resultValueRefIt != nullptr)
 		m_massFluxRef = *resultValueRefIt;
 	++resultValueRefIt;
 }
 
-double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const
-{
-	return MASS_FLUX_SCALE*(mdot - *m_massFluxRef);
+
+double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
+	return (mdot - *m_massFluxRef);
 }
 
-void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/, double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+
+void HNConstantMassFluxPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+									  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
 {
-	df_dmdot = MASS_FLUX_SCALE;
+	df_dmdot = 1;
 	df_dp_inlet = 0.0;
 	df_dp_outlet = 0.0;
 }
 
-void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, double p_outlet)
-{
+
+void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, double p_outlet) {
 	m_pressureHead = p_outlet - p_inlet;
 }
 
@@ -746,7 +747,7 @@ void HNControlledPump::partials(double mdot, double p_inlet, double p_outlet,
 	df_dp_inlet = 1;
 	df_dp_outlet = -1;
 	// partial derivatives of the system function to pressures are constants
-	if(m_controlElement == nullptr ) {
+	if (m_controlElement == nullptr ) {
 		df_dmdot = 0;
 	}
 	else {
@@ -858,7 +859,6 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
-
 
 
 
