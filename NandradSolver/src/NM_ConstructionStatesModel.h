@@ -202,6 +202,8 @@ private:
 	unsigned int					m_activeLayerIndex = 999;
 	/*! Active layer volume [m3]. */
 	double							m_activeLayerVolume = 6666;
+	/*! Stores the mean temperature of the active layer (area-weighted) in [K]. */
+	double							m_activeLayerMeanTemperature = 999;
 
 	/*! Cached conserved quantities (size nPrimaryStateResults() ) */
 	std::vector<double>				m_y;

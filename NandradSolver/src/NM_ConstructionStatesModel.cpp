@@ -121,9 +121,8 @@ void ConstructionStatesModel::setup(const NANDRAD::ConstructionInstance & con,
 	// store active layer
 	m_activeLayerIndex = m_con->m_constructionType->m_activeLayerIndex;
 	// calculate active layer volume
-	if(m_activeLayerIndex != NANDRAD::INVALID_ID) {
+	if (m_activeLayerIndex != NANDRAD::INVALID_ID)
 		m_activeLayerVolume = con.m_netHeatTransferArea * con.m_constructionType->m_materialLayers[m_activeLayerIndex].m_thickness;
-	}
 
 	// *** storage member initialization
 
@@ -199,7 +198,7 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 	resDesc.push_back(res);
 
 	// in the case of an actiev construction add active temparture layer
-	if(m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
+	if (m_con->m_constructionType->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		QuantityDescription result;
 		result.m_constant = true;
 		result.m_description = "Temperature of the active material layer";
@@ -208,8 +207,6 @@ void ConstructionStatesModel::resultDescriptions(std::vector<QuantityDescription
 
 		resDesc.push_back(result);
 	}
-
-	/// \todo add layer temperatures (as alternative to element temperatures)
 }
 
 
@@ -222,12 +219,11 @@ const double * ConstructionStatesModel::resultValueRef(const InputReference & qu
 	if (quantityName.m_name == "y") {
 		return &m_y[0];
 	}
-	else if(quantityName.m_name == "ActiveLayerTemperature") {
+	else if (quantityName.m_name == "ActiveLayerTemperature") {
 		// no active layer
-		if(m_activeLayerIndex == NANDRAD::INVALID_ID)
+		if (m_activeLayerIndex == NANDRAD::INVALID_ID)
 			return nullptr;
-
-		return &m_vectorValuedResults[VVR_ElementTemperature][m_activeLayerIndex];
+		return &m_activeLayerMeanTemperature;
 	}
 	else if (KeywordList::KeywordExists(category, quantityName.m_name)) {
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
@@ -290,6 +286,17 @@ void ConstructionStatesModel::stateDependencies(std::vector<std::pair<const doub
 		// temperatures in all elements depend on their respective energy densities
 		for (unsigned int i=0; i<m_nElements; ++i)
 			resultInputValueReferences.push_back(std::make_pair(&m_vectorValuedResults[VVR_ElementTemperature].data()[i], &m_y[i]) );
+
+		// mean active layer temperature depends on all discretization element temperatures of this active layer
+		if (m_activeLayerIndex != NANDRAD::INVALID_ID) {
+
+			// loop through all elements of active layer
+			unsigned int elemIdxStart = m_materialLayerElementOffset[m_activeLayerIndex];
+			unsigned int elemIdxEnd = m_materialLayerElementOffset[m_activeLayerIndex + 1];
+
+			for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+				resultInputValueReferences.push_back(std::make_pair(&m_activeLayerMeanTemperature, &m_vectorValuedResults[VVR_ElementTemperature].data()[i] ) );
+		}
 	}
 }
 
@@ -418,6 +425,18 @@ int ConstructionStatesModel::update(const double * y) {
 	}
 #endif
 
+
+	// compute active layer temperature
+	if (m_activeLayerIndex != NANDRAD::INVALID_ID) {
+		// loop through all elements of active layer
+		unsigned int elemIdxStart = m_materialLayerElementOffset[m_activeLayerIndex];
+		unsigned int elemIdxEnd = m_materialLayerElementOffset[m_activeLayerIndex + 1];
+
+		m_activeLayerMeanTemperature = 0;
+		for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+			m_activeLayerMeanTemperature += m_vectorValuedResults[VVR_ElementTemperature].dataPtr()[i] * m_elements[i].dx;
+		m_activeLayerMeanTemperature /= m_con->m_constructionType->m_materialLayers[m_activeLayerIndex].m_thickness;
+	}
 
 	// *** Ambient Boundary Conditions ***
 
@@ -623,6 +642,7 @@ void ConstructionStatesModel::generateGrid() {
 	// total construction width
 	m_constructionWidth = x;
 
+	// add number of elements so that we can easily get the interval of elements corresponding to the active layer
 	m_materialLayerElementOffset.push_back(m_nElements);
 
 	// compute weight factors for coefficient averaging and store material pointer

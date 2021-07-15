@@ -111,23 +111,25 @@ const double * ConstructionBalanceModel::resultValueRef(const InputReference & q
 		int resIdx = KeywordList::Enumeration(category, quantityName.m_name);
 		return &m_results[(unsigned int)resIdx];
 	}
-	else if(quantityName.m_name == KeywordList::Keyword("ConstructionBalanceModel::VectorValuedResults",
-														VVR_ThermalLoad)) {
+	else if (quantityName.m_name == KeywordList::Keyword("ConstructionBalanceModel::VectorValuedResults",
+														VVR_ThermalLoad))
+	{
 		// index check
-		if(quantityName.m_index == -1)
+		if (quantityName.m_index == -1)
 			return m_vectorValuedResults[VVR_ThermalLoad].dataPtr();
 
 		unsigned int index = (unsigned int) quantityName.m_index;
 		// index exceeds vector size
-		if(index >= m_vectorValuedResults[VVR_ThermalLoad].size())
+		if (index >= m_vectorValuedResults[VVR_ThermalLoad].size())
 			return nullptr;
 		return &m_vectorValuedResults[VVR_ThermalLoad].data()[index];
 	}
-	else if(quantityName.m_name == "ActiveLayerThermalLoad") {
+	else if (quantityName.m_name == "ActiveLayerThermalLoad") {
 		// no active layer
-		if( m_statesModel->m_activeLayerIndex == NANDRAD::INVALID_ID)
+		if (m_statesModel->m_activeLayerIndex == NANDRAD::INVALID_ID)
 			return nullptr;
 
+		// get index of first disc element of the active layer
 		return &m_vectorValuedResults[VVR_ThermalLoad].data()[m_statesModel->m_activeLayerIndex];
 	}
 
@@ -349,8 +351,8 @@ void ConstructionBalanceModel::initInputReferences(const std::vector<AbstractMod
 	m_inputRefs.insert(m_inputRefs.end(), surfaceHeatLoadRH.begin(), surfaceHeatLoadRH.end());
 }
 
-void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const
-{
+
+void ConstructionBalanceModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	inputRefs = m_inputRefs;
 }
 
@@ -366,12 +368,12 @@ void ConstructionBalanceModel::setInputValueRefs(const std::vector<QuantityDescr
 	for(unsigned int i = 0; i < NUM_InputRef; ++i)
 		m_valueRefs[i] = resultValueRefs[i];
 
-	if(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
+	if (m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID) {
 		// check all surface heating loads
 		for (unsigned int i= NUM_InputRef; i < NUM_InputRef + m_surfaceHeatingCoolingModelCount; ++i) {
 			// check that only one active layer is references
-			if(resultValueRefs[i] != nullptr) {
-				if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
+			if (resultValueRefs[i] != nullptr) {
+				if (m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr)
 					throw IBK::Exception(IBK::FormatString("Active layer is referenced twice from a network component or surface heating component "
 														   "for construction instance id=%1.").arg(m_id), FUNC_ID);
 				// copy pointer
@@ -434,12 +436,9 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
 			// loop through all elements of active layer
 			unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
-			unsigned int elemIdxEnd = m_statesModel->m_nElements;
+			unsigned int elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
 
-			if(m_statesModel->m_activeLayerIndex < m_con->m_constructionType->m_materialLayers.size() - 1)
-				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
-
-			for(unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+			for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_valueRefs[InputRef_ActiveLayerHeatLoads]) );
 		}
 	}
@@ -487,15 +486,12 @@ int ConstructionBalanceModel::update() {
 			IBK_ASSERT(m_statesModel->m_activeLayerIndex != NANDRAD::INVALID_ID);
 			// loop through all elements of active layer
 			unsigned int elemIdxStart = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex];
-			unsigned int elemIdxEnd = nElements;
+			unsigned int elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
 
 			// calculate flux density [W/m3]
 			double layerLoadDensity = layerLoad/m_statesModel->m_activeLayerVolume;
 
-			if(m_statesModel->m_activeLayerIndex < m_con->m_constructionType->m_materialLayers.size() - 1)
-				elemIdxEnd = m_statesModel->m_materialLayerElementOffset[m_statesModel->m_activeLayerIndex + 1];
-
-			for(unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
+			for (unsigned int i = elemIdxStart; i < elemIdxEnd; ++i)
 				ydot[i] += layerLoadDensity;
 		}
 	}
