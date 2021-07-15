@@ -14,25 +14,21 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="6" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditInsulationThickness"/>
+   <item row="7" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditInsulationLambda"/>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Wall thermal conductivity:</string>
+   <item row="0" column="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
+     <property name="minimumSize">
+      <size>
+       <width>200</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
    </item>
-   <item row="5" column="3">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>W/mK</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallThickness"/>
+   <item row="1" column="2">
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditCategory"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="labelDisplayName">
@@ -47,6 +43,66 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallRoughness"/>
+   </item>
+   <item row="3" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallThickness"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Wall thermal conductivity:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditInsulationThickness"/>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>mm</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditOuterDiameter"/>
+   </item>
+   <item row="5" column="2">
+    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallLambda"/>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Outer diameter:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>mm</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Wall thickness:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QLabel" name="label_13">
      <property name="text">
@@ -54,10 +110,24 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_7">
+   <item row="7" column="3">
+    <widget class="QLabel" name="label_12">
      <property name="text">
-      <string>Wall roughness:</string>
+      <string>W/mK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>W/mK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3">
+    <widget class="QLabel" name="label_10">
+     <property name="text">
+      <string>mm</string>
      </property>
     </widget>
    </item>
@@ -68,54 +138,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="3">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>mm</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QLabel" name="label_11">
-     <property name="text">
-      <string>Insulation thermal conductivity:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallLambda"/>
-   </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Wall thickness:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Outer diameter:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditOuterDiameter"/>
-   </item>
-   <item row="4" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditWallRoughness"/>
-   </item>
-   <item row="7" column="2">
-    <widget class="QtExt::ValidatingLineEdit" name="lineEditInsulationLambda"/>
-   </item>
-   <item row="2" column="3">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>mm</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="2">
+   <item row="9" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -128,17 +151,10 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="3">
-    <widget class="QLabel" name="label_10">
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_11">
      <property name="text">
-      <string>mm</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="3">
-    <widget class="QLabel" name="label_12">
-     <property name="text">
-      <string>W/mK</string>
+      <string>Insulation thermal conductivity:</string>
      </property>
     </widget>
    </item>
@@ -149,26 +165,34 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditCategory"/>
-   </item>
-   <item row="0" column="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
-     <property name="minimumSize">
-      <size>
-       <width>200</width>
-       <height>0</height>
-      </size>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Wall roughness:</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_14">
+     <property name="text">
+      <string>Effective conductivity per m pipe length:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QLabel" name="label_15">
+     <property name="text">
+      <string>W/mK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="2">
+    <widget class="QLineEdit" name="lineEditUValue">
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
