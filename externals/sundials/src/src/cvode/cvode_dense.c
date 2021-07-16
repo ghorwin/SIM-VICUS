@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4951 $
  * $Date: 2016-09-22 10:21:00 -0700 (Thu, 22 Sep 2016) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh and
  *                Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -37,11 +37,11 @@
 #define TWO          RCONST(2.0)
 
 /* CVDENSE linit, lsetup, lsolve, and lfree routines */
- 
+
 static int cvDenseInit(CVodeMem cv_mem);
 
 static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
-                        N_Vector fpred, booleantype *jcurPtr, 
+                        N_Vector fpred, booleantype *jcurPtr,
                         N_Vector vtemp1, N_Vector vtemp2, N_Vector vtemp3);
 
 static int cvDenseSolve(CVodeMem cv_mem, N_Vector b, N_Vector weight,
@@ -80,7 +80,7 @@ static int cvDenseFree(CVodeMem cv_mem);
 #define nfeDQ     (cvdls_mem->d_nfeDQ)
 #define J_data    (cvdls_mem->d_J_data)
 #define last_flag (cvdls_mem->d_last_flag)
-                  
+
 /*
  * -----------------------------------------------------------------
  * CVDense
@@ -98,7 +98,7 @@ static int cvDenseFree(CVodeMem cv_mem);
  * The return value is SUCCESS = 0, or LMEM_FAIL = -1.
  *
  * NOTE: The dense linear solver assumes a serial implementation
- *       of the NVECTOR package. Therefore, CVDense will first 
+ *       of the NVECTOR package. Therefore, CVDense will first
  *       test for compatible a compatible N_Vector internal
  *       representation by checking that N_VGetArrayPointer and
  *       N_VSetArrayPointer exist.
@@ -204,7 +204,7 @@ static int cvDenseInit(CVodeMem cv_mem)
   CVDlsMem cvdls_mem;
 
   cvdls_mem = (CVDlsMem) lmem;
-  
+
   cvDlsInitializeCounters(cvdls_mem);
   /*   nje   = 0;
    nfeDQ = 0;
@@ -229,15 +229,15 @@ static int cvDenseInit(CVodeMem cv_mem)
  * -----------------------------------------------------------------
  * This routine does the setup operations for the dense linear solver.
  * It makes a decision whether or not to call the Jacobian evaluation
- * routine based on various state variables, and if not it uses the 
- * saved copy.  In any case, it constructs the Newton matrix 
- * M = I - gamma*J, updates counters, and calls the dense LU 
+ * routine based on various state variables, and if not it uses the
+ * saved copy.  In any case, it constructs the Newton matrix
+ * M = I - gamma*J, updates counters, and calls the dense LU
  * factorization routine.
  * -----------------------------------------------------------------
  */
 
 static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
-                        N_Vector fpred, booleantype *jcurPtr, 
+                        N_Vector fpred, booleantype *jcurPtr,
                         N_Vector vtemp1, N_Vector vtemp2, N_Vector vtemp3)
 {
   booleantype jbad, jok;
@@ -247,15 +247,15 @@ static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
   int retval;
 
   cvdls_mem = (CVDlsMem) lmem;
- 
+
   /* Use nst, gamma/gammap, and convfail to set J eval. flag jok */
- 
+
   dgamma = SUNRabs((gamma/gammap) - ONE);
   jbad = (nst == 0) || (nst > nstlj + CVD_MSBJ) ||
          ((convfail == CV_FAIL_BAD_J) && (dgamma < CVD_DGMAX)) ||
          (convfail == CV_FAIL_OTHER);
   jok = !jbad;
- 
+
   if (jok) {
 
     /* If jok = TRUE, use saved copy of J */
@@ -272,7 +272,7 @@ static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
 
     SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_JACOBIAN_GENERATION,
       retval = jac(n, tn, ypred, fpred, M, J_data, vtemp1, vtemp2, vtemp3);
-	);
+  );
     if (retval < 0) {
       cvProcessError(cv_mem, CVDLS_JACFUNC_UNRECVR, "CVDENSE", "cvDenseSetup", MSGD_JACFUNC_FAILED);
       last_flag = CVDLS_JACFUNC_UNRECVR;
@@ -286,16 +286,18 @@ static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
     DenseCopy(M, savedJ);
 
   }
-  
+
+#if 0
+  SaveMat(M, "jacobian_dense_cvode.txt");
+  exit(1);
+#endif
+
   /* Scale and add I to get M = I - gamma*J */
   DenseScale(-gamma, M);
   AddIdentity(M);
-#if 0
-  SaveMat(M, "jacobian_dense_cvode.txt");
-#endif
   /* Do LU factorization of M */
   SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_JACOBIAN_FACTORIZATION,
-    ier = DenseGETRF(M, lpivots); 
+    ier = DenseGETRF(M, lpivots);
   );
 
   /* Return 0 if the LU was complete; otherwise return 1 */
@@ -321,7 +323,7 @@ static int cvDenseSolve(CVodeMem cv_mem, N_Vector b, N_Vector weight,
   (void)weight; (void)ycur; (void)fcur;
 
   cvdls_mem = (CVDlsMem) lmem;
-  
+
   bd = N_VGetArrayPointer(b);
 
   DenseGETRS(M, lpivots, bd);
@@ -330,7 +332,7 @@ static int cvDenseSolve(CVodeMem cv_mem, N_Vector b, N_Vector weight,
   if ((lmm == CV_BDF) && (gamrat != ONE)) {
     N_VScale(TWO/(ONE + gamrat), b, b);
   }
-  
+
   last_flag = CVDLS_SUCCESS;
   return(0);
 }
@@ -348,7 +350,7 @@ static int cvDenseFree(CVodeMem cv_mem)
   CVDlsMem  cvdls_mem;
 
   cvdls_mem = (CVDlsMem) lmem;
-  
+
   DestroyMat(M);
   DestroyMat(savedJ);
   DestroyArray(lpivots);
