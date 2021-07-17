@@ -217,7 +217,7 @@ void SVSimulationLocationOptions::updateUi() {
 			// not a database file, might still contain a placeholder
 
 			IBK::Path absPath = SVProjectHandler::instance().replacePathPlaceholders(m_location->m_climateFilePath);
-
+			absPath.removeRelativeParts(); // remove any remaining ../.. in the middle
 
 			m_ui->radioButtonFromDB->blockSignals(true); // slot is connected to first radio button, so block this
 			m_ui->radioButtonFromFile->setChecked(true);
@@ -229,10 +229,10 @@ void SVSimulationLocationOptions::updateUi() {
 
 			// select the correct radio button
 			m_ui->radioButtonUserPathAbsolute->blockSignals(true);
-			if (m_location->m_climateFilePath.str().find("${Project Directory}"))
+			if (m_location->m_climateFilePath.str().find("${Project Directory}") != std::string::npos)
 				m_ui->radioButtonUserPathRelative->setChecked(true);
 			else
-				m_ui->radioButtonUserPathRelative->setChecked(false);
+				m_ui->radioButtonUserPathAbsolute->setChecked(true);
 			m_ui->radioButtonUserPathAbsolute->blockSignals(false);
 
 			m_ui->lineEditUserFilePath->setText( QString::fromStdString(m_location->m_climateFilePath.str()));
@@ -409,7 +409,6 @@ void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked
 	m_ui->labelLatitude->setEnabled(checked);
 	m_ui->labelLongitude->setEnabled(checked);
 	m_ui->labelTimeZone->setEnabled(checked);
-	on_radioButtonUserPathAbsolute_toggled(m_ui->radioButtonUserPathAbsolute->isChecked());
 }
 
 
