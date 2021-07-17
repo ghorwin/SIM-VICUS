@@ -409,12 +409,16 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 			if (m_valueRefs[InputRef_RoomATemperature] != nullptr) {
 				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], m_valueRefs[InputRef_RoomATemperature]));
 				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionA], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureA]));
+				// ydot of first element depends on boundary flux
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[0], &m_results[R_FluxHeatConductionA] ) );
 			}
 		}
 		if (m_con->m_interfaceB.m_heatConduction.m_modelType != NANDRAD::InterfaceHeatConduction::NUM_MT) {
 			if (m_valueRefs[InputRef_RoomBTemperature] != nullptr) {
 				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], m_valueRefs[InputRef_RoomBTemperature]));
 				resultInputValueReferences.push_back(std::make_pair(&m_results[R_FluxHeatConductionB], &m_statesModel->m_results[ConstructionStatesModel::R_SurfaceTemperatureB]));
+				// ydot of last element depends on boundary flux
+				resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxHeatConductionB] ) );
 			}
 		}
 
@@ -429,6 +433,8 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 			if (i > 0)
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[i], m_statesModel->m_vectorValuedResults[ConstructionStatesModel::VVR_ElementTemperature].dataPtr() + i-1 ) );
 		}
+
+
 
 		// add active layer heat source dependencies
 		if(m_valueRefs[InputRef_ActiveLayerHeatLoads] != nullptr ) {
