@@ -40,7 +40,7 @@ class SolverStats:
 		return True
 
 	@staticmethod
-	def compareStats(s1, s2):
+	def compareStats(s1, s2, ignoredCounters):
 		"""Compares two sets of summary files (statistics counters).
 		
 		Parameters
@@ -62,6 +62,9 @@ class SolverStats:
 		s1keys.sort()
 		fail = False
 		for k in s1keys:
+			# skip ignore counters
+			if k in ignoredCounters:
+				continue 
 			if s1.counters.has_key(k):
 				if s2.counters.has_key(k):
 					match = s1.counters[k] == s2.counters[k]
