@@ -287,7 +287,7 @@ static int cvDenseSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
 
   }
 
-#if 0
+#ifdef SUNDIALS_DUMP_JACOBIAN
   SaveMat(M, "jacobian_dense_cvode.txt");
   exit(1);
 #endif

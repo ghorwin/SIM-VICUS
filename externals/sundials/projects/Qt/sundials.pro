@@ -20,6 +20,8 @@ unix|mac {
 
 LIBS += -lSuiteSparse
 
+DEFINES += SUNDIALS_DUMP_JACOBIAN
+
 INCLUDEPATH += \
 	../../src/include \
 	../../src/src/sundials \
@@ -114,12 +116,12 @@ SOURCES += \
 	../../src/src/sundials/sundials_sptfqmr.c \
 	../../src/src/sundials/sundials_timer.c \
 	../../src/src/cvode/cvode_klu.c \
-    ../../src/src/sundials/sundials_sparse.c \
-    ../../src/src/sundials/sundials_spfgmr.c \
-    ../../src/src/cvode/cvode_sparse.c
+	../../src/src/sundials/sundials_sparse.c \
+	../../src/src/sundials/sundials_spfgmr.c \
+	../../src/src/cvode/cvode_sparse.c
 
 contains( OPTIONS, lapack ) {
-		SOURCES += 
+		SOURCES +=
 	message(Enabling Lapack in Sundials)
 }
 

@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4922 $
  * $Date: 2016-09-19 14:35:32 -0700 (Mon, 19 Sep 2016) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh and
  *                Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -97,19 +97,19 @@ static int cvBandFree(CVodeMem cv_mem);
  * respectively.  It allocates memory for a structure of type
  * CVDlsMemRec and sets the cv_lmem field in (*cvode_mem) to the
  * address of this structure.  It sets setupNonNull in (*cvode_mem) to be
- * TRUE, d_mu to be mupper, d_ml to be mlower, and the d_jac field to be 
+ * TRUE, d_mu to be mupper, d_ml to be mlower, and the d_jac field to be
  * cvDlsBandDQJac.
  * Finally, it allocates memory for M, savedJ, and pivot.  The CVBand
  * return value is SUCCESS = 0, LMEM_FAIL = -1, or LIN_ILL_INPUT = -2.
  *
  * NOTE: The band linear solver assumes a serial implementation
- *       of the NVECTOR package. Therefore, CVBand will first 
+ *       of the NVECTOR package. Therefore, CVBand will first
  *       test for compatible a compatible N_Vector internal
- *       representation by checking that the function 
+ *       representation by checking that the function
  *       N_VGetArrayPointer exists.
  * -----------------------------------------------------------------
  */
-                  
+
 int CVBand(void *cvode_mem, long int N, long int mupper, long int mlower)
 {
   CVodeMem cv_mem;
@@ -130,12 +130,12 @@ int CVBand(void *cvode_mem, long int N, long int mupper, long int mlower)
 
   if (lfree != NULL) lfree(cv_mem);
 
-  /* Set four main function fields in cv_mem */  
+  /* Set four main function fields in cv_mem */
   linit  = cvBandInit;
   lsetup = cvBandSetup;
   lsolve = cvBandSolve;
   lfree  = cvBandFree;
-  
+
   /* Get memory for CVDlsMemRec */
   cvdls_mem = NULL;
   cvdls_mem = (CVDlsMem) malloc(sizeof(struct CVDlsMemRec));
@@ -146,7 +146,7 @@ int CVBand(void *cvode_mem, long int N, long int mupper, long int mlower)
 
   /* Set matrix type */
   mtype = SUNDIALS_BAND;
-  
+
   /* Initialize Jacobian-related data */
   jacDQ = TRUE;
   jac = NULL;
@@ -157,7 +157,7 @@ int CVBand(void *cvode_mem, long int N, long int mupper, long int mlower)
   cvDlsInitializeCounters(cvdls_mem);
 
   setupNonNull = TRUE;
-  
+
   /* Load problem dimension */
   n = N;
 
@@ -242,9 +242,9 @@ static int cvBandInit(CVodeMem cv_mem)
  * -----------------------------------------------------------------
  * This routine does the setup operations for the band linear solver.
  * It makes a decision whether or not to call the Jacobian evaluation
- * routine based on various state variables, and if not it uses the 
- * saved copy.  In any case, it constructs the Newton matrix 
- * M = I - gamma*J, updates counters, and calls the band LU 
+ * routine based on various state variables, and if not it uses the
+ * saved copy.  In any case, it constructs the Newton matrix
+ * M = I - gamma*J, updates counters, and calls the band LU
  * factorization routine.
  * -----------------------------------------------------------------
  */
@@ -268,7 +268,7 @@ static int cvBandSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
          ((convfail == CV_FAIL_BAD_J) && (dgamma < CVD_DGMAX)) ||
          (convfail == CV_FAIL_OTHER);
   jok = !jbad;
-  
+
   if (jok) {
 
     /* If jok = TRUE, use saved copy of J */
@@ -281,7 +281,7 @@ static int cvBandSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
     nje++;
     nstlj = nst;
     *jcurPtr = TRUE;
-    SetToZero(M); 
+    SetToZero(M);
     SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_JACOBIAN_GENERATION,
       retval = jac(n, mu, ml, tn, ypred, fpred, M, J_data, vtemp1, vtemp2, vtemp3);
     );
@@ -299,7 +299,12 @@ static int cvBandSetup(CVodeMem cv_mem, int convfail, N_Vector ypred,
     BandCopy(M, savedJ, mu, ml);
 
   }
-  
+
+#ifdef SUNDIALS_DUMP_JACOBIAN
+  SaveMat(M, "jacobian_band_cvode.txt");
+  exit(1);
+#endif
+
   /* Scale and add I to get M = I - gamma*J */
   BandScale(-gamma, M);
   AddIdentity(M);
