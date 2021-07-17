@@ -1,25 +1,2 @@
-/SingleZoneSingleOutdoorsConstruction/
-/SolarRadiationModel/
-/SolarRadiationModel_Perez/
-/SolarRadiationModel_Normal/
-/IntegralMeanOutputs/
-/VentilationRateConstant2Zones/
-/InfiltrationConstantSingleZone/
-/InfiltrationScheduledSingleZone/
-/SingleZoneSingleOutdoorsConstructionSideB/
-/LoadsIncidenceAngle/
-/SingleZoneSingleOutdoorsConstructionWithShwRad/
-/SingleZoneSingleOutdoorsConstructionWithWindow/
-/4108-02 DIN Waermeschutz_2013.pdf
-/InternalLoadsConstantSingleZone.nandrad
-/InternalLoadsScheduledSingleZone.nandrad
-/VDI2078_2015-06_Kuehllast.pdf
-/InternalLoadsConstantSingleZone/
-/InternalLoadsScheduledSingleZone/
-/InternalLoadsSingleZoneWithInternalWall/
-/InternalLoadsSingleZoneConstant75ppRadiant/
-/InternalLoadsSingleZoneConstantAllConvective/
-/InternalLoadsSingleZoneScheduledAllRadiant/
-/InternalLoadsTwoZonesConstant75ppRadiant/
-/InfiltrationRateConstant2Zones/
-/ZoneTemplate/
+*.Dense/
+*.KLU/
