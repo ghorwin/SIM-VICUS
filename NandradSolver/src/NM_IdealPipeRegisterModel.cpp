@@ -312,6 +312,11 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_maxMassFlowRefs[i]) );
 		}
 
+		// active layer load depends on active layer temperature
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_activeLayerTemperatureRefs[i]) );
+
+
 		// return temperature depends on layer temperature and mass flux
 		resultInputValueReferences.push_back(
 					std::make_pair(m_vectorValuedResults[VVR_ReturnTemperature].dataPtr() + i, m_vectorValuedResults[VVR_MassFlux].dataPtr() + i) );
