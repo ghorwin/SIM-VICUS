@@ -175,6 +175,11 @@ for project in projects:
 	# compose path of 'Dense' and 'KLU' folders
 	resultsFolderDense = resultsFolder + ".Dense"
 	resultsFolderKLU = resultsFolder + ".KLU"
+	
+	# check if .jac_checked file exists
+	if os.path.exists(resultsFolder + ".jac_checked"):
+		eval_times[resultsFolder] = 0
+		continue
 
 	# remove entire directory with previous results
 	if os.path.exists(resultsFolderDense):
