@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
-    <height>733</height>
+    <width>1024</width>
+    <height>955</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <property name="title">
       <string>Climate data</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0" colspan="2">
        <widget class="QRadioButton" name="radioButtonFromDB">
         <property name="text">
@@ -62,6 +62,36 @@
           <height>20</height>
          </size>
         </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QWidget" name="widgetUserPathOptions" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QRadioButton" name="radioButtonUserPathAbsolute">
+           <property name="text">
+            <string>Store absolute path</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="radioButtonUserPathRelative">
+           <property name="text">
+            <string>Store path relative to project file</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditUserFilePath">
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>

@@ -66,8 +66,6 @@ private slots:
 	void on_lineEditInitialDT_editingFinishedSuccessfully();
 	void on_lineEditMinDT_editingFinishedSuccessfully();
 
-	void on_checkBoxDisableKinsolLineSearch_stateChanged(int arg1);
-
 	void on_lineEditRelTol_editingFinished();
 
 private:

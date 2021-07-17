@@ -228,12 +228,6 @@ void SVSimulationPerformanceOptions::on_lineEditMinDT_editingFinishedSuccessfull
 }
 
 
-void SVSimulationPerformanceOptions::on_checkBoxDisableKinsolLineSearch_stateChanged(int arg1) {
-	m_solverParams->m_flag[NANDRAD::SolverParameter::F_KinsolDisableLineSearch].set(
-				NANDRAD::KeywordList::Keyword("SolverParameter::flag_t", NANDRAD::SolverParameter::F_KinsolDisableLineSearch), true);
-}
-
-
 void SVSimulationPerformanceOptions::parameterEditingFinished(int paraEnum, const QtExt::ValidatingLineEdit *edit) {
 	// create copy of solver parameter object
 

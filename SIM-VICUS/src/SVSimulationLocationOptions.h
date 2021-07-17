@@ -63,6 +63,8 @@ private slots:
 	void on_checkBoxCustomLocation_toggled(bool checked);
 	void on_filepathClimateDataFile_editingFinished();
 
+	void on_radioButtonUserPathAbsolute_toggled(bool checked);
+
 private:
 	void updateLocationInfo(const SVClimateFileInfo * dataPtr, bool databaseFile);
 	void updateUserClimateFileInfo();
