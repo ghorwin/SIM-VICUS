@@ -421,6 +421,7 @@ void ConstructionBalanceModel::stateDependencies(std::vector<std::pair<const dou
 				resultInputValueReferences.push_back(std::make_pair(&m_ydot[m_statesModel->m_nElements-1], &m_results[R_FluxHeatConductionB] ) );
 			}
 		}
+		// TODO : Add dependency to short wave radiation flux in case this depends on controlled shading
 
 		// remaining dependency pattern
 		for (unsigned int i=0; i<m_statesModel->m_nElements; ++i) {
