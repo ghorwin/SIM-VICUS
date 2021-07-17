@@ -104,11 +104,6 @@ def checkResults(dir1, dir2, evalTimes):
 			printError("Mismatching statistics.")
 			return False
 
-		# compare all result files (d60, tsv), if any reference result files exist
-		if os.path.exists(dir1 + "/results"):
-			if not SolverStats.compareResults(dir1 + "/results", dir2 + "/results"):
-				printError("Mismatching values.")
-				return False
 		evalTimes[dir2] = stats2.timers['WallClockTime']
 	except Exception as e:
 		printError("Error comparing simulation results, error: {}".format(e))
