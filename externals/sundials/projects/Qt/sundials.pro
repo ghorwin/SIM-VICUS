@@ -20,7 +20,7 @@ unix|mac {
 
 LIBS += -lSuiteSparse
 
-DEFINES += SUNDIALS_DUMP_JACOBIAN
+#DEFINES += SUNDIALS_DUMP_JACOBIAN
 
 INCLUDEPATH += \
 	../../src/include \
