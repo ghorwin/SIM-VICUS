@@ -2574,8 +2574,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			// 3. get component name in display name
 			const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			newElement.m_displayName = IBK::FormatString("%1.%2_%3")
-					.arg(node.m_displayName.toStdString()).arg(comp->m_displayName.string()).arg(newElement.m_id).str();
+			newElement.m_displayName = IBK::FormatString("%1_%2#%3")
+					.arg(comp->m_displayName.string()).arg(node.m_displayName.toStdString()).arg(node.m_id).str();
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
 			if (node.m_type == VICUS::NetworkNode::NT_Source)
@@ -2697,6 +2697,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no defined pipe from database")
 								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 
+		// create name
+		IBK::FormatString pipeName = IBK::FormatString("%1#%2_%3#%4")
+				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_displayName.toStdString())
+				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_id)
+				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_displayName.toStdString())
+				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_id);
 
 		// add inlet pipe element
 		unsigned int inletNode = supplyNodeIdMap[edge->m_nodeIdInlet];
@@ -2707,10 +2713,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													pipeComp->m_id,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_displayName = IBK::FormatString("PipeSupply.%1.%2")
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_displayName.toStdString())
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_displayName.toStdString()).str();
-
+		inletPipe.m_displayName = "SupplyPipe_" + pipeName.str();
 		inletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(inletPipe);
 
@@ -2723,9 +2726,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													pipeComp->m_id,
 													edge->m_pipeId,
 													edge->length());
-		outletPipe.m_displayName = IBK::FormatString("PipeReturn.%1.%2")
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_displayName.toStdString())
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_displayName.toStdString()).str();
+		// create name
+		inletPipe.m_displayName = "ReturnPipe_" + pipeName.str();
 		outletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(outletPipe);
 
