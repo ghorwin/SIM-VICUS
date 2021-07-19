@@ -193,6 +193,12 @@ public:
 	std::vector<std::string>								m_objListNamesSurface;
 	std::vector<std::string>								m_objListNamesPipe;
 
+	//std::vector<NANDRAD::LinearSplineParameter>				m_linearSplinePara;
+	//std::map<std::string, std::vector<unsigned int>>		m_objListLinearSpline;
+	std::vector<NANDRAD::ObjectList>						m_objListLinearSpline;
+	std::vector<std::string>								m_objListNamesLinearSplines;
+	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter>>	m_constructionIdToNandradSplines;
+
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
 	//std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
@@ -228,27 +234,27 @@ bool IdealSurfaceHeatingCoolingModelGenerator::calculateSupplyTemperature(const 
 	double mHeat = 0;
 	if(deltaX != 0)
 		mHeat = (supplySetpoints[0] - supplySetpoints[1]) / deltaX;
-	double nHeat = mHeat * supplySetpoints[0] - outdoorSetpoints[0];
+	double nHeat =  supplySetpoints[0] - mHeat * outdoorSetpoints[0];
 
 	deltaX = outdoorSetpoints[2] - outdoorSetpoints[3];
 	double mCool = 0;
 	if(deltaX != 0)
 		mCool = (supplySetpoints[2] - supplySetpoints[3]) / deltaX;
-	double nCool = mCool * supplySetpoints[2] - outdoorSetpoints[3];
+	double nCool = supplySetpoints[2] - mCool * outdoorSetpoints[2];
 
 	for(unsigned int i=0; i<outdoorTemperatureSpline.size(); ++i){
 		double tOut = outdoorTemperatureSpline[i];
 		double tSupply;
 		if(tOut <= lowerOutHeatLimit)
-			tSupply = lowerSupplyHeatLimit;
+			tSupply = upperSupplyHeatLimit;
 		else if(tOut > lowerOutHeatLimit && tOut <= upperOutHeatLimit)
 			tSupply = mHeat * tOut + nHeat;
 		else if(tOut > upperOutHeatLimit && tOut < lowerOutCoolLimit)
-			tSupply = upperSupplyHeatLimit;
+			tSupply = lowerSupplyHeatLimit;
 		else if(tOut >= lowerOutCoolLimit && tOut < upperOutCoolLimit)
 			tSupply = mCool * tOut + nCool;
 		else
-			tSupply = upperSupplyCoolLimit;
+			tSupply = lowerSupplyCoolLimit;
 		supplyTemperature.push_back(tSupply);
 	}
 	return true;
@@ -439,6 +445,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_models.m_idealPipeRegisterModels = idealSurfaceHeatCoolGenerator.m_idealPipeRegister;
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListsSurface.begin(), idealSurfaceHeatCoolGenerator.m_objListsSurface.end());
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListsPipe.begin(), idealSurfaceHeatCoolGenerator.m_objListsPipe.end());
+	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.begin(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.end());
+	p.m_schedules.m_annualSchedules = idealSurfaceHeatCoolGenerator.m_constructionIdToNandradSplines;
 }
 
 
@@ -1427,15 +1435,15 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	if(heatSched != nullptr)
 		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
 	else{
-		s.createConstSchedule(200);
-		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
+		s.createConstSchedule(-100);
+		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
 	}
 
 	if(coolSched != nullptr)
 		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
 	else{
-		s.createConstSchedule(-100);
-		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
+		s.createConstSchedule(200);
+		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
 	}
 
 	// now we have a valid schedule group, yet without object list name
@@ -1477,11 +1485,16 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
 	IBK::LinearSpline outdoorTemp;
 	//first vector -> timepoints; second temperature in C
-	outdoorTemp.setValues(std::vector<double>{0,100,200,300,400,8760}, std::vector<double>{-10,-10,0,0,15,30});
+	std::vector<double> timepoints{0,100,200,300,400,500,600,700,800,900,1000,
+												  1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
+												  2900,8760};
+	std::vector<double> datapoints{-20,-15,-14,-10,-5,0,5,10,15,20,21,22,23,24,25,26,27,28,29,30,31,35,40};
+	outdoorTemp.setValues(timepoints, datapoints);
 	outdoorTemp.m_extrapolationMethod = IBK::LinearSpline::EM_Constant;
 
 	std::vector<NANDRAD::IdealSurfaceHeatingCoolingModel>	idealSurfHeatCool;
 	std::vector<NANDRAD::IdealPipeRegisterModel>			idealPipeRegister;
+	std::map<unsigned int, std::vector<NANDRAD::LinearSplineParameter>>	constructionIdToNandradSplines;
 
 
 	//fill the map for quick work
@@ -1541,30 +1554,26 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 				}
 				const VICUS::NetworkPipe * pipe = Project::element(m_project->m_embeddedDB.m_pipes, surfSys->m_idPipe);
 				double insideDiameter = pipe->diameterInside();
-				if(!pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].empty())
-					insideDiameter -= 2* pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
 
-				double conversionMMToM = 1e-3;
-				insideDiameter *= conversionMMToM;
 				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * 0.25 *
 						surfSys->m_para[VICUS::SurfaceHeating::P_MaxFluidVelocity].value *
 						fluid.m_para[VICUS::NetworkFluid::P_Density].value;
 
 				double uValue = pipe->calculateUValue();
 
-				NANDRAD::KeywordList::setIntPara(nandradSys.m_intPara, "IdealSurfaceHeatingCoolingModel::intPara_t",
+				NANDRAD::KeywordList::setIntPara(nandradSys.m_intPara, "IdealPipeRegisterModel::intPara_t",
 												 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes, numberPipes);
 
-				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
 												   NANDRAD::IdealPipeRegisterModel::P_PipeLength, length);
 
-				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
 												   NANDRAD::IdealPipeRegisterModel::P_MaxMassFlux, maxMassFlux);
 
-				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
-												   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, insideDiameter/conversionMMToM);
+				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
+												   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, insideDiameter * 1000); //Attention this value is in mm
 
-				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealSurfaceHeatingCoolingModel::para_t",
+				NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
 												   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, uValue);
 
 				std::vector<double> supplyTemperatureVec;
@@ -1574,14 +1583,21 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 				//TODO Dirk->Andreas wie geht das anzuhängen ans NANDRAD projekt?
 				//kann sein das ich das erst speichern muss ... gucken ...
-				NANDRAD::LinearSplineParameter tSupply("FluidSupplyTemperature",NANDRAD::LinearSplineParameter::I_LINEAR,
+				NANDRAD::LinearSplineParameter tSupply("SupplyTemperatureSchedule",NANDRAD::LinearSplineParameter::I_LINEAR,
 													   outdoorTemp.x(), supplyTemperatureVec,
 													   IBK::Unit("h"),IBK::Unit("C"));
 
 				nandradSys.m_displayName = "Underfloor heating";
 				nandradSys.m_id = dsh.m_nandradConstructionInstanceId;
+				//m_linearSplinePara.push_back(tSupply);
+
+				NANDRAD::LinearSplineParameter massFlux("MaxMassFluxSchedule", NANDRAD::LinearSplineParameter::I_LINEAR,
+														std::vector<double>{0,8760}, std::vector<double>{maxMassFlux, maxMassFlux},
+														IBK::Unit("h"),IBK::Unit("kg/s"));
+				//m_linearSplinePara.push_back(massFlux);
 
 				idealPipeRegister.push_back(nandradSys);
+				constructionIdToNandradSplines[dsh.m_nandradConstructionInstanceId] = std::vector<NANDRAD::LinearSplineParameter>{tSupply,massFlux};
 			}
 			break;
 			case SurfaceHeating::NUM_T: break;	//only for compiler
@@ -1652,6 +1668,41 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			m_objListNamesPipe.push_back(ol.m_name);
 		}
 	}
+
+	for(std::map<unsigned int, std::vector<NANDRAD::LinearSplineParameter>>::iterator it=constructionIdToNandradSplines.begin();
+																					  it!=constructionIdToNandradSplines.end();
+																					  ++it){
+		bool isAdded = false;
+		for(std::map<std::string, std::vector<NANDRAD::LinearSplineParameter>>::iterator	it2=m_constructionIdToNandradSplines.begin();
+																							it2!=m_constructionIdToNandradSplines.end();
+																							++it2){
+			if(it->second==it2->second){
+				for(unsigned int i=0; i<m_objListLinearSpline.size(); ++i){
+					NANDRAD::ObjectList &ol = m_objListLinearSpline[i];
+					if(ol.m_name == it2->first){
+						ol.m_filterID.m_ids.insert(it->first);
+						break;
+					}
+				}
+				isAdded = true;
+				break;
+			}
+		}
+
+		if(!isAdded){
+			NANDRAD::ObjectList ol;
+			ol.m_name = "Supply Temperature and mass flux" + IBK::val2string(it->first);
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			ol.m_filterID.m_ids.insert(it->first);
+
+			//add object list and nandrad splines
+			m_objListLinearSpline.push_back(ol);
+			m_constructionIdToNandradSplines[ol.m_name] = it->second;
+			m_objListNamesLinearSplines.push_back(ol.m_name);
+		}
+
+	}
+
 }
 
 void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsigned int> &usedModelIds,  QStringList & errorStack) {
@@ -1686,7 +1737,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 
 	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
-	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,idealHeatCool.m_id);
+	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,r->m_id);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
 	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())

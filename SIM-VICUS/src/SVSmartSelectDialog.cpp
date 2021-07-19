@@ -28,12 +28,17 @@
 
 #include <QPushButton>
 #include <QDialogButtonBox>
+
 #include <VICUS_KeywordList.h>
 #include <VICUS_NetworkNode.h>
 #include <VICUS_Project.h>
 
+#include <QtExt_Conversions.h>
+
 #include "SVProjectHandler.h"
 #include "SVUndoTreeNodeState.h"
+#include "SVDatabase.h"
+#include "SVSettings.h"
 
 SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	QDialog(parent),
@@ -41,7 +46,8 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->verticalLayoutNetwork->setMargin(0);
+	m_ui->verticalLayoutNetwork->setContentsMargins(0,6,0,0);
+	m_ui->gridLayoutBuildings->setContentsMargins(0,6,0,0);
 
 	QPushButton * btn = new QPushButton(tr("Select"));
 	m_ui->buttonBox->addButton(btn, QDialogButtonBox::NoRole);
@@ -76,18 +82,146 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(false);
 	m_ui->lineEditLengthAbove->setEnabled(false);
 	m_ui->lineEditLengthBelow->setEnabled(false);
+
+	// populate static options
+	m_options.m_options.resize(2);
+
+	FilterOption & components = m_options.m_options[0];
+	components.m_name = tr("Components");
+	components.m_options.resize(3);
+
+	components.m_options[0].m_name = tr("Outside walls");
+	components.m_options[1].m_name = tr("Inside walls");
+	components.m_options[2].m_name = tr("Windows");
+
+	FilterOption & thermalElements = m_options.m_options[1];
+	thermalElements.m_name = tr("Thermal elements");
+
+	delete m_ui->pushButtonDummy;
 }
 
 
 SVSmartSelectDialog::~SVSmartSelectDialog() {
+	qDeleteAll(m_selectionButtons);
+	qDeleteAll(m_optionButtons);
 	delete m_ui;
 }
+
+
+void SVSmartSelectDialog::select() {
+
+	// populate dynamic elements
+	FilterOption & outsideWalls = m_options.m_options[0].m_options[0];
+	outsideWalls.m_options.clear();
+	FilterOption & insideWalls = m_options.m_options[0].m_options[1];
+	insideWalls.m_options.clear();
+	FilterOption & windows = m_options.m_options[0].m_options[2];
+	windows.m_options.clear();
+
+	// process data structure and populate options
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	std::set<const VICUS::Component *> components;
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
+		components.insert(db.m_components[ci.m_componentID]);
+	for (const VICUS::Component * comp : components) {
+		if (comp == nullptr) continue;
+		switch (comp->m_type) {
+			case VICUS::Component::CT_OutsideWall:
+				outsideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_OutsideWallToGround:
+				outsideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_InsideWall:
+				insideWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::Component::CT_FloorToCellar:
+			break;
+			case VICUS::Component::CT_FloorToAir:
+			break;
+			case VICUS::Component::CT_FloorToGround:
+			break;
+			case VICUS::Component::CT_Ceiling:
+			break;
+			case VICUS::Component::CT_SlopedRoof:
+			break;
+			case VICUS::Component::CT_FlatRoof:
+			break;
+			case VICUS::Component::CT_ColdRoof:
+			break;
+			case VICUS::Component::CT_WarmRoof:
+			break;
+			case VICUS::Component::CT_Miscellaneous:
+			break;
+			case VICUS::Component::NUM_CT: break;
+		}
+	}
+
+	std::set<const VICUS::SubSurfaceComponent *> subSurfaceComponents;
+	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances)
+		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_subSurfaceComponentID]);
+	for (const VICUS::SubSurfaceComponent * comp : subSurfaceComponents) {
+		if (comp == nullptr) continue;
+		switch (comp->m_type) {
+			case VICUS::SubSurfaceComponent::CT_Window:
+				windows.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
+			break;
+			case VICUS::SubSurfaceComponent::CT_Door:
+			break;
+			case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+			break;
+			case VICUS::SubSurfaceComponent::NUM_CT:
+			break;
+		}
+	}
+
+	updateButtonGrid();
+
+	// everything else is done inside the dialog
+	exec();
+}
+
+//void SVSmartSelectDialog::collectComponents(FilterOption * option,
+//											std::vector<const VICUS::Component*> & components,
+//											std::vector<const VICUS::SubSurfaceComponent*> & subSurfaceComponents
+//	);
 
 
 void SVSmartSelectDialog::onSelectClicked() {
 	// evaluate selection and create undo action for the selection
 	if (m_ui->tabWidgetGroup->currentIndex() == 0) {
-		// TODO Dirk : Building object selections
+		// do we have a component selected?
+		FilterOption * option = &m_options;
+		for (unsigned int i=0; i<m_selections.size(); ++i) {
+			unsigned int selectedIndex = m_selections[i];
+			if (selectedIndex >= option->m_options.size())
+				break; // not available, skip
+			option = &option->m_options[selectedIndex];
+		}
+
+		// collect list of selected components or subsurface components
+		std::vector<const VICUS::Component*> components;
+		std::vector<const VICUS::SubSurfaceComponent*> subSurfaceComponents;
+
+		// we process recursively all selected "options" and gather components and sub-surface-components
+		// in case of windows (or other derived quantities), we lookup the referencing components/sub-surface components
+
+//		collectComponents(option);
+
+
+
+
+		if (option->m_dbElement == nullptr) {
+			QMessageBox::critical(this, QString(), tr("Not a valid filter selection!"));
+			return;
+		}
+		// now determine all surfaces that are associated with this component
+		// TODO :
 	}
 	else {
 
@@ -203,22 +337,106 @@ void SVSmartSelectDialog::on_comboBoxNodeType_currentIndexChanged(int index)
 }
 
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1)
-{
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandBelow_stateChanged(int arg1) {
 	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandAbove_stateChanged(int arg1) {
 	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthBelow_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxLengthBelow_stateChanged(int arg1) {
 	m_ui->lineEditLengthBelow->setEnabled(arg1);
 }
 
-void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1)
-{
+
+void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1) {
 	m_ui->lineEditLengthAbove->setEnabled(arg1);
+}
+
+
+void SVSmartSelectDialog::on_pushButtonReset_clicked() {
+	// reset current hierarchy level to 0
+	m_selections.clear();
+	updateButtonGrid();
+}
+
+
+void SVSmartSelectDialog::onSelectionButtonPressed() {
+	QPushButton * btn = qobject_cast<QPushButton *>(sender());
+	Q_ASSERT(btn != nullptr);
+
+	// determine level and reduce selection accordingly
+	unsigned int buttonLevel = 0;
+	for (;buttonLevel < m_selectionButtons.size(); ++buttonLevel)
+		if (m_selectionButtons[buttonLevel] == btn)
+			break;
+
+	if (buttonLevel+1 == m_selectionButtons.size()) {
+		m_selectionButtons.back()->setDown(true);
+		return;
+	}
+	m_selections.resize(buttonLevel+1);
+	updateButtonGrid();
+}
+
+
+void SVSmartSelectDialog::onOptionButtonPressed() {
+	QPushButton * btn = qobject_cast<QPushButton *>(sender());
+	Q_ASSERT(btn != nullptr);
+
+	// determine level and reduce selection accordingly
+	unsigned int buttonLevel = 0;
+	for (;buttonLevel < m_optionButtons.size(); ++buttonLevel)
+		if (m_optionButtons[buttonLevel] == btn)
+			break;
+
+	// append selection
+	m_selections.push_back(buttonLevel);
+	updateButtonGrid();
+}
+
+
+void SVSmartSelectDialog::updateButtonGrid() {
+	// Mind: it may be the case that we cannot follow all selections through, if
+	//       dynamic options have disappeared sind last call
+
+	qDeleteAll(m_selectionButtons);
+	m_selectionButtons.clear();
+
+	FilterOption * option = &m_options;
+	std::vector<unsigned int> validSelections;
+	for (unsigned int i=0; i<m_selections.size(); ++i) {
+		unsigned int selectedIndex = m_selections[i];
+		if (selectedIndex >= option->m_options.size())
+			break; // not available, skip
+		validSelections.push_back(selectedIndex);
+		option = &option->m_options[selectedIndex];
+		// create push button
+		QPushButton * button = new QPushButton(option->m_name);
+		// connect clicked signal
+		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onSelectionButtonPressed);
+		m_ui->horizontalLayoutBreadCrums->insertWidget(m_ui->horizontalLayoutBreadCrums->count()-1, button);
+		m_selectionButtons.push_back(button);
+	}
+	m_selections.swap(validSelections);
+
+	if (!m_selectionButtons.empty()) {
+		m_selectionButtons.back()->setDown(true);
+	}
+
+	// now update button grid
+	qDeleteAll(m_optionButtons);
+	m_optionButtons.clear();
+
+	// based on the currently selected hierarchy level 'option', populate buttons
+	for (FilterOption & o : option->m_options) {
+		QPushButton * button = new QPushButton(o.m_name);
+		connect(button, &QPushButton::clicked, this, &SVSmartSelectDialog::onOptionButtonPressed);
+		m_ui->verticalLayoutOptions->insertWidget(m_ui->verticalLayoutOptions->count()-1, button);
+		m_optionButtons.push_back(button);
+	}
+
 }

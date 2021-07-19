@@ -62,11 +62,11 @@ void Schedules::checkParameters(const std::map<std::string, IBK::Path> &placehol
 			// still we check that x value unit is indeed convertible to time
 			if (spl.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS) {
 				if (spl.m_tsvFile.isValid())
-					throw IBK::Exception(IBK::FormatString("Invalid time unit in tsv-file '%1' got '%2'")
+					throw IBK::Exception(IBK::FormatString("Invalid time unit '%2' in tsv-file '%1'.")
 										 .arg(spl.m_tsvFile).arg(spl.m_xUnit.name()), FUNC_ID);
 				else
-					throw IBK::Exception(IBK::FormatString("Invalid time unit in 'AnnualSchedule' of schedule '%1'")
-										 .arg(spl.m_tsvFile), FUNC_ID);
+					throw IBK::Exception(IBK::FormatString("Invalid time unit '%2' in AnnualSchedule '%1'.")
+										 .arg(spl.m_name).arg(spl.m_xUnit.name()), FUNC_ID);
 			}
 		}
 	}
@@ -305,14 +305,17 @@ TiXmlElement * Schedules::writeXML(TiXmlElement * parent) const {
 		e->LinkEndChild(c);
 		for (const std::pair<const std::string, std::vector<NANDRAD::LinearSplineParameter> > & svec : m_annualSchedules) {
 			// create tags like
-			// <AnnualSchedule objectList="objectListName">
+			// <ScheduleGroup objectList="objectListName">
 			//   ...
-			// </AnnualSchedule>
-			TiXmlElement * g = new TiXmlElement("AnnualSchedule");
+			// </ScheduleGroup>
+			TiXmlElement * g = new TiXmlElement("ScheduleGroup");
 			c->LinkEndChild(g);
 			g->SetAttribute("objectList", svec.first);
-			for (const NANDRAD::LinearSplineParameter & s : svec.second)
-				s.writeXML(g);
+			for (const NANDRAD::LinearSplineParameter & s : svec.second) {
+				TiXmlElement * splTag = s.writeXML(g);
+				// Mind: we expect an 'AnnualSchedule' tag instead of 'LinearSplineParameter'
+				splTag->ToElement()->SetValue("AnnualSchedule");
+			}
 		}
 	}
 

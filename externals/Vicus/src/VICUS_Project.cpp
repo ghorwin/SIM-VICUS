@@ -1986,12 +1986,16 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										p.m_models.m_idealSurfaceHeatingCoolingModels.push_back(surfSysNandrad);
 									}
 									break;
-									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
-										//get pipe data
 
+									case VICUS::SurfaceHeating::T_IdealPipeRegister:{
+										// get pipe data
 										const VICUS::NetworkPipe * pipe = element(m_embeddedDB.m_pipes, shSys->m_idPipe);
 										if(pipe == nullptr){
-											//todo errorstack
+											// TODO Dirk, error handling errorstack
+											continue;
+										}
+										if (!pipe->isValid()) {
+											// TODO Dirk, error handling errorstack
 											continue;
 										}
 
@@ -2389,15 +2393,15 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 	// *** Transfer FLUID from Vicus to Nandrad
 
-	VICUS::NetworkFluid fluid;
-	fluid.defaultFluidWater(1);
-	nandradNetwork.m_fluid.m_displayName = fluid.m_displayName.string();
-
-	fluid.m_kinematicViscosity.m_values.setValues(std::vector<double>{0,20}, std::vector<double>{1.793e-6,1.793e-6});
-
-	nandradNetwork.m_fluid.m_kinematicViscosity = fluid.m_kinematicViscosity;
+	const VICUS::NetworkFluid *fluid = element(m_embeddedDB.m_fluids, vicusNetwork.m_fluidID);
+	if (fluid == nullptr)
+		throw IBK::Exception(IBK::FormatString("Fluid with id #%1 does not exist in database!").arg(vicusNetwork.m_fluidID), FUNC_ID);
+	if (!fluid->isValid())
+		throw IBK::Exception(IBK::FormatString("Fluid with id #%1 has invalid parameters!").arg(vicusNetwork.m_fluidID), FUNC_ID);
+	nandradNetwork.m_fluid.m_displayName = fluid->m_displayName.string();
+	nandradNetwork.m_fluid.m_kinematicViscosity = fluid->m_kinematicViscosity;
 	for (int i=0; i<VICUS::NetworkFluid::NUM_P; ++i)
-		nandradNetwork.m_fluid.m_para[i] = fluid.m_para[i];
+		nandradNetwork.m_fluid.m_para[i] = fluid->m_para[i];
 
 
 	// *** Transfer COMPONENTS from Vicus to Nandrad
@@ -2416,6 +2420,13 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		const VICUS::SubNetwork *sub = element(m_embeddedDB.m_subNetworks, subId);
 		if (sub == nullptr)
 			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 does not exist in database").arg(subId), FUNC_ID);
+		Database<SubNetwork> dbSubNetworks = Database<SubNetwork>(1);
+		dbSubNetworks.setData(m_embeddedDB.m_subNetworks);
+		Database<NetworkComponent> dbNetComps = Database<NetworkComponent>(1); // we dont care
+//		dbNetComps.setData(m)
+//		if (!sub->isValid(dbFromVector(m_embeddedDB.m_networkComponents),
+//						  dbFromVector(m_embeddedDB.m_networkControllers),
+//						  dbFromVector(m_embeddedDB.m_schedules)))
 		if (sub->m_elements.size() > maxNumberElements)
 			maxNumberElements = sub->m_elements.size();
 		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
@@ -2428,7 +2439,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	// --> transfer components
 	for (unsigned int compId: componentIds){
 		const VICUS::NetworkComponent *comp = element(m_embeddedDB.m_networkComponents, compId);
-		Q_ASSERT(comp != nullptr);
+		if (comp == nullptr)
+			throw IBK::Exception(IBK::FormatString("Network Component with id #%1 does not exist in database").arg(compId), FUNC_ID);
+//		if (!comp->isValid(mapToVector(m)))
+//			throw IBK::Exception(IBK::FormatString("Network Component with id #%1 has invalid parameters").arg(compId), FUNC_ID);
 		NANDRAD::HydraulicNetworkComponent nandradComp;
 		nandradComp.m_id = comp->m_id;
 		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
@@ -2443,7 +2457,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	// --> transfer controllers
 	for (unsigned int ctrId: controllerIds){
 		const VICUS::NetworkController *ctr = element(m_embeddedDB.m_networkControllers, ctrId);
-		Q_ASSERT(ctr!= nullptr);
+		if (ctr == nullptr)
+			throw IBK::Exception(IBK::FormatString("Network Controller with id #%1 does not exist in database").arg(ctrId), FUNC_ID);
+//		if (!ctr->isValid())
+//			throw IBK::Exception(IBK::FormatString("Network Controller with id #%1 has invalid parameters").arg(ctrId), FUNC_ID);
 		NANDRAD::HydraulicNetworkControlElement nandradCtr;
 		nandradCtr.m_id = ctr->m_id;
 		nandradCtr.m_modelType = NANDRAD::HydraulicNetworkControlElement::ModelType(ctr->m_modelType);
@@ -2471,9 +2488,14 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	}
 
 	// --> transfer
-	for(unsigned int pipeId: pipeIds){
+	for(unsigned int pipeId: pipeIds) {
 		const VICUS::NetworkPipe *pipe = element(m_embeddedDB.m_pipes, pipeId);
-		Q_ASSERT(pipe != nullptr);
+		if (pipe == nullptr)
+			throw IBK::Exception(IBK::FormatString("Pipe with id #%1 does not exist in database").arg(pipeId), FUNC_ID);
+		if (!pipe->isValid()) {
+			// TODO Hauke, error handling
+			continue;
+		}
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
 

@@ -25,33 +25,36 @@
 
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_KeywordList.h"
-#include <IBK_physics.h>
 
 
 namespace VICUS {
 
-double NetworkPipe::calculateUValue() const {
+double NetworkPipe::UValue() const {
+	// This function is only to be called when isValid() returns true. Hence, all parameters are present with
+	// valid values.
+
 	// some references for readability improvement
 	// all in SI units here (length unit "m")
-	const double &dInsulation = m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
-	const double &lambdaInsulation = m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
-	const double &da = m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
-	const double &lambdaWall = m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
+	const double dInsulation = m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value;
+	const double lambdaInsulation = m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value;
+	const double da = m_para[VICUS::NetworkPipe::P_DiameterOutside].value;
+	const double lambdaWall = m_para[VICUS::NetworkPipe::P_ThermalConductivityWall].value;
 
-	double UValue;
+	double di = diameterInside();
+	double r;
 	if (dInsulation > 0)
-		UValue = 2*IBK::PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside())
-						+ 1/lambdaInsulation * IBK::f_log((da + 2*dInsulation) / da) );
+		r =   1/(2*lambdaWall) * IBK::f_log(da / di)
+			+ 1/(2*lambdaInsulation) * IBK::f_log((da + 2*dInsulation) / da);
 	else
-		UValue = 2*IBK::PI/ ( 1/lambdaWall * IBK::f_log(da / diameterInside()) );
+		r =   1/(2*lambdaWall) * IBK::f_log(da / di);
 
+	double UValue = PI/r;
 	return UValue;
 }
 
 
 double NetworkPipe::diameterInside() const {
 	return (m_para[P_DiameterOutside].value - 2 * m_para[P_ThicknessWall].value);
-
 }
 
 
@@ -70,8 +73,8 @@ bool NetworkPipe::isValid() const {
 		}
 	}
 
-	//check if inside diameter is greater zero
-	if(diameterInside() <= 0)
+	// check if inside diameter is greater zero
+	if (diameterInside() <= 0)
 		return false;
 
 	return true;

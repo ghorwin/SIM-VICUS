@@ -178,20 +178,20 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		IBK::Path tsvFilePath(fpath);
 
 		if (!IBK::Path(tsvFilePath).exists())
-			throw IBK::Exception(IBK::FormatString("File '%1' does not exist").arg(m_tsvFile.str()), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("File '%1' does not exist.").arg(m_tsvFile.str()), FUNC_ID);
 		IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK::CSVReader reader;
 		reader.read(tsvFilePath, false, true);  // may throw exception
 		if (reader.m_nColumns <= colIndex)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns")
-								 .arg(tsvFilePath.str()).arg(colIndex+1), FUNC_ID); // Mind: column count = 1 (time column) + colIndex
+			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns, but has only %3.")
+								 .arg(tsvFilePath.str()).arg(colIndex+1)
+								 .arg(reader.m_nColumns), FUNC_ID); // Mind: column count = 1 (time column) + colIndex
 		if (reader.m_nRows < 2)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows")
+			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
 								 .arg(tsvFilePath.str()), FUNC_ID);
 		m_xUnit = IBK::Unit(reader.m_units[0]);
 		m_yUnit = IBK::Unit(reader.m_units[colIndex]);
 		m_values.setValues(reader.colData(0), reader.colData(colIndex));
-
 	}
 
 	// convert to base units

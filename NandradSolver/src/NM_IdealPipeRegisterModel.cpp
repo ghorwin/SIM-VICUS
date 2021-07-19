@@ -23,6 +23,8 @@
 
 #include <IBK_Exception.h>
 #include <IBK_physics.h>
+#include <IBK_messages.h>
+
 
 #include <NANDRAD_IdealPipeRegisterModel.h>
 #include <NANDRAD_ObjectList.h>
@@ -309,11 +311,23 @@ void IdealPipeRegisterModel::stateDependencies(std::vector<std::pair<const doubl
 			resultInputValueReferences.push_back(
 						std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_maxMassFlowRefs[i]) );
 		}
+
+		// active layer load depends on active layer temperature
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i, m_activeLayerTemperatureRefs[i]) );
+
+
+		// return temperature depends on layer temperature and mass flux
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_ReturnTemperature].dataPtr() + i, m_vectorValuedResults[VVR_MassFlux].dataPtr() + i) );
+		resultInputValueReferences.push_back(
+					std::make_pair(m_vectorValuedResults[VVR_ReturnTemperature].dataPtr() + i, m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr() + i) );
 	}
 }
 
 
 int IdealPipeRegisterModel::update() {
+	FUNCID(IdealPipeRegisterModel::update);
 
 	if (m_objectList->m_filterID.m_ids.empty())
 		return 0; // nothing to compute, return
@@ -334,16 +348,24 @@ int IdealPipeRegisterModel::update() {
 		coolingControlValue = std::max(0.0, std::min(1.0, coolingControlValue));
 	}
 
+	// ensure that we only either heat or cool and issue an error if this occurs
+	if (heatingControlValue > 0 && coolingControlValue > 0)
+		throw IBK::Exception(IBK::FormatString("Ideal pipe register received heating and cooling control signals at the same time (%1, %2).")
+							 .arg(heatingControlValue).arg(coolingControlValue), FUNC_ID);
+
 	// number of active layers heated by current model
 	unsigned int nTargets = (unsigned int) m_objectList->m_filterID.m_ids.size();
 
 	// fast-access pointers to all vector result quantities
 	double *massFluxPtr = m_vectorValuedResults[VVR_MassFlux].dataPtr();
 	double *surfaceLoadPtr = m_vectorValuedResults[VVR_ActiveLayerThermalLoad].dataPtr();
+	double *returnTemp = m_vectorValuedResults[VVR_ReturnTemperature].dataPtr();
 
-	// set initial heat load and mass flux to 0
+	// set initial heat load and mass flux to 0, and initialize return temperature with layer temperature
 	std::memset(massFluxPtr, 0.0, nTargets * sizeof (double) );
 	std::memset(surfaceLoadPtr, 0.0, nTargets * sizeof (double) );
+	for (unsigned int i = 0; i < nTargets; ++i)
+		returnTemp[i] = *m_activeLayerTemperatureRefs[i];
 
 	// Both heating and cooling may request a positive mass flux
 	// anyhow, we demand for a supply temperature > layer temperature in the case
@@ -352,6 +374,7 @@ int IdealPipeRegisterModel::update() {
 
 	IBK_ASSERT(!m_supplyTemperatureRefs.empty());
 	IBK_ASSERT(!m_maxMassFlowRefs.empty());
+
 
 	// heating is requested
 	if (heatingControlValue > 0.0) {
@@ -362,13 +385,11 @@ int IdealPipeRegisterModel::update() {
 			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature < supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if (layerTemperature >= supplyTemperature)
-				continue; // skip, layer too warm
 
 			double heatingMassFlow = heatingControlValue * *m_maxMassFlowRefs[i];
 			// skip 0 mass flow
-			if(heatingMassFlow == 0.)
-				continue;
+			if (heatingMassFlow == 0.)
+				continue; // default results have been initialized already
 
 			// store mass flow
 			massFluxPtr[i] = heatingMassFlow;
@@ -376,23 +397,27 @@ int IdealPipeRegisterModel::update() {
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
 			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-			double velocity = std::fabs(heatingMassFlow)/(m_fluidVolume * m_fluidDensity);
+
+			double velocity = std::fabs(heatingMassFlow)/(m_fluidCrossSection*m_fluidDensity);
 			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
-			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
+			// UAValueTotal has W/K, basically the specific heat loss over pipe surface per Kelvin temperature difference
+			// (including transfer coefficients) x pipe length.
 			double UAValueTotal = m_length /
 					( 1.0 / (innerHeatTransferCoefficient * m_innerDiameter * IBK::PI)
 					+ 1.0 / m_UValuePipeWall );
 
-			// compute exponential decay of thermal mass (analytical soluation for heat
-			// loss over a pipe with constant environmental temperature
+			// compute exponential decay of thermal mass (analytical solution for heat
+			// loss over a pipe with constant environmental temperature)
 			double thermalMassDecay = heatingMassFlow * m_fluidHeatCapacity *
 					(1. - std::exp(-UAValueTotal / (std::fabs(heatingMassFlow/ m_nParallelPipes)
 								* m_fluidHeatCapacity ) ) );
 			// calculate heat gain in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay ;
+			// calculate return temperature =  W / (kg/s * J/kgK) = W / (W / K) = K
+			returnTemp[i] = supplyTemperature - surfaceLoadPtr[i]/(heatingMassFlow*m_fluidHeatCapacity);
 		}
 	}
 	// cooling is requested
@@ -404,13 +429,11 @@ int IdealPipeRegisterModel::update() {
 			double supplyTemperature = *m_supplyTemperatureRefs[i];
 			// only accept layers whose temperature > supply temperature
 			double layerTemperature = *m_activeLayerTemperatureRefs[i];
-			if (layerTemperature <= supplyTemperature)
-				continue; // skip, layer too cold
 
 			double coolingMassFlow = coolingControlValue * *m_maxMassFlowRefs[i];
 			// skip 0 mass flow
-			if(coolingMassFlow == 0.)
-				continue;
+			if (coolingMassFlow == 0.)
+				continue; // default results have been initialized already
 
 			// store mass flow
 			massFluxPtr[i] = coolingMassFlow;
@@ -418,7 +441,7 @@ int IdealPipeRegisterModel::update() {
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
 			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-			double velocity = std::fabs(coolingMassFlow)/(m_fluidVolume * m_fluidDensity);
+			double velocity = std::fabs(coolingMassFlow)/(m_fluidCrossSection * m_fluidDensity);
 			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
 			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
@@ -435,6 +458,8 @@ int IdealPipeRegisterModel::update() {
 
 			// calculate heat loss in [W]
 			surfaceLoadPtr[i] = (supplyTemperature - layerTemperature) * thermalMassDecay;
+			// calculate return temperature =  W / (kg/s * J/kgK) = W / (W / K) = K
+			returnTemp[i] = supplyTemperature - surfaceLoadPtr[i]/(coolingMassFlow*m_fluidHeatCapacity);
 		}
 	}
 

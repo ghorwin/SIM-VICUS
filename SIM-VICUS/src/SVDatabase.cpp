@@ -289,6 +289,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	// *** everything that is referenced from zone templates
 
 	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
+		if(zt == nullptr)
+			continue;
 		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i) {
 			IDType idType = zt->m_idReferences[i];
 			const VICUS::InternalLoad *intLoad = m_internalLoads[idType];

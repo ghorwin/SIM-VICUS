@@ -147,7 +147,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 			}
 			if (requestedUnit.base_id() != var.second.base_id())
 				throw IBK::Exception(IBK::FormatString("Expected '%1' unit for scheduled quantity '%2', but "
-													   "got '%3' (not convertible).")
+													   "got unit with base SI-unit '%3' (not convertible).")
 									 .arg(requestedUnit).arg(var.first).arg(var.second), FUNC_ID);
 
 			m_variableNames.push_back(objectListName + "::" + var.first);
@@ -202,7 +202,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 			}
 			if (requestedUnit.base_id() != spl.m_yUnit.base_id())
 				throw IBK::Exception(IBK::FormatString("Expected '%1' unit for scheduled quantity '%2', but "
-													   "got '%3' (not convertible).")
+													   "got unit with base SI unit '%3' (not convertible).")
 									 .arg(requestedUnit).arg(spl.m_name).arg(spl.m_yUnit), FUNC_ID);
 
 			m_variableNames.push_back(objectListName + "::" + spl.m_name);

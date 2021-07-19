@@ -45,24 +45,25 @@ bool DailyCycle::isValid() const {
 			return false;	// day type is not valid
 	}
 
-	if(m_values.size() != m_timePoints.size() || m_values.empty())
+	if (m_values.size() != m_timePoints.size() || m_values.empty())
 		return false;	// empty values or size not same of values and timepoints
 
-	if(m_timePoints[0] != 0)
+	if (m_timePoints[0] != 0.0)
 		return false;	// start point is not 0
 
 	// check time points vector and time point and value vectors have same size
 	return true;
 }
 
+
 DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 	DailyCycle dc;
 
-	if(!isValid()){
+	if (!isValid()){
 		///TODO Katja fehlermeldung
 		return dc;
 	}
-	if(!other.isValid()){
+	if (!other.isValid()){
 		///TODO Katja fehlermeldung
 		return dc;
 	}
@@ -118,7 +119,7 @@ DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 	//iterate dc time points and check for same or lower time points in dc
 	//if true multiply
 	//otherwise increment
-	while(i<dc.m_timePoints.size()){
+	while (i<dc.m_timePoints.size()){
 		double timePoint = m_timePoints[j];
 		double timePoint2 = dc.m_timePoints[i];
 
@@ -140,36 +141,37 @@ DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 	return dc;
 }
 
+
 DailyCycle DailyCycle::multiply(double val) const {
 	FUNCID(DailyCycle::multiply);
 	DailyCycle dc;
-	if(!isValid()){
+	if (!isValid()){
 		//Schedule interval '%1' with (id=%2) is not valid.
 		return dc;
 	}
 
-	if(val<0)
+	if (val<0)
 		IBK::Exception(IBK::FormatString("Multiply negative values to a daily cylce is not allowed."), FUNC_ID);
 
 	dc = *this;
 
-	for(unsigned int i=0; i<dc.m_values.size(); ++i)
+	for (unsigned int i=0; i<dc.m_values.size(); ++i)
 		dc.m_values[i] *= val;
 
 	return dc;
 }
 
+
 DailyCycle DailyCycle::add(double val) const{
-	FUNCID(DailyCycle::add);
 	DailyCycle dc;
-	if(!isValid()){
+	if (!isValid()){
 		//Schedule interval '%1' with (id=%2) is not valid.
 		return dc;
 	}
 
 	dc = *this;
 
-	for(unsigned int i=0; i<dc.m_values.size(); ++i)
+	for (unsigned int i=0; i<dc.m_values.size(); ++i)
 		dc.m_values[i] += val;
 
 	return dc;

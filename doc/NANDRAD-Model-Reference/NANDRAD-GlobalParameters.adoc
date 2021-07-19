@@ -26,7 +26,6 @@ Im Folgenden werden alle Simulationsparameter beschrieben, siehe <<ex_simpara>>.
 ----
 <SimulationParameter>
   <IBK:Parameter name="InitialTemperature" unit="C">5</IBK:Parameter>
-  <IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
   <Interval>
     <IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
     <IBK:Parameter name="End" unit="d">730</IBK:Parameter>
@@ -158,6 +157,7 @@ Solver-Parameter
   <IBK:IntPara name="MaxKrylovDim">30</IBK:IntPara>
   <IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
   <IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
+  <IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
   <IBK:Flag name="DetectMaxTimeStep">true</IBK:Flag>
   <Integrator>CVODE</Integrator>
   <LesSolver>Dense</LesSolver>
@@ -165,7 +165,7 @@ Solver-Parameter
 ----
 ====
 
-Der tag `SolverParameter` enthält die folgenden untergeordneten tags:
+Der tag `SolverParameter` enthält die folgenden untergeordneten Elemente:
 
 [options="header",cols="20%,70%,^ 10%",width="100%"]
 |====================

@@ -32,6 +32,10 @@ namespace Ui {
 class SVSmartSelectDialog;
 }
 
+namespace VICUS {
+	class AbstractDBElement;
+}
+
 /*! The dialog for selecting objects based on properties. */
 class SVSmartSelectDialog : public QDialog {
 	Q_OBJECT
@@ -39,6 +43,9 @@ class SVSmartSelectDialog : public QDialog {
 public:
 	explicit SVSmartSelectDialog(QWidget *parent = nullptr);
 	~SVSmartSelectDialog();
+
+	/*! Updates selection options and executes the dialog. */
+	void select();
 
 private slots:
 	void onSelectClicked();
@@ -53,8 +60,41 @@ private slots:
 
 	void on_checkBoxLengthAbove_stateChanged(int arg1);
 
+	void on_pushButtonReset_clicked();
+
+	/*! Triggered when any of the bread crumb buttons has been pressed. */
+	void onSelectionButtonPressed();
+	/*! Triggered when any of the filter buttons has been pressed. */
+	void onOptionButtonPressed();
+
 private:
-	Ui::SVSmartSelectDialog *m_ui;
+	/*! Based on available options and current m_selections info, the button grid is updated. */
+	void updateButtonGrid();
+
+	struct FilterOption {
+		FilterOption() = default;
+		FilterOption(const QString & name, const VICUS::AbstractDBElement * dbElement) :
+			m_name(name), m_dbElement(dbElement) {}
+
+		QString							m_name;
+		const VICUS::AbstractDBElement	*m_dbElement = nullptr;
+		std::vector<FilterOption>		m_options;
+	};
+
+
+	Ui::SVSmartSelectDialog		*m_ui;
+
+	/*! The hierarchy of filter options. */
+	FilterOption				m_options;
+
+	/*! Contains the currently selected selections in the option hierarchy.
+		First index is the index within m_options.m_options[].
+	*/
+	std::vector<unsigned int>	m_selections;
+	/*! The push buttons in the bread crumbs layout (owned). */
+	std::vector<QPushButton*>	m_selectionButtons;
+
+	std::vector<QPushButton*>	m_optionButtons;
 };
 
 #endif // SVSmartSelectDialogH

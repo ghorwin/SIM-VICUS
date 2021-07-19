@@ -26,3 +26,6 @@
 /ThermoHydraulicNetworkHeatPumpIdealSupply/
 /ThermoHydraulicNetworkPumpWithLossesAndFraction/
 /ThermoHydraulicNetworkHeatPumpRealSource/
+/HydraulicNetworkPressureLossValve/
+/ThermoHydraulicNetworkPressureLossValve/
+/ThermoHydraulicNetworkPumpWithLossesScheduled/

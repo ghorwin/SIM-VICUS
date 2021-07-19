@@ -92,6 +92,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 		m_ui->lineEditWallRoughness->clear();
 		m_ui->lineEditInsulationLambda->clear();
 		m_ui->lineEditInsulationThickness->clear();
+		m_ui->lineEditUValue->clear();
 		m_ui->pushButtonPipeColor->setColor(Qt::gray);
 
 		m_autoNameGeneration = false;
@@ -119,6 +120,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value * 1000);
 	m_ui->lineEditInsulationLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value);
 	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value * 1000);
+	if (pipe->isValid())
+		m_ui->lineEditUValue->setText(QString("%L1").arg(pipe->UValue(),0, 'f', 3));
 
 	m_ui->pushButtonPipeColor->blockSignals(true);
 	m_ui->pushButtonPipeColor->setColor(pipe->m_color);

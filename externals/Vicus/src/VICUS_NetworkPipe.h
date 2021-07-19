@@ -60,7 +60,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Calculates the effective U-value per m length of pipe in [W/mK]. */
-	double calculateUValue() const;
+	double UValue() const;
 
 	/*! Returns the inner pipe diameter in [m].
 		\warning Parameters are not checked for validity. If used unchecked, result may be negative or zero.

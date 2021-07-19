@@ -15,6 +15,8 @@
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
 
+#include <IBKMK_common_defines.h>
+
 namespace SOLFRA {
 
 JacobianSparseCSR::JacobianSparseCSR(unsigned int n, unsigned int nnz, const unsigned int *ia, const unsigned int * ja,
@@ -187,23 +189,20 @@ int JacobianSparseCSR::setup(double t, const double * y, const double * ydot, co
 #endif
 #ifdef DUMP_JACOBIAN_BINARY
 	std::ofstream jacdump("jacobian_sparse.bin", std::ios_base::binary);
-	char* jacData = new char[serializationSize() + sizeof(size_t) + 4 * sizeof(unsigned int)];
-	void * jacDataPtr = jacData + sizeof(size_t) + 4 * sizeof(unsigned int);
+
+	// we store:
+	// - 1 byte for matrix ID
+	// - 1 size_t for size of matrix storage memory
+	// - 4 unsigned int - size integers
+	// - storage space for actual matrix serialization data
+	unsigned int totalNumberOfBytes = serializationSize();
+
+	char* jacData = new char[totalNumberOfBytes];
+	void * jacDataPtr = jacData;
 	// serialize all matrix data
 	serialize(jacDataPtr);
-	// store data size and matrix dimensions
-	unsigned int offset = 0;
-	*(size_t*)(jacData) = serializationSize();
-	offset += sizeof(size_t);
-	*(unsigned int*)(jacData + offset) = m_n;
-	offset += sizeof(unsigned int);
-	*(unsigned int*)(jacData + offset) = m_nnz;
-	offset += sizeof(unsigned int);
-	*(unsigned int*)(jacData + offset) = m_iaT.size();
-	offset += sizeof(unsigned int);
-	*(unsigned int*)(jacData + offset) = m_jaT.size();
 	// write data
-	jacdump.write(jacData, serializationSize() + sizeof(size_t) + 4 * sizeof(unsigned int) );
+	jacdump.write(jacData, totalNumberOfBytes );
 	jacdump.close();
 	delete[] jacData;
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");

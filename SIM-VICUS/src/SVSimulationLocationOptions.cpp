@@ -37,6 +37,7 @@
 #include "SVConstants.h"
 #include "SVDBModelDelegate.h"
 #include "SVClimateDataSortFilterProxyModel.h"
+#include "SVProjectHandler.h"
 
 SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRAD::Location & location) :
 	QWidget(parent),
@@ -171,7 +172,8 @@ void SVSimulationLocationOptions::updateUi() {
 
 	// do we have a climate file path given?
 	if (m_location->m_climateFilePath.isValid()) {
-		// is the referenced file in the climate database?
+		// is the referenced file in the climate database? If so, it has a placeholder "${Database}" in path or
+		// ${User Database}
 		QModelIndex idx;
 		for (int i=0, count = m_climateDataModel->rowCount(QModelIndex()); i< count; ++i) {
 			QModelIndex curIdx = m_climateDataModel->index(i, 0);
@@ -212,13 +214,28 @@ void SVSimulationLocationOptions::updateUi() {
 			// Note: update of location info is done through on_radioButtonFromDB_toggled() call below
 		}
 		else {
+			// not a database file, might still contain a placeholder
+
+			IBK::Path absPath = SVProjectHandler::instance().replacePathPlaceholders(m_location->m_climateFilePath);
+			absPath.removeRelativeParts(); // remove any remaining ../.. in the middle
+
 			m_ui->radioButtonFromDB->blockSignals(true); // slot is connected to first radio button, so block this
 			m_ui->radioButtonFromFile->setChecked(true);
 			m_ui->radioButtonFromDB->blockSignals(false);
 			// file is not contained in the database or user database, assume absolute file path
 			m_ui->filepathClimateDataFile->blockSignals(true);
-			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(m_location->m_climateFilePath.str()));
+			m_ui->filepathClimateDataFile->setFilename(QString::fromStdString(absPath.str()) );
 			m_ui->filepathClimateDataFile->blockSignals(false);
+
+			// select the correct radio button
+			m_ui->radioButtonUserPathAbsolute->blockSignals(true);
+			if (m_location->m_climateFilePath.str().find("${Project Directory}") != std::string::npos)
+				m_ui->radioButtonUserPathRelative->setChecked(true);
+			else
+				m_ui->radioButtonUserPathAbsolute->setChecked(true);
+			m_ui->radioButtonUserPathAbsolute->blockSignals(false);
+
+			m_ui->lineEditUserFilePath->setText( QString::fromStdString(m_location->m_climateFilePath.str()));
 
 			// Note: update of location info is done through on_radioButtonFromDB_toggled() call below
 		}
@@ -356,6 +373,7 @@ void SVSimulationLocationOptions::on_radioButtonFromDB_toggled(bool checked) {
 	m_ui->labelTextFilter->setEnabled(checked);
 	m_ui->lineEditTextFilter->setEnabled(checked);
 	m_ui->filepathClimateDataFile->setEnabled(!checked);
+	m_ui->widgetUserPathOptions->setEnabled(!checked);
 	if (checked) {
 		onCurrentIndexChanged(m_ui->tableViewClimateFiles->currentIndex(), QModelIndex());
 	}
@@ -379,6 +397,7 @@ void SVSimulationLocationOptions::on_lineEditTextFilter_textChanged(const QStrin
 
 void SVSimulationLocationOptions::on_filepathClimateDataFile_editingFinished() {
 	updateUserClimateFileInfo();
+	on_radioButtonUserPathAbsolute_toggled(m_ui->radioButtonUserPathAbsolute->isChecked());
 	updateLocationInfo(&m_userClimateFile, false);
 }
 
@@ -390,4 +409,33 @@ void SVSimulationLocationOptions::on_checkBoxCustomLocation_toggled(bool checked
 	m_ui->labelLatitude->setEnabled(checked);
 	m_ui->labelLongitude->setEnabled(checked);
 	m_ui->labelTimeZone->setEnabled(checked);
+}
+
+
+void SVSimulationLocationOptions::on_radioButtonUserPathAbsolute_toggled(bool checked) {
+	// update local file path
+
+	// we need a project file path for that
+	QString p = SVProjectHandler::instance().projectFile();
+	if (p.isEmpty())
+		checked = true; // fall back to absolute path if project file hasn't been saved, yet
+
+	if (checked) {
+		m_ui->lineEditUserFilePath->setText( m_ui->filepathClimateDataFile->filename() );
+	}
+	else {
+		IBK::Path proPath(p.toStdString());
+		proPath = proPath.parentPath();
+		IBK::Path climateFilePath(m_ui->filepathClimateDataFile->filename().toStdString());
+		try {
+			IBK::Path relPath = climateFilePath.relativePath(proPath);
+			QString pathString = QString::fromStdString( (IBK::Path("${Project Directory}") / relPath).str());
+			m_ui->lineEditUserFilePath->setText( pathString );
+		} catch (...) {
+			// can't relate paths... keep absolute
+			m_ui->lineEditUserFilePath->setText( m_ui->filepathClimateDataFile->filename() );
+		}
+	}
+	// finally update project data
+	m_location->m_climateFilePath = IBK::Path(m_ui->lineEditUserFilePath->text().toStdString());
 }
