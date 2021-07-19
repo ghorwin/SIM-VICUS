@@ -26,6 +26,8 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_KeywordList.h"
 
+#define PI				3.141592653589793238
+
 
 namespace VICUS {
 

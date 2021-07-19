@@ -2006,7 +2006,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 										NANDRAD::IdealPipeRegisterModel idealPipe;
 
 										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
-																		   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->calculateUValue());
+																		   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, pipe->UValue());
 										NANDRAD::KeywordList::setParameter(idealPipe.m_para, "IdealPipeRegisterModel::para_t",
 																		   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, pipe->diameterInside());
 										idealPipe.m_thermostatZoneId = dsh.m_zoneId;
@@ -2510,7 +2510,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness,
 										   pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].get_value("mm"));
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, pipe->calculateUValue());
+										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, pipe->UValue());
 		nandradNetwork.m_pipeProperties.push_back(pipeProp);
 	}
 
