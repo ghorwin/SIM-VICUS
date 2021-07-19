@@ -33,18 +33,18 @@
 namespace NANDRAD_MODEL {
 
 
-double FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness){
+double FrictionFactorSwamee(const double &reynolds, const double &d, const double &roughness){
 	if (reynolds < RE_LAMINAR)
 		return 64.0/reynolds;
 	else if (reynolds < RE_TURBULENT){
 		double fLam = 64.0/RE_LAMINAR; // f(RE_LAMINAR)
-		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
+		double fTurb = std::log10((roughness / d) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
 		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
 		// now interpolate linearly between fLam and fTurb
 		return fLam + (reynolds - RE_LAMINAR) * (fTurb - fLam) / (RE_TURBULENT - RE_LAMINAR);
 	}
 	else{
-		double f = std::log10( (roughness / diameter) / 3.7 + 5.74 / std::pow(reynolds, 0.9) ) ;
+		double f = std::log10( (roughness / d) / 3.7 + 5.74 / std::pow(reynolds, 0.9) ) ;
 		return	0.25 / (f*f);
 	}
 }
