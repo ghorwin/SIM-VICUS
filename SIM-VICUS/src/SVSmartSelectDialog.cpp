@@ -111,6 +111,10 @@ void SVSmartSelectDialog::onSelectClicked() {
 			if (m_ui->checkBoxMaxHeatingDemandAbove->isChecked() && m_ui->lineEditMaxHeatingDemandAbove->isValid())
 				maxHeatingDemandAboveFilter = m_ui->lineEditMaxHeatingDemandAbove->value();
 
+			unsigned int idFilter = VICUS::INVALID_ID;
+			if (m_ui->checkBoxNodeId->isChecked() && m_ui->lineEditNodeId->isValid())
+				idFilter = (unsigned int)m_ui->lineEditNodeId->value();
+
 			// now process all network objects and store IDs of selected nodes
 			std::set<unsigned int> nodeIDs;
 
@@ -122,6 +126,9 @@ void SVSmartSelectDialog::onSelectClicked() {
 
 				for (const VICUS::NetworkNode & n : nw.m_nodes) {
 				// apply filter rules
+
+					if (idFilter != VICUS::INVALID_ID && n.m_id != idFilter)
+						continue;
 
 					// filter based on type
 					if (nodeTypeFilter != VICUS::NetworkNode::NUM_NT && n.m_type != nodeTypeFilter)
