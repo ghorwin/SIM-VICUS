@@ -38,8 +38,8 @@ void ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(const double *y
 	ThermalNetworkAbstractFlowElement::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
 
 	// m_heatLoss depends on all inputs, just as ydot
-	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowLeft) );
-	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowRight) );
+//	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowLeft) );
+//	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowRight) );
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, &m_meanTemperature) );
 
