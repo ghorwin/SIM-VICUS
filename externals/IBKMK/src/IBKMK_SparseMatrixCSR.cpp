@@ -369,6 +369,9 @@ void SparseMatrixCSR::recreate(void* & dataPtr) {
 	IBK::recreate_vector(dataPtr, m_ja);
 	IBK::recreate_vector(dataPtr, m_iaT);
 	IBK::recreate_vector(dataPtr, m_jaT);
+
+	if (m_data.size() != m_nnz || m_ia.size() != m_n+1 || m_ja.size() != m_nnz)
+		throw IBK::Exception("Inconsistent binary matrix data.", FUNC_ID);
 }
 
 
