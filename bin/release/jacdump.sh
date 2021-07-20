@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NandradSolverJacDump $1
-NandradSolverJacDump $1 --les-solver=Dense
+NandradSolverJacDump $1 --les-solver=Dense --integrator=ImplicitEuler
 
 basename=$1
 basename=${basename%.nandrad}
