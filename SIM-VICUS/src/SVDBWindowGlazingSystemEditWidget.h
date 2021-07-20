@@ -35,6 +35,7 @@ namespace Ui {
 class SVDBWindowGlazingSystemTableModel;
 class SVDatabase;
 class QwtPlotCurve;
+class QTableWidgetItem;
 
 namespace VICUS {
 	class WindowGlazingSystem;
@@ -53,9 +54,6 @@ class SVDBWindowGlazingSystemEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
-
-
-
 	explicit SVDBWindowGlazingSystemEditWidget(QWidget *parent = nullptr);
 	~SVDBWindowGlazingSystemEditWidget() override;
 
@@ -64,7 +62,6 @@ public:
 
 	/*! Update widget with this. */
 	void updateInput(int id) override;
-
 
 private slots:
 	void on_lineEditName_editingFinished();
@@ -76,6 +73,8 @@ private slots:
 
 	void on_comboBoxType_currentIndexChanged(int index);
 
+
+	void on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item);
 
 private:
 

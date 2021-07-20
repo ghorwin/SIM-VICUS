@@ -70,6 +70,7 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	// set period table column sizes
 
 	//add header to periods table
+	m_ui->tableWidgetSHGC->blockSignals(true);
 	m_ui->tableWidgetSHGC->setColumnCount(2);
 	m_ui->tableWidgetSHGC->setRowCount(10);
 	// Note: valid column is self-explanatory and does not need a caption
@@ -87,30 +88,20 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	m_ui->tableWidgetSHGC->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	for (int i = 10; i > 0; --i) {
+	for (int i = 9; i >= 0; --i) {
 		// we need the Angle to go from 0 ... 90 Deg
 		// so we then make the iterator go from 0 ... 9
-		int idx = i-1;
 
-		m_ui->tableWidgetSHGC->setItem( i-1, 0, new QTableWidgetItem( QString::number(i*10) ) );
-		m_ui->tableWidgetSHGC->setItem( i-1, 1, new QTableWidgetItem(""));
+		QTableWidgetItem * item = new QTableWidgetItem( QString::number(i*10) );
+		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 
-		m_ui->tableWidgetSHGC->item( i-1, 0)->setFlags(m_ui->tableWidgetSHGC->item(i-1,0)->flags() & ~Qt::ItemIsEditable);
-		m_ui->tableWidgetSHGC->item( i-1, 0)->setTextAlignment(Qt::AlignCenter);
-		m_ui->tableWidgetSHGC->item( i-1, 1)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetSHGC->setItem( i, 0, item);
+		m_ui->tableWidgetSHGC->setItem( i, 1, new QTableWidgetItem);
+
+		m_ui->tableWidgetSHGC->item( i, 0)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetSHGC->item( i, 1)->setTextAlignment(Qt::AlignCenter);
 	}
-
-
-
-//	unsigned int i=9;
-//	while (true){
-//		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i)*10)));
-//		m_ui->tableWidgetSHGC->setItem((int)i, 1, new QTableWidgetItem(""));
-
-//		if(i == 0)
-//			break;
-//		--i;
-//	}
+	m_ui->tableWidgetSHGC->blockSignals(false);
 
 	m_ui->comboBoxType->blockSignals(true);
 	for (int i=0; i<VICUS::WindowGlazingSystem::NUM_MT; ++i)
@@ -124,7 +115,6 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	//plt->setMargin(5);
 	plt->setAxisScale(QwtPlot::xBottom, 0, 90);
 	plt->setAxisScale(QwtPlot::yLeft, 0, 1);
-
 
 	// axes
 	QwtText theAxisTitle(tr("Incident Angle [Deg]")); // no axis title for left diagram
@@ -240,7 +230,8 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	m_ui->comboBoxType->blockSignals(false);
 
 
-	if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple){
+	m_ui->tableWidgetSHGC->blockSignals(true);
+	if (m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple) {
 		std::vector<double> degVec;
 		std::vector<double> plotSHGCVec;
 		degVec.resize(10);
@@ -248,16 +239,15 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
 
-		if(!spline.empty()){
-			for(unsigned int i=0; i<10; ++i){
+		if (!spline.empty()) {
+			for (unsigned int i=0; i<10; ++i) {
 
 				IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
 				double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
-				m_ui->tableWidgetSHGC->item(i,1)->setText(QString::number(val));
-				// first we compose the vectors with data for the plot
+				m_ui->tableWidgetSHGC->item((int)i,1)->setText(QString("%L1").arg(val));
+				// compose the vectors with data for the plot
 				degVec[i] = i * 10;
 				plotSHGCVec[i] = val*100;
-
 			}
 			// we update the plot
 			m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
@@ -268,6 +258,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	else if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Detailed){
 		///TODO Stephan implement detailed model
 	}
+	m_ui->tableWidgetSHGC->blockSignals(false);
 
 
 	m_ui->pushButtonWindowColor->blockSignals(true);
@@ -332,4 +323,9 @@ void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int 
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
 	}
+}
+
+
+void SVDBWindowGlazingSystemEditWidget::on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item) {
+	// triggered when user has entered a value
 }
