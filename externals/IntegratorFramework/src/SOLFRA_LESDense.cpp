@@ -116,7 +116,7 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif
-#ifndef DUMP_JACOBIAN_BINARY
+#ifdef DUMP_JACOBIAN_BINARY
 	IBK::write_matrix_binary(*m_jacobian, "jacobian_dense.bin");
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif

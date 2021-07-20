@@ -188,7 +188,7 @@ int JacobianSparseCSR::setup(double t, const double * y, const double * ydot, co
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");
 #endif
-#ifndef DUMP_JACOBIAN_BINARY
+#ifdef DUMP_JACOBIAN_BINARY
 	IBK::write_matrix_binary(*this, "jacobian_sparse.bin");
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");
 #endif
