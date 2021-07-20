@@ -165,7 +165,10 @@ private:
 	/*! Holds number of thermostat model objects that values were requested from. */
 	unsigned int									m_thermostatModelObjects = 0;
 
-	/*! Vector with value references. */
+	/*! Vector with value references.
+		Vector contains 2 references (optional) for each zone that this model is applied to.
+		The order is: HeatingControlValue(zone1), CoolingControlValue(zone1), ... CoolingControlValue(zoneN)
+	*/
 	std::vector<const double*>						m_valueRefs;
 
 	/*! Integral values for each PI controller (if used). */
