@@ -11,6 +11,7 @@
 #include <IBK_Exception.h>
 #include <IBK_FormatString.h>
 #include <IBK_messages.h>
+#include <IBK_InputOutput.h>
 
 #include <cvode/cvode_dense.h>
 #include <ida/ida_dense.h>
@@ -98,10 +99,8 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 			// derivative: 1 - dt * dydot/dy
 			for (unsigned int i=0; i<m_n; ++i) {
 				// compute finite-differences column j in row i
-				(*m_jacobian)(i,j) = - gamma * ( m_FMod[i] - ydot[i] )/m_ydiff[j];
+				(*m_jacobian)(i,j) = ( m_FMod[i] - ydot[i] )/m_ydiff[j];
 			}
-			// add identity matrix
-			(*m_jacobian)(j,j) += 1.0;
 			// Jacobian matrix now holds df/dy
 			// update solver statistics
 			++m_statNumRhsEvals;
@@ -117,6 +116,18 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif
+#ifndef DUMP_JACOBIAN_BINARY
+	IBK::write_matrix_binary(*m_jacobian, "jacobian_dense.bin");
+	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
+#endif
+
+	// scale matrix with -gamma
+	unsigned int dataSize = m_n*m_n;
+	for (unsigned int i=0; i<dataSize; ++i)
+		m_jacobian->data()[i] *= -gamma;
+	// add identity matrix
+	for (unsigned int i=0; i<m_n; ++i)
+		(*m_jacobian)(i,i) += 1.0;
 
 	// perform LU-factorisation of the dense jacobian
 	m_jacobian->lu();
