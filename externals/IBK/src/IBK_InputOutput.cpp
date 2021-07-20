@@ -433,6 +433,86 @@ void read_string_vector_binary( std::istream &in,
 	} // while size left
 
 }
+
+
+void serialize_vector(void *& dataPtr, const std::vector<double> & vec) {
+	// store number of doubles
+	*(uint32_t*)dataPtr = (uint32_t)vec.size();
+	dataPtr = (char*)dataPtr + sizeof(uint32_t);
+	// store actual vector data
+	size_t dataSize = vec.size()*sizeof(double);
+	if (dataSize != 0) {
+		std::memcpy(dataPtr, vec.data(), dataSize);
+		dataPtr = (char*)dataPtr + dataSize;
+	}
+}
+
+
+void serialize_vector(void *& dataPtr, const std::vector<unsigned int> & vec) {
+	// store number of doubles
+	*(uint32_t*)dataPtr = (uint32_t)vec.size();
+	dataPtr = (char*)dataPtr + sizeof(uint32_t);
+	// store actual vector data
+	size_t dataSize = vec.size()*sizeof(unsigned int);
+	if (dataSize != 0) {
+		std::memcpy(dataPtr, vec.data(), dataSize);
+		dataPtr = (char*)dataPtr + dataSize;
+	}
+}
+
+
+void deserialize_vector(void *& dataPtr, std::vector<double> & vec) {
+	unsigned int n = *(uint32_t*)dataPtr;
+	if (vec.size() != n)
+		throw IBK::Exception(IBK::FormatString("Invalid vector size %1, expected %2.").arg(n).arg(vec.size()), "IBK::deserializeVector(double)");
+	dataPtr = (char*)dataPtr + sizeof(uint32_t); // advance pointer to start of data block
+	size_t dataSize = n*sizeof(double);
+	if (dataSize != 0) {
+		std::memcpy(vec.data(), dataPtr, dataSize);
+		dataPtr = (char*)dataPtr + dataSize;
+	}
+}
+
+
+void deserialize_vector(void *& dataPtr, std::vector<unsigned int> & vec) {
+	unsigned int n = *(uint32_t*)dataPtr;
+	if (vec.size() != n)
+		throw IBK::Exception(IBK::FormatString("Invalid vector size %1, expected %2.").arg(n).arg(vec.size()), "IBK::deserializeVector(unsigned int)");
+	dataPtr = (char*)dataPtr + sizeof(uint32_t); // advance pointer to start of data block
+	size_t dataSize = n*sizeof(unsigned int);
+	if (dataSize != 0) {
+		std::memcpy(vec.data(), dataPtr, dataSize);
+		dataPtr = (char*)dataPtr + dataSize;
+	}
+}
+
+
+void recreate_vector(void *& dataPtr, std::vector<double> & vec) {
+	unsigned int n = *(uint32_t*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(uint32_t); // advance pointer to start of data block
+	if (n == 0) {
+		vec.clear();
+		return;
+	}
+	vec.resize(n);
+	size_t dataSize = n*sizeof(double);
+	std::memcpy(vec.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+}
+
+
+void recreate_vector(void *& dataPtr, std::vector<unsigned int> & vec) {
+	unsigned int n = *(uint32_t*)dataPtr;
+	if (n == 0) {
+		vec.clear();
+		return;
+	}
+	vec.resize(n);
+	size_t dataSize = n*sizeof(unsigned int);
+	std::memcpy(vec.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+}
+
 // ----------------------------------------------------------------------------
 
 

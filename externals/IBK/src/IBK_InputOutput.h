@@ -334,6 +334,28 @@ void write_matrix(std::ostream & out, const T & mat, double * b, bool eulerForma
 	}
 }
 
+/*! Pushes content of double-vector to memory buffer and advances the pointer to the memory block. */
+void serialize_vector(void* & dataPtr, const std::vector<double> & vec);
+/*! Pushes content of unsigned int-vector to memory buffer and advances the pointer past the memory block. */
+void serialize_vector(void* & dataPtr, const std::vector<unsigned int> & vec);
+
+/*! Copies memory block into double-vector, hereby checking that target vector has correct size,
+	and advances the pointer past the memory block.
+*/
+void deserialize_vector(void* & dataPtr, std::vector<double> & vec);
+/*! Copies memory block into unsigned int-vector, hereby checking that target vector has correct size,
+	and advances the pointer past the memory block.
+*/
+void deserialize_vector(void* & dataPtr, std::vector<unsigned int> & vec);
+
+/*! Reads size from memory block, resizes double-vector (in case of zero length clears vector), and copies
+	memory block data into vector and advances the pointer past the memory block.
+*/
+void recreate_vector(void* & dataPtr, std::vector<double> & vec);
+/*! Reads size from memory block, resizes unsigned int-vector (in case of zero length clears vector), and copies
+	memory block data into vector and advances the pointer past the memory block.
+*/
+void recreate_vector(void* & dataPtr, std::vector<unsigned int> & vec);
 
 } // namespace IBK
 
