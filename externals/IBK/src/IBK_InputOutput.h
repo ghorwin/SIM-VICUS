@@ -242,6 +242,7 @@ void read_string_vector_binary( std::istream &in,
 */
 template <typename T>
 void write_matrix_binary(const T & mat, const std::string & filename) {
+	FUNCID(IBK::write_matrix_binary);
 	std::ofstream binFile(filename.c_str(), std::ios_base::binary);
 	// get size of matrix when stored on file
 	uint64_t matSize = mat.serializationSize();
@@ -249,11 +250,16 @@ void write_matrix_binary(const T & mat, const std::string & filename) {
 	std::string smem(matSize, ' ');
 	// dump to memory
 	void * smem_ptr = (void*)&smem[0];
+	void * originalSmem_ptr = smem_ptr;
 	mat.serialize(smem_ptr); // Note: smem_ptr is modified and points now past the memory of smem
+	uint64_t bytesStored = (char*)smem_ptr - (char*)originalSmem_ptr;
+	if (bytesStored != matSize)
+		throw IBK::Exception(IBK::FormatString("%1 bytes written, though only %2 bytes are allocated for matrix storage.")
+							 .arg(bytesStored).arg(matSize), FUNC_ID);
 	// first write data length
 	binFile.write((const char*)&matSize, sizeof(uint64_t));
 	// then write data
-	binFile.write(&smem[0], matSize*sizeof(char));
+	binFile.write(&smem[0], matSize);
 	binFile.close(); // close file
 }
 
@@ -273,12 +279,17 @@ void read_matrix_binary(const std::string & filename, T & mat) {
 	// reserve memory
 	std::string smem(matSize, ' ');
 	// read matrix data
-	if (!binFile.read(&smem[0], matSize*sizeof(char)))
+	if (!binFile.read(&smem[0], matSize))
 		throw IBK::Exception("Error reading matrix data from file.", FUNC_ID);
 	binFile.close();
 	// recreate matrix from data
 	void * smem_ptr = (void*)&smem[0];
 	mat.recreate(smem_ptr); // Note: smem_ptr is modified and points now past the memory of smem
+	void * originalSmem_ptr = smem_ptr;
+	uint64_t bytesRead = (char*)smem_ptr - (char*)originalSmem_ptr;
+	if (bytesRead + sizeof(uint64_t) != matSize)
+		throw IBK::Exception(IBK::FormatString("%1 bytes read, though only %2 bytes are provided in matrix storage.")
+							 .arg(bytesRead).arg(matSize - sizeof(uint64_t)), FUNC_ID);
 }
 
 
@@ -338,6 +349,8 @@ void write_matrix(std::ostream & out, const T & mat, double * b, bool eulerForma
 void serialize_vector(void* & dataPtr, const std::vector<double> & vec);
 /*! Pushes content of unsigned int-vector to memory buffer and advances the pointer past the memory block. */
 void serialize_vector(void* & dataPtr, const std::vector<unsigned int> & vec);
+/*! Pushes content of long int-vector to memory buffer and advances the pointer past the memory block. */
+void serialize_vector(void* & dataPtr, const std::vector<long int> & vec);
 
 /*! Copies memory block into double-vector, hereby checking that target vector has correct size,
 	and advances the pointer past the memory block.
@@ -347,6 +360,10 @@ void deserialize_vector(void* & dataPtr, std::vector<double> & vec);
 	and advances the pointer past the memory block.
 */
 void deserialize_vector(void* & dataPtr, std::vector<unsigned int> & vec);
+/*! Copies memory block into unsigned int-vector, hereby checking that target vector has correct size,
+	and advances the pointer past the memory block.
+*/
+void deserialize_vector(void* & dataPtr, std::vector<long int> & vec);
 
 /*! Reads size from memory block, resizes double-vector (in case of zero length clears vector), and copies
 	memory block data into vector and advances the pointer past the memory block.
@@ -356,6 +373,10 @@ void recreate_vector(void* & dataPtr, std::vector<double> & vec);
 	memory block data into vector and advances the pointer past the memory block.
 */
 void recreate_vector(void* & dataPtr, std::vector<unsigned int> & vec);
+/*! Reads size from memory block, resizes unsigned int-vector (in case of zero length clears vector), and copies
+	memory block data into vector and advances the pointer past the memory block.
+*/
+void recreate_vector(void* & dataPtr, std::vector<long int> & vec);
 
 } // namespace IBK
 
