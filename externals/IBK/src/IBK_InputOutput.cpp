@@ -503,6 +503,7 @@ void recreate_vector(void *& dataPtr, std::vector<double> & vec) {
 
 void recreate_vector(void *& dataPtr, std::vector<unsigned int> & vec) {
 	unsigned int n = *(uint32_t*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(uint32_t); // advance pointer to start of data block
 	if (n == 0) {
 		vec.clear();
 		return;
