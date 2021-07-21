@@ -5,4 +5,6 @@
 /IdealPipeRegisterCooling/
 /IdealPipeRegisterHeating/
 /IdealPipeRegisterScheduled/
-/Andreas/
+/ThermostatControlledIdealFloorHeating/
+/ThermostatControlledIdealPipeRegister/
+/ThermostatControlledIdealParallelPipeRegister/
