@@ -52,10 +52,17 @@
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
+				
+				<!-- The controlled pump has a maximum electrical power and maximum pressure head. These are used to calculate the actual 
+				max_pressure_head = f ( mdot) function -->
+				
 					<HydraulicNetworkComponent id="2" modelType="ControlledPump">
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>						
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
 					</HydraulicNetworkComponent>
+					
 					<HydraulicNetworkComponent id="3" modelType="HeatPumpIdealCarnotSourceSide">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
@@ -70,8 +77,12 @@
 					<HydraulicNetworkControlElement id="1" controlledProperty="TemperatureDifferenceOfFollowingElement"  modelType="Constant" controllerType="PController" >						
 						<IBK:Parameter name="Kp" unit="---">1e5</IBK:Parameter>
 						<IBK:Parameter name="TemperatureDifferenceSetpoint" unit="K">5</IBK:Parameter>
-						<!-- Deactivate upper limit of controller result value - this is the default and could be omitted -->
+						
+						<!-- The MaximumControllerResultValue doesnt have any impact. 
+						The maximum pressure head of the pump is determined by the parameters given in the component definition abvove -->
+						
 						<MaximumControllerResultValue>0</MaximumControllerResultValue>
+						
 					</HydraulicNetworkControlElement>
 				</ControlElements>
 
@@ -88,9 +99,13 @@
 					
 					<HydraulicNetworkElement id="401" inletNodeId="4" outletNodeId="1" componentId="3" displayName="Heat Pump">
 						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+						
+						<!-- We increase the heat loss of the heat pump, so the controlled pump exceeds its maximum pressure head, 
+						the temperature differnce will rise above the targeted 5 K -->
+						
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
-								<X unit="h">0 12 15 24 </X>
-								<Y unit="W">1000 1000 3000 5000 </Y>
+								<X unit="h">0 6 24 </X>
+								<Y unit="W">1000 1000 6000 </Y>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
@@ -148,6 +163,12 @@
 					<ObjectListName>Heat pump</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>				
+				<OutputDefinition>
+					<Quantity>PressureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>	
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
