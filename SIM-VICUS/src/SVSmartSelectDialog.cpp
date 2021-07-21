@@ -88,11 +88,11 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 
 	FilterOption & components = m_options.m_options[0];
 	components.m_name = tr("Components");
-	components.m_options.resize(3);
 
-	components.m_options[0].m_name = tr("Outside walls");
-	components.m_options[1].m_name = tr("Inside walls");
-	components.m_options[2].m_name = tr("Windows");
+	components.m_options.push_back(FilterOption(tr("Outside walls"), nullptr));
+	components.m_options.push_back(FilterOption(tr("Inside walls"), nullptr));
+	components.m_options.push_back(FilterOption(tr("Other walls"), nullptr));
+	components.m_options.push_back(FilterOption(tr("Windows"), nullptr));
 
 	FilterOption & thermalElements = m_options.m_options[1];
 	thermalElements.m_name = tr("Thermal elements");
@@ -115,7 +115,9 @@ void SVSmartSelectDialog::select() {
 	outsideWalls.m_options.clear();
 	FilterOption & insideWalls = m_options.m_options[0].m_options[1];
 	insideWalls.m_options.clear();
-	FilterOption & windows = m_options.m_options[0].m_options[2];
+	FilterOption & otherWalls = m_options.m_options[0].m_options[2];
+	otherWalls.m_options.clear();
+	FilterOption & windows = m_options.m_options[0].m_options[3];
 	windows.m_options.clear();
 
 	// process data structure and populate options
@@ -140,22 +142,16 @@ void SVSmartSelectDialog::select() {
 							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::Component::CT_FloorToCellar:
-			break;
 			case VICUS::Component::CT_FloorToAir:
-			break;
 			case VICUS::Component::CT_FloorToGround:
-			break;
 			case VICUS::Component::CT_Ceiling:
-			break;
 			case VICUS::Component::CT_SlopedRoof:
-			break;
 			case VICUS::Component::CT_FlatRoof:
-			break;
 			case VICUS::Component::CT_ColdRoof:
-			break;
 			case VICUS::Component::CT_WarmRoof:
-			break;
 			case VICUS::Component::CT_Miscellaneous:
+				otherWalls.m_options.push_back(
+							FilterOption(QtExt::MultiLangString2QString(comp->m_displayName), comp) );
 			break;
 			case VICUS::Component::NUM_CT: break;
 		}
@@ -200,11 +196,27 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 			// now lookup all component instances that make use of this component
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 				if (ci.m_componentID == c->m_id) {
-
+					// look up referenced surfaces
+					if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
+						objs.insert(ci.m_sideASurface);
+					if (ci.m_sideBSurface != nullptr && ci.m_sideBSurface->m_visible)
+						objs.insert(ci.m_sideBSurface);
 				}
 			}
 		}
-
+		const VICUS::SubSurfaceComponent * ssc = dynamic_cast<const VICUS::SubSurfaceComponent *>(option->m_dbElement);
+		if (ssc != nullptr) {
+			// now lookup all component instances that make use of this component
+			for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
+				if (ssci.m_subSurfaceComponentID == ssc->m_id) {
+					// look up referenced surfaces
+					if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
+						objs.insert(ssci.m_sideASubSurface);
+					if (ssci.m_sideBSubSurface != nullptr && ssci.m_sideBSubSurface->m_visible)
+						objs.insert(ssci.m_sideBSubSurface);
+				}
+			}
+		}
 	}
 }
 
@@ -331,8 +343,7 @@ void SVSmartSelectDialog::onSelectClicked() {
 }
 
 
-void SVSmartSelectDialog::on_comboBoxNodeType_currentIndexChanged(int index)
-{
+void SVSmartSelectDialog::on_comboBoxNodeType_currentIndexChanged(int index) {
 	bool noBuilding = index==1 || index==2;
 	m_ui->checkBoxMaxHeatingDemandAbove->setEnabled(!noBuilding);
 	m_ui->checkBoxMaxHeatingDemandBelow->setEnabled(!noBuilding);
