@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -59,6 +59,7 @@ bool Construction::calculateUValue(double & UValue, const VICUS::Database<Materi
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult Construction::equal(const AbstractDBElement *other) const{
 	const Construction * otherConstr = dynamic_cast<const Construction*>(other);
 	if (otherConstr == nullptr)
@@ -66,13 +67,12 @@ AbstractDBElement::ComparisonResult Construction::equal(const AbstractDBElement 
 
 	//first check critical data
 
-	if(m_materialLayers != otherConstr->m_materialLayers)
+	if (m_materialLayers != otherConstr->m_materialLayers)
 		return Different;
 
 	//check meta data
 
-	if(m_displayName != otherConstr->m_displayName ||
-			m_color != otherConstr->m_color ||
+	if (m_displayName != otherConstr->m_displayName ||
 			m_dataSource != otherConstr->m_dataSource ||
 			m_notes != otherConstr->m_notes ||
 			m_usageType != otherConstr->m_usageType ||

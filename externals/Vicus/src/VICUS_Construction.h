@@ -105,9 +105,6 @@ public:
 	/*! Display name of construction. */
 	IBK::MultiLanguageString		m_displayName;						// XML:A
 
-	/*! False color. */
-	QColor							m_color;							// XML:A
-
 	/*! Notes. */
 	IBK::MultiLanguageString		m_notes;							// XML:E
 

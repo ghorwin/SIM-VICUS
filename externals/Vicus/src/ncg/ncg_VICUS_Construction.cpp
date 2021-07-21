@@ -50,8 +50,6 @@ void Construction::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
-			else if (attribName == "color")
-				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -128,8 +126,6 @@ TiXmlElement * Construction::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
-	if (m_color.isValid())
-		e->SetAttribute("color", m_color.name().toStdString());
 
 	if (m_usageType != NUM_UT)
 		TiXmlElement::appendSingleAttributeElement(e, "UsageType", nullptr, std::string(), KeywordList::Keyword("Construction::UsageType",  m_usageType));
