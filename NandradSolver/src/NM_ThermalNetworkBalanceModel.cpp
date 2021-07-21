@@ -449,11 +449,12 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		// of following element, etc.) to *all* flow elements
 
 		const NANDRAD::HydraulicNetworkElement & nandradElement = m_statesModel->m_network->m_elements[i];
-		const double * dependentValueRef = nullptr;
+
 		if (nandradElement.m_controlElement != nullptr) {
 			switch (nandradElement.m_controlElement->m_controlledProperty) {
 				case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 				break;
+
 				case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
 					// insert dependency to outlet temperature of following element
 
@@ -464,7 +465,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 					unsigned int otherElemIndex = outletNode.m_elementIndexesOutlet.back();
 					IBK_ASSERT(outletNode.m_elementIndexesOutlet.size() == 1);
 					const Element & nextElement = m_statesModel->m_p->m_network->m_elements[otherElemIndex];
-					dependentValueRef = &m_statesModel->m_p->m_nodalTemperatures[nextElement.m_nodeIndexOutlet];
+					// temperature difference is computed from our own outlet temperature (node temperature) and the next
+					// element's outlet temperature. Hence, the mass flux depends on both temperatures.
+					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[nextElement.m_nodeIndexOutlet]) );
+					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
 				}
 				break;
 				case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
@@ -475,11 +479,6 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				break;
 			}
 		}
-		if (dependentValueRef != nullptr) {
-			// we add the dependency to all nodal temperatures
-			for (unsigned int i=0; i<m_statesModel->m_p->m_nodalTemperatures.size(); ++i)
-				deps.push_back(std::make_pair(&m_statesModel->m_p->m_nodalTemperatures[i], dependentValueRef) );
-		}
 
 		// copy dependencies
 		if (!deps.empty()) {
@@ -489,6 +488,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		offset += fe->nInternalStates();
 	}
 	// retrieve dependencies of network connections
+	// this basically adds dependencies of all nodal temperatures from mass fluxes
 	m_statesModel->m_p->dependencies(resultInputValueReferences);
 }
 

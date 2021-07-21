@@ -399,8 +399,11 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 }
 
 
-void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
-	// we ignore dependencies
+void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// all mass fluxes depend in each other
+	for (unsigned int i=0; i<m_p->m_fluidMassFluxes.size(); ++i)
+		for (unsigned int j=0; j<m_p->m_fluidMassFluxes.size(); ++j)
+			resultInputValueReferences.push_back(std::make_pair(&m_p->m_fluidMassFluxes[i], &m_p->m_fluidMassFluxes[j]) );
 }
 
 

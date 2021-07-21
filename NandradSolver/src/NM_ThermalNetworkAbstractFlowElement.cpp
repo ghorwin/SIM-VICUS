@@ -73,12 +73,11 @@ void ThermalNetworkAbstractFlowElement::dependencies(const double *ydot, const d
 	// meanTemperature is computed from y
 	resultInputDependencies.push_back(std::make_pair(&m_meanTemperature, y) );
 
-	// ydot depends on inflow conditions, mean temperature (=outflowTemperature()) and mdot
+	// ydot depends on inflow conditions, mean temperature (=outflowTemperature()) and mdot.
+	// Dependency on mean temperature is already defined via TInflowLeft and TInflowRight above.
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowLeft) );
 	resultInputDependencies.push_back(std::make_pair(ydot, TInflowRight) );
 	resultInputDependencies.push_back(std::make_pair(ydot, mdot) );
-	resultInputDependencies.push_back(std::make_pair(ydot, &m_meanTemperature) );
-
 }
 
 
