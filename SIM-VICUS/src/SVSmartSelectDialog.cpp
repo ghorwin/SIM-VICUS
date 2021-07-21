@@ -186,10 +186,27 @@ void SVSmartSelectDialog::select() {
 	exec();
 }
 
-//void SVSmartSelectDialog::collectComponents(FilterOption * option,
-//											std::vector<const VICUS::Component*> & components,
-//											std::vector<const VICUS::SubSurfaceComponent*> & subSurfaceComponents
-//	);
+
+void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set<const VICUS::Object*> & objs)  {
+	// if we have child leaves, process these
+	if (!option->m_options.empty()) {
+		for (FilterOption & o : option->m_options)
+			collectSelectedObjects(&o, objs);
+	}
+	else {
+		// we have a child node, now determine the type
+		const VICUS::Component * c = dynamic_cast<const VICUS::Component *>(option->m_dbElement);
+		if (c != nullptr) {
+			// now lookup all component instances that make use of this component
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				if (ci.m_componentID == c->m_id) {
+
+				}
+			}
+		}
+
+	}
+}
 
 
 void SVSmartSelectDialog::onSelectClicked() {
@@ -205,23 +222,19 @@ void SVSmartSelectDialog::onSelectClicked() {
 		}
 
 		// collect list of selected components or subsurface components
-		std::vector<const VICUS::Component*> components;
-		std::vector<const VICUS::SubSurfaceComponent*> subSurfaceComponents;
+		std::set<const VICUS::Object*> selectedObjects;
 
-		// we process recursively all selected "options" and gather components and sub-surface-components
-		// in case of windows (or other derived quantities), we lookup the referencing components/sub-surface components
+		// we process recursively all selected "options" and gather all objects selected by the current choice
+		// Mind: selectedObjects only holds visible objects
+		collectSelectedObjects(option, selectedObjects);
 
-//		collectComponents(option);
+		std::set<unsigned int> nodeIDs;
+		for (const VICUS::Object* o : selectedObjects)
+			nodeIDs.insert(o->uniqueID());
 
-
-
-
-		if (option->m_dbElement == nullptr) {
-			QMessageBox::critical(this, QString(), tr("Not a valid filter selection!"));
-			return;
-		}
-		// now determine all surfaces that are associated with this component
-		// TODO :
+		// create an undo-action with the selected
+		SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
+		undo->push();
 	}
 	else {
 

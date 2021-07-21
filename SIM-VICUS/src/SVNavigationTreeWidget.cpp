@@ -223,7 +223,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 						// mark invalid subsurfaces in red and give tooltip with error
 						if (!s.geometry().holes()[holeIdx].isValid()) {
-							subsurface->setTextColor(0, QColor(128,0,0));
+							subsurface->setForeground(0, QColor(128,0,0));
 							subsurface->setToolTip(0, tr("Invalid polygon data"));
 						}
 
@@ -344,8 +344,7 @@ void SVNavigationTreeWidget::on_actionSmartSelect_triggered() {
 }
 
 
-
-void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int column) {
+void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, int /*column*/) {
 	// create an undo-action for renaming of the item
 	// but first check that item isn't empty
 	QString newText = item->text(0).trimmed();
