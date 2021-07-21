@@ -30,7 +30,7 @@
 
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVConstants.h"
 #include "SVStyle.h"
@@ -71,33 +71,24 @@ QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role
 
 	std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = intLoadDB.begin();
 
-	unsigned int count=0;
+	int count=0;
 
-	for(; it != intLoadDB.end(); ++it){
-		if(it->second.m_category == m_category)
+	for (; it != intLoadDB.end(); ++it){
+		if (it->second.m_category == m_category)
 			++count;
 		// if count exceeds searched index, stop
-		if(count > index.row())
+		if (count > index.row())
 			break;
 	}
 	Q_ASSERT(it != intLoadDB.end());
 
 	switch (role) {
 		case Qt::DisplayRole : {
-			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-//				case ColCategory			:
-//					try {
-//						return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
-//					} catch (...) {
-//						return "";
-//					}
-				case ColSource				: return QString::fromStdString(it->second.m_dataSource.string(langId, fallBackLangId));
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
+				case ColSource				: return QtExt::MultiLangString2QString(it->second.m_dataSource);
 			}
 		} break;
 
@@ -209,12 +200,12 @@ QModelIndex SVDBInternalLoadsTableModel::copyItem(const QModelIndex & existingIt
 	Q_ASSERT(existingItemIndex.isValid());
 	std::map<unsigned int, VICUS::InternalLoad>::const_iterator it = db.begin();
 
-	unsigned int count=0;
-	for(; it != db.end(); ++it){
-		if(it->second.m_category == m_category)
+	int count=0;
+	for (; it != db.end(); ++it){
+		if (it->second.m_category == m_category)
 			++count;
 		// if count exceeds searched index, stop
-		if(count > existingItemIndex.row())
+		if (count > existingItemIndex.row())
 			break;
 	}
 	Q_ASSERT(it != db.end());
