@@ -469,10 +469,19 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 					// element's outlet temperature. Hence, the mass flux depends on both temperatures.
 					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[nextElement.m_nodeIndexOutlet]) );
 					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
-				}
-				break;
-				case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
-				break;
+				} break;
+
+				case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: {
+					// add dependency of current element's mass flux to the zone thermostat values:
+					//
+					// mdot <- heatingControlValue
+					// mdot <- coolingControlValue
+					//
+					// However, only the HNPipeElement holds these references and consequently, the
+					// HNPipeElement should generate the dependent information.
+
+				} break;
+
 				case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
 				break;
 				case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
