@@ -151,7 +151,7 @@ void SVSimulationShadingOptions::on_pushButtonCalculate_clicked(){
 
 
 void SVSimulationShadingOptions::calculateShadingFactors() {
-	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
+//	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
 
 	std::vector<std::vector<IBKMK::Vector3D> > selObst;
 	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
@@ -337,7 +337,7 @@ void SVSimulationShadingOptions::updateFileName() {
 }
 
 
-void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int index) {
+void SVSimulationShadingOptions::on_comboBoxFileType_currentIndexChanged(int /*index*/) {
 	updateFileName();
 }
 

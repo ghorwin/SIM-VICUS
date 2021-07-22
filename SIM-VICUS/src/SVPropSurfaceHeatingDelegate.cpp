@@ -52,7 +52,7 @@ SVPropSurfaceHeatingDelegate::~SVPropSurfaceHeatingDelegate() {
 }
 
 
-QWidget * SVPropSurfaceHeatingDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & option,
+QWidget * SVPropSurfaceHeatingDelegate::createEditor(QWidget * parent, const QStyleOptionViewItem & /*option*/,
 												  const QModelIndex & index ) const
 {
 	if (index.column() != 3)
