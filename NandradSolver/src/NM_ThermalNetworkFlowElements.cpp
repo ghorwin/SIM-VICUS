@@ -103,7 +103,6 @@ void TNSimplePipeElement::inputReferences(std::vector<InputReference> & inputRef
 
 
 void TNSimplePipeElement::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
-
 	m_heatExchangeTemperatureRef =  *(resultValueRefs++);
 }
 
@@ -150,7 +149,9 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	m_heatLoss = m_UAValue * (m_meanTemperature - externalTemperature) * m_nParallelPipes;
 }
 
-void TNSimplePipeElement::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > &resultInputDependencies) const
+void TNSimplePipeElement::dependencies(const double * ydot, const double * y, const double * mdot,
+									   const double * TInflowLeft, const double * TInflowRight,
+									   std::vector<std::pair<const double *, const double *> > &resultInputDependencies) const
 {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y , mdot, TInflowLeft, TInflowRight, resultInputDependencies);
 
@@ -662,13 +663,13 @@ TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowEl
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
 
-void TNElementWithExternalHeatLoss::modelQuantities(std::vector<QuantityDescription> &quantities) const
-{
+
+void TNElementWithExternalHeatLoss::modelQuantities(std::vector<QuantityDescription> &quantities) const {
 	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
 }
 
-void TNElementWithExternalHeatLoss::modelQuantityValueRefs(std::vector<const double *> &valRefs) const
-{
+
+void TNElementWithExternalHeatLoss::modelQuantityValueRefs(std::vector<const double *> &valRefs) const {
 	valRefs.push_back(&m_temperatureDifference);
 }
 
@@ -697,15 +698,16 @@ void TNElementWithExternalHeatLoss::setInputValueRefs(std::vector<const double *
 	m_heatExchangeHeatLossRef =  *(resultValueRefs++);
 }
 
-void TNElementWithExternalHeatLoss::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+
+void TNElementWithExternalHeatLoss::dependencies(const double * ydot, const double * y, const double * mdot,
+												 const double * TInflowLeft, const double * TInflowRight,
+												 std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y , mdot, TInflowLeft, TInflowRight, resultInputDependencies);
 
-	if(m_heatExchangeHeatLossRef != nullptr)
+	if (m_heatExchangeHeatLossRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeHeatLossRef) );
 }
-
-
 
 
 // *** TNHeatPumpIdealCarnot ***
@@ -916,15 +918,17 @@ void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
 }
 
 
-void TNHeatPumpIdealCarnot::dependencies(const double * ydot, const double * y, const double * mdot, const double * TInflowLeft, const double * TInflowRight, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+void TNHeatPumpIdealCarnot::dependencies(const double * ydot, const double * y, const double * mdot,
+										 const double * TInflowLeft, const double * TInflowRight,
+										 std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
 
 	// add consdenser heat flux
-	if(m_heatExchangeCondensorHeatLossRef != nullptr)
+	if (m_heatExchangeCondensorHeatLossRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeCondensorHeatLossRef));
 	// add evaporator temperature
-	if(m_heatExchangeEvaporatorTemperatureRef != nullptr)
+	if (m_heatExchangeEvaporatorTemperatureRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeEvaporatorTemperatureRef));
 }
 

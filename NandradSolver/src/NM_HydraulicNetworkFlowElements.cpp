@@ -131,6 +131,15 @@ void HNPipeElement::setInputValueRefs(std::vector<const double*>::const_iterator
 }
 
 
+void HNPipeElement::dependencies(const double * mdot, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+	// here we define dependencies between mdot and controller-inputs
+	if (m_heatingThermostatControlValueRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(mdot, m_heatingThermostatControlValueRef) );
+	if (m_coolingThermostatControlValueRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(mdot, m_coolingThermostatControlValueRef) );
+}
+
+
 double  HNPipeElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 #if 0
 	// test implementation of special bypass-pipe model
@@ -730,6 +739,25 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 				m_massFluxSetpointRef = *(resultValueRefs++);
 		break;
 		default: ; // other control elements do not require inputs
+	}
+}
+
+
+void HNControlledPump::dependencies(const double * mdot, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
+	if (m_controlElement == nullptr)
+		return; // no control, no dependencies
+	switch (m_controlElement->m_controlledProperty) {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
+			resultInputDependencies.push_back(std::make_pair(mdot, m_fluidTemperatureRef) );
+			resultInputDependencies.push_back(std::make_pair(mdot, m_followingFlowElementFluidTemperatureRef) );
+		break;
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
+			resultInputDependencies.push_back(std::make_pair(mdot, m_massFluxSetpointRef) );
+		break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
 

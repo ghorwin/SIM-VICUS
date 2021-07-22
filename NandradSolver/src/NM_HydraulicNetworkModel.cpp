@@ -400,6 +400,9 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 
 
 void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// insert dependencies of controller inputs to mass flux for each element
+	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
+		m_p->m_flowElements[i]->dependencies(&m_p->m_fluidMassFluxes[i], resultInputValueReferences);
 	// all mass fluxes depend in each other
 	for (unsigned int i=0; i<m_p->m_fluidMassFluxes.size(); ++i)
 		for (unsigned int j=0; j<m_p->m_fluidMassFluxes.size(); ++j)

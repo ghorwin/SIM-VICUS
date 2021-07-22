@@ -63,6 +63,10 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
+	/*! Function for registering dependencies between mass flux and externally referenced input values. */
+	virtual void dependencies(const double * mdot,
+		std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const override;
+
 	// HydraulicNetworkAbstractFlowElement interface
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -279,7 +283,7 @@ private:
 	double							m_pressureHead = -999;
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
-	/*! Value reference to pressure head [Pa] */
+	/*! Value reference to target mass flux [kg/s] */
 	const double					*m_massFluxRef = nullptr;
 
 }; // HNControlledPump
@@ -309,6 +313,10 @@ public:
 		When the function returns, the iterator must point to the first input reference past this element's inputs.
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function for registering dependencies between mass flux and externally referenced input values. */
+	virtual void dependencies(const double * mdot,
+		std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const override;
 
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;

@@ -439,6 +439,10 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 							 deps);
 		}
 
+
+#if 0
+		// handled already by HydraulicNetworkElements
+
 		// Some elements do not know about dependencies from other elements, because control elements
 		// are just used by the HydraulicNetworkElements. Hence we need to implement special handling for
 		// such cases.
@@ -488,7 +492,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 				break;
 			}
 		}
-
+#endif
 		// copy dependencies
 		if (!deps.empty()) {
 			resultInputValueReferences.insert(resultInputValueReferences.end(), deps.begin(), deps.end());

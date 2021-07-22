@@ -66,6 +66,12 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results for other model objects. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) { (void)mdot; (void)p_inlet; (void)p_outlet; }
 
+	/*! Optional function for registering dependencies between mass flux and externally referenced input values.
+		Default implementation does nothing. Re-implement for elements with mass-flow controllers.
+	*/
+	virtual void dependencies(const double */*mdot*/,
+							  std::vector<std::pair<const double *, const double *> > & ) const {}
+
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
 		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.
 		For MT_ThermalHydraulicNetwork this is a reference to the result "FluidTemperature" computed by

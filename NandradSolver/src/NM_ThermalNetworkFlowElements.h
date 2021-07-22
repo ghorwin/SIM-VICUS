@@ -499,7 +499,7 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	void internalDerivatives(double *ydot) override;
 
-	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	/*! Function for registering dependencies between derivatives, internal states and model inputs.*/
 	void dependencies(const double *ydot, const double *y,
 					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
