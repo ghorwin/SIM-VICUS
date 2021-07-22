@@ -350,6 +350,31 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 	}
 }
 
+void HNPressureLossCoeffElement::dependencies(const double * mdot,
+											  std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	if (m_controlElement == nullptr)
+		return;
+	switch (m_controlElement->m_controlledProperty) {
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+			resultInputDependencies.push_back(std::make_pair(mdot, m_heatExchangeHeatLossRef) );
+		break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
+			resultInputDependencies.push_back(std::make_pair(mdot, m_fluidTemperatureRef) );
+			resultInputDependencies.push_back(std::make_pair(mdot, m_followingFlowElementFluidTemperatureRef) );
+		break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
+			resultInputDependencies.push_back(std::make_pair(mdot, m_massFluxSetpointRef) );
+		}
+		break;
+
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
+	}
+}
+
 
 void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
 	if (m_controlElement == nullptr)

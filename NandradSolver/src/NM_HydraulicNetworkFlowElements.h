@@ -148,6 +148,10 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
+	/*! Function for registering dependencies between mass flux and externally referenced input values. */
+	virtual void dependencies(const double * mdot,
+		std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const override;
+
 	// HydraulicNetworkAbstractFlowElement interface
 	virtual double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	virtual void partials(double mdot, double p_inlet, double p_outlet,
