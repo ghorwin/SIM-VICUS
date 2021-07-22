@@ -750,6 +750,10 @@ int HydraulicNetworkModelImpl::solve() {
 	// reset initial guess
 	std::vector<double> rhs(n, 0);
 	std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
+#if 0
+	for (unsigned int i=0; i<n; ++i)
+		m_y[i] = 10;
+#endif
 
 	// now start the Newton iteration
 	int iterations = 100;
