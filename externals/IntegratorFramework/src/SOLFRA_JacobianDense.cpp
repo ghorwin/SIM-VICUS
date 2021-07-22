@@ -1,12 +1,14 @@
 #include "SOLFRA_JacobianDense.h"
 
 #include "SOLFRA_ModelInterface.h"
+#include "SOLFRA_Constants.h"
 
 #include <fstream>
 #include <iomanip>
 
 #include <IBK_Exception.h>
 #include <IBK_assert.h>
+#include <IBK_InputOutput.h>
 
 namespace SOLFRA {
 
@@ -84,11 +86,9 @@ int JacobianDense::setup(	double t,
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianDense::setup]");
 #endif
-#ifdef DUMP_JACOBIAN_CSR_BINARY
-	std::ofstream jacdump("jacobian_sparse_csr.bin", std::ios_base::binary);
-	serializeCSR(jacdump);
-	jacdump.close();
-	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianDense::setup]");
+#ifdef DUMP_JACOBIAN_BINARY
+	IBK::write_matrix_binary(*this, "jacobian_dense.bin");
+	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif
 
 	return 0;

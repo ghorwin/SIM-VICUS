@@ -12,5 +12,10 @@ extern const char * const LONG_VERSION;
 
 } // namespace SOLFRA
 
+// dump routines helper
+//#define DUMP_JACOBIAN_BINARY
+//#define DUMP_JACOBIAN_POSTSCRIPT
+//#define DUMP_JACOBIAN_TEXT
+
 
 #endif // SOLFRA_ConstantsH

@@ -3,6 +3,7 @@
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 #include "SOLFRA_IntegratorImplicitEuler.h"
 #include "SOLFRA_ModelInterface.h"
+#include "SOLFRA_Constants.h"
 
 #include <fstream>
 #include <iomanip>
@@ -10,6 +11,7 @@
 
 #include <IBKMK_BandMatrix.h>
 #include <IBK_messages.h>
+#include <IBK_InputOutput.h>
 
 #include <cvode/cvode_band.h>
 #include <cvode/cvode_serialization.h>
@@ -133,10 +135,8 @@ void LESBand::setup(const double * y, const double * ydot, const double * residu
 			// derivative: 1 - dt * dydot/dy
 			for (unsigned int k=kl; k<=ku; ++k) {
 				// compute finite-differences column j in row i
-				(*m_jacobian)(k,j) = - gamma * ( m_FMod[k] - ydot[k] )/m_ydiff[j];
+				(*m_jacobian)(k,j) =  ( m_FMod[k] - ydot[k] )/m_ydiff[j];
 			}
-			// add identity matrix
-			(*m_jacobian)(j,j) += 1.0;
 		}
 		// Jacobian matrix now holds df/dy
 		// update solver statistics
@@ -156,7 +156,20 @@ void LESBand::setup(const double * y, const double * ydot, const double * residu
 	m_jacobian->write(jacdump, nullptr, false, 15);
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESBand::setup]");
-#endif // DUMP_JACOBIAN_TEXT
+#endif
+#ifdef DUMP_JACOBIAN_BINARY
+	IBK::write_matrix_binary(*m_jacobian, "jacobian_band.bin");
+	throw IBK::Exception("Done with test-dump of Jacobian", "[LESBand::setup]");
+#endif
+
+	// scale matrix with -gamma
+	unsigned int dataSize = m_jacobian->data().size();
+	double * data = m_jacobian->data().data();
+	for (unsigned int i=0; i<dataSize; ++i)
+		data[i] *= -gamma;
+	// add identity matrix
+	for (unsigned int i=0; i<n; ++i)
+		(*m_jacobian)(i,i) += 1.0;
 
 	// perform LU-factorization of the jacobian
 	m_jacobian->lu();

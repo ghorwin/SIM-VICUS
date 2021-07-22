@@ -1,6 +1,7 @@
 #include "SOLFRA_JacobianSparseCSR.h"
 
 #include "SOLFRA_ModelInterface.h"
+#include "SOLFRA_Constants.h"
 
 #include <fstream>
 #include <iomanip>

@@ -5,7 +5,7 @@
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 #include "SOLFRA_IntegratorImplicitEuler.h"
 #include "SOLFRA_ModelInterface.h"
-#include "SOLFRA_JacobianInterface.h" // for the DUMP_JACOBIAN defines
+#include "SOLFRA_Constants.h"
 
 #include <IBKMK_DenseMatrix.h>
 #include <IBK_Exception.h>
