@@ -6,8 +6,6 @@
 TARGET = IBKMK
 TEMPLATE = lib
 
-DEFINES += CDT_USE_AS_COMPILED_LIBRARY
-
 # this pri must be sourced from all our libraries,
 # it contains all functions defined for casual libraries
 include( ../../../IBK/projects/Qt/IBK.pri )
@@ -23,53 +21,75 @@ unix|mac {
 }
 
 
-LIBS += 		-lIBK
+LIBS += -lsundials \
+		-lIBK
 
 
 INCLUDEPATH = \
-	../../../IBK/src \
-	../../src/CDT
+	../../../IBK/src
 
 
 SOURCES += \
-	../../src/CDT/CDT.cpp \
-	../../src/IBKMKC_dense_matrix.c \
-	../../src/IBKMKC_sparse_matrix.c \
-	../../src/IBKMKC_vector_operations.c \
 	../../src/IBKMK_2DCalculations.cpp \
 	../../src/IBKMK_3DCalculations.cpp \
+	../../src/IBKMK_BandMatrix.cpp \
+	../../src/IBKMK_BlockBandMatrix.cpp \
+	../../src/IBKMK_BlockSparseMatrix.cpp \
+	../../src/IBKMK_BlockTridiagMatrix.cpp \
+	../../src/IBKMKC_band_matrix.c \
+	../../src/IBKMKC_dense_matrix.c \
+	../../src/IBKMKC_ilut.c \
+	../../src/IBKMK_CRSpline.cpp \
+	../../src/IBKMKC_sparse_matrix.c \
+	../../src/IBKMKC_tridiag_matrix.c \
+	../../src/IBKMK_CuthillMcKee.cpp \
+	../../src/IBKMKC_vector_operations.c \
 	../../src/IBKMK_DenseMatrix.cpp \
+	../../src/IBKMK_IndexGenerator.cpp \
+	../../src/IBKMK_numerics.cpp \
 	../../src/IBKMK_Polygon2D.cpp \
 	../../src/IBKMK_Polygon3D.cpp \
 	../../src/IBKMK_SparseMatrixCSR.cpp \
+	../../src/IBKMK_SparseMatrixEID.cpp \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
-	../../src/IBKMKC_ilut.c \
-	../../src/IBKMK_Triangulation.cpp
+	../../src/IBKMK_Triangulation.cpp \
+	../../src/IBKMK_TridiagMatrix.cpp
+
 
 HEADERS += \
-	../../src/CDT/CDT.h \
-	../../src/CDT/CDT.hpp \
-	../../src/CDT/CDTUtils.h \
-	../../src/CDT/CDTUtils.hpp \
-	../../src/CDT/CDT_predicates.h \
-	../../src/CDT/CDT_remove_at.hpp \
-	../../src/CDT/cdt_export.h \
-	../../src/IBKMKC_dense_matrix.h \
-	../../src/IBKMKC_ilut.h \
-	../../src/IBKMKC_sparse_matrix.h \
-	../../src/IBKMKC_vector_operations.h \
 	../../src/IBKMK_2DCalculations.h \
 	../../src/IBKMK_3DCalculations.h \
+	../../src/IBKMK_BandMatrix.h \
+	../../src/IBKMK_BlockBandMatrix.h \
+	../../src/IBKMK_BlockSparseMatrix.h \
+	../../src/IBKMK_BlockTridiagMatrix.h \
+	../../src/IBKMK_BlockVector.h \
+	../../src/IBKMKC_band_matrix.h \
+	../../src/IBKMKC_dense_matrix.h \
+	../../src/IBKMKC_ilut.h \
+	../../src/IBKMK_common_defines.h \
+	../../src/IBKMK_CRSpline.h \
+	../../src/IBKMKC_sparse_matrix.h \
+	../../src/IBKMKC_tridiag_matrix.h \
+	../../src/IBKMK_CuthillMcKee.h \
+	../../src/IBKMKC_vector_operations.h \
 	../../src/IBKMK_DenseMatrix.h \
+	../../src/IBKMK.h \
+	../../src/IBKMK_IndexGenerator.h \
+	../../src/IBKMK_minimization.h \
+	../../src/IBKMK_numerics.h \
 	../../src/IBKMK_Polygon2D.h \
 	../../src/IBKMK_Polygon3D.h \
-	../../src/IBKMK_SparseMatrix.h \
+	../../src/IBKMK_random.h \
+	../../src/IBKMK_rational_number.h \
 	../../src/IBKMK_SparseMatrixCSR.h \
+	../../src/IBKMK_SparseMatrixEID.h \
+	../../src/IBKMK_SparseMatrix.h \
 	../../src/IBKMK_SparseMatrixPattern.h \
 	../../src/IBKMK_Triangulation.h \
+	../../src/IBKMK_TridiagMatrix.h \
 	../../src/IBKMK_Vector2D.h \
-	../../src/IBKMK_Vector3D.h \
-	../../src/IBKMK_common_defines.h
+	../../src/IBKMK_Vector3D.h
 
 DISTFILES += \
 	../../doc/IBKMK_mainpage \
