@@ -65,7 +65,6 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 		m_jacobian = new IBKMK::DenseMatrix(m_n);
 		m_yMod.resize(m_n);
 		m_ydotMod.resize(m_n);
-		m_FMod.resize(m_n);
 		m_ydiff.resize(m_n);
 
 		return;
@@ -94,12 +93,13 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 			// calculate modified right hand side
 			m_model->setY(&m_yMod[0]);
 			// calculate modified right hand side of the model, and store f(t,y) in m_FMod
-			m_model->ydot(&m_FMod[0]);
+			m_model->ydot(&m_ydotMod[0]);
 			// F = y - yn - dt*ydot,
 			// derivative: 1 - dt * dydot/dy
 			for (unsigned int i=0; i<m_n; ++i) {
 				// compute finite-differences column j in row i
-				(*m_jacobian)(i,j) = ( m_FMod[i] - ydot[i] )/m_ydiff[j];
+				double val = ( m_ydotMod[i] - ydot[i] )/m_ydiff[j];
+				(*m_jacobian)(i,j) = val;
 			}
 			// Jacobian matrix now holds df/dy
 			// update solver statistics
@@ -107,8 +107,6 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 		}
 		// restore y vector
 		m_yMod[j] = y[j];
-		// restore ydot vector
-		m_ydotMod[j] = ydot[j];
 	}
 #ifdef DUMP_JACOBIAN_TEXT
 	std::ofstream jacdump("jacobian_dense.txt");
