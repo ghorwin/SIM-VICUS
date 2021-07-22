@@ -124,7 +124,7 @@ public:
 	/*! Accesses the top-most (last) exception message.
 		\return Error message string.
 	*/
-	const char* what() 	const throw();
+	const char* what() 	const noexcept;
 	/*! Accesses the top-most (last) exception location.
 		\return Location string.
 	*/
