@@ -107,6 +107,8 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 		}
 		// restore y vector
 		m_yMod[j] = y[j];
+		// reset ydiff
+		m_ydiff[j] = 0;
 	}
 #ifdef DUMP_JACOBIAN_TEXT
 	std::ofstream jacdump("jacobian_dense.txt");
