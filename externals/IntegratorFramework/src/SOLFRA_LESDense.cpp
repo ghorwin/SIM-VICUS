@@ -76,7 +76,7 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 
 void LESDense::setup(const double * y, const double * ydot, const double * /* residuals */, double gamma) {
 	// only setup linear equation system explicitely if integrator implicit Euler is chosen
-	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == nullptr)
 		return;
 
 	m_jacobian->fill(0.0);
@@ -138,7 +138,7 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 
 void LESDense::solve(double * rhs) {
 	// only solve linear equation system explicitely if integrator implicit Euler is chosen
-	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == nullptr)
 		return;
 
 	// backsolve with given lu factorisation

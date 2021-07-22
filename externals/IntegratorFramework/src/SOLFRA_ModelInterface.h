@@ -160,7 +160,7 @@ public:
 	/*! Informs the integrator whether the model owns an error weighting function. */
 	virtual bool hasErrorWeightsFunction() {return false; }
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size in bytes, by default returns 0 which means feature not supported. */
 	virtual std::size_t serializationSize() const { return 0; }
 
 	/*! Stores model content at memory location pointed to by dataPtr and increases

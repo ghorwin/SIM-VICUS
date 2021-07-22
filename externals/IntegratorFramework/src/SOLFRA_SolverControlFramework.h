@@ -217,13 +217,14 @@ protected:
 		\param t_restart If step == -2, the restart file is read until t > t_restart
 		\param realT_restart Real time elapsed up to this time point.
 		\param t Time point of restart is stored here.
-		\param y Solution at restart time (size n) is stored here.
+		\param integratorModelData Solution at restart time (size n + m_model->serializationSize()/sizeof(double) )
+								   is stored here and any additional model data.
 		\param restartFileCopy Output file stream to be used for copying the restart file data into, up to the requested point.
 		\return Returns true if successful.
 	*/
 	bool readRestartFile(int step,
 		double t_restart,
-		double & t, double * y,
+		double & t, double * integratorModelData,
 		std::ostream * restartFileCopy = nullptr) const;
 
 	/*! Pointer to model implementation (not owned). */
