@@ -1,26 +1,39 @@
-/*	The SIM-IBKMK data model library.
+/*	IBK Math Kernel Library
+	Copyright (c) 2001-today, Institut fuer Bauklimatik, TU Dresden, Germany
 
-	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
+	Written by A. Nicolai, A. Paepcke, H. Fechner, St. Vogelsang
+	All rights reserved.
 
-	Primary authors:
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
-	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
-	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
-	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
+	This file is part of the IBKMK Library.
 
-	  ... all the others from the SIM-IBKMK team ... :-)
+	Redistribution and use in source and binary forms, with or without modification,
+	are permitted provided that the following conditions are met:
 
-	This library is part of SIM-IBKMK (https://github.com/ghorwin/SIM-IBKMK)
+	1. Redistributions of source code must retain the above copyright notice, this
+	   list of conditions and the following disclaimer.
 
-	This library is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+	2. Redistributions in binary form must reproduce the above copyright notice,
+	   this list of conditions and the following disclaimer in the documentation
+	   and/or other materials provided with the distribution.
 
-	This library is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
+	3. Neither the name of the copyright holder nor the names of its contributors
+	   may be used to endorse or promote products derived from this software without
+	   specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	This library contains derivative work based on other open-source libraries,
+	see LICENSE and OTHER_LICENSES files.
+
 */
 
 #include "IBKMK_Polygon3D.h"

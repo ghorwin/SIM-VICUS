@@ -1,5 +1,5 @@
 /*	IBK Math Kernel Library
-	Copyright (c) 2001-2016, Institut fuer Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2001-today, Institut fuer Bauklimatik, TU Dresden, Germany
 
 	Written by A. Nicolai, A. Paepcke, H. Fechner, St. Vogelsang
 	All rights reserved.
@@ -13,7 +13,7 @@
 	   list of conditions and the following disclaimer.
 
 	2. Redistributions in binary form must reproduce the above copyright notice,
-	   this list of conditions and the following disclaimer in the documentation 
+	   this list of conditions and the following disclaimer in the documentation
 	   and/or other materials provided with the distribution.
 
 	3. Neither the name of the copyright holder nor the names of its contributors
