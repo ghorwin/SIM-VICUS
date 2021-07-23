@@ -219,10 +219,18 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_current->m_builtIn;
 
-	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].get_value());
+	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
+
+	// create default SHGC-spline, if
+	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
+		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty())
+	{
+	}
+	double maxSHGC = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.y().back();
+	m_ui->lineEditSHGC->setValue(maxSHGC);
 
 	m_ui->comboBoxType->blockSignals(true);
-	if(m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT){
+	if (m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT) {
 		m_current->m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
 		modelModify();
 	}
@@ -254,9 +262,6 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 			m_ui->shgcPlot->replot();
 			m_ui->shgcPlot->repaint();
 		}
-	}
-	else if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Detailed){
-		///TODO Stephan implement detailed model
 	}
 	m_ui->tableWidgetSHGC->blockSignals(false);
 
