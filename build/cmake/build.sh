@@ -155,12 +155,14 @@ if [ -d $BUILDDIR/SIM-VICUS/SIM-VICUS.app ]
 then
 	# MacOS
 	rm -rf ../../bin/release/SIM-VICUS.app
+    rm -rf ../../bin/release/NandradFMUGenerator.app
 	cp -r $BUILDDIR/SIM-VICUS/SIM-VICUS.app ../../bin/release/SIM-VICUS.app &&
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
 	cp -r $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator.app ../../bin/release/NandradFMUGenerator.app &&
 	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.dylib ../../bin/release/NandradFMUGenerator.app/Contents/MacOS/libNandradSolverFMI.dylib &&
-	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradFMUGenerator.app/Contents/MacOS/NandradSolver
+	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradFMUGenerator.app/Contents/MacOS/NandradSolver &&
+    echo "All files copied successfully."
 else
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
