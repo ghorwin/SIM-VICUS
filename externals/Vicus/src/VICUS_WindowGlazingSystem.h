@@ -46,8 +46,7 @@ public:
 
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_Simple,						// Keyword: Simple								'Standard globbed-layers model.'
-		MT_Detailed,					// Keyword: Detailed							'Detailed window model with layers.'
+		MT_Simple,						// Keyword: Simple								'Standard globbed-layers model'
 		NUM_MT
 	};
 
@@ -71,12 +70,17 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
-	/*! Returns the calculate or given uValue depending on model type. [W/m2K] */
+	/*! Returns the calculate or given uValue depending on model type. [W/m2K].
+		Only call this function for valid data, otherwise return value is undefined (-1).
+	*/
 	double uValue() const;
 
-	/*! Returns the calculate or given SHGC depending on model type. [---] */
+	/*! Returns the calculate or given SHGC depending on model type. [---].
+		Only call this function for valid data, otherwise return value is undefined (-1).
+	*/
 	double SHGC() const;
 
+	/*! Tests if parameters are valid. */
 	bool isValid() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***

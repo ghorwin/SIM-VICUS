@@ -35,25 +35,25 @@ AbstractDBElement::ComparisonResult WindowGlazingSystem::equal(const AbstractDBE
 	if (otherWindow == nullptr)
 		return Different;
 
-	//first check critical data
+	// first check critical data
 
-	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
-		if(m_para[i] != otherWindow->m_para[i])
+	// check parameters
+	for (unsigned int i=0; i<NUM_P; ++i){
+		if (m_para[i] != otherWindow->m_para[i])
 			return Different;
 	}
 
-	for(unsigned int i=0; i<NUM_SP; ++i){
-		if(m_splinePara[i] != otherWindow->m_splinePara[i])
+	for (unsigned int i=0; i<NUM_SP; ++i) {
+		if (m_splinePara[i] != otherWindow->m_splinePara[i])
 			return Different;
 	}
 
-	if(m_layers != otherWindow->m_layers)
+	if (m_layers != otherWindow->m_layers)
 		return Different;
 
-	//check meta data
+	// check meta data
 
-	if(m_displayName != otherWindow->m_displayName ||
+	if (m_displayName != otherWindow->m_displayName ||
 			m_color != otherWindow->m_color ||
 			m_dataSource != otherWindow->m_dataSource ||
 			m_manufacturer != otherWindow->m_manufacturer ||
@@ -63,65 +63,64 @@ AbstractDBElement::ComparisonResult WindowGlazingSystem::equal(const AbstractDBE
 	return Equal;
 }
 
+
 double WindowGlazingSystem::uValue() const {
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
-			return m_para[P_ThermalTransmittance].get_value();
-
-		case VICUS::WindowGlazingSystem::MT_Detailed:
-			///TODO Dirk implement calculation u-value detailed window model
-			///TODO Stephan implement calculation u-value detailed window model
-		return -1;
-		case VICUS::WindowGlazingSystem::NUM_MT:
-		return -1;
+			return m_para[P_ThermalTransmittance].value;
+		case VICUS::WindowGlazingSystem::NUM_MT: ;
 	}
 
 	return -1;
 }
+
 
 double WindowGlazingSystem::SHGC() const{
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
-			return m_splinePara[SP_SHGC].m_values.value(0);
-		case VICUS::WindowGlazingSystem::MT_Detailed:
-			///TODO Dirk implement calculation SHGC detailed window model
-			///TODO Stephan implement calculation SHGC detailed window model
-		return -1;
-		case VICUS::WindowGlazingSystem::NUM_MT:
-		return -1;
+			if (m_splinePara[SP_SHGC].m_values.valid())
+				return m_splinePara[SP_SHGC].m_values.value(0);
+			else
+				return -1;
+		case VICUS::WindowGlazingSystem::NUM_MT: ;
 	}
 
 	return -1;
 }
 
+
 bool WindowGlazingSystem::isValid() const {
-	if(m_id == INVALID_ID ||
-	   m_modelType == NUM_MT)
+	if (m_id == INVALID_ID || m_modelType == NUM_MT)
 		return false;
+
+	// check U-value
 	switch (m_modelType) {
-		case MT_Simple:{
+		case MT_Simple: {
 			try {
 				m_para[P_ThermalTransmittance].checkedValue("ThermalTransmittance", "W/m2K", "W/m2K", 0, false, 2000, true, nullptr);
-				/// TODO Stephan
-				//m_splinePara[SP_SHGC].checkAndInitialize("SHGC", IBK::Unit("Deg"), IBK::Unit("---"), IBK::Unit("Deg"), 0, true, 1, true, nullptr);
 			}  catch (...) {
-
+				return false;
 			}
 		}
 		break;
-		case MT_Detailed:{
-			if(m_layers.empty())
-				return false;
-			for(unsigned int i=0; i<m_layers.size(); ++i)
-				if(!m_layers[i].isValid())
-					return false;
-		}
-		break;
-		case NUM_MT:
-		return false;
+
+		case NUM_MT: ; // just to make compiler happy, cannot get here because already checked before
 	}
 
+	// check SHGC-value
+	switch (m_modelType) {
+		case MT_Simple: {
+			try {
+				NANDRAD::LinearSplineParameter spl = m_splinePara[SP_SHGC];
+				spl.checkAndInitialize("SHGC", IBK::Unit("Deg"), IBK::Unit("---"), IBK::Unit("Deg"), 0, true, 1, true, nullptr);
+			}  catch (...) {
+				return false;
+			}
+		}
+		break;
 
+		case NUM_MT: ; // just to make compiler happy, cannot get here because already checked before
+	}
 
 	return true;
 }
