@@ -689,9 +689,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
 
 						IBKMK::Vector3D center, newCenter;
-						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, selSubSurfaces, center);
+//						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, selSubSurfaces, center);
 
-						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), rotAngle);
+						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)rotAngle);
 
 						Vic3D::Transform3D trans3D;
 						trans3D.setTranslation( QtExt::IBKVector2QVector(center) );
