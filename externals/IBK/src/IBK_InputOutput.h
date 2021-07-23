@@ -273,7 +273,7 @@ void read_matrix_binary(const std::string & filename, T & mat) {
 	FUNCID(IBK::read_matrix_binary);
 	std::ifstream binFile(filename.c_str(), std::ios_base::binary);
 	// read size of data storage in file
-	uint64_t matSize;
+	std::size_t matSize;
 	if (!binFile.read((char*)&matSize, sizeof(uint64_t)))
 		throw IBK::Exception("Error reading matrix size from file.", FUNC_ID);
 	// reserve memory
@@ -286,10 +286,10 @@ void read_matrix_binary(const std::string & filename, T & mat) {
 	void * smem_ptr = (void*)&smem[0];
 	void * originalSmem_ptr = smem_ptr;
 	mat.recreate(smem_ptr); // Note: smem_ptr is modified and points now past the memory of smem
-	uint64_t bytesRead = (char*)smem_ptr - (char*)originalSmem_ptr;
+	std::size_t bytesRead = (char*)smem_ptr - (char*)originalSmem_ptr;
 	if (bytesRead != matSize)
 		throw IBK::Exception(IBK::FormatString("%1 bytes read, though only %2 bytes are provided in matrix storage.")
-							 .arg(bytesRead).arg(matSize - sizeof(uint64_t)), FUNC_ID);
+							 .arg(bytesRead).arg((unsigned int)matSize - sizeof(uint64_t)), FUNC_ID);
 }
 
 
