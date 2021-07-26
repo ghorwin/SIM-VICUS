@@ -112,7 +112,7 @@ bool WindowGlazingSystem::isValid() const {
 		case MT_Simple: {
 			try {
 				NANDRAD::LinearSplineParameter spl = m_splinePara[SP_SHGC];
-				spl.checkAndInitialize("SHGC", IBK::Unit("Deg"), IBK::Unit("---"), IBK::Unit("Deg"), 0, true, 1, true, nullptr);
+				spl.checkAndInitialize("SHGC", IBK::Unit("Deg"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true, nullptr);
 			}  catch (...) {
 				return false;
 			}
