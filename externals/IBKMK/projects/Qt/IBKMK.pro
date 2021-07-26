@@ -26,6 +26,7 @@ LIBS += -lsundials \
 
 
 INCLUDEPATH = \
+	../../../IBK/src/CDT \
 	../../../IBK/src
 
 
@@ -89,6 +90,7 @@ HEADERS += \
 	../../src/IBKMK_Triangulation.h \
 	../../src/IBKMK_TridiagMatrix.h \
 	../../src/IBKMK_Vector2D.h \
+	../../src/CDT/CDT.h \
 	../../src/IBKMK_Vector3D.h
 
 DISTFILES += \

@@ -40,7 +40,7 @@
 
 #include <IBK_messages.h>
 
-#include <CDT.h>
+#include "CDT/CDT.h"
 
 namespace IBKMK {
 
