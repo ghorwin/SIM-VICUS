@@ -756,53 +756,59 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		return;
 
 	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
-	try {
-		if (infiltration == nullptr || !infiltration->isValid())
-			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-	}
-	catch (IBK::Exception & ex) {
-		errorStack.append( QString::fromStdString(ex.what()) );
-		return;
-	}
+//	try {
+//		if (infiltration != nullptr && !infiltration->isValid())
+//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+//	}
+//	catch (IBK::Exception & ex) {
+//		errorStack.append( QString::fromStdString(ex.what()) );
+//		return;
+//	}
 
-	try {
-		if (ventilation == nullptr || !ventilation->isValid(m_scheduleDB))
-			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
-								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-	}
-	catch (IBK::Exception & ex) {
-		errorStack.append( QString::fromStdString(ex.what()) );
-		return;
-	}
+//	try {
+//		if (ventilation != nullptr && !ventilation->isValid(m_scheduleDB))
+//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
+//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+//	}
+//	catch (IBK::Exception & ex) {
+//		errorStack.append( QString::fromStdString(ex.what()) );
+//		return;
+//	}
 
 
-	try {
-		if (ctrlVentilation == nullptr || !ctrlVentilation->isValid())
-			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-	}
-	catch (IBK::Exception & ex) {
-		errorStack.append( QString::fromStdString(ex.what()) );
-		return;
-	}
+//	try {
+//		if (ctrlVentilation != nullptr && !ctrlVentilation->isValid())
+//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
+//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
+//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
+//	}
+//	catch (IBK::Exception & ex) {
+//		errorStack.append( QString::fromStdString(ex.what()) );
+//		return;
+//	}
 
-	if(ventilation != nullptr  && ventilation->isValid(m_scheduleDB))
+	if(ventilation != nullptr  && !ventilation->isValid(m_scheduleDB))
 			errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
 								  .arg(ventilation->m_id)
 							   .arg(zoneTemplate->m_id)
 							   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
 
-	if(infiltration != nullptr  && infiltration->isValid())
+	if(ventilation != nullptr)
+		idSubTempVent = ventilation->m_id;
+
+	if(infiltration != nullptr  && !infiltration->isValid())
 		errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
 						   .arg(infiltration->m_id)
 						   .arg(zoneTemplate->m_id)
 						   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
 
-	if(ctrlVentilation != nullptr  && ctrlVentilation->isValid())
+	if(infiltration != nullptr)
+		idSubTempInf = infiltration->m_id;
+
+	if(ctrlVentilation != nullptr  && !ctrlVentilation->isValid())
 		errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
 						   .arg(ctrlVentilation->m_id)
 						   .arg(zoneTemplate->m_id)
