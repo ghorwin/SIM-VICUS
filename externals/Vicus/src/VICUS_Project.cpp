@@ -817,7 +817,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		NANDRAD::Outputs outputs;
 		outputs.m_timeUnit = IBK::Unit("h");
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" , "InletNodeTemperature",
-											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference"};
+											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference",
+											  "HeatSuppliedToFluid"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
@@ -2735,7 +2736,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													pipeComp->m_id,
 													edge->m_pipeId,
 													edge->length());
-		inletPipe.m_displayName = "SupplyPipe_" + pipeName.str();
+		inletPipe.m_displayName = "SupplyPipe." + pipeName.str();
 		inletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(inletPipe);
 
@@ -2749,10 +2750,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													edge->m_pipeId,
 													edge->length());
 		// create name
-		inletPipe.m_displayName = "ReturnPipe_" + pipeName.str();
+		outletPipe.m_displayName = "ReturnPipe." + pipeName.str();
 		outletPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(outletPipe);
-
 	}
 
 	 // we are DONE !!!

@@ -325,8 +325,6 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
 	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
 
-	// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
-	// see documentation above
 	if(m_outerHeatTransferCoefficient == 0.) {
 		// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
 		m_UAValue = m_discLength /
@@ -945,8 +943,8 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 	m_meanTemperature = *m_supplyTemperatureScheduleRef;
 	double absMassFlux = std::fabs(m_massFlux);
 
-	// heat needed to provide the given temperature (If we are heating up the fluid, this is negative)
-	m_heatLoss = absMassFlux * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
+	// heat needed to provide the given temperature (If we are heating up the fluid, this is positive)
+	m_heatSupplied = absMassFlux * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
 }
 
 
@@ -966,12 +964,12 @@ void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_i
 
 
 void TNIdealHeaterCooler::modelQuantities(std::vector<QuantityDescription> & quantities) const{
-	quantities.push_back(QuantityDescription("HeatLoss", "W", "Heat loss of element", false));
+	quantities.push_back(QuantityDescription("HeatSuppliedToFluid", "W", "Heat loss of element", false));
 }
 
 
 void TNIdealHeaterCooler::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
-	valRefs.push_back(&m_heatLoss);
+	valRefs.push_back(&m_heatSupplied);
 }
 
 

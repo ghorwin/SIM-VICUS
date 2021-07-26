@@ -645,7 +645,7 @@ private:
 
 	/*! Heat loss needed to provide the given supply temperature (If we add heat this is negative).
 		 Is not part of the base class since we use ThermalNetworkAbstractFlowElement */
-	double			m_heatLoss = 888;
+	double			m_heatSupplied = 888;
 
 };
 
