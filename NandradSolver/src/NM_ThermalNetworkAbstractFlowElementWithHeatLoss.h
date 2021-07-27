@@ -34,6 +34,12 @@ public:
 	/*! Function for retrieving heat fluxes out of the flow element.*/
 	virtual void internalDerivatives(double *ydot) override;
 
+	/*! Publishes 'FlowElementHeatLoss' via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
 	/*! Optional function for registering dependencies between derivatives and internal states.
 		Re-implemented to add dependencies to computed variable m_heatLoss and from
 		m_heatExchangeValueRef.

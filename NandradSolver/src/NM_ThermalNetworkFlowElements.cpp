@@ -66,6 +66,7 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 
 
 void TNSimplePipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 	quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 	quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
@@ -77,6 +78,7 @@ void TNSimplePipeElement::modelQuantities(std::vector<QuantityDescription> & qua
 
 
 void TNSimplePipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_velocity);
 	valRefs.push_back(&m_volumeFlow);
 	valRefs.push_back(&m_viscosity);
@@ -113,7 +115,7 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	// check heat transfer type
 	m_volumeFlow = std::fabs(m_massFlux)/m_fluidDensity; // m3/s !!! unit conversion is done when writing outputs
 
-	// note: velcoty is caluclated for a single pipe (but mass flux interpreted as flux through all parallel pipes
+	// note: velocity is calculated for a single pipe (but mass flux interpreted as flux through all parallel pipes)
 	m_velocity = m_volumeFlow/m_fluidCrossSection;
 
 	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
@@ -265,6 +267,7 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 
 
 void TNDynamicPipeElement::modelQuantities(std::vector<QuantityDescription> & quantities) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("FluidVolumeFlow","m3/h","Fluid volume flow", false));
 	quantities.push_back(QuantityDescription("FluidVelocity","m/s","Fluid velocity", false));
 	quantities.push_back(QuantityDescription("FluidViscosity","m2/s","Fluid dynamic viscosity", false));
@@ -276,6 +279,7 @@ void TNDynamicPipeElement::modelQuantities(std::vector<QuantityDescription> & qu
 
 
 void TNDynamicPipeElement::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_volumeFlow);
 	valRefs.push_back(&m_velocity);
 	valRefs.push_back(&m_viscosity);
@@ -602,12 +606,14 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFlu
 
 
 void TNPumpWithPerformanceLoss::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("ElectricalPower","W","Requested electrical power for current working point", false));
 	quantities.push_back(QuantityDescription("MechanicalPower","W","Mechanical power for current working point", false));
 }
 
 
 void TNPumpWithPerformanceLoss::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_electricalPower);
 	valRefs.push_back(&m_mechanicalPower);
 }
@@ -663,11 +669,13 @@ TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowEl
 
 
 void TNElementWithExternalHeatLoss::modelQuantities(std::vector<QuantityDescription> &quantities) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
 }
 
 
 void TNElementWithExternalHeatLoss::modelQuantityValueRefs(std::vector<const double *> &valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_temperatureDifference);
 }
 
@@ -723,6 +731,7 @@ TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & flu
 
 
 void TNHeatPumpIdealCarnot::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
 	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
 	quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
@@ -734,6 +743,7 @@ void TNHeatPumpIdealCarnot::modelQuantities(std::vector<QuantityDescription> & q
 
 
 void TNHeatPumpIdealCarnot::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_COP);
 	valRefs.push_back(&m_electricalPower);
 	valRefs.push_back(&m_condenserHeatFlux);
@@ -948,7 +958,7 @@ void TNIdealHeaterCooler::setInflowTemperature(double Tinflow) {
 	double absMassFlux = std::fabs(m_massFlux);
 
 	// heat needed to provide the given temperature (If we are heating up the fluid, this is positive)
-	m_heatSupplied = absMassFlux * m_fluidHeatCapacity * (m_meanTemperature - Tinflow);
+	m_heatLoss = absMassFlux * m_fluidHeatCapacity * (Tinflow - m_meanTemperature);
 }
 
 
@@ -968,12 +978,12 @@ void TNIdealHeaterCooler::setInputValueRefs(std::vector<const double *>::const_i
 
 
 void TNIdealHeaterCooler::modelQuantities(std::vector<QuantityDescription> & quantities) const{
-	quantities.push_back(QuantityDescription("HeatSuppliedToFluid", "W", "Heat loss of element", false));
+	quantities.push_back(QuantityDescription("FlowElementHeatLoss", "W", "Heat flux from flow element into environment", false));
 }
 
 
 void TNIdealHeaterCooler::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
-	valRefs.push_back(&m_heatSupplied);
+	valRefs.push_back(&m_heatLoss);
 }
 
 
@@ -991,7 +1001,8 @@ TNHeatPumpReal::TNHeatPumpReal(const NANDRAD::HydraulicFluid &fluid, const NANDR
 }
 
 
-void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantities) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
 	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
 	quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
@@ -1003,6 +1014,7 @@ void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantiti
 
 
 void TNHeatPumpReal::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_COP);
 	valRefs.push_back(&m_electricalPower);
 	valRefs.push_back(&m_condenserHeatFlux);

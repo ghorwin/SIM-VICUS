@@ -230,6 +230,12 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
+					<ObjectListName>Flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">

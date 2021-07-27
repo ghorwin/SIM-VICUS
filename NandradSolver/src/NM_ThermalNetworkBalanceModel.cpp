@@ -157,20 +157,6 @@ void ThermalNetworkBalanceModel::setup(ThermalNetworkStatesModel *statesModel) {
 
 void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 
-	// publish heat loss from flow element towards environment
-	QuantityDescription desc("FlowElementHeatLoss", "W", "Heat flux from flow element into environment", false);
-
-	// set a description for each flow element
-	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	// loop through all flow elements
-	for (unsigned int i = 0; i < m_flowElementProperties.size(); ++i) {
-		// skip elements without heat loss
-		if (m_statesModel->m_p->m_heatLossElements[i] == nullptr)
-			continue;
-		desc.m_id = m_flowElementProperties[i].m_elementId;
-		resDesc.push_back(desc);
-	}
-
 	// heat load to zones with heat exchange
 	if (!m_zoneProperties.empty()) {
 		// select all zone ids
@@ -179,7 +165,7 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 			zoneIds.push_back(zoneProp.m_zoneId);
 
 		// set a description for each zone
-		desc = QuantityDescription("NetworkZoneThermalLoad", "W", "Complete Heat load to zones from all hydraulic network elements", false);
+		QuantityDescription desc("NetworkZoneThermalLoad", "W", "Complete Heat load to zones from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(zoneIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
@@ -193,14 +179,14 @@ void ThermalNetworkBalanceModel::resultDescriptions(std::vector<QuantityDescript
 			conInstanceIds.push_back(layerProp.m_constructionInstanceId);
 
 		// set a description for each construction
-		desc = QuantityDescription("ActiveLayerThermalLoad", "W", "Heat load to the construction layers from all hydraulic network elements", false);
+		QuantityDescription desc("ActiveLayerThermalLoad", "W", "Heat load to the construction layers from all hydraulic network elements", false);
 		// add current index to description
 		desc.resize(conInstanceIds, VectorValuedQuantityIndex::IK_ModelID);
 		resDesc.push_back(desc);
 	}
 
 	// inlet node temperature is a result
-	desc = QuantityDescription("InletNodeTemperature", "C", "Inlet node temperature of a flow element", false);
+	QuantityDescription desc("InletNodeTemperature", "C", "Inlet node temperature of a flow element", false);
 	// set a description for each flow element
 	desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	// loop through all flow elements
@@ -280,8 +266,6 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 		return fIt->m_inletNodeTemperatureRef;
 	else if (quantityName == std::string("OutletNodeTemperature"))
 		return fIt->m_outletNodeTemperatureRef;
-	else if (quantityName == std::string("FlowElementHeatLoss"))
-		return fIt->m_heatLossRef;
 
 	unsigned int pos = (unsigned int) std::distance(m_flowElementProperties.begin(), fIt);
 	// search for quantity inside individual element results

@@ -30,6 +30,16 @@ void ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(double *
 }
 
 
+void ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(std::vector<QuantityDescription> & quantities) const {
+	quantities.push_back(QuantityDescription("FlowElementHeatLoss", "W", "Heat flux from flow element into environment", false));
+}
+
+
+void ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	valRefs.push_back(&m_heatLoss);
+}
+
+
 void ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(const double *ydot, const double *y,
 			const double *mdot, const double* TInflowLeft, const double*TInflowRight,
 			std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
@@ -38,8 +48,6 @@ void ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(const double *y
 	ThermalNetworkAbstractFlowElement::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
 
 	// m_heatLoss depends on all inputs, just as ydot
-//	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowLeft) );
-//	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, TInflowRight) );
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, mdot) );
 	resultInputDependencies.push_back(std::make_pair(&m_heatLoss, &m_meanTemperature) );
 

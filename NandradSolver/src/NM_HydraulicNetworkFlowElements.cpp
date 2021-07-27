@@ -881,7 +881,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 
 	// Clipping of pressure head
 	// in case m_maxPressureHeadMinFlow or m_maxElectricalPower <=0, we dont apply clipping
-	if (m_maxPressureHeadMinFlow > 0 && m_maxElectricalPower > 0){
+	if (m_maxPressureHeadMinFlow > 0 && m_maxElectricalPower > 0) {
 		// calculation of actual maximum pressure head which depends on mass flux
 		// --> point of maximum volume flow (at minimum pressure head)
 		const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
@@ -891,7 +891,6 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		if (pressHeadControlled > pressHeadMax)
 			pressHeadControlled = pressHeadMax;
 	}
-
 
 	return pressHeadControlled;
 }
