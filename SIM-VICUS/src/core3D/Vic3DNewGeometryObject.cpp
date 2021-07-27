@@ -429,18 +429,18 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 			m_polygonGeometry.setPolygon(poly3d);
 		}
 
-		//distance of point 2 to 3
-		double distBC = polyline[2].distanceTo(polyline[1]);
+		//distance of point 0 to 1
+		double distAB = polyline[1].distanceTo(polyline[0]);
 		double height = roofData.m_height;
 		double angle  = roofData.m_angle;
 		//calculate height
 		if (!roofData.m_isHeightPredefined)
-			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distBC;
+			height = std::tan(roofData.m_angle * IBK::DEG2RAD) * distAB;
 		//calculate angle
 		else{
 			///TODO Dirk->Andreas fehlerbehandlung?
-			if(distBC>0)
-				angle = std::atan(roofData.m_height/distBC);
+			if(distAB>0)
+				angle = std::atan(roofData.m_height/distAB);
 			else
 				angle = 0;
 		}
