@@ -121,7 +121,6 @@ double PrandtlNumber(const double &kinVis, const double &cp, const double &lambd
 
 
 
-
 Network::Network() {
 	setDefaultSizingParams();
 }
@@ -142,18 +141,18 @@ Network Network::copyWithBaseParameters() {
 }
 
 
-unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
+unsigned int Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
-		for (NetworkNode n: m_nodes){
+		for (const NetworkNode &n: m_nodes){
 			if (n.m_position.distanceTo(v) < geometricResolution)
 				return n.m_id;
 		}
 	}
 
 	// else add new node
-	unsigned id = m_nodes.size();
+	unsigned id = Project::uniqueId(m_nodes);
 	m_nodes.push_back(NetworkNode(id, type, v));
 	updateNodeEdgeConnectionPointers();
 
@@ -161,27 +160,25 @@ unsigned Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType 
 }
 
 
-unsigned Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
+unsigned int Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
 	unsigned id = addNode(node.m_position, node.m_type, considerCoordinates);
-	m_nodes[id].m_maxHeatingDemand = node.m_maxHeatingDemand;
+	nodeById(id)->m_maxHeatingDemand = node.m_maxHeatingDemand;
 	return id;
 }
 
 
 void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
-	IBK_ASSERT(nodeId1<m_nodes.size() && nodeId2<m_nodes.size());
 	NetworkEdge e(nodeId1, nodeId2, supply, 0, INVALID_ID);
+	e.m_node1 = nodeById(nodeId1);
+	e.m_node2 = nodeById(nodeId2);
+	e.setLengthFromCoordinates();
 	m_edges.push_back(e);
-	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
-	updateNodeEdgeConnectionPointers();
-	m_edges.back().setLengthFromCoordinates();
 }
 
 
 void Network::addEdge(const NetworkEdge &edge) {
-	IBK_ASSERT(edge.nodeId1()<m_nodes.size() && edge.nodeId2()<m_nodes.size());
 	m_edges.push_back(edge);
-	// TODO : does this needs to be done very time a node is added? or manually, when we are done?
+	// we DON'T recalculate the length here!
 	updateNodeEdgeConnectionPointers();
 }
 
@@ -196,10 +193,8 @@ void Network::updateNodeEdgeConnectionPointers() {
 	// loop over all edges
 	for (NetworkEdge & e : m_edges) {
 		// store pointers to connected nodes
-		IBK_ASSERT(e.nodeId1() < m_nodes.size());
-		e.m_node1 = &m_nodes[e.nodeId1()];
-		IBK_ASSERT(e.nodeId2() < m_nodes.size());
-		e.m_node2 = &m_nodes[e.nodeId2()];
+		e.m_node1 = nodeById(e.nodeId1());
+		e.m_node2 = nodeById(e.nodeId2());
 
 		// now also store pointer to this edge into connected nodes
 		e.m_node1->m_edges.push_back(&e);
@@ -216,7 +211,6 @@ void Network::updateNodeEdgeConnectionPointers() {
 		n.m_parent = this;
 		m_children.push_back(&n);
 	}
-
 }
 
 
@@ -335,7 +329,7 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 
 	// extract vector of string-xy-pairs
 	std::vector<std::string> tokens;
-	for (std::string line: cont){
+	for (std::string &line: cont){
 		if (line.find("MULTILINESTRING ((") == std::string::npos)
 			continue;
 		IBK::trim(line, ",");
@@ -369,7 +363,7 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 	// extract vector of string-xy
 	std::vector<std::string> lineSepStr;
 	std::vector<std::string> xyStr;
-	for (std::string line: cont){
+	for (std::string &line: cont){
 		if (line.find("POINT") == std::string::npos)
 			continue;
 		IBK::explode(line, lineSepStr, ",", IBK::EF_NoFlags);
@@ -381,25 +375,25 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 			continue;
 		// add node
 		unsigned id = addNodeExt(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0), NetworkNode::NT_Building);
-		m_nodes[id].m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
+		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
 
 
-void Network::assignSourceNode(const IBKMK::Vector3D &v) {
-	IBK_ASSERT(!m_nodes.empty());
-	NetworkNode * nMin = nullptr;
-	double distMin = std::numeric_limits<double>::max();
-	for (NetworkNode &n: m_nodes){
-		double dist = n.m_position.distanceTo(v - m_origin);
-		if (dist < distMin){
-			distMin = dist;
-			nMin = &n;
-		}
-	}
+//void Network::assignSourceNode(const IBKMK::Vector3D &v) {
+//	IBK_ASSERT(!m_nodes.empty());
+//	NetworkNode * nMin = nullptr;
+//	double distMin = std::numeric_limits<double>::max();
+//	for (NetworkNode &n: m_nodes){
+//		double dist = n.m_position.distanceTo(v - m_origin);
+//		if (dist < distMin){
+//			distMin = dist;
+//			nMin = &n;
+//		}
+//	}
 
-	nMin->m_type = NetworkNode::NT_Source;
-}
+//	nMin->m_type = NetworkNode::NT_Source;
+//}
 
 
 void Network::generateIntersections(){
@@ -423,8 +417,8 @@ bool Network::findAndAddIntersection() {
 				unsigned nInter = addNode(IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
 				addEdge(nInter, m_edges[i1].nodeId1(), true);
 				addEdge(nInter, m_edges[i2].nodeId1(), true);
-				m_edges[i1].setNodeId1(nInter, &m_nodes[nInter]);
-				m_edges[i2].setNodeId1(nInter, &m_nodes[nInter]);
+				m_edges[i1].setNodeId1(nInter, nodeById(nInter));
+				m_edges[i2].setNodeId1(nInter, nodeById(nInter));
 				updateNodeEdgeConnectionPointers();
 				return true;
 			}
@@ -437,32 +431,34 @@ bool Network::findAndAddIntersection() {
 void Network::connectBuildings(const bool extendSupplyPipes) {
 
 	int idNext = nextUnconnectedBuilding();
-	while (idNext>=0) {
 
-		unsigned idBuilding = static_cast<unsigned>(idNext);
+	while (idNext >= 0) {
+
+		unsigned int idBuilding = (unsigned int)idNext;
 
 		// find closest supply edge
 		double distMin = std::numeric_limits<double>::max();
-		unsigned idEdgeMin=0;
+		unsigned idEdgeMin = 0;
 		for (unsigned id=0; id<m_edges.size(); ++id){
 			if (!m_edges[id].m_supply)
 				continue;
-			double dist = NetworkLine(m_edges[id]).distanceToPoint(m_nodes[idBuilding].m_position.point2D());
+			double dist = NetworkLine(m_edges[id]).distanceToPoint(nodeById(idBuilding)->m_position.point2D());
 			if (dist<distMin){
 				distMin = dist;
 				idEdgeMin = id;
 			}
 		}
+
 		// branch node
 		NetworkLine lMin = NetworkLine(m_edges[idEdgeMin]);
 		IBK::point2D<double> pBranch;
 		unsigned idBranch;
-		lMin.projectionFromPoint(m_nodes[idBuilding].m_position.point2D(), pBranch);
+		lMin.projectionFromPoint(nodeById(idBuilding)->m_position.point2D(), pBranch);
 		// branch node is inside edge: split edge
 		if (lMin.containsPoint(pBranch)){
 			idBranch = addNode(IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
 			addEdge(m_edges[idEdgeMin].nodeId1(), idBranch, true);
-			m_edges[idEdgeMin].setNodeId1(idBranch, &m_nodes[idBranch]);
+			m_edges[idEdgeMin].setNodeId1(idBranch, nodeById(idBranch));
 			updateNodeEdgeConnectionPointers();
 		}
 		// branch node is outside edge
@@ -472,8 +468,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 			idBranch = (dist1 < dist2) ? m_edges[idEdgeMin].nodeId1() : m_edges[idEdgeMin].nodeId2();
 			// if pipe should be extended, change coordinates of branch node
 			if (extendSupplyPipes) {
-				m_nodes[idBranch].m_position = IBKMK::Vector3D(pBranch);
-				for (NetworkEdge *e: m_nodes[idBranch].m_edges)
+				nodeById(idBranch)->m_position = IBKMK::Vector3D(pBranch);
+				for (NetworkEdge *e: nodeById(idBranch)->m_edges)
 					e->setLengthFromCoordinates();
 			}
 		}
@@ -494,11 +490,12 @@ int Network::nextUnconnectedBuilding() const{
 }
 
 
+// TODO : no copy needed anymore with new data structure ?
 void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 
 	for (unsigned step=0; step<maxSteps; ++step){
 		for (unsigned n=0; n<m_nodes.size(); ++n)
-			m_nodes[n].updateIsDeadEnd();
+			nodeById(n)->updateIsDeadEnd();
 	}
 	for (const NetworkEdge &edge: m_edges){
 		if (edge.m_node1->m_isDeadEnd || edge.m_node2->m_isDeadEnd)
@@ -510,6 +507,7 @@ void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 }
 
 
+// TODO : no copy needed anymore with new data structure ?
 void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 
 	IBK_ASSERT(m_edges.size()>0);
@@ -551,82 +549,82 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 void Network::removeShortEdges(Network &newNetwork, const double &threshold) {
 	FUNCID(Network::removeShortEdges);
 
-	updateNodeEdgeConnectionPointers();
+//	updateNodeEdgeConnectionPointers();
 
-	// check for source
-	std::vector<NetworkNode> sources;
-	findSourceNodes(sources);
-	if (sources.size() < 1)
-		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
+//	// check for source
+//	std::vector<NetworkNode> sources;
+//	findSourceNodes(sources);
+//	if (sources.size() < 1)
+//		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
-	// First, we need to order the edges. As a result we get a list of edges where each edge
-	// is connected to one of the previuos edges in the vector.
-	std::set<const VICUS::NetworkNode *> dummyNodeSet;
-	std::vector<const VICUS::NetworkEdge *> orderedEdges;
-	for (const VICUS::NetworkNode &node: m_nodes){
-		if (node.m_type == VICUS::NetworkNode::NT_Source){
-			node.setInletOutletNode(dummyNodeSet, orderedEdges);
-			break;
-		}
-	}
+//	// First, we need to order the edges. As a result we get a list of edges where each edge
+//	// is connected to one of the previuos edges in the vector.
+//	std::set<const VICUS::NetworkNode *> dummyNodeSet;
+//	std::vector<const VICUS::NetworkEdge *> orderedEdges;
+//	for (const VICUS::NetworkNode &node: m_nodes){
+//		if (node.m_type == VICUS::NetworkNode::NT_Source){
+//			node.setInletOutletNode(dummyNodeSet, orderedEdges);
+//			break;
+//		}
+//	}
 
-	// Now we create the new network:
-	// If the edge length is above the threshold, we add it with the according nodes to the new network.
-	// Else: We map the unknown node to the other node. There is always only one unknown node! This is because we ordered
-	// the edges in advance, see above.
+//	// Now we create the new network:
+//	// If the edge length is above the threshold, we add it with the according nodes to the new network.
+//	// Else: We map the unknown node to the other node. There is always only one unknown node! This is because we ordered
+//	// the edges in advance, see above.
 
-	// the very first node of the first edge is already known in the map (this must be the source)
-	std::map<unsigned int, unsigned int> nodeMap;
-	unsigned int id0 = newNetwork.addNode(*orderedEdges[0]->m_node1);
-	nodeMap[id0] = id0;
+//	// the very first node of the first edge is already known in the map (this must be the source)
+//	std::map<unsigned int, unsigned int> nodeMap;
+//	unsigned int id0 = newNetwork.addNode(*orderedEdges[0]->m_node1);
+//	nodeMap[id0] = id0;
 
-	for (const NetworkEdge *edge: orderedEdges){
+//	for (const NetworkEdge *edge: orderedEdges){
 
-		// get the ids of the nodes (they might have changed, when an edge was removed)
-		unsigned int newId, existingId;
-		if (contains(nodeMap, edge->nodeId1())){
-			newId = edge->nodeId2();
-			existingId = nodeMap.at(edge->nodeId1());
-		}
-		else if (contains(nodeMap, edge->nodeId2())){
-			newId = edge->nodeId1();
-			existingId = nodeMap.at(edge->nodeId2());
-		}
-		else
-			throw IBK::Exception(IBK::FormatString("Error in edge '%1 -> %2': One of both nodes must exist already in the map.")
-													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
+//		// get the ids of the nodes (they might have changed, when an edge was removed)
+//		unsigned int newId, existingId;
+//		if (contains(nodeMap, edge->nodeId1())){
+//			newId = edge->nodeId2();
+//			existingId = nodeMap.at(edge->nodeId1());
+//		}
+//		else if (contains(nodeMap, edge->nodeId2())){
+//			newId = edge->nodeId1();
+//			existingId = nodeMap.at(edge->nodeId2());
+//		}
+//		else
+//			throw IBK::Exception(IBK::FormatString("Error in edge '%1 -> %2': One of both nodes must exist already in the map.")
+//													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
 
-//		// calculate the updated length
-		double length0 = edge->length();
-		double length = NetworkLine(m_nodes[newId].m_position.point2D(), m_nodes[existingId].m_position.point2D()).length();
+////		// calculate the updated length
+//		double length0 = edge->length();
+//		double length = NetworkLine(m_nodes[newId].m_position.point2D(), m_nodes[existingId].m_position.point2D()).length();
 
-		// if this length is below the threshold and none of the nodes is a building,
-		// we will just map the ids and dont add any edge
-		if (length < threshold && (edge->m_node1->m_type != NetworkNode::NT_Building &&
-								   edge->m_node2->m_type != NetworkNode::NT_Building) ){
+//		// if this length is below the threshold and none of the nodes is a building,
+//		// we will just map the ids and dont add any edge
+//		if (length < threshold && (edge->m_node1->m_type != NetworkNode::NT_Building &&
+//								   edge->m_node2->m_type != NetworkNode::NT_Building) ){
 
-			// find the node which is not known yet
-			// map this node to the mapped value of the known node
-			nodeMap[newId] = nodeMap.at(existingId);
-		}
+//			// find the node which is not known yet
+//			// map this node to the mapped value of the known node
+//			nodeMap[newId] = nodeMap.at(existingId);
+//		}
 
-		// else just add the nodes and the edge
-		else {
+//		// else just add the nodes and the edge
+//		else {
 
-			NetworkNode * newNode;
-			if (newId == edge->nodeId1())
-				newNode = edge->m_node1;
-			else
-				newNode = edge->m_node2;
+//			NetworkNode * newNode;
+//			if (newId == edge->nodeId1())
+//				newNode = edge->m_node1;
+//			else
+//				newNode = edge->m_node2;
 
-			unsigned int id33 = newNetwork.addNode(*newNode);
-			nodeMap[newId] = newId;
+//			unsigned int id33 = newNetwork.addNode(*newNode);
+//			nodeMap[newId] = newId;
 
-			// add edge and calculate new length of it
-			newNetwork.addEdge(NetworkEdge(existingId, id33, edge->m_supply, edge->length(), edge->m_pipeId));
-			newNetwork.edge(existingId, id33)->setLengthFromCoordinates();
-		}
-	}
+//			// add edge and calculate new length of it
+//			newNetwork.addEdge(NetworkEdge(existingId, id33, edge->m_supply, edge->length(), edge->m_pipeId));
+//			newNetwork.edge(existingId, id33)->setLengthFromCoordinates();
+//		}
+//	}
 }
 
 
@@ -871,9 +869,9 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const Network
 		double minDistance = std::numeric_limits<double>::max();
 		NetworkNode *nMin = nullptr;
 		for (unsigned id = 0; id < m_nodes.size(); ++id){
-			if (visitedNodes.find(id) == visitedNodes.end() && m_nodes[id].m_distanceToStart < minDistance){
-				minDistance = m_nodes[id].m_distanceToStart;
-				nMin = &m_nodes[id];
+			if (visitedNodes.find(id) == visitedNodes.end() && nodeById(id)->m_distanceToStart < minDistance){
+				minDistance = nodeById(id)->m_distanceToStart;
+				nMin = nodeById(id);
 			}
 		}
 		IBK_ASSERT(nMin != nullptr);

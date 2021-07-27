@@ -155,7 +155,7 @@ public:
 
 	void writeNetworkCSV(const IBK::Path &file) const;
 
-	void writePathCSV(const IBK::Path &file, const NetworkNode & node, const std::vector<NetworkEdge *> &path) const;
+	void writePathCSV(const IBK::Path &file, const NetworkNode & nodeById, const std::vector<NetworkEdge *> &path) const;
 
 	void writeBuildingsCSV(const IBK::Path &file) const;
 
@@ -195,6 +195,38 @@ public:
 
 	void setVisible(bool visible);
 
+	NetworkNode *nodeById(unsigned int id) {
+		for (NetworkNode &n: m_nodes){
+			if (n.m_id == id)
+				return &n;
+		}
+		IBK_ASSERT(false);
+		return nullptr;
+
+//		std::vector<NetworkNode>::iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
+//		IBK_ASSERT(it == m_nodes.end());
+//		if (it == m_nodes.end())
+//			return nullptr;
+//		else
+//			return &(*it);
+	}
+
+	const NetworkNode *nodeById(unsigned int id) const{
+		for (const NetworkNode &n: m_nodes){
+			if (n.m_id == id)
+				return &n;
+		}
+		IBK_ASSERT(false);
+		return nullptr;
+
+//		std::vector<NetworkNode>::const_iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
+//		IBK_ASSERT(it == m_nodes.end());
+//		if (it == m_nodes.end())
+//			return nullptr;
+//		else
+//			return &(*it);
+	}
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -207,13 +239,7 @@ public:
 	/*! Network name */
 	//:inherited	QString			m_displayName;								// XML:A
 
-	/*! Nodes ID matches always node index.
-		\code
-		Edge e;
-		e.m_n1 = 17;
-		// get node identified by edge
-		Node & n = m_nodes[e.m_n1];
-		\endcode
+	/*! Nodes id must not match index in vector. To obtain a node by id use nodeById() function
 	*/
 	std::vector<NetworkNode>				m_nodes;									// XML:E
 
@@ -285,11 +311,11 @@ private:
 	/*! add node to network based on coordinates and type and return the node id.
 	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
-	unsigned addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
+	unsigned int addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! addNode using Node constructor for convenience,
 	 * does only copy position, type and maxHeatingDemand */
-	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
+	unsigned int addNode(const NetworkNode & nodeById, const bool considerCoordinates=true);
 
 };
 

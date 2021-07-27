@@ -49,6 +49,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
+	VICUS_COMPARE_WITH_ID
 
 	enum NodeType {
 		NT_Building,		// Keyword: Building

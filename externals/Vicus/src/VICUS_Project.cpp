@@ -2722,10 +2722,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 		// create name
 		IBK::FormatString pipeName = IBK::FormatString("%1#%2_%3#%4")
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_displayName.toStdString())
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdInlet].m_id)
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_displayName.toStdString())
-				.arg(vicusNetwork.m_nodes[edge->m_nodeIdOutlet].m_id);
+				.arg(vicusNetwork.nodeById(edge->m_nodeIdInlet)->m_displayName.toStdString())
+				.arg(vicusNetwork.nodeById(edge->m_nodeIdInlet)->m_id)
+				.arg(vicusNetwork.nodeById(edge->m_nodeIdOutlet)->m_displayName.toStdString())
+				.arg(vicusNetwork.nodeById(edge->m_nodeIdOutlet)->m_id);
 
 		// add inlet pipe element
 		unsigned int inletNode = supplyNodeIdMap[edge->m_nodeIdInlet];

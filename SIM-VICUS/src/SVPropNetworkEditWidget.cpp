@@ -722,7 +722,7 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 	// set hx properties to nodes
 	if (!m_currentNodes.empty()){
 		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
-			m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = hx;
+			m_currentNetwork.nodeById(nodeConst->m_id)->m_heatExchange = hx;
 		}
 	}
 
@@ -1160,7 +1160,7 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 		return;
 	Q_ASSERT(!m_currentNodes.empty());
 	for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
-		m_currentNetwork.m_nodes[nodeConst->m_id].*property = value;
+		m_currentNetwork.nodeById(nodeConst->m_id)->*property = value;
 	}
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
