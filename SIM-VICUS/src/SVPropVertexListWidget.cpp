@@ -1034,15 +1034,15 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 	// if checkbox is visible, we adjust the enabled state of other inputs
 	bool annonymousGeometry = createAnnonymousGeometry();
 	if (annonymousGeometry) {
-		m_ui->labelBuilding->setEnabled(false);
+		m_ui->labelAddBuilding->setEnabled(false);
 		m_ui->comboBoxBuilding->setEnabled(false);
 		m_ui->toolButtonAddBuilding->setEnabled(false);
 
-		m_ui->labelBuildingLevel->setEnabled(false);
+		m_ui->labelAddBuildingLevel->setEnabled(false);
 		m_ui->comboBoxBuildingLevel->setEnabled(false);
 		m_ui->toolButtonAddBuildingLevel->setEnabled(false);
 
-		m_ui->labelZone->setEnabled(false);
+		m_ui->labelAddZone->setEnabled(false);
 		m_ui->comboBoxZone->setEnabled(false);
 		m_ui->toolButtonAddZone->setEnabled(false);
 
@@ -1056,26 +1056,19 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 		m_ui->toolButtonEditComponents1->setEnabled(true);
 
 		// building controls
-		if (m_ui->comboBoxBuilding->count() == 0) {
-			m_ui->comboBoxBuilding->setEnabled(false);
-		}
-		else {
-			m_ui->comboBoxBuilding->setEnabled(true);
-		}
-		m_ui->labelBuilding->setEnabled(true);
+		m_ui->labelAddBuilding->setEnabled(true);
+		m_ui->comboBoxBuilding->setEnabled(m_ui->comboBoxBuilding->count() != 0);
 		m_ui->toolButtonAddBuilding->setEnabled(true);
 
-
 		// building level controls
-		if (m_ui->comboBoxBuildingLevel->count() == 0) {
-			m_ui->comboBoxBuildingLevel->setEnabled(false);
-		}
-		else {
-			m_ui->comboBoxBuildingLevel->setEnabled(true);
-		}
-		// enable tool button to add new levels
+		m_ui->labelAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
+		m_ui->comboBoxBuildingLevel->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 		m_ui->toolButtonAddBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
-		m_ui->labelBuildingLevel->setEnabled(m_ui->comboBoxBuilding->count() != 0);
+
+		// zone controls
+		m_ui->labelAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
+		m_ui->comboBoxZone->setEnabled(m_ui->comboBoxZone->count() != 0);
+		m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 	}
 }
 

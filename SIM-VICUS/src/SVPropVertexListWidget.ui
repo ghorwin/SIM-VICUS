@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageVertexes">
       <layout class="QGridLayout" name="gridLayout_8">
@@ -155,14 +155,14 @@
            </layout>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="labelBuildingLevel">
+           <widget class="QLabel" name="labelAddBuildingLevel">
             <property name="text">
              <string>Building level:</string>
             </property>
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="labelZone">
+           <widget class="QLabel" name="labelAddZone">
             <property name="text">
              <string>Zone:</string>
             </property>
@@ -186,7 +186,7 @@
            <widget class="QComboBox" name="comboBoxZone"/>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="labelBuilding">
+           <widget class="QLabel" name="labelAddBuilding">
             <property name="text">
              <string>Building:</string>
             </property>
