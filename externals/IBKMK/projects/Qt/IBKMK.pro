@@ -26,7 +26,6 @@ LIBS += -lsundials \
 
 
 INCLUDEPATH = \
-	../../../IBK/src/CDT \
 	../../../IBK/src
 
 
