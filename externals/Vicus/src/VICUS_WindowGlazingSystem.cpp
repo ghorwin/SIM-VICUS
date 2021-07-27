@@ -48,9 +48,6 @@ AbstractDBElement::ComparisonResult WindowGlazingSystem::equal(const AbstractDBE
 			return Different;
 	}
 
-	if (m_layers != otherWindow->m_layers)
-		return Different;
-
 	// check meta data
 
 	if (m_displayName != otherWindow->m_displayName ||
@@ -79,9 +76,8 @@ double WindowGlazingSystem::SHGC() const{
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
 			if (m_splinePara[SP_SHGC].m_values.valid())
-				return m_splinePara[SP_SHGC].m_values.value(0);
-			else
-				return -1;
+				return m_splinePara[SP_SHGC].m_values.y().front();
+		break;
 		case VICUS::WindowGlazingSystem::NUM_MT: ;
 	}
 

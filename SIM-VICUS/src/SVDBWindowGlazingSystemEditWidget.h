@@ -66,13 +66,12 @@ public:
 private slots:
 	void on_lineEditName_editingFinished();
 
-	void on_lineEditSHGC_editingFinished();
+	void on_lineEditSHGC0_editingFinishedSuccessfully();
 	void on_pushButtonWindowColor_colorChanged();
 
 	void on_lineEditUValue_editingFinishedSuccessfully();
 
 	void on_comboBoxType_currentIndexChanged(int index);
-
 
 	void on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item);
 
@@ -80,6 +79,9 @@ private:
 
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	/*! Populates the current data base element with a default SHGC-spline. */
+	void createDefaultSHGCSpline();
 
 	Ui::SVDBWindowGlazingSystemEditWidget 	*m_ui;
 

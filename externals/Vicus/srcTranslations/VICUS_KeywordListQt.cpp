@@ -217,7 +217,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Specific heat capacity of the gas layer.");
 	tr("Standard globbed-layers model");
 	tr("Thermal transmittance");
-	tr("Short wave transmittance at outside directed surface.");
+	tr("Incidence-angle dependent short wave transmittance across glazing system");
 	tr("Upper limit for room air temperature.");
 	tr("Lower limit for room air temperature.");
 	tr("Upper limit for outside air temperature.");

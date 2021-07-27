@@ -1390,7 +1390,7 @@ namespace VICUS {
 			// WindowGlazingSystem::splinePara_t
 			case 46 :
 			switch (t) {
-				case 0 : return "Short wave transmittance at outside directed surface.";
+				case 0 : return "Incidence-angle dependent short wave transmittance across glazing system";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
 			case 47 :

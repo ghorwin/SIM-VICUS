@@ -198,7 +198,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		// property info fields
 		m_ui->lineEditUValue->setText("");
-		m_ui->lineEditSHGC->setText("");
+		m_ui->lineEditSHGC0->setText("");
 		m_ui->comboBoxType->blockSignals(true);
 		m_ui->comboBoxType->setCurrentIndex(VICUS::WindowGlazingSystem::NUM_MT);
 		m_ui->comboBoxType->blockSignals(false);
@@ -219,16 +219,6 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_current->m_builtIn;
 
-	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
-
-	// create default SHGC-spline, if
-	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
-		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty())
-	{
-	}
-	double maxSHGC = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.y().back();
-	m_ui->lineEditSHGC->setValue(maxSHGC);
-
 	m_ui->comboBoxType->blockSignals(true);
 	if (m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT) {
 		m_current->m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
@@ -237,6 +227,17 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_modelType);
 	m_ui->comboBoxType->blockSignals(false);
 
+	// parameters may not be given or invalid, we transfer it anyway
+	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
+	m_ui->lineEditSHGC0->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_SHGC0].value);
+
+	// create default SHGC-spline, if not existent or invalid
+	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
+		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty() ||
+		!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() )
+	{
+		createDefaultSHGCSpline();
+	}
 
 	m_ui->tableWidgetSHGC->blockSignals(true);
 	if (m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple) {
@@ -273,12 +274,13 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
-	m_ui->lineEditSHGC->setReadOnly(!isEditable);
+	m_ui->lineEditSHGC0->setReadOnly(!isEditable);
 	m_ui->lineEditUValue->setReadOnly(!isEditable);
 	m_ui->comboBoxType->setEnabled(isEditable);
 	m_ui->toolButtonCreateSpline->setEnabled(false);	///TODO Dirk implement a function for SHGC
 
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_current != nullptr);
@@ -288,10 +290,19 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditName_editingFinished(){
 	}
 }
 
+
 void SVDBWindowGlazingSystemEditWidget::modelModify() {
 	m_db->m_windowGlazingSystems.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
+
+void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
+	IBK_ASSERT(m_current != nullptr);
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_]
+
+}
+
 
 void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() {
 
@@ -305,11 +316,11 @@ void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() 
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC_editingFinished(){
+void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC0_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
-	//do nothing
-	// only for button create SHGC ....
+
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
@@ -317,6 +328,7 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccess
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
