@@ -74,7 +74,7 @@ public:
 	}
 
 	/*! returns distance to other vector */
-	double distanceTo(const Vector3D &v){
+	double distanceTo(const Vector3D &v) const{
 		return Vector3D(*this - v).magnitude();
 	}
 
