@@ -890,6 +890,18 @@ bool SVProjectHandler::importEmbeddedDB() {
 		);
 	}
 
+
+	// now that all DB elements have been imported, we need to replace the referenced to those ID elements in the project
+
+	// *** ComponentInstance and SubSurfaceComponentInstance ***
+
+	for (VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
+		replaceID(ci.m_componentID, componentIDMap);
+		replaceID(ci.m_surfaceHeatingID, surfaceHeatingIDMap);
+	}
+	for (VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances)
+		replaceID(ci.m_subSurfaceComponentID, subSurfaceComponentIDMap);
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();
