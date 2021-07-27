@@ -229,7 +229,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	// parameters may not be given or invalid, we transfer it anyway
 	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
-	m_ui->lineEditSHGC0->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_SHGC0].value);
+//	m_ui->lineEditSHGC0->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_SHGC0].value);
 
 	// create default SHGC-spline, if not existent or invalid
 	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
@@ -299,7 +299,7 @@ void SVDBWindowGlazingSystemEditWidget::modelModify() {
 
 void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
 	IBK_ASSERT(m_current != nullptr);
-	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_]
+//	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_]
 
 }
 
