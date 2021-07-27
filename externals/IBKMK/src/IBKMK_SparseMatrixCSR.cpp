@@ -1,5 +1,5 @@
 /*	IBK Math Kernel Library
-	Copyright (c) 2001-2016, Institut fuer Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2001-today, Institut fuer Bauklimatik, TU Dresden, Germany
 
 	Written by A. Nicolai, A. Paepcke, H. Fechner, St. Vogelsang
 	All rights reserved.
@@ -44,6 +44,7 @@
 
 #include "IBKMK_SparseMatrixCSR.h"
 #include "IBKMKC_sparse_matrix.h"
+#include <IBK_InputOutput.h>
 
 namespace IBKMK {
 
@@ -284,11 +285,14 @@ std::size_t SparseMatrixCSR::serializationSize() const {
 	// the actual data consists of:
 	// - matrix identifier (char)
 	// - 2 size variables (n, nnz),
-	// - 2 size variables to indicate size of transposed index vectors(iaT, jaT),
-	// - data storage,
+	// - data storage vector
 	// - i and j index vectors
 	// - iT and jT transposed index vectors ( only if matrix pattern is asymmetric)
-	size_t s = sizeof(char) + 2*sizeof(uint32_t) + 2*sizeof(uint32_t) + m_data.size()*sizeof(double)
+	//
+	// each vector is serialized as 4-byte integer with size followed by actual data
+	size_t s = sizeof(char) + 2*sizeof(uint32_t)
+			+ sizeof(uint32_t) + m_data.size()*sizeof(double)
+			+ 4*sizeof(uint32_t) // each of the index vector data blocks is preceeded by the size
 			+ m_ia.size()*sizeof(unsigned int) + m_ja.size()*sizeof(unsigned int)
 			+ m_iaT.size()*sizeof(unsigned int) + m_jaT.size()*sizeof(unsigned int);
 	return s;
@@ -296,7 +300,17 @@ std::size_t SparseMatrixCSR::serializationSize() const {
 
 
 void SparseMatrixCSR::serialize(void* & dataPtr) const {
-	// store type
+	// Memory layout
+	//
+	// 1 char = 5
+	// 1 uint32_t = 4 bytes = n
+	// 1 uint32_t = 4 bytes = nnz
+	// binary vector data
+	// binary vector ia
+	// binary vector ja
+	// binary vector iaT
+	// binary vector jaT
+
 	*(char*)dataPtr = (char)MT_SparseMatrixCSR;
 	dataPtr = (char*)dataPtr + sizeof(char);
 
@@ -304,36 +318,12 @@ void SparseMatrixCSR::serialize(void* & dataPtr) const {
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 	*(uint32_t*)dataPtr = (uint32_t)m_nnz;
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	size_t iaTLen = m_iaT.size();
-	size_t jaTLen = m_jaT.size();
-	*(uint32_t*)dataPtr = (uint32_t)iaTLen;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	*(uint32_t*)dataPtr = (uint32_t)jaTLen;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(dataPtr, &m_data[0], dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
-
-	size_t iaSize = m_ia.size()*sizeof(unsigned int);
-	std::memcpy(dataPtr, &m_ia[0], iaSize);
-	dataPtr = (char*)dataPtr + iaSize;
-
-	size_t jaSize = m_ja.size()*sizeof(unsigned int);
-	std::memcpy(dataPtr, &m_ja[0], jaSize);
-	dataPtr = (char*)dataPtr + jaSize;
-
-	size_t iaTSize = iaTLen*sizeof(unsigned int);
-	size_t jaTSize = jaTLen*sizeof(unsigned int);
-	if (iaTSize != 0) {
-		std::memcpy(dataPtr, &m_iaT[0], iaTSize);
-		dataPtr = (char*)dataPtr + iaTSize;
-	}
-
-	if (jaTSize != 0) {
-		std::memcpy(dataPtr, &m_jaT[0], jaTSize);
-		dataPtr = (char*)dataPtr + jaTSize;
-	}
+	IBK::serialize_vector(dataPtr, m_data);
+	IBK::serialize_vector(dataPtr, m_ia);
+	IBK::serialize_vector(dataPtr, m_ja);
+	IBK::serialize_vector(dataPtr, m_iaT);
+	IBK::serialize_vector(dataPtr, m_jaT);
 }
 
 
@@ -349,35 +339,15 @@ void SparseMatrixCSR::deserialize(void* & dataPtr) {
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 	unsigned int  nnz = *(uint32_t*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	unsigned int  iaTLen = *(uint32_t*)dataPtr;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	unsigned int  jaTLen = *(uint32_t*)dataPtr;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	if (n != m_n || nnz != m_nnz || iaTLen != m_iaT.size() || jaTLen != m_jaT.size())
+	if (n != m_n || nnz != m_nnz)
 		throw IBK::Exception("Invalid matrix dimensions in binary data storage (target matrix not properly resized?).", FUNC_ID);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(&m_data[0], dataPtr, dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
-
-	size_t iaSize = m_ia.size()*sizeof(unsigned int);
-	std::memcpy(&m_ia[0], dataPtr, iaSize);
-	dataPtr = (char*)dataPtr + iaSize;
-
-	size_t jaSize = m_ja.size()*sizeof(unsigned int);
-	std::memcpy(&m_ja[0], dataPtr, jaSize);
-	dataPtr = (char*)dataPtr + jaSize;
-
-	size_t iaTSize = iaTLen * sizeof(unsigned int);
-	size_t jaTSize = jaTLen * sizeof(unsigned int);
-	if (iaTSize != 0) {
-		std::memcpy(&m_iaT[0], dataPtr, iaTSize);
-		dataPtr = (char*)dataPtr + iaTSize;
-	}
-	if (jaTSize != 0) {
-		std::memcpy(&m_jaT[0], dataPtr, jaTSize);
-		dataPtr = (char*)dataPtr + jaTSize;
-	}
+	// Mind: these functions assume correct memory sizes and throw exceptions if mismatching
+	IBK::deserialize_vector(dataPtr, m_data);
+	IBK::deserialize_vector(dataPtr, m_ia);
+	IBK::deserialize_vector(dataPtr, m_ja);
+	IBK::deserialize_vector(dataPtr, m_iaT);
+	IBK::deserialize_vector(dataPtr, m_jaT);
 }
 
 
@@ -393,40 +363,15 @@ void SparseMatrixCSR::recreate(void* & dataPtr) {
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 	m_nnz = *(uint32_t*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	unsigned int iaTLen = *(uint32_t*)dataPtr;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	unsigned int jaTLen = *(uint32_t*)dataPtr;
-	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 
-	// resize memory
-	m_data.resize(m_nnz);
-	m_ia.resize(m_n+1);
-	m_ja.resize(m_nnz);
-	m_iaT.resize(iaTLen);
-	m_jaT.resize(jaTLen);
+	IBK::recreate_vector(dataPtr, m_data);
+	IBK::recreate_vector(dataPtr, m_ia);
+	IBK::recreate_vector(dataPtr, m_ja);
+	IBK::recreate_vector(dataPtr, m_iaT);
+	IBK::recreate_vector(dataPtr, m_jaT);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(&m_data[0], dataPtr, dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
-
-	size_t iaSize = m_ia.size()*sizeof(unsigned int);
-	std::memcpy(&m_ia[0], dataPtr, iaSize);
-	dataPtr = (char*)dataPtr + iaSize;
-
-	size_t jaSize = m_ja.size()*sizeof(unsigned int);
-	std::memcpy(&m_ja[0], dataPtr, jaSize);
-	dataPtr = (char*)dataPtr + jaSize;
-
-	size_t iaTSize = iaTLen * sizeof(unsigned int);
-	size_t jaTSize = jaTLen * sizeof(unsigned int);
-	if (iaTLen != 0) {
-		std::memcpy(&m_iaT[0], dataPtr, iaTSize);
-		dataPtr = (char*)dataPtr + iaTSize;
-	}
-	if (jaTLen != 0) {
-		std::memcpy(&m_jaT[0], dataPtr, jaTSize);
-		dataPtr = (char*)dataPtr + jaTSize;
-	}
+	if (m_data.size() != m_nnz || m_ia.size() != m_n+1 || m_ja.size() != m_nnz)
+		throw IBK::Exception("Inconsistent binary matrix data.", FUNC_ID);
 }
 
 

@@ -1,5 +1,5 @@
 /*	IBK Math Kernel Library
-	Copyright (c) 2001-2016, Institut fuer Bauklimatik, TU Dresden, Germany
+	Copyright (c) 2001-today, Institut fuer Bauklimatik, TU Dresden, Germany
 
 	Written by A. Nicolai, A. Paepcke, H. Fechner, St. Vogelsang
 	All rights reserved.
@@ -88,7 +88,9 @@ std::size_t DenseMatrix::serializationSize() const {
 	// - 1 size variable (n),
 	// - data storage, and
 	// - pivot array
-	size_t s = sizeof(char) + sizeof(uint32_t) + m_data.size()*sizeof(double) + m_n*sizeof(long int);
+	size_t s = sizeof(char) + sizeof(uint32_t)
+			+ 2*sizeof(uint32_t)
+			+ m_data.size()*sizeof(double) + m_n*sizeof(long int);
 	return s;
 }
 
@@ -101,13 +103,8 @@ void DenseMatrix::serialize(void* & dataPtr) const {
 	*(uint32_t*)dataPtr = (uint32_t)m_n;
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(dataPtr, &m_data[0], dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
-
-	size_t pivotSize = m_n*sizeof(long int);
-	std::memcpy(dataPtr, &m_pivots[0], pivotSize);
-	dataPtr = (char*)dataPtr + pivotSize;
+	IBK::serialize_vector(dataPtr, m_data);
+	IBK::serialize_vector(dataPtr, m_pivots);
 }
 
 
@@ -124,13 +121,8 @@ void DenseMatrix::deserialize(void* & dataPtr) {
 	if (n != m_n)
 		throw IBK::Exception("Invalid matrix dimensions in binary data storage (target matrix not properly resized?).", FUNC_ID);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(&m_data[0], dataPtr, dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
-
-	size_t pivotSize = m_n*sizeof(long int);
-	std::memcpy(&m_pivots[0], dataPtr, pivotSize);
-	dataPtr = (char*)dataPtr + pivotSize;
+	IBK::deserialize_vector(dataPtr, m_data);
+	IBK::deserialize_vector(dataPtr, m_pivots);
 }
 
 
@@ -142,17 +134,14 @@ void DenseMatrix::recreate(void* & dataPtr) {
 	if (matType != MT_DenseMatrix)
 		throw IBK::Exception("Invalid matrix type in binary data storage.", FUNC_ID);
 
-	unsigned int n = *(uint32_t*)dataPtr;
+	m_n = *(uint32_t*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(uint32_t);
-	resize(n);
 
-	size_t dataSize = m_data.size()*sizeof(double);
-	std::memcpy(&m_data[0], dataPtr, dataSize);
-	dataPtr = (char*)dataPtr + dataSize;
+	IBK::recreate_vector(dataPtr, m_data);
+	IBK::recreate_vector(dataPtr, m_pivots);
 
-	size_t pivotSize = m_n*sizeof(long int);
-	std::memcpy(&m_pivots[0], dataPtr, pivotSize);
-	dataPtr = (char*)dataPtr + pivotSize;
+	if (m_data.size() != m_n*m_n || m_pivots.size() != m_n)
+		throw IBK::Exception("Inconsistent binary matrix data.", FUNC_ID);
 }
 
 

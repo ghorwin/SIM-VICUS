@@ -400,8 +400,14 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 }
 
 
-void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & /*resultInputValueReferences*/) const {
-	// we ignore dependencies
+void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+	// insert dependencies of controller inputs to mass flux for each element
+	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
+		m_p->m_flowElements[i]->dependencies(&m_p->m_fluidMassFluxes[i], resultInputValueReferences);
+	// all mass fluxes depend in each other
+	for (unsigned int i=0; i<m_p->m_fluidMassFluxes.size(); ++i)
+		for (unsigned int j=0; j<m_p->m_fluidMassFluxes.size(); ++j)
+			resultInputValueReferences.push_back(std::make_pair(&m_p->m_fluidMassFluxes[i], &m_p->m_fluidMassFluxes[j]) );
 }
 
 
@@ -745,6 +751,10 @@ int HydraulicNetworkModelImpl::solve() {
 	// reset initial guess
 	std::vector<double> rhs(n, 0);
 	std::memcpy(m_y.data(), m_yLast.data(), sizeof(double)*n);
+#if 0
+	for (unsigned int i=0; i<n; ++i)
+		m_y[i] = 10;
+#endif
 
 	// now start the Newton iteration
 	int iterations = 100;

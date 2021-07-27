@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -18,7 +18,7 @@
  * This is the implementation file for operations to be used by a
  * generic direct linear solver.
  * -----------------------------------------------------------------
- */ 
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,7 +39,7 @@ DlsMat NewDenseMat(long int M, long int N)
   A = NULL;
   A = (DlsMat) malloc(sizeof *A);
   if (A==NULL) return (NULL);
-  
+
   A->data = (realtype *) malloc(M * N * sizeof(realtype));
   if (A->data == NULL) {
     free(A); A = NULL;
@@ -94,7 +94,7 @@ DlsMat NewBandMat(long int N, long int mu, long int ml, long int smu)
   long int j, colSize;
 
   if (N <= 0) return(NULL);
-  
+
   A = NULL;
   A = (DlsMat) malloc(sizeof *A);
   if (A == NULL) return (NULL);
@@ -161,7 +161,7 @@ DlsMat NewBTridiagMat(long int NB, long int blocksize)
 
   if (NB <= 0) return(NULL);
   if (blocksize <= 0) return(NULL);
-  
+
   A = NULL;
   A = (DlsMat) malloc(sizeof *A);
   if (A == NULL) return (NULL);
@@ -305,14 +305,14 @@ realtype *newRealArray(long int m)
 }
 
 void DestroyArray(void *V)
-{ 
-  free(V); 
+{
+  free(V);
   V = NULL;
 }
 
 void destroyArray(void *v)
 {
-  free(v); 
+  free(v);
   v = NULL;
 }
 
@@ -356,7 +356,7 @@ void AddIdentity(DlsMat A)
           for (j=0; j<A->M; j++)            /* j column in block */
             M[i][j*A->M + j] += ONE;        /* A->cols[1] points to main diagonal */
         break;
-    } 
+    }
     break;
 
   }
@@ -372,7 +372,7 @@ void SetToZero(DlsMat A)
   switch (A->type) {
 
   case SUNDIALS_DENSE:
-    
+
     for (j=0; j<A->N; j++) {
       col_j = A->cols[j];
       for (i=0; i<A->M; i++)
@@ -394,7 +394,7 @@ void SetToZero(DlsMat A)
 
 
   case SUNDIALS_BTRIDIAG:
-    for (i=0; i<A->ldata; ++i) 
+    for (i=0; i<A->ldata; ++i)
       A->data[i] = ZERO;
 
     break;
@@ -427,7 +427,7 @@ void PrintMat(DlsMat A)
       printf("\n");
     }
     printf("\n");
-    
+
     break;
 
   case SUNDIALS_BAND:
@@ -450,7 +450,7 @@ void PrintMat(DlsMat A)
       printf("\n");
     }
     printf("\n");
-    
+
     break;
 
 
@@ -482,7 +482,7 @@ void PrintMat(DlsMat A)
 #if defined(SUNDIALS_EXTENDED_PRECISION)
         printf("%12Lg  ", BTRIDIAG_ELEM(A,i,j));
 #elif defined(SUNDIALS_DOUBLE_PRECISION)
-        block = BTRIDIAG_BLOCK(A,i,j); 
+        block = BTRIDIAG_BLOCK(A,i,j);
         printf("%12g  ", BTRIDIAG_ELEM(A,i,j));
 #else
         printf("%12g  ", BTRIDIAG_ELEM(A,i,j));
@@ -505,7 +505,7 @@ void PrintMat(DlsMat A)
       printf("\n");
     }
     printf("\n");
-    
+
     break;
   }
 
@@ -518,7 +518,7 @@ void SaveMat(DlsMat A, const char* const fname)
   realtype **a;
   realtype * block;
   FILE * f;
-  
+
   f = fopen(fname, "w");
 
   switch (A->type) {
@@ -539,7 +539,7 @@ void SaveMat(DlsMat A, const char* const fname)
       fprintf(f,"\n");
     }
     fprintf(f,"\n");
-    
+
     break;
 
 
@@ -563,7 +563,7 @@ void SaveMat(DlsMat A, const char* const fname)
       fprintf(f,"\n");
     }
     fprintf(f,"\n");
-    
+
     break;
 
 
@@ -595,7 +595,7 @@ void SaveMat(DlsMat A, const char* const fname)
 #if defined(SUNDIALS_EXTENDED_PRECISION)
         fprintf(f,"%12Lg  ", BTRIDIAG_ELEM(A,i,j));
 #elif defined(SUNDIALS_DOUBLE_PRECISION)
-        block = BTRIDIAG_BLOCK(A,i,j); 
+        block = BTRIDIAG_BLOCK(A,i,j);
         fprintf(f,"%12g  ", BTRIDIAG_ELEM(A,i,j));
 #else
         fprintf(f,"%12g  ", BTRIDIAG_ELEM(A,i,j));
@@ -618,8 +618,47 @@ void SaveMat(DlsMat A, const char* const fname)
       fprintf(f,"\n");
     }
     fprintf(f,"\n");
-    
+
     break;
   }
   fclose(f);
+}
+
+void SaveMatBinary(DlsMat A, const char* const fname) {
+  long int i, j, start, finish;
+  char matType;
+  unsigned int s;
+  realtype **a;
+  realtype * block;
+  FILE * f;
+
+  f = fopen(fname, "wb");
+
+  switch (A->type) {
+
+  case SUNDIALS_DENSE:
+//      size_t dataSize = m_data.size()*sizeof(double);
+//      std::memcpy(dataPtr, &m_data[0], dataSize);
+//      dataPtr = (char*)dataPtr + dataSize;
+
+//      size_t pivotSize = m_n*sizeof(long int);
+//      std::memcpy(dataPtr, &m_pivots[0], pivotSize);
+//      dataPtr = (char*)dataPtr + pivotSize;
+
+    // store type
+    matType = 1;
+    fwrite(&matType, sizeof(char), 1, f);
+    // matrix size
+    s = A->N;
+    fwrite(&s, sizeof(int), 1, f);
+    // matrix buffer size
+    s = A->N*A->N;
+    fwrite(&s, sizeof(int), 1, f);
+    // matrix buffer itself
+    fwrite(&A->data, s * sizeof(realtype), 1, f);
+    // pivot-data is not needed, dump zero vector length
+    s = 0;
+    fwrite(&s, sizeof(int), 1, f);
+    break;
+  }
 }

@@ -81,7 +81,7 @@ void SolverFeedback::writeFeedback(double t, bool betweenOutputs) {
 	}
 	// compute sliding average of computation speed
 	double slidingAverageSpeed;
-	if (delta_t_real == 0) {
+	if (delta_t_real == 0.0) {
 		slidingAverageSpeed = 0;
 	}
 	else {

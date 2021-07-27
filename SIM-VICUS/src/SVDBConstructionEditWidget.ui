@@ -44,16 +44,6 @@
         <item>
          <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
         </item>
-        <item>
-         <widget class="QtExt::ColorButton" name="pushButtonColor">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
       <item row="1" column="0">
@@ -208,11 +198,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QtExt::ColorButton</class>
-   <extends>QPushButton</extends>
-   <header location="global">QtExt_ColorButton.h</header>
-  </customwidget>
   <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>

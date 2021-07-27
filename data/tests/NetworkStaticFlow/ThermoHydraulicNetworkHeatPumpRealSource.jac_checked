@@ -1,0 +1,4 @@
+Differences result from temperature-dependent viscosity -> if viscosity is constant, Jacobians
+match perfectly between Dense and Sparse.
+Also note: tridiagonal matrix structure results from possibility of different flow directions.
+

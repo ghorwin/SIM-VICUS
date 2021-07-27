@@ -35,6 +35,7 @@ namespace Ui {
 class SVDBWindowGlazingSystemTableModel;
 class SVDatabase;
 class QwtPlotCurve;
+class QTableWidgetItem;
 
 namespace VICUS {
 	class WindowGlazingSystem;
@@ -53,9 +54,6 @@ class SVDBWindowGlazingSystemEditWidget : public SVAbstractDatabaseEditWidget {
 	Q_OBJECT
 
 public:
-
-
-
 	explicit SVDBWindowGlazingSystemEditWidget(QWidget *parent = nullptr);
 	~SVDBWindowGlazingSystemEditWidget() override;
 
@@ -65,22 +63,25 @@ public:
 	/*! Update widget with this. */
 	void updateInput(int id) override;
 
-
 private slots:
 	void on_lineEditName_editingFinished();
 
-	void on_lineEditSHGC_editingFinished();
+	void on_lineEditSHGC0_editingFinishedSuccessfully();
 	void on_pushButtonWindowColor_colorChanged();
 
 	void on_lineEditUValue_editingFinishedSuccessfully();
 
 	void on_comboBoxType_currentIndexChanged(int index);
 
+	void on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item);
 
 private:
 
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	/*! Populates the current data base element with a default SHGC-spline. */
+	void createDefaultSHGCSpline();
 
 	Ui::SVDBWindowGlazingSystemEditWidget 	*m_ui;
 

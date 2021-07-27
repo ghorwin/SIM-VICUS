@@ -5,12 +5,13 @@
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 #include "SOLFRA_IntegratorImplicitEuler.h"
 #include "SOLFRA_ModelInterface.h"
-#include "SOLFRA_JacobianInterface.h" // for the DUMP_JACOBIAN defines
+#include "SOLFRA_Constants.h"
 
 #include <IBKMK_DenseMatrix.h>
 #include <IBK_Exception.h>
 #include <IBK_FormatString.h>
 #include <IBK_messages.h>
+#include <IBK_InputOutput.h>
 
 #include <cvode/cvode_dense.h>
 #include <ida/ida_dense.h>
@@ -64,7 +65,6 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 		m_jacobian = new IBKMK::DenseMatrix(m_n);
 		m_yMod.resize(m_n);
 		m_ydotMod.resize(m_n);
-		m_FMod.resize(m_n);
 		m_ydiff.resize(m_n);
 
 		return;
@@ -75,7 +75,7 @@ void LESDense::init(ModelInterface * model, IntegratorInterface * integrator,
 
 void LESDense::setup(const double * y, const double * ydot, const double * /* residuals */, double gamma) {
 	// only setup linear equation system explicitely if integrator implicit Euler is chosen
-	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == nullptr)
 		return;
 
 	m_jacobian->fill(0.0);
@@ -93,23 +93,22 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 			// calculate modified right hand side
 			m_model->setY(&m_yMod[0]);
 			// calculate modified right hand side of the model, and store f(t,y) in m_FMod
-			m_model->ydot(&m_FMod[0]);
+			m_model->ydot(&m_ydotMod[0]);
 			// F = y - yn - dt*ydot,
 			// derivative: 1 - dt * dydot/dy
 			for (unsigned int i=0; i<m_n; ++i) {
 				// compute finite-differences column j in row i
-				(*m_jacobian)(i,j) = - gamma * ( m_FMod[i] - ydot[i] )/m_ydiff[j];
+				double val = ( m_ydotMod[i] - ydot[i] )/m_ydiff[j];
+				(*m_jacobian)(i,j) = val;
 			}
-			// add identity matrix
-			(*m_jacobian)(j,j) += 1.0;
 			// Jacobian matrix now holds df/dy
 			// update solver statistics
 			++m_statNumRhsEvals;
 		}
 		// restore y vector
 		m_yMod[j] = y[j];
-		// restore ydot vector
-		m_ydotMod[j] = ydot[j];
+		// reset ydiff
+		m_ydiff[j] = 0;
 	}
 #ifdef DUMP_JACOBIAN_TEXT
 	std::ofstream jacdump("jacobian_dense.txt");
@@ -117,6 +116,18 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 	jacdump.close();
 	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
 #endif
+#ifdef DUMP_JACOBIAN_BINARY
+	IBK::write_matrix_binary(*m_jacobian, "jacobian_dense.bin");
+	throw IBK::Exception("Done with test-dump of Jacobian", "[LESDense::setup]");
+#endif
+
+	// scale matrix with -gamma
+	unsigned int dataSize = m_n*m_n;
+	for (unsigned int i=0; i<dataSize; ++i)
+		m_jacobian->data()[i] *= -gamma;
+	// add identity matrix
+	for (unsigned int i=0; i<m_n; ++i)
+		(*m_jacobian)(i,i) += 1.0;
 
 	// perform LU-factorisation of the dense jacobian
 	m_jacobian->lu();
@@ -127,7 +138,7 @@ void LESDense::setup(const double * y, const double * ydot, const double * /* re
 
 void LESDense::solve(double * rhs) {
 	// only solve linear equation system explicitely if integrator implicit Euler is chosen
-	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == NULL)
+	if (dynamic_cast<IntegratorImplicitEuler*>(m_integrator) == nullptr)
 		return;
 
 	// backsolve with given lu factorisation

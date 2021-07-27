@@ -2,6 +2,7 @@
 
 #include "SOLFRA_IntegratorInterface.h"
 #include "SOLFRA_JacobianSparseCSR.h"
+#include "SOLFRA_JacobianSparseEID.h"
 #include "SOLFRA_ModelInterface.h"
 
 #include <IBKMK_SparseMatrixCSR.h>
@@ -84,11 +85,23 @@ void PrecondILUT::init(SOLFRA::ModelInterface * model, SOLFRA::IntegratorInterfa
 	// transfer jacobian matrix and ensure it is a sparse Jacobian implementation
 	// do we have a CSR Jacobian interface?
 	const SOLFRA::JacobianSparseCSR * jacCSR = dynamic_cast<const SOLFRA::JacobianSparseCSR*>(jacobianInterface);
-	IBK_ASSERT (jacCSR != nullptr);
+	if (jacCSR != nullptr) {
 
-	// let Jacobian implementation construct a copy for us and transfer ownership
-	m_precondMatrixCSR = dynamic_cast<IBKMK::SparseMatrixCSR*>(jacCSR->createAndReleaseJacobianCopy());
-	IBK_ASSERT(m_precondMatrixCSR != nullptr);
+		// let Jacobian implementation construct a copy for us and transfer ownership
+		m_precondMatrixCSR = dynamic_cast<IBKMK::SparseMatrixCSR*>(jacCSR->createAndReleaseJacobianCopy());
+		IBK_ASSERT(m_precondMatrixCSR != nullptr);
+	}
+	else {
+
+		const SOLFRA::JacobianSparseEID * jacEID = dynamic_cast<const SOLFRA::JacobianSparseEID*>(jacobianInterface);
+		IBK_ASSERT (jacEID != nullptr);
+
+		const IBKMK::SparseMatrixEID* sparseMatrixEID = dynamic_cast<const IBKMK::SparseMatrixEID*>(jacEID->jacobian());
+
+		// construct new CSR matrix with structure from EID
+		m_precondMatrixCSR = new IBKMK::SparseMatrixCSR;
+		m_precondMatrixCSR->resizeFromEID(sparseMatrixEID->n(), sparseMatrixEID->elementsPerRow(), sparseMatrixEID->constIndex());
+	}
 
 	// create a itsol sparse m,atrix and copy precond matrix pointer
 	m_itsolMatrix = new IBKMK::SpaFmt;
@@ -133,9 +146,20 @@ int PrecondILUT::setup(double t, const double * y, const double * ydot, const do
 
 	double * jacData = nullptr;
 
-	// restore partial Jacobian data in our local copy
-	jacData = m_precondMatrixCSR->data();
-	IBKMK::vector_copy(m_precondMatrixCSR->dataSize(), m_jacobianSparse->jacobian()->data(), jacData);
+	// different process of copying data from EID or CSR data structures
+	const SOLFRA::JacobianSparseEID * jacEID = dynamic_cast<const SOLFRA::JacobianSparseEID *>(m_jacobianSparse);
+	if (jacEID != nullptr) {
+		const IBKMK::SparseMatrixEID* sparseMatrix = dynamic_cast<const IBKMK::SparseMatrixEID*>(jacEID->jacobian());
+		m_precondMatrixCSR->parseFromEID(sparseMatrix->n(), sparseMatrix->elementsPerRow(), sparseMatrix->constIndex(), sparseMatrix->data());
+
+		jacData = m_precondMatrixCSR->data();
+	}
+	else {
+
+		// restore partial Jacobian data in our local copy
+		jacData = m_precondMatrixCSR->data();
+		IBKMK::vector_copy(m_precondMatrixCSR->dataSize(), m_jacobianSparse->jacobian()->data(), jacData);
+	}
 
 //#define DUMP_SPARSE_JACOBIANS
 #ifdef DUMP_SPARSE_JACOBIANS

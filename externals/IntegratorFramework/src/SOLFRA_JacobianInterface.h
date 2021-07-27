@@ -7,13 +7,6 @@ namespace SOLFRA {
 
 class ModelInterface;
 
-
-// dump routines helper
-//#define DUMP_JACOBIAN_BINARY
-//#define DUMP_JACOBIAN_POSTSCRIPT
-//#define DUMP_JACOBIAN_TEXT
-
-
 /*! This class defines the interface functions for generating a Jacobian matrix
 	and computing a matrix/vector multiplication.
 

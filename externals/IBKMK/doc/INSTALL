@@ -1,0 +1,22 @@
+Information about the IBK Library
+=================================
+
+Files in the library root directory
+-----------------------------------
+  README        - this file
+  ChangeLog     - recent changes to the library
+  COPYING       - formulation of the Lesser GNU Public License
+  AUTHORS       - copyright and contact information
+  CMakeList.txt - build information for CMake
+
+Subdirectories
+--------------
+  src           - contains the sources and include files of the IBK lib
+  src/examples  - example source code that demonstrates some features of the IBK lib
+  doc           - IBK library API documentation
+  projects      - contains some project files for various IDEs
+
+Compiling
+---------
+Enter directory build/cmake and run any of the build scripts.
+

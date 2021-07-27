@@ -1,6 +1,7 @@
 #include "SOLFRA_JacobianSparseCSR.h"
 
 #include "SOLFRA_ModelInterface.h"
+#include "SOLFRA_Constants.h"
 
 #include <fstream>
 #include <iomanip>
@@ -9,11 +10,12 @@
 #include <cvode/cvode.h>
 #include <sundials/sundials_timer.h>
 
+#include <IBKMK_SparseMatrix.h>
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
-#include <IBKMK_SparseMatrix.h>
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
+#include <IBK_InputOutput.h>
 
 #include <IBKMK_common_defines.h>
 
@@ -188,23 +190,7 @@ int JacobianSparseCSR::setup(double t, const double * y, const double * ydot, co
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");
 #endif
 #ifdef DUMP_JACOBIAN_BINARY
-	std::ofstream jacdump("jacobian_sparse.bin", std::ios_base::binary);
-
-	// we store:
-	// - 1 byte for matrix ID
-	// - 1 size_t for size of matrix storage memory
-	// - 4 unsigned int - size integers
-	// - storage space for actual matrix serialization data
-	unsigned int totalNumberOfBytes = serializationSize();
-
-	char* jacData = new char[totalNumberOfBytes];
-	void * jacDataPtr = jacData;
-	// serialize all matrix data
-	serialize(jacDataPtr);
-	// write data
-	jacdump.write(jacData, totalNumberOfBytes );
-	jacdump.close();
-	delete[] jacData;
+	IBK::write_matrix_binary(*this, "jacobian_sparse.bin");
 	throw IBK::Exception("Done with test-dump of Jacobian", "[JacobianSparseCSR::setup]");
 #endif
 #ifdef DUMP_JACOBIAN_POSTSCRIPT

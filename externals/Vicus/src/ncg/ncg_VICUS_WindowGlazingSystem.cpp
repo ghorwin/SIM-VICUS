@@ -52,10 +52,6 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName.setEncodedString(attrib->ValueStr());
-			else if (attribName == "color")
-				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (modelType_t)KeywordList::Enumeration("WindowGlazingSystem::modelType_t", attrib->ValueStr());
@@ -64,6 +60,10 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -106,18 +106,6 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "Layers") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "WindowGlazingLayer")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					WindowGlazingLayer obj;
-					obj.readXML(c2);
-					m_layers.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -139,12 +127,12 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));
 	if (!m_notes.isEmpty())
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
 	if (!m_manufacturer.isEmpty())
@@ -162,18 +150,6 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 			m_splinePara[i].writeXML(e);
 		}
 	}
-
-	if (!m_layers.empty()) {
-		TiXmlElement * child = new TiXmlElement("Layers");
-		e->LinkEndChild(child);
-
-		for (std::vector<WindowGlazingLayer>::const_iterator it = m_layers.begin();
-			it != m_layers.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
 	return e;
 }
 

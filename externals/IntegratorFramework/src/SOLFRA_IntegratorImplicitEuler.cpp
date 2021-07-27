@@ -34,6 +34,7 @@
 #include <sundials/sundials_timer.h>
 
 #include "SOLFRA_LESInterface.h"
+#include "SOLFRA_LESADI.h"
 #include "SOLFRA_PrecondInterface.h"
 #include "SOLFRA_JacobianInterface.h"
 
@@ -517,6 +518,18 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::tryStep() {
 
 	// model is at state m_t, m_y(pred)
 
+	// if we have an ADI LES Solver, we just need to take one ADI step, instead of
+	// a Newton iteration
+	if (dynamic_cast<SOLFRA::LESADI*>(m_lesSolver) != nullptr) {
+		// ADI solver setup gets old yn values, time steps
+		m_lesSolver->setup(DOUBLE_PTR(m_yn), DOUBLE_PTR(m_ydot), nullptr, m_dt);
+		// ADI solver step
+		m_lesSolver->solve(DOUBLE_PTR(m_deltaY));
+		// done
+		return IntegratorImplicitEuler::Success;
+	}
+
+
 	// this flag is true when we have updated the Jacobian matrix at least once in this tryStep() run with the current time step size
 	m_jacCurrent = false;
 
@@ -540,7 +553,7 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::tryStep() {
 
 		// we are updating the Jacobian with predicted/iterative y values
 		SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_LS_SETUP,
-			m_lesSolver->setup(DOUBLE_PTR(m_y), DOUBLE_PTR(m_ydot), 0, m_dt);
+			m_lesSolver->setup(DOUBLE_PTR(m_y), DOUBLE_PTR(m_ydot), nullptr, m_dt);
 		);
 		++m_statNumJacEvals;
 
@@ -758,7 +771,7 @@ IntegratorImplicitEuler::StepResult IntegratorImplicitEuler::newtonIteration() {
 		if ((m_modifiedNewtonStrategy == MN_EVERY_ITERATION) ||
 			(m_modifiedNewtonStrategy == MN_EVERY_ITERATION_UNTIL_THRESHOLD && m_residualNorm > 0.01))
 		{
-			m_lesSolver->setup(DOUBLE_PTR(m_y), DOUBLE_PTR(m_ydot), 0, m_dt);
+			m_lesSolver->setup(DOUBLE_PTR(m_y), DOUBLE_PTR(m_ydot), nullptr, m_dt);
 			++m_statNumJacEvals;
 
 			// reset counters
@@ -821,7 +834,7 @@ void IntegratorImplicitEuler::writeIterationStats(double convRateResiduals, doub
 	if (m_statNumIters == 0 && m_statNumSteps == 0) {
 #ifdef SOLVER_STEP_STATS
 		dump.close();
-		dump.open( (m_logFilePath + "/iter_stats.txt").c_str() );
+		dump.open( (m_logFilePath + "/iter_stats.txt").str().c_str() );
 #endif // SOLVER_STEP_STATS
 		std::stringstream strm;
 		strm << std::setw(6) << std::left << "Steps "

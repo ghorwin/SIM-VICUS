@@ -66,3 +66,92 @@ modelObject->setup(...); // this may throw
 
 m_modelContainer.push_back(modelObject.release()); // transfer ownership
 ----
+
+
+## Jacobian matrix pattern correctness check
+
+It is easily possible to forget a specific interrelation and dependency when publishing model variable dependencies. The resulting sparse Jacobian-pattern may be incomplete.
+
+An incomplete Jacobian-pattern has the following consequences:
+
+- The Newton-iteration may frequently not converge - the number of NonLinConvFails increases. Because of this, often a restart with new Newton-matrix setup and factorization is needed, which is expensive.
+- The Newton-iteration may converge, yet not entirely correct. This is picked up by the truncation error test, and leads potentially to an increase of ErrorFails and resulting step-rejections. Redoing a step is very bad for performance; time step is reduced, Jacobian matrix is recomputed and factorized... overall, the performance suffers.
+
+- The actual time to compose and factorize the Jacobian matrix may, however, be shorter when elements are missing. In some cases this can be desired, for example, when the Jacobian contains many very small values in its pattern. Then, it is often meaningful to drop these in the calculation. For example, the network interaction due to temperature-dependent viscosity changes may be omitted from the Jacobian. Also, the dependency of network element balance equations on a thermostat-controlled valve somewhere upstream reduces from element to element, until after several pipe segments the impact is no longer significant and could be dropped from the Jacobian.
+
+Generally speaking, the Jacobian pattern should be complete and correct for most models, and this should be regularly checked.
+
+### Automatic consistency check
+
+Under the condition that Jacobian matrixes for Dense and KLU are identical, the simulation should also run - theoretically - with identical results and solver statistics, only a bit slower in the case of the Dense matrix. Hence, it is a good first test to run the same test case with both matrix solvers and check, if there are significant differences.
+
+When running a test case with the following options:
+[source,bash]
+----
+> NandradSolver test.nandrad --les-solver=Dense --integrator=ImplicitEuler -o="test.Dense"
+> NandradSolver test.nandrad --les-solver=KLU -o="test.KLU"
+----
+
+this will generate two sets of output directories with (hopefully) identical physical results and statistics. However, even if the Jacobian pattern used by the sparse matrix solver is 100% correct, the rounding errors related to the LU factorization of the dense matrix, or the factorization of the re-arranged sparse matrix will likely give minor changes in the Newton solution which may accumulate over time and cause small differences in counters.
+
+Still, the test can be done automated by running the script `run_JacobianPatternTest.sh` in the `build/cmake` directory.
+
+[IMPORTANT]
+====
+Run the script `run_JacobianPatternTest.sh` for the release-build NANDRAD solver without any specific modifications (except maybe the Network-initial condition hack, as described below).
+====
+
+The script will run all test cases with Dense and KLU solvers, compare results and statistics and flag all test cases with differences as failed.
+
+Once a test case has been manually checked, a file with suffix `jac_checked` instead of `nandrad` can be placed side-by-side the NANDRAD project file. For all test cases with such a `jac_checked` file, the test will be skipped and the case will be marked as successful.
+
+
+### Manually checking Jacobian patterns
+
+The sparse Jacobian pattern can be checked by comparing it against a full dense Jacobian matrix. If the sparse pattern is correct, the generated Jacobian matrixes must be identical, under the following conditions:
+
+- Jacobian matrix data is compared as originally computed in memory. Hence, dumping the data in binary format is required. When writing Jacobian data in ASCII format, there will be accuracy loss and hence small differences will be computed stemming from rounding errors.
+
+- Jacobian matrixes generated with DQ-algorithms must be generated using the same calculation method for the increments. For example, the increment calculation method in the SUNDIALS solvers is different from those in IBKMK-library - results will not be comparible. It is advised to use only IBKMK-matrix classes to generate Jacobian data.
+
+- All states must be identical, when the Jacobians are generated. This is usually only guaranteed at the begin of a simulation. Thus, the typical procedure is to generate the Jacobian, dump it to file and stop the solver right away.
+
+- The system function must be 100% deterministic and only dependent on the current set of states provided to the function. This also means that all embedded iterative/numerical algorithms must be started with *exactly* the same initial conditions. This applies, for example, to the Newton solver that is used for the hydraulic network calculation.
+
+
+To generate the Jacobians to compare, the following changes need to be made in the solver's source code:
+
+[IMPORTANT]
+====
+
+- in `SOLFRA_JacobianSparseCSR.cpp` enable binary dumping of Jacobian matrix and enabling the define
+- in `SOLFRA_LESDense.cpp`  enable binary dumping of Jacobian matrix and enabling the define
+- in `NM_HydraulicNetworkModel.cpp` in function `HydraulicNetworkModelImpl::solve()` enable the if-block to ensure usage of the same initial conditions for the Newton method.
+
+- compile the solver with CMake in release mode
+- copy the solver executable `NandradSolver` to `NandradSolverJacDump`
+====
+
+
+Now you can generate the Jacobians for a specific test case using the command
+
+[source,bash]
+----
+> jacdump.sh test.nandrad
+----
+
+This will run the test case with KLU and Dense (the latter with ImplicitEuler integrator) and then rename the dumped Jacobians to `test_jacobian_dense.bin` and `test_jacobian_sparse.bin`.
+
+Now open these files with the _JacobianMatrixViewer_ tool (see https://github.com/ghorwin/JacobianMatrixViewer).
+
+If the matrixes match, you can run the script:
+
+[source,bash]
+----
+> checked.sh test.nandrad
+----
+
+which will create the `test.jac_checked` file and also remove the `bin`-files.
+
+
+

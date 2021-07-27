@@ -46,8 +46,7 @@ public:
 
 	/*! Model types supported by the window model. */
 	enum modelType_t {
-		MT_Simple,						// Keyword: Simple								'Standard globbed-layers model.'
-		MT_Detailed,					// Keyword: Detailed							'Detailed window model with layers.'
+		MT_Simple,						// Keyword: Simple								'Standard globbed-layers model'
 		NUM_MT
 	};
 
@@ -59,7 +58,7 @@ public:
 
 	/*! Enum type with all possible glazing system spline parameters.*/
 	enum splinePara_t {
-		SP_SHGC,						// Keyword: SHGC						[---]		'Short wave transmittance at outside directed surface.'
+		SP_SHGC,						// Keyword: SHGC						[---]		'Incidence-angle dependent short wave transmittance across glazing system'
 		NUM_SP
 	};
 
@@ -71,18 +70,26 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
-	/*! Returns the calculate or given uValue depending on model type. [W/m2K] */
+	/*! Returns the calculate or given uValue depending on model type. [W/m2K].
+		Only call this function for valid data, otherwise return value is undefined (-1).
+	*/
 	double uValue() const;
 
-	/*! Returns the calculate or given SHGC depending on model type. [---] */
+	/*! Returns the calculated or given SHGC for perpendicular incidence (angle 0) depending on model type. [---].
+		Only call this function for valid data, otherwise return value is undefined (-1).
+	*/
 	double SHGC() const;
 
+	/*! Tests if parameters are valid. */
 	bool isValid() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */
 	unsigned int						m_id = INVALID_ID;							// XML:A:required
+
+	/*! Model type. */
+	modelType_t							m_modelType = NUM_MT;						// XML:A:required
 
 	/*! Some display/comment name for this model (optional). */
 	IBK::MultiLanguageString			m_displayName;								// XML:A
@@ -99,18 +106,11 @@ public:
 	/*! Data source. */
 	QString								m_dataSource;								// XML:E
 
-	/*! Model type. */
-	modelType_t							m_modelType = NUM_MT;						// XML:A:required
-
 	/*! List of parameters. */
 	IBK::Parameter						m_para[NUM_P];								// XML:E
 
-	/*! Parameter for angle-dependent SHGC value. */
+	/*! Normalized angle-dependent SHGC values. */
 	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];						// XML:E
-
-	/*! Parameters for the detailed multi-layer model. */
-	std::vector<WindowGlazingLayer>		m_layers;									// XML:E
-
 };
 
 } // namespace VICUS

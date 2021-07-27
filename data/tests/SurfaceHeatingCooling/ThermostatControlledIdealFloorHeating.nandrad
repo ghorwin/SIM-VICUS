@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">17.9</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="3001" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter><!-- is ne Wand aber das sollte ja für uns egal sein --> 
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter><!-- den würde ich auch weiter runter nehmen so auf 10 circa (Dirk) -->
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction with heated slab">
+				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
+				<ActiveLayerIndex>1</ActiveLayerIndex>
+				<MaterialLayers>
+					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
+					<MaterialLayer thickness="0.01" matId="1002" />
+					<MaterialLayer thickness="0.12" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+
+		<Materials>
+			<Material id="1001" displayName="Beton/Estrich">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Trittschalldämmung"><!-- changed by Dirk -->
+				<IBK:Parameter name="Density" unit="kg/m3">35</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+		</Materials>
+
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+
+			<Thermostats>
+				<!-- A thermostat with scheduled heating set point, no cooling. Uses air temperature as sensor value. -->
+				<Thermostat id="601" displayName="Air temperature thermostat" modelType="Scheduled">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<!-- P-controller is accurate to 0.2 K -->
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+				</Thermostat>
+			</Thermostats>
+
+			<IdealSurfaceHeatingCoolingModels>
+				<IdealSurfaceHeatingCoolingModel id="701">
+					<!-- Use thermostat in zone 1 for control -->
+					<ThermostatZoneId>1</ThermostatZoneId>
+					<ConstructionObjectList>Floor</ConstructionObjectList>
+					<!-- Maximum heating power per construction/surface area, here: 10 m2 * 200 W/m2 = 2000 W -->
+					 <!-- das halte ich für viel zu viel bei Fußbodenheizung haste circa max. 70 W die in den Raum reingehen bei 20°C 
+							Raumtemperatur und circa 27°C Fußbodenoberflächentemperatur
+							Alles was wärmer ist ist unbehaglich
+							Damit kann das Rohr zw. 70-90 W/m2 abgeben
+							Grob kann man davon ausgehen das pro K unterschied zw. Raumluft und Fußbodenheizung 10 W/m2 rausgehen
+					 -->
+					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">90</IBK:Parameter><!-- changed 200-> 90 -->
+				</IdealSurfaceHeatingCoolingModel>
+			</IdealSurfaceHeatingCoolingModels>
+
+		</Models>
+
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Zones">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0 6 18</TimePoints>
+								<Values>HeatingSetpointSchedule [C]:18 22 18</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>CoolingSetpointSchedule [C]:40</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		
+		<Outputs>
+			<Definitions>
+
+				<OutputDefinition>
+					<Quantity>VentilationHeatLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<ObjectListName>Floor</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ActiveLayerTemperature</Quantity>
+					<ObjectListName>Floor</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+			</Definitions>
+			
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">30</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floor">
+				<FilterID>3001</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+
+	</Project>
+</NandradProject>

@@ -54,8 +54,6 @@ private:
 	std::vector<double>						m_yMod;
 	/*! Used to store individual ydot elements. */
 	std::vector<double>						m_ydotMod;
-	/*! Used to store individual right hand side of ODE models. */
-	std::vector<double>						m_FMod;
 	/*! Used to store differences added to the individual y elements. */
 	std::vector<double>						m_ydiff;
 	/*! Stores the modified residuals/ydot values during the FD algorithm. */

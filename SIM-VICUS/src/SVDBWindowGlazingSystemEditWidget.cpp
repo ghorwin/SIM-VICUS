@@ -70,6 +70,7 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	// set period table column sizes
 
 	//add header to periods table
+	m_ui->tableWidgetSHGC->blockSignals(true);
 	m_ui->tableWidgetSHGC->setColumnCount(2);
 	m_ui->tableWidgetSHGC->setRowCount(10);
 	// Note: valid column is self-explanatory and does not need a caption
@@ -87,30 +88,20 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	m_ui->tableWidgetSHGC->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
-	for (int i = 10; i > 0; --i) {
+	for (int i = 9; i >= 0; --i) {
 		// we need the Angle to go from 0 ... 90 Deg
 		// so we then make the iterator go from 0 ... 9
-		int idx = i-1;
 
-		m_ui->tableWidgetSHGC->setItem( i-1, 0, new QTableWidgetItem( QString::number(i*10) ) );
-		m_ui->tableWidgetSHGC->setItem( i-1, 1, new QTableWidgetItem(""));
+		QTableWidgetItem * item = new QTableWidgetItem( QString::number(i*10) );
+		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
 
-		m_ui->tableWidgetSHGC->item( i-1, 0)->setFlags(m_ui->tableWidgetSHGC->item(i-1,0)->flags() & ~Qt::ItemIsEditable);
-		m_ui->tableWidgetSHGC->item( i-1, 0)->setTextAlignment(Qt::AlignCenter);
-		m_ui->tableWidgetSHGC->item( i-1, 1)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetSHGC->setItem( i, 0, item);
+		m_ui->tableWidgetSHGC->setItem( i, 1, new QTableWidgetItem);
+
+		m_ui->tableWidgetSHGC->item( i, 0)->setTextAlignment(Qt::AlignCenter);
+		m_ui->tableWidgetSHGC->item( i, 1)->setTextAlignment(Qt::AlignCenter);
 	}
-
-
-
-//	unsigned int i=9;
-//	while (true){
-//		m_ui->tableWidgetSHGC->setItem((int)i, 0, new QTableWidgetItem(QString::number((i)*10)));
-//		m_ui->tableWidgetSHGC->setItem((int)i, 1, new QTableWidgetItem(""));
-
-//		if(i == 0)
-//			break;
-//		--i;
-//	}
+	m_ui->tableWidgetSHGC->blockSignals(false);
 
 	m_ui->comboBoxType->blockSignals(true);
 	for (int i=0; i<VICUS::WindowGlazingSystem::NUM_MT; ++i)
@@ -124,7 +115,6 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	//plt->setMargin(5);
 	plt->setAxisScale(QwtPlot::xBottom, 0, 90);
 	plt->setAxisScale(QwtPlot::yLeft, 0, 1);
-
 
 	// axes
 	QwtText theAxisTitle(tr("Incident Angle [Deg]")); // no axis title for left diagram
@@ -208,7 +198,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		// property info fields
 		m_ui->lineEditUValue->setText("");
-		m_ui->lineEditSHGC->setText("");
+		m_ui->lineEditSHGC0->setText("");
 		m_ui->comboBoxType->blockSignals(true);
 		m_ui->comboBoxType->setCurrentIndex(VICUS::WindowGlazingSystem::NUM_MT);
 		m_ui->comboBoxType->blockSignals(false);
@@ -229,18 +219,28 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_current->m_builtIn;
 
-	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].get_value());
-
 	m_ui->comboBoxType->blockSignals(true);
-	if(m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT){
+	if (m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT) {
 		m_current->m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
 		modelModify();
 	}
 	m_ui->comboBoxType->setCurrentIndex(m_current->m_modelType);
 	m_ui->comboBoxType->blockSignals(false);
 
+	// parameters may not be given or invalid, we transfer it anyway
+	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
+//	m_ui->lineEditSHGC0->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_SHGC0].value);
 
-	if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple){
+	// create default SHGC-spline, if not existent or invalid
+	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
+		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty() ||
+		!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() )
+	{
+		createDefaultSHGCSpline();
+	}
+
+	m_ui->tableWidgetSHGC->blockSignals(true);
+	if (m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple) {
 		std::vector<double> degVec;
 		std::vector<double> plotSHGCVec;
 		degVec.resize(10);
@@ -248,16 +248,15 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
 
-		if(!spline.empty()){
-			for(unsigned int i=0; i<10; ++i){
+		if (!spline.empty()) {
+			for (unsigned int i=0; i<10; ++i) {
 
 				IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
 				double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
-				m_ui->tableWidgetSHGC->item(i,1)->setText(QString::number(val));
-				// first we compose the vectors with data for the plot
+				m_ui->tableWidgetSHGC->item((int)i,1)->setText(QString("%L1").arg(val));
+				// compose the vectors with data for the plot
 				degVec[i] = i * 10;
 				plotSHGCVec[i] = val*100;
-
 			}
 			// we update the plot
 			m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
@@ -265,9 +264,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 			m_ui->shgcPlot->repaint();
 		}
 	}
-	else if(m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Detailed){
-		///TODO Stephan implement detailed model
-	}
+	m_ui->tableWidgetSHGC->blockSignals(false);
 
 
 	m_ui->pushButtonWindowColor->blockSignals(true);
@@ -277,12 +274,13 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
-	m_ui->lineEditSHGC->setReadOnly(!isEditable);
+	m_ui->lineEditSHGC0->setReadOnly(!isEditable);
 	m_ui->lineEditUValue->setReadOnly(!isEditable);
 	m_ui->comboBoxType->setEnabled(isEditable);
 	m_ui->toolButtonCreateSpline->setEnabled(false);	///TODO Dirk implement a function for SHGC
 
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_lineEditName_editingFinished(){
 	Q_ASSERT(m_current != nullptr);
@@ -292,10 +290,19 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditName_editingFinished(){
 	}
 }
 
+
 void SVDBWindowGlazingSystemEditWidget::modelModify() {
 	m_db->m_windowGlazingSystems.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 }
+
+
+void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
+	IBK_ASSERT(m_current != nullptr);
+//	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_]
+
+}
+
 
 void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() {
 
@@ -309,11 +316,11 @@ void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() 
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC_editingFinished(){
+void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC0_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
-	//do nothing
-	// only for button create SHGC ....
+
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
@@ -321,6 +328,7 @@ void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccess
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
 }
+
 
 void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
@@ -332,4 +340,9 @@ void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int 
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
 	}
+}
+
+
+void SVDBWindowGlazingSystemEditWidget::on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item) {
+	// triggered when user has entered a value
 }

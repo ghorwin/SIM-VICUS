@@ -37,7 +37,7 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVConstants.h"
 #include "SVStyle.h"
@@ -66,13 +66,10 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 
 	switch (role) {
 		case Qt::DisplayRole : {
-			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 				case ColUsageType			: return VICUS::KeywordListQt::Description("Construction::UsageType", it->second.m_usageType);
 				case ColInsulationKind		: return VICUS::KeywordListQt::Description("Construction::InsulationKind", it->second.m_insulationKind);
 				case ColMaterialKind		: return VICUS::KeywordListQt::Description("Construction::MaterialKind", it->second.m_materialKind);
@@ -163,7 +160,6 @@ void SVDBConstructionTableModel::resetModel() {
 QModelIndex SVDBConstructionTableModel::addNewItem() {
 	VICUS::Construction c;
 	c.m_displayName.setEncodedString("en:<new construction type>");
-	c.m_color = SVStyle::randomColor();
 
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	unsigned int id = m_db->m_constructions.add( c );
@@ -182,7 +178,6 @@ QModelIndex SVDBConstructionTableModel::copyItem(const QModelIndex & existingIte
 	beginInsertRows(QModelIndex(), rowCount(), rowCount());
 	// create new item and insert into DB
 	VICUS::Construction newItem(it->second);
-	newItem.m_color = SVStyle::randomColor();
 	unsigned int id = m_db->m_constructions.add( newItem );
 	endInsertRows();
 	QModelIndex idx = indexById(id);

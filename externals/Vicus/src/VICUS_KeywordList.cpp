@@ -478,7 +478,6 @@ namespace VICUS {
 			case 44 :
 			switch (t) {
 				case 0 : return "Simple";
-				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -933,7 +932,6 @@ namespace VICUS {
 			case 44 :
 			switch (t) {
 				case 0 : return "Simple";
-				case 1 : return "Detailed";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -1388,8 +1386,7 @@ namespace VICUS {
 			// WindowGlazingSystem::modelType_t
 			case 44 :
 			switch (t) {
-				case 0 : return "Standard globbed-layers model.";
-				case 1 : return "Detailed window model with layers.";
+				case 0 : return "Standard globbed-layers model";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -1399,7 +1396,7 @@ namespace VICUS {
 			// WindowGlazingSystem::splinePara_t
 			case 46 :
 			switch (t) {
-				case 0 : return "Short wave transmittance at outside directed surface.";
+				case 0 : return "Incidence-angle dependent short wave transmittance across glazing system";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
 			case 47 :
@@ -1844,7 +1841,6 @@ namespace VICUS {
 			case 44 :
 			switch (t) {
 				case 0 : return "";
-				case 1 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -2299,7 +2295,6 @@ namespace VICUS {
 			case 44 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -2754,7 +2749,6 @@ namespace VICUS {
 			case 44 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowGlazingSystem::para_t
 			case 45 :
@@ -2926,7 +2920,7 @@ namespace VICUS {
 			// WindowGlazingLayer::splinePara_t
 			case 43 : return 6;
 			// WindowGlazingSystem::modelType_t
-			case 44 : return 2;
+			case 44 : return 1;
 			// WindowGlazingSystem::para_t
 			case 45 : return 1;
 			// WindowGlazingSystem::splinePara_t
@@ -3044,7 +3038,7 @@ namespace VICUS {
 			// WindowGlazingLayer::splinePara_t
 			case 43 : return 5;
 			// WindowGlazingSystem::modelType_t
-			case 44 : return 1;
+			case 44 : return 0;
 			// WindowGlazingSystem::para_t
 			case 45 : return 0;
 			// WindowGlazingSystem::splinePara_t

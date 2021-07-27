@@ -39,9 +39,12 @@
 #endif // _WIN32
 
 #include "SOLFRA_ModelInterface.h"
+#include "SOLFRA_IntegratorADI.h"
+#include "SOLFRA_IntegratorExplicitEuler.h"
 #include "SOLFRA_IntegratorInterface.h"
 #include "SOLFRA_OutputScheduler.h"
 #include "SOLFRA_IntegratorSundialsCVODE.h"
+#include "SOLFRA_IntegratorRungeKutta45.h"
 #include "SOLFRA_LESDense.h"
 #include "SOLFRA_PrecondInterface.h"
 #include "SOLFRA_JacobianInterface.h"
@@ -98,7 +101,7 @@ SolverControlFramework::~SolverControlFramework() {
 
 
 void SolverControlFramework::setModel(ModelInterface * model) {
-//	FUNCID(SolverControlFramework::setModel);
+	FUNCID(SolverControlFramework::setModel);
 
 	// clean up previously created
 	delete m_defaultIntegrator;
@@ -121,6 +124,29 @@ void SolverControlFramework::setModel(ModelInterface * model) {
 
 	// store pointer to linear equation system solver
 	m_lesSolver = model->lesInterface();
+
+	// ADI integrator requires ADI LES interface
+	IntegratorADI *integratorADI = dynamic_cast<IntegratorADI*>(m_integrator);
+	if (integratorADI != nullptr) {
+		m_lesSolver = integratorADI->lesInterface();
+	}
+
+
+	// the explicit integrators do not need an LES solver
+	IntegratorRungeKutta45 * integratorRK = dynamic_cast<IntegratorRungeKutta45*>(m_integrator);
+	IntegratorExplicitEuler * integratorExpEuler = dynamic_cast<IntegratorExplicitEuler*>(m_integrator);
+
+	if (integratorRK != nullptr || integratorExpEuler != nullptr) {
+		if (m_lesSolver != nullptr)
+			throw IBK::Exception("Providing LES solvers for explicit integrators is not needed and hence treated as an error.", FUNC_ID);
+		IBK_Message( IBK::FormatString("Explicit intergrators to not require LES solvers.\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+	}
+	else if (m_lesSolver == nullptr) {
+		// if none is given, construct a dense direct matrix solver
+		IBK_Message( IBK::FormatString("Creating generic Dense LES solver.\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		m_defaultLES = new LESDense;
+		m_lesSolver = m_defaultLES;
+	}
 
 	// store pointer to preconditioner
 	m_precondInterface = model->preconditionerInterface();
@@ -181,7 +207,7 @@ void SolverControlFramework::restartFrom(double t_restart) {
 	FUNCID(SolverControlFramework::restartFrom=);
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Invalid pointers to model, integrator or outputScheduler.", FUNC_ID);
-	std::vector<double> tmp(m_model->n());
+	std::vector<double> tmp(m_model->n() + m_model->serializationSize()/sizeof(double));
 	double t;
 	bool success = readRestartFile(-2, t_restart, t, &tmp[0]);
 	if (!success)
@@ -197,6 +223,17 @@ void SolverControlFramework::restartFrom(double t_restart) {
 		IBK::IBK_Message("Stopping after successful initialization of integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return;
 	}
+
+	// now pass serialization data to model as well
+	double * modelDataPtr = tmp.data() + m_model->n();
+	void * modPtr = (void*)modelDataPtr;
+	// check if enough data is available - i.e. source data memory is large enough for target memory in model
+	unsigned int dataSize = m_model->serializationSize()/sizeof(double); // number of doubles
+	if (tmp.size() - m_model->n() != dataSize)
+		throw IBK::Exception("Invalid data size in restart file. You MUST NOT add/remove "
+							 "outputs with time integration/averaging when restarting!", FUNC_ID);
+	m_model->deserialize(modPtr);
+
 
 	run(t);
 }
@@ -232,7 +269,7 @@ void SolverControlFramework::restart(int step) {
 		// we are allready finished here, so we will return
 		return;
 	}
-	std::vector<double> tmp(m_model->n());
+	std::vector<double> tmp(m_model->n() + m_model->serializationSize()/sizeof(double));
 	double t;
 	// create restart file to hold all previous restart data up to and including 'step'
 	IBK::Path tmpfile_name = m_restartFilename;
@@ -247,6 +284,12 @@ void SolverControlFramework::restart(int step) {
 	if (!success)
 		throw IBK::Exception("Error reading restart data.", FUNC_ID);
 	// replace restart files
+
+	// Note: in case of RestartFromAll, we had stored many restart time data sets, for example for 30 time points
+	//       If we now restart from the 10th point, we copy in function readRestartFile() the first 10 restart points
+	//       to a temporary file. And now we copy the tempary file over the original restart file, so that it appears
+	//       is if we had continued from the end. This ensures, that the next added restart time data sets are always
+	//       consecutively following the old restart points.
 	bool copy_success;
 	{
 #if defined(_MSC_VER)
@@ -266,11 +309,23 @@ void SolverControlFramework::restart(int step) {
 
 	// initialize integrator with read solution
 	try {
+		// the first model->n() doubles in the tmp vector are the states used by the integrator
 		m_integrator->init(m_model, t, &tmp[0], m_lesSolver, m_precondInterface, m_jacobianInterface);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Initialization of Integrator failed.", FUNC_ID);
 	}
+
+	// now pass serialization data to model as well
+	double * modelDataPtr = tmp.data() + m_model->n();
+	void * modPtr = (void*)modelDataPtr;
+	// check if enough data is available - i.e. source data memory is large enough for target memory in model
+	unsigned int dataSize = m_model->serializationSize()/sizeof(double); // number of doubles
+	if (tmp.size() - m_model->n() != dataSize)
+		throw IBK::Exception("Invalid data size in restart file. You MUST NOT add/remove "
+							 "outputs with time integration/averaging when restarting!", FUNC_ID);
+	m_model->deserialize(modPtr);
+
 	if (m_stopAfterSolverInit) {
 		IBK::IBK_Message("Stopping after successful initialization of integrator.\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return;
@@ -332,8 +387,8 @@ void SolverControlFramework::printVersionInfo() {
 // *** PRIVATE FUNCTIONS ***
 
 void SolverControlFramework::run(double t) {
-	FUNCID(SolverControlFramework::run);
 
+	FUNCID(SolverControlFramework::run);
 	if (m_model == nullptr || m_integrator == nullptr || m_outputScheduler == nullptr)
 		throw IBK::Exception("Missing model, integrator or outputScheduler.", FUNC_ID);
 
@@ -521,7 +576,7 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 	else {
 		// if restart file exists, rename it to bak
 		if (m_restartFilename.isFile())
-			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak");
+			IBK::Path::move(m_restartFilename, m_restartFilename + ".bak"); // restart.bak
 		out.open(m_restartFilename.c_str(), std::ios_base::binary);
 	}
 #endif
@@ -529,9 +584,23 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 		throw IBK::Exception( IBK::FormatString("Cannot open restart file '%1' for writing.").arg(m_restartFilename), FUNC_ID);
 	// write in binary mode unless debug option is set
 	out.write((const char *)&t, sizeof(double) );
+
+	// collect and write total number of doubles in double-value data block
 	unsigned int n = m_model->n();
-	out.write((const char *)&n, sizeof(unsigned int) );
+	unsigned int dataSize = m_model->serializationSize() / sizeof(double);
+	unsigned int totalNumberOfDoubles = n + dataSize;
+	out.write((const char *)&totalNumberOfDoubles, sizeof(unsigned int) );
+
+	// write integrator memory
 	out.write((const char *)y, sizeof(double)*n);
+
+	// write model memory
+	if (dataSize != 0) {
+		std::vector<double> tmpData(dataSize);
+		void * dataPtr = (void *)tmpData.data();
+		m_model->serialize(dataPtr);
+		out.write((const char *)tmpData.data(), sizeof(double)*dataSize);
+	}
 
 }
 
@@ -539,7 +608,7 @@ void SolverControlFramework::appendRestartInfo(double t, const double * y) const
 
 bool SolverControlFramework::readRestartFile(int step,
 	double t_restart,
-	double & t, double * y,
+	double & t, double * integratorModelData,
 	std::ostream * restartFileCopy) const
 {
 	// open restart file for reading
@@ -566,20 +635,23 @@ bool SolverControlFramework::readRestartFile(int step,
 		IBK::IBK_Message( IBK::FormatString("Failed to read first block in restart file."), IBK::MSG_ERROR);
 		return false;
 	}
-	if (n != m_model->n()) {
+	unsigned int numberOfDoubles = m_model->n() + m_model->serializationSize()/sizeof(double);
+	if (n != numberOfDoubles) {
 		IBK::IBK_Message( IBK::FormatString("Size mismatch between restart file (n = %1) and "
 			"size returned by model (n = %2)").arg(n).arg(m_model->n()), IBK::MSG_ERROR);
 		return false;
 	}
 
-	// compute block size
-	int bs = sizeof(double) + sizeof(unsigned int) + n*sizeof(double);
+	// compute block size (must be int variable)
+	long bs = sizeof(double) + sizeof(unsigned int) + n*sizeof(double);
 	// if step == -1, read last solution
 	if (step == -1) {
 		in.seekg(-bs, std::ios_base::end);
+		if (!in)
+			IBK::IBK_Message( IBK::FormatString("Error seeking."), IBK::MSG_ERROR);
 		in.read((char *)&t, sizeof(double));
 		in.read((char *)&n, sizeof(unsigned int) );
-		in.read((char *)y, sizeof(double)*n);
+		in.read((char *)integratorModelData, sizeof(double)*n);
 		if (!in) {
 			IBK::IBK_Message( IBK::FormatString("Error reading last block in restart file."), IBK::MSG_ERROR);
 			return false;
@@ -605,7 +677,7 @@ bool SolverControlFramework::readRestartFile(int step,
 		// special case: step == -2, we use t_restart
 		if (step == -2 && t > t_restart - 1e-10) {
 			// use values still stored in last_successful_t and tmp
-			std::memcpy(y, &tmp[0], sizeof(double)*n);
+			std::memcpy(integratorModelData, &tmp[0], sizeof(double)*n);
 			t = last_successful_t;
 			return true;		// abort criteria #2: passed restart time point
 		}

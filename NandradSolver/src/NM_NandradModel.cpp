@@ -2290,6 +2290,16 @@ void NandradModel::initOutputReferenceList() {
 	}
 
 
+	// *** append variable name substitutions for zones ***
+
+	for (const NANDRAD::Zone & zone : m_project->m_zones) {
+		// skip zones without display name
+		if (zone.m_displayName.empty())
+			continue;
+		std::string zoneObjectRef = IBK::FormatString("Zone(id=%1)").arg(zone.m_id).str();
+		varSubstMap[zoneObjectRef] = zone.m_displayName;
+	}
+
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "objectref_substitutions.txt");

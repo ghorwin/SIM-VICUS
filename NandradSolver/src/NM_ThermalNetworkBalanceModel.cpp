@@ -414,7 +414,8 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 	}
 
 	unsigned int offset = 0;
-	// we at first try use dense pattern between all internal element divergences and internal states
+
+	// process all elements and ask for their dependencies
 	for (unsigned int i = 0; i < m_statesModel->m_network->m_elements.size(); ++i) {
 
 		const ThermalNetworkAbstractFlowElement *fe = m_statesModel->m_p->m_flowElements[i];
@@ -438,6 +439,60 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 							 deps);
 		}
 
+
+#if 0
+		// handled already by HydraulicNetworkElements
+
+		// Some elements do not know about dependencies from other elements, because control elements
+		// are just used by the HydraulicNetworkElements. Hence we need to implement special handling for
+		// such cases.
+		//
+		// Basically, whenever a control element changes the mass flux, this impacts *all* flow elements
+		// in this network (actually, only all hydrauically linked).
+		// So, we need to add the dependency to the controlling variable (zone state, outlet temperature
+		// of following element, etc.) to *all* flow elements
+
+		const NANDRAD::HydraulicNetworkElement & nandradElement = m_statesModel->m_network->m_elements[i];
+
+		if (nandradElement.m_controlElement != nullptr) {
+			switch (nandradElement.m_controlElement->m_controlledProperty) {
+				case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+				break;
+
+				case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
+					// insert dependency to outlet temperature of following element
+
+					// get index of following element
+					// elem.m_nodeIndexOutlet -> outlet node of current element
+					const Node & outletNode = m_statesModel->m_p->m_network->m_nodes[elem.m_nodeIndexOutlet];
+					// node has exactly two elements, get the index of the element that is not the current
+					unsigned int otherElemIndex = outletNode.m_elementIndexesOutlet.back();
+					IBK_ASSERT(outletNode.m_elementIndexesOutlet.size() == 1);
+					const Element & nextElement = m_statesModel->m_p->m_network->m_elements[otherElemIndex];
+					// temperature difference is computed from our own outlet temperature (node temperature) and the next
+					// element's outlet temperature. Hence, the mass flux depends on both temperatures.
+					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[nextElement.m_nodeIndexOutlet]) );
+					deps.push_back(std::make_pair(&m_statesModel->m_p->m_fluidMassFluxes[i], &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet]) );
+				} break;
+
+				case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: {
+					// add dependency of current element's mass flux to the zone thermostat values:
+					//
+					// mdot <- heatingControlValue
+					// mdot <- coolingControlValue
+					//
+					// However, only the HNPipeElement holds these references and consequently, the
+					// HNPipeElement should generate the dependent information.
+
+				} break;
+
+				case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
+				break;
+				case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
+				break;
+			}
+		}
+#endif
 		// copy dependencies
 		if (!deps.empty()) {
 			resultInputValueReferences.insert(resultInputValueReferences.end(), deps.begin(), deps.end());
@@ -446,6 +501,7 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		offset += fe->nInternalStates();
 	}
 	// retrieve dependencies of network connections
+	// this basically adds dependencies of all nodal temperatures from mass fluxes
 	m_statesModel->m_p->dependencies(resultInputValueReferences);
 }
 

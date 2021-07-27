@@ -29,6 +29,8 @@ LIBS += -L../../../lib$${DIR_PREFIX} \
 								-lCCM \
 								-lIBK \
 								-lIBKMK \
+								-lsundials \
+								-lSuiteSparse \
 								-lqwt6
 
 win32 {

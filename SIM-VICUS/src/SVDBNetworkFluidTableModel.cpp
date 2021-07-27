@@ -31,7 +31,7 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVConstants.h"
 
@@ -59,13 +59,10 @@ QVariant SVDBNetworkFluidTableModel::data ( const QModelIndex & index, int role)
 
 	switch (role) {
 		case Qt::DisplayRole : {
-			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 			}
 		} break;
 

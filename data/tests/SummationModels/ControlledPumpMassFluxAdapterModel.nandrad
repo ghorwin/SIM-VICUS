@@ -10,7 +10,7 @@
 			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">21.9</IBK:Parameter>
 			<Interval>
 				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
 			</Interval>

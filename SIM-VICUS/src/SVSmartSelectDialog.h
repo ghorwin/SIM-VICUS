@@ -27,12 +27,14 @@
 #define SVSmartSelectDialogH
 
 #include <QDialog>
+#include <set>
 
 namespace Ui {
 class SVSmartSelectDialog;
 }
 
 namespace VICUS {
+	class Object;
 	class AbstractDBElement;
 }
 
@@ -80,6 +82,12 @@ private:
 		const VICUS::AbstractDBElement	*m_dbElement = nullptr;
 		std::vector<FilterOption>		m_options;
 	};
+
+	/*! Processes all selected options in the current option and recursivly calls this function until
+		all child leaves have been processed. Gathers all objects that are selected by this selection and
+		inserts them into the set.
+	*/
+	void collectSelectedObjects(FilterOption * option, std::set<const VICUS::Object*> & objs);
 
 
 	Ui::SVSmartSelectDialog		*m_ui;

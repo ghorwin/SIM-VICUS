@@ -64,7 +64,7 @@ void IntegratorExplicitEuler::init(	ModelInterface * model,
 
 	m_t = t0;
 	// if user didn't specify time step, take the value from the model
-	if (m_dt == 0)
+	if (m_dt == 0.0)
 		m_dt = model->dt0();
 	m_n=model->n();
 	m_y.resize(m_n);
