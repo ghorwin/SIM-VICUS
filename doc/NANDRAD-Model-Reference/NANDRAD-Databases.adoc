@@ -117,7 +117,7 @@ Verglasungssysteme werden in einer Liste innerhalb des XML-tags `WindowGlazingSy
 [source,xml]
 ----
 <WindowGlazingSystems>
-	<WindowGlazingSystem id="123" modelType="Standard">
+	<WindowGlazingSystem id="123" modelType="Simple">
 		<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0,4</IBK:Parameter>
 		<LinearSplineParameter name="SHGC" interpolationMethod="linear" wrapMethod="cyclic">
 			<!-- X incidence angle - 90 deg = Sonne steht senkrecht/normal zur Oberfläche -->
@@ -141,8 +141,8 @@ Innerhalb dieses Abschnitts beginnt jede Definition eines Verglasungssystem mit 
 | `modelType`  
 a| Identifiziert die Modellkomplexität:
 
-* `Standard` - Standard-Verglasungsmodell, mit einem U-Wert (Wärmedurchgangskoeffizient) und einfallswinkelabhängigem SHGC-Wert
-| string | _optional_
+* `Simple` - Standard-Verglasungsmodell, mit einem U-Wert (Wärmedurchgangskoeffizient) und einfallswinkelabhängigem SHGC-Wert
+| string | _erforderlich_
 |====================
 
 
