@@ -2660,7 +2660,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
-	std::set<VICUS::NetworkEdge *> orderedEdges;
+	std::vector<const VICUS::NetworkEdge *> orderedEdges;
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
 		if (node.m_type == VICUS::NetworkNode::NT_Source){
 			node.setInletOutletNode(dummyNodeSet, orderedEdges);

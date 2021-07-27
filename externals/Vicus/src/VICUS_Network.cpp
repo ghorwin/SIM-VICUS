@@ -44,9 +44,83 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Project.h"
 
+
 #define PI				3.141592653589793238
 
 namespace VICUS {
+
+
+
+// *** copy from NM_Physics ***
+
+double ReynoldsNumber(const double &v, const double &kinVis, const double &d)
+{
+	return  v * d / kinVis;
+}
+
+/*! Reynolds number where flow switches from laminar to transition state. */
+#define RE_LAMINAR		1700.0
+
+/*! Reynolds number where flow switches from transition state to turbulent */
+#define RE_TURBULENT	4000.0
+
+double NusseltNumberTurbulent(const double &reynolds, const double &prandtl, const double &l, const double &d)
+{
+	IBK_ASSERT(reynolds>0);
+	// Equation 25, VDI-Wärmeatlas (11. Auflage), Kapitel B2, Page 28
+	double zeta = std::pow(1.8 * std::log10(reynolds) - 1.5, -2.0);
+	return zeta / 8. * reynolds*prandtl /
+		(1. + 12.7 * std::sqrt(zeta / 8.) * (std::pow(prandtl, 0.6667) - 1.)) *
+							 (1. + std::pow(d / l, 0.6667));
+}
+
+double NusseltNumberLaminar(const double &reynolds, const double &prandtl, const double &l, const double &d)
+{
+	if (reynolds <=0)
+		return 3.66; // for velocity=0
+	else
+		return std::pow( 49.37 + std::pow(1.615 * std::pow(reynolds * prandtl * d/l, 1.0/3.0) - 0.7, 3.0) , 1.0/3.0);
+}
+
+double FrictionFactorSwamee(const double &reynolds, const double &d, const double &roughness){
+	if (reynolds < RE_LAMINAR)
+		return 64.0/reynolds;
+	else if (reynolds < RE_TURBULENT){
+		double fLam = 64.0/RE_LAMINAR; // f(RE_LAMINAR)
+		double fTurb = std::log10((roughness / d) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
+		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
+		// now interpolate linearly between fLam and fTurb
+		return fLam + (reynolds - RE_LAMINAR) * (fTurb - fLam) / (RE_TURBULENT - RE_LAMINAR);
+	}
+	else{
+		double f = std::log10( (roughness / d) / 3.7 + 5.74 / std::pow(reynolds, 0.9) ) ;
+		return	0.25 / (f*f);
+	}
+}
+
+
+double NusseltNumber(const double &reynolds, const double &prandtl, const double &l, const double &d)
+{
+	if (reynolds < RE_LAMINAR){
+		return NusseltNumberLaminar(reynolds, prandtl, l, d);
+	}
+	else if (reynolds < RE_TURBULENT){
+		double nuLam = NusseltNumberLaminar(RE_LAMINAR, prandtl, l, d);
+		double nuTurb = NusseltNumberTurbulent(RE_TURBULENT, prandtl, l, d);
+		return nuLam + (reynolds - RE_LAMINAR) * (nuTurb - nuLam) / (RE_TURBULENT - RE_LAMINAR);
+	}
+	else {
+		return NusseltNumberTurbulent(reynolds, prandtl, l, d);
+	}
+}
+
+double PrandtlNumber(const double &kinVis, const double &cp, const double &lambda, const double &rho)
+{
+	return kinVis * cp * rho / lambda;
+}
+
+
+
 
 Network::Network() {
 	setDefaultSizingParams();
@@ -54,22 +128,17 @@ Network::Network() {
 
 
 Network Network::copyWithBaseParameters() {
-	Network copy = *this;
-	copy.m_edges.clear();
-	copy.m_nodes.clear();
-	return copy;
-	// TODO: Hauke  implement this later for better performance
-//	copy.m_id = orig.m_id;
-//	copy.m_name = orig.m_name;
-//	copy.m_type = orig.m_type;
-//	copy.m_origin = orig.m_origin;
-//	copy.m_extends = orig.m_extends;
-//	copy.m_fluidID = orig.m_fluidID;
-//	copy.m_scaleEdges = orig.m_scaleEdges;
-//	copy.m_scaleNodes = orig.m_scaleNodes;
-//	copy.m_sizingPara = orig.m_sizingPara;
-//	copy.availablePipes = orig.availablePipes;
+	Network copy;
+	copy.m_type = this->m_type;
+	copy.m_modelType = this->m_modelType;
+	copy.m_fluidID = this->m_fluidID;
+	copy.m_scaleEdges = this->m_scaleEdges;
+	copy.m_scaleNodes = this->m_scaleNodes;
+	copy.m_origin = this->m_origin;
+	for (unsigned int i=0; i<VICUS::Network::NUM_P; ++i)
+		copy.m_para[i] = this->m_para[i];
 
+	return copy;
 }
 
 
@@ -189,23 +258,6 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 
 void Network::setDefaultColors() const
 {
-//	for (const NetworkEdge & edge: m_edges)
-//		edge.m_color = QColor(93,138,168); // light blue
-//	for (const NetworkNode & node: m_nodes) {
-//		switch (node.m_type) {
-//			case VICUS::NetworkNode::NT_Source:
-//				node.m_color = QColor(176,191,26); // green
-//			break;
-//			case VICUS::NetworkNode::NT_Building:
-//				node.m_color = QColor(255,126,0); // orange
-//			break;
-//			case VICUS::NetworkNode::NT_Mixer:
-//				node.m_color = QColor(255,191,0);
-//			break;
-//			default:;
-//		}
-//	}
-
 	for (const NetworkEdge & edge: m_edges)
 		edge.m_color = Qt::lightGray;
 	for (const NetworkNode & node: m_nodes) {
@@ -222,6 +274,16 @@ void Network::setDefaultColors() const
 			default:;
 		}
 	}
+}
+
+
+void Network::setVisible(bool visible)
+{
+	m_visible = visible;
+	for (NetworkEdge &edge: m_edges)
+		edge.m_visible = visible;
+	for (NetworkNode &node: m_nodes)
+		node.m_visible = visible;
 }
 
 
@@ -486,16 +548,83 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 }
 
 
-void Network::cleanShortEdges(Network &cleanNetwork, const double &threshold)
-{
-	IBK_ASSERT(m_edges.size()>0);
+void Network::removeShortEdges(Network &newNetwork, const double &threshold) {
+	FUNCID(Network::removeShortEdges);
 
-	for (const NetworkEdge &edge: m_edges){
+	updateNodeEdgeConnectionPointers();
 
-		if (edge.length() > threshold){
-			unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
-			unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
+	// check for source
+	std::vector<NetworkNode> sources;
+	findSourceNodes(sources);
+	if (sources.size() < 1)
+		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
+
+	// First, we need to order the edges. As a result we get a list of edges where each edge
+	// is connected to one of the previuos edges in the vector.
+	std::set<const VICUS::NetworkNode *> dummyNodeSet;
+	std::vector<const VICUS::NetworkEdge *> orderedEdges;
+	for (const VICUS::NetworkNode &node: m_nodes){
+		if (node.m_type == VICUS::NetworkNode::NT_Source){
+			node.setInletOutletNode(dummyNodeSet, orderedEdges);
+			break;
+		}
+	}
+
+	// Now we create the new network:
+	// If the edge length is above the threshold, we add it with the according nodes to the new network.
+	// Else: We map the unknown node to the other node. There is always only one unknown node! This is because we ordered
+	// the edges in advance, see above.
+
+	// the very first node of the first edge is already known in the map (this must be the source)
+	std::map<unsigned int, unsigned int> nodeMap;
+	unsigned int id0 = newNetwork.addNode(*orderedEdges[0]->m_node1);
+	nodeMap[id0] = id0;
+
+	for (const NetworkEdge *edge: orderedEdges){
+
+		// get the ids of the nodes (they might have changed, when an edge was removed)
+		unsigned int newId, existingId;
+		if (contains(nodeMap, edge->nodeId1())){
+			newId = edge->nodeId2();
+			existingId = nodeMap.at(edge->nodeId1());
+		}
+		else if (contains(nodeMap, edge->nodeId2())){
+			newId = edge->nodeId1();
+			existingId = nodeMap.at(edge->nodeId2());
+		}
+		else
+			throw IBK::Exception(IBK::FormatString("Error in edge '%1 -> %2': One of both nodes must exist already in the map.")
+													.arg(edge->nodeId1()).arg(edge->nodeId2()), FUNC_ID);
+
+//		// calculate the updated length
+		double length0 = edge->length();
+		double length = NetworkLine(m_nodes[newId].m_position.point2D(), m_nodes[existingId].m_position.point2D()).length();
+
+		// if this length is below the threshold and none of the nodes is a building,
+		// we will just map the ids and dont add any edge
+		if (length < threshold && (edge->m_node1->m_type != NetworkNode::NT_Building &&
+								   edge->m_node2->m_type != NetworkNode::NT_Building) ){
+
+			// find the node which is not known yet
+			// map this node to the mapped value of the known node
+			nodeMap[newId] = nodeMap.at(existingId);
+		}
+
+		// else just add the nodes and the edge
+		else {
+
+			NetworkNode * newNode;
+			if (newId == edge->nodeId1())
+				newNode = edge->m_node1;
+			else
+				newNode = edge->m_node2;
+
+			unsigned int id33 = newNetwork.addNode(*newNode);
+			nodeMap[newId] = newId;
+
+			// add edge and calculate new length of it
+			newNetwork.addEdge(NetworkEdge(existingId, id33, edge->m_supply, edge->length(), edge->m_pipeId));
+			newNetwork.edge(existingId, id33)->setLengthFromCoordinates();
 		}
 	}
 }
@@ -536,7 +665,7 @@ FUNCID(Network::sizePipeDimensions);
 
 	// set all edges heating demand = 0
 	for (NetworkEdge &edge: m_edges)
-		edge.m_maxHeatingDemand = 0;
+		edge.m_nominalHeatingDemand = 0;
 
 	// for all buildings: add their heating demand to the pipes along their shortest path
 	for (NetworkNode &node: m_nodes) {
@@ -560,14 +689,14 @@ FUNCID(Network::sizePipeDimensions);
 			}
 		}
 		for (NetworkEdge * edge: minPath)
-			edge->m_maxHeatingDemand += node.m_maxHeatingDemand.value;
+			edge->m_nominalHeatingDemand += node.m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
 	for (NetworkEdge &e: m_edges){
-		if (e.m_maxHeatingDemand <= 0){
+		if (e.m_nominalHeatingDemand <= 0){
 			std::set<NetworkEdge *> edges1, edges2;
-			e.m_maxHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+			e.m_nominalHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
 										+ e.m_node2->adjacentHeatingDemand(edges2) );
 		}
 	}
@@ -589,10 +718,10 @@ FUNCID(Network::sizePipeDimensions);
 		const NetworkPipe * currentPipe = nullptr; // here we store the candidate for the pipe to use
 
 		for (const NetworkPipe * pipe : availablePipes){
-			double massFlow = e.m_maxHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
+			e.m_nominalMassFlow = e.m_nominalHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
 			double di = pipe->diameterInside();
 			double area = PI/4 * di * di;
-			double vel = massFlow / (rho * area);
+			double vel = e.m_nominalMassFlow / (rho * area);
 			double re = ReynoldsNumber(vel, kinvis, di);
 			//  pressure loss per length (Pa/m)
 			double zeta = 1.0 / di * FrictionFactorSwamee(re, di, m_para[VICUS::NetworkPipe::P_DiameterOutside].value);
@@ -617,6 +746,104 @@ FUNCID(Network::sizePipeDimensions);
 	}
 
 }
+
+
+
+void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) {
+	FUNCID(Network::calcTemperatureChangeIndicator);
+
+	// check parameters
+	for (unsigned int n = 0; n < NUM_P; ++n){
+		try {
+			m_para[VICUS::Network::P_MaxPressureLoss].checkedValue("MaxPressureLoss", "Pa/m", "Pa/m",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+			m_para[VICUS::Network::P_TemperatureSetpoint].checkedValue("TemperatureSetpoint", "C", "C",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+			m_para[VICUS::Network::P_TemperatureDifference].checkedValue("TemperatureDifference", "K", "K",
+																   std::numeric_limits<double>::lowest(), true,
+																   std::numeric_limits<double>::max(), true, nullptr);
+		} catch (IBK::Exception &ex) {
+			throw IBK::Exception(ex, "Error in sizing pipes algorithm!", FUNC_ID);
+		}
+	}
+
+	// check for source
+	std::vector<NetworkNode> sources;
+	findSourceNodes(sources);
+	if (sources.size() < 1)
+		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
+
+	// set all edges heating demand = 0
+	for (NetworkEdge &edge: m_edges)
+		edge.m_nominalHeatingDemand = 0;
+
+	// for all buildings: add their heating demand to the pipes along their shortest path
+	for (NetworkNode &node: m_nodes) {
+		if (node.m_type != NetworkNode::NT_Building)
+			continue;
+		if (node.m_maxHeatingDemand.value <= 0)
+			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+
+		// for each source find the shortest path to current node. Finally select the shortest of these paths
+		std::vector<NetworkEdge * > minPath;
+		double minPathLength = std::numeric_limits<double>::max();
+		for (const NetworkNode &source: sources){
+			std::vector<NetworkEdge * > path;
+			dijkstraShortestPathToSource(node, source, path);  // shortest path between source and node
+			double pathLength = 0;
+			for (NetworkEdge *edge: path)
+				pathLength += edge->length();
+			if (pathLength < minPathLength){
+				minPathLength = pathLength;
+				minPath = path;
+			}
+		}
+		for (NetworkEdge * edge: minPath)
+			edge->m_nominalHeatingDemand += node.m_maxHeatingDemand.value;
+	}
+
+	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
+	for (NetworkEdge &e: m_edges){
+		if (e.m_nominalHeatingDemand <= 0){
+			std::set<NetworkEdge *> edges1, edges2;
+			e.m_nominalHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+										+ e.m_node2->adjacentHeatingDemand(edges2) );
+		}
+	}
+
+
+	double rho = fluid->m_para[NetworkFluid::P_Density].value;
+	double kinvis = fluid->m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
+	double cp = fluid->m_para[NetworkFluid::P_HeatCapacity].value;
+	double lambda = fluid->m_para[NetworkFluid::P_Conductivity].value;
+
+	for (NetworkEdge &e: m_edges){
+
+		const NetworkPipe *pipe = pipeDB[e.m_pipeId];
+		Q_ASSERT(pipe != nullptr);
+		e.m_nominalMassFlow = e.m_nominalHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
+
+		double di = pipe->diameterInside();
+		double area = PI/4 * di * di;
+		double vel = e.m_nominalMassFlow / (rho * area);
+		double re = ReynoldsNumber(vel, kinvis, di);
+		double prandtl = PrandtlNumber(kinvis, cp, lambda, rho);
+		double nusselt = NusseltNumber(re, prandtl, e.length(), pipe->diameterInside());
+		double innerHeatTransferCoefficient = nusselt * lambda / pipe->diameterInside();
+		double UAValue = e.length() /
+				(
+					  1.0 / ( innerHeatTransferCoefficient * pipe->diameterInside() * PI)
+					+ 1.0 / pipe->UValue()
+				);
+
+		e.m_tempChangeIndicator = UAValue / (e.m_nominalMassFlow * cp);
+	}
+
+}
+
+
 
 
 void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
@@ -711,8 +938,8 @@ NetworkEdge *Network::edge(unsigned nodeId1, unsigned nodeId2){
 }
 
 
-double Network::numberOfBuildings() const{
-	double count = 0;
+size_t Network::numberOfBuildings() const{
+	size_t count = 0;
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_type == NetworkNode::NT_Building)
 			++count;
@@ -764,35 +991,5 @@ void Network::writeBuildingsCSV(const IBK::Path &file) const {
 	f.close();
 }
 
-
-
-// *** copy from NM_Physics ***
-
-double Network::ReynoldsNumber(const double &v, const double &kinVis, const double &d)
-{
-	return  v * d / kinVis;
-}
-
-/*! Reynolds number where flow switches from laminar to transition state. */
-#define RE_LAMINAR		1700
-
-/*! Reynolds number where flow switches from transition state to turbulent */
-#define RE_TURBULENT	4000
-
-double Network::FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness){
-	if (reynolds < RE_LAMINAR)
-		return 64/reynolds;
-	else if (reynolds < RE_TURBULENT){
-		double fLam = 64/RE_LAMINAR; // f(RE_LAMINAR)
-		double fTurb = std::log10((roughness / diameter) / 3.7 + 5.74 / std::pow(RE_TURBULENT, 0.9) );
-		fTurb = 0.25/(fTurb*fTurb); // f(RE_TURBULENT)
-		// now interpolate linearly between fLam and fTurb
-		return fLam + (reynolds - RE_LAMINAR) * (fTurb - fLam) / (RE_TURBULENT - RE_LAMINAR);
-	}
-	else{
-		double f = std::log10( (roughness / diameter) / 3.7 + 5.74 / std::pow(reynolds, 0.9) ) ;
-		return	0.25 / (f*f);
-	}
-}
 
 } // namespace VICUS

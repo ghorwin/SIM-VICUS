@@ -142,12 +142,14 @@ public:
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
 
-	void cleanShortEdges(Network & cleanNetwork, const double &threshold);
+	void removeShortEdges(Network & newNetwork, const double &threshold);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
 	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
+
+	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB);
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
@@ -181,7 +183,7 @@ public:
 
 	NetworkEdge *edge(unsigned nodeId1, unsigned nodeId2);
 
-	double numberOfBuildings() const;
+	size_t numberOfBuildings() const;
 
 	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
 	 * before calling sizePipeDimensions() */
@@ -190,6 +192,9 @@ public:
 	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
 
 	void setDefaultColors() const;
+
+	void setVisible(bool visible);
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -243,7 +248,7 @@ public:
 		Note: keep the next line - this will cause the code generator to create serialization code
 			  for the inherited m_visible variable.
 	*/
-	//:inherited	bool									m_visible = true;							// XML:A
+	//:inherited	bool					m_visible = true;							// XML:A
 
 	// *** RUNTIME VARIABLES ***
 
@@ -256,13 +261,24 @@ public:
 	IBK::rectangle<double>					m_extends;
 
 
+
 	// *** STATIC FUNCTIONS
 
 	/*! returns a specific color for each heat exchange type */
 	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
 
 
+	/*! Checks if an object is contained in the set */
+	template <typename T>
+	static bool contains(const std::set<T> & set, unsigned int element) {
+		return set.find(element) != set.end();
+	}
 
+	/*! Checks if an object is contained in the map */
+	template <typename T, typename d>
+	static bool contains(const std::map<T, d> & map, unsigned int element) {
+		return map.find(element) != map.end();
+	}
 
 private:
 
@@ -275,18 +291,6 @@ private:
 	 * does only copy position, type and maxHeatingDemand */
 	unsigned addNode(const NetworkNode & node, const bool considerCoordinates=true);
 
-	/*! Calculates Reynolds number of a moving fluid.
-	\param v mean fluid flow velocity
-	\param kinVis fluid kinematic viscosity
-	\param l characteristic length
-	THIS IS A COPY FROM NM_PHYSICS
-	*/
-	static double ReynoldsNumber(const double &v, const double &kinVis, const double &l);
-
-	/*! friction factor according to swamee-jain euqation (approximation of colebrook-white)
-	THIS IS A COPY FROM NM_PHYSICS
-	*/
-	static double FrictionFactorSwamee(const double &reynolds, const double &diameter, const double &roughness);
 };
 
 } // namespace VICUS

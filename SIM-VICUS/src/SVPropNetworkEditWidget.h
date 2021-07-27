@@ -120,6 +120,12 @@ private slots:
 
 	void on_pushButtonAssignSubNetwork_clicked();
 
+	void on_pushButtonTempChangeIndicator_clicked();
+
+	void on_pushButtonRemoveSmallEdge_clicked();
+
+	void on_pushButtonRecalculateLength_clicked();
+
 private:
 
 	/*! Update information related to one or multiple nodes

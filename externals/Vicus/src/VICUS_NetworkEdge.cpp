@@ -43,12 +43,15 @@ void NetworkEdge::collectConnectedNodes(std::set<const NetworkNode *> & connecte
 }
 
 
-void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) {
+void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::vector<const NetworkEdge *> &orderedEdges) {
 	// first store ourselves as connected
-	orderedEdges.insert(this);
+	orderedEdges.push_back(this);
 	// now ask our nodes to collect their connected elements
-	m_node1->setInletOutletNode(visitedNodes, orderedEdges);
-	m_node2->setInletOutletNode(visitedNodes, orderedEdges);
+	if (visitedNodes.find(m_node1) != visitedNodes.end())
+		m_node2->setInletOutletNode(visitedNodes, orderedEdges);
+	else{
+		m_node1->setInletOutletNode(visitedNodes, orderedEdges);
+	}
 }
 
 
@@ -78,12 +81,6 @@ void NetworkEdge::setLengthFromCoordinates() {
 void NetworkEdge::setNodeId1(unsigned int nodeId1, NetworkNode *node1) {
 	m_nodeId1 = nodeId1;
 	m_node1 = node1;  // set pointer, so that setLengthFromCoordinates works
-	setLengthFromCoordinates();
-}
-
-
-void NetworkEdge::setNodeId2(unsigned int nodeId2) {
-	m_nodeId2 = nodeId2;
 	setLengthFromCoordinates();
 }
 

@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -43,13 +43,13 @@ void NetworkNode::collectConnectedEdges(std::set<const NetworkNode *> & connecte
 }
 
 
-void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::set<NetworkEdge *> &orderedEdges) const {
+void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes, std::vector<const NetworkEdge *> &orderedEdges) const {
 	// store ourselves as connected
 	visitedNodes.insert(this);
 	// now ask connected elements to collect their nodes
 	for (NetworkEdge * e : m_edges) {
 		// only process edges that are not yet collected
-		if (orderedEdges.find(e) == orderedEdges.end()){
+		if (std::find(orderedEdges.begin(), orderedEdges.end(), e) == orderedEdges.end()){
 			e->m_nodeIdInlet = m_id;
 			e->m_nodeIdOutlet = e->neighbourNode(m_id);
 			e->setInletOutletNode(visitedNodes, orderedEdges);
@@ -164,8 +164,8 @@ double NetworkNode::adjacentHeatingDemand(std::set<NetworkEdge *> visitedEdges){
 	for (NetworkEdge *e: m_edges){
 		if (visitedEdges.find(e)==visitedEdges.end()){
 			visitedEdges.insert(e);
-			if (e->m_maxHeatingDemand>0)
-				return e->m_maxHeatingDemand;
+			if (e->m_nominalHeatingDemand>0)
+				return e->m_nominalHeatingDemand;
 			e->neighbourNode(this)->adjacentHeatingDemand(visitedEdges);
 		}
 	}

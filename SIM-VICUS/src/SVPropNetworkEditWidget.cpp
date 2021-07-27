@@ -58,10 +58,6 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	// dont show them yet
-	m_ui->pushButtonSimplify->setVisible(false);
-	m_ui->pushButtonReduceRedundantNodes->setVisible(false);
-
 	// network property page
 	m_ui->stackedWidget->setCurrentIndex(0);
 
@@ -105,6 +101,8 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	// validating line edits
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
 
+
+	m_ui->lineEditThresholdSmallEdge->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
 	// TODO Hauke: remaining line edits setup
 	// !!!
 
@@ -254,10 +252,12 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 	if (m_currentEdges.size() == 1){
 		m_ui->labelPipeLength->setText(QString("%1 m").arg(m_currentEdges[0]->length()));
 		m_ui->lineEditEdgeDisplayName->setText(m_currentEdges[0]->m_displayName);
+		m_ui->labelTempChangeIndicator->setText(QString("%1 K/K").arg(m_currentEdges[0]->m_tempChangeIndicator));
 	}
 	else{
 		m_ui->labelPipeLength->clear();
 		m_ui->lineEditEdgeDisplayName->clear();
+		m_ui->labelTempChangeIndicator->clear();
 	}
 
 	// update supply property
@@ -947,10 +947,12 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 {
 	if (!setNetwork())
 		return;
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters(); // makes a copy without edges, nodes
+	// copy only base parameters
+	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanDeadEnds(newNetwork);
 	newNetwork.updateNodeEdgeConnectionPointers();
+	// we exchange the current one with the old one
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, newNetwork);
 	undo->push(); // modifies project and updates views
@@ -962,26 +964,60 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 		return;
 
 	// set current network invisible
-	m_currentNetwork.m_visible = false;
+	m_currentNetwork.setVisible(false);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undoMod->push(); // modifies project and updates views
 
-	// make copy with reduced edges
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters(); // makes a copy without edges, nodes
+	// make copy with reduced nodes
+	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
+	newNetwork.m_displayName = QString("%1_noRedundants").arg(m_currentNetwork.m_displayName);
+	newNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	newNetwork.setVisible(true);
+
+	// algorithm
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanRedundantEdges(newNetwork);
-	newNetwork.m_visible = true;
-	newNetwork.m_displayName += "_reduced";
 	const VICUS::Project & p = project();
 	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
 	newNetwork.updateNodeEdgeConnectionPointers();
+	newNetwork.updateExtends();
 
-	// set all selected
-	for (VICUS::NetworkNode &node: newNetwork.m_nodes)
-		node.m_selected = true;
-	for (VICUS::NetworkEdge &edge: newNetwork.m_edges)
-		edge.m_selected = true;
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
+	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
+{
+	if (!setNetwork())
+		return;
+
+	double threshold = 0;
+	if (m_ui->lineEditThresholdSmallEdge->isValid())
+		threshold = m_ui->lineEditThresholdSmallEdge->value();
+	else
+		return;
+
+	// set current network invisible
+	m_currentNetwork.setVisible(false);
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undoMod->push(); // modifies project and updates views
+
+	// make copy with reduced nodes
+	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
+	newNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
+	newNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	newNetwork.setVisible(true);
+
+	// algorithm
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+	m_currentNetwork.removeShortEdges(newNetwork, threshold);
+	const VICUS::Project & p = project();
+	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
+	newNetwork.updateNodeEdgeConnectionPointers();
+	newNetwork.updateExtends();
 
 	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
 	undo->push(); // modifies project and updates views
@@ -1005,54 +1041,6 @@ void SVPropNetworkEditWidget::on_pushButtonSelectPipes_clicked()
 void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_activated(int index)
 {
 	modifyHeatExchangeProperties();
-//	NANDRAD::HydraulicNetworkHeatExchange currentHX;
-//	bool isUniform = true;
-//	if (m_currentEdges.size()>0){
-//		currentHX = m_currentEdges[0]->m_heatExchange;
-//		isUniform = uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_heatExchange);
-//	}
-//	else if (m_currentNodes.size()>0){
-//		currentHX = m_currentNodes[0]->m_heatExchange;
-//		isUniform = uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_heatExchange);
-//	}
-
-//	NANDRAD::HydraulicNetworkHeatExchange::ModelType newModelType =
-//			NANDRAD::HydraulicNetworkHeatExchange::ModelType(m_ui->comboBoxHeatExchangeType->currentData().toUInt());
-
-//	// if model type has not changed and it is unifrom fro all selected objects: do nothing
-//	if (newModelType == currentHX.m_modelType && isUniform)
-//		return;
-
-//	// if model type has changed, clear current hx properties
-//	if (newModelType != currentHX.m_modelType)
-//		currentHX = NANDRAD::HydraulicNetworkHeatExchange(newModelType);
-
-//	// Note: if model type is the same like the first selected object and objects are not uniform,
-//	// we still apply the currentHX to all objects
-
-//	if (!setNetwork())
-//		return;
-
-//	// set hx properties to nodes
-//	if (!m_currentNodes.empty()){
-//		for (const VICUS::NetworkNode * nodeConst: m_currentNodes){
-//			m_currentNetwork.m_nodes[nodeConst->m_id].m_heatExchange = currentHX;
-//		}
-//	}
-
-//	// set hx properties to edges
-//	if (!m_currentEdges.empty()){
-//		for (const VICUS::NetworkEdge * edge: m_currentEdges){
-//			m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->m_heatExchange = currentHX;
-//		}
-//	}
-
-//	m_currentNetwork.updateNodeEdgeConnectionPointers();
-//	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-//	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
-//	undo->push(); // modifies project and updates views
-
-//	updateHeatExchangeProperties();
 }
 
 
@@ -1109,6 +1097,43 @@ void SVPropNetworkEditWidget::on_pushButtonAssignSubNetwork_clicked()
 	modifyNodeProperty(&VICUS::NetworkNode::m_subNetworkId, newId);
 }
 
+
+void SVPropNetworkEditWidget::on_pushButtonTempChangeIndicator_clicked()
+{
+	if (!setNetwork())
+		return;
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	Q_ASSERT(fluid!=nullptr);
+	m_currentNetwork.calcTemperatureChangeIndicator(fluid, db.m_pipes);
+
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+	updateNetworkProperties();
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonRecalculateLength_clicked()
+{
+	if (!setNetwork())
+		return;
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	Q_ASSERT(fluid!=nullptr);
+	for (const VICUS::NetworkEdge * edge: m_currentEdges){
+		m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->setLengthFromCoordinates();
+	}
+
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+	updateNetworkProperties();
+}
 
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value)

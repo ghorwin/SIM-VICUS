@@ -74,18 +74,17 @@ public:
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 								std::set<const NetworkEdge*> & connectedEdge) const;
 
-	void setInletOutletNode(std::set<const NetworkNode*> & visitedNodes,
-					std::set<NetworkEdge*> & orderedEdges);
+	void setInletOutletNode(std::set<const NetworkNode*> & visitedNodes, std::vector<const NetworkEdge*> & orderedEdges);
 
 	// TODO Hauke, Vergleichsoperatoren sollten immer das ganze Objekt vergleichen - eher dann eine andere Funktion verwenden
 	//             mit eigenem Namen
-	bool operator==(const NetworkEdge &e2){
-		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
-	}
+//	bool operator==(const NetworkEdge &e2){
+//		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
+//	}
 
-	bool operator!=(const NetworkEdge &e2){
-		return (m_nodeId1 != e2.m_nodeId1) || (m_nodeId2 == e2.m_nodeId2);
-	}
+//	bool operator!=(const NetworkEdge &e2){
+//		return (m_nodeId1 != e2.m_nodeId1) || (m_nodeId2 == e2.m_nodeId2);
+//	}
 
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
@@ -102,10 +101,6 @@ public:
 	void setNodeId1(unsigned int nodeId1, NetworkNode *node1);
 
 	unsigned int nodeId2() const {return m_nodeId2; }
-
-	// sets nodeId and pointer to the node and calculates the new length of this edge
-	void setNodeId2(unsigned int nodeId2);
-
 
 	/*! Returns the corresponding NetworkComponent model type based on the PipeModel. */
 	NetworkComponent::ModelType networkComponentModelType() const;
@@ -141,8 +136,14 @@ public:
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor										m_color;
 
-	/*! Heating demand of all connected buildings [W] */
-	double												m_maxHeatingDemand = 0;
+	/*! Sum of maximum heating demand of all connected buildings [W], will be determined in sizePipeDimensions() */
+	double												m_nominalHeatingDemand = 0;
+
+	/*! Mass flow [kg/s] at nominal temperature difference, will be determined in sizePipeDimensions() */
+	double												m_nominalMassFlow = 0;
+
+	/*! in [1/m] */
+	double												m_tempChangeIndicator = -1;
 
 	NetworkNode											* m_node1 = nullptr;
 	NetworkNode											* m_node2 = nullptr;
