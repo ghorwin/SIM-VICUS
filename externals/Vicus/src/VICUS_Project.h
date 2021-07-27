@@ -250,7 +250,7 @@ public:
 		}
 		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 	}
-	
+
 	/*! Function to generate unique ID and add this id to the vector. */
 	template <typename T>
 	static unsigned int uniqueIdAdd(std::vector<T>& vec) {
@@ -405,17 +405,25 @@ public:
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 
 
-	/*! Adds a vicus schedule to nandrad project. */
+
+
+	/*! Adds a vicus schedule to nandrad project.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
 
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
-	struct IdMap{
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
+	struct IdMap {
 		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
 		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
 	};
 
-	/*! Create an thermostat. */
+	/*! Create an thermostat.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	bool createThermostat(const VICUS::ZoneControlThermostat * thermo,
 						  const std::string &zoneTemplateDisplayName,
 						  NANDRAD::Project &p,
@@ -424,7 +432,9 @@ public:
 						  std::string &thermoObjListName) const;
 
 
-	/*! Create ideal heating/cooling. */
+	/*! Create ideal heating/cooling.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	bool createIdealHeatingCooling(const VICUS::ZoneIdealHeatingCooling * ideal,
 								   NANDRAD::Project &p,
 								   std::vector<IdMap> &idMaps,
@@ -435,18 +445,23 @@ private:
 
 
 	/*! Return room name by id.
-		TODO Coding style beachten!
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
 	*/
 	std::string getRoomNameById(unsigned int id) const;
 
 	/*! Check all models for validity. */
 	bool allModelsValid();
 
+	/*!
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs, std::vector<IdMap> &idMaps,
 						   const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst) const;
 
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids. */
-	enum IdSpaces{
+	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
+	enum IdSpaces {
 		Material,
 		Component,
 		ConstructionInstance,
@@ -459,14 +474,21 @@ private:
 		NUM_IdSpaces
 	};
 
-
+	/*!
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 										 std::vector<IdMap> &maps,
 										 unsigned int & interfaceID, bool takeASide = true) const;
 
-	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
+	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	static unsigned int uniqueIdWithPredef2(IdSpaces idSpace, unsigned int id, std::vector<IdMap> &maps, bool makeNewId = false);
 
+	/*!
+		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	*/
 	std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
 
 
