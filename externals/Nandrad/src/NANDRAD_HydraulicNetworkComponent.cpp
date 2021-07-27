@@ -186,7 +186,8 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	const char * unit = KeywordList::Unit(enumName, (int)numPara);
 
-	switch (numPara) {
+	// TODO Hauke
+	switch ((para_t)numPara) {
 		// value must be >0
 		case P_HydraulicDiameter:
 		case P_Volume:
