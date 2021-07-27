@@ -866,7 +866,6 @@ bool SVProjectHandler::importEmbeddedDB() {
 	std::map<unsigned int, unsigned int> netControllersIDMap;
 	for (VICUS::NetworkController & e : m_project->m_embeddedDB.m_networkControllers) {
 
-		// TODO Hauke, substitute ID references
 		importDBElement(e, db.m_networkControllers, netControllersIDMap,
 						"Network Controller '%1' with #%2 imported -> new ID #%3.\n",
 						"Network Controller '%1' with #%2 exists already -> ID #%3.\n"
@@ -877,7 +876,14 @@ bool SVProjectHandler::importEmbeddedDB() {
 	std::map<unsigned int, unsigned int> subNetworksIDMap;
 	for (VICUS::SubNetwork & e : m_project->m_embeddedDB.m_subNetworks) {
 
-		// TODO Hauke, substitute m_heatExchangeElementId
+		// replace IDs referenced from NANDRAD::HydraulicNetworkElement
+
+		for (NANDRAD::HydraulicNetworkElement & elem : e.m_elements) {
+			replaceID(elem.m_componentId, netComponentsIDMap);
+			replaceID(elem.m_controlElementId, netControllersIDMap);
+			replaceID(elem.m_pipePropertiesId, pipesIDMap);
+		}
+
 		importDBElement(e, db.m_subNetworks, subNetworksIDMap,
 						"Sub Network '%1' with #%2 imported -> new ID #%3.\n",
 						"Sub Network '%1' with #%2 exists already -> ID #%3.\n"
