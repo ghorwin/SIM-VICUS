@@ -67,11 +67,12 @@ public:
 	enum DatabaseTypes {
 		DT_Materials,
 		DT_Constructions,
-		DT_Components,
-		DT_SubSurfaceComponents,
-		DT_BoundaryConditions,
 		DT_Windows,
 		DT_WindowGlazingSystems,
+		DT_BoundaryConditions,
+		DT_Components,
+		DT_SubSurfaceComponents,
+		DT_SurfaceHeating,
 		DT_Pipes,
 		DT_Fluids,
 		DT_NetworkComponents,
@@ -79,14 +80,13 @@ public:
 		DT_SubNetworks,
 		DT_Schedules,
 		DT_InternalLoads,
-		DT_ZoneTemplates,
 		DT_ZoneControlThermostat,
-		DT_ZoneControlNaturalVentilation,
 		DT_ZoneControlShading,
+		DT_ZoneControlNaturalVentilation,
 		DT_ZoneIdealHeatingCooling,
-		DT_Infiltration,
 		DT_VentilationNatural,
-		DT_SurfaceHeating,
+		DT_Infiltration,
+		DT_ZoneTemplates,
 		NUM_DT // used for "all"
 	};
 
@@ -109,6 +109,21 @@ public:
 			uses those stored in this SVDatabase object!
 	*/
 	void updateEmbeddedDatabase(VICUS::Project & p);
+
+
+	struct DuplicateInfo {
+		unsigned int m_idFirst;
+		unsigned int m_idSecond;
+		bool m_identical;
+	};
+
+	/*! Processes all database lists and checks for duplicates. If a duplicate is found (i.e. two database elements
+		are either identical except for ID, or only differ in meta-data), their IDs are added to the respective
+		vector. Each database element ID appears only once, even if there are three or more identical elements.
+		\param duplicatePairs Vector of size NUM_DT with a vector of potential duplicates for each DB element type. Use
+							  DatabaseTypes enumeration values as index.
+	*/
+	void determineDuplicates(std::vector< std::vector<DuplicateInfo> > & duplicatePairs) const;
 
 	// Databases
 

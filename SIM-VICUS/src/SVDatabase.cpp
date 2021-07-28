@@ -405,4 +405,61 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
 }
 
+template <typename T>
+void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::DuplicateInfo> & dupInfos) {
+	std::set<unsigned int> duplicateIDs; // stores all IDs of all already found duplicates
+	// process all database elements
+	for (typename std::map<unsigned int, T>::const_iterator it = db.begin(); it != db.end(); ++it) {
+		// skip elements already marked as duplicates
+		if (duplicateIDs.find(it->first) != duplicateIDs.end() ) continue;
+
+		// process all other elements
+		for (typename std::map<unsigned int, T>::const_iterator it2 = db.begin(); it2 != db.end(); ++it2) {
+			// skip ourselves
+			if (it->first == it2->first) continue;
+			// skip elements already marked as duplicates
+			if (duplicateIDs.find(it2->first) != duplicateIDs.end() ) continue;
+
+			// are we sufficiently similar
+			VICUS::AbstractDBElement::ComparisonResult compRes = it->second.equal(&it2->second);
+			if (compRes != VICUS::AbstractDBElement::Different) {
+				SVDatabase::DuplicateInfo info;
+				info.m_idFirst = it->first;
+				info.m_idSecond = it2->first;
+				info.m_identical = (compRes == VICUS::AbstractDBElement::Equal);
+				dupInfos.push_back(info);
+			}
+		}
+	}
+}
+
+
+
+void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::DuplicateInfo> > & duplicatePairs) const {
+
+	// process all databases and search for duplicates
+	findDublicates(m_materials, duplicatePairs[DT_Materials]);
+	findDublicates(m_constructions, duplicatePairs[DT_Constructions]);
+	findDublicates(m_windows, duplicatePairs[DT_Windows]);
+	findDublicates(m_windowGlazingSystems, duplicatePairs[DT_WindowGlazingSystems]);
+	findDublicates(m_boundaryConditions, duplicatePairs[DT_BoundaryConditions]);
+	findDublicates(m_components, duplicatePairs[DT_Components]);
+	findDublicates(m_subSurfaceComponents, duplicatePairs[DT_SubSurfaceComponents]);
+	findDublicates(m_surfaceHeatings, duplicatePairs[DT_SurfaceHeating]);
+	findDublicates(m_pipes, duplicatePairs[DT_Pipes]);
+	findDublicates(m_fluids, duplicatePairs[DT_Fluids]);
+	findDublicates(m_networkComponents, duplicatePairs[DT_NetworkComponents]);
+	findDublicates(m_networkControllers, duplicatePairs[DT_NetworkControllers]);
+	findDublicates(m_subNetworks, duplicatePairs[DT_SubNetworks]);
+	findDublicates(m_schedules, duplicatePairs[DT_Schedules]);
+	findDublicates(m_internalLoads, duplicatePairs[DT_InternalLoads]);
+	findDublicates(m_zoneControlThermostat, duplicatePairs[DT_ZoneControlThermostat]);
+	findDublicates(m_zoneControlShading, duplicatePairs[DT_ZoneControlShading]);
+	findDublicates(m_zoneControlVentilationNatural, duplicatePairs[DT_ZoneControlNaturalVentilation]);
+	findDublicates(m_zoneIdealHeatingCooling, duplicatePairs[DT_ZoneIdealHeatingCooling]);
+	findDublicates(m_ventilationNatural, duplicatePairs[DT_VentilationNatural]);
+	findDublicates(m_infiltration, duplicatePairs[DT_Infiltration]);
+	findDublicates(m_zoneTemplates, duplicatePairs[DT_Materials]);
+}
+
 
