@@ -1334,17 +1334,17 @@ namespace VICUS {
 			// Window::Method
 			case 37 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "None";
-				case 1 : if (no_description != nullptr) *no_description = true; return "Fraction";
-				case 2 : if (no_description != nullptr) *no_description = true; return "ConstantWidth";
+				case 0 : return "None";
+				case 1 : return "Fraction of area";
+				case 2 : return "Constant width";
 			} break;
 			// Window::para_t
 			case 38 :
 			switch (t) {
-				case 0 : return "Frame width of the window.";
-				case 1 : return "Frame area fraction of the window.";
-				case 2 : return "Divider width of the window.";
-				case 3 : return "Divider area fraction of the window.";
+				case 0 : return "Frame width of the window";
+				case 1 : return "Frame area fraction of the window";
+				case 2 : return "Divider width of the window";
+				case 3 : return "Divider area fraction of the window";
 			} break;
 			// WindowDivider::para_t
 			case 39 :

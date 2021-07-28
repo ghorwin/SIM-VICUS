@@ -28,9 +28,7 @@
 
 #include <QSortFilterProxyModel>
 
-#include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
-
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Conversions.h>
@@ -66,8 +64,8 @@ SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
 	m_ui->comboBoxFrameMethod->blockSignals(true);
 	m_ui->comboBoxDividerMethod->blockSignals(true);
 	for (int i=0; i<VICUS::Window::NUM_M; ++i) {
-		m_ui->comboBoxFrameMethod->addItem(VICUS::KeywordListQt::Keyword("Window::Method", i), i);
-		m_ui->comboBoxDividerMethod->addItem(VICUS::KeywordListQt::Keyword("Window::Method", i), i);
+		m_ui->comboBoxFrameMethod->addItem(VICUS::KeywordListQt::Description("Window::Method", i), i);
+		m_ui->comboBoxDividerMethod->addItem(VICUS::KeywordListQt::Description("Window::Method", i), i);
 	}
 	m_ui->comboBoxFrameMethod->blockSignals(false);
 	m_ui->comboBoxDividerMethod->blockSignals(false);
@@ -116,12 +114,12 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	}
 	// re-enable all controls
 	setEnabled(true);
-	//TODO Dirk anderen Namen vergeben
 	m_current = const_cast<VICUS::Window *>(m_db->m_windows[(unsigned int) id ]);
-	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
-
 	// we must have a valid internal load model pointer
 	Q_ASSERT(m_current != nullptr);
+
+	m_ui->lineEditName->setString(m_current->m_displayName);
+	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
 
 	// now update the GUI controls
 
@@ -133,19 +131,18 @@ void SVDBWindowEditWidget::updateInput(int id) {
 
 	// *** glazing system ***
 
-	if(m_current->m_idGlazingSystem != VICUS::INVALID_ID){
+	if (m_current->m_idGlazingSystem != VICUS::INVALID_ID){
 		VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[m_current->m_idGlazingSystem]);
-		if(glazSys != nullptr){
+		if (glazSys != nullptr){
 			m_ui->lineEditUValue->setText(QString("%L1").arg(glazSys->uValue(), 0, 'f', 4));
 			m_ui->lineEditSHGC->setText(QString("%L1").arg(glazSys->SHGC(), 0, 'f', 4));
 			m_ui->lineEditGlazingSystemName->setText(QtExt::MultiLangString2QString(glazSys->m_displayName));
 		}
 	}
 
-
 	// *** frame ***
 	int frameIdx;
-	switch(m_current->m_methodFrame){
+	switch(m_current->m_methodFrame) {
 		case VICUS::Window::M_Fraction:{
 			m_ui->labelFrameInput->setText(tr("Fraction of Window:"));
 			m_ui->labelFrameInputUnit->setText(tr("-"));
@@ -156,7 +153,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		case VICUS::Window::M_ConstantWidth:{
 			m_ui->labelFrameInput->setText(tr("Width:"));
 			m_ui->labelFrameInputUnit->setText(tr("m"));
-			m_ui->lineEditFrameInput->setup(0,2,tr("Frame width."), false, true);
+			m_ui->lineEditFrameInput->setup(0,2,tr("Frame width"), false, true);
 			frameIdx = 2;
 
 		}
@@ -173,18 +170,18 @@ void SVDBWindowEditWidget::updateInput(int id) {
 
 	}
 
-	if(m_current->m_frame.m_id != VICUS::INVALID_ID && frameIdx > 0){
+	if (m_current->m_frame.m_id != VICUS::INVALID_ID && frameIdx > 0) {
 		m_ui->lineEditFrameMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowFrame::P_Thickness].get_value());
 		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_frame.m_idMaterial]);
-		if(mat != nullptr)
+		if (mat != nullptr)
 			m_ui->lineEditFrameMaterialName->setText(QtExt::MultiLangString2QString(mat->m_displayName));
 	}
 
 	m_ui->comboBoxFrameMethod->blockSignals(true);
 	m_ui->comboBoxFrameMethod->setCurrentIndex(frameIdx);
 	m_ui->comboBoxFrameMethod->blockSignals(false);
-
 	m_ui->comboBoxFrameMethod->setEnabled(isEditable);
+
 	m_ui->lineEditFrameMaterialName->setEnabled(frameIdx>0);
 	m_ui->lineEditFrameInput->setReadOnly(!isEditable && frameIdx>0);
 	m_ui->lineEditFrameMaterialThickness->setReadOnly(!isEditable && frameIdx>0);
@@ -194,7 +191,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 
 	// *** divider ***
 	int dividerIdx;
-	switch(m_current->m_methodDivider){
+	switch(m_current->m_methodDivider) {
 		case VICUS::Window::M_Fraction:{
 			m_ui->labelDividerInput->setText(tr("Fraction of Window:"));
 			m_ui->labelDividerInputUnit->setText(tr("-"));
@@ -205,9 +202,8 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		case VICUS::Window::M_ConstantWidth:{
 			m_ui->labelDividerInput->setText(tr("Width:"));
 			m_ui->labelDividerInputUnit->setText(tr("m"));
-			m_ui->lineEditDividerInput->setup(0,2,tr("Divider width."), false, true);
+			m_ui->lineEditDividerInput->setup(0,2,tr("Divider width"), false, true);
 			dividerIdx = 2;
-
 		}
 		break;
 		case VICUS::Window::M_None:
@@ -222,10 +218,10 @@ void SVDBWindowEditWidget::updateInput(int id) {
 
 	}
 
-	if(m_current->m_divider.m_id != VICUS::INVALID_ID && dividerIdx > 0){
+	if (m_current->m_divider.m_id != VICUS::INVALID_ID && dividerIdx > 0) {
 		m_ui->lineEditDividerMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowDivider::P_Thickness].get_value());
 		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_divider.m_idMaterial]);
-		if(mat != nullptr)
+		if (mat != nullptr)
 			m_ui->lineEditDividerMaterialName->setText(QtExt::MultiLangString2QString(mat->m_displayName));
 	}
 
@@ -261,11 +257,12 @@ void SVDBWindowEditWidget::on_lineEditName_editingFinished(){
 	}
 }
 
+
 void SVDBWindowEditWidget::modelModify() {
 	m_db->m_windows.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 }
+
 
 void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
 	// get glazing system edit dialog from mainwindow
@@ -281,16 +278,13 @@ void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
 
 
 void SVDBWindowEditWidget::on_pushButtonWindowColor_colorChanged() {
-
 	Q_ASSERT(m_current != nullptr);
 
 	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
 		m_current->m_color = m_ui->pushButtonWindowColor->color();
 		modelModify(); // tell model that we changed the data
 	}
-
 }
-
 
 
 void SVDBWindowEditWidget::on_toolButtonSelectFrameMaterial_clicked(){
@@ -305,74 +299,74 @@ void SVDBWindowEditWidget::on_toolButtonSelectFrameMaterial_clicked(){
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
 
+void SVDBWindowEditWidget::on_toolButtonSelectDividerMaterial_clicked(){
 	// get material edit dialog from mainwindow
 	SVDatabaseEditDialog * matEditDialog = SVMainWindow::instance().dbMaterialEditDialog();
 	unsigned int matId = matEditDialog->select(m_current->m_divider.m_idMaterial);
 	if (matId !=  VICUS::INVALID_ID && matId != m_current->m_divider.m_idMaterial) {
 		m_current->m_divider.m_idMaterial = matId;
 		modelModify(); // tell model that we changed the data
-
 	}
 	updateInput((int)m_current->m_id);
-
 }
+
 
 void SVDBWindowEditWidget::on_lineEditFrameMaterialThickness_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
 		VICUS::KeywordList::setParameter(m_current->m_frame.m_para, "WindowFrame::para_t", VICUS::WindowFrame::P_Thickness, m_ui->lineEditFrameMaterialThickness->value());
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
-
 }
+
 
 void SVDBWindowEditWidget::on_lineEditDividerMaterialThickness_editingFinishedSuccessfully(){
 	Q_ASSERT(m_current != nullptr);
 		VICUS::KeywordList::setParameter(m_current->m_divider.m_para, "WindowDivider::para_t", VICUS::WindowDivider::P_Thickness, m_ui->lineEditDividerMaterialThickness->value());
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
-
 }
+
 
 void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
-		bool isModi = true;
-		if(m_current->m_methodDivider == VICUS::Window::M_ConstantWidth)
-			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, m_ui->lineEditDividerInput->value());
-		else if(m_current->m_methodDivider == VICUS::Window::M_Fraction)
-			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, m_ui->lineEditDividerInput->value());
-		else
-			isModi = false;
-		if(isModi){
-			modelModify(); // tell model that we changed the data
-			updateInput((int)m_current->m_id);
-		}
+	bool isModi = true;
+	if (m_current->m_methodDivider == VICUS::Window::M_ConstantWidth)
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, m_ui->lineEditDividerInput->value());
+	else if(m_current->m_methodDivider == VICUS::Window::M_Fraction)
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, m_ui->lineEditDividerInput->value());
+	else
+		isModi = false;
+	if (isModi) {
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
 }
+
 
 void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
-		bool isModi = true;
-		if(m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
-			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, m_ui->lineEditFrameInput->value());
-		else if(m_current->m_methodFrame == VICUS::Window::M_Fraction)
-			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, m_ui->lineEditFrameInput->value());
-		else
-			isModi = false;
-		if(isModi){
-			modelModify(); // tell model that we changed the data
-			updateInput((int)m_current->m_id);
-		}
+	bool isModi = true;
+	if (m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, m_ui->lineEditFrameInput->value());
+	else if(m_current->m_methodFrame == VICUS::Window::M_Fraction)
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, m_ui->lineEditFrameInput->value());
+	else
+		isModi = false;
+	if (isModi) {
+		modelModify(); // tell model that we changed the data
+		updateInput((int)m_current->m_id);
+	}
 }
+
 
 void SVDBWindowEditWidget::on_comboBoxFrameMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
 	// update database but only if different from original
-	if (index != (int)m_current->m_methodFrame)
-	{
+	if (index != (int)m_current->m_methodFrame) {
 		m_current->m_methodFrame = static_cast<VICUS::Window::Method>(index);
-		if(m_current->m_methodFrame == VICUS::Window::M_Fraction || m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
+		if (m_current->m_methodFrame == VICUS::Window::M_Fraction || m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
 			m_current->m_frame.m_id = 1;
 		else
 			m_current->m_frame.m_id = VICUS::INVALID_ID;
@@ -381,19 +375,18 @@ void SVDBWindowEditWidget::on_comboBoxFrameMethod_currentIndexChanged(int index)
 	}
 }
 
+
 void SVDBWindowEditWidget::on_comboBoxDividerMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
 	// update database but only if different from original
-	if (index != (int)m_current->m_methodDivider)
-	{
+	if (index != (int)m_current->m_methodDivider) {
 		m_current->m_methodDivider = static_cast<VICUS::Window::Method>(index);
-		if(m_current->m_methodDivider== VICUS::Window::M_Fraction || m_current->m_methodDivider== VICUS::Window::M_ConstantWidth)
+		if (m_current->m_methodDivider== VICUS::Window::M_Fraction || m_current->m_methodDivider== VICUS::Window::M_ConstantWidth)
 			m_current->m_divider.m_id = 1;
 		else
 			m_current->m_divider.m_id = VICUS::INVALID_ID;
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
 	}
-
 }

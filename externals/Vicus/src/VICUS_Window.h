@@ -41,18 +41,18 @@ namespace VICUS {
 class Window : public AbstractDBElement {
 public:
 
-	enum Method{
-		M_None,				// Keyword: None
-		M_Fraction,			// Keyword: Fraction
-		M_ConstantWidth,	// Keyword: ConstantWidth
+	enum Method {
+		M_None,						// Keyword: None								'None'
+		M_Fraction,					// Keyword: Fraction							'Fraction of area'
+		M_ConstantWidth,			// Keyword: ConstantWidth						'Constant width'
 		NUM_M
 	};
 
 	enum para_t {
-		P_FrameWidth,					// Keyword: FrameWidth					[m]		'Frame width of the window.'
-		P_FrameFraction,				// Keyword: FrameFraction				[---]	'Frame area fraction of the window.'
-		P_DividerWidth,					// Keyword: DividerWidth				[m]		'Divider width of the window.'
-		P_DividerFraction,				// Keyword: DividerFraction				[---]	'Divider area fraction of the window.'
+		P_FrameWidth,				// Keyword: FrameWidth					[m]		'Frame width of the window'
+		P_FrameFraction,			// Keyword: FrameFraction				[---]	'Frame area fraction of the window'
+		P_DividerWidth,				// Keyword: DividerWidth				[m]		'Divider width of the window'
+		P_DividerFraction,			// Keyword: DividerFraction				[---]	'Divider area fraction of the window'
 		NUM_P
 	};
 
