@@ -72,7 +72,7 @@ double WindowGlazingSystem::uValue() const {
 }
 
 
-double WindowGlazingSystem::SHGC() const{
+double WindowGlazingSystem::SHGC() const {
 	switch (m_modelType) {
 		case VICUS::WindowGlazingSystem::MT_Simple:
 			if (m_splinePara[SP_SHGC].m_values.valid())
@@ -108,7 +108,7 @@ bool WindowGlazingSystem::isValid() const {
 		case MT_Simple: {
 			try {
 				NANDRAD::LinearSplineParameter spl = m_splinePara[SP_SHGC];
-				spl.checkAndInitialize("SHGC", IBK::Unit("Deg"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true, nullptr);
+				spl.checkAndInitialize("SHGC", IBK::Unit("Rad"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true, nullptr);
 			}  catch (...) {
 				return false;
 			}

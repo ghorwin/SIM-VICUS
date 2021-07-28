@@ -65,11 +65,9 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Window Glazing System"));
 
-	//header elements
+	m_ui->lineEditSHGC0->setup(0, 1, tr("SHGC for vertical incidence angle must be between 0...1."), false, true);
+	m_ui->lineEditUValue->setup(0, 100, tr("U-value of glazing system must be > 0."), false, true);
 
-	// set period table column sizes
-
-	//add header to periods table
 	m_ui->tableWidgetSHGC->blockSignals(true);
 	m_ui->tableWidgetSHGC->setColumnCount(2);
 	m_ui->tableWidgetSHGC->setRowCount(10);
@@ -229,15 +227,17 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	// parameters may not be given or invalid, we transfer it anyway
 	m_ui->lineEditUValue->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_ThermalTransmittance].value);
-//	m_ui->lineEditSHGC0->setValue(m_current->m_para[VICUS::WindowGlazingSystem::P_SHGC0].value);
 
 	// create default SHGC-spline, if not existent or invalid
 	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
 		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty() ||
-		!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() )
+		!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() ||
+		m_current->SHGC() <= 0)
 	{
 		createDefaultSHGCSpline();
 	}
+	// we now have a guaranteed valid spline
+	m_ui->lineEditSHGC0->setValue(m_current->SHGC());
 
 	m_ui->tableWidgetSHGC->blockSignals(true);
 	if (m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple) {
@@ -248,37 +248,32 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
 
-		if (!spline.empty()) {
-			for (unsigned int i=0; i<10; ++i) {
+		for (unsigned int i=0; i<10; ++i) {
 
-				IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
-				double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
-				m_ui->tableWidgetSHGC->item((int)i,1)->setText(QString("%L1").arg(val));
-				// compose the vectors with data for the plot
-				degVec[i] = i * 10;
-				plotSHGCVec[i] = val*100;
-			}
-			// we update the plot
-			m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
-			m_ui->shgcPlot->replot();
-			m_ui->shgcPlot->repaint();
+			IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
+			double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
+			m_ui->tableWidgetSHGC->item((int)i,1)->setText(QString("%L1").arg(val));
+			// compose the vectors with data for the plot
+			degVec[i] = i * 10;
+			plotSHGCVec[i] = val*100;
 		}
+		// we update the plot
+		m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
+		m_ui->shgcPlot->replot();
+		m_ui->shgcPlot->repaint();
 	}
 	m_ui->tableWidgetSHGC->blockSignals(false);
-
 
 	m_ui->pushButtonWindowColor->blockSignals(true);
 	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
 	m_ui->pushButtonWindowColor->blockSignals(false);
-
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
 	m_ui->lineEditSHGC0->setReadOnly(!isEditable);
 	m_ui->lineEditUValue->setReadOnly(!isEditable);
 	m_ui->comboBoxType->setEnabled(isEditable);
-	m_ui->toolButtonCreateSpline->setEnabled(false);	///TODO Dirk implement a function for SHGC
-
+	m_ui->toolButtonCreateSpline->setEnabled(false);
 }
 
 
@@ -299,8 +294,31 @@ void SVDBWindowGlazingSystemEditWidget::modelModify() {
 
 void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
 	IBK_ASSERT(m_current != nullptr);
-//	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_]
+	std::vector<double> angles;
+	std::vector<double> values;
+	for (unsigned int i=0; i<10; ++i)
+		angles.push_back(i*10);
 
+	values.push_back(1); // 0 deg
+	values.push_back(1);
+	values.push_back(1);
+	values.push_back(1);
+	values.push_back(0.98);
+	values.push_back(0.94);
+	values.push_back(0.86);
+	values.push_back(0.69);
+	values.push_back(0.37);
+	values.push_back(0); // 90 deg
+
+	// scale by nominal SHGC
+	for (double & v : values)
+		v *= 0.75; // default for double-glazing layer
+
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name = "SHGC";
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit.set("Deg");
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_yUnit.set("---");
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, values);
+	modelModify();
 }
 
 
@@ -312,21 +330,34 @@ void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() 
 		m_current->m_color = m_ui->pushButtonWindowColor->color();
 		modelModify(); // tell model that we changed the data
 	}
-
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC0_editingFinishedSuccessfully(){
+void SVDBWindowGlazingSystemEditWidget::on_lineEditSHGC0_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
 
+	// compute scale factor
+	Q_ASSERT(!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() &&
+		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() );
+
+	double newSHGC0 = m_ui->lineEditSHGC0->value();
+	double oldSHGC0 = m_current->SHGC(); // ensured to be > 0
+
+	double scaleFactor = newSHGC0/oldSHGC0;
+	std::vector<double> newSHGCVals(m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.y());
+	for (double & v : newSHGCVals)
+		v *= scaleFactor;
+	std::vector<double> angles(m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.x());
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, newSHGCVals);
+	modelModify(); // tell model that we changed the data
+	updateInput((int)m_current->m_id);
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccessfully(){
+void SVDBWindowGlazingSystemEditWidget::on_lineEditUValue_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
-		VICUS::KeywordList::setParameter(m_current->m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m_ui->lineEditUValue->value());
-		modelModify(); // tell model that we changed the data
-		updateInput((int)m_current->m_id);
+	VICUS::KeywordList::setParameter(m_current->m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m_ui->lineEditUValue->value());
+	modelModify(); // tell model that we changed the data
 }
 
 
@@ -334,8 +365,7 @@ void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int 
 	Q_ASSERT(m_current != nullptr);
 
 	// update database but only if different from original
-	if (index != (int)m_current->m_modelType)
-	{
+	if (index != (int)m_current->m_modelType) {
 		m_current->m_modelType = static_cast<VICUS::WindowGlazingSystem::modelType_t>(index);
 		modelModify(); // tell model that we changed the data
 		updateInput((int)m_current->m_id);
