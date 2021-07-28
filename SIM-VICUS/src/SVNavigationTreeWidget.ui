@@ -41,8 +41,8 @@
       <bool>false</bool>
      </property>
      <addaction name="actionRemoveSelected"/>
-     <addaction name="actionShowSelected"/>
      <addaction name="actionHideSelected"/>
+     <addaction name="actionShowSelected"/>
      <addaction name="actionSelect_all"/>
      <addaction name="actionSmartSelect"/>
     </widget>
@@ -90,10 +90,10 @@
     <string>Show selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Makes all selected objects visible (F6)</string>
+    <string>Makes all selected objects visible (F7)</string>
    </property>
    <property name="shortcut">
-    <string>F6</string>
+    <string>F7</string>
    </property>
   </action>
   <action name="actionHideSelected">
@@ -105,10 +105,10 @@
     <string>Hides selected objects</string>
    </property>
    <property name="toolTip">
-    <string>Hides all selected objects (F7)</string>
+    <string>Hides all selected objects (F6)</string>
    </property>
    <property name="shortcut">
-    <string>F7</string>
+    <string>F6</string>
    </property>
   </action>
   <action name="actionSelect_all">
