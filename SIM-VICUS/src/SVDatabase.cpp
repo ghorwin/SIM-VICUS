@@ -428,6 +428,9 @@ void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::Dupli
 				info.m_idSecond = it2->first;
 				info.m_identical = (compRes == VICUS::AbstractDBElement::Equal);
 				dupInfos.push_back(info);
+				duplicateIDs.insert(it->first);
+				duplicateIDs.insert(it2->first);
+				break;
 			}
 		}
 	}

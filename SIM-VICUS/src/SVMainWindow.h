@@ -59,6 +59,7 @@ class SVSimulationShadingOptions;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
+class SVDBDuplicatesDialog;
 
 /*! Main window class. */
 class SVMainWindow : public QMainWindow {
@@ -281,6 +282,9 @@ private slots:
 	void on_actionDBHydraulicComponents_triggered();
 	void on_actionDBNetworkPipes_triggered();
 	void on_actionDBFluids_triggered();
+	void on_actionDBControllers_triggered();
+	void on_actionDBSubNetworks_triggered();
+	void on_actionDBRemoveDuplicates_triggered();
 
 
 	void on_actionBuildingFloorManager_triggered();
@@ -313,9 +317,6 @@ private slots:
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 
 
-	void on_actionDBControllers_triggered();
-
-	void on_actionDBSub_networks_triggered();
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
@@ -473,6 +474,8 @@ private:
 
 	// special edit dialogs
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;
+
+	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
 
 	friend class SVThreadBase;
 

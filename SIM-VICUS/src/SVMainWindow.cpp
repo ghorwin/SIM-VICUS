@@ -87,6 +87,7 @@
 
 #include "SVDatabaseEditDialog.h"
 #include "SVDBZoneTemplateEditDialog.h"
+#include "SVDBDuplicatesDialog.h"
 
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
@@ -467,9 +468,7 @@ void SVMainWindow::on_actionDBNetworkPipes_triggered() {
 	dbPipeEditDialog()->edit();
 }
 
-
-void SVMainWindow::on_actionDBFluids_triggered()
-{
+void SVMainWindow::on_actionDBFluids_triggered() {
 	dbFluidEditDialog()->edit();
 }
 
@@ -477,14 +476,18 @@ void SVMainWindow::on_actionDBHydraulicComponents_triggered() {
 	dbNetworkComponentEditDialog()->edit();
 }
 
-void SVMainWindow::on_actionDBControllers_triggered()
-{
+void SVMainWindow::on_actionDBControllers_triggered() {
 	dbNetworkControllerEditDialog()->edit();
 }
 
-void SVMainWindow::on_actionDBSub_networks_triggered()
-{
+void SVMainWindow::on_actionDBSubNetworks_triggered() {
 	dbSubNetworkEditDialog()->edit();
+}
+
+void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
+	if (m_dbDuplicatesDialog == nullptr)
+		m_dbDuplicatesDialog = new SVDBDuplicatesDialog(this);
+	m_dbDuplicatesDialog->removeDuplicates();
 }
 
 
@@ -1419,7 +1422,7 @@ void SVMainWindow::onUpdateRecentProjects() {
 	if (m_recentProjectActions.count() != (int)SVSettings::instance().m_maxRecentProjects) {
 		qDeleteAll(m_recentProjectActions);
 		m_recentProjectActions.clear();
-		for (unsigned int i = 0; i < SVSettings::instance().m_maxRecentProjects; ++i) {
+		for (int i = 0; i < (int)SVSettings::instance().m_maxRecentProjects; ++i) {
 			QAction * a = new QAction(this);
 			m_recentProjectActions.push_back(a);
 			connect(m_recentProjectActions[i], SIGNAL(triggered()), this, SLOT(onActionOpenRecentFile()));
@@ -1434,16 +1437,14 @@ void SVMainWindow::onUpdateRecentProjects() {
 	}
 	else {
 		m_ui->actionFileRecentProjects->setEnabled(true);
-		for ( int i = 0, count = SVSettings::instance().m_recentProjects.count(); i < count; ++i) {
+		for (int i = 0, count = SVSettings::instance().m_recentProjects.count(); i < count; ++i) {
 			/// \bug Fix underscore/whitespace display in menu action
 			m_recentProjectActions[i]->setText(SVSettings::instance().m_recentProjects[i]);
 			m_recentProjectActions[i]->setData(SVSettings::instance().m_recentProjects[i]);
 			m_recentProjectActions[i]->setVisible(true);
 		}
 
-		for (unsigned int i = SVSettings::instance().m_recentProjects.count();
-			i < SVSettings::instance().m_maxRecentProjects; ++i)
-		{
+		for (int i = SVSettings::instance().m_recentProjects.count(); i < (int)SVSettings::instance().m_maxRecentProjects; ++i) {
 			m_recentProjectActions[i]->setVisible(false);
 		}
 	}
@@ -1830,6 +1831,7 @@ void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera();
 }
+
 
 
 
