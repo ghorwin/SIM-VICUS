@@ -902,6 +902,22 @@ bool SVProjectHandler::importEmbeddedDB() {
 	for (VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances)
 		replaceID(ci.m_subSurfaceComponentID, subSurfaceComponentIDMap);
 
+
+	// *** Network (Nodes, Edges, Pipes, Fluid) ***
+
+	for (VICUS::Network & n : m_project->m_geometricNetworks) {
+
+		for (VICUS::NetworkNode & node : n.m_nodes)
+			replaceID(node.m_subNetworkId, subNetworksIDMap);
+
+		for (VICUS::NetworkEdge & edge : n.m_edges)
+			replaceID(edge.m_pipeId, pipesIDMap);
+
+		replaceID(n.m_fluidID, fluidsIDMap);
+		for (unsigned int & pipeID : n.m_availablePipes)
+			replaceID(pipeID, pipesIDMap);
+	}
+
 	// any ids modified?
 	idsModified |= !materialIDMap.empty();
 	idsModified |= !constructionIDMap.empty();

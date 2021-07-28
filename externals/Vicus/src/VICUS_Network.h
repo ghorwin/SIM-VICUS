@@ -74,7 +74,7 @@ public:
 		NUM_NET
 	};
 
-	enum para_t{
+	enum para_t {
 		P_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
 		P_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
 		P_MaxPressureLoss,					// Keyword: MaxPressureLoss						[Pa/m]	'Maximum pressure loss for pipe dimensioning algorithm'
@@ -202,13 +202,6 @@ public:
 		}
 		IBK_ASSERT(false);
 		return nullptr;
-
-//		std::vector<NetworkNode>::iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
-//		IBK_ASSERT(it == m_nodes.end());
-//		if (it == m_nodes.end())
-//			return nullptr;
-//		else
-//			return &(*it);
 	}
 
 	const NetworkNode *nodeById(unsigned int id) const{
@@ -218,13 +211,6 @@ public:
 		}
 		IBK_ASSERT(false);
 		return nullptr;
-
-//		std::vector<NetworkNode>::const_iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
-//		IBK_ASSERT(it == m_nodes.end());
-//		if (it == m_nodes.end())
-//			return nullptr;
-//		else
-//			return &(*it);
 	}
 
 
