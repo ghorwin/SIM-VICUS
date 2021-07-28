@@ -84,6 +84,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 								../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 								../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+								../../src/SVDBDuplicatesDialog.cpp \
 								../../src/SVDBNetworkControllerEditWidget.cpp \
 								../../src/SVDBNetworkControllerTableModel.cpp \
 								../../src/SVDBSubNetworkEditWidget.cpp \
@@ -237,6 +238,7 @@ SOURCES += \
 								../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+								../../src/SVDBDuplicatesDialog.h \
 								../../src/SVDBNetworkControllerEditWidget.h \
 								../../src/SVDBNetworkControllerTableModel.h \
 								../../src/SVDBSubNetworkEditWidget.h \
@@ -394,6 +396,7 @@ HEADERS  += \
 
 FORMS    += \
 								../../src/SVAboutDialog.ui \
+								../../src/SVDBDuplicatesDialog.ui \
 								../../src/SVDBNetworkControllerEditWidget.ui \
 								../../src/SVDBSubNetworkEditWidget.ui \
 								../../src/SVDatabaseEditDialog.ui \
