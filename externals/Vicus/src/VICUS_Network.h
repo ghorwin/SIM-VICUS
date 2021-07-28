@@ -142,7 +142,7 @@ public:
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
 
-	void removeShortEdges(Network & newNetwork, const double &threshold);
+	void removeShortEdges(const double &threshold);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)

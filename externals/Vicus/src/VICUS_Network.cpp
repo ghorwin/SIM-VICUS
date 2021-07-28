@@ -474,36 +474,28 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 }
 
 
-void Network::removeShortEdges(Network &newNetwork, const double &threshold) {
+void Network::removeShortEdges(const double &threshold) {
 	FUNCID(Network::removeShortEdges);
 
 	updateNodeEdgeConnectionPointers();
 
-	// check for source
+	// check if there is a source
 	std::vector<NetworkNode> sources;
 	findSourceNodes(sources);
 	if (sources.size() < 1)
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
-	// First, we need to order the edges. As a result we get a list of edges where each edge
-	// is connected to one of the previuos edges in the vector.
-	std::set<const VICUS::NetworkNode *> dummyNodeSet;
-	std::vector<const VICUS::NetworkEdge *> orderedEdges;
-	unsigned int sourceId = 0;
-	for (const VICUS::NetworkNode &node: m_nodes){
-		if (node.m_type == VICUS::NetworkNode::NT_Source){
-			sourceId = node.m_id;
-			break;
-		}
-	}
+	// we just take the first source
+	unsigned int sourceId = sources[0].m_id;
 
+	// we iterate as many times as there are edges
 	unsigned int size = m_edges.size();
+	bool hasChanged = true;
 	for (unsigned int count=0; count<size; ++count){
 
-		updateNodeEdgeConnectionPointers();
-
-		orderedEdges.clear();
-		dummyNodeSet.clear();
+		// if the network has changed since last iterations
+		std::set<const VICUS::NetworkNode *> dummyNodeSet;
+		std::vector<const VICUS::NetworkEdge *> orderedEdges;
 		nodeById(sourceId)->setInletOutletNode(dummyNodeSet, orderedEdges);
 
 		std::set<unsigned int> knownIds;
@@ -531,8 +523,8 @@ void Network::removeShortEdges(Network &newNetwork, const double &threshold) {
 
 				m_nodes.erase(m_nodes.begin() + indexOfNode(newId));
 				m_edges.erase(m_edges.begin() + indexOfEdge(exId, exId));
-//				std::remove(m_nodes.begin(), m_nodes.end(), newId);
-//				std::remove(m_edges.begin(), m_edges.end(), *edge(exId, exId));
+
+				updateNodeEdgeConnectionPointers();
 
 				break;
 			}
@@ -540,8 +532,7 @@ void Network::removeShortEdges(Network &newNetwork, const double &threshold) {
 
 	}
 
-	newNetwork.m_edges = m_edges;
-	newNetwork.m_nodes = m_nodes;
+
 }
 
 

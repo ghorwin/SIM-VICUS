@@ -1000,27 +1000,22 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 	else
 		return;
 
-	// set current network invisible
-	m_currentNetwork.setVisible(false);
+	// make a copy which will keep the original network data
+	VICUS::Network originalNetwork = m_currentNetwork;
+	originalNetwork.updateNodeEdgeConnectionPointers();
+	originalNetwork.setVisible(false);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, originalNetwork);
 	undoMod->push(); // modifies project and updates views
 
-	// make copy with reduced nodes
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
-	newNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
-	newNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
-	newNetwork.setVisible(true);
+	// now modify the current network (new id, new name)
+	m_currentNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	m_currentNetwork.m_displayName = QString("%1_noShortEdges").arg(originalNetwork.m_displayName);
+	m_currentNetwork.removeShortEdges(threshold);
+	m_currentNetwork.setVisible(true);
+	m_currentNetwork.updateExtends();
 
-	// algorithm
-	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.removeShortEdges(newNetwork, threshold);
-	const VICUS::Project & p = project();
-	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
-	newNetwork.updateNodeEdgeConnectionPointers();
-	newNetwork.updateExtends();
-
-	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
 
