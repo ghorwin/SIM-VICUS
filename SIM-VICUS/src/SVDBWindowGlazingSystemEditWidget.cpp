@@ -27,11 +27,13 @@
 #include "ui_SVDBWindowGlazingSystemEditWidget.h"
 
 #include <QSortFilterProxyModel>
+#include <QClipboard>
 
 #include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
 
 #include <IBK_physics.h>
+#include <IBK_UnitVector.h>
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Conversions.h>
@@ -70,9 +72,10 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	m_ui->tableWidgetSHGC->blockSignals(true);
 	m_ui->tableWidgetSHGC->setColumnCount(2);
-	m_ui->tableWidgetSHGC->setRowCount(10);
+	m_ui->tableWidgetSHGC->setRowCount(1);
+	m_ui->tableWidgetSHGC->blockSignals(false);
 	// Note: valid column is self-explanatory and does not need a caption
-	m_ui->tableWidgetSHGC->setHorizontalHeaderLabels(QStringList() << tr("Angle") << tr("SHGC"));
+	m_ui->tableWidgetSHGC->setHorizontalHeaderLabels(QStringList() << tr("Angle [Deg]") << tr("SHGC [---]"));
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSHGC);
 
@@ -83,23 +86,7 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 
 	int width = 100;
 	m_ui->tableWidgetSHGC->setColumnWidth(0, width);
-
 	m_ui->tableWidgetSHGC->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-
-	for (int i = 9; i >= 0; --i) {
-		// we need the Angle to go from 0 ... 90 Deg
-		// so we then make the iterator go from 0 ... 9
-
-		QTableWidgetItem * item = new QTableWidgetItem( QString::number(i*10) );
-		item->setFlags(item->flags() & ~Qt::ItemIsEditable);
-
-		m_ui->tableWidgetSHGC->setItem( i, 0, item);
-		m_ui->tableWidgetSHGC->setItem( i, 1, new QTableWidgetItem);
-
-		m_ui->tableWidgetSHGC->item( i, 0)->setTextAlignment(Qt::AlignCenter);
-		m_ui->tableWidgetSHGC->item( i, 1)->setTextAlignment(Qt::AlignCenter);
-	}
-	m_ui->tableWidgetSHGC->blockSignals(false);
 
 	m_ui->comboBoxType->blockSignals(true);
 	for (int i=0; i<VICUS::WindowGlazingSystem::NUM_MT; ++i)
@@ -115,12 +102,12 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	plt->setAxisScale(QwtPlot::yLeft, 0, 1);
 
 	// axes
-	QwtText theAxisTitle(tr("Incident Angle [Deg]")); // no axis title for left diagram
+	QwtText theAxisTitle(tr("Incidence Angle [Deg]")); // no axis title for left diagram
 	QFont f(theAxisTitle.font());
 	f.setPointSize(9);
 	theAxisTitle.setFont(f);
 	plt->setAxisTitle(QwtPlot::xBottom, theAxisTitle);
-	theAxisTitle.setText(tr("SHGC [-]"), QwtText::RichText);
+	theAxisTitle.setText(tr("SHGC [---]"), QwtText::RichText);
 	plt->setAxisTitle(QwtPlot::yLeft, theAxisTitle);
 
 #if defined(Q_OS_MAC)
@@ -146,25 +133,15 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	grid->attach(plt);
 
 	// set up shgc curve
-	m_shgcCurve = new QwtPlotCurve("");
+	m_shgcCurve = new QwtPlotCurve("bla");
 	m_shgcCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-	m_shgcCurve->setPen(QPen(Qt::black));
+	m_shgcCurve->setPen( Qt::black );
 	m_shgcCurve->setYAxis(QwtPlot::yLeft);
-	m_shgcCurve->setZ(1);
-	m_shgcCurve->setVisible(false);
+//	m_shgcCurve->setZ(1);
+	m_shgcCurve->setVisible(true);
 	m_shgcCurve->attach(plt);
 
-	std::vector<double> degVec;
-	std::vector<double> plotSHGCVec;
-
-	degVec.push_back(0);
-	degVec.push_back(90);
-
-	plotSHGCVec.push_back(60);
-	plotSHGCVec.push_back(60);
-
-	m_shgcCurve->setRawSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
-
+	plt->setAutoReplot(true);
 	m_ui->shgcPlot->replot();
 
 	// initial state is "nothing selected"
@@ -202,11 +179,16 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 		m_ui->comboBoxType->blockSignals(false);
 
 		m_ui->pushButtonWindowColor->setColor(Qt::black);
+		m_ui->shgcPlot->setVisible(false);
+
+		m_ui->toolButtonCreateSpline->setEnabled(false);
+		m_ui->toolButtonImportSplineFromClipboard->setEnabled(false);
 
 		return;
 	}
 	// re-enable all controls
 	setEnabled(true);
+	m_ui->shgcPlot->setVisible(true);
 	m_current = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[(unsigned int) id ]);
 
 	// we must have a valid internal load model pointer
@@ -217,8 +199,10 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_current->m_builtIn;
 
+	m_ui->lineEditName->setString(m_current->m_displayName);
+
 	m_ui->comboBoxType->blockSignals(true);
-	if (m_current->m_modelType != VICUS::WindowGlazingSystem::NUM_MT) {
+	if (m_current->m_modelType == VICUS::WindowGlazingSystem::NUM_MT) {
 		m_current->m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
 		modelModify();
 	}
@@ -230,7 +214,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	// create default SHGC-spline, if not existent or invalid
 	if (m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name.empty() ||
-		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.empty() ||
+		m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.size() < 2 ||
 		!m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.valid() ||
 		m_current->SHGC() <= 0)
 	{
@@ -241,26 +225,29 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 
 	m_ui->tableWidgetSHGC->blockSignals(true);
 	if (m_current->m_modelType == VICUS::WindowGlazingSystem::MT_Simple) {
-		std::vector<double> degVec;
-		std::vector<double> plotSHGCVec;
-		degVec.resize(10);
-		plotSHGCVec.resize(10);
 
 		const IBK::LinearSpline &spline=m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values;
+		const std::vector<double> & degVec = spline.x();
+		const std::vector<double> & plotSHGCVec = spline.y();
 
-		for (unsigned int i=0; i<10; ++i) {
+		m_ui->tableWidgetSHGC->setRowCount(degVec.size());
 
-			IBK::Unit unit = m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit;
-			double val = spline.value(i * 10 / (unit == IBK::Unit("Deg") ? 1 : IBK::DEG2RAD));
-			m_ui->tableWidgetSHGC->item((int)i,1)->setText(QString("%L1").arg(val));
-			// compose the vectors with data for the plot
-			degVec[i] = i * 10;
-			plotSHGCVec[i] = val*100;
+		for (int i = 0; i < m_ui->tableWidgetSHGC->rowCount(); ++i) {
+			QTableWidgetItem * item = new QTableWidgetItem( QString("%L1").arg(degVec[i], 0, 'g') );
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+
+			m_ui->tableWidgetSHGC->setItem( i, 0, item);
+			item = new QTableWidgetItem( QString("%L1").arg(plotSHGCVec[i], 0, 'g') );
+			item->setFlags(item->flags() & ~Qt::ItemIsEditable);
+			m_ui->tableWidgetSHGC->setItem( i, 1, item);
+
+			m_ui->tableWidgetSHGC->item( i, 0)->setTextAlignment(Qt::AlignCenter);
+			m_ui->tableWidgetSHGC->item( i, 1)->setTextAlignment(Qt::AlignCenter);
 		}
+
 		// we update the plot
-		m_shgcCurve->setSamples(&degVec[0], &plotSHGCVec[0], (int)degVec.size() );
-		m_ui->shgcPlot->replot();
-		m_ui->shgcPlot->repaint();
+		m_shgcCurve->setSamples(degVec.data(), plotSHGCVec.data(), (int)degVec.size() );
+		m_ui->shgcPlot->setVisible(true);
 	}
 	m_ui->tableWidgetSHGC->blockSignals(false);
 
@@ -273,7 +260,8 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	m_ui->lineEditSHGC0->setReadOnly(!isEditable);
 	m_ui->lineEditUValue->setReadOnly(!isEditable);
 	m_ui->comboBoxType->setEnabled(isEditable);
-	m_ui->toolButtonCreateSpline->setEnabled(false);
+	m_ui->toolButtonCreateSpline->setEnabled(isEditable);
+	m_ui->toolButtonImportSplineFromClipboard->setEnabled(isEditable);
 }
 
 
@@ -297,7 +285,7 @@ void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
 	std::vector<double> angles;
 	std::vector<double> values;
 	for (unsigned int i=0; i<10; ++i)
-		angles.push_back(i*10);
+		angles.push_back(i*10); // in Deg
 
 	values.push_back(1); // 0 deg
 	values.push_back(1);
@@ -373,6 +361,63 @@ void SVDBWindowGlazingSystemEditWidget::on_comboBoxType_currentIndexChanged(int 
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_tableWidgetSHGC_itemChanged(QTableWidgetItem *item) {
-	// triggered when user has entered a value
+void SVDBWindowGlazingSystemEditWidget::on_toolButtonImportSplineFromClipboard_clicked() {
+	// extract data from clipboard
+	// get content of clip board
+	QString data = qApp->clipboard()->text();
+	if (data.isEmpty()) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("No data on clipboard"));
+		return;
+	}
+	// first replace all , with .
+	std::replace(data.begin(), data.end(), ',', '.');
+	QTextStream strm(&data);
+	double angle, val;
+	strm >> angle >> val;
+	if (strm.status() != QTextStream::Ok) {
+		QMessageBox::critical(this, tr("Cannot paste SHGC data"),
+							  tr("Invalid format, expected table with two columns of numbers, separated by white-space character(s), without header line."));
+		return;
+	}
+
+	if (!IBK::near_equal(angle, 0)) {
+		QMessageBox::critical(this, tr("Cannot paste SHGC data"),
+							  tr("Invalid data, expected 0 Deg in first row and first column."));
+		return;
+	}
+	std::vector<double> angles;
+	std::vector<double> values;
+	while (strm.status() == QTextStream::Ok) {
+		angles.push_back(angle);
+		values.push_back(val);
+		strm >> angle >> val;
+	}
+
+	if (angles.size() < 2) {
+		QMessageBox::critical(this, tr("Cannot paste SHGC data"),
+							  tr("Invalid data, expected at least two rows."));
+		return;
+	}
+	if (!IBK::near_equal(angles.back(), 90)) {
+		QMessageBox::critical(this, tr("Cannot paste SHGC data"),
+							  tr("Invalid data, expected 90 Deg in last row and first column."));
+		return;
+	}
+	for (const double & v : values) {
+		if (v < 0 || v > 1) {
+			QMessageBox::critical(this, tr("Cannot paste SHGC data"),
+								  tr("Invalid data, SHGC values between 0 and 1."));
+			return;
+		}
+	}
+
+	m_current->m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, values);
+	modelModify();
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBWindowGlazingSystemEditWidget::on_toolButtonCreateSpline_clicked() {
+	createDefaultSHGCSpline();
+	updateInput((int)m_current->m_id);
 }
