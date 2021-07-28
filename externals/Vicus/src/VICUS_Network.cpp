@@ -474,45 +474,58 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 }
 
 
-void Network::removeShortEdges(const double &threshold) {
+void Network::removeShortEdges(const double &thresholdLength) {
 	FUNCID(Network::removeShortEdges);
 
 	updateNodeEdgeConnectionPointers();
 
-	// check if there is a source
+	// check if there is a source node
 	std::vector<NetworkNode> sources;
 	findSourceNodes(sources);
 	if (sources.size() < 1)
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
-	// we just take the first source
-	unsigned int sourceId = sources[0].m_id;
 
 	// we iterate as many times as there are edges
-	unsigned int size = m_edges.size();
 	bool hasChanged = true;
+	std::set<const VICUS::NetworkNode *> dummyNodeSet;
+	std::vector<const VICUS::NetworkEdge *> orderedEdges;
+	unsigned int size = m_edges.size();
 	for (unsigned int count=0; count<size; ++count){
 
-		// if the network has changed since last iterations
-		std::set<const VICUS::NetworkNode *> dummyNodeSet;
-		std::vector<const VICUS::NetworkEdge *> orderedEdges;
-		nodeById(sourceId)->setInletOutletNode(dummyNodeSet, orderedEdges);
+		// if the network has changed since last iteration:
+		// we put edges in a deterministic order. They are ordered according to their distance from the source node
+		// And even more important: We need to put them in an order so that one node of each edge has already occured in
+		// one of the previuos edges within the vector
+		if (hasChanged){
+			orderedEdges.clear();
+			dummyNodeSet.clear();
+			nodeById(sources[0].m_id)->setInletOutletNode(dummyNodeSet, orderedEdges);
+			hasChanged = false;
+		}
 
-		std::set<unsigned int> knownIds;
-		knownIds.insert(orderedEdges[0]->nodeId1());
+		// we store the node ids that we have already processed
+		std::set<unsigned int> processedIds;
+		processedIds.insert(orderedEdges[0]->nodeId1());
 
+		// now go through the ordered edges
 		for (const NetworkEdge *e: orderedEdges){
 
+			// determine which of both nodeIds has already been processed (=exId)
+			// and which is of both is new (=newId)
 			unsigned int newId;
-			if (contains(knownIds, e->nodeId1()))
+			if (contains(processedIds, e->nodeId1()))
 				newId = e->nodeId2();
 			else
 				newId = e->nodeId1();
-
+			processedIds.insert(newId);
 			unsigned int exId = e->neighbourNode(newId);
-			knownIds.insert(newId);
 
-			if (e->length() < threshold){
+			// if the length of this edge is below threshold and the new node is not a building: we want to
+			// - modify all edges connected to the new node of this edge and connect them to the existing node
+			// - remove the according edge and the new node
+			// - leave the loop and start again so that we can assess the next edges with there adjusted lengths
+			if (e->length() < thresholdLength	&& nodeById(newId)->m_type == NetworkNode::NT_Mixer){
 
 				for (NetworkEdge *adjacentEdge: nodeById(newId)->m_edges){
 					if (adjacentEdge->nodeId1() == newId)
@@ -524,14 +537,13 @@ void Network::removeShortEdges(const double &threshold) {
 				m_nodes.erase(m_nodes.begin() + indexOfNode(newId));
 				m_edges.erase(m_edges.begin() + indexOfEdge(exId, exId));
 
+				// now update the pointers and leave the loop, start again from the beginning
 				updateNodeEdgeConnectionPointers();
-
+				hasChanged = true;
 				break;
 			}
 		}
-
 	}
-
 
 }
 

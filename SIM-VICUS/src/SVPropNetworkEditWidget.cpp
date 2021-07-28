@@ -1001,21 +1001,22 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 		return;
 
 	// make a copy which will keep the original network data
-	VICUS::Network originalNetwork = m_currentNetwork;
-	originalNetwork.updateNodeEdgeConnectionPointers();
-	originalNetwork.setVisible(false);
+	VICUS::Network reducedNetwork = m_currentNetwork.clone();
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
+	m_currentNetwork.setVisible(false);
+	reducedNetwork.setVisible(false);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, originalNetwork);
+	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undoMod->push(); // modifies project and updates views
 
 	// now modify the current network (new id, new name)
-	m_currentNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
-	m_currentNetwork.m_displayName = QString("%1_noShortEdges").arg(originalNetwork.m_displayName);
-	m_currentNetwork.removeShortEdges(threshold);
-	m_currentNetwork.setVisible(true);
-	m_currentNetwork.updateExtends();
+	reducedNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	reducedNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
+	reducedNetwork.removeShortEdges(threshold);
+	reducedNetwork.setVisible(true);
+	reducedNetwork.updateExtends();
 
-	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), m_currentNetwork);
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), reducedNetwork);
 	undo->push(); // modifies project and updates views
 }
 
@@ -1118,9 +1119,6 @@ void SVPropNetworkEditWidget::on_pushButtonRecalculateLength_clicked()
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 
-	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_fluidID];
-	Q_ASSERT(fluid!=nullptr);
 	for (const VICUS::NetworkEdge * edge: m_currentEdges){
 		m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->setLengthFromCoordinates();
 	}

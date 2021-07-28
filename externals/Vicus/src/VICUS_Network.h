@@ -68,12 +68,14 @@ public:
 		NUM_MT
 	};
 
+	/*! Defines wether this network represents a Single or DoublePipe Network (where each edges represents 2 pipes) */
 	enum NetworkType {
 		NET_SinglePipe,						// Keyword: SinglePipe
 		NET_DoublePipe,						// Keyword: DoublePipe
 		NUM_NET
 	};
 
+	/*! The parameters */
 	enum para_t{
 		P_TemperatureSetpoint,				// Keyword: TemperatureSetpoint					[C]		'Temperature for pipe dimensioning algorithm'
 		P_TemperatureDifference,			// Keyword: TemperatureDifference				[K]		'Temperature difference for pipe dimensioning algorithm'
@@ -88,7 +90,19 @@ public:
 
 	Network();
 
-	/*! copies all member except nodes and edges */
+	/*! creates a cpoy with new unique id */
+	Network clone() const{
+		Network n(*this); // create new network with same unique ID
+		for (unsigned int i=0; i<m_edges.size(); ++i)
+			n.m_edges[i] = m_edges[i].clone();
+		for (unsigned int i=0; i<m_nodes.size(); ++i)
+			n.m_nodes[i] = m_nodes[i].clone();
+		Object & o = n;
+		(Object&)n = o.clone(); // assign new ID only
+		return n;
+	}
+
+	/*! copies basic information except nodes and edges */
 	Network copyWithBaseParameters();
 
 	/*! call private addNode and set position relative to orign.
@@ -111,9 +125,6 @@ public:
 	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.
 	*/
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand);
-
-	/*! finds node that is closest to the given coordinates and change its type to NT_SOURCE */
-	void assignSourceNode(const IBKMK::Vector3D &v);
 
 	/*! generate all intersections in the network (runs in a loop as long as findAndAddIntersection() is true.) */
 	void generateIntersections();
@@ -142,7 +153,8 @@ public:
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
 
-	void removeShortEdges(const double &threshold);
+	/*! iteratively removes edges which have a length below thresholdLength in [m] */
+	void removeShortEdges(const double &thresholdLength);
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
@@ -181,22 +193,33 @@ public:
 		m_nodes.clear();
 	}
 
+	/*! returns pointer to edge, which is identified by its two nodeIds */
 	NetworkEdge *edge(unsigned nodeId1, unsigned nodeId2);
 
+	/*! returns the index of the according edge in the m_edges vector */
 	unsigned int indexOfEdge(unsigned nodeId1, unsigned nodeId2);
 
+	/*! returns the number of nodes with type NT_Building */
 	size_t numberOfBuildings() const;
 
-	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
+	/*! sets default values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
 	 * before calling sizePipeDimensions() */
 	void setDefaultSizingParams();
 
+	/*! sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
+	 * and heat demands (nodes)
+	*/
 	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
 
+	/*! sets default colors */
 	void setDefaultColors() const;
 
+	/*! sets the network object as well as all edges and nodes visible */
 	void setVisible(bool visible);
 
+	/*! identifies node by its id (in m_nodes vector) and returns according pointer
+	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
+	 */
 	NetworkNode *nodeById(unsigned int id) {
 		for (NetworkNode &n: m_nodes){
 			if (n.m_id == id)
@@ -206,6 +229,9 @@ public:
 		return nullptr;
 	}
 
+	/*! identifies node by its id (in m_nodes vector) and returns according const pointer
+	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
+	 */
 	const NetworkNode *nodeById(unsigned int id) const{
 		for (const NetworkNode &n: m_nodes){
 			if (n.m_id == id)
@@ -215,6 +241,9 @@ public:
 		return nullptr;
 	}
 
+	/*! identifies node by its id and returns according index in m_nodes vector
+	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return an index >= m_nodes.size() !
+	 */
 	unsigned int indexOfNode(unsigned int id) const {
 		for (unsigned int i=0; i<m_nodes.size(); ++i){
 			if (m_nodes[i].m_id == id)
