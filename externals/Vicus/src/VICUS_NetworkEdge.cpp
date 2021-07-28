@@ -78,9 +78,16 @@ void NetworkEdge::setLengthFromCoordinates() {
 }
 
 
-void NetworkEdge::setNodeId1(unsigned int nodeId1, NetworkNode *node1) {
-	m_nodeId1 = nodeId1;
-	m_node1 = node1;  // set pointer, so that setLengthFromCoordinates works
+void NetworkEdge::changeNode1(NetworkNode *node) {
+	m_nodeId1 = node->m_id;
+	m_node1 = node;  // set pointer, so that setLengthFromCoordinates works
+	setLengthFromCoordinates();
+}
+
+void NetworkEdge::changeNode2(NetworkNode *node)
+{
+	m_nodeId2 = node->m_id;
+	m_node2 = node;  // set pointer, so that setLengthFromCoordinates works
 	setLengthFromCoordinates();
 }
 

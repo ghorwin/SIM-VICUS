@@ -183,6 +183,8 @@ public:
 
 	NetworkEdge *edge(unsigned nodeId1, unsigned nodeId2);
 
+	unsigned int indexOfEdge(unsigned nodeId1, unsigned nodeId2);
+
 	size_t numberOfBuildings() const;
 
 	/*! sets defauklt values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
@@ -202,13 +204,6 @@ public:
 		}
 		IBK_ASSERT(false);
 		return nullptr;
-
-//		std::vector<NetworkNode>::iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
-//		IBK_ASSERT(it == m_nodes.end());
-//		if (it == m_nodes.end())
-//			return nullptr;
-//		else
-//			return &(*it);
 	}
 
 	const NetworkNode *nodeById(unsigned int id) const{
@@ -218,13 +213,15 @@ public:
 		}
 		IBK_ASSERT(false);
 		return nullptr;
+	}
 
-//		std::vector<NetworkNode>::const_iterator it = std::find(m_nodes.begin(), m_nodes.end(), id);
-//		IBK_ASSERT(it == m_nodes.end());
-//		if (it == m_nodes.end())
-//			return nullptr;
-//		else
-//			return &(*it);
+	unsigned int indexOfNode(unsigned int id) const {
+		for (unsigned int i=0; i<m_nodes.size(); ++i){
+			if (m_nodes[i].m_id == id)
+				return i;
+		}
+		IBK_ASSERT(false);
+		return 99999;
 	}
 
 
@@ -318,6 +315,7 @@ private:
 	unsigned int addNode(const NetworkNode & nodeById, const bool considerCoordinates=true);
 
 };
+
 
 } // namespace VICUS
 

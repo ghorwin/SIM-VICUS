@@ -59,12 +59,18 @@ void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes
 
 
 void NetworkNode::updateIsDeadEnd(){
-	unsigned numDeadEndNodes = 0;
+	// buildings or sources are never dead ends
+	if (m_type == NT_Building || m_type == NT_Source){
+		m_isDeadEnd = false;
+		return;
+	}
+	// check all neighbouring nodes. If only 1 or less are not dead ends: this is a dead end
+	unsigned numNonDeadEndNeighbours = 0;
 	for (NetworkEdge *e: m_edges){
 		if (!e->neighbourNode(this)->m_isDeadEnd)
-			++numDeadEndNodes;
+			++numNonDeadEndNeighbours;
 	}
-	m_isDeadEnd = numDeadEndNodes < 2 && m_type != NT_Building && m_type != NT_Source;
+	m_isDeadEnd = numNonDeadEndNeighbours <= 1;
 }
 
 

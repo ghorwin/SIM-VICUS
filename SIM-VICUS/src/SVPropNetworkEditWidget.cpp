@@ -958,6 +958,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 	undo->push(); // modifies project and updates views
 }
 
+
 void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 {
 	if (!setNetwork())

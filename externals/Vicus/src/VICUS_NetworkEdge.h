@@ -78,13 +78,13 @@ public:
 
 	// TODO Hauke, Vergleichsoperatoren sollten immer das ganze Objekt vergleichen - eher dann eine andere Funktion verwenden
 	//             mit eigenem Namen
-//	bool operator==(const NetworkEdge &e2){
-//		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
-//	}
+	bool operator==(NetworkEdge &e2) const{
+		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
+	}
 
-//	bool operator!=(const NetworkEdge &e2){
-//		return (m_nodeId1 != e2.m_nodeId1) || (m_nodeId2 == e2.m_nodeId2);
-//	}
+	bool operator==(const NetworkEdge &e2) const{
+		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
+	}
 
 	/*! returns opposite node of the given one */
 	NetworkNode * neighbourNode(const NetworkNode *node) const;
@@ -97,10 +97,13 @@ public:
 
 	unsigned int nodeId1() const { return m_nodeId1; }
 
-	// sets nodeId and pointer to the node and calculates the new length of this edge
-	void setNodeId1(unsigned int nodeId1, NetworkNode *node1);
-
 	unsigned int nodeId2() const {return m_nodeId2; }
+
+	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
+	void changeNode1(NetworkNode *node);
+
+	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
+	void changeNode2(NetworkNode *node);
 
 	/*! Returns the corresponding NetworkComponent model type based on the PipeModel. */
 	NetworkComponent::ModelType networkComponentModelType() const;
