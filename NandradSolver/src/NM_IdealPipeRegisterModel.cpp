@@ -24,14 +24,13 @@
 #include <IBK_Exception.h>
 #include <IBK_physics.h>
 #include <IBK_messages.h>
-
+#include <IBK_FluidPhysics.h>
 
 #include <NANDRAD_IdealPipeRegisterModel.h>
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_Thermostat.h>
 #include <NANDRAD_Zone.h>
 
-#include "NM_Physics.h"
 
 #include "NM_KeywordList.h"
 #include "NM_ThermostatModel.h"
@@ -396,11 +395,11 @@ int IdealPipeRegisterModel::update() {
 
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
-			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+			double prandtl = IBK::PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 
 			double velocity = std::fabs(heatingMassFlow)/(m_fluidCrossSection*m_fluidDensity);
-			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+			double reynolds = IBK::ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+			double nusselt = IBK::NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
 			// UAValueTotal has W/K, basically the specific heat loss over pipe surface per Kelvin temperature difference
@@ -440,10 +439,10 @@ int IdealPipeRegisterModel::update() {
 
 			// calculate inner heat transfer
 			double viscosity = m_fluidViscosity.value(supplyTemperature);
-			double prandtl = PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+			double prandtl = IBK::PrandtlNumber(viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
 			double velocity = std::fabs(coolingMassFlow)/(m_fluidCrossSection * m_fluidDensity);
-			double reynolds = ReynoldsNumber(velocity, viscosity, m_innerDiameter);
-			double nusselt = NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
+			double reynolds = IBK::ReynoldsNumber(velocity, viscosity, m_innerDiameter);
+			double nusselt = IBK::NusseltNumber(reynolds, prandtl, m_length, m_innerDiameter);
 			double innerHeatTransferCoefficient = nusselt * m_fluidConductivity / m_innerDiameter;
 
 			// UAValueTotal has W/K, basically the u-value per length pipe (including transfer coefficients) x pipe length.
