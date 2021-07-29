@@ -725,6 +725,8 @@ void decode_version_number(const std::string & versionString, unsigned int & maj
 */
 bool convertDosToUnix( const std::string& fname, std::stringstream& out, std::string& errmsg );
 
+/*! Takes an XML text and encodes it in HTML by replacing special characters with symbols. */
+std::string convertXml2Html(const std::string & xmlText);
 
 }   // namespace IBK
 

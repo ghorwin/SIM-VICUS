@@ -1089,6 +1089,28 @@ void decode_version_number(const std::string & versionString, unsigned int & maj
 	}
 }
 
+
+std::string convertXml2Html(const std::string & xmlText) {
+	static std::vector< std::pair<std::string, std::string> >substitutionTable;
+	if (substitutionTable.empty()) {
+		// Note: & must be replaced at the very begin!
+		substitutionTable.push_back( std::make_pair("&", "&amp;") );	//	ampersand
+		substitutionTable.push_back( std::make_pair("\"","&quot;") ); //	quotation mark
+//		substitutionTable["'"]	= "&apos;"; //	apostrophe
+		substitutionTable.push_back( std::make_pair("<","&lt;") ); //	less-than
+		substitutionTable.push_back( std::make_pair(">","&gt;") ); //	greater-than
+		substitutionTable.push_back( std::make_pair("\n", "<br>") ); //	line break
+//		substitutionTable.push_back( std::make_pair(" ", "&nbsp;") ); //	no-break-space
+	}
+
+	std::string newText = xmlText;
+	for (const auto & subst : substitutionTable)
+		newText = replace_string(newText, subst.first, subst.second);
+
+	return newText;
+}
+
+
 //std::string latin9_to_utf8(const char *const string) {
 //    char   *result;
 //    size_t  n = 0;
