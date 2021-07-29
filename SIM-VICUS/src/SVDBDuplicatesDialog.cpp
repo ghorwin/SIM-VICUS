@@ -5,6 +5,7 @@
 #include <QHeaderView>
 
 #include <IBK_StringUtils.h>
+#include <IBK_Differ.h>
 
 #include <tinyxml.h>
 
@@ -331,8 +332,16 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	std::vector<std::string> linesLeft = processXML(xmlLeft.toStdString());
 	std::vector<std::string> linesRight = processXML(xmlRight.toStdString());
 
+	IBK::Differ<std::string> diff(linesLeft, linesRight);
+	diff.diff();
+
 	std::string encodedLeft = IBK::convertXml2Html( IBK::join(linesLeft, '\n') );
-	std::string encodedRight = IBK::convertXml2Html(  IBK::join(linesRight, '\n') );
+	std::string encodedRight;
+
+	for (unsigned int i=0; i<diff.resultObj().size(); ++i) {
+
+//		const std::string & line : diff.resultObj()
+	}
 
 	const char * const htmlPrefix = "<html><body><pre style=\"font-size:9pt;\">";
 	const char * const htmlSuffix = "</pre></body></html>";
