@@ -7,15 +7,25 @@
 
 namespace IBK {
 
+enum Operation {
+	DifferOpInsert,
+	DifferOpRemove,
+	DifferOpEqual
+};
+
 /*! See https://florian.github.io/diffing */
 template <typename T>
 class Differ {
 public:
-	/*! default constructor */
+
+	/*! Default constructor */
 	Differ() = default;
 
-	/*! constructor */
+	/*! Constructor */
 	Differ(const std::vector<T> &obj1, const std::vector<T> &obj2);
+
+	/*! Sets a new data set. */
+	void setData(const std::vector<T> &obj1, const std::vector<T> &obj2);
 
 	/*! calculates the longest common subsequence (LCS) as a matrix */
 	void calculateLCS();
@@ -29,26 +39,47 @@ public:
 	/*! the length of the longest common subsequence */
 	unsigned int lcsLength();
 
+	/*! Returns merged vector (obj2 merged into obj1). */
+	const std::vector<T> & resultObj() const { return m_resultObj; }
+
+	/*! Operation needed for each element. */
+	const std::vector<Operation> & resultOperation() const { return m_resultOperation; }
+
+private:
+	/*! Stores info if LCS was already calculated for current input data set. */
 	bool									m_lcsCalculated = false;
 
+	/*! Cached input data vector 1. */
 	std::vector<T>							m_obj1;
-
+	/*! Cached input data vector 2. */
 	std::vector<T>							m_obj2;
 
+	/*! Cached LCS matrix. */
 	std::vector<std::vector<unsigned int> > m_lcs;
 
-	std::vector<T >							m_resultObj;
+	/*! Merged vector (obj2 merged into obj1). */
+	std::vector<T>							m_resultObj;
 
-	std::vector<std::string>				m_resultOperation;
+	/*! Operation needed for each element. */
+	std::vector<Operation>					m_resultOperation;
 
 };
 
 
 template <typename T>
 Differ<T>::Differ(const std::vector<T> &obj1, const std::vector<T> &obj2):
+	m_lcsCalculated(false),
 	m_obj1(obj1),
 	m_obj2(obj2)
 {
+}
+
+
+template<typename T>
+void Differ<T>::setData(const std::vector<T> & obj1, const std::vector<T> & obj2) {
+	m_obj1 = obj1;
+	m_obj2 = obj2;
+	m_lcsCalculated = false;
 }
 
 
@@ -60,12 +91,12 @@ void Differ<T>::calculateLCS() {
 	// creates a matrix with n+1 rows and m+1 columns, which is needed to compare both objects
 	m_lcs = std::vector<std::vector<unsigned int> > (n+1, std::vector<unsigned int>(m+1, 0));
 
-	for (unsigned int i=0; i<n+1; ++i){
-		for (unsigned int j=0; j<m+1; ++j){
-
-			if (i==0 || j==0)
-				m_lcs[i][j] = 0;
-			else if (m_obj1[i - 1] == m_obj2[j - 1])
+	// we initialized memory and have already:
+	//   m_lcs[0][j] = 0;
+	//   m_lcs[i][0] = 0;
+	for (unsigned int i=1; i<n+1; ++i) {
+		for (unsigned int j=1; j<m+1; ++j) {
+			if (m_obj1[i - 1] == m_obj2[j - 1])
 				m_lcs[i][j] = 1 + m_lcs[i - 1][j - 1];
 			else
 				m_lcs[i][j] = std::max(m_lcs[i - 1][j], m_lcs[i][j - 1]);
@@ -101,29 +132,29 @@ void Differ<T>::diff() {
 
 		if (i==0){
 			m_resultObj.push_back(m_obj2[j-1]);
-			m_resultOperation.push_back("+");
+			m_resultOperation.push_back(DifferOpInsert);
 			--j;
 		}
 		else if (j==0) {
 			m_resultObj.push_back(m_obj1[i-1]);
-			m_resultOperation.push_back("-");
+			m_resultOperation.push_back(DifferOpRemove);
 			--i;
 		}
 
 		else if (m_obj1[i-1] == m_obj2[j-1]){
 			m_resultObj.push_back(m_obj1[i-1]);
-			m_resultOperation.push_back("==");
+			m_resultOperation.push_back(DifferOpEqual);
 			--i;
 			--j;
 		}
 		else if (m_lcs[i-1][j] <= m_lcs[i][j-1]){
 			m_resultObj.push_back(m_obj2[j-1]);
-			m_resultOperation.push_back("+");
+			m_resultOperation.push_back(DifferOpInsert);
 			--j;
 		}
 		else {
 			m_resultObj.push_back(m_obj1[i-1]);
-			m_resultOperation.push_back("-");
+			m_resultOperation.push_back(DifferOpRemove);
 			--i;
 		}
 	}
