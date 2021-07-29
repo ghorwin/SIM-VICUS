@@ -958,6 +958,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 	undo->push(); // modifies project and updates views
 }
 
+
 void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 {
 	if (!setNetwork())
@@ -999,27 +1000,23 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 	else
 		return;
 
-	// set current network invisible
+	// make a copy which will keep the original network data
+	VICUS::Network reducedNetwork = m_currentNetwork.clone();
+	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.setVisible(false);
+	reducedNetwork.setVisible(false);
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undoMod = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undoMod->push(); // modifies project and updates views
 
-	// make copy with reduced nodes
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
-	newNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
-	newNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
-	newNetwork.setVisible(true);
+	// now modify the current network (new id, new name)
+	reducedNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	reducedNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
+	reducedNetwork.removeShortEdges(threshold);
+	reducedNetwork.setVisible(true);
+	reducedNetwork.updateExtends();
 
-	// algorithm
-	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.removeShortEdges(newNetwork, threshold);
-	const VICUS::Project & p = project();
-	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
-	newNetwork.updateNodeEdgeConnectionPointers();
-	newNetwork.updateExtends();
-
-	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
+	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), reducedNetwork);
 	undo->push(); // modifies project and updates views
 }
 
@@ -1122,9 +1119,6 @@ void SVPropNetworkEditWidget::on_pushButtonRecalculateLength_clicked()
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 
-	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_fluidID];
-	Q_ASSERT(fluid!=nullptr);
 	for (const VICUS::NetworkEdge * edge: m_currentEdges){
 		m_currentNetwork.edge(edge->nodeId1(), edge->nodeId2())->setLengthFromCoordinates();
 	}

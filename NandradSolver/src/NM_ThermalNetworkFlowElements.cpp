@@ -30,9 +30,10 @@
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_HydraulicNetworkControlElement.h"
 
-#include "numeric"
+#include <numeric>
 
-#include "IBK_messages.h"
+#include <IBK_messages.h>
+#include <IBK_FluidPhysics.h>
 
 
 namespace NANDRAD_MODEL {
@@ -119,9 +120,9 @@ void TNSimplePipeElement::setInflowTemperature(double Tinflow) {
 	m_velocity = m_volumeFlow/m_fluidCrossSection;
 
 	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
-	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
-	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+	m_reynolds = IBK::ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+	m_prandtl = IBK::PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+	m_nusselt = IBK::NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
 	// calculate inner heat transfer coefficient
 	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity /
 											m_innerDiameter;
@@ -325,9 +326,9 @@ void TNDynamicPipeElement::setInflowTemperature(double Tinflow) {
 
 	// assume constant heat transfer coefficient along pipe, using average temperature
 	m_viscosity = m_fluidViscosity.value(m_meanTemperature);
-	m_reynolds = ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
-	m_prandtl = PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
-	m_nusselt = NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
+	m_reynolds = IBK::ReynoldsNumber(m_velocity, m_viscosity, m_innerDiameter);
+	m_prandtl = IBK::PrandtlNumber(m_viscosity, m_fluidHeatCapacity, m_fluidConductivity, m_fluidDensity);
+	m_nusselt = IBK::NusseltNumber(m_reynolds, m_prandtl, m_length, m_innerDiameter);
 	double innerHeatTransferCoefficient = m_nusselt * m_fluidConductivity / m_innerDiameter;
 
 	if(m_outerHeatTransferCoefficient == 0.) {

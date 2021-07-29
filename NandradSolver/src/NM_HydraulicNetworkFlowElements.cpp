@@ -20,7 +20,6 @@
 */
 
 #include "NM_HydraulicNetworkFlowElements.h"
-#include "NM_Physics.h"
 
 #include <NANDRAD_HydraulicNetworkElement.h>
 #include <NANDRAD_HydraulicNetworkPipeProperties.h>
@@ -29,7 +28,9 @@
 #include <NANDRAD_HydraulicFluid.h>
 #include <NANDRAD_Thermostat.h>
 
-#include "NM_ThermalNetworkFlowElements.h"
+#include <IBK_FluidPhysics.h>
+
+#include <algorithm>
 
 #define PI				3.141592653589793238
 
@@ -182,7 +183,7 @@ double HNPipeElement::pressureLossFriction(const double &mdot) const {
 	double fluidDensity = m_fluid->m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	double velocity = mdot / (fluidDensity * m_diameter * m_diameter * PI / 4.0);
 	double Re = std::abs(velocity) * m_diameter / m_fluid->m_kinematicViscosity.m_values.value(*m_fluidTemperatureRef);
-	double zeta = m_length / m_diameter * FrictionFactorSwamee(Re, m_diameter, m_roughness);
+	double zeta = m_length / m_diameter * IBK::FrictionFactorSwamee(Re, m_diameter, m_roughness);
 
 	// add controlled zeta
 	if (m_controlElement != nullptr)
