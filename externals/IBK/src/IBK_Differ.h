@@ -2,21 +2,20 @@
 #define DIFFER_H
 
 #include <vector>
+#include <string>
 
 
 namespace IBK {
 
 
-template<class t>
-
-class Differ
-{
+template <typename T>
+class Differ {
 public:
 	/*! default constructor */
-	Differ();
+	Differ() = default;
 
 	/*! constructor */
-	Differ(const std::vector<t> &obj1, const std::vector<t> &obj2);
+	Differ(const std::vector<T> &obj1, const std::vector<T> &obj2);
 
 	/*! calculates the longest common subsequence (LCS) as a matrix */
 	void calculateLCS();
@@ -32,13 +31,13 @@ public:
 
 	bool									m_lcsCalculated = false;
 
-	std::vector<t>							m_obj1;
+	std::vector<T>							m_obj1;
 
-	std::vector<t>							m_obj2;
+	std::vector<T>							m_obj2;
 
 	std::vector<std::vector<unsigned int> > m_lcs;
 
-	std::vector<t >							m_resultObj;
+	std::vector<T >							m_resultObj;
 
 	std::vector<std::string>				m_resultOperation;
 

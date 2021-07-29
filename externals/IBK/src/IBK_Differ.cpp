@@ -1,27 +1,20 @@
 #include "IBK_Differ.h"
 
+#include <string>
 #include <algorithm>
 
 namespace IBK {
 
-
-template<class t>
-Differ<t>::Differ()
-{
-}
-
-
-template<class t>
-Differ<t>::Differ(const std::vector<t> &obj1, const std::vector<t> &obj2):
+template <typename T>
+Differ<T>::Differ(const std::vector<T> &obj1, const std::vector<T> &obj2):
 	m_obj1(obj1),
 	m_obj2(obj2)
 {
 }
 
 
-template<class t>
-void Differ<t>::calculateLCS()
-{
+template <typename T>
+void Differ<T>::calculateLCS() {
 	unsigned int n = m_obj1.size();
 	unsigned int m = m_obj2.size();
 
@@ -43,18 +36,16 @@ void Differ<t>::calculateLCS()
 }
 
 
-template<class t>
-unsigned int Differ<t>::lcsLength()
-{
+template <typename T>
+unsigned int Differ<T>::lcsLength() {
 	if (!m_lcsCalculated)
 		calculateLCS();
 	return	m_lcs[m_obj1.size()][m_obj2.size()];
 }
 
 
-template<class t>
-void Differ<t>::diff()
-{
+template <typename T>
+void Differ<T>::diff() {
 	// first we need to calculate the lcs matrix
 	calculateLCS();
 
