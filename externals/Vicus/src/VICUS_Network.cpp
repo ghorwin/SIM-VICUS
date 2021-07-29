@@ -207,6 +207,36 @@ void Network::setVisible(bool visible)
 		node.m_visible = visible;
 }
 
+NetworkNode *Network::nodeById(unsigned int id)
+{
+	for (NetworkNode &n: m_nodes){
+		if (n.m_id == id)
+			return &n;
+	}
+	IBK_ASSERT(false);
+	return nullptr;
+}
+
+const NetworkNode *Network::nodeById(unsigned int id) const
+{
+	for (const NetworkNode &n: m_nodes){
+		if (n.m_id == id)
+			return &n;
+	}
+	IBK_ASSERT(false);
+	return nullptr;
+}
+
+unsigned int Network::indexOfNode(unsigned int id) const
+{
+	for (unsigned int i=0; i<m_nodes.size(); ++i){
+		if (m_nodes[i].m_id == id)
+			return i;
+	}
+	IBK_ASSERT(false);
+	return 99999;
+}
+
 
 QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType) {
 	switch (heatExchangeType) {
@@ -525,7 +555,7 @@ void Network::removeShortEdges(const double &thresholdLength) {
 			// - modify all edges connected to the new node of this edge and connect them to the existing node
 			// - remove the according edge and the new node
 			// - leave the loop and start again so that we can assess the next edges with there adjusted lengths
-			if (e->length() < thresholdLength	&& nodeById(newId)->m_type == NetworkNode::NT_Mixer){
+			if (e->length() < thresholdLength && nodeById(newId)->m_type == NetworkNode::NT_Mixer){
 
 				for (NetworkEdge *adjacentEdge: nodeById(newId)->m_edges){
 					if (adjacentEdge->nodeId1() == newId)
@@ -760,8 +790,6 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 	}
 
 }
-
-
 
 
 void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{

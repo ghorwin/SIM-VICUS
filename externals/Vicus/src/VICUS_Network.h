@@ -90,7 +90,7 @@ public:
 
 	Network();
 
-	/*! creates a cpoy with new unique id */
+	/*! creates a copy with new unique id */
 	Network clone() const{
 		Network n(*this); // create new network with same unique ID
 		for (unsigned int i=0; i<m_edges.size(); ++i)
@@ -220,38 +220,17 @@ public:
 	/*! identifies node by its id (in m_nodes vector) and returns according pointer
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
 	 */
-	NetworkNode *nodeById(unsigned int id) {
-		for (NetworkNode &n: m_nodes){
-			if (n.m_id == id)
-				return &n;
-		}
-		IBK_ASSERT(false);
-		return nullptr;
-	}
+	NetworkNode *nodeById(unsigned int id);
 
 	/*! identifies node by its id (in m_nodes vector) and returns according const pointer
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
 	 */
-	const NetworkNode *nodeById(unsigned int id) const{
-		for (const NetworkNode &n: m_nodes){
-			if (n.m_id == id)
-				return &n;
-		}
-		IBK_ASSERT(false);
-		return nullptr;
-	}
+	const NetworkNode *nodeById(unsigned int id) const;
 
 	/*! identifies node by its id and returns according index in m_nodes vector
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return an index >= m_nodes.size() !
 	 */
-	unsigned int indexOfNode(unsigned int id) const {
-		for (unsigned int i=0; i<m_nodes.size(); ++i){
-			if (m_nodes[i].m_id == id)
-				return i;
-		}
-		IBK_ASSERT(false);
-		return 99999;
-	}
+	unsigned int indexOfNode(unsigned int id) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
