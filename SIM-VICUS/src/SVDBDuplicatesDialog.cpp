@@ -2,6 +2,7 @@
 #include "ui_SVDBDuplicatesDialog.h"
 
 #include <QtExt_Conversions.h>
+#include <QHeaderView>
 
 #include "SVSettings.h"
 #include "SVStyle.h"
@@ -16,8 +17,15 @@ SVDBDuplicatesDialog::SVDBDuplicatesDialog(QWidget *parent) :
 	m_ui->tableWidget->setHorizontalHeaderLabels(QStringList() << tr("Database Element")
 		<< tr("Duplicate #1") << tr("Duplicate #2"));
 
+	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+
 	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
 	m_ui->tableWidget->setSortingEnabled(false);
+
+	connect(m_ui->tableWidget->selectionModel(), &QItemSelectionModel::currentRowChanged,
+			this, &SVDBDuplicatesDialog::onCurrentRowChanged);
 }
 
 
@@ -42,6 +50,7 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 		}
 	}
 
+	m_ui->tableWidget->selectionModel()->blockSignals(true);
 	// now populate table
 	int rows = 0;
 	for (unsigned int i=0; i<SVDatabase::NUM_DT; ++i) {
@@ -61,27 +70,33 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 					break;
 				case SVDatabase::DT_Windows:					item->setText(tr("Windows")); break;
 				case SVDatabase::DT_WindowGlazingSystems:		item->setText(tr("WindowGlazingSystems")); break;
-				case SVDatabase::DT_BoundaryConditions:			item->setText(tr("BoundaryConditions")); break;
+				case SVDatabase::DT_BoundaryConditions:			item->setText(tr("BoundaryConditions"));
+					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_boundaryConditions[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
+					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_boundaryConditions[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+					break;
 				case SVDatabase::DT_Components:					item->setText(tr("Components"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_components[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_components[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_SubSurfaceComponents:		item->setText(tr("SubSurfaceComponents")); break;
+				case SVDatabase::DT_SubSurfaceComponents:		item->setText(tr("SubSurfaceComponents"));
+					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subSurfaceComponents[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
+					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subSurfaceComponents[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+					break;
 				case SVDatabase::DT_SurfaceHeating:				item->setText(tr("SurfaceHeating")); break;
-				case SVDatabase::DT_Pipes:						item->setText(tr("Materials")); break;
-				case SVDatabase::DT_Fluids:						item->setText(tr("Materials")); break;
-				case SVDatabase::DT_NetworkComponents:			item->setText(tr("Materials")); break;
-				case SVDatabase::DT_NetworkControllers:			item->setText(tr("Materials")); break;
-				case SVDatabase::DT_SubNetworks:				item->setText(tr("Materials")); break;
-				case SVDatabase::DT_Schedules:					item->setText(tr("Materials")); break;
-				case SVDatabase::DT_InternalLoads:				item->setText(tr("Materials")); break;
-				case SVDatabase::DT_ZoneControlThermostat:		item->setText(tr("Materials")); break;
-				case SVDatabase::DT_ZoneControlShading:			item->setText(tr("Materials")); break;
-				case SVDatabase::DT_ZoneControlNaturalVentilation:	item->setText(tr("Materials")); break;
-				case SVDatabase::DT_ZoneIdealHeatingCooling:	item->setText(tr("Materials")); break;
-				case SVDatabase::DT_VentilationNatural:			item->setText(tr("Materials")); break;
-				case SVDatabase::DT_Infiltration:				item->setText(tr("Materials")); break;
-				case SVDatabase::DT_ZoneTemplates:				item->setText(tr("Materials")); break;
+				case SVDatabase::DT_Pipes:						item->setText(tr("Pipes")); break;
+				case SVDatabase::DT_Fluids:						item->setText(tr("Fluids")); break;
+				case SVDatabase::DT_NetworkComponents:			item->setText(tr("NetworkComponents")); break;
+				case SVDatabase::DT_NetworkControllers:			item->setText(tr("NetworkControllers")); break;
+				case SVDatabase::DT_SubNetworks:				item->setText(tr("SubNetworks")); break;
+				case SVDatabase::DT_Schedules:					item->setText(tr("Schedules")); break;
+				case SVDatabase::DT_InternalLoads:				item->setText(tr("InternalLoads")); break;
+				case SVDatabase::DT_ZoneControlThermostat:		item->setText(tr("ZoneControlThermostat")); break;
+				case SVDatabase::DT_ZoneControlShading:			item->setText(tr("ZoneControlShading")); break;
+				case SVDatabase::DT_ZoneControlNaturalVentilation:	item->setText(tr("ZoneControlNaturalVentilation")); break;
+				case SVDatabase::DT_ZoneIdealHeatingCooling:	item->setText(tr("ZoneIdealHeatingCooling")); break;
+				case SVDatabase::DT_VentilationNatural:			item->setText(tr("VentilationNatural")); break;
+				case SVDatabase::DT_Infiltration:				item->setText(tr("Infiltration")); break;
+				case SVDatabase::DT_ZoneTemplates:				item->setText(tr("ZoneTemplates")); break;
 				case SVDatabase::NUM_DT:;// just to make compiler happy
 			}
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -91,17 +106,97 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 			item = new QTableWidgetItem(left);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			item->setData(Qt::UserRole, duplicates.m_idFirst); // item(row,1) holds DB element ID of first element
+			if (duplicates.m_identical)
+				item->setBackground(QColor("#d0e0ff"));
 			m_ui->tableWidget->setItem(rows+(int)j, 1, item);
 
 			item = new QTableWidgetItem(right);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,1) holds DB element ID of second element
+			if (duplicates.m_identical)
+				item->setBackground(QColor("#d0e0ff"));
 			m_ui->tableWidget->setItem(rows+(int)j, 2, item);
 		}
 		rows += dupInfos[i].size();
 	}
 
+	m_ui->tableWidget->selectionModel()->blockSignals(false);
 	m_ui->groupBox->setVisible(false);
 
+	if (m_ui->tableWidget->rowCount() != 0)
+		m_ui->tableWidget->selectRow(0);
+
 	exec();
+}
+
+template <typename T>
+QString dumpXML(const VICUS::Database<T> & db, unsigned int id) {
+	return QString();
+}
+
+
+void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
+	m_ui->groupBox->setVisible(false);
+	// take currently selected items, access them and generate their diffs
+	int currentRow = current.row();
+	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
+	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
+	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
+	QString xmlLeft, xmlRight;
+	const SVDatabase & db = SVSettings::instance().m_db;
+	switch (type) {
+		case SVDatabase::DT_Materials:
+			xmlLeft = dumpXML(db.m_materials, leftID);
+			xmlRight = dumpXML(db.m_materials, leftID);
+		break;
+		case SVDatabase::DT_Constructions:
+		break;
+		case SVDatabase::DT_Windows:
+		break;
+		case SVDatabase::DT_WindowGlazingSystems:
+		break;
+		case SVDatabase::DT_BoundaryConditions:
+		break;
+		case SVDatabase::DT_Components:
+		break;
+		case SVDatabase::DT_SubSurfaceComponents:
+		break;
+		case SVDatabase::DT_SurfaceHeating:
+		break;
+		case SVDatabase::DT_Pipes:
+		break;
+		case SVDatabase::DT_Fluids:
+		break;
+		case SVDatabase::DT_NetworkComponents:
+		break;
+		case SVDatabase::DT_NetworkControllers:
+		break;
+		case SVDatabase::DT_SubNetworks:
+		break;
+		case SVDatabase::DT_Schedules:
+		break;
+		case SVDatabase::DT_InternalLoads:
+		break;
+		case SVDatabase::DT_ZoneControlThermostat:
+		break;
+		case SVDatabase::DT_ZoneControlShading:
+		break;
+		case SVDatabase::DT_ZoneControlNaturalVentilation:
+		break;
+		case SVDatabase::DT_ZoneIdealHeatingCooling:
+		break;
+		case SVDatabase::DT_VentilationNatural:
+		break;
+		case SVDatabase::DT_Infiltration:
+		break;
+		case SVDatabase::DT_ZoneTemplates:
+		break;
+		case SVDatabase::NUM_DT:
+		break;
+	}
+
+	// generate diff and color output
+
+	m_ui->textEditLeft->setHtml(xmlLeft);
+	m_ui->textEditRight->setHtml(xmlRight);
 }

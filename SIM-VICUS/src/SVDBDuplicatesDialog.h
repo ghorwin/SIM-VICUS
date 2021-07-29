@@ -23,6 +23,8 @@ public:
 	*/
 	void removeDuplicates(SVDatabase::DatabaseTypes dbType = SVDatabase::NUM_DT);
 
+private slots:
+	void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
 private:
 	Ui::SVDBDuplicatesDialog *m_ui;
 };
