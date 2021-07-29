@@ -24,7 +24,6 @@ SOURCES += \
 	../../src/IBK_ArgParser.cpp \
 	../../src/IBK_Color.cpp \
 	../../src/IBK_Constants.cpp \
-	../../src/IBK_Differ.cpp \
 	../../src/IBK_FluidPhysics.cpp \
 	../../src/IBK_crypt.cpp \
 	../../src/IBK_EOLStreamBuffer.cpp \
