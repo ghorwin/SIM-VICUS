@@ -7,7 +7,7 @@
 
 namespace IBK {
 
-
+/*! See https://florian.github.io/diffing */
 template <typename T>
 class Differ {
 public:
