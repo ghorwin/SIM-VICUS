@@ -4,6 +4,10 @@
 #include <QtExt_Conversions.h>
 #include <QHeaderView>
 
+#include <IBK_StringUtils.h>
+
+#include <tinyxml.h>
+
 #include "SVSettings.h"
 #include "SVStyle.h"
 
@@ -120,23 +124,56 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 		rows += dupInfos[i].size();
 	}
 
-	m_ui->tableWidget->selectionModel()->blockSignals(false);
 	m_ui->groupBox->setVisible(false);
 
-	if (m_ui->tableWidget->rowCount() != 0)
+	if (m_ui->tableWidget->rowCount() != 0) {
 		m_ui->tableWidget->selectRow(0);
+		onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
+	}
+	m_ui->tableWidget->selectionModel()->blockSignals(false);
 
 	exec();
 }
 
+
 template <typename T>
-QString dumpXML(const VICUS::Database<T> & db, unsigned int id) {
-	return QString();
+QString dumpXML(const T & data) {
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusData" );
+	doc.LinkEndChild(root);
+	data.writeXML(root);
+
+	TiXmlPrinter printer;
+	printer.SetIndent( "  " );
+
+	doc.Accept( &printer );
+	std::string xmltext = printer.CStr();
+
+	return QString::fromStdString(xmltext);
+}
+
+
+std::vector<std::string> processXML(const std::string & xmlText) {
+	// split and create vector of lines
+	std::vector<std::string> lines = IBK::explode(xmlText, '\n');
+	if (lines.size() < 3)
+		return lines;
+	// remove first 2 lines and last
+	lines.erase(lines.begin(), lines.begin()+2);
+	lines.erase(lines.end()-1, lines.end());
+
+	// remove two levels of indentation in each string
+	for (std::string & l : lines)
+		l = l.substr(2);
+	return lines;
 }
 
 
 void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
-	m_ui->groupBox->setVisible(false);
+	m_ui->groupBox->setVisible(true);
 	// take currently selected items, access them and generate their diffs
 	int currentRow = current.row();
 	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
@@ -146,10 +183,13 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	const SVDatabase & db = SVSettings::instance().m_db;
 	switch (type) {
 		case SVDatabase::DT_Materials:
-			xmlLeft = dumpXML(db.m_materials, leftID);
-			xmlRight = dumpXML(db.m_materials, leftID);
+			xmlLeft = dumpXML(*db.m_materials[leftID]);
+			xmlRight = dumpXML(*db.m_materials[rightID]);
 		break;
 		case SVDatabase::DT_Constructions:
+			xmlLeft = dumpXML(*db.m_constructions[leftID]);
+			xmlRight = dumpXML(*db.m_constructions[rightID]);
+		break;
 		break;
 		case SVDatabase::DT_Windows:
 		break;
@@ -197,6 +237,19 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 
 	// generate diff and color output
 
-	m_ui->textEditLeft->setHtml(xmlLeft);
-	m_ui->textEditRight->setHtml(xmlRight);
+	// split and create vector of lines
+	std::vector<std::string> linesLeft = processXML(xmlLeft.toStdString());
+	std::vector<std::string> linesRight = processXML(xmlRight.toStdString());
+
+	std::string encodedLeft = IBK::convertXml2Html( IBK::join(linesLeft, '\n') );
+	std::string encodedRight = IBK::convertXml2Html(  IBK::join(linesRight, '\n') );
+
+	const char * const htmlPrefix = "<html><body><pre style=\"font-size:9pt;\">";
+	const char * const htmlSuffix = "</pre></body></html>";
+
+	QString formattedHtmlLeft = htmlPrefix + QString::fromStdString(encodedLeft) + htmlSuffix;
+	QString formattedHtmlRight = htmlPrefix + QString::fromStdString(encodedRight) + htmlSuffix;
+
+	m_ui->textEditLeft->setHtml(formattedHtmlLeft);
+	m_ui->textEditRight->setHtml(formattedHtmlRight);
 }
