@@ -77,7 +77,7 @@ public:
 	IBK::MultiLanguageString				m_displayName;						// XML:A
 
 	/*! Identification color. */
-	QColor									m_color;							// XML:E
+	QColor									m_color;							// XML:A
 
 	// Boundary condition parameters
 	/*! Model for convective heat transfer. */

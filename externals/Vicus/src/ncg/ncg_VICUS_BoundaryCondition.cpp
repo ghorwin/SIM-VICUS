@@ -49,6 +49,8 @@ void BoundaryCondition::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -59,9 +61,7 @@ void BoundaryCondition::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Color")
-				m_color.setNamedColor(QString::fromStdString(c->GetText()));
-			else if (cName == "InterfaceHeatConduction")
+			if (cName == "InterfaceHeatConduction")
 				m_heatConduction.readXML(c);
 			else if (cName == "InterfaceSolarAbsorption")
 				m_solarAbsorption.readXML(c);
@@ -95,7 +95,7 @@ TiXmlElement * BoundaryCondition::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "Color", nullptr, std::string(), m_color.name().toStdString());
+		e->SetAttribute("color", m_color.name().toStdString());
 
 	m_heatConduction.writeXML(e);
 
