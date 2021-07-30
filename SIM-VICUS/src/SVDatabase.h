@@ -125,6 +125,9 @@ public:
 	*/
 	void determineDuplicates(std::vector< std::vector<DuplicateInfo> > & duplicatePairs) const;
 
+	/*! Removes element from Database. */
+	void removeDBElement(DatabaseTypes dbType, unsigned int elementID);
+
 	// Databases
 
 	/*! Map of all opaque database materials. */

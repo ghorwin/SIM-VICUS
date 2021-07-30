@@ -466,3 +466,8 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 }
 
 
+void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID) {
+	// TODO : implement
+}
+
+

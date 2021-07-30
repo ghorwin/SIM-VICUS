@@ -25,8 +25,17 @@ public:
 
 private slots:
 	void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
+	void on_pushButtonTakeLeft_clicked();
+
+	void on_pushButtonTakeRight_clicked();
+
 private:
-	Ui::SVDBDuplicatesDialog *m_ui;
+	/*! Updates table. */
+	void updateUi();
+
+	Ui::SVDBDuplicatesDialog	*m_ui;
+
+	SVDatabase::DatabaseTypes	m_dbType;
 };
 
 #endif // SVDBDUPLICATESDIALOG_H

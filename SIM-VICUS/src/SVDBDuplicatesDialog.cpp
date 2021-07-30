@@ -44,6 +44,315 @@ SVDBDuplicatesDialog::~SVDBDuplicatesDialog() {
 
 
 void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
+	m_dbType = dbType;
+	updateUi();
+	exec();
+}
+
+
+template <typename T>
+QString dumpXML(const T & data) {
+	TiXmlDocument doc;
+	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
+	doc.LinkEndChild( decl );
+
+	TiXmlElement * root = new TiXmlElement( "VicusData" );
+	doc.LinkEndChild(root);
+	data.writeXML(root);
+
+	TiXmlPrinter printer;
+	printer.SetIndent( "  " );
+
+	doc.Accept( &printer );
+	std::string xmltext = printer.CStr();
+
+	return QString::fromStdString(xmltext);
+}
+
+
+std::vector<std::string> processXML(const std::string & xmlText) {
+	// split and create vector of lines
+	std::vector<std::string> lines = IBK::explode(xmlText, '\n');
+	if (lines.size() < 3)
+		return lines;
+	// remove first 2 lines and last
+	lines.erase(lines.begin(), lines.begin()+2);
+	lines.erase(lines.end()-1, lines.end());
+
+	// remove two levels of indentation in each string
+	for (std::string & l : lines)
+		l = l.substr(2);
+	return lines;
+}
+
+
+void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
+	m_ui->groupBox->setVisible(true);
+	// take currently selected items, access them and generate their diffs
+	int currentRow = current.row();
+	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
+	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
+	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
+	QString xmlLeft, xmlRight;
+	const SVDatabase & db = SVSettings::instance().m_db;
+	const VICUS::AbstractDBElement * dbElemLeft = nullptr;
+	const VICUS::AbstractDBElement * dbElemRight = nullptr;
+	switch (type) {
+		case SVDatabase::DT_Materials:
+			dbElemLeft = db.m_materials[leftID];
+			dbElemRight = db.m_materials[rightID];
+		break;
+		case SVDatabase::DT_Constructions:
+			xmlLeft = dumpXML(*db.m_constructions[leftID]);
+			xmlRight = dumpXML(*db.m_constructions[rightID]);
+		break;
+		case SVDatabase::DT_Windows:
+			xmlLeft = dumpXML(*db.m_windows[leftID]);
+			xmlRight = dumpXML(*db.m_windows[rightID]);
+		break;
+		case SVDatabase::DT_WindowGlazingSystems:
+			xmlLeft = dumpXML(*db.m_windowGlazingSystems[leftID]);
+			xmlRight = dumpXML(*db.m_windowGlazingSystems[rightID]);
+		break;
+		case SVDatabase::DT_BoundaryConditions:
+			xmlLeft = dumpXML(*db.m_boundaryConditions[leftID]);
+			xmlRight = dumpXML(*db.m_boundaryConditions[rightID]);
+		break;
+		case SVDatabase::DT_Components:
+			xmlLeft = dumpXML(*db.m_components[leftID]);
+			xmlRight = dumpXML(*db.m_components[rightID]);
+		break;
+		case SVDatabase::DT_SubSurfaceComponents:
+			xmlLeft = dumpXML(*db.m_subSurfaceComponents[leftID]);
+			xmlRight = dumpXML(*db.m_subSurfaceComponents[rightID]);
+		break;
+		case SVDatabase::DT_SurfaceHeating:
+			xmlLeft = dumpXML(*db.m_surfaceHeatings[leftID]);
+			xmlRight = dumpXML(*db.m_surfaceHeatings[rightID]);
+		break;
+		case SVDatabase::DT_Pipes:
+			xmlLeft = dumpXML(*db.m_pipes[leftID]);
+			xmlRight = dumpXML(*db.m_pipes[rightID]);
+		break;
+		case SVDatabase::DT_Fluids:
+			xmlLeft = dumpXML(*db.m_fluids[leftID]);
+			xmlRight = dumpXML(*db.m_fluids[rightID]);
+		break;
+		case SVDatabase::DT_NetworkComponents:
+			xmlLeft = dumpXML(*db.m_networkComponents[leftID]);
+			xmlRight = dumpXML(*db.m_networkComponents[rightID]);
+		break;
+		case SVDatabase::DT_NetworkControllers:
+			xmlLeft = dumpXML(*db.m_networkControllers[leftID]);
+			xmlRight = dumpXML(*db.m_networkControllers[rightID]);
+		break;
+		case SVDatabase::DT_SubNetworks:
+			xmlLeft = dumpXML(*db.m_subNetworks[leftID]);
+			xmlRight = dumpXML(*db.m_subNetworks[rightID]);
+		break;
+		case SVDatabase::DT_Schedules:
+			xmlLeft = dumpXML(*db.m_schedules[leftID]);
+			xmlRight = dumpXML(*db.m_schedules[rightID]);
+		break;
+		case SVDatabase::DT_InternalLoads:
+			xmlLeft = dumpXML(*db.m_internalLoads[leftID]);
+			xmlRight = dumpXML(*db.m_internalLoads[rightID]);
+		break;
+		case SVDatabase::DT_ZoneControlThermostat:
+			xmlLeft = dumpXML(*db.m_zoneControlThermostat[leftID]);
+			xmlRight = dumpXML(*db.m_zoneControlThermostat[rightID]);
+		break;
+		case SVDatabase::DT_ZoneControlShading:
+			xmlLeft = dumpXML(*db.m_zoneControlShading[leftID]);
+			xmlRight = dumpXML(*db.m_zoneControlShading[rightID]);
+		break;
+		case SVDatabase::DT_ZoneControlNaturalVentilation:
+			xmlLeft = dumpXML(*db.m_zoneControlVentilationNatural[leftID]);
+			xmlRight = dumpXML(*db.m_zoneControlVentilationNatural[rightID]);
+		break;
+		case SVDatabase::DT_ZoneIdealHeatingCooling:
+			xmlLeft = dumpXML(*db.m_zoneIdealHeatingCooling[leftID]);
+			xmlRight = dumpXML(*db.m_zoneIdealHeatingCooling[rightID]);
+		break;
+		case SVDatabase::DT_VentilationNatural:
+			xmlLeft = dumpXML(*db.m_ventilationNatural[leftID]);
+			xmlRight = dumpXML(*db.m_ventilationNatural[rightID]);
+		break;
+		case SVDatabase::DT_Infiltration:
+			xmlLeft = dumpXML(*db.m_infiltration[leftID]);
+			xmlRight = dumpXML(*db.m_infiltration[rightID]);
+		break;
+		case SVDatabase::DT_ZoneTemplates:
+			xmlLeft = dumpXML(*db.m_zoneTemplates[leftID]);
+			xmlRight = dumpXML(*db.m_zoneTemplates[rightID]);
+		break;
+		case SVDatabase::NUM_DT:
+		break;
+	}
+
+	// get XML description of tag and enabled/disable "take" buttons
+	if (dbElemLeft != nullptr) {
+		xmlLeft = dumpXML(*dbElemLeft);
+		m_ui->pushButtonTakeLeft->setEnabled(!dbElemLeft->m_builtIn);
+	}
+	if (dbElemRight != nullptr) {
+		xmlRight = dumpXML(*dbElemRight);
+		m_ui->pushButtonTakeRight->setEnabled(!dbElemLeft->m_builtIn);
+	}
+
+	// generate diff and color output
+
+	// split and create vector of lines
+	std::vector<std::string> linesLeft = processXML(xmlLeft.toStdString());
+	std::vector<std::string> linesRight = processXML(xmlRight.toStdString());
+
+	IBK::Differ<std::string> diff(linesLeft, linesRight);
+	diff.diff();
+
+	std::string encodedLeft;
+	std::string encodedRight;
+
+	for (unsigned int i=0, count = diff.resultObj().size(); i<count; ++i) {
+		// check if this and the next line have opposite change markers
+		// and if so, compute levenstein
+		if (i+1 < count) {
+			// need both insert (0) and remove (1) operations, doesn't matter if insert comes first
+			if (diff.resultOperation()[i] + diff.resultOperation()[i+1] == 1) {
+				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
+				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
+#if 1
+					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
+#else
+
+					// found a conflicting line (i.e. same line edited in both files, which should be the most common case)
+					// now determine the different chars in this line
+					std::vector<char> lineLeft(diff.resultObj()[i].begin(), diff.resultObj()[i].end());
+					std::vector<char> lineRight(diff.resultObj()[i+1].begin(), diff.resultObj()[i+1].end());
+					IBK::Differ<char> lineDiff(lineLeft, lineRight);
+					lineDiff.diff();
+					bool equalMode = true;
+					std::string mergedLineLeft;
+					std::string mergedLineRight;
+					for (unsigned int j=0, chcount = lineDiff.resultObj().size(); j<chcount; ++j) {
+						if (lineDiff.resultOperation()[j] == IBK::DifferOpEqual) {
+							// switch to equal mode?
+							if (!equalMode) {
+								// if we had already a "different string" span, close it and start a new
+								if (!mergedLineLeft.empty()) {
+									mergedLineLeft += "</span>";
+									mergedLineRight += "</span>";
+								}
+								mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+								mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+								equalMode = true;
+							}
+							mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+							mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+						}
+						else {
+							// switch to different mode?
+							if (equalMode) {
+								// if we had already an "equal string" span, close it and start a new
+								if (!mergedLineLeft.empty()) {
+									mergedLineLeft += "</span>";
+									mergedLineRight += "</span>";
+								}
+								mergedLineLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
+								mergedLineRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
+								equalMode = false;
+							}
+							++j; // skip over next char as well
+						}
+						// for first char, add span header
+						if (mergedLineLeft.empty()) {
+							mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+							mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+						}
+						mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+						mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j+1]));
+					}
+					if (!mergedLine.empty())
+						mergedLine += "</span>";
+
+					encodedLeft += mergedLine + "<br>";
+					encodedRight += mergedLine + "<br>";
+					++i;
+					continue;
+#endif
+					++i; // skip over second marker as well
+					continue;
+				}
+			}
+		}
+		switch (diff.resultOperation()[i]) {
+			case IBK::DifferOpEqual :
+				encodedLeft += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+			break;
+			case IBK::DifferOpInsert :
+				encodedLeft += "<span style=\"font-size:9pt;color:#20c050\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += "<br>";
+			break;
+			case IBK::DifferOpRemove :
+				encodedLeft += "<br>";
+				encodedRight += "<span style=\"font-size:9pt;color:#c04040\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+			break;
+		}
+	}
+
+	const char * const htmlPrefix = "<html><body><pre style=\"font-size:9pt;\">";
+	const char * const htmlSuffix = "</pre></body></html>";
+
+	QString formattedHtmlLeft = htmlPrefix + QString::fromStdString(encodedLeft) + htmlSuffix;
+	QString formattedHtmlRight = htmlPrefix + QString::fromStdString(encodedRight) + htmlSuffix;
+
+	m_ui->textEditLeft->setHtml(formattedHtmlLeft);
+	m_ui->textEditRight->setHtml(formattedHtmlRight);
+}
+
+
+void SVDBDuplicatesDialog::on_pushButtonTakeLeft_clicked() {
+	// get left db element ID
+	int currentRow = m_ui->tableWidget->currentRow();
+	Q_ASSERT(currentRow != -1);
+
+	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
+	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
+
+	SVSettings::instance().m_db.removeDBElement(type, leftID);
+
+
+	// get current index
+	updateUi();
+	currentRow = std::min(m_ui->tableWidget->rowCount()-1, currentRow);
+	m_ui->tableWidget->selectionModel()->blockSignals(true);
+	m_ui->tableWidget->selectRow(currentRow);
+	m_ui->tableWidget->selectionModel()->blockSignals(false);
+	onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
+}
+
+
+void SVDBDuplicatesDialog::on_pushButtonTakeRight_clicked() {
+	// get current index
+	int currentRow = m_ui->tableWidget->currentRow();
+	Q_ASSERT(currentRow != -1);
+
+	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
+	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
+
+	SVSettings::instance().m_db.removeDBElement(type, rightID);
+
+	updateUi();
+	currentRow = std::min(m_ui->tableWidget->rowCount()-1, currentRow);
+	m_ui->tableWidget->selectionModel()->blockSignals(true);
+	m_ui->tableWidget->selectRow(currentRow);
+	m_ui->tableWidget->selectionModel()->blockSignals(false);
+	onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
+}
+
+
+void SVDBDuplicatesDialog::updateUi() {
 	// populate table
 
 	const SVDatabase & db = SVSettings::instance().m_db;
@@ -51,10 +360,10 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 	std::vector< std::vector<SVDatabase::DuplicateInfo> > dupInfos(SVDatabase::NUM_DT);
 	db.determineDuplicates(dupInfos);
 
-	if (dbType != SVDatabase::NUM_DT) {
+	if (m_dbType != SVDatabase::NUM_DT) {
 		// remove all but the selected DB type
 		for (unsigned int i=0; i<SVDatabase::NUM_DT; ++i) {
-			if (i == dbType) continue;
+			if (i == m_dbType) continue;
 			dupInfos[i].clear();
 		}
 	}
@@ -187,256 +496,4 @@ void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 		onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
 	}
 	m_ui->tableWidget->selectionModel()->blockSignals(false);
-
-	exec();
-}
-
-
-template <typename T>
-QString dumpXML(const T & data) {
-	TiXmlDocument doc;
-	TiXmlDeclaration * decl = new TiXmlDeclaration( "1.0", "UTF-8", "" );
-	doc.LinkEndChild( decl );
-
-	TiXmlElement * root = new TiXmlElement( "VicusData" );
-	doc.LinkEndChild(root);
-	data.writeXML(root);
-
-	TiXmlPrinter printer;
-	printer.SetIndent( "  " );
-
-	doc.Accept( &printer );
-	std::string xmltext = printer.CStr();
-
-	return QString::fromStdString(xmltext);
-}
-
-
-std::vector<std::string> processXML(const std::string & xmlText) {
-	// split and create vector of lines
-	std::vector<std::string> lines = IBK::explode(xmlText, '\n');
-	if (lines.size() < 3)
-		return lines;
-	// remove first 2 lines and last
-	lines.erase(lines.begin(), lines.begin()+2);
-	lines.erase(lines.end()-1, lines.end());
-
-	// remove two levels of indentation in each string
-	for (std::string & l : lines)
-		l = l.substr(2);
-	return lines;
-}
-
-
-void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
-	m_ui->groupBox->setVisible(true);
-	// take currently selected items, access them and generate their diffs
-	int currentRow = current.row();
-	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
-	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
-	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
-	QString xmlLeft, xmlRight;
-	const SVDatabase & db = SVSettings::instance().m_db;
-	switch (type) {
-		case SVDatabase::DT_Materials:
-			xmlLeft = dumpXML(*db.m_materials[leftID]);
-			xmlRight = dumpXML(*db.m_materials[rightID]);
-		break;
-		case SVDatabase::DT_Constructions:
-			xmlLeft = dumpXML(*db.m_constructions[leftID]);
-			xmlRight = dumpXML(*db.m_constructions[rightID]);
-		break;
-		case SVDatabase::DT_Windows:
-			xmlLeft = dumpXML(*db.m_windows[leftID]);
-			xmlRight = dumpXML(*db.m_windows[rightID]);
-		break;
-		case SVDatabase::DT_WindowGlazingSystems:
-			xmlLeft = dumpXML(*db.m_windowGlazingSystems[leftID]);
-			xmlRight = dumpXML(*db.m_windowGlazingSystems[rightID]);
-		break;
-		case SVDatabase::DT_BoundaryConditions:
-			xmlLeft = dumpXML(*db.m_boundaryConditions[leftID]);
-			xmlRight = dumpXML(*db.m_boundaryConditions[rightID]);
-		break;
-		case SVDatabase::DT_Components:
-			xmlLeft = dumpXML(*db.m_components[leftID]);
-			xmlRight = dumpXML(*db.m_components[rightID]);
-		break;
-		case SVDatabase::DT_SubSurfaceComponents:
-			xmlLeft = dumpXML(*db.m_subSurfaceComponents[leftID]);
-			xmlRight = dumpXML(*db.m_subSurfaceComponents[rightID]);
-		break;
-		case SVDatabase::DT_SurfaceHeating:
-			xmlLeft = dumpXML(*db.m_surfaceHeatings[leftID]);
-			xmlRight = dumpXML(*db.m_surfaceHeatings[rightID]);
-		break;
-		case SVDatabase::DT_Pipes:
-			xmlLeft = dumpXML(*db.m_pipes[leftID]);
-			xmlRight = dumpXML(*db.m_pipes[rightID]);
-		break;
-		case SVDatabase::DT_Fluids:
-			xmlLeft = dumpXML(*db.m_fluids[leftID]);
-			xmlRight = dumpXML(*db.m_fluids[rightID]);
-		break;
-		case SVDatabase::DT_NetworkComponents:
-			xmlLeft = dumpXML(*db.m_networkComponents[leftID]);
-			xmlRight = dumpXML(*db.m_networkComponents[rightID]);
-		break;
-		case SVDatabase::DT_NetworkControllers:
-			xmlLeft = dumpXML(*db.m_networkControllers[leftID]);
-			xmlRight = dumpXML(*db.m_networkControllers[rightID]);
-		break;
-		case SVDatabase::DT_SubNetworks:
-			xmlLeft = dumpXML(*db.m_subNetworks[leftID]);
-			xmlRight = dumpXML(*db.m_subNetworks[rightID]);
-		break;
-		case SVDatabase::DT_Schedules:
-			xmlLeft = dumpXML(*db.m_schedules[leftID]);
-			xmlRight = dumpXML(*db.m_schedules[rightID]);
-		break;
-		case SVDatabase::DT_InternalLoads:
-			xmlLeft = dumpXML(*db.m_internalLoads[leftID]);
-			xmlRight = dumpXML(*db.m_internalLoads[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlThermostat:
-			xmlLeft = dumpXML(*db.m_zoneControlThermostat[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlThermostat[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlShading:
-			xmlLeft = dumpXML(*db.m_zoneControlShading[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlShading[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlNaturalVentilation:
-			xmlLeft = dumpXML(*db.m_zoneControlVentilationNatural[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlVentilationNatural[rightID]);
-		break;
-		case SVDatabase::DT_ZoneIdealHeatingCooling:
-			xmlLeft = dumpXML(*db.m_zoneIdealHeatingCooling[leftID]);
-			xmlRight = dumpXML(*db.m_zoneIdealHeatingCooling[rightID]);
-		break;
-		case SVDatabase::DT_VentilationNatural:
-			xmlLeft = dumpXML(*db.m_ventilationNatural[leftID]);
-			xmlRight = dumpXML(*db.m_ventilationNatural[rightID]);
-		break;
-		case SVDatabase::DT_Infiltration:
-			xmlLeft = dumpXML(*db.m_infiltration[leftID]);
-			xmlRight = dumpXML(*db.m_infiltration[rightID]);
-		break;
-		case SVDatabase::DT_ZoneTemplates:
-			xmlLeft = dumpXML(*db.m_zoneTemplates[leftID]);
-			xmlRight = dumpXML(*db.m_zoneTemplates[rightID]);
-		break;
-		case SVDatabase::NUM_DT:
-		break;
-	}
-
-	// generate diff and color output
-
-	// split and create vector of lines
-	std::vector<std::string> linesLeft = processXML(xmlLeft.toStdString());
-	std::vector<std::string> linesRight = processXML(xmlRight.toStdString());
-
-	IBK::Differ<std::string> diff(linesLeft, linesRight);
-	diff.diff();
-
-	std::string encodedLeft;
-	std::string encodedRight;
-
-	for (unsigned int i=0, count = diff.resultObj().size(); i<count; ++i) {
-		// check if this and the next line have opposite change markers
-		// and if so, compute levenstein
-		if (i+1 < count) {
-			// need both insert (0) and remove (1) operations, doesn't matter if insert comes first
-			if (diff.resultOperation()[i] + diff.resultOperation()[i+1] == 1) {
-				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
-				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
-#if 1
-					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
-#else
-
-					// found a conflicting line (i.e. same line edited in both files, which should be the most common case)
-					// now determine the different chars in this line
-					std::vector<char> lineLeft(diff.resultObj()[i].begin(), diff.resultObj()[i].end());
-					std::vector<char> lineRight(diff.resultObj()[i+1].begin(), diff.resultObj()[i+1].end());
-					IBK::Differ<char> lineDiff(lineLeft, lineRight);
-					lineDiff.diff();
-					bool equalMode = true;
-					std::string mergedLineLeft;
-					std::string mergedLineRight;
-					for (unsigned int j=0, chcount = lineDiff.resultObj().size(); j<chcount; ++j) {
-						if (lineDiff.resultOperation()[j] == IBK::DifferOpEqual) {
-							// switch to equal mode?
-							if (!equalMode) {
-								// if we had already a "different string" span, close it and start a new
-								if (!mergedLineLeft.empty()) {
-									mergedLineLeft += "</span>";
-									mergedLineRight += "</span>";
-								}
-								mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-								mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-								equalMode = true;
-							}
-							mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-							mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-						}
-						else {
-							// switch to different mode?
-							if (equalMode) {
-								// if we had already an "equal string" span, close it and start a new
-								if (!mergedLineLeft.empty()) {
-									mergedLineLeft += "</span>";
-									mergedLineRight += "</span>";
-								}
-								mergedLineLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
-								mergedLineRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
-								equalMode = false;
-							}
-							++j; // skip over next char as well
-						}
-						// for first char, add span header
-						if (mergedLineLeft.empty()) {
-							mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-							mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-						}
-						mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-						mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j+1]));
-					}
-					if (!mergedLine.empty())
-						mergedLine += "</span>";
-
-					encodedLeft += mergedLine + "<br>";
-					encodedRight += mergedLine + "<br>";
-					++i;
-					continue;
-#endif
-					++i; // skip over second marker as well
-					continue;
-				}
-			}
-		}
-		switch (diff.resultOperation()[i]) {
-			case IBK::DifferOpEqual :
-				encodedLeft += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-				encodedRight += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-			break;
-			case IBK::DifferOpInsert :
-				encodedLeft += "<span style=\"font-size:9pt;color:#20c050\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-				encodedRight += "<br>";
-			break;
-			case IBK::DifferOpRemove :
-				encodedLeft += "<br>";
-				encodedRight += "<span style=\"font-size:9pt;color:#c04040\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-			break;
-		}
-	}
-
-	const char * const htmlPrefix = "<html><body><pre style=\"font-size:9pt;\">";
-	const char * const htmlSuffix = "</pre></body></html>";
-
-	QString formattedHtmlLeft = htmlPrefix + QString::fromStdString(encodedLeft) + htmlSuffix;
-	QString formattedHtmlRight = htmlPrefix + QString::fromStdString(encodedRight) + htmlSuffix;
-
-	m_ui->textEditLeft->setHtml(formattedHtmlLeft);
-	m_ui->textEditRight->setHtml(formattedHtmlRight);
 }
