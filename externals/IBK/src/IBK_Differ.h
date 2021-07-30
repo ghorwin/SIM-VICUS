@@ -128,31 +128,41 @@ void Differ<T>::diff() {
 	m_resultOperation.clear();
 	m_resultOperation.reserve(i + j);
 
+	// LCS[n,m] contains longest common sequence length.
+	// Backtrack from largest LCS and construct merged sequence.
+	// Because of this, we append the tokens back to front, so at
+	// the end we need to reverse the list.
+
+	// loop until both sequences are empty
 	while (i != 0 || j != 0) {
 
-		if (i==0){
+		// first sequence is empty, just insert the rest of the second sequence
+		if (i==0) {
 			m_resultObj.push_back(m_obj2[j-1]);
 			m_resultOperation.push_back(DifferOpInsert);
 			--j;
 		}
+		// second sequence is empty, just remove the rest of the second sequence
 		else if (j==0) {
 			m_resultObj.push_back(m_obj1[i-1]);
 			m_resultOperation.push_back(DifferOpRemove);
 			--i;
 		}
-
+		// both are the same
 		else if (m_obj1[i-1] == m_obj2[j-1]){
 			m_resultObj.push_back(m_obj1[i-1]);
 			m_resultOperation.push_back(DifferOpEqual);
 			--i;
 			--j;
 		}
+		// take from second sequence (LCS is longer in that direction)
 		else if (m_lcs[i-1][j] <= m_lcs[i][j-1]){
 			m_resultObj.push_back(m_obj2[j-1]);
 			m_resultOperation.push_back(DifferOpInsert);
 			--j;
 		}
 		else {
+			// take from first sequence (LCS is longer in that direction)
 			m_resultObj.push_back(m_obj1[i-1]);
 			m_resultOperation.push_back(DifferOpRemove);
 			--i;

@@ -335,12 +335,24 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	IBK::Differ<std::string> diff(linesLeft, linesRight);
 	diff.diff();
 
-	std::string encodedLeft = IBK::convertXml2Html( IBK::join(linesLeft, '\n') );
+	std::string encodedLeft;
 	std::string encodedRight;
 
 	for (unsigned int i=0; i<diff.resultObj().size(); ++i) {
-
-//		const std::string & line : diff.resultObj()
+		switch (diff.resultOperation()[i]) {
+			case IBK::DifferOpEqual :
+				encodedLeft += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+			break;
+			case IBK::DifferOpInsert :
+				encodedLeft += "<span style=\"font-size:9pt;color:#20c050\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += "<br>";
+			break;
+			case IBK::DifferOpRemove :
+				encodedLeft += "<br>";
+				encodedRight += "<span style=\"font-size:9pt;color:#c04040\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+			break;
+		}
 	}
 
 	const char * const htmlPrefix = "<html><body><pre style=\"font-size:9pt;\">";
