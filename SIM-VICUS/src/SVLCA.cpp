@@ -81,7 +81,7 @@ void addEpdMaterialToComponent(VICUS::EPDDataset epd, LCA::LCAComponentResult &c
 		}
 		else
 			throw IBK::Exception(IBK::FormatString("No valid specific Unit of epd material '%1' available.").
-								 arg(epd.m_displayName.toStdString()), FUNC_ID);
+								 arg(epd.m_displayName.string()), FUNC_ID);
 		val /= epd.m_referenceQuantity;
 
 		val *= adjustment;
