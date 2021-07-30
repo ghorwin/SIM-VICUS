@@ -97,23 +97,20 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of ZoneTemplate. */
-	unsigned int					m_id						= INVALID_ID;		// XML:A:required
-
-	/*! Display name of ZoneTemplate. */
-	IBK::MultiLanguageString		m_displayName;									// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
-	QColor							m_color;										// XML:A
+	QColor							m_color;								// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;										// XML:E
+	IBK::MultiLanguageString		m_notes;								// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;									// XML:E
+	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Stores id references for all sub-templates. */
-	IDType							m_idReferences[NUM_ST];							// XML:E
+	IDType							m_idReferences[NUM_ST];					// XML:E
 };
 
 

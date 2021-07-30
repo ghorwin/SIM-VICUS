@@ -70,26 +70,22 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of boundary condition. */
-	unsigned int							m_id = INVALID_ID;					// XML:A:required
-
-	/*! Display name of boundary condition. */
-	IBK::MultiLanguageString				m_displayName;						// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! Identification color. */
-	QColor									m_color;							// XML:A
+	QColor									m_color;						// XML:A
 
-	// Boundary condition parameters
 	/*! Model for convective heat transfer. */
-	NANDRAD::InterfaceHeatConduction		m_heatConduction;					// XML:E
+	NANDRAD::InterfaceHeatConduction		m_heatConduction;				// XML:E
 	/*! Model for solar absorption. */
-	NANDRAD::InterfaceSolarAbsorption		m_solarAbsorption;					// XML:E
+	NANDRAD::InterfaceSolarAbsorption		m_solarAbsorption;				// XML:E
 	/*! Model for long wave emissivity. */
-	NANDRAD::InterfaceLongWaveEmission		m_longWaveEmission;					// XML:E
+	NANDRAD::InterfaceLongWaveEmission		m_longWaveEmission;				// XML:E
 	/*! Model for vapor diffusion (requires enabled moisture balance). */
-	NANDRAD::InterfaceVaporDiffusion		m_vaporDiffusion;					// XML:E
+	NANDRAD::InterfaceVaporDiffusion		m_vaporDiffusion;				// XML:E
 	/*! Model for air flow calculation. */
-	NANDRAD::InterfaceAirFlow				m_airFlow;							// XML:E
+	NANDRAD::InterfaceAirFlow				m_airFlow;						// XML:E
 
 };
 

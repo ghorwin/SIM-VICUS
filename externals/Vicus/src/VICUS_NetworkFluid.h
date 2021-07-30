@@ -64,22 +64,20 @@ public:
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique id number. */
-	unsigned int						m_id = INVALID_ID;				// XML:A:required
-
-	/*! Display name of fluid. */
-	IBK::MultiLanguageString			m_displayName;					// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
-	QColor								m_color;						// XML:A
+	QColor								m_color;							// XML:A
 
 	/*! List of parameters. */
-	IBK::Parameter						m_para[NUM_P];					// XML:E
+	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 	/*! Kinematic viscosity [m2/s]. */
-	NANDRAD::LinearSplineParameter		m_kinematicViscosity;			// XML:E
+	NANDRAD::LinearSplineParameter		m_kinematicViscosity;				// XML:E
 
 };
 

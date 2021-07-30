@@ -36,9 +36,7 @@
 
 namespace VICUS {
 
-/*! Window frame is a child of Window, but not a stand-alone
-	database element.
-*/
+/*! Window frame is a child of Window, but not a stand-alone database element. */
 class WindowFrame {
 public:
 
@@ -59,13 +57,10 @@ public:
 
 	/*! Comparison operator. */
 	bool operator!=(const WindowFrame &other)const {
-		if( m_id != other.m_id ||
-				m_dataSource != other.m_dataSource ||
-				m_idMaterial != other.m_idMaterial ||
-				m_notes != other.m_notes)
+		if (m_id != other.m_id || m_idMaterial != other.m_idMaterial)
 			return true;
 
-		for(unsigned int i=0; i<NUM_P; ++i)
+		for (unsigned int i=0; i<NUM_P; ++i)
 			if(m_para[i] != other.m_para[i])
 				return true;
 
@@ -73,8 +68,7 @@ public:
 	}
 
 	bool isValid() const {
-		if(m_id == INVALID_ID ||
-				m_idMaterial == INVALID_ID)
+		if (m_id == INVALID_ID || m_idMaterial == INVALID_ID)
 			return false;
 
 		m_para[P_Thickness].checkedValue(KeywordList::Keyword("WindowFrame::para_t", P_Thickness),
@@ -88,25 +82,13 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of frame. */
-	unsigned int					m_id = INVALID_ID;					// XML:A:required
-
-	/*! Display name of frame. */
-	QString							m_displayName;						// XML:A
-
-	/*! Notes. */
-	QString							m_notes;							// XML:E
-
-	/*! Data source. */
-	QString							m_dataSource;						// XML:E
+	unsigned int					m_id = INVALID_ID;						// XML:A:required
 
 	/*! Material ID. */
-	unsigned int					m_idMaterial = INVALID_ID;			// XML:A
+	unsigned int					m_idMaterial = INVALID_ID;				// XML:A
 
 	/*! Parameters. */
-	IBK::Parameter					m_para[NUM_P];						// XML:E
-
-
+	IBK::Parameter					m_para[NUM_P];							// XML:E
 };
 
 } // namespace VICUS

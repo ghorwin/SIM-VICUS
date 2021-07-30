@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -41,6 +41,9 @@ namespace VICUS {
 
 /*! Window glazing layer is a child of WindowGlazingSystem, but not a stand-alone
 	database element.
+
+	TODO Review and remove if not needed anylonger.
+
 */
 class WindowGlazingLayer {
 public:
@@ -90,9 +93,7 @@ public:
 
 	/*! Comparison operator. */
 	bool operator!=(const WindowGlazingLayer &other)const {
-		if(m_type != other.m_type ||
-				m_id != other.m_id ||
-				m_displayName != other.m_displayName)
+		if (m_type != other.m_type)
 			return true;
 
 		for(unsigned int i=0; i<NUM_P; ++i)
@@ -116,23 +117,14 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	type_t							m_type = NUM_T;						// XML:A:required
-
-	/*! Unique ID-number for this window layer. */
-	unsigned int					m_id = INVALID_ID;					// XML:A:required
-
-	/*! Display name of layer. */
-	QString							m_displayName;						// XML:A
-
-	/*! Data source. */
-	QString							m_dataSource;						// XML:E
+	type_t							m_type = NUM_T;							// XML:A:required
 
 	/*! Basic parameters of the window layer  */
-	IBK::Parameter					m_para[NUM_P];						// XML:E
+	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	// Layer Data in LinearSpline
 
-	NANDRAD::LinearSplineParameter	m_splinePara[NUM_SP];				// XML:E
+	NANDRAD::LinearSplineParameter	m_splinePara[NUM_SP];					// XML:E
 
 };
 

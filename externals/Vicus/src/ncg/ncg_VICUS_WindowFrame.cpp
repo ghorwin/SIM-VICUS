@@ -47,8 +47,6 @@ void WindowFrame::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "idMaterial")
 				m_idMaterial = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
@@ -61,11 +59,7 @@ void WindowFrame::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes = QString::fromStdString(c->GetText());
-			else if (cName == "DataSource")
-				m_dataSource = QString::fromStdString(c->GetText());
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -99,14 +93,8 @@ TiXmlElement * WindowFrame::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_idMaterial != VICUS::INVALID_ID)
 		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
-	if (!m_notes.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
-	if (!m_dataSource.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

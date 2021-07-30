@@ -1324,7 +1324,7 @@ namespace VICUS {
 			// VentilationNatural::para_t
 			case 35 :
 			switch (t) {
-				case 0 : return "Air change rate.";
+				case 0 : return "Air change rate";
 			} break;
 			// ViewSettings::Flags
 			case 36 :

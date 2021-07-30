@@ -106,14 +106,11 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of lca material. */
-	unsigned int					m_id = INVALID_ID;						// XML:A:required
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! UUID of material. */
 	QString							m_uuid;									// XML:A
-
-	/*! Display name of material. */
-	QString							m_displayName;							// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A

@@ -50,12 +50,12 @@ void NetworkComponent::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "displayName")
+			if (attribName == "id")
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
-			else if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (ModelType)KeywordList::Enumeration("NetworkComponent::ModelType", attrib->ValueStr());
@@ -116,12 +116,12 @@ TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkComponent");
 	parent->LinkEndChild(e);
 
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_id != VICUS::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("NetworkComponent::ModelType",  m_modelType));
 	if (!m_notes.empty())

@@ -70,37 +70,34 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of frame. */
-	unsigned int					m_id = INVALID_ID;					// XML:A:required
-
-	/*! Display name of frame. */
-	IBK::MultiLanguageString		m_displayName;						// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! ID of glazing system referenced from this window definition. */
-	unsigned int					m_idGlazingSystem = INVALID_ID;		// XML:A
+	unsigned int					m_idGlazingSystem = INVALID_ID;			// XML:A
 
 	/*! False color. */
-	QColor							m_color;							// XML:A
+	QColor							m_color;								// XML:A
 
 	/*! Notes. */
-	QString							m_notes;							// XML:E
+	QString							m_notes;								// XML:E
 
 	/*! Data source. */
-	QString							m_dataSource;						// XML:E
+	QString							m_dataSource;							// XML:E
 
 	/*! Method for frame. */
-	Method							m_methodFrame = NUM_M;				// XML::A
+	Method							m_methodFrame = NUM_M;					// XML::A
 
 	/*! Method for Divider. */
-	Method							m_methodDivider = NUM_M;			// XML::A
+	Method							m_methodDivider = NUM_M;				// XML::A
 
 	/*! Parameter. */
-	IBK::Parameter					m_para[NUM_P];						// XML:E
+	IBK::Parameter					m_para[NUM_P];							// XML:E
 
 	/*! Frame parameters (optional). */
-	WindowFrame						m_frame;							// XML:E
+	WindowFrame						m_frame;								// XML:E
 	/*! Divider parameters (optional). */
-	WindowDivider					m_divider;							// XML:E
+	WindowDivider					m_divider;								// XML:E
 
 };
 

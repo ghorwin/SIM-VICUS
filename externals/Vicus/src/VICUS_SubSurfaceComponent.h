@@ -71,7 +71,7 @@ public:
 	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! Display name of component. */
-	IBK::MultiLanguageString		m_displayName;								// XML:A
+	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
 
 	/*! False color, not transparent!. */
 	QColor							m_color;									// XML:A

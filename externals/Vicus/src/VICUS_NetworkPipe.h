@@ -76,20 +76,20 @@ public:
 	/*! Generates a display name from category and entered pipe dimensions. */
 	IBK::MultiLanguageString nameFromData() const;
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique id number. */
-	unsigned int						m_id = INVALID_ID;				// XML:A:required
-	/*! Display name of fluid. */
-	IBK::MultiLanguageString			m_displayName;					// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+
 	/*! Identification color. */
-	QColor								m_color;						// XML:A
+	QColor								m_color;							// XML:A
 
 	/*! A custom category name. */
-	IBK::MultiLanguageString			m_categoryName;					// XML:A
+	IBK::MultiLanguageString			m_categoryName;						// XML:A
 
 	/*! Pipe parameters. */
-	IBK::Parameter						m_para[NUM_P];					// XML:E
+	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 };
 

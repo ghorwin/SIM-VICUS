@@ -42,10 +42,6 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'type' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "id"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
-
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
@@ -58,10 +54,6 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -72,9 +64,7 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DataSource")
-				m_dataSource = QString::fromStdString(c->GetText());
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -115,18 +105,11 @@ void WindowGlazingLayer::readXML(const TiXmlElement * element) {
 }
 
 TiXmlElement * WindowGlazingLayer::writeXML(TiXmlElement * parent) const {
-	if (m_id == VICUS::INVALID_ID)  return nullptr;
 	TiXmlElement * e = new TiXmlElement("WindowGlazingLayer");
 	parent->LinkEndChild(e);
 
 	if (m_type != NUM_T)
 		e->SetAttribute("type", KeywordList::Keyword("WindowGlazingLayer::type_t",  m_type));
-	if (m_id != VICUS::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (!m_dataSource.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

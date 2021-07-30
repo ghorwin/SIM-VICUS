@@ -52,6 +52,8 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (modelType_t)KeywordList::Enumeration("WindowGlazingSystem::modelType_t", attrib->ValueStr());
@@ -60,8 +62,6 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "displayName")
-				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
@@ -75,11 +75,11 @@ void WindowGlazingSystem::readXML(const TiXmlElement * element) {
 		while (c) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "Notes")
-				m_notes = QString::fromStdString(c->GetText());
+				m_notes.setEncodedString(c->GetText());
 			else if (cName == "Manufacturer")
-				m_manufacturer = QString::fromStdString(c->GetText());
+				m_manufacturer.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
-				m_dataSource = QString::fromStdString(c->GetText());
+				m_dataSource.setEncodedString(c->GetText());
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -127,18 +127,18 @@ TiXmlElement * WindowGlazingSystem::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_modelType != NUM_MT)
-		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_modelType != NUM_MT)
+		e->SetAttribute("modelType", KeywordList::Keyword("WindowGlazingSystem::modelType_t",  m_modelType));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (!m_notes.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.toStdString());
-	if (!m_manufacturer.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.toStdString());
-	if (!m_dataSource.isEmpty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.toStdString());
+	if (!m_notes.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
+	if (!m_manufacturer.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "Manufacturer", nullptr, std::string(), m_manufacturer.encodedString());
+	if (!m_dataSource.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

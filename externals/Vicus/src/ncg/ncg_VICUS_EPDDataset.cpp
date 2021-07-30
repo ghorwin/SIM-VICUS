@@ -48,10 +48,10 @@ void EPDDataset::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "uuid")
 				m_uuid = QString::fromStdString(attrib->ValueStr());
-			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
@@ -128,10 +128,10 @@ TiXmlElement * EPDDataset::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (!m_uuid.isEmpty())
 		e->SetAttribute("uuid", m_uuid.toStdString());
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_notes.isEmpty())

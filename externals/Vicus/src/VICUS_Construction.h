@@ -92,27 +92,24 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of construction. */
-	unsigned int					m_id = INVALID_ID;					// XML:A:required
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! The usage type (classification property). */
-	UsageType						m_usageType = NUM_UT;				// XML:E
+	UsageType						m_usageType = NUM_UT;					// XML:E
 	/*! The type of insulation used (classification property). */
-	InsulationKind					m_insulationKind = NUM_IK;			// XML:E
+	InsulationKind					m_insulationKind = NUM_IK;				// XML:E
 	/*! The main/load bearing material (classification property). */
-	MaterialKind					m_materialKind = NUM_MK;			// XML:E
-
-	/*! Display name of construction. */
-	IBK::MultiLanguageString		m_displayName;						// XML:A
+	MaterialKind					m_materialKind = NUM_MK;				// XML:E
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;							// XML:E
+	IBK::MultiLanguageString		m_notes;								// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;						// XML:E
+	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! The individual material layers. */
-	std::vector<MaterialLayer>		m_materialLayers;					// XML:E
+	std::vector<MaterialLayer>		m_materialLayers;						// XML:E
 };
 
 } // namespace VICUS

@@ -36,8 +36,7 @@ AbstractDBElement::~AbstractDBElement() {
 
 Material::Material( unsigned int id, const IBK::MultiLanguageString &name,
 					double conductivity, double density, double specHeatCapa) :
-	m_id(id),
-	m_displayName(name)
+	AbstractDBElement(id, name)
 {
 	VICUS::KeywordList::setParameter(m_para, "Material::para_t", P_Density, density);
 	VICUS::KeywordList::setParameter(m_para, "Material::para_t", P_Conductivity, conductivity);

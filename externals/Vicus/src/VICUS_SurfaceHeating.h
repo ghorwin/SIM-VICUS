@@ -40,10 +40,7 @@
 
 namespace VICUS {
 
-/*! Describes the course of all SurfaceHeating.
-
-*/
-
+/*! SurfaceHeating model parameters. */
 class SurfaceHeating : public AbstractDBElement {
 public:
 
@@ -86,14 +83,11 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of SurfaceHeating. */
-	unsigned int					m_id = INVALID_ID;						// XML:A:required
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! Surface heating type. */
 	Type							m_type = T_Ideal;						// XML:A:required
-
-	/*! Display name of SurfaceHeating. */
-	IBK::MultiLanguageString		m_displayName;							// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A

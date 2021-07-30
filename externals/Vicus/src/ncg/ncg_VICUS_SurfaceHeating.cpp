@@ -52,6 +52,8 @@ void SurfaceHeating::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "type")
 				try {
 					m_type = (Type)KeywordList::Enumeration("SurfaceHeating::Type", attrib->ValueStr());
@@ -60,8 +62,6 @@ void SurfaceHeating::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "displayName")
-				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
@@ -114,10 +114,10 @@ TiXmlElement * SurfaceHeating::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_type != NUM_T)
-		e->SetAttribute("type", KeywordList::Keyword("SurfaceHeating::Type",  m_type));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_type != NUM_T)
+		e->SetAttribute("type", KeywordList::Keyword("SurfaceHeating::Type",  m_type));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
 	if (!m_notes.empty())

@@ -93,19 +93,17 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
 
-	/*! Display name. */
-	IBK::MultiLanguageString			m_displayName;									// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;				// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;					// XML:A
 
 	/*! False color. */
-	QColor								m_color;										// XML:A
+	QColor							m_color;										// XML:A
 
 	/*! reference to schedule */
-	unsigned int						m_scheduleId = INVALID_ID;						// XML:A
+	unsigned int					m_scheduleId = INVALID_ID;						// XML:A
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkControlElement ***
-
-	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
 	/*! Determines variability of setpoint parameters. */
 	ModelType						m_modelType = NUM_MT;							// XML:A:required

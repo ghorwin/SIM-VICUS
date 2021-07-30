@@ -46,7 +46,7 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
-				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
@@ -94,7 +94,8 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("SubNetwork");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (m_id != VICUS::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())

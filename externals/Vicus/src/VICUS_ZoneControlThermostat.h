@@ -80,11 +80,8 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of zone control thermostat. */
-	unsigned int					m_id = INVALID_ID;						// XML:A:required
-
-	/*! Display name of zone control thermostat. */
-	IBK::MultiLanguageString		m_displayName;							// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A

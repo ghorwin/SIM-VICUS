@@ -36,10 +36,7 @@
 
 namespace VICUS {
 
-/*! Describes the course of all infiltration.
-
-*/
-
+/*! Infiltration model parameters. */
 class Infiltration : public AbstractDBElement {
 public:
 
@@ -74,11 +71,8 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of infiltration. */
-	unsigned int					m_id = INVALID_ID;						// XML:A:required
-
-	/*! Display name of infiltration. */
-	IBK::MultiLanguageString		m_displayName;							// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A

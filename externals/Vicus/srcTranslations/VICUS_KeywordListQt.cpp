@@ -191,7 +191,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Plastic");
 	tr("Metal");
 	tr("Glass");
-	tr("Air change rate.");
+	tr("Air change rate");
 	tr("Grid is visible");
 	tr("None");
 	tr("Fraction of area");

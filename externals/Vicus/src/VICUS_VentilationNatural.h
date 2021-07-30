@@ -41,15 +41,13 @@ namespace VICUS {
 /*! Describes the course of all natural ventilation.
 
 */
-
 class VentilationNatural : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Air change rate. */
-		P_AirChangeRate,				// Keyword: AirChangeRate			[1/h]		'Air change rate.'
-
+		P_AirChangeRate,				// Keyword: AirChangeRate			[1/h]		'Air change rate'
 		NUM_P
 	};
 
@@ -66,11 +64,8 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID. */
-	unsigned int					m_id = INVALID_ID;						// XML:A:required
-
-	/*! Display name. */
-	IBK::MultiLanguageString		m_displayName;							// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
 	QColor							m_color;								// XML:A

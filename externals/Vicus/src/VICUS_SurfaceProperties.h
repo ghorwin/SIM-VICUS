@@ -38,7 +38,10 @@
 
 namespace VICUS {
 
-class SurfaceProperties : public AbstractDBElement{
+/*!
+	TODO is this still needed?
+*/
+class SurfaceProperties : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */
@@ -60,25 +63,18 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	/*! Comparison operator */
-	ComparisonResult equal(const AbstractDBElement *other) const override;
+	/*! Comparison operator
+		TODO
+	*/
+	ComparisonResult equal(const AbstractDBElement */*other*/) const { return Equal; }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */
-	unsigned int						m_id = INVALID_ID;							// XML:A:required
-
-	/*! Some display/comment name for this model (optional). */
-	QString								m_displayName;								// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! False color. */
 	QColor								m_color;									// XML:A
-
-	/*! Manufacturer. */
-	QString								m_manufacturer;								// XML:E
-
-	/*! Data source. */
-	QString								m_dataSource;								// XML:E
 
 	/*! List of parameters. */
 	IBK::Parameter						m_para[NUM_P];								// XML:E

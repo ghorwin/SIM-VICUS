@@ -85,32 +85,30 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID-number for this glazing system (INVALID_ID = disabled/undefined). */
-	unsigned int						m_id = INVALID_ID;							// XML:A:required
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
 
 	/*! Model type. */
-	modelType_t							m_modelType = NUM_MT;						// XML:A:required
+	modelType_t							m_modelType = NUM_MT;				// XML:A:required
 
-	/*! Some display/comment name for this model (optional). */
-	IBK::MultiLanguageString			m_displayName;								// XML:A
 
 	/*! False color. */
-	QColor								m_color;									// XML:A
+	QColor								m_color;							// XML:A
 
 	/*! Notes. */
-	QString								m_notes;									// XML:E
+	IBK::MultiLanguageString			m_notes;							// XML:E
 
 	/*! Manufacturer. */
-	QString								m_manufacturer;								// XML:E
+	IBK::MultiLanguageString			m_manufacturer;						// XML:E
 
 	/*! Data source. */
-	QString								m_dataSource;								// XML:E
+	IBK::MultiLanguageString			m_dataSource;						// XML:E
 
 	/*! List of parameters. */
-	IBK::Parameter						m_para[NUM_P];								// XML:E
+	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 	/*! Normalized angle-dependent SHGC values. */
-	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];						// XML:E
+	NANDRAD::LinearSplineParameter		m_splinePara[NUM_SP];				// XML:E
 };
 
 } // namespace VICUS

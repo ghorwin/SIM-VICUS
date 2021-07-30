@@ -99,29 +99,27 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
 
-	/*! Display name. */
-	IBK::MultiLanguageString			m_displayName;										// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;					// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;						// XML:A
 
 	/*! False color. */
-	QColor								m_color;											// XML:A
+	QColor								m_color;										// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString			m_notes;											// XML:E
+	IBK::MultiLanguageString			m_notes;										// XML:E
 
 	/*! Manufacturer. */
-	IBK::MultiLanguageString			m_manufacturer;										// XML:E
+	IBK::MultiLanguageString			m_manufacturer;									// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString			m_dataSource;										// XML:E
+	IBK::MultiLanguageString			m_dataSource;									// XML:E
 
 	/*! Schedules for this component */
-	std::vector<unsigned int>			m_scheduleIds;										// XML:E
+	std::vector<unsigned int>			m_scheduleIds;									// XML:E
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***
 
-	/*! Unique ID for this component. */
-	unsigned int					m_id			= NANDRAD::INVALID_ID;				// XML:A:required
 
 	/*! Model type. */
 	ModelType						m_modelType		= NUM_MT;							// XML:A:required
