@@ -13,7 +13,11 @@
 #include "SVStyle.h"
 
 SVDBDuplicatesDialog::SVDBDuplicatesDialog(QWidget *parent) :
-	QDialog(parent),
+	QDialog(parent
+	#ifdef Q_OS_LINUX
+				, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint /*| Qt::WindowSystemMenuHint*/
+	#endif
+			),
 	m_ui(new Ui::SVDBDuplicatesDialog)
 {
 	m_ui->setupUi(this);
@@ -338,7 +342,79 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	std::string encodedLeft;
 	std::string encodedRight;
 
-	for (unsigned int i=0; i<diff.resultObj().size(); ++i) {
+	for (unsigned int i=0, count = diff.resultObj().size(); i<count; ++i) {
+		// check if this and the next line have opposite change markers
+		// and if so, compute levenstein
+		if (i+1 < count) {
+			// need both insert (0) and remove (1) operations, doesn't matter if insert comes first
+			if (diff.resultOperation()[i] + diff.resultOperation()[i+1] == 1) {
+				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
+				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
+#if 1
+					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
+#else
+
+					// found a conflicting line (i.e. same line edited in both files, which should be the most common case)
+					// now determine the different chars in this line
+					std::vector<char> lineLeft(diff.resultObj()[i].begin(), diff.resultObj()[i].end());
+					std::vector<char> lineRight(diff.resultObj()[i+1].begin(), diff.resultObj()[i+1].end());
+					IBK::Differ<char> lineDiff(lineLeft, lineRight);
+					lineDiff.diff();
+					bool equalMode = true;
+					std::string mergedLineLeft;
+					std::string mergedLineRight;
+					for (unsigned int j=0, chcount = lineDiff.resultObj().size(); j<chcount; ++j) {
+						if (lineDiff.resultOperation()[j] == IBK::DifferOpEqual) {
+							// switch to equal mode?
+							if (!equalMode) {
+								// if we had already a "different string" span, close it and start a new
+								if (!mergedLineLeft.empty()) {
+									mergedLineLeft += "</span>";
+									mergedLineRight += "</span>";
+								}
+								mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+								mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+								equalMode = true;
+							}
+							mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+							mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+						}
+						else {
+							// switch to different mode?
+							if (equalMode) {
+								// if we had already an "equal string" span, close it and start a new
+								if (!mergedLineLeft.empty()) {
+									mergedLineLeft += "</span>";
+									mergedLineRight += "</span>";
+								}
+								mergedLineLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
+								mergedLineRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
+								equalMode = false;
+							}
+							++j; // skip over next char as well
+						}
+						// for first char, add span header
+						if (mergedLineLeft.empty()) {
+							mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+							mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
+						}
+						mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+						mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j+1]));
+					}
+					if (!mergedLine.empty())
+						mergedLine += "</span>";
+
+					encodedLeft += mergedLine + "<br>";
+					encodedRight += mergedLine + "<br>";
+					++i;
+					continue;
+#endif
+					++i; // skip over second marker as well
+					continue;
+				}
+			}
+		}
 		switch (diff.resultOperation()[i]) {
 			case IBK::DifferOpEqual :
 				encodedLeft += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
