@@ -2354,7 +2354,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	if (element(m_geometricNetworks, networkId) == nullptr)
 		return;
 
-	const VICUS::Network vicusNetwork = *element(m_geometricNetworks, networkId);
+	VICUS::Network vicusNetwork = *element(m_geometricNetworks, networkId);
 
 	// buildings can only have one connected edge
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
@@ -2674,10 +2674,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
 
-	NANDRAD::FMIDescription fmiDsc;
-	fmiDsc.m_modelName = vicusNetwork.m_displayName.toStdString();
+	unsigned int fmiValueRef = 42; // start value
+	unsigned int idSoilModel = 0; // start value
 	std::map<unsigned int, unsigned int> mapSoilModel2NetworkSupplyPipe;
 	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
+//	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
@@ -2775,32 +2776,75 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		returnPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(returnPipe);
 
-		// store the supplyPipeId and returnPipeId to the edge
+
+		// Create FMI Input Output Definitions
 		if (edge->m_hasHeatExchangeWithGround){
+
+			// create FMI input definitions
+			// --> supply pipe
+			NANDRAD::FMIVariableDefinition inputDefSupplyPipeTemp;
+			inputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".Temperature"; // custom name
+			inputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
+			inputDefSupplyPipeTemp.m_varName += ".HeatExchangeTemperature";
+			inputDefSupplyPipeTemp.m_unit = "K";
+			inputDefSupplyPipeTemp.m_fmiValueRef = ++fmiValueRef;
+			inputDefSupplyPipeTemp.m_fmiVarDescription = "Pre-described external temperature";
+			inputDefSupplyPipeTemp.m_fmiStartValue = vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature].value;
+			p.m_fmiDescription.m_inputVariables.push_back(inputDefSupplyPipeTemp);
+			// --> return pipe
+			NANDRAD::FMIVariableDefinition inputDefReturnPipeTemp = inputDefSupplyPipeTemp;
+			inputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			inputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
+			p.m_fmiDescription.m_inputVariables.push_back(inputDefReturnPipeTemp);
+
+			// create FMI output definitions
+			// --> supply pipe
+			NANDRAD::FMIVariableDefinition outputDefSupplyPipeTemp;
+			outputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".HeatLoss"; // custom name
+			outputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
+			outputDefSupplyPipeTemp.m_varName += ".FlowElementHeatLoss";
+			outputDefSupplyPipeTemp.m_unit = "W";
+			outputDefSupplyPipeTemp.m_fmiValueRef = ++fmiValueRef;
+			outputDefSupplyPipeTemp.m_fmiVarDescription = "Heat flux from flow element into environment";
+			outputDefSupplyPipeTemp.m_fmiStartValue = 0;
+			p.m_fmiDescription.m_outputVariables.push_back(outputDefSupplyPipeTemp);
+			// --> return pipe
+			NANDRAD::FMIVariableDefinition outputDefReturnPipeTemp = outputDefSupplyPipeTemp;
+			outputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			outputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
+			p.m_fmiDescription.m_inputVariables.push_back(outputDefReturnPipeTemp);
+
+
+			// store Nandrad element id in edge so they can be used later on
 			const_cast<NetworkEdge*>(edge)->m_NandradSupplyPipeId = supplyPipe.m_id;
 			const_cast<NetworkEdge*>(edge)->m_NandradReturnPipeId = returnPipe.m_id;
-			NANDRAD::FMIVariableDefinition varDefSupplyInput;
-			varDefSupplyInput.m_varName = supplyPipe.m_displayName;
-//			fmiDsc.
 
-			p.m_fmiDescription.m_inputVariables.push_back(varDefSupplyInput);
-
-
-			NANDRAD::FMIVariableDefinition varDefReturn;
-
-
-			// continue here...
-
-
+			// einfacher Ansatz: für jede Edge ein Delphin Modell
+			++idSoilModel;
+			mapSoilModel2NetworkSupplyPipe[idSoilModel] = supplyPipe.m_id;
+			mapSoilModel2NetworkReturnPipe[idSoilModel] = returnPipe.m_id;
+			//
+			// hier noch edge.m_para parameters für jedes Delphin Model in einer Map o.ä. speichern...
+			//
 		}
 	}
 
+	// besserer Ansatz: entlang der Pfade gehen und entsprechend des TempChangeIndicator die Delphin Modelle zuweisen...
 
-	for (const NetworkEdge &edge: vicusNetwork.m_edges){
+//	vicusNetwork.calcTemperatureChangeIndicator()
+//	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+//	vicusNetwork.findShortestPathForBuildings(shortestPaths);
 
-		// write map Delphin -> Nandrad
+//	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+//		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+//		for (NetworkEdge * edge: shortestPath)
+//			edge->m_supplyPipeId ...
+//	}
 
-	}
+
+	// die Delphin Maps als txt Dateien speichern ...
 
 
 	 // we are DONE !!!

@@ -578,6 +578,51 @@ void Network::removeShortEdges(const double &thresholdLength) {
 }
 
 
+void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) {
+	FUNCID(Network::findShortestPathForBuildings);
+
+	updateNodeEdgeConnectionPointers();
+
+	// check for source
+	std::vector<NetworkNode> sources;
+	findSourceNodes(sources);
+	if (sources.size() < 1)
+		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
+
+	// iterate over all buildings
+	minPathMap.clear();
+	for (NetworkNode &node: m_nodes) {
+
+		if (node.m_type != NetworkNode::NT_Building)
+			continue;
+
+		// there must be a defined maximum heating demand
+		if (node.m_maxHeatingDemand.value <= 0)
+			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+
+		// for each source find the shortest path to current node. Finally select the shortest of these paths
+		std::vector<NetworkEdge * > minPath;
+		double minPathLength = std::numeric_limits<double>::max();
+		for (const NetworkNode &source: sources){
+			std::vector<NetworkEdge * > path;
+			// shortest path between source and node
+			dijkstraShortestPathToSource(node, source, path);
+			double pathLength = 0;
+			// length of this path
+			for (NetworkEdge *edge: path)
+				pathLength += edge->length();
+			// minumum length of paths for each source to current building
+			if (pathLength < minPathLength){
+				minPathLength = pathLength;
+				minPath = path;
+			}
+		}
+		// finally store the shortest path
+		minPathMap[node.m_id] = minPath;
+	}
+}
+
+
 void Network::sizePipeDimensions(const NetworkFluid *fluid, std::vector<const VICUS::NetworkPipe*> & availablePipes) {
 FUNCID(Network::sizePipeDimensions);
 
@@ -605,39 +650,20 @@ FUNCID(Network::sizePipeDimensions);
 		}
 	}
 
-	// check for source
-	std::vector<NetworkNode> sources;
-	findSourceNodes(sources);
-	if (sources.size() < 1)
-		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
-
 	// set all edges heating demand = 0
 	for (NetworkEdge &edge: m_edges)
 		edge.m_nominalHeatingDemand = 0;
 
-	// for all buildings: add their heating demand to the pipes along their shortest path
-	for (NetworkNode &node: m_nodes) {
-		if (node.m_type != NetworkNode::NT_Building)
-			continue;
-		if (node.m_maxHeatingDemand.value <= 0)
-			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+	// find shortest path for each building node to closest source node
+	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	findShortestPathForBuildings(shortestPaths);
 
-		// for each source find the shortest path to current node. Finally select the shortest of these paths
-		std::vector<NetworkEdge * > minPath;
-		double minPathLength = std::numeric_limits<double>::max();
-		for (const NetworkNode &source: sources){
-			std::vector<NetworkEdge * > path;
-			dijkstraShortestPathToSource(node, source, path);  // shortest path between source and node
-			double pathLength = 0;
-			for (NetworkEdge *edge: path)
-				pathLength += edge->length();
-			if (pathLength < minPathLength){
-				minPathLength = pathLength;
-				minPath = path;
-			}
-		}
-		for (NetworkEdge * edge: minPath)
-			edge->m_nominalHeatingDemand += node.m_maxHeatingDemand.value;
+	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		NetworkNode *building = nodeById(it->first);			// get pointer to building node
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (NetworkEdge * edge: shortestPath)
+			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
@@ -696,26 +722,8 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-
 void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) {
 	FUNCID(Network::calcTemperatureChangeIndicator);
-
-	// check parameters
-	for (unsigned int n = 0; n < NUM_P; ++n){
-		try {
-			m_para[VICUS::Network::P_MaxPressureLoss].checkedValue("MaxPressureLoss", "Pa/m", "Pa/m",
-																   std::numeric_limits<double>::lowest(), true,
-																   std::numeric_limits<double>::max(), true, nullptr);
-			m_para[VICUS::Network::P_TemperatureSetpoint].checkedValue("TemperatureSetpoint", "C", "C",
-																   std::numeric_limits<double>::lowest(), true,
-																   std::numeric_limits<double>::max(), true, nullptr);
-			m_para[VICUS::Network::P_TemperatureDifference].checkedValue("TemperatureDifference", "K", "K",
-																   std::numeric_limits<double>::lowest(), true,
-																   std::numeric_limits<double>::max(), true, nullptr);
-		} catch (IBK::Exception &ex) {
-			throw IBK::Exception(ex, "Error in sizing pipes algorithm!", FUNC_ID);
-		}
-	}
 
 	// check for source
 	std::vector<NetworkNode> sources;
@@ -727,29 +735,20 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 	for (NetworkEdge &edge: m_edges)
 		edge.m_nominalHeatingDemand = 0;
 
-	// for all buildings: add their heating demand to the pipes along their shortest path
-	for (NetworkNode &node: m_nodes) {
-		if (node.m_type != NetworkNode::NT_Building)
-			continue;
-		if (node.m_maxHeatingDemand.value <= 0)
-			throw IBK::Exception(IBK::FormatString("Maximum heating demand of node '%1' must be >0").arg(node.m_id), FUNC_ID);
+	// set all edges heating demand = 0
+	for (NetworkEdge &edge: m_edges)
+		edge.m_nominalHeatingDemand = 0;
 
-		// for each source find the shortest path to current node. Finally select the shortest of these paths
-		std::vector<NetworkEdge * > minPath;
-		double minPathLength = std::numeric_limits<double>::max();
-		for (const NetworkNode &source: sources){
-			std::vector<NetworkEdge * > path;
-			dijkstraShortestPathToSource(node, source, path);  // shortest path between source and node
-			double pathLength = 0;
-			for (NetworkEdge *edge: path)
-				pathLength += edge->length();
-			if (pathLength < minPathLength){
-				minPathLength = pathLength;
-				minPath = path;
-			}
-		}
-		for (NetworkEdge * edge: minPath)
-			edge->m_nominalHeatingDemand += node.m_maxHeatingDemand.value;
+	// find shortest path for each building node to closest source node
+	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	findShortestPathForBuildings(shortestPaths);
+
+	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		NetworkNode *building = nodeById(it->first);			// get pointer to building node
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (NetworkEdge * edge: shortestPath)
+			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
@@ -761,12 +760,13 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 		}
 	}
 
+	// fluid properties
+	const double &rho = fluid->m_para[NetworkFluid::P_Density].value;
+	const double &kinvis = fluid->m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
+	const double &cp = fluid->m_para[NetworkFluid::P_HeatCapacity].value;
+	const double &lambda = fluid->m_para[NetworkFluid::P_Conductivity].value;
 
-	double rho = fluid->m_para[NetworkFluid::P_Density].value;
-	double kinvis = fluid->m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
-	double cp = fluid->m_para[NetworkFluid::P_HeatCapacity].value;
-	double lambda = fluid->m_para[NetworkFluid::P_Conductivity].value;
-
+	// calculate temperature change indicator for each edge
 	for (NetworkEdge &e: m_edges){
 
 		const NetworkPipe *pipe = pipeDB[e.m_pipeId];
@@ -786,9 +786,9 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 					+ 1.0 / pipe->UValue()
 				);
 
+		// is dimensionless or [K/K] for interpretation
 		e.m_tempChangeIndicator = UAValue / (e.m_nominalMassFlow * cp);
 	}
-
 }
 
 

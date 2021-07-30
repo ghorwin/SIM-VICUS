@@ -156,11 +156,19 @@ public:
 	/*! iteratively removes edges which have a length below thresholdLength in [m] */
 	void removeShortEdges(const double &thresholdLength);
 
+	/*! For each building node: Find shortest path to the closest source node and store the pointers to the edges
+	 * along that path. The result is a map with keys being the ids of the building nodes */
+	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap);
+
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
 	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
 
+	/*! Calculate the temperature change indicator for each edge. Therefore the massflow under nominal conditions for
+	 * each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
+	 * each edge.
+	 */
 	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB);
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
