@@ -51,10 +51,18 @@ namespace VICUS {
 class NetworkEdge : public Object {
 public:
 
+	/*! Defines which model in Nandrad shall be used */
 	enum PipeModel {
 		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
 		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
 		NUM_PM
+	};
+
+	/*! Parameters used to create soil model (FMU) for heat exchange with the ground */
+	enum para_t {
+		P_PipeSpacing,			// Keyword: PipeSpacing		[m]		'Distance between supply pipe and return pipe'
+		P_PipeDepth,			// Keyword: PipeDepth		[m]		'Distance between pipes and soil surface'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -137,6 +145,15 @@ public:
 	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
 	NANDRAD::HydraulicNetworkHeatExchange				m_heatExchange;					// XML:E
 
+	/*! Defines wether this edge has heat exchange with the ground.
+	 * We dont store this information in NANDRAD::HydraulicNetworkHeatExchange, because it is actually not used (yet)
+	 * within the Nandrad Solver. We only use this to create the according FMI inputs/outputs and the
+	 * coupling information for the soil FMUs */
+	bool												m_hasHeatExchangeWithGround = false; // XML:E
+
+
+	/*! Parameters used for coupling with ground heat exchange model */
+	para_t												m_para;
 
 	// *** RUNTIME VARIABLES ***
 
@@ -153,7 +170,10 @@ public:
 	/*! Mass flow [kg/s] at nominal temperature difference, will be determined in sizePipeDimensions() */
 	double												m_nominalMassFlow = 0;
 
-	/*! in [1/m] */
+	/*! Describes the fluid temperature change along this pipe with nominal mass flow, when there is a temperature difference of 1 K
+		between fluid and sourrunding soil. This information can be used to create according soil models.
+		Is dimensionless, but for interpretation, unit [K/K] can be used
+	*/
 	double												m_tempChangeIndicator = -1;
 
 	NetworkNode											* m_node1 = nullptr;
@@ -161,6 +181,9 @@ public:
 
 	unsigned int										m_nodeIdInlet = INVALID_ID;
 	unsigned int										m_nodeIdOutlet = INVALID_ID;
+
+	unsigned int										m_NandradSupplyPipeId = INVALID_ID;
+	unsigned int										m_NandradReturnPipeId = INVALID_ID;
 
 
 private:

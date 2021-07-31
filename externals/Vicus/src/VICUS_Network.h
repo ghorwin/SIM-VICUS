@@ -90,7 +90,7 @@ public:
 
 	Network();
 
-	/*! creates a cpoy with new unique id */
+	/*! creates a copy with new unique id */
 	Network clone() const{
 		Network n(*this); // create new network with same unique ID
 		for (unsigned int i=0; i<m_edges.size(); ++i)
@@ -156,11 +156,19 @@ public:
 	/*! iteratively removes edges which have a length below thresholdLength in [m] */
 	void removeShortEdges(const double &thresholdLength);
 
+	/*! For each building node: Find shortest path to the closest source node and store the pointers to the edges
+	 * along that path. The result is a map with keys being the ids of the building nodes */
+	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap);
+
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
 	 */
 	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
 
+	/*! Calculate the temperature change indicator for each edge. Therefore the massflow under nominal conditions for
+	 * each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
+	 * each edge.
+	 */
 	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB);
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
@@ -220,38 +228,17 @@ public:
 	/*! identifies node by its id (in m_nodes vector) and returns according pointer
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
 	 */
-	NetworkNode *nodeById(unsigned int id) {
-		for (NetworkNode &n: m_nodes){
-			if (n.m_id == id)
-				return &n;
-		}
-		IBK_ASSERT(false);
-		return nullptr;
-	}
+	NetworkNode *nodeById(unsigned int id);
 
 	/*! identifies node by its id (in m_nodes vector) and returns according const pointer
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return a nullptr here !
 	 */
-	const NetworkNode *nodeById(unsigned int id) const{
-		for (const NetworkNode &n: m_nodes){
-			if (n.m_id == id)
-				return &n;
-		}
-		IBK_ASSERT(false);
-		return nullptr;
-	}
+	const NetworkNode *nodeById(unsigned int id) const;
 
 	/*! identifies node by its id and returns according index in m_nodes vector
 	 * Note: make sure the id exists beforehand, there is no plausible case where we want to return an index >= m_nodes.size() !
 	 */
-	unsigned int indexOfNode(unsigned int id) const {
-		for (unsigned int i=0; i<m_nodes.size(); ++i){
-			if (m_nodes[i].m_id == id)
-				return i;
-		}
-		IBK_ASSERT(false);
-		return 99999;
-	}
+	unsigned int indexOfNode(unsigned int id) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
