@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (15.06.2021)</span>
+<span id="revdate">0.2.0 (31.07.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -116,6 +116,7 @@ table {
 <li><a href="#_code_quality">2.4. Code Quality</a>
 <ul class="sectlevel3">
 <li><a href="#_frequently_check_for_potential_memory_leaks">2.4.1. Frequently check for potential memory leaks</a></li>
+<li><a href="#_jacobian_matrix_pattern_correctness_check">2.4.2. Jacobian matrix pattern correctness check</a></li>
 </ul>
 </li>
 </ul>
@@ -155,7 +156,11 @@ table {
 <li><a href="#_normal_vector_calculation_of_polygons">4.2.2. Normal vector calculation of polygons</a></li>
 </ul>
 </li>
-<li><a href="#_zustand_der_benutzeroberfläche_view_state">4.3. Zustand der Benutzeroberfläche (View State)</a></li>
+<li><a href="#_zustand_der_benutzeroberfläche_view_state">4.3. Zustand der Benutzeroberfläche (View State)</a>
+<ul class="sectlevel3">
+<li><a href="#_viewmode">4.3.1. <code>ViewMode</code></a></li>
+</ul>
+</li>
 <li><a href="#UI-SelectionHandling">4.4. Auswahl von Objekten</a>
 <ul class="sectlevel3">
 <li><a href="#_auswahl_in_der_scene">4.4.1. Auswahl in der Scene</a></li>
@@ -223,7 +228,7 @@ table {
 <div class="sect4">
 <h5 id="_windows">Windows</h5>
 <div class="paragraph">
-<p>Note: the build scripts are set up to work for Visual Studio 2015 x64 with Qt Version 5.11.3. You can, however, use any other combination of Visual Studio or even Intel compiler or MinGW and any other (newer) Qt version. It may be, though, that you have to tweak the build scripts or defined environment variables.</p>
+<p>There are build scripts for different VC and Qt versions. To keep things simple, all developers should install the same VC and Qt versions on development machines.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -240,12 +245,25 @@ table {
 </table>
 </div>
 <div class="paragraph">
-<p>Here are the recommended steps:</p>
+<p>Required versions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Visual Studio 2019 Community Edition</p>
+</li>
+<li>
+<p>Qt 15.5.2</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Installation steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download and install Visual Studio 2015 x64 Express for Desktop. You can get it on <a href="https://visualstudio.microsoft.com/de/vs/older-downloads/" class="bare">https://visualstudio.microsoft.com/de/vs/older-downloads/</a></p>
+<p>Download and install Visual Studio 2019 Community Online Installer from: <a href="https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#" class="bare">https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#</a> - Once downloaded, install only basic development option.</p>
 </li>
 <li>
 <p>Download and install cmake. Either download from <a href="https://cmake.org" class="bare">https://cmake.org</a> or use <em>chocolatey</em> (<a href="https://chocolatey.org" class="bare">https://chocolatey.org</a>) and run</p>
@@ -256,7 +274,10 @@ table {
 </div>
 </li>
 <li>
-<p>Download and install Qt Version 5.11.3. Download the Qt Online Installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and in the installation program select the 5.11.3 variant instead of the default (newest).</p>
+<p>Download and install Qt Online Installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and in the installation program select the <strong>5.15.2</strong> variant.</p>
+</li>
+<li>
+<p>Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly): <a href="https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019" class="bare">https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019</a></p>
 </li>
 </ol>
 </div>
@@ -283,29 +304,36 @@ table {
 &gt; git config --global user.email "your_email@example.com"</pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Note: On Ubuntu 18.04 LTS the default Qt version is 5.9.5, so that is the oldest Qt version we are going to support.</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_macos">MacOS</h5>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>MacOS comples with Clang installed. I suggest installing <em>Homebrew</em> (see <a href="https://brew.sh" class="bare">https://brew.sh</a>). Then</p>
+<p>HomeBrew does no longer work well for older MacOS versions, such as El Capitan. You may have problems installing certain tools. However, you may still use it to install newer gcc versions, needed for parallel builds.</p>
+</div>
+<div class="paragraph">
+<p><em>Homebrew</em> can be used to install other programs (see <a href="https://brew.sh" class="bare">https://brew.sh</a>). Then</p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>&gt; brew install cmake</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Install the newest Qt 5 version:</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>&gt; brew install qt5</pre>
-</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
-<p>If you plan on developing on the Mac, then download the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>)
-and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific
-compilation problems.</p>
+<p>On El Capitan (MacOSX 10.11) Qt 5.11.3 is the last version to work. So you need to manually download this version. First select the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>)  and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific compilation problems.</p>
 </div>
 <div class="paragraph">
 <p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
@@ -339,8 +367,12 @@ compilation problems.</p>
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>&gt; build_VC_x64.bat</pre>
+<pre>&gt; build_VC2019_x64.bat</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>or
+    &gt; build_VC2019_x64_with_pause.bat</p>
 </div>
 <div class="paragraph">
 <p>for Windows.</p>
@@ -360,7 +392,7 @@ compilation problems.</p>
 <p>Once the build has completed, the executables are copied into the <code>bin/release</code> (or <code>bin/release_x64</code> on Windows) directory.</p>
 </div>
 <div class="paragraph">
-<p>On Windows, you may want to run <code>bin/release_x64/CreateDeploy_VC14.bat</code> batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).</p>
+<p>On Windows, you may want to run <code>bin/release_x64/CreateDeploy_VC2019.bat</code> batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).</p>
 </div>
 </div>
 <div class="sect3">
@@ -1152,6 +1184,152 @@ Total initialization time: 802 ms
 
 <span class="n">m_modelContainer</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">modelObject</span><span class="p">.</span><span class="n">release</span><span class="p">());</span> <span class="c1">// transfer ownership</span></code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_jacobian_matrix_pattern_correctness_check">2.4.2. Jacobian matrix pattern correctness check</h4>
+<div class="paragraph">
+<p>It is easily possible to forget a specific interrelation and dependency when publishing model variable dependencies. The resulting sparse Jacobian-pattern may be incomplete.</p>
+</div>
+<div class="paragraph">
+<p>An incomplete Jacobian-pattern has the following consequences:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The Newton-iteration may frequently not converge - the number of NonLinConvFails increases. Because of this, often a restart with new Newton-matrix setup and factorization is needed, which is expensive.</p>
+</li>
+<li>
+<p>The Newton-iteration may converge, yet not entirely correct. This is picked up by the truncation error test, and leads potentially to an increase of ErrorFails and resulting step-rejections. Redoing a step is very bad for performance; time step is reduced, Jacobian matrix is recomputed and factorized&#8230;&#8203; overall, the performance suffers.</p>
+</li>
+<li>
+<p>The actual time to compose and factorize the Jacobian matrix may, however, be shorter when elements are missing. In some cases this can be desired, for example, when the Jacobian contains many very small values in its pattern. Then, it is often meaningful to drop these in the calculation. For example, the network interaction due to temperature-dependent viscosity changes may be omitted from the Jacobian. Also, the dependency of network element balance equations on a thermostat-controlled valve somewhere upstream reduces from element to element, until after several pipe segments the impact is no longer significant and could be dropped from the Jacobian.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Generally speaking, the Jacobian pattern should be complete and correct for most models, and this should be regularly checked.</p>
+</div>
+<div class="sect4">
+<h5 id="_automatic_consistency_check">Automatic consistency check</h5>
+<div class="paragraph">
+<p>Under the condition that Jacobian matrixes for Dense and KLU are identical, the simulation should also run - theoretically - with identical results and solver statistics, only a bit slower in the case of the Dense matrix. Hence, it is a good first test to run the same test case with both matrix solvers and check, if there are significant differences.</p>
+</div>
+<div class="paragraph">
+<p>When running a test case with the following options:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradSolver test.nandrad <span class="nt">--les-solver</span><span class="o">=</span>Dense <span class="nt">--integrator</span><span class="o">=</span>ImplicitEuler <span class="nt">-o</span><span class="o">=</span><span class="s2">"test.Dense"</span>
+<span class="o">&gt;</span> NandradSolver test.nandrad <span class="nt">--les-solver</span><span class="o">=</span>KLU <span class="nt">-o</span><span class="o">=</span><span class="s2">"test.KLU"</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>this will generate two sets of output directories with (hopefully) identical physical results and statistics. However, even if the Jacobian pattern used by the sparse matrix solver is 100% correct, the rounding errors related to the LU factorization of the dense matrix, or the factorization of the re-arranged sparse matrix will likely give minor changes in the Newton solution which may accumulate over time and cause small differences in counters.</p>
+</div>
+<div class="paragraph">
+<p>Still, the test can be done automated by running the script <code>run_JacobianPatternTest.sh</code> in the <code>build/cmake</code> directory.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Run the script <code>run_JacobianPatternTest.sh</code> for the release-build NANDRAD solver without any specific modifications (except maybe the Network-initial condition hack, as described below).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The script will run all test cases with Dense and KLU solvers, compare results and statistics and flag all test cases with differences as failed.</p>
+</div>
+<div class="paragraph">
+<p>Once a test case has been manually checked, a file with suffix <code>jac_checked</code> instead of <code>nandrad</code> can be placed side-by-side the NANDRAD project file. For all test cases with such a <code>jac_checked</code> file, the test will be skipped and the case will be marked as successful.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_manually_checking_jacobian_patterns">Manually checking Jacobian patterns</h5>
+<div class="paragraph">
+<p>The sparse Jacobian pattern can be checked by comparing it against a full dense Jacobian matrix. If the sparse pattern is correct, the generated Jacobian matrixes must be identical, under the following conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jacobian matrix data is compared as originally computed in memory. Hence, dumping the data in binary format is required. When writing Jacobian data in ASCII format, there will be accuracy loss and hence small differences will be computed stemming from rounding errors.</p>
+</li>
+<li>
+<p>Jacobian matrixes generated with DQ-algorithms must be generated using the same calculation method for the increments. For example, the increment calculation method in the SUNDIALS solvers is different from those in IBKMK-library - results will not be comparible. It is advised to use only IBKMK-matrix classes to generate Jacobian data.</p>
+</li>
+<li>
+<p>All states must be identical, when the Jacobians are generated. This is usually only guaranteed at the begin of a simulation. Thus, the typical procedure is to generate the Jacobian, dump it to file and stop the solver right away.</p>
+</li>
+<li>
+<p>The system function must be 100% deterministic and only dependent on the current set of states provided to the function. This also means that all embedded iterative/numerical algorithms must be started with <strong>exactly</strong> the same initial conditions. This applies, for example, to the Newton solver that is used for the hydraulic network calculation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To generate the Jacobians to compare, the following changes need to be made in the solver&#8217;s source code:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>in <code>SOLFRA_JacobianSparseCSR.cpp</code> enable binary dumping of Jacobian matrix and enabling the define</p>
+</li>
+<li>
+<p>in <code>SOLFRA_LESDense.cpp</code>  enable binary dumping of Jacobian matrix and enabling the define</p>
+</li>
+<li>
+<p>in <code>NM_HydraulicNetworkModel.cpp</code> in function <code>HydraulicNetworkModelImpl::solve()</code> enable the if-block to ensure usage of the same initial conditions for the Newton method.</p>
+</li>
+<li>
+<p>compile the solver with CMake in release mode</p>
+</li>
+<li>
+<p>copy the solver executable <code>NandradSolver</code> to <code>NandradSolverJacDump</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now you can generate the Jacobians for a specific test case using the command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> jacdump.sh test.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will run the test case with KLU and Dense (the latter with ImplicitEuler integrator) and then rename the dumped Jacobians to <code>test_jacobian_dense.bin</code> and <code>test_jacobian_sparse.bin</code>.</p>
+</div>
+<div class="paragraph">
+<p>Now open these files with the <em>JacobianMatrixViewer</em> tool (see <a href="https://github.com/ghorwin/JacobianMatrixViewer" class="bare">https://github.com/ghorwin/JacobianMatrixViewer</a>).</p>
+</div>
+<div class="paragraph">
+<p>If the matrixes match, you can run the script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> checked.sh test.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>which will create the <code>test.jac_checked</code> file and also remove the <code>bin</code>-files.</p>
 </div>
 </div>
 </div>
@@ -2219,6 +2397,43 @@ erfolgt in folgenden Schritten:</p>
 <span class="n">SVViewStateHandler</span><span class="o">::</span><span class="n">instance</span><span class="p">().</span><span class="n">setViewState</span><span class="p">(</span><span class="n">vs</span><span class="p">);</span></code></pre>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_viewmode">4.3.1. <code>ViewMode</code></h4>
+<div class="paragraph">
+<p>Umschalten erfolgt durch Modusauswahl-Schaltflächen in der linken Toolbar</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>VM_GeometryEditMode</code> - wenn Geometrie bearbeitet wird; Geometrie wird mit definierten Oberflächen/Materialfarben dargestellt</p>
+</li>
+<li>
+<p><code>VM_PropertyEditMode</code> - beim Eigenschaften ansehen/bearbeiten; Geometrie wird mit Falschfarben je nach Modus dargestellt</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Beim Umschalten zwischen den Modi wird die Geometrie neu eingefärbt und gezeichnet.</p>
+</div>
+<div class="paragraph">
+<p>Im <code>VM_PropertyEditMode</code>: <code>NUM_OM</code> + <code>NUM_L</code> und <code>PropertyWidgetMode</code> wird je nach Auswahl im <code>SVPropModeSelectionWidget</code> gesetzt, genau wie
+<code>ObjectColorMode</code>.</p>
+</div>
+<div class="paragraph">
+<p>(ACHTUNG: Shortcuts zum Ändern des SceneOperationMode deaktivieren!)</p>
+</div>
+<div class="paragraph">
+<p>Beim Einschalten des <code>VM_GeometryEditMode</code> wird unterschieden:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Es gibt eine Auswahl von Flächen, dann: <code>OM_SelectedGeometry</code> + <code>PM_EditGeometry</code>
+-</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="UI-SelectionHandling">4.4. Auswahl von Objekten</h3>
@@ -2693,7 +2908,7 @@ B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-06-15 13:27:13 +0200
+Last updated 2021-07-31 20:57:36 +0200
 </div>
 </div>
 <style>
