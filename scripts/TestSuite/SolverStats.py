@@ -33,7 +33,7 @@ class SolverStats:
 				if tokens[0].find("Time") != -1:
 					self.timers[tokens[0]] = float(tokens[1])
 				else:
-					self.counters[tokens[0]] = long(tokens[1])
+					self.counters[tokens[0]] = int(tokens[1])
 		except Exception as e:
 			print("Error opening/reading file '{}', error: {}".format(statsFile, e))
 			return False
@@ -58,15 +58,19 @@ class SolverStats:
 		# print side-by-side differences
 		s1keys = s1.counters.keys()
 		s2keys = s2.counters.keys()
-		s1keys = list(set(s1keys + s2keys))
-		s1keys.sort()
-		fail = False
+		mergedKeys = set()
 		for k in s1keys:
+			mergedKeys.add(k)
+		for k in s2keys:
+			mergedKeys.add(k)
+		mergedKeys = sorted(mergedKeys)
+		fail = False
+		for k in mergedKeys:
 			# skip ignore counters
 			if k in ignoredCounters:
 				continue 
-			if s1.counters.has_key(k):
-				if s2.counters.has_key(k):
+			if k in s1.counters:
+				if k in s2.counters:
 					match = s1.counters[k] == s2.counters[k]
 					if match:
 						pass #print("  {:30s}  {:12d} == {:12d}".format(k, s1.counters[k], s2.counters[k]))
@@ -83,13 +87,17 @@ class SolverStats:
 		# compare timings (with threshold)
 		s1keys = s1.timers.keys()
 		s2keys = s2.timers.keys()
-		s1keys = list(set(s1keys + s2keys))
-		s1keys.sort()
+		mergedKeys = set()
+		for k in s1keys:
+			mergedKeys.add(k)
+		for k in s2keys:
+			mergedKeys.add(k)
+		mergedKeys = sorted(mergedKeys)
 		#print "  --"
 		THRESHOLD = 0.1 # 10 %
-		for k in s1keys:
-			if s1.timers.has_key(k):
-				if s2.timers.has_key(k):
+		for k in mergedKeys:
+			if k in s1.timers:
+				if k in s2.timers:
 					val1 = s1.timers[k]
 					val2 = s2.timers[k]
 					match = val1*(1+THRESHOLD) > val2 and val2*(1+THRESHOLD) > val1
@@ -155,7 +163,7 @@ class SolverStats:
 									printError("  '{}'".format(lines2[i].rstrip('\n')))
 									fail = True
 									break
-							print f
+							print(f)
 					except OSError as e:
 						printError("Error comparing files '{}'".format(f))
 						fail = True
