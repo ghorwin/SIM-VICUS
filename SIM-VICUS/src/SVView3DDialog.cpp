@@ -34,6 +34,7 @@
 #include "VICUS_Room.h"
 #include "VICUS_ComponentInstance.h"
 #include "VICUS_BoundaryCondition.h"
+#include "VICUS_PlaneTriangulationData.h"
 
 #include "IBK_FileUtils.h"
 #include "IBK_FileReader.h"
@@ -73,7 +74,8 @@ void SVView3D::exportView3d() {
 
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
 		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon().vertexes();
-
+		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
+		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
 
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
 		if ( r == nullptr ) // we only want surfaces that are assigned to rooms
@@ -102,9 +104,9 @@ void SVView3D::exportView3d() {
 			v3dRoom.m_vertexes.push_back(vView3d);
 		}
 
+
 		unsigned int surfId = 0;
 		unsigned int counter = 0;
-
 
 		// we take all triangles from triangulation and combine them in view3D
 		for ( const IBKMK::Triangulation::triangle_t &triangle : triangles) { // mind that our surfaces have to point inwards
@@ -124,6 +126,48 @@ void SVView3D::exportView3d() {
 
 			counter == 0 ? counter = surfaceId : 0; // we combine all triangles
 		}
+
+
+		// ==================================================================
+		// we take also all holes with windows
+		for (unsigned int i=0; i<holes.size(); ++i) {
+
+			const VICUS::PlaneTriangulationData &planeTriangulation = holes[i];
+
+			const VICUS::SubSurface &subS = subSurfs[i];
+
+			for (const IBKMK::Vector3D &vHole : planeTriangulation.m_vertexes) {
+				if ( !v3dRoom.m_vertexes.empty() )
+					vertexId = v3dRoom.m_vertexes.back().m_id;
+				else {
+					vertexId = 0;
+					offset = 1;
+				}
+			}
+
+			unsigned int surfId = 0;
+			unsigned int counter = 0;
+
+			// we take all triangles from triangulation and combine them in view3D
+			for ( const IBKMK::Triangulation::triangle_t &triangle : planeTriangulation.m_triangles) { // mind that our surfaces have to point inwards
+
+				if ( !v3dRoom.m_surfaces.empty() )
+					surfaceId = v3dRoom.m_surfaces.back().m_id;
+				else
+					surfaceId = 0;
+
+				view3dSurface sView3d (++surfaceId, s.m_id, offset + triangle.i3, offset + triangle.i2, offset + triangle.i1, 0, counter, 0.001,
+									   "[" + std::to_string(s.m_id) + "] " + s.m_displayName.toStdString() + "" + "["  + std::to_string(++surfId) + "]" );
+
+				v3dRoom.m_surfaces.push_back(sView3d);
+
+				surfToViewFacorMap[&v3dRoom] = std::map<const VICUS::Surface*,double> ();
+				surfToViewFacorMap[&v3dRoom][surf] = 0.0;
+
+				counter == 0 ? counter = surfaceId : 0; // we combine all triangles
+			}
+		}
+		// ==================================================================
 
 		// now we are also looking for component instances
 		if ( s.m_componentInstance != nullptr ){
@@ -276,7 +320,6 @@ void SVView3D::exportView3d() {
 }
 
 void SVView3D::readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom) {
-#if 0
 	FUNCID(SVView3D::readView3dResults);
 	std::vector<std::string> cont;
 	// we take the IBK File Reader in order to read result files
@@ -315,7 +358,6 @@ void SVView3D::readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom) {
 		}
 	}
 
-#endif
 //	}
 
 
