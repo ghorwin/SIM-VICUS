@@ -31,6 +31,7 @@
 #include <VICUS_Project.h>
 #include <VICUS_Object.h>
 #include <VICUS_BuildingLevel.h>
+#include <VICUS_Polygon3D.h>
 
 #include <QMessageBox>
 
@@ -406,16 +407,38 @@ void SVPropEditGeometry::rotate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
-			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
+
+			const VICUS::Polygon3D &poly = s->polygon3D();
+			std::vector<IBKMK::Vector3D> vertexes = poly.vertexes();
+
+			IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
+			IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
+
+			vertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+
+			// check if we already have broken geometries
+			if ( poly.polyline().vertexes().size() != vertexes.size() )
+				continue;
+
+			for ( unsigned int i=1; i<vertexes.size(); ++i ) {
+
+				const std::vector<IBKMK::Vector2D> &polylineVertexes = poly.polyline().vertexes();
+				// we take our polyline and rotated local Axes to construct our
+				// rotated polygon3D
+
+				vertexes[i] = vertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
+
+			}
+
+			// we also want to translate all points back to its original center
 			for ( IBKMK::Vector3D & v : vertexes ) {
-				// use just this instead of making a QVetor3D
-				QVector3D v3D = rotate.rotatedVector(QtExt::IBKVector2QVector(v) );
 
 				Vic3D::Transform3D t;
-				t.setTranslation( v3D );
+				t.setTranslation(QtExt::IBKVector2QVector(v) );
 				t.translate(trans);
 
 				v = QtExt::QVector2IBKVector(t.translation() );
+
 			}
 			VICUS::Surface modS(*s);
 			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
