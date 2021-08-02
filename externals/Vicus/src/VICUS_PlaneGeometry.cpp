@@ -33,6 +33,7 @@
 #include <IBK_assert.h>
 #include <IBK_Line.h>
 #include <IBK_physics.h>
+#include <IBK_math.h>
 
 #include <IBKMK_Triangulation.h>
 #include <IBKMK_3DCalculations.h>
@@ -64,15 +65,22 @@ PlaneGeometry::PlaneGeometry(Polygon3D::type_t t,
 }
 
 
-double PlaneGeometry::inclination() const {
-	return std::acos(normal().m_z) / IBK::DEG2RAD;
+double PlaneGeometry::inclination(int digits) const {
+	double inc = std::acos(normal().m_z) / IBK::DEG2RAD;
+	inc = std::floor(inc*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+	return inc;
 }
 
 
-double PlaneGeometry::orientation() const {
+double PlaneGeometry::orientation(int digits) const {
 	double val = 90 - std::atan2(normal().m_y, normal().m_x) / IBK::DEG2RAD;
 	if (val<0)
 		val += 360;
+
+	// round value to n digits
+
+	val = std::floor(val*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+
 	return  val;
 }
 

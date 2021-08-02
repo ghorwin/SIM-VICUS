@@ -117,7 +117,7 @@ void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
 }
 
 
-double Polygon2D::area() const {
+double Polygon2D::area(int digits) const {
 	double surfArea=0;
 	unsigned int sizeV = m_vertexes.size();
 	for (unsigned int i=0; i<sizeV; ++i){
@@ -127,6 +127,7 @@ double Polygon2D::area() const {
 		surfArea += p1.m_x * (p2.m_y - p0.m_y);
 	}
 	surfArea *= 0.5;
+	surfArea = std::floor(surfArea*IBK::f_pow10(digits))/IBK::f_pow10(digits);
 	return surfArea;
 }
 

@@ -104,7 +104,7 @@ public:
 	void setVertexes(const std::vector<IBKMK::Vector2D> & vertexes);
 
 	/*! Calculates surface area in m2. */
-	double area() const;
+	double area(int digits = 1) const;
 
 	/*! Calculates surface circumference in m. */
 	double circumference() const;

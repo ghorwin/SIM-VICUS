@@ -69,10 +69,10 @@ public:
 	bool isValid() const { return m_polygon.isValid() && !m_triangulationData.m_triangles.empty(); }
 
 	/*! Return the inclination in Deg. 0° -> Roof; 90° -> Wall; 180° -> Floor. */
-	double inclination() const;
+	double inclination(int digits = 1) const;
 
 	/*! Return the orientation in Deg. 0° -> North; 90° -> East; 180° -> South; etc. */
-	double orientation() const;
+	double orientation(int digits = 1) const;
 
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
