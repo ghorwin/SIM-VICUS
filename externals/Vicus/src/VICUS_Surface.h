@@ -77,18 +77,13 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of surface. */
-	unsigned int						m_id = INVALID_ID;			// XML:A:required
-
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
-
-	/*! Stores visibility information for this surface.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
 	//:inherited	bool				m_visible = true;			// XML:A
 
-	/*! The color to be used when rendering the surface in regular mode (not in false-color mode). */
+	/*! The color to be used when rendering the surface in regular mode (not in false-color mode).
+		Important also for daylight calculation.
+	*/
 	QColor								m_displayColor;				// XML:E
 
 	// *** Runtime Variables ***
@@ -115,7 +110,8 @@ private:
 	/*! Subsurfaces of the surface. */
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 
-	// *** Runtime Variables ***
+
+	// *** RUNTIME VARIABLES ***
 
 	/*! The actual geometry. This object manages the triangulation of the surface's polygon and
 		its embedded subsurfaces.

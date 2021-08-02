@@ -1,14 +1,30 @@
 #include "VICUS_Project.h"
 
 #include <NANDRAD_Project.h>
-#include <IBK_algorithm.h>
 
+#include <IBK_algorithm.h>
 #include <IBK_physics.h>
+
+#include "VICUS_utilities.h"
 
 namespace VICUS {
 
 inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
 	return QString::fromStdString(mls.string(IBK::MultiLanguageString::m_language, "en"));
+}
+
+/*! Simple valid function. */
+template <typename T>
+bool isValidTemplate(const std::vector<T> elements, QStringList &errorStack, const QString &name ) {
+	bool valid = true;
+	for (const  T &e : elements){
+		if (!e.isValid() ){
+			errorStack << qApp->translate("isValidTemplate", "The %3 with #%1 and name '%2' is not valid! Export failed.")
+						  .arg(e.m_id).arg(QString::fromStdString(e.m_displayName.string()).arg(name));
+			valid = false;
+		}
+	}
+	return valid;
 }
 
 
@@ -27,7 +43,7 @@ public:
 			return nullptr;
 		// lookup zone template
 
-		const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+		const VICUS::ZoneTemplate * zoneTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 		if (zoneTemplate == nullptr)
 			throw IBK::Exception( qApp->tr("Invalid zone template ID #%1 referenced from zone #%2 '%3'.").arg(r->m_idZoneTemplate)
 			  .arg(r->m_id).arg(r->m_displayName).toStdString(), FUNC_ID);
@@ -41,25 +57,25 @@ public:
 			case VICUS::ZoneTemplate::ST_IntLoadPerson:
 			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 			case VICUS::ZoneTemplate::ST_IntLoadLighting:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_internalLoads, zoneTemplate->m_idReferences[subType]);
 			break;
 
 			case VICUS::ZoneTemplate::ST_IntLoadOther:
 			break;
 			case VICUS::ZoneTemplate::ST_ControlThermostat:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_Infiltration:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_infiltration, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_VentilationNatural:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_ventilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
-				subTemplate = Project::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
+				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneIdealHeatingCooling, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::NUM_ST:
 			break;
@@ -508,6 +524,138 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 	}
 }
 
+/* Important in the NANDRAD project the scheduleQuantity is not added. Otherwise the project is inconsistent. */
+void Project::addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
+								 NANDRAD::Project &p, const std::string &objListName)const {
+
+	// *** predefinitions ***
+
+	//find a schedule in NANDRAD project with the objListName
+	if(p.m_schedules.m_scheduleGroups.find(objListName) != p.m_schedules.m_scheduleGroups.end()){
+		//get schedule vector for this object list name
+		std::vector<NANDRAD::Schedule> &scheds = p.m_schedules.m_scheduleGroups[objListName];
+
+		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
+			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
+
+			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
+
+				//merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = Schedule::mergeDayType(dc.m_dayTypes);
+
+				//loop over all day types of vicus schedule
+				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+
+					bool valuesAdded = false;
+					//check if a period with equal start+end date exists
+					for(NANDRAD::Schedule &schedNandrad : scheds){
+
+						//now check day types of vicus schedule with nandrad schedule
+						//for a nandrad schedule following properties must be equal
+						// * day type
+						// * start day
+						// * end day
+						// if this is all equal we can add the timepoint and values to an existing daily cycle with same interpolation method
+						// otherwise we add a new daily cycle to the daily cylce vector
+
+						if(dt == schedNandrad.m_type &&
+								schedNandrad.m_startDayOfTheYear == period.m_intervalStartDay &&
+								((i+1<schedVic.m_periods.size() && schedNandrad.m_endDayOfTheYear == schedVic.m_periods[i+1].m_intervalStartDay-1) ||
+																		schedNandrad.m_endDayOfTheYear == 364)){
+							//now check if we have daily cylces with equal properties to:
+							// * interpolation method
+							// * time points
+							for(NANDRAD::DailyCycle &dcNandrad : schedNandrad.m_dailyCycles){
+								if( ( (dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Constant && !schedVic.m_useLinearInterpolation) ||
+										(dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Linear && schedVic.m_useLinearInterpolation) ) &&
+										dcNandrad.m_timePoints == dc.m_timePoints){
+									// now we can add the data
+									dcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+									valuesAdded = true;
+									break;
+								}
+							}
+							//nothing found to add data
+							//create a new daily cycle
+							if(!valuesAdded){
+								NANDRAD::DailyCycle newDcNandrad;
+								newDcNandrad.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+								newDcNandrad.m_timePoints = dc.m_timePoints;
+								newDcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+								schedNandrad.m_dailyCycles.push_back(newDcNandrad);
+								valuesAdded = true;
+							}
+						}
+						if(valuesAdded)
+							break;
+					}
+					//no schedule found
+					//so add a new one
+					if(!valuesAdded){
+						NANDRAD::Schedule newNandradSched;
+						newNandradSched.m_startDayOfTheYear = period.m_intervalStartDay;
+						if(i+1<schedVic.m_periods.size())
+							newNandradSched.m_endDayOfTheYear = schedVic.m_periods[i+1].m_intervalStartDay - 1;
+
+						//create daily cyle
+						NANDRAD::DailyCycle newDcNandrad;
+						newDcNandrad.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+						newDcNandrad.m_timePoints = dc.m_timePoints;
+						newDcNandrad.m_values.m_values[scheduleQuantityName] = dc.m_values;
+						//add daily cycle to schedule
+						newNandradSched.m_dailyCycles.push_back(newDcNandrad);
+
+						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dts){
+							newNandradSched.m_type = dtNandrad;
+							//add schedule to schedule group
+							scheds.push_back(newNandradSched);
+						}
+					}
+				}
+			}
+		}
+	}
+	//we do not find a schedule with name = objListName
+	//so create a new one
+	else{
+		std::vector<NANDRAD::Schedule> scheds;
+		//create for each period a new NANDRAD schedule
+		for(unsigned int i=0; i<schedVic.m_periods.size(); ++i){
+			const VICUS::ScheduleInterval &period = schedVic.m_periods[i];
+			//find day types for NANDRAD schedule
+			for(unsigned int j=0; j<period.m_dailyCycles.size(); ++j){
+				const VICUS::DailyCycle &dc = period.m_dailyCycles[j];
+
+				//merge all possible day types
+				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = Schedule::mergeDayType(dc.m_dayTypes);
+
+				//create for each day type in merge vector a new NANDRAD schedule
+				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
+					NANDRAD::Schedule s;
+					//set up start day
+					if(period.m_intervalStartDay > 0)
+						s.m_startDayOfTheYear = period.m_intervalStartDay;
+					//set up end day
+					//search in next period for a start day
+					if(i+1 < schedVic.m_periods.size())
+						s.m_endDayOfTheYear = schedVic.m_periods[i+1].m_intervalStartDay - 1;
+					s.m_type = dt;
+					NANDRAD::DailyCycle dcNANDRAD;
+					dcNANDRAD.m_interpolation = schedVic.m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Constant;
+					dcNANDRAD.m_timePoints = dc.m_timePoints;
+					dcNANDRAD.m_values.m_values[scheduleQuantityName] = dc.m_values;
+					s.m_dailyCycles.push_back(dcNANDRAD);
+					scheds.push_back(s);
+				}
+			}
+		}
+		//add sched group to NANDRAD project
+		p.m_schedules.m_scheduleGroups[objListName] = scheds;
+	}
+}
+
+
 
 void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned int> &usedModelIds, QStringList & errorStack) {
 	// check if we have a zone template with id to internal loads
@@ -686,8 +834,8 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 	// generate NANDRAD::InternalLoads object
 	NANDRAD::InternalLoadsModel internalLoadsModel;
-	internalLoadsModel.m_id = Project::uniqueIdWithPredef(usedModelIds, 1);  /*Project::uniqueId(m_internalLoadObjects)*/;
-	const VICUS::ZoneTemplate * zt = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+	internalLoadsModel.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);  /*VICUS::uniqueId(m_internalLoadObjects)*/;
+	const VICUS::ZoneTemplate * zt = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 	internalLoadsModel.m_displayName = zt->m_displayName.string();
 	internalLoadsModel.m_modelType = NANDRAD::InternalLoadsModel::MT_Scheduled;
 
@@ -755,7 +903,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	if (ventilation == nullptr && infiltration == nullptr)
 		return;
 
-	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+	const VICUS::ZoneTemplate * zoneTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 //	try {
 //		if (infiltration != nullptr && !infiltration->isValid())
 //			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
@@ -835,7 +983,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	else if(isInf && isVenti)			ventiType = V_InfAndVenti;
 
 	NANDRAD::NaturalVentilationModel natVentMod;
-	natVentMod.m_id = Project::uniqueIdWithPredef(usedModelIds, 1);
+	natVentMod.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);
 	natVentMod.m_displayName = zoneTemplate->m_displayName.string();
 	//TODO id and display name
 
@@ -990,7 +1138,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 
 	for(const SubSurface &ss : subSurfs){
 		NANDRAD::EmbeddedObject emb;
-		emb.m_id = Project::uniqueId(idSet);
+		emb.m_id = VICUS::uniqueId(idSet);
 		idSet.insert(emb.m_id);	//add new id to set
 		//get surface are of emb. obj.
 		NANDRAD::KeywordList::setParameter(emb.m_para, "EmbeddedObject::para_t",
@@ -1080,7 +1228,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		s = ci.m_sideBSurface;
 
 	// lookup boundary condition definition in embedded database
-	const VICUS::BoundaryCondition * bc = Project::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
+	const VICUS::BoundaryCondition * bc = VICUS::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
 	if (bc == nullptr){
 		errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
 				.arg(ci.m_componentID).arg(s->m_id));
@@ -1131,7 +1279,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already
-		const VICUS::Component * comp = Project::element(m_project->m_embeddedDB.m_components, compInstaVicus.m_componentID);
+		const VICUS::Component * comp = VICUS::element(m_project->m_embeddedDB.m_components, compInstaVicus.m_componentID);
 		if (comp == nullptr){
 			errorStack.append(qApp->tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
 							 .arg(compInstaVicus.m_componentID).arg(compInstaVicus.m_id));
@@ -1140,7 +1288,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		// now generate a construction instance
 		NANDRAD::ConstructionInstance constrInstNandrad;
 		//search for a free id
-		constrInstNandrad.m_id = Project::uniqueId(idSet);//compInstaVicus.m_id;
+		constrInstNandrad.m_id = VICUS::uniqueId(idSet);//compInstaVicus.m_id;
 		//now add id to Set
 		idSet.insert(constrInstNandrad.m_id);
 
@@ -1394,7 +1542,7 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 		return;
 	}
 
-	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+	const VICUS::ZoneTemplate * zoneTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 
 	// no model defined?
 	if (thermostat == nullptr)
@@ -1414,7 +1562,7 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 
 	NANDRAD::Thermostat thermo;
 
-	thermo.m_id = Project::uniqueIdWithPredef(usedModelIds, thermostat->m_id);
+	thermo.m_id = VICUS::uniqueIdWithPredef(usedModelIds, thermostat->m_id);
 	thermo.m_displayName = "Thermostat_" + zoneTemplate->m_displayName.string();
 	thermo.m_controllerType = thermostat->m_controllerType == VICUS::ZoneControlThermostat::CT_Analog ?
 				NANDRAD::Thermostat::CT_Analog : NANDRAD::Thermostat::CT_Digital;
@@ -1508,7 +1656,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 		const DataSurfaceHeating &dsh = dataSurfaceHeating[i];
 
 		const SurfaceHeating * surfSys =
-				Project::element(m_project->m_embeddedDB.m_surfaceHeatings, dsh.m_heatingSystemId);
+				VICUS::element(m_project->m_embeddedDB.m_surfaceHeatings, dsh.m_heatingSystemId);
 		VICUS::Database<NetworkPipe> pipeDB(0);
 		pipeDB.setData(m_project->m_embeddedDB.m_pipes);
 		if(surfSys == nullptr || !surfSys->isValid(pipeDB)){
@@ -1558,7 +1706,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 					numberPipes = (int)std::ceil( length / 100.);
 					length = area / pipeSpacing / (double)numberPipes;
 				}
-				const VICUS::NetworkPipe * pipe = Project::element(m_project->m_embeddedDB.m_pipes, surfSys->m_idPipe);
+				const VICUS::NetworkPipe * pipe = VICUS::element(m_project->m_embeddedDB.m_pipes, surfSys->m_idPipe);
 				double insideDiameter = pipe->diameterInside();
 
 				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * 0.25 *
@@ -1633,7 +1781,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(ideal.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			ideal.m_id = Project::uniqueIdWithPredef(usedModelIds, ideal.m_id);
+			ideal.m_id = VICUS::uniqueIdWithPredef(usedModelIds, ideal.m_id);
 
 			// set object list in new definition
 			ideal.m_constructionObjectList= ol.m_name;
@@ -1663,7 +1811,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			ol.m_filterID.m_ids.insert(pipReg.m_id);		//remember we have save the construction instance id in this id
 
 			//get a new unique id for this element
-			pipReg.m_id = Project::uniqueIdWithPredef(usedModelIds, pipReg.m_id);
+			pipReg.m_id = VICUS::uniqueIdWithPredef(usedModelIds, pipReg.m_id);
 
 			// set object list in new definition
 			pipReg.m_constructionObjectList= ol.m_name;
@@ -1724,7 +1872,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 		return;
 	}
 
-	const VICUS::ZoneTemplate * zoneTemplate = Project::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
+	const VICUS::ZoneTemplate * zoneTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
 
 	// no model defined?
 	if (idealHeatingCooling == nullptr)
@@ -1743,7 +1891,7 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 
 	NANDRAD::IdealHeatingCoolingModel idealHeatCool;
-	idealHeatCool.m_id = Project::uniqueIdWithPredef(usedModelIds,r->m_id);
+	idealHeatCool.m_id = VICUS::uniqueIdWithPredef(usedModelIds,r->m_id);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
 	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())

@@ -255,6 +255,7 @@ public:
 	bool										m_modified = false;
 
 private:
+	/*! Holds actual data, key = (unique) ID of DB element, value = data object. */
 	std::map<unsigned int, T>					m_data;
 
 	/*! Counter that holds the first user material ID. */

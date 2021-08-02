@@ -54,10 +54,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Persistant ID of building level. */
-	unsigned int						m_id = INVALID_ID;			// XML:A:required
-
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! The nominal elevation [m] of the floor's surface above ground. */
 	double								m_elevation = 0;			// XML:E
@@ -65,14 +64,16 @@ public:
 	/*! The nominal height [m] (floor surface to ceiling) of the building level. */
 	double								m_height = 2.7;				// XML:E
 
-	/*! Stores visibility information for this surface.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool								m_visible = true;			// XML:A
-
 	/*! Vector of all rooms in a building level. */
 	std::vector<Room>					m_rooms;					// XML:E
+
+	// *** RUNTIME VARIABLES ***
+
+	/*! Whole building level net floor area in m2.
+		This area is updated whenever the pointer hierarchy is updated, that is, whenever
+		anything changes in the building->building level->room tree.
+	*/
+	double								m_netFloorArea = -1;
 };
 
 } // namespace VICUS

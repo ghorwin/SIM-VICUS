@@ -38,25 +38,22 @@
 
 namespace VICUS {
 
-/*! Describes the course of all zone control thermostats.
-
-*/
-
+/*! Zone control parameters for thermostat model. */
 class ZoneControlThermostat : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Tolerance. */
-		P_Tolerance,				// Keyword: Tolerance						[K]			'Thermostat tolerance heating and cooling mode.'
+		P_Tolerance,				// Keyword: Tolerance						[K]			'Thermostat tolerance heating and cooling mode'
+		P_DeadBand,					// Keyword: DeadBand						[K]			'Thermostat dead band (for digital controllers)'
 		NUM_P
 	};
 
 	/*! Zone control value.*/
 	enum ControlValue {
-		CV_AirTemperature,		// Keyword: AirTemperature					[-]		'Air temperature'
-		//CV_RadiantTemperature,	// Keyword: RadiantTemperature				[-]		'Radiant temperature'
-		CV_OperativeTemperature,// Keyword: OperativeTemperature			[-]		'Operative temperature'
+		CV_AirTemperature,			// Keyword: AirTemperature					[-]		'Air temperature'
+		CV_OperativeTemperature,	// Keyword: OperativeTemperature			[-]		'Operative temperature'
 		NUM_CV
 	};
 
@@ -80,20 +77,23 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
-	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;				// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;					// XML:A
 
 	/*! False color. */
-	QColor							m_color;								// XML:A
+	QColor							m_color;										// XML:A
 
 	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
+	IBK::MultiLanguageString		m_notes;										// XML:E
 
 	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;							// XML:E
+	IBK::MultiLanguageString		m_dataSource;									// XML:E
 
 	/*! Control value. */
 	ControlValue					m_controlValue = NUM_CV;						// XML:E:required
+
+	/*! Type of controller. */
+	ControllerType					m_controllerType = NUM_CT;						// XML:E:required
 
 	/*! Heating setpoint schedule ID. */
 	unsigned int					m_heatingSetpointScheduleId = INVALID_ID;		// XML:E
@@ -101,7 +101,6 @@ public:
 	/*! Cooling setpoint schedule ID. */
 	unsigned int					m_coolingSetpointScheduleId = INVALID_ID;		// XML:E
 
-	ControllerType					m_controllerType = NUM_CT;						// XML:E:required
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E

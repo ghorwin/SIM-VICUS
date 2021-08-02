@@ -67,13 +67,10 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of component. */
-	unsigned int					m_id = INVALID_ID;							// XML:A:required
-
-	/*! Display name of component. */
+	//:inherited	unsigned int					m_id = INVALID_ID;			// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
 
-	/*! False color, not transparent!. */
+	/*! False color, not transparent! */
 	QColor							m_color;									// XML:A
 
 	/*! SubSurfaceComponent type. */

@@ -47,6 +47,7 @@ public:
 		IBKMK::Polygon3D(vertexes)
 	{
 	}
+
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 	*/
@@ -57,6 +58,7 @@ public:
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	VICUS_COMP(Polygon3D)
 };
 

@@ -76,19 +76,18 @@ HEADERS += \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
 	../../src/VICUS_SurfaceHeating.h \
 	../../src/VICUS_Surface.h \
-	../../src/VICUS_SurfaceProperties.h \
 	../../src/VICUS_VentilationNatural.h \
 	../../src/VICUS_ViewSettings.h \
 	../../src/VICUS_Window.h \
 	../../src/VICUS_WindowDivider.h \
 	../../src/VICUS_WindowFrame.h \
-	../../src/VICUS_WindowGlazingLayer.h \
 	../../src/VICUS_WindowGlazingSystem.h \
 	../../src/VICUS_ZoneControlNaturalVentilation.h \
 	../../src/VICUS_ZoneControlShading.h \
 	../../src/VICUS_ZoneControlThermostat.h \
 	../../src/VICUS_ZoneIdealHeatingCooling.h \
-	../../src/VICUS_ZoneTemplate.h
+	../../src/VICUS_ZoneTemplate.h \
+	../../src/VICUS_utilities.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -99,7 +98,6 @@ SOURCES += \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
-	../../src/VICUS_EmbeddedDatabase.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
@@ -134,6 +132,7 @@ SOURCES += \
 	../../src/VICUS_ZoneControlThermostat.cpp \
 	../../src/VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/VICUS_ZoneTemplate.cpp \
+	../../src/VICUS_utilities.cpp \
 	../../src/ncg/ncg_VICUS_BoundaryCondition.cpp \
 	../../src/ncg/ncg_VICUS_Building.cpp \
 	../../src/ncg/ncg_VICUS_BuildingLevel.cpp \
@@ -166,13 +165,11 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceHeating.cpp \
-	../../src/ncg/ncg_VICUS_SurfaceProperties.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \
 	../../src/ncg/ncg_VICUS_ViewSettings.cpp \
 	../../src/ncg/ncg_VICUS_Window.cpp \
 	../../src/ncg/ncg_VICUS_WindowDivider.cpp \
 	../../src/ncg/ncg_VICUS_WindowFrame.cpp \
-	../../src/ncg/ncg_VICUS_WindowGlazingLayer.cpp \
 	../../src/ncg/ncg_VICUS_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlNaturalVentilation.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlShading.cpp \

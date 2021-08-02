@@ -50,6 +50,7 @@ public:
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	VICUS_COMP(Polygon2D)
 
 };

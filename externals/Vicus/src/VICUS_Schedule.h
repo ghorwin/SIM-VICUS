@@ -78,6 +78,11 @@ public:
 	void insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const;
 
 
+	/*! Converts vector of VICUS day types into a NANDRAD schedule day types
+		(also merges weekdays to NANDRAD::Schedule::ST_WEEKDAY, etc.).
+	*/
+	static std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required

@@ -1561,6 +1561,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
 					case SVViewState::OCM_NetworkSubNetworks:
+					case SVViewState::OCM_NetworkHeatExchange:
 					case SVViewState::OCM_SelectedSurfacesHighlighted:
 					break;
 				}
@@ -1625,6 +1626,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkEdge:
 					case SVViewState::OCM_NetworkNode:
 					case SVViewState::OCM_NetworkSubNetworks:
+					case SVViewState::OCM_NetworkHeatExchange:
 					case SVViewState::OCM_SurfaceHeating:
 					break;
 				} // switch

@@ -34,6 +34,9 @@ class TiXmlElement;
 
 namespace VICUS {
 
+/*! Abstract base class of all database elements, needed to have generic DB table model implementations.
+	ID and display name are mandatory elements for each db element.
+*/
 class AbstractDBElement {
 public:
 	enum ComparisonResult {

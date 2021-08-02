@@ -62,11 +62,7 @@ void Infiltration::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes.setEncodedString(c->GetText());
-			else if (cName == "DataSource")
-				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IBK:Parameter") {
+			if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -113,10 +109,6 @@ TiXmlElement * Infiltration::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (!m_notes.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
-	if (!m_dataSource.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (m_airChangeType != NUM_AC)
 		TiXmlElement::appendSingleAttributeElement(e, "AirChangeType", nullptr, std::string(), KeywordList::Keyword("Infiltration::AirChangeType",  m_airChangeType));

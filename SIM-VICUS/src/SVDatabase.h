@@ -26,33 +26,7 @@
 #ifndef SVDatabaseH
 #define SVDatabaseH
 
-#include <VICUS_Material.h>
-#include <VICUS_Component.h>
-#include <VICUS_Construction.h>
-#include <VICUS_WindowGlazingSystem.h>
-#include <VICUS_Window.h>
-#include <VICUS_WindowFrame.h>
-#include <VICUS_WindowDivider.h>
-#include <VICUS_SurfaceProperties.h>
-#include <VICUS_BoundaryCondition.h>
-#include <VICUS_NetworkPipe.h>
-#include <VICUS_NetworkFluid.h>
-#include <VICUS_NetworkComponent.h>
-#include <VICUS_NetworkController.h>
-#include <VICUS_SubNetwork.h>
-#include <VICUS_EPDDataset.h>
-#include <VICUS_Schedule.h>
-#include <VICUS_InternalLoad.h>
-#include <VICUS_ZoneControlThermostat.h>
-#include <VICUS_ZoneControlShading.h>
-#include <VICUS_ZoneControlNaturalVentilation.h>
-#include <VICUS_Infiltration.h>
-#include <VICUS_VentilationNatural.h>
-#include <VICUS_ZoneTemplate.h>
 #include <VICUS_Project.h>
-#include <VICUS_SurfaceHeating.h>
-
-#include <VICUS_Database.h>
 
 /*! Central provider of predefined and user defined construction, window, material... databases.
 
@@ -110,7 +84,7 @@ public:
 	*/
 	void updateEmbeddedDatabase(VICUS::Project & p);
 
-
+	/*! Holds ids of possible duplicates and whether they are identical. */
 	struct DuplicateInfo {
 		unsigned int m_idFirst;
 		unsigned int m_idSecond;

@@ -37,13 +37,14 @@ bool ZoneControlNaturalVentilation::isValid() const
 	if ( m_id == INVALID_ID )
 		return false;
 
-	for (unsigned int i = 0; i < NUM_ST; ++i) {
+	for (int i = 0; i < NUM_ST; ++i) {
 		// is a schedule ID set?
-		if (m_scheduleId[i].empty())
+		if (m_idSchedules[i] != INVALID_ID) {
+			/// TODO Check Schedule ID
+			/// we have to check also if the schedule with the specified ID exists!
+			///
+			/// for now we always return false
 			return false;
-		else {
-		/// TODO Check Schedule ID
-		/// we have to check also if the schedule with the specified ID exists!
 		}
 
 		try {
@@ -90,7 +91,7 @@ AbstractDBElement::ComparisonResult ZoneControlNaturalVentilation::equal(const A
 	}
 
 	for(unsigned int i=0; i<NUM_ST; ++i)
-		if(m_scheduleId[i] != otherVent->m_scheduleId[i])
+		if(m_idSchedules[i] != otherVent->m_idSchedules[i])
 			return Different;
 
 	//check meta data

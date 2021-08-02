@@ -31,6 +31,8 @@
 
 #include <QString>
 
+#include "VICUS_Constants.h"
+
 namespace VICUS {
 
 /*! Base class for all objects that have a parent and are shown in the
@@ -72,13 +74,18 @@ public:
 	}
 
 
-
+	/*! Parent pointer, do not modify. */
 	Object	*m_parent = nullptr;
 
-	/*! Stores selected information for this surface (not serialized, for now). */
+	/*! Stores visibility information for this surface. */
 	bool								m_selected = false;
 	/*! Stores visibility information for this surface (serialized manually in derived classes). */
 	bool								m_visible = true;
+
+	/*! Persistant ID of object (not the unique ID, may not be unique in DB model, must be handled
+		appropriately in error handling).
+	*/
+	unsigned int						m_id = INVALID_ID;
 
 	/*! The descriptive name of the object. */
 	QString								m_displayName;

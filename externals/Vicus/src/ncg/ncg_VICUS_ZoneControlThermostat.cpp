@@ -141,13 +141,13 @@ TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
 
 	if (m_controlValue != NUM_CV)
 		TiXmlElement::appendSingleAttributeElement(e, "ControlValue", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControlValue",  m_controlValue));
+
+	if (m_controllerType != NUM_CT)
+		TiXmlElement::appendSingleAttributeElement(e, "ControllerType", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControllerType",  m_controllerType));
 	if (m_heatingSetpointScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "HeatingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_heatingSetpointScheduleId));
 	if (m_coolingSetpointScheduleId != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "CoolingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_coolingSetpointScheduleId));
-
-	if (m_controllerType != NUM_CT)
-		TiXmlElement::appendSingleAttributeElement(e, "ControllerType", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControllerType",  m_controllerType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

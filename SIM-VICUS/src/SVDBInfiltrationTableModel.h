@@ -41,8 +41,6 @@ public:
 		ColId,
 		ColCheck,
 		ColName,
-		//ColCategory,
-		ColSource,
 		NumColumns
 	};
 

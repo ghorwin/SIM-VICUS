@@ -29,10 +29,7 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Project.h"
 #include "VICUS_KeywordList.h"
-#include "VICUS_NetworkLine.h"
-#include "VICUS_NetworkFluid.h"
-#include "VICUS_NetworkPipe.h"
-#include "VICUS_Project.h"
+#include "VICUS_utilities.h"
 
 #include <IBK_assert.h>
 #include <IBK_Path.h>
@@ -80,7 +77,7 @@ unsigned int Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeT
 	}
 
 	// else add new node
-	unsigned id = Project::uniqueId(m_nodes);
+	unsigned id = VICUS::uniqueId(m_nodes);
 	m_nodes.push_back(NetworkNode(id, type, v));
 	updateNodeEdgeConnectionPointers();
 

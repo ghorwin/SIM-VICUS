@@ -36,10 +36,7 @@
 
 namespace VICUS {
 
-/*! Describes the course of all zone control shading.
-
-*/
-
+/*! Zone control parameters for dynamic shading. */
 class ZoneControlShading : public AbstractDBElement {
 public:
 
@@ -57,7 +54,6 @@ public:
 		P_GlobalWest,					// Keyword: GlobalWest				[W/m2]		'Global west (upper) sensor setpoint value.'
 		/*! Dead band value. */
 		P_DeadBand,						// Keyword: DeadBand				[W/m2]		'Dead band value for all sensors.'
-
 
 		NUM_P
 	};

@@ -37,15 +37,19 @@
 
 namespace VICUS {
 
+/*! Stores all data for a room. */
 class Room : public Object {
 public:
 
-	/*! Room parameters. */
-	enum para_t{
+	/*! Room parameters.
+		These parameters are either automatically computed when zone is created/modified, or manually
+		entered/adjusted by user.
+	*/
+	enum para_t {
 		/*! Dry density of the material. */
-		P_Area,					// Keyword: Area					[m2]	'Floor area of the zone.'
+		P_Area,					// Keyword: Area					[m2]	'Floor area of the zone'
 		/*! Dry density of the material. */
-		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone.'
+		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone'
 		NUM_P
 	};
 
@@ -74,27 +78,32 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of building. */
-	unsigned int						m_id = INVALID_ID;					// XML:A:required
-
-	//:inherited	QString				m_displayName;						// XML:A
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
+	//:inherited	QString				m_displayName;				// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! Reference to assigned zone template (optional). */
 	IDType								m_idZoneTemplate = INVALID_ID;		// XML:E
 
-	/*! Stores visibility information for this surface.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool								m_visible = true;			// XML:A
-
-	/*! Stores zone parameters.
-		if area or volume is zero --> autocalulation from geometry
-	*/
+	/*! Zone parameters. */
 	IBK::Parameter						m_para[NUM_P];						// XML:E
 
 	/*! Surfaces of the room. */
 	std::vector<Surface>				m_surfaces;							// XML:E
+
+	// *** RUNTIME VARIABLES ***
+
+	/*! Whole room net floor area in m2.
+		This area is updated either from user-defined area in m_para or automatically computed from
+		zone geometry. If the latter is not possible, user must enter a floor area.
+	*/
+	double								m_netFloorArea = -1;
+
+	/*! Whole room volume in m3.
+		This volume is updated either from user-defined volume in m_para or automatically computed from
+		zone geometry. If the latter is not possible, user must enter a valid volume.
+	*/
+	double								m_volume = -1;
 };
 
 

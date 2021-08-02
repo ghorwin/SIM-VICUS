@@ -32,6 +32,7 @@
 #include <VICUS_Object.h>
 #include <VICUS_BuildingLevel.h>
 #include <VICUS_Polygon3D.h>
+#include <VICUS_utilities.h>
 
 #include <QMessageBox>
 
@@ -1323,7 +1324,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 				const_cast<VICUS::SubSurface&>(clonedSubSurf).m_id = clonedSubSurf.uniqueID(); // same as for surface
 
-				const_cast<VICUS::SubSurface&>(clonedSubSurf).m_displayName = VICUS::Project::uniqueName(it->m_displayName, m_subSurfNames);
+				const_cast<VICUS::SubSurface&>(clonedSubSurf).m_displayName = VICUS::uniqueName(it->m_displayName, m_subSurfNames);
 				// remember old vs. new surface ID map
 				oldNewIDMap[it->m_id] = clonedSubSurf.m_id;
 
@@ -1339,7 +1340,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		// selected objects
 
 		// we take our name set for this purpose and use the unique Name Function to take care of our new names
-		newSurf.m_displayName = VICUS::Project::uniqueName(s->m_displayName, m_surfNames );
+		newSurf.m_displayName = VICUS::uniqueName(s->m_displayName, m_surfNames );
 
 		// now translate surface; no need to translate sub-surfaces, since they are embedded anyway
 		std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
@@ -1369,10 +1370,10 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		// we create a copy of the component instance
 		bool leftSideUsed =
 				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					 VICUS::Project::contains(m_selSurfaces, ci.m_sideASurfaceID) );
+					 VICUS::contains(m_selSurfaces, ci.m_sideASurfaceID) );
 		bool rightSideUsed =
 				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					 VICUS::Project::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
+					 VICUS::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1380,7 +1381,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 		// create copy of CI
 		VICUS::ComponentInstance newCi;
-		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
 		newCi.m_componentID = ci.m_componentID;
 		if (leftSideUsed)
@@ -1396,10 +1397,10 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		// we create a copy of the component instance
 		bool leftSideUsed =
 				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					( VICUS::Project::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
+					( VICUS::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
 		bool rightSideUsed =
 				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					( VICUS::Project::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
+					( VICUS::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1407,7 +1408,7 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 		// create copy of CI
 		VICUS::SubSurfaceComponentInstance newCi;
-		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
 		newCi.m_subSurfaceComponentID = ci.m_subSurfaceComponentID;
 		if (leftSideUsed)
@@ -1522,7 +1523,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 				}
 				const_cast<VICUS::Surface&>(clonedSurf).setSubSurfaces(subs);
 
-				const_cast<VICUS::Surface&>(clonedSurf).m_displayName = VICUS::Project::uniqueName(itSurf->m_displayName, m_surfNames);
+				const_cast<VICUS::Surface&>(clonedSurf).m_displayName = VICUS::uniqueName(itSurf->m_displayName, m_surfNames);
 
 				// now translate Room566 gh; no need to translate sub-surfaces, since they are embedded anyway
 				std::vector<IBKMK::Vector3D> vertexes = const_cast<VICUS::Surface&>(clonedSurf).polygon3D().vertexes();
@@ -1545,7 +1546,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		// selected objects
 
 		// we take our name set for this purpose and use the unique Name Function to take care of our new names
-		newRoom.m_displayName = VICUS::Project::uniqueName(r->m_displayName, m_roomNames );
+		newRoom.m_displayName = VICUS::uniqueName(r->m_displayName, m_roomNames );
 
 		newRooms.push_back(newRoom);
 	}
@@ -1562,10 +1563,10 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		// we create a copy of the component instance
 		bool leftSideUsed =
 				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					 VICUS::Project::contains(m_selSurfaces, ci.m_sideASurfaceID) );
+					 VICUS::contains(m_selSurfaces, ci.m_sideASurfaceID) );
 		bool rightSideUsed =
 				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					 VICUS::Project::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
+					 VICUS::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1573,7 +1574,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 
 		// create copy of CI
 		VICUS::ComponentInstance newCi;
-		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
 		newCi.m_componentID = ci.m_componentID;
 		if (leftSideUsed)
@@ -1589,10 +1590,10 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		// we create a copy of the component instance
 		bool leftSideUsed =
 				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					( VICUS::Project::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
+					( VICUS::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
 		bool rightSideUsed =
 				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					( VICUS::Project::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
+					( VICUS::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1600,7 +1601,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 
 		// create copy of CI
 		VICUS::SubSurfaceComponentInstance newCi;
-		newCi.m_id = VICUS::Project::uniqueId(compInstanceIDs);
+		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
 		newCi.m_subSurfaceComponentID = ci.m_subSurfaceComponentID;
 		if (leftSideUsed)
@@ -1662,8 +1663,8 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		// we find a room
 		// we make a copy of the room
 		VICUS::Room newRoom = r->clone();
-		newRoom.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
-		newRoom.m_displayName = VICUS::Project::uniqueName(r->m_displayName, existingRoomNames);
+		newRoom.m_id = VICUS::uniqueId(project().m_plainGeometry);
+		newRoom.m_displayName = VICUS::uniqueName(r->m_displayName, existingRoomNames);
 
 		VICUS::BuildingLevel * bl = dynamic_cast<VICUS::BuildingLevel*>(r->m_parent);
 		Q_ASSERT(bl != nullptr);
@@ -1688,8 +1689,8 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 				// deselect old surface
 				const_cast<VICUS::Surface*>(s)->m_selected = false;
 
-				newSurf.m_displayName = VICUS::Project::uniqueName(s->m_displayName, existingSurfNames);
-				newSurf.m_id = VICUS::Project::uniqueId(allSurfaces);
+				newSurf.m_displayName = VICUS::uniqueName(s->m_displayName, existingSurfNames);
+				newSurf.m_id = VICUS::uniqueId(allSurfaces);
 
 				std::vector<IBKMK::Vector3D> vertexes = newSurf.m_geometry.vertexes();
 				for ( IBKMK::Vector3D &v : vertexes ) {

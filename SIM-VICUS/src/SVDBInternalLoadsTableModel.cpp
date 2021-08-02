@@ -88,7 +88,6 @@ QVariant SVDBInternalLoadsTableModel::data ( const QModelIndex & index, int role
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
-				case ColSource				: return QtExt::MultiLangString2QString(it->second.m_dataSource);
 			}
 		} break;
 
@@ -132,8 +131,6 @@ QVariant SVDBInternalLoadsTableModel::headerData(int section, Qt::Orientation or
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				//case ColCategory			: return tr("Category");
-				case ColSource				: return tr("Source");
 			}
 		} break;
 

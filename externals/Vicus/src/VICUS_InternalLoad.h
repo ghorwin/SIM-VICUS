@@ -107,12 +107,6 @@ public:
 	/*! False color. */
 	QColor							m_color;								// XML:A
 
-	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
-
-	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;							// XML:E
-
 	/*! Internal Load category. */
 	Category						m_category = NUM_MC;					// XML:E:required
 

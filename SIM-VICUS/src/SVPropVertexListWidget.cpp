@@ -39,8 +39,7 @@
 
 #include <VICUS_Project.h>
 #include <VICUS_KeywordList.h>
-#include <VICUS_ComponentInstance.h>
-#include <VICUS_Polygon3D.h>
+#include <VICUS_utilities.h>
 
 #include "SVProjectHandler.h"
 #include "SVViewStateHandler.h"
@@ -352,12 +351,12 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::Building & b : project().m_buildings)
 		existingNames.insert(b.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Building"), existingNames);
+	QString defaultName = VICUS::uniqueName(tr("Building"), existingNames);
 	QString text = QInputDialog::getText(this, tr("Add building"), tr("New building name:"), QLineEdit::Normal, defaultName).trimmed();
 	if (text.isEmpty()) return;
 	// modify project
 	VICUS::Building b;
-	b.m_id = VICUS::Project::uniqueId(project().m_buildings);
+	b.m_id = VICUS::uniqueId(project().m_buildings);
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
 	undo->push(); // this will update our combo boxes
@@ -402,13 +401,13 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::BuildingLevel & bl : b->m_buildingLevels)
 		existingNames.insert(bl.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Level"), existingNames);
+	QString defaultName = VICUS::uniqueName(tr("Level"), existingNames);
 	QString text = QInputDialog::getText(this, tr("Add building level"), tr("New building level/floor name:"), QLineEdit::Normal, defaultName).trimmed();
 	if (text.isEmpty()) return;
 
 	// modify project
 	VICUS::BuildingLevel bl;
-	bl.m_id = VICUS::Project::uniqueId(b->m_buildingLevels);
+	bl.m_id = VICUS::uniqueId(b->m_buildingLevels);
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
 	undo->push(); // this will update our combo boxes
@@ -427,13 +426,13 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::Room & r : bl->m_rooms)
 		existingNames.insert(r.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Room"), existingNames);
+	QString defaultName = VICUS::uniqueName(tr("Room"), existingNames);
 	QString text = QInputDialog::getText(this, tr("Add room/zone"), tr("New room/zone name:"), QLineEdit::Normal, defaultName).trimmed();
 	if (text.isEmpty()) return;
 
 	// modify project
 	VICUS::Room r;
-	r.m_id = VICUS::Project::uniqueId(bl->m_rooms);
+	r.m_id = VICUS::uniqueId(bl->m_rooms);
 	r.m_displayName = text;
 	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding building zone '%1'").arg(r.m_displayName), buildingLevelUniqueID, r, true);
 	undo->push(); // this will update our combo boxes
@@ -494,7 +493,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
 		s.m_color = QColor("#206000");
-		s.m_id = VICUS::Project::uniqueId(project().m_plainGeometry);
+		s.m_id = VICUS::uniqueId(project().m_plainGeometry);
 		// modify project
 		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
 		undo->push();
@@ -513,7 +512,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		s.m_id = s.uniqueID();
 		// also store component information
 		VICUS::ComponentInstance compInstance;
-		compInstance.m_id = VICUS::Project::uniqueId(project().m_componentInstances);
+		compInstance.m_id = VICUS::uniqueId(project().m_componentInstances);
 		compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
 		// for now we assume that the zone's surface is connected to the b-side of the component
 		compInstance.m_sideBSurfaceID = s.m_id;
@@ -625,7 +624,7 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 
 	sFloor.initializeColorBasedOnInclination();
 	// get the smallest yet free ID for component instances/construction instances
-	unsigned int conInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+	unsigned int conInstID = VICUS::largestUniqueId(project().m_componentInstances);
 	// Note: surface is attached to "Side A"
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
 		 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
@@ -761,7 +760,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	r.m_surfaces.push_back(sFloor);
 
 	std::vector<VICUS::ComponentInstance> componentInstances;
-	unsigned int compInstID = VICUS::Project::largestUniqueId(project().m_componentInstances);
+	unsigned int compInstID = VICUS::largestUniqueId(project().m_componentInstances);
 	// now process all other generated surfaces and create roof surfaces
 	unsigned int roofSurfaceCount = 0;
 	unsigned int wallCount = 0;

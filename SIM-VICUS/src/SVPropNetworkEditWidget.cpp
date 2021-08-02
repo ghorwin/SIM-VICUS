@@ -33,6 +33,7 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <VICUS_KeywordList.h>
+#include <VICUS_utilities.h>
 
 
 #include <QtExt_Conversions.h>
@@ -134,7 +135,7 @@ void SVPropNetworkEditWidget::selectionChanged(unsigned int networkId) {
 	m_currentNodes.clear();
 
 	// set current network based on given id
-	m_currentConstNetwork = VICUS::Project::element(project().m_geometricNetworks, networkId);
+	m_currentConstNetwork = VICUS::element(project().m_geometricNetworks, networkId);
 
 	// can be nullptr if no network was selected
 	if (m_currentConstNetwork != nullptr){
@@ -763,7 +764,7 @@ bool SVPropNetworkEditWidget::setNetwork() {
 	if (m_currentConstNetwork == nullptr)
 		return false;
 	VICUS::Project p = project();
-	m_currentNetwork = *p.element(p.m_geometricNetworks, m_currentConstNetwork->m_id);
+	m_currentNetwork = *VICUS::element(p.m_geometricNetworks, m_currentConstNetwork->m_id);
 	return true;
 }
 
@@ -973,14 +974,14 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	// make copy with reduced nodes
 	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
 	newNetwork.m_displayName = QString("%1_noRedundants").arg(m_currentNetwork.m_displayName);
-	newNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	newNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);
 	newNetwork.setVisible(true);
 
 	// algorithm
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanRedundantEdges(newNetwork);
 	const VICUS::Project & p = project();
-	newNetwork.m_id = p.uniqueId(p.m_geometricNetworks);
+	newNetwork.m_id = VICUS::uniqueId(p.m_geometricNetworks);
 	newNetwork.updateNodeEdgeConnectionPointers();
 	newNetwork.updateExtends();
 
@@ -1010,7 +1011,7 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 	undoMod->push(); // modifies project and updates views
 
 	// now modify the current network (new id, new name)
-	reducedNetwork.m_id = project().uniqueId(project().m_geometricNetworks);
+	reducedNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);
 	reducedNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
 	reducedNetwork.removeShortEdges(threshold);
 	reducedNetwork.setVisible(true);

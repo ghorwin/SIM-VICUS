@@ -65,18 +65,8 @@ void ZoneControlNaturalVentilation::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IBK:IntPara") {
-				IBK::IntPara p;
-				NANDRAD::readIntParaElement(c, p);
-				bool success = false;
-				try {
-					ScheduleType ptype = (ScheduleType)KeywordList::Enumeration("ZoneControlNaturalVentilation::ScheduleType", p.name);
-					m_scheduleId[ptype] = p; success = true;
-				}
-				catch (...) { /* intentional fail */  }
-				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
+			else if (cName == "IdSchedules[NUM_ST]")
+				m_idSchedules[NUM_ST] = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -119,12 +109,8 @@ TiXmlElement * ZoneControlNaturalVentilation::writeXML(TiXmlElement * parent) co
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
-
-	for (unsigned int i=0; i<NUM_ST; ++i) {
-		if (!m_scheduleId[i].name.empty()) {
-			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_scheduleId[i].name, IBK::val2string(m_scheduleId[i].value));
-		}
-	}
+	if (m_idSchedules[NUM_ST] != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSchedules[NUM_ST]", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSchedules[NUM_ST]));
 
 	for (unsigned int i=0; i<NUM_ST; ++i) {
 		if (!m_para[i].name.empty()) {

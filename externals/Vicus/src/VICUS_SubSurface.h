@@ -61,22 +61,15 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Unique ID of sub surface. */
-	unsigned int						m_id = INVALID_ID;			// XML:A:required
-
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! The actual geometry. */
 	Polygon2D							m_polygon2D;				// XML:E
 
 
-	/*! Stores visibility information for this SubSurface.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool								m_visible = true;			// XML:A
-
-	// *** Runtime Variables ***
+	// *** RUNTIME VARIABLES ***
 
 	/*! Color to be used when next updating the geometry.
 		Color is set based on hightlighting/selection algorithm.

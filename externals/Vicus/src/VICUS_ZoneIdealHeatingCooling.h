@@ -36,19 +36,16 @@
 
 namespace VICUS {
 
-/*! Describes the course of all ZoneIdealHeatingCooling.
-
-*/
-
+/*! Zone control parameters for ideal heating/cooling models. */
 class ZoneIdealHeatingCooling : public AbstractDBElement {
 public:
 
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Heating limit. */
-		P_HeatingLimit,					// Keyword: HeatingLimit			[W/m2]		'Heating Limit.'
-		/*! Cooling limit. */
-		P_CoolingLimit,					// Keyword: CoolingLimit			[W/m2]		'Cooling Limit.'
+		P_HeatingLimit,					// Keyword: HeatingLimit			[W/m2]		'Heating limit'
+		/*! Cooling limit (always positive, cooling load is positive). */
+		P_CoolingLimit,					// Keyword: CoolingLimit			[W/m2]		'Cooling limit (positive)'
 		NUM_P
 	};
 

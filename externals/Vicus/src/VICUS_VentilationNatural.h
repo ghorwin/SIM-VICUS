@@ -38,9 +38,7 @@
 
 namespace VICUS {
 
-/*! Describes the course of all natural ventilation.
-
-*/
+/*! Natural ventilation model parameters. */
 class VentilationNatural : public AbstractDBElement {
 public:
 

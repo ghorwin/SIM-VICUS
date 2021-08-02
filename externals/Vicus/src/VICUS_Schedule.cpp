@@ -28,66 +28,63 @@
 namespace VICUS {
 
 
-/* Returns the possible merged day types. If no merge is possible returns dts. */
-std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts){
-//	unsigned int weekDayCount=0, weekEndCount=0;
-//	bool hasHoli = false;
-	std::set<int> dtSet,weekDaySet,weekEndSet,holiSet;
-	for(int v : dts){
-		if(v == NANDRAD::Schedule::ST_MONDAY ||
-				v == NANDRAD::Schedule::ST_TUESDAY ||
-				v == NANDRAD::Schedule::ST_WEDNESDAY ||
-				v == NANDRAD::Schedule::ST_THURSDAY ||
-				v == NANDRAD::Schedule::ST_FRIDAY)
-			weekDaySet.insert(v);
-		else if(v == NANDRAD::Schedule::ST_SATURDAY ||
-				v == NANDRAD::Schedule::ST_SUNDAY)
-			weekEndSet.insert(v);
-		else if(v == NANDRAD::Schedule::ST_HOLIDAY)
-			holiSet.insert(v);
-		dtSet.insert(v);
+// Returns the possible merged day types. If no merge is possible returns dts.
+std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const std::vector<int> &dts) {
+	FUNCID(Schedule::mergeDayType);
+	// we must have always have a non-empty vector
+	if (dts.empty())
+		throw IBK::Exception("Expected non-empty vector with day types.", FUNC_ID);
+
+	std::set<NANDRAD::Schedule::ScheduledDayType> dayTypes;
+
+	// insert all daytypes in vector into set
+	unsigned int weekDayCount = 0;
+	unsigned int weekEndDayCount = 0;
+	for (int v : dts) {
+		switch ((NANDRAD::Schedule::ScheduledDayType)v) {
+			case NANDRAD::Schedule::ST_MONDAY:
+			case NANDRAD::Schedule::ST_TUESDAY:
+			case NANDRAD::Schedule::ST_WEDNESDAY:
+			case NANDRAD::Schedule::ST_THURSDAY:
+			case NANDRAD::Schedule::ST_FRIDAY:
+				++weekDayCount;
+			break;
+			case NANDRAD::Schedule::ST_SATURDAY:
+			case NANDRAD::Schedule::ST_SUNDAY:
+				++weekEndDayCount;
+			break;
+			case NANDRAD::Schedule::ST_HOLIDAY:
+			case NANDRAD::Schedule::ST_ALLDAYS:
+			case NANDRAD::Schedule::ST_WEEKDAY:
+			case NANDRAD::Schedule::ST_WEEKEND:
+			case NANDRAD::Schedule::NUM_ST:
+			break;
+		}
+		dayTypes.insert((NANDRAD::Schedule::ScheduledDayType)v);
 	}
 
-	std::vector<NANDRAD::Schedule::ScheduledDayType> schedDts;
-	if(!holiSet.empty())
-		schedDts.push_back(NANDRAD::Schedule::ST_HOLIDAY);
-
-	//AllDays
-	if(weekDaySet.size() + weekEndSet.size() == 7)
+	// replace weekend days if both present with ST_WEEKEND
+	if (weekEndDayCount + weekDayCount == 7)
 		return std::vector<NANDRAD::Schedule::ScheduledDayType> {NANDRAD::Schedule::ST_ALLDAYS};
-	//WeekDay
-	else if(weekDaySet.size() == 5){
-		//on pos 1 can be holiday -> swap weekday to pos 1
-		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKDAY);
-		switch (weekEndSet.size()) {
-			case 0:		return schedDts;
-			case 1:{
-				for(int val : weekEndSet)
-					schedDts.push_back((NANDRAD::Schedule::ScheduledDayType)val);
-				std::swap(schedDts[1], schedDts.back());
-				return schedDts;
-			}
-		}
+	if (weekEndDayCount == 2) {
+		dayTypes.erase(NANDRAD::Schedule::ST_SATURDAY);
+		dayTypes.erase(NANDRAD::Schedule::ST_SUNDAY);
+		dayTypes.insert(NANDRAD::Schedule::ST_WEEKEND);
 	}
-	//WeekEnd
-	else if(weekEndSet.size() == 2){
-		//on pos 1 can be holiday -> swap weekend to pos 1
-		schedDts.insert(schedDts.begin(), NANDRAD::Schedule::ST_WEEKEND);
-		if(weekDaySet.empty())
-			return schedDts;
-		else{
-			for (int i : weekDaySet)
-				schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
-			std::swap(schedDts[1], schedDts.back());
-			return schedDts;
-		}
+	if (weekDayCount == 5) {
+		dayTypes.erase(NANDRAD::Schedule::ST_MONDAY);
+		dayTypes.erase(NANDRAD::Schedule::ST_TUESDAY);
+		dayTypes.erase(NANDRAD::Schedule::ST_WEDNESDAY);
+		dayTypes.erase(NANDRAD::Schedule::ST_THURSDAY);
+		dayTypes.erase(NANDRAD::Schedule::ST_FRIDAY);
+		dayTypes.insert(NANDRAD::Schedule::ST_WEEKDAY);
 	}
-	//no merge possible
-	schedDts.clear();
-	for (int i : dts)
-		schedDts.push_back(NANDRAD::Schedule::ScheduledDayType(i));
+
+	std::vector<NANDRAD::Schedule::ScheduledDayType> schedDts(dayTypes.begin(), dayTypes.end());
+
 	return schedDts;
 }
+
 
 bool Schedule::isValid() const {
 

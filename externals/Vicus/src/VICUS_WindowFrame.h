@@ -52,16 +52,13 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
-	/// TODO Dirk add a function to get the circumference
-	/// need polygon ...
-
 	/*! Comparison operator. */
 	bool operator!=(const WindowFrame &other)const {
 		if (m_id != other.m_id || m_idMaterial != other.m_idMaterial)
 			return true;
 
 		for (unsigned int i=0; i<NUM_P; ++i)
-			if(m_para[i] != other.m_para[i])
+			if (m_para[i] != other.m_para[i])
 				return true;
 
 		return false;

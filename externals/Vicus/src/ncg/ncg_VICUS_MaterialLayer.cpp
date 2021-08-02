@@ -47,8 +47,6 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "matId")
 				m_matId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "isActive")
-				m_isActive = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -91,8 +89,6 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 
 	if (m_matId != VICUS::INVALID_ID)
 		e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
-	if (m_isActive != MaterialLayer().m_isActive)
-		e->SetAttribute("isActive", IBK::val2string<bool>(m_isActive));
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());

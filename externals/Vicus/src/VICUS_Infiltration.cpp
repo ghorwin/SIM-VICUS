@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -59,6 +59,7 @@ bool Infiltration::isValid() const
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult Infiltration::equal(const AbstractDBElement *other) const{
 	const Infiltration * otherInf = dynamic_cast<const Infiltration*>(other);
 	if (otherInf == nullptr)
@@ -67,7 +68,7 @@ AbstractDBElement::ComparisonResult Infiltration::equal(const AbstractDBElement 
 	//first check critical data
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
+	for (unsigned int i=0; i<NUM_P; ++i){
 		if(m_para[i] != otherInf->m_para[i])
 			return Different;
 	}
@@ -76,10 +77,7 @@ AbstractDBElement::ComparisonResult Infiltration::equal(const AbstractDBElement 
 
 	//check meta data
 
-	if(m_displayName != otherInf->m_displayName ||
-			m_color != otherInf->m_color ||
-			m_dataSource != otherInf->m_dataSource ||
-			m_notes != otherInf->m_notes)
+	if (m_displayName != otherInf->m_displayName || m_color != otherInf->m_color)
 		return OnlyMetaDataDiffers;
 
 	return Equal;

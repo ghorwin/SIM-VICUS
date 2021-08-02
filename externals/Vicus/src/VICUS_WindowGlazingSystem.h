@@ -28,7 +28,6 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
-#include "VICUS_WindowGlazingLayer.h"
 #include "VICUS_AbstractDBElement.h"
 
 #include <QString>

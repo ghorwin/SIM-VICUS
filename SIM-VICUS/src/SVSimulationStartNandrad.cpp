@@ -464,15 +464,6 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
 		m_localProject.generateNandradProject(p, errorStack);
 	}
-	catch (VICUS::Project::ConversionError & ex) {
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"), ex.what());
-		switch (ex.m_errorType) {
-			case VICUS::Project::ConversionError::ET_MissingClimate :
-				m_ui->tabWidget->setCurrentWidget(m_ui->tabClimate);
-			break;
-		}
-		return false;
-	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();

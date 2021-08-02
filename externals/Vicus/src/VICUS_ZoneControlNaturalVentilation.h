@@ -37,26 +37,15 @@
 
 namespace VICUS {
 
-/*! Describes the course of all zone control natural ventilation.
-
-*/
-
+/*! Zone control parameters for natural ventilation. */
 class ZoneControlNaturalVentilation : public AbstractDBElement {
 public:
 
-
-	/*! Schedule types for control. */
-//	enum ScheduleType{
-//		ST_TemperatureAirMax,		// Keywordx: TemperatureAirMax							'Upper limit for room air temperature.'
-//		ST_TemperatureAirMin,		// Keywordx: TemperatureAirMin							'Lower limit for room air temperature.'
-//		ST_TemperatureOutsideMax,	// Keywordx: TemperatureOutsideMax						'Upper limit for outside air temperature.'
-//		ST_TemperatureOutsideMin,	// Keywordx: TemperatureOutsideMin						'Lower limit for outside air temperature.'
-//		ST_TemperatureDifference,	// Keywordx: TemperatureDifference						'Temperature difference limit (inside - outside).'
-//		ST_WindSpeedMax,			// Keywordx: WindSpeedMax								'Limit for wind speed .'
-//		NUM_ST
-//	};
-
-	enum ScheduleType{
+	/*! Parameters for ventilation control model. Can be given as constant parameters in m_para, or can be
+		defined as scheduled quantities. For each of these parameters that is provided as schedule, the
+		m_idSchedules[] vector contains non INVALID_ID entries.
+	*/
+	enum ScheduleType {
 		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax					[C]		'Upper limit for room air temperature.'
 		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin					[C]		'Lower limit for room air temperature.'
 		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax				[C]		'Upper limit for outside air temperature.'
@@ -67,6 +56,12 @@ public:
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	/*! Default constructor, initializes m_idSchedules with INVALID_ID */
+	ZoneControlNaturalVentilation() {
+		for (int i=0; i<NUM_ST; ++i)
+			m_idSchedules[i] = INVALID_ID;
+	}
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
@@ -92,10 +87,9 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Schedule ID. */
-	IBK::IntPara					m_scheduleId[NUM_ST];					// XML:E
+	unsigned int					m_idSchedules[NUM_ST];					// XML:E
 
-	/// TODO Dirk Das ist nur vorläufig bis die Zeitpläne funktionieren.
-	/*! List of parameters. */
+	/*! List of constant parameters. */
 	IBK::Parameter					m_para[NUM_ST];							// XML:E
 
 };

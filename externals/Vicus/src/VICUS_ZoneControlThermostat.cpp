@@ -31,11 +31,10 @@ namespace VICUS {
 
 
 bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const {
-	if(m_id == INVALID_ID)
+	if (m_id == INVALID_ID)
 		return false;
 
-	if (m_controlValue == NUM_CV ||
-			m_controllerType == NUM_CT)
+	if (m_controlValue == NUM_CV || m_controllerType == NUM_CT)
 		return false;
 
 
@@ -44,11 +43,23 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 		return false;
 
 	try {
+		m_para[P_Tolerance].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_Tolerance),
+							 "K", "K", 0, true, 5, true, nullptr);
+		// P_DeadBand is only required for digital controller
+		if (m_controllerType == CT_Digital)
+			m_para[P_DeadBand].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_DeadBand),
+								 "K", "K", 0, false, 50, true, nullptr);
+
+		// check schedules if referenced
 		if (m_heatingSetpointScheduleId != INVALID_ID) {
-			m_para[P_Tolerance].checkedValue(KeywordList::Keyword("ZoneControlThermostat::para_t", P_Tolerance),
-								 "K", "K", 0, true, 5, true, nullptr);
-			// check if schedule ID is existing and valid
 			const Schedule * sched = scheduleDB[m_heatingSetpointScheduleId];
+			if (sched == nullptr)
+				return false;
+			if (!sched->isValid())
+				return false;
+		}
+		if (m_coolingSetpointScheduleId != INVALID_ID) {
+			const Schedule * sched = scheduleDB[m_coolingSetpointScheduleId];
 			if (sched == nullptr)
 				return false;
 			if (!sched->isValid())

@@ -48,10 +48,10 @@ public:
 	bool operator==(const MaterialLayer & other) const { return !operator!=(other); }
 
 	/*! Thickness in [m]. */
-	double					m_thickness;				// XML:A
+	double					m_thickness;				// XML:A:required
 
 	/*! Material id. */
-	unsigned int			m_matId;					// XML:A
+	unsigned int			m_matId;					// XML:A:required
 
 	// *** Variables used only during simulation ***
 

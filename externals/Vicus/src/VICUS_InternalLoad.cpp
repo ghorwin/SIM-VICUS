@@ -165,9 +165,7 @@ AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement 
 	//check meta data
 
 	if(m_displayName != otherIntLoad->m_displayName ||
-			m_color != otherIntLoad->m_color ||
-			m_dataSource != otherIntLoad->m_dataSource ||
-			m_notes != otherIntLoad->m_notes)
+			m_color != otherIntLoad->m_color)
 		return OnlyMetaDataDiffers;
 
 	return Equal;

@@ -57,27 +57,19 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! Persistant ID of building. */
-	unsigned int						m_id = INVALID_ID;			// XML:A:required
-
-	/*! Display name of building. */
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
-
-	/*! Stores visibility information for this surface.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
 	//:inherited	bool				m_visible = true;			// XML:A
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E
 
 
-	// *** RUNTIME VARIABLE ***
+	// *** RUNTIME VARIABLES ***
 
 	/*! Whole building net floor area in m2.
-		We need a update function and/or user input.
-		TODO : how is this used?
+		This area is updated whenever the pointer hierarchy is updated, that is, whenever
+		anything changes in the building->building level->room tree.
 	*/
 	double								m_netFloorArea = -1;
 };

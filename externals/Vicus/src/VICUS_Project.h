@@ -155,42 +155,14 @@ public:
 
 	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
 
-	/*! This exception class extends IBK::Exception by additional members
-		needed to adjust the start-simulation-dialog, for example, to focus problematic inputs.
-	*/
-	class ConversionError : public IBK::Exception { // NO KEYWORDS
-	public:
-		enum Errortypes {
-			ET_MissingClimate,
-			ET_InvalidID,
-			ET_MismatchingSurfaceArea,
-			ET_MissingParentZone,
-			ET_NotValid
-		};
-
-		ConversionError(Errortypes errorType, const std::string & errmsg) :
-			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
-		ConversionError(Errortypes errorType, const IBK::FormatString & errmsg) :
-			IBK::Exception(errmsg, "ConversionError"), m_errorType(errorType) {}
-		ConversionError(Errortypes errorType, const QString & errmsg) :
-			IBK::Exception(errmsg.toStdString(), "ConversionError"), m_errorType(errorType) {}
-		ConversionError(const ConversionError&) = default;
-		virtual ~ConversionError() override;
-
-		Errortypes m_errorType;
-	};
-
 	/*! Converts VICUS data structure into NANDRAD project file.
 		This function throws an error message in case the conversion failed.
 		\param p The NANDRAD project to be populated.
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
 	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack)const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
 
-	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
-							  NANDRAD::Project & p, QStringList & errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
 
 	// *** STATIC FUNCTIONS ***
 
@@ -201,154 +173,6 @@ public:
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
 
-	/*! Function to find an element by ID. */
-	template <typename T>
-	static T * element(std::vector<T>& vec, unsigned int id) {
-		typename std::vector<T>::iterator it = std::find(vec.begin(), vec.end(), id);
-		if (it == vec.end())
-			return nullptr;
-		else
-			return &(*it);
-	}
-
-	/*! Checks if an object with m_id matching the searched id exists in the vector. */
-	template <typename T>
-	static bool contains(const std::vector<T> & vec, unsigned int id) {
-		for (auto & t : vec)
-			if (t->m_id == id)
-				return true;
-		return false;
-	}
-
-
-	/*! Function to find an element by ID (const-version). */
-	template <typename T>
-	static const T * element(const std::vector<T>& vec, unsigned int id) {
-		typename std::vector<T>::const_iterator it = std::find(vec.begin(), vec.end(), id);
-		if (it == vec.end())
-			return nullptr;
-		else
-			return &(*it);
-	}
-
-	/*! Function to generate unique ID (const-version). */
-	template <typename T>
-	static unsigned int uniqueId(const std::vector<T>& vec) {
-		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
-			if (std::find(vec.begin(), vec.end(), id) == vec.end())
-				return id;
-		}
-		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
-	}
-
-	/*! Function to generate unique ID (const-version). */
-	template <typename T>
-	static unsigned int uniqueId(const std::set<T>& vec) {
-		for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
-			if (std::find(vec.begin(), vec.end(), id) == vec.end())
-				return id;
-		}
-		return 999999; // just to make compiler happy, we will find an unused ID in the loop above
-	}
-
-	/*! Function to generate unique ID and add this id to the vector. */
-	template <typename T>
-	static unsigned int uniqueIdAdd(std::vector<T>& vec) {
-		unsigned int id = uniqueId(vec);
-		vec.push_back(id);
-		return id;
-	}
-
-	/*! Function to generate unique ID. First check predefined id. And the Id to the container. */
-	template <typename T>
-	static unsigned int uniqueIdWithPredef(std::vector<T>& vec, unsigned int newId) {
-		if(std::find(vec.begin(), vec.end(), newId) == vec.end()){
-			vec.push_back(newId);
-			return newId;
-		}
-		unsigned id=uniqueId(vec);
-		vec.push_back(id);
-		return id;
-	}
-
-	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.  */
-	template <typename T>
-	static unsigned int uniqueIdWithPredef(std::vector<T>& vec, unsigned int id, std::map<T,T> mapOldToNewId){
-
-		if(mapOldToNewId.find(id) == mapOldToNewId.end())
-			mapOldToNewId[id] = uniqueIdWithPredef(vec, id);
-		return mapOldToNewId[id];
-	}
-
-	/*! Function to generate a unique ID that is larger than all the other IDs used.
-		This is useful if a series of objects with newly generated IDs shall be added to a container.
-	*/
-	template <typename T>
-	static unsigned int largestUniqueId(const std::vector<T>& vec) {
-		unsigned int largest = 0;
-		for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
-			largest = std::max(largest, it->m_id);
-		return largest+1; // Mind: plus one, to get past the largest _existing_ ID
-	}
-
-	/*! Simple valid function. */
-	template <typename T>
-	bool isValidTemplate(const std::vector<T> elements, QStringList &errorStack, const QString &name ){
-		bool valid = true;
-		for(const  T &e : elements){
-			if(!e.isValid() ){
-				errorStack << tr("The %3 with #%1 and name '%2' is not valid! Export failed.")
-							  .arg(e.m_id).arg(QString::fromStdString(e.m_displayName.string()).arg(name));
-				valid = false;
-			}
-		}
-		return valid;
-	}
-
-	/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
-		the name no longer exists in set existingNames.
-	*/
-	static QString uniqueName(const QString & baseName, const std::set<QString> & existingNames) {
-		// generate new unique object/surface name
-		unsigned int count = 1;
-		QString name = baseName;
-		for (;;) {
-			// process all surfaces and check if we have already a new surface with our current name
-			if (existingNames.find(name) == existingNames.end())
-				break;
-			name = QString("%1 [%2]").arg(baseName).arg(++count);
-		}
-		return name;
-	}
-
-	/*! Test function that checks that all objects in the given vector have unique m_id parameters.
-		The set passed as second argument is used for comparison. Pass an empty set if only the elements
-		in the vector itself shall be tested. You can re-use the populated set for another call
-		to this function, if you want to ensure uniqueness of several object vectors.
-	*/
-	template <typename T>
-	static void checkForUniqueIDs(const std::vector<T> & vec, std::set<unsigned int> & usedIDs) {
-		FUNCID(Project::checkForUniqueIDs);
-
-		for (const T & t : vec) {
-			if (usedIDs.find(t.m_id) != usedIDs.end())
-				throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
-									 .arg(t.m_id), FUNC_ID);
-			usedIDs.insert(t.m_id);
-		}
-	}
-
-	template <typename T>
-	static void checkForUniqueIDs(const std::vector<const T*> & vec, std::set<unsigned int> & usedIDs) {
-		FUNCID(Project::checkForUniqueIDs);
-
-		for (const T * t : vec) {
-			if (usedIDs.find(t->m_id) != usedIDs.end())
-				throw IBK::Exception(IBK::FormatString("Duplicate model/object ID #%1.")
-									 .arg(t->m_id), FUNC_ID);
-			usedIDs.insert(t->m_id);
-		}
-	}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -405,13 +229,22 @@ public:
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 
 
+private:
 
+	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	/*! Adds a vicus schedule to nandrad project.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
+	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack)const;
+	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
+							  NANDRAD::Project & p, QStringList & errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
+	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
+
+
+
+	// *** DIRK REMOVE BELOW ***
+
+
 
 	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids.
 		TODO Dirk, remove once ported to VICUS_ProjectGenerator
@@ -440,17 +273,10 @@ public:
 								   std::vector<IdMap> &idMaps,
 								   const std::string &objListNameThermostat) const;
 
-private:
-
-
-
 	/*! Return room name by id.
 		TODO Dirk, remove once ported to VICUS_ProjectGenerator
 	*/
 	std::string getRoomNameById(unsigned int id) const;
-
-	/*! Check all models for validity. */
-	bool allModelsValid();
 
 	/*!
 		TODO Dirk, remove once ported to VICUS_ProjectGenerator

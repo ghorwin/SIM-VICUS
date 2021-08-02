@@ -6,6 +6,7 @@
 #include <QtExt_Conversions.h>
 
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
@@ -280,7 +281,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 				m_ui->comboBoxSubSurfaceComponent->currentIndex() != -1)
 			{
 				VICUS::SubSurfaceComponentInstance subInstance;
-				subInstance.m_id = VICUS::Project::uniqueId(subSurfaceComponentInstances);
+				subInstance.m_id = VICUS::uniqueId(subSurfaceComponentInstances);
 				subInstance.m_subSurfaceComponentID = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
 				subInstance.m_sideASurfaceID = subsurf.m_id;
 				subInstance.m_sideBSurfaceID = VICUS::INVALID_ID; // currently, all our new windows are outside windows

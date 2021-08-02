@@ -43,17 +43,16 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Air change rate. */
-		P_AirChangeRate,				// Keyword: AirChangeRate			[1/h]		'Air change rate.'
+		P_AirChangeRate,				// Keyword: AirChangeRate					[1/h]		'Air change rate.'
 		/*! Shielding coefficient. */
-		P_ShieldingCoefficient,			// Keyword: ShiedlindCoefficient	[-]			'Shielding coefficient for n50 value.'
-
+		P_ShieldingCoefficient,			// Keyword: ShieldingCoefficient			[-]			'Shielding coefficient for n50 value.'
 		NUM_P
 	};
 
 	/*! Air Change Type.*/
 	enum AirChangeType {
-		AC_normal,				// Keyword: normal							[1/h]		'normal'
-		AC_n50,					// Keyword: n50								[1/h]		'n50'
+		AC_normal,						// Keyword: normal							[1/h]		'normal'
+		AC_n50,							// Keyword: n50								[1/h]		'n50'
 		NUM_AC
 	};
 
@@ -76,12 +75,6 @@ public:
 
 	/*! False color. */
 	QColor							m_color;								// XML:A
-
-	/*! Notes. */
-	IBK::MultiLanguageString		m_notes;								// XML:E
-
-	/*! Data source. */
-	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Air change type. */
 	AirChangeType					m_airChangeType = NUM_AC;				// XML:E

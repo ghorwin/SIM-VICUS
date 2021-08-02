@@ -9,6 +9,7 @@
 #include <QtExt_Conversions.h>
 
 #include <VICUS_KeywordList.h>
+#include <VICUS_utilities.h>
 
 
 SVDBSubNetworkEditWidget::SVDBSubNetworkEditWidget(QWidget *parent) :
@@ -199,7 +200,7 @@ void SVDBSubNetworkEditWidget::on_toolButtonAdd_clicked()
 	if (m_currentSubNet->m_elements.size()>10)
 		return;
 	NANDRAD::HydraulicNetworkElement el;
-	el.m_id = VICUS::Project::uniqueId(m_currentSubNet->m_elements);
+	el.m_id = VICUS::uniqueId(m_currentSubNet->m_elements);
 	el.m_displayName = IBK::FormatString("new element %1").arg(el.m_id).str();
 	m_currentSubNet->m_elements.push_back(el);
 	setInletOutletIds();

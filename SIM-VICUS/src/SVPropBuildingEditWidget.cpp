@@ -29,6 +29,8 @@
 #include <QMessageBox>
 
 #include <VICUS_Component.h>
+#include <VICUS_utilities.h>
+
 #include <QtExt_Conversions.h>
 
 #include "SVViewStateHandler.h"
@@ -1183,7 +1185,7 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 		// if we didn't have a component instance yet, create a new one
 		if (!compInstanceFound) {
 			VICUS::ComponentInstance newCi;
-			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			newCi.m_id = nextId;
 			newCi.m_componentID = (unsigned int)selectedComponentId;
 			newCi.m_sideASurfaceID = (*selSurfaces.begin())->m_id;
@@ -1214,7 +1216,7 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 		// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
 		// hence, we need to create a new componentInstance for each of them
 		if (!selSurfaces.empty()) {
-			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			for (const VICUS::Surface * s : selSurfaces) {
 				VICUS::ComponentInstance c;
 				c.m_id = nextId++;
@@ -1305,7 +1307,7 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 		// if we didn't have a component instance yet, create a new one
 		if (!compInstanceFound) {
 			VICUS::SubSurfaceComponentInstance newCi;
-			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			newCi.m_id = nextId;
 			newCi.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
 			newCi.m_sideASurfaceID = (*surfaces.begin())->m_id;
@@ -1336,7 +1338,7 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 		// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
 		// hence, we need to create a new componentInstance for each of them
 		if (!surfaces.empty()) {
-			unsigned int nextId = VICUS::Project::largestUniqueId(compInstances);
+			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			for (const VICUS::SubSurface * s : surfaces) {
 				VICUS::SubSurfaceComponentInstance c;
 				c.m_id = nextId++;

@@ -109,6 +109,7 @@ bool WindowGlazingSystem::isValid() const {
 			try {
 				NANDRAD::LinearSplineParameter spl = m_splinePara[SP_SHGC];
 				spl.checkAndInitialize("SHGC", IBK::Unit("Rad"), IBK::Unit("---"), IBK::Unit("---"), 0, true, 1, true, nullptr);
+				// TODO : check deg 0..90
 			}  catch (...) {
 				return false;
 			}

@@ -66,11 +66,7 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Notes")
-				m_notes.setEncodedString(c->GetText());
-			else if (cName == "DataSource")
-				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "OccupancyScheduleId")
+			if (cName == "OccupancyScheduleId")
 				m_occupancyScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "ActivityScheduleId")
 				m_activityScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
@@ -141,10 +137,6 @@ TiXmlElement * InternalLoad::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (!m_notes.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
-	if (!m_dataSource.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 
 	if (m_category != NUM_MC)
 		TiXmlElement::appendSingleAttributeElement(e, "Category", nullptr, std::string(), KeywordList::Keyword("InternalLoad::Category",  m_category));

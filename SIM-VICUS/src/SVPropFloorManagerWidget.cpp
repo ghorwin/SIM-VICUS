@@ -36,6 +36,7 @@
 #include <QtExt_Locale.h>
 
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include "SVProjectHandler.h"
 #include "SVUndoAddBuilding.h"
@@ -215,12 +216,12 @@ void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::Building & b : project().m_buildings)
 		existingNames.insert(b.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Building"), existingNames);
+	QString defaultName = VICUS::uniqueName(tr("Building"), existingNames);
 	QString text = QInputDialog::getText(this, tr("Add building"), tr("New building name:"), QLineEdit::Normal, defaultName).trimmed();
 	if (text.isEmpty()) return;
 	// modify project
 	VICUS::Building b;
-	b.m_id = VICUS::Project::uniqueId(project().m_buildings);
+	b.m_id = VICUS::uniqueId(project().m_buildings);
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
 	undo->push(); // this will update our tree widget
@@ -249,13 +250,13 @@ void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 	std::set<QString> existingNames;
 	for (const VICUS::BuildingLevel & bl : m_currentBuilding->m_buildingLevels)
 		existingNames.insert(bl.m_displayName);
-	QString defaultName = VICUS::Project::uniqueName(tr("Level"), existingNames);
+	QString defaultName = VICUS::uniqueName(tr("Level"), existingNames);
 	QString text = QInputDialog::getText(this, tr("Add building level"), tr("New building level/floor name:"), QLineEdit::Normal, defaultName).trimmed();
 	if (text.isEmpty()) return;
 
 	// modify project
 	VICUS::BuildingLevel bl;
-	bl.m_id = VICUS::Project::uniqueId(m_currentBuilding->m_buildingLevels);
+	bl.m_id = VICUS::uniqueId(m_currentBuilding->m_buildingLevels);
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
 	undo->push(); // this will update our tree widget

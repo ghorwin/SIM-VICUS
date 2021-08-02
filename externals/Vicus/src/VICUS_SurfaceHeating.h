@@ -62,8 +62,7 @@ public:
 
 
 	/*! Surface Heating Types. */
-	// TODO all hier brauchen wir mal bessere Namen
-	enum Type{
+	enum Type {
 		T_Ideal,				// Keyword: Ideal												'Ideal surface conditioning'
 		T_IdealPipeRegister,	// Keyword: IdealPipeRegister									'Water-based surface conditioning'
 		NUM_T

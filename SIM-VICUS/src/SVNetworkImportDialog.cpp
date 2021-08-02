@@ -40,6 +40,7 @@
 #include <VICUS_Network.h>
 #include <VICUS_NetworkLine.h>
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
@@ -92,7 +93,7 @@ bool SVNetworkImportDialog::edit() {
 		m_network.setOrigin(IBKMK::Vector3D(x, y, 0));
 
 		// generate id, set name
-		m_network.m_id = VICUS::Project::uniqueId(p.m_geometricNetworks);
+		m_network.m_id = VICUS::uniqueId(p.m_geometricNetworks);
 		m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
 
 		m_network.updateExtends();
@@ -136,8 +137,8 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 		}
 		// add to existing network
 		else {
-			unsigned id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
-			m_network = *project().element(project().m_geometricNetworks, id);
+			unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
+			m_network = *VICUS::element(project().m_geometricNetworks, id);
 			readNetworkData(networkFile, m_network);
 
 			m_ui->lineEditXOrigin->setText( QString("%L1").arg(m_network.m_origin.m_x));

@@ -36,7 +36,6 @@
 #include "VICUS_Window.h"
 #include "VICUS_WindowFrame.h"
 #include "VICUS_WindowDivider.h"
-#include "VICUS_SurfaceProperties.h"
 #include "VICUS_BoundaryCondition.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkFluid.h"

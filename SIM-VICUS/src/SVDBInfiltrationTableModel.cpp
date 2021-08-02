@@ -30,7 +30,7 @@
 
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVConstants.h"
 #include "SVStyle.h"
@@ -64,20 +64,10 @@ QVariant SVDBInfiltrationTableModel::data ( const QModelIndex & index, int role)
 
 	switch (role) {
 		case Qt::DisplayRole : {
-			// Note: when accessing multilanguage strings below, take name in current language or if missing, "all"
-			std::string langId = QtExt::LanguageHandler::instance().langId().toStdString();
-			std::string fallBackLangId = "en";
 
 			switch (index.column()) {
 				case ColId					: return it->first;
-				case ColName				: return QString::fromStdString(it->second.m_displayName.string(langId, fallBackLangId));
-//				case ColCategory			:
-//					try {
-//						return VICUS::KeywordListQt::Keyword("Material::Category",it->second.m_category);
-//					} catch (...) {
-//						return "";
-//					}
-				case ColSource				: return QString::fromStdString(it->second.m_dataSource.string(langId, fallBackLangId));
+				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 			}
 		} break;
 
@@ -121,8 +111,6 @@ QVariant SVDBInfiltrationTableModel::headerData(int section, Qt::Orientation ori
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
-				//case ColCategory			: return tr("Category");
-				case ColSource				: return tr("Source");
 			}
 		} break;
 
