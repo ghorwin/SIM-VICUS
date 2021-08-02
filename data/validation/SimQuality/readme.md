@@ -1,10 +1,10 @@
-The *SimQuality* test suite checks for correct calculation of individual 
+The *SimQuality* test suite checks for correct calculation of individual
 model aspects and combined effects.
 
 The test suite is organized in test cases (german "TestFall" hence "TF" prefix of directories),
 with usually several simulation projects.
 
-The subdirectory `climate` contains climate data files in `c6b` format (created as 
+The subdirectory `climate` contains climate data files in `c6b` format (created as
 described in the test suite).
 
 ## Validation Results
@@ -22,7 +22,7 @@ described in the test suite).
 <img src="TF03/results/TF03.1.png" width="400px"/><img src="TF03/results/TF03.1.png" width="400px"/><br>
 <img src="TF03/results/TF03.3.png" width="400px"/><img src="TF03/results/TF03.4.png" width="400px"/>
 
-### TestCase 04 - Wärmeleitung- und Speicherung (1- und 2-Raummodelle) 
+### TestCase 04 - Wärmeleitung- und Speicherung (1- und 2-Raummodelle)
 
 <img src="TF04/results/TF04.1.png" width="400px"/><img src="TF04/results/TF04.2.png" width="400px"/><br>
 <img src="TF04/results/TF04.3A.png" width="400px"/><img src="TF04/results/TF04.3B.png" width="400px"/><br>
@@ -68,3 +68,11 @@ described in the test suite).
 <img src="TF08/results/TF08.3.png" width="600px" height="400px"/><br>
 <img src="TF08/results/TF08.4.png" width="600px" height="400px"/>
 
+### TestCase 09 - Externe & dynamische Verschattung
+
+<img src="TF09/results/TF09.1.png" width="600px" height="400px"/><br>
+<img src="TF09/results/TF09.2.png" width="600px" height="400px"/><br>
+<img src="TF09/results/TF09.3.png" width="600px" height="400px"/><br>
+<img src="TF09/results/TF09.4.png" width="600px" height="400px"/><br>
+<img src="TF09/results/TF09.5.png" width="600px" height="400px"/><br>
+<img src="TF09/results/TF09.6.png" width="600px" height="400px"/><br>
