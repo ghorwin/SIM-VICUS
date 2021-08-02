@@ -28,6 +28,8 @@
 
 #include <IBK_physics.h>
 
+#include <IBKMK_3DCalculations.h>
+
 #include <VICUS_Project.h>
 #include <VICUS_Object.h>
 #include <VICUS_BuildingLevel.h>
@@ -410,29 +412,37 @@ void SVPropEditGeometry::rotate() {
 		if (s != nullptr) {
 
 			const VICUS::Polygon3D &poly = s->polygon3D();
-			std::vector<IBKMK::Vector3D> vertexes = poly.vertexes();
+			const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
+			std::vector<IBKMK::Vector3D> newVertexes;
 
 			IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
 			IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
 
-			vertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+			newVertexes.resize(vertexes.size() );
+			newVertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+
+			VICUS::Polygon3D newPoly;
+			newPoly.addVertex(newVertexes[0]);
 
 			// check if we already have broken geometries
 			if ( poly.polyline().vertexes().size() != vertexes.size() )
 				continue;
 
+
 			for ( unsigned int i=1; i<vertexes.size(); ++i ) {
 
 				const std::vector<IBKMK::Vector2D> &polylineVertexes = poly.polyline().vertexes();
+
 				// we take our polyline and rotated local Axes to construct our
 				// rotated polygon3D
+				newVertexes[i] = newVertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
 
-				vertexes[i] = vertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
+				newPoly.addVertex(newVertexes[i]);
 
 			}
 
 			// we also want to translate all points back to its original center
-			for ( IBKMK::Vector3D & v : vertexes ) {
+			for ( IBKMK::Vector3D & v : const_cast<std::vector<IBKMK::Vector3D>&>(newPoly.vertexes() ) ) {
 
 				Vic3D::Transform3D t;
 				t.setTranslation(QtExt::IBKVector2QVector(v) );
@@ -441,8 +451,9 @@ void SVPropEditGeometry::rotate() {
 				v = QtExt::QVector2IBKVector(t.translation() );
 
 			}
-			VICUS::Surface modS(*s);
-			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
+			VICUS::Surface modS = *s;
+			// modS.setPolygon3D( VICUS::Polygon3D(newVertexes) );
+			modS.setPolygon3D( newPoly );
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
