@@ -39,6 +39,7 @@
 #include "IBKMK_3DCalculations.h"
 
 #include "IBKMK_Vector3D.h"
+#include <IBK_messages.h>
 
 namespace IBKMK {
 
@@ -50,7 +51,7 @@ namespace IBKMK {
 static bool solve(double a, double b, double c,  double d,  double e,  double f, double & x, double & y) {
 	double det = a*d - b*c;
 	// Prevent division by very small numbers
-	if (std::fabs(det) < 1e-6)
+	if (std::fabs(det) < 1e-4)
 		return false;
 
 	x = (e*d - c*f)/det;
@@ -69,31 +70,59 @@ static bool solve(double a, double b, double c,  double d,  double e,  double f,
 bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3D & b,
 							 const Vector3D & v, double & x, double & y, double tolerance)
 {
-	// TODO : first project vector v onto plane (using normal vector) and check distance between v and vOnPlane
-	//        if larger than tolerance, bail out
-	//        otherwise perform point-coordinate calculation with projected point
+	FUNCID(IBKMK::planeCoordinates);
+	// compute projection of vector v onto plane
+
+	// scalar project of vector v to offset and normal vector of plane
+	IBKMK::Vector3D n = a.crossProduct(b);
+	n.normalize();
+
+	// dist = length component of normal vector in vector (offset-v)
+	double dist = (offset - v).scalarProduct(n);
+	// move point v along normal vector with distance dist
+	IBKMK::Vector3D v2 = v - dist*n;
+	IBKMK::Vector3D v2offset = v2 - v;
+	if (v2offset.magnitude() > tolerance) {
+		IBK::IBK_Message(IBK::FormatString("Distance between point and projection point = %1 is too large!").arg(v2offset.magnitude()),
+						 IBK::MSG_WARNING, FUNC_ID);
+	}
 
 	// We have 3 equations, but only two unknowns - so we have 3 different options to compute them.
 	// Some of them may fail, so we try them all.
 
-	const Vector3D & rhs = v-offset;
-	// rows 1 and 2
-	bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
-	if (!success)
-		// rows 1 and 3
-		success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
-	if (!success)
-		// rows 2 and 3
-		success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
-	if (!success)
-		return false;
+	const Vector3D & rhs = v2-offset;
+
+	// compute project of rhs vector to a and b vectors
+	IBKMK::Vector3D anorm = a.normalized();
+	IBKMK::Vector3D bnorm = b.normalized();
+	if (std::fabs(anorm.scalarProduct(bnorm)) < 1e-10) {
+//		IBK::IBK_Message("scalar");
+		x = rhs.scalarProduct(anorm);
+		x /= a.magnitude();
+		y = rhs.scalarProduct(bnorm);
+		y /= b.magnitude();
+	}
+	else {
+//		IBK::IBK_Message("gleichungssystem");
+		// rows 1 and 2
+		bool success = solve(a.m_x, a.m_y, b.m_x, b.m_y, rhs.m_x, rhs.m_y, x, y);
+		if (!success)
+			// rows 1 and 3
+			success = solve(a.m_x, a.m_z, b.m_x, b.m_z, rhs.m_x, rhs.m_z, x, y);
+		if (!success)
+			// rows 2 and 3
+			success = solve(a.m_y, a.m_z, b.m_y, b.m_z, rhs.m_y, rhs.m_z, x, y);
+		if (!success)
+			return false;
+	}
 
 	// check that the point was indeed in the plane
-	Vector3D v2 = offset + x*a + y*b;
-	v2 -= v;
-	// TODO : proper rounding error check!
-	if (v2.magnitude() > tolerance)
+	IBKMK::Vector3D v3 = offset + x*a + y*b;
+	IBKMK::Vector3D v3offset = v3 - v;
+	if (v3offset.magnitude() > tolerance) {
+		IBK::IBK_Message(IBK::FormatString("Plane coordinate calculation incorrect: deviation = %1").arg(v3offset.magnitude()), IBK::MSG_WARNING, FUNC_ID);
 		return false;
+	}
 	else
 		return true;
 }
