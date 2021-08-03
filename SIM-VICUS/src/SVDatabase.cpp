@@ -177,6 +177,13 @@ void SVDatabase::writeDatabases() const {
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 }
 
+struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::AbstractDBElement, bool> {
+	bool operator()(VICUS::AbstractDBElement & x, VICUS::AbstractDBElement & y) const {
+		return x.m_id < y.m_id;
+	}
+
+};
+
 
 template <typename T>
 void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
@@ -185,6 +192,7 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 	// store objects but skip nullptr
 	for (const T * c : container)
 		if (c != nullptr) vec.push_back(*c);
+	std::sort(vec.begin(), vec.end(), SortByID());
 }
 
 
