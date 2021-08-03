@@ -125,7 +125,7 @@ void SVSmartSelectDialog::select() {
 
 	std::set<const VICUS::Component *> components;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances)
-		components.insert(db.m_components[ci.m_componentID]);
+		components.insert(db.m_components[ci.m_idComponent]);
 	for (const VICUS::Component * comp : components) {
 		if (comp == nullptr) continue;
 		switch (comp->m_type) {
@@ -159,7 +159,7 @@ void SVSmartSelectDialog::select() {
 
 	std::set<const VICUS::SubSurfaceComponent *> subSurfaceComponents;
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances)
-		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_subSurfaceComponentID]);
+		subSurfaceComponents.insert(db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent]);
 	for (const VICUS::SubSurfaceComponent * comp : subSurfaceComponents) {
 		if (comp == nullptr) continue;
 		switch (comp->m_type) {
@@ -195,7 +195,7 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 		if (c != nullptr) {
 			// now lookup all component instances that make use of this component
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				if (ci.m_componentID == c->m_id) {
+				if (ci.m_idComponent == c->m_id) {
 					// look up referenced surfaces
 					if (ci.m_sideASurface != nullptr && ci.m_sideASurface->m_visible)
 						objs.insert(ci.m_sideASurface);
@@ -208,7 +208,7 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 		if (ssc != nullptr) {
 			// now lookup all component instances that make use of this component
 			for (const VICUS::SubSurfaceComponentInstance & ssci : project().m_subSurfaceComponentInstances) {
-				if (ssci.m_subSurfaceComponentID == ssc->m_id) {
+				if (ssci.m_idSubSurfaceComponent == ssc->m_id) {
 					// look up referenced surfaces
 					if (ssci.m_sideASubSurface != nullptr && ssci.m_sideASubSurface->m_visible)
 						objs.insert(ssci.m_sideASubSurface);

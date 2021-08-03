@@ -100,7 +100,7 @@ public:
 	QColor							m_color;										// XML:A
 
 	/*! reference to schedule */
-	unsigned int					m_scheduleId = INVALID_ID;						// XML:A
+	unsigned int					m_idSchedule = INVALID_ID;						// XML:A
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkControlElement ***

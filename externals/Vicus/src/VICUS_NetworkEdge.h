@@ -73,9 +73,9 @@ public:
 
 	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
 		m_supply(supply),
-		m_pipeId(pipeId),
-		m_nodeId1(nodeId1),
-		m_nodeId2(nodeId2),
+		m_idPipe(pipeId),
+		m_idNode1(nodeId1),
+		m_idNode2(nodeId2),
 		m_length(length)
 	{}
 
@@ -95,11 +95,11 @@ public:
 	// TODO Hauke, Vergleichsoperatoren sollten immer das ganze Objekt vergleichen - eher dann eine andere Funktion verwenden
 	//             mit eigenem Namen
 	bool operator==(NetworkEdge &e2) const{
-		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
+		return (m_idNode1 == e2.m_idNode1) && (m_idNode2 == e2.m_idNode2);
 	}
 
 	bool operator==(const NetworkEdge &e2) const{
-		return (m_nodeId1 == e2.m_nodeId1) && (m_nodeId2 == e2.m_nodeId2);
+		return (m_idNode1 == e2.m_idNode1) && (m_idNode2 == e2.m_idNode2);
 	}
 
 	/*! returns opposite node of the given one */
@@ -111,9 +111,9 @@ public:
 
 	void setLengthFromCoordinates();
 
-	unsigned int nodeId1() const { return m_nodeId1; }
+	unsigned int nodeId1() const { return m_idNode1; }
 
-	unsigned int nodeId2() const {return m_nodeId2; }
+	unsigned int nodeId2() const {return m_idNode2; }
 
 	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
 	void changeNode1(NetworkNode *node);
@@ -135,7 +135,7 @@ public:
 	bool												m_supply;						// XML:A
 
 	/*! ID of pipe in database */
-	unsigned int										m_pipeId = INVALID_ID;			// XML:A
+	unsigned int										m_idPipe = INVALID_ID;			// XML:A
 
 	//:inherited	QString								m_displayName;					// XML:A
 
@@ -179,19 +179,19 @@ public:
 	NetworkNode											* m_node1 = nullptr;
 	NetworkNode											* m_node2 = nullptr;
 
-	unsigned int										m_nodeIdInlet = INVALID_ID;
-	unsigned int										m_nodeIdOutlet = INVALID_ID;
+	unsigned int										m_idNodeInlet = INVALID_ID;
+	unsigned int										m_idNodeOutlet = INVALID_ID;
 
-	unsigned int										m_NandradSupplyPipeId = INVALID_ID;
-	unsigned int										m_NandradReturnPipeId = INVALID_ID;
+	unsigned int										m_idNandradSupplyPipe = INVALID_ID;
+	unsigned int										m_idNandradReturnPipe = INVALID_ID;
 
 
 private:
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
-	unsigned int										m_nodeId1 = 0;					// XML:A:required
-	unsigned int										m_nodeId2 = 0;					// XML:A:required
+	unsigned int										m_idNode1 = 0;					// XML:A:required
+	unsigned int										m_idNode2 = 0;					// XML:A:required
 
 	/*! Effective length [m], might be different than geometric length between nodes. */
 	double												m_length = 0;					// XML:E

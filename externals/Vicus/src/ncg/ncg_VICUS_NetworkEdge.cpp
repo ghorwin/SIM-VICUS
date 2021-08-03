@@ -38,13 +38,13 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "nodeId1"))
+		if (!TiXmlAttribute::attributeByName(element, "idNode1"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'nodeId1' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'idNode1' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "nodeId2"))
+		if (!TiXmlAttribute::attributeByName(element, "idNode2"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'nodeId2' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'idNode2' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
@@ -60,16 +60,16 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 				}
 			else if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
-			else if (attribName == "pipeId")
-				m_pipeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idPipe")
+				m_idPipe = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
-			else if (attribName == "nodeId1")
-				m_nodeId1 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "nodeId2")
-				m_nodeId2 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idNode1")
+				m_idNode1 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idNode2")
+				m_idNode2 = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -108,16 +108,16 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
 		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
-	if (m_pipeId != VICUS::INVALID_ID)
-		e->SetAttribute("pipeId", IBK::val2string<unsigned int>(m_pipeId));
+	if (m_idPipe != VICUS::INVALID_ID)
+		e->SetAttribute("idPipe", IBK::val2string<unsigned int>(m_idPipe));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkEdge().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
-	if (m_nodeId1 != VICUS::INVALID_ID)
-		e->SetAttribute("nodeId1", IBK::val2string<unsigned int>(m_nodeId1));
-	if (m_nodeId2 != VICUS::INVALID_ID)
-		e->SetAttribute("nodeId2", IBK::val2string<unsigned int>(m_nodeId2));
+	if (m_idNode1 != VICUS::INVALID_ID)
+		e->SetAttribute("idNode1", IBK::val2string<unsigned int>(m_idNode1));
+	if (m_idNode2 != VICUS::INVALID_ID)
+		e->SetAttribute("idNode2", IBK::val2string<unsigned int>(m_idNode2));
 
 	m_heatExchange.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));

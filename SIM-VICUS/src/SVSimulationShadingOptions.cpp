@@ -241,8 +241,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we want to take only surface connected to ambient, that means, the associated component instance
 		// must have one zone with ID 0 assigned
-		if (s->m_componentInstance->m_sideASurfaceID != VICUS::INVALID_ID &&
-			s->m_componentInstance->m_sideBSurfaceID != VICUS::INVALID_ID)
+		if (s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID &&
+			s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
 			continue; // skip inside constructions
 
 		// we compute shading factors for this surface

@@ -93,7 +93,7 @@ void SVDBVentilationNaturalEditWidget::updateInput(int id) {
 		m_ui->lineEditAirChangeRate->setValue(0);
 	}
 
-	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_scheduleId]);
+	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idSchedule]);
 	if (sched != nullptr)
 		m_ui->lineEditScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
 	else
@@ -150,9 +150,9 @@ void SVDBVentilationNaturalEditWidget::on_pushButtonColor_colorChanged() {
 
 void SVDBVentilationNaturalEditWidget::on_toolButtonSelectSchedule_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_scheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_scheduleId != newId) {
-		m_current->m_scheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idSchedule != newId) {
+		m_current->m_idSchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);

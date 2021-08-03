@@ -63,8 +63,8 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "subNetworkId")
-				m_subNetworkId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSubNetwork")
+				m_idSubNetwork = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
@@ -133,8 +133,8 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (m_type != NUM_NT)
 		e->SetAttribute("type", KeywordList::Keyword("NetworkNode::NodeType",  m_type));
-	if (m_subNetworkId != VICUS::INVALID_ID)
-		e->SetAttribute("subNetworkId", IBK::val2string<unsigned int>(m_subNetworkId));
+	if (m_idSubNetwork != VICUS::INVALID_ID)
+		e->SetAttribute("idSubNetwork", IBK::val2string<unsigned int>(m_idSubNetwork));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkNode().m_visible)

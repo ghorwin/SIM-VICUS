@@ -246,7 +246,7 @@ public:
 	unsigned int					m_id = INVALID_ID;							// XML:A:required
 
 	/*! fluid id */
-	unsigned int					m_fluidID = INVALID_ID;						// XML:A
+	unsigned int					m_idFluid = INVALID_ID;						// XML:A
 
 	/*! Network name */
 	//:inherited	QString			m_displayName;								// XML:A

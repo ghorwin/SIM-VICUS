@@ -56,17 +56,17 @@ void NetworkEdge::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes
 
 
 unsigned NetworkEdge::neighbourNode(unsigned nodeId) const{
-	IBK_ASSERT(nodeId == m_nodeId1 || nodeId == m_nodeId2);
-	if (nodeId == m_nodeId1)
-		return m_nodeId2;
+	IBK_ASSERT(nodeId == m_idNode1 || nodeId == m_idNode2);
+	if (nodeId == m_idNode1)
+		return m_idNode2;
 	else
-		return m_nodeId1;
+		return m_idNode1;
 }
 
 
 NetworkNode * NetworkEdge::neighbourNode(const NetworkNode *node) const {
-	IBK_ASSERT(node->m_id == m_nodeId1 || node->m_id == m_nodeId2);
-	if (node->m_id == m_nodeId1)
+	IBK_ASSERT(node->m_id == m_idNode1 || node->m_id == m_idNode2);
+	if (node->m_id == m_idNode1)
 		return m_node2;
 	else
 		return m_node1;
@@ -79,14 +79,14 @@ void NetworkEdge::setLengthFromCoordinates() {
 
 
 void NetworkEdge::changeNode1(NetworkNode *node) {
-	m_nodeId1 = node->m_id;
+	m_idNode1 = node->m_id;
 	m_node1 = node;  // set pointer, so that setLengthFromCoordinates works
 	setLengthFromCoordinates();
 }
 
 void NetworkEdge::changeNode2(NetworkNode *node)
 {
-	m_nodeId2 = node->m_id;
+	m_idNode2 = node->m_id;
 	m_node2 = node;  // set pointer, so that setLengthFromCoordinates works
 	setLengthFromCoordinates();
 }

@@ -254,7 +254,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 		/// TODO : Hauke, think about grouping for larger networks
 		for (const VICUS::NetworkEdge & e : n.m_edges) {
 			QString name = QString("[%1->%2]").arg(e.nodeId1()).arg(e.nodeId2());
-			const VICUS::NetworkPipe * pipe = db.m_pipes[e.m_pipeId];
+			const VICUS::NetworkPipe * pipe = db.m_pipes[e.m_idPipe];
 			if (pipe != nullptr)
 				name += " "  + QString::fromStdString(pipe->m_displayName.string());
 			QTreeWidgetItem * en = new QTreeWidgetItem(QStringList() << name, QTreeWidgetItem::Type);

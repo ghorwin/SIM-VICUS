@@ -34,11 +34,11 @@ bool VentilationNatural::isValid(const Database<Schedule> &scheduleDB) const {
 	if ( m_id == INVALID_ID )
 		return false;
 
-	if ( m_scheduleId == INVALID_ID )
+	if ( m_idSchedule == INVALID_ID )
 		return false;
 	else {
 		// check if schedule ID is existing and valid
-		const Schedule * sched = scheduleDB[m_scheduleId];
+		const Schedule * sched = scheduleDB[m_idSchedule];
 		if (sched == nullptr)
 			return false;
 		if (!sched->isValid())
@@ -68,7 +68,7 @@ AbstractDBElement::ComparisonResult VentilationNatural::equal(const AbstractDBEl
 		if(m_para[i] != otherVent->m_para[i])
 			return Different;
 	}
-	if(m_scheduleId != otherVent->m_scheduleId)
+	if(m_idSchedule != otherVent->m_idSchedule)
 		return Different;
 
 	//check meta data

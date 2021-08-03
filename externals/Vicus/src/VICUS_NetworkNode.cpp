@@ -50,8 +50,8 @@ void NetworkNode::setInletOutletNode(std::set<const NetworkNode *> &visitedNodes
 	for (NetworkEdge * e : m_edges) {
 		// only process edges that are not yet collected
 		if (std::find(orderedEdges.begin(), orderedEdges.end(), e) == orderedEdges.end()){
-			e->m_nodeIdInlet = m_id;
-			e->m_nodeIdOutlet = e->neighbourNode(m_id);
+			e->m_idNodeInlet = m_id;
+			e->m_idNodeOutlet = e->neighbourNode(m_id);
 			e->setInletOutletNode(visitedNodes, orderedEdges);
 		}
 	}

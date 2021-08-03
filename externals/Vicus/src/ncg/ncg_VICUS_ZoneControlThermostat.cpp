@@ -74,10 +74,10 @@ void ZoneControlThermostat::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "HeatingSetpointScheduleId")
-				m_heatingSetpointScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "CoolingSetpointScheduleId")
-				m_coolingSetpointScheduleId = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdHeatingSetpointSchedule")
+				m_idHeatingSetpointSchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdCoolingSetpointSchedule")
+				m_idCoolingSetpointSchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -144,10 +144,10 @@ TiXmlElement * ZoneControlThermostat::writeXML(TiXmlElement * parent) const {
 
 	if (m_controllerType != NUM_CT)
 		TiXmlElement::appendSingleAttributeElement(e, "ControllerType", nullptr, std::string(), KeywordList::Keyword("ZoneControlThermostat::ControllerType",  m_controllerType));
-	if (m_heatingSetpointScheduleId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "HeatingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_heatingSetpointScheduleId));
-	if (m_coolingSetpointScheduleId != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "CoolingSetpointScheduleId", nullptr, std::string(), IBK::val2string<unsigned int>(m_coolingSetpointScheduleId));
+	if (m_idHeatingSetpointSchedule != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdHeatingSetpointSchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idHeatingSetpointSchedule));
+	if (m_idCoolingSetpointSchedule != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdCoolingSetpointSchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idCoolingSetpointSchedule));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

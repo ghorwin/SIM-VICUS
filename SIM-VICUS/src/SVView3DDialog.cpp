@@ -172,8 +172,8 @@ void SVView3D::exportView3d() {
 		// now we are also looking for component instances
 		if ( s.m_componentInstance != nullptr ){
 			const VICUS::ComponentInstance &compInst = *s.m_componentInstance;
-			const VICUS::Component *comp = db.m_components[compInst.m_componentID];
-			if ( compInst.m_sideASurfaceID == s.m_id ){
+			const VICUS::Component *comp = db.m_components[compInst.m_idComponent];
+			if ( compInst.m_idSideASurface == s.m_id ){
 				if ( comp != nullptr ) {
 					const VICUS::BoundaryCondition *boundCond = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
 					if ( boundCond != nullptr ) {
@@ -181,7 +181,7 @@ void SVView3D::exportView3d() {
 					}
 				}
 			}
-			else if ( compInst.m_sideBSurfaceID == s.m_id ){
+			else if ( compInst.m_idSideBSurface == s.m_id ){
 				if ( comp != nullptr ) {
 					const VICUS::BoundaryCondition *boundCond = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 					if ( boundCond != nullptr ) {

@@ -1284,10 +1284,10 @@ void Scene::generateBuildingGeometry() {
 					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[i];
 						if (sub.m_subSurfaceComponentInstance != nullptr &&
-							sub.m_subSurfaceComponentInstance->m_subSurfaceComponentID != VICUS::INVALID_ID)
+							sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
 						{
 							// lookup subsurface component - if it exists
-							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_subSurfaceComponentID];
+							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
 							if (comp != nullptr) {
 								// now select transparent or opaque surface based on type
 								if (comp->m_type == VICUS::SubSurfaceComponent::CT_Window) {
@@ -1504,7 +1504,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			// now color all surfaces, this works by first looking up the components, associated with each surface
 			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 				// lookup component definition
-				const VICUS::Component * comp = db.m_components[ci.m_componentID];
+				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 				if (comp == nullptr)
 					continue; // no component definition - keep default (gray) color
 				switch (ocm) {
@@ -1517,7 +1517,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
 						// or when component ID matches selected id
-						if (id == VICUS::INVALID_ID || ci.m_componentID == id) {
+						if (id == VICUS::INVALID_ID || ci.m_idComponent == id) {
 							// color side A surfaces with blue,
 							// side B surfaces with orange
 							if (ci.m_sideASurface != nullptr)
@@ -1543,7 +1543,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 					case SVViewState::OCM_SurfaceHeating: {
 						// lookup surface heating definition
-						const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+						const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
 						if (surfHeat != nullptr) {
 							if (ci.m_sideASurface != nullptr)
 								ci.m_sideASurface->m_color = surfHeat->m_color;
@@ -1570,7 +1570,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
 			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 				// lookup component definition
-				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
 				if (comp == nullptr)
 					continue; // no component definition - keep default (uninterested) color
 				switch (ocm) {
@@ -1588,7 +1588,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
 						// or when component ID matches selected id
-						if (id == VICUS::INVALID_ID || ci.m_subSurfaceComponentID == id) {
+						if (id == VICUS::INVALID_ID || ci.m_idSubSurfaceComponent == id) {
 							// color side A surfaces with blue,
 							// side B surfaces with orange
 							// colors slightly brighter than components, to allow differntiation
@@ -1678,7 +1678,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					} break;
 					case SVViewState::OCM_NetworkEdge: {
 						for (const VICUS::NetworkEdge & edge: net.m_edges){
-							unsigned int id = edge.m_pipeId;
+							unsigned int id = edge.m_idPipe;
 							if (db.m_pipes[id] != nullptr)
 								edge.m_color = db.m_pipes[id]->m_color;
 						}
@@ -1691,7 +1691,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					} break;
 					case SVViewState::OCM_NetworkSubNetworks: {
 						for (const VICUS::NetworkNode & node: net.m_nodes){
-							unsigned int id = node.m_subNetworkId;
+							unsigned int id = node.m_idSubNetwork;
 							if (db.m_subNetworks[id] != nullptr)
 								node.m_color = db.m_subNetworks[id]->m_color;
 						}

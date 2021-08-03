@@ -122,13 +122,13 @@ public:
 
 
 	/*! Model type. */
-	ModelType						m_modelType		= NUM_MT;							// XML:A:required
+	ModelType							m_modelType		= NUM_MT;						// XML:A:required
 
 	/*! Parameters of the flow component. */
-	IBK::Parameter					m_para[NUM_P];										// XML:E
+	IBK::Parameter						m_para[NUM_P];									// XML:E
 
 	/*! Array parameters of the flow component */
-	NANDRAD::DataTable				m_polynomCoefficients;								// XML:E
+	NANDRAD::DataTable					m_polynomCoefficients;							// XML:E
 
 };
 

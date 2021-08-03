@@ -132,7 +132,7 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 		const NANDRAD::HydraulicNetworkElement &elem = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx];
 
 		// checkBox
-		m_ui->checkBoxElementHasHeatExchange->setChecked(elem.m_id == m_currentSubNet->m_heatExchangeElementId);
+		m_ui->checkBoxElementHasHeatExchange->setChecked(elem.m_id == m_currentSubNet->m_idHeatExchangeElement);
 
 		// line edits
 		m_ui->groupBoxEditElement->setEnabled(true);
@@ -283,8 +283,8 @@ void SVDBSubNetworkEditWidget::on_checkBoxElementHasHeatExchange_clicked(bool ch
 	else
 		hxId = VICUS::INVALID_ID;
 
-	if (hxId != m_currentSubNet->m_heatExchangeElementId){
-		m_currentSubNet->m_heatExchangeElementId = hxId;
+	if (hxId != m_currentSubNet->m_idHeatExchangeElement){
+		m_currentSubNet->m_idHeatExchangeElement = hxId;
 		modelModify();
 		updateElementProperties();
 	}

@@ -228,8 +228,8 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 
 	// current sub network name
 	const SVDatabase & db = SVSettings::instance().m_db;
-	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_subNetworkId)){
-		const VICUS::SubNetwork *subNet = db.m_subNetworks[m_currentNodes[0]->m_subNetworkId];
+	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_idSubNetwork)){
+		const VICUS::SubNetwork *subNet = db.m_subNetworks[m_currentNodes[0]->m_idSubNetwork];
 		if (subNet != nullptr)
 			m_ui->labelSelectedSubNetwork->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
 	}
@@ -268,9 +268,9 @@ void SVPropNetworkEditWidget::updateEdgeProperties() {
 		m_ui->checkBoxSupplyPipe->setCheckState(Qt::CheckState::PartiallyChecked);
 
 	// update pipe label
-	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_pipeId)){
+	if (uniformProperty(m_currentEdges, &VICUS::NetworkEdge::m_idPipe)){
 		const SVDatabase  & db = SVSettings::instance().m_db;
-		const VICUS::NetworkPipe * pipe = db.m_pipes[m_currentEdges[0]->m_pipeId];
+		const VICUS::NetworkPipe * pipe = db.m_pipes[m_currentEdges[0]->m_idPipe];
 		if(pipe == nullptr)
 			m_ui->labelSelectedPipe->clear();
 		else
@@ -304,7 +304,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_currentConstNetwork->m_nodes.size()));
 
 	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_idFluid];
 	if (fluid != nullptr){
 		m_ui->labelFluidName->setText(QtExt::MultiLangString2QString(fluid->m_displayName));
 		m_ui->labelFluidName->setStyleSheet("QLabel {color: black}");
@@ -342,9 +342,9 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 	std::vector<unsigned int> pipeIds;
 	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges){
-		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_pipeId) == pipeIds.end() &&
-			e.m_pipeId != VICUS::INVALID_ID)
-			pipeIds.push_back(e.m_pipeId);
+		if (std::find(pipeIds.begin(), pipeIds.end(), e.m_idPipe) == pipeIds.end() &&
+			e.m_idPipe != VICUS::INVALID_ID)
+			pipeIds.push_back(e.m_idPipe);
 	}
 	// sort in ascending order of ids
 	std::sort(pipeIds.begin(), pipeIds.end());
@@ -422,9 +422,9 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 
 	std::vector<unsigned int> subNetworkIds;
 	for (const VICUS::NetworkNode &n: m_currentConstNetwork->m_nodes){
-		if (std::find(subNetworkIds.begin(), subNetworkIds.end(), n.m_subNetworkId) == subNetworkIds.end() &&
-				n.m_subNetworkId != VICUS::INVALID_ID)
-			subNetworkIds.push_back(n.m_subNetworkId);
+		if (std::find(subNetworkIds.begin(), subNetworkIds.end(), n.m_idSubNetwork) == subNetworkIds.end() &&
+				n.m_idSubNetwork != VICUS::INVALID_ID)
+			subNetworkIds.push_back(n.m_idSubNetwork);
 	}
 
 	currentRow = m_ui->tableWidgetSubNetworks->currentRow();
@@ -486,7 +486,7 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 	VICUS::NetworkComponent::ModelType modelType = VICUS::NetworkComponent::NUM_MT;
 	// if we have node(s)
 	if (!m_currentNodes.empty()){
-		const VICUS::SubNetwork *sub = db.m_subNetworks[m_currentNodes[0]->m_subNetworkId];
+		const VICUS::SubNetwork *sub = db.m_subNetworks[m_currentNodes[0]->m_idSubNetwork];
 		if (sub == nullptr)
 			return;
 		const VICUS::NetworkComponent *comp = sub->heatExchangeComponent(db.m_networkComponents);
@@ -641,7 +641,7 @@ QString SVPropNetworkEditWidget::largestDiameter() const
 	const SVDatabase & db = SVSettings::instance().m_db;
 	double dMax = 0;
 	for (const VICUS::NetworkEdge &edge: m_currentConstNetwork->m_edges){
-		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
+		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_idPipe];
 		if (p == nullptr)
 			return QString();
 		if (p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value > dMax)
@@ -656,7 +656,7 @@ QString SVPropNetworkEditWidget::smallestDiameter() const
 	const SVDatabase & db = SVSettings::instance().m_db;
 	double dMin = std::numeric_limits<double>::max();
 	for (const VICUS::NetworkEdge &edge: m_currentConstNetwork->m_edges){
-		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_pipeId];
+		const VICUS::NetworkPipe * p = db.m_pipes[edge.m_idPipe];
 		if (p == nullptr)
 			return QString();
 		if (p->m_para[VICUS::NetworkPipe::P_DiameterOutside].value < dMin)
@@ -884,10 +884,10 @@ void SVPropNetworkEditWidget::on_pushButtonSizePipeDimensions_clicked()
 	if (!setNetwork())
 		return;
 	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	const VICUS::NetworkFluid * fluid = db.m_fluids[m_currentNetwork.m_idFluid];
 	if (fluid == nullptr)
 		throw IBK::Exception(IBK::FormatString("Could not find fluid with id %1 in fluid database")
-							.arg(m_currentNetwork.m_fluidID), FUNC_ID);
+							.arg(m_currentNetwork.m_idFluid), FUNC_ID);
 
 	// filter out list of available pipes
 	std::vector<const VICUS::NetworkPipe*> availablePipes;
@@ -1044,13 +1044,13 @@ void SVPropNetworkEditWidget::on_comboBoxHeatExchangeType_activated(int index)
 
 void SVPropNetworkEditWidget::on_pushButtonSelectFluid_clicked()
 {
-	unsigned int currentId  = m_currentConstNetwork->m_fluidID;
+	unsigned int currentId  = m_currentConstNetwork->m_idFluid;
 	SVDatabaseEditDialog *dialog = SVMainWindow::instance().dbFluidEditDialog();
 	unsigned int newId = dialog->select(currentId);
 	if (newId > 0){
 		if (!setNetwork())
 			return;
-		m_currentNetwork.m_fluidID = newId;
+		m_currentNetwork.m_idFluid = newId;
 		m_currentNetwork.updateNodeEdgeConnectionPointers();
 		unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
@@ -1063,16 +1063,16 @@ void SVPropNetworkEditWidget::on_pushButtonAssignPipe_clicked()
 {
 	unsigned int currentId = 0;
 	if (m_currentEdges.size() > 0)
-		currentId = m_currentEdges[0]->m_pipeId;
+		currentId = m_currentEdges[0]->m_idPipe;
 	unsigned int newId = SVMainWindow::instance().dbPipeEditDialog()->select(currentId);
-	modifyEdgeProperty(&VICUS::NetworkEdge::m_pipeId, newId);
+	modifyEdgeProperty(&VICUS::NetworkEdge::m_idPipe, newId);
 }
 
 void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
 {
 	unsigned int currentId = 0;
 	if (m_currentEdges.size() > 0)
-		currentId = m_currentEdges[0]->m_pipeId;
+		currentId = m_currentEdges[0]->m_idPipe;
 	SVMainWindow::instance().dbPipeEditDialog()->edit(currentId);
 }
 
@@ -1081,7 +1081,7 @@ void SVPropNetworkEditWidget::on_pushButtonEditSubNetworks_clicked()
 {
 	unsigned int currentId = 0;
 	if (m_currentNodes.size() > 0)
-		currentId = m_currentNodes[0]->m_subNetworkId;
+		currentId = m_currentNodes[0]->m_idSubNetwork;
 	SVMainWindow::instance().dbSubNetworkEditDialog()->edit(currentId);
 }
 
@@ -1090,9 +1090,9 @@ void SVPropNetworkEditWidget::on_pushButtonAssignSubNetwork_clicked()
 {
 	unsigned int currentId = 0;
 	if (m_currentNodes.size() > 0)
-		currentId = m_currentNodes[0]->m_subNetworkId;
+		currentId = m_currentNodes[0]->m_idSubNetwork;
 	unsigned int newId = SVMainWindow::instance().dbSubNetworkEditDialog()->select(currentId);
-	modifyNodeProperty(&VICUS::NetworkNode::m_subNetworkId, newId);
+	modifyNodeProperty(&VICUS::NetworkNode::m_idSubNetwork, newId);
 }
 
 
@@ -1103,7 +1103,7 @@ void SVPropNetworkEditWidget::on_pushButtonTempChangeIndicator_clicked()
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 
 	const SVDatabase & db = SVSettings::instance().m_db;
-	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_fluidID];
+	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_idFluid];
 	Q_ASSERT(fluid!=nullptr);
 	m_currentNetwork.calcTemperatureChangeIndicator(fluid, db.m_pipes);
 

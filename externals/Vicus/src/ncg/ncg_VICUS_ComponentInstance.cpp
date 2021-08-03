@@ -47,12 +47,12 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "componentID")
-				m_componentID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "sideASurfaceID")
-				m_sideASurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "sideBSurfaceID")
-				m_sideBSurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idComponent")
+				m_idComponent = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSideASurface")
+				m_idSideASurface = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSideBSurface")
+				m_idSideBSurface = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -63,10 +63,10 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "SurfaceHeatingID")
-				m_surfaceHeatingID = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "SurfaceHeatingControlZoneID")
-				m_surfaceHeatingControlZoneID = NANDRAD::readPODElement<unsigned int>(c, cName);
+			if (cName == "IdSurfaceHeating")
+				m_idSurfaceHeating = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSurfaceHeatingControlZone")
+				m_idSurfaceHeatingControlZone = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -88,16 +88,16 @@ TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_componentID != VICUS::INVALID_ID)
-		e->SetAttribute("componentID", IBK::val2string<unsigned int>(m_componentID));
-	if (m_sideASurfaceID != VICUS::INVALID_ID)
-		e->SetAttribute("sideASurfaceID", IBK::val2string<unsigned int>(m_sideASurfaceID));
-	if (m_sideBSurfaceID != VICUS::INVALID_ID)
-		e->SetAttribute("sideBSurfaceID", IBK::val2string<unsigned int>(m_sideBSurfaceID));
-	if (m_surfaceHeatingID != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "SurfaceHeatingID", nullptr, std::string(), IBK::val2string<unsigned int>(m_surfaceHeatingID));
-	if (m_surfaceHeatingControlZoneID != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "SurfaceHeatingControlZoneID", nullptr, std::string(), IBK::val2string<unsigned int>(m_surfaceHeatingControlZoneID));
+	if (m_idComponent != VICUS::INVALID_ID)
+		e->SetAttribute("idComponent", IBK::val2string<unsigned int>(m_idComponent));
+	if (m_idSideASurface != VICUS::INVALID_ID)
+		e->SetAttribute("idSideASurface", IBK::val2string<unsigned int>(m_idSideASurface));
+	if (m_idSideBSurface != VICUS::INVALID_ID)
+		e->SetAttribute("idSideBSurface", IBK::val2string<unsigned int>(m_idSideBSurface));
+	if (m_idSurfaceHeating != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceHeating", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceHeating));
+	if (m_idSurfaceHeatingControlZone != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceHeatingControlZone", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceHeatingControlZone));
 	return e;
 }
 

@@ -96,10 +96,10 @@ public:
 	ControllerType					m_controllerType = NUM_CT;						// XML:E:required
 
 	/*! Heating setpoint schedule ID. */
-	unsigned int					m_heatingSetpointScheduleId = INVALID_ID;		// XML:E
+	unsigned int					m_idHeatingSetpointSchedule = INVALID_ID;		// XML:E
 
 	/*! Cooling setpoint schedule ID. */
-	unsigned int					m_coolingSetpointScheduleId = INVALID_ID;		// XML:E
+	unsigned int					m_idCoolingSetpointSchedule = INVALID_ID;		// XML:E
 
 
 	/*! List of parameters. */

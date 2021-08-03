@@ -1380,11 +1380,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// we create a copy of the component instance
 		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					 VICUS::contains(m_selSurfaces, ci.m_sideASurfaceID) );
+				(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					 VICUS::contains(m_selSurfaces, ci.m_idSideASurface) );
 		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					 VICUS::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
+				(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					 VICUS::contains(m_selSurfaces, ci.m_idSideBSurface) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1394,11 +1394,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		VICUS::ComponentInstance newCi;
 		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
-		newCi.m_componentID = ci.m_componentID;
+		newCi.m_idComponent = ci.m_idComponent;
 		if (leftSideUsed)
-			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+			newCi.m_idSideASurface = oldNewIDMap[ci.m_idSideASurface];
 		if (rightSideUsed)
-			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+			newCi.m_idSideBSurface = oldNewIDMap[ci.m_idSideBSurface];
 		newComponentInstances.push_back(newCi);
 	}
 
@@ -1407,11 +1407,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 		// we create a copy of the component instance
 		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					( VICUS::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
+				(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideASurface) ) );
 		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					( VICUS::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
+				(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideBSurface) ) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1421,11 +1421,11 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 		VICUS::SubSurfaceComponentInstance newCi;
 		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
-		newCi.m_subSurfaceComponentID = ci.m_subSurfaceComponentID;
+		newCi.m_idSubSurfaceComponent = ci.m_idSubSurfaceComponent;
 		if (leftSideUsed)
-			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+			newCi.m_idSideASurface = oldNewIDMap[ci.m_idSideASurface];
 		if (rightSideUsed)
-			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+			newCi.m_idSideBSurface = oldNewIDMap[ci.m_idSideBSurface];
 		newSubSurfaceComponentInstances.push_back(newCi);
 	}
 
@@ -1573,11 +1573,11 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// we create a copy of the component instance
 		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					 VICUS::contains(m_selSurfaces, ci.m_sideASurfaceID) );
+				(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					 VICUS::contains(m_selSurfaces, ci.m_idSideASurface) );
 		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					 VICUS::contains(m_selSurfaces, ci.m_sideBSurfaceID) );
+				(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					 VICUS::contains(m_selSurfaces, ci.m_idSideBSurface) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1587,11 +1587,11 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		VICUS::ComponentInstance newCi;
 		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
-		newCi.m_componentID = ci.m_componentID;
+		newCi.m_idComponent = ci.m_idComponent;
 		if (leftSideUsed)
-			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+			newCi.m_idSideASurface = oldNewIDMap[ci.m_idSideASurface];
 		if (rightSideUsed)
-			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+			newCi.m_idSideBSurface = oldNewIDMap[ci.m_idSideBSurface];
 		newComponentInstances.push_back(newCi);
 	}
 
@@ -1600,11 +1600,11 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 		// we create a copy of the component instance
 		bool leftSideUsed =
-				(ci.m_sideASurfaceID != VICUS::INVALID_ID &&
-					( VICUS::contains(m_selSubSurfaces, ci.m_sideASurfaceID) ) );
+				(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideASurface) ) );
 		bool rightSideUsed =
-				(ci.m_sideBSurfaceID != VICUS::INVALID_ID &&
-					( VICUS::contains(m_selSubSurfaces, ci.m_sideBSurfaceID) ) );
+				(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideBSurface) ) );
 
 		// skip unrelated component instances
 		if (!leftSideUsed && !rightSideUsed)
@@ -1614,11 +1614,11 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 		VICUS::SubSurfaceComponentInstance newCi;
 		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
 		compInstanceIDs.push_back(newCi.m_id);
-		newCi.m_subSurfaceComponentID = ci.m_subSurfaceComponentID;
+		newCi.m_idSubSurfaceComponent = ci.m_idSubSurfaceComponent;
 		if (leftSideUsed)
-			newCi.m_sideASurfaceID = oldNewIDMap[ci.m_sideASurfaceID];
+			newCi.m_idSideASurface = oldNewIDMap[ci.m_idSideASurface];
 		if (rightSideUsed)
-			newCi.m_sideBSurfaceID = oldNewIDMap[ci.m_sideBSurfaceID];
+			newCi.m_idSideBSurface = oldNewIDMap[ci.m_idSideBSurface];
 		newSubSurfaceComponentInstances.push_back(newCi);
 	}
 

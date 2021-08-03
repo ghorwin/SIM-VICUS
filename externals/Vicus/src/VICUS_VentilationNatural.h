@@ -75,7 +75,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Schedule ID. */
-	unsigned int					m_scheduleId = INVALID_ID;				// XML:E
+	unsigned int					m_idSchedule = INVALID_ID;				// XML:E
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E

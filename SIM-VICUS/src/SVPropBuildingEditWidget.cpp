@@ -248,8 +248,8 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeComponents_clicked() {
 	// now process all component instances and modify the component
 	std::vector<VICUS::ComponentInstance> modCI = project().m_componentInstances;
 	for (VICUS::ComponentInstance & ci : modCI) {
-		if (ci.m_componentID == oldId)
-			ci.m_componentID = (unsigned int)newId;
+		if (ci.m_idComponent == oldId)
+			ci.m_idComponent = (unsigned int)newId;
 	}
 	// create the undo action and modify project
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components exchanged"), modCI);
@@ -343,8 +343,8 @@ void SVPropBuildingEditWidget::on_pushButtonExchangeSubSurfaceComponents_clicked
 	// now process all component instances and modify the component
 	std::vector<VICUS::SubSurfaceComponentInstance> modCI = project().m_subSurfaceComponentInstances;
 	for (VICUS::SubSurfaceComponentInstance & ci : modCI) {
-		if (ci.m_subSurfaceComponentID == oldId)
-			ci.m_subSurfaceComponentID = (unsigned int)newId;
+		if (ci.m_idSubSurfaceComponent == oldId)
+			ci.m_idSubSurfaceComponent = (unsigned int)newId;
 	}
 	// create the undo action and modify project
 	SVUndoModifySubSurfaceComponentInstances * undo = new SVUndoModifySubSurfaceComponentInstances(tr("Sub-surface components exchanged"), modCI);
@@ -486,10 +486,10 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// component ID assigned?
-		if (ci.m_componentID == VICUS::INVALID_ID)
+		if (ci.m_idComponent == VICUS::INVALID_ID)
 			continue; // no component, skip
 		// lookup component in DB
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
 		if (comp == nullptr) {
 			// invalid component ID... should we notify the user about that somehow?
 			// for now we keep the nullptr and use this to identify "invalid component" in the table
@@ -524,10 +524,10 @@ void SVPropBuildingEditWidget::updateUi() {
 
 	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
 		// component ID assigned?
-		if (ci.m_subSurfaceComponentID == VICUS::INVALID_ID)
+		if (ci.m_idSubSurfaceComponent == VICUS::INVALID_ID)
 			continue; // no component, skip
 		// lookup component in DB
-		const VICUS::SubSurfaceComponent * comp = SVSettings::instance().m_db.m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+		const VICUS::SubSurfaceComponent * comp = SVSettings::instance().m_db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
 		if (comp == nullptr) {
 			// invalid component ID... should we notify the user about that somehow?
 			// for now we keep the nullptr and use this to identify "invalid component" in the table
@@ -618,7 +618,7 @@ void SVPropBuildingEditWidget::updateUi() {
 		std::set<const VICUS::Component *> selectedComponents;
 		for (const VICUS::Surface* s : surfObjs) {
 			if (s->m_componentInstance != nullptr) {
-				const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_componentID];
+				const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_idComponent];
 				selectedComponents.insert(surfcomp);
 			}
 		}
@@ -703,7 +703,7 @@ void SVPropBuildingEditWidget::updateUi() {
 		std::set<const VICUS::SubSurfaceComponent *> selectedComponents;
 		for (const VICUS::SubSurface* s : subSurfObjs) {
 			if (s->m_subSurfaceComponentInstance != nullptr) {
-				const VICUS::SubSurfaceComponent * surfcomp = db.m_subSurfaceComponents[s->m_subSurfaceComponentInstance->m_subSurfaceComponentID];
+				const VICUS::SubSurfaceComponent * surfcomp = db.m_subSurfaceComponents[s->m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
 				selectedComponents.insert(surfcomp);
 			}
 		}
@@ -760,10 +760,10 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_bcSurfacesMap.clear();
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// component ID assigned?
-			if (ci.m_componentID == VICUS::INVALID_ID)
+			if (ci.m_idComponent == VICUS::INVALID_ID)
 				continue; // no component, skip
 			// lookup component in DB
-			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
 			const VICUS::BoundaryCondition * bcSideA = nullptr;
 			const VICUS::BoundaryCondition * bcSideB = nullptr;
 			if (comp != nullptr) {
@@ -930,7 +930,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 	unsigned int componentFilterID = m_ui->comboBoxSurfaceHeatingComponentFilter->currentData().toUInt();
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// skip all without components - these should be removed as invalid from the start
-		const VICUS::Component * comp = db.m_components[ci.m_componentID];
+		const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 		if (comp == nullptr)
 			continue;
 		// skip all that do not have active layers
@@ -946,7 +946,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		m_ui->tableWidgetSurfaceHeating->setRowCount(row + 1);
 
 		// look-up surface heating system
-		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_surfaceHeatingID];
+		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
 
 
 		// column 0 - valid icon, also stores unique ID of this component instance
@@ -1039,7 +1039,7 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 				surfacesToDDeselect.insert(it->m_sideASurface->uniqueID()); // Mind: use uniqueID here for selection change!
 			if (sideBSelected)
 				surfacesToDDeselect.insert(it->m_sideBSurface->uniqueID());
-			std::swap(it->m_sideASurfaceID, it->m_sideBSurfaceID);
+			std::swap(it->m_idSideASurface, it->m_idSideBSurface);
 		}
 	}
 
@@ -1157,22 +1157,22 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 				compInstanceFound = true;
 				VICUS::ComponentInstance newCi(ci);
 				// set the selected component
-				newCi.m_componentID = (unsigned int)selectedComponentId;
+				newCi.m_idComponent = (unsigned int)selectedComponentId;
 				// no, first time a component instance references the selected surfaces, modify it such,
 				// that any original assignment remains untouched
 				if (it != selSurfaces.end()) {
 					// side A connected?, set side B to the other surface
 					if (it == selSurfaces.begin())
-						newCi.m_sideBSurfaceID = (*selSurfaces.rbegin())->m_id;
+						newCi.m_idSideBSurface = (*selSurfaces.rbegin())->m_id;
 					else
-						newCi.m_sideBSurfaceID = (*selSurfaces.begin())->m_id;
+						newCi.m_idSideBSurface = (*selSurfaces.begin())->m_id;
 				}
 				else {
 					// must be side B connected, set side A to the other surface
 					if (it2 == selSurfaces.begin())
-						newCi.m_sideASurfaceID = (*selSurfaces.rbegin())->m_id;
+						newCi.m_idSideASurface = (*selSurfaces.rbegin())->m_id;
 					else
-						newCi.m_sideASurfaceID = (*selSurfaces.begin())->m_id;
+						newCi.m_idSideASurface = (*selSurfaces.begin())->m_id;
 				}
 				// remember modified component instance
 				compInstances.push_back(newCi);
@@ -1187,9 +1187,9 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 			VICUS::ComponentInstance newCi;
 			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			newCi.m_id = nextId;
-			newCi.m_componentID = (unsigned int)selectedComponentId;
-			newCi.m_sideASurfaceID = (*selSurfaces.begin())->m_id;
-			newCi.m_sideBSurfaceID = (*selSurfaces.rbegin())->m_id;
+			newCi.m_idComponent = (unsigned int)selectedComponentId;
+			newCi.m_idSideASurface = (*selSurfaces.begin())->m_id;
+			newCi.m_idSideBSurface = (*selSurfaces.rbegin())->m_id;
 			compInstances.push_back(newCi);
 		}
 
@@ -1202,13 +1202,13 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 		for (VICUS::ComponentInstance & ci : compInstances) {
 			std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
 			if (it != selSurfaces.end()) {
-				ci.m_componentID = (unsigned int)selectedComponentId;
+				ci.m_idComponent = (unsigned int)selectedComponentId;
 				selSurfaces.erase(it);
 				continue;
 			}
 			it = selSurfaces.find(ci.m_sideBSurface);
 			if (it != selSurfaces.end()) {
-				ci.m_componentID = (unsigned int)selectedComponentId;
+				ci.m_idComponent = (unsigned int)selectedComponentId;
 				selSurfaces.erase(it);
 			}
 		}
@@ -1220,8 +1220,8 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 			for (const VICUS::Surface * s : selSurfaces) {
 				VICUS::ComponentInstance c;
 				c.m_id = nextId++;
-				c.m_sideASurfaceID = s->m_id;
-				c.m_componentID = (unsigned int)selectedComponentId;
+				c.m_idSideASurface = s->m_id;
+				c.m_idComponent = (unsigned int)selectedComponentId;
 				compInstances.push_back(c);
 			}
 		}
@@ -1279,22 +1279,22 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 				compInstanceFound = true;
 				VICUS::SubSurfaceComponentInstance newCi(ci);
 				// set the selected component
-				newCi.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				newCi.m_idSubSurfaceComponent = (unsigned int)selectedComponentId;
 				// no, first time a component instance references the selected surfaces, modify it such,
 				// that any original assignment remains untouched
 				if (it != surfaces.end()) {
 					// side A connected?, set side B to the other surface
 					if (it == surfaces.begin())
-						newCi.m_sideBSurfaceID = (*surfaces.rbegin())->m_id;
+						newCi.m_idSideBSurface = (*surfaces.rbegin())->m_id;
 					else
-						newCi.m_sideBSurfaceID = (*surfaces.begin())->m_id;
+						newCi.m_idSideBSurface = (*surfaces.begin())->m_id;
 				}
 				else {
 					// must be side B connected, set side A to the other surface
 					if (it2 == surfaces.begin())
-						newCi.m_sideASurfaceID = (*surfaces.rbegin())->m_id;
+						newCi.m_idSideASurface = (*surfaces.rbegin())->m_id;
 					else
-						newCi.m_sideASurfaceID = (*surfaces.begin())->m_id;
+						newCi.m_idSideASurface = (*surfaces.begin())->m_id;
 				}
 				// remember modified component instance
 				compInstances.push_back(newCi);
@@ -1309,9 +1309,9 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 			VICUS::SubSurfaceComponentInstance newCi;
 			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			newCi.m_id = nextId;
-			newCi.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
-			newCi.m_sideASurfaceID = (*surfaces.begin())->m_id;
-			newCi.m_sideBSurfaceID = (*surfaces.rbegin())->m_id;
+			newCi.m_idSubSurfaceComponent = (unsigned int)selectedComponentId;
+			newCi.m_idSideASurface = (*surfaces.begin())->m_id;
+			newCi.m_idSideBSurface = (*surfaces.rbegin())->m_id;
 			compInstances.push_back(newCi);
 		}
 
@@ -1324,13 +1324,13 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 		for (VICUS::SubSurfaceComponentInstance & ci : compInstances) {
 			std::set<const VICUS::SubSurface*>::iterator it = surfaces.find(ci.m_sideASubSurface);
 			if (it != surfaces.end()) {
-				ci.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				ci.m_idSubSurfaceComponent = (unsigned int)selectedComponentId;
 				surfaces.erase(it);
 				continue;
 			}
 			it = surfaces.find(ci.m_sideBSubSurface);
 			if (it != surfaces.end()) {
-				ci.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				ci.m_idSubSurfaceComponent = (unsigned int)selectedComponentId;
 				surfaces.erase(it);
 			}
 		}
@@ -1342,8 +1342,8 @@ void SVPropBuildingEditWidget::assignSubSurfaceComponent(bool connectTwoSurfaces
 			for (const VICUS::SubSurface * s : surfaces) {
 				VICUS::SubSurfaceComponentInstance c;
 				c.m_id = nextId++;
-				c.m_sideASurfaceID = s->m_id;
-				c.m_subSurfaceComponentID = (unsigned int)selectedComponentId;
+				c.m_idSideASurface = s->m_id;
+				c.m_idSubSurfaceComponent = (unsigned int)selectedComponentId;
 				compInstances.push_back(c);
 			}
 		}
@@ -1476,9 +1476,9 @@ void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWi
 		for (unsigned int i=0; i<cis.size(); ++i)
 			if (cis[i].m_id == ciID) {
 				if (item->column() == 2)
-					cis[i].m_surfaceHeatingID = item->data(Qt::UserRole).toUInt();
+					cis[i].m_idSurfaceHeating = item->data(Qt::UserRole).toUInt();
 				else
-					cis[i].m_surfaceHeatingControlZoneID = item->data(Qt::UserRole).toUInt();
+					cis[i].m_idSurfaceHeatingControlZone = item->data(Qt::UserRole).toUInt();
 				break;
 			}
 		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
@@ -1503,9 +1503,9 @@ void SVPropBuildingEditWidget::on_pushButtonRemoveSurfaceHeating_clicked() {
 			for (unsigned int i=0; i<cis.size(); ++i)
 				if (cis[i].m_id == ciID) {
 					if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected())
-						cis[i].m_surfaceHeatingID = VICUS::INVALID_ID;
+						cis[i].m_idSurfaceHeating = VICUS::INVALID_ID;
 					if (m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
-						cis[i].m_surfaceHeatingControlZoneID = VICUS::INVALID_ID;
+						cis[i].m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
 					break;
 				}
 		}
@@ -1534,7 +1534,7 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
 		if (ciIt == m_selectedComponentInstances.end())
 			continue;
 		// if component instance does not have an active layer assigned, inform the user
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_componentID];
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
 		if (comp == nullptr) {
 			QMessageBox::critical(this, QString(), tr("One or more of the selected surfaces have no valid component, yet."));
 			return;
@@ -1550,8 +1550,8 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeating_clicked() {
 			s = ci.m_sideBSurface;
 		Q_ASSERT(s != nullptr);
 		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(s->m_parent);
-		ci.m_surfaceHeatingID = selectedID;
-		ci.m_surfaceHeatingControlZoneID = room->m_id;
+		ci.m_idSurfaceHeating = selectedID;
+		ci.m_idSurfaceHeatingControlZone = room->m_id;
 	}
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
 	undo->push();

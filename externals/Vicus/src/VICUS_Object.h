@@ -92,10 +92,10 @@ public:
 
 protected:
 	/*! List of all children. */
-	std::vector<Object *>	m_children;
+	std::vector<Object *>				m_children;
 
 private:
-	unsigned int			m_uniqueID;
+	unsigned int						m_uniqueID;
 
 	/*! Unique ID marker, incremented in each constructor call. */
 	static unsigned int LAST_ID;

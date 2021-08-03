@@ -118,7 +118,7 @@ void SVDBInternalLoadsLightsEditWidget::updateInput(int id) {
 	//m_ui->lineEditLatentFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_LatentHeatFactor].value);
 	//m_ui->lineEditLossFactor->setValue(m_current->m_para[VICUS::InternalLoad::P_LossHeatFactor].value);
 
-	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_powerManagementScheduleId ]);
+	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idPowerManagementSchedule ]);
 	if (sched != nullptr)
 		m_ui->lineEditManagementScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
 	else
@@ -239,9 +239,9 @@ void SVDBInternalLoadsLightsEditWidget::on_pushButtonColor_colorChanged() {
 
 void SVDBInternalLoadsLightsEditWidget::on_toolButtonSelectSchedule_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_powerManagementScheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_powerManagementScheduleId != newId) {
-		m_current->m_powerManagementScheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idPowerManagementSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idPowerManagementSchedule != newId) {
+		m_current->m_idPowerManagementSchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);
@@ -249,7 +249,7 @@ void SVDBInternalLoadsLightsEditWidget::on_toolButtonSelectSchedule_clicked() {
 
 void SVDBInternalLoadsLightsEditWidget::on_toolButtonRemovePowerManagementSchedule_clicked() {
 
-	m_current->m_powerManagementScheduleId = VICUS::INVALID_ID;
+	m_current->m_idPowerManagementSchedule = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);

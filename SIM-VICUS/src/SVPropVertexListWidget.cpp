@@ -513,9 +513,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		// also store component information
 		VICUS::ComponentInstance compInstance;
 		compInstance.m_id = VICUS::uniqueId(project().m_componentInstances);
-		compInstance.m_componentID = m_ui->comboBoxComponent->currentData().toUInt();
+		compInstance.m_idComponent = m_ui->comboBoxComponent->currentData().toUInt();
 		// for now we assume that the zone's surface is connected to the b-side of the component
-		compInstance.m_sideBSurfaceID = s.m_id;
+		compInstance.m_idSideBSurface = s.m_id;
 		// modify project
 		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, zoneUUID, &compInstance);
 		undo->push();

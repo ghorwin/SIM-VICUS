@@ -51,8 +51,8 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
-			else if (attribName == "heatExchangeElementId")
-				m_heatExchangeElementId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idHeatExchangeElement")
+				m_idHeatExchangeElement = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -100,8 +100,8 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_heatExchangeElementId != VICUS::INVALID_ID)
-		e->SetAttribute("heatExchangeElementId", IBK::val2string<unsigned int>(m_heatExchangeElementId));
+	if (m_idHeatExchangeElement != VICUS::INVALID_ID)
+		e->SetAttribute("idHeatExchangeElement", IBK::val2string<unsigned int>(m_idHeatExchangeElement));
 
 	if (!m_elements.empty()) {
 		TiXmlElement * child = new TiXmlElement("Elements");

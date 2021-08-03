@@ -63,7 +63,7 @@ public:
 	std::vector<NANDRAD::HydraulicNetworkElement>		m_elements;								// XML:E
 
 	/*! Stores id of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
-	unsigned int										m_heatExchangeElementId = INVALID_ID;	// XML:A
+	unsigned int										m_idHeatExchangeElement = INVALID_ID;	// XML:A
 
 	const static unsigned int INLET_ID = 333333;
 	const static unsigned int OUTLET_ID = 666666;

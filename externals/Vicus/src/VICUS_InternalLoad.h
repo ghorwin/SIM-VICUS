@@ -101,32 +101,32 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
-	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;			// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
 
 	/*! False color. */
-	QColor							m_color;								// XML:A
+	QColor							m_color;									// XML:A
 
 	/*! Internal Load category. */
-	Category						m_category = NUM_MC;					// XML:E:required
+	Category						m_category = NUM_MC;						// XML:E:required
 
 	/*! Person count method. */
-	PersonCountMethod				m_personCountMethod=NUM_PCM;			// XML:E
+	PersonCountMethod				m_personCountMethod=NUM_PCM;				// XML:E
 
 	/*! Power method. */
-	PowerMethod						m_powerMethod=NUM_PM;					// XML:E
+	PowerMethod						m_powerMethod=NUM_PM;						// XML:E
 
 	/*! Schedule ID. */
-	unsigned int					m_occupancyScheduleId = INVALID_ID;		// XML:E
+	unsigned int					m_idOccupancySchedule = INVALID_ID;			// XML:E
 
 	/*! Only required for person*/
-	unsigned int					m_activityScheduleId = INVALID_ID;		// XML:E
+	unsigned int					m_idActivitySchedule = INVALID_ID;			// XML:E
 
 	/*! Only required for electric equipment, lights, other. */
-	unsigned int					m_powerManagementScheduleId = INVALID_ID;		// XML:E
+	unsigned int					m_idPowerManagementSchedule = INVALID_ID;	// XML:E
 
 	/*! List of parameters. */
-	IBK::Parameter					m_para[NUM_P];							// XML:E
+	IBK::Parameter					m_para[NUM_P];								// XML:E
 };
 
 }

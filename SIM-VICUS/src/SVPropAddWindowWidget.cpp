@@ -282,9 +282,9 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 			{
 				VICUS::SubSurfaceComponentInstance subInstance;
 				subInstance.m_id = VICUS::uniqueId(subSurfaceComponentInstances);
-				subInstance.m_subSurfaceComponentID = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
-				subInstance.m_sideASurfaceID = subsurf.m_id;
-				subInstance.m_sideBSurfaceID = VICUS::INVALID_ID; // currently, all our new windows are outside windows
+				subInstance.m_idSubSurfaceComponent = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
+				subInstance.m_idSideASurface = subsurf.m_id;
+				subInstance.m_idSideBSurface = VICUS::INVALID_ID; // currently, all our new windows are outside windows
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
 		}

@@ -54,7 +54,7 @@ void SVUndoAddSurface::undo() {
 		Q_ASSERT(!theProject().m_plainGeometry.empty());
 		theProject().m_plainGeometry.pop_back();
 	}
-	if (m_componentInstance.m_componentID != VICUS::INVALID_ID) {
+	if (m_componentInstance.m_idComponent != VICUS::INVALID_ID) {
 		Q_ASSERT(!theProject().m_componentInstances.empty());
 		theProject().m_componentInstances.pop_back();
 	}
@@ -79,7 +79,7 @@ void SVUndoAddSurface::redo() {
 		theProject().m_plainGeometry.push_back(m_addedSurface);
 	}
 
-	if (m_componentInstance.m_componentID != VICUS::INVALID_ID) {
+	if (m_componentInstance.m_idComponent != VICUS::INVALID_ID) {
 		theProject().m_componentInstances.push_back(m_componentInstance);
 	}
 	theProject().updatePointers();

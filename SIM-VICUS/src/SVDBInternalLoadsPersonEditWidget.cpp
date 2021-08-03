@@ -124,13 +124,13 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 		}break;
 	}
 
-	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_occupancyScheduleId ]);
+	VICUS::Schedule * occSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idOccupancySchedule ]);
 	if (occSched != nullptr)
 		m_ui->lineEditOccupancyScheduleName->setText(QtExt::MultiLangString2QString(occSched->m_displayName));
 	else
 		m_ui->lineEditOccupancyScheduleName->setText(tr("<select schedule>"));
 
-	VICUS::Schedule * actSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_activityScheduleId ]);
+	VICUS::Schedule * actSched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idActivitySchedule ]);
 	if (actSched != nullptr)
 		m_ui->lineEditActivityScheduleName->setText(QtExt::MultiLangString2QString(actSched->m_displayName));
 	else
@@ -234,9 +234,9 @@ void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() 
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_occupancyScheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_occupancyScheduleId != newId) {
-		m_current->m_occupancyScheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idOccupancySchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idOccupancySchedule != newId) {
+		m_current->m_idOccupancySchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);
@@ -245,9 +245,9 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectOccupancy_clicked() {
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonSelectActivity_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_activityScheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_activityScheduleId != newId) {
-		m_current->m_activityScheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idActivitySchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idActivitySchedule != newId) {
+		m_current->m_idActivitySchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);
@@ -262,7 +262,7 @@ void SVDBInternalLoadsPersonEditWidget::modelModify() {
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveOccupancySchedule_clicked() {
 
-	m_current->m_occupancyScheduleId = VICUS::INVALID_ID;
+	m_current->m_idOccupancySchedule = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
@@ -270,7 +270,7 @@ void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveOccupancySchedule_cli
 
 void SVDBInternalLoadsPersonEditWidget::on_toolButtonRemoveActivitySchedule_clicked() {
 
-	m_current->m_activityScheduleId = VICUS::INVALID_ID;
+	m_current->m_idActivitySchedule = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);

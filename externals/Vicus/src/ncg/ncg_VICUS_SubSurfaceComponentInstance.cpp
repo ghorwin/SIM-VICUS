@@ -47,12 +47,12 @@ void SubSurfaceComponentInstance::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "subSurfaceComponentID")
-				m_subSurfaceComponentID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "sideASurfaceID")
-				m_sideASurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "sideBSurfaceID")
-				m_sideBSurfaceID = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSubSurfaceComponent")
+				m_idSubSurfaceComponent = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSideASurface")
+				m_idSideASurface = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "idSideBSurface")
+				m_idSideBSurface = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -74,12 +74,12 @@ TiXmlElement * SubSurfaceComponentInstance::writeXML(TiXmlElement * parent) cons
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_subSurfaceComponentID != VICUS::INVALID_ID)
-		e->SetAttribute("subSurfaceComponentID", IBK::val2string<unsigned int>(m_subSurfaceComponentID));
-	if (m_sideASurfaceID != VICUS::INVALID_ID)
-		e->SetAttribute("sideASurfaceID", IBK::val2string<unsigned int>(m_sideASurfaceID));
-	if (m_sideBSurfaceID != VICUS::INVALID_ID)
-		e->SetAttribute("sideBSurfaceID", IBK::val2string<unsigned int>(m_sideBSurfaceID));
+	if (m_idSubSurfaceComponent != VICUS::INVALID_ID)
+		e->SetAttribute("idSubSurfaceComponent", IBK::val2string<unsigned int>(m_idSubSurfaceComponent));
+	if (m_idSideASurface != VICUS::INVALID_ID)
+		e->SetAttribute("idSideASurface", IBK::val2string<unsigned int>(m_idSideASurface));
+	if (m_idSideBSurface != VICUS::INVALID_ID)
+		e->SetAttribute("idSideBSurface", IBK::val2string<unsigned int>(m_idSideBSurface));
 	return e;
 }
 

@@ -15,7 +15,7 @@ bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 
 	// check if schedule exists
 	if (m_modelType == MT_Scheduled){
-		const Schedule * setPointSched = scheduleDB[m_scheduleId];
+		const Schedule * setPointSched = scheduleDB[m_idSchedule];
 		if (setPointSched == nullptr)
 			return false;
 		if (!setPointSched->isValid())
@@ -36,7 +36,7 @@ AbstractDBElement::ComparisonResult NetworkController::equal(const VICUS::Abstra
 	if (m_modelType != otherCtrl->m_modelType
 		|| m_controllerType != otherCtrl->m_controllerType
 		|| m_controlledProperty != otherCtrl->m_controlledProperty
-		|| m_scheduleId != otherCtrl->m_scheduleId
+		|| m_idSchedule != otherCtrl->m_idSchedule
 		|| m_maximumControllerResultValue > otherCtrl->m_maximumControllerResultValue
 		|| m_maximumControllerResultValue < otherCtrl->m_maximumControllerResultValue)
 		return Different;

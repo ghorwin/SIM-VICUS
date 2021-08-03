@@ -39,7 +39,7 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 
 
 	// if both setpoint schedules are undefined, the definition is incomplete (one is required)
-	if (m_coolingSetpointScheduleId == INVALID_ID && m_heatingSetpointScheduleId == INVALID_ID)
+	if (m_idCoolingSetpointSchedule == INVALID_ID && m_idHeatingSetpointSchedule == INVALID_ID)
 		return false;
 
 	try {
@@ -51,15 +51,15 @@ bool ZoneControlThermostat::isValid(const Database<Schedule> & scheduleDB) const
 								 "K", "K", 0, false, 50, true, nullptr);
 
 		// check schedules if referenced
-		if (m_heatingSetpointScheduleId != INVALID_ID) {
-			const Schedule * sched = scheduleDB[m_heatingSetpointScheduleId];
+		if (m_idHeatingSetpointSchedule != INVALID_ID) {
+			const Schedule * sched = scheduleDB[m_idHeatingSetpointSchedule];
 			if (sched == nullptr)
 				return false;
 			if (!sched->isValid())
 				return false;
 		}
-		if (m_coolingSetpointScheduleId != INVALID_ID) {
-			const Schedule * sched = scheduleDB[m_coolingSetpointScheduleId];
+		if (m_idCoolingSetpointSchedule != INVALID_ID) {
+			const Schedule * sched = scheduleDB[m_idCoolingSetpointSchedule];
 			if (sched == nullptr)
 				return false;
 			if (!sched->isValid())
@@ -86,8 +86,8 @@ AbstractDBElement::ComparisonResult ZoneControlThermostat::equal(const AbstractD
 		if(m_para[i] != otherCtrl->m_para[i])
 			return Different;
 	}
-	if(m_heatingSetpointScheduleId != otherCtrl->m_heatingSetpointScheduleId ||
-			m_coolingSetpointScheduleId != otherCtrl->m_coolingSetpointScheduleId ||
+	if(m_idHeatingSetpointSchedule != otherCtrl->m_idHeatingSetpointSchedule ||
+			m_idCoolingSetpointSchedule != otherCtrl->m_idCoolingSetpointSchedule ||
 			m_controlValue != otherCtrl->m_controlValue ||
 			m_controllerType != otherCtrl->m_controllerType)
 		return Different;

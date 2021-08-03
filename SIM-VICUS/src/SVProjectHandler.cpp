@@ -748,9 +748,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// InternalLoad
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
 	for (VICUS::InternalLoad & e : m_project->m_embeddedDB.m_internalLoads) {
-		replaceID(e.m_activityScheduleId, schedulesIDMap);
-		replaceID(e.m_occupancyScheduleId, schedulesIDMap);
-		replaceID(e.m_powerManagementScheduleId, schedulesIDMap);
+		replaceID(e.m_idActivitySchedule, schedulesIDMap);
+		replaceID(e.m_idOccupancySchedule, schedulesIDMap);
+		replaceID(e.m_idPowerManagementSchedule, schedulesIDMap);
 		importDBElement(e, db.m_internalLoads, internalLoadIDMap,
 			"Internal loads '%1' with #%2 imported -> new ID #%3.\n",
 			"Internal loads '%1' with #%2 exists already -> ID #%3.\n"
@@ -769,7 +769,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// ventilation
 	std::map<unsigned int, unsigned int> ventilationIDMap;
 	for (VICUS::VentilationNatural & e : m_project->m_embeddedDB.m_ventilationNatural) {
-		replaceID(e.m_scheduleId, schedulesIDMap);
+		replaceID(e.m_idSchedule, schedulesIDMap);
 
 		importDBElement(e, db.m_ventilationNatural, ventilationIDMap,
 						"Natural ventilation '%1' with #%2 imported -> new ID #%3.\n",
@@ -780,8 +780,8 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// zone control thermostat
 	std::map<unsigned int, unsigned int> thermostatIDMap;
 	for (VICUS::ZoneControlThermostat & e : m_project->m_embeddedDB.m_zoneControlThermostats) {
-		replaceID(e.m_heatingSetpointScheduleId,schedulesIDMap);
-		replaceID(e.m_coolingSetpointScheduleId,schedulesIDMap);
+		replaceID(e.m_idHeatingSetpointSchedule,schedulesIDMap);
+		replaceID(e.m_idCoolingSetpointSchedule,schedulesIDMap);
 		importDBElement(e, db.m_zoneControlThermostat, thermostatIDMap,
 						"Thermostat '%1' with #%2 imported -> new ID #%3.\n",
 						"Thermostat '%1' with #%2 exists already -> ID #%3.\n"
@@ -896,11 +896,11 @@ bool SVProjectHandler::importEmbeddedDB() {
 	// *** ComponentInstance and SubSurfaceComponentInstance ***
 
 	for (VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
-		replaceID(ci.m_componentID, componentIDMap);
-		replaceID(ci.m_surfaceHeatingID, surfaceHeatingIDMap);
+		replaceID(ci.m_idComponent, componentIDMap);
+		replaceID(ci.m_idSurfaceHeating, surfaceHeatingIDMap);
 	}
 	for (VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances)
-		replaceID(ci.m_subSurfaceComponentID, subSurfaceComponentIDMap);
+		replaceID(ci.m_idSubSurfaceComponent, subSurfaceComponentIDMap);
 
 
 	// *** Network (Nodes, Edges, Pipes, Fluid) ***
@@ -908,12 +908,12 @@ bool SVProjectHandler::importEmbeddedDB() {
 	for (VICUS::Network & n : m_project->m_geometricNetworks) {
 
 		for (VICUS::NetworkNode & node : n.m_nodes)
-			replaceID(node.m_subNetworkId, subNetworksIDMap);
+			replaceID(node.m_idSubNetwork, subNetworksIDMap);
 
 		for (VICUS::NetworkEdge & edge : n.m_edges)
-			replaceID(edge.m_pipeId, pipesIDMap);
+			replaceID(edge.m_idPipe, pipesIDMap);
 
-		replaceID(n.m_fluidID, fluidsIDMap);
+		replaceID(n.m_idFluid, fluidsIDMap);
 		for (unsigned int & pipeID : n.m_availablePipes)
 			replaceID(pipeID, pipesIDMap);
 	}

@@ -230,8 +230,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// *** ComponentInstance and Component ***
 	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
-		const VICUS::Component * c = m_components[ci.m_componentID];
-		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_surfaceHeatingID]);
+		const VICUS::Component * c = m_components[ci.m_idComponent];
+		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_idSurfaceHeating]);
 		if (c == nullptr) continue;
 
 		referencedComponents.insert(c);
@@ -242,7 +242,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// *** SubSurfaceComponentInstance, SubSurfaceComponent, Window and WindowGlazingSystems ***
 	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances) {
-		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_subSurfaceComponentID];
+		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
 		referencedSubSurfaceComponents.insert(c);
 		if (c == nullptr) continue;
 
@@ -303,14 +303,14 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
 				switch (tempType) {
 					case VICUS::ZoneTemplate::ST_IntLoadPerson:
-						referencedSchedule.insert(m_schedules[intLoad->m_activityScheduleId]);
-						referencedSchedule.insert(m_schedules[intLoad->m_occupancyScheduleId]);
+						referencedSchedule.insert(m_schedules[intLoad->m_idActivitySchedule]);
+						referencedSchedule.insert(m_schedules[intLoad->m_idOccupancySchedule]);
 					break;
 
 					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
 					case VICUS::ZoneTemplate::ST_IntLoadOther:
-						referencedSchedule.insert(m_schedules[intLoad->m_powerManagementScheduleId]);
+						referencedSchedule.insert(m_schedules[intLoad->m_idPowerManagementSchedule]);
 					break;
 
 					case VICUS::ZoneTemplate::ST_ControlThermostat:
@@ -325,15 +325,15 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 			else if(thermo != nullptr) {
 				referencedThermostats.insert(thermo);
 
-				referencedSchedule.insert(m_schedules[thermo->m_heatingSetpointScheduleId]);
-				referencedSchedule.insert(m_schedules[thermo->m_coolingSetpointScheduleId]);
+				referencedSchedule.insert(m_schedules[thermo->m_idHeatingSetpointSchedule]);
+				referencedSchedule.insert(m_schedules[thermo->m_idCoolingSetpointSchedule]);
 			}
 			else if (inf != nullptr) {
 				referencedInfiltration.insert(inf);
 			}
 			else if (ventiNat != nullptr) {
 				referencedVentilation.insert(ventiNat);
-				referencedSchedule.insert(m_schedules[ventiNat->m_scheduleId]);
+				referencedSchedule.insert(m_schedules[ventiNat->m_idSchedule]);
 			}
 			else if(idealHeatCool != nullptr)
 				referencedIdealHeatingCooling.insert(idealHeatCool);
@@ -345,15 +345,15 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	for (const VICUS::Network &net: p.m_geometricNetworks){
 
 		// fluids
-		referencedNetworkFluids.insert(m_fluids[net.m_fluidID]);
+		referencedNetworkFluids.insert(m_fluids[net.m_idFluid]);
 
 		// pipes
 		for (const VICUS::NetworkEdge &edge: net.m_edges)
-			referencedNetworkPipes.insert(m_pipes[edge.m_pipeId]);
+			referencedNetworkPipes.insert(m_pipes[edge.m_idPipe]);
 
 		// sub networks
 		for (const VICUS::NetworkNode &node: net.m_nodes)
-			referencedSubNetworks.insert(m_subNetworks[node.m_subNetworkId]);
+			referencedSubNetworks.insert(m_subNetworks[node.m_idSubNetwork]);
 	}
 
 	// iterate through collected sub networks

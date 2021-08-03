@@ -66,18 +66,18 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				return false;
 			}
 
-			if(m_activityScheduleId == INVALID_ID || m_occupancyScheduleId == INVALID_ID)
+			if(m_idActivitySchedule == INVALID_ID || m_idOccupancySchedule == INVALID_ID)
 				return false;
 
 			//check schedules occ and act
 			// check if schedule ID is existing and valid
-			const Schedule * actSched = scheduleDB[m_activityScheduleId];
+			const Schedule * actSched = scheduleDB[m_idActivitySchedule];
 			if (actSched == nullptr)
 				return false;
 			if (!actSched->isValid())
 				return false;
 
-			const Schedule * occSched = scheduleDB[m_occupancyScheduleId];
+			const Schedule * occSched = scheduleDB[m_idOccupancySchedule];
 			if (occSched == nullptr)
 				return false;
 			if (!occSched->isValid())
@@ -110,11 +110,11 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				case VICUS::InternalLoad::NUM_PM:	return false;
 			}
 
-			if(m_powerManagementScheduleId == INVALID_ID)
+			if(m_idPowerManagementSchedule == INVALID_ID)
 				return false;
 
 			// check if schedule ID is existing and valid
-			const Schedule * powerSched = scheduleDB[m_powerManagementScheduleId];
+			const Schedule * powerSched = scheduleDB[m_idPowerManagementSchedule];
 			if (powerSched == nullptr)
 				return false;
 			if (!powerSched->isValid())
@@ -157,9 +157,9 @@ AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement 
 	if(m_category != otherIntLoad->m_category ||
 			m_personCountMethod != otherIntLoad->m_personCountMethod||
 			m_powerMethod != otherIntLoad->m_powerMethod ||
-			m_occupancyScheduleId != otherIntLoad->m_occupancyScheduleId ||
-			m_activityScheduleId != otherIntLoad->m_activityScheduleId ||
-			m_powerManagementScheduleId != otherIntLoad->m_powerManagementScheduleId)
+			m_idOccupancySchedule != otherIntLoad->m_idOccupancySchedule ||
+			m_idActivitySchedule != otherIntLoad->m_idActivitySchedule ||
+			m_idPowerManagementSchedule != otherIntLoad->m_idPowerManagementSchedule)
 		return Different;
 
 	//check meta data

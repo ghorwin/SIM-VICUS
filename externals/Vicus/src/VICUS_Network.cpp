@@ -55,7 +55,7 @@ Network Network::copyWithBaseParameters() {
 	Network copy;
 	copy.m_type = this->m_type;
 	copy.m_modelType = this->m_modelType;
-	copy.m_fluidID = this->m_fluidID;
+	copy.m_idFluid = this->m_idFluid;
 	copy.m_scaleEdges = this->m_scaleEdges;
 	copy.m_scaleNodes = this->m_scaleNodes;
 	copy.m_origin = this->m_origin;
@@ -143,8 +143,8 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 	// process all edges and update their display radius
 	for (const VICUS::NetworkEdge & e : m_edges) {
 		double radius = 0.5;
-		if (e.m_pipeId != VICUS::INVALID_ID){
-			const VICUS::NetworkPipe * pipe = pipeDB[e.m_pipeId];
+		if (e.m_idPipe != VICUS::INVALID_ID){
+			const VICUS::NetworkPipe * pipe = pipeDB[e.m_idPipe];
 			if (pipe != nullptr)
 				radius *= pipe->m_para[VICUS::NetworkPipe::P_DiameterOutside].value * m_scaleEdges;
 		}
@@ -457,7 +457,7 @@ void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
 			continue;
 		unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
 		unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
+		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
 	}
 }
 
@@ -490,12 +490,12 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 			// add nodes and reduced edge to new network
 			unsigned id1 = cleanNetwork.addNode(*previousNode);
 			unsigned id2 = cleanNetwork.addNode(*nextNode);
-			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_pipeId));
+			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_idPipe));
 		}
 		else{
 			unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
 			unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_pipeId));
+			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
 		}
 	}
 }
@@ -710,10 +710,10 @@ FUNCID(Network::sizePipeDimensions);
 
 		// if we found a pipe, store its id
 		if (currentPipe != nullptr)
-			e.m_pipeId = currentPipe->m_id;
+			e.m_idPipe = currentPipe->m_id;
 		// otherwise store ID of biggest pipe
 		else
-			e.m_pipeId = largestPipe->m_id;
+			e.m_idPipe = largestPipe->m_id;
 	}
 
 }
@@ -766,7 +766,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 	// calculate temperature change indicator for each edge
 	for (NetworkEdge &e: m_edges){
 
-		const NetworkPipe *pipe = pipeDB[e.m_pipeId];
+		const NetworkPipe *pipe = pipeDB[e.m_idPipe];
 		Q_ASSERT(pipe != nullptr);
 		e.m_nominalMassFlow = e.m_nominalHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
 

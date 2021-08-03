@@ -45,7 +45,7 @@ public:
 	/*! Initializing constructor. */
 	ComponentInstance(unsigned int id,
 					  unsigned int componentID, unsigned int sideASurfaceID, unsigned int sideBSurfaceID)
-		: m_id(id), m_componentID(componentID), m_sideASurfaceID(sideASurfaceID), m_sideBSurfaceID(sideBSurfaceID)
+		: m_id(id), m_idComponent(componentID), m_idSideASurface(sideASurfaceID), m_idSideBSurface(sideBSurfaceID)
 	{}
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -58,16 +58,16 @@ public:
 	/*! ID of component instance (will be used for NANDRAD::ConstructionInstance). */
 	unsigned int						m_id = INVALID_ID;					// XML:A:required
 	/*! ID of referenced component. */
-	unsigned int						m_componentID = INVALID_ID;			// XML:A
+	unsigned int						m_idComponent = INVALID_ID;			// XML:A
 	/*! ID of surface at side A (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
-	unsigned int						m_sideASurfaceID = INVALID_ID;		// XML:A
+	unsigned int						m_idSideASurface = INVALID_ID;		// XML:A
 	/*! ID of surface at side B (optional, ID = 0 reserved for "ambient", INVALID_ID means adiabatic). */
-	unsigned int						m_sideBSurfaceID = INVALID_ID;		// XML:A
+	unsigned int						m_idSideBSurface = INVALID_ID;		// XML:A
 
 	/*! ID of surface heating definition, to be used when component has active layer. */
-	unsigned int						m_surfaceHeatingID				= INVALID_ID;	// XML:E
+	unsigned int						m_idSurfaceHeating				= INVALID_ID;	// XML:E
 	/*! ID of zone containing thermostat for control of surface heating. */
-	unsigned int						m_surfaceHeatingControlZoneID	= INVALID_ID;	// XML:E
+	unsigned int						m_idSurfaceHeatingControlZone	= INVALID_ID;	// XML:E
 
 	// *** RUNTIME VARIABLES ***
 

@@ -139,7 +139,7 @@ void LCA::calculateLCA()
 				// get component
 				const VICUS::ComponentInstance * compInstance = s.m_componentInstance;
 				if (compInstance != nullptr) {
-					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_componentID,
+					VICUS::Component comp = elementExists<VICUS::Component>(m_dbComponents, compInstance->m_idComponent,
 													s.m_displayName.toStdString(),"Component", "surface");
 					//save surface area
 					compRes[comp.m_id].m_area += surf.geometry().area();

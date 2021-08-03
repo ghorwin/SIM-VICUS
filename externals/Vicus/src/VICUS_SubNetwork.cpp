@@ -64,7 +64,7 @@ AbstractDBElement::ComparisonResult SubNetwork::equal(const AbstractDBElement *o
 
 
 const NetworkComponent * SubNetwork::heatExchangeComponent(const Database<NetworkComponent> &compDB) const {
-	const NANDRAD::HydraulicNetworkElement *elem = VICUS::element(m_elements, m_heatExchangeElementId);
+	const NANDRAD::HydraulicNetworkElement *elem = VICUS::element(m_elements, m_idHeatExchangeElement);
 	if (elem == nullptr)
 		return nullptr;
 

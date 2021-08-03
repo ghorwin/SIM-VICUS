@@ -742,8 +742,8 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 			// - retrieve schedules referenced via m_occupancyScheduleId and m_activityScheduleId
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * activitySchedule = m_scheduleDB[intLoadPerson->m_activityScheduleId];
-			const Schedule * occupancySchedule = m_scheduleDB[intLoadPerson->m_occupancyScheduleId];
+			const Schedule * activitySchedule = m_scheduleDB[intLoadPerson->m_idActivitySchedule];
+			const Schedule * occupancySchedule = m_scheduleDB[intLoadPerson->m_idOccupancySchedule];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = activitySchedule->multiply(*occupancySchedule);
 			combinedSchedule = combinedSchedule.multiply(personPerArea);
@@ -780,7 +780,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 			// - retrieve schedules referenced via
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadEquipment->m_powerManagementScheduleId];
+			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadEquipment->m_idPowerManagementSchedule];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
@@ -816,7 +816,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 
 			// - retrieve schedules referenced via
 			//   valid schedule references have been checked in isValid() already
-			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadLighting->m_powerManagementScheduleId];
+			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadLighting->m_idPowerManagementSchedule];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
 
@@ -1077,7 +1077,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	std::vector<NANDRAD::Schedule> scheds;
 	VICUS::Schedule combinedSchedule;
 	if(ventiType != V_Infiltration){
-		const Schedule * ventSched = m_scheduleDB[ventilation->m_scheduleId];
+		const Schedule * ventSched = m_scheduleDB[ventilation->m_idSchedule];
 		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].value);
 		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
 			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].value;
@@ -1154,8 +1154,8 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		unsigned int subSurfaceComponentId = VICUS::INVALID_ID;
 		//find sub surface component instance
 		for(const VICUS::SubSurfaceComponentInstance &ssci : m_project->m_subSurfaceComponentInstances){
-			if(ssci.m_sideASurfaceID == ss.m_id || ssci.m_sideBSurfaceID == ss.m_id){
-				subSurfaceComponentId = ssci.m_subSurfaceComponentID;
+			if(ssci.m_idSideASurface == ss.m_id || ssci.m_idSideBSurface == ss.m_id){
+				subSurfaceComponentId = ssci.m_idSubSurfaceComponent;
 
 				break;
 			}
@@ -1231,7 +1231,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	const VICUS::BoundaryCondition * bc = VICUS::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
 	if (bc == nullptr){
 		errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
-				.arg(ci.m_componentID).arg(s->m_id));
+				.arg(ci.m_idComponent).arg(s->m_id));
 		return NANDRAD::Interface();
 	}
 	if (!bc->isValid())
@@ -1279,10 +1279,10 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already
-		const VICUS::Component * comp = VICUS::element(m_project->m_embeddedDB.m_components, compInstaVicus.m_componentID);
+		const VICUS::Component * comp = VICUS::element(m_project->m_embeddedDB.m_components, compInstaVicus.m_idComponent);
 		if (comp == nullptr){
 			errorStack.append(qApp->tr("Component ID #%1 is referenced from component instance with id #%2, but there is no such component.")
-							 .arg(compInstaVicus.m_componentID).arg(compInstaVicus.m_id));
+							 .arg(compInstaVicus.m_idComponent).arg(compInstaVicus.m_id));
 			continue;
 		}
 		// now generate a construction instance
@@ -1310,7 +1310,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 					errorStack.append(qApp->tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
 						   "areas %3 and %4 m2.")
-								  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_sideASurfaceID).arg(compInstaVicus.m_sideBSurfaceID)
+								  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_idSideASurface).arg(compInstaVicus.m_idSideBSurface)
 								  .arg(area).arg(areaB));
 				}
 
@@ -1387,15 +1387,15 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 		int activeLayerIdx = -1;
 		//create surface heating system data
-		if(compInstaVicus.m_surfaceHeatingControlZoneID != INVALID_ID && compInstaVicus.m_surfaceHeatingID != INVALID_ID){
+		if(compInstaVicus.m_idSurfaceHeatingControlZone != INVALID_ID && compInstaVicus.m_idSurfaceHeating != INVALID_ID){
 			//get an area check for surface heating systems
 			if(area <= 1e-4){
 				errorStack.append(qApp->tr("Component instance #%1 area is too small. No surface heating/cooling export possible.")
 									  .arg(compInstaVicus.m_id));
 				continue;
 			}
-			m_surfaceHeatingData.push_back(DataSurfaceHeating(compInstaVicus.m_surfaceHeatingControlZoneID,
-															  compInstaVicus.m_surfaceHeatingID, constrInstNandrad.m_id,
+			m_surfaceHeatingData.push_back(DataSurfaceHeating(compInstaVicus.m_idSurfaceHeatingControlZone,
+															  compInstaVicus.m_idSurfaceHeating, constrInstNandrad.m_id,
 															  area));
 			activeLayerIdx = (int)comp->m_activeLayerIndex;
 //			bool isAdded = false;
@@ -1582,8 +1582,8 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	std::vector<NANDRAD::Schedule> scheds;
 	VICUS::Schedule s;
 
-	const Schedule * heatSched = m_scheduleDB[thermostat->m_heatingSetpointScheduleId];
-	const Schedule * coolSched = m_scheduleDB[thermostat->m_coolingSetpointScheduleId];
+	const Schedule * heatSched = m_scheduleDB[thermostat->m_idHeatingSetpointSchedule];
+	const Schedule * coolSched = m_scheduleDB[thermostat->m_idCoolingSetpointSchedule];
 
 	if(heatSched != nullptr)
 		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);

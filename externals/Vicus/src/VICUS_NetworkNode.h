@@ -129,7 +129,7 @@ public:
 	IBK::Parameter								m_maxHeatingDemand;										// XML:E
 
 	/*! Reference id to a VICUS::SubNetwork */
-	unsigned int								m_subNetworkId = INVALID_ID;							// XML:A
+	unsigned int								m_idSubNetwork = INVALID_ID;							// XML:A
 
 	//:inherited	QString						m_displayName;											// XML:A
 

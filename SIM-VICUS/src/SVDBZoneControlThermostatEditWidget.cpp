@@ -119,13 +119,13 @@ void SVDBZoneControlThermostatEditWidget::updateInput(int id) {
 
 	m_ui->lineEditTolerance->setValue(m_current->m_para[VICUS::ZoneControlThermostat::P_Tolerance].value);
 
-	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_heatingSetpointScheduleId]);
+	VICUS::Schedule * sched = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idHeatingSetpointSchedule]);
 	if (sched != nullptr)
 		m_ui->lineEditHeatingScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
 	else
 		m_ui->lineEditHeatingScheduleName->setText(tr("<select schedule>"));
 
-	VICUS::Schedule * schedC = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_coolingSetpointScheduleId]);
+	VICUS::Schedule * schedC = const_cast<VICUS::Schedule *>(m_db->m_schedules[(unsigned int) m_current->m_idCoolingSetpointSchedule]);
 	if (schedC != nullptr)
 		m_ui->lineEditCoolingScheduleName->setText(QtExt::MultiLangString2QString(schedC->m_displayName));
 	else
@@ -213,9 +213,9 @@ void SVDBZoneControlThermostatEditWidget::on_pushButtonColor_colorChanged() {
 
 void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_heatingSetpointScheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_heatingSetpointScheduleId != newId) {
-		m_current->m_heatingSetpointScheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idHeatingSetpointSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idHeatingSetpointSchedule != newId) {
+		m_current->m_idHeatingSetpointSchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);
@@ -224,9 +224,9 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectHeatingSchedule_cli
 
 void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_clicked() {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_coolingSetpointScheduleId);
-	if (newId != VICUS::INVALID_ID && m_current->m_coolingSetpointScheduleId != newId) {
-		m_current->m_coolingSetpointScheduleId = newId;
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idCoolingSetpointSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_idCoolingSetpointSchedule != newId) {
+		m_current->m_idCoolingSetpointSchedule = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);
@@ -235,7 +235,7 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonSelectCoolingSchedule_cli
 
 void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveHeatingSetpointSchedule_clicked() {
 
-	m_current->m_heatingSetpointScheduleId = VICUS::INVALID_ID;
+	m_current->m_idHeatingSetpointSchedule = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
@@ -244,7 +244,7 @@ void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveHeatingSetpointSche
 
 void SVDBZoneControlThermostatEditWidget::on_toolButtonRemoveCoolingSetpointSchedule_clicked() {
 
-	m_current->m_coolingSetpointScheduleId = VICUS::INVALID_ID;
+	m_current->m_idCoolingSetpointSchedule = VICUS::INVALID_ID;
 
 	modelModify();
 	updateInput((int)m_current->m_id);
