@@ -129,10 +129,10 @@
 				<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10004">
+						<MaterialLayer idMaterial="10004">
 							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10000">
+						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>

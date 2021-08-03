@@ -49,13 +49,13 @@ public:
 
 	/*! Simple Constructor with thickness in [m] and material id. */
 	MaterialLayer(double thickness, unsigned int id):
-		m_matId(id),
+		m_idMaterial(id),
 		m_thickness(IBK::Parameter("Thickness", thickness, "m"))
 	{}
 
 	/*! Simple Constructor with thickness and material id. */
 	MaterialLayer(IBK::Parameter thickness, unsigned int id):
-		m_matId(id),
+		m_idMaterial(id),
 		m_thickness(thickness)
 	{}
 
@@ -63,14 +63,14 @@ public:
 	VICUS_READWRITE
 
 	/*! Inequality operator. */
-	bool operator!=(const MaterialLayer & other) const { return (m_thickness != other.m_thickness || m_matId != other.m_matId);	}
+	bool operator!=(const MaterialLayer & other) const { return (m_thickness != other.m_thickness || m_idMaterial != other.m_idMaterial);	}
 	/*! Equality operator. */
 	bool operator==(const MaterialLayer & other) const { return !operator!=(other); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of material. */
-	unsigned int					m_matId = INVALID_ID;	// XML:A:required
+	unsigned int					m_idMaterial = INVALID_ID;	// XML:A:required
 
 	/*! Thickness of the material layer. */
 	IBK::Parameter					m_thickness;			// XML:E:required

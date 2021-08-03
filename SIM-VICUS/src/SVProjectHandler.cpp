@@ -643,7 +643,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	for (VICUS::Construction & e : m_project->m_embeddedDB.m_constructions) {
 		// apply material ID substitutions
 		for (VICUS::MaterialLayer & lay : e.m_materialLayers)
-			replaceID(lay.m_matId, materialIDMap);
+			replaceID(lay.m_idMaterial, materialIDMap);
 
 		importDBElement(e, db.m_constructions, constructionIDMap,
 			"Construction type '%1' with #%2 imported -> new ID #%3.\n",

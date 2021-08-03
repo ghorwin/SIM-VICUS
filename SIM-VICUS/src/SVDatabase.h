@@ -99,8 +99,12 @@ public:
 	*/
 	void determineDuplicates(std::vector< std::vector<DuplicateInfo> > & duplicatePairs) const;
 
-	/*! Removes element from Database. */
-	void removeDBElement(DatabaseTypes dbType, unsigned int elementID);
+	/*! Removes element from Database.
+		\param dbType The database to remove the element from.
+		\param elementID The ID of the element to be removed.
+		\param replacementElementID ID to be used instead of removed elementID in all references to the removed DB element.
+	*/
+	void removeDBElement(DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID);
 
 	// Databases
 

@@ -120,7 +120,7 @@
 				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10002">
+						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>

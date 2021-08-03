@@ -29,7 +29,7 @@ namespace VICUS {
 
 bool Construction::isValid(const VICUS::Database<Material> & materials) const {
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
-		const Material * mat = materials[m_materialLayers[i].m_matId];
+		const Material * mat = materials[m_materialLayers[i].m_idMaterial];
 		if (mat == nullptr)
 			return false; // error, material with this ID is not found
 		if ( mat->m_para[Material::P_Conductivity].value <= 0)
@@ -45,7 +45,7 @@ bool Construction::calculateUValue(double & UValue, const VICUS::Database<Materi
 	// simple calculation
 	double R = ri + re;
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
-		const Material * mat = materials[m_materialLayers[i].m_matId];
+		const Material * mat = materials[m_materialLayers[i].m_idMaterial];
 		if (mat == nullptr)
 			return false; // error, material with this ID is not found
 		double lambda, thickness;

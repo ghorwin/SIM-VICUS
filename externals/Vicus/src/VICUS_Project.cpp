@@ -2136,7 +2136,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
 			NANDRAD::MaterialLayer mlayer;
-			mlayer.m_matId = uniqueIdWithPredef2(Material, ml.m_matId, m_idMaps);
+			mlayer.m_matId = uniqueIdWithPredef2(Material, ml.m_idMaterial, m_idMaps);
 			mlayer.m_thickness = ml.m_thickness.value;
 			conType.m_materialLayers.push_back(mlayer);
 		}

@@ -326,9 +326,10 @@ void SVDBDuplicatesDialog::on_pushButtonTakeLeft_clicked() {
 	Q_ASSERT(currentRow != -1);
 
 	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
+	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
 	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
 
-	SVSettings::instance().m_db.removeDBElement(type, rightID);
+	SVSettings::instance().m_db.removeDBElement(type, rightID, leftID); // remove right, use left instead
 	m_dbModified = true;
 
 
@@ -349,8 +350,9 @@ void SVDBDuplicatesDialog::on_pushButtonTakeRight_clicked() {
 
 	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
 	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
+	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
 
-	SVSettings::instance().m_db.removeDBElement(type, leftID);
+	SVSettings::instance().m_db.removeDBElement(type, leftID, rightID); // remove left, use right instead
 	m_dbModified = true;
 
 
@@ -517,7 +519,7 @@ void SVDBDuplicatesDialog::updateUi() {
 					b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
 				item->setBackground(b);
 			}
-			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,1) holds DB element ID of second element
+			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,2) holds DB element ID of second element
 			if (duplicates.m_identical)
 				item->setForeground(QColor("#3030e0"));
 			m_ui->tableWidget->setItem(rows+(int)j, 2, item);

@@ -1265,22 +1265,22 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>Concrete</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10023">
+						<MaterialLayer idMaterial="10023">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10021">
+						<MaterialLayer idMaterial="10021">
 							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10021">
+						<MaterialLayer idMaterial="10021">
 							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10022">
+						<MaterialLayer idMaterial="10022">
 							<IBK:Parameter name="Thickness" unit="m">0.095</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10024">
+						<MaterialLayer idMaterial="10024">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10022">
+						<MaterialLayer idMaterial="10022">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1290,13 +1290,13 @@
 					<InsulationKind>InsideInsulation</InsulationKind>
 					<MaterialKind>Wood</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10027">
+						<MaterialLayer idMaterial="10027">
 							<IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10026">
+						<MaterialLayer idMaterial="10026">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10028">
+						<MaterialLayer idMaterial="10028">
 							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1306,10 +1306,10 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>Wood</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10027">
+						<MaterialLayer idMaterial="10027">
 							<IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10026">
+						<MaterialLayer idMaterial="10026">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1319,16 +1319,16 @@
 					<InsulationKind>NotInsulated</InsulationKind>
 					<MaterialKind>Concrete</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10021">
+						<MaterialLayer idMaterial="10021">
 							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10021">
+						<MaterialLayer idMaterial="10021">
 							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10022">
+						<MaterialLayer idMaterial="10022">
 							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10024">
+						<MaterialLayer idMaterial="10024">
 							<IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1338,19 +1338,19 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>Concrete</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10023">
+						<MaterialLayer idMaterial="10023">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10021">
+						<MaterialLayer idMaterial="10021">
 							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10022">
+						<MaterialLayer idMaterial="10022">
 							<IBK:Parameter name="Thickness" unit="m">0.095</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10024">
+						<MaterialLayer idMaterial="10024">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10022">
+						<MaterialLayer idMaterial="10022">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1360,7 +1360,7 @@
 					<InsulationKind>NotInsulated</InsulationKind>
 					<MaterialKind>BrickMasonry</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10020">
+						<MaterialLayer idMaterial="10020">
 							<IBK:Parameter name="Thickness" unit="m">0.175</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1370,7 +1370,7 @@
 					<InsulationKind>NotInsulated</InsulationKind>
 					<MaterialKind>BrickMasonry</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10020">
+						<MaterialLayer idMaterial="10020">
 							<IBK:Parameter name="Thickness" unit="m">0.115</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -1380,13 +1380,13 @@
 					<InsulationKind>CoreInsulation</InsulationKind>
 					<MaterialKind>BrickMasonry</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10018">
+						<MaterialLayer idMaterial="10018">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10019">
+						<MaterialLayer idMaterial="10019">
 							<IBK:Parameter name="Thickness" unit="m">0.365</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10018">
+						<MaterialLayer idMaterial="10018">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>

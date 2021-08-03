@@ -1486,10 +1486,9 @@ void ConstructionInstanceModelGenerator::generateConstructions(QStringList &erro
 			NANDRAD::ConstructionType conType;
 			conType.m_id = actLayer.m_nandradConstructionTypeId[i];			//c.m_id;
 			conType.m_displayName = c.m_displayName.string(IBK::MultiLanguageString::m_language, "en");
-			unsigned int counter=0;
 			for (const VICUS::MaterialLayer & ml : c.m_materialLayers) {
 				NANDRAD::MaterialLayer mlayer;
-				mlayer.m_matId = ml.m_matId;
+				mlayer.m_matId = ml.m_idMaterial;
 				mlayer.m_thickness = ml.m_thickness.value;
 				conType.m_materialLayers.push_back(mlayer);
 			}

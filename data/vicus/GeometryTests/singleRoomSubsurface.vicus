@@ -439,7 +439,7 @@
 				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10002">
+						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -447,19 +447,19 @@
 				<Construction id="1009" displayName="DE: [SimQuality] TF12 Konstruktionstyp 3 (Deckenkonstuktion) |EN: [SimQuality] TF12 Construction 3 (CeilingConstruction)">
 					<UsageType>Ceiling</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10007">
+						<MaterialLayer idMaterial="10007">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10009">
+						<MaterialLayer idMaterial="10009">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10013">
+						<MaterialLayer idMaterial="10013">
 							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10010">
+						<MaterialLayer idMaterial="10010">
 							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10012">
+						<MaterialLayer idMaterial="10012">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -467,13 +467,13 @@
 				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10000">
+						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10002">
+						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10001">
+						<MaterialLayer idMaterial="10001">
 							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -483,13 +483,13 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>NaturalStoneMasonry</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer matId="10003">
+						<MaterialLayer idMaterial="10003">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10002">
+						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer matId="10001">
+						<MaterialLayer idMaterial="10001">
 							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
@@ -497,7 +497,7 @@
 				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer matId="10000">
+						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>

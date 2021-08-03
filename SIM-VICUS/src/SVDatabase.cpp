@@ -1,4 +1,4 @@
-/*	SIM-VICUS - Building and District Energy Simulation Tool.
+﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -277,7 +277,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	for (const VICUS::Construction * c : referencedConstructions) {
 		if (c == nullptr) continue;
 		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
-			referencedMaterials.insert(m_materials[ml.m_matId]);
+			referencedMaterials.insert(m_materials[ml.m_idMaterial]);
 	}
 	for (const VICUS::Window * c : referencedWindows) {
 		if (c == nullptr) continue;
@@ -466,8 +466,61 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 }
 
 
-void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID) {
-	// TODO : implement
+void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID) {
+
+	// depending on database type, we need to replace references to the element on other dbs as well
+	switch (dbType) {
+		case DT_Materials : {
+			// materials are used in construction layers, window frame and divider
+			// replace mat ID everywhere
+			for (const auto & p : m_constructions) {
+				VICUS::Construction & con = const_cast<VICUS::Construction &>(p.second); // const-cast is ok here
+				for (VICUS::MaterialLayer & ml : con.m_materialLayers) {
+					if (ml.m_idMaterial == elementID) {
+						ml.m_idMaterial = replacementElementID;
+						m_constructions.m_modified = true;
+					}
+				}
+			}
+			for (const auto & p : m_windows) {
+				VICUS::Window & w = const_cast<VICUS::Window&>(p.second); // const-cast is ok here
+				if (w.m_frame.m_idMaterial == elementID) {
+					w.m_frame.m_idMaterial = replacementElementID;
+					m_windows.m_modified = true;
+				}
+				if (w.m_divider.m_idMaterial == elementID) {
+					w.m_divider.m_idMaterial = replacementElementID;
+					m_windows.m_modified = true;
+				}
+			}
+			// finally remove material
+			m_materials.remove(elementID);
+			m_materials.m_modified = true;
+		} break;
+
+		case DT_Constructions : {
+			for (const auto & p : m_components) {
+				VICUS::Component & c = const_cast<VICUS::Component &>(p.second); // const-cast is ok here
+				if (c.m_idConstruction == elementID) {
+					c.m_idConstruction = replacementElementID;
+					m_components.m_modified = true;
+				}
+			}
+			m_constructions.remove(elementID);
+			m_constructions.m_modified = true;
+		} break;
+
+	}
+
+	// Note: if we have a project, also replace directly referenced DB elements in project
+	//       - Components
+	//       - SubSurfaceComponents
+	//       - ZoneTemplate
+	//       - NetworkPipes
+	//       - NetworkFluid
+	//       - NetworkComponent
+	//       - SubNetwork
+
 }
 
 

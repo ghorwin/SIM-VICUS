@@ -168,7 +168,7 @@ void LCA::calculateLCA()
 			for(auto l : constr.m_materialLayers){
 				//check if material exists
 				VICUS::Material mat =
-						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_matId,
+						elementExists<VICUS::Material>(m_dbOpaqueMaterials, l.m_idMaterial,
 														   constr.m_displayName.string(),
 														   "Material",
 														   "construction");
@@ -268,8 +268,8 @@ void LCA::calculateLCA()
 
 			//get values for all material layers in each category of the lifecycle
 			for(auto &l : constr.m_materialLayers){
-				MatEpd &matEpd = materialIdAndEpd[l.m_matId];
-				double rho = m_dbOpaqueMaterials[l.m_matId].m_para[VICUS::Material::P_Density].get_value("kg/m3");
+				MatEpd &matEpd = materialIdAndEpd[l.m_idMaterial];
+				double rho = m_dbOpaqueMaterials[l.m_idMaterial].m_para[VICUS::Material::P_Density].get_value("kg/m3");
 
 //				addEpdMaterialToComponent(matEpd.m_epdA, comp, compResErsatz[compId],
 //							   l.m_lifeCylce, l.m_thickness.get_value("m"),

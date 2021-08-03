@@ -37,16 +37,16 @@ void MaterialLayer::readXML(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
-		if (!TiXmlAttribute::attributeByName(element, "matId"))
+		if (!TiXmlAttribute::attributeByName(element, "idMaterial"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'matId' attribute.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'idMaterial' attribute.") ), FUNC_ID);
 
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "matId")
-				m_matId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			if (attribName == "idMaterial")
+				m_idMaterial = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -87,8 +87,8 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("MaterialLayer");
 	parent->LinkEndChild(e);
 
-	if (m_matId != VICUS::INVALID_ID)
-		e->SetAttribute("matId", IBK::val2string<unsigned int>(m_matId));
+	if (m_idMaterial != VICUS::INVALID_ID)
+		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
 		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());

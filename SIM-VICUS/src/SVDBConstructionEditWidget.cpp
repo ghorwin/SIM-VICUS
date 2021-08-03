@@ -31,6 +31,7 @@
 #include <QtExt_ConstructionViewWidget.h>
 #include <QtExt_Locale.h>
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include <VICUS_KeywordListQt.h>
 
@@ -241,9 +242,9 @@ void SVDBConstructionEditWidget::updateTable() {
 
 	for (int i=0; i<(int)m_current->m_materialLayers.size(); ++i) {
 		const VICUS::MaterialLayer & layer = m_current->m_materialLayers[i];
-		const VICUS::Material * mat = m_db->m_materials[layer.m_matId];
+		const VICUS::Material * mat = m_db->m_materials[layer.m_idMaterial];
 		if (mat != nullptr) {
-			QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(mat->m_displayName("de", true)));
+			QTableWidgetItem * item = new QTableWidgetItem(QtExt::MultiLangString2QString(mat->m_displayName));
 			if (m_current->m_builtIn) {
 				item->setFlags(Qt::ItemIsEnabled);
 				item->setBackground(QBrush(SVStyle::instance().m_readOnlyEditFieldBackground));
@@ -331,7 +332,7 @@ void SVDBConstructionEditWidget::updateConstructionView() {
 	QVector<QtExt::ConstructionLayer> layers;
 	for (unsigned int i=0; i<m_current->m_materialLayers.size(); ++i) {
 		QtExt::ConstructionLayer layer;
-		unsigned int matID = m_current->m_materialLayers[i].m_matId;
+		unsigned int matID = m_current->m_materialLayers[i].m_idMaterial;
 		const VICUS::Material * mat = m_db->m_materials[matID];
 		if (mat != nullptr) {
 			layer.m_name = QString::fromStdString(mat->m_displayName("de", true));
@@ -515,11 +516,11 @@ void SVDBConstructionEditWidget::showMaterialSelectionDialog(int index) {
 	// get material edit dialog (owned/managed by main window)
 	SVDatabaseEditDialog * matSelect = SVMainWindow::instance().dbMaterialEditDialog();
 	// ask to select a material
-	unsigned int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_matId);
+	unsigned int matId = matSelect->select(m_current->m_materialLayers[(unsigned int)index].m_idMaterial);
 	if (matId == VICUS::INVALID_ID)
 		return; // dialog was canceled, no change here
-	if (matId != m_current->m_materialLayers[(unsigned int)index].m_matId) {
-		m_current->m_materialLayers[(unsigned int)index].m_matId = matId;
+	if (matId != m_current->m_materialLayers[(unsigned int)index].m_idMaterial) {
+		m_current->m_materialLayers[(unsigned int)index].m_idMaterial = matId;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}
 	updateTable();
