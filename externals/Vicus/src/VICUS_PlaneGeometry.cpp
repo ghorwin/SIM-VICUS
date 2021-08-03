@@ -67,7 +67,12 @@ PlaneGeometry::PlaneGeometry(Polygon3D::type_t t,
 
 double PlaneGeometry::inclination(int digits) const {
 	double inc = std::acos(normal().m_z) / IBK::DEG2RAD;
-	inc = std::floor(inc*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+
+	double a = inc*IBK::f_pow10(digits);
+	double b = std::round(a);
+	double c = b / IBK::f_pow10(digits);
+
+	inc = std::round(inc*IBK::f_pow10(digits))/IBK::f_pow10(digits);
 	return inc;
 }
 
@@ -79,7 +84,7 @@ double PlaneGeometry::orientation(int digits) const {
 
 	// round value to n digits
 
-	val = std::floor(val*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+	val = std::round(val*IBK::f_pow10(digits))/IBK::f_pow10(digits);
 
 	return  val;
 }
