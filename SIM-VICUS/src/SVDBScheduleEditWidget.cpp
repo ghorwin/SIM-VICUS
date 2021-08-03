@@ -460,6 +460,10 @@ void SVDBScheduleEditWidget::on_toolButtonRemovePeriode_clicked(){
 
 	// erase period
 	m_current->m_periods.erase(m_current->m_periods.begin() + rowIdx);
+	//update pointer
+	m_currentInterval = &m_current->m_periods.back();
+	//update index
+	m_currentDailyCycleIndex = 0;
 	// if first period is erased then change startDay of the next period to 0
 	if (rowIdx == 0)
 		m_current->m_periods.front().m_intervalStartDay = 0;
