@@ -141,7 +141,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	}
 
 	// *** frame ***
-	int frameIdx;
+	int frameIdx = 0;
 	switch(m_current->m_methodFrame) {
 		case VICUS::Window::M_Fraction:{
 			m_ui->labelFrameInput->setText(tr("Fraction of Window:"));
@@ -190,7 +190,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	m_ui->toolButtonSelectFrameMaterial->setEnabled(isEditable && frameIdx > 0);
 
 	// *** divider ***
-	int dividerIdx;
+	int dividerIdx = 0;
 	switch(m_current->m_methodDivider) {
 		case VICUS::Window::M_Fraction:{
 			m_ui->labelDividerInput->setText(tr("Fraction of Window:"));
