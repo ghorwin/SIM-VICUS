@@ -43,10 +43,13 @@ SVDBDuplicatesDialog::~SVDBDuplicatesDialog() {
 }
 
 
-void SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
+bool SVDBDuplicatesDialog::removeDuplicates(SVDatabase::DatabaseTypes dbType) {
 	m_dbType = dbType;
 	updateUi();
+	m_dbModified = false;
 	exec();
+
+	return m_dbModified; // if true, the undo-history of the project will be cleared, because Undo after DB change is not possible
 }
 
 
@@ -86,6 +89,15 @@ std::vector<std::string> processXML(const std::string & xmlText) {
 }
 
 
+template <typename T>
+void dbItem(const VICUS::Database<T> & db, unsigned int idLeft, unsigned int idRight,
+			const VICUS::AbstractDBElement * &left, const VICUS::AbstractDBElement * &right)
+{
+	left = db[idLeft];
+	right = db[idRight];
+}
+
+
 void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
 	m_ui->groupBox->setVisible(true);
 	// take currently selected items, access them and generate their diffs
@@ -98,14 +110,10 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	const VICUS::AbstractDBElement * dbElemLeft = nullptr;
 	const VICUS::AbstractDBElement * dbElemRight = nullptr;
 	switch (type) {
-		case SVDatabase::DT_Materials:
-			dbElemLeft = db.m_materials[leftID];
-			dbElemRight = db.m_materials[rightID];
-		break;
-		case SVDatabase::DT_Constructions:
-			xmlLeft = dumpXML(*db.m_constructions[leftID]);
-			xmlRight = dumpXML(*db.m_constructions[rightID]);
-		break;
+		case SVDatabase::DT_Materials:		dbItem(db.m_materials, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Constructions:	dbItem(db.m_constructions, leftID, rightID, dbElemLeft, dbElemRight); break;
+
+		// TODO Katja
 		case SVDatabase::DT_Windows:
 			xmlLeft = dumpXML(*db.m_windows[leftID]);
 			xmlRight = dumpXML(*db.m_windows[rightID]);
@@ -193,11 +201,11 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	// get XML description of tag and enabled/disable "take" buttons
 	if (dbElemLeft != nullptr) {
 		xmlLeft = dumpXML(*dbElemLeft);
-		m_ui->pushButtonTakeLeft->setEnabled(!dbElemLeft->m_builtIn);
+		m_ui->pushButtonTakeRight->setEnabled(!dbElemLeft->m_builtIn); // if left is a built-in, we disable the "take right" button
 	}
 	if (dbElemRight != nullptr) {
 		xmlRight = dumpXML(*dbElemRight);
-		m_ui->pushButtonTakeRight->setEnabled(!dbElemLeft->m_builtIn);
+		m_ui->pushButtonTakeLeft->setEnabled(!dbElemRight->m_builtIn); // if right is a built-in, we disable the "take left" button
 	}
 
 	// generate diff and color output
@@ -318,9 +326,10 @@ void SVDBDuplicatesDialog::on_pushButtonTakeLeft_clicked() {
 	Q_ASSERT(currentRow != -1);
 
 	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
-	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
+	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
 
-	SVSettings::instance().m_db.removeDBElement(type, leftID);
+	SVSettings::instance().m_db.removeDBElement(type, rightID);
+	m_dbModified = true;
 
 
 	// get current index
@@ -339,9 +348,11 @@ void SVDBDuplicatesDialog::on_pushButtonTakeRight_clicked() {
 	Q_ASSERT(currentRow != -1);
 
 	SVDatabase::DatabaseTypes type = (SVDatabase::DatabaseTypes)m_ui->tableWidget->item(currentRow, 0)->data(Qt::UserRole).toInt();
-	unsigned int rightID = m_ui->tableWidget->item(currentRow, 2)->data(Qt::UserRole).toUInt();
+	unsigned int leftID = m_ui->tableWidget->item(currentRow, 1)->data(Qt::UserRole).toUInt();
 
-	SVSettings::instance().m_db.removeDBElement(type, rightID);
+	SVSettings::instance().m_db.removeDBElement(type, leftID);
+	m_dbModified = true;
+
 
 	updateUi();
 	currentRow = std::min(m_ui->tableWidget->rowCount()-1, currentRow);
@@ -377,15 +388,19 @@ void SVDBDuplicatesDialog::updateUi() {
 			const SVDatabase::DuplicateInfo & duplicates = dupInfos[i][j];
 			QTableWidgetItem * item = new QTableWidgetItem;
 			QString left, right;
+			const VICUS::AbstractDBElement * dbElemLeft = nullptr;
+			const VICUS::AbstractDBElement * dbElemRight = nullptr;
 			switch ((SVDatabase::DatabaseTypes)i) {
-				case SVDatabase::DT_Materials:					item->setText(tr("Materials"));
-					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_materials[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
-					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_materials[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
-					break;
-				case SVDatabase::DT_Constructions:				item->setText(tr("Constructions"));
-					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_constructions[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
-					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_constructions[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
-					break;
+				case SVDatabase::DT_Materials:
+					item->setText(tr("Materials"));
+					dbItem(db.m_materials, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight); break;
+				break;
+				case SVDatabase::DT_Constructions:
+					item->setText(tr("Constructions"));
+					dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight); break;
+				break;
+
+				// TODO : Katja
 				case SVDatabase::DT_Windows:					item->setText(tr("Windows"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
@@ -468,22 +483,43 @@ void SVDBDuplicatesDialog::updateUi() {
 					break;
 				case SVDatabase::NUM_DT:;// just to make compiler happy
 			}
+
+			if (dbElemLeft != nullptr) {
+				left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(dbElemLeft->m_displayName) ).arg(duplicates.m_idFirst);
+				right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(dbElemRight->m_displayName) ).arg(duplicates.m_idSecond);
+			}
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			item->setData(Qt::UserRole, i); // item(row,0) holds DB element type as data
 			m_ui->tableWidget->setItem(rows+(int)j, 0, item);
 
 			item = new QTableWidgetItem(left);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			if (dbElemLeft != nullptr && dbElemLeft->m_builtIn) {
+				QBrush b;
+				if (rows % 2 == 0)
+					b = QBrush(SVStyle::instance().m_alternativeBackgroundDark);
+				else
+					b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
+				item->setBackground(b);
+			}
 			item->setData(Qt::UserRole, duplicates.m_idFirst); // item(row,1) holds DB element ID of first element
 			if (duplicates.m_identical)
-				item->setBackground(QColor("#d0e0ff"));
+				item->setForeground(QColor("#d0e0ff"));
 			m_ui->tableWidget->setItem(rows+(int)j, 1, item);
 
 			item = new QTableWidgetItem(right);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			if (dbElemRight != nullptr && dbElemRight->m_builtIn) {
+				QBrush b;
+				if (rows % 2 == 0)
+					b = QBrush(SVStyle::instance().m_alternativeBackgroundDark);
+				else
+					b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
+				item->setBackground(b);
+			}
 			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,1) holds DB element ID of second element
 			if (duplicates.m_identical)
-				item->setBackground(QColor("#d0e0ff"));
+				item->setForeground(QColor("#d0e0ff"));
 			m_ui->tableWidget->setItem(rows+(int)j, 2, item);
 		}
 		rows += dupInfos[i].size();

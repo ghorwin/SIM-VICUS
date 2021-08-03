@@ -21,7 +21,7 @@ public:
 	/*! Shows and starts the database dialog.
 		\param dbType Filters out only a single DB element type (SVDatabase::NUM_DT selects all).
 	*/
-	void removeDuplicates(SVDatabase::DatabaseTypes dbType = SVDatabase::NUM_DT);
+	bool removeDuplicates(SVDatabase::DatabaseTypes dbType = SVDatabase::NUM_DT);
 
 private slots:
 	void onCurrentRowChanged(const QModelIndex &current, const QModelIndex &previous);
@@ -36,6 +36,7 @@ private:
 	Ui::SVDBDuplicatesDialog	*m_ui;
 
 	SVDatabase::DatabaseTypes	m_dbType;
+	bool						m_dbModified; // stores information on whether the database has been modified
 };
 
 #endif // SVDBDUPLICATESDIALOG_H

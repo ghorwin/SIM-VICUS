@@ -487,7 +487,11 @@ void SVMainWindow::on_actionDBSubNetworks_triggered() {
 void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
 	if (m_dbDuplicatesDialog == nullptr)
 		m_dbDuplicatesDialog = new SVDBDuplicatesDialog(this);
-	m_dbDuplicatesDialog->removeDuplicates();
+	bool dbModified = m_dbDuplicatesDialog->removeDuplicates();
+	if (dbModified) {
+		if (SVProjectHandler::instance().isValid())
+			m_undoStack->clear();
+	}
 }
 
 
