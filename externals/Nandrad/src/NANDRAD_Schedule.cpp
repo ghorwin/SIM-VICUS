@@ -35,6 +35,8 @@ namespace NANDRAD {
 bool Schedule::operator!=(const Schedule & other) const {
 	if (m_type != other.m_type) return true;
 	if (m_dailyCycles != other.m_dailyCycles) return true;
+	if (m_startDayOfTheYear != other.m_startDayOfTheYear) return true;
+	if (m_endDayOfTheYear != other.m_endDayOfTheYear) return true;
 
 	return false;
 }
