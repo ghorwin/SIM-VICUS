@@ -408,7 +408,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 						if(dt == schedNandrad.m_type &&
 								schedNandrad.m_startDayOfTheYear == period.m_intervalStartDay &&
 								((i+1<m_periods.size() && schedNandrad.m_endDayOfTheYear == m_periods[i+1].m_intervalStartDay-1) ||
-																		schedNandrad.m_endDayOfTheYear == 364)){
+																		(schedNandrad.m_endDayOfTheYear == 364 && m_periods.size() == 1))){
 							//now check if we have daily cylces with equal properties to:
 							// * interpolation method
 							// * time points
@@ -455,7 +455,8 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dts){
 							newNandradSched.m_type = dtNandrad;
 							//add schedule to schedule group
-							scheduleGroup.push_back(newNandradSched);
+							if(!newNandradSched.m_dailyCycles.empty())
+								scheduleGroup.push_back(newNandradSched);
 						}
 					}
 				}
