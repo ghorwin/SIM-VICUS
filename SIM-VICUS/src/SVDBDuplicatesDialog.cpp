@@ -393,11 +393,11 @@ void SVDBDuplicatesDialog::updateUi() {
 			switch ((SVDatabase::DatabaseTypes)i) {
 				case SVDatabase::DT_Materials:
 					item->setText(tr("Materials"));
-					dbItem(db.m_materials, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight); break;
+					dbItem(db.m_materials, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
 				break;
 				case SVDatabase::DT_Constructions:
 					item->setText(tr("Constructions"));
-					dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight); break;
+					dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
 				break;
 
 				// TODO : Katja
@@ -504,7 +504,7 @@ void SVDBDuplicatesDialog::updateUi() {
 			}
 			item->setData(Qt::UserRole, duplicates.m_idFirst); // item(row,1) holds DB element ID of first element
 			if (duplicates.m_identical)
-				item->setForeground(QColor("#d0e0ff"));
+				item->setForeground(QColor("#3030e0"));
 			m_ui->tableWidget->setItem(rows+(int)j, 1, item);
 
 			item = new QTableWidgetItem(right);
@@ -519,7 +519,7 @@ void SVDBDuplicatesDialog::updateUi() {
 			}
 			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,1) holds DB element ID of second element
 			if (duplicates.m_identical)
-				item->setForeground(QColor("#d0e0ff"));
+				item->setForeground(QColor("#3030e0"));
 			m_ui->tableWidget->setItem(rows+(int)j, 2, item);
 		}
 		rows += dupInfos[i].size();
