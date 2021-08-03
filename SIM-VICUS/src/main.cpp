@@ -90,11 +90,24 @@ int main(int argc, char *argv[]) {
 	// initialize resources in dependent libraries
 	Q_INIT_RESOURCE(QtExt);
 
-	// *** Create and initialize setting object of DSix Application ***
+	// *** Create log file directory and setup message handler ***
+	QDir baseDir;
+	baseDir.mkpath(QtExt::Directories::userDataDir());
+
+	SVMessageHandler messageHandler;
+	IBK::MessageHandlerRegistry::instance().setMessageHandler( &messageHandler );
+	std::string errmsg;
+	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toUtf8().data(), false, errmsg);
+
+	// *** Create and initialize setting object ***
 
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
+
+	// adjust log file verbosity
+	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );
+	messageHandler.setLogfileVerbosityLevel( settings.m_userLogLevelLogfile );
 
 	// *** Style Init ***
 
@@ -121,18 +134,6 @@ int main(int argc, char *argv[]) {
 	if (autoUpdater.installUpdateWhenAvailable(QtExt::Directories::updateFilePath()))
 		return EXIT_SUCCESS;
 #endif
-
-	// *** Create log file directory and setup message handler ***
-	QDir baseDir;
-	baseDir.mkpath(QtExt::Directories::userDataDir());
-
-	SVMessageHandler messageHandler;
-	IBK::MessageHandlerRegistry::instance().setMessageHandler( &messageHandler );
-	std::string errmsg;
-	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toUtf8().data(), false, errmsg);
-	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );
-	messageHandler.setLogfileVerbosityLevel( settings.m_userLogLevelLogfile );
-
 
 	// *** Install translator ***
 	QtExt::LanguageHandler::instance().setup(SVSettings::instance().m_organization,
