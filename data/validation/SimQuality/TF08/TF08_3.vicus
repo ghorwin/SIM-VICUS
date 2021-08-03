@@ -98,12 +98,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1008" sideASurfaceID="31" />
-			<ComponentInstance id="3" componentID="1008" sideASurfaceID="32" />
-			<ComponentInstance id="4" componentID="1008" sideASurfaceID="33" />
-			<ComponentInstance id="5" componentID="1008" sideASurfaceID="34" />
-			<ComponentInstance id="6" componentID="1008" sideASurfaceID="35" />
-			<ComponentInstance id="7" componentID="1008" sideASurfaceID="36" />
+			<ComponentInstance id="2" idComponent="1008" idSideASurface="31" />
+			<ComponentInstance id="3" idComponent="1008" idSideASurface="32" />
+			<ComponentInstance id="4" idComponent="1008" idSideASurface="33" />
+			<ComponentInstance id="5" idComponent="1008" idSideASurface="34" />
+			<ComponentInstance id="6" idComponent="1008" idSideASurface="35" />
+			<ComponentInstance id="7" idComponent="1008" idSideASurface="36" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -202,7 +202,7 @@
 				<InternalLoad id="7003" displayName="DE: TF08.3 |EN: TF08.3;" color="#ac66ff">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>Power</PowerMethod>
-					<PowerManagementScheduleId>60012</PowerManagementScheduleId>
+					<IdPowerManagementSchedule>60012</IdPowerManagementSchedule>
 					<IBK:Parameter name="Power" unit="W">1000</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>
 					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>

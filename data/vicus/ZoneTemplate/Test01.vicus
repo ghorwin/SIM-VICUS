@@ -103,17 +103,17 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1010" sideASurfaceID="11" />
-			<ComponentInstance id="3" componentID="1010" sideASurfaceID="12" />
-			<ComponentInstance id="4" componentID="1010" sideASurfaceID="13" />
-			<ComponentInstance id="5" componentID="1010" sideASurfaceID="14" />
-			<ComponentInstance id="6" componentID="1010" sideASurfaceID="15" />
-			<ComponentInstance id="8" componentID="100001" sideASurfaceID="17" />
-			<ComponentInstance id="9" componentID="1011" sideASurfaceID="18" />
-			<ComponentInstance id="10" componentID="1001" sideASurfaceID="19" />
-			<ComponentInstance id="11" componentID="1001" sideASurfaceID="20" />
-			<ComponentInstance id="12" componentID="1001" sideASurfaceID="21" />
-			<ComponentInstance id="13" componentID="1001" sideASurfaceID="22" />
+			<ComponentInstance id="2" idComponent="1010" idSideASurface="11" />
+			<ComponentInstance id="3" idComponent="1010" idSideASurface="12" />
+			<ComponentInstance id="4" idComponent="1010" idSideASurface="13" />
+			<ComponentInstance id="5" idComponent="1010" idSideASurface="14" />
+			<ComponentInstance id="6" idComponent="1010" idSideASurface="15" />
+			<ComponentInstance id="8" idComponent="100001" idSideASurface="17" />
+			<ComponentInstance id="9" idComponent="1011" idSideASurface="18" />
+			<ComponentInstance id="10" idComponent="1001" idSideASurface="19" />
+			<ComponentInstance id="11" idComponent="1001" idSideASurface="20" />
+			<ComponentInstance id="12" idComponent="1001" idSideASurface="21" />
+			<ComponentInstance id="13" idComponent="1001" idSideASurface="22" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -377,8 +377,8 @@
 				<InternalLoad id="70006" displayName="DE: pers. model |EN: &lt;new internal load model&gt;" color="#5aff82">
 					<Category>Person</Category>
 					<PersonCountMethod>PersonPerArea</PersonCountMethod>
-					<OccupancyScheduleId>60003</OccupancyScheduleId>
-					<ActivityScheduleId>60004</ActivityScheduleId>
+					<IdOccupancySchedule>60003</IdOccupancySchedule>
+					<IdActivitySchedule>60004</IdActivitySchedule>
 					<IBK:Parameter name="PersonCount" unit="-">11</IBK:Parameter>
 					<IBK:Parameter name="PersonPerArea" unit="m2">0.1</IBK:Parameter>
 					<IBK:Parameter name="AreaPerPerson" unit="m2">10</IBK:Parameter>
@@ -390,7 +390,7 @@
 				<InternalLoad id="70005" displayName="DE: TestLightModel |EN: &lt;new internal load model&gt;" color="#5aff82">
 					<Category>Lighting</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
-					<PowerManagementScheduleId>60005</PowerManagementScheduleId>
+					<IdPowerManagementSchedule>60005</IdPowerManagementSchedule>
 					<IBK:Parameter name="Power" unit="W">15</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">7.8</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.2</IBK:Parameter>
@@ -398,7 +398,7 @@
 				<InternalLoad id="70003" displayName="DE: Electric Equip |EN: &lt;new internal load model&gt;" color="#5a6eff">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
-					<PowerManagementScheduleId>60005</PowerManagementScheduleId>
+					<IdPowerManagementSchedule>60005</IdPowerManagementSchedule>
 					<IBK:Parameter name="Power" unit="W">10</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">10</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
@@ -408,7 +408,7 @@
 			</InternalLoads>
 			<VentilationNatural>
 				<VentilationNatural id="150001" displayName="DE: Venti Test Model |EN: &lt;new zone control thermostat model&gt;" color="#5a6eff">
-					<ScheduleId>60005</ScheduleId>
+					<IdSchedule>60005</IdSchedule>
 					<IBK:Parameter name="AirChangeRate" unit="1/h">0.5</IBK:Parameter>
 				</VentilationNatural>
 			</VentilationNatural>

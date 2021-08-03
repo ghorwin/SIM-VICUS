@@ -79,16 +79,16 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="0" sideASurfaceID="11" />
-			<ComponentInstance id="3" componentID="0" sideASurfaceID="12" />
-			<ComponentInstance id="4" componentID="1001" sideASurfaceID="13" />
-			<ComponentInstance id="5" componentID="100002" sideASurfaceID="14" />
-			<ComponentInstance id="6" componentID="1001" sideASurfaceID="15" />
-			<ComponentInstance id="8" componentID="0" sideASurfaceID="17" />
-			<ComponentInstance id="9" componentID="0" sideASurfaceID="18" />
-			<ComponentInstance id="10" componentID="100002" sideASurfaceID="19" />
-			<ComponentInstance id="11" componentID="1001" sideASurfaceID="20" />
-			<ComponentInstance id="12" componentID="1001" sideASurfaceID="21" />
+			<ComponentInstance id="2" idComponent="0" idSideASurface="11" />
+			<ComponentInstance id="3" idComponent="0" idSideASurface="12" />
+			<ComponentInstance id="4" idComponent="1001" idSideASurface="13" />
+			<ComponentInstance id="5" idComponent="100002" idSideASurface="14" />
+			<ComponentInstance id="6" idComponent="1001" idSideASurface="15" />
+			<ComponentInstance id="8" idComponent="0" idSideASurface="17" />
+			<ComponentInstance id="9" idComponent="0" idSideASurface="18" />
+			<ComponentInstance id="10" idComponent="100002" idSideASurface="19" />
+			<ComponentInstance id="11" idComponent="1001" idSideASurface="20" />
+			<ComponentInstance id="12" idComponent="1001" idSideASurface="21" />
 		</ComponentInstances>
 	</Project>
 </VicusProject>

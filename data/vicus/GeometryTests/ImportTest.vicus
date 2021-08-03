@@ -43,7 +43,7 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="1" componentID="1001" sideBSurfaceID="11" />
+			<ComponentInstance id="1" idComponent="1001" idSideBSurface="11" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>

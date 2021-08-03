@@ -152,30 +152,30 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="1001" componentID="1001" sideBSurfaceID="11" />
-			<ComponentInstance id="1002" componentID="1001" sideBSurfaceID="12" />
-			<ComponentInstance id="1003" componentID="1001" sideBSurfaceID="13" />
-			<ComponentInstance id="1004" componentID="1001" sideBSurfaceID="14" />
-			<ComponentInstance id="1005" componentID="1001" sideBSurfaceID="15" />
-			<ComponentInstance id="1006" componentID="1001" sideBSurfaceID="16" />
-			<ComponentInstance id="1007" componentID="1002" sideBSurfaceID="25" />
-			<ComponentInstance id="1008" componentID="1002" sideBSurfaceID="26" />
-			<ComponentInstance id="1009" componentID="1002" sideBSurfaceID="27" />
-			<ComponentInstance id="1010" componentID="1002" sideBSurfaceID="28" />
-			<ComponentInstance id="1011" componentID="1002" sideBSurfaceID="29" />
-			<ComponentInstance id="1012" componentID="1002" sideBSurfaceID="30" />
-			<ComponentInstance id="1013" componentID="1003" sideBSurfaceID="32" />
-			<ComponentInstance id="1014" componentID="1003" sideBSurfaceID="33" />
-			<ComponentInstance id="1015" componentID="1003" sideBSurfaceID="34" />
-			<ComponentInstance id="1016" componentID="1003" sideBSurfaceID="35" />
-			<ComponentInstance id="1017" componentID="1003" sideBSurfaceID="36" />
-			<ComponentInstance id="1018" componentID="1003" sideBSurfaceID="37" />
-			<ComponentInstance id="1019" componentID="1004" sideBSurfaceID="39" />
-			<ComponentInstance id="1020" componentID="1004" sideBSurfaceID="40" />
-			<ComponentInstance id="1021" componentID="1004" sideBSurfaceID="41" />
-			<ComponentInstance id="1022" componentID="1004" sideBSurfaceID="42" />
-			<ComponentInstance id="1023" componentID="1004" sideBSurfaceID="43" />
-			<ComponentInstance id="1024" componentID="1004" sideBSurfaceID="44" />
+			<ComponentInstance id="1001" idComponent="1001" idSideBSurface="11" />
+			<ComponentInstance id="1002" idComponent="1001" idSideBSurface="12" />
+			<ComponentInstance id="1003" idComponent="1001" idSideBSurface="13" />
+			<ComponentInstance id="1004" idComponent="1001" idSideBSurface="14" />
+			<ComponentInstance id="1005" idComponent="1001" idSideBSurface="15" />
+			<ComponentInstance id="1006" idComponent="1001" idSideBSurface="16" />
+			<ComponentInstance id="1007" idComponent="1002" idSideBSurface="25" />
+			<ComponentInstance id="1008" idComponent="1002" idSideBSurface="26" />
+			<ComponentInstance id="1009" idComponent="1002" idSideBSurface="27" />
+			<ComponentInstance id="1010" idComponent="1002" idSideBSurface="28" />
+			<ComponentInstance id="1011" idComponent="1002" idSideBSurface="29" />
+			<ComponentInstance id="1012" idComponent="1002" idSideBSurface="30" />
+			<ComponentInstance id="1013" idComponent="1003" idSideBSurface="32" />
+			<ComponentInstance id="1014" idComponent="1003" idSideBSurface="33" />
+			<ComponentInstance id="1015" idComponent="1003" idSideBSurface="34" />
+			<ComponentInstance id="1016" idComponent="1003" idSideBSurface="35" />
+			<ComponentInstance id="1017" idComponent="1003" idSideBSurface="36" />
+			<ComponentInstance id="1018" idComponent="1003" idSideBSurface="37" />
+			<ComponentInstance id="1019" idComponent="1004" idSideBSurface="39" />
+			<ComponentInstance id="1020" idComponent="1004" idSideBSurface="40" />
+			<ComponentInstance id="1021" idComponent="1004" idSideBSurface="41" />
+			<ComponentInstance id="1022" idComponent="1004" idSideBSurface="42" />
+			<ComponentInstance id="1023" idComponent="1004" idSideBSurface="43" />
+			<ComponentInstance id="1024" idComponent="1004" idSideBSurface="44" />
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surface id="1" displayName="New surface">

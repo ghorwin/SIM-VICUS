@@ -339,17 +339,17 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="1" componentID="1001" sideASurfaceID="14" />
-			<ComponentInstance id="2" componentID="1002" sideASurfaceID="13" />
-			<ComponentInstance id="3" componentID="1002" sideASurfaceID="15" />
-			<ComponentInstance id="4" componentID="1003" sideASurfaceID="16" />
-			<ComponentInstance id="5" componentID="1008" sideASurfaceID="12" />
-			<ComponentInstance id="6" componentID="1011" sideASurfaceID="11" />
+			<ComponentInstance id="1" idComponent="1001" idSideASurface="14" />
+			<ComponentInstance id="2" idComponent="1002" idSideASurface="13" />
+			<ComponentInstance id="3" idComponent="1002" idSideASurface="15" />
+			<ComponentInstance id="4" idComponent="1003" idSideASurface="16" />
+			<ComponentInstance id="5" idComponent="1008" idSideASurface="12" />
+			<ComponentInstance id="6" idComponent="1011" idSideASurface="11" />
 		</ComponentInstances>
 		<SubSurfaceComponentInstances>
-			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="10001" sideASurfaceID="102" />
-			<SubSurfaceComponentInstance id="2" subSurfaceComponentID="10001" sideASurfaceID="19" />
-			<SubSurfaceComponentInstance id="3" subSurfaceComponentID="10001" sideASurfaceID="20" />
+			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="10001" idSideASurface="102" />
+			<SubSurfaceComponentInstance id="2" idSubSurfaceComponent="10001" idSideASurface="19" />
+			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="10001" idSideASurface="20" />
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>

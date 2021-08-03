@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.2">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 10:16:20 2021</Created>
-		<LastEdited>Fr. Juli 9 14:09:05 2021</LastEdited>
+		<LastEdited>Di. Aug. 3 20:30:23 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -187,30 +187,30 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1001" sideASurfaceID="11" />
-			<ComponentInstance id="3" componentID="1001" sideASurfaceID="12" />
-			<ComponentInstance id="4" componentID="1001" sideASurfaceID="13" />
-			<ComponentInstance id="5" componentID="1001" sideASurfaceID="14" />
-			<ComponentInstance id="6" componentID="1001" sideASurfaceID="15" />
-			<ComponentInstance id="7" componentID="1001" sideASurfaceID="16" />
-			<ComponentInstance id="9" componentID="1002" sideASurfaceID="18" />
-			<ComponentInstance id="10" componentID="1002" sideASurfaceID="19" />
-			<ComponentInstance id="11" componentID="1002" sideASurfaceID="20" />
-			<ComponentInstance id="12" componentID="1002" sideASurfaceID="21" />
-			<ComponentInstance id="13" componentID="1002" sideASurfaceID="22" />
-			<ComponentInstance id="14" componentID="1002" sideASurfaceID="23" />
-			<ComponentInstance id="16" componentID="1003" sideASurfaceID="25" />
-			<ComponentInstance id="17" componentID="1003" sideASurfaceID="26" />
-			<ComponentInstance id="18" componentID="1003" sideASurfaceID="27" />
-			<ComponentInstance id="19" componentID="1003" sideASurfaceID="28" />
-			<ComponentInstance id="20" componentID="1003" sideASurfaceID="29" />
-			<ComponentInstance id="21" componentID="1003" sideASurfaceID="30" />
-			<ComponentInstance id="23" componentID="1004" sideASurfaceID="32" />
-			<ComponentInstance id="24" componentID="1004" sideASurfaceID="33" />
-			<ComponentInstance id="25" componentID="1004" sideASurfaceID="34" />
-			<ComponentInstance id="26" componentID="1004" sideASurfaceID="35" />
-			<ComponentInstance id="27" componentID="1004" sideASurfaceID="36" />
-			<ComponentInstance id="28" componentID="1004" sideASurfaceID="37" />
+			<ComponentInstance id="2" idComponent="1001" idSideASurface="11" />
+			<ComponentInstance id="3" idComponent="1001" idSideASurface="12" />
+			<ComponentInstance id="4" idComponent="1001" idSideASurface="13" />
+			<ComponentInstance id="5" idComponent="1001" idSideASurface="14" />
+			<ComponentInstance id="6" idComponent="1001" idSideASurface="15" />
+			<ComponentInstance id="7" idComponent="1001" idSideASurface="16" />
+			<ComponentInstance id="9" idComponent="1002" idSideASurface="18" />
+			<ComponentInstance id="10" idComponent="1002" idSideASurface="19" />
+			<ComponentInstance id="11" idComponent="1002" idSideASurface="20" />
+			<ComponentInstance id="12" idComponent="1002" idSideASurface="21" />
+			<ComponentInstance id="13" idComponent="1002" idSideASurface="22" />
+			<ComponentInstance id="14" idComponent="1002" idSideASurface="23" />
+			<ComponentInstance id="16" idComponent="50005" idSideASurface="25" />
+			<ComponentInstance id="17" idComponent="50005" idSideASurface="26" />
+			<ComponentInstance id="18" idComponent="50005" idSideASurface="27" />
+			<ComponentInstance id="19" idComponent="50005" idSideASurface="28" />
+			<ComponentInstance id="20" idComponent="50005" idSideASurface="29" />
+			<ComponentInstance id="21" idComponent="50005" idSideASurface="30" />
+			<ComponentInstance id="23" idComponent="50004" idSideASurface="32" />
+			<ComponentInstance id="24" idComponent="50004" idSideASurface="33" />
+			<ComponentInstance id="25" idComponent="50004" idSideASurface="34" />
+			<ComponentInstance id="26" idComponent="50004" idSideASurface="35" />
+			<ComponentInstance id="27" idComponent="50004" idSideASurface="36" />
+			<ComponentInstance id="28" idComponent="50004" idSideASurface="37" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -259,44 +259,42 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Außendämmung) |EN: [SimQuality] TF03 Construction 3 (outside insulated wall)">
+				<Construction id="20005" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Innendämmung) |EN: [SimQuality] TF03 Construction 4 (inside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer idMaterial="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Innendämmung) |EN: [SimQuality] TF03 Construction 4 (inside insulated wall)">
+				<Construction id="20004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Außendämmung) |EN: [SimQuality] TF03 Construction 3 (outside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer idMaterial="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
 				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-					<Color>#204a87</Color>
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
@@ -315,15 +313,15 @@
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+				<Component id="50005" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1004</IdConstruction>
+					<IdConstruction>20004</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
+				<Component id="50004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1003</IdConstruction>
+					<IdConstruction>20005</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>

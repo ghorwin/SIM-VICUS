@@ -97,12 +97,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1012" sideASurfaceID="45" />
-			<ComponentInstance id="3" componentID="1012" sideASurfaceID="46" />
-			<ComponentInstance id="4" componentID="1012" sideASurfaceID="47" />
-			<ComponentInstance id="5" componentID="1012" sideASurfaceID="48" />
-			<ComponentInstance id="6" componentID="1012" sideASurfaceID="49" />
-			<ComponentInstance id="7" componentID="1012" sideASurfaceID="50" />
+			<ComponentInstance id="2" idComponent="1012" idSideASurface="45" />
+			<ComponentInstance id="3" idComponent="1012" idSideASurface="46" />
+			<ComponentInstance id="4" idComponent="1012" idSideASurface="47" />
+			<ComponentInstance id="5" idComponent="1012" idSideASurface="48" />
+			<ComponentInstance id="6" idComponent="1012" idSideASurface="49" />
+			<ComponentInstance id="7" idComponent="1012" idSideASurface="50" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>

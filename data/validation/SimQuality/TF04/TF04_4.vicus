@@ -127,17 +127,17 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1004" sideBSurfaceID="11" />
-			<ComponentInstance id="3" componentID="1004" sideBSurfaceID="12" />
-			<ComponentInstance id="4" componentID="1004" sideBSurfaceID="13" />
-			<ComponentInstance id="5" componentID="1007" sideASurfaceID="14" sideBSurfaceID="23" />
-			<ComponentInstance id="6" componentID="1004" sideBSurfaceID="15" />
-			<ComponentInstance id="7" componentID="1004" sideBSurfaceID="16" />
-			<ComponentInstance id="9" componentID="1003" sideBSurfaceID="18" />
-			<ComponentInstance id="10" componentID="1003" sideBSurfaceID="19" />
-			<ComponentInstance id="11" componentID="1003" sideBSurfaceID="20" />
-			<ComponentInstance id="12" componentID="1003" sideBSurfaceID="21" />
-			<ComponentInstance id="13" componentID="1003" sideBSurfaceID="22" />
+			<ComponentInstance id="2" idComponent="1004" idSideBSurface="11" />
+			<ComponentInstance id="3" idComponent="1004" idSideBSurface="12" />
+			<ComponentInstance id="4" idComponent="1004" idSideBSurface="13" />
+			<ComponentInstance id="5" idComponent="1007" idSideASurface="14" idSideBSurface="23" />
+			<ComponentInstance id="6" idComponent="1004" idSideBSurface="15" />
+			<ComponentInstance id="7" idComponent="1004" idSideBSurface="16" />
+			<ComponentInstance id="9" idComponent="1003" idSideBSurface="18" />
+			<ComponentInstance id="10" idComponent="1003" idSideBSurface="19" />
+			<ComponentInstance id="11" idComponent="1003" idSideBSurface="20" />
+			<ComponentInstance id="12" idComponent="1003" idSideBSurface="21" />
+			<ComponentInstance id="13" idComponent="1003" idSideBSurface="22" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>

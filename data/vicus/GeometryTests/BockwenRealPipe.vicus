@@ -976,215 +976,215 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="1" componentID="50046" sideASurfaceID="87" />
-			<ComponentInstance id="2" componentID="50046" sideASurfaceID="88" />
-			<ComponentInstance id="3" componentID="50046" sideASurfaceID="89" />
-			<ComponentInstance id="4" componentID="50046" sideASurfaceID="177" />
-			<ComponentInstance id="5" componentID="50046" sideASurfaceID="186" />
-			<ComponentInstance id="6" componentID="50046" sideASurfaceID="189" />
-			<ComponentInstance id="7" componentID="50046" sideASurfaceID="191" />
-			<ComponentInstance id="8" componentID="50046" sideASurfaceID="192" />
-			<ComponentInstance id="9" componentID="50046" sideASurfaceID="193" />
-			<ComponentInstance id="10" componentID="50046" sideASurfaceID="204" />
-			<ComponentInstance id="11" componentID="50046" sideASurfaceID="110" />
-			<ComponentInstance id="12" componentID="50046" sideASurfaceID="121" />
-			<ComponentInstance id="13" componentID="50046" sideASurfaceID="133" />
-			<ComponentInstance id="14" componentID="50046" sideASurfaceID="134" />
-			<ComponentInstance id="15" componentID="50046" sideASurfaceID="135" />
-			<ComponentInstance id="16" componentID="50046" sideASurfaceID="163" />
-			<ComponentInstance id="17" componentID="50050" sideASurfaceID="51" />
-			<ComponentInstance id="18" componentID="50050" sideASurfaceID="55" />
-			<ComponentInstance id="19" componentID="50050" sideASurfaceID="71" />
-			<ComponentInstance id="20" componentID="50050" sideASurfaceID="72" />
-			<ComponentInstance id="21" componentID="50050" sideASurfaceID="73" />
-			<ComponentInstance id="22" componentID="50050" sideASurfaceID="132" />
-			<ComponentInstance id="23" componentID="50050" sideASurfaceID="187" />
-			<ComponentInstance id="24" componentID="50050" sideASurfaceID="188" />
-			<ComponentInstance id="25" componentID="50050" sideASurfaceID="190" />
-			<ComponentInstance id="26" componentID="50050" sideASurfaceID="161" />
-			<ComponentInstance id="27" componentID="50050" sideASurfaceID="162" />
-			<ComponentInstance id="28" componentID="50050" sideASurfaceID="23" />
-			<ComponentInstance id="29" componentID="50050" sideASurfaceID="24" />
-			<ComponentInstance id="30" componentID="50050" sideASurfaceID="31" />
-			<ComponentInstance id="31" componentID="50050" sideASurfaceID="175" />
-			<ComponentInstance id="32" componentID="50050" sideASurfaceID="176" />
-			<ComponentInstance id="33" componentID="50050" sideASurfaceID="58" />
-			<ComponentInstance id="34" componentID="50050" sideASurfaceID="59" />
-			<ComponentInstance id="35" componentID="50050" sideASurfaceID="70" />
-			<ComponentInstance id="36" componentID="50050" sideASurfaceID="85" />
-			<ComponentInstance id="37" componentID="50050" sideASurfaceID="86" />
-			<ComponentInstance id="38" componentID="50050" sideASurfaceID="105" />
-			<ComponentInstance id="39" componentID="50050" sideASurfaceID="106" />
-			<ComponentInstance id="40" componentID="50050" sideASurfaceID="120" />
-			<ComponentInstance id="41" componentID="50050" sideASurfaceID="128" />
-			<ComponentInstance id="42" componentID="50050" sideASurfaceID="131" />
-			<ComponentInstance id="43" componentID="50050" sideASurfaceID="108" />
-			<ComponentInstance id="44" componentID="50050" sideASurfaceID="109" />
-			<ComponentInstance id="45" componentID="50050" sideASurfaceID="43" />
-			<ComponentInstance id="46" componentID="50050" sideASurfaceID="44" />
-			<ComponentInstance id="47" componentID="50043" sideASurfaceID="144" />
-			<ComponentInstance id="48" componentID="50043" sideASurfaceID="151" />
-			<ComponentInstance id="49" componentID="50043" sideASurfaceID="153" />
-			<ComponentInstance id="50" componentID="50043" sideASurfaceID="155" />
-			<ComponentInstance id="51" componentID="50047" sideASurfaceID="185" sideBSurfaceID="169" />
-			<ComponentInstance id="52" componentID="50043" sideASurfaceID="99" />
-			<ComponentInstance id="53" componentID="50047" sideASurfaceID="100" sideBSurfaceID="145" />
-			<ComponentInstance id="54" componentID="50047" sideASurfaceID="101" sideBSurfaceID="152" />
-			<ComponentInstance id="55" componentID="50043" sideASurfaceID="102" />
-			<ComponentInstance id="56" componentID="50047" sideASurfaceID="103" sideBSurfaceID="157" />
-			<ComponentInstance id="57" componentID="50047" sideASurfaceID="130" sideBSurfaceID="158" />
-			<ComponentInstance id="58" componentID="50047" sideASurfaceID="116" sideBSurfaceID="154" />
-			<ComponentInstance id="59" componentID="50043" sideASurfaceID="117" />
-			<ComponentInstance id="60" componentID="50047" sideASurfaceID="118" sideBSurfaceID="156" />
-			<ComponentInstance id="61" componentID="50047" sideASurfaceID="119" sideBSurfaceID="127" />
-			<ComponentInstance id="62" componentID="50049" sideASurfaceID="171" sideBSurfaceID="107" />
-			<ComponentInstance id="63" componentID="50049" sideASurfaceID="174" sideBSurfaceID="104" />
-			<ComponentInstance id="64" componentID="50049" sideASurfaceID="150" sideBSurfaceID="172" />
-			<ComponentInstance id="65" componentID="50049" sideASurfaceID="148" sideBSurfaceID="181" />
-			<ComponentInstance id="66" componentID="50049" sideASurfaceID="146" sideBSurfaceID="183" />
-			<ComponentInstance id="67" componentID="50049" sideASurfaceID="147" sideBSurfaceID="173" />
-			<ComponentInstance id="68" componentID="50049" sideASurfaceID="184" sideBSurfaceID="129" />
-			<ComponentInstance id="69" componentID="50049" sideASurfaceID="56" sideBSurfaceID="76" />
-			<ComponentInstance id="70" componentID="50044" sideASurfaceID="126" sideBSurfaceID="195" />
-			<ComponentInstance id="71" componentID="50044" sideASurfaceID="115" sideBSurfaceID="201" />
-			<ComponentInstance id="72" componentID="50044" sideASurfaceID="159" sideBSurfaceID="200" />
-			<ComponentInstance id="73" componentID="50044" sideASurfaceID="98" sideBSurfaceID="202" />
-			<ComponentInstance id="74" componentID="50044" sideASurfaceID="95" sideBSurfaceID="203" />
-			<ComponentInstance id="75" componentID="50044" sideASurfaceID="160" sideBSurfaceID="197" />
-			<ComponentInstance id="76" componentID="50044" sideASurfaceID="168" sideBSurfaceID="199" />
-			<ComponentInstance id="77" componentID="50044" sideASurfaceID="180" sideBSurfaceID="198" />
-			<ComponentInstance id="78" componentID="50053" sideASurfaceID="112" sideBSurfaceID="50">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>17</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="1" idComponent="50046" idSideASurface="87" />
+			<ComponentInstance id="2" idComponent="50046" idSideASurface="88" />
+			<ComponentInstance id="3" idComponent="50046" idSideASurface="89" />
+			<ComponentInstance id="4" idComponent="50046" idSideASurface="177" />
+			<ComponentInstance id="5" idComponent="50046" idSideASurface="186" />
+			<ComponentInstance id="6" idComponent="50046" idSideASurface="189" />
+			<ComponentInstance id="7" idComponent="50046" idSideASurface="191" />
+			<ComponentInstance id="8" idComponent="50046" idSideASurface="192" />
+			<ComponentInstance id="9" idComponent="50046" idSideASurface="193" />
+			<ComponentInstance id="10" idComponent="50046" idSideASurface="204" />
+			<ComponentInstance id="11" idComponent="50046" idSideASurface="110" />
+			<ComponentInstance id="12" idComponent="50046" idSideASurface="121" />
+			<ComponentInstance id="13" idComponent="50046" idSideASurface="133" />
+			<ComponentInstance id="14" idComponent="50046" idSideASurface="134" />
+			<ComponentInstance id="15" idComponent="50046" idSideASurface="135" />
+			<ComponentInstance id="16" idComponent="50046" idSideASurface="163" />
+			<ComponentInstance id="17" idComponent="50050" idSideASurface="51" />
+			<ComponentInstance id="18" idComponent="50050" idSideASurface="55" />
+			<ComponentInstance id="19" idComponent="50050" idSideASurface="71" />
+			<ComponentInstance id="20" idComponent="50050" idSideASurface="72" />
+			<ComponentInstance id="21" idComponent="50050" idSideASurface="73" />
+			<ComponentInstance id="22" idComponent="50050" idSideASurface="132" />
+			<ComponentInstance id="23" idComponent="50050" idSideASurface="187" />
+			<ComponentInstance id="24" idComponent="50050" idSideASurface="188" />
+			<ComponentInstance id="25" idComponent="50050" idSideASurface="190" />
+			<ComponentInstance id="26" idComponent="50050" idSideASurface="161" />
+			<ComponentInstance id="27" idComponent="50050" idSideASurface="162" />
+			<ComponentInstance id="28" idComponent="50050" idSideASurface="23" />
+			<ComponentInstance id="29" idComponent="50050" idSideASurface="24" />
+			<ComponentInstance id="30" idComponent="50050" idSideASurface="31" />
+			<ComponentInstance id="31" idComponent="50050" idSideASurface="175" />
+			<ComponentInstance id="32" idComponent="50050" idSideASurface="176" />
+			<ComponentInstance id="33" idComponent="50050" idSideASurface="58" />
+			<ComponentInstance id="34" idComponent="50050" idSideASurface="59" />
+			<ComponentInstance id="35" idComponent="50050" idSideASurface="70" />
+			<ComponentInstance id="36" idComponent="50050" idSideASurface="85" />
+			<ComponentInstance id="37" idComponent="50050" idSideASurface="86" />
+			<ComponentInstance id="38" idComponent="50050" idSideASurface="105" />
+			<ComponentInstance id="39" idComponent="50050" idSideASurface="106" />
+			<ComponentInstance id="40" idComponent="50050" idSideASurface="120" />
+			<ComponentInstance id="41" idComponent="50050" idSideASurface="128" />
+			<ComponentInstance id="42" idComponent="50050" idSideASurface="131" />
+			<ComponentInstance id="43" idComponent="50050" idSideASurface="108" />
+			<ComponentInstance id="44" idComponent="50050" idSideASurface="109" />
+			<ComponentInstance id="45" idComponent="50050" idSideASurface="43" />
+			<ComponentInstance id="46" idComponent="50050" idSideASurface="44" />
+			<ComponentInstance id="47" idComponent="50043" idSideASurface="144" />
+			<ComponentInstance id="48" idComponent="50043" idSideASurface="151" />
+			<ComponentInstance id="49" idComponent="50043" idSideASurface="153" />
+			<ComponentInstance id="50" idComponent="50043" idSideASurface="155" />
+			<ComponentInstance id="51" idComponent="50047" idSideASurface="185" idSideBSurface="169" />
+			<ComponentInstance id="52" idComponent="50043" idSideASurface="99" />
+			<ComponentInstance id="53" idComponent="50047" idSideASurface="100" idSideBSurface="145" />
+			<ComponentInstance id="54" idComponent="50047" idSideASurface="101" idSideBSurface="152" />
+			<ComponentInstance id="55" idComponent="50043" idSideASurface="102" />
+			<ComponentInstance id="56" idComponent="50047" idSideASurface="103" idSideBSurface="157" />
+			<ComponentInstance id="57" idComponent="50047" idSideASurface="130" idSideBSurface="158" />
+			<ComponentInstance id="58" idComponent="50047" idSideASurface="116" idSideBSurface="154" />
+			<ComponentInstance id="59" idComponent="50043" idSideASurface="117" />
+			<ComponentInstance id="60" idComponent="50047" idSideASurface="118" idSideBSurface="156" />
+			<ComponentInstance id="61" idComponent="50047" idSideASurface="119" idSideBSurface="127" />
+			<ComponentInstance id="62" idComponent="50049" idSideASurface="171" idSideBSurface="107" />
+			<ComponentInstance id="63" idComponent="50049" idSideASurface="174" idSideBSurface="104" />
+			<ComponentInstance id="64" idComponent="50049" idSideASurface="150" idSideBSurface="172" />
+			<ComponentInstance id="65" idComponent="50049" idSideASurface="148" idSideBSurface="181" />
+			<ComponentInstance id="66" idComponent="50049" idSideASurface="146" idSideBSurface="183" />
+			<ComponentInstance id="67" idComponent="50049" idSideASurface="147" idSideBSurface="173" />
+			<ComponentInstance id="68" idComponent="50049" idSideASurface="184" idSideBSurface="129" />
+			<ComponentInstance id="69" idComponent="50049" idSideASurface="56" idSideBSurface="76" />
+			<ComponentInstance id="70" idComponent="50044" idSideASurface="126" idSideBSurface="195" />
+			<ComponentInstance id="71" idComponent="50044" idSideASurface="115" idSideBSurface="201" />
+			<ComponentInstance id="72" idComponent="50044" idSideASurface="159" idSideBSurface="200" />
+			<ComponentInstance id="73" idComponent="50044" idSideASurface="98" idSideBSurface="202" />
+			<ComponentInstance id="74" idComponent="50044" idSideASurface="95" idSideBSurface="203" />
+			<ComponentInstance id="75" idComponent="50044" idSideASurface="160" idSideBSurface="197" />
+			<ComponentInstance id="76" idComponent="50044" idSideASurface="168" idSideBSurface="199" />
+			<ComponentInstance id="77" idComponent="50044" idSideASurface="180" idSideBSurface="198" />
+			<ComponentInstance id="78" idComponent="50053" idSideASurface="112" idSideBSurface="50">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>17</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="79" componentID="50053" sideASurfaceID="124" sideBSurfaceID="49">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>18</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="79" idComponent="50053" idSideASurface="124" idSideBSurface="49">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>18</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="80" componentID="50053" sideASurfaceID="123" sideBSurfaceID="57">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>18</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="80" idComponent="50053" idSideASurface="123" idSideBSurface="57">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>18</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="81" componentID="50053" sideASurfaceID="139" sideBSurfaceID="41">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>19</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="81" idComponent="50053" idSideASurface="139" idSideBSurface="41">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="82" componentID="50053" sideASurfaceID="113" sideBSurfaceID="42">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>17</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="82" idComponent="50053" idSideASurface="113" idSideBSurface="42">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>17</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="83" componentID="50053" sideASurfaceID="140" sideBSurfaceID="28">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>19</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="83" idComponent="50053" idSideASurface="140" idSideBSurface="28">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="84" componentID="50053" sideASurfaceID="137" sideBSurfaceID="68">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>19</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="84" idComponent="50053" idSideASurface="137" idSideBSurface="68">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>19</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="85" componentID="50053" sideASurfaceID="91" sideBSurfaceID="69">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>16</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="85" idComponent="50053" idSideASurface="91" idSideBSurface="69">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="86" componentID="50053" sideASurfaceID="92" sideBSurfaceID="29">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>16</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="86" idComponent="50053" idSideASurface="92" idSideBSurface="29">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="87" componentID="50053" sideASurfaceID="165" sideBSurfaceID="84">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>20</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="87" idComponent="50053" idSideASurface="165" idSideBSurface="84">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>20</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="88" componentID="50053" sideASurfaceID="166" sideBSurfaceID="67">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>20</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="88" idComponent="50053" idSideASurface="166" idSideBSurface="67">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>20</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="89" componentID="50053" sideASurfaceID="178" sideBSurfaceID="83">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>21</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="89" idComponent="50053" idSideASurface="178" idSideBSurface="83">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>21</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="90" componentID="50054" sideASurfaceID="52">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>13</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="90" idComponent="50054" idSideASurface="52">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>13</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="91" componentID="50054" sideASurfaceID="74">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>15</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="91" idComponent="50054" idSideASurface="74">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>15</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="92" componentID="50045" sideASurfaceID="30" />
-			<ComponentInstance id="93" componentID="50054" sideASurfaceID="32">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>11</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="92" idComponent="50045" idSideASurface="30" />
+			<ComponentInstance id="93" idComponent="50054" idSideASurface="32">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>11</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="94" componentID="50054" sideASurfaceID="60">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>14</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="94" idComponent="50054" idSideASurface="60">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>14</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="95" componentID="50054" sideASurfaceID="45">
-				<SurfaceHeatingID>350002</SurfaceHeatingID>
-				<SurfaceHeatingControlZoneID>12</SurfaceHeatingControlZoneID>
+			<ComponentInstance id="95" idComponent="50054" idSideASurface="45">
+				<IdSurfaceHeating>350002</IdSurfaceHeating>
+				<IdSurfaceHeatingControlZone>12</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="96" componentID="50047" sideASurfaceID="54" sideBSurfaceID="47" />
-			<ComponentInstance id="97" componentID="50047" sideASurfaceID="25" sideBSurfaceID="61" />
-			<ComponentInstance id="98" componentID="50049" sideASurfaceID="79" sideBSurfaceID="65" />
-			<ComponentInstance id="99" componentID="50049" sideASurfaceID="81" sideBSurfaceID="63" />
-			<ComponentInstance id="100" componentID="50049" sideASurfaceID="34" sideBSurfaceID="64" />
-			<ComponentInstance id="101" componentID="50049" sideASurfaceID="77" sideBSurfaceID="36" />
-			<ComponentInstance id="102" componentID="50049" sideASurfaceID="53" sideBSurfaceID="38" />
-			<ComponentInstance id="103" componentID="50049" sideASurfaceID="39" sideBSurfaceID="46" />
-			<ComponentInstance id="104" componentID="50049" sideASurfaceID="26" sideBSurfaceID="35" />
-			<ComponentInstance id="105" componentID="50042" sideASurfaceID="75" />
-			<ComponentInstance id="106" componentID="50042" sideASurfaceID="78" />
-			<ComponentInstance id="107" componentID="50042" sideASurfaceID="80" />
-			<ComponentInstance id="108" componentID="50042" sideASurfaceID="33" />
-			<ComponentInstance id="109" componentID="50042" sideASurfaceID="37" />
-			<ComponentInstance id="110" componentID="50042" sideASurfaceID="62" />
-			<ComponentInstance id="111" componentID="50040" sideBSurfaceID="82" />
-			<ComponentInstance id="112" componentID="50040" sideBSurfaceID="27" />
-			<ComponentInstance id="113" componentID="50040" sideBSurfaceID="40" />
-			<ComponentInstance id="114" componentID="50040" sideBSurfaceID="66" />
-			<ComponentInstance id="115" componentID="50040" sideBSurfaceID="48" />
-			<ComponentInstance id="116" componentID="50041" sideASurfaceID="136" />
-			<ComponentInstance id="117" componentID="50041" sideASurfaceID="138" />
-			<ComponentInstance id="118" componentID="50041" sideASurfaceID="164" />
-			<ComponentInstance id="119" componentID="50041" sideASurfaceID="90" />
-			<ComponentInstance id="120" componentID="50041" sideASurfaceID="122" />
-			<ComponentInstance id="121" componentID="50041" sideASurfaceID="111" />
-			<ComponentInstance id="122" componentID="50042" sideASurfaceID="149" />
-			<ComponentInstance id="123" componentID="50042" sideASurfaceID="170" />
-			<ComponentInstance id="124" componentID="50051" sideASurfaceID="141" />
-			<ComponentInstance id="125" componentID="50051" sideASurfaceID="142" />
-			<ComponentInstance id="126" componentID="50051" sideASurfaceID="143" />
-			<ComponentInstance id="127" componentID="50051" sideASurfaceID="167" />
-			<ComponentInstance id="128" componentID="50051" sideASurfaceID="179" />
-			<ComponentInstance id="129" componentID="50051" sideASurfaceID="93" />
-			<ComponentInstance id="130" componentID="50051" sideASurfaceID="94" />
-			<ComponentInstance id="131" componentID="50051" sideASurfaceID="96" />
-			<ComponentInstance id="132" componentID="50051" sideASurfaceID="97" />
-			<ComponentInstance id="133" componentID="50051" sideASurfaceID="125" />
-			<ComponentInstance id="134" componentID="50051" sideASurfaceID="114" />
-			<ComponentInstance id="135" componentID="50052" sideBSurfaceID="194" />
-			<ComponentInstance id="136" componentID="50052" sideBSurfaceID="196" />
+			<ComponentInstance id="96" idComponent="50047" idSideASurface="54" idSideBSurface="47" />
+			<ComponentInstance id="97" idComponent="50047" idSideASurface="25" idSideBSurface="61" />
+			<ComponentInstance id="98" idComponent="50049" idSideASurface="79" idSideBSurface="65" />
+			<ComponentInstance id="99" idComponent="50049" idSideASurface="81" idSideBSurface="63" />
+			<ComponentInstance id="100" idComponent="50049" idSideASurface="34" idSideBSurface="64" />
+			<ComponentInstance id="101" idComponent="50049" idSideASurface="77" idSideBSurface="36" />
+			<ComponentInstance id="102" idComponent="50049" idSideASurface="53" idSideBSurface="38" />
+			<ComponentInstance id="103" idComponent="50049" idSideASurface="39" idSideBSurface="46" />
+			<ComponentInstance id="104" idComponent="50049" idSideASurface="26" idSideBSurface="35" />
+			<ComponentInstance id="105" idComponent="50042" idSideASurface="75" />
+			<ComponentInstance id="106" idComponent="50042" idSideASurface="78" />
+			<ComponentInstance id="107" idComponent="50042" idSideASurface="80" />
+			<ComponentInstance id="108" idComponent="50042" idSideASurface="33" />
+			<ComponentInstance id="109" idComponent="50042" idSideASurface="37" />
+			<ComponentInstance id="110" idComponent="50042" idSideASurface="62" />
+			<ComponentInstance id="111" idComponent="50040" idSideBSurface="82" />
+			<ComponentInstance id="112" idComponent="50040" idSideBSurface="27" />
+			<ComponentInstance id="113" idComponent="50040" idSideBSurface="40" />
+			<ComponentInstance id="114" idComponent="50040" idSideBSurface="66" />
+			<ComponentInstance id="115" idComponent="50040" idSideBSurface="48" />
+			<ComponentInstance id="116" idComponent="50041" idSideASurface="136" />
+			<ComponentInstance id="117" idComponent="50041" idSideASurface="138" />
+			<ComponentInstance id="118" idComponent="50041" idSideASurface="164" />
+			<ComponentInstance id="119" idComponent="50041" idSideASurface="90" />
+			<ComponentInstance id="120" idComponent="50041" idSideASurface="122" />
+			<ComponentInstance id="121" idComponent="50041" idSideASurface="111" />
+			<ComponentInstance id="122" idComponent="50042" idSideASurface="149" />
+			<ComponentInstance id="123" idComponent="50042" idSideASurface="170" />
+			<ComponentInstance id="124" idComponent="50051" idSideASurface="141" />
+			<ComponentInstance id="125" idComponent="50051" idSideASurface="142" />
+			<ComponentInstance id="126" idComponent="50051" idSideASurface="143" />
+			<ComponentInstance id="127" idComponent="50051" idSideASurface="167" />
+			<ComponentInstance id="128" idComponent="50051" idSideASurface="179" />
+			<ComponentInstance id="129" idComponent="50051" idSideASurface="93" />
+			<ComponentInstance id="130" idComponent="50051" idSideASurface="94" />
+			<ComponentInstance id="131" idComponent="50051" idSideASurface="96" />
+			<ComponentInstance id="132" idComponent="50051" idSideASurface="97" />
+			<ComponentInstance id="133" idComponent="50051" idSideASurface="125" />
+			<ComponentInstance id="134" idComponent="50051" idSideASurface="114" />
+			<ComponentInstance id="135" idComponent="50052" idSideBSurface="194" />
+			<ComponentInstance id="136" idComponent="50052" idSideBSurface="196" />
 		</ComponentInstances>
 		<SubSurfaceComponentInstances>
-			<SubSurfaceComponentInstance id="1" subSurfaceComponentID="160005" sideASurfaceID="223" />
-			<SubSurfaceComponentInstance id="2" subSurfaceComponentID="160005" sideASurfaceID="224" />
-			<SubSurfaceComponentInstance id="3" subSurfaceComponentID="160005" sideASurfaceID="221" />
-			<SubSurfaceComponentInstance id="4" subSurfaceComponentID="160005" sideASurfaceID="222" />
-			<SubSurfaceComponentInstance id="5" subSurfaceComponentID="160005" sideASurfaceID="216" />
-			<SubSurfaceComponentInstance id="6" subSurfaceComponentID="160005" sideASurfaceID="219" />
-			<SubSurfaceComponentInstance id="7" subSurfaceComponentID="160005" sideASurfaceID="211" />
-			<SubSurfaceComponentInstance id="8" subSurfaceComponentID="160005" sideASurfaceID="212" />
-			<SubSurfaceComponentInstance id="9" subSurfaceComponentID="160005" sideASurfaceID="213" />
-			<SubSurfaceComponentInstance id="10" subSurfaceComponentID="160005" sideASurfaceID="214" />
-			<SubSurfaceComponentInstance id="11" subSurfaceComponentID="160005" sideASurfaceID="215" />
-			<SubSurfaceComponentInstance id="12" subSurfaceComponentID="160005" sideASurfaceID="210" />
-			<SubSurfaceComponentInstance id="13" subSurfaceComponentID="160005" sideASurfaceID="209" />
-			<SubSurfaceComponentInstance id="14" subSurfaceComponentID="160005" sideASurfaceID="208" />
-			<SubSurfaceComponentInstance id="15" subSurfaceComponentID="160005" sideASurfaceID="207" />
-			<SubSurfaceComponentInstance id="16" subSurfaceComponentID="160005" sideASurfaceID="206" />
-			<SubSurfaceComponentInstance id="17" subSurfaceComponentID="160005" sideASurfaceID="205" />
-			<SubSurfaceComponentInstance id="18" subSurfaceComponentID="160004" sideASurfaceID="217" />
-			<SubSurfaceComponentInstance id="19" subSurfaceComponentID="160004" sideASurfaceID="218" />
-			<SubSurfaceComponentInstance id="20" subSurfaceComponentID="160004" sideASurfaceID="220" />
+			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="160005" idSideASurface="223" />
+			<SubSurfaceComponentInstance id="2" idSubSurfaceComponent="160005" idSideASurface="224" />
+			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="160005" idSideASurface="221" />
+			<SubSurfaceComponentInstance id="4" idSubSurfaceComponent="160005" idSideASurface="222" />
+			<SubSurfaceComponentInstance id="5" idSubSurfaceComponent="160005" idSideASurface="216" />
+			<SubSurfaceComponentInstance id="6" idSubSurfaceComponent="160005" idSideASurface="219" />
+			<SubSurfaceComponentInstance id="7" idSubSurfaceComponent="160005" idSideASurface="211" />
+			<SubSurfaceComponentInstance id="8" idSubSurfaceComponent="160005" idSideASurface="212" />
+			<SubSurfaceComponentInstance id="9" idSubSurfaceComponent="160005" idSideASurface="213" />
+			<SubSurfaceComponentInstance id="10" idSubSurfaceComponent="160005" idSideASurface="214" />
+			<SubSurfaceComponentInstance id="11" idSubSurfaceComponent="160005" idSideASurface="215" />
+			<SubSurfaceComponentInstance id="12" idSubSurfaceComponent="160005" idSideASurface="210" />
+			<SubSurfaceComponentInstance id="13" idSubSurfaceComponent="160005" idSideASurface="209" />
+			<SubSurfaceComponentInstance id="14" idSubSurfaceComponent="160005" idSideASurface="208" />
+			<SubSurfaceComponentInstance id="15" idSubSurfaceComponent="160005" idSideASurface="207" />
+			<SubSurfaceComponentInstance id="16" idSubSurfaceComponent="160005" idSideASurface="206" />
+			<SubSurfaceComponentInstance id="17" idSubSurfaceComponent="160005" idSideASurface="205" />
+			<SubSurfaceComponentInstance id="18" idSubSurfaceComponent="160004" idSideASurface="217" />
+			<SubSurfaceComponentInstance id="19" idSubSurfaceComponent="160004" idSideASurface="218" />
+			<SubSurfaceComponentInstance id="20" idSubSurfaceComponent="160004" idSideASurface="220" />
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -1612,7 +1612,7 @@
 				<InternalLoad id="70017" displayName="DE: Internal Load -&gt; 2 W/m2 |EN: &lt;new internal load model&gt;" color="#5ac5ff">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
-					<PowerManagementScheduleId>60005</PowerManagementScheduleId>
+					<IdPowerManagementSchedule>60005</IdPowerManagementSchedule>
 					<IBK:Parameter name="Power" unit="W">2</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">2</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>
@@ -1623,15 +1623,15 @@
 			<ZoneControlThermostats>
 				<ZoneControlThermostat id="110009" displayName="DE: Thermostat Bockwen Wohnen |EN: &lt;new zone control thermostat model&gt;" color="#8aff5a">
 					<ControlValue>AirTemperature</ControlValue>
-					<HeatingSetpointScheduleId>60023</HeatingSetpointScheduleId>
-					<CoolingSetpointScheduleId>60024</CoolingSetpointScheduleId>
+					<IdHeatingSetpointSchedule>60023</IdHeatingSetpointSchedule>
+					<IdCoolingSetpointSchedule>60024</IdCoolingSetpointSchedule>
 					<ControllerType>Analog</ControllerType>
 					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
 				</ZoneControlThermostat>
 				<ZoneControlThermostat id="110010" displayName="DE: Thermostat Bockwen Bad |EN: &lt;new zone control thermostat model&gt;" color="#ffc25a">
 					<ControlValue>AirTemperature</ControlValue>
-					<HeatingSetpointScheduleId>60025</HeatingSetpointScheduleId>
-					<CoolingSetpointScheduleId>60024</CoolingSetpointScheduleId>
+					<IdHeatingSetpointSchedule>60025</IdHeatingSetpointSchedule>
+					<IdCoolingSetpointSchedule>60024</IdCoolingSetpointSchedule>
 					<ControllerType>Analog</ControllerType>
 					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
 				</ZoneControlThermostat>

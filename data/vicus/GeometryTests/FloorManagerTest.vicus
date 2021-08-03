@@ -1000,8 +1000,8 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="1" componentID="1001" sideBSurfaceID="292" />
-			<ComponentInstance id="2" componentID="1001" sideBSurfaceID="293" />
+			<ComponentInstance id="1" idComponent="1001" idSideBSurface="292" />
+			<ComponentInstance id="2" idComponent="1001" idSideBSurface="293" />
 		</ComponentInstances>
 	</Project>
 </VicusProject>

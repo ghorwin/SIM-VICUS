@@ -98,12 +98,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="23" componentID="1004" sideASurfaceID="32" />
-			<ComponentInstance id="24" componentID="1004" sideASurfaceID="33" />
-			<ComponentInstance id="25" componentID="1004" sideASurfaceID="34" />
-			<ComponentInstance id="26" componentID="1004" sideASurfaceID="35" />
-			<ComponentInstance id="27" componentID="1004" sideASurfaceID="36" />
-			<ComponentInstance id="28" componentID="1004" sideASurfaceID="37" />
+			<ComponentInstance id="23" idComponent="1004" idSideASurface="32" />
+			<ComponentInstance id="24" idComponent="1004" idSideASurface="33" />
+			<ComponentInstance id="25" idComponent="1004" idSideASurface="34" />
+			<ComponentInstance id="26" idComponent="1004" idSideASurface="35" />
+			<ComponentInstance id="27" idComponent="1004" idSideASurface="36" />
+			<ComponentInstance id="28" idComponent="1004" idSideASurface="37" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -269,8 +269,8 @@
 			<ZoneControlThermostats>
 				<ZoneControlThermostat id="110004" displayName="DE: TF10.1 Thermostat |EN: &lt;new zone control thermostat model&gt;" color="#e6ff5a">
 					<ControlValue>AirTemperature</ControlValue>
-					<HeatingSetpointScheduleId>60020</HeatingSetpointScheduleId>
-					<CoolingSetpointScheduleId>60017</CoolingSetpointScheduleId>
+					<IdHeatingSetpointSchedule>60020</IdHeatingSetpointSchedule>
+					<IdCoolingSetpointSchedule>60017</IdCoolingSetpointSchedule>
 					<ControllerType>Analog</ControllerType>
 					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
 				</ZoneControlThermostat>

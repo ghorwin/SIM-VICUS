@@ -45,7 +45,7 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="6" componentID="1001" sideASurfaceID="15" />
+			<ComponentInstance id="6" idComponent="1001" idSideASurface="15" />
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surface id="1" displayName="VerschattungNord">

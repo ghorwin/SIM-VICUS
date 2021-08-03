@@ -88,17 +88,17 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="13" componentID="0" sideASurfaceID="0" />
-			<ComponentInstance id="14" componentID="0" sideASurfaceID="0" />
-			<ComponentInstance id="15" componentID="0" sideASurfaceID="0" />
-			<ComponentInstance id="16" componentID="0" sideASurfaceID="0" />
-			<ComponentInstance id="17" componentID="0" sideASurfaceID="0" />
-			<ComponentInstance id="1" componentID="1001" sideBSurfaceID="160" />
-			<ComponentInstance id="2" componentID="1001" sideBSurfaceID="4" />
-			<ComponentInstance id="18" componentID="1001" sideASurfaceID="60" />
-			<ComponentInstance id="19" componentID="1001" sideASurfaceID="1" />
-			<ComponentInstance id="20" componentID="1001" sideASurfaceID="2" />
-			<ComponentInstance id="21" componentID="1001" sideASurfaceID="3" />
+			<ComponentInstance id="13" idComponent="0" idSideASurface="0" />
+			<ComponentInstance id="14" idComponent="0" idSideASurface="0" />
+			<ComponentInstance id="15" idComponent="0" idSideASurface="0" />
+			<ComponentInstance id="16" idComponent="0" idSideASurface="0" />
+			<ComponentInstance id="17" idComponent="0" idSideASurface="0" />
+			<ComponentInstance id="1" idComponent="1001" idSideBSurface="160" />
+			<ComponentInstance id="2" idComponent="1001" idSideBSurface="4" />
+			<ComponentInstance id="18" idComponent="1001" idSideASurface="60" />
+			<ComponentInstance id="19" idComponent="1001" idSideASurface="1" />
+			<ComponentInstance id="20" idComponent="1001" idSideASurface="2" />
+			<ComponentInstance id="21" idComponent="1001" idSideASurface="3" />
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surface id="1" displayName="New surface">

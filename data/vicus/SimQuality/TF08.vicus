@@ -63,12 +63,12 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" componentID="1008" sideASurfaceID="13" />
-			<ComponentInstance id="3" componentID="1008" sideASurfaceID="14" />
-			<ComponentInstance id="4" componentID="1008" sideASurfaceID="15" />
-			<ComponentInstance id="5" componentID="1008" sideASurfaceID="16" />
-			<ComponentInstance id="6" componentID="1008" sideASurfaceID="17" />
-			<ComponentInstance id="7" componentID="1008" sideASurfaceID="18" />
+			<ComponentInstance id="2" idComponent="1008" idSideASurface="13" />
+			<ComponentInstance id="3" idComponent="1008" idSideASurface="14" />
+			<ComponentInstance id="4" idComponent="1008" idSideASurface="15" />
+			<ComponentInstance id="5" idComponent="1008" idSideASurface="16" />
+			<ComponentInstance id="6" idComponent="1008" idSideASurface="17" />
+			<ComponentInstance id="7" idComponent="1008" idSideASurface="18" />
 		</ComponentInstances>
 	</Project>
 </VicusProject>
