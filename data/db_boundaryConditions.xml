@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <BoundaryConditions>
 	<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-		<Color>#204a87</Color>
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
 	<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-		<Color>#cc0000</Color>
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
 	<BoundaryCondition id="1003" displayName="EN: [SimQuality] TF03 Outside conditions |DE: [SimQuality] TF03 Außenbedingungen">
-		<Color>#ffc0cb</Color>
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
@@ -25,7 +22,6 @@
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
 	<BoundaryCondition id="1004" displayName="EN: [SimQuality] TF06 Outside conditions (heat conduction and short wave radiation) |DE: [SimQuality] TF03 Außenbedingungen (Wärmeleitung und kurzwellige Strahlung)">
-		<Color>#e7feff</Color>
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 		</InterfaceHeatConduction>
@@ -34,7 +30,6 @@
 		</InterfaceSolarAbsorption>
 	</BoundaryCondition>
 	<BoundaryCondition id="1005" displayName="DE: [SimQuality] TF08 (innen mit langwelliger Strahlung) |EN: [SimQuality] TF08 with Emissivity;">
-		<Color>#5aff82</Color>
 		<InterfaceHeatConduction modelType="Constant">
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 		</InterfaceHeatConduction>

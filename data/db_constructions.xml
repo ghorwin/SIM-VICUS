@@ -131,7 +131,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1010" displayName="DE: [SimQuality] TF04 Konstruktionstyp 1 (Betonwand) halbe Wanddicke |EN: [SimQuality] TF04 Construction 1 (concrete wall) half thickness" color="#ff5aaa">
+	<Construction id="1010" displayName="DE: [SimQuality] TF04 Konstruktionstyp 1 (Betonwand) halbe Wanddicke |EN: [SimQuality] TF04 Construction 1 (concrete wall) half thickness">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
