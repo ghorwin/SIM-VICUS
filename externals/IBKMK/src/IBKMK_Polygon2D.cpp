@@ -127,7 +127,7 @@ double Polygon2D::area(int digits) const {
 		surfArea += p1.m_x * (p2.m_y - p0.m_y);
 	}
 	surfArea *= 0.5;
-	surfArea = std::floor(surfArea*IBK::f_pow10(digits))/IBK::f_pow10(digits);
+	surfArea = std::round(surfArea*IBK::f_pow10(digits))/IBK::f_pow10(digits);
 	return surfArea;
 }
 
