@@ -91,6 +91,7 @@ bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3
 	// check that the point was indeed in the plane
 	Vector3D v2 = offset + x*a + y*b;
 	v2 -= v;
+	// TODO : proper rounding error check!
 	if (v2.magnitude() > tolerance)
 		return false;
 	else
@@ -209,6 +210,7 @@ static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline) {
 		double cosAngle = a.scalarProduct(b);
 
 
+		// TODO : proper rounding error check!
 		if(cosAngle < -1+eps || cosAngle > 1-eps){
 			polyline.erase(polyline.begin()+idx);
 			return true;
@@ -228,6 +230,7 @@ void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon) {
 		size_t j=(size_t)i-1;
 		if(i==0)
 			j=polygon.size()-1;
+		// TODO : proper rounding error check!
 		if((polygon[(size_t)i]-polygon[j]).magnitude()<0.001)
 			polygon.erase(polygon.begin()+i);
 	}

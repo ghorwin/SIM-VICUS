@@ -169,7 +169,8 @@ void Polygon3D::detectType() {
 	IBKMK::Vector3D c2 = b + (d-a);
 	c2 -= c;
 	// we assume we have zero length for an rectangle
-	if (c2.magnitude() < 1e-4)  // TODO : should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
+	// TODO : proper rounding error check! should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
+	if (c2.magnitude() < 1e-4)
 		m_type = T_Rectangle;
 }
 
@@ -198,6 +199,7 @@ void Polygon3D::updateLocalCoordinateSystem() {
 	IBKMK::Vector3D y = m_vertexes.back() - m_vertexes[0];
 	IBKMK::Vector3D n;
 	m_localX.crossProduct(y, n);
+	// TODO : proper rounding error check!
 	if (n.magnitude() < 1e-9)
 		return; // invalid vertex input
 	n.normalize();
@@ -210,6 +212,7 @@ void Polygon3D::updateLocalCoordinateSystem() {
 		IBKMK::Vector3D vy = m_vertexes[i-1] - m_vertexes[i];
 		IBKMK::Vector3D vn;
 		vx.crossProduct(vy, vn);
+		// TODO : proper rounding error check!
 		if (vn.magnitude() < 1e-9)
 			return; // invalid vertex input
 		vn.normalize();
