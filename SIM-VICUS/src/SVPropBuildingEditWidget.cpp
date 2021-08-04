@@ -933,6 +933,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 		item->setFlags(Qt::ItemIsEnabled);
 		item->setData(Qt::UserRole, ci.m_id);
 		item->setText(QString("%1").arg(ci.m_id));
+		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 0, item);
 
 		// column 1 - surface name A
@@ -960,13 +961,10 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
 	}
 	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(false);
-	// enlarge columns if contents doesn't match
-//	int width1 = m_ui->tableWidgetInterlinkedSurfaces->sizeHintForColumn(1);
-//	if (m_ui->tableWidgetInterlinkedSurfaces->columnWidth(1) < width1)
-//		m_ui->tableWidgetInterlinkedSurfaces->setColumnWidth(1, width1);
-//	int width2 = m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->sizeHintForColumn(2);
-//	if (m_ui->tableWidgetInterlinkedSurfaces->columnWidth(2) < width2)
-//		m_ui->tableWidgetInterlinkedSurfaces->setColumnWidth(2, width2);
+
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 0, true);
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 1, true);
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 2, true);
 
 	m_ui->tableWidgetInterlinkedSurfaces->selectionModel()->blockSignals(false);
 }

@@ -58,6 +58,12 @@ public:
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
 	static void formatWelcomePage(QString & htmlCode);
 
+	/*! Resizes column to contents, yet honors the enlargeOnly flag.
+		Useful if user can adjust column width manually, but data changes may require enlarging
+		column.
+	*/
+	static void resizeTableColumnToContents(QTableView * v, int column, bool enlargeOnly);
+
 	/*! Sets the application wide style sheet. */
 	void setStyle(SVSettings::ThemeType dark);
 
