@@ -23,7 +23,7 @@
 	GNU General Public License for more details.
 */
 
-#include "Vic3DOpaqueGeometryObject.h"
+#include "Vic3DTransparentBuildingObject.h"
 
 #include <QVector3D>
 #include <QOpenGLShaderProgram>
@@ -32,10 +32,11 @@
 #include <VICUS_Project.h>
 #include "SVProjectHandler.h"
 #include "Vic3DGeometryHelpers.h"
+#include "Vic3DShaderProgram.h"
 
 namespace Vic3D {
 
-OpaqueGeometryObject::OpaqueGeometryObject() :
+TransparentBuildingObject::TransparentBuildingObject() :
 	m_vertexBufferObject(QOpenGLBuffer::VertexBuffer), // VertexBuffer is the default, so default constructor would have been enough
 	m_colorBufferObject(QOpenGLBuffer::VertexBuffer),
 	m_indexBufferObject(QOpenGLBuffer::IndexBuffer) // make this an Index Buffer
@@ -43,9 +44,11 @@ OpaqueGeometryObject::OpaqueGeometryObject() :
 }
 
 
-void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgram) {
+void TransparentBuildingObject::create(ShaderProgram * shaderProgramm) {
 	if (m_vao.isCreated())
 		return;
+
+	m_shaderProgram = shaderProgramm;
 
 	// *** create buffers on GPU memory ***
 
@@ -85,19 +88,19 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgram) {
 				  // this vbo
 
 	// coordinates
-	shaderProgram->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	shaderProgram->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+	m_shaderProgram->shaderProgram()->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
 
 	// normals
-	shaderProgram->enableAttributeArray(NORMAL_ARRAY_INDEX);
-	shaderProgram->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
+	m_shaderProgram->shaderProgram()->enableAttributeArray(NORMAL_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(NORMAL_ARRAY_INDEX, GL_FLOAT, offsetof(Vertex, m_normal), 3 /* vec3 */, sizeof(Vertex));
 
 
 	m_colorBufferObject.bind(); // now color buffer is active in vao
 
 	// colors
-	shaderProgram->enableAttributeArray(COLOR_ARRAY_INDEX);
-	shaderProgram->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
+	m_shaderProgram->shaderProgram()->enableAttributeArray(COLOR_ARRAY_INDEX);
+	m_shaderProgram->shaderProgram()->setAttributeBuffer(COLOR_ARRAY_INDEX, GL_UNSIGNED_BYTE, 0, 4, 4 /* bytes = sizeof(char) */);
 
 	// Release (unbind) all
 
@@ -114,7 +117,7 @@ void OpaqueGeometryObject::create(QOpenGLShaderProgram * shaderProgram) {
 }
 
 
-void OpaqueGeometryObject::destroy() {
+void TransparentBuildingObject::destroy() {
 	m_vao.destroy();
 	m_vertexBufferObject.destroy();
 	m_colorBufferObject.destroy();
@@ -122,15 +125,11 @@ void OpaqueGeometryObject::destroy() {
 }
 
 
-void OpaqueGeometryObject::updateBuffers() {
+void TransparentBuildingObject::updateBuffers() {
 	if (m_indexBufferData.empty())
 		return;
 
-	// TODO Andreas, if a performance issue arises with very large geometries, use the same memory mapping as
-	//               for the color buffer, in order to avoid the overhead for re-allocating when there is no
-	//               buffer size change.
-
-	// transfer data stored in m_vertexBufferData
+	// transfer data stored in m_vertexBufferData and m_indexBufferObject
 	m_vertexBufferObject.bind();
 	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
 	m_vertexBufferObject.release();
@@ -144,7 +143,7 @@ void OpaqueGeometryObject::updateBuffers() {
 }
 
 
-void OpaqueGeometryObject::updateColorBuffer() {
+void TransparentBuildingObject::updateColorBuffer() {
 	if (m_colorBufferData.empty())
 		return;
 	m_colorBufferObject.bind();
@@ -162,32 +161,12 @@ void OpaqueGeometryObject::updateColorBuffer() {
 }
 
 
-void OpaqueGeometryObject::renderOpaque() {
+void TransparentBuildingObject::renderTransparent() {
 	// bind all buffers ("position", "normal" and "color" arrays)
 	m_vao.bind();
-	// now draw the geometry
-	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
-	else
-		glDrawElements(GL_TRIANGLES, m_transparentStartIndex, GL_UNSIGNED_INT, nullptr);
+	glDrawElements(GL_TRIANGLES, (GLsizei)m_indexBufferData.size(), GL_UNSIGNED_INT, nullptr);
 	// release buffers again
 	m_vao.release();
-}
-
-
-void OpaqueGeometryObject::renderTransparent() {
-	// bind all buffers ("position", "normal" and "color" arrays)
-	m_vao.bind();
-	// now draw the geometry
-	if (m_drawTriangleStrips)
-		glDrawElements(GL_TRIANGLE_STRIP, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
-			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
-	else
-		glDrawElements(GL_TRIANGLES, (GLsizei)m_indexBufferData.size() - m_transparentStartIndex,
-			GL_UNSIGNED_INT, (const GLvoid*)(sizeof(GLuint) * (unsigned long)m_transparentStartIndex));
-	// release buffers again
-	m_vao.release();
-
 }
 
 
