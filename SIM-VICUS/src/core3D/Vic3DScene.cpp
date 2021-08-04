@@ -1411,10 +1411,75 @@ void Scene::generateTransparentBuildingGeometry() {
 	// generate a list of surfaces that are connected
 	std::set<const VICUS::Surface *> connectedSurfaces;
 	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
-		if (ci.m_sideASurface != nullptr && ci.m_sideBSurface != nullptr) {
-			connectedSurfaces.insert(ci.m_sideASurface);
-			connectedSurfaces.insert(ci.m_sideBSurface);
+		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
+			continue;
+
+		// remember connected surfaces
+		connectedSurfaces.insert(ci.m_sideASurface);
+		connectedSurfaces.insert(ci.m_sideBSurface);
+
+		// generate geometry for the "Links"
+
+		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
+		// direction of the plane in 0.1 cm x 0.1 cm
+
+		IBKMK::Vector3D s1center = ci.m_sideASurface->geometry().centerPoint();
+		std::vector<IBKMK::Vector3D> v1;
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
+
+		IBKMK::Vector3D s2center = ci.m_sideBSurface->geometry().centerPoint();
+		std::vector<IBKMK::Vector3D> v2;
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
+
+		// make sure both polygons "rotate" into the same direction
+		IBKMK::Vector3D n1 = (v1[0] - v1[1]).crossProduct(v1[2]-v1[1]);
+		IBKMK::Vector3D n2 = (v2[0] - v2[1]).crossProduct(v2[2]-v2[1]);
+		IBKMK::Vector3D centerLine = s2center - s1center;
+
+		 // make sure normals of both polygons point along center line
+		if (centerLine.scalarProduct(n1) < 0)
+			std::reverse(v1.begin(), v1.end());
+		if (centerLine.scalarProduct(n2) < 0)
+			std::reverse(v2.begin(), v2.end());
+
+		// now determine rotation offset for second polygon until both rects are aligned
+		// this can be checked by computing the sum of the vertex distances and pick the combination that is shortest
+		unsigned int shortestOffset = 0;
+		double len = std::numeric_limits<double>::max();
+		for (unsigned int k=0; k<4; ++k) {
+			double distSum = 0;
+			for (unsigned int i=0; i<4; ++i) {
+				double dist = v1[i].distanceTo(v2[(i + k) % 4]);
+				distSum += dist;
+			}
+			if (distSum < len) {
+				shortestOffset = k;
+				len = distSum;
+			}
 		}
+
+		// now rotation v2 by the offset
+		std::vector<IBKMK::Vector3D> v2mod;
+		if (shortestOffset == 0) {
+			v2mod.swap(v2);
+		}
+		else {
+			for (unsigned int i=0; i<4; ++i)
+				v2mod.push_back(v2[(i+shortestOffset) % 4]);
+		}
+
+		v1.insert(v1.end(), v2mod.begin(), v2mod.end()); // combine polygons
+		// add geometry to buffer
+		addBox(v1, QColor(196,0,0,128), currentVertexIndex, currentElementIndex,
+				 m_transparentBuildingObject.m_vertexBufferData,
+				 m_transparentBuildingObject.m_colorBufferData,
+				 m_transparentBuildingObject.m_indexBufferData);
 	}
 
 	for (const VICUS::Building & b : p.m_buildings) {
@@ -1461,7 +1526,7 @@ void Scene::generateTransparentBuildingGeometry() {
 		}
 	}
 
-	// finally generate geometry for the "Links"
+
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for transparent geometry generation";

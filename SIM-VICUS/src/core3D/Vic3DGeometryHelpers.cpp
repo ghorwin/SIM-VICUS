@@ -654,6 +654,43 @@ void updateColors(const VICUS::Surface & s, unsigned int & currentVertexIndex, s
 }
 
 
+void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
+			unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
+{
+	// Box geometry is given by 0,1,2,3 and 4,5,6,7 vertexes
+
+	// as long as this is not performance-critical, we use the convenient way and just reuse VICUS::PlaneGeometry
+
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[0], v[3], v[1]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[4], v[5], v[7]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[0], v[1], v[4]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[1], v[2], v[5]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[2], v[3], v[6]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+	{
+		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[3], v[0], v[7]);
+		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+
+}
+
+
 
 
 

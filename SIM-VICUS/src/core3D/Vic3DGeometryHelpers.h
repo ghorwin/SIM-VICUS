@@ -90,6 +90,7 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 /*! Adds a cylinder mesh to a vertex, color and index buffer. */
 void updateCylinderColors(const QColor & c, unsigned int & currentVertexIndex, std::vector<ColorRGBA> & colorBufferData);
 
+
 // ** Spheres **
 
 /*! Adds a sphere mesh to a vertex, color and index buffer.
@@ -119,7 +120,16 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 				 std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData);
 
 
+// *** (unregular) Box ***
 
+/*! Adds an unregular box defined by a vector of 8 vertexes, where the first 4 form the "floor" polygon and
+	the other 4 form the matching "ceiling" polygon. Both polygons wind the same way.
+	The function calls addPlane() 6 times.
+*/
+void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
+			unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
+			std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData,
+			std::vector<GLuint> & indexBufferData);
 
 // *** High-level data structures ***
 //

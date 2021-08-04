@@ -137,7 +137,7 @@ public:
 	double area() const;
 
 	/*! Calculates the center point of the surface/polygon */
-	IBKMK::Vector3D centerPoint() const;
+	IBKMK::Vector3D centerPoint() const { return m_polygon.centerPoint(); }
 
 private:
 
