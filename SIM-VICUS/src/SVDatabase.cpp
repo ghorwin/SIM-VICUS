@@ -32,6 +32,8 @@
 
 #include <QtExt_Directories.h>
 
+#include "SVProjectHandler.h"
+
 const unsigned int USER_ID_SPACE_START = 10000;
 
 
@@ -473,33 +475,31 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_zoneTemplates, duplicatePairs[DT_Materials]);
 }
 
+template <typename T>
+void replaceID(unsigned int oldID, unsigned int newId, unsigned int & idVar, T & db) {
+	if (idVar == oldID) {
+		idVar = newId;
+		db.m_modified = true;
+	}
+}
 
 void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID) {
 
 	// depending on database type, we need to replace references to the element on other dbs as well
 	switch (dbType) {
+
 		case DT_Materials : {
 			// materials are used in construction layers, window frame and divider
 			// replace mat ID everywhere
 			for (const auto & p : m_constructions) {
 				VICUS::Construction & con = const_cast<VICUS::Construction &>(p.second); // const-cast is ok here
-				for (VICUS::MaterialLayer & ml : con.m_materialLayers) {
-					if (ml.m_idMaterial == elementID) {
-						ml.m_idMaterial = replacementElementID;
-						m_constructions.m_modified = true;
-					}
-				}
+				for (VICUS::MaterialLayer & ml : con.m_materialLayers)
+					replaceID(elementID, replacementElementID, ml.m_idMaterial, m_constructions);
 			}
 			for (const auto & p : m_windows) {
 				VICUS::Window & w = const_cast<VICUS::Window&>(p.second); // const-cast is ok here
-				if (w.m_frame.m_idMaterial == elementID) {
-					w.m_frame.m_idMaterial = replacementElementID;
-					m_windows.m_modified = true;
-				}
-				if (w.m_divider.m_idMaterial == elementID) {
-					w.m_divider.m_idMaterial = replacementElementID;
-					m_windows.m_modified = true;
-				}
+				replaceID(elementID, replacementElementID, w.m_frame.m_idMaterial, m_windows);
+				replaceID(elementID, replacementElementID, w.m_divider.m_idMaterial, m_windows);
 			}
 			// finally remove material
 			m_materials.remove(elementID);
@@ -509,16 +509,107 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		case DT_Constructions : {
 			for (const auto & p : m_components) {
 				VICUS::Component & c = const_cast<VICUS::Component &>(p.second); // const-cast is ok here
-				if (c.m_idConstruction == elementID) {
-					c.m_idConstruction = replacementElementID;
-					m_components.m_modified = true;
-				}
+				replaceID(elementID, replacementElementID, c.m_idConstruction, m_components);
+			}
+			for (const auto & p : m_subSurfaceComponents) {
+				VICUS::SubSurfaceComponent & c = const_cast<VICUS::SubSurfaceComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idConstruction, m_subSurfaceComponents);
 			}
 			m_constructions.remove(elementID);
 			m_constructions.m_modified = true;
 		} break;
 
-	}
+		case SVDatabase::DT_Windows:
+			for (const auto & p : m_subSurfaceComponents) {
+				VICUS::SubSurfaceComponent & c = const_cast<VICUS::SubSurfaceComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idWindow, m_subSurfaceComponents);
+			}
+			m_windows.remove(elementID);
+			m_windows.m_modified = true;
+		break;
+
+		case SVDatabase::DT_WindowGlazingSystems:
+			for (const auto & p : m_windows) {
+				VICUS::Window & c = const_cast<VICUS::Window &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idGlazingSystem, m_windows);
+			}
+			m_windowGlazingSystems.remove(elementID);
+			m_windowGlazingSystems.m_modified = true;
+		break;
+
+		case SVDatabase::DT_BoundaryConditions:
+			for (const auto & p : m_components) {
+				VICUS::Component & c = const_cast<VICUS::Component &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idSideABoundaryCondition, m_components);
+				replaceID(elementID, replacementElementID, c.m_idSideBBoundaryCondition, m_components);
+			}
+			for (const auto & p : m_subSurfaceComponents) {
+				VICUS::SubSurfaceComponent & c = const_cast<VICUS::SubSurfaceComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idSideABoundaryCondition, m_subSurfaceComponents);
+				replaceID(elementID, replacementElementID, c.m_idSideBBoundaryCondition, m_subSurfaceComponents);
+			}
+			m_boundaryConditions.remove(elementID);
+			m_boundaryConditions.m_modified = true;
+		break;
+
+		case SVDatabase::DT_Components:
+			// components are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_componentInstances) {
+					VICUS::ComponentInstance & c = const_cast<VICUS::ComponentInstance &>(p); // const-cast is ok here
+					if (c.m_idComponent == elementID)
+						c.m_idComponent = replacementElementID;
+				}
+				m_components.remove(elementID);
+				m_components.m_modified = true;
+			}
+		break;
+
+		case SVDatabase::DT_SubSurfaceComponents:
+			// components are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_subSurfaceComponentInstances) {
+					VICUS::SubSurfaceComponentInstance & c = const_cast<VICUS::SubSurfaceComponentInstance &>(p); // const-cast is ok here
+					if (c.m_idSubSurfaceComponent == elementID)
+						c.m_idSubSurfaceComponent = replacementElementID;
+				}
+				m_components.remove(elementID);
+				m_components.m_modified = true;
+			}
+		break;
+
+		case SVDatabase::DT_SurfaceHeating:
+		break;
+		case SVDatabase::DT_Pipes:
+		break;
+		case SVDatabase::DT_Fluids:
+		break;
+		case SVDatabase::DT_NetworkComponents:
+		break;
+		case SVDatabase::DT_NetworkControllers:
+		break;
+		case SVDatabase::DT_SubNetworks:
+		break;
+		case SVDatabase::DT_Schedules:
+		break;
+		case SVDatabase::DT_InternalLoads:
+		break;
+		case SVDatabase::DT_ZoneControlThermostat:
+		break;
+		case SVDatabase::DT_ZoneControlShading:
+		break;
+		case SVDatabase::DT_ZoneControlNaturalVentilation:
+		break;
+		case SVDatabase::DT_ZoneIdealHeatingCooling:
+		break;
+		case SVDatabase::DT_VentilationNatural:
+		break;
+		case SVDatabase::DT_Infiltration:
+		break;
+		case SVDatabase::DT_ZoneTemplates:
+		break;
+		case SVDatabase::NUM_DT:
+		break;	}
 
 	// Note: if we have a project, also replace directly referenced DB elements in project
 	//       - Components
