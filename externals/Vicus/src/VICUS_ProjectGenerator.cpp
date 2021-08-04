@@ -65,7 +65,7 @@ public:
 			case VICUS::ZoneTemplate::ST_ControlThermostat:
 				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlThermostats, zoneTemplate->m_idReferences[subType]);
 			break;
-			case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
+			case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
 				subTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneControlVentilationNatural, zoneTemplate->m_idReferences[subType]);
 			break;
 			case VICUS::ZoneTemplate::ST_Infiltration:
@@ -893,7 +893,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	try {
 		infiltration = dynamic_cast<const Infiltration*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_Infiltration));
 		ventilation = dynamic_cast<const VentilationNatural*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_VentilationNatural));
-		ctrlVentilation = dynamic_cast<const ZoneControlNaturalVentilation*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlNaturalVentilation));
+		ctrlVentilation = dynamic_cast<const ZoneControlNaturalVentilation*>(findZoneSubTemplate(r, VICUS::ZoneTemplate::ST_ControlVentilationNatural));
 	}  catch (IBK::Exception & ex) {
 		errorStack.append( QString::fromStdString(ex.what()) );
 		return;

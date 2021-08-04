@@ -1903,7 +1903,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 		// *** infiltration and ventilation ***
 		{
-			unsigned int idNatVentCtrl = zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlNaturalVentilation];
+			unsigned int idNatVentCtrl = zt->m_idReferences[VICUS::ZoneTemplate::ST_ControlVentilationNatural];
 			const VICUS::ZoneControlNaturalVentilation * natVentCtrl = nullptr;
 			bool isCtrl = false;
 			if(idNatVentCtrl != VICUS::INVALID_ID){

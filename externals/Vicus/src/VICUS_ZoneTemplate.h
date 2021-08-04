@@ -57,7 +57,7 @@ public:
 		ST_IntLoadLighting,					// Keyword: IntLoadLighting
 		ST_IntLoadOther,					// Keyword: IntLoadOther
 		ST_ControlThermostat,				// Keyword: ControlThermostat
-		ST_ControlNaturalVentilation,		// Keyword: ControlNaturalVentilation
+		ST_ControlVentilationNatural,		// Keyword: ControlVentilationNatural
 		ST_Infiltration,					// Keyword: Infiltration
 		ST_VentilationNatural,				// Keyword: NaturalVentilation
 		ST_IdealHeatingCooling,				// Keyword: IdealHeatingCooling

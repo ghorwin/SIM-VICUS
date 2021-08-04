@@ -25,7 +25,7 @@
 
 #include "SVViewStateHandler.h"
 
-#include <QDebug>
+#include "SVProjectHandler.h"
 
 SVViewStateHandler * SVViewStateHandler::m_self = nullptr;
 
@@ -57,6 +57,7 @@ void SVViewStateHandler::setViewState(const SVViewState & newViewState) {
 
 
 void SVViewStateHandler::refreshColors() {
-	emit colorRefreshNeeded();
+	if (SVProjectHandler::instance().isValid())
+		emit colorRefreshNeeded();
 }
 

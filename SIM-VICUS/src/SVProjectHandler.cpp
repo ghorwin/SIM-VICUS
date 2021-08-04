@@ -828,7 +828,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_Infiltration], infiltrationIDMap);
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_VentilationNatural], ventilationIDMap);
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat], thermostatIDMap);
-		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_ControlNaturalVentilation], ventilationCtrlIDMap);
+		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_ControlVentilationNatural], ventilationCtrlIDMap);
 		//TODO Dirk Shading implementieren
 		//replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_Control], );
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling], idealHeatingCoolingIDMap);

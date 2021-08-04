@@ -326,7 +326,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 					break;
 
 					case VICUS::ZoneTemplate::ST_ControlThermostat:
-					case VICUS::ZoneTemplate::ST_ControlNaturalVentilation:
+					case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
 					case VICUS::ZoneTemplate::ST_Infiltration:
 					case VICUS::ZoneTemplate::ST_VentilationNatural:
 					case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
@@ -494,6 +494,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 	//       - Components
 	//       - SubSurfaceComponents
 	//       - ZoneTemplate
+	//       - SurfaceHeating
 	//       - NetworkPipes
 	//       - NetworkFluid
 	//       - NetworkComponent
@@ -644,25 +645,117 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		} break;
 
 
-		// TODO : Dirk + Andreas
+		// TODO : Hauke, add schedule references in network stuff
 		case SVDatabase::DT_Schedules:
+			for (const auto & p : m_internalLoads) {
+				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
+				// might be any of the following four
+				replaceID(elementID, replacementElementID, c.m_idActivitySchedule, m_internalLoads);
+				replaceID(elementID, replacementElementID, c.m_idOccupancySchedule, m_internalLoads);
+				replaceID(elementID, replacementElementID, c.m_idPowerManagementSchedule, m_internalLoads);
+			}
+			for (const auto & p : m_ventilationNatural) {
+				VICUS::VentilationNatural & c = const_cast<VICUS::VentilationNatural &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idSchedule, m_ventilationNatural);
+			}
+			for (const auto & p : m_zoneControlThermostat) {
+				VICUS::ZoneControlThermostat & c = const_cast<VICUS::ZoneControlThermostat &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idCoolingSetpointSchedule, m_zoneControlThermostat);
+				replaceID(elementID, replacementElementID, c.m_idHeatingSetpointSchedule, m_zoneControlThermostat);
+			}
+			for (const auto & p : m_zoneControlVentilationNatural) {
+				VICUS::ZoneControlNaturalVentilation & c = const_cast<VICUS::ZoneControlNaturalVentilation &>(p.second); // const-cast is ok here
+				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_ST; ++j)
+					replaceID(elementID, replacementElementID, c.m_idSchedules[j], m_zoneControlVentilationNatural);
+			}
+
+			m_schedules.remove(elementID);
+			m_schedules.m_modified = true;
 		break;
-		case SVDatabase::DT_InternalLoads:
-		break;
-		case SVDatabase::DT_ZoneControlThermostat:
-		break;
-		case SVDatabase::DT_ZoneControlShading:
-		break;
-		case SVDatabase::DT_ZoneControlNaturalVentilation:
-		break;
-		case SVDatabase::DT_ZoneIdealHeatingCooling:
-		break;
-		case SVDatabase::DT_VentilationNatural:
-		break;
-		case SVDatabase::DT_Infiltration:
-		break;
+
+		case SVDatabase::DT_InternalLoads: {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				// might be any of the following four
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson], m_zoneTemplates);
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadLighting], m_zoneTemplates);
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadEquipment], m_zoneTemplates);
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadOther], m_zoneTemplates);
+			}
+			m_internalLoads.remove(elementID);
+			m_internalLoads.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_ZoneControlThermostat: {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_ControlThermostat], m_zoneTemplates);
+			}
+			m_zoneControlThermostat.remove(elementID);
+			m_zoneControlThermostat.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_ZoneControlShading:  {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				// TODO Dirk : add as soon as available
+				//replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_], m_zoneTemplates);
+			}
+			m_zoneControlShading.remove(elementID);
+			m_zoneControlShading.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_ZoneControlNaturalVentilation:  {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_ControlVentilationNatural], m_zoneTemplates);
+			}
+			m_zoneControlVentilationNatural.remove(elementID);
+			m_zoneControlVentilationNatural.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_ZoneIdealHeatingCooling:  {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_IdealHeatingCooling], m_zoneTemplates);
+			}
+			m_zoneIdealHeatingCooling.remove(elementID);
+			m_zoneIdealHeatingCooling.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_VentilationNatural:   {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_VentilationNatural], m_zoneTemplates);
+			}
+			m_ventilationNatural.remove(elementID);
+			m_ventilationNatural.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_Infiltration:   {
+			for (const auto & p : m_zoneTemplates) {
+				VICUS::ZoneTemplate & c = const_cast<VICUS::ZoneTemplate &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idReferences[VICUS::ZoneTemplate::ST_Infiltration], m_zoneTemplates);
+			}
+			m_infiltration.remove(elementID);
+			m_infiltration.m_modified = true;
+		} break;
+
 		case SVDatabase::DT_ZoneTemplates:
+			// components are referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const VICUS::Building & b : project().m_buildings)
+					for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+						for (const VICUS::Room & r : bl.m_rooms) {
+							VICUS::Room & c = const_cast<VICUS::Room &>(r); // const-cast is ok here
+							if (c.m_idZoneTemplate == elementID)
+								c.m_idZoneTemplate = replacementElementID;
+						}
+			}
+			m_zoneTemplates.remove(elementID);
+			m_zoneTemplates.m_modified = true;
 		break;
+
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
 	}
 

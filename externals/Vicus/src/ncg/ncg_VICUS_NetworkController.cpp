@@ -60,8 +60,6 @@ void NetworkController::readXML(const TiXmlElement * element) {
 				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
-			else if (attribName == "idSchedule")
-				m_idSchedule = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (ModelType)KeywordList::Enumeration("NetworkController::ModelType", attrib->ValueStr());
@@ -145,8 +143,6 @@ TiXmlElement * NetworkController::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("displayName", m_displayName.encodedString());
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
-	if (m_idSchedule != VICUS::INVALID_ID)
-		e->SetAttribute("idSchedule", IBK::val2string<unsigned int>(m_idSchedule));
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("NetworkController::ModelType",  m_modelType));
 	if (m_controllerType != NUM_CT)

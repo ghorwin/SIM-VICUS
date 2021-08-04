@@ -81,7 +81,7 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 	m_ui->lineEditName->setString(m_current->m_displayName);
 
 	// get schedule
-	const VICUS::Schedule * setPointSched = m_db->m_schedules[m_current->m_idSchedule];
+	const VICUS::Schedule * setPointSched = m_db->m_schedules[m_current->m_idReferences[VICUS::NetworkController::ID_Schedule]];
 
 	// controlled property
 	int propIdx = m_ui->comboBoxProperty->findData(m_current->m_controlledProperty);
@@ -233,14 +233,14 @@ void SVDBNetworkControllerEditWidget::on_radioButtonFixedSetPoint_clicked(bool c
 void SVDBNetworkControllerEditWidget::on_toolButtonSchedule_clicked()
 {
 	// open schedule edit dialog in selection mode
-	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idSchedule);
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_idReferences[VICUS::NetworkController::ID_Schedule]);
 
 	// if dialog was canceled do nothing
 	if (newId == VICUS::INVALID_ID)
 		return;
 
-	if (m_current->m_idSchedule != newId) {
-		m_current->m_idSchedule = newId;
+	if (m_current->m_idReferences[VICUS::NetworkController::ID_Schedule] != newId) {
+		m_current->m_idReferences[VICUS::NetworkController::ID_Schedule] = newId;
 		modelModify();
 	}
 	updateInput((int)m_current->m_id);

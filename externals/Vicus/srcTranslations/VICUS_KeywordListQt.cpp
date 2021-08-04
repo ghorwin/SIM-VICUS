@@ -157,6 +157,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Target temperature difference");
 	tr("Target mass flux");
 	tr("ID of zone containing thermostat");
+	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Distance between supply pipe and return pipe");
@@ -229,7 +230,7 @@ KeywordListQt::KeywordListQt() {
 	tr("IntLoadLighting");
 	tr("IntLoadOther");
 	tr("ControlThermostat");
-	tr("ControlNaturalVentilation");
+	tr("ControlVentilationNatural");
 	tr("Infiltration");
 	tr("NaturalVentilation");
 	tr("IdealHeatingCooling");

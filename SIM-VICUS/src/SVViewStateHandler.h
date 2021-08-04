@@ -67,12 +67,6 @@ public:
 	*/
 	void setViewState(const SVViewState & newViewState);
 
-	/*! Call this function after modifying database elements that affect coloring. This is needed since
-		scene view and property widgets only listen to project data changes, and database elements do not belong
-		to the project.
-	*/
-	void refreshColors();
-
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
 
@@ -119,6 +113,17 @@ public:
 
 	/*! Pointer to property widget for adding windows/doors */
 	SVPropAddWindowWidget				*m_propAddWindowWidget = nullptr;
+
+public slots:
+
+	/*! Call this function after modifying database elements that affect coloring. This is needed since
+		scene view and property widgets only listen to project data changes, and database elements do not belong
+		to the project.
+		This function emits the colorRefreshNeeded() signal, but only if we have a valid project (otherwise
+		color update isn't needed).
+	*/
+	void refreshColors();
+
 
 signals:
 	/*! Emitted, when the state has changed. */

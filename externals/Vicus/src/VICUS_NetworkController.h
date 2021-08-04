@@ -71,7 +71,9 @@ public:
 	/*! Integer/whole number parameters. */
 	enum References {
 		/*! Id of zone whose thermostat is used for control: only for controlled property 'ThermostatValue'. */
-		ID_ThermostatZoneId,				// Keyword: ThermostatZoneId				[-]		'ID of zone containing thermostat'
+		ID_ThermostatZone,					// Keyword: ThermostatZone				[-]		'ID of zone containing thermostat'
+		/*! Id of schedule with control value. */
+		ID_Schedule,						// Keyword: Schedule					[-]		'ID of schedule'
 		NUM_ID
 	};
 
@@ -98,9 +100,6 @@ public:
 
 	/*! False color. */
 	QColor							m_color;										// XML:A
-
-	/*! reference to schedule */
-	unsigned int					m_idSchedule = INVALID_ID;						// XML:A
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkControlElement ***

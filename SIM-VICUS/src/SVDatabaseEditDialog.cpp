@@ -188,7 +188,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	exec();
-	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 }
 
 
@@ -205,7 +205,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->tableView->resizeColumnsToContents();
 
 	int res = exec();
-	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::colorRefreshNeeded);
+	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 	if (res == QDialog::Accepted) {
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();

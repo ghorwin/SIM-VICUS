@@ -328,7 +328,8 @@ namespace VICUS {
 			// NetworkController::References
 			case 23 :
 			switch (t) {
-				case 0 : return "ThermostatZoneId";
+				case 0 : return "ThermostatZone";
+				case 1 : return "Schedule";
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -509,7 +510,7 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlNaturalVentilation";
+				case 5 : return "ControlVentilationNatural";
 				case 6 : return "Infiltration";
 				case 7 : return "NaturalVentilation";
 				case 8 : return "IdealHeatingCooling";
@@ -748,7 +749,8 @@ namespace VICUS {
 			// NetworkController::References
 			case 23 :
 			switch (t) {
-				case 0 : return "ThermostatZoneId";
+				case 0 : return "ThermostatZone";
+				case 1 : return "Schedule";
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -929,7 +931,7 @@ namespace VICUS {
 				case 2 : return "IntLoadLighting";
 				case 3 : return "IntLoadOther";
 				case 4 : return "ControlThermostat";
-				case 5 : return "ControlNaturalVentilation";
+				case 5 : return "ControlVentilationNatural";
 				case 6 : return "Infiltration";
 				case 7 : return "NaturalVentilation";
 				case 8 : return "IdealHeatingCooling";
@@ -1170,6 +1172,7 @@ namespace VICUS {
 			case 23 :
 			switch (t) {
 				case 0 : return "ID of zone containing thermostat";
+				case 1 : return "ID of schedule";
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -1350,7 +1353,7 @@ namespace VICUS {
 				case 2 : if (no_description != nullptr) *no_description = true; return "IntLoadLighting";
 				case 3 : if (no_description != nullptr) *no_description = true; return "IntLoadOther";
 				case 4 : if (no_description != nullptr) *no_description = true; return "ControlThermostat";
-				case 5 : if (no_description != nullptr) *no_description = true; return "ControlNaturalVentilation";
+				case 5 : if (no_description != nullptr) *no_description = true; return "ControlVentilationNatural";
 				case 6 : if (no_description != nullptr) *no_description = true; return "Infiltration";
 				case 7 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
 				case 8 : if (no_description != nullptr) *no_description = true; return "IdealHeatingCooling";
@@ -1590,6 +1593,7 @@ namespace VICUS {
 			case 23 :
 			switch (t) {
 				case 0 : return "-";
+				case 1 : return "-";
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -2010,6 +2014,7 @@ namespace VICUS {
 			case 23 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -2430,6 +2435,7 @@ namespace VICUS {
 			case 23 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkEdge::PipeModel
 			case 24 :
@@ -2670,7 +2676,7 @@ namespace VICUS {
 			// NetworkController::para_t
 			case 22 : return 5;
 			// NetworkController::References
-			case 23 : return 1;
+			case 23 : return 2;
 			// NetworkEdge::PipeModel
 			case 24 : return 2;
 			// NetworkEdge::para_t
@@ -2780,7 +2786,7 @@ namespace VICUS {
 			// NetworkController::para_t
 			case 22 : return 4;
 			// NetworkController::References
-			case 23 : return 0;
+			case 23 : return 1;
 			// NetworkEdge::PipeModel
 			case 24 : return 1;
 			// NetworkEdge::para_t
