@@ -63,7 +63,10 @@ public:
 	VICUS_READWRITE
 
 	/*! Inequality operator. */
-	bool operator!=(const MaterialLayer & other) const { return (m_thickness != other.m_thickness || m_idMaterial != other.m_idMaterial);	}
+	bool operator!=(const MaterialLayer & other) const {
+		return (m_idMaterial != other.m_idMaterial ||
+				m_thickness != other.m_thickness);
+	}
 	/*! Equality operator. */
 	bool operator==(const MaterialLayer & other) const { return !operator!=(other); }
 

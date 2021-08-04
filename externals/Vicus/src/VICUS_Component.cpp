@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -79,7 +79,6 @@ AbstractDBElement::ComparisonResult Component::equal(const AbstractDBElement *ot
 	//check meta data
 
 	if (m_displayName != otherComp->m_displayName ||
-			m_color != otherComp->m_color ||
 			m_dataSource != otherComp->m_dataSource ||
 			m_manufacturer != otherComp->m_manufacturer ||
 			m_notes != otherComp->m_notes)
