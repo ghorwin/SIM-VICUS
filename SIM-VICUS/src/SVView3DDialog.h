@@ -44,7 +44,7 @@ class SVView3D : public QDialog
 public:
 	SVView3D();
 
-
+	/*! Struct to hold all data for a View3D Vertex */
 	struct view3dVertex
 	{
 		view3dVertex() {}
@@ -53,20 +53,20 @@ public:
 			m_id(id),
 			m_vertex(v)
 		{
-
 		}
 
 		view3dVertex(unsigned int id, double x, double y, double z) :
 			m_id(id),
 			m_vertex(IBKMK::Vector3D (x, y, z) )
-		{}
+		{
+		}
 
-		unsigned int		m_id;
+		unsigned int		m_id;		///> id of vertex
 
-		IBKMK::Vector3D		m_vertex;
-
+		IBKMK::Vector3D		m_vertex;	///> point of vertex with coordinates
 	};
 
+	/*! Struct to hold all data for a View3D Surface */
 	struct view3dSurface
 	{
 
@@ -83,40 +83,55 @@ public:
 			m_combId(combId),
 			m_emittance(emittance),
 			m_name(name)
-		{}
+		{
+		}
 
-		unsigned int					m_id;
+		unsigned int					m_id;			///> id of surface
 
-		unsigned int					m_vicusId;
+		unsigned int					m_vicusId;		///> corresponding vicus id
 
-		unsigned int					m_v1;
-		unsigned int					m_v2;
-		unsigned int					m_v3;
-		unsigned int					m_v4;
+		unsigned int					m_v1;			///> id of first vertex
+		unsigned int					m_v2;			///> id of second vertex
+		unsigned int					m_v3;			///> id of third vertex
+		unsigned int					m_v4;			///> id of fourth vertex
 
-		unsigned int					m_combId;
+		unsigned int					m_combId;		///> id of surface that combines
 
-		double							m_emittance;
+		double							m_emittance;	///> emittance of surface
 
-		std::string						m_name;
+		std::string						m_name;			///> surface name for export
 
 
 	};
 
+
+	/*! Struct to hold all data for combining view factors */
 	struct extendedSurfaces {
 
 		extendedSurfaces( ) {}
 
-		extendedSurfaces( const VICUS::Surface *vicusSurf ) :
-			m_vicusSurface(vicusSurf)
-		{}
+		extendedSurfaces( const unsigned int idVicusSurf ) :
+			m_idVicusSurface(idVicusSurf)
+		{
+		}
 
-		const VICUS::Surface *					m_vicusSurface;
+		extendedSurfaces( const unsigned int idVicusSurf, bool isSubSurface ) :
+			m_idVicusSurface(idVicusSurf),
+			m_isSubSurface(isSubSurface)
+		{
+		}
 
-		std::map<const VICUS::Surface*, double> m_vicSurfToViewFactor;
+		const unsigned int							m_idVicusSurface = VICUS::INVALID_ID;	///> id of Vicus Surface
+
+		std::map<const unsigned int, double>		m_vicSurfIdToViewFactor;					///> Map with pointer to Surface and viewfactor
+
+//		std::map<const VICUS::SubSurface*, double>	m_vicSubSurfToViewFactor;				///> Map with pointer to Surface and viewfactor
+
+		bool										m_isSubSurface = false;			///> indicates wheather its a subsurface
 
 	};
 
+	/*! Struct to hold all data for a View3D Room with all surfaces and vertexes */
 	struct view3dRoom {
 
 		view3dRoom()  {}
@@ -124,17 +139,17 @@ public:
 		view3dRoom(unsigned int roomId, QString displayName) :
 			m_roomId(roomId),
 			m_displayName(displayName)
-		{ }
+		{
+		}
 
-		unsigned int							m_roomId;
+		unsigned int							m_roomId;					///> Room Id
 
-		QString									m_displayName;
+		QString									m_displayName;				///> Room display name
 
-		std::vector<view3dSurface>				m_surfaces;
-		std::vector<view3dVertex>				m_vertexes;
+		std::vector<view3dSurface>				m_surfaces;					///> Vector with all surfaces
+		std::vector<view3dVertex>				m_vertexes;					///> Vector with all vertexes
 
-		std::vector<extendedSurfaces>			m_extendedSurfaces;
-
+		std::vector<extendedSurfaces>			m_extendedSurfaces;			///> Extended surfaces with all data
 
 	};
 
@@ -143,11 +158,11 @@ public:
 	void exportView3d();
 
 	/*! Reads an View3D Log file with results */
-	void readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom);
+	void readView3dResults(IBK::Path fname, view3dRoom &v3dRoom);
 
-	QString													m_solverExecutable;
+	QString													m_solverExecutable;				///> Solver Executable String
 
-	std::vector<const VICUS::Surface*>						m_selSurfaces;
+	std::vector<const VICUS::Surface*>						m_selSurfaces;					///> Vector with all selected surfaces in project
 
 	std::map<unsigned int, view3dRoom>						m_vicusRoomIdToView3dRoom;		///> Map with View3D Rooms
 

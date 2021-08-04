@@ -51,8 +51,6 @@ SVView3D::SVView3D() {
 void SVView3D::exportView3d() {
 	FUNCID(SVView3D::exportView3d);
 
-
-
 	// We take all our selected surfaces
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_All);
 
@@ -65,30 +63,36 @@ void SVView3D::exportView3d() {
 	std::map< const view3dRoom *, std::map<const VICUS::Surface*,double> > surfToViewFacorMap;
 
 	for (const VICUS::Surface *surf : m_selSurfaces) {
+
 		// We iterate through all selected surfaces
 		// then we triangulate them and compose our View3D Objects
-
 		VICUS::Surface s = *surf;
 
 		// TODO : Stephan/Dirk, review if this still works when there are windows in the wall
-
 		const std::vector<IBKMK::Triangulation::triangle_t> &triangles = s.geometry().triangulationData().m_triangles;
 		const std::vector<IBKMK::Vector3D> &vertexes = s.geometry().polygon().vertexes();
 		const std::vector<VICUS::PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();	// we get all holes
 		const std::vector<VICUS::SubSurface> &subSurfs = s.subSurfaces();								// we get all subsurfaces
 
+		// we skip all dump geometries
 		const VICUS::Room *r = dynamic_cast<const VICUS::Room *>(s.m_parent);
 		if ( r == nullptr ) // we only want surfaces that are assigned to rooms
 			continue;
 
+		// if we did not yet add a room object
 		if ( m_vicusRoomIdToView3dRoom.find(r->m_id) == m_vicusRoomIdToView3dRoom.end() ) { // we find the entry
 			m_vicusRoomIdToView3dRoom[r->m_id] = view3dRoom(r->m_id, r->m_displayName);
 		}
 
 		view3dRoom &v3dRoom = m_vicusRoomIdToView3dRoom[r->m_id];
 
-		extendedSurfaces extendedSurf ( surf );
+		extendedSurfaces extendedSurf ( surf->uniqueID() );
 		v3dRoom.m_extendedSurfaces.push_back( extendedSurf );
+
+		for (const VICUS::SubSurface &subSurf : s.subSurfaces() ) {
+			extendedSurfaces extendedSubSurf ( subSurf.uniqueID(), true );
+			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
+		}
 
 		// we compose our view 3D Surface
 		for ( const IBKMK::Vector3D &v : vertexes ) {
@@ -101,14 +105,15 @@ void SVView3D::exportView3d() {
 			}
 
 			view3dVertex vView3d (++vertexId, v);
-			v3dRoom.m_vertexes.push_back(vView3d);
-		}
+			v3dRoom.m_vertexes.push_back(vView3d);	// we add the vertexes
 
+		}
 
 		unsigned int surfId = 0;
 		unsigned int counter = 0;
 
 		// we take all triangles from triangulation and combine them in view3D
+		// first we take all triangles of the surfaces
 		for ( const IBKMK::Triangulation::triangle_t &triangle : triangles) { // mind that our surfaces have to point inwards
 
 			if ( !v3dRoom.m_surfaces.empty() )
@@ -127,29 +132,34 @@ void SVView3D::exportView3d() {
 			counter == 0 ? counter = surfaceId : 0; // we combine all triangles
 		}
 
-
-		// ==================================================================
+		// =====================================
 		// we take also all holes with windows
+		// =====================================
 		for (unsigned int i=0; i<holes.size(); ++i) {
+			counter = 0;
+			offset = v3dRoom.m_vertexes.size()+1;
 
 			const VICUS::PlaneTriangulationData &planeTriangulation = holes[i];
 
 			const VICUS::SubSurface &subS = subSurfs[i];
 
 			for (const IBKMK::Vector3D &vHole : planeTriangulation.m_vertexes) {
-				if ( !v3dRoom.m_vertexes.empty() )
+				if ( !v3dRoom.m_vertexes.empty() ) {
 					vertexId = v3dRoom.m_vertexes.back().m_id;
+				}
 				else {
 					vertexId = 0;
 					offset = 1;
 				}
+
+				view3dVertex vView3d (++vertexId, vHole);
+				v3dRoom.m_vertexes.push_back(vView3d);
 			}
 
-			unsigned int surfId = 0;
-			unsigned int counter = 0;
-
 			// we take all triangles from triangulation and combine them in view3D
-			for ( const IBKMK::Triangulation::triangle_t &triangle : planeTriangulation.m_triangles) { // mind that our surfaces have to point inwards
+			for (unsigned int i=0; i<planeTriangulation.m_triangles.size(); ++i) { // mind that our surfaces have to point inwards
+
+				const IBKMK::Triangulation::triangle_t &triangle = planeTriangulation.m_triangles[i];
 
 				if ( !v3dRoom.m_surfaces.empty() )
 					surfaceId = v3dRoom.m_surfaces.back().m_id;
@@ -157,7 +167,7 @@ void SVView3D::exportView3d() {
 					surfaceId = 0;
 
 				view3dSurface sView3d (++surfaceId, s.m_id, offset + triangle.i3, offset + triangle.i2, offset + triangle.i1, 0, counter, 0.001,
-									   "[" + std::to_string(s.m_id) + "] " + s.m_displayName.toStdString() + "" + "["  + std::to_string(++surfId) + "]" );
+									   "[" + std::to_string(s.m_id) + "] " + s.m_displayName.toStdString() + " " + subS.m_displayName.toStdString() + " " + "["  + std::to_string(++surfId) + "]" );
 
 				v3dRoom.m_surfaces.push_back(sView3d);
 
@@ -194,8 +204,9 @@ void SVView3D::exportView3d() {
 		offset = vertexId + 1;
 	}
 
-
-
+	// ==================================
+	// we now initiate the FILE EXPORT
+	// ==================================
 
 	for ( std::map<unsigned int, view3dRoom>::iterator itRoom=m_vicusRoomIdToView3dRoom.begin();
 		  itRoom != m_vicusRoomIdToView3dRoom.end(); ++itRoom) {
@@ -205,10 +216,10 @@ void SVView3D::exportView3d() {
 		for ( extendedSurfaces &extSurf : room.m_extendedSurfaces ) {
 			for ( extendedSurfaces &extSurf2 : room.m_extendedSurfaces ) {
 
-//				if ( extSurf.m_vicusSurface->m_id == extSurf2.m_vicusSurface->m_id )
-//					continue;
-
-				extSurf.m_vicSurfToViewFactor[extSurf2.m_vicusSurface] = 0.0;
+				//	if ( extSurf.m_vicusSurface->m_id == extSurf2.m_vicusSurface->m_id )
+				//		continue;
+				unsigned int id = extSurf2.m_idVicusSurface;
+				extSurf.m_vicSurfIdToViewFactor[extSurf2.m_idVicusSurface] = 999;
 			}
 		}
 
@@ -262,6 +273,7 @@ void SVView3D::exportView3d() {
 		/// 2 prints all the view factors; 3 causes dumping of some intermediate values.
 		out << "C eps = 0.0001 col = 0 row = 0 encl = 0 maxU = 8 maxO = 8 minO = 0 emit = 0 out = 0 list = 3\n";
 		out << "!--------------------------------------\n";
+
 		// all vertices
 		out << "!\t#\tx\ty\tz\tcoordinates of vertices\n";
 
@@ -272,8 +284,8 @@ void SVView3D::exportView3d() {
 				   .arg(v.m_vertex.m_z).toStdString();
 		}
 		out << "!--------------------------------------\n";
-		// all surfaces
 
+		// all surfaces
 		out << "!\t#\tv1\tv2\tv3\tv4\tbase\tcmb\temit\tname\tsurface data\n";
 		for (const view3dSurface &s : surfaces) {
 			out << "S\t" << IBK::FormatString("%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\t").arg(s.m_id)
@@ -319,21 +331,25 @@ void SVView3D::exportView3d() {
 
 }
 
-void SVView3D::readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom) {
+void SVView3D::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 	FUNCID(SVView3D::readView3dResults);
+
 	std::vector<std::string> cont;
+
 	// we take the IBK File Reader in order to read result files
 	try {
 		IBK::FileReader::readAll( fname, cont, std::vector<std::string>() );
 
-	} catch (IBK::Exception &ex) {
+	}
+	catch (IBK::Exception &ex) {
 		throw IBK::Exception(IBK::FormatString("Could not read View3D Results."), FUNC_ID);
 	}
 
 	std::vector<double> area(v3dRoom.m_extendedSurfaces.size() );
+
 	// extract vector of string-xy-pairs
 	std::vector<std::string> tokens;
-	for ( unsigned int i=0; i<cont.size(); ++i ) {
+	for ( unsigned int i=0; i<cont.size()-1; ++i ) { // we do not want to read the last line
 		if ( i == 0 )
 			continue;
 
@@ -346,19 +362,8 @@ void SVView3D::readView3dResults(IBK::Path fname, const view3dRoom &v3dRoom) {
 				area[j] = IBK::string2val<double>(token); // we take this to check our surface
 			}
 			else {
-				for ( extendedSurfaces surfs : v3dRoom.m_extendedSurfaces) {
-					for ( std::map<const VICUS::Surface *, double>::iterator itSurf = surfs.m_vicSurfToViewFactor.begin();
-						  itSurf != surfs.m_vicSurfToViewFactor.end(); ++itSurf) {
-
-
-						itSurf->second = IBK::string2val<double>(token);
-					}
-				}
+				v3dRoom.m_extendedSurfaces[i-2].m_vicSurfIdToViewFactor[v3dRoom.m_extendedSurfaces[j].m_idVicusSurface] = IBK::string2val<double>(token);
 			}
 		}
 	}
-
-//	}
-
-
 }
