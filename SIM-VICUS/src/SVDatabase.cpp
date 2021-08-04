@@ -532,25 +532,25 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			m_constructions.m_modified = true;
 		} break;
 
-		case SVDatabase::DT_Windows:
+		case SVDatabase::DT_Windows: {
 			for (const auto & p : m_subSurfaceComponents) {
 				VICUS::SubSurfaceComponent & c = const_cast<VICUS::SubSurfaceComponent &>(p.second); // const-cast is ok here
 				replaceID(elementID, replacementElementID, c.m_idWindow, m_subSurfaceComponents);
 			}
 			m_windows.remove(elementID);
 			m_windows.m_modified = true;
-		break;
+		} break;
 
-		case SVDatabase::DT_WindowGlazingSystems:
+		case SVDatabase::DT_WindowGlazingSystems: {
 			for (const auto & p : m_windows) {
 				VICUS::Window & c = const_cast<VICUS::Window &>(p.second); // const-cast is ok here
 				replaceID(elementID, replacementElementID, c.m_idGlazingSystem, m_windows);
 			}
 			m_windowGlazingSystems.remove(elementID);
 			m_windowGlazingSystems.m_modified = true;
-		break;
+		} break;
 
-		case SVDatabase::DT_BoundaryConditions:
+		case SVDatabase::DT_BoundaryConditions: {
 			for (const auto & p : m_components) {
 				VICUS::Component & c = const_cast<VICUS::Component &>(p.second); // const-cast is ok here
 				replaceID(elementID, replacementElementID, c.m_idSideABoundaryCondition, m_components);
@@ -563,9 +563,9 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			}
 			m_boundaryConditions.remove(elementID);
 			m_boundaryConditions.m_modified = true;
-		break;
+		} break;
 
-		case SVDatabase::DT_Components:
+		case SVDatabase::DT_Components: {
 			// components are referenced from project
 			if (SVProjectHandler::instance().isValid()) {
 				for (const auto & p : project().m_componentInstances) {
@@ -576,9 +576,9 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			}
 			m_components.remove(elementID);
 			m_components.m_modified = true;
-		break;
+		} break;
 
-		case SVDatabase::DT_SubSurfaceComponents:
+		case SVDatabase::DT_SubSurfaceComponents: {
 			// components are referenced from project
 			if (SVProjectHandler::instance().isValid()) {
 				for (const auto & p : project().m_subSurfaceComponentInstances) {
@@ -589,20 +589,62 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			}
 			m_subSurfaceComponents.remove(elementID);
 			m_subSurfaceComponents.m_modified = true;
-		break;
+		} break;
 
-		case SVDatabase::DT_SurfaceHeating:
-		break;
-		case SVDatabase::DT_Pipes:
-		break;
-		case SVDatabase::DT_Fluids:
-		break;
-		case SVDatabase::DT_NetworkComponents:
-		break;
-		case SVDatabase::DT_NetworkControllers:
-		break;
-		case SVDatabase::DT_SubNetworks:
-		break;
+		case SVDatabase::DT_SurfaceHeating: {
+			// referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_componentInstances) {
+					VICUS::ComponentInstance & c = const_cast<VICUS::ComponentInstance &>(p); // const-cast is ok here
+					if (c.m_idSurfaceHeating == elementID)
+						c.m_idSurfaceHeating = replacementElementID;
+				}
+			}
+			m_surfaceHeatings.remove(elementID);
+			m_surfaceHeatings.m_modified = true;
+		} break;
+
+		case SVDatabase::DT_Pipes: {
+			// referenced from project
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & c = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (unsigned int & np : c.m_availablePipes)
+						if (np == elementID)
+							np = replacementElementID;
+					for (VICUS::NetworkEdge & ne : c.m_edges)
+						if (ne.m_idPipe == elementID)
+							ne.m_idPipe = replacementElementID;
+				}
+			}
+			for (const auto & p : m_surfaceHeatings) {
+				VICUS::SurfaceHeating & c = const_cast<VICUS::SurfaceHeating &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_idPipe, m_surfaceHeatings);
+			}
+
+			m_pipes.remove(elementID);
+			m_pipes.m_modified = true;
+			// TODO : Hauke, check if all references to pipes have been handled
+		} break;
+
+		case SVDatabase::DT_Fluids: {
+			// TODO : Hauke
+		} break;
+
+		case SVDatabase::DT_NetworkComponents: {
+			// TODO : Hauke
+		} break;
+
+		case SVDatabase::DT_NetworkControllers: {
+			// TODO : Hauke
+		} break;
+
+		case SVDatabase::DT_SubNetworks: {
+			// TODO : Hauke
+		} break;
+
+
+		// TODO : Dirk + Andreas
 		case SVDatabase::DT_Schedules:
 		break;
 		case SVDatabase::DT_InternalLoads:
