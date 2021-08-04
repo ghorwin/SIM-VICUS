@@ -1393,8 +1393,7 @@ void Scene::generateTransparentBuildingGeometry() {
 	m_transparentBuildingObject.m_colorBufferData.reserve(100000);
 	m_transparentBuildingObject.m_indexBufferData.reserve(100000);
 
-	// we now process all surfaces and add their coordinates and
-	// normals
+	// we now process all surfaces and add their coordinates and normals
 
 	// recursively process all buildings, building levels etc.
 
@@ -1412,10 +1411,10 @@ void Scene::generateTransparentBuildingGeometry() {
 	// generate a list of surfaces that are connected
 	std::set<const VICUS::Surface *> connectedSurfaces;
 	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
-		if (ci.m_sideASurface != nullptr)
+		if (ci.m_sideASurface != nullptr && ci.m_sideBSurface != nullptr) {
 			connectedSurfaces.insert(ci.m_sideASurface);
-		if (ci.m_sideBSurface != nullptr)
 			connectedSurfaces.insert(ci.m_sideBSurface);
+		}
 	}
 
 	for (const VICUS::Building & b : p.m_buildings) {
@@ -1428,18 +1427,22 @@ void Scene::generateTransparentBuildingGeometry() {
 					// TODO : also store average depth of polygon
 
 					// general slightly gray - strong transparent
-					QColor col(196,196,196,64);
+					QColor col(255,255,255,64);
 					if (connectedSurfaces.find(&s) != connectedSurfaces.end())
-						col = QColor(128,128,128,96);
-					addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex,
-							 m_transparentBuildingObject.m_vertexBufferData,
-							 m_transparentBuildingObject.m_colorBufferData,
-							 m_transparentBuildingObject.m_indexBufferData, false);
+						col = QColor(128,128,128,64);
+
+					if (s.m_visible && !s.m_selected)
+						addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex,
+								 m_transparentBuildingObject.m_vertexBufferData,
+								 m_transparentBuildingObject.m_colorBufferData,
+								 m_transparentBuildingObject.m_indexBufferData, false);
 
 					col = QColor(64,64,64,64); // for subsurfaces
 					// process all subsurfaces
 					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[i];
+						if (!sub.m_visible || sub.m_selected)
+							continue;
 						if (sub.m_subSurfaceComponentInstance != nullptr &&
 							sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
 						{
@@ -1457,6 +1460,8 @@ void Scene::generateTransparentBuildingGeometry() {
 			}
 		}
 	}
+
+	// finally generate geometry for the "Links"
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for transparent geometry generation";
