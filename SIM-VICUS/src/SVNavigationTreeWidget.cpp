@@ -48,11 +48,12 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	// give others access to us
 	SVViewStateHandler::instance().m_navigationTreeWidget = this;
 
-
 	SVStyle::formatWidgetWithLayout(this);
+	SVStyle::formatDatabaseTreeView(m_ui->treeWidget);
 
 	// register item delegate that paints the "visible" bulb
 	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);

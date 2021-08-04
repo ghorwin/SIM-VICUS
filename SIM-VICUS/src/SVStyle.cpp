@@ -146,16 +146,14 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setAlternatingRowColors(true);
-	v->setSortingEnabled(true);
-	v->sortByColumn(0, Qt::AscendingOrder);
+	v->setSortingEnabled(false);
+//	v->sortByColumn(0, Qt::AscendingOrder);
 	QFont f = v->font();
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
 	v->setFont(f);
 	QString headerStyleSheet = QString("QHeaderView::section {font-size:%1pt;}").arg(pointSize);
 	v->header()->setStyleSheet(headerStyleSheet);
-//	QString styleSheet = QString("QTreeView {font-size:%1pt;}").arg(pointSize);
-//	v->setStyleSheet(headerStyleSheet);
 }
 
 void SVStyle::formatWelcomePage(QString & htmlCode) {

@@ -155,3 +155,11 @@ void SVNavigationTreeItemDelegate::updateEditorGeometry(QWidget * editor, const 
 	// move inside a little
 	editor->setGeometry(editor->pos().x() + 34, editor->pos().y(),  editor->width()-34, editor->height());
 }
+
+
+QSize SVNavigationTreeItemDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const {
+	QSize sh = QItemDelegate::sizeHint(option, index);
+	sh.setHeight(16); // enough space for 16x16 icon
+	return sh;
+
+}
