@@ -179,6 +179,7 @@ void SVDatabase::writeDatabases() const {
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 }
 
+// Local sort operator, so sort AbstractDBElement vectors by m_id member
 struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::AbstractDBElement, bool> {
 	bool operator()(VICUS::AbstractDBElement & x, VICUS::AbstractDBElement & y) const {
 		return x.m_id < y.m_id;
@@ -187,6 +188,7 @@ struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::A
 };
 
 
+// Local utility function used to convert a set of items to a vector sorted by id
 template <typename T>
 void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 	// clear target vector
@@ -415,6 +417,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
 }
 
+// local search function to identify duplicates in DBs
 template <typename T>
 void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::DuplicateInfo> & dupInfos) {
 	std::set<unsigned int> duplicateIDs; // stores all IDs of all already found duplicates
@@ -475,6 +478,8 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_zoneTemplates, duplicatePairs[DT_Materials]);
 }
 
+
+// local convenience function to substitute IDs and mark the respective DB as modified
 template <typename T>
 void replaceID(unsigned int oldID, unsigned int newId, unsigned int & idVar, T & db) {
 	if (idVar == oldID) {
@@ -484,8 +489,16 @@ void replaceID(unsigned int oldID, unsigned int newId, unsigned int & idVar, T &
 }
 
 void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID) {
-
 	// depending on database type, we need to replace references to the element on other dbs as well
+	// Note: if we have a project, also replace directly referenced DB elements in project
+	//       - Components
+	//       - SubSurfaceComponents
+	//       - ZoneTemplate
+	//       - NetworkPipes
+	//       - NetworkFluid
+	//       - NetworkComponent
+	//       - SubNetwork
+
 	switch (dbType) {
 
 		case DT_Materials : {
@@ -560,9 +573,9 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 					if (c.m_idComponent == elementID)
 						c.m_idComponent = replacementElementID;
 				}
-				m_components.remove(elementID);
-				m_components.m_modified = true;
 			}
+			m_components.remove(elementID);
+			m_components.m_modified = true;
 		break;
 
 		case SVDatabase::DT_SubSurfaceComponents:
@@ -573,9 +586,9 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 					if (c.m_idSubSurfaceComponent == elementID)
 						c.m_idSubSurfaceComponent = replacementElementID;
 				}
-				m_components.remove(elementID);
-				m_components.m_modified = true;
 			}
+			m_subSurfaceComponents.remove(elementID);
+			m_subSurfaceComponents.m_modified = true;
 		break;
 
 		case SVDatabase::DT_SurfaceHeating:
@@ -608,17 +621,8 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		break;
 		case SVDatabase::DT_ZoneTemplates:
 		break;
-		case SVDatabase::NUM_DT:
-		break;	}
-
-	// Note: if we have a project, also replace directly referenced DB elements in project
-	//       - Components
-	//       - SubSurfaceComponents
-	//       - ZoneTemplate
-	//       - NetworkPipes
-	//       - NetworkFluid
-	//       - NetworkComponent
-	//       - SubNetwork
+		case SVDatabase::NUM_DT: ; // just to make compiler happy
+	}
 
 }
 

@@ -487,10 +487,20 @@ void SVMainWindow::on_actionDBSubNetworks_triggered() {
 void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
 	if (m_dbDuplicatesDialog == nullptr)
 		m_dbDuplicatesDialog = new SVDBDuplicatesDialog(this);
+	if (SVProjectHandler::instance().isValid()) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "DuplicateRemovalInProjectWarning",
+			tr("Removing database duplicates"),
+			tr("When removing duplicate database elements that are used in the currently open project, "
+			   "the resulting change to the project data cannot be undone (and none of the earlier changes, either)."));
+	}
 	bool dbModified = m_dbDuplicatesDialog->removeDuplicates();
 	if (dbModified) {
-		if (SVProjectHandler::instance().isValid())
+		if (SVProjectHandler::instance().isValid()) {
+			// signal an "all changed" to the world so that all colors/db references are being updated
+			SVProjectHandler::instance().setModified(SVProjectHandler::AllModified);
+			// now clear the undo stack, since we cannot roll-back a DB change
 			m_undoStack->clear();
+		}
 	}
 }
 

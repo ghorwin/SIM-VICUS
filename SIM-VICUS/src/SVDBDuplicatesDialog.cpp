@@ -99,6 +99,7 @@ void dbItem(const VICUS::Database<T> & db, unsigned int idLeft, unsigned int idR
 
 
 void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, const QModelIndex & /*previous*/) {
+	Q_ASSERT(current.isValid());
 	m_ui->groupBox->setVisible(true);
 	// take currently selected items, access them and generate their diffs
 	int currentRow = current.row();
@@ -126,10 +127,7 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 			xmlLeft = dumpXML(*db.m_boundaryConditions[leftID]);
 			xmlRight = dumpXML(*db.m_boundaryConditions[rightID]);
 		break;
-		case SVDatabase::DT_Components:
-			xmlLeft = dumpXML(*db.m_components[leftID]);
-			xmlRight = dumpXML(*db.m_components[rightID]);
-		break;
+		case SVDatabase::DT_Components: dbItem(db.m_components, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_SubSurfaceComponents:
 			xmlLeft = dumpXML(*db.m_subSurfaceComponents[leftID]);
 			xmlRight = dumpXML(*db.m_subSurfaceComponents[rightID]);
@@ -226,8 +224,16 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		if (i+1 < count) {
 			// need both insert (0) and remove (1) operations, doesn't matter if insert comes first
 			if (diff.resultOperation()[i] + diff.resultOperation()[i+1] == 1) {
-				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
-				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
+				std::string leftStr = diff.resultObj()[i];
+				std::string rightStr = diff.resultObj()[i+1];
+				// if both strings start with same XML token we treat them as the same
+				std::string::size_type pos = leftStr.find_first_not_of(" \t");
+				pos = leftStr.find_first_of(" \t", pos);
+				if (pos == std::string::npos)
+					pos = leftStr.size();
+				if (rightStr.size() >= pos && leftStr.substr(0,pos) == rightStr.substr(0, pos)) {
+//				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
+//				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
 #if 1
 					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
 					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
@@ -337,9 +343,11 @@ void SVDBDuplicatesDialog::on_pushButtonTakeLeft_clicked() {
 	updateUi();
 	currentRow = std::min(m_ui->tableWidget->rowCount()-1, currentRow);
 	m_ui->tableWidget->selectionModel()->blockSignals(true);
-	m_ui->tableWidget->selectRow(currentRow);
+	if (currentRow != -1) {
+		m_ui->tableWidget->selectRow(currentRow);
+		onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
+	}
 	m_ui->tableWidget->selectionModel()->blockSignals(false);
-	onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
 }
 
 
@@ -359,9 +367,11 @@ void SVDBDuplicatesDialog::on_pushButtonTakeRight_clicked() {
 	updateUi();
 	currentRow = std::min(m_ui->tableWidget->rowCount()-1, currentRow);
 	m_ui->tableWidget->selectionModel()->blockSignals(true);
-	m_ui->tableWidget->selectRow(currentRow);
+	if (currentRow != -1) {
+		m_ui->tableWidget->selectRow(currentRow);
+		onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
+	}
 	m_ui->tableWidget->selectionModel()->blockSignals(false);
-	onCurrentRowChanged(m_ui->tableWidget->currentIndex(), QModelIndex());
 }
 
 
@@ -496,6 +506,7 @@ void SVDBDuplicatesDialog::updateUi() {
 
 			item = new QTableWidgetItem(left);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			// built-in items will be bold with special background
 			if (dbElemLeft != nullptr && dbElemLeft->m_builtIn) {
 				QBrush b;
 				if (rows % 2 == 0)
@@ -503,6 +514,9 @@ void SVDBDuplicatesDialog::updateUi() {
 				else
 					b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
 				item->setBackground(b);
+				QFont f = item->font();
+				f.setBold(true);
+				item->setFont(f);
 			}
 			item->setData(Qt::UserRole, duplicates.m_idFirst); // item(row,1) holds DB element ID of first element
 			if (duplicates.m_identical)
@@ -518,6 +532,9 @@ void SVDBDuplicatesDialog::updateUi() {
 				else
 					b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
 				item->setBackground(b);
+				QFont f = item->font();
+				f.setBold(true);
+				item->setFont(f);
 			}
 			item->setData(Qt::UserRole, duplicates.m_idSecond); // item(row,2) holds DB element ID of second element
 			if (duplicates.m_identical)
