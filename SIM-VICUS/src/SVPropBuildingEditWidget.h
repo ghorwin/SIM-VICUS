@@ -173,6 +173,9 @@ private:
 	/*! Updates widget to current project state. */
 	void updateUi();
 
+	/*! Updates the interlinked surfaces page based on current project's content. */
+	void updateInterlinkedSurfacesPage();
+
 	/*! Updates the surface heating page based on current project's content. */
 	void updateSurfaceHeatingPage();
 

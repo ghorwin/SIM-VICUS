@@ -60,6 +60,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutSubSurfaceComponents->setMargin(0);
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
+	m_ui->verticalLayoutInterlinkedSurfaces->setMargin(0);
 	m_ui->verticalLayoutZoneTemplates->setMargin(0);
 	m_ui->verticalLayoutSurfaceHeating->setMargin(0);
 
@@ -95,6 +96,16 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetInterlinkedSurfaces->setColumnCount(3);
+	m_ui->tableWidgetInterlinkedSurfaces->setHorizontalHeaderLabels(QStringList() << tr("Component instance id") << tr("Surface Side A") << tr("Surface Side B"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInterlinkedSurfaces);
+	m_ui->tableWidgetInterlinkedSurfaces->setSortingEnabled(false);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Interactive);
+	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectItems);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(5);
 	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B"));
@@ -151,8 +162,9 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(2); break;
 		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(3); break;
 		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(4); break;
-		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
-		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
+		case BT_InterlinkedSurfaces		: m_ui->stackedWidget->setCurrentIndex(5); break;
+		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(6); break;
+		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(7); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -892,6 +904,11 @@ void SVPropBuildingEditWidget::updateUi() {
 	}
 
 	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
+
 }
 
 
