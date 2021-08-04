@@ -80,7 +80,7 @@ public:
 	unsigned int					m_idWindow = INVALID_ID;					// XML:E
 
 	/*! Construction type ID in case of opaque component/door (used for all types but CT_Window). */
-	unsigned int					m_idConstructionType = INVALID_ID;			// XML:E
+	unsigned int					m_idConstruction = INVALID_ID;			// XML:E
 
 	/*! Boundary condition ID for Side A (usually outside). */
 	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E

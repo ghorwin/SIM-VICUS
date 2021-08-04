@@ -68,8 +68,8 @@ void SubSurfaceComponent::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "IdWindow")
 				m_idWindow = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdConstructionType")
-				m_idConstructionType = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdConstruction")
+				m_idConstruction = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideABoundaryCondition")
 				m_idSideABoundaryCondition = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSideBBoundaryCondition")
@@ -113,8 +113,8 @@ TiXmlElement * SubSurfaceComponent::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("SubSurfaceComponent::SubSurfaceComponentType",  m_type));
 	if (m_idWindow != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdWindow", nullptr, std::string(), IBK::val2string<unsigned int>(m_idWindow));
-	if (m_idConstructionType != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdConstructionType", nullptr, std::string(), IBK::val2string<unsigned int>(m_idConstructionType));
+	if (m_idConstruction != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdConstruction", nullptr, std::string(), IBK::val2string<unsigned int>(m_idConstruction));
 	if (m_idSideABoundaryCondition != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSideABoundaryCondition", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSideABoundaryCondition));
 	if (m_idSideBBoundaryCondition != VICUS::INVALID_ID)

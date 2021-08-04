@@ -699,7 +699,7 @@ bool SVProjectHandler::importEmbeddedDB() {
 	std::map<unsigned int, unsigned int> subSurfaceComponentIDMap;
 	for (VICUS::SubSurfaceComponent & e : m_project->m_embeddedDB.m_subSurfaceComponents) {
 		replaceID(e.m_idWindow, windowIDMap);
-		replaceID(e.m_idConstructionType, constructionIDMap);
+		replaceID(e.m_idConstruction, constructionIDMap);
 		replaceID(e.m_idSideABoundaryCondition, boundaryConditionsIDMap);
 		replaceID(e.m_idSideBBoundaryCondition, boundaryConditionsIDMap);
 
