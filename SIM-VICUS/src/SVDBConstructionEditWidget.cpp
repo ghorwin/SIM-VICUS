@@ -81,7 +81,7 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	for (int i=1; i<4; ++i) {
 		m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Fixed);
-		m_ui->tableWidget->horizontalHeader()->resizeSection(i, fm.width(headerLabels[i])+ 8);
+		m_ui->tableWidget->horizontalHeader()->resizeSection(i, fm.boundingRect(headerLabels[i]).width()+ 8);
 	}
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
 

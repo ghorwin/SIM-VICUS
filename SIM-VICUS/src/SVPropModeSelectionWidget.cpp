@@ -47,6 +47,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Sub-Surfaces"), BT_SubSurfaceComponents);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Construction orientation"), BT_ComponentOrientation);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Boundary conditions"), BT_BoundaryConditions);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Surface connections/component instances"), BT_InterlinkedSurfaces);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
@@ -188,6 +189,7 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 				case BT_SubSurfaceComponents:	vs.m_objectColorMode = SVViewState::OCM_SubSurfaceComponents; break;
 				case BT_ComponentOrientation:	vs.m_objectColorMode = SVViewState::OCM_ComponentOrientation; break;
 				case BT_BoundaryConditions:		vs.m_objectColorMode = SVViewState::OCM_BoundaryConditions; break;
+				case BT_InterlinkedSurfaces:	vs.m_objectColorMode = SVViewState::OCM_InterlinkedSurfaces; break;
 				case BT_FloorManager:			vs.m_objectColorMode = SVViewState::OCM_None; break;
 				case BT_ZoneTemplates:			vs.m_objectColorMode = SVViewState::OCM_ZoneTemplates; break;
 				case BT_SurfaceHeating:			vs.m_objectColorMode = SVViewState::OCM_SurfaceHeating; break;
@@ -217,8 +219,8 @@ void SVPropModeSelectionWidget::viewStateProperties(SVViewState & vs) const {
 	}
 }
 
-unsigned int SVPropModeSelectionWidget::currentNetworkId() const
-{
+
+unsigned int SVPropModeSelectionWidget::currentNetworkId() const {
 	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
 }
 

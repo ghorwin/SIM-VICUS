@@ -268,12 +268,14 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	if (updateBuilding) {
 		// create geometry object (if already existing, nothing happens here)
 		m_buildingGeometryObject.create(m_buildingShader->shaderProgram()); // Note: does nothing, if already existing
+		m_transparentBuildingObject.create(m_buildingShader);
 
 		// transfer data from building geometry to vertex array caches
 		const SVViewState & vs = SVViewStateHandler::instance().viewState();
 		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
 			recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID); // only changes color set in objects
 		generateBuildingGeometry();
+		generateTransparentBuildingGeometry();
 	}
 
 	// create network
@@ -295,6 +297,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// update all GPU buffers (transfer cached data to GPU)
 	if (updateBuilding || updateSelection) {
 		m_buildingGeometryObject.updateBuffers();
+		m_transparentBuildingObject.updateBuffers();
 		m_surfaceNormalsObject.updateVertexBuffers();
 	}
 
@@ -311,6 +314,7 @@ void Scene::destroy() {
 	m_gridObject.destroy();
 	m_orbitControllerObject.destroy();
 	m_buildingGeometryObject.destroy();
+	m_transparentBuildingObject.destroy();
 	m_networkGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
 	m_coordinateSystemObject.destroy();
@@ -1030,25 +1034,31 @@ void Scene::render() {
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[3], viewPos);
 #endif // FIXED_LIGHT_POSITION
 
-	// render network geometry
-	m_networkGeometryObject.renderOpaque();
+	// only render opaque building geometry, if not in InterlinkedSurfaces mode
+	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces) {
 
-	// render opaque part of building geometry
-	m_buildingGeometryObject.renderOpaque();
+		// render network geometry
+		m_networkGeometryObject.renderOpaque();
 
-	// render opaque part of new sub-surface object
-	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
-		m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
+		// render opaque part of building geometry
+		m_buildingGeometryObject.renderOpaque();
+
+		// render opaque part of new sub-surface object
+		if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+			m_newSubSurfaceObject.renderOpaque(); // might do nothing, if no sub-surface is being created
+	}
 
 	m_buildingShader->release();
 
-	// *** surface normals
+	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces) {
+		// *** surface normals
 
-	if (m_surfaceNormalsVisible) {
-		m_surfaceNormalsShader->bind();
-		m_surfaceNormalsShader->shaderProgram()->setUniformValue(m_surfaceNormalsShader->m_uniformIDs[0], m_worldToView);
-		m_surfaceNormalsObject.render();
-		m_surfaceNormalsShader->release();
+		if (m_surfaceNormalsVisible) {
+			m_surfaceNormalsShader->bind();
+			m_surfaceNormalsShader->shaderProgram()->setUniformValue(m_surfaceNormalsShader->m_uniformIDs[0], m_worldToView);
+			m_surfaceNormalsObject.render();
+			m_surfaceNormalsShader->release();
+		}
 	}
 
 	// *** grid ***
@@ -1073,24 +1083,34 @@ void Scene::render() {
 	// disable update of depth test but still use it
 	glDepthMask (GL_FALSE);
 
+	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces) {
 
-	// ... windows, ...
-	m_buildingShader->bind();
-	if (m_buildingGeometryObject.canDrawTransparent() != 0) {
-		m_buildingGeometryObject.renderTransparent();
+		// ... windows, ...
+		m_buildingShader->bind();
+		if (m_buildingGeometryObject.canDrawTransparent() != 0) {
+			m_buildingGeometryObject.renderTransparent();
+		}
+		if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
+			m_newSubSurfaceObject.renderTransparent(); // might do nothing, if no subsurface is being constructed
+		m_buildingShader->release();
+
+
+		// *** new polygon draw object (transparent plane) ***
+
+		if (m_newGeometryObject.canDrawTransparent() != 0) {
+			m_fixedColorTransformShader->bind();
+			// Note: worldToView uniform has already been set
+			m_newGeometryObject.renderTransparent();
+			m_fixedColorTransformShader->release();
+		}
 	}
-	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
-		m_newSubSurfaceObject.renderTransparent(); // might do nothing, if no subsurface is being constructed
-	m_buildingShader->release();
+	else {
 
+		// render now transparent building geometry object
+		m_buildingShader->bind();
+		m_transparentBuildingObject.renderTransparent();
+		m_buildingShader->release();
 
-	// *** new polygon draw object (transparent plane) ***
-
-	if (m_newGeometryObject.canDrawTransparent() != 0) {
-		m_fixedColorTransformShader->bind();
-		// Note: worldToView uniform has already been set
-		m_newGeometryObject.renderTransparent();
-		m_fixedColorTransformShader->release();
 	}
 
 	// turn off blending
@@ -1122,13 +1142,13 @@ void Scene::render() {
 		// Suppose the local coordinate system shall be located at 20,0,0 and the camera looks at the coordinate
 		// system's origin from 20,-40,2. Now, inside the shader, all coordinates are multiplied by the
 		// model2world matrix, which basically moves all coordinates +20 in x direction. Now light and view position
-		// (the latter only being used to compute the phong shading) are at 40, -40, 2, wheras the local coordinate
+		// (the latter only being used to compute the phong shading) are at 40, -40, 2, whereas the local coordinate
 		// system is moved from local 0,0,0 to the desired 20,0,0.
 		// Consequently, the light and view position cause the phong shader to draw the sphere as if lighted slightly
 		// from the direction of positive x.
 
 		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
-		// this revert the effect introduced by the model2world matrix on the light/view coordinates.
+		// this reverts the effect introduced by the model2world matrix on the light/view coordinates.
 		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
 //		qDebug() << viewPos << m_coordinateSystemObject.translation();
 
@@ -1193,8 +1213,10 @@ void Scene::setViewState(const SVViewState & vs) {
 		if (updateBuilding) {
 			qDebug() << "Updating surface coloring of buildings";
 			generateBuildingGeometry();
+			generateTransparentBuildingGeometry();
 			// TODO : Andreas, Performance update, only update affected part of color buffer
 			m_buildingGeometryObject.updateColorBuffer();
+			m_transparentBuildingObject.updateColorBuffer();
 		}
 		if (updateNetwork) {
 			qDebug() << "Updating surface coloring of networks";
@@ -1214,22 +1236,27 @@ void Scene::refreshColors() {
 
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	recolorObjects(vs.m_objectColorMode, vs.m_colorModePropertyID);
-//	if (vs.m_objectColorMode > SVViewState::OCM_None && vs.m_objectColorMode < SVViewState::OCM_Network) {
-		qDebug() << "Updating surface coloring of buildings";
-		// TODO : Andreas, Performance update, only update and transfer color buffer
-		generateBuildingGeometry();
-		m_buildingGeometryObject.updateColorBuffer();
-//	}
-//	else if (vs.m_objectColorMode >= SVViewState::OCM_Network) {
-		qDebug() << "Updating surface coloring of networks";
-		// TODO : Andreas, Performance update, only update and transfer color buffer
-		generateNetworkGeometry();
-		m_networkGeometryObject.updateBuffers();
-//	}
+	qDebug() << "Updating surface coloring of buildings";
+	// TODO : Andreas, Performance update, only update and transfer color buffer
+	generateBuildingGeometry();
+	generateTransparentBuildingGeometry();
+	m_buildingGeometryObject.updateColorBuffer();
+	m_transparentBuildingObject.updateColorBuffer();
+
+	qDebug() << "Updating surface coloring of networks";
+	// TODO : Andreas, Performance update, only update and transfer color buffer
+	generateNetworkGeometry();
+	m_networkGeometryObject.updateBuffers();
 }
 
 
 void Scene::generateBuildingGeometry() {
+//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+//	// when we show transparent building, we do not need to update the building geometry
+//	// when we switch object color mode, this function will be called again anyways
+//	if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
+//		return;
+
 	QElapsedTimer t;
 	t.start();
 	// get VICUS project data
@@ -1339,6 +1366,170 @@ void Scene::generateBuildingGeometry() {
 
 	if (t.elapsed() > 20)
 		qDebug() << t.elapsed() << "ms for building generation";
+}
+
+
+
+void Scene::generateTransparentBuildingGeometry() {
+//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
+//		return;
+
+	QElapsedTimer t;
+	t.start();
+	// get VICUS project data
+	const VICUS::Project & p = project();
+
+	// we rebuild the entire geometry here, so this may be slow
+
+	// clear out existing cache
+
+	m_transparentBuildingObject.m_vertexBufferData.clear();
+	m_transparentBuildingObject.m_colorBufferData.clear();
+	m_transparentBuildingObject.m_indexBufferData.clear();
+	m_transparentBuildingObject.m_vertexStartMap.clear();
+
+	m_transparentBuildingObject.m_vertexBufferData.reserve(100000);
+	m_transparentBuildingObject.m_colorBufferData.reserve(100000);
+	m_transparentBuildingObject.m_indexBufferData.reserve(100000);
+
+	// we now process all surfaces and add their coordinates and normals
+
+	// recursively process all buildings, building levels etc.
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	// coloring rules
+	// - surfaces without connections to other surfaces are drawn in very transparent light gray
+	// - surfaces with connections to other surfaces are drawn in slightly darker, transparent gray
+	// - subsurfaces are drawn in very dark, very transparent gray
+	// - active surface is drawn in silver, little transparent only
+
+	// generate a list of surfaces that are connected
+	std::set<const VICUS::Surface *> connectedSurfaces;
+	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
+		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
+			continue;
+
+		// remember connected surfaces
+		connectedSurfaces.insert(ci.m_sideASurface);
+		connectedSurfaces.insert(ci.m_sideBSurface);
+
+		// generate geometry for the "Links"
+
+		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
+		// direction of the plane in 0.1 cm x 0.1 cm
+
+		IBKMK::Vector3D s1center = ci.m_sideASurface->geometry().centerPoint();
+		std::vector<IBKMK::Vector3D> v1;
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
+
+		IBKMK::Vector3D s2center = ci.m_sideBSurface->geometry().centerPoint();
+		std::vector<IBKMK::Vector3D> v2;
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
+
+		// make sure both polygons "rotate" into the same direction
+		IBKMK::Vector3D n1 = (v1[0] - v1[1]).crossProduct(v1[2]-v1[1]);
+		IBKMK::Vector3D n2 = (v2[0] - v2[1]).crossProduct(v2[2]-v2[1]);
+		IBKMK::Vector3D centerLine = s2center - s1center;
+
+		 // make sure normals of both polygons point along center line
+		if (centerLine.scalarProduct(n1) < 0)
+			std::reverse(v1.begin(), v1.end());
+		if (centerLine.scalarProduct(n2) < 0)
+			std::reverse(v2.begin(), v2.end());
+
+		// now determine rotation offset for second polygon until both rects are aligned
+		// this can be checked by computing the sum of the vertex distances and pick the combination that is shortest
+		unsigned int shortestOffset = 0;
+		double len = std::numeric_limits<double>::max();
+		for (unsigned int k=0; k<4; ++k) {
+			double distSum = 0;
+			for (unsigned int i=0; i<4; ++i) {
+				double dist = v1[i].distanceTo(v2[(i + k) % 4]);
+				distSum += dist;
+			}
+			if (distSum < len) {
+				shortestOffset = k;
+				len = distSum;
+			}
+		}
+
+		// now rotation v2 by the offset
+		std::vector<IBKMK::Vector3D> v2mod;
+		if (shortestOffset == 0) {
+			v2mod.swap(v2);
+		}
+		else {
+			for (unsigned int i=0; i<4; ++i)
+				v2mod.push_back(v2[(i+shortestOffset) % 4]);
+		}
+
+		v1.insert(v1.end(), v2mod.begin(), v2mod.end()); // combine polygons
+		// add geometry to buffer
+		addBox(v1, QColor(196,0,0,128), currentVertexIndex, currentElementIndex,
+				 m_transparentBuildingObject.m_vertexBufferData,
+				 m_transparentBuildingObject.m_colorBufferData,
+				 m_transparentBuildingObject.m_indexBufferData);
+	}
+
+	for (const VICUS::Building & b : p.m_buildings) {
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			for (const VICUS::Room & r : bl.m_rooms) {
+				for (const VICUS::Surface & s : r.m_surfaces) {
+
+					// remember where the vertexes for this surface start in the buffer
+					m_transparentBuildingObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
+					// TODO : also store average depth of polygon
+
+					// general slightly gray - strong transparent
+					QColor col(255,255,255,64);
+					if (connectedSurfaces.find(&s) != connectedSurfaces.end())
+						col = QColor(128,128,128,64);
+
+					if (s.m_visible && !s.m_selected)
+						addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex,
+								 m_transparentBuildingObject.m_vertexBufferData,
+								 m_transparentBuildingObject.m_colorBufferData,
+								 m_transparentBuildingObject.m_indexBufferData, false);
+
+					col = QColor(64,64,64,64); // for subsurfaces
+					// process all subsurfaces
+					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
+						const VICUS::SubSurface & sub = s.subSurfaces()[i];
+						if (!sub.m_visible || sub.m_selected)
+							continue;
+						if (sub.m_subSurfaceComponentInstance != nullptr &&
+							sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
+						{
+							// lookup subsurface component - if it exists
+							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
+							if (comp != nullptr) {
+								addPlane(s.geometry().holeTriangulationData()[i], col, currentVertexIndex, currentElementIndex,
+										 m_transparentBuildingObject.m_vertexBufferData,
+										 m_transparentBuildingObject.m_colorBufferData,
+										 m_transparentBuildingObject.m_indexBufferData, false);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+
+	if (t.elapsed() > 20)
+		qDebug() << t.elapsed() << "ms for transparent geometry generation";
 }
 
 

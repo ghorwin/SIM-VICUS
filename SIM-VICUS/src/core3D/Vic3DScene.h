@@ -35,6 +35,7 @@
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
+#include "Vic3DTransparentBuildingObject.h"
 #include "Vic3DOrbitControllerObject.h"
 #include "Vic3DCoordinateSystemObject.h"
 #include "Vic3DSmallCoordinateSystemObject.h"
@@ -140,6 +141,7 @@ public:
 
 private:
 	void generateBuildingGeometry();
+	void generateTransparentBuildingGeometry();
 	void generateNetworkGeometry();
 
 	/*! Processes all surfaces and assigns colors based on current object color mode. */
@@ -224,10 +226,12 @@ private:
 
 	/*! The grid draw object. */
 	GridObject				m_gridObject;
-	/*! A geometry drawing object (no transparency) for building (room) surfaces.*/
+	/*! A geometry drawing object (transparency only for windows) for building (room) surfaces.*/
 	OpaqueGeometryObject	m_buildingGeometryObject;
 	/*! A geometry drawing object (no transparency) for network elements.*/
 	OpaqueGeometryObject	m_networkGeometryObject;
+	/*! A geometry drawing object for building (room) surfaces.*/
+	TransparentBuildingObject	m_transparentBuildingObject;
 	/*! A geometry for drawing selected primitives with overlayed wireframe. */
 	WireFrameObject			m_selectedGeometryObject;
 	/*! Indicator for the center of the orbit controller.

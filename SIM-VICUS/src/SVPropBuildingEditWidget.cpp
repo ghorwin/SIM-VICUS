@@ -60,6 +60,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutSubSurfaceComponents->setMargin(0);
 	m_ui->verticalLayoutComponentOrientation->setMargin(0);
 	m_ui->verticalLayoutBoundaryConditions->setMargin(0);
+	m_ui->verticalLayoutInterlinkedSurfaces->setMargin(0);
 	m_ui->verticalLayoutZoneTemplates->setMargin(0);
 	m_ui->verticalLayoutSurfaceHeating->setMargin(0);
 
@@ -95,6 +96,17 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
+
+	m_ui->tableWidgetInterlinkedSurfaces->setColumnCount(4);
+	m_ui->tableWidgetInterlinkedSurfaces->setHorizontalHeaderLabels(QStringList() << tr("Component instance id") << tr("Surface Side A") << tr("Surface Side B") << tr("Component"));
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInterlinkedSurfaces);
+	m_ui->tableWidgetInterlinkedSurfaces->setSortingEnabled(false);
+//	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
+//	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
+//	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Interactive);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setStretchLastSection(true);
+	m_ui->tableWidgetInterlinkedSurfaces->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableWidgetInterlinkedSurfaces->setSelectionBehavior(QAbstractItemView::SelectItems);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(5);
 	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B"));
@@ -151,8 +163,9 @@ void SVPropBuildingEditWidget::setPropertyType(int buildingPropertyType) {
 		case BT_SubSurfaceComponents	: m_ui->stackedWidget->setCurrentIndex(2); break;
 		case BT_ComponentOrientation	: m_ui->stackedWidget->setCurrentIndex(3); break;
 		case BT_BoundaryConditions		: m_ui->stackedWidget->setCurrentIndex(4); break;
-		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(5); break;
-		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(6); break;
+		case BT_InterlinkedSurfaces		: m_ui->stackedWidget->setCurrentIndex(5); break;
+		case BT_ZoneTemplates			: m_ui->stackedWidget->setCurrentIndex(6); break;
+		case BT_SurfaceHeating			: m_ui->stackedWidget->setCurrentIndex(7); break;
 		case BT_FloorManager : break; // just to remove compiler warning, FloorManager is not handled here
 	}
 }
@@ -891,7 +904,69 @@ void SVPropBuildingEditWidget::updateUi() {
 		on_tableWidgetZoneTemplates_itemSelectionChanged();
 	}
 
+	updateInterlinkedSurfacesPage();
 	updateSurfaceHeatingPage();
+}
+
+
+void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
+
+	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(true);
+	m_ui->tableWidgetInterlinkedSurfaces->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetInterlinkedSurfaces->setRowCount(0);
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// process all component instances
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// skip all without two surfaces
+		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
+			continue;
+
+		// add new row
+		int row = m_ui->tableWidgetInterlinkedSurfaces->rowCount();
+		m_ui->tableWidgetInterlinkedSurfaces->setRowCount(row + 1);
+
+		// column 0 - ID of this component instance
+
+		QTableWidgetItem * item = new QTableWidgetItem;
+		item->setFlags(Qt::ItemIsEnabled);
+		item->setData(Qt::UserRole, ci.m_id);
+		item->setText(QString("%1").arg(ci.m_id));
+		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 0, item);
+
+		// column 1 - surface name A
+
+		item = new QTableWidgetItem(ci.m_sideASurface->m_displayName);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 1, item);
+
+		// column 2 - surface name B
+
+		item = new QTableWidgetItem(ci.m_sideBSurface->m_displayName);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
+
+		// column 3 - component
+		const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+		QString compName;
+		if (comp == nullptr)
+			compName = "---";
+		else
+			compName = QtExt::MultiLangString2QString(comp->m_displayName);
+
+		item = new QTableWidgetItem(compName);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
+	}
+	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(false);
+
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 0, true);
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 1, true);
+	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 2, true);
+
+	m_ui->tableWidgetInterlinkedSurfaces->selectionModel()->blockSignals(false);
 }
 
 

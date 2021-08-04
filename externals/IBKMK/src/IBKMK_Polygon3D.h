@@ -73,6 +73,8 @@ public:
 	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
+		If t is Polygon3D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
+		internally.
 	*/
 	Polygon3D(Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 

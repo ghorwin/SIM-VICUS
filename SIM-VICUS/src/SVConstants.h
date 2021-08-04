@@ -83,6 +83,8 @@ enum BuildingPropertyTypes {
 	BT_ComponentOrientation,
 	/*! Boundary conditions of component. */
 	BT_BoundaryConditions,
+	/*! Surface interlinking operations. */
+	BT_InterlinkedSurfaces,
 	/*! Floor manager. */
 	BT_FloorManager,
 	/*! Zone templates. */

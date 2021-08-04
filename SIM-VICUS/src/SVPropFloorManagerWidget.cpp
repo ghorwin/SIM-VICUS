@@ -47,6 +47,7 @@
 #include "SVUndoModifyBuildingLevel.h"
 #include "SVUndoModifyBuildingTopology.h"
 #include "SVPropFloorManagerItemDelegate.h"
+#include "SVStyle.h"
 
 SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	QWidget(parent),
@@ -60,6 +61,7 @@ SVPropFloorManagerWidget::SVPropFloorManagerWidget(QWidget *parent) :
 	header << tr("Building/Floor") << tr("Elevation [m]") << tr("Height [m]");
 	m_ui->treeWidget->setHeaderLabels(header);
 	m_ui->treeWidget->setItemDelegate(new SVPropFloorManagerItemDelegate);
+	SVStyle::formatDatabaseTreeView(m_ui->treeWidget);
 
 	m_ui->treeWidget->header()->setSectionResizeMode(0, QHeaderView::Stretch);
 	m_ui->treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);

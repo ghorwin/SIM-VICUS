@@ -162,6 +162,10 @@ public:
 		/*! All surfaces of rooms with associated zone template are colored based on that zone template color.
 		*/
 		OCM_SurfaceHeating,
+		/*! All surfaces are drawn in transparent light gray, linked surfaces are drawn in transparent gray and are
+			connected by red boxes.
+		*/
+		OCM_InterlinkedSurfaces,
 		/*! When this mode is active, all but the selected surfaces are shown in dark gray, but the selected surfaces
 			are shown in orange.
 		*/
