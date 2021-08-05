@@ -662,6 +662,7 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 
 	// as long as this is not performance-critical, we use the convenient way and just reuse VICUS::PlaneGeometry
 
+	// floor and ceiling polygons are always planes
 	{
 		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[0], v[3], v[1]);
 		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
@@ -670,6 +671,22 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[4], v[5], v[7]);
 		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	}
+
+	// the sides are not necessarily planes
+#if 1
+	for (unsigned int i=0; i<3; ++i) {
+		addPlane(VICUS::PlaneTriangulationData(v[(0+i)%8], v[(1+i)%8], v[(5+i)%8]), c,
+			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+		addPlane(VICUS::PlaneTriangulationData(v[(0+i)%8], v[(5+i)%8], v[(4+i)%8]), c,
+			currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	}
+	// last plane is special
+	addPlane(VICUS::PlaneTriangulationData(v[3], v[0], v[4]), c,
+		currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+	addPlane(VICUS::PlaneTriangulationData(v[3], v[4], v[7]), c,
+		currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
+
+#else
 
 	{
 		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[0], v[1], v[4]);
@@ -687,7 +704,7 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[3], v[0], v[7]);
 		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	}
-
+#endif
 }
 
 

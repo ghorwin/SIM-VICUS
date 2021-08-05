@@ -1423,19 +1423,20 @@ void Scene::generateTransparentBuildingGeometry() {
 		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
 		// direction of the plane in 0.1 cm x 0.1 cm
 
+		const double BOX_THICKNESS = 0.05;
 		IBKMK::Vector3D s1center = ci.m_sideASurface->geometry().centerPoint();
 		std::vector<IBKMK::Vector3D> v1;
-		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
-		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
-		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 - ci.m_sideASurface->geometry().localY()*0.1);
-		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*0.1 + ci.m_sideASurface->geometry().localY()*0.1);
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*BOX_THICKNESS + ci.m_sideASurface->geometry().localY()*BOX_THICKNESS);
+		v1.push_back(s1center + ci.m_sideASurface->geometry().localX()*BOX_THICKNESS - ci.m_sideASurface->geometry().localY()*BOX_THICKNESS);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*BOX_THICKNESS - ci.m_sideASurface->geometry().localY()*BOX_THICKNESS);
+		v1.push_back(s1center - ci.m_sideASurface->geometry().localX()*BOX_THICKNESS + ci.m_sideASurface->geometry().localY()*BOX_THICKNESS);
 
 		IBKMK::Vector3D s2center = ci.m_sideBSurface->geometry().centerPoint();
 		std::vector<IBKMK::Vector3D> v2;
-		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
-		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
-		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 - ci.m_sideBSurface->geometry().localY()*0.1);
-		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*0.1 + ci.m_sideBSurface->geometry().localY()*0.1);
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*BOX_THICKNESS + ci.m_sideBSurface->geometry().localY()*BOX_THICKNESS);
+		v2.push_back(s2center + ci.m_sideBSurface->geometry().localX()*BOX_THICKNESS - ci.m_sideBSurface->geometry().localY()*BOX_THICKNESS);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*BOX_THICKNESS - ci.m_sideBSurface->geometry().localY()*BOX_THICKNESS);
+		v2.push_back(s2center - ci.m_sideBSurface->geometry().localX()*BOX_THICKNESS + ci.m_sideBSurface->geometry().localY()*BOX_THICKNESS);
 
 		// make sure both polygons "rotate" into the same direction
 		IBKMK::Vector3D n1 = (v1[0] - v1[1]).crossProduct(v1[2]-v1[1]);
