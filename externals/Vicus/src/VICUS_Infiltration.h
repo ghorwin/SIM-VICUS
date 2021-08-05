@@ -43,9 +43,9 @@ public:
 	/*! Basic parameters. */
 	enum para_t {
 		/*! Air change rate. */
-		P_AirChangeRate,				// Keyword: AirChangeRate					[1/h]		'Air change rate.'
-		/*! Shielding coefficient. */
-		P_ShieldingCoefficient,			// Keyword: ShieldingCoefficient			[-]			'Shielding coefficient for n50 value.'
+		P_AirChangeRate,				// Keyword: AirChangeRate					[1/h]		'Air change rate'
+		/*! Shielding coefficient, needed for air change model type 'n50' */
+		P_ShieldingCoefficient,			// Keyword: ShieldingCoefficient			[-]			'Shielding coefficient for n50 value'
 		NUM_P
 	};
 

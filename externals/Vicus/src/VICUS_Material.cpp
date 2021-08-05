@@ -33,7 +33,6 @@ AbstractDBElement::~AbstractDBElement() {
 }
 
 
-
 Material::Material( unsigned int id, const IBK::MultiLanguageString &name,
 					double conductivity, double density, double specHeatCapa) :
 	AbstractDBElement(id, name)
@@ -70,14 +69,12 @@ bool Material::isValid(bool hygrothermalCalculation) const {
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * other) const {
 	const Material * otherMaterial = dynamic_cast<const Material*>(other);
 	if (otherMaterial == nullptr)
 		return Different;
 
-	//first check critical data
-
-	//check parameters
 	for (unsigned int i=0; i<NUM_P; ++i){
 		if (m_para[i] != otherMaterial->m_para[i])
 			return Different;
@@ -103,4 +100,4 @@ AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * ot
 }
 
 
-}
+} // namespace VICUS

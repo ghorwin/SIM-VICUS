@@ -25,8 +25,8 @@
 
 #include "VICUS_Schedule.h"
 #include <algorithm>
-namespace VICUS {
 
+namespace VICUS {
 
 // Returns the possible merged day types. If no merge is possible returns dts.
 std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const std::vector<int> &dts) {
@@ -128,6 +128,7 @@ bool Schedule::isValid() const {
 
 	return true;
 }
+
 
 Schedule Schedule::multiply(const Schedule &other) const {
 	FUNCID(Schedule::multiply(Schedule));

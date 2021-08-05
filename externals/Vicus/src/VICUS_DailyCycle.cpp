@@ -63,36 +63,30 @@ bool DailyCycle::isValid() const {
 
 
 DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
+	FUNCID(DailyCycle::multiply);
+
 	DailyCycle dc;
 
-	if (!isValid()){
-		///TODO Katja fehlermeldung
-		return dc;
-	}
-	if (!other.isValid()){
-		///TODO Katja fehlermeldung
-		return dc;
-	}
+	if (!isValid() || !other.isValid())
+		throw IBK::Exception("Both daily cycles must be valid in order to be multiplied.", FUNC_ID);
 
-	//check for equal day types
-	for(unsigned int i=0; i<m_dayTypes.size(); ++i){
-		for(unsigned int j=0; j<other.m_dayTypes.size(); ++j){
-			if(m_dayTypes[i] == other.m_dayTypes[j])
+	// Only keep equal day types
+	for (unsigned int i=0; i<m_dayTypes.size(); ++i){
+		for (unsigned int j=0; j<other.m_dayTypes.size(); ++j){
+			if (m_dayTypes[i] == other.m_dayTypes[j])
 				dc.m_dayTypes.push_back(m_dayTypes[i]);
 		}
 	}
-	if(dc.m_dayTypes.empty())
+	if (dc.m_dayTypes.empty())
 		return dc;
 
-	//make a copy of the other daily cycle to the new daily cycle
+	// make a copy of the other daily cycle to the new daily cycle
 	dc.m_timePoints = other.m_timePoints;
 	dc.m_values = other.m_values;
 
-	//compare timepoints
+	// compare timepoints
 	unsigned int j=0;
 	unsigned int i=0;
-	//for(unsigned int j=0; j<m_timePoints.size();){
-	//for(unsigned int i=0; i<dc.m_timePoints.size();){
 	while (i<dc.m_timePoints.size()) {
 
 		double timePoint = m_timePoints[j];
@@ -148,34 +142,31 @@ DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 }
 
 
-DailyCycle DailyCycle::multiply(double val) const {
+DailyCycle DailyCycle::multiply(double factor) const {
 	FUNCID(DailyCycle::multiply);
-	DailyCycle dc;
-	if (!isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return dc;
-	}
 
-	if (val<0)
-		IBK::Exception(IBK::FormatString("Multiply negative values to a daily cylce is not allowed."), FUNC_ID);
+	if (!isValid())
+		throw IBK::Exception("Daily cycle must be valid in order to be multiplied.", FUNC_ID);
 
-	dc = *this;
+	if (factor <= 0)
+		IBK::Exception(IBK::FormatString("Multiply negative values or zero to a daily cycle is not allowed."), FUNC_ID);
+
+	DailyCycle dc(*this);
 
 	for (unsigned int i=0; i<dc.m_values.size(); ++i)
-		dc.m_values[i] *= val;
+		dc.m_values[i] *= factor;
 
 	return dc;
 }
 
 
 DailyCycle DailyCycle::add(double val) const{
-	DailyCycle dc;
-	if (!isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return dc;
-	}
+	FUNCID(DailyCycle::add);
 
-	dc = *this;
+	if (!isValid())
+		throw IBK::Exception("Daily cycle must be valid in order to add values to it.", FUNC_ID);
+
+	DailyCycle dc(*this);
 
 	for (unsigned int i=0; i<dc.m_values.size(); ++i)
 		dc.m_values[i] += val;

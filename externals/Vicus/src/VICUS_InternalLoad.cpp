@@ -29,31 +29,24 @@
 
 namespace VICUS {
 
-
 bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
-	if(m_id == INVALID_ID)
-		return false;
-
 	switch (m_category) {
-		case VICUS::InternalLoad::IC_Person:{
-
-			if(m_personCountMethod == NUM_PCM)
-				return false;
+		case VICUS::InternalLoad::IC_Person: {
 
 			try {
-				switch(m_personCountMethod){
-					case InternalLoad::PCM_PersonPerArea:{
+				switch(m_personCountMethod) {
+					case InternalLoad::PCM_PersonPerArea: {
 						m_para[P_PersonPerArea].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PersonPerArea),
 														   "Person/m2", "Person/m2", 0, true, 100000, true, nullptr);
 					}
 					break;
-					case InternalLoad::PCM_AreaPerPerson:{
+					case InternalLoad::PCM_AreaPerPerson: {
 						m_para[P_AreaPerPerson].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_AreaPerPerson),
 														   "m2/Person", "m2/Person", 0, false, 100000, true, nullptr);
 
 					}
 					break;
-					case InternalLoad::PCM_PersonCount:{
+					case InternalLoad::PCM_PersonCount: {
 						m_para[P_PersonCount].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PersonCount),
 														   "-", "-", 0, true, 100000, true, nullptr);
 					}
@@ -66,10 +59,10 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				return false;
 			}
 
-			if(m_idActivitySchedule == INVALID_ID || m_idOccupancySchedule == INVALID_ID)
+			if (m_idActivitySchedule == INVALID_ID || m_idOccupancySchedule == INVALID_ID)
 				return false;
 
-			//check schedules occ and act
+			// check schedules occ and act
 			// check if schedule ID is existing and valid
 			const Schedule * actSched = scheduleDB[m_idActivitySchedule];
 			if (actSched == nullptr)
@@ -82,26 +75,26 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				return false;
 			if (!occSched->isValid())
 				return false;
-
 		}
 		break;
+
 		case VICUS::InternalLoad::IC_ElectricEquiment:
 		case VICUS::InternalLoad::IC_Lighting:
-		case VICUS::InternalLoad::IC_Other:{
+		case VICUS::InternalLoad::IC_Other: {
 			switch (m_powerMethod) {
 				case VICUS::InternalLoad::PM_PowerPerArea: {
 					try {
 						m_para[P_PowerPerArea].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_PowerPerArea),
-															   "W/m2", "W/m2", 0, true, 1000, true, nullptr);
+															"W/m2", "W/m2", 0, true, 1000, true, nullptr);
 					}  catch (...) {
 						return false;
 					}
 				}
 				break;
-				case VICUS::InternalLoad::PM_Power:{
+				case VICUS::InternalLoad::PM_Power: {
 					try {
 						m_para[P_Power].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_Power),
-															   "W", "W", 0, true, 100000, true, nullptr);
+													 "W", "W", 0, true, 100000, true, nullptr);
 					}  catch (...) {
 						return false;
 					}
@@ -110,7 +103,7 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 				case VICUS::InternalLoad::NUM_PM:	return false;
 			}
 
-			if(m_idPowerManagementSchedule == INVALID_ID)
+			if (m_idPowerManagementSchedule == INVALID_ID)
 				return false;
 
 			// check if schedule ID is existing and valid
@@ -128,12 +121,12 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 	try {
 
 		m_para[P_ConvectiveHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_ConvectiveHeatFactor),
-											   "---", "---", 0, true, 1, true, nullptr);
-		if(m_category == IC_ElectricEquiment){
+													"---", "---", 0, true, 1, true, nullptr);
+		if (m_category == IC_ElectricEquiment) {
 			m_para[P_LossHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LossHeatFactor),
-												   "---", "---", 0, true, 1, true, nullptr);
+												  "---", "---", 0, true, 1, true, nullptr);
 			m_para[P_LatentHeatFactor].checkedValue(KeywordList::Keyword("InternalLoad::para_t", P_LatentHeatFactor),
-												   "---", "---", 0, true, 1, true, nullptr);
+													"---", "---", 0, true, 1, true, nullptr);
 		}
 	}  catch (...) {
 		return false;
@@ -142,19 +135,17 @@ bool InternalLoad::isValid(const Database<Schedule> &scheduleDB) const {
 	return true;
 }
 
+
 AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement *other) const {
 	const InternalLoad * otherIntLoad = dynamic_cast<const InternalLoad*>(other);
 	if (otherIntLoad == nullptr)
 		return Different;
 
-	//first check critical data
-
-	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
-		if(m_para[i] != otherIntLoad->m_para[i])
+	for (unsigned int i=0; i<NUM_P; ++i){
+		if (m_para[i] != otherIntLoad->m_para[i])
 			return Different;
 	}
-	if(m_category != otherIntLoad->m_category ||
+	if (	m_category != otherIntLoad->m_category ||
 			m_personCountMethod != otherIntLoad->m_personCountMethod||
 			m_powerMethod != otherIntLoad->m_powerMethod ||
 			m_idOccupancySchedule != otherIntLoad->m_idOccupancySchedule ||
@@ -164,12 +155,11 @@ AbstractDBElement::ComparisonResult InternalLoad::equal(const AbstractDBElement 
 
 	//check meta data
 
-	if(m_displayName != otherIntLoad->m_displayName ||
-			m_color != otherIntLoad->m_color)
+	if (m_displayName != otherIntLoad->m_displayName)
 		return OnlyMetaDataDiffers;
 
 	return Equal;
 }
 
 
-}
+} // namespace VICUS
