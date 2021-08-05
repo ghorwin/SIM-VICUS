@@ -111,14 +111,10 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	const VICUS::AbstractDBElement * dbElemLeft = nullptr;
 	const VICUS::AbstractDBElement * dbElemRight = nullptr;
 	switch (type) {
-		case SVDatabase::DT_Materials:		dbItem(db.m_materials, leftID, rightID, dbElemLeft, dbElemRight);
-			xmlLeft = dumpXML(*db.m_materials[leftID]);
-			xmlRight = dumpXML(*db.m_materials[rightID]);
-		break;
-		case SVDatabase::DT_Constructions:	dbItem(db.m_constructions, leftID, rightID, dbElemLeft, dbElemRight);
-			xmlLeft = dumpXML(*db.m_constructions[leftID]);
-			xmlRight = dumpXML(*db.m_constructions[rightID]);
-		break;
+		case SVDatabase::DT_Materials:		dbItem(db.m_materials, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Constructions:	dbItem(db.m_constructions, leftID, rightID, dbElemLeft, dbElemRight); break;
+
+		// TODO Katja
 		case SVDatabase::DT_Windows:
 			xmlLeft = dumpXML(*db.m_windows[leftID]);
 			xmlRight = dumpXML(*db.m_windows[rightID]);
@@ -131,10 +127,7 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 			xmlLeft = dumpXML(*db.m_boundaryConditions[leftID]);
 			xmlRight = dumpXML(*db.m_boundaryConditions[rightID]);
 		break;
-		case SVDatabase::DT_Components: dbItem(db.m_components, leftID, rightID, dbElemLeft, dbElemRight);
-			xmlLeft = dumpXML(*db.m_components[leftID]);
-			xmlRight = dumpXML(*db.m_components[rightID]);
-		break;
+		case SVDatabase::DT_Components: dbItem(db.m_components, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_SubSurfaceComponents:
 			xmlLeft = dumpXML(*db.m_subSurfaceComponents[leftID]);
 			xmlRight = dumpXML(*db.m_subSurfaceComponents[rightID]);
@@ -412,16 +405,14 @@ void SVDBDuplicatesDialog::updateUi() {
 			switch ((SVDatabase::DatabaseTypes)i) {
 				case SVDatabase::DT_Materials:
 					item->setText(tr("Materials"));
-					//dbItem(db.m_materials, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
-					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_materials[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
-					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_materials[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+					dbItem(db.m_materials, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
 				break;
 				case SVDatabase::DT_Constructions:
 					item->setText(tr("Constructions"));
-					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_constructions[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
-					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_constructions[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
-					//dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
+					dbItem(db.m_constructions, duplicates.m_idFirst, duplicates.m_idSecond, dbElemLeft, dbElemRight);
 				break;
+
+				// TODO : Katja
 				case SVDatabase::DT_Windows:					item->setText(tr("Windows"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
