@@ -180,6 +180,11 @@ public:
 
 	// *** members below are stored in settings file ***
 
+	/*! This string is to be read from the settings and used to check if the settings exist already
+		for the current version.
+	*/
+	QString						m_versionIdentifier;
+
 	/*! Solver executable name. */
 	QString						m_currentSolverExecutableName;
 

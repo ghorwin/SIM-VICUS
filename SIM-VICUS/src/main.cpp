@@ -104,6 +104,13 @@ int main(int argc, char *argv[]) {
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
+	// if we have just upgraded to a new version, try to import settings from the lest minor version
+	if (settings.m_versionIdentifier.isEmpty()) {
+
+	}
+	settings.m_versionIdentifier = VICUS::VERSION;
+
+
 
 	// adjust log file verbosity
 	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );

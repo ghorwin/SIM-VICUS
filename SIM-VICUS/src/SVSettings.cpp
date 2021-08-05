@@ -131,6 +131,7 @@ void SVSettings::read() {
 			m_propertyMap.insert((PropertyType)i, var);
 	}
 
+	m_versionIdentifier = settings.value("Version", QString()).toString();
 	QString tmpPostProcExecutable = settings.value("PostProcExecutable", m_postProcExecutable ).toString();
 	if (!tmpPostProcExecutable.isEmpty())
 		m_postProcExecutable = tmpPostProcExecutable;
@@ -195,7 +196,9 @@ void SVSettings::read() {
 void SVSettings::write(QByteArray geometry, QByteArray state) {
 	QtExt::Settings::write(geometry, state);
 
+
 	QSettings settings( m_organization, m_appName );
+	settings.setValue("VersionIdentifier", m_versionIdentifier);
 	settings.setValue("VisibleDockWidgets", m_visibleDockWidgets.join(","));
 	settings.setValue("PostProcExecutable", m_postProcExecutable );
 	settings.setValue("CCMEditorExecutable", m_CCMEditorExecutable );
