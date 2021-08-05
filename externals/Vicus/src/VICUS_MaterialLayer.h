@@ -28,6 +28,8 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_Database.h"
+#include "VICUS_Material.h"
 
 #include <QString>
 
@@ -61,6 +63,9 @@ public:
 
 
 	VICUS_READWRITE
+
+	/*! Checks if all referenced materials exist and if their parameters are valid. */
+	bool isValid(const VICUS::Database<VICUS::Material> & materials) const;
 
 	/*! Inequality operator. */
 	bool operator!=(const MaterialLayer & other) const {

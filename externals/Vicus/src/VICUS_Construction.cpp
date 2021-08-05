@@ -29,12 +29,7 @@ namespace VICUS {
 
 bool Construction::isValid(const VICUS::Database<Material> & materials) const {
 	for (unsigned int i=0; i<m_materialLayers.size(); ++i) {
-		const Material * mat = materials[m_materialLayers[i].m_idMaterial];
-		if (mat == nullptr)
-			return false; // error, material with this ID is not found
-		if ( mat->m_para[Material::P_Conductivity].value <= 0)
-			return false; // error, invalid lambda
-		if ( m_materialLayers[i].m_thickness.value <= 0)
+		if (!m_materialLayers[i].isValid(materials))
 			return false; // error, invalid layer thickness
 	}
 	return true;
@@ -55,7 +50,7 @@ bool Construction::calculateUValue(double & UValue, const VICUS::Database<Materi
 			return false; // error, invalid layer thickness
 		R += thickness/lambda;
 	}
-	UValue = 1/R;
+	UValue = 1/(R+1e-10);
 	return true;
 }
 
@@ -65,14 +60,10 @@ AbstractDBElement::ComparisonResult Construction::equal(const AbstractDBElement 
 	if (otherConstr == nullptr)
 		return Different;
 
-	//first check critical data
-
 	if (m_materialLayers != otherConstr->m_materialLayers)
 		return Different;
 
-	//check meta data
-
-	if (m_displayName != otherConstr->m_displayName ||
+	if (	m_displayName != otherConstr->m_displayName ||
 			m_dataSource != otherConstr->m_dataSource ||
 			m_notes != otherConstr->m_notes ||
 			m_usageType != otherConstr->m_usageType ||

@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -35,6 +35,8 @@ bool BoundaryCondition::isValid() const {
 		m_heatConduction.checkParameters();
 		m_longWaveEmission.checkParameters();
 		m_solarAbsorption.checkParameters();
+
+		// TODO : add vapor diffusion/air flow once needed
 	} catch (...) {
 		return false;
 	}
@@ -85,26 +87,24 @@ QString BoundaryCondition::htmlDescription() const {
 	return html;
 }
 
+
 AbstractDBElement::ComparisonResult BoundaryCondition::equal(const AbstractDBElement *other) const {
 	const BoundaryCondition * otherBC = dynamic_cast<const BoundaryCondition*>(other);
 	if (otherBC == nullptr)
 		return Different;
 
-	//first check critical data
+	// check parameters
 
-	//check parameters
-
-	if(m_heatConduction != otherBC->m_heatConduction ||
+	if (m_heatConduction != otherBC->m_heatConduction ||
 			m_longWaveEmission != otherBC->m_longWaveEmission ||
 			m_solarAbsorption != otherBC->m_solarAbsorption ||
 			m_vaporDiffusion != otherBC->m_vaporDiffusion ||
 			m_airFlow != otherBC->m_airFlow)
 		return Different;
 
-	//check meta data
+	// check meta data
 
-	if(m_displayName != otherBC->m_displayName ||
-			m_color != otherBC->m_color)
+	if (m_displayName != otherBC->m_displayName)
 		return OnlyMetaDataDiffers;
 
 	return Equal;

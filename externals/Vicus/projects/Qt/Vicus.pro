@@ -102,6 +102,7 @@ SOURCES += \
 	../../src/VICUS_InternalLoad.cpp \
 	../../src/VICUS_KeywordList.cpp \
 	../../src/VICUS_Material.cpp \
+	../../src/VICUS_MaterialLayer.cpp \
 	../../src/VICUS_Network.cpp \
 	../../src/VICUS_NetworkComponent.cpp \
 	../../src/VICUS_NetworkController.cpp \
