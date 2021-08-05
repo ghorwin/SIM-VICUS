@@ -111,101 +111,39 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	const VICUS::AbstractDBElement * dbElemLeft = nullptr;
 	const VICUS::AbstractDBElement * dbElemRight = nullptr;
 	switch (type) {
-		case SVDatabase::DT_Materials:		dbItem(db.m_materials, leftID, rightID, dbElemLeft, dbElemRight); break;
-		case SVDatabase::DT_Constructions:	dbItem(db.m_constructions, leftID, rightID, dbElemLeft, dbElemRight); break;
-
-		// TODO Katja
-		case SVDatabase::DT_Windows:
-			xmlLeft = dumpXML(*db.m_windows[leftID]);
-			xmlRight = dumpXML(*db.m_windows[rightID]);
-		break;
-		case SVDatabase::DT_WindowGlazingSystems:
-			xmlLeft = dumpXML(*db.m_windowGlazingSystems[leftID]);
-			xmlRight = dumpXML(*db.m_windowGlazingSystems[rightID]);
-		break;
-		case SVDatabase::DT_BoundaryConditions:
-			xmlLeft = dumpXML(*db.m_boundaryConditions[leftID]);
-			xmlRight = dumpXML(*db.m_boundaryConditions[rightID]);
-		break;
-		case SVDatabase::DT_Components: dbItem(db.m_components, leftID, rightID, dbElemLeft, dbElemRight); break;
-		case SVDatabase::DT_SubSurfaceComponents:
-			xmlLeft = dumpXML(*db.m_subSurfaceComponents[leftID]);
-			xmlRight = dumpXML(*db.m_subSurfaceComponents[rightID]);
-		break;
-		case SVDatabase::DT_SurfaceHeating:
-			xmlLeft = dumpXML(*db.m_surfaceHeatings[leftID]);
-			xmlRight = dumpXML(*db.m_surfaceHeatings[rightID]);
-		break;
-		case SVDatabase::DT_Pipes:
-			xmlLeft = dumpXML(*db.m_pipes[leftID]);
-			xmlRight = dumpXML(*db.m_pipes[rightID]);
-		break;
-		case SVDatabase::DT_Fluids:
-			xmlLeft = dumpXML(*db.m_fluids[leftID]);
-			xmlRight = dumpXML(*db.m_fluids[rightID]);
-		break;
-		case SVDatabase::DT_NetworkComponents:
-			xmlLeft = dumpXML(*db.m_networkComponents[leftID]);
-			xmlRight = dumpXML(*db.m_networkComponents[rightID]);
-		break;
-		case SVDatabase::DT_NetworkControllers:
-			xmlLeft = dumpXML(*db.m_networkControllers[leftID]);
-			xmlRight = dumpXML(*db.m_networkControllers[rightID]);
-		break;
-		case SVDatabase::DT_SubNetworks:
-			xmlLeft = dumpXML(*db.m_subNetworks[leftID]);
-			xmlRight = dumpXML(*db.m_subNetworks[rightID]);
-		break;
-		case SVDatabase::DT_Schedules:
-			xmlLeft = dumpXML(*db.m_schedules[leftID]);
-			xmlRight = dumpXML(*db.m_schedules[rightID]);
-		break;
-		case SVDatabase::DT_InternalLoads:
-			xmlLeft = dumpXML(*db.m_internalLoads[leftID]);
-			xmlRight = dumpXML(*db.m_internalLoads[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlThermostat:
-			xmlLeft = dumpXML(*db.m_zoneControlThermostat[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlThermostat[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlShading:
-			xmlLeft = dumpXML(*db.m_zoneControlShading[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlShading[rightID]);
-		break;
-		case SVDatabase::DT_ZoneControlNaturalVentilation:
-			xmlLeft = dumpXML(*db.m_zoneControlVentilationNatural[leftID]);
-			xmlRight = dumpXML(*db.m_zoneControlVentilationNatural[rightID]);
-		break;
-		case SVDatabase::DT_ZoneIdealHeatingCooling:
-			xmlLeft = dumpXML(*db.m_zoneIdealHeatingCooling[leftID]);
-			xmlRight = dumpXML(*db.m_zoneIdealHeatingCooling[rightID]);
-		break;
-		case SVDatabase::DT_VentilationNatural:
-			xmlLeft = dumpXML(*db.m_ventilationNatural[leftID]);
-			xmlRight = dumpXML(*db.m_ventilationNatural[rightID]);
-		break;
-		case SVDatabase::DT_Infiltration:
-			xmlLeft = dumpXML(*db.m_infiltration[leftID]);
-			xmlRight = dumpXML(*db.m_infiltration[rightID]);
-		break;
-		case SVDatabase::DT_ZoneTemplates:
-			xmlLeft = dumpXML(*db.m_zoneTemplates[leftID]);
-			xmlRight = dumpXML(*db.m_zoneTemplates[rightID]);
-		break;
+		case SVDatabase::DT_Materials:				dbItem(db.m_materials, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Constructions:			dbItem(db.m_constructions, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Windows:				dbItem(db.m_windows, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_WindowGlazingSystems:	dbItem(db.m_windowGlazingSystems, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_BoundaryConditions:		dbItem(db.m_boundaryConditions, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Components:				dbItem(db.m_components, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_SubSurfaceComponents:	dbItem(db.m_subSurfaceComponents, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_SurfaceHeating:			dbItem(db.m_surfaceHeatings, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Pipes:					dbItem(db.m_pipes, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Fluids:					dbItem(db.m_fluids, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_NetworkComponents:		dbItem(db.m_networkComponents, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_NetworkControllers:		dbItem(db.m_networkControllers, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_SubNetworks:			dbItem(db.m_subNetworks, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Schedules:				dbItem(db.m_schedules, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_InternalLoads:			dbItem(db.m_internalLoads, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_ZoneControlThermostat:	dbItem(db.m_zoneControlThermostat, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_ZoneControlShading:		dbItem(db.m_zoneControlShading, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_ZoneControlNaturalVentilation:	dbItem(db.m_zoneControlVentilationNatural, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_ZoneIdealHeatingCooling:	dbItem(db.m_zoneIdealHeatingCooling, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_VentilationNatural:		dbItem(db.m_ventilationNatural, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_Infiltration:			dbItem(db.m_infiltration, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_ZoneTemplates:			dbItem(db.m_zoneTemplates, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::NUM_DT:
 		break;
 	}
 
 	// get XML description of tag and enabled/disable "take" buttons
-	if (dbElemLeft != nullptr) {
-		xmlLeft = dumpXML(*dbElemLeft);
-		m_ui->pushButtonTakeRight->setEnabled(!dbElemLeft->m_builtIn); // if left is a built-in, we disable the "take right" button
-	}
-	if (dbElemRight != nullptr) {
-		xmlRight = dumpXML(*dbElemRight);
-		m_ui->pushButtonTakeLeft->setEnabled(!dbElemRight->m_builtIn); // if right is a built-in, we disable the "take left" button
-	}
-
+	Q_ASSERT(dbElemLeft != nullptr);
+	xmlLeft = dumpXML(*dbElemLeft);
+	m_ui->pushButtonTakeRight->setEnabled(!dbElemLeft->m_builtIn); // if left is a built-in, we disable the "take right" button
+	Q_ASSERT(dbElemRight != nullptr);
+	xmlRight = dumpXML(*dbElemRight);
+	m_ui->pushButtonTakeLeft->setEnabled(!dbElemRight->m_builtIn); // if right is a built-in, we disable the "take left" button
 	// generate diff and color output
 
 	// split and create vector of lines
@@ -413,83 +351,103 @@ void SVDBDuplicatesDialog::updateUi() {
 				break;
 
 				// TODO : Katja
-				case SVDatabase::DT_Windows:					item->setText(tr("Windows"));
+				case SVDatabase::DT_Windows:
+					item->setText(tr("Windows"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windows[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_WindowGlazingSystems:		item->setText(tr("WindowGlazingSystems"));
+				case SVDatabase::DT_WindowGlazingSystems:
+					item->setText(tr("WindowGlazingSystems"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windowGlazingSystems[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_windowGlazingSystems[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_BoundaryConditions:			item->setText(tr("BoundaryConditions"));
+				case SVDatabase::DT_BoundaryConditions:
+					item->setText(tr("BoundaryConditions"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_boundaryConditions[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_boundaryConditions[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_Components:					item->setText(tr("Components"));
+				case SVDatabase::DT_Components:
+					item->setText(tr("Components"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_components[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_components[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_SubSurfaceComponents:		item->setText(tr("SubSurfaceComponents"));
+				case SVDatabase::DT_SubSurfaceComponents:
+					item->setText(tr("SubSurfaceComponents"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subSurfaceComponents[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subSurfaceComponents[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_SurfaceHeating:				item->setText(tr("SurfaceHeating"));
+				case SVDatabase::DT_SurfaceHeating:
+					item->setText(tr("SurfaceHeating"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_surfaceHeatings[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_surfaceHeatings[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_Pipes:						item->setText(tr("Pipes"));
+				case SVDatabase::DT_Pipes:
+					item->setText(tr("Pipes"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_pipes[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_pipes[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_Fluids:						item->setText(tr("Fluids"));
+				case SVDatabase::DT_Fluids:
+					item->setText(tr("Fluids"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_fluids[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_fluids[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_NetworkComponents:			item->setText(tr("NetworkComponents"));
+				case SVDatabase::DT_NetworkComponents:
+					item->setText(tr("NetworkComponents"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_networkComponents[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_networkComponents[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_NetworkControllers:			item->setText(tr("NetworkControllers"));
+				case SVDatabase::DT_NetworkControllers:
+					item->setText(tr("NetworkControllers"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_networkControllers[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_networkControllers[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_SubNetworks:				item->setText(tr("SubNetworks"));
+				case SVDatabase::DT_SubNetworks:
+					item->setText(tr("SubNetworks"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subNetworks[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subNetworks[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_Schedules:					item->setText(tr("Schedules"));
+				case SVDatabase::DT_Schedules:
+					item->setText(tr("Schedules"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_schedules[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_schedules[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_InternalLoads:				item->setText(tr("InternalLoads"));
+				case SVDatabase::DT_InternalLoads:
+					item->setText(tr("InternalLoads"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_internalLoads[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_internalLoads[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_ZoneControlThermostat:		item->setText(tr("ZoneControlThermostat"));
+				case SVDatabase::DT_ZoneControlThermostat:
+					item->setText(tr("ZoneControlThermostat"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlThermostat[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlThermostat[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_ZoneControlShading:			item->setText(tr("ZoneControlShading"));
+				case SVDatabase::DT_ZoneControlShading:
+					item->setText(tr("ZoneControlShading"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlShading[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlShading[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_ZoneControlNaturalVentilation:	item->setText(tr("ZoneControlNaturalVentilation"));
+				case SVDatabase::DT_ZoneControlNaturalVentilation:
+					item->setText(tr("ZoneControlNaturalVentilation"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlVentilationNatural[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneControlVentilationNatural[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_ZoneIdealHeatingCooling:	item->setText(tr("ZoneIdealHeatingCooling"));
+				case SVDatabase::DT_ZoneIdealHeatingCooling:
+					item->setText(tr("ZoneIdealHeatingCooling"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneIdealHeatingCooling[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneIdealHeatingCooling[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_VentilationNatural:			item->setText(tr("VentilationNatural"));
+				case SVDatabase::DT_VentilationNatural:
+					item->setText(tr("VentilationNatural"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_ventilationNatural[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_ventilationNatural[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_Infiltration:				item->setText(tr("Infiltration"));
+				case SVDatabase::DT_Infiltration:
+					item->setText(tr("Infiltration"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_infiltration[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_infiltration[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
-				case SVDatabase::DT_ZoneTemplates:				item->setText(tr("ZoneTemplates"));
+				case SVDatabase::DT_ZoneTemplates:
+					item->setText(tr("ZoneTemplates"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneTemplates[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_zoneTemplates[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
