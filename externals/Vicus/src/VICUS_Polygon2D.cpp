@@ -104,11 +104,7 @@ TiXmlElement * Polygon2D::writeXML(TiXmlElement * parent) const {
 
 // Comparison operator !=
 bool Polygon2D::operator!=(const Polygon2D &other) const {
-	if (m_type != other.m_type)
-		return true;
-	if (m_vertexes != other.m_vertexes)
-		return true;
-	return false;
+	return IBKMK::Polygon2D::operator!=(other);
 }
 
 
