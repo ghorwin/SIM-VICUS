@@ -701,6 +701,15 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 }
 
 
+bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<const Surface *> & selectedSurfaces,
+							  std::vector<ComponentInstance> & newComponentInstances)
+{
+	// TODO : Dirk, implement algorithm
+
+	return false;
+}
+
+
 
 void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const {
 	FUNCID(Project::generateNandradProject);

@@ -173,6 +173,15 @@ public:
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
 
+	/*! Attempts to create new surface-surface connections based on the current selection.
+		Newly created component instances are stored in vector newComponentInstances alongside
+		original component instances.
+		Existing component instances that reference now connected surfaces are removed. The
+		component is selected based on existing component instances.
+	*/
+	static bool connectSurfaces(double maxDist, double maxAngle, const std::set<const VICUS::Surface*> & selectedSurfaces,
+								std::vector<VICUS::ComponentInstance> & newComponentInstances);
+
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

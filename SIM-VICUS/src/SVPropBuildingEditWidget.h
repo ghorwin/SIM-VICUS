@@ -92,7 +92,7 @@ public slots:
 
 private slots:
 
-	// *** Component property mode ***
+	// *** Component page ***
 
 	/*! Triggered when user switches component in table. */
 	void on_tableWidgetComponents_itemSelectionChanged();
@@ -117,7 +117,7 @@ private slots:
 	void on_pushButtonAssignInsideComponent_clicked();
 
 
-	// *** Sub-Surface Component property mode ***
+	// *** Sub-Surface Component page ***
 
 	void on_tableWidgetSubSurfaceComponents_itemSelectionChanged();
 	void on_pushButtonEditSubSurfaceComponents_clicked();
@@ -127,7 +127,7 @@ private slots:
 	void on_pushButtonAssignInsideSubSurfaceComponent_clicked();
 
 
-	// *** Component orientation property mode ***
+	// *** Component orientation page ***
 
 	void on_checkBoxShowAllComponentOrientations_toggled(bool checked);
 	void on_pushButtonAlignComponentToSideA_clicked();
@@ -135,8 +135,7 @@ private slots:
 	void on_comboBoxComponentSelection_currentIndexChanged(int);
 
 
-
-	// *** Zone template property mode ***
+	// *** Zone template page ***
 
 	void on_pushButtonAssignZoneTemplate_clicked();
 	void on_tableWidgetZoneTemplates_itemSelectionChanged();
@@ -147,7 +146,7 @@ private slots:
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
 
-	// *** Surface heating property mode ***
+	// *** Surface heating page ***
 
 	void on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int index);
 	void on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item);
@@ -156,11 +155,10 @@ private slots:
 	void on_tableWidgetSurfaceHeating_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
 
 
+	// *** Interlinked surfaces page ***
 
 	void on_pushButtonRemoveComponentInstance_clicked();
-
 	void on_pushButtonConnectSurfaces_clicked();
-
 	void on_tableWidgetInterlinkedSurfaces_itemSelectionChanged();
 
 private:

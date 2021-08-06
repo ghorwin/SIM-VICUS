@@ -1705,7 +1705,36 @@ void SVPropBuildingEditWidget::on_pushButtonRemoveComponentInstance_clicked() {
 
 
 void SVPropBuildingEditWidget::on_pushButtonConnectSurfaces_clicked() {
+	// check input
+	if (!m_ui->lineEditConnectSurfacesMaxDistance->isValid()) {
+		QMessageBox::critical(this, QString(), tr("Please enter valid parameters!"));
+		m_ui->lineEditConnectSurfacesMaxDistance->selectAll();
+		m_ui->lineEditConnectSurfacesMaxDistance->setFocus();
+		return;
+	}
+	// check input
+	if (!m_ui->lineEditConnectSurfacesMaxAngle->isValid()) {
+		QMessageBox::critical(this, QString(), tr("Please enter valid parameters!"));
+		m_ui->lineEditConnectSurfacesMaxAngle->selectAll();
+		m_ui->lineEditConnectSurfacesMaxAngle->setFocus();
+		return;
+	}
+	double maxDist = m_ui->lineEditConnectSurfacesMaxDistance->value();
+	double maxAngle = m_ui->lineEditConnectSurfacesMaxAngle->value();
 
+	// the actual work is implemented in the project class, because it is needed elsewhere as well
+	std::vector<VICUS::ComponentInstance> newInstances;
+
+	if (project().connectSurfaces(maxDist, maxAngle, m_selectedSurfaces, newInstances)) {
+
+		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Created surface-surface connection"),
+																				   newInstances);
+		undo->push();
+	}
+	else {
+		QMessageBox::information(this, QString(), tr("With the given selection and algorithm parameters, no new "
+													 "connections could be created."));
+	}
 }
 
 
