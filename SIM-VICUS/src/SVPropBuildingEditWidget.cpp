@@ -944,7 +944,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 		item = new QTableWidgetItem(ci.m_sideASurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setData(Qt::UserRole, ci.m_sideASurface->m_id);
+		item->setData(Qt::UserRole, ci.m_sideASurface->uniqueID()); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideASurface) != m_selectedSurfaces.end())
 			selectedItems.append(item);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 1, item);
@@ -953,7 +953,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 		item = new QTableWidgetItem(ci.m_sideBSurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setData(Qt::UserRole, ci.m_sideBSurface->m_id);
+		item->setData(Qt::UserRole, ci.m_sideBSurface->uniqueID()); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideBSurface) != m_selectedSurfaces.end())
 			selectedItems.append(item);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
@@ -1650,4 +1650,30 @@ void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(i
 	QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(previousRow, previousColumn);
 	if (item != nullptr)
 		m_ui->tableWidgetSurfaceHeating->closePersistentEditor(item);
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonRemoveComponentInstance_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonConnectSurfaces_clicked() {
+
+}
+
+
+void SVPropBuildingEditWidget::on_tableWidgetInterlinkedSurfaces_itemSelectionChanged() {
+	// get selected items, compose undo-action and fire
+	// compose set of objects to be selected
+	std::set<unsigned int> selectedObjs;
+
+	for (QTableWidgetItem * item : m_ui->tableWidgetInterlinkedSurfaces->selectedItems())
+		if (item->isSelected())
+			selectedObjs.insert(item->data(Qt::UserRole).toUInt());
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected connected surfaces"),
+														 SVUndoTreeNodeState::SelectedState, selectedObjs,
+														 true, true /* exclusive */);
+	undo->push();
 }

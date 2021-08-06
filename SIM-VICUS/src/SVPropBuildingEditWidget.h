@@ -157,6 +157,12 @@ private slots:
 
 
 
+	void on_pushButtonRemoveComponentInstance_clicked();
+
+	void on_pushButtonConnectSurfaces_clicked();
+
+	void on_tableWidgetInterlinkedSurfaces_itemSelectionChanged();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
