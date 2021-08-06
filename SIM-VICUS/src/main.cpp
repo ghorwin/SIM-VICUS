@@ -105,8 +105,17 @@ int main(int argc, char *argv[]) {
 	settings.setDefaults();
 	settings.read();
 	// if we have just upgraded to a new version, try to import settings from the lest minor version
-	if (settings.m_versionIdentifier.isEmpty()) {
-
+	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
+		unsigned int major, minor, patch;
+		IBK::decode_version_number(VICUS::VERSION, major, minor, patch);
+		for (int i=(int)minor-1; i>0; --i) {
+			QString VersionName = QString("SIM-VICUS %1.%2").arg(major).arg(i);
+			settings.m_appName = VersionName;
+			settings.read();
+			if (!settings.m_versionIdentifier.isEmpty() || !settings.m_lastProjectFile.isEmpty())
+				break;
+		}
+		settings.m_appName = ProgramVersionName;
 	}
 	settings.m_versionIdentifier = VICUS::VERSION;
 
