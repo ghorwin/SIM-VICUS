@@ -149,8 +149,11 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode)
+			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
 				refreshColors();
+				if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
+					m_transparentBuildingObject.updateBuffers();
+			}
 			return;
 		}
 

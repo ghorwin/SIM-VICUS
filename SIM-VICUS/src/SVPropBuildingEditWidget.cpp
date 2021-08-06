@@ -138,6 +138,13 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	p.setColor(QPalette::Window, QColor(255, 206, 48));
 	m_ui->frameSideB->setPalette(p);
 
+	m_ui->lineEditConnectSurfacesMaxDistance->setup(0, 10000, tr("Maximum distances between surfaces to enable connection in [m]."),
+												 false, true);
+	m_ui->lineEditConnectSurfacesMaxDistance->setValue(0.8);
+	m_ui->lineEditConnectSurfacesMaxAngle->setup(0, 45, tr("Maximum angle between surfaces to enable connection in [Deg]."),
+												 false, true);
+	m_ui->lineEditConnectSurfacesMaxAngle->setValue(5);
+
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVPropBuildingEditWidget::onModified);
 
@@ -984,7 +991,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 	// enable/disable button based on available selections
 	m_ui->pushButtonRemoveComponentInstance->setEnabled(!selectedItems.isEmpty());
-	m_ui->pushButtonConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
+	m_ui->groupBoxConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
 }
 
 
@@ -1016,7 +1023,6 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 	m_ui->tableWidgetSurfaceHeating->blockSignals(true);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(true);
 	m_ui->tableWidgetSurfaceHeating->setRowCount(0);
-
 
 
 	// process all component instances
@@ -1655,6 +1661,46 @@ void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_currentCellChanged(i
 
 void SVPropBuildingEditWidget::on_pushButtonRemoveComponentInstance_clicked() {
 
+	// create set with selected and connected surfaces
+	std::set<unsigned int> connectedSurfacesIDs;
+	for (QTableWidgetItem * item : m_ui->tableWidgetInterlinkedSurfaces->selectedItems())
+		connectedSurfacesIDs.insert(item->data(Qt::UserRole).toUInt());
+
+	// now process all ComponentInstances and handle those with selected and connected surfaces
+	std::vector<VICUS::ComponentInstance> newInstances;
+	unsigned int newID = VICUS::largestUniqueId(project().m_componentInstances);
+	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+		// must have both sides connected
+		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr) {
+			newInstances.push_back(ci); // just keep unmodified
+			continue;
+		}
+
+		if ( (ci.m_sideASurface != nullptr &&
+				connectedSurfacesIDs.find(ci.m_sideASurface->uniqueID()) != connectedSurfacesIDs.end()) ||
+			(ci.m_sideBSurface != nullptr &&
+							connectedSurfacesIDs.find(ci.m_sideBSurface->uniqueID()) != connectedSurfacesIDs.end()) )
+		{
+			// create two copies of the ComponentInstance and remove sideA and sideB in either one
+			VICUS::ComponentInstance ci1(ci);
+			ci1.m_id = newID++;
+			ci1.m_idSideBSurface = VICUS::INVALID_ID;
+			VICUS::ComponentInstance ci2(ci);
+			ci2.m_id = newID++;
+			ci2.m_idSideASurface = VICUS::INVALID_ID;
+			newInstances.push_back(ci1);
+			newInstances.push_back(ci2);
+		}
+		else {
+			// not currently selected
+			newInstances.push_back(ci); // just keep unmodified
+			continue;
+		}
+	}
+
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface-surface connection"),
+																			   newInstances);
+	undo->push();
 }
 
 
@@ -1669,8 +1715,7 @@ void SVPropBuildingEditWidget::on_tableWidgetInterlinkedSurfaces_itemSelectionCh
 	std::set<unsigned int> selectedObjs;
 
 	for (QTableWidgetItem * item : m_ui->tableWidgetInterlinkedSurfaces->selectedItems())
-		if (item->isSelected())
-			selectedObjs.insert(item->data(Qt::UserRole).toUInt());
+		selectedObjs.insert(item->data(Qt::UserRole).toUInt());
 
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selected connected surfaces"),
 														 SVUndoTreeNodeState::SelectedState, selectedObjs,
