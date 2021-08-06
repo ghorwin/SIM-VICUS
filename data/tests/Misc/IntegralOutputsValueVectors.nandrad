@@ -196,17 +196,17 @@
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 
-				<OutputDefinition><Quantity>ActiveLayerThermalLoad[701]</Quantity>
+				<OutputDefinition><Quantity>ActiveLayerThermalLoad[3001]</Quantity>
 					<ObjectListName>All models</ObjectListName>
 					<GridName>hourly</GridName>
-				<!--<TimeType>Mean</TimeType> -->
+					<TimeType>Mean</TimeType>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ActiveLayerThermalLoad[702]</Quantity>
+					<Quantity>ActiveLayerThermalLoad[3002]</Quantity>
 					<ObjectListName>All models</ObjectListName>
 					<GridName>hourly</GridName>
-				<!--<TimeType>Mean</TimeType> -->
+					<TimeType>Mean</TimeType>
 				</OutputDefinition>
 
 			</Definitions>
@@ -238,6 +238,12 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
+			
+			<!-- We use a wildcard to adressing models. This should not generate warnings about
+				 missing outputs, when, for example, trying to retrieve "ActiveLayerThermalLoad[3001]"
+				 from Thermostat model 601, since this request is fulfilled by
+				 IdealSurfaceHeatingCoolingModel model 701.
+			-->
 			<ObjectList name="All models">
 				<FilterID>*</FilterID>
 				<ReferenceType>Model</ReferenceType>

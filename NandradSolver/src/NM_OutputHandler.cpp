@@ -139,10 +139,11 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 		}
 	}
 
-	// we create groups of output definitions, first based on target file name
+	// We create groups of output definitions, first based on user-defined target file name. These are stored
+	// in map targetFileMap. Outputs without user-specified file name are stored in vector targetFileMap[""].
 
-	// in the initial loop, we also create and store pointer references to output grids and object lists referenced
-	// from output definitions - in case of invalid definitions, we bail out with an error message
+	// In this initial loop we also create and store pointer references to output grids and object lists referenced
+	// from output definitions - in case of invalid definitions, we bail out with an error message.
 	std::map<std::string, std::vector<NANDRAD::OutputDefinition> > targetFileMap;
 	for (unsigned int i=0; i<prj.m_outputs.m_definitions.size(); ++i) {
 
@@ -284,7 +285,7 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 			if (od.m_timeType == NANDRAD::OutputDefinition::OTT_INTEGRAL)
 				groupMap[od.m_gridName][OFN_FluxIntegrals].push_back(od);
 			else
-				groupMap[od.m_gridName][OFN_Fluxes].push_back(od);
+				groupMap[od.m_gridName][OFN_Fluxes].push_back(od); // Note: Mean values are also stored in "fluxes.tsv"
 			continue;
 		}
 
@@ -293,10 +294,10 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	}
 
 
-	// now we have grouped all output definitions into files, and we can create output file objects for
-	// all non-empty groups
+	// Now we have grouped all output definitions into files, and we can create output file objects for
+	// all non-empty groups.
 
-	// we first create the output files in shared ptr containers, so that memory is properly
+	// We first create the output files in shared ptr containers, so that memory is properly
 	// cleaned up in case of exceptions. At the end of the function, the objects
 	// are moved to m_outputFiles before they are copied into NandradModel::m_modelContainer (which
 	// owns them).

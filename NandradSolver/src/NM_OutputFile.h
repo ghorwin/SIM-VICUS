@@ -175,29 +175,39 @@ private:
 
 	/*! Input references for all output variables written in the file handled by this object. */
 	std::vector<InputReference>					m_inputRefs;
-	/*! Maps output variable (input reference) to output definition (index), this variable was created from.
+	/*! Maps requested input reference to index of original output definition, that this variable was created from.
 		\code
-		OutputDefinition of = m_outputDefinitions[ m_outputDefMap[inputRefIdx] ];
+		OutputDefinition of = m_outputDefinitions[ m_outputDefMap[inputRefIdx].first ];
 		\endcode
+		Second value in pair indicates that the requested filterID contained a * wildcard. This is used
+		to filter out warnings for missing result variables.
 
-		This data can be used to obtain the timeTime of the output quantity.
-	*/
-	std::vector<unsigned int>					m_outputDefMap;
+		This mapping is needed since a single output definition may result in several input references
+		(because of multiple models being referenced by object lists, or because of multiple values referenced
+		in a vector-valued result).
 
-	/*! Pointers to variables to monitor (same size and order as m_inputRefs).
-		Populated in setInputValueRef().
+		\warning This mapping is only used in setInputValueRefs()
 	*/
-	std::vector<const double*>					m_valueRefs;
-	/*! Corresponding quantity descriptions (same size and order as m_inputRefs).
-		Populated in setInputValueRef().
-	*/
-	std::vector<QuantityDescription>			m_quantityDescs;
-	/*! Vector with output units; source values are always in base SI unit (same size and order as m_inputRefs).
-		Populated in setInputValueRef().
-	*/
-	std::vector<IBK::Unit>						m_valueUnits;
+	std::vector< std::pair<unsigned int, bool> >	m_outputDefMap;
 
-	/*! Number of columns with actual values in the output file.
+
+	/*! This struct stores all info collected about an output variable (= column in result file).
+		This struct is populated in setInputValueRef().
+	*/
+	struct OutputFileVarInfo {
+		const double*							m_valueRef = nullptr;
+		QuantityDescription						m_quantityDesc;
+		IBK::Unit								m_resultUnit; // Note: in case of integral time type differs from m_quantityDesc.m_unit!
+		NANDRAD::OutputDefinition::timeType_t	m_timeType;
+		std::string								m_columnHeader;
+	};
+
+	/*! Vector with collected information about output variables to be written in individual columns
+		of this output file.
+	*/
+	std::vector<OutputFileVarInfo>				m_outputVarInfo;
+
+	/*! Number of columns with actual values in the output file (same as m_outputVarInfo.size()).
 		Can (remain) 0 if non of the requested variables for this file are available from the model.
 		In this case the file is not created and writing outputs does nothing.
 	*/
