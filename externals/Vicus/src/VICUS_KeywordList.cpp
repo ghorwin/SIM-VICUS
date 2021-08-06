@@ -1008,8 +1008,8 @@ namespace VICUS {
 			// Infiltration::para_t
 			case 5 :
 			switch (t) {
-				case 0 : return "Air change rate.";
-				case 1 : return "Shielding coefficient for n50 value.";
+				case 0 : return "Air change rate";
+				case 1 : return "Shielding coefficient for n50 value";
 			} break;
 			// Infiltration::AirChangeType
 			case 6 :

@@ -65,8 +65,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Eutrophication potential.");
 	tr("Total use of non-renewable primary energy resources.");
 	tr("Total use of renewable primary energy resources .");
-	tr("Air change rate.");
-	tr("Shielding coefficient for n50 value.");
+	tr("Air change rate");
+	tr("Shielding coefficient for n50 value");
 	tr("normal");
 	tr("n50");
 	tr("Person count");
