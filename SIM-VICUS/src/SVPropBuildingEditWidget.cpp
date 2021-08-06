@@ -478,19 +478,22 @@ void SVPropBuildingEditWidget::updateUi() {
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // just visible
+
+	// filter-out selected objects and group by type
 	std::vector<const VICUS::Object * > selObjs;
-	std::vector<const VICUS::Surface * > surfObjs;
+	std::vector<const VICUS::Surface * > selSurfs;
 	std::vector<const VICUS::SubSurface * > subSurfObjs;
 	for (const VICUS::Object * o : objs) {
 		if (!o->m_selected) continue;
 		selObjs.push_back(o);
 		const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface *>(o);
 		if (surf != nullptr)
-			surfObjs.push_back(surf);
+			selSurfs.push_back(surf);
 		const VICUS::SubSurface * subsurf = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (subsurf != nullptr)
 			subSurfObjs.push_back(subsurf);
 	}
+	m_selectedSurfaces = std::set<const VICUS::Surface*>(selSurfs.begin(), selSurfs.end());
 
 	// ** Components data structure update **
 	// now build a map of component IDs versus visible surfaces
@@ -618,18 +621,18 @@ void SVPropBuildingEditWidget::updateUi() {
 		m_ui->tableWidgetComponents->blockSignals(false);
 		m_ui->tableWidgetComponents->selectRow(std::min(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
 		// process all selected surfaces and determine which component they have assigned
-		if (surfObjs.empty()) {
+		if (selSurfs.empty()) {
 			m_ui->labelSelectedComponents->setText("");
 			m_ui->groupBoxSelectedComponent->setEnabled(false);
 		}
 		else {
 			m_ui->groupBoxSelectedComponent->setEnabled(true);
 		}
-		m_ui->pushButtonAssignInsideComponent->setEnabled(surfObjs.size() == 2);
+		m_ui->pushButtonAssignInsideComponent->setEnabled(selSurfs.size() == 2);
 
 		// update selection-related info
 		std::set<const VICUS::Component *> selectedComponents;
-		for (const VICUS::Surface* s : surfObjs) {
+		for (const VICUS::Surface* s : selSurfs) {
 			if (s->m_componentInstance != nullptr) {
 				const VICUS::Component * surfcomp = db.m_components[s->m_componentInstance->m_idComponent];
 				selectedComponents.insert(surfcomp);
@@ -918,6 +921,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 
 	// process all component instances
+	QList<QTableWidgetItem *> selectedItems;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// skip all without two surfaces
 		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
@@ -940,12 +944,18 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 		item = new QTableWidgetItem(ci.m_sideASurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, ci.m_sideASurface->m_id);
+		if (m_selectedSurfaces.find(ci.m_sideASurface) != m_selectedSurfaces.end())
+			selectedItems.append(item);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 1, item);
 
 		// column 2 - surface name B
 
 		item = new QTableWidgetItem(ci.m_sideBSurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, ci.m_sideBSurface->m_id);
+		if (m_selectedSurfaces.find(ci.m_sideBSurface) != m_selectedSurfaces.end())
+			selectedItems.append(item);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
 
 		// column 3 - component
@@ -957,16 +967,24 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 			compName = QtExt::MultiLangString2QString(comp->m_displayName);
 
 		item = new QTableWidgetItem(compName);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setFlags(Qt::ItemIsEnabled);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
 	}
 	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(false);
+
+	// once table is complete (and won't be modified anylonger), select items
+	for (QTableWidgetItem * item : selectedItems)
+		item->setSelected(true);
 
 	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 0, true);
 	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 1, true);
 	SVStyle::resizeTableColumnToContents(m_ui->tableWidgetInterlinkedSurfaces, 2, true);
 
 	m_ui->tableWidgetInterlinkedSurfaces->selectionModel()->blockSignals(false);
+
+	// enable/disable button based on available selections
+	m_ui->pushButtonRemoveComponentInstance->setEnabled(!selectedItems.isEmpty());
+	m_ui->pushButtonConnectSurfaces->setEnabled(!m_selectedSurfaces.empty());
 }
 
 
@@ -1200,15 +1218,11 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 	if (selectedComponentId == VICUS::INVALID_ID)
 		return; // user aborted the dialog
 
-	std::vector<const VICUS::Surface*> surfaces;
-	project().selectedSurfaces(surfaces, VICUS::Project::SG_Building);
-	Q_ASSERT(!surfaces.empty());
-	std::set<const VICUS::Surface*> selSurfaces(surfaces.begin(), surfaces.end());
-
+	Q_ASSERT(!m_selectedSurfaces.empty());
 
 	std::vector<VICUS::ComponentInstance> compInstances;
 	if (insideWall) {
-		Q_ASSERT(surfaces.size() == 2); // must have exactly two
+		Q_ASSERT(m_selectedSurfaces.size() == 2); // must have exactly two
 		// we handle the following cases
 		// - both surfaces are not yet used in a componentInstance -> we create a new one
 		// - both surfaces are already used in the same componentInstance -> we just replace the component
@@ -1220,9 +1234,9 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 		// process all component instances
 		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 			// does the component instance reference either of our selected surfaces/or both?
-			std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
-			std::set<const VICUS::Surface*>::iterator it2 = selSurfaces.find(ci.m_sideBSurface);
-			if (it != selSurfaces.end() || it2 != selSurfaces.end()) {
+			std::set<const VICUS::Surface*>::iterator it = m_selectedSurfaces.find(ci.m_sideASurface);
+			std::set<const VICUS::Surface*>::iterator it2 = m_selectedSurfaces.find(ci.m_sideBSurface);
+			if (it != m_selectedSurfaces.end() || it2 != m_selectedSurfaces.end()) {
 				// yes, but did we already have a component instance with these surfaces?
 				if (compInstanceFound) {
 					// already handled, so we can just skip this component instance
@@ -1235,19 +1249,19 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 				newCi.m_idComponent = (unsigned int)selectedComponentId;
 				// no, first time a component instance references the selected surfaces, modify it such,
 				// that any original assignment remains untouched
-				if (it != selSurfaces.end()) {
+				if (it != m_selectedSurfaces.end()) {
 					// side A connected?, set side B to the other surface
-					if (it == selSurfaces.begin())
-						newCi.m_idSideBSurface = (*selSurfaces.rbegin())->m_id;
+					if (it == m_selectedSurfaces.begin())
+						newCi.m_idSideBSurface = (*m_selectedSurfaces.rbegin())->m_id;
 					else
-						newCi.m_idSideBSurface = (*selSurfaces.begin())->m_id;
+						newCi.m_idSideBSurface = (*m_selectedSurfaces.begin())->m_id;
 				}
 				else {
 					// must be side B connected, set side A to the other surface
-					if (it2 == selSurfaces.begin())
-						newCi.m_idSideASurface = (*selSurfaces.rbegin())->m_id;
+					if (it2 == m_selectedSurfaces.begin())
+						newCi.m_idSideASurface = (*m_selectedSurfaces.rbegin())->m_id;
 					else
-						newCi.m_idSideASurface = (*selSurfaces.begin())->m_id;
+						newCi.m_idSideASurface = (*m_selectedSurfaces.begin())->m_id;
 				}
 				// remember modified component instance
 				compInstances.push_back(newCi);
@@ -1263,8 +1277,8 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 			unsigned int nextId = VICUS::largestUniqueId(compInstances);
 			newCi.m_id = nextId;
 			newCi.m_idComponent = (unsigned int)selectedComponentId;
-			newCi.m_idSideASurface = (*selSurfaces.begin())->m_id;
-			newCi.m_idSideBSurface = (*selSurfaces.rbegin())->m_id;
+			newCi.m_idSideASurface = (*m_selectedSurfaces.begin())->m_id;
+			newCi.m_idSideBSurface = (*m_selectedSurfaces.rbegin())->m_id;
 			compInstances.push_back(newCi);
 		}
 
@@ -1275,24 +1289,24 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 
 		// process all componentInstances and for all that reference any of the selected surfaces, replace component
 		for (VICUS::ComponentInstance & ci : compInstances) {
-			std::set<const VICUS::Surface*>::iterator it = selSurfaces.find(ci.m_sideASurface);
-			if (it != selSurfaces.end()) {
+			std::set<const VICUS::Surface*>::iterator it = m_selectedSurfaces.find(ci.m_sideASurface);
+			if (it != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				selSurfaces.erase(it);
+				m_selectedSurfaces.erase(it);
 				continue;
 			}
-			it = selSurfaces.find(ci.m_sideBSurface);
-			if (it != selSurfaces.end()) {
+			it = m_selectedSurfaces.find(ci.m_sideBSurface);
+			if (it != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				selSurfaces.erase(it);
+				m_selectedSurfaces.erase(it);
 			}
 		}
 
 		// now all surfaces still left in selSurfaces are not yet referenced in ComponentInstances
 		// hence, we need to create a new componentInstance for each of them
-		if (!selSurfaces.empty()) {
+		if (!m_selectedSurfaces.empty()) {
 			unsigned int nextId = VICUS::largestUniqueId(compInstances);
-			for (const VICUS::Surface * s : selSurfaces) {
+			for (const VICUS::Surface * s : m_selectedSurfaces) {
 				VICUS::ComponentInstance c;
 				c.m_id = nextId++;
 				c.m_idSideASurface = s->m_id;

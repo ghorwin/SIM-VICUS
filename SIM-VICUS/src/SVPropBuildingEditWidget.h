@@ -113,6 +113,7 @@ private slots:
 	*/
 	void on_pushButtonAssignComponent_clicked();
 
+	/*! Assigns a component to two simultaneously selected surfaces. */
 	void on_pushButtonAssignInsideComponent_clicked();
 
 
@@ -135,32 +136,26 @@ private slots:
 
 
 
+	// *** Zone template property mode ***
 
 	void on_pushButtonAssignZoneTemplate_clicked();
-
 	void on_tableWidgetZoneTemplates_itemSelectionChanged();
-
 	void on_pushButtonEditZoneTemplates_clicked();
-
 	void on_pushButtonExchangeZoneTemplates_clicked();
-
 	void on_checkBoxZoneTemplateColorOnlyActive_toggled(bool checked);
-
 	void on_checkBoxZoneTemplateShowOnlyActive_toggled(bool checked);
-
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
 
+	// *** Surface heating property mode ***
 
 	void on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int index);
-
 	void on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item);
-
 	void on_pushButtonRemoveSurfaceHeating_clicked();
-
 	void on_pushButtonAssignSurfaceHeating_clicked();
-
 	void on_tableWidgetSurfaceHeating_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
+
+
 
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
@@ -231,6 +226,9 @@ private:
 	*/
 	std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >			m_zoneTemplateAssignments;
 
+
+	/*! Caches currently selected surfaces. Updated in updateUi(). */
+	std::set<const VICUS::Surface*>													m_selectedSurfaces;
 };
 
 
