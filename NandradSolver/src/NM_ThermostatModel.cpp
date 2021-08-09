@@ -312,10 +312,14 @@ void ThermostatModel::stateDependencies(std::vector<std::pair<const double *, co
 
 
 int ThermostatModel::update() {
+	FUNCID(ThermostatModel::update);
 
 	unsigned int inputVarsPerZone = 1;
 	if (m_thermostat->m_modelType == NANDRAD::Thermostat::MT_Scheduled)
 		inputVarsPerZone = 3;
+
+	double * heatingControlSetpoints = m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr();
+	double * coolingControlSetpoints = m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr();
 
 	// loop over all thermostats
 	unsigned int nZones = m_controllers.size()/2;
@@ -330,14 +334,17 @@ int ThermostatModel::update() {
 
 		// if we have setpoint temperatures in each zone, we store the corresponding setpoint right here
 		if (m_thermostat->m_referenceZoneId == NANDRAD::INVALID_ID) {
-			*(m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr() + i) = TSetpointHeating;
-			*(m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr() + i) = TSetpointCooling;
+			heatingControlSetpoints[i] = TSetpointHeating;
+			coolingControlSetpoints[i] = TSetpointCooling;
 		}
 
 		// update heating and cooling controllers
 		m_controllers[i*2]->update(TSetpointHeating - Troom);
 		m_controllers[i*2+1]->update(Troom - TSetpointCooling); // Mind the sign! Turn on cooling when room is _above_ setpoint
 	}
+
+	double * heatingControlValues = m_vectorValuedResults[VVR_HeatingControlValue].dataPtr();
+	double * coolingControlValues = m_vectorValuedResults[VVR_CoolingControlValue].dataPtr();
 
 	// transfer results
 	if (m_thermostat->m_referenceZoneId != NANDRAD::INVALID_ID) {
@@ -350,18 +357,29 @@ int ThermostatModel::update() {
 
 		// reference zone - all results get the same control values
 		for (unsigned int i=0; i<nZones; ++i) {
-			*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) = m_controllers[0]->m_controlValue;
-			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) = m_controllers[1]->m_controlValue;
-			// setpoints are the same for all zones
-			*(m_vectorValuedResults[VVR_ThermostatHeatingSetpoint].dataPtr() + i) = TSetpointHeating;
-			*(m_vectorValuedResults[VVR_ThermostatCoolingSetpoint].dataPtr() + i) = TSetpointCooling;
+			heatingControlValues[i] = m_controllers[0]->m_controlValue;
+			coolingControlValues[i] = m_controllers[1]->m_controlValue;
+			// setpoints are the same for all zones; override earlier stored zone-specific setpoints
+			heatingControlSetpoints[i] = TSetpointHeating;
+			coolingControlSetpoints[i] = TSetpointCooling;
 		}
 	}
 	else {
 		// each zone gets the results of its own controller
 		for (unsigned int i=0; i<nZones; ++i) {
-			*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) = m_controllers[i*2]->m_controlValue;
-			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) = m_controllers[i*2 + 1]->m_controlValue;
+			heatingControlValues[i] = m_controllers[i*2]->m_controlValue;
+			coolingControlValues[i] = m_controllers[i*2 + 1]->m_controlValue;
+		}
+	}
+
+	// check that we never have heating and cooling at the same time
+	for (unsigned int i=0; i<nZones; ++i) {
+		if (*(m_vectorValuedResults[VVR_HeatingControlValue].dataPtr() + i) > 0 &&
+			*(m_vectorValuedResults[VVR_CoolingControlValue].dataPtr() + i) > 0)
+		{
+			throw IBK::Exception(IBK::FormatString("Thermostat for zone #%1 turns on heating and cooling at the same time, using "
+								 "heating/cooling setpoints %2 C and %3 C, respectively.").
+				arg((*m_zones)[i].m_id).arg(heatingControlSetpoints[i]-273.15).arg(coolingControlSetpoints[i]-273.15), FUNC_ID);
 		}
 	}
 
