@@ -93,7 +93,8 @@ SOURCES += \
     ../../src/NM_VectorValuedQuantity.cpp \
     ../../src/NM_VectorValuedQuantityIndex.cpp \
     ../../src/NM_WindowModel.cpp \
-    ../../src/NM_HeatLoadSummationModel.cpp
+    ../../src/NM_HeatLoadSummationModel.cpp \
+    ../../src/NM_ConstantZoneModel.cpp
 
 
 HEADERS += \
@@ -148,5 +149,6 @@ HEADERS += \
     ../../src/NM_AbstractTransientController.h \
     ../../src/NM_Controller.h \
     ../../src/NM_ShadingControlModel.h \
-    ../../src/NM_HeatLoadSummationModel.h
+    ../../src/NM_HeatLoadSummationModel.h \
+    ../../src/NM_ConstantZoneModel.h
 

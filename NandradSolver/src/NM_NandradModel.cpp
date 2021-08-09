@@ -73,6 +73,7 @@
 #include "NM_Schedules.h"
 #include "NM_RoomStatesModel.h"
 #include "NM_RoomBalanceModel.h"
+#include "NM_ConstantZoneModel.h"
 #include "NM_OutputFile.h"
 #include "NM_StateModelGroup.h"
 #include "NM_FMIInputOutput.h"
@@ -1045,6 +1046,10 @@ void NandradModel::initZones() {
 			// initialise a constant zone model
 			case NANDRAD::Zone::ZT_Constant :
 			{
+				ConstantZoneModel *constantZoneModel = new ConstantZoneModel(zone.m_id, zone.m_displayName);
+				m_modelContainer.push_back(constantZoneModel); // transfer ownership
+				// register as state dependend (model may depend on scheduled temperature)
+				registerStateDependendModel(constantZoneModel);
 			} break;
 
 

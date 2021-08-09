@@ -196,7 +196,8 @@ SOURCES += \
     ../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
     ../../src/ncg/ncg_NANDRAD_Zone.cpp \
     ../../src/NANDRAD_HeatLoadSummationModel.cpp \
-    ../../src/ncg/ncg_NANDRAD_HeatLoadSummationModel.cpp
+    ../../src/ncg/ncg_NANDRAD_HeatLoadSummationModel.cpp \
+    ../../src/NANDRAD_Zone.cpp
 
 
 

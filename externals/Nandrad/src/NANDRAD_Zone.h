@@ -69,6 +69,11 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
+	/*! Checks for valid and required parameters (value ranges).
+		\param networkModelType Type of network calculation model (HydraulicNetwork::ModelType).
+	*/
+	void checkParameters();
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID of the zone. */
