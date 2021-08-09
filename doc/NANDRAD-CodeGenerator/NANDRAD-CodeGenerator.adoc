@@ -1,7 +1,7 @@
 The NANDRAD CodeGenerator
 =========================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.1 (03.04.2021)
+v1.1 (09.08.2021)
 // v1.1 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -117,6 +117,34 @@ nameAttrib = getAttributeText(xmlTag, "name"); // might be 'End'
 Interval::para_t p = (Interval::para_t)KeywordList::Enumeration("Interval::para_t", nameAttrib);
 ----
 
+### Keyword-definition syntax
+
+The syntax for a keyword definition line is:
+
+```
+    SOME_ENUM_VALUE,	// Keyword: KEYWORD1 KEYWORD2  [unit] <#FFEECC> {defaultValue} 'description'
+```
+
+`KEYWORD1` is the mandatory keyword, that should normally match the Enum-value, for example:
+
+```
+    ID_Category,        // Keyword: Category
+```
+
+`KEYWORD2` is an optional (potential outdated) keyword. Unit, color (htmlcode), default value and description are all optional attributes.
+
+[CAUTION]
+====
+Mind the separation chars. These must not appear inside other separation chars, so `[]<>{}` must not be used inside the description!
+====
+
+[IMPORTANT]
+====
+The keyword list parser looks for occurances of exactly the substring  `// Keyword:`. So, if you merely comment out a line with a keyword, also falsify this substring, for example to `// ---Keyword:`. Otherwise the code-generator will still count the line and generate false enum value/keyword string mappings (and also potentially cause access violations/seg faults, because of invalid enum values being returned).
+====
+
+### Static member functions of class `KeywordList`
+
 The code generator will now create the implementation of the functions:
 
 * `KeywordList::Enumeration`
@@ -128,10 +156,11 @@ The code generator will now create the implementation of the functions:
 * `KeywordList::Count` - returns number of enumeration values in this category
 * `KeywordList::KeywordExists` - convenience function, same as comparing result of `Enumeration()` with -1
 
+For optional parameters that are not provided, these functions return default values, i.e. empty strings, `IBK::Unit()` and 0 as default value.
 
 ### Usage
 
-The header file `NANDRAD_KeywordList.h` is always the same and can be included directory. The corresponding implementation file `NANDRAD_KeywordList.cpp` is generated in the same directory as the NANDRAD header files.
+The header file `NANDRAD_KeywordList.h` is always the same and can be included directly. The corresponding implementation file `NANDRAD_KeywordList.cpp` is generated in the same directory as the NANDRAD header files.
 
 [[cmake_automation]]
 ### CMake automation

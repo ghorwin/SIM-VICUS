@@ -73,7 +73,7 @@ table {
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revnumber">version 1.1 (03.04.2021)</span>
+<span id="revnumber">version 1.1 (09.08.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -86,8 +86,10 @@ table {
 <li><a href="#_functionality_example">2. Functionality Example</a>
 <ul class="sectlevel2">
 <li><a href="#_keyword_support">2.1. Keyword support</a></li>
-<li><a href="#_usage">2.2. Usage</a></li>
-<li><a href="#cmake_automation">2.3. CMake automation</a></li>
+<li><a href="#_keyword_definition_syntax">2.2. Keyword-definition syntax</a></li>
+<li><a href="#_static_member_functions_of_class_keywordlist">2.3. Static member functions of class <code>KeywordList</code></a></li>
+<li><a href="#_usage">2.4. Usage</a></li>
+<li><a href="#cmake_automation">2.5. CMake automation</a></li>
 </ul>
 </li>
 <li><a href="#_readwrite_to_xml_support_and_utility_macros">3. Read/write to XML support, and utility macros</a>
@@ -272,6 +274,59 @@ table {
 <span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">Interval</span><span class="o">::</span><span class="n">para_t</span><span class="p">)</span><span class="n">KeywordList</span><span class="o">::</span><span class="n">Enumeration</span><span class="p">(</span><span class="s">"Interval::para_t"</span><span class="p">,</span> <span class="n">nameAttrib</span><span class="p">);</span></code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_keyword_definition_syntax">2.2. Keyword-definition syntax</h3>
+<div class="paragraph">
+<p>The syntax for a keyword definition line is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>    SOME_ENUM_VALUE,	// Keyword: KEYWORD1 KEYWORD2  [unit] &lt;#FFEECC&gt; {defaultValue} 'description'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>KEYWORD1</code> is the mandatory keyword, that should normally match the Enum-value, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>    ID_Category,        // Keyword: Category</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>KEYWORD2</code> is an optional (potential outdated) keyword. Unit, color (htmlcode), default value and description are all optional attributes.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Mind the separation chars. These must not appear inside other separation chars, so <code>[]&lt;&gt;{}</code> must not be used inside the description!</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The keyword list parser looks for occurances of exactly the substring  <code>// Keyword:</code>. So, if you merely comment out a line with a keyword, also falsify this substring, for example to <code>// ---Keyword:</code>. Otherwise the code-generator will still count the line and generate false enum value/keyword string mappings (and also potentially cause access violations/seg faults, because of invalid enum values being returned).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_static_member_functions_of_class_keywordlist">2.3. Static member functions of class <code>KeywordList</code></h3>
 <div class="paragraph">
 <p>The code generator will now create the implementation of the functions:</p>
 </div>
@@ -303,15 +358,18 @@ table {
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_usage">2.2. Usage</h3>
 <div class="paragraph">
-<p>The header file <code>NANDRAD_KeywordList.h</code> is always the same and can be included directory. The corresponding implementation file <code>NANDRAD_KeywordList.cpp</code> is generated in the same directory as the NANDRAD header files.</p>
+<p>For optional parameters that are not provided, these functions return default values, i.e. empty strings, <code>IBK::Unit()</code> and 0 as default value.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cmake_automation">2.3. CMake automation</h3>
+<h3 id="_usage">2.4. Usage</h3>
+<div class="paragraph">
+<p>The header file <code>NANDRAD_KeywordList.h</code> is always the same and can be included directly. The corresponding implementation file <code>NANDRAD_KeywordList.cpp</code> is generated in the same directory as the NANDRAD header files.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cmake_automation">2.5. CMake automation</h3>
 <div class="paragraph">
 <p>The automatic update of the keyword list is triggered by a custom rule in the NANDRAD CMake project file:</p>
 </div>
@@ -1558,8 +1616,8 @@ Also, the corresponding enumeration <strong>must</strong> have keywords for the 
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.1 (03.04.2021)<br>
-Last updated 2021-04-03 15:45:54 +0200
+Version 1.1 (09.08.2021)<br>
+Last updated 2021-08-09 09:22:36 +0200
 </div>
 </div>
 <style>
