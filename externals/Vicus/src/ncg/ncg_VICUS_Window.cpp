@@ -50,10 +50,10 @@ void Window::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
-			else if (attribName == "idGlazingSystem")
-				m_idGlazingSystem = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "color")
 				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else if (attribName == "idGlazingSystem")
+				m_idGlazingSystem = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "methodFrame")
 				try {
 					m_methodFrame = (Method)KeywordList::Enumeration("Window::Method", attrib->ValueStr());
@@ -124,10 +124,10 @@ TiXmlElement * Window::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName.encodedString());
-	if (m_idGlazingSystem != VICUS::INVALID_ID)
-		e->SetAttribute("idGlazingSystem", IBK::val2string<unsigned int>(m_idGlazingSystem));
 	if (m_color.isValid())
 		e->SetAttribute("color", m_color.name().toStdString());
+	if (m_idGlazingSystem != VICUS::INVALID_ID)
+		e->SetAttribute("idGlazingSystem", IBK::val2string<unsigned int>(m_idGlazingSystem));
 	if (m_methodFrame != NUM_M)
 		e->SetAttribute("methodFrame", KeywordList::Keyword("Window::Method",  m_methodFrame));
 	if (m_methodDivider != NUM_M)

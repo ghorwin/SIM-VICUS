@@ -762,3 +762,25 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 }
 
 
+const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const {
+	IBK_ASSERT(st < VICUS::ZoneTemplate::NUM_ST);
+	unsigned int id = idReferenceArray[st];
+	if (id == VICUS::INVALID_ID)
+		return nullptr;
+
+	switch (st) {
+		case VICUS::ZoneTemplate::ST_IntLoadPerson:
+		case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+		case VICUS::ZoneTemplate::ST_IntLoadLighting:
+		case VICUS::ZoneTemplate::ST_IntLoadOther:					return m_internalLoads[id];
+		case VICUS::ZoneTemplate::ST_ControlThermostat:				return m_zoneControlThermostat[id];
+		case VICUS::ZoneTemplate::ST_ControlVentilationNatural:		return m_zoneControlVentilationNatural[id];
+		case VICUS::ZoneTemplate::ST_Infiltration:					return m_infiltration[id];
+		case VICUS::ZoneTemplate::ST_VentilationNatural:			return m_ventilationNatural[id];
+		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:			return m_zoneIdealHeatingCooling[id];
+		case VICUS::ZoneTemplate::NUM_ST:							return nullptr; // just to make compiler happy
+	}
+
+}
+
+

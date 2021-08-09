@@ -27,7 +27,6 @@
 #define VICUS_BoundaryConditionH
 
 #include <QString>
-#include <QColor>
 #include <QCoreApplication>
 
 #include <vector>
@@ -72,9 +71,7 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
-
-	/*! Identification color. */
-	QColor									m_color;						// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Model for convective heat transfer. */
 	NANDRAD::InterfaceHeatConduction		m_heatConduction;				// XML:E

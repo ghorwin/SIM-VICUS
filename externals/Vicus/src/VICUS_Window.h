@@ -72,12 +72,10 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! ID of glazing system referenced from this window definition. */
 	unsigned int					m_idGlazingSystem = INVALID_ID;			// XML:A
-
-	/*! False color. */
-	QColor							m_color;								// XML:A
 
 	/*! Notes. */
 	QString							m_notes;								// XML:E

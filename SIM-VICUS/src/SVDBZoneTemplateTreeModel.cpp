@@ -57,8 +57,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 	// readability improvement
 	const VICUS::Database<VICUS::ZoneTemplate> & db = m_db->m_zoneTemplates;
 
-	// index is a top-level item
 	std::map<unsigned int, VICUS::ZoneTemplate>::const_iterator it;
+
+	// ZoneTemplate Node?
 	if (index.internalPointer() == nullptr) {
 
 		int row = index.row();
@@ -113,107 +114,36 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 		int subTemplateIndex = index.row();
 		VICUS::ZoneTemplate::SubTemplateType subType = zt.usedReference((unsigned int)subTemplateIndex);
 
-		// subtype role
-		if (role == Role_SubTemplateType)
-			return subType;
+		switch (role) {
+			case Role_SubTemplateType :
+				return subType;
 
-		// ID role
-		if (role == Role_Id ||
-			(role == Qt::DisplayRole && index.column() == ColId))
-			return zt.m_idReferences[subType];
+			case Role_Id :
+				return zt.m_idReferences[subType];
 
-		// different handling based on referenced sub-type
-		switch (subType) {
-			case VICUS::ZoneTemplate::ST_Infiltration:{
-				// lookup item in question
-				const VICUS::Infiltration *inf = m_db->m_infiltration[zt.m_idReferences[subType]];
-				// Mind: inf might be a nullptr, if index wasn't given
-				if (role == Qt::DisplayRole && index.column() == ColName) {
-					if (inf == nullptr)
-						return tr("<invalid ID reference>");
-					else
-						return QtExt::MultiLangString2QString(inf->m_displayName);
-				}
-				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
-					if (inf == nullptr) return QVariant();
-					else return inf->m_color;
-				}
-			}break;
-			case VICUS::ZoneTemplate::ST_VentilationNatural:{
-				// lookup item in question
-				const VICUS::VentilationNatural *venti = m_db->m_ventilationNatural[zt.m_idReferences[subType]];
-				// Mind: venti might be a nullptr, if index wasn't given
-				if (role == Qt::DisplayRole && index.column() == ColName) {
-					if (venti == nullptr)
-						return tr("<invalid ID reference>");
-					else
-						return QtExt::MultiLangString2QString(venti->m_displayName);
-				}
-				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
-					if (venti == nullptr) return QVariant();
-					else return venti->m_color;
-				}
-
-			} break;
-			case VICUS::ZoneTemplate::ST_IntLoadPerson:
-			case VICUS::ZoneTemplate::ST_IntLoadEquipment:
-			case VICUS::ZoneTemplate::ST_IntLoadOther:
-			case VICUS::ZoneTemplate::ST_IntLoadLighting:  {
-				// lookup item in question
-				const VICUS::InternalLoad * iload = m_db->m_internalLoads[zt.m_idReferences[subType]];
-				// Mind: il might be a nullptr, if index wasn't given
-				if (role == Qt::DisplayRole && index.column() == ColName) {
-					if (iload == nullptr)
-						return tr("<invalid ID reference>");
-					else
-						return QtExt::MultiLangString2QString(iload->m_displayName);
-				}
-				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
-					if (iload == nullptr) return QVariant();
-					else return iload->m_color;
-				}
-			} break;
-			case VICUS::ZoneTemplate::ST_ControlThermostat:{
-				// lookup item in question
-				const VICUS::ZoneControlThermostat * thermo = m_db->m_zoneControlThermostat[zt.m_idReferences[subType]];
-				// Mind: il might be a nullptr, if index wasn't given
-				if (role == Qt::DisplayRole && index.column() == ColName) {
-					if (thermo == nullptr)
-						return tr("<invalid ID reference>");
-					else
-						return QtExt::MultiLangString2QString(thermo->m_displayName);
-				}
-				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
-					if (thermo == nullptr) return QVariant();
-					else return thermo->m_color;
+			case Qt::DisplayRole : {
+				switch (index.column()) {
+					case ColId		: return zt.m_idReferences[subType];
+					case ColType	: return VICUS::KeywordListQt::Description("ZoneTemplate::SubTemplateType", subType);
+					case ColName	: {
+						const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
+						if (dbElement == nullptr)
+							return tr("<invalid ID reference>");
+						else
+							return QtExt::MultiLangString2QString(dbElement->m_displayName);
+					}
+					case Qt::BackgroundRole : {
+						const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
+						if (dbElement != nullptr)
+							return dbElement->m_color;
+					}
 				}
 			}
-			break;
-			case VICUS::ZoneTemplate::ST_IdealHeatingCooling:{
-				// lookup item in question
-				const VICUS::ZoneIdealHeatingCooling * ideal = m_db->m_zoneIdealHeatingCooling[zt.m_idReferences[subType]];
-				// Mind: il might be a nullptr, if index wasn't given
-				if (role == Qt::DisplayRole && index.column() == ColName) {
-					if (ideal == nullptr)
-						return tr("<invalid ID reference>");
-					else
-						return QtExt::MultiLangString2QString(ideal->m_displayName);
-				}
-				else if (role == Qt::BackgroundRole && index.column() == ColColor) {
-					if (ideal == nullptr) return QVariant();
-					else return ideal->m_color;
-				}
-			}
-			break;
-			case VICUS::ZoneTemplate::NUM_ST:
-			break;
 		}
-
 	}
 
 	// common handling for templates and sub-templates
 	switch (role) {
-
 		case Qt::SizeHintRole :
 			switch (index.column()) {
 				case ColCheck :

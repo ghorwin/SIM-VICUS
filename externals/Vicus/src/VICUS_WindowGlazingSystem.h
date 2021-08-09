@@ -86,13 +86,10 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Model type. */
 	modelType_t							m_modelType = NUM_MT;				// XML:A:required
-
-
-	/*! False color. */
-	QColor								m_color;							// XML:A
 
 	/*! Notes. */
 	IBK::MultiLanguageString			m_notes;							// XML:E

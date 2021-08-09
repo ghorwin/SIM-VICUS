@@ -41,6 +41,7 @@ public:
 	/*! Columns shown in the table view. */
 	enum Columns {
 		ColId,
+		ColType,
 		ColColor,
 		ColCheck,
 		ColName,

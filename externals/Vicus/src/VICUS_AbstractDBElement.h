@@ -28,6 +28,8 @@
 
 #include <IBK_MultiLanguageString.h>
 
+#include <QColor>
+
 #include "VICUS_Constants.h"
 
 class TiXmlElement;
@@ -74,6 +76,9 @@ public:
 
 	/*! The description text for this DB element. */
 	IBK::MultiLanguageString		m_displayName;
+
+	/*! False-color for this DB element (optional, may not be necessary for all DB elements). */
+	QColor							m_color;
 
 };
 

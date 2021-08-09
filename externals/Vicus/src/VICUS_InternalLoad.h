@@ -103,9 +103,7 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;			// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;				// XML:A
-
-	/*! False color. */
-	QColor							m_color;									// XML:A
+	//:inherited	QColor							m_color;					// XML:A
 
 	/*! Internal Load category. */
 	Category						m_category = NUM_MC;						// XML:E:required

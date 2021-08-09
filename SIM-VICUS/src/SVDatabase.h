@@ -106,6 +106,12 @@ public:
 	*/
 	void removeDBElement(DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID);
 
+	/*! Convenience function, can be used to lookup a subtype template by argument.
+		ID of subtemplate is taken from idReferenceArray at index given by 'st'.
+		Returns nullptr if element doesn't exist.
+	*/
+	const VICUS::AbstractDBElement * lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const;
+
 	// Databases
 
 	/*! Map of all opaque database materials. */

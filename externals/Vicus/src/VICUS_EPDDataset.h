@@ -109,12 +109,10 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! UUID of material. */
 	QString							m_uuid;									// XML:A
-
-	/*! False color. */
-	QColor							m_color;								// XML:A
 
 	/*! Notes. */
 	QString							m_notes;								// XML:E

@@ -50,9 +50,7 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;							// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;								// XML:A
-
-	/*! False color. */
-	QColor												m_color;								// XML:A
+	//:inherited	QColor							m_color;									// XML:A
 
 	/*! Defines sub-network through elements, connected by implicitely numbered internal nodes.
 		Nodes with INLET_ID and OUTLET_ID represent inlet and outlet nodes of the sub network respectively

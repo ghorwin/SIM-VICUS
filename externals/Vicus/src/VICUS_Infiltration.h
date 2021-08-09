@@ -72,9 +72,7 @@ public:
 
 	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
 	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
-
-	/*! False color. */
-	QColor							m_color;								// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Air change type. */
 	AirChangeType					m_airChangeType = NUM_AC;				// XML:E
