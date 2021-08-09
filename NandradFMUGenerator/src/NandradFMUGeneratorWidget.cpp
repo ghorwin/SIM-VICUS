@@ -331,7 +331,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
 	f.setBold(true);
 	for (int i=0; i<8; ++i) {
 		m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
-		m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::black);
+		m_ui->tableWidgetInputVars->item(row, i)->setForeground(Qt::black);
 	}
 	m_ui->tableWidgetInputVars->blockSignals(false);
 	on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
@@ -381,7 +381,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 	f.setItalic(true);
 	for (int i=0; i<8; ++i) {
 		m_ui->tableWidgetInputVars->item(row, i)->setFont(f);
-		m_ui->tableWidgetInputVars->item(row, i)->setTextColor(Qt::gray);
+		m_ui->tableWidgetInputVars->item(row, i)->setForeground(Qt::gray);
 	}
 	m_ui->tableWidgetInputVars->blockSignals(false);
 	on_tableWidgetInputVars_currentCellChanged(row,0,0,0);
@@ -426,7 +426,7 @@ void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
 	f.setBold(true);
 	for (int i=0; i<8; ++i) {
 		m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
-		m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::black);
+		m_ui->tableWidgetOutputVars->item(row, i)->setForeground(Qt::black);
 	}
 	m_ui->tableWidgetOutputVars->blockSignals(false);
 	on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
@@ -464,7 +464,7 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 	f.setItalic(true);
 	for (int i=0; i<8; ++i) {
 		m_ui->tableWidgetOutputVars->item(row, i)->setFont(f);
-		m_ui->tableWidgetOutputVars->item(row, i)->setTextColor(Qt::gray);
+		m_ui->tableWidgetOutputVars->item(row, i)->setForeground(Qt::gray);
 	}
 	m_ui->tableWidgetOutputVars->blockSignals(false);
 	on_tableWidgetOutputVars_currentCellChanged(row,0,0,0);
@@ -1027,14 +1027,14 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, 
 	QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(var.m_varName));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 0, item);
 
 
 	item = new QTableWidgetItem(QString("%1").arg(var.m_objectId));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 1, item);
 
 	item = new QTableWidgetItem(QString("%1").arg(var.m_vectorIndex));
@@ -1042,19 +1042,19 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, 
 		item->setText(""); // no -1 display
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 2, item);
 
 	item = new QTableWidgetItem(QString::fromStdString(var.m_unit));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 3, item);
 
 	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarName));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 4, item);
 
 	item = new QTableWidgetItem();
@@ -1064,19 +1064,19 @@ void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, 
 		item->setText(QString("%1").arg(var.m_fmiValueRef));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 5, item);
 
 	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiTypeName));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 6, item);
 
 	item = new QTableWidgetItem(QString::fromStdString(var.m_fmiVarDescription));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	item->setFont(itemFont);
-	item->setTextColor(itemColor);
+	item->setForeground(itemColor);
 	tableWidget->setItem(row, 7, item);
 
 	tableWidget->blockSignals(false);
