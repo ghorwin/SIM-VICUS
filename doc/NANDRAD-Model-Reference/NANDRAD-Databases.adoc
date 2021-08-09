@@ -90,13 +90,7 @@ Eine Konstruktion besteht aus einer oder mehreren Materialschichten. Diese werde
 | `matId` | verweist auf ein Material durch eine eindeutige Material-Identifikationsnummer (`id` wie in einem `Material`-Tag definiert) | string | _erforderlich_
 |====================
 
-Mit der Verwendung des Attributs _matId_ referenzieren Schichten von Konstruktionen die verwendeten Materialien:
-
-.Kollaborationsdiagramm für ConstructionType- und Material-Objekte
-image::Mat_ConstInst.png[]
-
-
-Das `MaterialLayer` hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
+Das Material in der Materialschicht wird über das Attributs _matId_ mittels ID referenziert. Das `MaterialLayer` hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind. 
 
 
 [[construction_active_layer]]

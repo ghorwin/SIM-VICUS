@@ -643,6 +643,12 @@ Die `ActiveLayerThermalLoad` ist positiv bei Beheizung der Fläche und negativ b
 ## Modell für idealisierte Rohrregister-Flächenheizungen
 
 Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Flächen verwendet werden kann. Dabei wird das Rohrnetzwerk im Gebäude nicht abgebildet, sondern eine Vorlauftemperatur als gegeben angenommen (daher _idealisiert_).
+Das Rohrregistermodell ist auch deshalb _ideal_, weil es von stationären Bedingungen ausgeht, d.h. es wird von einem größtenteils konstant durchflossenem Rohr mit konstanten Rand- und Umgebungsbedingungen und konstanter Vorlauftemperatur ausgegangen. Entlang der Rohrschlange wird von konstanten Umgebungsbedingungen ausgegangen (es wird die Temperatur der aktiven Schicht verwendet). 
+
+[NOTE]
+====
+Die Randbedingungen und Vorlauftemperatur können sich zwar während der Simulation ändern, jedoch sind die Gleichungen streng genommen nur für komplett stationäre Prozesse gültig.
+====
 
 .Definitionsblock für Rohrregister-Heizungen
 ====
@@ -713,13 +719,15 @@ Folgende Fließkommaparameter (siehe <<IBK_Parameter>> für eine Beschreibung de
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `SupplyTemperature` | C | Vorlauftemperatur | {nbsp} >= -100.0 {nbsp} | _erforderlich nur für Modelltyp_ `Constant`
-| `MaxMassFlow` | kg/s | Maximaler Massestrom durch das gesamte Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich nur für Modelltyp_ `Constant`
+| `MaxMassFlux` | kg/s | Maximaler Massestrom durch das _gesamte_ Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich nur für Modelltyp_ `Constant`
 | `PipeLength` | m | Länge eines Rohrs im Rohrregister | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 | `PipeInnerDiameter` | m | Innendurchmesser des Rohrs | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich_ 
 | `UValuePipeWall` | W/mK | Längenbezogener äquivalenter U-Wert der Rohrwand | {nbsp}>{nbsp}0.0{nbsp}  | _erforderlich_ 
 |====================
 
-Der Parameter `NumberParallelPipes` gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden.
+Der Parameter `NumberParallelPipes` gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden. Der insgesamt durchströmte Querschnitt ergibt somit aus dem Querschnitt eines Rohres mal Anzahl parallel durchströmter Rohre.
+
+Diese Angabe hat Einfluss auf die Berechnung der Strömungsgeschwindigkeit, da der Massenstrom durch das Rohrregister gleichmäßig auf alle parallelen Stränge aufgeteilt wird. Dies hat auch Auswirkung auf den Begrenzungsparameter `MaxMassFlux`. Ist dieser bspw. auf 0,1 kg/s eingestellt, und es sind zwei parallele Rohrregister verbaut (`NumberParallelPipes=2`), so wird jedes der parallel verlegten Rohre mit max. 0,05 kg/s durchströmt.
 
 
 [TIP]
