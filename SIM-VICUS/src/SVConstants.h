@@ -70,7 +70,10 @@ enum DataRoles {
 		the item corresponds to. */
 	Role_RawPointer,
 	/*! Role to be used to identify color column. */
-	Role_Color
+	Role_Color,
+	/*! Role to retrieve sub-template type, only used by SVDBZoneTemplateTreeModel all other
+		models return QVariant(). */
+	Role_SubTemplateType
 };
 
 /*! Different edit/coloring modes. */

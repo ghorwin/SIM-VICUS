@@ -111,6 +111,7 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	m_ui->treeView->resizeColumnToContents(2);
+	m_ui->treeView->resizeColumnToContents(3);
 
 	exec();
 	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
@@ -238,7 +239,7 @@ void SVDBZoneTemplateEditDialog::onCurrentIndexChanged(const QModelIndex &curren
 			subTemplateID = id;
 			QModelIndex parentIndex = sourceIndex.parent();
 			id = parentIndex.data(Role_Id).toInt();
-			subTemplateType = (VICUS::ZoneTemplate::SubTemplateType)sourceIndex.data(SVDBZoneTemplateTreeModel::Role_SubTemplateType).toInt();
+			subTemplateType = (VICUS::ZoneTemplate::SubTemplateType)sourceIndex.data(Role_SubTemplateType).toInt();
 		}
 		m_editWidget->updateInput(id, subTemplateID, subTemplateType);
 	}

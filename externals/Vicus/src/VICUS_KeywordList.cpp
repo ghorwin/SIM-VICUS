@@ -1348,15 +1348,15 @@ namespace VICUS {
 			// ZoneTemplate::SubTemplateType
 			case 50 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "IntLoadPerson";
-				case 1 : if (no_description != nullptr) *no_description = true; return "IntLoadEquipment";
-				case 2 : if (no_description != nullptr) *no_description = true; return "IntLoadLighting";
-				case 3 : if (no_description != nullptr) *no_description = true; return "IntLoadOther";
-				case 4 : if (no_description != nullptr) *no_description = true; return "ControlThermostat";
-				case 5 : if (no_description != nullptr) *no_description = true; return "ControlVentilationNatural";
-				case 6 : if (no_description != nullptr) *no_description = true; return "Infiltration";
+				case 0 : return "Person loads";
+				case 1 : return "Equipment loads";
+				case 2 : return "Lighting loads";
+				case 3 : return "Other internal loads";
+				case 4 : return "Thermostat control";
+				case 5 : return "Natural ventilation control";
+				case 6 : return "Infiltration loads";
 				case 7 : if (no_description != nullptr) *no_description = true; return "NaturalVentilation";
-				case 8 : if (no_description != nullptr) *no_description = true; return "IdealHeatingCooling";
+				case 8 : return "Heating/cooling loads";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")
@@ -2190,15 +2190,15 @@ namespace VICUS {
 			// ZoneTemplate::SubTemplateType
 			case 50 :
 			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
+				case 0 : return "#FFBB55";
+				case 1 : return "#AA2222";
+				case 2 : return "#FFEECC";
+				case 3 : return "#602222";
+				case 4 : return "#E00010";
+				case 5 : return "#00A000";
+				case 6 : return "#A0B0FF";
+				case 7 : return "#22EE22";
+				case 8 : return "#B08000";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine color for enumeration type '%1' and index '%2'.")

@@ -225,15 +225,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Digital");
 	tr("Heating limit");
 	tr("Cooling limit (positive)");
-	tr("IntLoadPerson");
-	tr("IntLoadEquipment");
-	tr("IntLoadLighting");
-	tr("IntLoadOther");
-	tr("ControlThermostat");
-	tr("ControlVentilationNatural");
-	tr("Infiltration");
+	tr("Person loads");
+	tr("Equipment loads");
+	tr("Lighting loads");
+	tr("Other internal loads");
+	tr("Thermostat control");
+	tr("Natural ventilation control");
+	tr("Infiltration loads");
 	tr("NaturalVentilation");
-	tr("IdealHeatingCooling");
+	tr("Heating/cooling loads");
 }
 
 

@@ -33,6 +33,8 @@
 #include "SVStyle.h"
 #include "SVConstants.h"
 
+#include <VICUS_ZoneTemplate.h>
+
 SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
 	QItemDelegate(parent),
 	m_builtInRole(builtInRole)
@@ -40,6 +42,18 @@ SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
 }
 
 SVDBModelDelegate::~SVDBModelDelegate() {
+}
+
+
+void drawSubTemplateBar( QPainter * painter, QStyleOptionViewItem & option, int subTemplateType) {
+	QBrush b(QColor(VICUS::KeywordList::Color("ZoneTemplate::SubTemplateType", subTemplateType)));
+
+	const int BARWIDTH = 10;
+	QRect r(option.rect);
+	r.setWidth(BARWIDTH);
+
+	option.rect.setLeft(option.rect.left()+BARWIDTH);
+	painter->fillRect(r, b);
 }
 
 void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const {
@@ -67,8 +81,19 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
 		QStyleOptionViewItem modifiedOption(option);
 		modifiedOption.palette = pal;
+
+		// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
+		// subtemplate type
+		QVariant subTemplateType = index.data(Role_SubTemplateType);
+		if (subTemplateType.isValid() && index.column() == 1) // note: column index is currently hard-coded
+			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
 		QItemDelegate::paint(painter, modifiedOption, index);
 	}
-	else
-		QItemDelegate::paint(painter, option, index);
+	else {
+		QVariant subTemplateType = index.data(Role_SubTemplateType);
+		QStyleOptionViewItem modifiedOption(option);
+		if (subTemplateType.isValid() && index.column() == 1)
+			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
+		QItemDelegate::paint(painter, modifiedOption, index);
+	}
 }

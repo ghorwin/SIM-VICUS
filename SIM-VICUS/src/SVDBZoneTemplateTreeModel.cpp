@@ -132,13 +132,54 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 						else
 							return QtExt::MultiLangString2QString(dbElement->m_displayName);
 					}
-					case Qt::BackgroundRole : {
-						const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
-						if (dbElement != nullptr)
-							return dbElement->m_color;
+				}
+			} break;
+
+			case Qt::BackgroundRole : {
+				if (index.column() == ColColor) {
+					const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
+					if (dbElement != nullptr)
+						return dbElement->m_color;
+				}
+			} break;
+
+			case Qt::DecorationRole : {
+				if (index.column() == ColCheck) {
+					const VICUS::AbstractDBElement * dbElement = m_db->lookupSubTemplate(subType, zt.m_idReferences);
+					if (dbElement != nullptr) {
+						bool valid = false;
+						switch (subType) {
+							case VICUS::ZoneTemplate::ST_IntLoadPerson:
+							case VICUS::ZoneTemplate::ST_IntLoadEquipment:
+							case VICUS::ZoneTemplate::ST_IntLoadLighting:
+							case VICUS::ZoneTemplate::ST_IntLoadOther:
+								valid = ((const VICUS::InternalLoad*)dbElement)->isValid(m_db->m_schedules);
+							break;
+							case VICUS::ZoneTemplate::ST_ControlThermostat:
+								valid = ((const VICUS::ZoneControlThermostat*)dbElement)->isValid(m_db->m_schedules);
+							break;
+							case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
+								valid = ((const VICUS::ZoneControlNaturalVentilation*)dbElement)->isValid();
+							break;
+							case VICUS::ZoneTemplate::ST_Infiltration:
+								valid = ((const VICUS::Infiltration*)dbElement)->isValid();
+							break;
+							case VICUS::ZoneTemplate::ST_VentilationNatural:
+								valid = ((const VICUS::VentilationNatural*)dbElement)->isValid(m_db->m_schedules);
+							break;
+							case VICUS::ZoneTemplate::ST_IdealHeatingCooling:
+								valid = ((const VICUS::ZoneIdealHeatingCooling*)dbElement)->isValid();
+							break;
+							case VICUS::ZoneTemplate::NUM_ST: ; // just to make compiler happy
+						}
+						if (valid)
+							return QIcon("://gfx/actions/16x16/ok.png");
+						else
+							return QIcon("://gfx/actions/16x16/error.png");
 					}
 				}
-			}
+			} break;
+
 		}
 	}
 
@@ -149,6 +190,13 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 				case ColCheck :
 				case ColColor :
 					return QSize(22, 16);
+
+				case ColType : {
+					QFontMetrics fm(data(index, Qt::FontRole).value<QFont>());
+					QRect bb = fm.boundingRect(data(index, Qt::DisplayRole).toString());
+					QSize s(bb.width() + 10, bb.height());
+					return s;
+				}
 			} // switch
 			break;
 
@@ -187,6 +235,7 @@ QVariant SVDBZoneTemplateTreeModel::headerData(int section, Qt::Orientation orie
 		case Qt::DisplayRole: {
 			switch ( section ) {
 				case ColId					: return tr("Id");
+				case ColType				: return tr("Type");
 				case ColName				: return tr("Name");
 				default: ;
 			}

@@ -778,9 +778,10 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 		case VICUS::ZoneTemplate::ST_Infiltration:					return m_infiltration[id];
 		case VICUS::ZoneTemplate::ST_VentilationNatural:			return m_ventilationNatural[id];
 		case VICUS::ZoneTemplate::ST_IdealHeatingCooling:			return m_zoneIdealHeatingCooling[id];
-		case VICUS::ZoneTemplate::NUM_ST:							return nullptr; // just to make compiler happy
+		case VICUS::ZoneTemplate::NUM_ST:							; // just to make compiler happy
 	}
 
+	return nullptr;
 }
 
 

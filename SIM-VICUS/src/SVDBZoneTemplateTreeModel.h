@@ -48,10 +48,6 @@ public:
 		NumColumns
 	};
 
-	enum CustomRoles {
-		Role_SubTemplateType = Qt::UserRole + 20
-	};
-
 	/*! Constructor, requires a read/write pointer to the central database object.
 		\note Pointer to database must be valid throughout the lifetime of the Model!
 		*/
