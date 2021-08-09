@@ -1977,19 +1977,19 @@ namespace NANDRAD {
 			// Zone::type_t
 			case 82 :
 			switch (t) {
-				case 0 : return "Zone with constant/predefined temperatures. (schedule)";
-				case 1 : return "Zone described by a temperature node in space.";
-				case 2 : return "Ground zone (calculates temperature based on standard).";
+				case 0 : return "Zone with constant/predefined temperature";
+				case 1 : return "Zone with energy balance equation";
+				case 2 : return "Ground zone (calculates temperature based on heat loss to ground model)";
 			} break;
 			// Zone::para_t
 			case 83 :
 			switch (t) {
-				case 0 : return "Temperature of the zone if set constant [C].";
-				case 1 : return "Relative humidity of the zone if set constant [%].";
-				case 2 : return "CO2 concentration of the zone if set constant [g/m3].";
-				case 3 : return "Net usage area of the ground floor [m2] (for area-related outputs and loads).";
-				case 4 : return "Zone air volume [m3].";
-				case 5 : return "Extra heat capacity [J/K].";
+				case 0 : return "Temperature of the zone if set constant";
+				case 1 : return "Relative humidity of the zone if set constant";
+				case 2 : return "CO2 concentration of the zone if set constant";
+				case 3 : return "Net usage area of the ground floor (for area-related outputs and loads)";
+				case 4 : return "Zone air volume";
+				case 5 : return "Extra heat capacity";
 			} break;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Cannot determine description for enumeration type '%1' and index '%2'.")

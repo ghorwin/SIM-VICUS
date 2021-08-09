@@ -243,7 +243,7 @@ namespace NANDRAD_MODEL {
 				case 19 : return "HeatPumpOnOffSignalSchedule";
 				case 20 : return "SupplyTemperatureSchedule";
 				case 21 : return "PressureHeadSchedule";
-				case 22 : return "AirTemperatureSchedule";
+				case 22 : return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -447,7 +447,7 @@ namespace NANDRAD_MODEL {
 				case 19 : return "HeatPumpOnOffSignalSchedule";
 				case 20 : return "SupplyTemperatureSchedule";
 				case 21 : return "PressureHeadSchedule";
-				case 22 : return "AirTemperatureSchedule";
+				case 22 : return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -623,9 +623,9 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 17 :
 			switch (t) {
-				case 0 : return "Room air temperature.";
-				case 1 : return "Room air relative humidity.";
-				case 2 : return "Room air vapor pressure.";
+				case 0 : return "Room air temperature";
+				case 1 : return "Room air relative humidity";
+				case 2 : return "Room air vapor pressure";
 			} break;
 			// Schedules::KnownQuantities
 			case 18 :
@@ -652,7 +652,7 @@ namespace NANDRAD_MODEL {
 				case 19 : if (no_description != nullptr) *no_description = true; return "HeatPumpOnOffSignalSchedule";
 				case 20 : if (no_description != nullptr) *no_description = true; return "SupplyTemperatureSchedule";
 				case 21 : if (no_description != nullptr) *no_description = true; return "PressureHeadSchedule";
-				case 22 : if (no_description != nullptr) *no_description = true; return "AirTemperatureSchedule";
+				case 22 : if (no_description != nullptr) *no_description = true; return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :

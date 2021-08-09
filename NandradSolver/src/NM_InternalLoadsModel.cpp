@@ -112,9 +112,7 @@ void InternalLoadsModel::initResults(const std::vector<AbstractModel *> &) {
 								 "(error in object list init code).").arg(id).arg(m_objectList->m_name), FUNC_ID);
 		// check existence and validity of zone area
 
-		m_zoneAreas.push_back(it->m_para[NANDRAD::Zone::P_Area].checkedValue("Area", "m2",
-			"m2", 0, true, std::numeric_limits<double>::max(), true,
-			"Zone area must be >= 0 W/m2.") );
+		m_zoneAreas.push_back(it->m_para[NANDRAD::Zone::P_Area].value ); // already checked in Zone::checkParameters()
 
 	}
 	// calculate initial solution for constant model

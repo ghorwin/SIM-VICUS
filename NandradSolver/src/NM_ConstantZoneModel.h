@@ -25,7 +25,6 @@
 #include "NM_AbstractModel.h"
 #include "NM_AbstractStateDependency.h"
 
-
 namespace NANDRAD {
 	class Zone;
 };
@@ -33,8 +32,12 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for a Zone with predefined temperature. Temperature may be either given as parameter or
-	schedule.
+/*! A model for a Zone with predefined temperature. Temperature must be given as parameter 'Temperature', but is
+	overwritten if a schedule 'TemperatureSchedule' is provided.
+
+	Generates a single result value 'AirTemperature', that is used just as the computed air temperature of
+	an active zone. Note that for "ground" zones the term 'AirTemperature' may be a bit misleading, but
+	using the same result variable name as for active zones makes it much easier for ConstructionInstance models.
 */
 class ConstantZoneModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -43,11 +46,8 @@ public:
 	{
 	}
 
-	/*! Initializes object.
-		\param controller Model data.
-	*/
+	/*! Initializes object. */
 	void setup(const NANDRAD::Zone &zone);
-
 
 	// *** Re-implemented from AbstractModel
 
@@ -93,8 +93,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
-	/*! Constant reference to scheduled zone value. */
-	const double*									m_temperaturePtr = nullptr;
+	/*! Reference to predefined zone temperature [K]. */
+	const double*									m_temperature = nullptr;
 };
 
 

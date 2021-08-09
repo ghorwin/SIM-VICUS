@@ -97,10 +97,8 @@ void IdealHeatingCoolingModel::initResults(const std::vector<AbstractModel *> &)
 			throw IBK::Exception(IBK::FormatString("Zone with id '%1' is referenced in object list '%2' but does not exist "
 								 "(error in object list init code).").arg(id).arg(m_objectList->m_name), FUNC_ID);
 
-		// check existence and validity of zone area
-		m_zoneAreas.push_back(it->m_para[NANDRAD::Zone::P_Area].checkedValue("Area", "m2",
-			"m2", 0, true, std::numeric_limits<double>::max(), true,
-			"Zone area must be >= 0 W/m2.") );
+		// store zone area
+		m_zoneAreas.push_back(it->m_para[NANDRAD::Zone::P_Area].value );  // already checked in Zone::checkParameters()
 
 	}
 

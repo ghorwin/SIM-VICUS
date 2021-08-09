@@ -293,15 +293,15 @@ KeywordListQt::KeywordListQt() {
 	tr("Precomputed reduction factor.");
 	tr("Reduction factor is computed based on control model");
 	tr("Reduction factor (remaining percentage of solar gains if shading is closed).");
-	tr("Zone with constant/predefined temperatures. (schedule)");
-	tr("Zone described by a temperature node in space.");
-	tr("Ground zone (calculates temperature based on standard).");
-	tr("Temperature of the zone if set constant [C].");
-	tr("Relative humidity of the zone if set constant [%].");
-	tr("CO2 concentration of the zone if set constant [g/m3].");
-	tr("Net usage area of the ground floor [m2] (for area-related outputs and loads).");
-	tr("Zone air volume [m3].");
-	tr("Extra heat capacity [J/K].");
+	tr("Zone with constant/predefined temperature");
+	tr("Zone with energy balance equation");
+	tr("Ground zone (calculates temperature based on heat loss to ground model)");
+	tr("Temperature of the zone if set constant");
+	tr("Relative humidity of the zone if set constant");
+	tr("CO2 concentration of the zone if set constant");
+	tr("Net usage area of the ground floor (for area-related outputs and loads)");
+	tr("Zone air volume");
+	tr("Extra heat capacity");
 }
 
 

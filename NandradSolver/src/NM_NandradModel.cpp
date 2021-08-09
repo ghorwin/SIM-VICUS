@@ -963,9 +963,16 @@ void NandradModel::initZones() {
 	std::vector<const NANDRAD::Zone*> activeZones;
 	// process all active zones in list of zones
 	for (const NANDRAD::Zone & zone : m_project->m_zones) {
-
-
 		IBK::IBK_Message( IBK::FormatString("Zone [%1] '%2':").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+		try {
+			// check for required parameters
+			zone.checkParameters();
+		}
+		catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, IBK::FormatString("Error in zone parametrization for zone #%1 '%2'")
+				.arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
+		}
+
 		switch (zone.m_type) {
 			case NANDRAD::Zone::ZT_Active : {
 				IBK::IBK_Message( IBK::FormatString(" ACTIVE\n").arg(zone.m_id).arg(zone.m_displayName), IBK::MSG_CONTINUED, FUNC_ID, IBK::VL_INFO);
@@ -1044,10 +1051,10 @@ void NandradModel::initZones() {
 
 
 			// initialise a constant zone model
-			case NANDRAD::Zone::ZT_Constant :
-			{
+			case NANDRAD::Zone::ZT_Constant :  {
 				ConstantZoneModel *constantZoneModel = new ConstantZoneModel(zone.m_id, zone.m_displayName);
 				m_modelContainer.push_back(constantZoneModel); // transfer ownership
+				constantZoneModel->setup(zone);
 				// register as state dependend (model may depend on scheduled temperature)
 				registerStateDependendModel(constantZoneModel);
 			} break;
@@ -1861,7 +1868,7 @@ void NandradModel::initModelDependencies() {
 						try {
 							srcVarAddress = srcObject->resultValueRef(inputRef);
 							if (srcVarAddress == nullptr)
-								throw IBK::Exception("Object return nullptr reference for exported variable.", FUNC_ID);
+								throw IBK::Exception("Object returns nullptr reference for exported variable.", FUNC_ID);
 						} catch (IBK::Exception & ex) {
 							// in case of error, simply cache a warning to be used in the error message if this variable
 							// is required

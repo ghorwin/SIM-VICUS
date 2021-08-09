@@ -23,14 +23,13 @@
 
 #include <NANDRAD_Zone.h>
 
-
 namespace NANDRAD_MODEL {
 
 
 void ConstantZoneModel::setup(const NANDRAD::Zone & zone) {
-	// as a first try set temperature to a constant paarmeter value
-	if(!zone.m_para[NANDRAD::Zone::P_Temperature].name.empty())
-		m_temperaturePtr = &zone.m_para[NANDRAD::Zone::P_Temperature].value;
+	// Initialize pointer to temperature with constant parameter value.
+	// This is a required parameter and was checked for in Zone::checkParameters().
+	m_temperature = &zone.m_para[NANDRAD::Zone::P_Temperature].value;
 }
 
 
@@ -39,50 +38,42 @@ void ConstantZoneModel::resultDescriptions(std::vector<QuantityDescription> & re
 
 	// stemperature value
 	result.m_constant = true;
-	result.m_description = "Predefined zone air temperature [K].";
+	result.m_description = "Predefined zone (air) temperature";
 	result.m_name = "AirTemperature";
-	result.m_unit = "K";
+	result.m_unit = "C";
 
 	resDesc.push_back(result);
 }
 
 
-const double *ConstantZoneModel::resultValueRef(const InputReference & quantity) const {
+const double * ConstantZoneModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 
 	// 'setInputValueRefs' is always called before 'resultValueRef'
 	// so we can transport input references from schedules toward the dependend model
 
 	if (quantityName.m_name == "AirTemperature")
-		return m_temperaturePtr;
+		return m_temperature;
 
 	return nullptr;
 }
 
-void ConstantZoneModel::inputReferences(std::vector<InputReference> & inputRefs) const
-{
+
+void ConstantZoneModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// set an optional reference to temperature schedule
 	InputReference inputRef;
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-	inputRef.m_name = std::string("AirTemperatureSchedule");
-	inputRef.m_required = false;
+	inputRef.m_name = std::string("TemperatureSchedule");
+	inputRef.m_required = false; // optional schedule
 	inputRef.m_id = m_id;
 	inputRefs.push_back(inputRef);
 }
 
-void ConstantZoneModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs)
-{
-	FUNCID(ConstantZoneModel::setInputValueRefs);
 
-	// overwrite constant definition
-	if(resultValueRefs[0] != nullptr) {
-		m_temperaturePtr = resultValueRefs[0];
-	}
-	// missing temperature value
-	if(m_temperaturePtr ==  nullptr) {
-		throw IBK::Exception(IBK::FormatString("Missing temperature value (either IBK:Parameter or Schedule) for constant zone with id %1!")
-							 .arg(m_id), FUNC_ID);
-	}
+void ConstantZoneModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs) {
+	// if schedule is provided, overwrite constant definition
+	if (resultValueRefs[0] != nullptr)
+		m_temperature = resultValueRefs[0];
 }
 
 } // namespace NANDRAD_MODEL

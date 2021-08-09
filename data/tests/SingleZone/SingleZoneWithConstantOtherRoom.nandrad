@@ -2,16 +2,20 @@
 <NandradProject fileVersion="1.99">
 	<Project>
 		<ProjectInfo>
-			<Comment>Tests single zone connected to single outside constructiuon</Comment>
+			<Comment>
+				Tests single zone connected to a zone with predefined temperature (constant).
+				Both zones are connected by a single-layered construction.
+				Zone 1 cools down to constant temperature of Zone 2.
+			</Comment>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
-			<ClimateFilePath>${Project Directory}/../climate/TF03-Sprung2.c6b</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
-			<IBK:Parameter name="InitialTemperature" unit="C">21</IBK:Parameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<Interval>
 				<IBK:Parameter name="End" unit="d">10</IBK:Parameter>
 			</Interval>
@@ -24,10 +28,9 @@
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
-				<IBK:Parameter name="Volume" unit="m3">0.0001</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
 			<Zone id="2" displayName="Ideally heated Room" type="Constant">
-					<!--Parameter is overwritted by scheduled temperature-->
 				<IBK:Parameter name="Temperature" unit="C">15</IBK:Parameter>
 			</Zone>/>
 		</Zones>
@@ -36,16 +39,16 @@
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="1" zoneId="1">
-						<!--Interface to 'Room'-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="2" zoneId="2">
-						<!--Interface to 'Ideally heated Room'-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to 'Ideally heated Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
 		</ConstructionInstances>
@@ -63,40 +66,12 @@
 				<IBK:Parameter name="Conductivity" unit="W/mK">0.2</IBK:Parameter>
 			</Material>
 		</Materials>
-		<Schedules>
-			<WeekEndDays>Sat,Sun</WeekEndDays>
-			<ScheduleGroups>
-				<ScheduleGroup objectList="Indoors">
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<!-- We only heat in occupancy periods between 7 a.m and 7 p.m. -->
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0,7,19</TimePoints>
-								<Values>AirTemperatureSchedule [C]:15,21,15;</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
-			</ScheduleGroups>
-		</Schedules>
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
 					<Quantity>AirTemperature</Quantity>
 					<TimeType>None</TimeType>
 					<ObjectListName>All zones</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>SurfaceTemperatureA</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>All constructions</ObjectListName>
-					<GridName>hourly</GridName>
-				</OutputDefinition>
-				<OutputDefinition>
-					<Quantity>SurfaceTemperatureB</Quantity>
-					<TimeType>None</TimeType>
-					<ObjectListName>All constructions</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -113,14 +88,6 @@
 		<ObjectLists>
 			<ObjectList name="All zones">
 				<FilterID>*</FilterID>
-				<ReferenceType>Zone</ReferenceType>
-			</ObjectList>
-			<ObjectList name="All constructions">
-				<FilterID>*</FilterID>
-				<ReferenceType>ConstructionInstance</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Indoors">
-				<FilterID>2</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

@@ -85,8 +85,6 @@ void Zone::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
-			else if (cName == "ScheduleName")
-				m_scheduleName = c->GetText();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -118,8 +116,6 @@ TiXmlElement * Zone::writeXML(TiXmlElement * parent) const {
 			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
 		}
 	}
-	if (!m_scheduleName.empty())
-		TiXmlElement::appendSingleAttributeElement(e, "ScheduleName", nullptr, std::string(), m_scheduleName);
 	return e;
 }
 

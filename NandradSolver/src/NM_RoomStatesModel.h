@@ -56,9 +56,9 @@ public:
 		Availability depends on thermal/hygrothermal calculation modes.
 	*/
 	enum Results {
-		R_AirTemperature,						// Keyword: AirTemperature				[C]		'Room air temperature.'
-		R_RelativeHumidity,						// Keyword: RelativeHumidity			[%]		'Room air relative humidity.'
-		R_VaporPressure,						// Keyword: VaporPressure				[Pa]	'Room air vapor pressure.'
+		R_AirTemperature,						// Keyword: AirTemperature				[C]		'Room air temperature'
+		R_RelativeHumidity,						// Keyword: RelativeHumidity			[%]		'Room air relative humidity'
+		R_VaporPressure,						// Keyword: VaporPressure				[Pa]	'Room air vapor pressure'
 		NUM_R
 	};
 

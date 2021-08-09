@@ -89,7 +89,8 @@ public:
 		SQ_HeatPumpOnOffSignalSchedule,							// Keyword: HeatPumpOnOffSignalSchedule						[---]
 		SQ_SupplyTemperatureSchedule,							// Keyword: SupplyTemperatureSchedule						[C]
 		SQ_PressureHeadSchedule,								// Keyword: PressureHeadSchedule							[Pa]
-		SQ_AirTemperatureSchedule,								// Keyword: AirTemperatureSchedule							[C]
+		/*! A schedule for a predefined air/ground temperature (used in constant zones). */
+		SQ_TemperatureSchedule,									// Keyword: TemperatureSchedule								[C]
 		NUM_SQ
 	};
 

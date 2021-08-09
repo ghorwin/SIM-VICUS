@@ -32,8 +32,6 @@
 namespace NANDRAD_MODEL {
 
 void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::SimulationParameter & simPara) {
-	FUNCID(RoomStatesModel::setup);
-
 	// Only initialization of zone with matching ID allowed
 	IBK_ASSERT(zone.m_id == id());
 
@@ -41,26 +39,7 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	m_zone		= &zone;
 	m_simPara	= &simPara;
 
-	// check for required parameters
-
-	// m_volume = checkParameter(zone.m_para[NANDRAD::Zone::ZP_VOLUME], "m3", 0, false, std::numeric_limits<double>::max(), false);
-
-	if (zone.m_para[NANDRAD::Zone::P_Volume].name.empty())
-		throw IBK::Exception(IBK::FormatString("Missing parameter 'Volume' in zone #%1 '%2'")
-							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
-
-	// check for valid parameters
-	m_volume = zone.m_para[NANDRAD::Zone::P_Volume].get_value("m3");
-	if (m_volume <= 0)
-		throw IBK::Exception(IBK::FormatString("'Volume' in zone #%1 '%2' must be > 0!")
-							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
-
-	if (!zone.m_para[NANDRAD::Zone::P_HeatCapacity].name.empty() &&
-		zone.m_para[NANDRAD::Zone::P_HeatCapacity].value <= 0)
-	{
-		throw IBK::Exception(IBK::FormatString("'HeatCapacity' in zone #%1 '%2' must be > 0!")
-							 .arg(zone.m_id).arg(zone.m_displayName), FUNC_ID);
-	}
+	m_volume = zone.m_para[NANDRAD::Zone::P_Volume].value;  // already checked in Zone::checkParameters()
 	m_additionalHeatCapacity = zone.m_para[NANDRAD::Zone::P_HeatCapacity].value;
 
 	// resize memory cache for results
@@ -72,11 +51,6 @@ void RoomStatesModel::setup(const NANDRAD::Zone & zone, const NANDRAD::Simulatio
 	}
 	else {
 		m_results.resize(1);
-
-		// warn if temperature parameter is given in active zone
-		if (!zone.m_para[NANDRAD::Zone::P_Temperature].name.empty())
-			IBK::IBK_Message("Temperature parameter in active zone ignored. Using global default initial temperature "
-							 "from simulation parameters.", IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 
 		// cache initial condition
 		m_results[0] = simPara.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value;

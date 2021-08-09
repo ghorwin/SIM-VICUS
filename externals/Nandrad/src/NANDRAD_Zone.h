@@ -46,21 +46,23 @@ public:
 
 	/*! Type of zone. Defines whether zone is balanced and included in equation system. */
 	enum type_t {
-		ZT_Constant,				// Keyword: Constant		'Zone with constant/predefined temperatures. (schedule) '
-		ZT_Active,					// Keyword: Active			'Zone described by a temperature node in space.'
-		/// \todo research different models for ground temperature calculation
-		ZT_Ground,					// Keyword: Ground			'Ground zone (calculates temperature based on standard).'
+		/*! Constant model requires P_Temperature parameter. Optionally, a schedule with name 'TemperatureSchedule' can be used to
+			identify temperature of the zone (or soil, if this is a ground zone).
+		*/
+		ZT_Constant,				// Keyword: Constant		'Zone with constant/predefined temperature'
+		ZT_Active,					// Keyword: Active			'Zone with energy balance equation'
+		ZT_Ground,					// Keyword: Ground			'Ground zone (calculates temperature based on heat loss to ground model)'
 		NUM_ZT
 	};
 
 	/*! Parameters of a zone. */
 	enum para_t {
-		P_Temperature,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant [C].'
-		P_RelativeHumidity,			// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant [%].'
-		P_CO2Concentration,			// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant [g/m3].'
-		P_Area,						// Keyword: Area					[m2]	'Net usage area of the ground floor [m2] (for area-related outputs and loads).'
-		P_Volume,					// Keyword: Volume					[m3]	'Zone air volume [m3].'
-		P_HeatCapacity,				// Keyword: HeatCapacity			[J/K]	'Extra heat capacity [J/K].'
+		P_Temperature,				// Keyword: Temperature				[C]		'Temperature of the zone if set constant'
+		P_RelativeHumidity,			// Keyword: RelativeHumidity		[%]		'Relative humidity of the zone if set constant'
+		P_CO2Concentration,			// Keyword: CO2Concentration		[g/m3]	'CO2 concentration of the zone if set constant'
+		P_Area,						// Keyword: Area					[m2]	'Net usage area of the ground floor (for area-related outputs and loads)'
+		P_Volume,					// Keyword: Volume					[m3]	'Zone air volume'
+		P_HeatCapacity,				// Keyword: HeatCapacity			[J/K]	'Extra heat capacity'
 		NUM_P
 	};
 
@@ -69,10 +71,8 @@ public:
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 
-	/*! Checks for valid and required parameters (value ranges).
-		\param networkModelType Type of network calculation model (HydraulicNetwork::ModelType).
-	*/
-	void checkParameters();
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters() const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -83,16 +83,12 @@ public:
 	std::string					m_displayName;						// XML:A
 
 	/*! Zone type (Constant, Active).
-		\sa zoneType_t
+		\sa type_t
 	*/
 	type_t						m_type = NUM_ZT;					// XML:A:required
 
 	/*! Physical parameters describing the zone. */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
-
-	/*! Optional schedule reference name for constant zones. */
-	std::string					m_scheduleName;						// XML:E
-
 
 	/*! Data type used in view factor definition. */
 	typedef std::pair<unsigned int, unsigned int>  viewFactorPair;
