@@ -2747,7 +2747,8 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 			iface.m_zoneId = room->m_id;
 
 		// only transfer heat conduction parameters
-		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_heatConduction.m_modelType = (NANDRAD::InterfaceHeatConduction::modelType_t)bc->m_heatConduction.m_modelType;
+		iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] = bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient];
 		return iface;
 	}
 	else {
@@ -2757,7 +2758,8 @@ NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & c
 		NANDRAD::Interface iface;
 		iface.m_id = uniqueIdWithPredef2(Interface, interfaceID, maps, true);
 		iface.m_zoneId = 0; // outside zone
-		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_heatConduction.m_modelType = (NANDRAD::InterfaceHeatConduction::modelType_t)bc->m_heatConduction.m_modelType;
+		iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] = bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient];
 		iface.m_solarAbsorption = bc->m_solarAbsorption;
 		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;

@@ -218,9 +218,9 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_curr
 	Q_ASSERT(m_current != nullptr);
 	// update database but only if different from original
 	if (index != (int)m_current->m_heatConduction.m_modelType) {
-		m_current->m_heatConduction.m_modelType = static_cast<NANDRAD::InterfaceHeatConduction::modelType_t>(index);
-		if (m_current->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::NUM_MT)
-			m_current->m_heatConduction = NANDRAD::InterfaceHeatConduction(); // reset entire object
+		m_current->m_heatConduction.m_modelType = static_cast<VICUS::InterfaceHeatConduction::modelType_t>(index);
+		if (m_current->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::NUM_MT)
+			m_current->m_heatConduction = VICUS::InterfaceHeatConduction(); // reset entire object
 		modelModify();
 	}
 	// by default disable all inputs
@@ -229,11 +229,11 @@ void SVDBBoundaryConditionEditWidget::on_comboBoxHeatTransferCoeffModelType_curr
 	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
 	if (m_ui->groupBoxHeatTransfer->isEnabled()) {
 		switch (m_current->m_heatConduction.m_modelType) {
-			case NANDRAD::InterfaceHeatConduction::MT_Constant:
+			case VICUS::InterfaceHeatConduction::MT_Constant:
 				m_ui->labelHeatTransferCoefficient->setEnabled(true);
 				m_ui->lineEditHeatTransferCoefficient->setEnabled(true);
 			break;
-			case NANDRAD::InterfaceHeatConduction::NUM_MT: break;
+			case VICUS::InterfaceHeatConduction::NUM_MT: break;
 		}
 	}
 }

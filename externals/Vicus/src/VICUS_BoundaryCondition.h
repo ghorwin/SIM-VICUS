@@ -34,7 +34,6 @@
 #include <IBK_Parameter.h>
 #include <IBK_MultiLanguageString.h>
 
-#include <NANDRAD_InterfaceHeatConduction.h>
 #include <NANDRAD_InterfaceLongWaveEmission.h>
 #include <NANDRAD_InterfaceSolarAbsorption.h>
 #include <NANDRAD_InterfaceVaporDiffusion.h>
@@ -43,6 +42,7 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_InterfaceHeatConduction.h"
 
 
 namespace VICUS {
@@ -74,7 +74,7 @@ public:
 	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Model for convective heat transfer. */
-	NANDRAD::InterfaceHeatConduction		m_heatConduction;				// XML:E
+	VICUS::InterfaceHeatConduction			m_heatConduction;				// XML:E
 	/*! Model for solar absorption. */
 	NANDRAD::InterfaceSolarAbsorption		m_solarAbsorption;				// XML:E
 	/*! Model for long wave emissivity. */

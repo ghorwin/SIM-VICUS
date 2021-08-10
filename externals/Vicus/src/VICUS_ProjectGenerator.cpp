@@ -1254,7 +1254,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		iface.m_zoneId = room->m_id;	//we can take the room id directly, because we dont have duplicates
 
 		// only transfer heat conduction parameters
-		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_heatConduction.m_modelType = (NANDRAD::InterfaceHeatConduction::modelType_t)bc->m_heatConduction.m_modelType;
+		iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] = bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient];
 		iface.m_solarAbsorption = bc->m_solarAbsorption;
 		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;
@@ -1266,7 +1267,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		NANDRAD::Interface iface;
 		iface.m_id = interfaceID;
 		iface.m_zoneId = 0; // outside zone
-		iface.m_heatConduction = bc->m_heatConduction;
+		iface.m_heatConduction.m_modelType = (NANDRAD::InterfaceHeatConduction::modelType_t)bc->m_heatConduction.m_modelType;
+		iface.m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient] = bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient];
 		iface.m_solarAbsorption = bc->m_solarAbsorption;
 		iface.m_longWaveEmission = bc->m_longWaveEmission;
 		return iface;

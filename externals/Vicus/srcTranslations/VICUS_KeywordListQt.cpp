@@ -69,6 +69,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Shielding coefficient for n50 value");
 	tr("normal");
 	tr("n50");
+	tr("Constant heat exchange coefficient");
+	tr("No convective heat exchange");
+	tr("Standard");
+	tr("Constant");
+	tr("Scheduled");
+	tr("Convective heat transfer coefficient");
+	tr("Constant temperature of other zone/ground");
 	tr("Person count");
 	tr("Person per area");
 	tr("Area per person");
