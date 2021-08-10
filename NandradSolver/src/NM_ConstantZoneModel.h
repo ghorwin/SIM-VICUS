@@ -93,6 +93,8 @@ private:
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
 	std::string										m_displayName;
+	/*! Coded zone type (either 'Constant' or 'Scheduled'). */
+	int												m_zoneType = 999;
 	/*! Reference to predefined zone temperature [K]. */
 	const double*									m_temperature = nullptr;
 };

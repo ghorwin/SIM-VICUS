@@ -31,10 +31,13 @@ void Zone::checkParameters() const {
 
 	switch (m_type) {
 		// require parameter 'Temperature' for Zone attribute 'Constant'
-		// this parameter may be overwritten by a schedule later
 		case ZT_Constant : {
 			m_para[P_Temperature].checkedValue("Temperature", "K", "K", 173.15, false, std::numeric_limits<double>::max(), false,
 											   "Parameter 'Temperature' must be > -100 C.");
+		} break;
+
+		case ZT_Scheduled : {
+			// no parameters needed
 		} break;
 
 		case ZT_Active : {

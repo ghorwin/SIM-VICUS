@@ -735,8 +735,9 @@ namespace NANDRAD {
 			case 82 :
 			switch (t) {
 				case 0 : return "Constant";
-				case 1 : return "Active";
-				case 2 : return "Ground";
+				case 1 : return "Scheduled";
+				case 2 : return "Active";
+				case 3 : return "Ground";
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -1356,8 +1357,9 @@ namespace NANDRAD {
 			case 82 :
 			switch (t) {
 				case 0 : return "Constant";
-				case 1 : return "Active";
-				case 2 : return "Ground";
+				case 1 : return "Scheduled";
+				case 2 : return "Active";
+				case 3 : return "Ground";
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -1977,9 +1979,10 @@ namespace NANDRAD {
 			// Zone::type_t
 			case 82 :
 			switch (t) {
-				case 0 : return "Zone with constant/predefined temperature";
-				case 1 : return "Zone with energy balance equation";
-				case 2 : return "Ground zone (calculates temperature based on heat loss to ground model)";
+				case 0 : return "Zone with constant temperature";
+				case 1 : return "Zone with schedule defined temperature";
+				case 2 : return "Zone with energy balance equation";
+				case 3 : return "Ground zone (calculates temperature based on heat loss to ground model)";
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -2601,6 +2604,7 @@ namespace NANDRAD {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
+				case 3 : return "";
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -3222,6 +3226,7 @@ namespace NANDRAD {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -3843,6 +3848,7 @@ namespace NANDRAD {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Zone::para_t
 			case 83 :
@@ -4027,7 +4033,7 @@ namespace NANDRAD {
 			// WindowShading::para_t
 			case 81 : return 1;
 			// Zone::type_t
-			case 82 : return 3;
+			case 82 : return 4;
 			// Zone::para_t
 			case 83 : return 6;
 		} // switch
@@ -4203,7 +4209,7 @@ namespace NANDRAD {
 			// WindowShading::para_t
 			case 81 : return 0;
 			// Zone::type_t
-			case 82 : return 2;
+			case 82 : return 3;
 			// Zone::para_t
 			case 83 : return 6;
 		} // switch

@@ -49,7 +49,8 @@ public:
 		/*! Constant model requires P_Temperature parameter. Optionally, a schedule with name 'TemperatureSchedule' can be used to
 			identify temperature of the zone (or soil, if this is a ground zone).
 		*/
-		ZT_Constant,				// Keyword: Constant		'Zone with constant/predefined temperature'
+		ZT_Constant,				// Keyword: Constant		'Zone with constant temperature'
+		ZT_Scheduled,				// Keyword: Scheduled		'Zone with schedule defined temperature'
 		ZT_Active,					// Keyword: Active			'Zone with energy balance equation'
 		ZT_Ground,					// Keyword: Ground			'Ground zone (calculates temperature based on heat loss to ground model)'
 		NUM_ZT

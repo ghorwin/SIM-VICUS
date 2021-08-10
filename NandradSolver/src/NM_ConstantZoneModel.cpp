@@ -27,16 +27,19 @@ namespace NANDRAD_MODEL {
 
 
 void ConstantZoneModel::setup(const NANDRAD::Zone & zone) {
-	// Initialize pointer to temperature with constant parameter value.
+	// copy zone type
+	m_zoneType = zone.m_type;
+	// Initialize pointer to temperature with constant parameter value for a zone of type 'Constant'.
 	// This is a required parameter and was checked for in Zone::checkParameters().
-	m_temperature = &zone.m_para[NANDRAD::Zone::P_Temperature].value;
+	if(m_zoneType == NANDRAD::Zone::ZT_Constant)
+		m_temperature = &zone.m_para[NANDRAD::Zone::P_Temperature].value;
 }
 
 
 void ConstantZoneModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	QuantityDescription result;
 
-	// stemperature value
+	// temperature value
 	result.m_constant = true;
 	result.m_description = "Predefined zone (air) temperature";
 	result.m_name = "AirTemperature";
@@ -60,19 +63,21 @@ const double * ConstantZoneModel::resultValueRef(const InputReference & quantity
 
 
 void ConstantZoneModel::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// set an optional reference to temperature schedule
-	InputReference inputRef;
-	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-	inputRef.m_name = std::string("TemperatureSchedule");
-	inputRef.m_required = false; // optional schedule
-	inputRef.m_id = m_id;
-	inputRefs.push_back(inputRef);
+	// set reference to temperature schedule for zone type 'Schedule'
+	if(m_zoneType == NANDRAD::Zone::ZT_Scheduled) {
+		InputReference inputRef;
+		inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+		inputRef.m_name = std::string("TemperatureSchedule");
+		inputRef.m_required = true;
+		inputRef.m_id = m_id;
+		inputRefs.push_back(inputRef);
+	}
 }
 
 
 void ConstantZoneModel::setInputValueRefs(const std::vector<QuantityDescription> &, const std::vector<const double *> & resultValueRefs) {
 	// if schedule is provided, overwrite constant definition
-	if (resultValueRefs[0] != nullptr)
+	if(m_zoneType == NANDRAD::Zone::ZT_Scheduled)
 		m_temperature = resultValueRefs[0];
 }
 

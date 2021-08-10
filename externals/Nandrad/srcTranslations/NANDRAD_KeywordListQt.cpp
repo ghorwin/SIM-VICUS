@@ -293,7 +293,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Precomputed reduction factor.");
 	tr("Reduction factor is computed based on control model");
 	tr("Reduction factor (remaining percentage of solar gains if shading is closed).");
-	tr("Zone with constant/predefined temperature");
+	tr("Zone with constant temperature");
+	tr("Zone with schedule defined temperature");
 	tr("Zone with energy balance equation");
 	tr("Ground zone (calculates temperature based on heat loss to ground model)");
 	tr("Temperature of the zone if set constant");

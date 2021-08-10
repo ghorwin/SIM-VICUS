@@ -30,9 +30,7 @@
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
-			<Zone id="2" displayName="Ideally heated Room" type="Constant">
-				<IBK:Parameter name="Temperature" unit="C">15</IBK:Parameter>
-			</Zone>/>
+			<Zone id="2" displayName="Ideally heated Room" type="Scheduled"/>
 		</Zones>
 		<ConstructionInstances>
 			<ConstructionInstance id="101" displayName="South">
@@ -69,7 +67,7 @@
 		<Schedules>
 			<WeekEndDays>Sat,Sun</WeekEndDays>
 			<ScheduleGroups>
-				<ScheduleGroup objectList="ConstantZone">
+				<ScheduleGroup objectList="ScheduledZone">
 					<Schedule type="AllDays">
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
@@ -113,7 +111,7 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
-			<ObjectList name="ConstantZone">
+			<ObjectList name="ScheduledZone">
 				<FilterID>2</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>

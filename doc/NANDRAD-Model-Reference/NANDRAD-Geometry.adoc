@@ -35,7 +35,8 @@ Innerhalb des XML-tags namens `Zones` beginnt jede Zone mit dem XML-tag `Zone`. 
 | `type`  
 a| Legt fest, ob die Zone ausgeglichen und in das Gleichungssystem einbezogen wird.
 
-* `Constant` als Zone mit konstanten/vordefinierten Temperaturen (Zeitplan)
+* `Constant` als Zone mit konstanten Temperaturen (Parameter)
+* `Scheduled` als Zone mit zeitplandefinierten Temperaturen
 * `Active` als Zone, die durch einen Temperaturknoten im Raum beschrieben wird
 * `Ground` als Bodenzone (berechnet die Temperatur auf Basis des Standards) | key | _erforderlich_
 
@@ -45,10 +46,11 @@ Für _konstante_ Zonen wird angenommen, dass die Temperatur
 vorgegeben ist, während in _Active_ Zonen die Temperatur berechnet wird (d. h. in den
  Unbekannten des Modells enthalten ist). 
  
- Eine _konstante_ Zone benötigt entweder Temperaturparameter oder einen Temperaturzeitplan, aber keine weiteren Parameter. Der Zeitplan muss dabei
+ Eine _konstante_ Zone benötigt nur den Temperaturparameter.
+ 
+ Eine _scheduled_ Zone benötigt keine Parameter. Der Temperaturzeitplan muss allerdings
  in den _Schedules_ abgelegt sein, eine _ScheduleGroup_ für eine die Zone enthaltene Objektliste definieren und den Parameter 'TemperatureSchedule' definieren. 
- Bei Vorliegen eines Zeitplans und eines Temperaturparameters überschreibt die Scheduledefinition den Parameter.
-
+ 
 Parameter (siehe Abschnitt <<IBK_Parameter>> für eine Beschreibung des tags `IBK:Parameter`):
 
 [options="header",cols="18%,^ 15%,38%,^ 20%,^ 10%",width="100%"]

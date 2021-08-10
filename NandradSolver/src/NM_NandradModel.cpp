@@ -1051,7 +1051,8 @@ void NandradModel::initZones() {
 
 
 			// initialise a constant zone model
-			case NANDRAD::Zone::ZT_Constant :  {
+			case NANDRAD::Zone::ZT_Constant :
+			case NANDRAD::Zone::ZT_Scheduled: {
 				ConstantZoneModel *constantZoneModel = new ConstantZoneModel(zone.m_id, zone.m_displayName);
 				m_modelContainer.push_back(constantZoneModel); // transfer ownership
 				constantZoneModel->setup(zone);
