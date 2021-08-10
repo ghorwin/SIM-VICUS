@@ -112,12 +112,12 @@ public:
 	~SVSettings();
 
 	/*! Sets default options (after first program start). */
-	void setDefaults();
+	void setDefaults() override;
 
 	/*! Reads the user specific config data.
 		The data is read in the usual method supported by the various platforms.
 	*/
-	void read();
+	void read() override;
 
 	/*! Writes the user specific config data.
 		The data is writted in the usual method supported by the various platforms.
@@ -125,14 +125,23 @@ public:
 		\param state A bytearray with the main window state (toolbars, dockwidgets etc.)
 					(see QMainWindow::saveState())
 	*/
-	void write(QByteArray geometry, QByteArray state);
+	void write(QByteArray geometry, QByteArray state) override;
+
+	/*! Adds SIM-VICUS-specific command line arguments to the arg parser. */
+	void updateArgParser(IBK::ArgParser & argParser) override;
+
+	/*! Processes SIM-VICUS-specific command line arguments.
+		This function is called after setDefaults() and read(). It can be used
+		to override settings read from configuration or default settings.
+	*/
+	void applyCommandLineArgs(const IBK::ArgParser & argParser) override;
 
 	/*! Reads the main window configuration properties.
 		\param geometry A bytearray with the main window geometry (see QMainWindow::saveGeometry())
 		\param state A bytearray with the main window state (toolbars, dockwidgets etc.)
 					(see QMainWindow::saveState())
 	*/
-	void readMainWindowSettings(QByteArray &geometry, QByteArray &state);
+	void readMainWindowSettings(QByteArray &geometry, QByteArray &state) override;
 
 	/*! Convenience check function, tests if a property is in the map. */
 	bool hasProperty(PropertyType t) const { return m_propertyMap.find(t) != m_propertyMap.end(); }
@@ -177,6 +186,11 @@ public:
 
 	// ****** member variables ************
 
+
+	/*! If user has specified --nandrad project file argument, the target file name is stored here.
+		(may be absolute or relative path).
+	*/
+	QString						m_nandradExportFileName;
 
 	// *** members below are stored in settings file ***
 
@@ -258,6 +272,7 @@ private:
 	static SVSettings			*m_self;
 
 };
+
 
 
 #endif // SVSettingsH

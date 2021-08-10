@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	QtExt::Directories::appname = "SIM-VICUS";
 	QtExt::Directories::devdir = "SIM-VICUS";
 
-	// create QApplication wrapped to catch rogue exceptions
+	// create wrapped-QApplication class (to catch rogue exceptions)
 	SVDebugApplication a(argc, argv);
 
 	// install message handler to catch qDebug()
@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
 	QDir baseDir;
 	baseDir.mkpath(QtExt::Directories::userDataDir());
 
+	// create global message handler object, from here until end-of-program-life accessible via IBK::MessageHandlerRegistry::instance()
 	SVMessageHandler messageHandler;
 	IBK::MessageHandlerRegistry::instance().setMessageHandler( &messageHandler );
 	std::string errmsg;
@@ -101,10 +102,11 @@ int main(int argc, char *argv[]) {
 
 	// *** Create and initialize setting object ***
 
+	// create global settings object, from here until end-of-program-life accessible via SVSettings::instance()
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
-	// if we have just upgraded to a new version, try to import settings from the lest minor version
+	// if we have just upgraded to a new version, try to import settings from the last minor version
 	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
 		unsigned int major, minor, patch;
 		IBK::decode_version_number(VICUS::VERSION, major, minor, patch);

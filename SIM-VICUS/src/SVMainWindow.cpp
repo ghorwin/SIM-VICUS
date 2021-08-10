@@ -61,6 +61,8 @@
 #include <QtExt_Directories.h>
 #include <QtExt_configuration.h>
 
+#include <NANDRAD_Project.h>
+
 #include "SVMessageHandler.h"
 #include "SVConstants.h"
 #include "SVSettings.h"
@@ -1566,6 +1568,37 @@ void SVMainWindow::onWorkerThreadFinished() {
 
 
 void SVMainWindow::onFixProjectAfterRead() {
+	FUNCID(SVMainWindow::onFixProjectAfterRead);
+
+	// project has been read - if we have a nandrad-export specified, run the automatic nandrad generation
+	if (!SVSettings::instance().m_nandradExportFileName.isEmpty()) {
+
+		QStringList errorStack;
+
+		VICUS::Project localProject(project());
+		localProject.updatePointers();
+		SVSettings::instance().m_db.updateEmbeddedDatabase(localProject);
+		try {
+			NANDRAD::Project p;
+			// add default placeholders
+			p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
+			p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
+			project().generateNandradProject(p, errorStack);
+			// save project
+			IBK::Path targetNandradFile(SVSettings::instance().m_nandradExportFileName.toStdString());
+			p.writeXML(targetNandradFile);
+
+			IBK::IBK_Message( IBK::FormatString("NANDRAD project file '%1' generated.\n").arg(targetNandradFile.absolutePath()), IBK::MSG_PROGRESS, FUNC_ID);
+		}
+		catch (IBK::Exception & ex) {
+			// just show a generic error message
+			ex.writeMsgStackToError();
+			IBK::IBK_Message("An error occurred during NANDRAD project generation.", IBK::MSG_ERROR, FUNC_ID);
+			exit(1);
+		}
+		exit(0); // bail out successfully
+	}
+
 	// here we do all entry checks that will tell users about suggested changes in project
 
 	std::vector<std::vector<SVDatabase::DuplicateInfo> > dups;

@@ -38,6 +38,7 @@
 #endif
 
 #include <QtExt_Directories.h>
+#include <IBK_ArgParser.h>
 
 #include <tinyxml.h>
 
@@ -233,6 +234,37 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 }
 
 
+void SVSettings::updateArgParser(IBK::ArgParser & argParser) {
+	QtExt::Settings::updateArgParser(argParser);
+	argParser.addOption(0, "nandrad", "Generate NANDRAD simulation project from vicus-file.", "<target-name.nandrad>", "");
+}
+
+
+void SVSettings::applyCommandLineArgs(const IBK::ArgParser & argParser) {
+	FUNCID(SVSettings::applyCommandLineArgs);
+	QtExt::Settings::applyCommandLineArgs(argParser);
+
+	if (argParser.hasOption("nandrad")) {
+		// we need an initial project file argument
+		if (m_initialProjectFile.isEmpty()) {
+			IBK::IBK_Message("Incomplete command line, '--nandrad' option requires vicus project file argument.",
+							 IBK::MSG_ERROR, FUNC_ID);
+			exit(1);
+		}
+		std::string str = argParser.option("nandrad");
+#ifdef Q_OS_WIN
+		// On Windows, use codepage encoding instead of UTF8
+		m_nandradExportFileName = QString::fromLatin1(str.c_str() );
+#else
+		m_nandradExportFileName = QString::fromUtf8( str.c_str() );
+		// remove "file://" prefix
+		if (m_nandradExportFileName.indexOf("file://") == 0)
+			m_nandradExportFileName = m_nandradExportFileName.mid(7);
+#endif
+	}
+}
+
+
 void SVSettings::readMainWindowSettings(QByteArray &geometry, QByteArray &state) {
 	QtExt::Settings::readMainWindowSettings(geometry, state);
 
@@ -240,7 +272,6 @@ void SVSettings::readMainWindowSettings(QByteArray &geometry, QByteArray &state)
 	QString defaultDockWidgets = "Materials,Log";
 	m_visibleDockWidgets = settings.value("VisibleDockWidgets", defaultDockWidgets).toString().split(",");
 }
-
 
 
 void SVSettings::recursiveSearch(QDir baseDir, QStringList & files, const QStringList & extensions) {
