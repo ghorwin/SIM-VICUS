@@ -156,6 +156,9 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	std::string encodedLeft;
 	std::string encodedRight;
 
+	const char * LINE_DIFF_SPAN = "<span style=\"color:#202080;background-color:#d0d0ff\">";
+	const char * CHAR_DIFF_SPAN = "<span style=\"color:#ffffff;background-color:#2020a0\">";
+
 	for (unsigned int i=0, count = diff.resultObj().size(); i<count; ++i) {
 		// check if this and the next line have opposite change markers
 		// and if so, compute levenstein
@@ -170,67 +173,84 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 				if (pos == std::string::npos)
 					pos = leftStr.size();
 				if (rightStr.size() >= pos && leftStr.substr(0,pos) == rightStr.substr(0, pos)) {
-//				int ld = IBK::levenshtein_distance(diff.resultObj()[i], diff.resultObj()[i+1]);
-//				if (ld < (diff.resultObj()[i].length()*0.5) && diff.resultObj()[i].length() > 0) {
-#if 1
-					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
-#else
 
-					// found a conflicting line (i.e. same line edited in both files, which should be the most common case)
-					// now determine the different chars in this line
-					std::vector<char> lineLeft(diff.resultObj()[i].begin(), diff.resultObj()[i].end());
-					std::vector<char> lineRight(diff.resultObj()[i+1].begin(), diff.resultObj()[i+1].end());
+#if 1
+
+					std::vector<char> lineLeft(leftStr.begin(), leftStr.end());
+					std::vector<char> lineRight(rightStr.begin(), rightStr.end());
 					IBK::Differ<char> lineDiff(lineLeft, lineRight);
 					lineDiff.diff();
-					bool equalMode = true;
+
 					std::string mergedLineLeft;
 					std::string mergedLineRight;
-					for (unsigned int j=0, chcount = lineDiff.resultObj().size(); j<chcount; ++j) {
-						if (lineDiff.resultOperation()[j] == IBK::DifferOpEqual) {
-							// switch to equal mode?
-							if (!equalMode) {
-								// if we had already a "different string" span, close it and start a new
-								if (!mergedLineLeft.empty()) {
-									mergedLineLeft += "</span>";
-									mergedLineRight += "</span>";
-								}
-								mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-								mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-								equalMode = true;
-							}
-							mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-							mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-						}
-						else {
-							// switch to different mode?
-							if (equalMode) {
-								// if we had already an "equal string" span, close it and start a new
-								if (!mergedLineLeft.empty()) {
-									mergedLineLeft += "</span>";
-									mergedLineRight += "</span>";
-								}
-								mergedLineLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
-								mergedLineRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">";
-								equalMode = false;
-							}
-							++j; // skip over next char as well
-						}
-						// for first char, add span header
-						if (mergedLineLeft.empty()) {
-							mergedLineLeft += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-							mergedLineRight += "<span style=\"color:#a0a0ff;background-color:#ffffff\">";
-						}
-						mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
-						mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j+1]));
-					}
-					if (!mergedLine.empty())
-						mergedLine += "</span>";
 
-					encodedLeft += mergedLine + "<br>";
-					encodedRight += mergedLine + "<br>";
-					++i;
-					continue;
+					bool leftModMode = false;
+					bool rightModMode = false;
+					// we process now all change markers
+					for (unsigned int j=0, chcount = lineDiff.resultObj().size(); j<chcount; ++j) {
+						switch (lineDiff.resultOperation()[j]) {
+							case IBK::DifferOpEqual : {
+								// leave left modification mode?
+								if (leftModMode) {
+									// if we had already a "different string" span, close it and start a new
+									if (!mergedLineLeft.empty()) {
+										mergedLineLeft += "</span>";
+									}
+									mergedLineLeft += LINE_DIFF_SPAN;
+									leftModMode = false;
+								}
+
+								// leave right modification mode?
+								if (rightModMode) {
+									// if we had already a "different string" span, close it and start a new
+									if (!mergedLineRight.empty()) {
+										mergedLineRight += "</span>";
+									}
+									mergedLineRight += LINE_DIFF_SPAN;
+									rightModMode = false;
+								}
+
+								// append character
+								mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+								mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+							} break;
+
+							case IBK::DifferOpInsert : {
+								// turn on right modification mode?
+								if (!rightModMode) {
+									if (!mergedLineRight.empty()) {
+										mergedLineRight += "</span>";
+									}
+									mergedLineRight += CHAR_DIFF_SPAN;
+									rightModMode = true;
+								}
+								mergedLineRight += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+							} break;
+
+							case IBK::DifferOpRemove : {
+								// turn on left modification mode?
+								if (!leftModMode) {
+									if (!mergedLineLeft.empty()) {
+										mergedLineLeft += "</span>";
+									}
+									mergedLineLeft += CHAR_DIFF_SPAN;
+									leftModMode = true;
+								}
+								mergedLineLeft += IBK::convertXml2Html(std::string(1,lineDiff.resultObj()[j]));
+							} break;
+
+						} // switch
+					}
+					// if we had some content in the string, close the span token
+					if (!mergedLineLeft.empty())
+						mergedLineLeft += "</span>";
+					if (!mergedLineRight.empty())
+						mergedLineRight += "</span>";
+					encodedLeft = LINE_DIFF_SPAN + mergedLineLeft + "<br>";
+					encodedRight = LINE_DIFF_SPAN + mergedLineRight + "<br>";
+#else
+					encodedLeft += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+					encodedRight += "<span style=\"color:#2020a0;background-color:#c0c0ff\">" + IBK::convertXml2Html(diff.resultObj()[i+1]) + "</span><br>";
 #endif
 					++i; // skip over second marker as well
 					continue;
