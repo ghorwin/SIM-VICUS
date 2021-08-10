@@ -541,7 +541,16 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						}
 
 						// store original translation matrix
+						IBK::IBK_Message(IBK::FormatString("%1 %2 %3").arg(m_rotationAxis.m_x).arg(m_rotationAxis.m_y).arg(m_rotationAxis.m_z));
 						m_originalRotation = m_coordinateSystemObject.transform().rotation();
+
+						// compute and store bounding box
+						std::vector<const VICUS::Surface*> selSurfaces;
+						std::vector<const VICUS::SubSurface*> selSubSurfaces;
+
+						project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
+						project().boundingBox(selSurfaces, selSubSurfaces, m_boundingBoxCenterPoint);
+
 						qDebug() << "Entering interactive rotation mode";
 					}
 				}
@@ -655,86 +664,82 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					} break;// interactive translation active
 
 					case NM_InteractiveRotation: {
+						// take the line-of-sight and compute intersection point with current rotation plane
+						// rotation plane = rotation axis (e.g. TM_RotateX) and offset
+
+						// store current's coordinate system position
+						IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
+
 						// pick a point and snap to some point in the scene
 						if (!pickObject.m_pickPerformed)
 							pick(pickObject);
 
-						// store current's coordinate system position
-						IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
-						// snap it to the new location
-						snapLocalCoordinateSystem(pickObject);
-						// get point that the mouse snapped to
-						IBKMK::Vector3D newPoint = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
-						// and restore coordinate systems location
-						m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector( coordinateSystemLocation) );
+						IBKMK::Vector3D intersectionPoint;
+						double dist;
+						bool haveIntersection = IBKMK::linePlaneIntersection(coordinateSystemLocation, m_rotationAxis, /* rotation plane */
+																			 pickObject.m_lineOfSightOffset, pickObject.m_lineOfSightDirection,
+																			 intersectionPoint, dist);
+						if (!haveIntersection) {
+							IBK::IBK_Message("bug");
+						}
 
-						IBKMK::Vector3D projectedVector;
-						IBKMK::pointProjectedOnPlane(coordinateSystemLocation, m_rotationAxis, newPoint, projectedVector);
+						if (haveIntersection) {
+							// compute angle between intersection point and offset and rotation start point and offset
+							// snap angle to 10 degrees, except if shift is pressed
 
-						projectedVector.normalize();
-						// now compute rotation angle to rotation x vector
-						double cosBeta = m_rotationVectorX.scalarProduct(projectedVector);
-						double sinGamma = m_rotationVectorY.scalarProduct(projectedVector);
+							// vector from coordinate origin to intersection point
+							IBKMK::Vector3D vec2Cursor = intersectionPoint - coordinateSystemLocation;
 
-						double rotAngle = 0;
-						if (cosBeta > 1.0)
-							rotAngle = 0;
-						else if (cosBeta < -1.0)
-							rotAngle = 180;
-						else
-							rotAngle = std::acos(cosBeta)*180/3.141569;
-						// adjustment for quadrant 3 and 4
-						if (sinGamma < 0)
-							rotAngle = 360-rotAngle;
+							double x,y;
+							bool res = planeCoordinates(coordinateSystemLocation, m_rotationVectorX, m_rotationVectorY,
+														intersectionPoint, x, y);
+							if (res) {
+								double angle = std::atan2(y,x)/IBK::DEG2RAD;
+								if (angle < 0)
+									angle = 360 + angle;
 
-						// the rotation angle
-						qDebug() << QtExt::IBKVector2String(newPoint) << QtExt::IBKVector2String(projectedVector) << cosBeta << sinGamma << rotAngle;
+								// snap angle
+								angle = std::floor(angle/10 + 0.5)*10;
+								IBK::IBK_Message(IBK::FormatString("%1, %2, %3 deg\n").arg(x).arg(y).arg(angle), IBK::MSG_PROGRESS);
 
-						std::vector<const VICUS::Surface*> selSurfaces;
-						std::vector<const VICUS::SubSurface*> selSubSurfaces;
+								// compute rotation for local coordinate system
+								QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)angle);
+								q = q*m_originalRotation;
 
-						project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
+//								Vic3D::Transform3D trans3D;
+//								trans3D.setTranslation( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) );
 
-						IBKMK::Vector3D center, newCenter;
-//						IBKMK::Vector3D boundingBoxDimensions = project().boundingBox(selSurfaces, selSubSurfaces, center);
+								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
 
-						QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)rotAngle);
-
-						Vic3D::Transform3D trans3D;
-						trans3D.setTranslation( QtExt::IBKVector2QVector(center) );
-
-						q = m_originalRotation*q;
-
-						newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(center) ) );
-
-						m_coordinateSystemObject.setRotation(q);
-//						m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
+								m_coordinateSystemObject.setRotation(q);
+//								m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
+							}
+						}
 
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setRotation(q);
-						m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
+//						m_selectedGeometryObject.m_transform.setRotation(q);
+//						m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
 
-#if 0
-						// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-						// rotate to
-						IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
+//						// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+//						// rotate to
+//						IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
 
-						Vic3D::Transform3D rota;
-						// we now also have to find the angle between both normals
-						rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
+//						Vic3D::Transform3D rota;
+//						// we now also have to find the angle between both normals
+//						rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
 
-						// we take the QQuarternion to rotate
-						QQuaternion centerRota = rota.rotation();
-						QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+//						// we take the QQuarternion to rotate
+//						QQuaternion centerRota = rota.rotation();
+//						QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 
-						// we also have to find the center point after rotation and translate our center back to its origin
-						rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+//						// we also have to find the center point after rotation and translate our center back to its origin
+//						rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
 
-						// we give our tranfsformation to the wire frame object
-						SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
-						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-#endif
+//						// we give our tranfsformation to the wire frame object
+//						SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
+//						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+//						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+
 
 					} break;// interactive translation active
 				} // switch

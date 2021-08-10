@@ -292,6 +292,8 @@ private:
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
 	IBKMK::Vector3D			m_rotationVectorY;
+	/*! Center point of originally selected geometry. */
+	IBKMK::Vector3D			m_boundingBoxCenterPoint;
 
 	/*! Holds coordinates of the snap marker, for interactive three-point-rotation it holds the two points
 		already defined for rotation.

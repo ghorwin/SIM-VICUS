@@ -270,7 +270,7 @@ void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon) {
 }
 
 
-bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
+bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
 		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist)
 {
 	// plane is given by offset 'a' and normal vector 'normal'.
@@ -298,6 +298,30 @@ bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Ve
 	return true;
 }
 
+
+bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
+		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist)
+{
+	// plane is given by offset 'a' and normal vector 'normal'.
+	// line is given by point 'p' and its line vector 'd'
+
+	// first the normal test
+
+	double d_dot_normal = d.scalarProduct(normal);
+	double angle = d_dot_normal/d.magnitude();
+	// line parallel to plane? no intersection
+	if (angle < 1e-8 && angle > -1e-8)
+		return false;
+
+	double t = (a - p).scalarProduct(normal) / d_dot_normal;
+
+	// now determine location on plane
+	IBKMK::Vector3D x0 = p + t*d;
+
+	intersectionPoint = x0;
+	dist = t;
+	return true;
+}
 
 } // namespace IBKMK
 

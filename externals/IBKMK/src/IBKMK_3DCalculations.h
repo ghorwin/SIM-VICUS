@@ -40,6 +40,7 @@
 #define IBKMK_3DCalculationsH
 
 #include "IBKMK_Vector3D.h"
+#include <IBK_physics.h>
 
 namespace IBKMK {
 
@@ -89,6 +90,15 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 		or if normal vector and line vector point into the same direction. Otherwise returns true and the intersection
 		point in 'intersectionPoint' and the line factor 'dist'.
 */
+bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
+						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist);
+
+/*! Calculates intersection of a line with a plane.
+	Plane is given by offset 'a' and normal vector 'normal'.
+	Line is given by point 'p' and its line vector 'd'.
+	\return Returns false if line is parallel to plane (normal vector and line vector are perpendicular).
+		Otherwise returns true and the intersection point in 'intersectionPoint' and the line factor 'dist'.
+*/
 bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
 						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist);
 
@@ -100,6 +110,11 @@ void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal,
 
 /*! Eleminates colinear points in a polygon. */
 void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon);
+
+/*! Returns the inner Angle between two Vectors of a Polygon in Degree (0..360). */
+inline double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
+	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+}
 
 } // namespace IBKMK
 

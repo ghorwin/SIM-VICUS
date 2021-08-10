@@ -68,10 +68,6 @@ bool checkVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
 			 IBK::nearly_equal<digits>(v1.m_z, v2.m_z) );
 }
 
-/*! Returns the inner Angle between two Vectors of a Polygon in Degree */
-static double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
-	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
-}
 
 
 class LineEditFormater : public QtExt::FormatterBase {
