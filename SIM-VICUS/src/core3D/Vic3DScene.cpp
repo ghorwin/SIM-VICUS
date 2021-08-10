@@ -2312,8 +2312,15 @@ void Scene::pick(PickObject & pickObject) {
 	if (m_navigationMode == NUM_NM) {
 
 		PickObject::PickResult r;
-		if (m_coordinateSystemObject.pick(nearPoint, direction, r))
+		if (m_coordinateSystemObject.pick(nearPoint, direction, r)) {
+
+			// if local coordinate system is in "transformation" mode,
+			// ignore the other pick points and just use the local coordinate system
+			if (m_coordinateSystemObject.m_geometryTransformMode != CoordinateSystemObject::TM_None) {
+				pickObject.m_candidates.clear();
+			}
 			pickObject.m_candidates.push_back(r);
+		}
 
 	}
 
