@@ -677,7 +677,7 @@
   </action>
   <action name="actionDBRemoveDuplicates">
    <property name="text">
-    <string>Remove database duplicates...</string>
+    <string>Remove duplicates...</string>
    </property>
    <property name="toolTip">
     <string>Removes duplicate elements from database.</string>

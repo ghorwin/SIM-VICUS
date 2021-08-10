@@ -124,7 +124,7 @@ void SVMainWindow::addUndoCommand(QUndoCommand * command) {
 
 // *** public functions ***
 
-SVMainWindow::SVMainWindow(QWidget * /*parent*/, Qt::WindowFlags /*flags*/) :
+SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	m_ui(new Ui::SVMainWindow),
 	m_undoStack(new QUndoStack(this)),
 	m_postProcHandler(new SVPostProcHandler),
@@ -1568,7 +1568,16 @@ void SVMainWindow::onWorkerThreadFinished() {
 void SVMainWindow::onFixProjectAfterRead() {
 	// here we do all entry checks that will tell users about suggested changes in project
 
-	/// \todo Andreas: implement interactive fixes here with dialogs and user-confirmations
+	std::vector<std::vector<SVDatabase::DuplicateInfo> > dups;
+	SVSettings::instance().m_db.determineDuplicates(dups);
+	if (!dups.empty()) {
+		int res = SVSettings::instance().showDoNotShowAgainQuestion(this, "RemoveDuplicatesAfterProjectRead",
+			tr("Remove/merge duplicates in database"),
+			tr("The database contains now some duplicate definitions. Do you want "
+			   "to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?"), QMessageBox::Yes | QMessageBox::No);
+		if (res == QMessageBox::Yes)
+			on_actionDBRemoveDuplicates_triggered();
+	}
 
 }
 

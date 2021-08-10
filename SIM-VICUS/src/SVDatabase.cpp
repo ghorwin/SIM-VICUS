@@ -452,6 +452,7 @@ void findDublicates(const VICUS::Database<T> & db, std::vector<SVDatabase::Dupli
 
 
 void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::DuplicateInfo> > & duplicatePairs) const {
+	duplicatePairs.resize(NUM_DT);
 
 	// process all databases and search for duplicates
 	findDublicates(m_materials, duplicatePairs[DT_Materials]);

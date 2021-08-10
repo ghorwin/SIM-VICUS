@@ -80,7 +80,7 @@ public:
 
 
 	/*! Default SVMainWindow constructor. */
-	explicit SVMainWindow(QWidget *parent = nullptr, Qt::WindowFlags flags = 0);
+	explicit SVMainWindow(QWidget *parent = nullptr);
 
 	/*! Default destructor. */
 	~SVMainWindow();
