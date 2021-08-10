@@ -26,8 +26,7 @@
 
 namespace NANDRAD {
 
-void Location::checkParameters() const
-{
+void Location::checkParameters() const {
 	// check albedo
 	m_para[NANDRAD::Location::P_Albedo].checkedValue("Albedo","---","---", 0, true, 1, true,
 													 "Location parameter 'Albedo' is expected between 0 and 1.");

@@ -63,6 +63,9 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 	FUNCID(Loads::setup);
 
 	try {
+		// basic parameter checking
+		location.checkParameters();
+
 		// for now we require a climate data file
 		// if dummy values are needed, it is possible to create a simple dummy climate data file
 		// with constant values throughout the year
