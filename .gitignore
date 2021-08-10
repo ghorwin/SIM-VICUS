@@ -45,6 +45,7 @@ Makefile*
 *.tlog
 *.vcxproj.user
 *.~p2
+*.autosave
 
 *.lyx~
 *.lyx\#
