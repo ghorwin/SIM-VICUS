@@ -60,7 +60,7 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 			const IBKMK::Vector3D & offset = m_obstacles[j].vertexes()[0];
 			IBKMK::Vector3D intersectionPoint;
 			double dist;
-			if (!IBKMK::linePlaneIntersection(offset, m_obstacles[j].normal(), // plane
+			if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, m_obstacles[j].normal(), // plane
 											  m_gridPoints[i], sunNormal, // line
 											  intersectionPoint, dist))
 				continue; // no intersection, next obstacle plane

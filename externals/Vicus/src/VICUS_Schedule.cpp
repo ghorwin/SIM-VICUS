@@ -88,16 +88,13 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 
 bool Schedule::isValid() const {
 
-	if (!m_annualSchedule.empty()) {
-		// if we have annual schedule data, we must not have periods at the same time
-		if (!m_periods.empty())
+	if (m_haveAnnualSchedule) {
+		if (m_annualSchedule.empty())
 			return false;
-
 		// TODO : Annual schedule check
 
 		return true;
 	}
-
 
 	// *** daily cycle based schedule check ***
 

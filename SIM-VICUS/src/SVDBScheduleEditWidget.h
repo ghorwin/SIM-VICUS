@@ -105,6 +105,10 @@ private slots:
 
 	void on_widgetDailyCycle_dataChanged();
 
+	void on_radioButtonDailyCycles_toggled(bool checked);
+
+	void on_pushButtonPasteAnnualDataFromClipboard_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true.
 		Also updates the diagram.

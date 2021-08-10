@@ -476,7 +476,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_zoneIdealHeatingCooling, duplicatePairs[DT_ZoneIdealHeatingCooling]);
 	findDublicates(m_ventilationNatural, duplicatePairs[DT_VentilationNatural]);
 	findDublicates(m_infiltration, duplicatePairs[DT_Infiltration]);
-	findDublicates(m_zoneTemplates, duplicatePairs[DT_Materials]);
+	findDublicates(m_zoneTemplates, duplicatePairs[DT_ZoneTemplates]);
 }
 
 

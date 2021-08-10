@@ -52,7 +52,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	m_ui(new Ui::SVDBScheduleEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayoutMaster->setMargin(4);
+	m_ui->verticalLayoutMaster->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Schedule identification name"));
@@ -143,6 +143,11 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->radioButtonConstant->setChecked(!m_current->m_useLinearInterpolation);
 	m_ui->radioButtonLinear->blockSignals(false);
 	m_ui->radioButtonConstant->blockSignals(false);
+
+	m_ui->radioButtonDailyCycles->setChecked(m_current->m_annualSchedule.empty());
+	m_ui->radioButtonAnnualSchedules->setChecked(!m_current->m_annualSchedule.empty());
+
+	m_ui->stackedWidget->setCurrentIndex(m_current->m_annualSchedule.empty() ? 0 : 1);
 
 	// period schedule?
 	if (m_current->m_annualSchedule.x().empty()) {
@@ -773,4 +778,22 @@ void SVDBScheduleEditWidget::modelModify() {
 
 void SVDBScheduleEditWidget::on_widgetDailyCycle_dataChanged() {
 	updateDiagram();
+}
+
+
+void SVDBScheduleEditWidget::on_radioButtonDailyCycles_toggled(bool checked) {
+	m_current->m_haveAnnualSchedule = !checked;
+	m_ui->stackedWidget->setCurrentIndex(checked ? 0 : 1);
+	modelModify();
+}
+
+
+void SVDBScheduleEditWidget::on_pushButtonPasteAnnualDataFromClipboard_clicked() {
+	// paste data from clipboard
+
+
+
+	// clear annual spline data file and update file widget
+
+
 }

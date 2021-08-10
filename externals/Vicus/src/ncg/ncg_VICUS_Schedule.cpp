@@ -65,6 +65,8 @@ void Schedule::readXML(const TiXmlElement * element) {
 				m_dataSource.setEncodedString(c->GetText());
 			else if (cName == "UseLinearInterpolation")
 				m_useLinearInterpolation = NANDRAD::readPODElement<bool>(c, cName);
+			else if (cName == "HaveAnnualSchedule")
+				m_haveAnnualSchedule = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "IBK:LinearSpline") {
 				IBK::LinearSpline p;
 				std::string name;
@@ -116,6 +118,7 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 	TiXmlElement::appendSingleAttributeElement(e, "UseLinearInterpolation", nullptr, std::string(), IBK::val2string<bool>(m_useLinearInterpolation));
+	TiXmlElement::appendSingleAttributeElement(e, "HaveAnnualSchedule", nullptr, std::string(), IBK::val2string<bool>(m_haveAnnualSchedule));
 	if (!m_annualSchedule.empty())
 		NANDRAD::writeLinearSplineElement(e, "AnnualSchedule", m_annualSchedule, "-", "-");
 
