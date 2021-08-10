@@ -130,17 +130,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			throw IBK::Exception("If specifying 'Latitude' or 'Longitude', you need to specify always both.", FUNC_ID);
 
 		// albedo
-
-		// TODO : replace code below with .checkValue()
-
-		const IBK::Parameter &albedo = location.m_para[NANDRAD::Location::P_Albedo];
-		if (albedo.name.empty())
-			throw IBK::Exception(IBK::FormatString("Error initializing climate data: Missing parameter 'Albedo'."), FUNC_ID);
-		if (albedo.value < 0 || albedo.value > 1) {
-			throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-				"Location parameter 'Albedo' is expected between 0 and 1."), FUNC_ID);
-		}
-		m_solarRadiationModel.m_albedo = albedo.value;
+		m_solarRadiationModel.m_albedo = location.m_para[NANDRAD::Location::P_Albedo].value;
 
 		// finally update the latitude and longitude in the sunPositionModel
 		m_solarRadiationModel.m_sunPositionModel.m_latitude = m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree * DEG2RAD;

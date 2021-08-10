@@ -61,6 +61,9 @@ public:
 
 	NANDRAD_READWRITE
 
+	/*! Checks for valid and required parameters (value ranges). */
+	void checkParameters() const;
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter set. */
