@@ -663,6 +663,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
 					} break;// interactive translation active
 
+
 					case NM_InteractiveRotation: {
 						// take the line-of-sight and compute intersection point with current rotation plane
 						// rotation plane = rotation axis (e.g. TM_RotateX) and offset
@@ -672,7 +673,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 						// pick a point and snap to some point in the scene
 						if (!pickObject.m_pickPerformed)
-							pick(pickObject);
+							pick(pickObject); // TODO : if a performance hit, reduce to only compute line-of-sight
 
 						IBKMK::Vector3D intersectionPoint;
 						double dist;
@@ -680,15 +681,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 																			 pickObject.m_lineOfSightOffset, pickObject.m_lineOfSightDirection,
 																			 intersectionPoint, dist);
 						if (!haveIntersection) {
-							IBK::IBK_Message("bug");
+							IBK::IBK_Message("Cannot compute intersection between line of sight and rotation plane.");
 						}
 
 						if (haveIntersection) {
 							// compute angle between intersection point and offset and rotation start point and offset
 							// snap angle to 10 degrees, except if shift is pressed
-
-							// vector from coordinate origin to intersection point
-							IBKMK::Vector3D vec2Cursor = intersectionPoint - coordinateSystemLocation;
 
 							double x,y;
 							bool res = planeCoordinates(coordinateSystemLocation, m_rotationVectorX, m_rotationVectorY,
@@ -699,47 +697,26 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 									angle = 360 + angle;
 
 								// snap angle
-								angle = std::floor(angle/10 + 0.5)*10;
-								IBK::IBK_Message(IBK::FormatString("%1, %2, %3 deg\n").arg(x).arg(y).arg(angle), IBK::MSG_PROGRESS);
+								if (!keyboardHandler.keyDown(Qt::Key_Shift))
+									angle = std::floor(angle/10 + 0.5)*10;
+								IBK::IBK_Message(IBK::FormatString("Rotation angle = %1 deg\n").arg(angle), IBK::MSG_PROGRESS);
 
 								// compute rotation for local coordinate system
 								QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)angle);
-								q = q*m_originalRotation;
+								QQuaternion coordinateSystemRotation = q*m_originalRotation;
 
-//								Vic3D::Transform3D trans3D;
-//								trans3D.setTranslation( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) );
+								// rotate local coordinate system (translation isn't needed)
+								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
+								// determine new center point if selected geometry were rotated around origin
 								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+								// now rotate selected geometry and move it back into original center
 
-								m_coordinateSystemObject.setRotation(q);
-//								m_coordinateSystemObject.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
+								// now set this in the wireframe object as translation
+								m_selectedGeometryObject.m_transform.setRotation(q);
+								m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
 							}
 						}
-
-						// now set this in the wireframe object as translation
-//						m_selectedGeometryObject.m_transform.setRotation(q);
-//						m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
-
-//						// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-//						// rotate to
-//						IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal) );
-
-//						Vic3D::Transform3D rota;
-//						// we now also have to find the angle between both normals
-//						rota.rotate((float)angleBetweenVectorsDeg(m_normal, newNormal), QtExt::IBKVector2QVector(rotationAxis) );
-
-//						// we take the QQuarternion to rotate
-//						QQuaternion centerRota = rota.rotation();
-//						QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
-
-//						// we also have to find the center point after rotation and translate our center back to its origin
-//						rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
-
-//						// we give our tranfsformation to the wire frame object
-//						SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
-//						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
-//						const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
-
 
 					} break;// interactive translation active
 				} // switch
@@ -770,6 +747,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (m_navigationMode == NM_InteractiveRotation) {
 			qDebug() << "Leaving interactive rotation mode";
 			SVViewStateHandler::instance().m_propEditGeometryWidget->rotate();
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Rotate, SVPropEditGeometry::MS_Absolute);
 			needRepaint = true;
 		}
 		// clear orbit controller flag
@@ -2316,19 +2294,22 @@ void Scene::pick(PickObject & pickObject) {
 	// only do this when not panning/orbiting/first-person-viewing etc.
 	if (m_navigationMode == NUM_NM) {
 
-		PickObject::PickResult r;
-		if (m_coordinateSystemObject.pick(nearPoint, direction, r)) {
+		// also, we do not snap to the local coordinate system spheres, when we are in align coordinate system
+		// mode. Basically, we only snap to the local coordinate system, when in "selected geometry" mode
+		if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
 
-			// if local coordinate system is in "transformation" mode,
-			// ignore the other pick points and just use the local coordinate system
-			if (m_coordinateSystemObject.m_geometryTransformMode != CoordinateSystemObject::TM_None) {
-				pickObject.m_candidates.clear();
+			PickObject::PickResult r;
+			if (m_coordinateSystemObject.pick(nearPoint, direction, r)) {
+
+				// If local coordinate system is in "transformation" mode,
+				// ignore the other pick points and just use the local coordinate system.
+				// But only do this, if we are not in "align coordinate system" mode.
+				if (m_coordinateSystemObject.m_geometryTransformMode != CoordinateSystemObject::TM_None)
+					pickObject.m_candidates.clear();
+				pickObject.m_candidates.push_back(r);
 			}
-			pickObject.m_candidates.push_back(r);
 		}
-
 	}
-
 
 	// finally sort the pick candidates based on depth value
 	std::sort(pickObject.m_candidates.begin(), pickObject.m_candidates.end());
