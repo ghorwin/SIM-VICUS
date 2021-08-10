@@ -88,17 +88,11 @@ void ConstructionInstance::checkParameters(const Project & prj) {
 
 	if (haveRadiationBCA || haveRadiationBCB) {
 		// we have solar radiation to outside - and we need orientation and inclination for that
-		if (m_para[P_Orientation].name.empty())
-			throw IBK::Exception( "Missing parameter 'Orientation'.", FUNC_ID);
-		double orientationInDeg = m_para[P_Orientation].get_value("Deg");
-		if (orientationInDeg < 0 || orientationInDeg > 360)
-			throw IBK::Exception( "Parameter 'Orientation' outside allowed value range [0,360] Deg.", FUNC_ID);
+		m_para[P_Orientation].checkedValue("Orientation", "Deg", "Deg", 0, true, 360, true,
+										   "Parameter 'Orientation' outside allowed value range [0,360] Deg.");
 
-		if (m_para[P_Inclination].name.empty())
-			throw IBK::Exception( "Missing parameter 'Inclination'.", FUNC_ID);
-		double inclinationInDeg = m_para[P_Inclination].get_value("Deg");
-		if (inclinationInDeg < 0 || inclinationInDeg > 180)
-			throw IBK::Exception( "Parameter 'Inclination' outside allowed value range [0,180] Deg.", FUNC_ID);
+		m_para[P_Inclination].checkedValue("Inclination", "Deg", "Deg", 0, true, 180, true,
+										   "Parameter 'Inclination' outside allowed value range [0,180] Deg.");
 	}
 
 	// check boundary condition models
