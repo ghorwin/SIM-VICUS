@@ -1611,7 +1611,6 @@ void SVMainWindow::onFixProjectAfterRead() {
 		if (res == QMessageBox::Yes)
 			on_actionDBRemoveDuplicates_triggered();
 	}
-
 }
 
 

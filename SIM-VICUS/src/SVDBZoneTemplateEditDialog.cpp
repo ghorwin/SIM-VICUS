@@ -252,7 +252,7 @@ void SVDBZoneTemplateEditDialog::on_pushButtonReloadUserDB_clicked() {
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
 		// tell db to drop all user-defined items and re-read the DB
-		SVSettings::instance().m_db.m_materials.removeUserElements();
+		SVSettings::instance().m_db.m_zoneTemplates.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(SVDatabase::DT_ZoneTemplates);
 		// tell model to reset completely
 		m_dbModel->resetModel();
