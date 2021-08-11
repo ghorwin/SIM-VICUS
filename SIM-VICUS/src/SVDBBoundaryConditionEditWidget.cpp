@@ -155,7 +155,10 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	on_comboBoxSWModelType_currentIndexChanged(m_ui->comboBoxSWModelType->currentIndex());
 
 	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
-	m_ui->lineEditZoneConstTemperature->setValue(bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_ConstTemperature].value);
+	if (!bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_ConstTemperature].name.empty())
+		m_ui->lineEditZoneConstTemperature->setValue(bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_ConstTemperature].get_value("C"));
+	else
+		m_ui->lineEditZoneConstTemperature->setValue(8);
 	if (bc->m_heatConduction.m_idSchedule == VICUS::INVALID_ID) {
 		m_ui->lineEditTemperatureScheduleName->setText("");
 	}
@@ -166,7 +169,9 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 		else
 			m_ui->lineEditTemperatureScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
 	}
+
 	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
+
 	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
 
 	m_ui->pushButtonColor->blockSignals(true);
@@ -363,6 +368,7 @@ void SVDBBoundaryConditionEditWidget::on_toolButtonSelectTemperatureSchedule_cli
 void SVDBBoundaryConditionEditWidget::on_toolButtonRemoveTemperatureSchedule_clicked() {
 	m_current->m_heatConduction.m_idSchedule = VICUS::INVALID_ID;
 	m_ui->toolButtonRemoveTemperatureSchedule->setEnabled(false);
+	m_ui->lineEditTemperatureScheduleName->setText(tr("<select schedule>"));
 	modelModify();
 }
 
