@@ -1085,7 +1085,7 @@
 				<IdSurfaceHeating>350002</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="86" idComponent="50018" idSideASurface="92" idSideBSurface="69">
+			<ComponentInstance id="86" idComponent="50018" idSideASurface="92" idSideBSurface="29">
 				<IdSurfaceHeating>350002</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>16</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
