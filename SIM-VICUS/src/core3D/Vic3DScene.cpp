@@ -1657,6 +1657,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	//       have a different color than regular surfaces without component
 
 	switch (ocm) {
+		case SVViewState::OCM_InterlinkedSurfaces:
 		case SVViewState::OCM_None: break;
 
 		case SVViewState::OCM_SelectedSurfacesHighlighted: {
@@ -1741,6 +1742,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkSubNetworks:
 					case SVViewState::OCM_NetworkHeatExchange:
 					case SVViewState::OCM_SelectedSurfacesHighlighted:
+					case SVViewState::OCM_InterlinkedSurfaces:
 					break;
 				}
 			}
@@ -1806,6 +1808,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_NetworkSubNetworks:
 					case SVViewState::OCM_NetworkHeatExchange:
 					case SVViewState::OCM_SurfaceHeating:
+					case SVViewState::OCM_InterlinkedSurfaces:
 					break;
 				} // switch
 			}
@@ -1885,6 +1888,7 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SurfaceHeating:
 					case SVViewState::OCM_Network:
+					case SVViewState::OCM_InterlinkedSurfaces:
 					break;
 				}
 			}
