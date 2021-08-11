@@ -132,7 +132,7 @@ void SVSettings::read() {
 			m_propertyMap.insert((PropertyType)i, var);
 	}
 
-	m_versionIdentifier = settings.value("Version", QString()).toString();
+	m_versionIdentifier = settings.value("VersionIdentifier", QString()).toString();
 	QString tmpPostProcExecutable = settings.value("PostProcExecutable", m_postProcExecutable ).toString();
 	if (!tmpPostProcExecutable.isEmpty())
 		m_postProcExecutable = tmpPostProcExecutable;
