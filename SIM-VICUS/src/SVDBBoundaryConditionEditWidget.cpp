@@ -51,7 +51,7 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 
 	m_ui->lineEditSolarAbsorptionCoefficient->setup(0, 1, tr("Solar Absorption (short wave)"), true, true);
 	m_ui->lineEditLongWaveEmissivity->setup(0, 1, tr("Thermal Absorption (long wave)"), true, true);
-	m_ui->lineEditHeatTransferCoefficient->setup(0.001, 500, tr("Thermal conductivity"), true, true);
+	m_ui->lineEditHeatTransferCoefficient->setup(0, 500, tr("Thermal conductivity"), true, true);
 
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
 	for (unsigned int i=0; i <= VICUS::InterfaceHeatConduction::NUM_MT; ++i)
@@ -81,6 +81,13 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 										   .arg(NANDRAD::KeywordListQt::Keyword("InterfaceSolarAbsorption::modelType_t", (int)i)), i);
 	m_ui->comboBoxSWModelType->blockSignals(false);
 
+	// For now hide all model type combo boxes
+	m_ui->comboBoxHeatTransferCoeffModelType->setVisible(false);
+	m_ui->comboBoxLWModelType->setVisible(false);
+	m_ui->comboBoxSWModelType->setVisible(false);
+	m_ui->labelHeatTransferCoeffModelType->setVisible(false);
+	m_ui->labelLWModelType->setVisible(false);
+	m_ui->labelSWModelType->setVisible(false);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
