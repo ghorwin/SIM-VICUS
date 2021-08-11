@@ -23,9 +23,12 @@
 
 #include <QVector3D>
 #include <QVector4D>
-#include <IBKMK_Vector3D.h>
 #include <QColor>
+#include <QString>
+
+#include <IBKMK_Vector3D.h>
 #include <IBK_MultiLanguageString.h>
+#include <IBK_Path.h>
 
 namespace QtExt {
 
@@ -53,6 +56,16 @@ inline QString IBKVector2String(const IBKMK::Vector3D & v) {
 
 inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
 	return QString::fromStdString(mls.string(IBK::MultiLanguageString::m_language, "en"));
+}
+
+/*! Utility function for conversion of a QString to an IBK::Path. */
+inline IBK::Path QString2Path(const QString & str) {
+	return IBK::Path(str.toUtf8().data());
+}
+
+/*! Utility function for conversion of a QString to an IBK::Path. */
+inline QString Path2String(const IBK::Path & p) {
+	return QString::fromStdString(p.str());
 }
 
 } // QtExt
