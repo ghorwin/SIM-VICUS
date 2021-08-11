@@ -452,7 +452,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab">
           <attribute name="title">
@@ -617,7 +617,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widgetClimatePreview" native="true">
+        <widget class="SVTimeSeriesPreviewWidget" name="timeSeriesPreview" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -664,10 +664,16 @@
    <header>QtExt_BrowseFilenameWidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>SVTimeSeriesPreviewWidget</class>
+   <extends>QWidget</extends>
+   <header>SVTimeSeriesPreviewWidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
   <include location="../resources/qdarkstyle/style.qrc"/>
+  <include location="../resources/SIM-VICUS.qrc"/>
  </resources>
  <connections/>
 </ui>

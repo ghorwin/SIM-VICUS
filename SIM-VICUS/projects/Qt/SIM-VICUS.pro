@@ -92,6 +92,7 @@ SOURCES += \
 								../../src/SVPropSurfaceHeatingDelegate.cpp \
 								../../src/SVSimulationNetworkOptions.cpp \
 								../../src/SVSimulationShadingOptions.cpp \
+								../../src/SVTimeSeriesPreviewWidget.cpp \
 								../../src/actions/SVUndoAddBuilding.cpp \
 								../../src/actions/SVUndoAddBuildingLevel.cpp \
 								../../src/actions/SVUndoAddNetwork.cpp \
@@ -247,6 +248,7 @@ HEADERS  += \
 								../../src/SVPropSurfaceHeatingDelegate.h \
 								../../src/SVSimulationNetworkOptions.h \
 								../../src/SVSimulationShadingOptions.h \
+								../../src/SVTimeSeriesPreviewWidget.h \
 								../../src/actions/SVUndoAddBuilding.h \
 								../../src/actions/SVUndoAddBuildingLevel.h \
 								../../src/actions/SVUndoAddNetwork.h \
