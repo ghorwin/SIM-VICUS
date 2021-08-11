@@ -71,9 +71,9 @@ KeywordListQt::KeywordListQt() {
 	tr("n50");
 	tr("Constant heat exchange coefficient");
 	tr("No convective heat exchange");
-	tr("Standard");
-	tr("Constant");
-	tr("Scheduled");
+	tr("Active zone or outside");
+	tr("Zone/ground with constant temperature");
+	tr("Zone/ground with scheduled temperature");
 	tr("Convective heat transfer coefficient");
 	tr("Constant temperature of other zone/ground");
 	tr("Person count");

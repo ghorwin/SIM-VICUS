@@ -1067,9 +1067,9 @@ namespace VICUS {
 			// InterfaceHeatConduction::OtherZoneType
 			case 8 :
 			switch (t) {
-				case 0 : if (no_description != nullptr) *no_description = true; return "Standard";
-				case 1 : if (no_description != nullptr) *no_description = true; return "Constant";
-				case 2 : if (no_description != nullptr) *no_description = true; return "Scheduled";
+				case 0 : return "Active zone or outside";
+				case 1 : return "Zone/ground with constant temperature";
+				case 2 : return "Zone/ground with scheduled temperature";
 			} break;
 			// InterfaceHeatConduction::para_t
 			case 9 :

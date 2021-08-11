@@ -55,9 +55,9 @@ public:
 
 	/*! Defines what kind of zone is connected via this boundary condition. */
 	enum OtherZoneType {
-		OZ_Standard,			// Keyword: Standard
-		OZ_Constant,			// Keyword: Constant
-		OZ_Scheduled,			// Keyword: Scheduled
+		OZ_Standard,			// Keyword: Standard			'Active zone or outside'
+		OZ_Constant,			// Keyword: Constant			'Zone/ground with constant temperature'
+		OZ_Scheduled,			// Keyword: Scheduled			'Zone/ground with scheduled temperature'
 		NUM_OZ
 	};
 

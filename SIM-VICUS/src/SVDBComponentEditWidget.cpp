@@ -137,8 +137,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(bcA->m_displayName));
 		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription());
 
-		if(bcA->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
-			double hc = bcA->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+		if (bcA->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
+			double hc = bcA->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideA = hc > 0 ? 1/hc : 0;
 		}
 	}
@@ -152,8 +152,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(bcB->m_displayName));
 		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription());
 
-		if(bcB->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
-			double hc = bcB->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+		if (bcB->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
+			double hc = bcB->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideB = hc > 0 ? 1/hc : 0;
 		}
 	}
@@ -166,11 +166,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	if (con != nullptr) {
 		m_ui->lineEditConstructionName->setText(QtExt::MultiLangString2QString(con->m_displayName));
 		double UValue;
-		/* Take for uvalue calculation the surface resistance from the side A and B if this exist.
-			If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
-		*/
+		// Take for uvalue calculation the surface resistance from the side A and B if this exist.
+		// If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
 		bool validUValue = false;
-		if(surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
+		if (surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
 			validUValue = con->calculateUValue(UValue, m_db->m_materials, surfaceResistanceSideA, surfaceResistanceSideB);
 		else
 			validUValue = con->calculateUValue(UValue, m_db->m_materials, 0.13, 0.04);

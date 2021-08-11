@@ -73,6 +73,15 @@ private slots:
 	void on_pushButtonColor_colorChanged();
 
 
+	void on_comboBoxConnectedZoneType_currentIndexChanged(int index);
+
+
+	void on_toolButtonSelectTemperatureSchedule_clicked();
+
+	void on_toolButtonRemoveTemperatureSchedule_clicked();
+
+	void on_lineEditZoneConstTemperature_editingFinishedSuccessfully();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

@@ -26,21 +26,25 @@
 #include "SVDBBoundaryConditionEditWidget.h"
 #include "ui_SVDBBoundaryConditionEditWidget.h"
 
+#include <VICUS_KeywordListQt.h>
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
+#include <QtExt_Conversions.h>
 
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVConstants.h"
 #include "SVSettings.h"
+#include "SVMainWindow.h"
+#include "SVDatabaseEditDialog.h"
 
 SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
 	m_ui(new Ui::SVDBBoundaryConditionEditWidget)
 {
 	m_ui->setupUi(this);
-	m_ui->gridLayoutMaster->setMargin(4);
+	m_ui->verticalLayoutMaster->setMargin(4);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");
@@ -50,11 +54,18 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->lineEditHeatTransferCoefficient->setup(0.001, 500, tr("Thermal conductivity"), true, true);
 
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(true);
-	for (unsigned int i=0; i <= NANDRAD::InterfaceHeatConduction::NUM_MT; ++i)
+	for (unsigned int i=0; i <= VICUS::InterfaceHeatConduction::NUM_MT; ++i)
 		m_ui->comboBoxHeatTransferCoeffModelType->addItem(QString("%1 [%2]")
-														  .arg(NANDRAD::KeywordListQt::Description("InterfaceHeatConduction::modelType_t", (int)i))
-														  .arg(NANDRAD::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i)), i);
+														  .arg(VICUS::KeywordListQt::Description("InterfaceHeatConduction::modelType_t", (int)i))
+														  .arg(VICUS::KeywordListQt::Keyword("InterfaceHeatConduction::modelType_t", (int)i)), i);
 	m_ui->comboBoxHeatTransferCoeffModelType->blockSignals(false);
+
+	m_ui->comboBoxConnectedZoneType->blockSignals(true);
+	for (unsigned int i=0; i < VICUS::InterfaceHeatConduction::NUM_OZ; ++i)
+		m_ui->comboBoxConnectedZoneType->addItem(QString("%1 [%2]")
+														  .arg(VICUS::KeywordListQt::Description("InterfaceHeatConduction::OtherZoneType", (int)i))
+														  .arg(VICUS::KeywordListQt::Keyword("InterfaceHeatConduction::OtherZoneType", (int)i)), i);
+	m_ui->comboBoxConnectedZoneType->blockSignals(false);
 
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	for(unsigned int i=0; i <= NANDRAD::InterfaceLongWaveEmission::NUM_MT; ++i)
@@ -122,6 +133,15 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	// update model-specific input states
 	on_comboBoxHeatTransferCoeffModelType_currentIndexChanged(m_ui->comboBoxHeatTransferCoeffModelType->currentIndex());
 
+	m_ui->comboBoxConnectedZoneType->blockSignals(true);
+	VICUS::InterfaceHeatConduction::OtherZoneType oz = bc->m_heatConduction.m_otherZoneType;
+	if (oz == VICUS::InterfaceHeatConduction::NUM_OZ)
+		oz = VICUS::InterfaceHeatConduction::OZ_Standard;
+	m_ui->comboBoxConnectedZoneType->setCurrentIndex(m_ui->comboBoxConnectedZoneType->findData(oz));
+	m_ui->comboBoxConnectedZoneType->blockSignals(false);
+	// update model-specific input states
+	on_comboBoxConnectedZoneType_currentIndexChanged(m_ui->comboBoxConnectedZoneType->currentIndex());
+
 	m_ui->comboBoxLWModelType->blockSignals(true);
 	m_ui->comboBoxLWModelType->setCurrentIndex(m_ui->comboBoxLWModelType->findData(bc->m_longWaveEmission.m_modelType));
 	m_ui->comboBoxLWModelType->blockSignals(false);
@@ -134,7 +154,18 @@ void SVDBBoundaryConditionEditWidget::updateInput(int id) {
 	// update model-specific input states
 	on_comboBoxSWModelType_currentIndexChanged(m_ui->comboBoxSWModelType->currentIndex());
 
-	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
+	m_ui->lineEditHeatTransferCoefficient->setValue(bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value);
+	m_ui->lineEditZoneConstTemperature->setValue(bc->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_ConstTemperature].value);
+	if (bc->m_heatConduction.m_idSchedule == VICUS::INVALID_ID) {
+		m_ui->lineEditTemperatureScheduleName->setText("");
+	}
+	else {
+		const VICUS::Schedule * sched = SVSettings::instance().m_db.m_schedules[bc->m_heatConduction.m_idSchedule];
+		if (sched == nullptr)
+			m_ui->lineEditTemperatureScheduleName->setText(tr("<select schedule>"));
+		else
+			m_ui->lineEditTemperatureScheduleName->setText(QtExt::MultiLangString2QString(sched->m_displayName));
+	}
 	m_ui->lineEditSolarAbsorptionCoefficient->setValue(bc->m_solarAbsorption.m_para[NANDRAD::InterfaceSolarAbsorption::P_AbsorptionCoefficient].value);
 	m_ui->lineEditLongWaveEmissivity->setValue(bc->m_longWaveEmission.m_para[NANDRAD::InterfaceLongWaveEmission::P_Emissivity].value);
 
@@ -299,10 +330,45 @@ void SVDBBoundaryConditionEditWidget::on_pushButtonColor_colorChanged() {
 	}
 }
 
+
 void SVDBBoundaryConditionEditWidget::modelModify() {
 	m_db->m_boundaryConditions.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 }
 
 
+void SVDBBoundaryConditionEditWidget::on_comboBoxConnectedZoneType_currentIndexChanged(int index) {
+	m_current->m_heatConduction.m_otherZoneType = (VICUS::InterfaceHeatConduction::OtherZoneType)index;
+	m_ui->labelZoneConstTemperature->setEnabled(index == 1);
+	m_ui->lineEditZoneConstTemperature->setEnabled(index == 1);
+	m_ui->labelScheduleZoneTemperature->setEnabled(index == 2);
+	m_ui->lineEditTemperatureScheduleName->setEnabled(index == 2);
+	m_ui->toolButtonSelectTemperatureSchedule->setEnabled(index == 2);
+	m_ui->toolButtonRemoveTemperatureSchedule->setEnabled(index == 2 && m_current->m_heatConduction.m_idSchedule != VICUS::INVALID_ID);
+}
+
+
+void SVDBBoundaryConditionEditWidget::on_toolButtonSelectTemperatureSchedule_clicked() {
+	// open schedule edit dialog in selection mode
+	unsigned int newId = SVMainWindow::instance().dbScheduleEditDialog()->select(m_current->m_heatConduction.m_idSchedule);
+	if (newId != VICUS::INVALID_ID && m_current->m_heatConduction.m_idSchedule != newId) {
+		m_current->m_heatConduction.m_idSchedule = newId;
+		modelModify();
+	}
+	m_ui->toolButtonRemoveTemperatureSchedule->setEnabled(m_current->m_heatConduction.m_idSchedule != VICUS::INVALID_ID);
+	updateInput((int)m_current->m_id);
+}
+
+
+void SVDBBoundaryConditionEditWidget::on_toolButtonRemoveTemperatureSchedule_clicked() {
+	m_current->m_heatConduction.m_idSchedule = VICUS::INVALID_ID;
+	m_ui->toolButtonRemoveTemperatureSchedule->setEnabled(false);
+	modelModify();
+}
+
+
+void SVDBBoundaryConditionEditWidget::on_lineEditZoneConstTemperature_editingFinishedSuccessfully() {
+	VICUS::KeywordList::setParameter(m_current->m_heatConduction.m_para, "InterfaceHeatConduction::para_t",
+									 VICUS::InterfaceHeatConduction::P_ConstTemperature, m_ui->lineEditZoneConstTemperature->value());
+	modelModify();
+}
