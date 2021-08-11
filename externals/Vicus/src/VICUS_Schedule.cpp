@@ -89,7 +89,7 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 bool Schedule::isValid() const {
 
 	if (m_haveAnnualSchedule) {
-		if (m_annualSchedule.empty())
+		if (m_annualSchedule.m_values.empty())
 			return false;
 		// TODO : Annual schedule check
 

@@ -494,6 +494,12 @@
              </item>
              <item row="1" column="1">
               <widget class="QLabel" name="labelFileNameReference">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>TextLabel</string>
                </property>
@@ -516,17 +522,14 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="2">
-              <widget class="QPushButton" name="pushButtonImportDataFile">
-               <property name="toolTip">
-                <string>Copies the selected climate data file to the local climate directory relative to the project file and references the file with relative file path.</string>
-               </property>
+             <item row="3" column="1">
+              <widget class="QRadioButton" name="radioButtonAbsoluteFilePath">
                <property name="text">
-                <string>Import...</string>
+                <string>Reference with absolute file path</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
+             <item row="0" column="1" colspan="2">
               <widget class="QtExt::BrowseFilenameWidget" name="filepathAnnualDataFile" native="true">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -536,13 +539,6 @@
                </property>
                <property name="focusPolicy">
                 <enum>Qt::StrongFocus</enum>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QRadioButton" name="radioButtonAbsoluteFilePath">
-               <property name="text">
-                <string>Reference with absolute file path</string>
                </property>
               </widget>
              </item>
@@ -617,7 +613,7 @@
         </widget>
        </item>
        <item>
-        <widget class="SVTimeSeriesPreviewWidget" name="timeSeriesPreview" native="true">
+        <widget class="SVTimeSeriesPreviewWidget" name="widgetTimeSeriesPreview" native="true">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -642,6 +638,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::BrowseFilenameWidget</class>
+   <extends>QWidget</extends>
+   <header>QtExt_BrowseFilenameWidget.h</header>
+   <container>1</container>
+   <slots>
+    <signal>editingFinished()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
@@ -656,12 +661,6 @@
    <class>QwtPlot</class>
    <extends>QWidget</extends>
    <header location="global">qwt_plot.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QtExt::BrowseFilenameWidget</class>
-   <extends>QWidget</extends>
-   <header>QtExt_BrowseFilenameWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

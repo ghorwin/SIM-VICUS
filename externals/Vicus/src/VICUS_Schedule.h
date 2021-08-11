@@ -102,8 +102,8 @@ public:
 	/*! If true, we have an annual schedule (though it might still be empty). */
 	bool							m_haveAnnualSchedule = false;			// XML:E
 
-	/*! Annual schedules are simply stored as linear spline. */
-	IBK::LinearSpline				m_annualSchedule;						// XML:E
+	/*! Annual schedule data. */
+	NANDRAD::LinearSplineParameter	m_annualSchedule;						// XML:E
 
 	/*! Data is organized in periods of data.
 		Periods in vector must be consecutive in time.

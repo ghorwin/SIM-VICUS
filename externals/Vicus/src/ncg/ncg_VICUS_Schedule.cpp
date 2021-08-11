@@ -67,16 +67,15 @@ void Schedule::readXML(const TiXmlElement * element) {
 				m_useLinearInterpolation = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "HaveAnnualSchedule")
 				m_haveAnnualSchedule = NANDRAD::readPODElement<bool>(c, cName);
-			else if (cName == "IBK:LinearSpline") {
-				IBK::LinearSpline p;
-				std::string name;
-				NANDRAD::readLinearSplineElement(c, p, name, nullptr, nullptr);
+			else if (cName == "LinearSplineParameter") {
+				NANDRAD::LinearSplineParameter p;
+				p.readXML(c);
 				bool success = false;
-				if (name == "AnnualSchedule") {
+				if (p.m_name == "AnnualSchedule") {
 					m_annualSchedule = p; success = true;
 				}
 				if (!success)
-					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.m_name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else if (cName == "Periods") {
 				const TiXmlElement * c2 = c->FirstChildElement();
@@ -119,8 +118,10 @@ TiXmlElement * Schedule::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 	TiXmlElement::appendSingleAttributeElement(e, "UseLinearInterpolation", nullptr, std::string(), IBK::val2string<bool>(m_useLinearInterpolation));
 	TiXmlElement::appendSingleAttributeElement(e, "HaveAnnualSchedule", nullptr, std::string(), IBK::val2string<bool>(m_haveAnnualSchedule));
-	if (!m_annualSchedule.empty())
-		NANDRAD::writeLinearSplineElement(e, "AnnualSchedule", m_annualSchedule, "-", "-");
+	if (!m_annualSchedule.m_name.empty()) {
+		IBK_ASSERT("AnnualSchedule" == m_annualSchedule.m_name);
+		m_annualSchedule.writeXML(e);
+	}
 
 	if (!m_periods.empty()) {
 		TiXmlElement * child = new TiXmlElement("Periods");

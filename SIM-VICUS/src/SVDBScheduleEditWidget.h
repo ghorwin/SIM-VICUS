@@ -39,6 +39,7 @@ namespace VICUS {
 	class ScheduleInterval;
 }
 
+class QListWidgetItem;
 class QwtPlotCurve;
 class SVDBScheduleTableModel;
 class SVDatabase;
@@ -102,7 +103,6 @@ private slots:
 	void onValidityInfoUpdated();
 
 
-
 	void on_widgetDailyCycle_dataChanged();
 
 	void on_radioButtonDailyCycles_toggled(bool checked);
@@ -112,6 +112,10 @@ private slots:
 	void on_filepathAnnualDataFile_editingFinished();
 
 	void on_radioButtonRelativeFilePath_toggled(bool checked);
+
+	void on_pushButtonEditTexteditor_clicked();
+
+	void on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
 private:
 	/*! Set up the modified variable of the model to true.
@@ -128,7 +132,7 @@ private:
 	/*! Updates diagram preview based on currently selected schedule interval, interpolation mode and
 		"Full year" checkbox.
 	*/
-	void updateDiagram();
+	void updateDailyCycleDiagram();
 
 	/*! Called when a new daily cycle has been selected,i.e. m_currentDailyCycleIndex has changed. */
 	void selectDailyCycle();
@@ -139,6 +143,8 @@ private:
 	/*! Updates enabled/disabled state of buttons based on content of m_currentInterval and current user interface state. */
 	void updateDailyCycleSelectButtons();
 
+	/*! Generates a relative/absolute path from entered annual spline tsv-file path and updates m_current and the respective label. */
+	void generateRelativeFilePath();
 
 
 	Ui::SVDBScheduleEditWidget			*m_ui;

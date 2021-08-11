@@ -27,6 +27,9 @@
 #include "ui_SVDBScheduleEditWidget.h"
 
 #include <QDate>
+#include <QFileDialog>
+#include <QListWidget>
+#include <QListWidgetItem>
 
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
@@ -36,10 +39,15 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
+#include <QtExt_configuration.h>
 
 #include <qwt_plot_curve.h>
 
+#include <IBK_FileUtils.h>
+#include <IBK_CSVReader.h>
+
 #include "SVSettings.h"
+#include "SVProjectHandler.h"
 #include "SVDBScheduleTableModel.h"
 #include "SVDBScheduleDailyCycleEditWidget.h"
 #include "SVStyle.h"
@@ -144,13 +152,13 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->radioButtonLinear->blockSignals(false);
 	m_ui->radioButtonConstant->blockSignals(false);
 
-	m_ui->radioButtonDailyCycles->setChecked(m_current->m_annualSchedule.empty());
-	m_ui->radioButtonAnnualSchedules->setChecked(!m_current->m_annualSchedule.empty());
+	m_ui->radioButtonDailyCycles->setChecked(!m_current->m_haveAnnualSchedule);
+	m_ui->radioButtonAnnualSchedules->setChecked(m_current->m_haveAnnualSchedule);
 
-	m_ui->stackedWidget->setCurrentIndex(m_current->m_annualSchedule.empty() ? 0 : 1);
+	m_ui->stackedWidget->setCurrentIndex(m_current->m_haveAnnualSchedule ? 1 : 0);
 
 	// period schedule?
-	if (m_current->m_annualSchedule.x().empty()) {
+	if (!m_current->m_haveAnnualSchedule) {
 
 		// check that this schedule has a period
 		// if not create first period
@@ -224,7 +232,7 @@ void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 }
 
 
-void SVDBScheduleEditWidget::updateDiagram() {
+void SVDBScheduleEditWidget::updateDailyCycleDiagram() {
 	// show period data in plot preview
 	std::vector<double> timepoints;
 	std::vector<double> data;
@@ -488,7 +496,7 @@ void SVDBScheduleEditWidget::on_tableWidgetPeriods_currentCellChanged(int curren
 	m_currentDailyCycleIndex = 0;
 
 	selectDailyCycle();
-	updateDiagram();
+	updateDailyCycleDiagram();
 }
 
 
@@ -769,18 +777,12 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 }
 
 
-void SVDBScheduleEditWidget::modelModify() {
-	m_db->m_schedules.m_modified = true;
-	m_dbModel->setItemModified(m_current->m_id);
-	updateDiagram();
-}
-
-
 void SVDBScheduleEditWidget::on_widgetDailyCycle_dataChanged() {
-	updateDiagram();
+	updateDailyCycleDiagram();
 }
 
 
+// switch from DailyCycle to Annual Schedules
 void SVDBScheduleEditWidget::on_radioButtonDailyCycles_toggled(bool checked) {
 	m_current->m_haveAnnualSchedule = !checked;
 	m_ui->stackedWidget->setCurrentIndex(checked ? 0 : 1);
@@ -792,19 +794,167 @@ void SVDBScheduleEditWidget::on_pushButtonPasteAnnualDataFromClipboard_clicked()
 	// paste data from clipboard
 
 
-
 	// clear annual spline data file and update file widget
-
-
 }
 
+
 void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
+	// clear embedded spline data
+	m_current->m_annualSchedule.m_values.clear();
+
 	// update text label with file reference
 	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
 
+	QString dataFilePath = m_ui->filepathAnnualDataFile->filename();
+	if (dataFilePath.trimmed().isEmpty()) {
+		m_current->m_annualSchedule.m_tsvFile.clear();
+		updateInput((int)m_current->m_id);
+		return;
+	}
+
+	// parse tsv-file and if several data columns are in file, show the column selection list widget
+	m_ui->widgetColumnSelection->setVisible(false);
+
+	IBK::Path filePath(dataFilePath.toStdString()); // this is always an absolute path
+	// check if we have a  csv/tsv file
+	IBK::Path adjustedFileName;
+	int selectedColumn = 1;
+	IBK::extract_number_suffix(filePath, adjustedFileName, selectedColumn);
+	std::string extension = IBK::tolower_string(adjustedFileName.extension());
+	if (extension == "tsv" || extension == "csv") {
+		// read first line of file
+		IBK::CSVReader reader;
+		try {
+			// read only header
+			reader.read(adjustedFileName, true, true);
+		}
+		catch (...) {
+			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
+			return;
+		}
+		// special case: only two columns, just compose linear spline parameter and populate diagram
+		if (reader.m_captions.size() == 2) {
+			// TODO :
+			return;
+		}
+
+		// show column selection list widget
+		m_ui->widgetColumnSelection->setVisible(true);
+
+		// extract columns
+		m_ui->listWidgetColumnSelection->clear();
+
+		// process all columns past the first
+		for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
+
+			// try to extract unit
+			QListWidgetItem * item = nullptr;
+			std::string ustr = reader.m_units[i];
+			if (ustr.empty())
+				ustr = "-";
+			try {
+				item = new QListWidgetItem(QString("%1 [%2]").arg(QString::fromStdString(reader.m_captions[i]),
+																  QString::fromStdString(ustr)) );
+				item->setData(Qt::UserRole+1, QString::fromStdString(ustr));
+				IBK::Unit u(ustr); // will throw in case of unknown unit
+				item->setData(Qt::UserRole, i);
+				item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			}
+			catch (...) {
+				item->setData(Qt::UserRole, -2); // unrecognized unit
+				item->setForeground(Qt::gray);
+			}
+			m_ui->listWidgetColumnSelection->addItem(item);
+		}
+		m_ui->listWidgetColumnSelection->blockSignals(true);
+		selectedColumn = qMin(selectedColumn, (int)reader.m_captions.size());
+		m_ui->listWidgetColumnSelection->setCurrentRow(selectedColumn-1);
+		m_ui->listWidgetColumnSelection->blockSignals(false);
+	}
+
+	// we now have a column selected, trigger update of diagram
+	on_listWidgetColumnSelection_currentItemChanged(m_ui->listWidgetColumnSelection->currentItem(), nullptr);
 }
 
 
-void SVDBScheduleEditWidget::on_radioButtonRelativeFilePath_toggled(bool checked) {
+void SVDBScheduleEditWidget::on_radioButtonRelativeFilePath_toggled(bool) {
+	// read path from
+	generateRelativeFilePath();
+	m_current->m_annualSchedule.m_tsvFile = m_ui->labelFileNameReference->text().toStdString();
+	modelModify();
+}
 
+
+void SVDBScheduleEditWidget::on_pushButtonEditTexteditor_clicked() {
+	// span editor if valid file name has been entered
+	IBK::Path f(m_ui->filepathAnnualDataFile->filename().toStdString());
+	IBK::Path adjustedFileName;
+	int selectedColumn = 1;
+	IBK::extract_number_suffix(f, adjustedFileName, selectedColumn);
+	if (adjustedFileName.exists()) {
+		SVSettings::instance().openFileInTextEditor(this, QString::fromStdString(adjustedFileName.str()));
+	}
+	else {
+		QMessageBox::critical(this, tr("Invalid filename"), tr("Cannot edit file, file does not exist, yet."));
+	}
+}
+
+
+void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
+	if (current == nullptr)
+		return; // do nothing
+	// get column index
+	int currentListItem = current->data(Qt::UserRole).toInt();
+	QString unitName = current->data(Qt::UserRole+1).toString();
+
+	// add suffix to file name
+	IBK::Path fname(IBK::Path(m_ui->filepathAnnualDataFile->filename().toStdString()));
+	IBK::Path adjustedFileName;
+	int number;
+	IBK::extract_number_suffix(fname, adjustedFileName, number);
+	QString extendedFilename = QString("%1?%2")
+			.arg(QString::fromStdString(adjustedFileName.str()))
+			.arg(currentListItem);
+	m_ui->filepathAnnualDataFile->setFilename( extendedFilename );
+	on_filepathAnnualDataFile_editingFinished();
+}
+
+
+// *** PRIVATE FUNCTIONS ***
+
+void SVDBScheduleEditWidget::modelModify() {
+	m_db->m_schedules.m_modified = true;
+	m_dbModel->setItemModified(m_current->m_id);
+	updateDailyCycleDiagram();
+}
+
+
+void SVDBScheduleEditWidget::generateRelativeFilePath() {
+	// if filename is empty, simply return
+	if (m_ui->filepathAnnualDataFile->filename().trimmed().isEmpty()) {
+		m_ui->labelFileNameReference->setText("");
+		return;
+	}
+
+	// no project file saved yet? or absolute file path selected?
+	if (SVProjectHandler::instance().projectFile().isEmpty() ||
+		m_ui->radioButtonAbsoluteFilePath->isChecked() )
+	{
+		m_ui->labelFileNameReference->setText(m_ui->filepathAnnualDataFile->filename());
+		return;
+	}
+
+	IBK::Path fname(QtExt::QString2Path(m_ui->filepathAnnualDataFile->filename()));
+
+	// relative to project dir?
+	if (m_ui->radioButtonRelativeFilePath->isChecked()) {
+		// generate relative path
+		try {
+			IBK::Path relFname = fname.relativePath( QtExt::QString2Path(SVProjectHandler::instance().projectFile()).parentPath() );
+			m_ui->labelFileNameReference->setText("${Project Directory}/" + QString::fromStdString(relFname.str()));
+		}
+		catch (...) {
+			m_ui->labelFileNameReference->setText(m_ui->filepathAnnualDataFile->filename());
+		}
+	}
 }
