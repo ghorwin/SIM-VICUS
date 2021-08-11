@@ -106,6 +106,11 @@ public:
 	/*! Returns the center point (average of all vertexes of the polygon). */
 	IBKMK::Vector3D centerPoint() const;
 
+	/*! Computes bounding box of polygon. */
+	void boundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+	/*! Enlarges existing bounding box to hold polygon. */
+	void enlargeBoundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+
 	/*! Returns the normal vector of the polygon (only defined if polygon is valid).
 		Normal vector is defined based on winding order of polygon.
 	*/

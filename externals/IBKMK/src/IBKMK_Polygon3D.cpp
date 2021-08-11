@@ -150,6 +150,25 @@ IBKMK::Vector3D Polygon3D::centerPoint() const {
 }
 
 
+void Polygon3D::boundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
+	if (m_vertexes.empty()) {
+		lowerValues = IBKMK::Vector3D(0,0,0);
+		upperValues = IBKMK::Vector3D(0,0,0);
+		return;
+	}
+	lowerValues = m_vertexes[0];
+	upperValues = m_vertexes[0];
+	for (unsigned int i=1; i<m_vertexes.size(); ++i)
+		IBKMK::enlargeBoundingBox(m_vertexes[i], lowerValues, upperValues);
+}
+
+
+void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
+	for (const IBKMK::Vector3D & v: m_vertexes)
+		IBKMK::enlargeBoundingBox(v, lowerValues, upperValues);
+}
+
+
 
 // *** PRIVATE MEMBER FUNCTIONS ***
 

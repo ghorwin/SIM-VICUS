@@ -116,6 +116,9 @@ inline double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::V
 	return std::acos( v1.scalarProduct(v2) / sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
 }
 
+/*! Takes the vector v and enlarges the current bounding box defined through 'minVec' and 'maxVec'. */
+void enlargeBoundingBox(const IBKMK::Vector3D & v, IBKMK::Vector3D & minVec, IBKMK::Vector3D & maxVec);
+
 } // namespace IBKMK
 
 #endif // IBKMK_3DCalculationsH

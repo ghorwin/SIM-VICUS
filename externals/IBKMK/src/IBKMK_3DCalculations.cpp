@@ -323,5 +323,16 @@ bool linePlaneIntersection(const Vector3D & a, const Vector3D & normal, const Ve
 	return true;
 }
 
+
+void enlargeBoundingBox(const Vector3D & v, Vector3D & minVec, Vector3D & maxVec) {
+	minVec.m_x = std::min(minVec.m_x, v.m_x);
+	minVec.m_y = std::min(minVec.m_y, v.m_y);
+	minVec.m_z = std::min(minVec.m_z, v.m_z);
+
+	maxVec.m_x = std::max(maxVec.m_x, v.m_x);
+	maxVec.m_y = std::max(maxVec.m_y, v.m_y);
+	maxVec.m_z = std::max(maxVec.m_z, v.m_z);
+}
+
 } // namespace IBKMK
 
