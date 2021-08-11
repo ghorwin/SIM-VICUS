@@ -1,5 +1,5 @@
-#ifndef EP_READ_H
-#define EP_READ_H
+#ifndef EP_ProjectH
+#define EP_ProjectH
 
 #include <IBK_Path.h>
 
@@ -10,6 +10,7 @@
 #include "EP_Construction.h"
 #include "EP_Zone.h"
 #include "EP_Version.h"
+#include "EP_ShadingBuildingDetailed.h"
 
 namespace EP {
 
@@ -77,8 +78,11 @@ public:
 	/*! Vector of all constructions */
 	std::vector<EP::Construction>					m_constructions;
 
-
+	/*! Vector of all ShadingBuildingDetaile */
+	std::vector<EP::ShadingBuildingDetailed>		m_shadingBuildingDetailed;
 };
-}
 
-#endif // EP_READ_H
+
+} // namespace EP
+
+#endif // EP_ProjectH

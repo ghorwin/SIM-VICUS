@@ -938,6 +938,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 		case SVImportIDFDialog::ImportCancelled :
 			return;
 	}
+
 }
 
 

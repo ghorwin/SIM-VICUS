@@ -82,12 +82,11 @@ void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigne
 	//ignored number of points str[10]
 
 	//rounding
-	int r1 = 1e5;
-	for (size_t i=11; i<str.size(); ) {
+	for (size_t i=11; i+2<str.size(); ) {
 		IBKMK::Vector3D vec;
-		vec.m_x = static_cast<double>(static_cast<int>(IBK::string2val<double>(str[i])*r1))/r1;	++i;
-		vec.m_y = static_cast<double>(static_cast<int>(IBK::string2val<double>(str[i])*r1))/r1;	++i;
-		vec.m_z = static_cast<double>(static_cast<int>(IBK::string2val<double>(str[i])*r1))/r1;	++i;
+		vec.m_x = IBK::rounded<6>(IBK::string2val<double>(str[i]));	++i;
+		vec.m_y = IBK::rounded<6>(IBK::string2val<double>(str[i]));	++i;
+		vec.m_z = IBK::rounded<6>(IBK::string2val<double>(str[i]));	++i;
 		m_polyline.push_back(vec);
 	}
 

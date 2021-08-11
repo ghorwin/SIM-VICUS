@@ -251,6 +251,29 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		subs.push_back(subSurf);
 		surf->setSubSurfaces(subs);
 	}
+
+
+	// *** ShadingBuildingDetailed ***
+
+	//import all building surface detailed -> opaque surfaces
+	for (const EP::ShadingBuildingDetailed &sh : prj.m_shadingBuildingDetailed) {
+		++count;
+		if (progressTimer.elapsed() > 100) {
+			dlg.setValue(count);
+			if (dlg.wasCanceled())
+				throw IBK::Exception("Import canceled.", FUNC_ID);
+			progressTimer.start();
+		}
+
+		VICUS::Surface surf;
+		surf.m_id = surf.uniqueID();
+		surf.m_displayName = QString::fromStdString(sh.m_name);
+		surf.setPolygon3D( VICUS::Polygon3D( sh.m_polyline ) );
+		surf.m_color = surf.m_displayColor = QColor("#006500");
+
+		vp.m_plainGeometry.push_back(surf);
+	}
+
 }
 
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {

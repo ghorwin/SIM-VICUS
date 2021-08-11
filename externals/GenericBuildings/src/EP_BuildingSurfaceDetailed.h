@@ -1,5 +1,5 @@
-#ifndef EP_BUILDINGSURFACEDETAILED_H
-#define EP_BUILDINGSURFACEDETAILED_H
+#ifndef EP_BuildingSurfaceDetailedH
+#define EP_BuildingSurfaceDetailedH
 
 
 #include <IBKMK_Vector3D.h>
@@ -55,4 +55,4 @@ public:
 };
 }
 
-#endif // EP_BUILDINGSURFACEDETAILED_H
+#endif // EP_BuildingSurfaceDetailedH

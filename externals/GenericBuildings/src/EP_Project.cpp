@@ -19,6 +19,7 @@ void Project::readIDF(const IDFParser & idfData) {
 		idfData.readClassObj("material:nomass", m_materials); // data get's added to m_materials
 		idfData.readClassObj("windowmaterial:simpleglazingsystem", m_windowMaterial);
 		idfData.readClassObj("construction", m_constructions);
+		idfData.readClassObj("shading:building:detailed", m_shadingBuildingDetailed);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, "Error extracting data from IDF.", FUNC_ID);
