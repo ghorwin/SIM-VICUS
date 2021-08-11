@@ -1204,7 +1204,7 @@ QComboBox {
   padding-right: 36px;
   /* 4 + 16*2 See scrollbar size */
   /* Fixes #103, #111 */
-  min-height: 1.5em;
+  /* min-height: 1.5em; */
   /* padding-top: 2px;     removed to fix #132 */
   /* padding-bottom: 2px;  removed to fix #132 */
   /* min-width: 75px;      removed to fix #109 */
@@ -1267,8 +1267,13 @@ QComboBox::item:alternate {
   background: #212124;
 }
 
-QComboBox::item:checked {
+/*
+BUG in Qt 5.14 and newer on Linux and Windows if next style is used.
   font-weight: bold;
+*/
+QComboBox::item:checked {
+  color: #a08918;
+  background: #212124;
 }
 
 QComboBox::item:selected {
