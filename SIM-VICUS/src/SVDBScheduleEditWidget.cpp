@@ -825,9 +825,9 @@ void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
 
 	// show column selection list widget
 	m_ui->widgetColumnSelection->blockSignals(true);
-	m_ui->widgetColumnSelection->setEnabled(false);
+	m_ui->listWidgetColumnSelection->setEnabled(false);
 	m_ui->listWidgetColumnSelection->clear();
-	m_ui->widgetColumnSelection->blockSignals(false);
+	m_ui->listWidgetColumnSelection->blockSignals(false);
 
 	// parse tsv-file and if several data columns are in file, show the column selection list widget
 	IBK::Path filePath(dataFilePath.toStdString()); // this is always an absolute path
@@ -853,7 +853,7 @@ void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
 	}
 
 	m_ui->widgetColumnSelection->setEnabled(true);
-	m_ui->widgetColumnSelection->blockSignals(true);
+	m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(true);
 
 	// process all columns past the first
 	for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
@@ -941,7 +941,8 @@ void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QLi
 void SVDBScheduleEditWidget::modelModify() {
 	m_db->m_schedules.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
-	updateDailyCycleDiagram();
+	if (!m_current->m_haveAnnualSchedule)
+		updateDailyCycleDiagram();
 }
 
 
