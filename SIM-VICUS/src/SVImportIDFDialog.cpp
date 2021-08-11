@@ -310,6 +310,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		vp.m_viewSettings.m_gridSpacing = 100;
 }
 
+
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {
 	m_returnCode = ReplaceProject;
 	accept();

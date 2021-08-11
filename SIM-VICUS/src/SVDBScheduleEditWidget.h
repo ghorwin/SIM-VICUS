@@ -146,6 +146,9 @@ private:
 	/*! Generates a relative/absolute path from entered annual spline tsv-file path and updates m_current and the respective label. */
 	void generateRelativeFilePath();
 
+	/*! Updates the preview of the annual spline data. */
+	void updateAnnualDataDiagram();
+
 
 	Ui::SVDBScheduleEditWidget			*m_ui;
 

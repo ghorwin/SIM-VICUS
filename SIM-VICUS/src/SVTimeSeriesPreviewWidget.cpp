@@ -67,18 +67,16 @@ void SVTimeSeriesPreviewWidget::setErrorMessage(const QString& errmsg) {
 
 
 void SVTimeSeriesPreviewWidget::setData(const NANDRAD::LinearSplineParameter & data) {
+	m_data = data;
 
 	// we need valid data, otherwise we clear the chart and show an error message
-	try {
-		m_data = data;
-		m_data.checkAndInitialize(data.m_name, data.m_xUnit, data.m_yUnit,
-								data.m_yUnit, std::numeric_limits<double>::lowest(), true, std::numeric_limits<double>::max(), true,
-								"", true);
-	} catch (IBK::Exception & ex) {
+	std::string errmsg;
+	if (!m_data.m_values.makeSpline(errmsg)) {
 		// TODO : error message from checkAndInitialize is not translated... we may need a Qt-based check-and-initialize function
-		setErrorMessage(tr("Invalid data: %1").arg(ex.what()));
+		setErrorMessage(tr("Invalid data: %1").arg(QString::fromStdString(errmsg)));
 		return;
 	}
+
 	m_chart->setVisible(true);
 	m_errorTextBrowser->setVisible(false);
 

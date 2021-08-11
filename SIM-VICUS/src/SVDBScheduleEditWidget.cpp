@@ -81,6 +81,7 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	configureChart(m_ui->plotWidget);
 	m_curve = addConfiguredCurve(m_ui->plotWidget);
 
+	m_ui->filepathAnnualDataFile->setup("", true, true, tr("Time-series data files (*.tsv *.csv);;All files (*.*)"));
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -136,6 +137,12 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		m_curve->setSamples(QVector<QPointF>());
 		m_ui->plotWidget->replot();
 
+		m_ui->radioButtonDailyCycles->blockSignals(true);
+		m_ui->radioButtonDailyCycles->setChecked(true);
+		m_ui->radioButtonAnnualSchedules->setChecked(false);
+		m_ui->radioButtonDailyCycles->blockSignals(false);
+		m_ui->stackedWidget->setCurrentIndex(0);
+
 		return;
 	}
 
@@ -152,7 +159,9 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	m_ui->radioButtonLinear->blockSignals(false);
 	m_ui->radioButtonConstant->blockSignals(false);
 
+	m_ui->radioButtonDailyCycles->blockSignals(true);
 	m_ui->radioButtonDailyCycles->setChecked(!m_current->m_haveAnnualSchedule);
+	m_ui->radioButtonDailyCycles->blockSignals(false);
 	m_ui->radioButtonAnnualSchedules->setChecked(m_current->m_haveAnnualSchedule);
 
 	m_ui->stackedWidget->setCurrentIndex(m_current->m_haveAnnualSchedule ? 1 : 0);
@@ -172,7 +181,9 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	}
 	// annualSchedule
 	else {
-		// TODO Annual Schedule ...
+		// TODO populate line edit with tsv-file, if any
+
+
 	}
 
 	// for built-ins, disable editing/make read-only
@@ -812,65 +823,64 @@ void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
 		return;
 	}
 
-	// parse tsv-file and if several data columns are in file, show the column selection list widget
-	m_ui->widgetColumnSelection->setVisible(false);
+	// show column selection list widget
+	m_ui->widgetColumnSelection->blockSignals(true);
+	m_ui->widgetColumnSelection->setEnabled(false);
+	m_ui->listWidgetColumnSelection->clear();
+	m_ui->widgetColumnSelection->blockSignals(false);
 
+	// parse tsv-file and if several data columns are in file, show the column selection list widget
 	IBK::Path filePath(dataFilePath.toStdString()); // this is always an absolute path
 	// check if we have a  csv/tsv file
 	IBK::Path adjustedFileName;
 	int selectedColumn = 1;
 	IBK::extract_number_suffix(filePath, adjustedFileName, selectedColumn);
 	std::string extension = IBK::tolower_string(adjustedFileName.extension());
-	if (extension == "tsv" || extension == "csv") {
-		// read first line of file
-		IBK::CSVReader reader;
+	// read first line of file
+	IBK::CSVReader reader;
+	try {
+		// read only header
+		reader.read(adjustedFileName, true, true);
+	}
+	catch (...) {
+		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
+		return;
+	}
+	// special case: only two columns, just compose linear spline parameter and populate diagram
+	if (reader.m_captions.size() == 2) {
+		updateAnnualDataDiagram();
+		return;
+	}
+
+	m_ui->widgetColumnSelection->setEnabled(true);
+	m_ui->widgetColumnSelection->blockSignals(true);
+
+	// process all columns past the first
+	for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
+
+		// try to extract unit
+		QListWidgetItem * item = nullptr;
+		std::string ustr = reader.m_units[i];
+		if (ustr.empty())
+			ustr = "-";
+		item = new QListWidgetItem(QString("%1 [%2]").arg(QString::fromStdString(reader.m_captions[i]),
+														  QString::fromStdString(ustr)) );
 		try {
-			// read only header
-			reader.read(adjustedFileName, true, true);
+			IBK::Unit u(ustr); // will throw in case of unknown unit
+
+			item->setData(Qt::UserRole, i);
+			item->setData(Qt::UserRole+1, QString::fromStdString(ustr));
+			item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		}
 		catch (...) {
-			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
-			return;
+			item->setData(Qt::UserRole, -2); // unrecognized unit
+			item->setForeground(Qt::gray);
 		}
-		// special case: only two columns, just compose linear spline parameter and populate diagram
-		if (reader.m_captions.size() == 2) {
-			// TODO :
-			return;
-		}
-
-		// show column selection list widget
-		m_ui->widgetColumnSelection->setVisible(true);
-
-		// extract columns
-		m_ui->listWidgetColumnSelection->clear();
-
-		// process all columns past the first
-		for (unsigned int i=1; i<reader.m_captions.size(); ++i) {
-
-			// try to extract unit
-			QListWidgetItem * item = nullptr;
-			std::string ustr = reader.m_units[i];
-			if (ustr.empty())
-				ustr = "-";
-			try {
-				item = new QListWidgetItem(QString("%1 [%2]").arg(QString::fromStdString(reader.m_captions[i]),
-																  QString::fromStdString(ustr)) );
-				item->setData(Qt::UserRole+1, QString::fromStdString(ustr));
-				IBK::Unit u(ustr); // will throw in case of unknown unit
-				item->setData(Qt::UserRole, i);
-				item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			}
-			catch (...) {
-				item->setData(Qt::UserRole, -2); // unrecognized unit
-				item->setForeground(Qt::gray);
-			}
-			m_ui->listWidgetColumnSelection->addItem(item);
-		}
-		m_ui->listWidgetColumnSelection->blockSignals(true);
-		selectedColumn = qMin(selectedColumn, (int)reader.m_captions.size());
-		m_ui->listWidgetColumnSelection->setCurrentRow(selectedColumn-1);
-		m_ui->listWidgetColumnSelection->blockSignals(false);
+		m_ui->listWidgetColumnSelection->addItem(item);
 	}
+	selectedColumn = qMin(selectedColumn, (int)reader.m_captions.size());
+	m_ui->listWidgetColumnSelection->setCurrentRow(selectedColumn-1);
+	m_ui->listWidgetColumnSelection->blockSignals(false);
 
 	// we now have a column selected, trigger update of diagram
 	on_listWidgetColumnSelection_currentItemChanged(m_ui->listWidgetColumnSelection->currentItem(), nullptr);
@@ -900,11 +910,16 @@ void SVDBScheduleEditWidget::on_pushButtonEditTexteditor_clicked() {
 }
 
 
-void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous) {
+void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
 	if (current == nullptr)
 		return; // do nothing
 	// get column index
 	int currentListItem = current->data(Qt::UserRole).toInt();
+	if (currentListItem < 0) {
+		// invalid unit in data column, cannot use this column
+		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Invalid/missing unit in column header of data file."));
+		return;
+	}
 	QString unitName = current->data(Qt::UserRole+1).toString();
 
 	// add suffix to file name
@@ -916,7 +931,8 @@ void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QLi
 			.arg(QString::fromStdString(adjustedFileName.str()))
 			.arg(currentListItem);
 	m_ui->filepathAnnualDataFile->setFilename( extendedFilename );
-	on_filepathAnnualDataFile_editingFinished();
+	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
+	updateAnnualDataDiagram();
 }
 
 
@@ -957,4 +973,34 @@ void SVDBScheduleEditWidget::generateRelativeFilePath() {
 			m_ui->labelFileNameReference->setText(m_ui->filepathAnnualDataFile->filename());
 		}
 	}
+}
+
+
+void SVDBScheduleEditWidget::updateAnnualDataDiagram() {
+	FUNCID(SVDBScheduleEditWidget::updateAnnualDataDiagram);
+	// We compose a NANDRAD::LinearSplineParameter and afterwards update the diagram.
+	// This function is called when we have at least valid meta-data.
+	if (m_current->m_annualSchedule.m_tsvFile.isValid()) {
+		// tsv-file variant
+		// get absolute path
+		IBK::Path fname(IBK::Path(m_ui->filepathAnnualDataFile->filename().toStdString()));
+
+		NANDRAD::LinearSplineParameter spl;
+		spl.m_tsvFile = fname;
+		try {
+			IBK::IBK_Message(IBK::FormatString("Reading '%1'\n").arg(fname), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
+			spl.readTsv();
+		}
+		catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Error reading data file."));
+			return;
+		}
+		m_ui->widgetTimeSeriesPreview->setData(spl);
+	}
+	else {
+		// embedded data variant
+
+	}
+
 }

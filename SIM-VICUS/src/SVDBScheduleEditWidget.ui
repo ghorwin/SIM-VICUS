@@ -448,7 +448,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageAnnualSchedule">
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
        <item>
         <widget class="QTabWidget" name="tabWidget">
          <property name="currentIndex">
@@ -550,12 +550,12 @@
               <enum>Qt::Vertical</enum>
              </property>
              <property name="sizeType">
-              <enum>QSizePolicy::Minimum</enum>
+              <enum>QSizePolicy::Preferred</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
                <width>17</width>
-               <height>17</height>
+               <height>20</height>
               </size>
              </property>
             </spacer>

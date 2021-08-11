@@ -157,42 +157,8 @@ void LinearSplineParameter::checkAndInitialize(const std::string & expectedName,
 		throw IBK::Exception("Either a tsvFile or values can be specified. Both is not possible", FUNC_ID);
 
 	// if there is a valid tsv-file: read it and set values
-	if (m_tsvFile.isValid()) {
-
-		// Note: we may have a path like '/data/tsv/values.tsv?3' with column indiator
-
-		// extract column identifier, if any
-		std::string fpath = m_tsvFile.str();
-		unsigned int colIndex = 1; // 1 means "first data column" (actually 2nd column in file, with 0-based index 1)
-		std::size_t pos = fpath.find('?');
-		if (pos != std::string::npos) {
-			try {
-				colIndex = IBK::string2val<unsigned int>(fpath.substr(pos+1));
-			} catch (...) {
-				throw IBK::Exception(IBK::FormatString("Malformed file name '%1' (invalid column indicator).").arg(m_tsvFile.str()), FUNC_ID);
-			}
-			fpath = fpath.substr(0, pos);
-		}
-
-		// this is now the path without column indicator
-		IBK::Path tsvFilePath(fpath);
-
-		if (!IBK::Path(tsvFilePath).exists())
-			throw IBK::Exception(IBK::FormatString("File '%1' does not exist.").arg(m_tsvFile.str()), FUNC_ID);
-		IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-		IBK::CSVReader reader;
-		reader.read(tsvFilePath, false, true);  // may throw exception
-		if (reader.m_nColumns <= colIndex)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns, but has only %3.")
-								 .arg(tsvFilePath.str()).arg(colIndex+1)
-								 .arg(reader.m_nColumns), FUNC_ID); // Mind: column count = 1 (time column) + colIndex
-		if (reader.m_nRows < 2)
-			throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
-								 .arg(tsvFilePath.str()), FUNC_ID);
-		m_xUnit = IBK::Unit(reader.m_units[0]);
-		m_yUnit = IBK::Unit(reader.m_units[colIndex]);
-		m_values.setValues(reader.colData(0), reader.colData(colIndex));
-	}
+	if (m_tsvFile.isValid())
+		readTsv();
 
 	// convert to base units
 	convert2BaseUnits(); // throws an exception if invalid
@@ -259,6 +225,46 @@ bool LinearSplineParameter::operator!=(const LinearSplineParameter & other) cons
 	if (m_xUnit != other.m_xUnit) return true;
 	if (m_yUnit != other.m_yUnit) return true;
 	return false;
+}
+
+
+void LinearSplineParameter::readTsv() {
+	FUNCID(LinearSplineParameter::readTsv);
+
+	// Note: we may have a path like '/data/tsv/values.tsv?3' with column indiator
+
+	// extract column identifier, if any
+	std::string fpath = m_tsvFile.str();
+	unsigned int colIndex = 1; // 1 means "first data column" (actually 2nd column in file, with 0-based index 1)
+	std::size_t pos = fpath.find('?');
+	if (pos != std::string::npos) {
+		try {
+			colIndex = IBK::string2val<unsigned int>(fpath.substr(pos+1));
+		} catch (...) {
+			throw IBK::Exception(IBK::FormatString("Malformed file name '%1' (invalid column indicator).").arg(m_tsvFile.str()), FUNC_ID);
+		}
+		fpath = fpath.substr(0, pos);
+	}
+
+	// this is now the path without column indicator
+	IBK::Path tsvFilePath(fpath);
+
+	if (!IBK::Path(tsvFilePath).exists())
+		throw IBK::Exception(IBK::FormatString("File '%1' does not exist.").arg(m_tsvFile.str()), FUNC_ID);
+	IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::CSVReader reader;
+	reader.read(tsvFilePath, false, true);  // may throw exception
+	if (reader.m_nColumns <= colIndex)
+		throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns, but has only %3.")
+							 .arg(tsvFilePath.str()).arg(colIndex+1)
+							 .arg(reader.m_nColumns), FUNC_ID); // Mind: column count = 1 (time column) + colIndex
+	if (reader.m_nRows < 2)
+		throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
+							 .arg(tsvFilePath.str()), FUNC_ID);
+	m_xUnit = IBK::Unit(reader.m_units[0]); // may throw
+	m_yUnit = IBK::Unit(reader.m_units[colIndex]); // may throw
+	m_values.setValues(reader.colData(0), reader.colData(colIndex));
+
 }
 
 } // namespace NANDRAD

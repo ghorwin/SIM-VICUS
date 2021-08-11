@@ -112,6 +112,10 @@ public:
 							const IBK::Unit & limitYUnit, double minYVal, bool isGreaterEqual,
 							double maxYVal, bool isLessEqual, const char * const errmsg, bool skipUnitChecks=false);
 
+	/*! Reads externally referenced tsv-file.
+		m_tsvFile is expected to contain a valid absolute path, optionally with trailing ?n column identifier.
+	*/
+	void readTsv();
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -133,7 +137,9 @@ public:
 	IBK::Unit				m_xUnit;
 	/*! Unit of the y-values. */
 	IBK::Unit				m_yUnit;
-	/*! Path to tsv-file, the file will be read during checkAndInitialize() call */
+	/*! Path to tsv-file, the file will be read during checkAndInitialize() call.
+		Path may have an appended column identifier, starting with 1 for the first data column after the time column.
+	*/
 	IBK::Path				m_tsvFile;
 
 
