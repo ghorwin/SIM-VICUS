@@ -109,6 +109,10 @@ private slots:
 
 	void on_pushButtonPasteAnnualDataFromClipboard_clicked();
 
+	void on_filepathAnnualDataFile_editingFinished();
+
+	void on_radioButtonRelativeFilePath_toggled(bool checked);
+
 private:
 	/*! Set up the modified variable of the model to true.
 		Also updates the diagram.

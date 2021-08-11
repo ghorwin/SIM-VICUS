@@ -797,3 +797,14 @@ void SVDBScheduleEditWidget::on_pushButtonPasteAnnualDataFromClipboard_clicked()
 
 
 }
+
+void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
+	// update text label with file reference
+	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
+
+}
+
+
+void SVDBScheduleEditWidget::on_radioButtonRelativeFilePath_toggled(bool checked) {
+
+}
