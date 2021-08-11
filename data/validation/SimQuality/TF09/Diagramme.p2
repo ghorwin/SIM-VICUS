@@ -3,14 +3,9 @@
 	<!--List of all directories-->
 	<Directories>
 		<Directory>
-			<Path>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten</Path>
-			<SubDir Color="#ff007f" Checked="1">.</SubDir>
-		</Directory>
-		<Directory>
-			<Path>B:/git/SIM-VICUS/data/vicus/ShadingTest</Path>
-			<SubDir Color="#ffaa00" Checked="1">.</SubDir>
-			<SubDir Color="#ff007f" Checked="0">SimQ_09.1</SubDir>
-			<ExpandedSubDir>.</ExpandedSubDir>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="1">.</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">sensitivity analysis</SubDir>
 		</Directory>
 	</Directories>
 
@@ -18,66 +13,45 @@
 
 	<!--All mappers.-->
 	<Mappers>
-		<Mapper name="Varinate 09 - Azimuth">
+		<Mapper name="TF 09.1 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>0</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -87,237 +61,186 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>7</MarkerSize>
+						<MarkerSize>6</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<LineStyle>-1</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>20</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<IBK:Unit name="AxisUnit">min</IBK:Unit>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
-						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.yyyy&#x0A;dd.MM.yyyy&#x0A;MMM&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
-						<Maximum>93.443591258121671</Maximum>
-						<Minimum>88.127584170112243</Minimum>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.46943336233983</Maximum>
-						<Minimum>815.46607383209994</Minimum>
-					</Axis>
+					<Axis index="2" enabled="0" />
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09 - Azimuth</TitleText>
+					<TitleText>TF 09.1 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>5</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Varinate 09 - Altitude">
+		<Mapper name="TF 09.2 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE.tsv?1|2</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
+					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
+					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS.tsv?1|2</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
+					<ColumnIndex>3</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>11</MarkerSize>
+						<MarkerSize>6</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<LineStyle>-1</LineStyle>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>20</MarkerSize>
+					</Series>
+					<Series inLegend="0">
+						<TitleText>$quantity</TitleText>
+						<MarkerStyle>10</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#314004</PenColor>
-						<MarkerColor>#314004</MarkerColor>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS accurate</TitleText>
+						<PenColor>#0055ff</PenColor>
+						<MarkerColor>#0055ff</MarkerColor>
 					</Series>
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<IBK:Unit name="AxisUnit">min</IBK:Unit>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
 						<GridPenStyle>1</GridPenStyle>
 						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
-						<DateTimeFormats>hh:mm:ss:zzz&#x0A;dd hh:mm:ss&#x0A;dd.MM. hh:mm&#x0A;hh:mm;;dd.MM.&#x0A;dd.MM.yyyy&#x0A;dd.MM.yyyy&#x0A;MMM&#x0A;yyyy</DateTimeFormats>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
-						<Maximum>33.632604843473125</Maximum>
-						<Minimum>30.50206733608978</Minimum>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
-						<Maximum>815.67676437143461</Maximum>
-						<Minimum>815.27098111173643</Minimum>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09 - Altitude</TitleText>
+					<TitleText>TF 09.2 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -329,62 +252,55 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Varinate 09.1 - Sonnenlichtfaktor">
+		<Mapper name="TF 09.3 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -406,20 +322,14 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS detailed</TitleText>
 						<PenColor>#579d1c</PenColor>
 						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS fast</TitleText>
-						<PenColor>#ffaa00</PenColor>
-						<MarkerColor>#ffaa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS accurate</TitleText>
@@ -429,148 +339,29 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09.1 - Sonnenlichtfaktor</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-					<AxisScalesInside>1</AxisScalesInside>
-					<Legend>
-						<Position>Inside</Position>
-						<MaxColumns>1</MaxColumns>
-						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
-					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="Varinate 09.2 - Sonnenlichtfaktor">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>Referenz</TitleText>
-						<MarkerStyle>0</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>6</MarkerSize>
-					</Series>
-					<Series inLegend="0">
-						<TitleText>$quantity</TitleText>
-						<LineStyle>-1</LineStyle>
-						<MarkerStyle>10</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>20</MarkerSize>
-					</Series>
-					<Series inLegend="0">
-						<TitleText>$quantity</TitleText>
-						<MarkerStyle>10</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>20</MarkerSize>
-					</Series>
-					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS detailed</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS fast</TitleText>
-						<PenColor>#ffaa00</PenColor>
-						<MarkerColor>#ffaa00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS accurate</TitleText>
-						<PenColor>#0055ff</PenColor>
-						<MarkerColor>#0055ff</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978307200000</DateTimeZero>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Varinate 09.2 - Sonnenlichtfaktor</TitleText>
+					<TitleText>TF 09.4 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -582,62 +373,55 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Varinate 09.3 - Sonnenlichtfaktor">
+		<Mapper name="TF 09.4 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -659,20 +443,14 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
+						<TitleText>SIM-VICUS fast</TitleText>
+						<PenColor>#ffaa00</PenColor>
+						<MarkerColor>#ffaa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS detailed</TitleText>
 						<PenColor>#579d1c</PenColor>
 						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS fast</TitleText>
-						<PenColor>#ffaa00</PenColor>
-						<MarkerColor>#ffaa00</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS accurate</TitleText>
@@ -682,22 +460,29 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09.4 - Sonnenlichtfaktor</TitleText>
+					<TitleText>TF 09.4 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -709,62 +494,55 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Varinate 09.4 - Sonnenlichtfaktor">
+		<Mapper name="TF 09.5 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
+					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
+					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
+					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
+					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 			</Extractors>
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -786,12 +564,6 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
-					</Series>
-					<Series>
 						<TitleText>SIM-VICUS detailed</TitleText>
 						<PenColor>#579d1c</PenColor>
 						<MarkerColor>#579d1c</MarkerColor>
@@ -809,149 +581,29 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09.4 - Sonnenlichtfaktor</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-					<AxisScalesInside>1</AxisScalesInside>
-					<Legend>
-						<Position>Inside</Position>
-						<Alignment>5</Alignment>
-						<MaxColumns>1</MaxColumns>
-						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
-					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="Varinate 09.5 - Sonnenlichtfaktor">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>Referenz</TitleText>
-						<MarkerStyle>0</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>6</MarkerSize>
-					</Series>
-					<Series inLegend="0">
-						<TitleText>$quantity</TitleText>
-						<LineStyle>-1</LineStyle>
-						<MarkerStyle>10</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>20</MarkerSize>
-					</Series>
-					<Series inLegend="0">
-						<TitleText>$quantity</TitleText>
-						<MarkerStyle>10</MarkerStyle>
-						<PenStyle>0</PenStyle>
-						<MarkerColor>#000000</MarkerColor>
-						<MarkerSize>20</MarkerSize>
-					</Series>
-					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS detailed</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS fast</TitleText>
-						<PenColor>#ffaa00</PenColor>
-						<MarkerColor>#ffaa00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>SIM-VICUS accurate</TitleText>
-						<PenColor>#0055ff</PenColor>
-						<MarkerColor>#0055ff</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-						<DateTimeZero>978307200000</DateTimeZero>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Varinate 09.5 - Sonnenlichtfaktor</TitleText>
+					<TitleText>TF 09.5 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -962,52 +614,45 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Varinate 09.6 - Sonnenlichtfaktor">
+		<Mapper name="TF 09.6 - Sunlight factor">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>Referenzwerte.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Max.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
+					<DataIOFileName>Referenzwerte_Min.tsv?1|2|3|4|5|6</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_opt.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -1017,7 +662,7 @@
 			<ChartModel chartType="2D">
 				<SeriesProperties>
 					<Series>
-						<TitleText>Referenz</TitleText>
+						<TitleText>validation reference</TitleText>
 						<MarkerStyle>0</MarkerStyle>
 						<PenStyle>0</PenStyle>
 						<MarkerColor>#000000</MarkerColor>
@@ -1039,12 +684,6 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SHADING Lib old accurate</TitleText>
-						<PenStyle>2</PenStyle>
-						<PenColor>#ff0000</PenColor>
-						<MarkerColor>#ff0000</MarkerColor>
-					</Series>
-					<Series>
 						<TitleText>SIM-VICUS detailed</TitleText>
 						<PenColor>#579d1c</PenColor>
 						<MarkerColor>#579d1c</MarkerColor>
@@ -1062,22 +701,29 @@
 				</SeriesProperties>
 				<AxisProperties>
 					<Axis index="0" autoscale="0">
+						<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>991141200000</Maximum>
-						<Minimum>991116000000</Minimum>
+						<Maximum>991139400000</Maximum>
+						<Minimum>991119660000</Minimum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
 						<DateTimeEnabled>1</DateTimeEnabled>
 						<DateTimeZero>978307200000</DateTimeZero>
 					</Axis>
 					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Sunlight factor [---]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">---</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
 					</Axis>
 					<Axis index="2" enabled="0">
 						<TitleText>$quantity [$unit]</TitleText>
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>Varinate 09.6 - Sonnenlichtfaktor</TitleText>
+					<TitleText>TF 09.6 - Sunlight factor</TitleText>
 					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
@@ -1089,477 +735,13 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="Variante 09.7 - Azimut">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>961545600000</Maximum>
-						<Minimum>961459200000</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Variante 09.7 - Azimtuh</TitleText>
-					<Legend />
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="Variante 09.7 - Altitude">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?1|2</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename:$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>961545600000</Maximum>
-						<Minimum>961459200000</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">Deg</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Variante 09.7 - Altitude</TitleText>
-					<Legend />
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="Variante 09.7 - GlobalStrahlung">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS_Var7.tsv?4</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>7</PenWidth>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>7</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>10</PenWidth>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-						<Maximum>961545600636</Maximum>
-						<Minimum>961459200141</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">W/m2</IBK:Unit>
-						<Maximum>448.55776352824148</Maximum>
-						<Minimum>440.78665199387683</Minimum>
-					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>469.45660837921463</Maximum>
-						<Minimum>469.45471165673746</Minimum>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Variante 09.7 - GlobalStrahlung</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
-						<Position>Inside</Position>
-						<Alignment>5</Alignment>
-						<MaxColumns>1</MaxColumns>
-						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
-					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="Variante 09.7 - Sonnenlichtfaktor">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Aixlib_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/ETU_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/IDAICE_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/NANDRAD_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/Therakles_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TRNSYS_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/Arbeit/cloud/SimQuality/SimQuality/AP4/TF09-Verschattung/Auswertung/Rohdaten/TAS_Var7.tsv?3</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#7c00bf</PenColor>
-						<MarkerColor>#7c00bf</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>7</PenWidth>
-						<PenColor>#8ae234</PenColor>
-						<MarkerColor>#8ae234</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#e50c0c</PenColor>
-						<MarkerColor>#e50c0c</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>2</PenWidth>
-						<PenColor>#ffc120</PenColor>
-						<MarkerColor>#ffc120</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenWidth>8</PenWidth>
-						<PenColor>#7ea921</PenColor>
-						<MarkerColor>#7ea921</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#c17d11</PenColor>
-						<MarkerColor>#c17d11</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$basename</TitleText>
-						<PenColor>#0369a3</PenColor>
-						<MarkerColor>#0369a3</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0" autoscale="0">
-						<TitleText>Time [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">min</IBK:Unit>
-						<Maximum>961545839805.16809</Maximum>
-						<Minimum>961458711762.84009</Minimum>
-						<DateTimeEnabled>1</DateTimeEnabled>
-					</Axis>
-					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>1.054615444750123</Maximum>
-						<Minimum>-0.062596877693212205</Minimum>
-					</Axis>
-					<Axis index="2" enabled="0" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-						<Maximum>0.43619582005265156</Maximum>
-						<Minimum>0.32357790789746305</Minimum>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>Variante 09.7 - Sonnenlichtfaktor</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
-					<AxisScalesInside>1</AxisScalesInside>
-					<Legend visible="0">
-						<Position>Inside</Position>
-						<Alignment>5</Alignment>
-						<MaxColumns>1</MaxColumns>
-						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
-					</Legend>
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
-		<Mapper name="$project: $basename">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>4</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>5</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>3</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>2</ColumnIndex>
-				</Extractor>
-				<Extractor>
-					<DataIOFileName>B:/git/SIM-VICUS/data/vicus/ShadingTest/SimQ_09.1_shadingFactors_0815.tsv?3|4|5|6|7|8</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>1</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#ff420e</PenColor>
-						<MarkerColor>#ff420e</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#004586</PenColor>
-						<MarkerColor>#004586</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#aecf00</PenColor>
-						<MarkerColor>#aecf00</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#ffd320</PenColor>
-						<MarkerColor>#ffd320</MarkerColor>
-					</Series>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0">
-						<TitleText>Time [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">---</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
-					<Legend />
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="7" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="5" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
