@@ -97,10 +97,15 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->resizeSection(0,20);
 	m_ui->tableWidgetZoneTemplates->horizontalHeader()->setStretchLastSection(true);
 
-	m_ui->tableWidgetInterlinkedSurfaces->setColumnCount(4);
-	m_ui->tableWidgetInterlinkedSurfaces->setHorizontalHeaderLabels(QStringList() << tr("Component instance id") << tr("Surface Side A") << tr("Surface Side B") << tr("Component"));
+	m_ui->tableWidgetInterlinkedSurfaces->setColumnCount(5);
+	m_ui->tableWidgetInterlinkedSurfaces->setHorizontalHeaderLabels(QStringList() << tr("") << tr("CI id") << tr("Surface Side A") << tr("Surface Side B") << tr("Component") );
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetInterlinkedSurfaces);
 	m_ui->tableWidgetInterlinkedSurfaces->setSortingEnabled(false);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->resizeSection(0,10);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->resizeSection(1,40);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->resizeSection(2,100);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->resizeSection(3,100);
+	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->resizeSection(4,100);
 //	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Interactive);
 //	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Interactive);
 //	m_ui->tableWidgetInterlinkedSurfaces->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Interactive);
@@ -119,7 +124,7 @@ SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(2,100);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->resizeSection(3,120);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setStretchLastSection(true);
-	m_ui->tableWidgetSurfaceHeating->setSelectionMode(QAbstractItemView::ExtendedSelection);
+		m_ui->tableWidgetSurfaceHeating->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableWidgetSurfaceHeating->setSelectionBehavior(QAbstractItemView::SelectItems);
 
 	// Mind: parent of the item delegate must be its widget!
@@ -516,6 +521,7 @@ void SVPropBuildingEditWidget::updateUi() {
 		if (comp == nullptr) {
 			// invalid component ID... should we notify the user about that somehow?
 			// for now we keep the nullptr and use this to identify "invalid component" in the table
+
 		}
 
 		// now test the surfaces associated with this component instance
@@ -929,6 +935,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 	// process all component instances
 	QList<QTableWidgetItem *> selectedItems;
+	std::set<const VICUS::Surface*> referencedSurfaces;
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
 		// skip all without two surfaces
 		if (ci.m_sideASurface == nullptr || ci.m_sideBSurface == nullptr)
@@ -938,34 +945,34 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 		int row = m_ui->tableWidgetInterlinkedSurfaces->rowCount();
 		m_ui->tableWidgetInterlinkedSurfaces->setRowCount(row + 1);
 
-		// column 0 - ID of this component instance
+		// column 1 - ID of this component instance
 
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
 		item->setData(Qt::UserRole, ci.m_id);
 		item->setText(QString("%1").arg(ci.m_id));
 		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 0, item);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 1, item);
 
-		// column 1 - surface name A
+		// column 2 - surface name A
 
 		item = new QTableWidgetItem(ci.m_sideASurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setData(Qt::UserRole, ci.m_sideASurface->uniqueID()); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideASurface) != m_selectedSurfaces.end())
 			selectedItems.append(item);
-		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 1, item);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
 
-		// column 2 - surface name B
+		// column 3 - surface name B
 
 		item = new QTableWidgetItem(ci.m_sideBSurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		item->setData(Qt::UserRole, ci.m_sideBSurface->uniqueID()); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideBSurface) != m_selectedSurfaces.end())
 			selectedItems.append(item);
-		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
 
-		// column 3 - component
+		// column 4 - component
 		const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 		QString compName;
 		if (comp == nullptr)
@@ -975,7 +982,89 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 		item = new QTableWidgetItem(compName);
 		item->setFlags(Qt::ItemIsEnabled);
-		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 4, item);
+
+		// we also have to check all components, so that we have not only
+		// connected surfaces but also boundary conditions that fits to them
+
+		// we already now that both sides are connected
+
+		//QIcon("://gfx/actions/16x16/error.png");
+		item = new QTableWidgetItem();
+		item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
+
+		// we collect all relevent information as text in the tooltip
+		QString toolTip;
+
+		// check that neither of the two surfaces was previously used in another component instance
+		if (referencedSurfaces.find(ci.m_sideASurface) != referencedSurfaces.end()) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip += "Component references surface at side A that was already previously referenced somewhere else.";
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+		}
+		if (referencedSurfaces.find(ci.m_sideBSurface) != referencedSurfaces.end()) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+			toolTip += "Component references surface at side B that was already previously referenced somewhere else.";
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+		}
+		// remember surfaces are "referenced"
+		referencedSurfaces.insert(ci.m_sideASurface);
+		referencedSurfaces.insert(ci.m_sideBSurface);
+
+		// accces DB
+
+		const VICUS::BoundaryCondition * bcLeft = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+		if (bcLeft == nullptr) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+			toolTip += "Component has no valid boundary condition at surface side A.";
+
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+		}
+		else {
+			// check that bc does not reference constant zone
+			if (bcLeft->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+				toolTip += "Boundary condition at surface side A is associated with constant/scheduled zone.";
+
+				m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+			}
+		}
+
+
+		const VICUS::BoundaryCondition * bcRight = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+		if (bcRight == nullptr) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+			toolTip += "Component has no valid boundary condition at surface side B.";
+
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+		}
+		else {
+			// check that bc does not reference constant zone
+			if (bcRight->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+				toolTip += "Boundary condition at surface side B is associated with constant/scheduled zone.";
+
+				m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+			}
+		}
+
+		// must not reference the same surface on both sides
+		if (ci.m_sideASurface == ci.m_sideBSurface) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+			toolTip += "Same surface referenced on both sides.";
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+		}
+
+		item->setToolTip(toolTip);
+		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 0, item);
+
 	}
 	m_ui->tableWidgetInterlinkedSurfaces->blockSignals(false);
 
