@@ -40,69 +40,86 @@ bool ZoneTemplate::isValid(const Database<InternalLoad> & intLoadDB,
 						   const Database<Schedule> &schedulesDB,
 						   const Database<Infiltration> & infiltraionDB,
 						   const Database<VentilationNatural> &ventilationDB,
-						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const {
+						   const Database<ZoneIdealHeatingCooling> &idealHeatingCoolingDB) const
+{
 
-	if(m_id ==  INVALID_ID)
+	if (m_id == INVALID_ID)
 		return false;
 
-	for(unsigned int i=0; i<NUM_ST; ++i){
+	// test all referenced sub-template types
+	unsigned int count = 0;
+	for (unsigned int i=0; i<NUM_ST; ++i) {
 		unsigned int id = m_idReferences[i];
-		if(id == INVALID_ID)
+		if (id == INVALID_ID)
 			continue;
+
+		++count;
 
 		switch ((SubTemplateType)i) {
 			case ZoneTemplate::ST_IntLoadPerson:
 			case ZoneTemplate::ST_IntLoadLighting:
 			case ZoneTemplate::ST_IntLoadOther:
-			case ZoneTemplate::ST_IntLoadEquipment:{
+			case ZoneTemplate::ST_IntLoadEquipment: {
 				const InternalLoad *intLoad = intLoadDB[id];
-				if(intLoad == nullptr)
+				if (intLoad == nullptr)
 					return false;
-				if(!intLoad->isValid(schedulesDB))
+				if (!intLoad->isValid(schedulesDB))
 					return false;
-
 			}
 			break;
-			case ZoneTemplate::ST_ControlThermostat:{
+
+			case ZoneTemplate::ST_ControlThermostat: {
 				const ZoneControlThermostat *thermo = thermostatDB[id];
-				if(thermo == nullptr)
+				if (thermo == nullptr)
 					return false;
-				if(!thermo->isValid(schedulesDB))
+				if (!thermo->isValid(schedulesDB))
 					return false;
-
 			}
 			break;
-			case ZoneTemplate::ST_Infiltration:{
+
+			case ZoneTemplate::ST_Infiltration: {
 				const Infiltration *inf = infiltraionDB[id];
-				if(inf == nullptr)
+				if (inf == nullptr)
 					return false;
-				if(!inf->isValid())
+				if (!inf->isValid())
 					return false;
 			}
 			break;
-			case ZoneTemplate::ST_VentilationNatural:{
-				const VentilationNatural *venti = ventilationDB[id];
-				if(venti == nullptr)
-					return false;
-				if(!venti->isValid(schedulesDB))
-					return false;
-			}
 
+			case ZoneTemplate::ST_VentilationNatural: {
+				const VentilationNatural *venti = ventilationDB[id];
+				if (venti == nullptr)
+					return false;
+				if (!venti->isValid(schedulesDB))
+					return false;
+			}
 			break;
-			case ZoneTemplate::ST_IdealHeatingCooling:{
+
+			case ZoneTemplate::ST_IdealHeatingCooling: {
 				const ZoneIdealHeatingCooling *ideal = idealHeatingCoolingDB[id];
-				if(ideal == nullptr)
+				if (ideal == nullptr)
 					return false;
-				if(!ideal->isValid())
+				if (!ideal->isValid())
+					return false;
+				// ideal heating/cooling always requires a valid thermostat
+				const ZoneControlThermostat *thermo = thermostatDB[m_idReferences[ST_ControlThermostat]];
+				if (thermo == nullptr)
+					return false;
+				if (!thermo->isValid(schedulesDB))
 					return false;
 			}
 			break;
-			case ZoneTemplate::NUM_ST:{
-				return false;
+
+			case ZoneTemplate::ST_ControlVentilationNatural: {
+				// TODO Dirk
 			}
 			break;
+
+			case ZoneTemplate::NUM_ST: ; // just to make compiler happy
 		}
 	}
+	if (count == 0)
+		return false; // must have at least one subtype
 
 	return true;
 }
@@ -137,24 +154,22 @@ ZoneTemplate::SubTemplateType ZoneTemplate::usedReference(unsigned int index) co
 	return (ZoneTemplate::SubTemplateType)i; // if index > number of used references, we return NUM_ST here
 }
 
-AbstractDBElement::ComparisonResult ZoneTemplate::equal(const AbstractDBElement *other) const{
+
+AbstractDBElement::ComparisonResult ZoneTemplate::equal(const AbstractDBElement *other) const {
 	const ZoneTemplate * otherEPD = dynamic_cast<const ZoneTemplate*>(other);
 	if (otherEPD == nullptr)
 		return Different;
 
-	//first check critical data
-
-	//check parameters
-	for(unsigned int i=0; i<NUM_ST; ++i){
-		if(m_idReferences[i] != otherEPD->m_idReferences[i])
+	// check parameters
+	for (unsigned int i=0; i<NUM_ST; ++i){
+		if (m_idReferences[i] != otherEPD->m_idReferences[i])
 			return Different;
 	}
-	//check meta data
 
-	if(m_displayName != otherEPD->m_displayName ||
-			m_color != otherEPD->m_color ||
-			m_dataSource != otherEPD->m_dataSource ||
-			m_notes != otherEPD->m_notes)
+	// check meta data
+	if (m_displayName != otherEPD->m_displayName ||
+		m_dataSource != otherEPD->m_dataSource ||
+		m_notes != otherEPD->m_notes)
 		return OnlyMetaDataDiffers;
 
 	return Equal;
