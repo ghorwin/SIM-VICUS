@@ -31,6 +31,7 @@
 #include <QElapsedTimer>
 
 #include "SVProjectHandler.h"
+#include "SVSettings.h"
 
 #include <EP_Project.h>
 #include <EP_IDFParser.h>
@@ -63,7 +64,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 
 		// now transfer data to temporary VICUS project structure.
 		m_importedProject = VICUS::Project(); // clear data from previous import
-		transferData(prj);
+		transferData(prj); // this also updates the geometry shift to center the imported geometry
 	}
 	catch (IBK::Exception & ex) {
 		QMessageBox::critical((QWidget*)parent(), tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
@@ -73,7 +74,6 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	// if successful, show dialog
 
 	// merge project is only active if we have a project
-
 	m_ui->pushButtonMerge->setEnabled( SVProjectHandler::instance().isValid() );
 
 	int res = exec();
@@ -118,6 +118,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	QElapsedTimer progressTimer;
 	progressTimer.start();
+
+	IBKMK::Vector3D minCoords(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	IBKMK::Vector3D maxCoords(std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest());
 
 	// this counter is used to update the progress dialog
 	int count = 0;
@@ -183,8 +186,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_id = surf.uniqueID();
 		surf.m_displayName = QString::fromStdString(bsd.m_name);
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 
 		surf.initializeColorBasedOnInclination();
+		surf.m_color = surf.m_displayColor;
 		bl.m_rooms[idx].m_surfaces.push_back(surf);
 
 		mapBsdNameIDmap[bsd.m_name] = surf.m_id;
@@ -269,11 +274,40 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_id = surf.uniqueID();
 		surf.m_displayName = QString::fromStdString(sh.m_name);
 		surf.setPolygon3D( VICUS::Polygon3D( sh.m_polyline ) );
-		surf.m_color = surf.m_displayColor = QColor("#006500");
+		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
+		surf.m_color = surf.m_displayColor = QColor("#67759d");
 
 		vp.m_plainGeometry.push_back(surf);
 	}
 
+
+	// TODO : Windows
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+//	// finally initialize subsurface colors
+//	for (VICUS::SubSurfaceComponentInstance & sub : vp.m_subSurfaceComponentInstances) {
+//		VICUS::SubSurfaceComponent * subComp = db.m_subSurfaceComponents[sub.m_idSubSurfaceComponent];
+//		subComp
+//	}
+
+
+	// set site properties based on extends of imported geometry
+	double maxDist = maxCoords.m_x - minCoords.m_x;
+	maxDist = std::max(maxDist, maxCoords.m_y - minCoords.m_y);
+	maxDist = std::max(maxDist, maxCoords.m_z - minCoords.m_z);
+	vp.m_viewSettings.m_farDistance = maxDist*4;
+	vp.m_viewSettings.m_gridWidth = maxDist;
+	if (maxDist < 10)
+		vp.m_viewSettings.m_gridSpacing = 0.1;
+	else if (maxDist < 100)
+		vp.m_viewSettings.m_gridSpacing = 1;
+	else if (maxDist < 500)
+		vp.m_viewSettings.m_gridSpacing = 10;
+	else if (maxDist < 1000)
+		vp.m_viewSettings.m_gridSpacing = 50;
+	else
+		vp.m_viewSettings.m_gridSpacing = 100;
 }
 
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {
