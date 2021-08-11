@@ -156,8 +156,17 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 	std::string encodedLeft;
 	std::string encodedRight;
 
+	const char * LINE_EQUAL_SPAN = "<span style=\"font-size:9pt;color:#606060\">";
+	const char * LINE_INSERTED_SPAN = "<span style=\"font-size:9pt;color:#20c050\">";
+	const char * LINE_REMOVED_SPAN = "<span style=\"font-size:9pt;color:#c04040\">";
 	const char * LINE_DIFF_SPAN = "<span style=\"color:#202080;background-color:#d0d0ff\">";
 	const char * CHAR_DIFF_SPAN = "<span style=\"color:#ffffff;background-color:#2020a0\">";
+
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		LINE_EQUAL_SPAN = "<span style=\"font-size:9pt;color:#d0d0d0\">";
+		LINE_INSERTED_SPAN = "<span style=\"font-size:9pt;color:#40ff70\">";
+		LINE_REMOVED_SPAN = "<span style=\"font-size:9pt;color:#ff7060\">";
+	}
 
 	for (unsigned int i=0, count = diff.resultObj().size(); i<count; ++i) {
 		// check if this and the next line have opposite change markers
@@ -259,16 +268,16 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		}
 		switch (diff.resultOperation()[i]) {
 			case IBK::DifferOpEqual :
-				encodedLeft += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
-				encodedRight += "<span style=\"font-size:9pt;color:#606060\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedLeft += LINE_EQUAL_SPAN + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += LINE_EQUAL_SPAN + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
 			break;
 			case IBK::DifferOpInsert :
-				encodedLeft += "<span style=\"font-size:9pt;color:#20c050\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedLeft += LINE_INSERTED_SPAN + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
 				encodedRight += "<br>";
 			break;
 			case IBK::DifferOpRemove :
 				encodedLeft += "<br>";
-				encodedRight += "<span style=\"font-size:9pt;color:#c04040\">" + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
+				encodedRight += LINE_REMOVED_SPAN + IBK::convertXml2Html(diff.resultObj()[i]) + "</span><br>";
 			break;
 		}
 	}
