@@ -1,6 +1,6 @@
-# CMakeLists.txt file for GenericBuildings library
+# CMakeLists.txt file for IDFReader library
 
-project( GenericBuildings )
+project( IDFReader )
 
 # collect a list of all source files
 file( GLOB LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )

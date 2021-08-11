@@ -23,7 +23,7 @@ void BuildingSurfaceDetailed::setSurfaceConditions(const OutsideBoundaryConditio
 }
 
 
-void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int version) {
+void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int /*version*/) {
 //	FUNCID(BuildingSurfaceDetailed::read);
 
 	//for version 8.3

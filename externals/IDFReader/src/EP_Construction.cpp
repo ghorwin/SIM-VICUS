@@ -9,7 +9,7 @@
 
 namespace EP {
 
-void Construction::read(const std::vector<std::string> & str, unsigned int version) {
+void Construction::read(const std::vector<std::string> & str, unsigned int /*version*/) {
 //	const char * const FUNC_ID = "[Construction::read]";
 
 	//for version 8.3

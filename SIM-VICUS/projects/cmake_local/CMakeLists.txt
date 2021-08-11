@@ -20,7 +20,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/QuaZIP/src/zlib
 	${PROJECT_SOURCE_DIR}/../../../externals/CCM/src
 	${PROJECT_SOURCE_DIR}/../../../externals/Shading/src
-	${PROJECT_SOURCE_DIR}/../../../externals/GenericBuildings/src
+	${PROJECT_SOURCE_DIR}/../../../externals/IDFReader/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}
 	${Qt5Svg_INCLUDE_DIRS}
@@ -125,7 +125,7 @@ target_link_libraries( ${PROJECT_NAME}
 	DataIO
 	CCM
 	QtExt
-	GenericBuildings
+	IDFReader
 	IBKMK
 	IBK
 	TiCPP

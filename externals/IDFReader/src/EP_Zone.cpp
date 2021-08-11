@@ -5,8 +5,7 @@
 
 namespace EP {
 
-void Zone::read(const std::vector<std::string> & str, unsigned int version)
-{
+void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) {
 	//for version 8.3
 //	if(version != EP::Version::VN_8_3)
 //		return;
@@ -37,9 +36,8 @@ void Zone::read(const std::vector<std::string> & str, unsigned int version)
 	//ignore other elements
 }
 
-void Zone::write(std::string &outStr, unsigned int version) const
-{
 
+void Zone::write(std::string &outStr, unsigned int version) const {
 
 	if(version != EP::Version::VN_8_3)
 		return;
@@ -65,4 +63,4 @@ void Zone::write(std::string &outStr, unsigned int version) const
 
 }
 
-}
+} // namespace EP

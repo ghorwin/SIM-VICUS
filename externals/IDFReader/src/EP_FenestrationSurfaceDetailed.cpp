@@ -6,7 +6,7 @@
 
 namespace EP {
 
-void FenestrationSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int version)
+void FenestrationSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int /*version*/)
 {
 
 	//for version 8.3

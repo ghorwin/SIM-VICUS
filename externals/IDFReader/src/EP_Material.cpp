@@ -2,45 +2,44 @@
 
 #include <IBK_StringUtils.h>
 #include <IBK_math.h>
+#include <IBK_messages.h>
 
 #include "EP_Version.h"
 
 namespace EP {
 
-void Material::read(const std::vector<std::string> & str, unsigned int version)
-{
+void Material::read(const std::vector<std::string> & str, unsigned int /*version*/) {
 	const char * const FUNC_ID = "[Material::read]";
 	std::vector<std::string> str1;
 
-	//for version 8.3
+	// for version 8.3
 //	if(version != EP::Version::VN_8_3)
 //		return;
 
 	str1 = str;
-	if(str1.size()!= 10)
+	if (str1.size() != 10)
 		str1.resize(10,"");
-
 
 	m_name = str1[1];
 
-	if(IBK::tolower_string(str1[2]) == "veryrough")
+	if (IBK::tolower_string(str1[2]) == "veryrough")
 		m_roughness = Roughness::R_VeryRough;
-	else if(IBK::tolower_string(str1[2]) == "rough")
+	else if (IBK::tolower_string(str1[2]) == "rough")
 		m_roughness = Roughness::R_Rough;
-	else if(IBK::tolower_string(str1[2]) == "mediumrough")
+	else if (IBK::tolower_string(str1[2]) == "mediumrough")
 		m_roughness = Roughness::R_MediumRough;
-	else if(IBK::tolower_string(str1[2]) == "verysmooth")
+	else if (IBK::tolower_string(str1[2]) == "verysmooth")
 		m_roughness = Roughness::R_VerySmooth;
-	else if(IBK::tolower_string(str1[2]) == "smooth")
+	else if (IBK::tolower_string(str1[2]) == "smooth")
 		m_roughness = Roughness::R_Smooth;
-	else if(IBK::tolower_string(str1[2]) == "mediumsmooth")
+	else if (IBK::tolower_string(str1[2]) == "mediumsmooth")
 		m_roughness = Roughness::R_MediumSmooth;
 	else {
 		m_roughness = Roughness::R_MediumRough;
 		//warnung rausgeben
 	}
 
-	if(IBK::tolower_string(str1[0]) == "material"){
+	if (IBK::tolower_string(str1[0]) == "material") {
 		m_thickness = IBK::string2val<double>(str1[3]);
 		m_conductivity = IBK::string2val<double>(str1[4]);
 		m_density = IBK::string2val<double>(str1[5]);
@@ -52,7 +51,7 @@ void Material::read(const std::vector<std::string> & str, unsigned int version)
 	}
 	else if(IBK::tolower_string(str1[0]) == "material:nomass"){
 		double resistance = IBK::string2val<double>(str[3]);
-		if(resistance<=0)
+		if (resistance<=0)
 			IBK::Exception(IBK::FormatString("Resistance is not valid. Material name '%1'").arg(m_name), FUNC_ID);
 		m_thickness = 0.1;
 		m_specHeatCapa = 1000;
@@ -65,10 +64,9 @@ void Material::read(const std::vector<std::string> & str, unsigned int version)
 	}
 }
 
-void Material::write(std::string &outStr, unsigned int version) const
-{
-	if(version != EP::Version::VN_8_3)
-		return;
+
+void Material::write(std::string &outStr, unsigned int version) const {
+	IBK_ASSERT(version == EP::Version::VN_8_3);
 
 	std::stringstream ss;
 	ss << "Material," << std::endl;

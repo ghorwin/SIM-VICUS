@@ -60,7 +60,7 @@ NANDRAD uses a bunch of external/third-party libraries:
 
 * **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
 * **DataIO** - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
-* **GenericBuildings** - library for data import, transformation and generic building model generation
+* **IDFReader** - library for IDF file parsing and data import to VICUS
 * **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
 * **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching
 * **IntegratorFramework** - library that includes several numerical interation libraries and provides a convenient framework to error-controlled time integration
