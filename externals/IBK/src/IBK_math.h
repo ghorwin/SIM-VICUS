@@ -155,8 +155,31 @@ inline bool betweenOrEqual(const double & v, const double & vMin, const double &
 }
 
 
-/// Utility function that can be used to set all elements of a Vector to zero very quickly.
+/*! Utility function that can be used to set all elements of a Vector to zero very quickly. */
 inline void set_zero(std::vector<double>& v) { std::memset(&v[0], 0, sizeof(double)*v.size()); }
+
+/*! Rounds to given number of digits. */
+template <unsigned int digits>
+double rounded(double val) {
+	double scale = IBK::f_pow10(digits);
+	double v = std::floor(val*scale+0.5)/scale;
+	return v;
+}
+
+
+/*! Rounds to 4 digits. */
+template <>
+inline double rounded<4>(double val) {
+	double v = std::floor(val*10000 + 0.5)/10000;
+	return v;
+}
+
+/*! Rounds to 6 digits. */
+template <>
+inline double rounded<6>(double val) {
+	double v = std::floor(val*1000000 + 0.5)/1000000;
+	return v;
+}
 
 /*! Power function version for integer exponents.
 
