@@ -1463,7 +1463,10 @@ void Scene::generateTransparentBuildingGeometry() {
 
 		v1.insert(v1.end(), v2mod.begin(), v2mod.end()); // combine polygons
 		// add geometry to buffer
-		addBox(v1, QColor(196,0,0,128), currentVertexIndex, currentElementIndex,
+		QColor linkBoxColor(196,0,0,226);
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+			linkBoxColor = QColor(255,64,32,226);
+		addBox(v1, linkBoxColor, currentVertexIndex, currentElementIndex,
 				 m_transparentBuildingObject.m_vertexBufferData,
 				 m_transparentBuildingObject.m_colorBufferData,
 				 m_transparentBuildingObject.m_indexBufferData);
@@ -1481,7 +1484,7 @@ void Scene::generateTransparentBuildingGeometry() {
 					// general slightly gray - strong transparent
 					QColor col(255,255,255,64);
 					if (connectedSurfaces.find(&s) != connectedSurfaces.end())
-						col = QColor(128,128,128,64);
+						col = QColor(128,128,128,32);
 
 					if (s.m_visible && !s.m_selected)
 						addPlane(s.geometry().triangulationData(), col, currentVertexIndex, currentElementIndex,
@@ -1489,7 +1492,7 @@ void Scene::generateTransparentBuildingGeometry() {
 								 m_transparentBuildingObject.m_colorBufferData,
 								 m_transparentBuildingObject.m_indexBufferData, false);
 
-					col = QColor(64,64,64,64); // for subsurfaces
+					col = QColor(64,64,64,32); // for subsurfaces
 					// process all subsurfaces
 					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[i];
