@@ -130,14 +130,19 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
-	QFont f = v->font();
+	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
-	v->setFont(f);
 
-	//v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
-	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-size:%1pt;}").arg(pointSize);
+	// v->setFont(f);
+	// v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
+
+	// Since we have an applition-wide style sheet, we must specify our customizations also via stylesheet.
+	// Since we only tweak font sizes, this works for both bright and dark style.
+	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-size:%1pt; font-weight:bold;}").arg(pointSize);
 	v->horizontalHeader()->setStyleSheet(headerStyleSheet);
+	QString viewStyleSheet = QString("QTableView {font-size:%1pt;}").arg(pointSize);
+	v->setStyleSheet(viewStyleSheet);
 }
 
 
@@ -148,12 +153,16 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(false);
 //	v->sortByColumn(0, Qt::AscendingOrder);
-	QFont f = v->font();
+	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
-	v->setFont(f);
+
+	// Since we have an applition-wide style sheet, we must specify our customizations also via stylesheet.
+	// Since we only tweak font sizes, this works for both bright and dark style.
 	QString headerStyleSheet = QString("QHeaderView::section {font-size:%1pt;}").arg(pointSize);
 	v->header()->setStyleSheet(headerStyleSheet);
+	QString viewStyleSheet = QString("QTreeView {font-size:%1pt;}").arg(pointSize);
+	v->setStyleSheet(viewStyleSheet);
 }
 
 void SVStyle::formatWelcomePage(QString & htmlCode) {

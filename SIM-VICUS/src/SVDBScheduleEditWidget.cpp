@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QClipboard>
 
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_KeywordList.h>
@@ -70,14 +71,22 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	// Note: valid column is self-explanatory and does not need a caption
 	m_ui->tableWidgetPeriods->setHorizontalHeaderLabels(QStringList() << tr("Start date") << QString() << tr("Name"));
 
+	// styling of tables
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
+	m_ui->tableWidgetPeriods->setSortingEnabled(false);
+
+	m_ui->tableWidgetCopiedSplineData->setColumnCount(2);
+	m_ui->tableWidgetCopiedSplineData->setHorizontalHeaderLabels(QStringList() << tr("Time") << tr("Value"));
+
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetCopiedSplineData);
+	m_ui->tableWidgetCopiedSplineData->setSortingEnabled(false);
+	m_ui->tableWidgetCopiedSplineData->horizontalHeader()->setStretchLastSection(true);
 
 	QFont f = m_ui->listWidgetColumnSelection->font();
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
 	m_ui->listWidgetColumnSelection->setFont(f);
 
-	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
 	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
 	m_ui->widgetPeriod->layout()->setMargin(0);
@@ -195,6 +204,8 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(true);
 		m_ui->listWidgetColumnSelection->clear();
 		m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(false);
+		m_ui->tableWidgetCopiedSplineData->setRowCount(0);
+		m_ui->tableWidgetCopiedSplineData->setColumnCount(0);
 		m_ui->widgetColumnSelection->setEnabled(false);
 
 		if (m_current->m_annualSchedule.m_tsvFile.isValid()) {
@@ -222,7 +233,23 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		else {
 			m_ui->tabWidget->setCurrentIndex(0); // switch to embedded data page
 
-			// TODO : update table
+			// do we have valid spline data?
+			if (m_current->m_annualSchedule.m_values.size() != 0) {
+				m_ui->tableWidgetCopiedSplineData->setColumnCount(2);
+				m_ui->tableWidgetCopiedSplineData->setHorizontalHeaderLabels( QStringList() <<
+					tr("Time [%1]").arg(QString::fromStdString(m_current->m_annualSchedule.m_xUnit.name())) <<
+					tr("Values [%1]").arg(QString::fromStdString(m_current->m_annualSchedule.m_yUnit.name())) );
+				m_ui->tableWidgetCopiedSplineData->setRowCount((int)m_current->m_annualSchedule.m_values.size());
+				for (unsigned int i=0, count = m_current->m_annualSchedule.m_values.size(); i<count; ++i) {
+					QTableWidgetItem * item = new QTableWidgetItem(QString("%L1").arg(m_current->m_annualSchedule.m_values.x()[i]));
+					item->setFlags(Qt::ItemIsEnabled);
+					m_ui->tableWidgetCopiedSplineData->setItem((int)i,0,item);
+					item = new QTableWidgetItem(QString("%L1").arg(m_current->m_annualSchedule.m_values.y()[i]));
+					item->setFlags(Qt::ItemIsEnabled);
+					m_ui->tableWidgetCopiedSplineData->setItem((int)i,1,item);
+				}
+			}
+
 		}
 		updateAnnualDataDiagram();
 	}
@@ -844,13 +871,71 @@ void SVDBScheduleEditWidget::on_radioButtonDailyCycles_toggled(bool checked) {
 
 
 void SVDBScheduleEditWidget::on_pushButtonPasteAnnualDataFromClipboard_clicked() {
-	// paste data from clipboard
+	// get content of clip board
+	QString data = qApp->clipboard()->text();
+	if (data.isEmpty()) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("No data on clipboard"));
+		return;
+	}
+	// first replace all , with .; this may also result in header name changes, but using , as part of a column
+	// name is bad practice anyway
+	std::replace(data.begin(), data.end(), ',', '.');
 
-	// TODO :
+	// now use the CSV-Reader to read the data into memory
+	IBK::CSVReader reader;
+	IBK::Unit timeUnit, valueUnit;
+	try {
+		reader.parse(data.toStdString(), false, true);
+		if (reader.m_nColumns != 2) {
+			QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Expected exactly 2 columns of data."));
+			return;
+		}
+		timeUnit.set(reader.m_units[0]);
+		valueUnit.set(reader.m_units[1]);
+	}
+	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Invalid format of header data (possibly units are wrong/missing?)."));
+		return;
+	}
 
-	// clear annual spline data file and update file widget
+	if (reader.m_nRows == 0) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Missing data after header row."));
+		return;
+	}
+
+	// check for valid time unit
+	if (timeUnit.base_id() != IBK_UNIT_ID_SECONDS) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Expected time unit in first column."));
+		return;
+	}
+
+	IBK::LinearSpline spl;
+	try {
+		std::vector<double> x,y;
+		x.reserve(reader.m_nRows);
+		y.reserve(reader.m_nRows);
+		for (unsigned int i=0; i<reader.m_nRows; ++i) {
+			x.push_back(reader.m_values[i][0]);
+			y.push_back(reader.m_values[i][1]);
+		}
+		spl.setValues(x,y);
+		if (!spl.valid())
+			throw std::runtime_error("...");
+	} catch (...) {
+		QMessageBox::critical(this, tr("Cannot paste schedule data"), tr("Invalid spline data in table."));
+		return;
+	}
+
+	// clear annual spline data file
 	m_current->m_annualSchedule.m_tsvFile.clear();
-	m_current->m_annualSchedule.m_name.clear();
+
+	// store spline data
+	m_current->m_annualSchedule.m_name = "AnnualSchedule";
+	m_current->m_annualSchedule.m_values = spl;
+	m_current->m_annualSchedule.m_xUnit = timeUnit;
+	m_current->m_annualSchedule.m_yUnit = valueUnit;
+
 	modelModify();
 	updateInput((int)m_current->m_id); // this will update the annual schedule page and preview
 }
