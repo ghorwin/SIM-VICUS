@@ -757,6 +757,7 @@ void SVMainWindow::onStyleChanged() {
 	// if we have, at some point, really different icon sets for dark and bright themes, we
 	// may just centrally replace the entire icon set, but this is tricky and also would require
 	// a lot of work maintaining two icon themes. So for now, we just manually switch between the icon sets
+#if 0
 	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
 		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube.svg"));
 		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h.svg"));
@@ -765,6 +766,7 @@ void SVMainWindow::onStyleChanged() {
 		m_ui->actionViewToggleGeometryMode->setIcon(QIcon(":/gfx/actions/icon-shape-shape-cube-dark.svg"));
 		m_ui->actionViewToggleParametrizationMode->setIcon(QIcon(":/gfx/actions/icon-filter-slider-circle-h-dark.svg"));
 	}
+#endif
 }
 
 

@@ -99,7 +99,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QVBoxLayout" name="verticalLayoutPage1">
@@ -248,9 +248,8 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <disabledon>:/gfx/actions/icon-arrow-expand-alt.svg</disabledon>
-               </iconset>
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/move.png</normaloff>:/gfx/actions/move.png</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -275,9 +274,8 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <disabledoff>:/gfx/actions/icon-arrow-refresh-double.svg</disabledoff>
-               </iconset>
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/rotating.png</normaloff>:/gfx/actions/rotating.png</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -299,9 +297,8 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
-                <disabledoff>:/gfx/actions/icon-resize-resize-alt.svg</disabledoff>
-               </iconset>
+               <iconset resource="../resources/SIM-VICUS.qrc">
+                <normaloff>:/gfx/actions/resize.png</normaloff>:/gfx/actions/resize.png</iconset>
               </property>
               <property name="iconSize">
                <size>
