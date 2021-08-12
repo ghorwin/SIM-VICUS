@@ -263,6 +263,7 @@ void LinearSplineParameter::readTsv() {
 							 .arg(tsvFilePath.str()), FUNC_ID);
 	m_xUnit = IBK::Unit(reader.m_units[0]); // may throw
 	m_yUnit = IBK::Unit(reader.m_units[colIndex]); // may throw
+	m_name = reader.m_captions[colIndex];
 	m_values.setValues(reader.colData(0), reader.colData(colIndex));
 
 }
