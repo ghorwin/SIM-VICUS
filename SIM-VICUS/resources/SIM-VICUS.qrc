@@ -68,5 +68,7 @@
         <file>gfx/actions/24x24/alignCoordinateSystem.png</file>
         <file>gfx/actions/24x24/left.png</file>
         <file>gfx/actions/24x24/right.png</file>
+        <file>gfx/splashscreen/SIM-VICUS-START.gif</file>
+        <file>gfx/splashscreen/SIM-VICUS-Logo-Draft.png</file>
     </qresource>
 </RCC>

@@ -181,7 +181,7 @@ int main(int argc, char *argv[]) {
 
 	if (!settings.m_flags[SVSettings::NoSplashScreen]) {
 		QPixmap pixmap;
-		pixmap.load(":/gfx/splashscreen/SIM-VICUS.jpg");
+		pixmap.load(":/gfx/splashscreen/SIM-VICUS-Logo-Draft.png");
 		splash.reset(new QSplashScreen(pixmap, Qt::WindowStaysOnTopHint | Qt::SplashScreen));
 		splash->show();
 		QTimer::singleShot(5000, splash.get(), SLOT(close()));
