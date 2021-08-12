@@ -242,7 +242,7 @@ Schedule Schedule::multiply(double val) const {
 }
 
 Schedule Schedule::add(double val) const{
-	FUNCID(Schedule::add(double));
+//	FUNCID(Schedule::add(double));
 
 	Schedule sched;
 
@@ -267,77 +267,79 @@ void Schedule::createConstSchedule(double val) {
 }
 
 void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const {
-	if(m_periods.empty())
+	if (m_periods.empty())
 		return;
 
-	for(unsigned int i=0; i<m_periods.size(); ++i){
+	for (unsigned int i=0; i<m_periods.size(); ++i) {
 		const ScheduleInterval &si = m_periods[i];
-		int dayCount =0;
-		int startDay = si.m_intervalStartDay%7;		// 0 -> Monday, 1 -> Tuesday, ... , 6 -> Sunday
+		unsigned int dayCount =0;
+		unsigned int startDay = si.m_intervalStartDay%7;		// 0 -> Monday, 1 -> Tuesday, ... , 6 -> Sunday
 		//find next period to get the size of days
-		if(i+1 == m_periods.size()){
+		if (i+1 == m_periods.size()){
 			//now we have last period
-			dayCount = 365 - (int)si.m_intervalStartDay;
+			dayCount = 365 - si.m_intervalStartDay;
 		}
 		else{
-			dayCount = (int)m_periods[i+1].m_intervalStartDay - (int)si.m_intervalStartDay;
+			dayCount = m_periods[i+1].m_intervalStartDay - si.m_intervalStartDay;
+			// FIXME Dirk: can this become negative? This is nowhere checked!
 		}
-		int endDayFirstWeek = std::min(7, startDay + dayCount);
+		unsigned int endDayFirstWeek = std::min<unsigned int>(7, startDay + dayCount);
 		//get week time and data points
 		std::vector<double> tp, d, tpSum, dSum;
 		si.createWeekDataVector(tp,d);
-		if(tp.empty())
+		if (tp.empty())
 			continue;
 
-		int addedDays = 0;
-		int weekCount = si.m_intervalStartDay/7  ;
+		unsigned int addedDays = 0;
+		unsigned int weekCount = si.m_intervalStartDay/7  ;
 
 		//add first days to fill up current week
-		if(startDay > 0 ){
-			for(unsigned int n=0; n<tp.size(); ++n){
-				if(tp[n] >= endDayFirstWeek * 24 )
+		if (startDay > 0 ){
+			for (unsigned int n=0; n<tp.size(); ++n){
+				if (tp[n] >= endDayFirstWeek * 24 )
 					break;
-				addedDays = tp[n] / 24 - startDay;
+				addedDays = (unsigned int)(tp[n] / 24 - startDay);
 				if(tp[n] >= startDay * 24){
 					timepoints.push_back(tp[n] + weekCount*7*24);
 					data.push_back(d[n]);
 				}
 			}
 		}
-		//no days left take next period
-		if(addedDays > dayCount)
+		// no days left take next period
+		if (addedDays > dayCount)
 			continue;
 		weekCount = (dayCount- addedDays)/7  ;
-		int weekOfYear = (si.m_intervalStartDay + addedDays )/7;
+		unsigned int weekOfYear = (si.m_intervalStartDay + addedDays )/7;
 
-		for(unsigned int n=0; n<weekCount; ++n){
+		for (unsigned int n=0; n<weekCount; ++n){
 			++weekOfYear;
 			std::vector<double> newTps = tp;
-			for(unsigned int j=0; j<newTps.size(); ++j)
+			for (unsigned int j=0; j<newTps.size(); ++j)
 				newTps[j] += weekOfYear * 24 * 7;
 			timepoints.insert(timepoints.end(), newTps.begin(), newTps.end());
 			data.insert(data.end(), d.begin(), d.end());
 			addedDays += 7;
 		}
-		if(weekOfYear>0){
+		if (weekOfYear > 0) {
 			++weekOfYear;
 			++addedDays;
 		}
-		//check if we have days left
-		if(addedDays > dayCount)
+		// check if we have days left
+		if (addedDays > dayCount)
 			continue;
 
-		//add left days to timepoints/data vector
-		int addedDays2=0;
-		for(unsigned int n=0; n<tp.size(); ++n){
-			addedDays2 = tp[n] / 24;
-			if(addedDays2 >= dayCount - addedDays)
+		// add left days to timepoints/data vector
+		unsigned int addedDays2=0;
+		for (unsigned int n=0; n<tp.size(); ++n){
+			addedDays2 = (unsigned int)(tp[n] / 24);
+			if (addedDays2 >= dayCount - addedDays)
 				break;
 			timepoints.push_back(tp[n] + weekOfYear*7*24);
 			data.push_back(d[n]);
 		}
 	}
 }
+
 
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);
