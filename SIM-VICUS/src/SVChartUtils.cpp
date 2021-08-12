@@ -66,13 +66,18 @@ QwtPlotCurve * addConfiguredCurve(QwtPlot * plot) {
 	// add curve
 	QwtPlotCurve *curve = new QwtPlotCurve("Curve 1");
 	curve->setTitle( "Some Points" ); // will later be used in legend
-	if (SVSettings::instance().m_theme == SVSettings::TT_White)
-		curve->setPen( QColor("#600000"), 1 ); // color and thickness in pixels
-	else
-		curve->setPen( QColor("#ff7030"), 1 ); // color and thickness in pixels
 	curve->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // use antialiasing
-
+	configureCurveTheme(curve);
 	curve->attach(plot);
 	return curve;
 }
 
+
+void configureCurveTheme(QwtPlotCurve * curve) {
+	if (SVSettings::instance().m_theme == SVSettings::TT_White)
+		curve->setPen( QColor("#600000"), 1 ); // color and thickness in pixels
+	else
+		curve->setPen( QColor("#ff7030"), 1 ); // color and thickness in pixels
+
+	// Mind: you may need to call this function for all your curves when the theme has changed
+}

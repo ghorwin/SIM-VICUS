@@ -78,6 +78,9 @@ void SVTimeSeriesPreviewWidget::setData(const NANDRAD::LinearSplineParameter & d
 	}
 
 	m_chart->setVisible(true);
+	// adjust styling based on current theme's settings
+	configureCurveTheme(m_curve);
+
 	m_errorTextBrowser->setVisible(false);
 
 	m_curve->setRawSamples(m_data.m_values.x().data(), m_data.m_values.y().data(), (int)m_data.m_values.size());
