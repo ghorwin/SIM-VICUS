@@ -25,6 +25,7 @@
 
 #include "SVChartUtils.h"
 
+#include "SVSettings.h"
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -65,7 +66,10 @@ QwtPlotCurve * addConfiguredCurve(QwtPlot * plot) {
 	// add curve
 	QwtPlotCurve *curve = new QwtPlotCurve("Curve 1");
 	curve->setTitle( "Some Points" ); // will later be used in legend
-	curve->setPen( QColor("#600000"), 1 ); // color and thickness in pixels
+	if (SVSettings::instance().m_theme == SVSettings::TT_White)
+		curve->setPen( QColor("#600000"), 1 ); // color and thickness in pixels
+	else
+		curve->setPen( QColor("#ff7030"), 1 ); // color and thickness in pixels
 	curve->setRenderHint( QwtPlotItem::RenderAntialiased, true ); // use antialiasing
 
 	curve->attach(plot);

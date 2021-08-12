@@ -68,14 +68,6 @@
         <file>gfx/actions/24x24/alignCoordinateSystem.png</file>
         <file>gfx/actions/24x24/left.png</file>
         <file>gfx/actions/24x24/right.png</file>
-        <file>gfx/splashscreen/SIM-VICUS-START.gif</file>
         <file>gfx/splashscreen/SIM-VICUS-Logo-Draft.png</file>
-        <file>gfx/actions/3d-modeling.png</file>
-        <file>gfx/actions/filter.png</file>
-        <file>gfx/actions/resize.png</file>
-        <file>gfx/actions/rotating.png</file>
-        <file>gfx/actions/move.png</file>
-        <file>gfx/actions/layers.png</file>
-        <file>gfx/actions/3d-cube.png</file>
     </qresource>
 </RCC>
