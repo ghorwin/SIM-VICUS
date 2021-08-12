@@ -57,6 +57,8 @@ public:
 		\param filename Input file name.
 	*/
 	void read(const IBK::Path & filename, bool headerOnly = false, bool extractUnits = false);
+	/*! Same as read, but this time the content is read from string. */
+	void parse(const std::string & data, bool headerOnly = false, bool extractUnits = false);
 
 	/*! Convenience function to extract data of a given column (colIndex starts with index 0). */
 	std::vector<double> colData(unsigned int colIndex) const;
@@ -79,6 +81,10 @@ public:
 	unsigned int						m_nColumns;
 	/*! Number of tabulator rows. */
 	unsigned int						m_nRows;
+
+private:
+
+	void parse(std::istream & in, bool headerOnly = false, bool extractUnits = false);
 };
 
 } // namespace IBK

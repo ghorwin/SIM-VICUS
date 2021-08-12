@@ -111,72 +111,23 @@ void CSVReader::read(const IBK::Path & filename, bool headerOnly, bool extractUn
 		if (!in)
 			throw IBK::Exception( IBK::FormatString("File doesn't exist or cannot open/access file."), FUNC_ID);
 
-		std::string line;
-		std::getline(in, line);
-		std::string sepChars;
-		sepChars.push_back(m_separationCharacter);
-		if (m_separationCharacter == ',')
-			IBK::explode(line, m_captions, sepChars, IBK::EF_UseQuotes);
-		else
-			IBK::explode(line, m_captions, sepChars, IBK::EF_NoFlags);
-		m_nColumns = (unsigned int)m_captions.size();
-		m_nRows = 0;
-		m_units.clear();
-		if (extractUnits) {
-			for (unsigned int i=0; i<m_captions.size(); ++i) {
-				const std::string & c = m_captions[i];
-				std::size_t pos = c.find("[");
-				std::size_t pos2 = c.find("]");
-				if (pos != std::string::npos && pos != std::string::npos && pos < pos2) {
-					m_units.push_back(c.substr(pos+1, pos2-pos-1));
-					m_captions[i] = c.substr(0, pos);
-					IBK::trim(m_captions[i], " \t\r\"");
-				}
-				else
-					m_units.push_back(""); // no unit
-			}
-		}
-		if (headerOnly)
-			return;
-		while (std::getline(in, line)) {
-			++m_nRows; // also count empty rows, to get correct line numbers in error messages
-			// skip empty rows
-			if (line.empty() || line.find_first_not_of("\n\r\t ") == std::string::npos)
-				continue;
-			std::vector<std::string> tokens;
-			if (m_separationCharacter == ',') {
-				IBK::explode(line, tokens, sepChars, IBK::EF_UseQuotes);
-				for (unsigned int i=0; i<tokens.size(); ++i) {
-					IBK::trim(tokens[i], " \t\r\"");
-				}
-			}
-			else
-				IBK::explode(line, tokens, sepChars, IBK::EF_NoFlags);
-			// error: wrong column size
-			if(tokens.size() != m_nColumns) {
-				throw IBK::Exception(IBK::FormatString("Wrong number of columns in line #%1!")
-										.arg(m_nRows+1), FUNC_ID);
-			}
-			std::vector<double> values(m_nColumns);
-			for (unsigned int i=0; i<m_nColumns; ++i) {
-				try {
-					values[i] = IBK::string2val<double>(tokens[i]);
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString("Error reading value in column %1 in line #%2.")
-										  .arg(i).arg(m_nRows+1), FUNC_ID);
-				}
-			}
-			m_values.push_back(values);
-		}
+		parse(in, headerOnly, extractUnits);
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading file '%1'.").arg(filename), FUNC_ID);
 	}
-	// store final number of rows
-	m_nRows = (unsigned int)m_values.size();
 }
-// ----------------------------------------------------------------------------
+
+
+void CSVReader::parse(const string & data, bool headerOnly, bool extractUnits) {
+	FUNCID(CSVReader::parse);
+	try {
+		std::stringstream in(data);
+		parse(in, headerOnly, extractUnits);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception( ex, IBK::FormatString("Error parsing data."), FUNC_ID);
+	}
+}
 
 
 std::vector<double> CSVReader::colData(unsigned int colIndex) const {
@@ -193,7 +144,75 @@ std::vector<double> CSVReader::colData(unsigned int colIndex) const {
 	}
 	return res;
 }
-// ----------------------------------------------------------------------------
+
+
+// PRIVATE FUNCTIONS
+
+void CSVReader::parse(istream & in, bool headerOnly, bool extractUnits) {
+	FUNCID(CSVReader::parse);
+
+	std::string line;
+	std::getline(in, line);
+	std::string sepChars;
+	sepChars.push_back(m_separationCharacter);
+	if (m_separationCharacter == ',')
+		IBK::explode(line, m_captions, sepChars, IBK::EF_UseQuotes);
+	else
+		IBK::explode(line, m_captions, sepChars, IBK::EF_NoFlags);
+	m_nColumns = (unsigned int)m_captions.size();
+	m_nRows = 0;
+	m_units.clear();
+	if (extractUnits) {
+		for (unsigned int i=0; i<m_captions.size(); ++i) {
+			const std::string & c = m_captions[i];
+			std::size_t pos = c.find("[");
+			std::size_t pos2 = c.find("]");
+			if (pos != std::string::npos && pos != std::string::npos && pos < pos2) {
+				m_units.push_back(c.substr(pos+1, pos2-pos-1));
+				m_captions[i] = c.substr(0, pos);
+				IBK::trim(m_captions[i], " \t\r\"");
+			}
+			else
+				m_units.push_back(""); // no unit
+		}
+	}
+	if (headerOnly)
+		return;
+	while (std::getline(in, line)) {
+		++m_nRows; // also count empty rows, to get correct line numbers in error messages
+		// skip empty rows
+		if (line.empty() || line.find_first_not_of("\n\r\t ") == std::string::npos)
+			continue;
+		std::vector<std::string> tokens;
+		if (m_separationCharacter == ',') {
+			IBK::explode(line, tokens, sepChars, IBK::EF_UseQuotes);
+			for (unsigned int i=0; i<tokens.size(); ++i) {
+				IBK::trim(tokens[i], " \t\r\"");
+			}
+		}
+		else
+			IBK::explode(line, tokens, sepChars, IBK::EF_NoFlags);
+		// error: wrong column size
+		if (tokens.size() != m_nColumns) {
+			throw IBK::Exception(IBK::FormatString("Wrong number of columns in line #%1!")
+									.arg(m_nRows+1), FUNC_ID);
+		}
+		std::vector<double> values(m_nColumns);
+		for (unsigned int i=0; i<m_nColumns; ++i) {
+			try {
+				values[i] = IBK::string2val<double>(tokens[i]);
+			}
+			catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString("Error reading value in column %1 in line #%2.")
+									  .arg(i).arg(m_nRows+1), FUNC_ID);
+			}
+		}
+		m_values.push_back(values);
+	}
+
+	// store final number of rows
+	m_nRows = (unsigned int)m_values.size();
+}
 
 
 } // namespace IBK
