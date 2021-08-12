@@ -143,6 +143,11 @@ private:
 	/*! Updates enabled/disabled state of buttons based on content of m_currentInterval and current user interface state. */
 	void updateDailyCycleSelectButtons();
 
+	/*! Parses the annual tsv-file header and populates the column list using the current file path in the filename line edit.
+		Also reselects the column if possible and specified in the file name.
+	*/
+	void updateColumnIndexList();
+
 	/*! Generates a relative/absolute path from entered annual spline tsv-file path and updates m_current and the respective label.
 		Does not modify m_current.
 	*/

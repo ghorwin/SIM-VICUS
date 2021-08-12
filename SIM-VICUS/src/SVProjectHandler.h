@@ -223,9 +223,9 @@ public:
 	void updateLastReadTime();
 
 	/*! Convenience function to be used for path placeholder substitution.
-		This function takes the project's path placeholders, adds/overwrites default path placeholders
-		and the "Project Directory" placeholder and then calls the IBK::replace_path_placeholders()
-		function.
+		This function add default path placeholders	for "Database" and "User Database" and
+		the "Project Directory" placeholder (if a project is active and has a valid file path)
+		and then calls the IBK::replace_path_placeholders() function.
 	*/
 	IBK::Path replacePathPlaceholders(const IBK::Path & stringWithPlaceholders);
 

@@ -386,13 +386,16 @@ void SVProjectHandler::updateLastReadTime() {
 
 
 IBK::Path SVProjectHandler::replacePathPlaceholders(const IBK::Path & stringWithPlaceholders) {
-	std::map<std::string, IBK::Path> mergedPlaceholders; // = project().m_placeholders;
-	/// \todo All: discuss placeholder handling in SIM-VICUS
+	std::map<std::string, IBK::Path> mergedPlaceholders;
 
+	mergedPlaceholders["Database"] = QtExt::Directories::databasesDir().toStdString();
+	mergedPlaceholders["User Database"] = QtExt::Directories::userDataDir().toStdString();
 
 	if (!projectFile().isEmpty())
 		mergedPlaceholders["Project Directory"] =
 				QFileInfo(projectFile()).absoluteDir().absolutePath().toUtf8().data();
+
+
 
 	IBK::Path newPath( stringWithPlaceholders );
 
