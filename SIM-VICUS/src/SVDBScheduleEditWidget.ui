@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1399</width>
-    <height>894</height>
+    <width>1000</width>
+    <height>746</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1000</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -506,7 +512,7 @@
               </widget>
              </item>
              <item row="1" column="2">
-              <widget class="QPushButton" name="pushButtonEditTexteditor">
+              <widget class="QPushButton" name="pushButtonEditAnnualDataInTexteditor">
                <property name="text">
                 <string>Edit...</string>
                </property>
@@ -598,10 +604,13 @@
               <item row="1" column="1">
                <widget class="QListWidget" name="listWidgetColumnSelection">
                 <property name="alternatingRowColors">
-                 <bool>false</bool>
+                 <bool>true</bool>
                 </property>
                 <property name="selectionMode">
                  <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior">
+                 <enum>QAbstractItemView::SelectItems</enum>
                 </property>
                </widget>
               </item>
@@ -671,8 +680,8 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resources/qdarkstyle/style.qrc"/>
   <include location="../resources/SIM-VICUS.qrc"/>
+  <include location="../resources/qdarkstyle/style.qrc"/>
  </resources>
  <connections/>
 </ui>

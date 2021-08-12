@@ -72,6 +72,11 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetPeriods);
 
+	QFont f = m_ui->listWidgetColumnSelection->font();
+	int pointSize = int(f.pointSizeF()*0.8);
+	f.setPointSize(pointSize);
+	m_ui->listWidgetColumnSelection->setFont(f);
+
 	m_ui->tableWidgetPeriods->setSortingEnabled(false);
 
 	m_ui->widgetDailyCycleAndDayTypes->layout()->setMargin(0);
@@ -137,6 +142,7 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		m_curve->setSamples(QVector<QPointF>());
 		m_ui->plotWidget->replot();
 
+		// switch to daily cycles view
 		m_ui->radioButtonDailyCycles->blockSignals(true);
 		m_ui->radioButtonDailyCycles->setChecked(true);
 		m_ui->radioButtonAnnualSchedules->setChecked(false);
@@ -161,8 +167,8 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 
 	m_ui->radioButtonDailyCycles->blockSignals(true);
 	m_ui->radioButtonDailyCycles->setChecked(!m_current->m_haveAnnualSchedule);
-	m_ui->radioButtonDailyCycles->blockSignals(false);
 	m_ui->radioButtonAnnualSchedules->setChecked(m_current->m_haveAnnualSchedule);
+	m_ui->radioButtonDailyCycles->blockSignals(false);
 
 	m_ui->stackedWidget->setCurrentIndex(m_current->m_haveAnnualSchedule ? 1 : 0);
 
@@ -181,9 +187,29 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 	}
 	// annualSchedule
 	else {
-		// TODO populate line edit with tsv-file, if any
-
-
+		if (m_current->m_annualSchedule.m_tsvFile.isValid()) {
+			IBK::Path annualDataFile(SVProjectHandler::instance().replacePathPlaceholders(m_current->m_annualSchedule.m_tsvFile) );
+			m_ui->filepathAnnualDataFile->setFilename(QString::fromStdString(annualDataFile.absolutePath().str()) );
+			m_ui->radioButtonRelativeFilePath->blockSignals(true);
+			if (m_current->m_annualSchedule.m_tsvFile.hasPlaceholder()) {
+				m_ui->radioButtonRelativeFilePath->setChecked(true);
+//				m_ui->radioButtonAbsoluteFilePath->setChecked(false);
+			}
+			else {
+//				m_ui->radioButtonRelativeFilePath->setChecked(false);
+				m_ui->radioButtonAbsoluteFilePath->setChecked(true);
+			}
+			m_ui->radioButtonRelativeFilePath->blockSignals(false);
+			// update relative path
+			generateRelativeFilePath();
+			m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(true);
+		}
+		else {
+			m_ui->filepathAnnualDataFile->setFilename("");
+			m_ui->labelFileNameReference->setText("");
+			m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(false);
+		}
+		updateAnnualDataDiagram();
 	}
 
 	// for built-ins, disable editing/make read-only
@@ -804,8 +830,12 @@ void SVDBScheduleEditWidget::on_radioButtonDailyCycles_toggled(bool checked) {
 void SVDBScheduleEditWidget::on_pushButtonPasteAnnualDataFromClipboard_clicked() {
 	// paste data from clipboard
 
+	// TODO :
 
 	// clear annual spline data file and update file widget
+	m_current->m_annualSchedule.m_tsvFile.clear();
+	modelModify();
+	updateInput((int)m_current->m_id); // this will update the annual schedule page and preview
 }
 
 
@@ -814,20 +844,27 @@ void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
 	m_current->m_annualSchedule.m_values.clear();
 
 	// update text label with file reference
+	// this also signals a modification of the m_current object
 	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
+
+	// clear list widget
+	m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(true);
+	m_ui->listWidgetColumnSelection->clear();
+	m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(false);
 
 	QString dataFilePath = m_ui->filepathAnnualDataFile->filename();
 	if (dataFilePath.trimmed().isEmpty()) {
 		m_current->m_annualSchedule.m_tsvFile.clear();
+		modelModify();
 		updateInput((int)m_current->m_id);
 		return;
 	}
 
+	// allow editing of file in text editor
+	m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(true);
+
 	// show column selection list widget
-	m_ui->widgetColumnSelection->blockSignals(true);
-	m_ui->listWidgetColumnSelection->setEnabled(false);
-	m_ui->listWidgetColumnSelection->clear();
-	m_ui->listWidgetColumnSelection->blockSignals(false);
+	m_ui->widgetColumnSelection->setEnabled(false);
 
 	// parse tsv-file and if several data columns are in file, show the column selection list widget
 	IBK::Path filePath(dataFilePath.toStdString()); // this is always an absolute path
@@ -879,8 +916,9 @@ void SVDBScheduleEditWidget::on_filepathAnnualDataFile_editingFinished() {
 		m_ui->listWidgetColumnSelection->addItem(item);
 	}
 	selectedColumn = qMin(selectedColumn, (int)reader.m_captions.size());
+
 	m_ui->listWidgetColumnSelection->setCurrentRow(selectedColumn-1);
-	m_ui->listWidgetColumnSelection->blockSignals(false);
+	m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(false);
 
 	// we now have a column selected, trigger update of diagram
 	on_listWidgetColumnSelection_currentItemChanged(m_ui->listWidgetColumnSelection->currentItem(), nullptr);
@@ -895,7 +933,7 @@ void SVDBScheduleEditWidget::on_radioButtonRelativeFilePath_toggled(bool) {
 }
 
 
-void SVDBScheduleEditWidget::on_pushButtonEditTexteditor_clicked() {
+void SVDBScheduleEditWidget::on_pushButtonEditAnnualDataInTexteditor_clicked() {
 	// span editor if valid file name has been entered
 	IBK::Path f(m_ui->filepathAnnualDataFile->filename().toStdString());
 	IBK::Path adjustedFileName;
@@ -907,32 +945,6 @@ void SVDBScheduleEditWidget::on_pushButtonEditTexteditor_clicked() {
 	else {
 		QMessageBox::critical(this, tr("Invalid filename"), tr("Cannot edit file, file does not exist, yet."));
 	}
-}
-
-
-void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem *) {
-	if (current == nullptr)
-		return; // do nothing
-	// get column index
-	int currentListItem = current->data(Qt::UserRole).toInt();
-	if (currentListItem < 0) {
-		// invalid unit in data column, cannot use this column
-		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Invalid/missing unit in column header of data file."));
-		return;
-	}
-	QString unitName = current->data(Qt::UserRole+1).toString();
-
-	// add suffix to file name
-	IBK::Path fname(IBK::Path(m_ui->filepathAnnualDataFile->filename().toStdString()));
-	IBK::Path adjustedFileName;
-	int number;
-	IBK::extract_number_suffix(fname, adjustedFileName, number);
-	QString extendedFilename = QString("%1?%2")
-			.arg(QString::fromStdString(adjustedFileName.str()))
-			.arg(currentListItem);
-	m_ui->filepathAnnualDataFile->setFilename( extendedFilename );
-	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
-	updateAnnualDataDiagram();
 }
 
 
@@ -1002,6 +1014,39 @@ void SVDBScheduleEditWidget::updateAnnualDataDiagram() {
 	else {
 		// embedded data variant
 
-	}
+		// do we have data at all?
+		if (m_current->m_annualSchedule.m_values.empty()) {
+			m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("No data, yet."));
+			return;
+		}
 
+		// simply transfer the data to the widget
+		m_ui->widgetTimeSeriesPreview->setData(m_current->m_annualSchedule);
+	}
+}
+
+
+void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QListWidgetItem *current, QListWidgetItem */*previous*/) {
+	if (current == nullptr)
+		return; // do nothing
+	// get column index
+	int currentListItem = current->data(Qt::UserRole).toInt();
+	if (currentListItem < 0) {
+		// invalid unit in data column, cannot use this column
+		m_ui->widgetTimeSeriesPreview->setErrorMessage(tr("Invalid/missing unit in column header of data file."));
+		return;
+	}
+	QString unitName = current->data(Qt::UserRole+1).toString();
+
+	// add suffix to file name
+	IBK::Path fname(IBK::Path(m_ui->filepathAnnualDataFile->filename().toStdString()));
+	IBK::Path adjustedFileName;
+	int number;
+	IBK::extract_number_suffix(fname, adjustedFileName, number);
+	QString extendedFilename = QString("%1?%2")
+			.arg(QString::fromStdString(adjustedFileName.str()))
+			.arg(currentListItem);
+	m_ui->filepathAnnualDataFile->setFilename( extendedFilename );
+	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
+	updateAnnualDataDiagram();
 }

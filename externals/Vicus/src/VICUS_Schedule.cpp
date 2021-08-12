@@ -91,7 +91,27 @@ bool Schedule::isValid() const {
 	if (m_haveAnnualSchedule) {
 		if (m_annualSchedule.m_values.empty())
 			return false;
-		// TODO : Annual schedule check
+		if (!m_annualSchedule.m_values.valid())
+			return false;
+
+		if (!m_annualSchedule.m_tsvFile.isValid()) {
+			// check if we have data
+			if (m_annualSchedule.m_values.empty())
+				return false;
+			// check that we have x and y unit set correctly
+			if (m_annualSchedule.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
+				return false;
+			if (m_annualSchedule.m_yUnit.base_id() == 0)
+				return false;
+		}
+		else {
+			// Normally, we should check if the file exists, if number of columns match etc., but that is
+			// pretty time-consuming and isValid() is being called very often. So we check this
+			// during schedule export.
+
+			// Also, we have no way of resolving the absolute path from a relative path, since we don't
+			// have access to the project's file path.
+		}
 
 		return true;
 	}
