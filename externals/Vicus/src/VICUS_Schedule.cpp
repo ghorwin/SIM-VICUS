@@ -89,14 +89,11 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 bool Schedule::isValid() const {
 
 	if (m_haveAnnualSchedule) {
-		if (m_annualSchedule.m_values.empty())
-			return false;
-		if (!m_annualSchedule.m_values.valid())
-			return false;
-
 		if (!m_annualSchedule.m_tsvFile.isValid()) {
 			// check if we have data
 			if (m_annualSchedule.m_values.empty())
+				return false;
+			if (!m_annualSchedule.m_values.valid())
 				return false;
 			// check that we have x and y unit set correctly
 			if (m_annualSchedule.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)

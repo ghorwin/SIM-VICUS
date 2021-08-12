@@ -199,15 +199,19 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 //				m_ui->radioButtonRelativeFilePath->setChecked(false);
 				m_ui->radioButtonAbsoluteFilePath->setChecked(true);
 			}
+			m_ui->tabWidget->setCurrentIndex(1); // switch to tsv-file page
 			m_ui->radioButtonRelativeFilePath->blockSignals(false);
 			// update relative path
 			generateRelativeFilePath();
 			m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(true);
 		}
 		else {
+			m_ui->tabWidget->setCurrentIndex(0); // switch to embedded data page
 			m_ui->filepathAnnualDataFile->setFilename("");
 			m_ui->labelFileNameReference->setText("");
 			m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(false);
+
+			// TODO : update table
 		}
 		updateAnnualDataDiagram();
 	}
