@@ -368,7 +368,11 @@ void SVWelcomeScreen::downloadFinished(QNetworkReply *reply) {
 		QString news = QString::fromUtf8(newsRaw);
 		bool languageFound = false;
 		if (news.indexOf("[lang:") != -1) {
+#if QT_VERSION >= 0x050e00
 			QStringList langTexts = news.split(QString("[lang:"), Qt::SkipEmptyParts);
+#else
+			QStringList langTexts = news.split(QString("[lang:"), QString::SkipEmptyParts);
+#endif
 			for (int i=0; i<langTexts.count(); ++i) {
 				QString langId = langTexts[i].left(2);
 				if (langId == QtExt::LanguageHandler::instance().langId()) {
