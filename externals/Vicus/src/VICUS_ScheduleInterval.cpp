@@ -191,7 +191,7 @@ ScheduleInterval ScheduleInterval::multiply(double val) const{
 }
 
 ScheduleInterval ScheduleInterval::add(double val) const{
-	FUNCID(ScheduleInterval::add);
+//	FUNCID(ScheduleInterval::add);
 	ScheduleInterval schedInt;
 	if(!isValid()){
 		//Schedule interval '%1' with (id=%2) is not valid.

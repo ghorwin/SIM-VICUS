@@ -75,7 +75,7 @@ AbstractDBElement::ComparisonResult Material::equal(const AbstractDBElement * ot
 	if (otherMaterial == nullptr)
 		return Different;
 
-	for (unsigned int i=0; i<NUM_P; ++i){
+	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (m_para[i] != otherMaterial->m_para[i])
 			return Different;
 	}

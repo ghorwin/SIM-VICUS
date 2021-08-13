@@ -158,21 +158,100 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				mat.m_category = cat.second;
 
 		// color and ID don't matter for now, try to find similar material in DB
+		bool found = false;
 		for (const std::pair<const unsigned int, VICUS::Material> & dbMat : db.m_materials) {
 			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("  '%1' -> using existing material '%2' [%3] \n")
-								  .arg(matName.toStdString(),20).arg(dbMat.second.m_displayName.string()).arg(dbMat.first),
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing material '%2' [%3] \n")
+								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
+								  .arg(dbMat.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbMat.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 				idfMat2VicusMatIDs.push_back(dbMat.first);
+				found = true;
 				break;
 			}
 		}
-		// no matching material found, add new material to DB
-		unsigned int newID = db.m_materials.add(mat);
-		IBK::IBK_Message( IBK::FormatString("  '%1' -> imported with ID #%2 \n")
-						  .arg(matName.toStdString(),20).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-		idfMat2VicusMatIDs.push_back(newID);
+		if (!found) {
+			// no matching material found, add new material to DB
+			unsigned int newID = db.m_materials.add(mat);
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2 \n")
+							  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			idfMat2VicusMatIDs.push_back(newID);
+		}
+	}
+
+	// For each construction in IDF we store the respective VICUS-construction ID, and also, if the
+	// referenced construction is defined in reverse.
+	std::vector<std::pair<unsigned int, bool> >  idfConstruction2VicusConIDs;
+
+	IBK::IBK_Message("Importing constructions...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	for (const EP::Construction & m : prj.m_constructions) {
+		// generate VICUS::ConstructionType
+		VICUS::Construction con;
+		QString conName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+		con.m_displayName.setEncodedString(conName.toStdString() );
+
+		try {
+
+			// process all referenced materials and lookup matching VICUS material IDs
+			for (const std::string & matLay : m.m_layers) {
+				// find material by name
+				unsigned int i=0;
+				for (;i<prj.m_materials.size(); ++i)
+					if (prj.m_materials[i].m_name == matLay)
+						break;
+				if (i == prj.m_materials.size()) {
+					// also convert names in error message
+					throw IBK::Exception(IBK::FormatString("Material '%1' referenced from construction '%2' is not defined in IDF file.")
+										 .arg(codec->toUnicode(matLay.c_str()).toStdString()).arg(conName.toStdString()), FUNC_ID);
+				}
+
+				// extract size in [m]
+				double thickness = prj.m_materials[i].m_thickness;
+				con.m_materialLayers.push_back(VICUS::MaterialLayer(thickness, idfMat2VicusMatIDs[i]) );
+			}
+
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			continue; // skip construction
+		}
+
+		VICUS::Construction conRev(con);
+		std::reverse(conRev.m_materialLayers.begin(), conRev.m_materialLayers.end());
+
+		bool found = false;
+		// now check if construction (or its reverse) does already exist in VICUS DB
+		// color and ID don't matter for now, try to find similar material in DB
+		for (const std::pair<const unsigned int, VICUS::Construction> & dbCon : db.m_constructions) {
+			if (dbCon.second.equal(&con) != VICUS::AbstractDBElement::Different) {
+				// re-use this construction
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [%3] \n")
+								  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left)
+								  .arg(dbCon.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbCon.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				idfConstruction2VicusConIDs.push_back( std::make_pair(dbCon.first, false) ); // not a reverse construction
+				found = true;
+				break;
+			}
+			if (dbCon.second.equal(&conRev) != VICUS::AbstractDBElement::Different) {
+				// re-use this construction
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [%3] (reversed)\n")
+								  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left)
+								  .arg(dbCon.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbCon.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				idfConstruction2VicusConIDs.push_back( std::make_pair(dbCon.first, true) ); // a reverse construction
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			// no matching construction found, add new to DB
+			unsigned int newID = db.m_constructions.add(con);
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2 \n")
+							  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			idfConstruction2VicusConIDs.push_back( std::make_pair(newID, false) ); // not a reverse construction
+		}
 	}
 
 

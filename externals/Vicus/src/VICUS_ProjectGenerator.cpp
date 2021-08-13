@@ -877,7 +877,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 }
 
 void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
-	FUNCID("VentilationModelGenerator::generate");
+//	FUNCID("VentilationModelGenerator::generate");
 
 	// check if we have a zone template with id to infiltration or ventilation
 
@@ -1277,7 +1277,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 
 void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentInstance> &componentInstances,
 												  QStringList &errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds,
-												  std::set<unsigned int> &idSet) {
+												  std::set<unsigned int> &idSet)
+{
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already

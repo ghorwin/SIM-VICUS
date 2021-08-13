@@ -81,7 +81,7 @@ public:
 	unsigned int					m_idMaterial = INVALID_ID;	// XML:A:required
 
 	/*! Thickness of the material layer. */
-	IBK::Parameter					m_thickness;			// XML:E:required
+	IBK::Parameter					m_thickness;				// XML:E:required
 };
 
 } // namespace VICUS
