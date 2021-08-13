@@ -251,6 +251,16 @@ bool nearly_equal(double x, double y) {
 	return (x + eps >= y  &&  x <= y + eps);
 }
 
+/*! Compares equality of a and b while using a certain number of significant digits. */
+template<int digits>
+bool nearly_equal2(double x, double y) {
+	if( x == y ) //-V550
+		return true;
+
+	const double eps = 1.0 / pow10Pos<digits>::pow;
+	const double absTol = std::max(std::fabs(x*eps), std::fabs(y*eps));
+	return (x + absTol >= y  &&  x <= y + absTol);
+}
 
 /*! Tests if a is less then b including a certain range for potential rounding errors. */
 inline bool near_le(double a, double b)     { return !near_equal(a, b) && a < b; }

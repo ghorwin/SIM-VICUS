@@ -194,7 +194,7 @@ public:
 		if (IO_unit != other.IO_unit)
 			return true;
 
-		if (!IBK::nearly_equal<8>(value, other.value))
+		if (!IBK::nearly_equal2<8>(value, other.value))
 			return true;
 
 		if (name != other.name)
@@ -206,18 +206,6 @@ public:
 	/*! Compares this instance and another by content and returns true if are the same. */
 	bool operator==(const Parameter& other) const {
 		return !operator!=(other);
-	}
-
-	/*! Comparison function, compares two parameters with 5 digits accuracy.
-		If you need a different level of accuracy, compare the values of the parameters
-		directly.
-		Requires the IO_units of this and the other parameter to have the same
-		base unit.
-	*/
-	bool equalTo(const Parameter& other) {
-		IBK_ASSERT(IO_unit.base_id() == other.IO_unit.base_id());
-		// compare with 5 digits accuracy
-		return IBK::nearly_equal<5>(value, other.value);
 	}
 
 	/*! This method is used to test if a physical parameter is lower than a given limit.
