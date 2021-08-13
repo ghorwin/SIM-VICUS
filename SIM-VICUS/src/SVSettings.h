@@ -58,7 +58,9 @@ class SVSettings : public QtExt::Settings {
 	Q_DECLARE_TR_FUNCTIONS(SVSettings)
 	Q_DISABLE_COPY(SVSettings)
 public:
-	/*! Enumeration values for different properties to be managed in settings. */
+	/*! Enumeration values for different properties to be managed in settings.
+		WARNING: When adding new properties here, remember to update PROPERTY_KEYWORDS in the cpp file!
+	*/
 	enum PropertyType {
 		PT_LastFileOpenDirectory,
 		PT_LastImportOpenDirectory,

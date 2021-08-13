@@ -50,6 +50,7 @@ SVSettings * SVSettings::m_self = nullptr;
 
 const char * const SVSettings::PROPERTY_KEYWORDS[SVSettings::NUM_PT] = {
 	"LastFileOpenDirectory",
+	"LastImportOpenDirectory",
 	"UseModernSolver",
 	"ClearResultDirBeforeStart",
 	"NumParallelThreads",
