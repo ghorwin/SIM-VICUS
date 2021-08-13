@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<PostProc version="2.2.3">
+<PostProc version="2.2.4">
 	<!--List of all directories-->
 	<Directories>
 		<Directory>
@@ -518,14 +518,14 @@
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -564,14 +564,14 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM-VICUS detailed</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
 						<TitleText>SIM-VICUS fast</TitleText>
 						<PenColor>#ffaa00</PenColor>
 						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS accurate</TitleText>
@@ -638,14 +638,14 @@
 					<ColumnIndex>5</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
 					<ColumnIndex>4</ColumnIndex>
 				</Extractor>
 				<Extractor>
-					<DataIOFileName>SimQ_shadingFactors_fast.tsv?3|4|5|6|7|8</DataIOFileName>
+					<DataIOFileName>SimQ_shadingFactors_detailed.tsv?3|4|5|6|7|8</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -684,14 +684,14 @@
 						<MarkerSize>20</MarkerSize>
 					</Series>
 					<Series>
-						<TitleText>SIM-VICUS detailed</TitleText>
-						<PenColor>#579d1c</PenColor>
-						<MarkerColor>#579d1c</MarkerColor>
-					</Series>
-					<Series>
 						<TitleText>SIM-VICUS fast</TitleText>
 						<PenColor>#ffaa00</PenColor>
 						<MarkerColor>#ffaa00</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>SIM-VICUS detailed</TitleText>
+						<PenColor>#579d1c</PenColor>
+						<MarkerColor>#579d1c</MarkerColor>
 					</Series>
 					<Series>
 						<TitleText>SIM-VICUS accurate</TitleText>
@@ -741,7 +741,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="5" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
