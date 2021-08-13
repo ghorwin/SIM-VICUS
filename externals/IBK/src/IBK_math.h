@@ -241,7 +241,7 @@ template <> struct pow10Pos<0> {
 	static const int pow = 1;
 };
 
-/*! Compares equality of a and b while using a certain number of digits. */
+/*! Compares equality of a and b while using a certain number of digits after the dot. */
 template<int digits>
 bool nearly_equal(double x, double y) {
 	if( x == y ) //-V550

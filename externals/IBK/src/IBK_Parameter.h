@@ -187,23 +187,25 @@ public:
 	*/
 	bool empty() const { return name.empty(); }
 
-	/*! Compares this instance and another by content and returns true if they differ. */
+	/*! Compares this instance and another by content and returns true if they differ.
+		Note: parameter values are treated as equal if the first 8 significant digits match.
+	*/
 	bool operator!=(const Parameter& other) const {
 		if (IO_unit != other.IO_unit)
-				return true;
+			return true;
 
-		if (value != other.value)
-				return true;
+		if (!IBK::nearly_equal<8>(value, other.value))
+			return true;
 
 		if (name != other.name)
-				return true;
+			return true;
 
 		return false;
 	}
 
 	/*! Compares this instance and another by content and returns true if are the same. */
 	bool operator==(const Parameter& other) const {
-			return !operator!=(other);
+		return !operator!=(other);
 	}
 
 	/*! Comparison function, compares two parameters with 5 digits accuracy.
