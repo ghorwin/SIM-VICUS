@@ -62,10 +62,13 @@ private slots:
 	void on_pushButtonMerge_clicked();
 
 private:
+	bool doImport();
+
 	/*! Transfers data from read project to VICUS::Project. */
 	void transferData(const EP::Project & prj);
 
 	ImportResults			m_returnCode;
+	EP::Project				*m_idfProject = nullptr; // owned by dialog;
 
 	Ui::SVImportIDFDialog	*m_ui;
 

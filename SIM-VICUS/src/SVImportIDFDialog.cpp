@@ -29,6 +29,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QElapsedTimer>
+#include <QTextCodec>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
@@ -40,14 +41,23 @@
 
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 	QDialog(parent),
+	m_idfProject(new EP::Project),
 	m_ui(new Ui::SVImportIDFDialog)
 {
 	m_ui->setupUi(this);
+
+	QList<QByteArray> codecs = QTextCodec::availableCodecs();
+	std::sort(codecs.begin(), codecs.end());
+	for (const QByteArray & b : codecs)
+		m_ui->comboBoxEncoding->addItem(QString(b));
+
+	m_ui->comboBoxEncoding->setCurrentText(QTextCodec::codecForLocale()->name());
 }
 
 
 SVImportIDFDialog::~SVImportIDFDialog() {
 	delete m_ui;
+	delete m_idfProject;
 }
 
 
@@ -59,12 +69,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 		EP::IDFParser parser;
 		parser.read(IBK::Path(fname.toStdString()));
 
-		EP::Project prj;
-		prj.readIDF(parser);
-
-		// now transfer data to temporary VICUS project structure.
-		m_importedProject = VICUS::Project(); // clear data from previous import
-		transferData(prj); // this also updates the geometry shift to center the imported geometry
+		m_idfProject->readIDF(parser);
 	}
 	catch (IBK::Exception & ex) {
 		QMessageBox::critical((QWidget*)parent(), tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
@@ -80,11 +85,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	if (res == QDialog::Rejected)
 		return ImportCancelled;
 
-	// TODO : apply coordinate shift to imported building geometry
-
-
 	return m_returnCode;
-
 }
 
 
@@ -100,8 +101,11 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// import problems. How do we do this? Stringlist with error messages shows as table afterwards?
 	// Single string were errors are appended to, shown in an error message box?
 
+	SVDatabase & db = SVSettings::instance().m_db; // readability improvement
 
 	VICUS::Project & vp = m_importedProject; // readability improvement
+	vp = VICUS::Project(); // clear any previous data
+
 	vp.m_buildings.resize(1);
 	vp.m_buildings[0].m_buildingLevels.resize(1);
 	vp.m_buildings[0].m_id = vp.m_buildings[0].uniqueID();
@@ -124,6 +128,53 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// this counter is used to update the progress dialog
 	int count = 0;
+
+	QTextCodec * codec = QTextCodec::codecForName(m_ui->comboBoxEncoding->currentText().toLocal8Bit());
+
+	// we start with database components
+
+	// Vector that relates IDF Material definition to VICUS Material IDs -> note that we directly modify SV Database during import
+	// to avoid excessive material duplicate generation.
+	std::vector<unsigned int> idfMat2VicusMatIDs;
+
+	// TODO : add more string->category matchings (multilang?)
+	std::vector<std::pair<QString, VICUS::Material::Category> > categories;
+	categories.push_back(std::make_pair("Porenbeton", VICUS::Material::MC_Cementitious));
+	categories.push_back(std::make_pair("Beton", VICUS::Material::MC_Cementitious));
+	categories.push_back(std::make_pair("Zementestrich", VICUS::Material::MC_Cementitious));
+
+	IBK::IBK_Message("Importing materials...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	for (const EP::Material & m : prj.m_materials) {
+		// generate VICUS::Material
+		VICUS::Material mat;
+		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+		mat.m_displayName.setEncodedString(matName.toStdString() );
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Density, m.m_density);
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Conductivity, m.m_conductivity);
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, m.m_specHeatCapa);
+
+		for (const std::pair<QString, VICUS::Material::Category> & cat : categories)
+			if (matName.startsWith(cat.first))
+				mat.m_category = cat.second;
+
+		// color and ID don't matter for now, try to find similar material in DB
+		for (const std::pair<const unsigned int, VICUS::Material> & dbMat : db.m_materials) {
+			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("  '%1' -> using existing material '%2' [%3] \n")
+								  .arg(matName.toStdString(),20).arg(dbMat.second.m_displayName.string()).arg(dbMat.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				idfMat2VicusMatIDs.push_back(dbMat.first);
+				break;
+			}
+		}
+		// no matching material found, add new material to DB
+		unsigned int newID = db.m_materials.add(mat);
+		IBK::IBK_Message( IBK::FormatString("  '%1' -> imported with ID #%2 \n")
+						  .arg(matName.toStdString(),20).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		idfMat2VicusMatIDs.push_back(newID);
+	}
+
 
 	// *** Zone ***
 
@@ -283,8 +334,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// TODO : Windows
 
-	const SVDatabase & db = SVSettings::instance().m_db;
-
 //	// finally initialize subsurface colors
 //	for (VICUS::SubSurfaceComponentInstance & sub : vp.m_subSurfaceComponentInstances) {
 //		VICUS::SubSurfaceComponent * subComp = db.m_subSurfaceComponents[sub.m_idSubSurfaceComponent];
@@ -293,7 +342,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 
 	// set site properties based on extends of imported geometry
-	double maxDist = maxCoords.m_x - minCoords.m_x;
+	double maxDist = 100;
+	maxDist = std::max(maxDist, maxCoords.m_x - minCoords.m_x);
 	maxDist = std::max(maxDist, maxCoords.m_y - minCoords.m_y);
 	maxDist = std::max(maxDist, maxCoords.m_z - minCoords.m_z);
 	vp.m_viewSettings.m_farDistance = maxDist*4;
@@ -311,12 +361,35 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 }
 
 
+bool SVImportIDFDialog::doImport() {
+	try {
+		// now transfer data to temporary VICUS project structure.
+		transferData(*m_idfProject);
+	}
+	catch (IBK::Exception & ex) {
+		if (ex.what() == QString("Import canceled."))
+			return false;
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("IDF Import"), tr("There were critical errors during the import (invalid IDF file), see application log for details."));
+		return false;
+	}
+	return true;
+}
+
+
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {
+	if (!doImport()) return;
+
 	m_returnCode = ReplaceProject;
 	accept();
 }
 
+
 void SVImportIDFDialog::on_pushButtonMerge_clicked() {
+	if (!doImport()) return;
+
 	m_returnCode = MergeProjects;
 	accept();
 }
+
+
