@@ -887,7 +887,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 	QString filename = QFileDialog::getOpenFileName(
 							this,
 							tr("Select IDF file"),
-							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
+							SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory].toString(),
 							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr
 #ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
 							,QFileDialog::DontUseNativeDialog
@@ -911,6 +911,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 		m_importIDFDialog = new SVImportIDFDialog(this);
 	}
 
+	SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory] = QDir(filename).absolutePath();
 	SVImportIDFDialog::ImportResults res = m_importIDFDialog->import(filename);
 
 	switch (res) {
@@ -940,6 +941,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 		case SVImportIDFDialog::ImportCancelled :
 			return;
 	}
+
 
 }
 
@@ -1253,8 +1255,7 @@ void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 		m_preferencesDialog->edit(0);
 		return;
 	}
-	QProcess p;
-	bool res = p.startDetached("\"" + ccmPath + "\"");
+	bool res = QProcess::startDetached(ccmPath, QStringList(), QString());
 	if (!res) {
 		QMessageBox::critical(this, tr("Error starting external application"), tr("Climate editor '%1' could not be started.")
 							  .arg(ccmPath));
