@@ -127,7 +127,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Material category. */
-	Category						m_category = NUM_MC;					// XML:E:required
+	Category						m_category = MC_Miscellaneous;			// XML:E:required
 
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];							// XML:E
