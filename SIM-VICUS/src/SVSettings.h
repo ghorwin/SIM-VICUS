@@ -61,6 +61,7 @@ public:
 	/*! Enumeration values for different properties to be managed in settings. */
 	enum PropertyType {
 		PT_LastFileOpenDirectory,
+		PT_LastImportOpenDirectory,
 		PT_UseModernSolver,
 		PT_ClearResultDirBeforeStart,
 		PT_NumParallelThreads,
