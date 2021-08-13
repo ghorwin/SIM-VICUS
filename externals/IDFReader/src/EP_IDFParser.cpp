@@ -81,7 +81,7 @@ void IDFParser::read(const IBK::Path & fname) {
 					case '\n':
 						if (inComment) {
 							inComment = false;
-							std::cout << "!" << currentComment << std::endl;
+//							std::cout << "!" << currentComment << std::endl;
 						}
 						continue;
 
@@ -92,7 +92,7 @@ void IDFParser::read(const IBK::Path & fname) {
 								entity.m_comment = lastComment;
 								entity.m_tokens[0] = IBK::tolower_string(entity.m_tokens[0]);
 								m_tables[entity.m_tokens[0]].push_back(entity);
-								std::cout << "[" << entity.m_tokens[0] << "] " << lastComment << std::endl;
+//								std::cout << "[" << entity.m_tokens[0] << "] " << lastComment << std::endl;
 								lastComment.clear();
 								currentComment.clear();
 								entity.m_tokens.clear();
