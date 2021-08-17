@@ -43,6 +43,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 	std::string						m_name;
 	SurfaceType						m_surfaceType;
+	/*! ID name that references a construction. */
 	std::string						m_constructionName;
 	std::string						m_zoneName;
 	OutsideBoundaryCondition		m_outsideBoundaryCondition;
