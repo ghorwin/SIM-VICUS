@@ -30,6 +30,41 @@ void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigne
 //	if (version != EP::Version::VN_8_3)
 //		throw IBK::Exception("Only version 8.3 supported.", FUNC_ID);
 
+	//  Example for two bsd that are interlinkd (i.e. inside wall)
+	//  Both reference the same construction (which is symmetric here),
+	//  and denote each other via "Outside Boundary Condition Object" ID name.
+	//
+	//	BuildingSurface:Detailed,
+	//	  Zn001:Flr001W,           !- Name
+	//	  Floor,                   !- Surface Type
+	//	  Plenum Floor,            !- Construction Name
+	//	  West Zone,               !- Zone Name
+	//	  Surface,                 !- Outside Boundary Condition
+	//	  PZn001:CeilingW,         !- Outside Boundary Condition Object
+	//	  NoSun,                   !- Sun Exposure
+	//	  NoWind,                  !- Wind Exposure
+	//	  1.000000,                !- View Factor to Ground
+	//	  4,                       !- Number of Vertices
+	//	  15.240,0.000000,0.50,  !- X,Y,Z ==> Vertex 1 {m}
+	//	  0.0000,0.000000,0.50,  !- X,Y,Z ==> Vertex 2 {m}
+	//	  0.0000,15.24000,0.50,  !- X,Y,Z ==> Vertex 3 {m}
+	//	  15.240,15.24000,0.50;  !- X,Y,Z ==> Vertex 4 {m}
+
+	//	BuildingSurface:Detailed,
+	//	  PZn001:CeilingW,         !- Name
+	//	  Roof,                    !- Surface Type
+	//	  Plenum Floor,            !- Construction Name
+	//	  West Plenum,             !- Zone Name
+	//	  Surface,                 !- Outside Boundary Condition
+	//	  Zn001:Flr001W,           !- Outside Boundary Condition Object
+	//	  NoSun,                   !- Sun Exposure
+	//	  NoWind,                  !- Wind Exposure
+	//	  1.000000,                !- View Factor to Ground
+	//	  4,                       !- Number of Vertices
+	//	  15.240,0.000000,0.50,  !- X,Y,Z ==> Vertex 1 {m}
+	//	  15.240,15.24000,0.50,  !- X,Y,Z ==> Vertex 2 {m}
+	//	  0.0000,15.24000,0.50,  !- X,Y,Z ==> Vertex 3 {m}
+	//	  0.0000,0.000000,0.50;  !- X,Y,Z ==> Vertex 4 {m}
 
 	m_name = str[1];
 
