@@ -38,6 +38,29 @@ const T * element(const std::vector<T>& vec, unsigned int id) {
 		return &(*it);
 }
 
+
+/*! Utility function to find a vector element by name. */
+template <typename T>
+const T * element(const std::vector<T> & vec, const std::string & name) {
+	unsigned int i=0;
+	for (;i<vec.size(); ++i)
+		if (vec[i].m_name == name)
+			return &vec[i];
+	return nullptr;
+}
+
+
+/*! Utility function to find a vector element's index by name. */
+template <typename T>
+unsigned int elementIndex(const std::vector<T> & vec, const std::string & name) {
+	unsigned int i=0;
+	for (;i<vec.size(); ++i)
+		if (vec[i].m_name == name)
+			break;
+	return i;
+}
+
+
 /*! Function to generate unique ID (const-version). */
 template <typename T>
 unsigned int uniqueId(const std::vector<T>& vec) {
