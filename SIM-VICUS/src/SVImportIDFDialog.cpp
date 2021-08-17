@@ -29,15 +29,20 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QElapsedTimer>
+#include <QPlainTextEdit>
 #include <QTextCodec>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
+#include "SVMessageHandler.h"
 
 #include <EP_Project.h>
 #include <EP_IDFParser.h>
 
+#include <VICUS_utilities.h>
+
 #include <IBKMK_3DCalculations.h>
+
 
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 	QDialog(parent),
@@ -89,6 +94,17 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 }
 
 
+void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer) {
+	const unsigned int PROGRESS_TIMER_MSEC_DELAY = 200;
+	if (progressTimer.elapsed() > PROGRESS_TIMER_MSEC_DELAY) {
+		dlg->setValue(dlg->value()+1);
+		if (dlg->wasCanceled())
+			throw IBK::Exception("Import canceled.", "[SVImportIDFDialog::transferData]");
+		progressTimer.start();
+	}
+}
+
+
 void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
 
@@ -115,7 +131,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	bl.m_id = bl.uniqueID();
 	bl.m_displayName = tr("Default building level");
 
-	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, prj.m_zones.size(), this);
+	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, 0, this);
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setValue(0);
 	qApp->processEvents();
@@ -126,15 +142,13 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	IBKMK::Vector3D minCoords(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 	IBKMK::Vector3D maxCoords(std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest());
 
-	// this counter is used to update the progress dialog
-	int count = 0;
-
 	QTextCodec * codec = QTextCodec::codecForName(m_ui->comboBoxEncoding->currentText().toLocal8Bit());
 
 	// we start with database components
 
 	// Vector that relates IDF Material definition to VICUS Material IDs -> note that we directly modify SV Database during import
 	// to avoid excessive material duplicate generation.
+	// We store this as vector and not as map, because we need the index to access IDF material properties later.
 	std::vector<unsigned int> idfMat2VicusMatIDs;
 
 	// TODO : add more string->category matchings (multilang?)
@@ -196,10 +210,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// process all referenced materials and lookup matching VICUS material IDs
 			for (const std::string & matLay : m.m_layers) {
 				// find material by name
-				unsigned int i=0;
-				for (;i<prj.m_materials.size(); ++i)
-					if (prj.m_materials[i].m_name == matLay)
-						break;
+				unsigned int i = VICUS::elementIndex(prj.m_materials, matLay);
 				if (i == prj.m_materials.size()) {
 					// also convert names in error message
 					throw IBK::Exception(IBK::FormatString("Material '%1' referenced from construction '%2' is not defined in IDF file.")
@@ -255,22 +266,49 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	}
 
 
+	// *** Inside boundary conditions ("surface") ***
+
+	unsigned int bcIDSurface = VICUS::INVALID_ID; // holds the ID of inside surfaces
+	{
+		VICUS::BoundaryCondition bcSurface;
+		QString bcName = tr("Inside surface");
+		bcSurface.m_displayName.setEncodedString(bcName.toStdString());
+		bcSurface.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
+		VICUS::KeywordList::setParameter(bcSurface.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
+		// TODO : how to set the remaining parameters?
+
+
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
+			if (dbBC.second.equal(&bcSurface) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("  Using existing boundary condition '%1' [%2] \n")
+								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				bcIDSurface = dbBC.first;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching BC found, add new BC to DB
+			bcIDSurface = db.m_boundaryConditions.add(bcSurface);
+			IBK::IBK_Message( IBK::FormatString("  Added new boundary condition '%1' with ID #%2 \n")
+							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
 	// *** Zone ***
 
-	// a map that relates zone name to index in the zones map
+	// a map that relates zone name to index in the VICUS room vector
 	std::map<std::string, unsigned int>	mapZoneNameToIdx;
+	IBK::IBK_Message("Importing zones...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Zone & z : prj.m_zones) {
-		++count;
-		if (progressTimer.elapsed() > 100) {
-			dlg.setValue(count);
-			if (dlg.wasCanceled())
-				throw IBK::Exception("Import canceled.", FUNC_ID);
-			progressTimer.start();
-		}
+		updateProgress(&dlg, progressTimer);
 
 		VICUS::Room r;
 		r.m_id = r.uniqueID();
-		r.m_displayName = QString::fromStdString(z.m_name);
+		r.m_displayName = codec->toUnicode(z.m_name.c_str()); // Mind text encoding here!
 
 		// remember zone name - id association
 		if (mapZoneNameToIdx.find(z.m_name) != mapZoneNameToIdx.end())
@@ -279,10 +317,16 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// transfer attributes
 
 		// ceiling height is not taken into account
-		if(z.m_floorArea > 0)
+		if (z.m_floorArea > 0)
 			r.m_para[VICUS::Room::P_Area].set("Area", z.m_floorArea, "m2" );
-		if(z.m_volume > 0)
+		if (z.m_volume > 0)
 			r.m_para[VICUS::Room::P_Volume].set("Volume", z.m_volume, "m3" );
+
+		IBK::IBK_Message( IBK::FormatString("  %1 with ID #%2, (area=%3 m2, volume=%4 m3) \n")
+						  .arg("'"+r.m_displayName.toStdString()+"'", 40, std::ios_base::left)
+						  .arg(r.m_id)
+						  .arg(r.m_para[VICUS::Room::P_Area].value)
+						  .arg(r.m_para[VICUS::Room::P_Volume].value), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 		// add zone and remember its index
 		mapZoneNameToIdx[z.m_name] = bl.m_rooms.size();
@@ -290,31 +334,26 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	}
 
 
+
 	// *** BuildingSurfaceDetailed ***
 
 	// a map that relates a bsd-ID name (display name of a surface) to its ID
 	std::map<std::string, unsigned int> mapBsdNameIDmap;
 
-	//import all building surface detailed -> opaque surfaces
+	// import all building surface detailed -> opaque surfaces
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
-		++count;
-		if (progressTimer.elapsed() > 100) {
-			dlg.setValue(count);
-			if (dlg.wasCanceled())
-				throw IBK::Exception("Import canceled.", FUNC_ID);
-			progressTimer.start();
-		}
+		updateProgress(&dlg, progressTimer);
 
 		const auto & zoneIt = mapZoneNameToIdx.find(bsd.m_zoneName);
 		if (zoneIt == mapZoneNameToIdx.end())
 			throw IBK::Exception(IBK::FormatString("Zone name '%1' does not exist, which is referenced in "
-												   "Building Surface Detailed '%2'").arg(bsd.m_zoneName)
+												   "BuildingSurface:Detailed '%2'").arg(bsd.m_zoneName)
 													.arg(bsd.m_name), FUNC_ID);
 		unsigned idx = zoneIt->second;
 
 		VICUS::Surface surf;
 		surf.m_id = surf.uniqueID();
-		surf.m_displayName = QString::fromStdString(bsd.m_name);
+		surf.m_displayName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 
@@ -322,7 +361,53 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_color = surf.m_displayColor;
 		bl.m_rooms[idx].m_surfaces.push_back(surf);
 
+		// remember bsd/surface name - id association
 		mapBsdNameIDmap[bsd.m_name] = surf.m_id;
+	}
+
+	// Now the bsd -> surface map is complete.
+	// We now create all components and component instances. For that, we loop again over all bsd.
+	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
+		QString bsdName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
+
+		// *** Components ***
+
+		// we first create a component with the referenced construction
+		VICUS::Component com;
+		com.m_displayName.setEncodedString("en:Component-" + bsdName.toStdString());
+		// lookup construction
+		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName);
+		if (conIdx == prj.m_constructions.size()) {
+			// also convert names in error message
+			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from BSD '%2' is not defined in IDF file.")
+								 .arg(codec->toUnicode(bsd.m_constructionName.c_str()).toStdString())
+								 .arg(bsdName.toStdString()), FUNC_ID);
+		}
+		// lookup matching VICUS::Construction ID
+		com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+		bool inverted = idfConstruction2VicusConIDs[conIdx].second; // if true, this is the inverted variant of a construction
+
+		// now create boundary conditions
+
+		switch (bsd.m_outsideBoundaryCondition) {
+
+			// inside surface?
+			case EP::BuildingSurfaceDetailed::OC_Surface : {
+				// we require an opposite surface set
+				if (bsd.m_outsideBoundaryConditionObject.empty())
+					throw IBK::Exception(IBK::FormatString("BSD '%1' of type 'Surface' does not reference outside BC object.")
+										 .arg(bsdName.toStdString()), FUNC_ID);
+				com.m_idSideABoundaryCondition = bcIDSurface;
+				com.m_idSideBBoundaryCondition = bcIDSurface;
+			} break;
+		}
+
+
+		// if inverted, swap BC assignments
+		if (inverted)
+			std::swap(com.m_idSideABoundaryCondition, com.m_idSideBBoundaryCondition);
+
+		// check, if we have such a component already
 	}
 
 	// add surfaces windows, doors, ...
@@ -333,13 +418,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// also, we need to create subsurface components and reference these
 
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
-		++count;
-		if (progressTimer.elapsed() > 100) {
-			dlg.setValue(count);
-			if (dlg.wasCanceled())
-				throw IBK::Exception("Import canceled.", FUNC_ID);
-			progressTimer.start();
-		}
+		updateProgress(&dlg, progressTimer);
 
 		// look up surface that this fenestration belongs to
 		const auto & bsd = mapBsdNameIDmap.find(fsd.m_bsdName);
@@ -392,13 +471,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	//import all building surface detailed -> opaque surfaces
 	for (const EP::ShadingBuildingDetailed &sh : prj.m_shadingBuildingDetailed) {
-		++count;
-		if (progressTimer.elapsed() > 100) {
-			dlg.setValue(count);
-			if (dlg.wasCanceled())
-				throw IBK::Exception("Import canceled.", FUNC_ID);
-			progressTimer.start();
-		}
+		updateProgress(&dlg, progressTimer);
 
 		VICUS::Surface surf;
 		surf.m_id = surf.uniqueID();
@@ -471,4 +544,32 @@ void SVImportIDFDialog::on_pushButtonMerge_clicked() {
 	accept();
 }
 
+
+// *** message handler
+
+
+SVImportMessageHandler::SVImportMessageHandler(QObject *parent, SVMessageHandler *defaultMsgHandler,
+											   QPlainTextEdit *plainTextEdit) :
+	QObject(parent),
+	m_defaultMsgHandler(defaultMsgHandler),
+	m_plainTextEdit(plainTextEdit)
+{
+}
+
+
+SVImportMessageHandler::~SVImportMessageHandler() {
+}
+
+
+void SVImportMessageHandler::msg(const std::string& msg,
+	IBK::msg_type_t t,
+	const char * func_id,
+	int verbose_level)
+{
+	IBK::MessageHandler::msg(msg, t, func_id, verbose_level);
+	if (verbose_level > m_requestedConsoleVerbosityLevel)
+		return;
+
+	m_plainTextEdit->appendPlainText(QString::fromStdString(msg).trimmed());
+}
 

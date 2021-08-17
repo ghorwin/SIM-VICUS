@@ -30,6 +30,9 @@
 
 #include <VICUS_Project.h>
 
+class SVMessageHandler;
+class QPlainTextEdit;
+
 namespace Ui {
 	class SVImportIDFDialog;
 }
@@ -72,6 +75,26 @@ private:
 
 	Ui::SVImportIDFDialog	*m_ui;
 
+};
+
+
+
+class SVImportMessageHandler : public QObject, public IBK::MessageHandler {
+	Q_OBJECT
+public:
+	explicit SVImportMessageHandler(QObject *parent, SVMessageHandler *defaultMsgHandler,
+									QPlainTextEdit *plainTextEdit);
+	virtual ~SVImportMessageHandler();
+
+
+	/*! Overloaded to received msg info. */
+	virtual void msg(const std::string& msg,
+		IBK::msg_type_t t = IBK::MSG_PROGRESS,
+		const char * func_id = nullptr,
+		int verbose_level = -1);
+
+	SVMessageHandler	*m_defaultMsgHandler = nullptr;
+	QPlainTextEdit		*m_plainTextEdit = nullptr;
 };
 
 #endif // SVImportIDFDialogH
