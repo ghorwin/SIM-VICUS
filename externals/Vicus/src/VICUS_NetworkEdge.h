@@ -153,7 +153,7 @@ public:
 
 
 	/*! Parameters used for coupling with ground heat exchange model */
-	para_t												m_para;
+	IBK::Parameter										m_para[NUM_P];
 
 	// *** RUNTIME VARIABLES ***
 

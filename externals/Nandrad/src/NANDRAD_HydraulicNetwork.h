@@ -33,7 +33,7 @@
 #include "NANDRAD_HydraulicNetworkPipeProperties.h"
 #include "NANDRAD_HydraulicNetworkComponent.h"
 #include "NANDRAD_HydraulicNetworkControlElement.h"
-
+#include "NANDRAD_HydraulicNetworkSoilModel.h"
 
 namespace NANDRAD {
 
@@ -97,6 +97,9 @@ public:
 
 	/*! List of mass flow controller elements. */
 	std::vector<HydraulicNetworkControlElement>		m_controlElements;								// XML:E
+
+	/*! List of soil models for FMI coupling */
+	std::vector<HydraulicNetworkSoilModel>			m_soilModels;									// XML:E
 
 };
 

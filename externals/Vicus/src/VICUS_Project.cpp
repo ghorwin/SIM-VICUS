@@ -827,8 +827,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		NANDRAD::Outputs outputs;
 		outputs.m_timeUnit = IBK::Unit("h");
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" , "InletNodeTemperature",
-											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference",
-											  "HeatSuppliedToFluid"};
+											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
@@ -2524,9 +2523,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 	unsigned int fmiValueRef = 42; // start value
 	unsigned int idSoilModel = 0; // start value
-	std::map<unsigned int, unsigned int> mapSoilModel2NetworkSupplyPipe;
-	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
-//	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
@@ -2619,7 +2615,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													pipeComp->m_id,
 													edge->m_idPipe,
 													edge->length());
-		// create name
 		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
 		returnPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(returnPipe);
@@ -2670,12 +2665,22 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			const_cast<NetworkEdge*>(edge)->m_idNandradReturnPipe = returnPipe.m_id;
 
 			// einfacher Ansatz: für jede Edge ein Delphin Modell
-			++idSoilModel;
-			mapSoilModel2NetworkSupplyPipe[idSoilModel] = supplyPipe.m_id;
-			mapSoilModel2NetworkReturnPipe[idSoilModel] = returnPipe.m_id;
-			//
-			// hier noch edge.m_para parameters für jedes Delphin Model in einer Map o.ä. speichern...
-			//
+			NANDRAD::HydraulicNetworkSoilModel soilModel;
+			soilModel.m_id = ++idSoilModel;
+
+			soilModel.m_supplyPipeId = supplyPipe.m_id;
+			soilModel.m_returnPipeId = returnPipe.m_id;
+			if (edge->m_para[NetworkEdge::P_PipeDepth].empty())
+				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no determined pipe depth. This is required for FMI coupling.")
+									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+			soilModel.m_pipeDepth = edge->m_para[NetworkEdge::P_PipeDepth];
+			if (edge->m_para[NetworkEdge::P_PipeSpacing].empty())
+				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no determined pipe spacing. This is required for FMI coupling.")
+									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+			soilModel.m_pipeSpacing = edge->m_para[NetworkEdge::P_PipeSpacing];
+			soilModel.m_pipeOuterDiameter = pipe->m_para[NetworkPipe::P_DiameterOutside];
+
+			nandradNetwork.m_soilModels.push_back(soilModel);
 		}
 	}
 
@@ -2691,8 +2696,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 //			edge->m_supplyPipeId ...
 //	}
 
-
-	// die Delphin Maps als txt Dateien speichern ...
 
 
 	 // we are DONE !!!
