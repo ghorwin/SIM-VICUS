@@ -233,7 +233,6 @@ SOURCES += \
 	../../src/SVSmartSelectDialog.cpp \
 	../../src/SVStyle.cpp \
 	../../src/SVThreadBase.cpp \
-	../../src/SVUtils.cpp \
 	../../src/SVView3DDialog.cpp \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
@@ -392,7 +391,6 @@ HEADERS  += \
 	../../src/SVSmartSelectDialog.h \
 	../../src/SVStyle.h \
 	../../src/SVThreadBase.h \
-	../../src/SVUtils.h \
 	../../src/SVView3DDialog.h \
 	../../src/SVViewState.h \
 	../../src/SVViewStateHandler.h \
