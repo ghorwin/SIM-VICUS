@@ -330,7 +330,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
 			if (dbBC.second.equal(&bc) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("\nUsing existing boundary condition '%1' [#%2]\n")
+				IBK::IBK_Message( IBK::FormatString("Using existing boundary condition '%1' [#%2]\n")
 								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 				bcIDGround = dbBC.first;
@@ -342,7 +342,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// no matching BC found, add new BC to DB
 			bc.m_color = SVStyle::randomColor();
 			bcIDGround = db.m_boundaryConditions.add(bc);
-			IBK::IBK_Message( IBK::FormatString("\nAdded new boundary condition '%1' with ID #%2\n")
+			IBK::IBK_Message( IBK::FormatString("Added new boundary condition '%1' with ID #%2\n")
 							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
@@ -364,7 +364,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
 			if (dbBC.second.equal(&bc) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("\nUsing existing boundary condition '%1' [#%2]\n")
+				IBK::IBK_Message( IBK::FormatString("Using existing boundary condition '%1' [#%2]\n")
 								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 				bcIDAdiabatic = dbBC.first;
@@ -376,7 +376,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// no matching BC found, add new BC to DB
 			bc.m_color = SVStyle::randomColor();
 			bcIDAdiabatic = db.m_boundaryConditions.add(bc);
-			IBK::IBK_Message( IBK::FormatString("\nAdded new boundary condition '%1' with ID #%2\n")
+			IBK::IBK_Message( IBK::FormatString("Added new boundary condition '%1' with ID #%2\n")
 							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
@@ -479,7 +479,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// we first create a component with the referenced construction
 		VICUS::Component com;
-		com.m_displayName.setEncodedString("en:Component-" + bsdName.toStdString());
+		com.m_displayName.setEncodedString("Component-" + bsdName.toStdString());
 		// lookup construction
 		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName);
 		if (conIdx == prj.m_constructions.size()) {
@@ -560,7 +560,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		IBK_ASSERT(surfID != 0);
 		// skip interface generation, if surface has been handled already
 		if (connectedSurfaces.find(surfID) != connectedSurfaces.end()) {
-			IBK::IBK_Message( IBK::FormatString("    skipped '%1' [#%2] (has been connected already)\n")
+			IBK::IBK_Message( IBK::FormatString("  skipped '%1' [#%2] (has been connected already)\n")
 					.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			continue;
 		}
