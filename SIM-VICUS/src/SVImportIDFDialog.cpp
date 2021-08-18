@@ -35,6 +35,7 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVMessageHandler.h"
+#include "SVStyle.h"
 
 #include <EP_Project.h>
 #include <EP_IDFParser.h>
@@ -57,6 +58,8 @@ SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 		m_ui->comboBoxEncoding->addItem(QString(b));
 
 	m_ui->comboBoxEncoding->setCurrentText(QTextCodec::codecForLocale()->name());
+
+	SVStyle::instance().formatPlainTextEdit(m_ui->plainTextEdit);
 }
 
 
@@ -67,14 +70,21 @@ SVImportIDFDialog::~SVImportIDFDialog() {
 
 
 SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname) {
+	FUNCID(SVImportIDFDialog::import);
+
+	// Create message handler instance -> redirect all IBK::IBK_message output to message handler
+	// at end of function, this object get's destroyed and resets the default message handler
+	SVImportMessageHandler msgHandler(this, m_ui->plainTextEdit);
 
 	// read IDF file
-
 	try {
 		EP::IDFParser parser;
 		parser.read(IBK::Path(fname.toStdString()));
 
+		IBK::IBK_Message("Parsing IDF...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		m_idfProject->readIDF(parser);
+
+
 	}
 	catch (IBK::Exception & ex) {
 		QMessageBox::critical((QWidget*)parent(), tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
@@ -82,9 +92,8 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	}
 
 	// if successful, show dialog
-
-	// merge project is only active if we have a project
-	m_ui->pushButtonMerge->setEnabled( SVProjectHandler::instance().isValid() );
+	m_ui->pushButtonMerge->setEnabled(false);
+	m_ui->pushButtonReplace->setEnabled(false);
 
 	int res = exec();
 	if (res == QDialog::Rejected)
@@ -109,9 +118,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
 
 	m_ui->plainTextEdit->clear();
-	// create message handler instance -> redirect all IBK::IBK_message output to message handler
-	// at end of function, this object get's destroyed and resets the default message handler
-	SVImportMessageHandler msgHandler(this, m_ui->plainTextEdit);
 
 	// TODO : Dirk, error handling concept
 	//        - decide which errors are critical and cause abort of import
@@ -162,12 +168,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	categories.push_back(std::make_pair("Beton", VICUS::Material::MC_Cementitious));
 	categories.push_back(std::make_pair("Zementestrich", VICUS::Material::MC_Cementitious));
 
-	IBK::IBK_Message("Importing materials...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message("\nImporting materials...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Material & m : prj.m_materials) {
 		// generate VICUS::Material
 		VICUS::Material mat;
 		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
 		mat.m_displayName.setEncodedString(matName.toStdString() );
+		mat.m_color = SVStyle::randomColor();
+
 		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Density, m.m_density);
 		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Conductivity, m.m_conductivity);
 		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, m.m_specHeatCapa);
@@ -181,7 +189,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::Material> & dbMat : db.m_materials) {
 			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing material '%2' [%3] \n")
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing material '%2' [#%3] \n")
 								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
 								  .arg(dbMat.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbMat.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -193,7 +201,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		if (!found) {
 			// no matching material found, add new material to DB
 			unsigned int newID = db.m_materials.add(mat);
-			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2 \n")
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
 							  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			idfMat2VicusMatIDs.push_back(newID);
 		}
@@ -203,12 +211,13 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// referenced construction is defined in reverse.
 	std::vector<std::pair<unsigned int, bool> >  idfConstruction2VicusConIDs;
 
-	IBK::IBK_Message("Importing constructions...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message("\nImporting constructions...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Construction & m : prj.m_constructions) {
 		// generate VICUS::ConstructionType
 		VICUS::Construction con;
 		QString conName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
 		con.m_displayName.setEncodedString(conName.toStdString() );
+		con.m_color = SVStyle::randomColor();
 
 		try {
 
@@ -241,7 +250,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::Construction> & dbCon : db.m_constructions) {
 			if (dbCon.second.equal(&con) != VICUS::AbstractDBElement::Different) {
 				// re-use this construction
-				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [%3] \n")
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [#%3]\n")
 								  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left)
 								  .arg(dbCon.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbCon.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -251,7 +260,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			}
 			if (dbCon.second.equal(&conRev) != VICUS::AbstractDBElement::Different) {
 				// re-use this construction
-				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [%3] (reversed)\n")
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing construction '%2' [#%3] (reversed)\n")
 								  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left)
 								  .arg(dbCon.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbCon.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -264,7 +273,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		if (!found) {
 			// no matching construction found, add new to DB
 			unsigned int newID = db.m_constructions.add(con);
-			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2 \n")
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
 							  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			idfConstruction2VicusConIDs.push_back( std::make_pair(newID, false) ); // not a reverse construction
 		}
@@ -287,7 +296,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
 			if (dbBC.second.equal(&bcSurface) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("  Using existing boundary condition '%1' [%2] \n")
+				IBK::IBK_Message( IBK::FormatString("\nUsing existing boundary condition '%1' [#%2]\n")
 								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 				bcIDSurface = dbBC.first;
@@ -297,8 +306,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		if (!found) {
 			// no matching BC found, add new BC to DB
+			bcSurface.m_color = SVStyle::randomColor();
 			bcIDSurface = db.m_boundaryConditions.add(bcSurface);
-			IBK::IBK_Message( IBK::FormatString("  Added new boundary condition '%1' with ID #%2 \n")
+			IBK::IBK_Message( IBK::FormatString("\nAdded new boundary condition '%1' with ID #%2\n")
 							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 	}
@@ -307,7 +317,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// a map that relates zone name to index in the VICUS room vector
 	std::map<std::string, unsigned int>	mapZoneNameToIdx;
-	IBK::IBK_Message("Importing zones...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message("\nImporting zones...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Zone & z : prj.m_zones) {
 		updateProgress(&dlg, progressTimer);
 
@@ -327,7 +337,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		if (z.m_volume > 0)
 			r.m_para[VICUS::Room::P_Volume].set("Volume", z.m_volume, "m3" );
 
-		IBK::IBK_Message( IBK::FormatString("  %1 with ID #%2, (area=%3 m2, volume=%4 m3) \n")
+		IBK::IBK_Message( IBK::FormatString("  %1 [#%2] (area=%3 m2, volume=%4 m3)\n")
 						  .arg("'"+r.m_displayName.toStdString()+"'", 40, std::ios_base::left)
 						  .arg(r.m_id)
 						  .arg(r.m_para[VICUS::Room::P_Area].value)
@@ -346,6 +356,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	std::map<std::string, unsigned int> mapBsdNameIDmap;
 
 	// import all building surface detailed -> opaque surfaces
+	IBK::IBK_Message("\nImporting surfaces...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
 		updateProgress(&dlg, progressTimer);
 
@@ -360,11 +371,25 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_id = surf.uniqueID();
 		surf.m_displayName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+
+		// we can only import a subsurface, if the surface itself has a valid polygon
+		if (!surf.geometry().isValid()) {
+			IBK::IBK_Message(IBK::FormatString("Invalid geometry of surface %1.")
+							 .arg(surf.m_displayName.toStdString()),
+							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+		}
+
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 
 		surf.initializeColorBasedOnInclination();
 		surf.m_color = surf.m_displayColor;
 		bl.m_rooms[idx].m_surfaces.push_back(surf);
+
+		IBK::IBK_Message( IBK::FormatString("  %3.%1 [#%2]\n")
+						  .arg(surf.m_displayName.toStdString())
+						  .arg(surf.m_id)
+						  .arg(bl.m_rooms[idx].m_displayName.toStdString()),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 		// remember bsd/surface name - id association
 		mapBsdNameIDmap[bsd.m_name] = surf.m_id;
@@ -378,6 +403,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// Now the bsd -> surface map is complete.
 	// We now create all components and component instances. For that, we loop again over all bsd.
+	IBK::IBK_Message("\nImporting components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
 		QString bsdName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
@@ -416,6 +442,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				otherSurfaceID = mapBsdNameIDmap[bsd.m_outsideBoundaryConditionObject];
 				IBK_ASSERT(otherSurfaceID != 0);
 			} break;
+
+			case EP::BuildingSurfaceDetailed::NUM_OC : ; // just to make compiler happy
 		}
 
 
@@ -429,7 +457,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (const std::pair<const unsigned int, VICUS::Component> & dbElement : db.m_components) {
 			if (dbElement.second.equal(&com) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
-				IBK::IBK_Message( IBK::FormatString("  Using existing component '%1' [%2] \n")
+				IBK::IBK_Message( IBK::FormatString("  -> using existing component '%1' [#%2]\n")
 								  .arg(dbElement.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbElement.first),
 								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 				comId = dbElement.first;
@@ -439,8 +467,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		if (!found) {
 			// no matching component found, add new to DB
+			com.m_color = SVStyle::randomColor();
 			comId = db.m_components.add(com);
-			IBK::IBK_Message( IBK::FormatString("  Added new component '%1' with ID #%2 \n")
+			IBK::IBK_Message( IBK::FormatString("  -> added new component '%1' [#%2]\n")
 							  .arg(com.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(comId), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 
@@ -449,10 +478,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		IBK_ASSERT(surfID != 0);
 		// skip interface generation, if surface has been handled already
 		if (connectedSurfaces.find(surfID) != connectedSurfaces.end()) {
-			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] has been connected already.\n")
+			IBK::IBK_Message( IBK::FormatString("    skipped '%1' [#%2] (has been connected already)\n")
 					.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			continue;
 		}
+
+		connectedSurfaces.insert(surfID);
+		if (otherSurfaceID != VICUS::INVALID_ID)
+			connectedSurfaces.insert(otherSurfaceID);
 
 		// now create a new component instance
 		VICUS::ComponentInstance ci;
@@ -466,44 +499,48 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		ci.m_idComponent = comId;
 
 		if (otherSurfaceID != VICUS::INVALID_ID)
-			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] is connected to surface '%3' [#%4].\n")
+			IBK::IBK_Message( IBK::FormatString("    '%1' [#%2] connected to surface '%3' [#%4]\n")
 				.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID)
 				.arg(codec->toUnicode(bsd.m_outsideBoundaryConditionObject.c_str()).toStdString()).arg(otherSurfaceID),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		else {
 			// TODO : distinguish between ambient and ground
-			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] is connected to outside.\n")
+			IBK::IBK_Message( IBK::FormatString("    '%1' [#%2] connected to outside\n")
 				.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
 		vp.m_componentInstances.push_back(ci);
 	}
 
+
+
+
 	// add surfaces windows, doors, ...
+
+	// TODO : review code below
+
 
 	// *** FenestrationSurfaceDetailed ***
 
 	// we need to collect a vector of subsurfaces for each surface to add to
 	// also, we need to create subsurface components and reference these
 
+	IBK::IBK_Message("\nImporting windows (sub-surfaces)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
 		updateProgress(&dlg, progressTimer);
 
+		QString fsdName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
+		QString bsdName = codec->toUnicode(fsd.m_bsdName.c_str()); // Mind text encoding here!
 		// look up surface that this fenestration belongs to
 		const auto & bsd = mapBsdNameIDmap.find(fsd.m_bsdName);
 		if (bsd == mapBsdNameIDmap.end()) {
-			throw IBK::Exception(IBK::FormatString("Building Surface Detailed name '%1' does not exist, which is "
-												   "referenced in Fenestration Surface Detailed '%2'")
-								 .arg(fsd.m_bsdName).arg(fsd.m_name), FUNC_ID);
+			throw IBK::Exception(IBK::FormatString("BuildingSurface:Detailed name '%1' does not exist, which is "
+												   "referenced in FenestrationSurfaceDetailed '%2'.")
+								 .arg(bsdName.toStdString()).arg(fsdName.toStdString()), FUNC_ID);
 		}
 
 		VICUS::Surface * surf = vp.surfaceByID(bsd->second);
-		Q_ASSERT(surf != nullptr);
-		// we can only import a subsurface, if the surface itself has a valid polygon
-		if (!surf->geometry().isValid()) {
-			qDebug() << "Invalid surface" << surf->m_displayName << ", cannot add subsurfaces!";
-			continue;
-		}
+		IBK_ASSERT(surf != nullptr);
 
 		// now convert the 3D polyline into projected 2D coordinates
 
@@ -512,7 +549,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			const IBKMK::Vector3D & x0 = fsd.m_polyline[i];
 			double x,y;
 			if (!IBKMK::planeCoordinates(surf->geometry().offset(), surf->geometry().localX(), surf->geometry().localY(), x0, x, y, 1e-4)) {
-				qDebug() << "Invalid point of subsurface polygon!";
+				IBK::IBK_Message(IBK::FormatString("Invalid point of sub-surface polygon of FenestrationSurfaceDetailed '%1'.")
+								 .arg(fsdName.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 				subSurfaceVertexes.clear();
 				break;
 			}
@@ -527,39 +565,43 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		subSurf.m_displayName = QString::fromStdString(fsd.m_name);
 		subSurf.m_polygon2D.setVertexes(subSurfaceVertexes);
 		if (!subSurf.m_polygon2D.isValid()) {
-			qDebug() << "Invalid subsurface polygon!";
+			IBK::IBK_Message(IBK::FormatString("Invalid sub-surface polygon of FenestrationSurfaceDetailed '%1'.")
+							 .arg(fsdName.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			continue;
 		}
 		std::vector<VICUS::SubSurface> subs = surf->subSurfaces();
 		subs.push_back(subSurf);
 		surf->setSubSurfaces(subs);
+
+		IBK::IBK_Message( IBK::FormatString("  %1.%2 [#%3]\n")
+						  .arg(surf->m_displayName.toStdString())
+						  .arg(subSurf.m_displayName.toStdString())
+						  .arg(subSurf.m_id),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 
 
 	// *** ShadingBuildingDetailed ***
 
-	//import all building surface detailed -> opaque surfaces
+	IBK::IBK_Message("\nShading geometry (ShadingBuildingDetailed)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::ShadingBuildingDetailed &sh : prj.m_shadingBuildingDetailed) {
 		updateProgress(&dlg, progressTimer);
 
 		VICUS::Surface surf;
 		surf.m_id = surf.uniqueID();
-		surf.m_displayName = QString::fromStdString(sh.m_name);
+		surf.m_displayName = codec->toUnicode(sh.m_name.c_str()); // Mind text encoding here!
 		surf.setPolygon3D( VICUS::Polygon3D( sh.m_polyline ) );
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 		surf.m_color = surf.m_displayColor = QColor("#67759d");
 
 		vp.m_plainGeometry.push_back(surf);
+
+		IBK::IBK_Message( IBK::FormatString("  %1 [#%2]\n")
+						  .arg(surf.m_displayName.toStdString())
+						  .arg(surf.m_id),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 
-
-	// TODO : Windows
-
-//	// finally initialize subsurface colors
-//	for (VICUS::SubSurfaceComponentInstance & sub : vp.m_subSurfaceComponentInstances) {
-//		VICUS::SubSurfaceComponent * subComp = db.m_subSurfaceComponents[sub.m_idSubSurfaceComponent];
-//		subComp
-//	}
 
 
 	// set site properties based on extends of imported geometry
@@ -582,35 +624,38 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 }
 
 
-bool SVImportIDFDialog::doImport() {
-	try {
-		// now transfer data to temporary VICUS project structure.
-		transferData(*m_idfProject);
-	}
-	catch (IBK::Exception & ex) {
-		if (ex.what() == QString("Import canceled."))
-			return false;
-		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("IDF Import"), tr("There were critical errors during the import (invalid IDF file), see application log for details."));
-		return false;
-	}
-	return true;
-}
-
 
 void SVImportIDFDialog::on_pushButtonReplace_clicked() {
-	if (!doImport()) return;
-
 	m_returnCode = ReplaceProject;
 	accept();
 }
 
 
 void SVImportIDFDialog::on_pushButtonMerge_clicked() {
-	if (!doImport()) return;
-
 	m_returnCode = MergeProjects;
 	accept();
+}
+
+
+void SVImportIDFDialog::on_pushButtonImport_clicked() {
+	try {
+		// now transfer data to temporary VICUS project structure.
+		transferData(*m_idfProject);
+		QMessageBox::information(this, tr("IDF Import"),
+								 tr("IDF data imported, successfully. Please review the import log for warnings!"));
+	}
+	catch (IBK::Exception & ex) {
+		if (ex.what() == QString("Import canceled."))
+			return;
+		ex.writeMsgStackToError();
+		QMessageBox::critical(this, tr("IDF Import"), tr("There were critical errors during the import (invalid IDF file), see log for details."));
+		return;
+	}
+
+	// merge project is only active if we have a project
+	m_ui->pushButtonMerge->setEnabled( SVProjectHandler::instance().isValid() );
+	m_ui->pushButtonReplace->setEnabled(true);
+	m_ui->pushButtonImport->setEnabled(false);
 }
 
 
@@ -623,6 +668,7 @@ SVImportMessageHandler::SVImportMessageHandler(QObject *parent, QPlainTextEdit *
 {
 	m_defaultMsgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
 	Q_ASSERT(m_defaultMsgHandler != nullptr);
+	IBK::MessageHandlerRegistry::instance().setMessageHandler(this);
 }
 
 
@@ -636,10 +682,33 @@ void SVImportMessageHandler::msg(const std::string& msg,
 	const char * func_id,
 	int verbose_level)
 {
+	if (msg.empty())
+		return;
+	std::string msg2;
+	if (msg[msg.size()-1] == '\n')
+		msg2 = msg.substr(0,msg.size()-1);
+	else
+		msg2 = msg;
+
+	switch (t) {
+		case IBK::MSG_WARNING :
+			msg2 = "<span style=\"color:#e0c000\">" + msg2 + "</span>";
+			m_plainTextEdit->appendHtml(QString::fromStdString(msg2));
+		break;
+
+		case IBK::MSG_ERROR :
+			msg2 = "<span style=\"color:#d00000\">" + msg2 + "</span>";
+			m_plainTextEdit->appendHtml(QString::fromStdString(msg2));
+		break;
+
+		default:
+			m_plainTextEdit->appendPlainText(QString::fromStdString(msg2));
+	}
+
+
 	IBK::MessageHandler::msg(msg, t, func_id, verbose_level);
 	if (verbose_level > m_requestedConsoleVerbosityLevel)
 		return;
-
-	m_plainTextEdit->appendPlainText(QString::fromStdString(msg).trimmed());
 }
+
 
