@@ -276,21 +276,29 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 QColor SVStyle::randomColor() {
 	double s = 1;
+	double v = 1;
+	bool useS = true;
 #if QT_VERSION >= 0x050a00
-	m_randomColorHueValue += QRandomGenerator().generateDouble()*0.4;
-	s = QRandomGenerator().generateDouble()*4;
-	s = (s*2 + 2)/10;
+	m_randomColorHueValue += QRandomGenerator::global()->generateDouble()*0.2;
+	s = (QRandomGenerator::global()->generateDouble()*3. + 7)/10.; // a value between 0.8 and 1
+	v = (QRandomGenerator::global()->generateDouble()*3. + 7)/10.; // a value between 0.8 and 1
+	useS = (QRandomGenerator::global()->generateDouble() < 0.5);
+
 #else
 	m_randomColorHueValue += double(qrand())/RAND_MAX*0.4;
-	s = std::floor(double(qrand())/RAND_MAX*4);
-	s = (s*2 + 2)/10;
+	s = (qrand()*3./RAND_MAX + 7)/10.;
+	v = (qrand()*1./RAND_MAX + 9)/10.;
 #endif
-	m_randomColorHueValue += 0.05;
+	m_randomColorHueValue += 0.08;
 
-	if (m_randomColorHueValue > 1)
+	while (m_randomColorHueValue > 1)
 		m_randomColorHueValue -= 1;
 
-	QColor col = QColor::fromHsvF(m_randomColorHueValue, s, 1);
+	QColor col;
+	if (useS)
+		col = QColor::fromHsvF(m_randomColorHueValue, s, 1);
+	else
+		col = QColor::fromHsvF(m_randomColorHueValue, 1, v);
 	return col;
 }
 
