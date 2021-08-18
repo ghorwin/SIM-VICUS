@@ -313,6 +313,74 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 	}
 
+	// *** Ground boundary conditions ("ground") ***
+
+	unsigned int bcIDGround = VICUS::INVALID_ID;
+	{
+		VICUS::BoundaryCondition bc;
+		QString bcName = tr("Ground surface");
+		bc.m_displayName.setEncodedString(bcName.toStdString());
+		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
+		bc.m_heatConduction.m_otherZoneType = VICUS::InterfaceHeatConduction::OZ_Constant;
+		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
+		// TODO : how to set the remaining parameters?
+
+
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
+			if (dbBC.second.equal(&bc) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("\nUsing existing boundary condition '%1' [#%2]\n")
+								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				bcIDGround = dbBC.first;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching BC found, add new BC to DB
+			bc.m_color = SVStyle::randomColor();
+			bcIDGround = db.m_boundaryConditions.add(bc);
+			IBK::IBK_Message( IBK::FormatString("\nAdded new boundary condition '%1' with ID #%2\n")
+							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
+
+	// *** Adiabatic boundary conditions ("adiabatic") ***
+
+	unsigned int bcIDAdiabatic= VICUS::INVALID_ID;
+	{
+		VICUS::BoundaryCondition bc;
+		QString bcName = tr("Adiabatic surface");
+		bc.m_displayName.setEncodedString(bcName.toStdString());
+		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::NUM_MT;
+//		bc.m_heatConduction.m_otherZoneType = VICUS::InterfaceHeatConduction::OZ_Constant;
+		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 0);
+		// TODO : how to set the remaining parameters?
+
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
+			if (dbBC.second.equal(&bc) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("\nUsing existing boundary condition '%1' [#%2]\n")
+								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				bcIDAdiabatic = dbBC.first;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching BC found, add new BC to DB
+			bc.m_color = SVStyle::randomColor();
+			bcIDAdiabatic = db.m_boundaryConditions.add(bc);
+			IBK::IBK_Message( IBK::FormatString("\nAdded new boundary condition '%1' with ID #%2\n")
+							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
 	// *** Zone ***
 
 	// a map that relates zone name to index in the VICUS room vector
@@ -441,6 +509,20 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				// store ID of other surface
 				otherSurfaceID = mapBsdNameIDmap[bsd.m_outsideBoundaryConditionObject];
 				IBK_ASSERT(otherSurfaceID != 0);
+			} break;
+
+			case EP::BuildingSurfaceDetailed::OC_Ground : {
+				com.m_idSideABoundaryCondition = bcIDSurface;
+				com.m_idSideBBoundaryCondition = bcIDGround;
+			} break;
+
+			case EP::BuildingSurfaceDetailed::OC_Outdoors : {
+				com.m_idSideABoundaryCondition = bcIDSurface;
+			} break;
+
+			case EP::BuildingSurfaceDetailed::OC_Adiabatic : {
+				com.m_idSideABoundaryCondition = bcIDSurface;
+				com.m_idSideBBoundaryCondition = bcIDAdiabatic;
 			} break;
 
 			case EP::BuildingSurfaceDetailed::NUM_OC : ; // just to make compiler happy
