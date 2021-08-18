@@ -108,6 +108,11 @@ void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer) {
 void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
 
+	m_ui->plainTextEdit->clear();
+	// create message handler instance -> redirect all IBK::IBK_message output to message handler
+	// at end of function, this object get's destroyed and resets the default message handler
+	SVImportMessageHandler msgHandler(this, m_ui->plainTextEdit);
+
 	// TODO : Dirk, error handling concept
 	//        - decide which errors are critical and cause abort of import
 	//        - which errors can just be ignored (resulting in an incomplete import)
@@ -365,6 +370,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		mapBsdNameIDmap[bsd.m_name] = surf.m_id;
 	}
 
+
+	// *** Components and ComponentInstances ***
+
+	// here we store the IDs of connected surfaces, so that we do not create duplicate inside walls
+	std::set<unsigned int> connectedSurfaces;
+
 	// Now the bsd -> surface map is complete.
 	// We now create all components and component instances. For that, we loop again over all bsd.
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
@@ -388,6 +399,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		bool inverted = idfConstruction2VicusConIDs[conIdx].second; // if true, this is the inverted variant of a construction
 
 		// now create boundary conditions
+		unsigned int otherSurfaceID = VICUS::INVALID_ID;
 
 		switch (bsd.m_outsideBoundaryCondition) {
 
@@ -399,6 +411,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 										 .arg(bsdName.toStdString()), FUNC_ID);
 				com.m_idSideABoundaryCondition = bcIDSurface;
 				com.m_idSideBBoundaryCondition = bcIDSurface;
+
+				// store ID of other surface
+				otherSurfaceID = mapBsdNameIDmap[bsd.m_outsideBoundaryConditionObject];
+				IBK_ASSERT(otherSurfaceID != 0);
 			} break;
 		}
 
@@ -407,7 +423,60 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		if (inverted)
 			std::swap(com.m_idSideABoundaryCondition, com.m_idSideBBoundaryCondition);
 
+		unsigned int comId = VICUS::INVALID_ID;
 		// check, if we have such a component already
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::Component> & dbElement : db.m_components) {
+			if (dbElement.second.equal(&com) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("  Using existing component '%1' [%2] \n")
+								  .arg(dbElement.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbElement.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				comId = dbElement.first;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching component found, add new to DB
+			comId = db.m_components.add(com);
+			IBK::IBK_Message( IBK::FormatString("  Added new component '%1' with ID #%2 \n")
+							  .arg(com.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(comId), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+
+		// check that the current surface hasn't been connected, yet
+		unsigned int surfID = mapBsdNameIDmap[bsd.m_name];
+		IBK_ASSERT(surfID != 0);
+		// skip interface generation, if surface has been handled already
+		if (connectedSurfaces.find(surfID) != connectedSurfaces.end()) {
+			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] has been connected already.\n")
+					.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			continue;
+		}
+
+		// now create a new component instance
+		VICUS::ComponentInstance ci;
+		ci.m_id = VICUS::uniqueId(vp.m_componentInstances);
+		ci.m_idSideASurface = surfID;
+		ci.m_idSideBSurface = otherSurfaceID;
+
+		if (inverted)
+			std::swap(ci.m_idSideASurface, ci.m_idSideBSurface);
+
+		ci.m_idComponent = comId;
+
+		if (otherSurfaceID != VICUS::INVALID_ID)
+			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] is connected to surface '%3' [#%4].\n")
+				.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID)
+				.arg(codec->toUnicode(bsd.m_outsideBoundaryConditionObject.c_str()).toStdString()).arg(otherSurfaceID),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		else {
+			// TODO : distinguish between ambient and ground
+			IBK::IBK_Message( IBK::FormatString("  Surface '%1' [#%2] is connected to outside.\n")
+				.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID),
+						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+		vp.m_componentInstances.push_back(ci);
 	}
 
 	// add surfaces windows, doors, ...
@@ -548,16 +617,17 @@ void SVImportIDFDialog::on_pushButtonMerge_clicked() {
 // *** message handler
 
 
-SVImportMessageHandler::SVImportMessageHandler(QObject *parent, SVMessageHandler *defaultMsgHandler,
-											   QPlainTextEdit *plainTextEdit) :
+SVImportMessageHandler::SVImportMessageHandler(QObject *parent, QPlainTextEdit *plainTextEdit) :
 	QObject(parent),
-	m_defaultMsgHandler(defaultMsgHandler),
 	m_plainTextEdit(plainTextEdit)
 {
+	m_defaultMsgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
+	Q_ASSERT(m_defaultMsgHandler != nullptr);
 }
 
 
 SVImportMessageHandler::~SVImportMessageHandler() {
+	IBK::MessageHandlerRegistry::instance().setMessageHandler(m_defaultMsgHandler);
 }
 
 

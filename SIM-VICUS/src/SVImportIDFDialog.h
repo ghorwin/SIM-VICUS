@@ -82,8 +82,7 @@ private:
 class SVImportMessageHandler : public QObject, public IBK::MessageHandler {
 	Q_OBJECT
 public:
-	explicit SVImportMessageHandler(QObject *parent, SVMessageHandler *defaultMsgHandler,
-									QPlainTextEdit *plainTextEdit);
+	explicit SVImportMessageHandler(QObject *parent, QPlainTextEdit *plainTextEdit);
 	virtual ~SVImportMessageHandler();
 
 
