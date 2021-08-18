@@ -32,6 +32,8 @@
 #include <QPlainTextEdit>
 #include <QTextCodec>
 
+#include <QtExt_Conversions.h>
+
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVMessageHandler.h"
@@ -86,8 +88,9 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 		parser.read(IBK::Path(fname.toStdString()));
 
 		IBK::IBK_Message("Parsing IDF...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		*m_idfProject = EP::Project();
 		m_idfProject->readIDF(parser);
-
+		m_ui->pushButtonImport->setEnabled(true);
 
 	}
 	catch (IBK::Exception & ex) {
@@ -107,10 +110,11 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 }
 
 
-void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer) {
-	const unsigned int PROGRESS_TIMER_MSEC_DELAY = 200;
-	if (progressTimer.elapsed() > PROGRESS_TIMER_MSEC_DELAY) {
-		dlg->setValue(dlg->value()+1);
+void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer, int count) {
+	const unsigned int PROGRESS_TIMER_MSEC_DELAY = 50;
+	double elapsed = progressTimer.elapsed();
+	if (elapsed > PROGRESS_TIMER_MSEC_DELAY) {
+		dlg->setValue(count);
 		if (dlg->wasCanceled())
 			throw IBK::Exception("Import canceled.", "[SVImportIDFDialog::transferData]");
 		progressTimer.start();
@@ -146,14 +150,22 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	bl.m_id = bl.uniqueID();
 	bl.m_displayName = tr("Default building level");
 
-	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, 0, this);
+	// count all elements to be imported
+	int elementsToImport =
+			prj.m_bsd.size()*2 +  // we loop twice here
+			prj.m_constructions.size() +
+			prj.m_zones.size() +
+			prj.m_shadingBuildingDetailed.size();
+
+	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, elementsToImport, this);
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setValue(0);
-	dlg.show();
-	qApp->processEvents();
+	dlg.setMinimumDuration(0);
 
 	QElapsedTimer progressTimer;
 	progressTimer.start();
+
+	int count = 0; // progress counter
 
 	IBKMK::Vector3D minCoords(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
 	IBKMK::Vector3D maxCoords(std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest());
@@ -211,6 +223,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			idfMat2VicusMatIDs.push_back(newID);
 		}
 	}
+	IBK_ASSERT(idfMat2VicusMatIDs.size() == prj.m_materials.size());
+
 
 	// For each construction in IDF we store the respective VICUS-construction ID, and also, if the
 	// referenced construction is defined in reverse.
@@ -218,6 +232,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	IBK::IBK_Message("\nImporting constructions...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Construction & m : prj.m_constructions) {
+		updateProgress(&dlg, progressTimer, ++count);
+
 		// generate VICUS::ConstructionType
 		VICUS::Construction con;
 		QString conName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
@@ -243,6 +259,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		} catch (IBK::Exception & ex) {
 			ex.writeMsgStackToError();
+			idfConstruction2VicusConIDs.push_back( std::make_pair(VICUS::INVALID_ID, false) ); // insert dummy ID
 			continue; // skip construction
 		}
 
@@ -283,6 +300,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			idfConstruction2VicusConIDs.push_back( std::make_pair(newID, false) ); // not a reverse construction
 		}
 	}
+	IBK_ASSERT(idfConstruction2VicusConIDs.size() == prj.m_constructions.size());
 
 
 	// *** Inside boundary conditions ("surface") ***
@@ -391,7 +409,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	std::map<std::string, unsigned int>	mapZoneNameToIdx;
 	IBK::IBK_Message("\nImporting zones...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::Zone & z : prj.m_zones) {
-		updateProgress(&dlg, progressTimer);
+		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Room r;
 		r.m_id = r.uniqueID();
@@ -430,7 +448,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// import all building surface detailed -> opaque surfaces
 	IBK::IBK_Message("\nImporting surfaces...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
-		updateProgress(&dlg, progressTimer);
+		updateProgress(&dlg, progressTimer, ++count);
 
 		const auto & zoneIt = mapZoneNameToIdx.find(bsd.m_zoneName);
 		if (zoneIt == mapZoneNameToIdx.end())
@@ -477,7 +495,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// We now create all components and component instances. For that, we loop again over all bsd.
 	IBK::IBK_Message("\nImporting components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
-		updateProgress(&dlg, progressTimer);
+		updateProgress(&dlg, progressTimer, ++count);
 
 		QString bsdName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
@@ -485,7 +503,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// we first create a component with the referenced construction
 		VICUS::Component com;
-		com.m_displayName.setEncodedString("Component-" + bsdName.toStdString());
 		// lookup construction
 		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName);
 		if (conIdx == prj.m_constructions.size()) {
@@ -496,6 +513,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		// lookup matching VICUS::Construction ID
 		com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+		const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
+		IBK_ASSERT(con != nullptr);
+		com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(con->m_displayName).toStdString() + "-component");
 		bool inverted = idfConstruction2VicusConIDs[conIdx].second; // if true, this is the inverted variant of a construction
 
 		// now create boundary conditions
@@ -615,7 +635,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	IBK::IBK_Message("\nImporting windows (sub-surfaces)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
-		updateProgress(&dlg, progressTimer);
 
 		QString fsdName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		QString bsdName = codec->toUnicode(fsd.m_bsdName.c_str()); // Mind text encoding here!
@@ -673,7 +692,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	IBK::IBK_Message("\nShading geometry (ShadingBuildingDetailed)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::ShadingBuildingDetailed &sh : prj.m_shadingBuildingDetailed) {
-		updateProgress(&dlg, progressTimer);
+		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Surface surf;
 		surf.m_id = surf.uniqueID();
