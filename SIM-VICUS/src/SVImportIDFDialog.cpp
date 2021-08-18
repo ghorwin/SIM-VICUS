@@ -46,7 +46,11 @@
 
 
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
-	QDialog(parent),
+	QDialog(parent
+#ifdef Q_OS_LINUX
+			, Qt::Window | Qt::CustomizeWindowHint | Qt::WindowMaximizeButtonHint | Qt::WindowCloseButtonHint /*| Qt::WindowSystemMenuHint*/
+#endif
+			),
 	m_idfProject(new EP::Project),
 	m_ui(new Ui::SVImportIDFDialog)
 {
@@ -145,6 +149,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, 0, this);
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setValue(0);
+	dlg.show();
 	qApp->processEvents();
 
 	QElapsedTimer progressTimer;
@@ -355,8 +360,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		VICUS::BoundaryCondition bc;
 		QString bcName = tr("Adiabatic surface");
 		bc.m_displayName.setEncodedString(bcName.toStdString());
-		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::NUM_MT;
-//		bc.m_heatConduction.m_otherZoneType = VICUS::InterfaceHeatConduction::OZ_Constant;
+		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
 		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 0);
 		// TODO : how to set the remaining parameters?
 
@@ -473,6 +477,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	// We now create all components and component instances. For that, we loop again over all bsd.
 	IBK::IBK_Message("\nImporting components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd) {
+		updateProgress(&dlg, progressTimer);
+
 		QString bsdName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
 		// *** Components ***
@@ -751,6 +757,7 @@ SVImportMessageHandler::SVImportMessageHandler(QObject *parent, QPlainTextEdit *
 	m_defaultMsgHandler = dynamic_cast<SVMessageHandler *>(IBK::MessageHandlerRegistry::instance().messageHandler());
 	Q_ASSERT(m_defaultMsgHandler != nullptr);
 	IBK::MessageHandlerRegistry::instance().setMessageHandler(this);
+	m_plainTextEdit->clear();
 }
 
 
