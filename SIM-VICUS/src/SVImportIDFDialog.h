@@ -64,9 +64,9 @@ private slots:
 
 	void on_pushButtonMerge_clicked();
 
-private:
-	bool doImport();
+	void on_pushButtonImport_clicked();
 
+private:
 	/*! Transfers data from read project to VICUS::Project. */
 	void transferData(const EP::Project & prj);
 
