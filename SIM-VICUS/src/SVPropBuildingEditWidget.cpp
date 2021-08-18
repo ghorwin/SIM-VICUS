@@ -1000,13 +1000,13 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 		if (referencedSurfaces.find(ci.m_sideASurface) != referencedSurfaces.end()) {
 			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 			toolTip += "Component references surface at side A that was already previously referenced somewhere else.";
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
 		}
 		if (referencedSurfaces.find(ci.m_sideBSurface) != referencedSurfaces.end()) {
 			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Component references surface at side B that was already previously referenced somewhere else.";
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
 		}
 		// remember surfaces are "referenced"
 		referencedSurfaces.insert(ci.m_sideASurface);
@@ -1020,7 +1020,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Component has no valid boundary condition at surface side A.";
 
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
 		}
 		else {
 			// check that bc does not reference constant zone
@@ -1029,7 +1029,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 				toolTip += "Boundary condition at surface side A is associated with constant/scheduled zone.";
 
-				m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
+				m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
 			}
 		}
 
@@ -1040,7 +1040,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Component has no valid boundary condition at surface side B.";
 
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
 		}
 		else {
 			// check that bc does not reference constant zone
@@ -1049,7 +1049,7 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 				toolTip += "Boundary condition at surface side B is associated with constant/scheduled zone.";
 
-				m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+				m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
 			}
 		}
 
@@ -1058,8 +1058,8 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Same surface referenced on both sides.";
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setTextColor(Qt::red);
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setTextColor(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
 		}
 
 		item->setToolTip(toolTip);
