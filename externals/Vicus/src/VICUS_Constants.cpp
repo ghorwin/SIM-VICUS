@@ -27,8 +27,8 @@
 
 namespace VICUS {
 
-const char * const VERSION = "0.5";
-const char * const LONG_VERSION = "0.5.0";
+const char * const VERSION = "0.6";
+const char * const LONG_VERSION = "0.6.0";
 
 unsigned int INVALID_ID = 0xFFFFFFFF;
 
