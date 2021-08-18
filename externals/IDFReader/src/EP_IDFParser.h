@@ -7,6 +7,7 @@
 
 #include <IBK_Path.h>
 #include <IBK_Exception.h>
+#include <IBK_messages.h>
 
 #include "EP_Version.h"
 
@@ -42,6 +43,8 @@ public:
 			}
 			objects.push_back(newObject);
 		}
+		IBK::IBK_Message(IBK::FormatString("  %1 %2\n").arg(objects.size(),4).arg(sectionName),
+						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	}
 
 	/*! Contains the data tables read from the IDF file. */
