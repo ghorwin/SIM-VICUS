@@ -1014,42 +1014,52 @@ void SVPropBuildingEditWidget::updateInterlinkedSurfacesPage() {
 
 		// accces DB
 
-		const VICUS::BoundaryCondition * bcLeft = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-		if (bcLeft == nullptr) {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
-			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
-			toolTip += "Component has no valid boundary condition at surface side A.";
-
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
-		}
-		else {
-			// check that bc does not reference constant zone
-			if (bcLeft->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+		if (comp != nullptr) {
+			const VICUS::BoundaryCondition * bcLeft = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+			if (bcLeft == nullptr) {
 				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
-				toolTip += "Boundary condition at surface side A is associated with constant/scheduled zone.";
+				toolTip += "Component has no valid boundary condition at surface side A.";
 
 				m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
 			}
-		}
+			else {
+				// check that bc does not reference constant zone
+				if (bcLeft->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+					item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+					toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+					toolTip += "Boundary condition at surface side A is associated with constant/scheduled zone.";
 
-
-		const VICUS::BoundaryCondition * bcRight = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-		if (bcRight == nullptr) {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
-			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
-			toolTip += "Component has no valid boundary condition at surface side B.";
-
-			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
+					m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
+				}
+			}
 		}
 		else {
-			// check that bc does not reference constant zone
-			if (bcRight->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+			toolTip += "Invalid/unassigned component";
+			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
+		}
+
+
+		if (comp != nullptr) {
+			const VICUS::BoundaryCondition * bcRight = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+			if (bcRight == nullptr) {
 				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
-				toolTip += "Boundary condition at surface side B is associated with constant/scheduled zone.";
+				toolTip += "Component has no valid boundary condition at surface side B.";
 
 				m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
+			}
+			else {
+				// check that bc does not reference constant zone
+				if (bcRight->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
+					item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+					toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
+					toolTip += "Boundary condition at surface side B is associated with constant/scheduled zone.";
+
+					m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
+				}
 			}
 		}
 
