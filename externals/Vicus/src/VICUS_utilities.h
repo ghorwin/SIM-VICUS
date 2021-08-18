@@ -61,7 +61,7 @@ unsigned int elementIndex(const std::vector<T> & vec, const std::string & name) 
 }
 
 
-/*! Function to generate unique ID (const-version). */
+/*! Function to generate unique (lowest not yet used) ID. */
 template <typename T>
 unsigned int uniqueId(const std::vector<T>& vec) {
 	for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
@@ -71,17 +71,17 @@ unsigned int uniqueId(const std::vector<T>& vec) {
 	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 }
 
-/*! Function to generate unique ID (const-version). */
+/*! Function to generate unique (lowest not yet used) ID. */
 template <typename T>
 unsigned int uniqueId(const std::set<T>& vec) {
-	for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
+	for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id) {
 		if (std::find(vec.begin(), vec.end(), id) == vec.end())
 			return id;
 	}
 	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 }
 
-/*! Function to generate unique ID and add this id to the vector. */
+/*! Function to generate unique ID and add this ID to the vector. */
 template <typename T>
 unsigned int uniqueIdAdd(std::vector<T>& vec) {
 	unsigned int id = uniqueId(vec);
