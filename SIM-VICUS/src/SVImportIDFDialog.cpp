@@ -155,6 +155,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			prj.m_bsd.size()*2 +  // we loop twice here
 			prj.m_constructions.size() +
 			prj.m_zones.size() +
+			prj.m_fsd.size() +
 			prj.m_shadingBuildingDetailed.size();
 
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, elementsToImport, this);
@@ -311,7 +312,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		QString bcName = tr("Inside surface");
 		bcSurface.m_displayName.setEncodedString(bcName.toStdString());
 		bcSurface.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
-		VICUS::KeywordList::setParameter(bcSurface.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
+		VICUS::KeywordList::setParameter(bcSurface.m_heatConduction.m_para, "InterfaceHeatConduction::para_t",
+										 VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 6.8);
 		// TODO : how to set the remaining parameters?
 
 
@@ -345,7 +347,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		bc.m_displayName.setEncodedString(bcName.toStdString());
 		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
 		bc.m_heatConduction.m_otherZoneType = VICUS::InterfaceHeatConduction::OZ_Constant;
-		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t", VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 8);
+		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t",
+										 VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 1000);
 		// TODO : how to set the remaining parameters?
 
 
@@ -398,6 +401,40 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// no matching BC found, add new BC to DB
 			bc.m_color = SVStyle::randomColor();
 			bcIDAdiabatic = db.m_boundaryConditions.add(bc);
+			IBK::IBK_Message( IBK::FormatString("Added new boundary condition '%1' with ID #%2\n")
+							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		}
+	}
+
+
+	// *** Outside boundary conditions ("outdoors") ***
+
+	unsigned int bcIDOutside= VICUS::INVALID_ID;
+	{
+		VICUS::BoundaryCondition bc;
+		QString bcName = tr("Outside surface");
+		bc.m_displayName.setEncodedString(bcName.toStdString());
+		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
+		VICUS::KeywordList::setParameter(bc.m_heatConduction.m_para, "InterfaceHeatConduction::para_t",
+										 VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient, 17);
+		// TODO : how to set the remaining parameters?
+
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::BoundaryCondition> & dbBC : db.m_boundaryConditions) {
+			if (dbBC.second.equal(&bc) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("Using existing boundary condition '%1' [#%2]\n")
+								  .arg(dbBC.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbBC.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				bcIDOutside = dbBC.first;
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching BC found, add new BC to DB
+			bc.m_color = SVStyle::randomColor();
+			bcIDOutside = db.m_boundaryConditions.add(bc);
 			IBK::IBK_Message( IBK::FormatString("Added new boundary condition '%1' with ID #%2\n")
 							  .arg(bcName.toStdString()).arg(bcIDSurface), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		}
@@ -544,11 +581,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 			case EP::BuildingSurfaceDetailed::OC_Outdoors : {
 				com.m_idSideABoundaryCondition = bcIDSurface;
+				com.m_idSideBBoundaryCondition = bcIDOutside;
 			} break;
 
 			case EP::BuildingSurfaceDetailed::OC_Adiabatic : {
 				com.m_idSideABoundaryCondition = bcIDSurface;
-				com.m_idSideBBoundaryCondition = bcIDAdiabatic;
+				com.m_idSideBBoundaryCondition = bcIDAdiabatic; // or no BC at all?
 			} break;
 
 			case EP::BuildingSurfaceDetailed::NUM_OC : ; // just to make compiler happy
@@ -635,6 +673,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	IBK::IBK_Message("\nImporting windows (sub-surfaces)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
+		updateProgress(&dlg, progressTimer, ++count);
 
 		QString fsdName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		QString bsdName = codec->toUnicode(fsd.m_bsdName.c_str()); // Mind text encoding here!
