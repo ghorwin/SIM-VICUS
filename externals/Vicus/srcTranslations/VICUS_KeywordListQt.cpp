@@ -169,8 +169,6 @@ KeywordListQt::KeywordListQt() {
 	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
-	tr("Distance between supply pipe and return pipe");
-	tr("Distance between pipes and soil surface");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

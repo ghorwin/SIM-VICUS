@@ -106,7 +106,7 @@ public:
 	unsigned int					m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Optional reference to a flow controller element. */
-	IDType							m_controlElementId = NANDRAD::INVALID_ID;				// XML:A
+	unsigned int					m_controlElementId = NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
 	std::string						m_displayName;											// XML:A
