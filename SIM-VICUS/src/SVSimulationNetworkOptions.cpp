@@ -108,6 +108,18 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 		m_ui->lineEditMaxPipeDiscretization->setValue(m_current->m_para[VICUS::Network::P_MaxPipeDiscretization].value);
 	else
 		m_ui->lineEditMaxPipeDiscretization->setValue(10);
+
+	// ground heat exchange options
+	m_current->m_hasHeatExchangeWithGround = m_ui->groupBoxHeatExchangeWithGround->isChecked();
+	if (!m_current->m_para[VICUS::Network::P_PipeSpacing].empty())
+		m_ui->lineEditPipeSpacing->setValue(m_current->m_para[VICUS::Network::P_PipeSpacing].value);
+	else
+		m_ui->lineEditPipeSpacing->setValue(0.5);
+
+	if (!m_current->m_para[VICUS::Network::P_PipeDepth].empty())
+		m_ui->lineEditPipeDepth->setValue(m_current->m_para[VICUS::Network::P_PipeDepth].value);
+	else
+		m_ui->lineEditPipeDepth->setValue(0.8);
 }
 
 
@@ -142,3 +154,22 @@ void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinishe
 		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_MaxPipeDiscretization,
 											 m_ui->lineEditMaxPipeDiscretization->value());
 }
+
+
+void SVSimulationNetworkOptions::on_lineEditPipeSpacing_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditPipeSpacing->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_PipeSpacing,
+											 m_ui->lineEditPipeSpacing->value());
+}
+
+void SVSimulationNetworkOptions::on_lineEditPipeDepth_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditPipeDepth->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_PipeDepth,
+											 m_ui->lineEditPipeDepth->value());
+}
+
+
