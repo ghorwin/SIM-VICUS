@@ -58,13 +58,6 @@ public:
 		NUM_PM
 	};
 
-	/*! Parameters used to create soil model (FMU) for heat exchange with the ground */
-	enum para_t {
-		P_PipeSpacing,			// Keyword: PipeSpacing		[m]		'Distance between supply pipe and return pipe'
-		P_PipeDepth,			// Keyword: PipeDepth		[m]		'Distance between pipes and soil surface'
-		NUM_P
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
