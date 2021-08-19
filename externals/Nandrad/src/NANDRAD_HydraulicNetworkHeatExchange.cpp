@@ -145,7 +145,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)),
+			 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)),
 			 FUNC_ID);
 	}
 }
