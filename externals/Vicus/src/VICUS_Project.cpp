@@ -2553,16 +2553,18 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		}
 
 		// check if a pipe component with this model type exists already
-		const NANDRAD::HydraulicNetworkComponent *pipeComp = nullptr;
+		NANDRAD::HydraulicNetworkComponent pipeComp;
+		bool pipeComponentExists = false;
 		for (const NANDRAD::HydraulicNetworkComponent &comp: nandradNetwork.m_components){
 			if (comp.m_modelType == pipeModelType){
-				pipeComp = &comp;
+				pipeComp = comp;
+				pipeComponentExists = true;
 				break;
 			}
 		}
 
 		// if there was none, add respective component for pipe
-		if (pipeComp == nullptr){
+		if (!pipeComponentExists){
 			NANDRAD::HydraulicNetworkComponent comp;
 			comp.m_id = VICUS::uniqueIdAdd(compIds);
 			comp.m_modelType = pipeModelType;
@@ -2577,7 +2579,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].value);
 			}
 			nandradNetwork.m_components.push_back(comp);
-			pipeComp = &comp;
+			pipeComp = comp;
 		}
 
 		// check if there is a reference to a pipe from DB
@@ -2599,7 +2601,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement supplyPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
-													pipeComp->m_id,
+													pipeComp.m_id,
 													edge->m_idPipe,
 													edge->length());
 		supplyPipe.m_displayName = "SupplyPipe." + pipeName.str();
@@ -2612,7 +2614,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement returnPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
-													pipeComp->m_id,
+													pipeComp.m_id,
 													edge->m_idPipe,
 													edge->length());
 		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
@@ -2621,7 +2623,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 
 		// Create FMI Input Output Definitions
-		if (edge->m_hasHeatExchangeWithGround){
+		if (vicusNetwork.m_hasHeatExchangeWithGround){
 
 			// create FMI input definitions
 			// --> supply pipe
