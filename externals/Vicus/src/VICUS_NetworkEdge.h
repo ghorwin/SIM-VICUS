@@ -145,15 +145,6 @@ public:
 	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
 	NANDRAD::HydraulicNetworkHeatExchange				m_heatExchange;					// XML:E
 
-	/*! Defines wether this edge has heat exchange with the ground.
-	 * We dont store this information in NANDRAD::HydraulicNetworkHeatExchange, because it is actually not used (yet)
-	 * within the Nandrad Solver. We only use this to create the according FMI inputs/outputs and the
-	 * coupling information for the soil FMUs */
-	bool												m_hasHeatExchangeWithGround = false; // XML:E
-
-
-	/*! Parameters used for coupling with ground heat exchange model */
-	IBK::Parameter										m_para[NUM_P];
 
 	// *** RUNTIME VARIABLES ***
 

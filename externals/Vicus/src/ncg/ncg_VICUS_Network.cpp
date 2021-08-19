@@ -145,6 +145,8 @@ void Network::readXML(const TiXmlElement * element) {
 				m_scaleEdges = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "SelectedForSimulation")
 				m_selectedForSimulation = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "HasHeatExchangeWithGround")
+				m_hasHeatExchangeWithGround = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "Type") {
 				try {
 					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
@@ -237,6 +239,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleEdges", nullptr, std::string(), IBK::val2string<double>(m_scaleEdges));
 	if (m_selectedForSimulation != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "SelectedForSimulation", nullptr, std::string(), IBK::val2string<unsigned int>(m_selectedForSimulation));
+	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
 	return e;
 }
 

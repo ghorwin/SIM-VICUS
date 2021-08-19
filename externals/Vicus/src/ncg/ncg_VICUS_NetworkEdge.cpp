@@ -80,9 +80,7 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "HasHeatExchangeWithGround")
-				m_hasHeatExchangeWithGround = NANDRAD::readPODElement<bool>(c, cName);
-			else if (cName == "Length")
+			if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
@@ -120,7 +118,6 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("idNode2", IBK::val2string<unsigned int>(m_idNode2));
 
 	m_heatExchange.writeXML(e);
-	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }
