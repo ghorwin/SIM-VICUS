@@ -47,6 +47,7 @@
 #include <vector>
 #include <cstring>
 #include <cstdio>
+#include <algorithm>
 
 #ifdef _MSC_VER
 	typedef __int64 int64_t;
