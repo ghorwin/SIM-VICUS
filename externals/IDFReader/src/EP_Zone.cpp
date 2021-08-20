@@ -18,8 +18,13 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 	Type
 	Multiplier
 	*/
-	if(IBK::tolower_string(str[8]) != "autocalculate")
-		m_ceilingHeight = IBK::string2val<double>(str[8]);
+	if(IBK::tolower_string(str[8]) != "autocalculate") {
+		try {
+			m_ceilingHeight = IBK::string2val<double>(str[8]);
+		} catch (...) {
+			m_ceilingHeight = -1; // optional
+		}
+	}
 	else
 		m_ceilingHeight = -1;
 
