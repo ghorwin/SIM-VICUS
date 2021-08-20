@@ -206,28 +206,7 @@ T string2val(const std::string& str) {
 
 
 template <>
-inline double string2val<double>(const std::string& str) {
-	double val;
-	if (str=="1.#QNAN")
-		return std::numeric_limits<double>::quiet_NaN();
-#ifdef IBK_USE_STOD
-	// for 32-bit, use std::stod()
-	size_t pos;
-	try {
-		val = std::stod(str, &pos); // may throw std::out_of_range or std::invalid_argument
-		if (str.find_first_not_of(" \t\n", pos) != std::string::npos)
-			throw std::exception();
-	}
-	catch (...) {
-		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
-	}
-#else
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok)
-		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
-#endif
-	return val;
-}
+double string2val<double>(const std::string& str);
 
 /*! Attempts to extract a numerical value from a string.
 	Returns the def value in case of non valid string.
@@ -251,30 +230,7 @@ T string2valDef(const std::string& str, const T& def) {
 	\endcode
 */
 template <>
-inline double string2valDef<double>(const std::string& str, const double & def) {
-	if (str=="1.#QNAN")
-		return std::numeric_limits<double>::quiet_NaN();
-	double val;
-#ifdef IBK_USE_STOD
-	// for 32-bit, use std::stod()
-	size_t pos;
-	if (std::locale().name() != "C")
-		setlocale(LC_ALL, "C");
-	try {
-		val = std::stod(str, &pos); // may throw std::out_of_range or std::invalid_argument
-		if (str.find_first_not_of(" \t\n", pos) != std::string::npos)
-			throw std::exception();
-	}
-	catch (...) {
-		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
-	}
-#else
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok)
-		return def;
-#endif
-	return val;
-}
+double string2valDef<double>(const std::string& str, const double & def);
 
 
 /*! Converts a string with white-space separated values into a vector.
