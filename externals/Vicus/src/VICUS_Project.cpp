@@ -2629,7 +2629,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			// --> supply pipe
 			NANDRAD::FMIVariableDefinition inputDefSupplyPipeTemp;
 			inputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
-			inputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".Temperature"; // custom name
+			inputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.Temperature").arg(supplyPipe.m_id).str(); // custom name
 			inputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 			inputDefSupplyPipeTemp.m_varName += ".HeatExchangeTemperature";
@@ -2641,7 +2641,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			// --> return pipe
 			NANDRAD::FMIVariableDefinition inputDefReturnPipeTemp = inputDefSupplyPipeTemp;
 			inputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
-			inputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			inputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.Temperature").arg(returnPipe.m_id).str(); // custom name
 			inputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
 			p.m_fmiDescription.m_inputVariables.push_back(inputDefReturnPipeTemp);
 
@@ -2649,7 +2649,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			// --> supply pipe
 			NANDRAD::FMIVariableDefinition outputDefSupplyPipeTemp;
 			outputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
-			outputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".HeatLoss"; // custom name
+			outputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
 			outputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 			outputDefSupplyPipeTemp.m_varName += ".FlowElementHeatLoss";
@@ -2661,7 +2661,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			// --> return pipe
 			NANDRAD::FMIVariableDefinition outputDefReturnPipeTemp = outputDefSupplyPipeTemp;
 			outputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
-			outputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			outputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
 			outputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
 			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipeTemp);
 
@@ -2674,8 +2674,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			NANDRAD::HydraulicNetworkSoilModel soilModel;
 			soilModel.m_id = ++idSoilModel;
 
-			soilModel.m_supplyPipeId = supplyPipe.m_id;
-			soilModel.m_returnPipeId = returnPipe.m_id;
+			soilModel.m_supplyPipeIds.push_back(supplyPipe.m_id);
+			soilModel.m_returnPipeIds.push_back(returnPipe.m_id);
 			if (vicusNetwork.m_para[Network::P_PipeDepth].empty())
 				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no determined pipe depth. This is required for FMI coupling.")
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);

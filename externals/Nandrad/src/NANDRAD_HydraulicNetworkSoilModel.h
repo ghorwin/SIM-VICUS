@@ -16,22 +16,22 @@ public:
 
 	HydraulicNetworkSoilModel();
 
-	IDType				m_id = INVALID_ID;							// XML:A
+	IDType						m_id = INVALID_ID;					// XML:A
 
 	/*! NANDRAD id of supply pipe */
-	IDType				m_supplyPipeId = INVALID_ID;				// XML:A
+	std::vector<unsigned int>	m_supplyPipeIds;					// XML:E
 
 	/*! NANDRAD id of return pipe */
-	IDType				m_returnPipeId = INVALID_ID;				// XML:A
+	std::vector<unsigned int>	m_returnPipeIds;					// XML:E
 
 	/*! Distance between pipes */
-	IBK::Parameter		m_pipeSpacing;								// XML:E
+	IBK::Parameter				m_pipeSpacing;						// XML:E
 
 	/*! Distance below surface */
-	IBK::Parameter		m_pipeDepth;								// XML:E
+	IBK::Parameter				m_pipeDepth;						// XML:E
 
 	/*! Outer diameter of pipe */
-	IBK::Parameter		m_pipeOuterDiameter;						// XML:E
+	IBK::Parameter				m_pipeOuterDiameter;				// XML:E
 };
 
 

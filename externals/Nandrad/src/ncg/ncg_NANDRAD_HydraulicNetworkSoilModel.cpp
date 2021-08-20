@@ -43,10 +43,6 @@ void HydraulicNetworkSoilModel::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "supplyPipeId")
-				m_supplyPipeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "returnPipeId")
-				m_returnPipeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -57,7 +53,11 @@ void HydraulicNetworkSoilModel::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "IBK:Parameter") {
+			if (cName == "SupplyPipeIds")
+				NANDRAD::readVector(c, "SupplyPipeIds", m_supplyPipeIds);
+			else if (cName == "ReturnPipeIds")
+				NANDRAD::readVector(c, "ReturnPipeIds", m_returnPipeIds);
+			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
 				bool success = false;
@@ -94,8 +94,8 @@ TiXmlElement * HydraulicNetworkSoilModel::writeXML(TiXmlElement * parent) const 
 	parent->LinkEndChild(e);
 
 	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
-	e->SetAttribute("supplyPipeId", IBK::val2string<IDType>(m_supplyPipeId));
-	e->SetAttribute("returnPipeId", IBK::val2string<IDType>(m_returnPipeId));
+	NANDRAD::writeVector(e, "SupplyPipeIds", m_supplyPipeIds);
+	NANDRAD::writeVector(e, "ReturnPipeIds", m_returnPipeIds);
 	if (!m_pipeSpacing.name.empty()) {
 		IBK_ASSERT("PipeSpacing" == m_pipeSpacing.name);
 		TiXmlElement::appendIBKParameterElement(e, "PipeSpacing", m_pipeSpacing.IO_unit.name(), m_pipeSpacing.get_value());
