@@ -124,12 +124,10 @@ void BuildingSurfaceDetailed::read(const std::vector<std::string> & str, unsigne
 		vec.m_z = IBK::rounded<6>(IBK::string2val<double>(str[i]));	++i;
 		m_polyline.push_back(vec);
 	}
-
-
 }
 
-void BuildingSurfaceDetailed::calcViewFactorToGround()
-{
+
+void BuildingSurfaceDetailed::calcViewFactorToGround() {
 	//NSG::Polygon poly(m_polyline);
 	//IBKMK::Vector3D normal = poly.calcNormal();
 	//m_viewFactorToGround = (1 - normal.m_z)*0.5;

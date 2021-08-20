@@ -91,6 +91,7 @@ void IDFParser::read(const IBK::Path & fname) {
 							if (entity.m_tokens.size() != 0) {
 								entity.m_comment = lastComment;
 								entity.m_tokens[0] = IBK::tolower_string(entity.m_tokens[0]);
+								IBK::trim(entity.m_tokens.back()); // trim last token
 								m_tables[entity.m_tokens[0]].push_back(entity);
 //								std::cout << "[" << entity.m_tokens[0] << "] " << lastComment << std::endl;
 								lastComment.clear();
@@ -114,6 +115,7 @@ void IDFParser::read(const IBK::Path & fname) {
 					}
 					// , separator?
 					if (*chp == ',') {
+						IBK::trim(entity.m_tokens.back());
 						entity.m_tokens.push_back(std::string());
 					}
 					else {
@@ -138,7 +140,7 @@ void IDFParser::read(const IBK::Path & fname) {
 		unsigned int majorNumber, minorNumber;
 		if (IBK::Version::extractMajorMinorVersionNumber(str, majorNumber, minorNumber)) {
 			if (majorNumber == 8 && minorNumber == 3)
-				m_version = VN_8_3;
+				m_version = (Version)(0x0100*majorNumber + minorNumber);
 		}
 
 		// TODO : what shall we do with invalid version numbers?
