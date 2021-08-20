@@ -2663,7 +2663,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			outputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
 			outputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
 			outputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			p.m_fmiDescription.m_inputVariables.push_back(outputDefReturnPipeTemp);
+			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipeTemp);
 
 
 			// store Nandrad element id in edge so they can be used later on
