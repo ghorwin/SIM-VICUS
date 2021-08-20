@@ -1337,35 +1337,33 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 	const char *const start_digits = p;
 
 	uint64_t i;      // an unsigned int avoids signed overflows (which are bad)
-	if (is_one_of<DecSeparators...>(*p)) {
+	if (is_one_of<DecSeparators...>(*p)) { // number starts with a decimal separator?
 		i = 0;
-		++p;
 	}
-	else {
-		if (*p == '0') { // 0 cannot be followed by an integer
+	else if (*p == '0') { // 0 cannot be followed by an integer
+		++p;
+		if (is_integer(*p)) {
+			return false;
+		}
+		i = 0;
+	} else {
+		if (!(is_integer(*p))) { // must start with an integer
+			return false;
+		}
+		unsigned char digit = (unsigned char)(*p - '0');
+		i = digit;
+		p++;
+		// the is_made_of_eight_digits_fast routine is unlikely to help here because
+		// we rarely see large integer parts like 123456789
+		while (is_integer(*p)) {
+			digit = (unsigned char)(*p - '0');
+			// a multiplication by 10 is cheaper than an arbitrary integer
+			// multiplication
+			i = 10 * i + digit; // might overflow, we will handle the overflow later
 			++p;
-			if (is_integer(*p)) {
-				return false;
-			}
-			i = 0;
-		} else {
-			if (!(is_integer(*p))) { // must start with an integer
-				return false;
-			}
-			unsigned char digit = (unsigned char)(*p - '0');
-			i = digit;
-			p++;
-			// the is_made_of_eight_digits_fast routine is unlikely to help here because
-			// we rarely see large integer parts like 123456789
-			while (is_integer(*p)) {
-				digit = (unsigned char)(*p - '0');
-				// a multiplication by 10 is cheaper than an arbitrary integer
-				// multiplication
-				i = 10 * i + digit; // might overflow, we will handle the overflow later
-				++p;
-			}
 		}
 	}
+
 	int64_t exponent = 0;
 	const char *first_after_period = nullptr;
 	if (is_one_of<DecSeparators...>(*p)) {
