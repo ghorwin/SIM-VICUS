@@ -1330,38 +1330,44 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 	if (found_minus) {
 		++p;
 		negative = true;
-		if (!is_integer(*p)) { // a negative sign must be followed by an integer
+		if (!is_one_of<DecSeparators...>(*p) && !is_integer(*p)) { // a negative sign must be followed by an integer or a decimal separator
 			return false;
 		}
 	}
 	const char *const start_digits = p;
 
 	uint64_t i;      // an unsigned int avoids signed overflows (which are bad)
-	if (*p == '0') { // 0 cannot be followed by an integer
-		++p;
-		if (is_integer(*p)) {
-			return false;
-		}
+	if (is_one_of<DecSeparators...>(*p)) {
 		i = 0;
-	} else {
-		if (!(is_integer(*p))) { // must start with an integer
-			return false;
-		}
-		unsigned char digit = *p - '0';
-		i = digit;
-		p++;
-		// the is_made_of_eight_digits_fast routine is unlikely to help here because
-		// we rarely see large integer parts like 123456789
-		while (is_integer(*p)) {
-			digit = *p - '0';
-			// a multiplication by 10 is cheaper than an arbitrary integer
-			// multiplication
-			i = 10 * i + digit; // might overflow, we will handle the overflow later
+		++p;
+	}
+	else {
+		if (*p == '0') { // 0 cannot be followed by an integer
 			++p;
+			if (is_integer(*p)) {
+				return false;
+			}
+			i = 0;
+		} else {
+			if (!(is_integer(*p))) { // must start with an integer
+				return false;
+			}
+			unsigned char digit = (unsigned char)(*p - '0');
+			i = digit;
+			p++;
+			// the is_made_of_eight_digits_fast routine is unlikely to help here because
+			// we rarely see large integer parts like 123456789
+			while (is_integer(*p)) {
+				digit = (unsigned char)(*p - '0');
+				// a multiplication by 10 is cheaper than an arbitrary integer
+				// multiplication
+				i = 10 * i + digit; // might overflow, we will handle the overflow later
+				++p;
+			}
 		}
 	}
 	int64_t exponent = 0;
-	const char *first_after_period = NULL;
+	const char *first_after_period = nullptr;
 	if (is_one_of<DecSeparators...>(*p)) {
 		++p;
 		if (unlikely(p[0] == '\0')) {
@@ -1371,7 +1377,7 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 		else {
 			first_after_period = p;
 			if (is_integer(*p)) {
-				unsigned char digit = *p - '0';
+				unsigned char digit = (unsigned char)(*p - '0');
 				++p;
 				i = i * 10 + digit; // might overflow + multiplication by 10 is likely
 														// cheaper than arbitrary mult.
@@ -1380,7 +1386,7 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 				return false;
 			}
 			while (is_integer(*p)) {
-				unsigned char digit = *p - '0';
+				unsigned char digit = (unsigned char)(*p - '0');
 				++p;
 				i = i * 10 + digit; // in rare cases, this will overflow, but that's ok
 														// because we have parse_highprecision_float later.
@@ -1404,16 +1410,16 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 		if (!is_integer(*p)) {
 			return false;
 		}
-		unsigned char digit = *p - '0';
+		unsigned char digit = (unsigned char)(*p - '0');
 		exp_number = digit;
 		p++;
 		if (is_integer(*p)) {
-			digit = *p - '0';
+			digit = (unsigned char)(*p - '0');
 			exp_number = 10 * exp_number + digit;
 			++p;
 		}
 		if (is_integer(*p)) {
-			digit = *p - '0';
+			digit = (unsigned char)(*p - '0');
 			exp_number = 10 * exp_number + digit;
 			++p;
 		}
@@ -1422,7 +1428,7 @@ really_inline bool parse_number_base(const char *p, double *outDouble) {
 																			// we refuse to parse this
 				return false;
 			}
-			digit = *p - '0';
+			digit = (unsigned char)(*p - '0');
 			exp_number = 10 * exp_number + digit;
 			++p;
 		}
