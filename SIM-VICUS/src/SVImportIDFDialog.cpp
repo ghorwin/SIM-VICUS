@@ -82,6 +82,10 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 	// at end of function, this object get's destroyed and resets the default message handler
 	SVImportMessageHandler msgHandler(this, m_ui->plainTextEdit);
 
+	// if successful, show dialog
+	m_ui->pushButtonMerge->setEnabled(false);
+	m_ui->pushButtonReplace->setEnabled(false);
+
 	// read IDF file
 	try {
 		EP::IDFParser parser;
@@ -94,13 +98,10 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 
 	}
 	catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
 		QMessageBox::critical((QWidget*)parent(), tr("Import error"), tr("Error parsing IDF file:\n%1").arg(ex.what()));
-		return ImportCancelled;
+		m_ui->pushButtonImport->setEnabled(false);
 	}
-
-	// if successful, show dialog
-	m_ui->pushButtonMerge->setEnabled(false);
-	m_ui->pushButtonReplace->setEnabled(false);
 
 	int res = exec();
 	if (res == QDialog::Rejected)

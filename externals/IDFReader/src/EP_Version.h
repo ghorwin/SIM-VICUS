@@ -4,8 +4,8 @@
 namespace EP {
 
 enum Version {
-	VN_8_3,
-	NUM_VN
+	VN_8_3		= 0x0803,
+	NUM_VN		= 0xFF00
 };
 
 } // namespace EP
