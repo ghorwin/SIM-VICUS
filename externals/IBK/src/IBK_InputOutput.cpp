@@ -47,6 +47,7 @@
 #include <stdexcept>
 #include <iterator>
 #include <algorithm>
+#include <cstring>
 
 #include "IBK_InputOutput.h"
 #include "IBK_StringUtils.h"

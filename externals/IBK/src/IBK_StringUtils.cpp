@@ -68,6 +68,24 @@
 #include "utf8/utf8.h"
 
 
+//#ifdef _WIN32
+
+//  #ifndef _WIN64
+
+//	#define IBK_USE_STOD
+
+//  #else
+
+//	#include "fast_float/fast_float.h"
+
+//  #endif
+
+//#else
+
+#include "fast_float/fast_float.h"
+
+//#endif
+
 
 namespace IBK {
 
@@ -89,8 +107,8 @@ double string2val<double>(const std::string& str) {
 		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
 	}
 #else
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok)
+	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
+	if (answer.ec != std::errc())
 		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
 #endif
 	return val;
@@ -116,8 +134,8 @@ double string2valDef<double>(const std::string& str, const double & def) {
 		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
 	}
 #else
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok)
+	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
+	if (answer.ec != std::errc())
 		return def;
 #endif
 	return val;
@@ -165,8 +183,9 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 #else
 				// try to parse from begin of number to this position
 				double val;
-				bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.data()+numberStart, &val);
-				if (!isok)
+//				bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.data()+numberStart, &val);
+				auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
+				if (answer.ec != std::errc())
 					throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 				vec.push_back(val);
 #endif // IBK_USE_STOD
@@ -195,8 +214,8 @@ void string2valueVector(const std::string & origStr, std::vector<double> & vec) 
 		}
 #else
 		double val;
-		bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.data()+numberStart, &val);
-		if (!isok)
+		auto answer = fast_float::from_chars(str.data()+numberStart, nullptr, val);
+		if (answer.ec != std::errc())
 			throw IBK::Exception(IBK::FormatString("'%1' at character pos #2 is not a valid number.").arg(str.data()+numberStart).arg(numberStart), FUNC_ID);
 		vec.push_back(val);
 #endif // IBK_USE_STOD

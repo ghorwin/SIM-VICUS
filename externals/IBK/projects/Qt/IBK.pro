@@ -121,7 +121,13 @@ HEADERS += \
 	../../src/IBK_Version.h \
 	../../src/IBK_system.h \
 	../../src/IBK_IntPara.h \
-	../../src/fast_double_parser/fast_double_parser.h
+	../../src/fast_float/ascii_number.h \
+	../../src/fast_float/decimal_to_binary.h \
+	../../src/fast_float/fast_float.h \
+	../../src/fast_float/fast_table.h \
+	../../src/fast_float/float_common.h \
+	../../src/fast_float/parse_number.h \
+	../../src/fast_float/simple_decimal_conversion.h
 
 DISTFILES += \
 	../../doc/LICENSE
