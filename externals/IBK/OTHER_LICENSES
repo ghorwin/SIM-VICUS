@@ -102,8 +102,12 @@ under your local laws, the contributors exclude the implied warranties of mercha
 purpose and non-infringement.
 
 ------------------------------------------------------------------------------
-FastDoubleParser
+fast_float number parsing library
 ------------------------------------------------------------------------------
 
-Downloaded from  https://github.com/lemire/fast_double_parser, Apache 2.0 license, see src/fast_double_parser/LICENSE
+Author: Daniel Lemire
+
+Downloaded from  https://github.com/fastfloat/fast_float, Apache 2.0 license, 
+see https://github.com/fastfloat/fast_float/blob/main/LICENSE-APACHE
+
 
