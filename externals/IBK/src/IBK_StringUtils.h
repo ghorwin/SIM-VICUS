@@ -52,23 +52,6 @@
 
 #include "IBK_Exception.h"
 
-#ifdef _WIN32
-
-  #ifndef _WIN64
-
-	#define IBK_USE_STOD
-
-  #else
-
-	#include "fast_double_parser/fast_double_parser.h"
-
-  #endif
-
-#else
-
-	#include "fast_double_parser/fast_double_parser.h"
-
-#endif
 
 #ifdef _MSC_VER
 #define TOLOWER(x) tolower(x)
