@@ -2685,6 +2685,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
 			soilModel.m_pipeSpacing = vicusNetwork.m_para[Network::P_PipeSpacing];
 			soilModel.m_pipeOuterDiameter = IBK::Parameter("PipeOuterDiameter", pipe->m_para[NetworkPipe::P_DiameterOutside].value, "m");
+			soilModel.m_pipeLength = IBK::Parameter("PipeLength", edge->length(), "m");
 
 			nandradNetwork.m_soilModels.push_back(soilModel);
 		}

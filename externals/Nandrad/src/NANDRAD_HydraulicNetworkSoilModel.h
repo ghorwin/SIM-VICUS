@@ -32,6 +32,9 @@ public:
 
 	/*! Outer diameter of pipe */
 	IBK::Parameter				m_pipeOuterDiameter;				// XML:E
+
+	/*! Length of pipe, needed to calculate the heat loss per m */
+	IBK::Parameter				m_pipeLength;						// XML:E
 };
 
 

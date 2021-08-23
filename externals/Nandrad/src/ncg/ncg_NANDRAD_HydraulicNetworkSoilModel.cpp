@@ -70,6 +70,9 @@ void HydraulicNetworkSoilModel::readXML(const TiXmlElement * element) {
 				else if (p.name == "PipeOuterDiameter") {
 					m_pipeOuterDiameter = p; success = true;
 				}
+				else if (p.name == "PipeLength") {
+					m_pipeLength = p; success = true;
+				}
 				if (!success) {
 				}
 				if (!success)
@@ -107,6 +110,10 @@ TiXmlElement * HydraulicNetworkSoilModel::writeXML(TiXmlElement * parent) const 
 	if (!m_pipeOuterDiameter.name.empty()) {
 		IBK_ASSERT("PipeOuterDiameter" == m_pipeOuterDiameter.name);
 		TiXmlElement::appendIBKParameterElement(e, "PipeOuterDiameter", m_pipeOuterDiameter.IO_unit.name(), m_pipeOuterDiameter.get_value());
+	}
+	if (!m_pipeLength.name.empty()) {
+		IBK_ASSERT("PipeLength" == m_pipeLength.name);
+		TiXmlElement::appendIBKParameterElement(e, "PipeLength", m_pipeLength.IO_unit.name(), m_pipeLength.get_value());
 	}
 	return e;
 }
