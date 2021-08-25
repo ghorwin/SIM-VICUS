@@ -640,6 +640,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// a map that relates a bsd-ID name (display name of a surface) to its ID
 	std::map<std::string, unsigned int> mapBsdNameIDmap;
+	std::set<std::string> brokenBSD;
+
+
 	std::map<std::string, unsigned int> mapFsdNameIDmap;
 
 	// import all building surface detailed -> opaque surfaces
@@ -663,7 +666,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		if (!surf.geometry().isValid()) {
 			IBK::IBK_Message(IBK::FormatString("Invalid geometry of surface %1.")
 							 .arg(surf.m_displayName.toStdString()),
-							 IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			brokenBSD.insert(bsd.m_name);
+			continue;
 		}
 
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
@@ -711,12 +716,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// lookup matching VICUS::Construction ID
 		com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
 		const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
-
-		if(con==nullptr){
-			unsigned int hirth = 0;
-			hirth++;
-		}
-
 		IBK_ASSERT(con != nullptr);
 		com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(con->m_displayName).toStdString() + "-component");
 		bool inverted = idfConstruction2VicusConIDs[conIdx].second; // if true, this is the inverted variant of a construction
@@ -736,6 +735,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				com.m_idSideBBoundaryCondition = bcIDSurface;
 
 				// store ID of other surface
+				if ( brokenBSD.find(bsd.m_outsideBoundaryConditionObject) != brokenBSD.end() )
+					continue;
+
 				otherSurfaceID = mapBsdNameIDmap[bsd.m_outsideBoundaryConditionObject];
 				IBK_ASSERT(otherSurfaceID != 0);
 			} break;
@@ -787,6 +789,17 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// check that the current surface hasn't been connected, yet
 		unsigned int surfID = mapBsdNameIDmap[bsd.m_name];
+
+		if ( surfID == 0 ) {
+			// check if bsd is broken
+			if (brokenBSD.find(bsd.m_name) != brokenBSD.end() ) {
+				IBK::IBK_Message( IBK::FormatString("  skipped '%1' [#%2] (has been broken)\n")
+						.arg(codec->toUnicode(bsd.m_name.c_str()).toStdString()).arg(surfID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+				continue;
+			}
+		}
+
 		IBK_ASSERT(surfID != 0);
 		// skip interface generation, if surface has been handled already
 		if (connectedSurfaces.find(surfID) != connectedSurfaces.end()) {
