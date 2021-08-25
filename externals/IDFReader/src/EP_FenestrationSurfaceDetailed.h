@@ -4,7 +4,12 @@
 #include <IBKMK_Vector3D.h>
 
 namespace EP {
-
+/*!
+	IDF Fenestration Surface Detailed Class
+	CHECK changes from EP version 8.9 to 9.0.
+		Shading Control name has been excluded from this class.
+		No changes since 9.0 to 9.5.
+*/
 class FenestrationSurfaceDetailed
 {
 public:

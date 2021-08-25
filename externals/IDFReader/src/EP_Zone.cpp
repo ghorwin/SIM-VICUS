@@ -11,6 +11,7 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 //		return;
 
 
+
 	m_name = str[1];
 	/* ignore elements:
 	Direction of North

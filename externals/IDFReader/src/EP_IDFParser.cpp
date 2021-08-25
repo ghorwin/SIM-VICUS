@@ -139,8 +139,10 @@ void IDFParser::read(const IBK::Path & fname) {
 		const std::string & str = versionData[0].m_tokens[1];
 		unsigned int majorNumber, minorNumber;
 		if (IBK::Version::extractMajorMinorVersionNumber(str, majorNumber, minorNumber)) {
-			if (majorNumber == 8 && minorNumber == 3)
+			if(majorNumber >= 8 && (minorNumber<10 && minorNumber>=0))
+			//if (majorNumber == 8 && minorNumber == 3)
 				m_version = (Version)(0x0100*majorNumber + minorNumber);
+
 		}
 
 		// TODO : what shall we do with invalid version numbers?
