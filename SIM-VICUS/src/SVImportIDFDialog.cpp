@@ -444,14 +444,6 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 									  .arg("'"+conName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 					idfWindow2VicusWindowIDs.back() = std::make_pair(newID, false) ; // not a reverse construction
 				}
-
-				int a=1;
-				if(window.isValid()){
-					++a;
-				}
-				else
-					a=0;
-
 			}
 			break;
 			case NUM_MT:
