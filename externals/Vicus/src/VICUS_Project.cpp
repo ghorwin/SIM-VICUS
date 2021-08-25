@@ -739,7 +739,12 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	generateNetworkProjectData(p);
+	try {
+		generateNetworkProjectData(p);
+	} catch (IBK::Exception &ex) {
+		ex.writeMsgStackToError();
+	}
+
 
 
 	// *** outputs ***
