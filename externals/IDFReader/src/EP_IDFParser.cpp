@@ -138,14 +138,10 @@ void IDFParser::read(const IBK::Path & fname) {
 
 		const std::string & str = versionData[0].m_tokens[1];
 		unsigned int majorNumber, minorNumber;
-		if (IBK::Version::extractMajorMinorVersionNumber(str, majorNumber, minorNumber)) {
-			if(majorNumber >= 8 && (minorNumber<10 && minorNumber>=0))
-			//if (majorNumber == 8 && minorNumber == 3)
-				m_version = (Version)(0x0100*majorNumber + minorNumber);
-
-		}
-
-		// TODO : what shall we do with invalid version numbers?
+		if (IBK::Version::extractMajorMinorVersionNumber(str, majorNumber, minorNumber))
+			m_version = (Version)(0x0100*majorNumber + minorNumber);
+		else
+			m_version = NUM_VN; // this should be an error, right? Or should we set some meaningful default version?
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Error reading '%1'.").arg(fname), FUNC_ID);
