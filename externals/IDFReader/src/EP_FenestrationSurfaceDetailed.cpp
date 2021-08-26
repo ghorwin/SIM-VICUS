@@ -6,7 +6,7 @@
 
 namespace EP {
 
-void FenestrationSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int /*version*/)
+void FenestrationSurfaceDetailed::read(const std::vector<std::string> & str, unsigned int version)
 {
 
 	//for version 8.3
@@ -37,13 +37,17 @@ void FenestrationSurfaceDetailed::read(const std::vector<std::string> & str, uns
 	else
 		m_viewFactorToGround = IBK::string2val<double>(str[6]);
 
-	m_shadingControlName = str[7];
-	m_frameAndDividerName = str[8];
+	unsigned int j=1;
+	if(version < EP::Version::VN_9_0){
+		m_shadingControlName = str[7];
+		j=0;
+	}
+	m_frameAndDividerName = str[8-j];
 
 	//multiplier ignored
 	//number of vertex ignored
 
-	for (size_t i=11; i<str.size(); ) {
+	for (size_t i=11-j; i<str.size(); ) {
 		IBKMK::Vector3D vec;
 		vec.m_x = IBK::string2val<double>(str[i]);	++i;
 		vec.m_y = IBK::string2val<double>(str[i]);	++i;

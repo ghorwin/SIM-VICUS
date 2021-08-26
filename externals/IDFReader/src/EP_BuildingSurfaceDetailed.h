@@ -6,6 +6,10 @@
 
 namespace EP {
 
+/*!
+	IDF Building Surface Detailed Class
+	CHECK no changes between EP version 8.3 to 9.5.
+*/
 
 class BuildingSurfaceDetailed
 {

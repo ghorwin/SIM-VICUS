@@ -76,5 +76,6 @@
         <file>gfx/actions/move.png</file>
         <file>gfx/actions/3d-modeling.png</file>
         <file>gfx/actions/filter.png</file>
+        <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,10 @@
 namespace EP {
 
 
+/*!
+	IDF Window Material Simple Galzing System Class
+	CHECK no changes between EP version 8.3 to 9.5.
+*/
 class WindowMaterial
 {
 public:

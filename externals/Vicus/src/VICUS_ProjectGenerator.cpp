@@ -877,7 +877,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 }
 
 void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int> &usedModelIds,  QStringList &errorStack) {
-//	FUNCID("VentilationModelGenerator::generate");
+//	FUNCID(VentilationModelGenerator::generate);
 
 	// check if we have a zone template with id to infiltration or ventilation
 
