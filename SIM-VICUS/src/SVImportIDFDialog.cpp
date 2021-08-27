@@ -58,10 +58,12 @@ SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	QList<QByteArray> codecs = QTextCodec::availableCodecs();
-	std::sort(codecs.begin(), codecs.end());
-	for (const QByteArray & b : codecs)
-		m_ui->comboBoxEncoding->addItem(QString(b));
+//	QList<QByteArray> codecs = QTextCodec::availableCodecs();
+//	std::sort(codecs.begin(), codecs.end());
+//	for (const QByteArray & b : codecs)
+	m_ui->comboBoxEncoding->addItem("UTF-8");
+	m_ui->comboBoxEncoding->addItem("ISO 8859-15");
+
 
 	m_ui->comboBoxEncoding->setCurrentText(QTextCodec::codecForLocale()->name());
 
@@ -363,6 +365,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		} catch (IBK::Exception & ex) {
 			ex.writeMsgStackToError();
 			idfConstruction2VicusConIDs.push_back( std::make_pair(VICUS::INVALID_ID, false) ); // insert dummy ID
+			idfWindow2VicusWindowIDs.push_back( std::make_pair(VICUS::INVALID_ID, false) ); // insert dummy ID
 			continue; // skip construction
 		}
 		//now we have parsed all layers of current construction
