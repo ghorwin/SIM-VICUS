@@ -130,6 +130,7 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
+#if !defined(Q_OS_WIN)
 	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
@@ -143,6 +144,7 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->horizontalHeader()->setStyleSheet(headerStyleSheet);
 	QString viewStyleSheet = QString("QTableView {font-size:%1pt;}").arg(pointSize);
 	v->setStyleSheet(viewStyleSheet);
+#endif
 }
 
 
@@ -153,6 +155,7 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(false);
 //	v->sortByColumn(0, Qt::AscendingOrder);
+#if !defined(Q_OS_WIN)
 	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);
@@ -163,6 +166,7 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->header()->setStyleSheet(headerStyleSheet);
 	QString viewStyleSheet = QString("QTreeView {font-size:%1pt;}").arg(pointSize);
 	v->setStyleSheet(viewStyleSheet);
+#endif
 }
 
 void SVStyle::formatWelcomePage(QString & htmlCode) {
