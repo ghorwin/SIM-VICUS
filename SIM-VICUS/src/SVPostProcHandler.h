@@ -28,7 +28,8 @@
 
 #ifdef _WIN32
 	#undef UNICODE
-	#include <windows.h>
+	#define NOMINMAX
+	#include <Windows.h>
 #endif
 
 #include <string>

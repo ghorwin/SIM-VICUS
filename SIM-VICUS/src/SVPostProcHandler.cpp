@@ -70,7 +70,7 @@ HWND find_main_window(unsigned long process_id) {
 
 
 SVPostProcHandler::SVPostProcHandler() :
-	m_postProcHandle(0)
+	m_postProcHandle(nullptr)
 {
 
 }
@@ -78,11 +78,11 @@ SVPostProcHandler::SVPostProcHandler() :
 
 int SVPostProcHandler::reopenIfActive() {
 #if _WIN32
-	if (m_postProcHandle != 0) {
+	if (m_postProcHandle != nullptr) {
 		DWORD exitCode;
 		BOOL res = GetExitCodeProcess(m_postProcHandle, &exitCode);
 		if (!res) {
-			m_postProcHandle = 0;
+			m_postProcHandle = nullptr;
 			return 1;
 		}
 		if (exitCode == STILL_ACTIVE) {
@@ -116,7 +116,7 @@ int SVPostProcHandler::reopenIfActive() {
 
 
 bool SVPostProcHandler::spawnPostProc(const std::string & sessionFile) {
-	FUNCID(SVPostProcHandler::spawnPostProc);
+	FUNCID(SVPostProcHandler::spawnPostProc); (void)FUNC_ID;
 
 #if _WIN32
 	IBK::FormatString cmdLine;
@@ -161,6 +161,7 @@ bool SVPostProcHandler::spawnPostProc(const std::string & sessionFile) {
 	}
 	// store process handle for later
 	m_postProcHandle = pi.hProcess;
+	return true;
 #else
 	// spawn post-proc process
 	QProcess p;
