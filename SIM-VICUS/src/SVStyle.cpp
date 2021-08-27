@@ -130,7 +130,12 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
-#if !defined(Q_OS_WIN)
+#ifdef Q_OS_WIN
+	// Since we have an applition-wide style sheet, we must specify our customizations also via stylesheet.
+	// Since we only tweak font sizes, this works for both bright and dark style.
+	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
+	v->horizontalHeader()->setStyleSheet(headerStyleSheet);
+#else
 	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
 	f.setPointSize(pointSize);

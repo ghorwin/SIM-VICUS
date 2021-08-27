@@ -140,12 +140,12 @@ QVariant SVDBConstructionTableModel::headerData(int section, Qt::Orientation ori
 				default: ;
 			}
 		} break;
-		case Qt::FontRole : {
-			QFont f;
-			f.setBold(true);
-			f.setPointSizeF(f.pointSizeF()*0.8);
-			return f;
-		}
+//		case Qt::FontRole : {
+//			QFont f;
+//			f.setBold(true);
+//			f.setPointSizeF(f.pointSizeF()*0.8);
+//			return f;
+//		}
 	} // switch
 	return QVariant();
 }

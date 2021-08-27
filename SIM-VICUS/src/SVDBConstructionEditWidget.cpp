@@ -55,35 +55,20 @@ SVDBConstructionEditWidget::SVDBConstructionEditWidget(QWidget * parent) :
 	m_ui->lineEditName->setDialog3Caption(tr("Construction identification name"));
 
 	m_ui->tableWidget->setColumnCount(5);
-
-	/// TODO : move style adjustment to SVStyle class
-	QFont f = m_ui->tableWidget->font();
-	f.setPointSizeF( f.pointSize()*0.8);
-	m_ui->tableWidget->setFont(f);
-
-	f = m_ui->tableWidget->horizontalHeader()->font();
-	f.setBold(true);
-	f.setPointSizeF( f.pointSize()*0.8);
-	QFontMetrics fm(f);
-#if defined(Q_OS_MAC)
-	int height = fm.lineSpacing()+ 6;
-#else
-	int height = fm.lineSpacing()+ 3;
-#endif
-	m_ui->tableWidget->horizontalHeader()->setFont(f);
-	m_ui->tableWidget->verticalHeader()->setDefaultSectionSize(height);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidget);
+	m_ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectItems);
+	m_ui->tableWidget->setSortingEnabled(false);
 
 	QStringList headerLabels;
 	headerLabels << tr("Material") << tr("Width [cm]") << tr("rho [kg/m3]") << tr("cT [J/kgK]") << tr("lambda [W/mK]");
 	m_ui->tableWidget->setHorizontalHeaderLabels(headerLabels);
 
-
 	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 	for (int i=1; i<4; ++i) {
-		m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(i, QHeaderView::Fixed);
-		m_ui->tableWidget->horizontalHeader()->resizeSection(i, fm.boundingRect(headerLabels[i]).width()+ 8);
+		m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+//		m_ui->tableWidget->horizontalHeader()->resizeSection(i, fm.boundingRect(headerLabels[i]).width()+ 8);
 	}
-	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
+//	m_ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Fixed);
 
 	m_ui->tableWidget->horizontalHeader()->resizeSection(1, 80);
 
