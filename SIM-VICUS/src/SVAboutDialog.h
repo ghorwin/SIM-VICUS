@@ -38,10 +38,11 @@ class SVAboutDialog : public QDialog {
 
 public:
 	explicit SVAboutDialog(QWidget *parent = nullptr);
-	~SVAboutDialog();
+	~SVAboutDialog() override;
 
 private:
 	Ui::SVAboutDialog *m_ui;
+
 };
 
 #endif // SVAboutDialogH
