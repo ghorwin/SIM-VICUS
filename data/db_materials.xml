@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Materials>
 	<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete"  color="#a29f2f">
-		<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+		<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
 		<Category>Cementitious</Category>
@@ -27,22 +27,16 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
-	<Material id="34" displayName="DE: Vollziegel Joens |EN: Brick Joens" color="#c4a000">
-		<Category>Bricks</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">1790</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">868</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.87</IBK:Parameter>
-	</Material>
-	<Material id="10003" displayName="de: [SimQuality] Stein |en: [SimQuality] Stone" color="#8f5902">
-		<Notes>en:Used in SimQuality test cases (TF8).|de:Verwendung in SimQuality (TF8).</Notes>
+	<Material id="10003" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#A2B84B">
+		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
-		<Category>NaturalStones</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
-	<Material id="10004" displayName="de:[SimQuality] Dämmung2 |en:[SimQuality] Insulation2" color="#f3dba0">
+	<Material id="10004" displayName="de:[SimQuality] Dämmung 2 |en:[SimQuality] Insulation 2" color="#f3dba0">
 		<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
 		<Manufacturer>generic</Manufacturer>
 		<DataSource>SimQuality</DataSource>
@@ -122,14 +116,5 @@
 		<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
-	</Material>
-	<Material id="10013" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#A2B84B">
-		<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
-		<Manufacturer>generic</Manufacturer>
-		<DataSource>SimQuality</DataSource>
-		<Category>Insulations</Category>
-		<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
-		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
-		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 	</Material>
 </Materials>
