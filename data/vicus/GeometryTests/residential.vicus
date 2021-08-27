@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.2">
+<VicusProject fileVersion="0.6">
 	<ProjectInfo>
 		<Created>Do. Nov. 26 15:15:10 2020</Created>
-		<LastEdited>Do Apr 22 13:25:01 2021</LastEdited>
+		<LastEdited>Fr Aug 27 20:42:37 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
-		<Placeholder name="Database">B:/git/SIM-VICUS/data</Placeholder>
+		<Placeholder name="Database">H:/git/SIM-VICUS/data</Placeholder>
 	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
@@ -49,12 +49,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-8.74199 -20.9839 15.5045</CameraTranslation>
+			<CameraTranslation>-17.2267 -15.6421 14.6063</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.871133</Wp>
-				<X>0.474869</X>
-				<Y>-0.0596791</Y>
-				<Z>-0.109635</Z>
+				<Wp>0.808868</Wp>
+				<X>0.464195</X>
+				<Y>-0.179273</Y>
+				<Z>-0.313164</Z>
 			</RotationMatrix>
 			<FarDistance>1000</FarDistance>
 		</ViewSettings>
@@ -68,110 +68,140 @@
 							<Room id="0" displayName="WE0.0_Bath">
 								<Surfaces>
 									<Surface id="6" displayName="WE0.0_Roof_1">
-										<Polygon3D type="Rectangle">1.8 0 2.2, 1.8 3.1 2.2, 0 3.1 2.2, 0 0 2.2</Polygon3D>
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>1.8 0 2.2, 1.8 3.1 2.2, 0 3.1 2.2, 0 0 2.2</Polygon3D>
 									</Surface>
 									<Surface id="2" displayName="WE0.0_Wall_1">
-										<Polygon3D type="Rectangle">0 0 0, 0 0 2.2, 0 3.1 2.2, 0 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 0 0, 0 0 2.2, 0 3.1 2.2, 0 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="3" displayName="WE0.0_Wall_2">
-										<Polygon3D type="Rectangle">0 3.1 0, 0 3.1 2.2, 1.8 3.1 2.2, 1.8 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 3.1 0, 0 3.1 2.2, 1.8 3.1 2.2, 1.8 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="4" displayName="WE0.0_Wall_3">
-										<Polygon3D type="Rectangle">1.8 3.1 0, 1.8 3.1 2.2, 1.8 0 2.2, 1.8 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.8 3.1 0, 1.8 3.1 2.2, 1.8 0 2.2, 1.8 0 0</Polygon3D>
 									</Surface>
 									<Surface id="5" displayName="WE0.0_Wall_4">
-										<Polygon3D type="Rectangle">1.8 0 0, 1.8 0 2.2, 0 0 2.2, 0 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.8 0 0, 1.8 0 2.2, 0 0 2.2, 0 0 0</Polygon3D>
 									</Surface>
 									<Surface id="1" displayName="WE0.0_Floor_1">
-										<Polygon3D type="Rectangle">0 0 0, 0 3.1 0, 1.8 3.1 0, 1.8 0 0</Polygon3D>
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 0 0, 0 3.1 0, 1.8 3.1 0, 1.8 0 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="1" displayName="WE0.0_Kitchen">
 								<Surfaces>
 									<Surface id="12" displayName="WE0.0_Roof_2">
-										<Polygon3D type="Rectangle">1.8 3.25 2.2, 1.8 6.25 2.2, 0 6.25 2.2, 0 3.25 2.2</Polygon3D>
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>1.8 3.25 2.2, 1.8 6.25 2.2, 0 6.25 2.2, 0 3.25 2.2</Polygon3D>
 									</Surface>
 									<Surface id="8" displayName="WE0.0_Wall_5">
-										<Polygon3D type="Rectangle">0 3.25 0, 0 3.25 2.2, 0 6.25 2.2, 0 6.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 3.25 0, 0 3.25 2.2, 0 6.25 2.2, 0 6.25 0</Polygon3D>
 									</Surface>
 									<Surface id="9" displayName="WE0.0_Wall_6">
-										<Polygon3D type="Rectangle">0 6.25 0, 0 6.25 2.2, 1.8 6.25 2.2, 1.8 6.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 6.25 0, 0 6.25 2.2, 1.8 6.25 2.2, 1.8 6.25 0</Polygon3D>
 									</Surface>
 									<Surface id="10" displayName="WE0.0_Wall_7">
-										<Polygon3D type="Rectangle">1.8 6.25 0, 1.8 6.25 2.2, 1.8 3.25 2.2, 1.8 3.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.8 6.25 0, 1.8 6.25 2.2, 1.8 3.25 2.2, 1.8 3.25 0</Polygon3D>
 									</Surface>
 									<Surface id="11" displayName="WE0.0_Wall_8">
-										<Polygon3D type="Rectangle">1.8 3.25 0, 1.8 3.25 2.2, 0 3.25 2.2, 0 3.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.8 3.25 0, 1.8 3.25 2.2, 0 3.25 2.2, 0 3.25 0</Polygon3D>
 									</Surface>
 									<Surface id="7" displayName="WE0.0_Floor_2">
-										<Polygon3D type="Rectangle">0 3.25 0, 0 6.25 0, 1.8 6.25 0, 1.8 3.25 0</Polygon3D>
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 3.25 0, 0 6.25 0, 1.8 6.25 0, 1.8 3.25 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="2" displayName="WE0.0_Living">
 								<Surfaces>
 									<Surface id="18" displayName="WE0.0_Roof_3">
-										<Polygon3D type="Rectangle">6.1 3.25 2.2, 6.1 6.25 2.2, 1.95 6.25 2.2, 1.95 3.25 2.2</Polygon3D>
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>6.1 3.25 2.2, 6.1 6.25 2.2, 1.95 6.25 2.2, 1.95 3.25 2.2</Polygon3D>
 									</Surface>
 									<Surface id="14" displayName="WE0.0_Wall_9">
-										<Polygon3D type="Rectangle">1.95 3.25 0, 1.95 3.25 2.2, 1.95 6.25 2.2, 1.95 6.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.95 3.25 0, 1.95 3.25 2.2, 1.95 6.25 2.2, 1.95 6.25 0</Polygon3D>
 									</Surface>
 									<Surface id="15" displayName="WE0.0_Wall_10">
-										<Polygon3D type="Rectangle">1.95 6.25 0, 1.95 6.25 2.2, 6.1 6.25 2.2, 6.1 6.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.95 6.25 0, 1.95 6.25 2.2, 6.1 6.25 2.2, 6.1 6.25 0</Polygon3D>
 									</Surface>
 									<Surface id="16" displayName="WE0.0_Wall_11">
-										<Polygon3D type="Rectangle">6.1 6.25 0, 6.1 6.25 2.2, 6.1 3.25 2.2, 6.1 3.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.1 6.25 0, 6.1 6.25 2.2, 6.1 3.25 2.2, 6.1 3.25 0</Polygon3D>
 									</Surface>
 									<Surface id="17" displayName="WE0.0_Wall_12">
-										<Polygon3D type="Rectangle">6.1 3.25 0, 6.1 3.25 2.2, 1.95 3.25 2.2, 1.95 3.25 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.1 3.25 0, 6.1 3.25 2.2, 1.95 3.25 2.2, 1.95 3.25 0</Polygon3D>
 									</Surface>
 									<Surface id="13" displayName="WE0.0_Floor_3">
-										<Polygon3D type="Rectangle">1.95 3.25 0, 1.95 6.25 0, 6.1 6.25 0, 6.1 3.25 0</Polygon3D>
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>1.95 3.25 0, 1.95 6.25 0, 6.1 6.25 0, 6.1 3.25 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="3" displayName="WE0.0_Corridor">
 								<Surfaces>
 									<Surface id="24" displayName="WE0.0_Roof_4">
-										<Polygon3D type="Rectangle">3.15 0 2.2, 3.15 3.1 2.2, 1.95 3.1 2.2, 1.95 0 2.2</Polygon3D>
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>3.15 0 2.2, 3.15 3.1 2.2, 1.95 3.1 2.2, 1.95 0 2.2</Polygon3D>
 									</Surface>
 									<Surface id="20" displayName="WE0.0_Wall_13">
-										<Polygon3D type="Rectangle">1.95 0 0, 1.95 0 2.2, 1.95 3.1 2.2, 1.95 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.95 0 0, 1.95 0 2.2, 1.95 3.1 2.2, 1.95 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="21" displayName="WE0.0_Wall_14">
-										<Polygon3D type="Rectangle">1.95 3.1 0, 1.95 3.1 2.2, 3.15 3.1 2.2, 3.15 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>1.95 3.1 0, 1.95 3.1 2.2, 3.15 3.1 2.2, 3.15 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="22" displayName="WE0.0_Wall_15">
-										<Polygon3D type="Rectangle">3.15 3.1 0, 3.15 3.1 2.2, 3.15 0 2.2, 3.15 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.15 3.1 0, 3.15 3.1 2.2, 3.15 0 2.2, 3.15 0 0</Polygon3D>
 									</Surface>
 									<Surface id="23" displayName="WE0.0_Wall_16">
-										<Polygon3D type="Rectangle">3.15 0 0, 3.15 0 2.2, 1.95 0 2.2, 1.95 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.15 0 0, 3.15 0 2.2, 1.95 0 2.2, 1.95 0 0</Polygon3D>
 									</Surface>
 									<Surface id="19" displayName="WE0.0_Floor_4">
-										<Polygon3D type="Rectangle">1.95 0 0, 1.95 3.1 0, 3.15 3.1 0, 3.15 0 0</Polygon3D>
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>1.95 0 0, 1.95 3.1 0, 3.15 3.1 0, 3.15 0 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="4" displayName="WE0.0_Sleeping">
 								<Surfaces>
 									<Surface id="30" displayName="WE0.0_Roof_5">
-										<Polygon3D type="Rectangle">6.1 0 2.2, 6.1 3.1 2.2, 3.3 3.1 2.2, 3.3 0 2.2</Polygon3D>
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>6.1 0 2.2, 6.1 3.1 2.2, 3.3 3.1 2.2, 3.3 0 2.2</Polygon3D>
 									</Surface>
 									<Surface id="26" displayName="WE0.0_Wall_17">
-										<Polygon3D type="Rectangle">3.3 0 0, 3.3 0 2.2, 3.3 3.1 2.2, 3.3 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.3 0 0, 3.3 0 2.2, 3.3 3.1 2.2, 3.3 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="27" displayName="WE0.0_Wall_18">
-										<Polygon3D type="Rectangle">3.3 3.1 0, 3.3 3.1 2.2, 6.1 3.1 2.2, 6.1 3.1 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.3 3.1 0, 3.3 3.1 2.2, 6.1 3.1 2.2, 6.1 3.1 0</Polygon3D>
 									</Surface>
 									<Surface id="28" displayName="WE0.0_Wall_19">
-										<Polygon3D type="Rectangle">6.1 3.1 0, 6.1 3.1 2.2, 6.1 0 2.2, 6.1 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.1 3.1 0, 6.1 3.1 2.2, 6.1 0 2.2, 6.1 0 0</Polygon3D>
 									</Surface>
 									<Surface id="29" displayName="WE0.0_Wall_20">
-										<Polygon3D type="Rectangle">6.1 0 0, 6.1 0 2.2, 3.3 0 2.2, 3.3 0 0</Polygon3D>
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.1 0 0, 6.1 0 2.2, 3.3 0 2.2, 3.3 0 0</Polygon3D>
 									</Surface>
 									<Surface id="25" displayName="WE0.0_Floor_5">
-										<Polygon3D type="Rectangle">3.3 0 0, 3.3 3.1 0, 6.1 3.1 0, 6.1 0 0</Polygon3D>
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>3.3 0 0, 3.3 3.1 0, 6.1 3.1 0, 6.1 0 0</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -188,27 +218,36 @@
 		</ComponentInstances>
 		<PlainGeometry>
 			<Surface id="46" displayName="New surface [2]">
-				<Polygon3D type="Polygon">12 2 0, 5 31 0, 2 25 0, 8 2 0</Polygon3D>
+				<Polygon3D>12 2 0, 5 31 0, 2 25 0, 8 2 0</Polygon3D>
 			</Surface>
 			<Surface id="47" displayName="New surface [3]">
-				<Polygon3D type="Polygon">-9 17 0, -21 16 0, -20 -1 0, -13 -4 0, -2 -6 0</Polygon3D>
+				<Polygon3D>-9 17 0, -21 16 0, -20 -1 0, -13 -4 0, -2 -6 0</Polygon3D>
 			</Surface>
 			<Surface id="48" displayName="New surface [4]">
-				<Polygon3D type="Rectangle">37 -8 0, 37 -5 0, 35 -5 0, 35 -8 0</Polygon3D>
+				<Polygon3D>37 -8 0, 37 -5 0, 35 -5 0, 35 -8 0</Polygon3D>
 			</Surface>
 			<Surface id="49" displayName="New surface [5]">
-				<Polygon3D type="Polygon">5 -7 1, 3 -7 -0.999999, 6 -7 -4, 9 -7 -5, 11 -7 -4, 12 -7 -0.999999, 11 -7 2, 7 -7 4, 2 -7 5</Polygon3D>
+				<Polygon3D>5 -7 1, 3 -7 -0.999999, 6 -7 -4, 9 -7 -5, 11 -7 -4, 12 -7 -0.999999, 11 -7 2, 7 -7 4, 2 -7 5</Polygon3D>
 			</Surface>
 			<Surface id="50" displayName="New surface [6]">
-				<Polygon3D type="Polygon">21 -2 0, 19 -2 0, 19 3 0, 16 3 0, 16 -2 0, 13 -2 0, 13 -6 0, 17 -6 0, 17 -4 0, 19 -4 0, 19 -6 0, 21 -6 0</Polygon3D>
+				<Polygon3D>21 -2 0, 19 -2 0, 19 3 0, 16 3 0, 16 -2 0, 13 -2 0, 13 -6 0, 17 -6 0, 17 -4 0, 19 -4 0, 19 -6 0, 21 -6 0</Polygon3D>
 			</Surface>
 			<Surface id="51" displayName="New surface [7]">
-				<Polygon3D type="Polygon">22 16 0, 19 19 0, 15 19 0, 14 13 0, 14 8 0, 16 5 0, 16 13 0, 18 15 0, 20 15 0, 21 11 0, 21 6 0, 22 5 0</Polygon3D>
+				<Polygon3D>22 16 0, 19 19 0, 15 19 0, 14 13 0, 14 8 0, 16 5 0, 16 13 0, 18 15 0, 20 15 0, 21 11 0, 21 6 0, 22 5 0</Polygon3D>
 			</Surface>
 		</PlainGeometry>
 		<EmbeddedDatabase>
 			<Materials>
-				<Material id="10004" displayName="de:[SimQuality] Dämmung2 |en:[SimQuality] Insulation2" color="#f3dba0">
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+				<Material id="10004" displayName="de:[SimQuality] Dämmung 2 |en:[SimQuality] Insulation 2" color="#f3dba0">
 					<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
@@ -216,15 +255,6 @@
 					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
-				</Material>
-				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
@@ -241,15 +271,15 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-					<Color>#204a87</Color>
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
 					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
 					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
