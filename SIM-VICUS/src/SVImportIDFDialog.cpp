@@ -337,6 +337,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				unsigned int blindIdx, shadeIdx, screenIdx;
 
 				if (opaqueIdx < prj.m_materials.size()) {
+					IBK_ASSERT(matType == NUM_MT || matType == Opaque);
 					matType = Opaque;
 
 					// extract size in [m]
@@ -345,10 +346,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 				}
 				else if (windowIdx < prj.m_windowMaterial.size()){
+					IBK_ASSERT(matType == NUM_MT || matType == Window);
+					// TODO : warn if matType already set, otherwise we have multiple layers
 					matType = Window;
 					window.m_idGlazingSystem = idfWindowGlazingSystem2VicusIDs[windowIdx];
-					/// TODO Dirk->Andreas: an dieser Stelle wissen wir noch nicht ob wir einen Frame und/oder Divider haben
-					// hierzu müssen wir er das FenestrationSurface:Detailed Objekt befragen.
 				}
 				///TODO Dirk: add shading when available
 
@@ -365,8 +366,8 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			continue; // skip construction
 		}
 		//now we have parsed all layers of current construction
-		idfConstruction2VicusConIDs.push_back(std::make_pair(std::numeric_limits<unsigned int>::max(),false));
-		idfWindow2VicusWindowIDs.push_back(std::make_pair(std::numeric_limits<unsigned int>::max(),false));
+		idfConstruction2VicusConIDs.push_back(std::make_pair(VICUS::INVALID_ID,false));
+		idfWindow2VicusWindowIDs.push_back(std::make_pair(VICUS::INVALID_ID,false));
 		switch(matType){
 			case Opaque:{
 				con.m_displayName = name;
@@ -452,7 +453,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		}
 	}
-	IBK_ASSERT(idfConstruction2VicusConIDs.size() == prj.m_constructions.size() /*&& idfWindow2VicusWindowIDs.size() == prj.m_constructions.size()*/);
+	IBK_ASSERT(idfConstruction2VicusConIDs.size() == prj.m_constructions.size() && idfWindow2VicusWindowIDs.size() == prj.m_constructions.size() );
 
 
 	// *** Inside boundary conditions ("surface") ***
@@ -707,6 +708,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		// lookup matching VICUS::Construction ID
 		com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+		// protect against invalid reference of transparent construction where an opaque construction is needed
+		if (com.m_idConstruction == VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from BSD '%2' is not an opaque construction.")
+								 .arg(codec->toUnicode(bsd.m_constructionName.c_str()).toStdString())
+								 .arg(bsdName.toStdString()), FUNC_ID);
+
 		const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
 		IBK_ASSERT(con != nullptr);
 		com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(con->m_displayName).toStdString() + "-component");
@@ -879,7 +886,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// set the subsurface
 		VICUS::SubSurface subSurf;
 		subSurf.m_id = subSurf.uniqueID();
-		subSurf.m_displayName = QString::fromStdString(fsd.m_name);
+		subSurf.m_displayName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		subSurf.m_polygon2D.setVertexes(subSurfaceVertexes);
 		if (!subSurf.m_polygon2D.isValid()) {
 			IBK::IBK_Message(IBK::FormatString("Invalid sub-surface polygon of FenestrationSurfaceDetailed '%1'.")
@@ -922,7 +929,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		VICUS::SubSurfaceComponent com;
 
 		//set up type
-		switch(fsd.m_surfaceType ){
+		switch (fsd.m_surfaceType ) {
 			case EP::FenestrationSurfaceDetailed::ST_Door:
 				com.m_type = VICUS::SubSurfaceComponent::CT_Door;
 			break;
@@ -930,29 +937,64 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			case EP::FenestrationSurfaceDetailed::ST_Window:
 				com.m_type = VICUS::SubSurfaceComponent::CT_Window;
 			break;
-			case EP::FenestrationSurfaceDetailed::NUM_ST:
-			break;
-
+			case EP::FenestrationSurfaceDetailed::NUM_ST: {
+				IBK::IBK_Message(IBK::FormatString("FSD '%1' does not have a supported type.")
+									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+									 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				continue;
+			}
 		}
 
 		// lookup construction
 		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, fsd.m_constructionName);
 		if (conIdx == prj.m_constructions.size()) {
 			// also convert names in error message
-			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from BSD '%2' is not defined in IDF file.")
+			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not defined in IDF file.")
 								 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
 								 .arg(fsdName.toStdString()), FUNC_ID);
 		}
-		// lookup matching VICUS::Construction ID
-		com.m_idConstruction = idfWindow2VicusWindowIDs[conIdx].first;
-		const VICUS::Window * window = db.m_windows[com.m_idConstruction];
-		IBK_ASSERT(window != nullptr);
-		com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(window->m_displayName).toStdString() + "-component");
+
+		// we need to distinguish between windows and doors -> windows are stored in transparent construction ID vector
+		if (com.m_type == VICUS::SubSurfaceComponent::CT_Window) {
+			// lookup matching VICUS::Window ID
+			com.m_idWindow = idfWindow2VicusWindowIDs[conIdx].first;
+			// if this index is INVALID_ID, we have referenced an opaque construction, but we need a window construction
+			if (com.m_idWindow == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not a transparent construction.")
+									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+									 .arg(fsdName.toStdString()), FUNC_ID);
+
+			const VICUS::Window * window = db.m_windows[com.m_idWindow];
+			IBK_ASSERT(window != nullptr);
+			com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(window->m_displayName).toStdString() + "-component");
+
+			// frame and divider
+			if (!fsd.m_frameAndDividerName.empty()) {
+
+			}
+		}
+		else {
+			// lookup matching VICUS::Construction ID
+			com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+			// if this index is INVALID_ID, we have referenced a transparent construction, but we need a window construction
+			if (com.m_idConstruction == VICUS::INVALID_ID)
+				throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not an opaque construction.")
+									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+									 .arg(fsdName.toStdString()), FUNC_ID);
+
+			const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
+			IBK_ASSERT(con != nullptr);
+			com.m_displayName.setEncodedString(QtExt::MultiLangString2QString(con->m_displayName).toStdString() + "-component");
+		}
 
 		// now create boundary conditions
 		//not used now
 		//unsigned int otherSurfaceID = VICUS::INVALID_ID;
 
+		// TODO Dirk, reverse construction bei Door
+
+
+		// For now, we only have outside surfaces, i.e. FSD without outside boundary condition object
 		if(fsd.m_outsideBoundaryConditionObject.empty()){
 			//now we assume we have an outside window
 			com.m_idSideABoundaryCondition = bcIDSurface;
