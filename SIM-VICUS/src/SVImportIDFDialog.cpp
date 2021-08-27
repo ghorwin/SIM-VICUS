@@ -961,16 +961,26 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			continue;
 		}
 
+		// lookup construnction/window ID
+		unsigned int idWindow = idfWindow2VicusWindowIDs[conIdx].first;
+		unsigned int idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+
 		// we need to distinguish between windows and doors -> windows are stored in transparent construction ID vector
 		if (com.m_type == VICUS::SubSurfaceComponent::CT_Window) {
-			// lookup matching VICUS::Window ID
-			com.m_idWindow = idfWindow2VicusWindowIDs[conIdx].first;
 			// if this index is INVALID_ID, we have referenced an opaque construction, but we need a window construction
-			if (com.m_idWindow == VICUS::INVALID_ID) {
-				IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not a transparent construction, skipped.")
-									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-									 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-				continue;
+			com.m_idWindow = idWindow;
+			if (idWindow == VICUS::INVALID_ID) {
+				if (idConstruction == VICUS::INVALID_ID)
+					IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' was not imported (due to errors, see log above).")
+										 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+										 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				else
+					IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not a transparent construction, skipped.")
+										 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+										 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+
+				// we keep the subsurface component and generate the component instance, but with a dummy window
+				com.m_idWindow = db.m_windows.begin()->first;
 			}
 
 			const VICUS::Window * window = db.m_windows[com.m_idWindow];
@@ -984,13 +994,18 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		else {
 			// lookup matching VICUS::Construction ID
-			com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
+			com.m_idConstruction = idConstruction;
 			// if this index is INVALID_ID, we have referenced a transparent construction, but we need a window construction
-			if (com.m_idConstruction == VICUS::INVALID_ID) {
-				IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not not an opaque construction, skipped.")
-									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-									 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-				continue;
+			if (idConstruction == VICUS::INVALID_ID) {
+				if (idWindow == VICUS::INVALID_ID)
+					IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' was not imported (due to errors, see log above).")
+										 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+										 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				else
+					IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not not an opaque construction, skipped.")
+										 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+										 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				com.m_idConstruction = db.m_constructions.begin()->first;
 			}
 
 			const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
@@ -1058,9 +1073,20 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		VICUS::SubSurfaceComponentInstance ssci;
 		ssci.m_id = VICUS::uniqueId(vp.m_subSurfaceComponentInstances);
 		ssci.m_idSideASurface = mapFsdNameIDmap[fsd.m_name];
-		ssci.m_idSideBSurface = 0;
+		ssci.m_idSideBSurface = VICUS::INVALID_ID;
 
 		ssci.m_idSubSurfaceComponent = comId;
+
+		VICUS::SubSurface * subsurf = vp.subSurfaceByID(ssci.m_idSideASurface);
+		switch (com.m_type) {
+			case VICUS::SubSurfaceComponent::CT_Window:
+				subsurf->m_color = QColor(96,96,255,64);
+			break;
+			case VICUS::SubSurfaceComponent::CT_Door:
+			case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+			case VICUS::SubSurfaceComponent::NUM_CT:
+				subsurf->m_color = QColor(164,164,164,255);
+		}
 
 		//not used now
 		/*
