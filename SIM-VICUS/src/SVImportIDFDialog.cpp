@@ -158,7 +158,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			prj.m_bsd.size()*2 +  // we loop twice here
 			prj.m_constructions.size() +
 			prj.m_zones.size() +
-			prj.m_fsd.size() +
+			prj.m_fsd.size()*2 +
 			prj.m_shadingBuildingDetailed.size();
 
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, elementsToImport, this);
@@ -858,12 +858,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		QString fsdName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		QString bsdName = codec->toUnicode(fsd.m_bsdName.c_str()); // Mind text encoding here!
+
 		// look up surface that this fenestration belongs to
 		const auto & bsd = mapBsdNameIDmap.find(fsd.m_bsdName);
 		if (bsd == mapBsdNameIDmap.end()) {
-			throw IBK::Exception(IBK::FormatString("BuildingSurface:Detailed name '%1' does not exist, which is "
-												   "referenced in FenestrationSurfaceDetailed '%2'.")
-								 .arg(bsdName.toStdString()).arg(fsdName.toStdString()), FUNC_ID);
+			IBK::IBK_Message(IBK::FormatString("BuildingSurface:Detailed name '%1' does not exist, which is "
+												   "referenced in FenestrationSurfaceDetailed '%2', skipped.")
+								 .arg(bsdName.toStdString()).arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+			continue;
 		}
 
 		VICUS::Surface * surf = vp.surfaceByID(bsd->second);
@@ -911,7 +913,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		mapFsdNameIDmap[fsd.m_name] = subSurf.m_id;
 	}
 
-#if 1
+
 	IBK::IBK_Message("\nImporting window components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
 		updateProgress(&dlg, progressTimer, ++count);
@@ -921,9 +923,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// look up surface that this fenestration belongs to
 		const auto & bsd = mapBsdNameIDmap.find(fsd.m_bsdName);
 		if (bsd == mapBsdNameIDmap.end()) {
-			throw IBK::Exception(IBK::FormatString("BuildingSurface:Detailed name '%1' does not exist, which is "
-												   "referenced in FenestrationSurfaceDetailed '%2'.")
-								 .arg(bsdName.toStdString()).arg(fsdName.toStdString()), FUNC_ID);
+			IBK::IBK_Message(IBK::FormatString("BuildingSurface:Detailed name '%1' does not exist, which is "
+												   "referenced in FenestrationSurfaceDetailed '%2', skipped")
+								 .arg(bsdName.toStdString()).arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+			continue;
 		}
 
 		// *** Window Components ***
@@ -952,9 +955,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, fsd.m_constructionName);
 		if (conIdx == prj.m_constructions.size()) {
 			// also convert names in error message
-			throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not defined in IDF file.")
+			IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not defined in IDF file.")
 								 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-								 .arg(fsdName.toStdString()), FUNC_ID);
+								 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+			continue;
 		}
 
 		// we need to distinguish between windows and doors -> windows are stored in transparent construction ID vector
@@ -962,10 +966,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// lookup matching VICUS::Window ID
 			com.m_idWindow = idfWindow2VicusWindowIDs[conIdx].first;
 			// if this index is INVALID_ID, we have referenced an opaque construction, but we need a window construction
-			if (com.m_idWindow == VICUS::INVALID_ID)
-				throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not a transparent construction.")
+			if (com.m_idWindow == VICUS::INVALID_ID) {
+				IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not a transparent construction, skipped.")
 									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-									 .arg(fsdName.toStdString()), FUNC_ID);
+									 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				continue;
+			}
 
 			const VICUS::Window * window = db.m_windows[com.m_idWindow];
 			IBK_ASSERT(window != nullptr);
@@ -980,10 +986,12 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			// lookup matching VICUS::Construction ID
 			com.m_idConstruction = idfConstruction2VicusConIDs[conIdx].first;
 			// if this index is INVALID_ID, we have referenced a transparent construction, but we need a window construction
-			if (com.m_idConstruction == VICUS::INVALID_ID)
-				throw IBK::Exception(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not an opaque construction.")
+			if (com.m_idConstruction == VICUS::INVALID_ID) {
+				IBK::IBK_Message(IBK::FormatString("Construction '%1' referenced from FSD '%2' is not not an opaque construction, skipped.")
 									 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-									 .arg(fsdName.toStdString()), FUNC_ID);
+									 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				continue;
+			}
 
 			const VICUS::Construction * con = db.m_constructions[com.m_idConstruction];
 			IBK_ASSERT(con != nullptr);
@@ -1070,7 +1078,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		*/
 		vp.m_subSurfaceComponentInstances.push_back(ssci);
 	}
-#endif
+
 	// *** ShadingBuildingDetailed ***
 
 	IBK::IBK_Message("\nShading geometry (ShadingBuildingDetailed)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
