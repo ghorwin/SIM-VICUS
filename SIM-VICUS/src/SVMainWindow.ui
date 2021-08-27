@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>17</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -85,6 +85,7 @@
     </property>
     <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
+    <addaction name="actionViewShowGrid"/>
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
    </widget>
@@ -681,6 +682,20 @@
    </property>
    <property name="toolTip">
     <string>Removes duplicate elements from database.</string>
+   </property>
+  </action>
+  <action name="actionViewShowGrid">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show main grid at z=0</string>
+   </property>
+   <property name="toolTip">
+    <string>Shows grid at z coordinate 0</string>
    </property>
   </action>
  </widget>

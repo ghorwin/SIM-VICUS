@@ -301,6 +301,7 @@ private slots:
 	void on_actionViewToggleGeometryMode_triggered();
 	void on_actionViewToggleParametrizationMode_triggered();
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+	void on_actionViewShowGrid_toggled(bool visible);
 	void on_actionViewResetView_triggered();
 
 
@@ -315,6 +316,7 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
+
 
 
 

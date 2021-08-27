@@ -1174,6 +1174,19 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 }
 
 
+void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
+	// set corresponding flag in View
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setMainGridVisible(visible);
+}
+
+
+void SVMainWindow::on_actionViewResetView_triggered() {
+	// set scene view to recenter its camera
+	SVViewStateHandler::instance().m_geometryView->resetCamera();
+}
+
+
+
 void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 	// configure PostProc session, save parallel to project and open session in post
 
@@ -1360,6 +1373,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
+	m_ui->actionViewShowGrid->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
@@ -1893,10 +1907,7 @@ static bool copyRecursively(const QString &srcFilePath,
 
 
 
-void SVMainWindow::on_actionViewResetView_triggered() {
-	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera();
-}
+
 
 
 

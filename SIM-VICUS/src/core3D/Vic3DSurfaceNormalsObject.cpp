@@ -120,9 +120,11 @@ void SurfaceNormalsObject::render() {
 	if (m_vertexCount == 0)
 		return;
 	m_vao.bind();
-	QColor normalsColor("#1bff0a");
-	if (SVSettings::instance().m_theme == SVSettings::TT_White)
-		normalsColor = QColor("#1b8e0a");
+	QColor normalsColor;
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		normalsColor = QColor("#4ec4f6");
+	else
+		normalsColor = QColor("#005eaa");
 	QVector4D col(normalsColor.redF(), normalsColor.greenF(), normalsColor.blueF(), 1.0);
 	m_shaderProgram->shaderProgram()->setUniformValue(m_shaderProgram->m_uniformIDs[1], col);
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
