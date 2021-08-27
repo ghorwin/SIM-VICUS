@@ -446,7 +446,7 @@ bool SVProjectHandler::read(const QString & fname) {
 	// check that we have a project, should be newly created
 	Q_ASSERT(isValid());
 
-	if (!QFileInfo(fname).exists()) {
+	if (!QFileInfo::exists(fname)) {
 		IBK::IBK_Message(IBK::FormatString("File '%1' does not exist or permissions are missing for accessing the file.")
 						 .arg(fname.toUtf8().data()), IBK::MSG_ERROR, FUNC_ID);
 		return false;

@@ -1607,7 +1607,14 @@ void SVMainWindow::onFixProjectAfterRead() {
 
 	std::vector<std::vector<SVDatabase::DuplicateInfo> > dups;
 	SVSettings::instance().m_db.determineDuplicates(dups);
-	if (!dups.empty()) {
+	// any duplicates?
+	bool haveDups = false;
+	for (const std::vector<SVDatabase::DuplicateInfo> & v : dups)
+		if (!v.empty()) {
+			haveDups = true;
+			break;
+		}
+	if (haveDups) {
 		int res = SVSettings::instance().showDoNotShowAgainQuestion(this, "RemoveDuplicatesAfterProjectRead",
 			tr("Remove/merge duplicates in database"),
 			tr("The database contains now some duplicate definitions. Do you want "

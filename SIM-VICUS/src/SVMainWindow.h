@@ -177,9 +177,9 @@ public slots:
 
 protected:
 	/*! Checks if project file has been changed by external application. */
-	void changeEvent(QEvent *event);
+	void changeEvent(QEvent *event) override;
 	/*! Does the confirm-saving-before-close stuff. */
-	void closeEvent(QCloseEvent * event);
+	void closeEvent(QCloseEvent * event) override;
 
 private slots:
 	/*! Does the entire UI initialization.
