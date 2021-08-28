@@ -282,10 +282,6 @@ private:
 	double	m_convRateDeltaNormX;
 	/*! Holds the current/estimated convergence rate based on the delta norm for the current Jacobian.*/
 	double	m_convRateDeltaNormY;
-	/*! Stores convergence rate based on vector norm of residuals of the balance equation. */
-	double m_convRateResiduals;
-	/*! Stores convergence rate based on vector norm of deltaY from current iteration step. */
-	double m_convRateDelta;
 
 	/*! Set to true if the last call to tryStep() signaled TryAgain with outdated Jacobian, x-step. */
 	bool m_newtonConvergenceErrorX;
