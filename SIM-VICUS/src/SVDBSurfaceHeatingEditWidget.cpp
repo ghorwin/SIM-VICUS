@@ -46,6 +46,8 @@ SVDBSurfaceHeatingEditWidget::SVDBSurfaceHeatingEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	// *** populate combo boxes ***
 
 	m_ui->comboBoxType->blockSignals(true);

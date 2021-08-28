@@ -89,6 +89,7 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
+	../../src/SVPreferencesPageMisc.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
@@ -244,6 +245,7 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
+	../../src/SVPreferencesPageMisc.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationShadingOptions.h \
@@ -436,6 +438,7 @@ FORMS    += \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkImportDialog.ui \
 	../../src/SVPreferencesDialog.ui \
+	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddWindowWidget.ui \

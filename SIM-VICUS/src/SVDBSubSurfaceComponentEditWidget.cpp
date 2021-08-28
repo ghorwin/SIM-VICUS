@@ -48,6 +48,8 @@ SVDBSubSurfaceComponentEditWidget::SVDBSubSurfaceComponentEditWidget(QWidget *pa
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Sub-Surface component identification name"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	// enter categories into combo box
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxSubSurfaceType->blockSignals(true);
@@ -90,7 +92,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditBoundaryConditionSideAName->setText("");
 
 		m_ui->lineEditBoundaryConditionSideBName->setText("");
-		m_ui->pushButtonFalseColor->setColor(Qt::black);
+		m_ui->pushButtonColor->setColor(Qt::black);
 
 		return;
 	}
@@ -107,9 +109,9 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxSubSurfaceType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxSubSurfaceType->blockSignals(false);
 
-	m_ui->pushButtonFalseColor->blockSignals(true);
-	m_ui->pushButtonFalseColor->setColor(m_current->m_color);
-	m_ui->pushButtonFalseColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
@@ -237,11 +239,11 @@ void SVDBSubSurfaceComponentEditWidget::modelModify() {
 }
 
 
-void SVDBSubSurfaceComponentEditWidget::on_pushButtonFalseColor_clicked() {
+void SVDBSubSurfaceComponentEditWidget::on_pushButtonColor_clicked() {
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonFalseColor->color()) {
-		m_current->m_color = m_ui->pushButtonFalseColor->color();
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		m_db->m_subSurfaceComponents.m_modified = true;
 		m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
 	}

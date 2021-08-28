@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBZoneControlVentilationNaturalEditWidget::SVDBZoneControlVentilationNaturalEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -46,7 +47,9 @@ SVDBZoneControlVentilationNaturalEditWidget::SVDBZoneControlVentilationNaturalEd
 
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
-	m_ui->lineEditName->setDialog3Caption(tr("Zone control VentilationNatural model name"));
+	m_ui->lineEditName->setDialog3Caption(tr("Zone control - natural ventilation model name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditTemperatureAirRoomMaximum->setup(-100, 100, tr("Maximum room air temperature above which ventilation stops."), true, true);
 	m_ui->lineEditTemperatureAirRoomMinimum->setup(-100, 100, tr("Minimum room air temperature below which ventilation stops."), true, true);
@@ -102,36 +105,36 @@ void SVDBZoneControlVentilationNaturalEditWidget::updateInput(int id) {
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 	try {
 		m_ui->lineEditTemperatureAirOutsideMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditTemperatureAirOutsideMaximum->setValue(0);
 	}
 	try {
 		m_ui->lineEditTemperatureAirOutsideMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditTemperatureAirOutsideMinimum->setValue(0);
 	}
 	try {
 		m_ui->lineEditTemperatureAirRoomMaximum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
 
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditTemperatureAirRoomMaximum->setValue(0);
 	}
 	try {
 		m_ui->lineEditTemperatureAirRoomMinimum->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
 
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditTemperatureAirRoomMinimum->setValue(0);
 	}
 	try {
 		m_ui->lineEditTemperatureDifference->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
 
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditTemperatureDifference->setValue(0);
 	}
 	try {
 		m_ui->lineEditWindSpeedMax->setValue(m_current->m_para[VICUS::ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
 
-	}  catch (IBK::Exception &ex) {
+	}  catch (IBK::Exception &) {
 		m_ui->lineEditWindSpeedMax->setValue(0);
 	}
 

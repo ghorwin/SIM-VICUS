@@ -50,6 +50,8 @@ SVDBNetworkFluidEditWidget::SVDBNetworkFluidEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Fluid identification name"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	// table widget
 	m_ui->tableWidgetViscosity->setColumnCount(2);
 	m_ui->tableWidgetViscosity->verticalHeader()->setVisible(false);
@@ -64,8 +66,8 @@ SVDBNetworkFluidEditWidget::SVDBNetworkFluidEditWidget(QWidget *parent) :
 	m_ui->tableWidgetViscosity->setSortingEnabled(false);
 }
 
-SVDBNetworkFluidEditWidget::~SVDBNetworkFluidEditWidget()
-{
+
+SVDBNetworkFluidEditWidget::~SVDBNetworkFluidEditWidget() {
 	delete m_ui;
 }
 
@@ -105,14 +107,14 @@ void SVDBNetworkFluidEditWidget::updateInput(int id) {
 	m_ui->lineEditHeatCapacity->setValue(fluid->m_para[VICUS::NetworkFluid::P_HeatCapacity].value);
 	m_ui->lineEditThermalConductivity->setValue(fluid->m_para[VICUS::NetworkFluid::P_Conductivity].value);
 
-	m_ui->pushButtonComponentColor->blockSignals(true);
-	m_ui->pushButtonComponentColor->setColor(m_currentFluid->m_color);
-	m_ui->pushButtonComponentColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_currentFluid->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !fluid->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 	m_ui->lineEditDensity->setReadOnly(!isEditable);
 	m_ui->lineEditHeatCapacity->setReadOnly(!isEditable);
 	m_ui->lineEditThermalConductivity->setReadOnly(!isEditable);
@@ -152,10 +154,10 @@ void SVDBNetworkFluidEditWidget::on_lineEditName_editingFinished(){
 	}
 }
 
-void SVDBNetworkFluidEditWidget::on_pushButtonComponentColor_colorChanged()
+void SVDBNetworkFluidEditWidget::on_pushButtonColor_colorChanged()
 {
-	if (m_currentFluid->m_color != m_ui->pushButtonComponentColor->color()) {
-		m_currentFluid->m_color = m_ui->pushButtonComponentColor->color();
+	if (m_currentFluid->m_color != m_ui->pushButtonColor->color()) {
+		m_currentFluid->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 }

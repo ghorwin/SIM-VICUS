@@ -23,42 +23,35 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVPreferencesPageToolsH
-#define SVPreferencesPageToolsH
+#include "SVPreferencesPageMisc.h"
+#include "ui_SVPreferencesPageMisc.h"
 
-#include <QWidget>
+#include "SVSettings.h"
+#include "SVStyle.h"
+#include "SVMainWindow.h"
 
-namespace Ui {
-	class SVPreferencesPageTools;
+SVPreferencesPageMisc::SVPreferencesPageMisc(QWidget *parent) :
+	QWidget(parent),
+	m_ui(new Ui::SVPreferencesPageMisc)
+{
+	m_ui->setupUi(this);
 }
 
-/*! The configuration page with external tool settings. */
-class SVPreferencesPageTools : public QWidget {
-	Q_OBJECT
-	Q_DISABLE_COPY(SVPreferencesPageTools)
-public:
-	/*! Default constructor. */
-	explicit SVPreferencesPageTools(QWidget *parent = nullptr);
-	/*! Destructor. */
-	~SVPreferencesPageTools() override;
 
-	/*! Updates the user interface with values in Settings object.*/
-	void updateUi();
-
-private slots:
-	void on_filepathPostProc_editingFinished();
-	void on_filepathPostProc_returnPressed();
-
-	void on_pushButtonAutoDetectPP2_clicked();
-
-	void on_filepathTextEditor_editingFinished();
-	void on_filepathTextEditor_returnPressed();
-
-	void on_pushButtonAutoDetectTextEditor_clicked();
-
-private:
-	Ui::SVPreferencesPageTools *m_ui;
-};
+SVPreferencesPageMisc::~SVPreferencesPageMisc() {
+	delete m_ui;
+}
 
 
-#endif // SVPreferencesPageToolsH
+void SVPreferencesPageMisc::updateUi() {
+	SVSettings & s = SVSettings::instance();
+	// transfer data to Ui
+	m_ui->checkBoxDontUseNativeDialogs->setChecked(s.m_dontUseNativeDialogs);
+}
+
+
+void SVPreferencesPageMisc::on_checkBoxDontUseNativeDialogs_toggled(bool checked) {
+	SVSettings & s = SVSettings::instance();
+	s.m_dontUseNativeDialogs = checked;
+}
+

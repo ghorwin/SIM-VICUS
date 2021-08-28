@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBZoneIdealHeatingCoolingEditWidget::SVDBZoneIdealHeatingCoolingEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -44,11 +45,10 @@ SVDBZoneIdealHeatingCoolingEditWidget::SVDBZoneIdealHeatingCoolingEditWidget(QWi
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
 
-	// *** populate combo boxes ***
-
-
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone ideal heating/cooling model name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditHeatingLimit->setup(0, 1000, tr("Maximum heating capacity limit."), true, true);
 	m_ui->lineEditCoolingLimit->setup(0, 1000, tr("Maximum cooling capacity limit."), true, true);

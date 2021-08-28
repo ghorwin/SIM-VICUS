@@ -67,6 +67,8 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Window Glazing System"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	m_ui->lineEditSHGC0->setup(0, 1, tr("SHGC for vertical incidence angle must be between 0...1."), false, true);
 	m_ui->lineEditUValue->setup(0, 100, tr("U-value of glazing system must be > 0."), false, true);
 
@@ -178,7 +180,7 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 		m_ui->comboBoxType->setCurrentIndex(VICUS::WindowGlazingSystem::NUM_MT);
 		m_ui->comboBoxType->blockSignals(false);
 
-		m_ui->pushButtonWindowColor->setColor(Qt::black);
+		m_ui->pushButtonColor->setColor(Qt::black);
 		m_ui->shgcPlot->setVisible(false);
 
 		m_ui->toolButtonCreateSpline->setEnabled(false);
@@ -251,12 +253,12 @@ void SVDBWindowGlazingSystemEditWidget::updateInput(int id) {
 	}
 	m_ui->tableWidgetSHGC->blockSignals(false);
 
-	m_ui->pushButtonWindowColor->blockSignals(true);
-	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
-	m_ui->pushButtonWindowColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 	m_ui->lineEditSHGC0->setReadOnly(!isEditable);
 	m_ui->lineEditUValue->setReadOnly(!isEditable);
 	m_ui->comboBoxType->setEnabled(isEditable);
@@ -310,12 +312,12 @@ void SVDBWindowGlazingSystemEditWidget::createDefaultSHGCSpline() {
 }
 
 
-void SVDBWindowGlazingSystemEditWidget::on_pushButtonWindowColor_colorChanged() {
+void SVDBWindowGlazingSystemEditWidget::on_pushButtonColor_colorChanged() {
 
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
-		m_current->m_color = m_ui->pushButtonWindowColor->color();
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify(); // tell model that we changed the data
 	}
 }

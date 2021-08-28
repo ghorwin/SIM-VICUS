@@ -30,6 +30,7 @@
 
 class SVPreferencesPageTools;
 class SVPreferencesPageStyle;
+class SVPreferencesPageMisc;
 
 namespace Ui {
 	class SVPreferencesDialog;
@@ -42,7 +43,7 @@ public:
 	/*! Constructor.*/
 	SVPreferencesDialog(QWidget * parent);
 	/*! Destructor. */
-	~SVPreferencesDialog();
+	~SVPreferencesDialog() override;
 
 	/*! Spawns the dialog and returns when user has closed the dialog.
 		\param initialPage The index of the page to be shown initially.
@@ -63,6 +64,8 @@ private:
 	SVPreferencesPageTools			*m_pageTools;
 	/*! The Style page. */
 	SVPreferencesPageStyle			*m_pageStyle;
+	/*! The Misc page. */
+	SVPreferencesPageMisc			*m_pageMisc;
 };
 
 #endif // SVPreferencesDialogH

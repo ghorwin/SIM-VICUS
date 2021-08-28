@@ -28,6 +28,7 @@
 
 #include "SVPreferencesPageTools.h"
 #include "SVPreferencesPageStyle.h"
+#include "SVPreferencesPageMisc.h"
 #include <QStackedWidget>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -48,8 +49,10 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 
 	m_pageTools = new SVPreferencesPageTools(this);
 	m_pageStyle = new SVPreferencesPageStyle(this);
+	m_pageMisc = new SVPreferencesPageMisc(this);
 	m_ui->tabWidget->addTab(m_pageTools, tr("External tools"));
 	m_ui->tabWidget->addTab(m_pageStyle, tr("Style"));
+	m_ui->tabWidget->addTab(m_pageMisc, tr("Miscellaneous"));
 
 	// ... other pages
 }
@@ -80,6 +83,7 @@ void SVPreferencesDialog::edit(int initialPage) {
 void SVPreferencesDialog::updateUi() {
 	m_pageTools->updateUi();
 	m_pageStyle->updateUi();
+	m_pageMisc->updateUi();
 	// ... other pages
 }
 

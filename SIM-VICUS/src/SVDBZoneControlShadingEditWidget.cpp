@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -57,6 +58,8 @@ SVDBZoneControlShadingEditWidget::SVDBZoneControlShadingEditWidget(QWidget *pare
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone control Shading model name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditEast->setup(0, 1400, tr("Global Radiation Sensor East."), true, true);
 	m_ui->lineEditWest->setup(0, 1400, tr("Global Radiation Sensor West."), true, true);

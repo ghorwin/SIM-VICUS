@@ -23,42 +23,40 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVPreferencesPageToolsH
-#define SVPreferencesPageToolsH
+#ifndef SVPreferencesPageMiscH
+#define SVPreferencesPageMiscH
 
 #include <QWidget>
 
 namespace Ui {
-	class SVPreferencesPageTools;
+	class SVPreferencesPageMisc;
 }
 
-/*! The configuration page with external tool settings. */
-class SVPreferencesPageTools : public QWidget {
+/*! The configuration page with other settings. */
+class SVPreferencesPageMisc : public QWidget {
 	Q_OBJECT
-	Q_DISABLE_COPY(SVPreferencesPageTools)
+	Q_DISABLE_COPY(SVPreferencesPageMisc)
 public:
 	/*! Default constructor. */
-	explicit SVPreferencesPageTools(QWidget *parent = nullptr);
+	explicit SVPreferencesPageMisc(QWidget *parent = nullptr);
 	/*! Destructor. */
-	~SVPreferencesPageTools() override;
+	~SVPreferencesPageMisc() override;
 
 	/*! Updates the user interface with values in Settings object.*/
 	void updateUi();
 
+signals:
+	/*! Emitted, when user has changed the style. */
+	void styleChanged();
+
+protected:
+
 private slots:
-	void on_filepathPostProc_editingFinished();
-	void on_filepathPostProc_returnPressed();
-
-	void on_pushButtonAutoDetectPP2_clicked();
-
-	void on_filepathTextEditor_editingFinished();
-	void on_filepathTextEditor_returnPressed();
-
-	void on_pushButtonAutoDetectTextEditor_clicked();
+	void on_checkBoxDontUseNativeDialogs_toggled(bool checked);
 
 private:
-	Ui::SVPreferencesPageTools *m_ui;
+	Ui::SVPreferencesPageMisc *m_ui;
 };
 
 
-#endif // SVPreferencesPageToolsH
+#endif // SVPreferencesPageMiscH

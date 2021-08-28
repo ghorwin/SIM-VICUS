@@ -73,7 +73,7 @@ private slots:
 	void on_toolButtonRemoveBoundaryConditionSideA_clicked();
 	void on_toolButtonRemoveBoundaryConditionSideB_clicked();
 
-	void on_pushButtonFalseColor_clicked();
+	void on_pushButtonColor_clicked();
 
 private:
 	/*! Set up the modified variable of the model to true. */

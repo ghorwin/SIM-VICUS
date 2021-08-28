@@ -66,7 +66,7 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_comboBoxComponentType_currentIndexChanged(int index);
 
-	void on_pushButtonComponentColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 
 	void on_tableWidgetParameters_cellChanged(int row, int column);
 

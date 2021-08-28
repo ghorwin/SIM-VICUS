@@ -45,10 +45,13 @@ SVDBMaterialEditWidget::SVDBMaterialEditWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(4);
 	// adjust color botton width
-	m_ui->pushButtonOpaqueMaterialColor->setMaximumSize(m_ui->lineEditName->height(), m_ui->lineEditName->height());
+	m_ui->pushButtonColor->setMaximumSize(m_ui->lineEditName->height(), m_ui->lineEditName->height());
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Material identification name"));
+
+
 	m_ui->lineEditDataSource->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditDataSource->setDialog3Caption(tr("Data source information"));
 	m_ui->lineEditManufacturer->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
@@ -118,7 +121,7 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 	m_ui->lineEditManufacturer->setString(mat->m_manufacturer);
 	m_ui->lineEditNotes->setString(mat->m_notes);
 	m_ui->comboBoxCategory->setCurrentIndex(mat->m_category);
-	m_ui->pushButtonOpaqueMaterialColor->setColor(mat->m_color);
+	m_ui->pushButtonColor->setColor(mat->m_color);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
@@ -133,7 +136,7 @@ void SVDBMaterialEditWidget::updateInput(int id) {
 	m_ui->lineEditConductivity->setReadOnly(!isEditable);
 	m_ui->lineEditSpecHeatCapacity->setReadOnly(!isEditable);
 	m_ui->comboBoxCategory->setEnabled(isEditable);
-	m_ui->pushButtonOpaqueMaterialColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 }
 
 
@@ -245,9 +248,9 @@ void SVDBMaterialEditWidget::on_comboBoxCategory_currentIndexChanged(int index){
 }
 
 
-void SVDBMaterialEditWidget::on_pushButtonOpaqueMaterialColor_colorChanged() {
-	if (m_current->m_color != m_ui->pushButtonOpaqueMaterialColor->color()) {
-		m_current->m_color = m_ui->pushButtonOpaqueMaterialColor->color();
+void SVDBMaterialEditWidget::on_pushButtonColor_colorChanged() {
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 }

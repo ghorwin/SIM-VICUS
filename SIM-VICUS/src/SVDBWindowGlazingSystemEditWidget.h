@@ -66,7 +66,7 @@ public:
 private slots:
 	void on_lineEditName_editingFinished();
 	void on_lineEditSHGC0_editingFinishedSuccessfully();
-	void on_pushButtonWindowColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 	void on_lineEditUValue_editingFinishedSuccessfully();
 	void on_comboBoxType_currentIndexChanged(int index);
 	void on_toolButtonImportSplineFromClipboard_clicked();

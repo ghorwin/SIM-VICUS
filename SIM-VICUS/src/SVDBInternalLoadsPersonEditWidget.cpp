@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -43,6 +44,8 @@ SVDBInternalLoadsPersonEditWidget::SVDBInternalLoadsPersonEditWidget(QWidget *pa
 {
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	// *** populate combo boxes ***
 
@@ -94,7 +97,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
-	m_ui->pushButtonPersonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
 	//change invalid person count method to a valid one
 	if (m_current->m_personCountMethod == VICUS::InternalLoad::PersonCountMethod::NUM_PCM){
 		m_current->m_personCountMethod = VICUS::InternalLoad::PersonCountMethod::PCM_PersonCount;
@@ -139,7 +142,7 @@ void SVDBInternalLoadsPersonEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
-	m_ui->pushButtonPersonColor->setReadOnly(isbuiltIn);
+	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
 	m_ui->comboBoxPersonMethod->setEnabled(!isbuiltIn);
 	m_ui->lineEditPersonCount->setEnabled(!isbuiltIn);
 	m_ui->lineEditConvectiveFactor->setEnabled(!isbuiltIn);
@@ -224,9 +227,9 @@ void SVDBInternalLoadsPersonEditWidget::on_lineEditConvectiveFactor_editingFinis
 }
 
 
-void SVDBInternalLoadsPersonEditWidget::on_pushButtonPersonColor_colorChanged() {
-	if (m_current->m_color != m_ui->pushButtonPersonColor->color()) {
-		m_current->m_color = m_ui->pushButtonPersonColor->color();
+void SVDBInternalLoadsPersonEditWidget::on_pushButtonColor_colorChanged() {
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 }
