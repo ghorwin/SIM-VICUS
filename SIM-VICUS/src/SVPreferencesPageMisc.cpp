@@ -46,12 +46,15 @@ SVPreferencesPageMisc::~SVPreferencesPageMisc() {
 void SVPreferencesPageMisc::updateUi() {
 	SVSettings & s = SVSettings::instance();
 	// transfer data to Ui
+	m_ui->checkBoxDontUseNativeDialogs->blockSignals(true);
 	m_ui->checkBoxDontUseNativeDialogs->setChecked(s.m_dontUseNativeDialogs);
+	m_ui->checkBoxDontUseNativeDialogs->blockSignals(false);
 }
 
 
 void SVPreferencesPageMisc::on_checkBoxDontUseNativeDialogs_toggled(bool checked) {
 	SVSettings & s = SVSettings::instance();
 	s.m_dontUseNativeDialogs = checked;
+	QMessageBox::information(this, QString(), tr("Please restart application!"));
 }
 
