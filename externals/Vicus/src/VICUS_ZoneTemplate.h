@@ -68,7 +68,7 @@ public:
 
 	ZoneTemplate();
 
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced ZoneTemplate is valid. */

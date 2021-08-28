@@ -95,7 +95,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 
 	/*! checks the parameters referenceunit, referencequantity, the categories and the different values of the EPDs
 		to see if the EPDDatest exists already and has the latest version.

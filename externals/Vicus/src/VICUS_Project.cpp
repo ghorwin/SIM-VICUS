@@ -954,7 +954,7 @@ std::string createUniqueNandradObjListAndName(const std::string &name,
 std::vector<NANDRAD::Schedule::ScheduledDayType> mergeDayType(const std::vector<int> &dts);
 
 
-
+#if 0
 
 
 std::string Project::getRoomNameById(unsigned int id) const {
@@ -2182,7 +2182,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 
 }
 
-
+#endif
 
 
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
@@ -2701,7 +2701,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 }
 
-
+#if 0
 
 NANDRAD::Interface Project::generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
 											  std::vector<IdMap> &maps,
@@ -2818,7 +2818,7 @@ unsigned int Project::uniqueIdWithPredef2(Project::IdSpaces idSpace, unsigned in
 	//return idMap.m_vicusToNandrad[id];
 }
 
-
+#endif
 
 } // namespace VICUS
 

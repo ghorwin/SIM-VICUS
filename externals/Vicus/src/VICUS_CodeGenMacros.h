@@ -35,6 +35,10 @@ typedef unsigned int IDType;
 	void readXML(const TiXmlElement * element); \
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
+#define VICUS_READWRITE_OVERRIDE \
+	void readXML(const TiXmlElement * element) override; \
+	TiXmlElement * writeXML(TiXmlElement * parent) const override;
+
 #define VICUS_READWRITE_IFNOTEMPTY(X) \
 	void readXML(const TiXmlElement * element) { readXMLPrivate(element); } \
 	TiXmlElement * writeXML(TiXmlElement * parent) const { if (*this != X()) return writeXMLPrivate(parent); else return nullptr; }
