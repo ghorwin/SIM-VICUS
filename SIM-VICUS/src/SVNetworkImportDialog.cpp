@@ -115,11 +115,11 @@ bool SVNetworkImportDialog::edit() {
 
 void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	// ask user to select csv file
+
+	// TODO Hauke, store last selected directory and restore instead of hardcoding relative path
 	QString fname = QFileDialog::getOpenFileName(this, tr("Select csv-file with GIS data"),
-												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"), nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-												 ,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+												 "../../data/vicus/GeometryTests/Network", tr("CSV-Files (*.csv)"), nullptr,
+												 SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 												 );
 	if (fname.isEmpty())
 		return;

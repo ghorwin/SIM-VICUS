@@ -74,7 +74,7 @@ void Settings::setDefaults() {
 			<< "C:\\Program Files (x86)\\Notepad++\\notepad++.exe";
 
 	m_textEditorExecutable.clear();
-	for (QString installLoc : textEditorInstallLocations) {
+	for (const QString & installLoc : textEditorInstallLocations) {
 		if (QFileInfo(installLoc).exists()) {
 			m_textEditorExecutable = installLoc;
 			break;
@@ -84,10 +84,9 @@ void Settings::setDefaults() {
 	// OS x editor?
 #endif
 
-	/// \todo Implement default text editor detection
+	m_dontUseNativeDialogs = false;
 
 	m_flags[NoSplashScreen] = false;
-
 }
 
 
@@ -137,6 +136,8 @@ void Settings::read() {
 	m_userLogLevelConsole = (IBK::verbosity_levels_t)settings.value("UserLogLevelConsole", m_userLogLevelConsole ).toInt();
 	m_userLogLevelLogfile = (IBK::verbosity_levels_t)settings.value("UserLogLevelLogfile", m_userLogLevelLogfile ).toInt();
 
+	m_dontUseNativeDialogs = settings.value("DontUseNativeDialogs", m_dontUseNativeDialogs ).toBool();
+
 	int count = settings.beginReadArray("DoNotShowAgainDialogs");
 	for (int i=0; i<count; ++i) {
 		settings.setArrayIndex(i);
@@ -182,6 +183,8 @@ void Settings::write(QByteArray geometry, QByteArray state) {
 
 	settings.setValue("UserLogLevelConsole", m_userLogLevelConsole);
 	settings.setValue("UserLogLevelLogfile", m_userLogLevelLogfile);
+
+	settings.setValue("DontUseNativeDialogs", m_dontUseNativeDialogs );
 
 	settings.setValue("MainWindowGeometry", geometry);
 	settings.setValue("MainWindowState", state);

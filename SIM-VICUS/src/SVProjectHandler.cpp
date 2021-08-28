@@ -287,10 +287,8 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 			tr("Specify SIM-VICUS project file"),
 			currentPath,
 			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix),
-			nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-			,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+			nullptr,
+			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 		);
 
 

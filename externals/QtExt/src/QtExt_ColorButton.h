@@ -44,14 +44,18 @@ public:
 	*/
 	void setReadOnly(bool readOnly);
 
+	/*! Overloaded to enable change of appearance (gray color). */
 	void setEnabled(bool enabled);
+
+	/*! Use this function to enable/disable use of native color dialog. */
+	void setDontUseNativeDialog(bool dontUseNativeDialog);
 
 signals:
 	/*! Emitted, when color has been changed by user. */
 	void colorChanged();
 
 protected:
-	virtual void paintEvent( QPaintEvent* );
+	virtual void paintEvent( QPaintEvent* ) override;
 
 private slots:
 	void onClicked();
@@ -61,7 +65,7 @@ private:
 	QColor	m_color;
 
 	bool	m_readOnly;
-
+	bool	m_dontUseNativeDialog;
 };
 
 } // namespace QtExt

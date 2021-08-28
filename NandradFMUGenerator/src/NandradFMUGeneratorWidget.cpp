@@ -40,28 +40,25 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	ZeroMemory( &si, sizeof(si) );
 	si.cb = sizeof(si);
 	std::string utf8String = projectFile.toStdString().data();
-	si.lpTitle = (char*)utf8String.c_str();
+	si.lpTitle = (LPSTR)utf8String.c_str();
 //	si.dwFlags = STARTF_USESHOWWINDOW;
 //	si.wShowWindow = SW_SHOW;
 	ZeroMemory( &pi, sizeof(pi) );
 	const unsigned int lower_priority = 0x00004000;
-	QString cmdLine = QString("\"%1\" %2 \"%3\"")
-		.arg(executable)
-		.arg(commandLineArgs.join(" "))
-		.arg(projectFile);
+	QString cmdLine = QString("\"%1\" %2 \"%3\"").arg(executable, commandLineArgs.join(" "), projectFile);
 
 	std::string cmd = cmdLine.toLatin1().data();
 	// Start the child process.
-	if( !CreateProcessA( NULL,   // No module name (use command line).
-		&cmd[0], 				// Command line.
-		NULL,             		// Process handle not inheritable.
-		NULL,             		// Thread handle not inheritable.
-		FALSE,            		// Set handle inheritance to FALSE.
-		lower_priority,   		// Create with priority lower then normal.
-		NULL,             		// Use parent's environment block.
-		NULL,             		// Use parent's starting directory.
-		&si,              		// Pointer to STARTUPINFO structure.
-		&pi )             		// Pointer to PROCESS_INFORMATION structure.
+	if( !CreateProcessA( nullptr,	// No module name (use command line).
+		&cmd[0],					// Command line.
+		nullptr,					// Process handle not inheritable.
+		nullptr,					// Thread handle not inheritable.
+		FALSE,						// Set handle inheritance to FALSE.
+		lower_priority,				// Create with priority lower then normal.
+		nullptr,					// Use parent's environment block.
+		nullptr,					// Use parent's starting directory.
+		&si,						// Pointer to STARTUPINFO structure.
+		&pi )						// Pointer to PROCESS_INFORMATION structure.
 	)
 	{
 		return false;
@@ -101,7 +98,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
-	m_ui->lineEditTargetDirectory->setup("", false, true, QString());
+	m_ui->lineEditTargetDirectory->setup("", false, true, QString(), true);
 
 	m_ui->tableWidgetInputVars->setColumnCount(8);
 	m_ui->tableWidgetInputVars->setRowCount(0);

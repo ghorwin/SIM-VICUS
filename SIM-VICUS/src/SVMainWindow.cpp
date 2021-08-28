@@ -805,10 +805,8 @@ void SVMainWindow::on_actionFileOpen_triggered() {
 							tr("Select SIM-VICUS project"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastFileOpenDirectory].toString(),
 							tr("SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)")
-							.arg(SVSettings::instance().m_projectFileSuffix).arg(SVSettings::instance().m_projectPackageSuffix), nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-							,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							.arg(SVSettings::instance().m_projectFileSuffix, SVSettings::instance().m_projectPackageSuffix), nullptr,
+							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 						);
 
 	if (filename.isEmpty()) return;
@@ -888,10 +886,8 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 							this,
 							tr("Select IDF file"),
 							SVSettings::instance().m_propertyMap[SVSettings::PT_LastImportOpenDirectory].toString(),
-							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-							,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							tr("EnergyPlus IDF files (*.idf);;All files (*.*)"), nullptr,
+							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 						);
 
 	if (filename.isEmpty()) return;
@@ -977,10 +973,8 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 							this,
 							tr("Specify SIM-VICUS project package"),
 							fnameSuggestion,
-							tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr
-			#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-							,QFileDialog::DontUseNativeDialog
-			#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+							tr("SIM-VICUS project packages (*.vicpac);;All files (*.*)"), nullptr,
+							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 				);
 
 	if (filename.isEmpty())
@@ -1217,10 +1211,8 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 			else {
 				sessionFile = QFileDialog::getOpenFileName(nullptr, tr("Postproc session files"),
 															QFileInfo(m_projectHandler.projectFile()).absolutePath(),
-															QString("*.p2"), nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-															,QFileDialog::DontUseNativeDialog);
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+															QString("*.p2"), nullptr,
+															SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options());
 			}
 		}
 
@@ -1515,10 +1507,8 @@ void SVMainWindow::onOpenExampleByFilename(const QString & filename) {
 	QDir srcDir = finfo.absoluteDir();
 	QSettings settings( SVSettings::instance().m_organization, SVSettings::instance().m_appName );
 	QString lastExampleTargetDir = settings.value("LastExampleSaveDirectory", QDir::homePath()).toString();
-	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-							,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+	QString targetDir = QFileDialog::getExistingDirectory(this, tr("Select directory to copy example project into"), lastExampleTargetDir,
+														  SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 							);
 	if (targetDir.isEmpty())
 		return;
@@ -1791,10 +1781,8 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 					this,
 					tr("Specify SIM-VICUS project"),
 					recentPath,
-					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-						,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+					tr("SIM-VICUS project files (%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix), nullptr,
+						SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 						);
 			if (targetFilePath.isEmpty())
 				return false;
@@ -1806,10 +1794,8 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 			targetDir = QFileDialog::getExistingDirectory(
 								this,
 								tr("Select target directory to extract project package into"),
-								recentPath
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-								,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+								recentPath,
+								SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 							);
 			if (targetDir.isEmpty())
 				return false;
