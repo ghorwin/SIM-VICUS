@@ -30,7 +30,7 @@ namespace VICUS {
 void Surface::initializeColorBasedOnInclination() {
 	// default color for walls
 	m_displayColor = QColor(200,200,140,255);
-	const double angleForWalls = 0.707;
+	const double angleForWalls = 0.35; // only very vertical planes are treated as walls
 	// Floor
 	if (m_geometry.normal().m_z < -angleForWalls)
 		m_displayColor = QColor("#566094");
