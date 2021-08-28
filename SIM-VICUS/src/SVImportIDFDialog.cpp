@@ -62,10 +62,10 @@ SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 //	std::sort(codecs.begin(), codecs.end());
 //	for (const QByteArray & b : codecs)
 	m_ui->comboBoxEncoding->addItem("UTF-8");
+	m_ui->comboBoxEncoding->addItem("ISO 8859-1");
 	m_ui->comboBoxEncoding->addItem("ISO 8859-15");
 
-
-	m_ui->comboBoxEncoding->setCurrentText(QTextCodec::codecForLocale()->name());
+	m_ui->comboBoxEncoding->setCurrentText("ISO 8859-15"); // most IDF will have been created on Windows, so we use this locale by default
 
 	SVStyle::instance().formatPlainTextEdit(m_ui->plainTextEdit);
 }
