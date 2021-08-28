@@ -186,9 +186,17 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	const char * unit = KeywordList::Unit(enumName, (int)numPara);
 
-	// TODO Hauke
 	switch ((para_t)numPara) {
-		// value must be >0
+		case NANDRAD::HydraulicNetworkComponent::P_MassFlux:
+			// TODO Hauke
+			break;
+		case NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead:
+			// TODO Hauke
+			break;
+		case NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower:
+			// TODO Hauke
+			break;
+			// value must be >0
 		case P_HydraulicDiameter:
 		case P_Volume:
 		case P_MaximumHeatingPower:
@@ -196,25 +204,26 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-		// value must be >= 0
+			// value must be >= 0
 		case P_PressureLoss:
 		case P_PressureLossCoefficient:{
 			para.checkedValue(name, unit, unit, 0, true, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-		// value must be >0 and <1
+			// value must be >0 and <1
 		case P_CarnotEfficiency:
 		case P_PumpEfficiency:
 		case P_FractionOfMotorInefficienciesToFluidStream: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}
-		// value can be negative
+			// value can be negative
 		case P_PressureHead: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
+		case NANDRAD::HydraulicNetworkComponent::NUM_P: ; // just to make compiler happy
 	}
 }
 
