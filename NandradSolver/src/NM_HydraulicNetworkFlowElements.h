@@ -243,8 +243,6 @@ public:
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 private:
 
-	/*! Element's ID, needed to formulate input references. */
-	unsigned int					m_id;
 	/*! Value of pressure loss [Pa] */
 	double							m_pressureLoss = -999;
 }; // HNConstantPressureLossValve

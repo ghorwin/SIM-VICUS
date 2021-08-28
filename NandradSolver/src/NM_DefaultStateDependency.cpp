@@ -291,8 +291,8 @@ void DefaultStateDependency::setInputValueRefs(const std::vector<QuantityDescrip
 
 void DefaultStateDependency::stateDependencies(std::vector< std::pair<const double *, const double *> >	&resultInputValueReferences) const {
 	// No state dependend model object without the model properties!!!
-	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
-	IBK_ASSERT(model != nullptr);
+//	const AbstractModel* model = dynamic_cast<const AbstractModel*>(this);
+//	IBK_ASSERT(model != nullptr);
 
 	// clear pattern
 	if(!resultInputValueReferences.empty() )

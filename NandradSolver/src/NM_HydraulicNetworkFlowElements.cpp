@@ -589,9 +589,7 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 
 // *** HNConstantPressureLossValve ***
 
-HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
-	m_id(id)
-{
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int, const NANDRAD::HydraulicNetworkComponent &component) {
 	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
 }
 

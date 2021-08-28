@@ -91,9 +91,6 @@ public:
 
 private:
 
-	/*! Reference to simulation parameter block. */
-	const NANDRAD::SimulationParameter				*m_simPara = nullptr;
-
 	/*! Model instance ID (unused since results are provided for zones). */
 	unsigned int									m_id;
 	/*! Display name (for error messages). */
