@@ -375,7 +375,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 
 
 void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
-	QComboBox * buildingCombo;
+	QComboBox * buildingCombo = nullptr;
 	QComboBox * buildingLevelCombo;
 	if (sender() == m_ui->toolButtonAddBuildingLevel) {
 		buildingCombo = m_ui->comboBoxBuilding;
