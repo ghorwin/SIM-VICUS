@@ -95,7 +95,7 @@ if( WIN32 )
 	set(WIN_FRAMEWORKS iphlpapi gdiplus gdi32 user32 ole32)
 	
 	# enable console window (to see debug/profiler messages)
-	set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
+	#set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
 	
 endif( WIN32 ) 
 
