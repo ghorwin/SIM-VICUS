@@ -46,6 +46,22 @@ qt5_add_resources( APP_RC_SRCS ${APP_QRCS} )
 qt5_wrap_ui( APP_UI_SRCS ${APP_UIS} )
 qt5_wrap_cpp( APP_MOC_SRCS ${APP_HDRS} )
 
+# Note: this is just so that the manually build app bundle is basically configured when testing in 
+#       MACOS and has a decent icon. In deployment mode, the same PList file needs to be used.
+if( APPLE )
+  set( GUI_TYPE MACOSX_BUNDLE )
+  set( MACOSX_BUNDLE_BUNDLE_NAME NANDRADFMUGenerator )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION 1.0 )
+  set( MACOSX_BUNDLE_COPYRIGHT "SIM-VICUS Team 2020-today, GPL Licensed" )
+  set( MACOSX_BUNDLE_GUI_IDENTIFIER com.IBK.NANDRADFMUGenerator )
+  set( MACOSX_BUNDLE_INFO_STRING "NANDRAD FMU Generator" )
+  set( MACOSX_BUNDLE_LONG_VERSION_STRING "Version 1.0.0" )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0" ) # the version shown in Finder
+  set( MACOSX_BUNDLE_ICON_FILE NandradFMUGenerator.icns )
+  SET_SOURCE_FILES_PROPERTIES( ${PROJECT_SOURCE_DIR}/../../resources/gfx/NandradFMUGenerator.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif( APPLE )
+
+
 # generate list of all required QT_LIBRARIES
 set ( QT_LIBRARIES 
 	Qt5::Widgets
