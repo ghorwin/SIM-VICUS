@@ -360,7 +360,11 @@ bool SVSettings::startProcess(const QString & executable,
 		} break;
 
 		case TE_GnomeTerminal : {
-			commandLineArgs = QStringList() << "--tab"  << "--" << "/bin/bash" << "'" + commandLineArgs.join(" ") + "'";
+			//  gnome-terminal -- /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/run_in_gnome_terminal.sh  /home/ghorwin/git/SIM-VICUS/bin/release/NandradSolver /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/Tutorial1.nandrad
+			QString executablePath = QFileInfo(executable).dir().absolutePath();
+			commandLineArgs = QStringList() << "--tab"  << "--" << executablePath + "/run_in_gnome_terminal.sh" << executable << commandLineArgs;
+
+//			commandLineArgs = QStringList() << "--tab"  << "--" << "/bin/bash" << executable << "\"" + commandLineArgs.join(" ") + "\"";
 			QString terminalProgram = "gnome-terminal";
 			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 		} break;

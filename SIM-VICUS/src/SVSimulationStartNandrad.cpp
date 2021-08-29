@@ -382,6 +382,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 
 
 bool SVSimulationStartNandrad::startSimulation(bool testInit) {
+	updateCmdLine();
 	QString resultPath;
 	if (!generateNANDRAD(resultPath))
 		return false;
@@ -470,8 +471,13 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
-							  tr("An error occurred during NANDRAD project generation. See log for details."));
+		QMessageBox box(this);
+		QString fullText = errorStack.join("\n");
+		box.setDetailedText(fullText);
+		box.setIcon(QMessageBox::Critical);
+		box.setText(tr("An error occurred during NANDRAD project generation (see details below)."));
+		box.setWindowTitle(tr("NANDRAD Project Generation Error"));
+		box.exec();
 		return false;
 	}
 
