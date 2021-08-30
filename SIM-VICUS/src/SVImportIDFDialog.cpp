@@ -583,6 +583,79 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	}
 	IBK_ASSERT(idfWindowGlazingSystem2VicusIDs.size() == prj.m_windowMaterial.size());
 
+	std::map<std::string, std::vector<std::string>>	constructionNameToFrameNames;
+
+	// get all windows
+	//search in all fsd's
+	//get the frame and divider there
+	for(const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd){
+		bool foundFrame = false;
+		//search for this window construction if frame is listed
+		std::vector<std::string> &frames= constructionNameToFrameNames[fsd.m_constructionName];
+		for (unsigned int i=0; i< frames.size(); ++i){
+			if(frames[i] == fsd.m_frameAndDividerName){
+				foundFrame = true;
+				break;
+			}
+		}
+		// not listed add frame
+		if(!foundFrame){
+			frames.push_back(fsd.m_frameAndDividerName);
+		}
+	}
+
+	std::map<std::string, unsigned int>		epFrameNameToIdFrameVicus;
+	std::map<std::string, unsigned int>		epFrameNameToIdDividerVicus;
+	std::map<std::string, unsigned int>		frameNameToFrameMaterialIds;
+	IBK::IBK_Message("\nImporting frames...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	for (const EP::Frame & frame : prj.m_frames) {
+		epFrameNameToIdFrameVicus[frame.m_name] = VICUS::INVALID_ID;
+		VICUS::WindowFrame frameVIC;
+		QString matName = codec->toUnicode(frame.m_name.c_str()); // Mind text encoding here!
+
+		//create a material for the frame
+		VICUS::Material mat;
+		VICUS::KeywordList::setParameter(frameVIC.m_para, "WindowFrame::para_t", VICUS::WindowFrame::P_Thickness, 0.1);
+		bool hasFrame = false;
+		if(frame.m_conductanceFrame>0){
+			VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Conductivity, frame.m_conductanceFrame * 0.1);
+			hasFrame = true;
+		}
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Density, 500);
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, 1500);
+
+		mat.m_displayName.setEncodedString("de:Rahmenmaterial");
+
+		// color and ID don't matter for now, try to find similar material in DB
+		bool found = false;
+		if(hasFrame){
+			for (const std::pair<const unsigned int, VICUS::Material> & dbMat : db.m_materials) {
+				if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
+					// re-use this material
+					IBK::IBK_Message( IBK::FormatString("  %1 -> using existing material '%2' [#%3] \n")
+									  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
+									  .arg(dbMat.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbMat.first),
+									  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+					frameNameToFrameMaterialIds[frame.m_name] = dbMat.first;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				// no matching material found, add new material to DB
+				unsigned int newID = db.m_materials.add(mat);
+				IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
+								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				frameNameToFrameMaterialIds[frame.m_name] = newID;
+			}
+			//add frame later
+			//first add database ..
+			//for(const std::pair<const unsigned int, VICUS::WindowFrame> & dbFrame : db.m)
+
+		}
+	}
+	IBK_ASSERT(idfMat2VicusMatIDs.size() == prj.m_materials.size());
+
 
 	// For each construction in IDF we store the respective VICUS-construction ID, and also, if the
 	// referenced construction is defined in reverse.
@@ -711,11 +784,21 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 				window.m_displayName = name;
 				window.m_color = color;
 				window.m_dataSource = "IDF Import";
+				for(unsigned int i=0; i<constructionNameToFrameNames[construction.m_name].size(); ++i){
+					const std::string &frameName = constructionNameToFrameNames[construction.m_name][i];
+					if(frameName.empty()){
+						window.m_methodFrame = VICUS::Window::M_None;
+						window.m_methodDivider = VICUS::Window::M_None;
+					}
+					else{
+						VICUS::WindowFrame winFrame;
+						VICUS::WindowDivider windDivider;
 
+
+					}
+				}
 				//now we have no frame
 				///TODO Dirk->Andreas wie können wir die Frames hinzufügen die aber erst in Verbindung mit den FSD's bereit stehen?
-				window.m_methodFrame = VICUS::Window::M_None;
-				window.m_methodDivider = VICUS::Window::M_None;
 
 				bool found = false;
 				// now check if window construction (or its reverse) does already exist in VICUS DB
@@ -931,7 +1014,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	std::set<std::string> brokenBSD;
 
 
-	std::map<std::string, unsigned int> mapFsdNameIDmap;
+	std::map<std::string, std::pair<unsigned int, unsigned int>> mapFsdNameIDmap;
 
 	// import all building surface detailed -> opaque surfaces
 	IBK::IBK_Message("\nImporting surfaces...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -1202,10 +1285,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 
 		// remember bsd/surface name - id association
-		mapFsdNameIDmap[fsd.m_name] = subSurf.m_id;
+		mapFsdNameIDmap[fsd.m_name] = std::pair<unsigned int, unsigned int> (surf->m_id, subs.size()-1);
 	}
 
-
+#if 0
 	IBK::IBK_Message("\nImporting window components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
 		updateProgress(&dlg, progressTimer, ++count);
@@ -1364,12 +1447,16 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// now create a new component instance
 		VICUS::SubSurfaceComponentInstance ssci;
 		ssci.m_id = VICUS::uniqueId(vp.m_subSurfaceComponentInstances);
-		ssci.m_idSideASurface = mapFsdNameIDmap[fsd.m_name];
+
+		VICUS::Surface *surf = vp.surfaceByID(mapFsdNameIDmap[fsd.m_name].first);
+		IBK_ASSERT(surf != nullptr);
+
+		ssci.m_idSideASurface = surf->subSurfaces()[mapFsdNameIDmap[fsd.m_name].second].m_id;
 		ssci.m_idSideBSurface = VICUS::INVALID_ID;
 
 		ssci.m_idSubSurfaceComponent = comId;
 
-		VICUS::SubSurface * subsurf = vp.subSurfaceByID(ssci.m_idSideASurface);
+		VICUS::SubSurface * subsurf = vp.subSurfaceByID(ssci.m_idSideASurface); //hier kann ein nullptr drin sein
 		switch (com.m_type) {
 			case VICUS::SubSurfaceComponent::CT_Window:
 				subsurf->m_color = QColor(96,96,255,64);
@@ -1396,7 +1483,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		*/
 		vp.m_subSurfaceComponentInstances.push_back(ssci);
 	}
-
+#endif
 	// *** ShadingBuildingDetailed ***
 
 	IBK::IBK_Message("\nShading geometry (ShadingBuildingDetailed)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
