@@ -1,5 +1,5 @@
-#ifndef EP_MATERIAL_H
-#define EP_MATERIAL_H
+#ifndef EP_MaterialH
+#define EP_MaterialH
 
 #include <vector>
 #include <string>
@@ -69,4 +69,4 @@ public:
 };
 }
 
-#endif // EP_MATERIAL_H
+#endif // EP_MaterialH
