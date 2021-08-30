@@ -125,6 +125,298 @@ void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer, int co
 }
 
 
+
+int constructionType(const std::string &conName, const EP::Project &prj, std::string &err, unsigned int &vecPos){
+	int result = -1;	//not found
+	/* result description
+		-1 not found
+		1 opaque
+		2 simple glazing system
+		3 simple glazing system with shade
+		4 other
+		9 unsupported material layers
+		10 Error
+	*/
+	const std::vector<EP::Construction> &cons = prj.m_constructions;
+	const std::vector<EP::Material> &mats = prj.m_materials;
+	const std::vector<EP::WindowMaterial> &winMats = prj.m_windowMaterial;
+
+	vecPos = 0;
+	for(const EP::Construction &con : cons){
+		if(con.m_name == conName){
+			result = 0;
+			for(const std::string &layerName : con.m_layers){
+
+				//check for opaque layer
+				bool foundOpaque = false;
+				for(const EP::Material &mat : mats){
+
+					if(mat.m_name == layerName){
+						if(result > 1){
+							err = "The construction '" + conName + "' is invalid. The construction has opaque and other material layers.";
+							return 10;
+						}
+						foundOpaque = true;
+						result = 1;
+					}
+				}
+
+				//check for simple glazing system
+				bool foundSimpleWin = false;
+				for(const EP::WindowMaterial &mat : winMats){
+
+					if(mat.m_name == layerName){
+						if(result == 3 || result == 2 || result == -1){
+							err = "The construction '" + conName + "' is invalid. The construction has transparent and other material layers.";
+							return 10;
+						}
+
+						foundSimpleWin = true;
+						result = 2;
+					}
+				}
+				if(!(foundOpaque && foundSimpleWin)){
+					err = "The construction '" + conName + "' has unsupported material layers.";
+					return 9;
+				}
+			}
+			break;
+		}
+		++vecPos;
+	}
+	return result;
+}
+
+void SVImportIDFDialog::transferDataDirk(const EP::Project &prj){
+	FUNCID(SVImportIDFDialog::transferDataDirk);
+	SVDatabase & db = SVSettings::instance().m_db; // readability improvement
+
+	VICUS::Project & vp = m_importedProject; // readability improvement
+	vp = VICUS::Project(); // clear any previous data
+
+	vp.m_buildings.resize(1);
+	vp.m_buildings[0].m_buildingLevels.resize(1);
+	vp.m_buildings[0].m_id = vp.m_buildings[0].uniqueID();
+	vp.m_buildings[0].m_displayName = tr("Imported IDF Building Geometry");
+
+	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
+	bl.m_id = bl.uniqueID();
+	bl.m_displayName = tr("Default building level");
+
+	// count all elements to be imported
+	int elementsToImport =
+			prj.m_bsd.size()*2 +  // we loop twice here
+			prj.m_constructions.size() +
+			prj.m_zones.size() +
+			prj.m_fsd.size() +
+			prj.m_shadingBuildingDetailed.size();
+
+	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, elementsToImport, this);
+	dlg.setWindowModality(Qt::WindowModal);
+	dlg.setValue(0);
+	dlg.setMinimumDuration(0);
+
+	QElapsedTimer progressTimer;
+	progressTimer.start();
+
+	int count = 0; // progress counter
+
+	IBKMK::Vector3D minCoords(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max());
+	IBKMK::Vector3D maxCoords(std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest(),std::numeric_limits<double>::lowest());
+
+	QTextCodec * codec = QTextCodec::codecForName(m_ui->comboBoxEncoding->currentText().toLocal8Bit());
+
+	std::map<QString, VICUS::Room> epZoneNameToRoomVICUS;
+	std::map<QString, VICUS::Construction> epConstructionNameToOpaqueConstructionVICUS;
+	std::vector<int> isConstructionImported(prj.m_constructions.size(),-1);
+
+	//für später
+	std::map<unsigned int, unsigned int> linkedIdx1To2BSD;
+	std::vector<QString> linkedBSDs;
+
+	// Vector that relates IDF Material definition to VICUS Material IDs -> note that we directly modify SV Database during import
+	// to avoid excessive material duplicate generation.
+	// We store this as vector and not as map, because we need the index to access IDF material properties later.
+	std::vector<unsigned int> idfMat2VicusMatIDs;
+	std::vector<unsigned int> idfWindowGlazingSystem2VicusIDs;
+
+	// TODO : add more string->category matchings (multilang?)
+	std::vector<std::pair<QString, VICUS::Material::Category> > categories;
+	categories.push_back(std::make_pair("Porenbeton", VICUS::Material::MC_Cementitious));
+	categories.push_back(std::make_pair("Beton", VICUS::Material::MC_Cementitious));
+	categories.push_back(std::make_pair("Zementestrich", VICUS::Material::MC_Cementitious));
+
+	IBK::IBK_Message("\nImporting materials...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	for (const EP::Material & m : prj.m_materials) {
+		// generate VICUS::Material
+		VICUS::Material mat;
+		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+		mat.m_displayName.setEncodedString(matName.toStdString() );
+		mat.m_color = SVStyle::randomColor();
+
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Density, m.m_density);
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_Conductivity, m.m_conductivity);
+		VICUS::KeywordList::setParameter(mat.m_para, "Material::para_t", VICUS::Material::P_HeatCapacity, m.m_specHeatCapa);
+
+		for (const std::pair<QString, VICUS::Material::Category> & cat : categories)
+			if (matName.startsWith(cat.first))
+				mat.m_category = cat.second;
+
+		// color and ID don't matter for now, try to find similar material in DB
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::Material> & dbMat : db.m_materials) {
+			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing material '%2' [#%3] \n")
+								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
+								  .arg(dbMat.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbMat.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				idfMat2VicusMatIDs.push_back(dbMat.first);
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching material found, add new material to DB
+			unsigned int newID = db.m_materials.add(mat);
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
+							  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			idfMat2VicusMatIDs.push_back(newID);
+		}
+	}
+	IBK_ASSERT(idfMat2VicusMatIDs.size() == prj.m_materials.size());
+
+	IBK::IBK_Message("\nImporting window glazing systems...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	for (const EP::WindowMaterial & m : prj.m_windowMaterial) {
+		// generate VICUS::WindowGlazingSystem
+
+		VICUS::WindowGlazingSystem mat;
+		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+		mat.m_displayName.setEncodedString(matName.toStdString() );
+		mat.m_color = SVStyle::randomColor();
+		mat.m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
+
+		VICUS::KeywordList::setParameter(mat.m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m.m_uValue);
+		//create a default spline for SHGC
+		std::vector<double> angles;
+		std::vector<double> values;
+		for (unsigned int i=0; i<10; ++i)
+			angles.push_back(i*10); // in Deg
+
+		values.push_back(1); // 0 deg
+		values.push_back(1);
+		values.push_back(1);
+		values.push_back(1);
+		values.push_back(0.98);
+		values.push_back(0.94);
+		values.push_back(0.86);
+		values.push_back(0.69);
+		values.push_back(0.37);
+		values.push_back(0); // 90 deg
+
+		// scale by nominal SHGC
+		for (double & v : values)
+			v *= m.m_SHGC;
+
+		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name = "SHGC";
+		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit.set("Deg");
+		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_yUnit.set("---");
+		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, values);
+
+		// color and ID don't matter for now, try to find similar material in DB
+		bool found = false;
+		for (const std::pair<const unsigned int, VICUS::WindowGlazingSystem> & dbMat : db.m_windowGlazingSystems) {
+			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
+				// re-use this material
+				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing window glazing system '%2' [#%3] \n")
+								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
+								  .arg(dbMat.second.m_displayName.string(IBK::MultiLanguageString::m_language, true)).arg(dbMat.first),
+								  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+				idfWindowGlazingSystem2VicusIDs.push_back(dbMat.first);
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			// no matching material found, add new material to DB
+			unsigned int newID = db.m_windowGlazingSystems.add(mat);
+			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
+							  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			idfWindowGlazingSystem2VicusIDs.push_back(newID);
+		}
+	}
+	IBK_ASSERT(idfWindowGlazingSystem2VicusIDs.size() == prj.m_windowMaterial.size());
+
+	//first loop over all building surface detailed objects
+	for( const EP::BuildingSurfaceDetailed &bsd : prj.m_bsd){
+		QString roomName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
+		//add Zone Name and create room if not exist
+		if(epZoneNameToRoomVICUS.find(roomName) == epZoneNameToRoomVICUS.end()){
+			//create room
+			VICUS::Room r;
+			r.m_id = r.uniqueID();
+			r.m_displayName = roomName;
+
+			bool foundRoom = false;
+			//find ep zone (room)
+			for(const EP::Zone &epRoom : prj.m_zones){
+				QString epRoomName = codec->toUnicode(epRoom.m_name.c_str()); // Mind text encoding here!
+				if(epRoomName == roomName){
+					// transfer attributes
+
+					// ceiling height is not taken into account
+					if (epRoom.m_floorArea > 0)
+						r.m_para[VICUS::Room::P_Area].set("Area", epRoom.m_floorArea, "m2" );
+					if (epRoom.m_volume > 0)
+						r.m_para[VICUS::Room::P_Volume].set("Volume", epRoom.m_volume, "m3" );
+
+
+					foundRoom = true;
+					break;
+				}
+			}
+			if(!foundRoom)
+				IBK::IBK_Message( IBK::FormatString("Referenced Zone '%1' in BSD '%2' is not listed in zones -> create a new Room without Volume and Area. \n")
+								  .arg(roomName.toStdString(), 40, std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+			epZoneNameToRoomVICUS[roomName] = r;
+
+			//add room to VICUS project
+			bl.m_rooms.push_back(r);
+			IBK::IBK_Message( IBK::FormatString("  %1 [#%2] (area=%3 m2, volume=%4 m3)\n")
+							  .arg("'"+r.m_displayName.toStdString()+"'", 40, std::ios_base::left)
+							  .arg(r.m_id)
+							  .arg(r.m_para[VICUS::Room::P_Area].value)
+							  .arg(r.m_para[VICUS::Room::P_Volume].value), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+			updateProgress(&dlg, progressTimer, ++count);
+		}
+
+
+		QString constructionName = codec->toUnicode(bsd.m_constructionName.c_str()); // Mind text encoding here!
+		//check if construction already exist
+		if(epConstructionNameToOpaqueConstructionVICUS.find(constructionName) == epConstructionNameToOpaqueConstructionVICUS.end()){
+			//add a new construction
+			VICUS::Construction constructionV;
+			constructionV.m_dataSource.setString("IDF Import", "all");
+			constructionV.m_displayName.setString(constructionName.toStdString(), "all");
+			constructionV.m_color = SVStyle::randomColor();
+
+			std::string err;
+			unsigned int vecPos;
+			int errInt = constructionType(bsd.m_constructionName, prj, err, vecPos);
+			//check if construction is a valid construction for import
+			if(errInt != 1)
+				IBK::IBK_Message(IBK::FormatString(err), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			else if(vecPos != prj.m_constructions.size())
+				isConstructionImported[vecPos] = 1;
+		}
+
+
+	}
+
+}
+
 void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
 
