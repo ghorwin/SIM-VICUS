@@ -1230,8 +1230,7 @@ void SVImportMessageHandler::msg(const std::string& msg,
 			m_plainTextEdit->appendPlainText(QString::fromStdString(msg2));
 	}
 
-
-	IBK::MessageHandler::msg(msg, t, func_id, verbose_level);
+	m_defaultMsgHandler->msg(msg, t, func_id, verbose_level);
 	if (verbose_level > m_requestedConsoleVerbosityLevel)
 		return;
 }
