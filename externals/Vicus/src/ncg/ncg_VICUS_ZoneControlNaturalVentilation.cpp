@@ -65,8 +65,6 @@ void ZoneControlNaturalVentilation::readXML(const TiXmlElement * element) {
 				m_notes.setEncodedString(c->GetText());
 			else if (cName == "DataSource")
 				m_dataSource.setEncodedString(c->GetText());
-			else if (cName == "IdSchedules[NUM_ST]")
-				m_idSchedules[NUM_ST] = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -81,7 +79,16 @@ void ZoneControlNaturalVentilation::readXML(const TiXmlElement * element) {
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+				bool found = false;
+				for (int i=0; i<NUM_ST; ++i) {
+					if (cName == KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType",i)) {
+						m_idSchedules[i] = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			c = c->NextSiblingElement();
 		}
@@ -109,8 +116,11 @@ TiXmlElement * ZoneControlNaturalVentilation::writeXML(TiXmlElement * parent) co
 		TiXmlElement::appendSingleAttributeElement(e, "Notes", nullptr, std::string(), m_notes.encodedString());
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
-	if (m_idSchedules[NUM_ST] != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdSchedules[NUM_ST]", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSchedules[NUM_ST]));
+
+	for (int i=0; i<NUM_ST; ++i) {
+		if (m_idSchedules[i] != VICUS::INVALID_ID)
+				TiXmlElement::appendSingleAttributeElement(e, KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType",  i), nullptr, std::string(), IBK::val2string<unsigned int>(m_idSchedules[i]));
+	}
 
 	for (unsigned int i=0; i<NUM_ST; ++i) {
 		if (!m_para[i].name.empty()) {
