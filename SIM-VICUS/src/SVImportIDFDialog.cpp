@@ -1013,7 +1013,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	std::map<std::string, unsigned int> mapBsdNameIDmap;
 	std::set<std::string> brokenBSD;
 
-
+	//fsd name EP, surface id VICUS, Idx subSurface VICUS
 	std::map<std::string, std::pair<unsigned int, unsigned int>> mapFsdNameIDmap;
 
 	// import all building surface detailed -> opaque surfaces
@@ -1288,7 +1288,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		mapFsdNameIDmap[fsd.m_name] = std::pair<unsigned int, unsigned int> (surf->m_id, subs.size()-1);
 	}
 
-#if 0
+#if 1
 	IBK::IBK_Message("\nImporting window components...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
 		updateProgress(&dlg, progressTimer, ++count);
@@ -1448,7 +1448,13 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		VICUS::SubSurfaceComponentInstance ssci;
 		ssci.m_id = VICUS::uniqueId(vp.m_subSurfaceComponentInstances);
 
+		if(mapFsdNameIDmap.find(fsd.m_name) == mapFsdNameIDmap.end()){
+			IBK::IBK_Message(IBK::FormatString("FSD %1 not map.").arg(fsd.m_name), IBK::MSG_WARNING,
+							 FUNC_ID, IBK::VL_STANDARD);
+			continue;
+		}
 		VICUS::Surface *surf = vp.surfaceByID(mapFsdNameIDmap[fsd.m_name].first);
+
 		IBK_ASSERT(surf != nullptr);
 
 		ssci.m_idSideASurface = surf->subSurfaces()[mapFsdNameIDmap[fsd.m_name].second].m_id;
