@@ -14,8 +14,6 @@ This project and everyone participating in it is governed by the [Code of Conduc
 
 The best place to for contributers start is the [documentation page](https://ghorwin.github.io/SIM-VICUS). Please also join the mailing list https://www.listserv.dfn.de/sympa/info/sim-vicus and discuss ideas and ask questions there.
 
-[What should I know before I get started?](#what-should-i-know-before-i-get-started)
-
 ### SIM-VICUS and NANDRAD
 
 The repository basically includes several distinct software packages (and some utility scripts, and build system tools, and and and..). But the central pieces are:
