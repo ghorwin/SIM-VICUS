@@ -122,6 +122,7 @@ SOURCES += \
 	../../src/core3D/Vic3DGeometryHelpers.cpp \
 	../../src/core3D/Vic3DGridObject.cpp \
 	../../src/core3D/Vic3DKeyboardMouseHandler.cpp \
+	../../src/core3D/Vic3DMeasurementObject.cpp \
 	../../src/core3D/Vic3DNewGeometryObject.cpp \
 	../../src/core3D/Vic3DNewSubSurfaceObject.cpp \
 	../../src/core3D/Vic3DOpaqueGeometryObject.cpp \
@@ -280,6 +281,7 @@ HEADERS  += \
 	../../src/core3D/Vic3DGeometryHelpers.h \
 	../../src/core3D/Vic3DGridObject.h \
 	../../src/core3D/Vic3DKeyboardMouseHandler.h \
+	../../src/core3D/Vic3DMeasurementObject.h \
 	../../src/core3D/Vic3DNewGeometryObject.h \
 	../../src/core3D/Vic3DNewSubSurfaceObject.h \
 	../../src/core3D/Vic3DOpaqueGeometryObject.h \
