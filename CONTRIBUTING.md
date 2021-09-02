@@ -18,7 +18,7 @@ The best place to for contributers start is the [documentation page](https://gho
 
 The repository basically includes several distinct software packages (and some utility scripts, and build system tools, and and and..). But the central pieces are:
 
-* **NandradSolver**, a command line multi-zone building and thermohygraulic network model solver
+* **NandradSolver**, a command line multi-zone building and thermo-hydraulic network model solver
 * **SIM-VICUS**, the graphical user interface for NANDRAD (and potentially other solvers/tools)
 * **NandradFMUGenerator**, a user interface (with automatition-via-command-line) for generating FMUs from NANDRAD projects
 
