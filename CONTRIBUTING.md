@@ -47,7 +47,7 @@ Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues/).
 * **Describe the behavior you observed after following the steps** and point out what exactly is the problem with that behavior.
 * **Provide complete NANDRAD projects including referenced climate data files** when reporting bugs/crashes in the NANDRAD solver core.
 * **Explain which behavior you expected to see instead and why.**
-* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem. You can use [this tool](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [this tool](https://github.com/colinkeenan/silentcast) or [this tool](https://github.com/GNOME/byzanz) on Linux.
+* **Include screenshots and animated GIFs** which show you following the described steps and clearly demonstrate the problem. You can use [LICEcap](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and [Silent cast](https://github.com/colinkeenan/silentcast) or _Shutter_ on Linux.
 * **If the problem wasn't triggered by a specific action**, describe what you were doing before the problem happened and share more information using the guidelines below.
 
 Provide more context by answering these questions:
