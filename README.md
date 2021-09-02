@@ -13,8 +13,12 @@ We have continuous integration scripts running (build-test of all C/C++ code) an
 | CI - MacOS 64-bit (10.11 "El Capitan") | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-IOS-SimVicus-Trunk&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus-Trunk/) |
 | Solver regression test (correctly simulating test suite) | [![Regression Test](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=Daily-Test-SimVicus_Nandrad2&style=plastic&subject=Testsuite)](https://baukli01.arch.tu-dresden.de/jenkins/job/Daily-Test-SimVicus_Nandrad2/)   |
 
+CI tests are located in directory `data/tests`. See [developer documentation](https://ghorwin.github.io/SIM-VICUS/Developer-Documentation/index.html) for information about the Python test suite scripts.
 
-Tests are located in `data/tests`, the validation suite(s) are in `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
+### Validation
+
+The NANDRAD solver is thoroughly validated with the [SimQuality test suite](https://simquality.de) and other published validation test cases.
+The validation suite(s) are in directory `data/validation` with summary given on the [Validation-Wiki-readme](https://github.com/ghorwin/SIM-VICUS/tree/master/data/validation/SimQuality) page.
 
 ## Repo-Documentation
 
