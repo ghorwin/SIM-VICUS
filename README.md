@@ -1,5 +1,9 @@
 # SIM-VICUS
 
+https://sim-vicus.de hosts the official webpage with user-centered information. Development-related information is stored and handled on github.
+
+## Quality Assurance
+
 We have continuous integration scripts running (build-test of all C/C++ code) and solver regression tests. For details, see [Jenkins](https://baukli01.arch.tu-dresden.de/jenkins).
 
 | Test | Result|
@@ -45,7 +49,7 @@ docs                 - generated AsciiDoctor-based documentation, displayed in g
 externals            - libraries including third-party libs
 lib_x64              - contains generated x64 libraries (nothing in here except .gitignore)
 NandradCodeGenerator - the NANDRAD code generator (keyword list and serialization support)
-NandradDevTests      - code snippeds used only during development, not for production code
+NandradDevTests      - code snippeds used only during development/testing, not for production code, may not compile
 NandradFMUGenerator  - GUI tool for FMU export configuration and FMU generation
 NandradSolver        - sources for the NANDRAD command line solver
 NandradSolverFMI     - sources for the NANDRAD Functional Mock-Up Interface module
@@ -60,16 +64,17 @@ NANDRAD uses a bunch of external/third-party libraries:
 
 * **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
 * **DataIO** - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
-* **IDFReader** - library for IDF file parsing and data import to VICUS
 * **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
 * **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching
+* **IDFReader** - library for IDF file parsing and data import to VICUS
 * **IntegratorFramework** - library that includes several numerical interation libraries and provides a convenient framework to error-controlled time integration
 * **ITSOL2** - implements ILUT preconditioner (included in IntegratorFramework, this directory contains the original sources)
 * **Nandrad** - the data model library (project handling)
+* **Shading** - implements shading factors calculation
 * **SuiteSparse** - implements sparse direct solver KLU
 * **sundials** - includes CVODE integrator, and GMRES and BiCGStab iterative les solvers
 * **TiCPP** - TinyXML parser library, used for reading/writing XML files
-* **Zeppelin** - graphing library (see [Graf Zeppelin](https://de.wikipedia.org/wiki/Ferdinand_von_Zeppelin) :-), needed to determine evaluation order
+* **Zeppelin** - graphing library (see [Graf Zeppelin](https://de.wikipedia.org/wiki/Ferdinand_von_Zeppelin) :-), needed to determine evaluation order of the NANDRAD model objects
 
 Libraries related to UI development:
 
