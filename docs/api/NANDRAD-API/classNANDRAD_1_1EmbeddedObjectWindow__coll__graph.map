@@ -1,0 +1,7 @@
+<map id="NANDRAD::EmbeddedObjectWindow" name="NANDRAD::EmbeddedObjectWindow">
+<area shape="rect" id="node2" href="$classNANDRAD_1_1WindowFrame.html" title="WindowFrame defines the frame of a window. " alt="" coords="502,5,685,32"/>
+<area shape="rect" id="node3" href="$classNANDRAD_1_1WindowGlazingSystem.html" title="WindowGlazingSystem defines the glazing to be used in a window. " alt="" coords="476,56,711,83"/>
+<area shape="rect" id="node4" href="$classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,81,235,108"/>
+<area shape="rect" id="node5" href="$classNANDRAD_1_1WindowShading.html" title="WindowShading defines a dynamically adjustable shading. " alt="" coords="497,107,689,133"/>
+<area shape="rect" id="node6" href="$classNANDRAD_1_1WindowDivider.html" title="WindowDivider defines the divider of a window. " alt="" coords="500,157,687,184"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="NANDRAD::HydraulicNetworkElement" name="NANDRAD::HydraulicNetworkElement">
+<area shape="rect" id="node2" href="$classNANDRAD_1_1HydraulicNetworkComponent.html" title="Parameters for a hydraulic component for the network. " alt="" coords="424,5,627,47"/>
+<area shape="rect" id="node3" href="$classNANDRAD_1_1DataTable.html" title="A data member for a table with named columns. " alt="" coords="41,13,199,39"/>
+<area shape="rect" id="node4" href="$classNANDRAD_1_1HydraulicNetworkControlElement.html" title="This class contains parameters for a controller that is used for network elements. " alt="" coords="424,71,627,112"/>
+<area shape="rect" id="node5" href="$classNANDRAD_1_1HydraulicNetworkPipeProperties.html" title="Stores data specific for a pipe. " alt="" coords="424,136,627,177"/>
+<area shape="rect" id="node6" href="$classNANDRAD_1_1HydraulicNetworkHeatExchange.html" title="Encapsulates all data defining heat exchange between flow elements and the environment or other model..." alt="" coords="424,201,627,243"/>
+<area shape="rect" id="node7" href="$classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,209,235,235"/>
+</map>

@@ -1,6 +1,9 @@
 var classNANDRAD_1_1Interface =
 [
-    [ "behavesLike", "classNANDRAD_1_1Interface.html#ad77004175bfa0f2e8bd4debd43dbefd5", null ],
+    [ "readXML", "classNANDRAD_1_1Interface.html#a5fed9a35c78ce04086f0b682425bd496", null ],
+    [ "writeXML", "classNANDRAD_1_1Interface.html#ac507e53fdb977ce9661db1985b4b4b17", null ],
+    [ "checkParameters", "classNANDRAD_1_1Interface.html#a33c28866b944408e86d316d7bfed512d", null ],
+    [ "behavesLike", "classNANDRAD_1_1Interface.html#ad3cdaf082235b0159a15c0c122c06126", null ],
     [ "updateComment", "classNANDRAD_1_1Interface.html#ada421f19ddc707854f3b124804ea68fc", null ],
     [ "haveBCParameters", "classNANDRAD_1_1Interface.html#a20ac613180ad47643e359d94ccec923e", null ],
     [ "m_id", "classNANDRAD_1_1Interface.html#af005386c82256ea8856b7232e154a00a", null ],

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Location Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Location Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -61,6 +62,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Location.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1Location-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -87,21 +89,37 @@ Public Types</h2></td></tr>
  }<tr class="memdesc:aaa5ff5e9c4c5a0108b02712c8deb7f32"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classNANDRAD_1_1Location.html" title="Class Location specifies climate and climatic loads of the whole building. ">Location</a> parameters.  <a href="classNANDRAD_1_1Location.html#aaa5ff5e9c4c5a0108b02712c8deb7f32">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:aaa5ff5e9c4c5a0108b02712c8deb7f32"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ea52b3a80f21c1bceb5cdff9c98f4ef"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#a5ea52b3a80f21c1bceb5cdff9c98f4ef">flag_t</a> { <b>F_PerezDiffuseRadiationModel</b>, 
+<b>F_ContinuousShadingFactorData</b>, 
+<b>NUM_F</b>
+ }<tr class="memdesc:a5ea52b3a80f21c1bceb5cdff9c98f4ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculation flags.  <a href="classNANDRAD_1_1Location.html#a5ea52b3a80f21c1bceb5cdff9c98f4ef">More...</a><br /></td></tr>
+</td></tr>
+<tr class="separator:a5ea52b3a80f21c1bceb5cdff9c98f4ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ae00d20032479163a5e229a415e02d6d5"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#ae00d20032479163a5e229a415e02d6d5">checkParameters</a> () const</td></tr>
+<tr class="memdesc:ae00d20032479163a5e229a415e02d6d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid and required parameters (value ranges).  <a href="#ae00d20032479163a5e229a415e02d6d5">More...</a><br /></td></tr>
+<tr class="separator:ae00d20032479163a5e229a415e02d6d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:aad83f8c7da123b4081928f5ee70d66d2"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#aad83f8c7da123b4081928f5ee70d66d2">m_para</a> [NUM_P]</td></tr>
-<tr class="memdesc:aad83f8c7da123b4081928f5ee70d66d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter set.  <a href="#aad83f8c7da123b4081928f5ee70d66d2">More...</a><br /></td></tr>
-<tr class="separator:aad83f8c7da123b4081928f5ee70d66d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa68a8ac2c9110e5060bd537a3882d5a1"><td class="memItemLeft" align="right" valign="top">IBK::Path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#aa68a8ac2c9110e5060bd537a3882d5a1">m_climateFileName</a></td></tr>
-<tr class="memdesc:aa68a8ac2c9110e5060bd537a3882d5a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the climate data file.  <a href="#aa68a8ac2c9110e5060bd537a3882d5a1">More...</a><br /></td></tr>
-<tr class="separator:aa68a8ac2c9110e5060bd537a3882d5a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af73ef75845d210942bbeb575a79de0ba"><td class="memItemLeft" align="right" valign="top">IBK::Path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#af73ef75845d210942bbeb575a79de0ba">m_shadingFactorFileName</a></td></tr>
-<tr class="memdesc:af73ef75845d210942bbeb575a79de0ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional: name of the external shading factor data file.  <a href="#af73ef75845d210942bbeb575a79de0ba">More...</a><br /></td></tr>
-<tr class="separator:af73ef75845d210942bbeb575a79de0ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acdf5ea59e1e9d664b7b60daf87556458"><td class="memItemLeft" align="right" valign="top">IBK::Flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#acdf5ea59e1e9d664b7b60daf87556458">m_perezDiffuseRadiationModel</a></td></tr>
-<tr class="memdesc:acdf5ea59e1e9d664b7b60daf87556458"><td class="mdescLeft">&#160;</td><td class="mdescRight">If enabled, Perez model for diffuse radiation is used.  <a href="#acdf5ea59e1e9d664b7b60daf87556458">More...</a><br /></td></tr>
-<tr class="separator:acdf5ea59e1e9d664b7b60daf87556458"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad30960171e38f4d9cfbc41b003de0b10"><td class="memItemLeft" align="right" valign="top">IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#ad30960171e38f4d9cfbc41b003de0b10">m_para</a> [NUM_P]</td></tr>
+<tr class="memdesc:ad30960171e38f4d9cfbc41b003de0b10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter set.  <a href="#ad30960171e38f4d9cfbc41b003de0b10">More...</a><br /></td></tr>
+<tr class="separator:ad30960171e38f4d9cfbc41b003de0b10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a6a30eb9d8d499d78ae7b4a3329fa5f"><td class="memItemLeft" align="right" valign="top">IBK::Flag&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#a2a6a30eb9d8d499d78ae7b4a3329fa5f">m_flags</a> [NUM_F]</td></tr>
+<tr class="memdesc:a2a6a30eb9d8d499d78ae7b4a3329fa5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of flags.  <a href="#a2a6a30eb9d8d499d78ae7b4a3329fa5f">More...</a><br /></td></tr>
+<tr class="separator:a2a6a30eb9d8d499d78ae7b4a3329fa5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba8a4654d661ef83d3bad175a7b07ef0"><td class="memItemLeft" align="right" valign="top"><a id="aba8a4654d661ef83d3bad175a7b07ef0"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#aba8a4654d661ef83d3bad175a7b07ef0">m_timeZone</a> = 13</td></tr>
+<tr class="memdesc:aba8a4654d661ef83d3bad175a7b07ef0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Time zone, only used when both P_Longitude and P_Latitude are given and thus a custom climatic location is being used. <br /></td></tr>
+<tr class="separator:aba8a4654d661ef83d3bad175a7b07ef0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4fb6200830b338a2bf47a4f7a7dca42"><td class="memItemLeft" align="right" valign="top">IBK::Path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#ab4fb6200830b338a2bf47a4f7a7dca42">m_climateFilePath</a></td></tr>
+<tr class="memdesc:ab4fb6200830b338a2bf47a4f7a7dca42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to the climate data file (may contain placeholders).  <a href="#ab4fb6200830b338a2bf47a4f7a7dca42">More...</a><br /></td></tr>
+<tr class="separator:ab4fb6200830b338a2bf47a4f7a7dca42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaaad17897e1e12e44a4c11274ea84e31"><td class="memItemLeft" align="right" valign="top">IBK::Path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#aaaad17897e1e12e44a4c11274ea84e31">m_shadingFactorFilePath</a></td></tr>
+<tr class="memdesc:aaaad17897e1e12e44a4c11274ea84e31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional: name of the external shading factor data file.  <a href="#aaaad17897e1e12e44a4c11274ea84e31">More...</a><br /></td></tr>
+<tr class="separator:aaaad17897e1e12e44a4c11274ea84e31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6159597060e94fe49459e1536561551f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1Sensor.html">Sensor</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Location.html#a6159597060e94fe49459e1536561551f">m_sensors</a></td></tr>
 <tr class="memdesc:a6159597060e94fe49459e1536561551f"><td class="mdescLeft">&#160;</td><td class="mdescRight">We may place one or more radiation sensors outside.  <a href="#a6159597060e94fe49459e1536561551f">More...</a><br /></td></tr>
 <tr class="separator:a6159597060e94fe49459e1536561551f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,76 +153,114 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="aad83f8c7da123b4081928f5ee70d66d2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad83f8c7da123b4081928f5ee70d66d2">&#9670;&nbsp;</a></span>m_para</h2>
+<a id="a5ea52b3a80f21c1bceb5cdff9c98f4ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ea52b3a80f21c1bceb5cdff9c98f4ef">&#9670;&nbsp;</a></span>flag_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE IBK::Parameter NANDRAD::Location::m_para[NUM_P]</td>
+          <td class="memname">enum <a class="el" href="classNANDRAD_1_1Location.html#a5ea52b3a80f21c1bceb5cdff9c98f4ef">NANDRAD::Location::flag_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculation flags. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00054">54</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae00d20032479163a5e229a415e02d6d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae00d20032479163a5e229a415e02d6d5">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::Location::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for valid and required parameters (value ranges). </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="ad30960171e38f4d9cfbc41b003de0b10"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad30960171e38f4d9cfbc41b003de0b10">&#9670;&nbsp;</a></span>m_para</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBK::Parameter NANDRAD::Location::m_para[NUM_P]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Parameter set. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00070">70</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
 
 </div>
 </div>
-<a id="aa68a8ac2c9110e5060bd537a3882d5a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa68a8ac2c9110e5060bd537a3882d5a1">&#9670;&nbsp;</a></span>m_climateFileName</h2>
+<a id="a2a6a30eb9d8d499d78ae7b4a3329fa5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a6a30eb9d8d499d78ae7b4a3329fa5f">&#9670;&nbsp;</a></span>m_flags</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IBK::Path NANDRAD::Location::m_climateFileName</td>
+          <td class="memname">IBK::Flag NANDRAD::Location::m_flags[NUM_F]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Name of the climate data file. </p>
+<p>List of flags. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00063">63</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00072">72</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
 
 </div>
 </div>
-<a id="af73ef75845d210942bbeb575a79de0ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af73ef75845d210942bbeb575a79de0ba">&#9670;&nbsp;</a></span>m_shadingFactorFileName</h2>
+<a id="ab4fb6200830b338a2bf47a4f7a7dca42"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4fb6200830b338a2bf47a4f7a7dca42">&#9670;&nbsp;</a></span>m_climateFilePath</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IBK::Path NANDRAD::Location::m_shadingFactorFileName</td>
+          <td class="memname">IBK::Path NANDRAD::Location::m_climateFilePath</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Path to the climate data file (may contain placeholders). </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00080">80</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+
+</div>
+</div>
+<a id="aaaad17897e1e12e44a4c11274ea84e31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaaad17897e1e12e44a4c11274ea84e31">&#9670;&nbsp;</a></span>m_shadingFactorFilePath</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBK::Path NANDRAD::Location::m_shadingFactorFilePath</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Optional: name of the external shading factor data file. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00066">66</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
-
-</div>
-</div>
-<a id="acdf5ea59e1e9d664b7b60daf87556458"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acdf5ea59e1e9d664b7b60daf87556458">&#9670;&nbsp;</a></span>m_perezDiffuseRadiationModel</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">IBK::Flag NANDRAD::Location::m_perezDiffuseRadiationModel</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>If enabled, Perez model for diffuse radiation is used. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00069">69</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00083">83</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
 
 </div>
 </div>
@@ -222,7 +278,7 @@ Public Attributes</h2></td></tr>
 
 <p>We may place one or more radiation sensors outside. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00072">72</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Location_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__Location_8h_source.html">NANDRAD_Location.h</a>.</p>
 
 </div>
 </div>
@@ -234,8 +290,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Location.html">Location</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Location.html">Location</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

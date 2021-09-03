@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::InterfaceHeatConduction Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::InterfaceHeatConduction Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -61,6 +62,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1InterfaceHeatConductio
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1InterfaceHeatConduction-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -76,16 +78,22 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1InterfaceHeatConductio
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:af273a9dbc465302e24509409aa7de05d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">para_t</a> { <a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05da1277092c422ad7dec440e317e18adc22">P_HeatTransferCoefficient</a>, 
-<b>NUM_P</b>
- }<tr class="memdesc:af273a9dbc465302e24509409aa7de05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters to be defined for the various window model types.  <a href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">More...</a><br /></td></tr>
-</td></tr>
-<tr class="separator:af273a9dbc465302e24509409aa7de05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0b3b2fe6f3c8489e2911b71393364a0d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#a0b3b2fe6f3c8489e2911b71393364a0d">modelType_t</a> { <a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#a0b3b2fe6f3c8489e2911b71393364a0da019a96c71155bd450f8c0551c079c955">MT_Constant</a>, 
 <b>NUM_MT</b>
  }<tr class="memdesc:a0b3b2fe6f3c8489e2911b71393364a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Model types supported by this model.  <a href="classNANDRAD_1_1InterfaceHeatConduction.html#a0b3b2fe6f3c8489e2911b71393364a0d">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:a0b3b2fe6f3c8489e2911b71393364a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af273a9dbc465302e24509409aa7de05d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">para_t</a> { <a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05da1277092c422ad7dec440e317e18adc22">P_HeatTransferCoefficient</a>, 
+<b>NUM_P</b>
+ }<tr class="memdesc:af273a9dbc465302e24509409aa7de05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters.  <a href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">More...</a><br /></td></tr>
+</td></tr>
+<tr class="separator:af273a9dbc465302e24509409aa7de05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a2c1bf2c0fde9e72d5d1ca4baf5b14b90"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#a2c1bf2c0fde9e72d5d1ca4baf5b14b90">checkParameters</a> () const</td></tr>
+<tr class="memdesc:a2c1bf2c0fde9e72d5d1ca4baf5b14b90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters (value ranges).  <a href="#a2c1bf2c0fde9e72d5d1ca4baf5b14b90">More...</a><br /></td></tr>
+<tr class="separator:a2c1bf2c0fde9e72d5d1ca4baf5b14b90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -97,29 +105,6 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae2023b11f35462d7a5cf9e6c8687ecbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="af273a9dbc465302e24509409aa7de05d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af273a9dbc465302e24509409aa7de05d">&#9670;&nbsp;</a></span>para_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">NANDRAD::InterfaceHeatConduction::para_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Parameters to be defined for the various window model types. </p>
-<table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af273a9dbc465302e24509409aa7de05da1277092c422ad7dec440e317e18adc22"></a>P_HeatTransferCoefficient&#160;</td><td class="fielddoc"><p>'Constant heat transfer coefficient [W/m2K]. </p>
-<p>' </p>
-</td></tr>
-</table>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00038">38</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
-
-</div>
-</div>
 <a id="a0b3b2fe6f3c8489e2911b71393364a0d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0b3b2fe6f3c8489e2911b71393364a0d">&#9670;&nbsp;</a></span>modelType_t</h2>
 
@@ -138,7 +123,49 @@ Public Attributes</h2></td></tr>
 </td></tr>
 </table>
 
+<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00037">37</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
+
+</div>
+</div>
+<a id="af273a9dbc465302e24509409aa7de05d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af273a9dbc465302e24509409aa7de05d">&#9670;&nbsp;</a></span>para_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html#af273a9dbc465302e24509409aa7de05d">NANDRAD::InterfaceHeatConduction::para_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Parameters. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="af273a9dbc465302e24509409aa7de05da1277092c422ad7dec440e317e18adc22"></a>P_HeatTransferCoefficient&#160;</td><td class="fielddoc"><p>Constant heat transfer coefficient [W/m2K]. </p>
+</td></tr>
+</table>
+
 <p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00044">44</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a2c1bf2c0fde9e72d5d1ca4baf5b14b90"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c1bf2c0fde9e72d5d1ca4baf5b14b90">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NANDRAD::InterfaceHeatConduction::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for valid parameters (value ranges). </p>
 
 </div>
 </div>
@@ -157,7 +184,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model type. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00058">58</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00061">61</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
 
 </div>
 </div>
@@ -175,7 +202,7 @@ Public Attributes</h2></td></tr>
 
 <p>List of constant parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html#l00063">63</a> of file <a class="el" href="NANDRAD__InterfaceHeatConduction_8h_source.html">NANDRAD_InterfaceHeatConduction.h</a>.</p>
 
 </div>
 </div>
@@ -187,8 +214,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html">InterfaceHeatConduction</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1InterfaceHeatConduction.html">InterfaceHeatConduction</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

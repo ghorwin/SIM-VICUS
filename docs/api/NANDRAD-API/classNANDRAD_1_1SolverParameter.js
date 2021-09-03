@@ -15,7 +15,6 @@ var classNANDRAD_1_1SolverParameter =
       [ "P_ControlTemperatureTolerance", "classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570a58b83507ca7710093db8e94e6b5dc9f3", null ],
       [ "P_KinsolRelTol", "classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570ac4c968a33ee3f60509b1bffcf5d57bc9", null ],
       [ "P_KinsolAbsTol", "classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570ac630aef12be5b945d520ddd66b5f5da6", null ],
-      [ "P_IntegralWeightsFactor", "classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570a9a329eae0b09679d8b27f6de67679889", null ],
       [ "NUM_P", "classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570a805560b28597d5a67990036e3482f5d2", null ]
     ] ],
     [ "intPara_t", "classNANDRAD_1_1SolverParameter.html#a5bd1a1ea877d78dcb2f830bd85500daf", [
@@ -51,7 +50,8 @@ var classNANDRAD_1_1SolverParameter =
       [ "NUM_PRE", "classNANDRAD_1_1SolverParameter.html#a30bcac3328e8eebc620061ccb0b7f71aad6d4861a950ad15da3d859d4cb2c477e", null ]
     ] ],
     [ "initDefaults", "classNANDRAD_1_1SolverParameter.html#acbbe376446cfc3ee75fec68455aa3c51", null ],
-    [ "m_para", "classNANDRAD_1_1SolverParameter.html#a696efd98ba5d94b5d9617783bf6bf560", null ],
+    [ "checkParameters", "classNANDRAD_1_1SolverParameter.html#a3ede9b298cd7b45c9b1bc26d8c7534bc", null ],
+    [ "m_para", "classNANDRAD_1_1SolverParameter.html#a41d22f4d41738703c6cd6acf52be83cc", null ],
     [ "m_intPara", "classNANDRAD_1_1SolverParameter.html#a016b242fe2570df134a70e21a83d4b0e", null ],
     [ "m_flag", "classNANDRAD_1_1SolverParameter.html#a74937d5b57e09121ccb8deaff5719f5a", null ],
     [ "m_integrator", "classNANDRAD_1_1SolverParameter.html#a40472ea6d6ba02c3db7fc00f2952affb", null ],
