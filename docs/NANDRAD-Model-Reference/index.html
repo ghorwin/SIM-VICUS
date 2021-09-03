@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (14.07.2021)</span>
+<span id="revnumber">version 0.2 (03.09.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -326,6 +326,11 @@ table {
 </li>
 </ul>
 </li>
+<li><a href="#FMU_export">19. Functional Mock-Up Interface</a>
+<ul class="sectlevel2">
+<li><a href="#_fmi_variablendefinition">19.1. FMI-Variablendefinition</a></li>
+</ul>
+</li>
 <li><a href="#units">Appendix A: Einheitendefinitionen</a></li>
 <li><a href="#quantities">Appendix B: Mengenreferenzen</a></li>
 </ul>
@@ -375,6 +380,8 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
       <span class="nt">&lt;Schedules&gt;</span>...<span class="nt">&lt;/Schedules&gt;</span>
       <span class="nt">&lt;Outputs&gt;</span>...<span class="nt">&lt;/Outputs&gt;</span>
       <span class="nt">&lt;ObjectLists&gt;</span>...<span class="nt">&lt;/ObjectLists&gt;</span>
+      <span class="c">&lt;!-- only needed for FMU export --&gt;</span>
+      <span class="nt">&lt;FMIDescription&gt;</span> ... <span class="nt">&lt;/FMIDescription&gt;</span>
   <span class="nt">&lt;/Project&gt;</span>
 <span class="nt">&lt;/NandradProject&gt;</span></code></pre>
 </div>
@@ -453,6 +460,10 @@ um sich einen Überblick über die NANDRAD Projektdefinition zu verschaffen.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ObjectLists</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Definition von Objektlisten/Objektreferenzgruppe &#8594; <a href="#object_lists">Objektlisten und Ergebnisreferenzen</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FMIDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Definition der FMU Export-Schnittstelle &#8594; <a href="#FMU_export">Functional Mock-Up Interface</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -987,16 +998,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 </tbody>
 </table>
 <div class="paragraph">
-<p>Mit der Verwendung des Attributs <em>matId</em> referenzieren Schichten von Konstruktionen die verwendeten Materialien:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/Mat_ConstInst.png" alt="Mat ConstInst">
-</div>
-<div class="title">Abbildung 1. Kollaborationsdiagramm für ConstructionType- und Material-Objekte</div>
-</div>
-<div class="paragraph">
-<p>Das <code>MaterialLayer</code> hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind.</p>
+<p>Das Material in der Materialschicht wird über das Attributs <em>matId</em> mittels ID referenziert. Das <code>MaterialLayer</code> hat keine Child-tags, da alle benötigten Daten wie oben beschrieben als XML-Attribute definiert sind.</p>
 </div>
 <div class="sect3">
 <h4 id="construction_active_layer">6.2.1. Aktive/beheizte Schichten</h4>
@@ -1019,7 +1021,7 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;WindowGlazingSystems&gt;</span>
-  <span class="nt">&lt;WindowGlazingSystem</span> <span class="na">id=</span><span class="s">"123"</span> <span class="na">modelType=</span><span class="s">"Standard"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;WindowGlazingSystem</span> <span class="na">id=</span><span class="s">"123"</span> <span class="na">modelType=</span><span class="s">"Simple"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"ThermalTransmittance"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>0,4<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"SHGC"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span> <span class="na">wrapMethod=</span><span class="s">"cyclic"</span><span class="nt">&gt;</span>
       <span class="c">&lt;!-- X incidence angle - 90 deg = Sonne steht senkrecht/normal zur Oberfläche --&gt;</span>
@@ -1073,12 +1075,12 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="ulist">
 <ul>
 <li>
-<p><code>Standard</code> - Standard-Verglasungsmodell, mit einem U-Wert (Wärmedurchgangskoeffizient) und einfallswinkelabhängigem SHGC-Wert</p>
+<p><code>Simple</code> - Standard-Verglasungsmodell, mit einem U-Wert (Wärmedurchgangskoeffizient) und einfallswinkelabhängigem SHGC-Wert</p>
 </li>
 </ul>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional</em></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
 </tbody>
 </table>
@@ -1214,7 +1216,10 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="ulist">
 <ul>
 <li>
-<p><code>Constant</code> als Zone mit konstanten/vordefinierten Temperaturen (Zeitplan)</p>
+<p><code>Constant</code> als Zone mit konstanten Temperaturen (Parameter)</p>
+</li>
+<li>
+<p><code>Scheduled</code> als Zone mit zeitplandefinierten Temperaturen</p>
 </li>
 <li>
 <p><code>Active</code> als Zone, die durch einen Temperaturknoten im Raum beschrieben wird</p>
@@ -1232,7 +1237,18 @@ die Platzhalterpfade zu den Verzeichnissen auf dem lokalen Rechner leicht geänd
 <div class="paragraph">
 <p>Für <em>konstante</em> Zonen wird angenommen, dass die Temperatur
 vorgegeben ist, während in <em>Active</em> Zonen die Temperatur berechnet wird (d. h. in den
- Unbekannten des Modells enthalten ist). Eine <em>konstante</em> Zone benötigt nur den Temperaturparameter.</p>
+ Unbekannten des Modells enthalten ist).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Eine _konstante_ Zone benötigt nur den Temperaturparameter.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Eine _scheduled_ Zone benötigt keine Parameter. Der Temperaturzeitplan muss allerdings
+in den _Schedules_ abgelegt sein, eine _ScheduleGroup_ für eine die Zone enthaltene Objektliste definieren und den Parameter 'TemperatureSchedule' definieren.</pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">IBK:Parameter</a> für eine Beschreibung des tags <code>IBK:Parameter</code>):</p>
@@ -1416,7 +1432,7 @@ vorgegeben ist, während in <em>Active</em> Zonen die Temperatur berechnet wird 
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>InterfaceB</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Interface für Konstruktionen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Schnittstelle für Konstruktionsinstanz Seite B</p></td>
 </tr>
 </tbody>
 </table>
@@ -1509,13 +1525,13 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="#fig_discretization">Abbildung 2</a> veranschaulicht die Wirkung verschiedener Dehnungsfaktoren</p>
+<p><a href="#fig_discretization">Abbildung 1</a> veranschaulicht die Wirkung verschiedener Dehnungsfaktoren</p>
 </div>
 <div id="fig_discretization" class="imageblock">
 <div class="content">
 <img src="./images/Discretization.png" alt="Discretization">
 </div>
-<div class="title">Abbildung 2. Verschiedene Diskretisierungsvarianten in Abhängigkeit vom Parameter DiscStretchFactor</div>
+<div class="title">Abbildung 1. Verschiedene Diskretisierungsvarianten in Abhängigkeit vom Parameter DiscStretchFactor</div>
 </div>
 <div class="paragraph">
 <p>Grundsätzlich werden drei verschiedene Gittergenerierungsverfahren unterstützt:</p>
@@ -1585,10 +1601,10 @@ Im Folgenden wird dies im Detail beschrieben.</p>
         <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HeatTransferCoefficient"</span> <span class="na">unit=</span><span class="s">"W/m2K"</span><span class="nt">&gt;</span>8<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;/InterfaceHeatConduction&gt;</span>
         <span class="nt">&lt;InterfaceSolarAbsorption</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0,6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"AbsorptionCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
         <span class="nt">&lt;/InterfaceSolarAbsorption&gt;</span>
         <span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">model=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0,9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+            <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
         <span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span>
     <span class="nt">&lt;/InterfaceB&gt;</span>
 <span class="nt">&lt;/ConstructionInstance&gt;</span></code></pre>
@@ -1795,7 +1811,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;InterfaceLongWaveEmission</span> <span class="na">modelType=</span><span class="s">"Constant"</span><span class="nt">&gt;</span>
-  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0,9<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Emissivity"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>0.9<span class="nt">&lt;/IBK:Parameter&gt;</span>
 <span class="nt">&lt;/InterfaceLongWaveEmission&gt;</span></code></pre>
 </div>
 </div>
@@ -2600,22 +2616,22 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>Es wird erwartet, dass die Zustandsgrößen als <em>Momentanwerte</em> am <em>Ende jeder Stunde</em> angegeben werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <a href="#fig_hourly_values">Abbildung 3</a> gezeigt.</p>
+<p>Es wird erwartet, dass die Zustandsgrößen als <em>Momentanwerte</em> am <em>Ende jeder Stunde</em> angegeben werden. Substündliche Werte werden durch lineare Interpolation erhalten, wie in <a href="#fig_hourly_values">Abbildung 2</a> gezeigt.</p>
 </div>
 <div id="fig_hourly_values" class="imageblock">
 <div class="content">
 <img src="./images/CCM_Interpolation1.png" alt="CCM Interpolation1">
 </div>
-<div class="title">Abbildung 3. Bei Zustandsgrößen wird eine lineare Interpolation verwendet, um den Zeitverlauf zwischen den stündlichen Momentanwerten zu rekonstruieren</div>
+<div class="title">Abbildung 2. Bei Zustandsgrößen wird eine lineare Interpolation verwendet, um den Zeitverlauf zwischen den stündlichen Momentanwerten zu rekonstruieren</div>
 </div>
 <div class="paragraph">
-<p>Fluss-/Lastgrößen werden als <em>Mittelwerte</em> über die <em>letzte Stunde</em> erwartet. Die substündlichen Werte werden durch lineare Interpolation zwischen den in der Mitte jeder Stunde platzierten Mittelwerten erhalten, wie in <a href="#fig_hourly_load_values">Abbildung 4</a> gezeigt.</p>
+<p>Fluss-/Lastgrößen werden als <em>Mittelwerte</em> über die <em>letzte Stunde</em> erwartet. Die substündlichen Werte werden durch lineare Interpolation zwischen den in der Mitte jeder Stunde platzierten Mittelwerten erhalten, wie in <a href="#fig_hourly_load_values">Abbildung 3</a> gezeigt.</p>
 </div>
 <div id="fig_hourly_load_values" class="imageblock">
 <div class="content">
 <img src="./images/CCM_Interpolation2.png" alt="CCM Interpolation2">
 </div>
-<div class="title">Abbildung 4. Bei Flussgrößen/Lasten werden die Werte in die Stundenmitte verschoben und dann linear interpoliert.</div>
+<div class="title">Abbildung 3. Bei Flussgrößen/Lasten werden die Werte in die Stundenmitte verschoben und dann linear interpoliert.</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2835,25 +2851,25 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="sect2">
 <h3 id="precomputed_shading">12.4. Vorberechnete externe Verschattung/Eigenverschattung</h3>
 <div class="paragraph">
-<p>In einem vorgelagerten Rechenschritt kann für jedes Flächenelement des Gebäudes der Anteil der sonnenbeschienenen Fläche berechnet werden. In <a href="#fig_shading_factors">Abbildung 5</a> wird zum Beispiel eine Fassade teilweise verschattet.</p>
+<p>In einem vorgelagerten Rechenschritt kann für jedes Flächenelement des Gebäudes der Anteil der sonnenbeschienenen Fläche berechnet werden. In <a href="#fig_shading_factors">Abbildung 4</a> wird zum Beispiel eine Fassade teilweise verschattet.</p>
 </div>
 <div id="fig_shading_factors" class="imageblock">
 <div class="content">
 <img src="./images/SolarShading.png" alt="SolarShading">
 </div>
-<div class="title">Abbildung 5. Darstellung einer teilverschatteten Fassade mit einem Fenster</div>
+<div class="title">Abbildung 4. Darstellung einer teilverschatteten Fassade mit einem Fenster</div>
 </div>
 <div class="paragraph">
 <p>Die Software kann nun den Prozentsatz der verschatteten Fläche sowohl für das opake Fassadenelement als auch für das Fensterobjekt separat berechnen. Das Fenster ist zu ca. 80 % verschattet, und ca. 20 % der opaquen Fläche sind noch der Sonne ausgesetzt. Der letztere Anteil wird auch als <em>Sonnenlichtfaktor</em> bzw. <em>Abminderungsfaktor infolge Verschattung</em> (engl. <em>shading factors</em>)  bezeichnet.</p>
 </div>
 <div class="paragraph">
-<p>Der für eine opaque Konstruktion gespeicherte Faktor ist immer <em>exklusive</em> aller eingebetteter Objekte zu verstehen.  <a href="#fig_shading_factor_example">Abbildung 6</a> zeigt ein ähnliches Beispiel, bei dem die Berechnung der Flächen und Sonnenlichfaktoren erläutert wird.</p>
+<p>Der für eine opaque Konstruktion gespeicherte Faktor ist immer <em>exklusive</em> aller eingebetteter Objekte zu verstehen.  <a href="#fig_shading_factor_example">Abbildung 5</a> zeigt ein ähnliches Beispiel, bei dem die Berechnung der Flächen und Sonnenlichfaktoren erläutert wird.</p>
 </div>
 <div id="fig_shading_factor_example" class="imageblock">
 <div class="content">
 <img src="./images/SolarShading_example.png" alt="SolarShading example">
 </div>
-<div class="title">Abbildung 6. Berechnungsbeispiel für eine teilverschattete Fassade mit einem Fenster</div>
+<div class="title">Abbildung 5. Berechnungsbeispiel für eine teilverschattete Fassade mit einem Fenster</div>
 </div>
 <div class="paragraph">
 <p>Die Konstruktion hat eine Fläche von 18x8 = 144 m2. Das Fenster hat eine Fläche von 10x4 = 40 m2. Damit verbleibt für die eine opaque Konstruktionsfläche von 144 - 40 = 104 m2.</p>
@@ -3517,7 +3533,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p><a href="#ex_schedule_week">Beispiel 35</a> veranschaulicht die Verwendung verschiedener Zeitpläne zur Definition eines Wochenplans. Zunächst wird der grundlegende tägliche Zeitplan definiert. Dann werden spezielle Regeln für Dienstage und Wochenenden definiert. <a href="#fig_schedule_week">Abbildung 7</a> veranschaulicht den resultierenden Zeitplan.</p>
+<p><a href="#ex_schedule_week">Beispiel 35</a> veranschaulicht die Verwendung verschiedener Zeitpläne zur Definition eines Wochenplans. Zunächst wird der grundlegende tägliche Zeitplan definiert. Dann werden spezielle Regeln für Dienstage und Wochenenden definiert. <a href="#fig_schedule_week">Abbildung 6</a> veranschaulicht den resultierenden Zeitplan.</p>
 </div>
 <div id="ex_schedule_week" class="exampleblock">
 <div class="title">Beispiel 35. Zeitplandefinition mit verschiedenen Tagestypen</div>
@@ -3566,7 +3582,7 @@ Sie werden z. B. in den folgenden Objekten oder Objektlisten verwendet:</p>
 <div class="content">
 <img src="./images/ScheduleExample_weekly.png" alt="ScheduleExample weekly">
 </div>
-<div class="title">Abbildung 7. Abbildung des wöchentlichen Zeitplans, definiert durch <a href="#ex_schedule_week">Beispiel 35</a></div>
+<div class="title">Abbildung 6. Abbildung des wöchentlichen Zeitplans, definiert durch <a href="#ex_schedule_week">Beispiel 35</a></div>
 </div>
 </div>
 <div class="sect3">
@@ -3613,19 +3629,19 @@ die geplanten Werte)</p>
 </ul>
 </div>
 <div class="paragraph">
-<p><a href="#fig_schedule_dailycycleconstant">Abbildung 8</a> und <a href="#fig_schedule_dailycycleconstant">Abbildung 8</a> zeigen den resultierenden Werteverlauf für die Zeitintervalle <em>0, 6, 20</em> und die entsprechenden Parameterwerte <em>2, 7, 1</em>.</p>
+<p><a href="#fig_schedule_dailycycleconstant">Abbildung 7</a> und <a href="#fig_schedule_dailycycleconstant">Abbildung 7</a> zeigen den resultierenden Werteverlauf für die Zeitintervalle <em>0, 6, 20</em> und die entsprechenden Parameterwerte <em>2, 7, 1</em>.</p>
 </div>
 <div id="fig_schedule_dailycycleconstant" class="imageblock">
 <div class="content">
 <img src="./images/ScheduleDailyCycleConstant.png" alt="ScheduleDailyCycleConstant">
 </div>
-<div class="title">Abbildung 8. Tageszyklus mit konstantem Interpolationsmodus</div>
+<div class="title">Abbildung 7. Tageszyklus mit konstantem Interpolationsmodus</div>
 </div>
 <div id="fig_schedule_dailycyclelinear" class="imageblock">
 <div class="content">
 <img src="./images/ScheduleDailyCycleLinear.png" alt="ScheduleDailyCycleLinear">
 </div>
-<div class="title">Abbildung 9. Tageszyklus mit linearem Interpolationsmodus</div>
+<div class="title">Abbildung 8. Tageszyklus mit linearem Interpolationsmodus</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3635,7 +3651,7 @@ die geplanten Werte)</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Bei der Verwendung des linearen Interpolationsmodus wird der Wert um 24 Uhr vom Beginn des nächsten Tageszyklus genommen, der im Zeitplan definiert ist. Zum Beispiel würde in <a href="#fig_schedule_week">Abbildung 7</a> der Wert am Montag 24:00 Uhr aus dem Zeitplan für Dienstag genommen werden, während der Wert am Mittwoch 24:00 Uhr aus dem regulären Zeitplan <em>AllDays</em> genommen würde.</p>
+<p>Bei der Verwendung des linearen Interpolationsmodus wird der Wert um 24 Uhr vom Beginn des nächsten Tageszyklus genommen, der im Zeitplan definiert ist. Zum Beispiel würde in <a href="#fig_schedule_week">Abbildung 6</a> der Wert am Montag 24:00 Uhr aus dem Zeitplan für Dienstag genommen werden, während der Wert am Mittwoch 24:00 Uhr aus dem regulären Zeitplan <em>AllDays</em> genommen würde.</p>
 </div>
 </td>
 </tr>
@@ -3707,13 +3723,13 @@ die geplanten Werte)</p>
 <p>Für praktische Anwendungen sind diese Schritte jedoch oft nicht erwünscht - auch wenn ein Sollwert kurzzeitig auf einen neuen Wert umgeschaltet wird, kann es in der Tat einige Minuten dauern, bis der resultierende physikalische Effekt spürbar wird. Dies wird bei der Interpretation der Sollwerte durch den Solver berücksichtigt.</p>
 </div>
 <div class="paragraph">
-<p>Anstatt exakt die schrittweise geplanten Werte zu liefern, implementiert der Solver eine automatische 2-Minuten-Rampe kurz vor dem Intervallende. <a href="#fig_schedule_dailycycle_jumpsmoothing">Abbildung 10</a> veranschaulicht die 2-minütige lineare Rampe, die direkt vor jedem neuen Intervall angewendet wird.</p>
+<p>Anstatt exakt die schrittweise geplanten Werte zu liefern, implementiert der Solver eine automatische 2-Minuten-Rampe kurz vor dem Intervallende. <a href="#fig_schedule_dailycycle_jumpsmoothing">Abbildung 9</a> veranschaulicht die 2-minütige lineare Rampe, die direkt vor jedem neuen Intervall angewendet wird.</p>
 </div>
 <div id="fig_schedule_dailycycle_jumpsmoothing" class="imageblock">
 <div class="content">
 <img src="./images/ScheduleDailyCycleConstant_actual.png" alt="ScheduleDailyCycleConstant actual">
 </div>
-<div class="title">Abbildung 10. Rampen-/Schrittglättung angewandt auf Tageszyklen mit schrittweise definierten Werten</div>
+<div class="title">Abbildung 9. Rampen-/Schrittglättung angewandt auf Tageszyklen mit schrittweise definierten Werten</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -4446,7 +4462,7 @@ die geplanten Werte)</p>
 <div class="content">
 <img src="./images/TimeType_illustration.png" alt="TimeType illustration">
 </div>
-<div class="title">Abbildung 11. Illustration der verschiedenen <code>TimeType</code>-Optionen</div>
+<div class="title">Abbildung 10. Illustration der verschiedenen <code>TimeType</code>-Optionen</div>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -4677,7 +4693,6 @@ Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n 
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;SimulationParameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"InitialTemperature"</span> <span class="na">unit=</span><span class="s">"C"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
-  <span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"DiscMaxElementsPerLayer"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:IntPara&gt;</span>
   <span class="nt">&lt;Interval&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Start"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>0<span class="nt">&lt;/IBK:Parameter&gt;</span>
     <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"End"</span> <span class="na">unit=</span><span class="s">"d"</span><span class="nt">&gt;</span>730<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -5021,6 +5036,7 @@ Start = 14*24 + 6 = 342 h</pre>
   <span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"MaxKrylovDim"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:IntPara&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscMinDx"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>2<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"DiscStretchFactor"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>4<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:IntPara</span> <span class="na">name=</span><span class="s">"DiscMaxElementsPerLayer"</span><span class="nt">&gt;</span>30<span class="nt">&lt;/IBK:IntPara&gt;</span>
   <span class="nt">&lt;IBK:Flag</span> <span class="na">name=</span><span class="s">"DetectMaxTimeStep"</span><span class="nt">&gt;</span>true<span class="nt">&lt;/IBK:Flag&gt;</span>
   <span class="nt">&lt;Integrator&gt;</span>CVODE<span class="nt">&lt;/Integrator&gt;</span>
   <span class="nt">&lt;LesSolver&gt;</span>Dense<span class="nt">&lt;/LesSolver&gt;</span>
@@ -5030,7 +5046,7 @@ Start = 14*24 + 6 = 342 h</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Der tag <code>SolverParameter</code> enthält die folgenden untergeordneten tags:</p>
+<p>Der tag <code>SolverParameter</code> enthält die folgenden untergeordneten Elemente:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6884,7 +6900,22 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect2">
 <h3 id="model_ideal_pipe_register">17.9. Modell für idealisierte Rohrregister-Flächenheizungen</h3>
 <div class="paragraph">
-<p>Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Flächen verwendet werden kann. Dabei wird das Rohrnetzwerk im Gebäude nicht abgebildet, sondern eine Vorlauftemperatur als gegeben angenommen (daher <em>idealisiert</em>).</p>
+<p>Das Modell beschreibt ein Rohrregister, welches zur Beheizung/Kühlung von Flächen verwendet werden kann. Dabei wird das Rohrnetzwerk im Gebäude nicht abgebildet, sondern eine Vorlauftemperatur als gegeben angenommen (daher <em>idealisiert</em>).
+Das Rohrregistermodell ist auch deshalb <em>ideal</em>, weil es von stationären Bedingungen ausgeht, d.h. es wird von einem größtenteils konstant durchflossenem Rohr mit konstanten Rand- und Umgebungsbedingungen und konstanter Vorlauftemperatur ausgegangen. Entlang der Rohrschlange wird von konstanten Umgebungsbedingungen ausgegangen (es wird die Temperatur der aktiven Schicht verwendet).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Randbedingungen und Vorlauftemperatur können sich zwar während der Simulation ändern, jedoch sind die Gleichungen streng genommen nur für komplett stationäre Prozesse gültig.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 56. Definitionsblock für Rohrregister-Heizungen</div>
@@ -7033,9 +7064,9 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich nur für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaxMassFlow</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaxMassFlux</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">kg/s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximaler Massestrom durch das gesamte Rohrregister</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximaler Massestrom durch das <em>gesamte</em> Rohrregister</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;=&#160;0.0&#160;</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><em>erforderlich nur für Modelltyp</em> <code>Constant</code></p></td>
 </tr>
@@ -7063,7 +7094,10 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </tbody>
 </table>
 <div class="paragraph">
-<p>Der Parameter <code>NumberParallelPipes</code> gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden.</p>
+<p>Der Parameter <code>NumberParallelPipes</code> gibt an, wie viele Rohre parallel in der Konstruktion durchströmt werden. Der insgesamt durchströmte Querschnitt ergibt somit aus dem Querschnitt eines Rohres mal Anzahl parallel durchströmter Rohre.</p>
+</div>
+<div class="paragraph">
+<p>Diese Angabe hat Einfluss auf die Berechnung der Strömungsgeschwindigkeit, da der Massenstrom durch das Rohrregister gleichmäßig auf alle parallelen Stränge aufgeteilt wird. Dies hat auch Auswirkung auf den Begrenzungsparameter <code>MaxMassFlux</code>. Ist dieser bspw. auf 0,1 kg/s eingestellt, und es sind zwei parallele Rohrregister verbaut (<code>NumberParallelPipes=2</code>), so wird jedes der parallel verlegten Rohre mit max. 0,05 kg/s durchströmt.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -8636,13 +8670,13 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <div class="content">
 <img src="./images/network_example.png" alt="network example">
 </div>
-<div class="title">Abbildung 12. Einfaches Strömungsnetzwerk mit 3 Knoten und 3 Elementen</div>
+<div class="title">Abbildung 11. Einfaches Strömungsnetzwerk mit 3 Knoten und 3 Elementen</div>
 </div>
 <div class="paragraph">
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 12</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 69</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 69</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
 <div class="title">Beispiel 69. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
@@ -9386,6 +9420,64 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </div>
 </div>
 <div class="sect1">
+<h2 id="FMU_export">19. Functional Mock-Up Interface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In diesem Abschnitt wird die Parametrisierung für den FMU-Export/Import beschrieben.
+Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGenerator</code>.</p>
+</div>
+<div class="paragraph">
+<p>Die Spezifikation der FMU Schnittstelle der zu generierenden NANDRAD-FMU wird im XML-Element <code>FMIDescription</code> definiert.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Beispiel 77. Definition einer FMU-Schnittstelle</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;FMIDescription&gt;</span>
+  <span class="nt">&lt;ModelName&gt;</span>IdealHeaterCoolerFixedMassFlow<span class="nt">&lt;/ModelName&gt;</span>
+  <span class="nt">&lt;InputVariables&gt;</span>
+    <span class="nt">&lt;FMIVariableDefinition</span> <span class="na">fmiVarName=</span><span class="s">"NetworkElement(3).SupplyTemperatureSchedule"</span> <span class="na">unit=</span><span class="s">"K"</span> <span class="na">fmiValueRef=</span><span class="s">"43"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;FmiVarDescription&gt;</span>Schedule parameter:SupplyTemperatureSchedule<span class="nt">&lt;/FmiVarDescription&gt;</span>
+      <span class="nt">&lt;FmiStartValue&gt;</span>0<span class="nt">&lt;/FmiStartValue&gt;</span>
+      <span class="nt">&lt;VarName&gt;</span>NetworkElement.SupplyTemperatureSchedule<span class="nt">&lt;/VarName&gt;</span>
+      <span class="nt">&lt;ObjectId&gt;</span>3<span class="nt">&lt;/ObjectId&gt;</span>
+    <span class="nt">&lt;/FMIVariableDefinition&gt;</span>
+  <span class="nt">&lt;/InputVariables&gt;</span>
+  <span class="nt">&lt;OutputVariables&gt;</span>
+    <span class="nt">&lt;FMIVariableDefinition</span> <span class="na">fmiVarName=</span><span class="s">"Location(0).Temperature"</span> <span class="na">unit=</span><span class="s">"K"</span> <span class="na">fmiValueRef=</span><span class="s">"44"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;FmiVarDescription&gt;</span>Outside temperature.<span class="nt">&lt;/FmiVarDescription&gt;</span>
+      <span class="nt">&lt;FmiStartValue&gt;</span>293.15<span class="nt">&lt;/FmiStartValue&gt;</span>
+      <span class="nt">&lt;VarName&gt;</span>Location.Temperature<span class="nt">&lt;/VarName&gt;</span>
+      <span class="nt">&lt;ObjectId&gt;</span>0<span class="nt">&lt;/ObjectId&gt;</span>
+    <span class="nt">&lt;/FMIVariableDefinition&gt;</span>
+    <span class="nt">&lt;FMIVariableDefinition</span> <span class="na">fmiVarName=</span><span class="s">"Zone(1).AirTemperature"</span> <span class="na">unit=</span><span class="s">"K"</span> <span class="na">fmiValueRef=</span><span class="s">"45"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;FmiVarDescription&gt;</span>Room air temperature.<span class="nt">&lt;/FmiVarDescription&gt;</span>
+      <span class="nt">&lt;FmiStartValue&gt;</span>293.15<span class="nt">&lt;/FmiStartValue&gt;</span>
+      <span class="nt">&lt;VarName&gt;</span>Zone.AirTemperature<span class="nt">&lt;/VarName&gt;</span>
+      <span class="nt">&lt;ObjectId&gt;</span>1<span class="nt">&lt;/ObjectId&gt;</span>
+    <span class="nt">&lt;/FMIVariableDefinition&gt;</span>
+  <span class="nt">&lt;/OutputVariables&gt;</span>
+<span class="nt">&lt;/FMIDescription&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Der FMU-Modellname wird im XML-Element <code>ModelName</code> angegeben. Es gelten die üblichen Einschränkungen für die Namensgebung (Name muss einen gültigen Dateinamen ergeben). Die resultierende FMU-Datei wird nach diesem Modellnamen benannt.</p>
+</div>
+<div class="paragraph">
+<p>Alle, von der NANDRAD-FMU importierten Variablen werden in der Liste <code>InputVariables</code> abgelegt. Die exportierten Variablen (Ausgabevariablen) werden in der Liste <code>OutputVariables</code> definiert.</p>
+</div>
+<div class="sect2">
+<h3 id="_fmi_variablendefinition">19.1. FMI-Variablendefinition</h3>
+<div class="paragraph">
+<p>Das XML-Element <code>FMIVariableDefinition</code> enthält die Informationen, welche in der <code>modelDescription.xml</code> erscheinen (entsprechend FMI Standard) und zusätzlich die Zuordnung zu den zugehörigen NANDRAD-Variablen.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="units">Appendix A: Einheitendefinitionen</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -9956,8 +10048,8 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (14.07.2021)<br>
-Last updated 2021-07-14 21:06:01 +0200
+Version 0.2 (03.09.2021)<br>
+Last updated 2021-09-03 10:52:27 +0200
 </div>
 </div>
 <style>
