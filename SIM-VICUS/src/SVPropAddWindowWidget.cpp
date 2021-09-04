@@ -134,6 +134,7 @@ void SVPropAddWindowWidget::updateUi() {
 
 
 void SVPropAddWindowWidget::updateGeometryObject() {
+	qDebug() << "updateGeometryObject()";
 	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(m_currentSelection, m_windowInputData);
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
@@ -295,4 +296,8 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
 		modSurfaces, &subSurfaceComponentInstances);
 	undo->push();
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	SVViewStateHandler::instance().setViewState(vs);
 }
