@@ -134,7 +134,6 @@ void SVPropAddWindowWidget::updateUi() {
 
 
 void SVPropAddWindowWidget::updateGeometryObject() {
-	qDebug() << "updateGeometryObject()";
 	SVViewStateHandler::instance().m_newSubSurfaceObject->generateSubSurfaces(m_currentSelection, m_windowInputData);
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
