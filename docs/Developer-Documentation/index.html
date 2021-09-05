@@ -278,6 +278,15 @@ table {
 <ol class="arabic">
 <li>
 <p>Download and install Visual Studio 2019 Community Online Installer from: <a href="https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#" class="bare">https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#</a> - Once downloaded, you only need to install basic development options.</p>
+<div class="imageblock">
+<div class="content">
+<img src="./images/vc2019_install_options.png" alt="vc2019 install options">
+</div>
+<div class="title">Figure 1. Minimal selection of Visual Studio components to be installed</div>
+</div>
+<div class="paragraph">
+<p>(Profiling tools are optional, profiling can be done very well with <code>valgrind</code> on Linux).</p>
+</div>
 </li>
 <li>
 <p>Download and install cmake. Either download from <a href="https://cmake.org" class="bare">https://cmake.org</a> or use <em>chocolatey</em> (<a href="https://chocolatey.org" class="bare">https://chocolatey.org</a>) and run</p>
@@ -2074,7 +2083,7 @@ Total initialization time: 802 ms
 <p>See also explanation in <a href="https://www.learnopengles.com/tag/triangle-strips" class="bare">https://www.learnopengles.com/tag/triangle-strips</a>.</p>
 </div>
 <div class="paragraph">
-<p>See polygon in <a href="#fig_trianglestrip_polygon">Figure 1</a>. Index list to draw the polygon is:</p>
+<p>See polygon in <a href="#fig_trianglestrip_polygon">Figure 2</a>. Index list to draw the polygon is:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -2108,19 +2117,19 @@ Total initialization time: 802 ms
 <div class="content">
 <img src="./images/TriangleStrip1.png" alt="TriangleStrip1">
 </div>
-<div class="title">Figure 1. Generation of a triangle strip from a polygon</div>
+<div class="title">Figure 2. Generation of a triangle strip from a polygon</div>
 </div>
 <div class="paragraph">
 <p>When drawing several triangle strips one after another, we need primitive restart (to have gaps between triangles).</p>
 </div>
 <div class="paragraph">
-<p>Consider strips in <a href="#fig_trianglestrip_restart">Figure 2</a>. Top part of the figure shows two strips where the first strip ends with an <em>odd numbered</em> triangle. Bottom part shows the first strip ending with an <em>even numbered</em> triangle.</p>
+<p>Consider strips in <a href="#fig_trianglestrip_restart">Figure 3</a>. Top part of the figure shows two strips where the first strip ends with an <em>odd numbered</em> triangle. Bottom part shows the first strip ending with an <em>even numbered</em> triangle.</p>
 </div>
 <div id="fig_trianglestrip_restart" class="imageblock">
 <div class="content">
 <img src="./images/TriangleStrip2.png" alt="TriangleStrip2">
 </div>
-<div class="title">Figure 2. Primitive restart using degenerated triangles</div>
+<div class="title">Figure 3. Primitive restart using degenerated triangles</div>
 </div>
 </div>
 </div>
@@ -2316,13 +2325,13 @@ used in SIM-VICUS.</p>
 <div class="sect3">
 <h4 id="_normal_vector_calculation_of_polygons">4.2.2. Normal vector calculation of polygons</h4>
 <div class="paragraph">
-<p>Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are concave, the sign of the normal vector depends on the edge being selected. <a href="#fig_concave_polygon">Figure 3</a> shows a concave polygon.</p>
+<p>Polygons are expected to be not-winding and defined in counter-clockwise manner. Then, the normal vector of the polygon can be created by computing the cross product of two adjacent edges. However, if polygons are concave, the sign of the normal vector depends on the edge being selected. <a href="#fig_concave_polygon">Figure 4</a> shows a concave polygon.</p>
 </div>
 <div id="fig_concave_polygon" class="imageblock">
 <div class="content">
 <img src="./images/polygon_normal_vector.svg" alt="polygon normal vector">
 </div>
-<div class="title">Figure 3. Concave polygon example</div>
+<div class="title">Figure 4. Concave polygon example</div>
 </div>
 <div class="paragraph">
 <p>Suppose the following vertex coordinates define the polygon:</p>
@@ -2677,7 +2686,7 @@ erfolgt in folgenden Schritten:</p>
 <div class="content">
 <img src="./images/QtCreator_DebugFmuLoadedLibs.png" alt="QtCreator DebugFmuLoadedLibs">
 </div>
-<div class="title">Figure 4. Ausgabe im QtCreator gleich nach Anhalten der Simulation in <code>fmi2Instantiate</code></div>
+<div class="title">Figure 5. Ausgabe im QtCreator gleich nach Anhalten der Simulation in <code>fmi2Instantiate</code></div>
 </div>
 <div class="ulist">
 <ul>
@@ -2947,7 +2956,7 @@ B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-05 08:01:15 +0200
+Last updated 2021-09-05 12:24:35 +0200
 </div>
 </div>
 <style>
