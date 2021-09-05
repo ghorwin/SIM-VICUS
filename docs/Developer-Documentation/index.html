@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="Andreas Nicolai">
-<title>NANDRAD Developers Manual</title>
+<title>SIM-VICUS and NANDRAD Developers Manual</title>
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
 
@@ -69,11 +69,11 @@ table {
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>NANDRAD Developers Manual</h1>
+<h1>SIM-VICUS and NANDRAD Developers Manual</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai</span><br>
 <span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
-<span id="revdate">0.2.0 (31.07.2021)</span>
+<span id="revdate">0.5.0 (05.09.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -220,6 +220,20 @@ table {
 <div class="paragraph">
 <p>For actual development we recommend use of Qt Creator with the prepared <a href="#qmake">qmake build system</a>.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are serious with own development of SIM-VICUS/NANDRAD I strongly suggest using Linux and Qt Creator - building the code on Linux is way faster than on Windows/Mac, and code insights and clang analysis in Qt Creator (including refactoring features) are much much better than in Visual Studio and/or XCode. But that&#8217;s just my humble opinion after a "few" years of working with all of these :-)</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="sect3">
 <h4 id="_setting_up_the_build_environment">2.1.1. Setting up the build environment</h4>
 <div class="paragraph">
@@ -238,7 +252,7 @@ table {
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not distrupt other peoples work by requiring alternative installation directories/tool versions.</p>
+<p>Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not disrupt other peoples work by requiring alternative installation directories/tool versions.</p>
 </div>
 </td>
 </tr>
@@ -250,7 +264,7 @@ table {
 <div class="ulist">
 <ul>
 <li>
-<p>Visual Studio 2019 Community Edition</p>
+<p>Visual Studio 2019 (Community Edition suffices)</p>
 </li>
 <li>
 <p>Qt 15.5.2</p>
@@ -263,7 +277,7 @@ table {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download and install Visual Studio 2019 Community Online Installer from: <a href="https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#" class="bare">https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#</a> - Once downloaded, install only basic development option.</p>
+<p>Download and install Visual Studio 2019 Community Online Installer from: <a href="https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#" class="bare">https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&amp;rel=16#</a> - Once downloaded, you only need to install basic development options.</p>
 </li>
 <li>
 <p>Download and install cmake. Either download from <a href="https://cmake.org" class="bare">https://cmake.org</a> or use <em>chocolatey</em> (<a href="https://chocolatey.org" class="bare">https://chocolatey.org</a>) and run</p>
@@ -277,7 +291,7 @@ table {
 <p>Download and install Qt Online Installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>) and in the installation program select the <strong>5.15.2</strong> variant.</p>
 </li>
 <li>
-<p>Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly): <a href="https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019" class="bare">https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019</a></p>
+<p>Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly - though I wouldn&#8217;t recommend it): <a href="https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019" class="bare">https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019</a></p>
 </li>
 </ol>
 </div>
@@ -304,8 +318,19 @@ table {
 &gt; git config --global user.email "your_email@example.com"</pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>Note: On Ubuntu 18.04 LTS the default Qt version is 5.9.5, so that is the oldest Qt version we are going to support.</p>
+<p>On Ubuntu 18.04 LTS the default Qt version is 5.9.5, so that is the oldest Qt version we are going to support. Whenever deprecated features are used to maintain compatibility with Qt 5.9.5, and where newer Qt features are available in more recent versions of Qt, the use of <code>#if QT_VERSION &gt;= 0x050a00</code> (and similar) is possible.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -333,7 +358,7 @@ table {
 </table>
 </div>
 <div class="paragraph">
-<p>On El Capitan (MacOSX 10.11) Qt 5.11.3 is the last version to work. So you need to manually download this version. First select the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>)  and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific compilation problems.</p>
+<p>On El Capitan (MacOSX 10.11) Qt 5.11.3 is the <strong>last version</strong> to work. So you need to manually download this version. First select the Qt online installer (<a href="https://www.qt.io/download-qt-installer" class="bare">https://www.qt.io/download-qt-installer</a>)  and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific compilation problems.</p>
 </div>
 <div class="paragraph">
 <p>Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)</p>
@@ -393,6 +418,20 @@ table {
 </div>
 <div class="paragraph">
 <p>On Windows, you may want to run <code>bin/release_x64/CreateDeploy_VC2019.bat</code> batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In case of build problems, inspect the build scripts and the path variables therein. You may need to set some environment variables yourself before running the scripts.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -2908,7 +2947,7 @@ B1_Reihenhaus_Fussbodenheizung_FMI.nandrad</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-07-31 20:57:36 +0200
+Last updated 2021-09-05 08:01:15 +0200
 </div>
 </div>
 <style>
