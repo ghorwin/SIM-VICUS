@@ -238,8 +238,8 @@ void PlaneGeometry::triangulate() {
 			//  - check if vertex is already in vertex list, then re-use same vertex index,
 			//    otherwise add vertex and get new index
 			unsigned int j=0;
-			for (;j<points.size();++j)
-				if (points[j] == v) // TODO : here we might rather use some fuzzy comparison to avoid very tiny triangles
+			for (; j<points.size(); ++j)
+				if (points[j].similar(v, 1e-6))
 					break;
 			// store index (either of existing vertex or next vertex to be added)
 			vertexIndexes.push_back(j);
@@ -251,7 +251,7 @@ void PlaneGeometry::triangulate() {
 			}
 		}
 
-		// now the 'points' vector holds vertexes of the outer polygon and the holes
+		// now the 'points' vector holds vertexes of the outer polygon and all the holes
 
 		// add edges
 		std::vector<std::pair<unsigned int, unsigned int> > holeOnlyEdges;
@@ -265,15 +265,17 @@ void PlaneGeometry::triangulate() {
 			holeOnlyEdges.push_back(std::make_pair(i1, i2));
 		}
 
-		// create inverse vertex lookup map
-		std::vector<unsigned int> inverseVertexIndexes(points.size(), (unsigned int)-1);
-		for (unsigned int i=0; i<vertexIndexes.size();++i)
-			inverseVertexIndexes[vertexIndexes[i]] = i;
+		// now do the triangulation of the window with its holes
+		IBKMK::Triangulation triangu;
+
+		// Note: we give the global points vector and all edgs of all holes
+		//       IBK::point2D<double> is a IBKMK::Vector2D
+		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), holeOnlyEdges);
 
 		// Example: outer polygon is defined through vertexes 0...3
 		//          hole is defined through vertexes 4...7
 		//          'points' holds vertexes 0...7
-		//          'edges' holds all edges and uses all vertexes
+		//          'edges' holds all edges (of outer polygon and inner polyons) and uses all vertexes
 		//          'holeOnlyEdges' holds only edges of hole: 4-5, 5-6, 6-7, 7-4
 		//          'vertexIndexes' maps hole-vertex-index to global index:
 		//            vertexIndexes[0] = 4
@@ -290,17 +292,18 @@ void PlaneGeometry::triangulate() {
 		//            inverseVertexIndexes[6] = 2
 		//            inverseVertexIndexes[7] = 3
 
-		// now do the triangulation of the window alone
-		IBKMK::Triangulation triangu;
+		// create inverse vertex lookup map
+		std::vector<unsigned int> inverseVertexIndexes(points.size(), (unsigned int)-1);
+		for (unsigned int i=0; i<vertexIndexes.size(); ++i)
+			inverseVertexIndexes[vertexIndexes[i]] = i;
 
-		// IBK::point2D<double> is a IBKMK::Vector2D
-		// Note: we give the global points vector
-		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), holeOnlyEdges);
 		// and copy the triangle data and remap the points
+		// Mind: some vertexes in 'holeVertexes3D' may remain uninitialized when unused due to degenerated triangles
 		std::vector<IBKMK::Vector3D> holeVertexes3D(holePoints.size());
 		for (auto tri : triangu.m_triangles) {
-			// TODO Dirk: only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
 			IBKMK::Triangulation::triangle_t remappedTriangle;
+			if (tri.isDegenerated())
+				continue;
 			// remap the vertexes
 			remappedTriangle.i1 = inverseVertexIndexes[tri.i1]; // index of local hole vertex
 			holeVertexes3D[remappedTriangle.i1] = vertexes[tri.i1];
@@ -317,12 +320,16 @@ void PlaneGeometry::triangulate() {
 		m_holeTriangulationData[holeIdx].m_normal = m_polygon.normal(); // cache normal for easy access
 	}
 
+	// now generate the triangulation data for the entire surface, without subsurface polygons
+
 	IBKMK::Triangulation triangu;
 	// Note: IBK::point2D<double> is a IBKMK::Vector2D
 	triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), edges);
 
 	for (auto tri : triangu.m_triangles) {
-		// TODO Dirk: only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
+		// skip degenerated triangles
+		if (tri.isDegenerated())
+			continue;
 		m_triangulationData.m_triangles.push_back(IBKMK::Triangulation::triangle_t(tri.i1, tri.i2, tri.i3));
 	}
 
