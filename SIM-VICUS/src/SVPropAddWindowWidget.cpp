@@ -271,7 +271,15 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 			VICUS::SubSurface subsurf;
 			subsurf.m_id = subsurf.uniqueID();
 			subsurf.m_polygon2D = p;
-			subsurf.m_displayName = tr("Window #").arg(subsurf.m_id);
+			if (m_ui->radioButtonSubSurfaceTypeWindow->isChecked()) {
+				subsurf.m_displayName = tr("Window #").arg(subsurf.m_id);
+				subsurf.m_color = QColor(96,96,255,64);
+			}
+			else {
+				subsurf.m_displayName = tr("Door #").arg(subsurf.m_id);
+				subsurf.m_color = QColor(164,164,164,255);
+			}
+
 			subs.push_back(subsurf);
 
 			// also create subsurface component instances
