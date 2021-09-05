@@ -1,0 +1,40 @@
+# Integration von FMU Kontrollmodellen in SIM-VICUS Modellierung
+
+## Themen
+
+- wie kann man Kontrollmodelle in der Programmoberfläche verwalten? Deren Schnittstellen, Beschreibungen und wie kann man diese Modelle aktualisieren?
+- wie kann man für den Nutzer die Erstellung/Anpassung von Source-code-FMUs möglichst einfach machen
+- wie kann man in Projekten Kontrollmodell-FMUs integrieren, diese Verknüpfen und Parametrieren
+- wie teilt man dem NANDRAD solver mit, dass Kontrollmodell-FMUs verwendet werden sollen
+- soll der NANDRAD solver selbständig die FMUs entpacken und entsprechende Fehlerprüfung durchführen, oder soll das die Oberfläche machen, sodass der NANDRAD-Solver nur den Pfad zur entpackten FMU erhält?
+
+
+
+## Oberflächenintegration
+
+### Anforderungen
+
+Der Anwender muss in einer gesonderten Ansicht Anlagenmodelle als Liste angezeigt bekommen. Dabei müssen die Schnittstellen (Ein- und Ausgangsvariablen) sichtbar sein.
+
+- Liste aller Kontroll-FMU mit Schnittstellen und Beschreibung
+- Verwaltet via fmu-Dateien, welche importiert werden
+- feste FMUs und source-code-FMUs, welche angepasst und neu übersetzt werden können
+
+- Kontrollmodell-FMUs müssen, falls konfiguriert 
+
+
+
+### Erstellung neuer FMU-Vorlagen zum selbst entwickeln
+
+--> Implementiert in Bibliothekskomponente - einmal zur Verwendung in SIM-VICUS, und einmal zur alleinstehenden Verwendung im FMICodeGenerator
+
+- Auswahl einer FMU-Konfiguration oder Erstellung einer neuen; eindeutig über Modellnamen identifiziert
+- Bearbeiten -> Öffnen eines Konfigurationsdialogs für Schnittstellen und Zustände
+- Speichern -> in Schnittstellenkonfigurationsdatei
+- Neu Generieren der Vorlage -> Falls es bereits Quelltext gibt, dort nach "own-code" Markern suchen, Quelltext dazwischen abspeichern
+- Erstellen eines Quelltextverzeichnisses mit allen Dateien für das Bauen der FMU -> hierbei einsetzen vorab gemerkter Quelltexte
+
+--> wir brauchen eine kenntlichmachung von unverändertem Originalquelltext und eigenem Quelltext --> Vielleicht über Dateitrennung?
+
+- Auswahlliste bietet optionen zum kompilieren und deployment
+
