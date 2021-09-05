@@ -34,6 +34,12 @@ Required versions:
 Installation steps:
 
 1. Download and install Visual Studio 2019 Community Online Installer from: https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16# - Once downloaded, you only need to install basic development options.
++
+.Minimal selection of Visual Studio components to be installed
+image::vc2019_install_options.png[]
++
+(Profiling tools are optional, profiling can be done very well with `valgrind` on Linux).
+
 
 2. Download and install cmake. Either download from https://cmake.org or use _chocolatey_ (https://chocolatey.org) and run
 
