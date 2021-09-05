@@ -57,6 +57,14 @@ public:
 			i1(n1), i2(n2), i3(n3)
 		{}
 
+		/*! Returns true, if triangle is invalid, i.e. contains invalid ID, or twice the same ID. */
+		bool isDegenerated() const {
+			if (i1 == (unsigned int)-1 || i1 == i2 || i1 == i3) return true;
+			if (i2 == (unsigned int)-1 || i2 == i1 || i2 == i3) return true;
+			if (i3 == (unsigned int)-1 || i3 == i1 || i3 == i2) return true;
+			return false;
+		}
+
 		unsigned int i1=0, i2=0, i3=0;
 	};
 
