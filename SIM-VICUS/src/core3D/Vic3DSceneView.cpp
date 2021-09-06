@@ -211,6 +211,12 @@ void SceneView::resetCamera() {
 }
 
 
+void SceneView::setMainGridVisible(bool visible) {
+	m_mainScene.m_gridVisible = visible;
+	renderLater();
+}
+
+
 void SceneView::onModified(int modificationType, ModificationInfo * data) {
 	// relay change notification to scene objects
 	m_mainScene.onModified(modificationType, data);

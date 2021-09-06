@@ -72,7 +72,7 @@ private slots:
 	void on_lineEditDensity_editingFinished();
 	void on_lineEditSpecHeatCapacity_editingFinished();
 	void on_comboBoxCategory_currentIndexChanged(int index);
-	void on_pushButtonOpaqueMaterialColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 
 private:
 	/*! Set up the modified variable of the model to true. */

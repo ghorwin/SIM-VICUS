@@ -90,7 +90,8 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	m_ui->comboBoxAlbedo->setCompleter(nullptr); // no auto-completion, otherwise we have text in a value-only combo box
 	m_ui->comboBoxAlbedo->blockSignals(false);
 
-	m_ui->filepathClimateDataFile->setup("", true, true, tr("Climate data container files (*.c6b *.epw *.wac);;All files (*.*)"));
+	m_ui->filepathClimateDataFile->setup("", true, true, tr("Climate data container files (*.c6b *.epw *.wac);;All files (*.*)"),
+										 SVSettings::instance().m_dontUseNativeDialogs);
 }
 
 

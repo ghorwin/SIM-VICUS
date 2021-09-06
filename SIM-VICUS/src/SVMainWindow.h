@@ -177,9 +177,9 @@ public slots:
 
 protected:
 	/*! Checks if project file has been changed by external application. */
-	void changeEvent(QEvent *event);
+	void changeEvent(QEvent *event) override;
 	/*! Does the confirm-saving-before-close stuff. */
-	void closeEvent(QCloseEvent * event);
+	void closeEvent(QCloseEvent * event) override;
 
 private slots:
 	/*! Does the entire UI initialization.
@@ -301,6 +301,7 @@ private slots:
 	void on_actionViewToggleGeometryMode_triggered();
 	void on_actionViewToggleParametrizationMode_triggered();
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
+	void on_actionViewShowGrid_toggled(bool visible);
 	void on_actionViewResetView_triggered();
 
 
@@ -315,6 +316,7 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
+
 
 
 

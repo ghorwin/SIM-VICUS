@@ -35,15 +35,15 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->setupUi(this);
 
 #ifdef Q_OS_WIN
-	m_ui->filepathPostProc->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
-	m_ui->filepathTextEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
-	m_ui->filePath7Zip->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
-	m_ui->filePathCCMEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"));
+	m_ui->filepathPostProc->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filepathTextEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePath7Zip->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathCCMEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #else
-	m_ui->filepathPostProc->setup("", true, true, tr("All files (*)"));
-	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*)"));
-	m_ui->filePath7Zip->setup("", true, true, tr("All files (*)"));
-	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*)"));
+	m_ui->filepathPostProc->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePath7Zip->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #endif
 
 

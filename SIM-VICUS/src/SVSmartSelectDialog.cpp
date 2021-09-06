@@ -84,7 +84,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->lineEditLengthBelow->setEnabled(false);
 
 	// populate static options
-	m_options.m_options.resize(2);
+	m_options.m_options.resize(3);
 
 	FilterOption & components = m_options.m_options[0];
 	components.m_name = tr("Components");
@@ -94,7 +94,12 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	components.m_options.push_back(FilterOption(tr("Other walls"), nullptr));
 	components.m_options.push_back(FilterOption(tr("Windows"), nullptr));
 
-	FilterOption & thermalElements = m_options.m_options[1];
+	FilterOption & geometry = m_options.m_options[1];
+	geometry.m_name = tr("Geometry");
+	geometry.m_options.push_back(FilterOption(tr("Surfaces"), nullptr));
+	geometry.m_options.push_back(FilterOption(tr("Sub-Surfaces"), nullptr));
+
+	FilterOption & thermalElements = m_options.m_options[2];
 	thermalElements.m_name = tr("Thermal elements");
 
 	delete m_ui->pushButtonDummy;
@@ -110,14 +115,19 @@ SVSmartSelectDialog::~SVSmartSelectDialog() {
 
 void SVSmartSelectDialog::select() {
 
+	const unsigned int COMPONENT_INDEX = 0;
+//	const unsigned int GEOMETRY_INDEX = 1;
+
 	// populate dynamic elements
-	FilterOption & outsideWalls = m_options.m_options[0].m_options[0];
+
+	// all assigned components/subsurface components
+	FilterOption & outsideWalls = m_options.m_options[COMPONENT_INDEX].m_options[0];
 	outsideWalls.m_options.clear();
-	FilterOption & insideWalls = m_options.m_options[0].m_options[1];
+	FilterOption & insideWalls = m_options.m_options[COMPONENT_INDEX].m_options[1];
 	insideWalls.m_options.clear();
-	FilterOption & otherWalls = m_options.m_options[0].m_options[2];
+	FilterOption & otherWalls = m_options.m_options[COMPONENT_INDEX].m_options[2];
 	otherWalls.m_options.clear();
-	FilterOption & windows = m_options.m_options[0].m_options[3];
+	FilterOption & windows = m_options.m_options[COMPONENT_INDEX].m_options[3];
 	windows.m_options.clear();
 
 	// process data structure and populate options
@@ -176,6 +186,7 @@ void SVSmartSelectDialog::select() {
 		}
 	}
 
+
 	updateButtonGrid();
 
 	// everything else is done inside the dialog
@@ -216,6 +227,28 @@ void SVSmartSelectDialog::collectSelectedObjects(FilterOption * option, std::set
 						objs.insert(ssci.m_sideBSubSurface);
 				}
 			}
+		}
+
+		// group select, compare pointers
+
+		// surfaces
+		if (&m_options.m_options[1].m_options[0] == option) {
+			// get list of all surfaces
+			for (const VICUS::Building & b : project().m_buildings)
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+					for (const VICUS::Room & r : bl.m_rooms)
+						for (const VICUS::Surface & s : r.m_surfaces)
+							objs.insert(&s);
+		}
+		// sub-surfaces
+		if (&m_options.m_options[1].m_options[1] == option) {
+			// get list of all subsurfaces
+			for (const VICUS::Building & b : project().m_buildings)
+				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+					for (const VICUS::Room & r : bl.m_rooms)
+						for (const VICUS::Surface & s : r.m_surfaces)
+							for (const VICUS::SubSurface & sub : s.subSurfaces() )
+								objs.insert(&sub);
 		}
 	}
 }

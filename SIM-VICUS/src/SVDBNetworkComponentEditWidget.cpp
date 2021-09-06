@@ -52,6 +52,8 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(),THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	// enter categories into combo box
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
@@ -124,9 +126,9 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
-	m_ui->pushButtonComponentColor->blockSignals(true);
-	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
-	m_ui->pushButtonComponentColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	// NOTE: we assume that ModelType enums are the same in both objects!
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
@@ -194,7 +196,7 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 
 }
 
@@ -222,11 +224,11 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 }
 
 
-void SVDBNetworkComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
+void SVDBNetworkComponentEditWidget::on_pushButtonColor_colorChanged() {
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
-		m_current->m_color = m_ui->pushButtonComponentColor->color();
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 }

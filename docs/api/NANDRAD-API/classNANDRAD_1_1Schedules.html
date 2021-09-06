@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Schedules Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Schedules Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -62,6 +63,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Schedules.html','');})
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1Schedules-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -89,7 +91,7 @@ Public Types</h2></td></tr>
 <b>SD_SUNDAY</b>, 
 <b>NUM_SD</b>
 <br />
- }<tr class="memdesc:a385c2f36efc9484f460d68eb42109751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Day ids, also used to define "a weekend".  <a href="classNANDRAD_1_1Schedules.html#a385c2f36efc9484f460d68eb42109751">More...</a><br /></td></tr>
+ }<tr class="memdesc:a385c2f36efc9484f460d68eb42109751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Day ids, also used to define "a weekend definition".  <a href="classNANDRAD_1_1Schedules.html#a385c2f36efc9484f460d68eb42109751">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:a385c2f36efc9484f460d68eb42109751"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a03573329ea01e278e50f5d48564c0b52"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#a03573329ea01e278e50f5d48564c0b52">flag_t</a> { <a class="el" href="classNANDRAD_1_1Schedules.html#a03573329ea01e278e50f5d48564c0b52a7cf0ec616a8057c7bb33889a51783a9a">F_EnableCyclicSchedules</a>, 
@@ -103,9 +105,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad28ecfacbad2a73a822448cab5ee0743"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#ad28ecfacbad2a73a822448cab5ee0743">initDefaults</a> ()</td></tr>
 <tr class="memdesc:ad28ecfacbad2a73a822448cab5ee0743"><td class="mdescLeft">&#160;</td><td class="mdescRight">Init default values (called before readXML()).  <a href="#ad28ecfacbad2a73a822448cab5ee0743">More...</a><br /></td></tr>
 <tr class="separator:ad28ecfacbad2a73a822448cab5ee0743"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c040a4f61b6cc74309c7fdc7e82d29a"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#a2c040a4f61b6cc74309c7fdc7e82d29a">generateLinearSpline</a> (const std::string &amp;objectListName, const std::string &amp;parameterName, IBK::LinearSpline &amp;spline, <a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79">DailyCycle::interpolation_t</a> &amp;interpolationType) const</td></tr>
+<tr class="memitem:a402da6624ddbd1b75141bcaa059cffef"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#a402da6624ddbd1b75141bcaa059cffef">checkParameters</a> (const std::map&lt; std::string, IBK::Path &gt; &amp;placeholders)</td></tr>
+<tr class="memdesc:a402da6624ddbd1b75141bcaa059cffef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks given parameters and initializes all linear splines given as tsv-files.  <a href="#a402da6624ddbd1b75141bcaa059cffef">More...</a><br /></td></tr>
+<tr class="separator:a402da6624ddbd1b75141bcaa059cffef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c040a4f61b6cc74309c7fdc7e82d29a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#a2c040a4f61b6cc74309c7fdc7e82d29a">generateLinearSpline</a> (const std::string &amp;objectListName, const std::string &amp;parameterName, IBK::LinearSpline &amp;spline, <a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79">DailyCycle::interpolation_t</a> &amp;interpolationType) const</td></tr>
 <tr class="memdesc:a2c040a4f61b6cc74309c7fdc7e82d29a"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function does all the work in the actual schedule-by-daily-cycle implementation.  <a href="#a2c040a4f61b6cc74309c7fdc7e82d29a">More...</a><br /></td></tr>
 <tr class="separator:a2c040a4f61b6cc74309c7fdc7e82d29a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aa328941d21510abc38a57d4e5c0c0cf7"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedules.html#aa328941d21510abc38a57d4e5c0c0cf7">equalSchedules</a> (const std::vector&lt; <a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a> &gt; &amp;first, const std::vector&lt; <a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a> &gt; &amp;second)</td></tr>
+<tr class="memdesc:aa328941d21510abc38a57d4e5c0c0cf7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares two schedule groups by schedule content, hereby ignoring the name of the schedule group.  <a href="#aa328941d21510abc38a57d4e5c0c0cf7">More...</a><br /></td></tr>
+<tr class="separator:aa328941d21510abc38a57d4e5c0c0cf7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -142,7 +153,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Day ids, also used to define "a weekend". </p>
+<p>Day ids, also used to define "a weekend definition". </p>
 
 <p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00044">44</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
@@ -189,7 +200,25 @@ Public Attributes</h2></td></tr>
 <p>Init default values (called before readXML()). </p>
 <dl class="section note"><dt>Note</dt><dd>These values will be overwritten in readXML() when the respective property is set in the project file. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8cpp_source.html#l00039">39</a> of file <a class="el" href="NANDRAD__Schedules_8cpp_source.html">NANDRAD_Schedules.cpp</a>.</p>
+</div>
+</div>
+<a id="a402da6624ddbd1b75141bcaa059cffef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a402da6624ddbd1b75141bcaa059cffef">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::Schedules::checkParameters </td>
+          <td>(</td>
+          <td class="paramtype">const std::map&lt; std::string, IBK::Path &gt; &amp;&#160;</td>
+          <td class="paramname"><em>placeholders</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks given parameters and initializes all linear splines given as tsv-files. </p>
 
 </div>
 </div>
@@ -242,9 +271,44 @@ Public Attributes</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>remove redundant values from spline, i.e when you have {0, 0; 5,0; 10,0} you can drop the middle point {0, 0; 10,0} without data loss </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8cpp_source.html#l00278">278</a> of file <a class="el" href="NANDRAD__Schedules_8cpp_source.html">NANDRAD_Schedules.cpp</a>.</p>
+</div>
+</div>
+<a id="aa328941d21510abc38a57d4e5c0c0cf7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa328941d21510abc38a57d4e5c0c0cf7">&#9670;&nbsp;</a></span>equalSchedules()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool NANDRAD::Schedules::equalSchedules </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>first</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>second</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Compares two schedule groups by schedule content, hereby ignoring the name of the schedule group. </p>
 
 </div>
 </div>
@@ -263,7 +327,7 @@ Public Attributes</h2></td></tr>
 
 <p>List of holiday days, stored in "day of the year", not including leap days. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00090">90</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00099">99</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
 </div>
 </div>
@@ -281,7 +345,7 @@ Public Attributes</h2></td></tr>
 
 <p>Weekend days. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00093">93</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00102">102</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
 </div>
 </div>
@@ -299,7 +363,7 @@ Public Attributes</h2></td></tr>
 
 <p>List of flags. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00101">101</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00110">110</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
 </div>
 </div>
@@ -317,7 +381,7 @@ Public Attributes</h2></td></tr>
 
 <p>Key is object list name, value is vector of schedules. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00104">104</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00113">113</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
 </div>
 </div>
@@ -336,21 +400,20 @@ Public Attributes</h2></td></tr>
 <p>Key is object list name, value is vector of <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit...">LinearSplineParameter</a>. </p>
 <p>The <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit...">LinearSplineParameter</a> has a name, which corresponds to the quantity that this scheduled parameter is for. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00109">109</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedules_8h_source.html#l00118">118</a> of file <a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__Schedules_8h_source.html">NANDRAD_Schedules.h</a></li>
-<li><a class="el" href="NANDRAD__Schedules_8cpp_source.html">NANDRAD_Schedules.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Schedules.html">Schedules</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Schedules.html">Schedules</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

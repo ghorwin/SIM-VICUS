@@ -68,6 +68,9 @@ private slots:
 
 private:
 	/*! Transfers data from read project to VICUS::Project. */
+	void transferDataDirk(const EP::Project & prj);
+
+	/*! Transfers data from read project to VICUS::Project. */
 	void transferData(const EP::Project & prj);
 
 	ImportResults			m_returnCode;

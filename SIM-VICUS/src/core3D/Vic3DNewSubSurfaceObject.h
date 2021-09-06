@@ -98,6 +98,8 @@ public:
 
 	/*! This function pupulates/updates m_surfaceGeometries based on the currently selected surfaces and
 		parametrization data.
+		Note: is is expected, that 'inputData' contains only valid parameters. Still, because of the arbitrary
+			shape of the selected surface polygons, it may be impossible to create windows in a polygon.
 	*/
 	void generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
 

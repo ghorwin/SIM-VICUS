@@ -49,13 +49,13 @@
 		<InsulationKind>OutsideInsulation</InsulationKind>
 		<MaterialKind>NaturalStoneMasonry</MaterialKind>
 		<MaterialLayers>
-			<MaterialLayer idMaterial="10003">
+			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
 			</MaterialLayer>
-			<MaterialLayer idMaterial="10003">
+			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
 			</MaterialLayer>
-			<MaterialLayer idMaterial="10003">
+			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.13</IBK:Parameter>
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10002">
@@ -120,7 +120,7 @@
 			<MaterialLayer idMaterial="10009">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 			</MaterialLayer>
-			<MaterialLayer idMaterial="10013">
+			<MaterialLayer idMaterial="10003">
 				<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10010">

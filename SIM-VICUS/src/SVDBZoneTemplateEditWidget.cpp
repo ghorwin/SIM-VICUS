@@ -49,7 +49,9 @@ SVDBZoneTemplateEditWidget::SVDBZoneTemplateEditWidget(QWidget *parent) :
 	m_ui->verticalLayoutWidget->setMargin(0);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
-	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");
+	m_ui->lineEditName->setDialog3Caption(tr("Zone template identification name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	// initial state is "nothing selected"
 	updateInput(-1, -1, VICUS::ZoneTemplate::NUM_ST);

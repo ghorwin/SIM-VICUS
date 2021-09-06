@@ -41,6 +41,11 @@ SVPreferencesPageStyle::SVPreferencesPageStyle(QWidget *parent) :
 
 	SVSettings & s = SVSettings::instance();
 	m_ui->comboBoxTheme->setCurrentIndex(s.m_theme);
+
+	m_ui->pushButtonMajorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->pushButtonMinorGridColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->pushButtonSceneBackgroundColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->pushButtonSelectedSurfaceColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 }
 
 
@@ -58,31 +63,6 @@ void SVPreferencesPageStyle::updateUi() {
 	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
 	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
 	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
-}
-
-
-bool SVPreferencesPageStyle::storeConfig() {
-	// no checks necessary
-	SVSettings & s = SVSettings::instance();
-
-	if ( m_ui->comboBoxTheme->currentText() == "White" ) {
-		s.m_theme = SVSettings::TT_White;
-	}
-	if ( m_ui->comboBoxTheme->currentText() == "Dark" ) {
-		s.m_theme = SVSettings::TT_Dark;
-	}
-
-	return true;
-}
-
-bool SVPreferencesPageStyle::rejectConfig() {
-	// no checks necessary
-	SVSettings & setting = SVSettings::instance();
-	SVStyle & style = SVStyle::instance();
-
-	style.setStyle(setting.m_theme);
-
-	return true;
 }
 
 

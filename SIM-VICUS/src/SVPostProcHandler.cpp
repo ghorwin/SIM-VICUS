@@ -40,7 +40,7 @@ struct handle_data {
 
 
 BOOL is_main_window(HWND handle) {
-	return GetWindow(handle, GW_OWNER) == (HWND)0 && IsWindowVisible(handle);
+	return (GetWindow(handle, GW_OWNER) == (HWND)nullptr) && IsWindowVisible(handle);
 }
 
 
@@ -58,7 +58,7 @@ BOOL CALLBACK enum_windows_callback(HWND handle, LPARAM lParam) {
 HWND find_main_window(unsigned long process_id) {
 	handle_data data;
 	data.process_id = process_id;
-	data.window_handle = 0;
+	data.window_handle = nullptr;
 	EnumWindows(enum_windows_callback, (LPARAM)&data);
 	return data.window_handle;
 }
@@ -70,7 +70,11 @@ HWND find_main_window(unsigned long process_id) {
 
 
 SVPostProcHandler::SVPostProcHandler() :
+#ifdef _WIN32
+	m_postProcHandle(nullptr)
+#else
 	m_postProcHandle(0)
+#endif // _WIN32
 {
 
 }
@@ -78,11 +82,11 @@ SVPostProcHandler::SVPostProcHandler() :
 
 int SVPostProcHandler::reopenIfActive() {
 #if _WIN32
-	if (m_postProcHandle != 0) {
+	if (m_postProcHandle != nullptr) {
 		DWORD exitCode;
 		BOOL res = GetExitCodeProcess(m_postProcHandle, &exitCode);
 		if (!res) {
-			m_postProcHandle = 0;
+			m_postProcHandle = nullptr;
 			return 1;
 		}
 		if (exitCode == STILL_ACTIVE) {
@@ -116,7 +120,7 @@ int SVPostProcHandler::reopenIfActive() {
 
 
 bool SVPostProcHandler::spawnPostProc(const std::string & sessionFile) {
-	FUNCID(SVPostProcHandler::spawnPostProc);
+	FUNCID(SVPostProcHandler::spawnPostProc); (void)FUNC_ID;
 
 #if _WIN32
 	IBK::FormatString cmdLine;
@@ -161,6 +165,7 @@ bool SVPostProcHandler::spawnPostProc(const std::string & sessionFile) {
 	}
 	// store process handle for later
 	m_postProcHandle = pi.hProcess;
+	return true;
 #else
 	// spawn post-proc process
 	QProcess p;

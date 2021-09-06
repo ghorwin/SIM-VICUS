@@ -13,10 +13,13 @@ var classNANDRAD_1_1Project =
     [ "m_solverParameter", "classNANDRAD_1_1Project.html#a3cc0b349d2b1273b7c783c93ac2930f6", null ],
     [ "m_zones", "classNANDRAD_1_1Project.html#a2177ee949c0274e502e6881bf494108b", null ],
     [ "m_constructionInstances", "classNANDRAD_1_1Project.html#ab984564997937bac85437e474d9571e3", null ],
+    [ "m_hydraulicNetworks", "classNANDRAD_1_1Project.html#a4e0857ba2d70b2aa63990f5e398dfb83", null ],
     [ "m_constructionTypes", "classNANDRAD_1_1Project.html#acb092bcec3961bb8cab92210f20b295a", null ],
     [ "m_materials", "classNANDRAD_1_1Project.html#aece7bebdd5def7f80f1d26bba3c315ea", null ],
+    [ "m_windowGlazingSystems", "classNANDRAD_1_1Project.html#aae03018e08a34777796fb2ed46f7ba4a", null ],
     [ "m_schedules", "classNANDRAD_1_1Project.html#abeec81913080bec4f527b99b8ecb4d8a", null ],
     [ "m_models", "classNANDRAD_1_1Project.html#ae5cee377786427fa2b62cb2fbfd99d03", null ],
     [ "m_outputs", "classNANDRAD_1_1Project.html#a6b84ec86060cf5f2041be71d7b695619", null ],
-    [ "m_objectLists", "classNANDRAD_1_1Project.html#a46a94f113dba2529398fba694c73c04e", null ]
+    [ "m_objectLists", "classNANDRAD_1_1Project.html#a46a94f113dba2529398fba694c73c04e", null ],
+    [ "m_fmiDescription", "classNANDRAD_1_1Project.html#af0a6423df79e00fc51371932aecb849e", null ]
 ];

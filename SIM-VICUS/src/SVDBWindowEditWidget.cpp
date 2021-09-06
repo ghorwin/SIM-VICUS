@@ -51,6 +51,8 @@ SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Window"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	//header elements
 	m_ui->lineEditUValue->setReadOnly(true);
 	m_ui->lineEditSHGC->setReadOnly(true);
@@ -108,7 +110,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		m_ui->lineEditUValue->setText("");
 		m_ui->lineEditSHGC->setText("");
 
-		m_ui->pushButtonWindowColor->setColor(Qt::black);
+		m_ui->pushButtonColor->setColor(Qt::black);
 
 		return;
 	}
@@ -119,7 +121,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	Q_ASSERT(m_current != nullptr);
 
 	m_ui->lineEditName->setString(m_current->m_displayName);
-	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
 
 	// now update the GUI controls
 
@@ -237,13 +239,13 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	m_ui->lineEditDividerMaterialThickness->setEnabled(dividerIdx>0);
 	m_ui->lineEditDividerMaterialName->setEnabled(dividerIdx>0);
 
-	m_ui->pushButtonWindowColor->blockSignals(true);
-	m_ui->pushButtonWindowColor->setColor(m_current->m_color);
-	m_ui->pushButtonWindowColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 
 	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonWindowColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 	m_ui->toolButtonSelectGlazingSystemName->setEnabled(isEditable);
 
 
@@ -277,11 +279,11 @@ void SVDBWindowEditWidget::on_toolButtonSelectGlazingSystemName_clicked() {
 }
 
 
-void SVDBWindowEditWidget::on_pushButtonWindowColor_colorChanged() {
+void SVDBWindowEditWidget::on_pushButtonColor_colorChanged() {
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonWindowColor->color()) {
-		m_current->m_color = m_ui->pushButtonWindowColor->color();
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify(); // tell model that we changed the data
 	}
 }

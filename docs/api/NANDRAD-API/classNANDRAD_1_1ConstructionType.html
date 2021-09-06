@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::ConstructionType Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::ConstructionType Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -70,22 +71,25 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1ConstructionType.html'
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Defines a multi-layered construction (without the boundary conditions). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00034">34</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00035">35</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a262e46b932fd091edc24a4101aa6e494"><td class="memItemLeft" align="right" valign="top"><a id="a262e46b932fd091edc24a4101aa6e494"></a>
-NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1ConstructionType.html#a262e46b932fd091edc24a4101aa6e494">checkParameters</a> (const std::vector&lt; <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &gt; &amp;materials)</td></tr>
-<tr class="memdesc:a262e46b932fd091edc24a4101aa6e494"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters in all material layers of the construction and also creates quick-access pointers to materials. <br /></td></tr>
-<tr class="separator:a262e46b932fd091edc24a4101aa6e494"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a932798ed23210eb51886bc67f8eda755"><td class="memItemLeft" align="right" valign="top"><a id="a932798ed23210eb51886bc67f8eda755"></a>
+NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1ConstructionType.html#a932798ed23210eb51886bc67f8eda755">checkParameters</a> (const std::vector&lt; <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &gt; &amp;materials)</td></tr>
+<tr class="memdesc:a932798ed23210eb51886bc67f8eda755"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters in all material layers of the construction and also creates quick-access pointers to materials. <br /></td></tr>
+<tr class="separator:a932798ed23210eb51886bc67f8eda755"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1ddfeb474dabd0e7d16c50c607fed6c9"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1ConstructionType.html#a1ddfeb474dabd0e7d16c50c607fed6c9">m_id</a></td></tr>
 <tr class="memdesc:a1ddfeb474dabd0e7d16c50c607fed6c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique id number.  <a href="#a1ddfeb474dabd0e7d16c50c607fed6c9">More...</a><br /></td></tr>
 <tr class="separator:a1ddfeb474dabd0e7d16c50c607fed6c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9241c2067b99fbfede20e624c9036f28"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1ConstructionType.html#a9241c2067b99fbfede20e624c9036f28">m_activeLayerIndex</a> = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td></tr>
+<tr class="memdesc:a9241c2067b99fbfede20e624c9036f28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional active layer index (use INVALID_ID to disable).  <a href="#a9241c2067b99fbfede20e624c9036f28">More...</a><br /></td></tr>
+<tr class="separator:a9241c2067b99fbfede20e624c9036f28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a129c1c28f07249b829ee98a16dba02b6"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1ConstructionType.html#a129c1c28f07249b829ee98a16dba02b6">m_displayName</a></td></tr>
 <tr class="memdesc:a129c1c28f07249b829ee98a16dba02b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">IBK-language encoded name of construction.  <a href="#a129c1c28f07249b829ee98a16dba02b6">More...</a><br /></td></tr>
 <tr class="separator:a129c1c28f07249b829ee98a16dba02b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -108,7 +112,25 @@ Public Attributes</h2></td></tr>
 
 <p>Unique id number. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00052">52</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00053">53</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
+
+</div>
+</div>
+<a id="a9241c2067b99fbfede20e624c9036f28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9241c2067b99fbfede20e624c9036f28">&#9670;&nbsp;</a></span>m_activeLayerIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int NANDRAD::ConstructionType::m_activeLayerIndex = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Optional active layer index (use INVALID_ID to disable). </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00056">56</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
 
 </div>
 </div>
@@ -126,7 +148,7 @@ Public Attributes</h2></td></tr>
 
 <p>IBK-language encoded name of construction. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00054">54</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00058">58</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
 
 </div>
 </div>
@@ -144,21 +166,20 @@ Public Attributes</h2></td></tr>
 
 <p>List of material layers. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00057">57</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__ConstructionType_8h_source.html#l00061">61</a> of file <a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__ConstructionType_8h_source.html">NANDRAD_ConstructionType.h</a></li>
-<li><a class="el" href="NANDRAD__ConstructionType_8cpp_source.html">NANDRAD_ConstructionType.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1ConstructionType.html">ConstructionType</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1ConstructionType.html">ConstructionType</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

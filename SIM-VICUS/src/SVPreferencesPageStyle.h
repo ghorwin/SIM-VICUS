@@ -40,22 +40,11 @@ public:
 	/*! Default constructor. */
 	explicit SVPreferencesPageStyle(QWidget *parent = nullptr);
 	/*! Destructor. */
-	~SVPreferencesPageStyle();
+	~SVPreferencesPageStyle() override;
 
 	/*! Updates the user interface with values in Settings object.*/
 	void updateUi();
 
-	/*! Transfers the current settings from the style page into
-		the settings object.
-		If one of the options was set wrong, the function will pop up a dialog
-		asking the user to fix it.
-		\return Returns true, if all settings were successfully stored. Otherwise
-				 false which signals that the dialog must not be closed, yet.
-	*/
-	bool storeConfig();
-
-	/*! */
-	bool rejectConfig();
 signals:
 	/*! Emitted, when user has changed the style. */
 	void styleChanged();

@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBInternalLoadsElectricEquipmentEditWidget::SVDBInternalLoadsElectricEquipmentEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -43,6 +44,8 @@ SVDBInternalLoadsElectricEquipmentEditWidget::SVDBInternalLoadsElectricEquipment
 {
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	// *** populate combo boxes ***
 	m_ui->comboBoxMethod->blockSignals(true);

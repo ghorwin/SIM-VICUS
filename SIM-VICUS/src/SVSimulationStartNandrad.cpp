@@ -83,16 +83,15 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	m_ui->comboBoxTermEmulator->setVisible(false);
 #elif defined(Q_OS_LINUX)
 	m_ui->checkBoxCloseConsoleWindow->setVisible(false);
+	m_ui->comboBoxTermEmulator->blockSignals(true);
+	m_ui->comboBoxTermEmulator->setCurrentIndex(SVSettings::instance().m_terminalEmulator);
+	m_ui->comboBoxTermEmulator->blockSignals(false);
 #else
 	// mac has neither option
 	m_ui->checkBoxCloseConsoleWindow->setVisible(false);
 	m_ui->labelTerminalEmulator->setVisible(false);
 	m_ui->comboBoxTermEmulator->setVisible(false);
 #endif
-	m_ui->comboBoxTermEmulator->blockSignals(true);
-	m_ui->comboBoxTermEmulator->setCurrentIndex(SVSettings::instance().m_terminalEmulator);
-	m_ui->comboBoxTermEmulator->blockSignals(false);
-
 
 	{
 		m_simulationPerformanceOptions = new SVSimulationPerformanceOptions(this, m_localProject.m_solverParameter);
@@ -383,6 +382,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 
 
 bool SVSimulationStartNandrad::startSimulation(bool testInit) {
+	updateCmdLine();
 	QString resultPath;
 	if (!generateNANDRAD(resultPath))
 		return false;
@@ -437,7 +437,11 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 
 	// delete working directory if requested
 	// launch solver - run option is only needed for linux, and otherwise it will always be -1
+#if defined(Q_OS_LINUX)
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)m_ui->comboBoxTermEmulator->currentIndex();
+#else
+	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
+#endif
 	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
@@ -467,8 +471,13 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
 		ex.writeMsgStackToError();
-		QMessageBox::critical(this, tr("NANDRAD Project Generation Error"),
-							  tr("An error occurred during NANDRAD project generation. See log for details."));
+		QMessageBox box(this);
+		QString fullText = errorStack.join("\n");
+		box.setDetailedText(fullText);
+		box.setIcon(QMessageBox::Critical);
+		box.setText(tr("An error occurred during NANDRAD project generation (see details below)."));
+		box.setWindowTitle(tr("NANDRAD Project Generation Error"));
+		box.exec();
 		return false;
 	}
 

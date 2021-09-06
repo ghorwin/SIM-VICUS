@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::DataTable Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::DataTable Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -85,9 +86,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a54e7126fff00f3584588039a60bf61c8"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DataTable.html#a54e7126fff00f3584588039a60bf61c8">encodedString</a> () const</td></tr>
 <tr class="memdesc:a54e7126fff00f3584588039a60bf61c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns content of data table as encoded string using tab a value separator.  <a href="#a54e7126fff00f3584588039a60bf61c8">More...</a><br /></td></tr>
 <tr class="separator:a54e7126fff00f3584588039a60bf61c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09cfdbfc7cb176288de5bd4e36a924e5"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DataTable.html#a09cfdbfc7cb176288de5bd4e36a924e5">valueVector</a> (const std::string &amp;parameterName) const</td></tr>
-<tr class="memdesc:a09cfdbfc7cb176288de5bd4e36a924e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that looks up a parameter data vector in the map and returns a const reference to it.  <a href="#a09cfdbfc7cb176288de5bd4e36a924e5">More...</a><br /></td></tr>
-<tr class="separator:a09cfdbfc7cb176288de5bd4e36a924e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf23cd83684895820fee44a724650fc8"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; double &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DataTable.html#abf23cd83684895820fee44a724650fc8">valueVector</a> (const std::string &amp;parameterName) const</td></tr>
+<tr class="memdesc:abf23cd83684895820fee44a724650fc8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function that looks up a parameter data vector in the map and returns a const reference to it.  <a href="#abf23cd83684895820fee44a724650fc8">More...</a><br /></td></tr>
+<tr class="separator:abf23cd83684895820fee44a724650fc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -146,8 +147,6 @@ Public Attributes</h2></td></tr>
 <p>Setting the following string "Col1:1 5 3;Col2:7 2 2" is equivalent to executing the following code: </p><div class="fragment"><div class="line"><a class="code" href="classNANDRAD_1_1DataTable.html#a7a8781f660999e8f029491c07ed5ec2d">m_values</a>[<span class="stringliteral">&quot;Col1&quot;</span>] = std::vector&lt;double&gt;{1,5,3};</div><div class="line"><a class="code" href="classNANDRAD_1_1DataTable.html#a7a8781f660999e8f029491c07ed5ec2d">m_values</a>[<span class="stringliteral">&quot;Col2&quot;</span>] = std::vector&lt;double&gt;{7,2,2};</div></div><!-- fragment --><p> Throws an IBK::Exception, if number of rows in columns mismatches.</p>
 <dl class="section note"><dt>Note</dt><dd>It is possible to use , and a whitespace (space or tab) character as number separator. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__DataTable_8cpp_source.html#l00032">32</a> of file <a class="el" href="NANDRAD__DataTable_8cpp_source.html">NANDRAD_DataTable.cpp</a>.</p>
-
 </div>
 </div>
 <a id="a54e7126fff00f3584588039a60bf61c8"></a>
@@ -167,18 +166,16 @@ Public Attributes</h2></td></tr>
 
 <p>Returns content of data table as encoded string using tab a value separator. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__DataTable_8cpp_source.html#l00064">64</a> of file <a class="el" href="NANDRAD__DataTable_8cpp_source.html">NANDRAD_DataTable.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a09cfdbfc7cb176288de5bd4e36a924e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09cfdbfc7cb176288de5bd4e36a924e5">&#9670;&nbsp;</a></span>valueVector()</h2>
+<a id="abf23cd83684895820fee44a724650fc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf23cd83684895820fee44a724650fc8">&#9670;&nbsp;</a></span>valueVector()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const std::vector&lt; double &gt; &amp; NANDRAD::DataTable::valueVector </td>
+          <td class="memname">const std::vector&lt;double&gt;&amp; NANDRAD::DataTable::valueVector </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>parameterName</em></td><td>)</td>
@@ -189,8 +186,6 @@ Public Attributes</h2></td></tr>
 
 <p>Convenience function that looks up a parameter data vector in the map and returns a const reference to it. </p>
 <p>Throws an IBK::Exception if the parameter name doesn't exist. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__DataTable_8cpp_source.html#l00081">81</a> of file <a class="el" href="NANDRAD__DataTable_8cpp_source.html">NANDRAD_DataTable.cpp</a>.</p>
 
 </div>
 </div>
@@ -213,17 +208,16 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__DataTable_8h_source.html">NANDRAD_DataTable.h</a></li>
-<li><a class="el" href="NANDRAD__DataTable_8cpp_source.html">NANDRAD_DataTable.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1DataTable.html">DataTable</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1DataTable.html">DataTable</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

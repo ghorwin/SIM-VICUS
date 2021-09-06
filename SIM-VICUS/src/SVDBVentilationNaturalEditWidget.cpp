@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBVentilationNaturalEditWidget::SVDBVentilationNaturalEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -43,6 +44,8 @@ SVDBVentilationNaturalEditWidget::SVDBVentilationNaturalEditWidget(QWidget *pare
 {
 	m_ui->setupUi(this);
 	m_ui->gridLayoutMaster->setMargin(4);
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone natural ventilation model name"));

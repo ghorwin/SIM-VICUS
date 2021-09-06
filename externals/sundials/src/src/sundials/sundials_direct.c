@@ -625,11 +625,11 @@ void SaveMat(DlsMat A, const char* const fname)
 }
 
 void SaveMatBinary(DlsMat A, const char* const fname) {
-  long int i, j, start, finish;
+//  long int i, j, start, finish;
   char matType;
   unsigned int s;
-  realtype **a;
-  realtype * block;
+//  realtype **a;
+//  realtype * block;
   FILE * f;
 
   f = fopen(fname, "wb");

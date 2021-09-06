@@ -160,7 +160,7 @@ public:
 		\param p The NANDRAD project to be populated.
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
-	void generateBuildingProjectData(NANDRAD::Project & p) const;
+//	void generateBuildingProjectData(NANDRAD::Project & p) const;
 	void generateNetworkProjectData(NANDRAD::Project & p) const;
 
 
@@ -250,7 +250,7 @@ private:
 									 NANDRAD::Project &p, const std::string &objListName)const;
 
 
-
+#if 0
 	// *** DIRK REMOVE BELOW ***
 
 
@@ -326,7 +326,7 @@ private:
 	*/
 	std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
 
-
+#endif
 };
 
 

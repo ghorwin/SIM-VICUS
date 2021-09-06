@@ -45,6 +45,8 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Pipe identification name"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	m_ui->lineEditCategory->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditCategory->setDialog3Caption(tr("Pipe category"));
 
@@ -80,7 +82,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setEnabled(isEnabled);
 	m_ui->lineEditInsulationLambda->setEnabled(isEnabled);
 	m_ui->lineEditInsulationThickness->setEnabled(isEnabled);
-	m_ui->pushButtonPipeColor->setEnabled(isEnabled);
+	m_ui->pushButtonColor->setEnabled(isEnabled);
 
 	if (!isEnabled) {
 		// clear input controls
@@ -93,7 +95,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 		m_ui->lineEditInsulationLambda->clear();
 		m_ui->lineEditInsulationThickness->clear();
 		m_ui->lineEditUValue->clear();
-		m_ui->pushButtonPipeColor->setColor(Qt::gray);
+		m_ui->pushButtonColor->setColor(Qt::gray);
 
 		m_autoNameGeneration = false;
 		return;
@@ -123,9 +125,9 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	if (pipe->isValid())
 		m_ui->lineEditUValue->setText(QString("%L1").arg(pipe->UValue(),0, 'f', 3));
 
-	m_ui->pushButtonPipeColor->blockSignals(true);
-	m_ui->pushButtonPipeColor->setColor(pipe->m_color);
-	m_ui->pushButtonPipeColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(pipe->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = true;
@@ -140,7 +142,7 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setReadOnly(!isEditable);
 	m_ui->lineEditInsulationLambda->setReadOnly(!isEditable);
 	m_ui->lineEditInsulationThickness->setReadOnly(!isEditable);
-	m_ui->pushButtonPipeColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 }
 
 
@@ -211,9 +213,9 @@ void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinishedSuccessfully
 }
 
 
-void SVDBPipeEditWidget::on_pushButtonPipeColor_colorChanged() {
-	if (m_current->m_color != m_ui->pushButtonPipeColor->color()) {
-		m_current->m_color = m_ui->pushButtonPipeColor->color();
+void SVDBPipeEditWidget::on_pushButtonColor_colorChanged() {
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 }

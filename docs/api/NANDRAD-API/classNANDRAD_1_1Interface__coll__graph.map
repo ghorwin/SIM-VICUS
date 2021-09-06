@@ -2,7 +2,7 @@
 <area shape="rect" id="node2" href="$classNANDRAD_1_1InterfaceLongWaveEmission.html" title="Contains parameters for long wave radiation exchange (outside). " alt="" coords="383,5,593,47"/>
 <area shape="rect" id="node3" href="$classNANDRAD_1_1InterfaceHeatConduction.html" title="Contains parameters for convenctive heat exchange between walls and zones/ambient climate..." alt="" coords="367,71,609,98"/>
 <area shape="rect" id="node4" href="$classNANDRAD_1_1InterfaceVaporDiffusion.html" title="Contains parameters for vapor diffusion flux calculation. " alt="" coords="371,122,605,149"/>
-<area shape="rect" id="node5" href="$classNANDRAD_1_1InterfaceSolarAbsorption.html" title="Declaration for class InterfaceSolarAbsorption. " alt="" coords="367,173,609,199"/>
+<area shape="rect" id="node5" href="$classNANDRAD_1_1InterfaceSolarAbsorption.html" title="Parametrization for solar absorption (short wave radiation boundary condition). " alt="" coords="367,173,609,199"/>
 <area shape="rect" id="node6" href="$classNANDRAD_1_1InterfaceAirFlow.html" title="Contains parameters for convenctive air flow through construction. " alt="" coords="391,223,585,250"/>
 <area shape="rect" id="node7" href="$classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,223,235,250"/>
 </map>

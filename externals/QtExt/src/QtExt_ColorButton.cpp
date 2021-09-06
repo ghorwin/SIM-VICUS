@@ -33,7 +33,8 @@ namespace QtExt {
 ColorButton::ColorButton(QWidget *parent) :
 	QPushButton(parent),
 	m_color(Qt::red),
-	m_readOnly(false)
+	m_readOnly(false),
+	m_dontUseNativeDialog(true)
 {
 	connect(this, SIGNAL(clicked()), this, SLOT(onClicked()));
 }
@@ -54,6 +55,11 @@ void ColorButton::setReadOnly(bool readOnly) {
 void ColorButton::setEnabled(bool enabled) {
 	m_readOnly = false;
 	QPushButton::setEnabled(enabled);
+}
+
+
+void ColorButton::setDontUseNativeDialog(bool dontUseNativeDialog) {
+	m_dontUseNativeDialog = dontUseNativeDialog;
 }
 
 
@@ -100,12 +106,8 @@ void ColorButton::paintEvent( QPaintEvent* e) {
 void ColorButton::onClicked() {
 	QColorDialog dlg(this);
 
-#ifdef Q_OS_WIN
-	#define NO_NATIVE_COLOR_DLG
-	#ifdef NO_NATIVE_COLOR_DLG
+	if (m_dontUseNativeDialog)
 		dlg.setOption(QColorDialog::DontUseNativeDialog, true);
-	#endif
-#endif
 
 	dlg.setCurrentColor(m_color);
 	if (dlg.exec() == QDialog::Accepted) {

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::OutputDefinition Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::OutputDefinition Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -81,7 +82,7 @@ Collaboration diagram for NANDRAD::OutputDefinition:</div>
 <map name="NANDRAD_1_1OutputDefinition_coll__map" id="NANDRAD_1_1OutputDefinition_coll__map">
 <area shape="rect" id="node2" href="classNANDRAD_1_1OutputGrid.html" title="An OutputGrid defines time intervals with a given output step size per interval. " alt="" coords="5,95,167,121"/>
 <area shape="rect" id="node3" href="classNANDRAD_1_1ObjectList.html" title="An ObjectList is used to select model instances based on reference type and ids. " alt="" coords="191,95,349,121"/>
-<area shape="rect" id="node4" href="classNANDRAD_1_1IDGroup.html" title="Declaration for class IDGroup. " alt="" coords="197,5,343,32"/>
+<area shape="rect" id="node4" href="classNANDRAD_1_1IDGroup.html" title="An IDGroup references one or more IDs and handles the encoding/decoding of an IDGroup&#45;string. " alt="" coords="197,5,343,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -97,9 +98,9 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ac87f0c7245d2a223be14c46e4d459136"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1OutputDefinition.html#ac87f0c7245d2a223be14c46e4d459136">m_filename</a></td></tr>
-<tr class="memdesc:ac87f0c7245d2a223be14c46e4d459136"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filename (if empty then filename is generated automatically).  <a href="#ac87f0c7245d2a223be14c46e4d459136">More...</a><br /></td></tr>
-<tr class="separator:ac87f0c7245d2a223be14c46e4d459136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a370d8d8af83fee411ec01ee9d9ec6dc4"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1OutputDefinition.html#a370d8d8af83fee411ec01ee9d9ec6dc4">m_fileName</a></td></tr>
+<tr class="memdesc:a370d8d8af83fee411ec01ee9d9ec6dc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filename (if empty then filename is generated automatically).  <a href="#a370d8d8af83fee411ec01ee9d9ec6dc4">More...</a><br /></td></tr>
+<tr class="separator:a370d8d8af83fee411ec01ee9d9ec6dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a62d58073d6f9d99206b1cd14061aec98"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1OutputDefinition.html#a62d58073d6f9d99206b1cd14061aec98">m_quantity</a></td></tr>
 <tr class="memdesc:a62d58073d6f9d99206b1cd14061aec98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quantity id (for example, "AirTemperature").  <a href="#a62d58073d6f9d99206b1cd14061aec98">More...</a><br /></td></tr>
 <tr class="separator:a62d58073d6f9d99206b1cd14061aec98"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,14 +148,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ac87f0c7245d2a223be14c46e4d459136"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac87f0c7245d2a223be14c46e4d459136">&#9670;&nbsp;</a></span>m_filename</h2>
+<a id="a370d8d8af83fee411ec01ee9d9ec6dc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a370d8d8af83fee411ec01ee9d9ec6dc4">&#9670;&nbsp;</a></span>m_fileName</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE std::string NANDRAD::OutputDefinition::m_filename</td>
+          <td class="memname">NANDRAD_READWRITE std::string NANDRAD::OutputDefinition::m_fileName</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -281,8 +282,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1OutputDefinition.html">OutputDefinition</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1OutputDefinition.html">OutputDefinition</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

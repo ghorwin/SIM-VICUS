@@ -40,7 +40,7 @@ public:
 	/*! Default constructor. */
 	explicit SVPreferencesPageTools(QWidget *parent = nullptr);
 	/*! Destructor. */
-	~SVPreferencesPageTools();
+	~SVPreferencesPageTools() override;
 
 	/*! Updates the user interface with values in Settings object.*/
 	void updateUi();

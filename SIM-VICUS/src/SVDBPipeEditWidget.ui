@@ -94,7 +94,7 @@
     </widget>
    </item>
    <item row="0" column="3">
-    <widget class="QtExt::ColorButton" name="pushButtonPipeColor">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -213,6 +213,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

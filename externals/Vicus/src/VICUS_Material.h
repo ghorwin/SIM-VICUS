@@ -99,7 +99,7 @@ public:
 	*/
 	Material( unsigned int id, const IBK::MultiLanguageString &name, double conductivity, double density, double specHeatCapa);
 
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Composes a NANDRAD material from the VICUS data structure. */

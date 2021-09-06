@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -57,6 +58,8 @@ SVDBInternalLoadsOtherEditWidget::SVDBInternalLoadsOtherEditWidget(QWidget *pare
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Internal loads other model name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditPower->setup(0, 250000, tr("Other power according to the given unit"), true, true);
 	m_ui->lineEditConvectiveFactor->setup(0, 1, tr("Convective heat factor"), true, true);

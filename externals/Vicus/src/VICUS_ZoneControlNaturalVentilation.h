@@ -63,7 +63,7 @@ public:
 			m_idSchedules[i] = INVALID_ID;
 	}
 
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all parameters are valid. */
@@ -85,7 +85,7 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Schedule ID. */
-	unsigned int					m_idSchedules[NUM_ST];					// XML:E
+	IDType							m_idSchedules[NUM_ST];					// XML:E
 
 	/*! List of constant parameters. */
 	IBK::Parameter					m_para[NUM_ST];							// XML:E

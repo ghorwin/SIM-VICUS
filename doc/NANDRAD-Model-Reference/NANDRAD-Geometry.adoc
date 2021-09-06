@@ -128,7 +128,7 @@ Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tags:
 | `ConstructionTypeId` | Referenz auf `ConstructionTypeId`
 | `IBK:Parameter` | Verschiedene `IBK:Parameter` für Konstruktionsinstanz
 | `InterfaceA` |Schnittstelle für Konstruktionsinstanz Seite A
-| `InterfaceB` |Interface für Konstruktionen
+| `InterfaceB` |Schnittstelle für Konstruktionsinstanz Seite B
 |====================
 
 
@@ -218,10 +218,10 @@ Die Interfaces definieren Randbedingungen und Parameter für die ein oder zwei O
     		<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
     	</InterfaceHeatConduction>
         <InterfaceSolarAbsorption model="Constant">
-            <IBK:Parameter name="AbsorptionCoefficient" unit="---">0,6</IBK:Parameter>
+            <IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
         </InterfaceSolarAbsorption>
         <InterfaceLongWaveEmission model="Constant">
-            <IBK:Parameter name="Emissivity" unit="---">0,9</IBK:Parameter>
+            <IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
         </InterfaceLongWaveEmission>
     </InterfaceB>
 </ConstructionInstance>
@@ -322,7 +322,7 @@ image::longwaverad.png[width=50%, scalewidth=17cm]
 [source,xml, indent=0]
 ----
 <InterfaceLongWaveEmission modelType="Constant">
-	<IBK:Parameter name="Emissivity" unit="---">0,9</IBK:Parameter>
+	<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 </InterfaceLongWaveEmission>
 ----
 ====

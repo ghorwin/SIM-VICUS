@@ -95,7 +95,8 @@ SVDBScheduleEditWidget::SVDBScheduleEditWidget(QWidget *parent) :
 	configureChart(m_ui->plotWidget);
 	m_curve = addConfiguredCurve(m_ui->plotWidget);
 
-	m_ui->filepathAnnualDataFile->setup("", true, true, tr("Time-series data files (*.tsv *.csv);;All files (*.*)"));
+	m_ui->filepathAnnualDataFile->setup("", true, true, tr("Time-series data files (*.tsv *.csv);;All files (*.*)"),
+										SVSettings::instance().m_dontUseNativeDialogs);
 
 	// initial state is "nothing selected"
 	updateInput(-1);

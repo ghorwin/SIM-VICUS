@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: Member List</title>
+<title>NANDRAD Data Model Library: Member List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -68,24 +69,33 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1LinearSplineParameter.
 <table class="directory">
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>C_CONTINUOUS</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>C_CYCLIC</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54">checkAndInitialize</a>(const std::string &amp;expectedName, const IBK::Unit &amp;targetXUnit, const IBK::Unit &amp;targetYUnit, const IBK::Unit &amp;limitYUnit, double minYVal, bool isGreaterEqual, double maxYVal, bool isLessEqual, const char *const errmsg, bool skipUnitChecks=false)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a3d3d90dbe89e6bdc9da502149fd028fa">convert2BaseUnits</a>()</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"><span class="mlabel">private</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>I_CONSTANT</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>I_LINEAR</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a> enum name</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#add90c4c28a6b46d43f2b05c2807fd650">m_interpolationMethod</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a66a1cbf150a264a934d5b265cec60a12">m_name</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a93c3c26df524015fdff178feaddbf501">LinearSplineParameter</a>()</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a783011f3be1675a86819bff0f477d2db">LinearSplineParameter</a>(const std::string &amp;name, const interpolationMethod_t intPol, const std::vector&lt; double &gt; &amp;xVals, const std::vector&lt; double &gt; yVals, const IBK::Unit &amp;xUnit, const IBK::Unit &amp;yUnit)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#aa0f3fdda6266c5b8298902e51505b3b7">LinearSplineParameter</a>(const std::string &amp;name, const interpolationMethod_t intPol, const IBK::Path &amp;tsvFilePath)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#add90c4c28a6b46d43f2b05c2807fd650">m_interpolationMethod</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a864a74b38f949c368325bfd1795dadce">m_name</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#ab49a07fa916a27a25913af47b550ed82">m_tsvFile</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#af0042e08f748cc6ceaf818e74062abd9">m_values</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#aeb979738b4ab10c8c53f974ac96dc3e4">m_wrapMethod</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#ad8d0bc979054fd9f1709f8b8bf0c1bbd">m_xUnit</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a22df9a13f60d07d1c2983e92d7a30df6">m_yUnit</a></td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>NUM_C</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>NUM_I</b> enum value (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adeb7bd7f71f2a1c4732bdde50feec8e0">readTsv</a>()</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>readXML</b>(const TiXmlElement *element) (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
   <tr><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adc0ad12d9d11b40c6e2674d255adfb07">wrapMethod_t</a> enum name</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
+  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>writeXML</b>(TiXmlElement *parent) const (defined in <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a>)</td><td class="entry"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a></td><td class="entry"></td></tr>
 </table></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

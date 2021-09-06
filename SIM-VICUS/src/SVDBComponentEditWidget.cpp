@@ -48,6 +48,8 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Component identification name"));
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	m_ui->lineEditRoughness->setup(0, 1, tr("Roughness according to the given unit"), true, true);
 	m_ui->lineEditSpecularity->setup(0, 1, tr("Specularity"), true, true);
 
@@ -105,7 +107,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditDaylightName->setText("");
 		m_ui->lineEditRoughness->setText("");
 		m_ui->lineEditSpecularity->setText("");
-		m_ui->pushButtonComponentColor->setColor(Qt::black);
+		m_ui->pushButtonColor->setColor(Qt::black);
 
 		return;
 	}
@@ -122,9 +124,9 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxComponentType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
-	m_ui->pushButtonComponentColor->blockSignals(true);
-	m_ui->pushButtonComponentColor->setColor(m_current->m_color);
-	m_ui->pushButtonComponentColor->blockSignals(false);
+	m_ui->pushButtonColor->blockSignals(true);
+	m_ui->pushButtonColor->setColor(m_current->m_color);
+	m_ui->pushButtonColor->blockSignals(false);
 
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
@@ -182,7 +184,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(true);
 		m_ui->spinBoxActiveLayerIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
-		m_ui->spinBoxActiveLayerIndex->setMaximum(con->m_materialLayers.size());
+		m_ui->spinBoxActiveLayerIndex->setMaximum((int)con->m_materialLayers.size());
 		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
 			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
@@ -199,7 +201,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
-	m_ui->pushButtonComponentColor->setReadOnly(!isEditable);
+	m_ui->pushButtonColor->setReadOnly(!isEditable);
 	m_ui->comboBoxComponentType->setEnabled(isEditable);
 	m_ui->toolButtonSelectConstruction->setEnabled(isEditable);
 	m_ui->toolButtonSelectBoundaryConditionSideAName->setEnabled(isEditable);
@@ -280,11 +282,11 @@ void SVDBComponentEditWidget::on_toolButtonSelectBoundaryConditionSideBName_clic
 }
 
 
-void SVDBComponentEditWidget::on_pushButtonComponentColor_colorChanged() {
+void SVDBComponentEditWidget::on_pushButtonColor_colorChanged() {
 	Q_ASSERT(m_current != nullptr);
 
-	if (m_current->m_color != m_ui->pushButtonComponentColor->color()) {
-		m_current->m_color = m_ui->pushButtonComponentColor->color();
+	if (m_current->m_color != m_ui->pushButtonColor->color()) {
+		m_current->m_color = m_ui->pushButtonColor->color();
 		modelModify();
 	}
 

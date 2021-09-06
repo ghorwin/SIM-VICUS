@@ -48,6 +48,7 @@ class Settings {
 	Q_DECLARE_TR_FUNCTIONS(Settings)
 	Q_DISABLE_COPY(Settings)
 public:
+
 	/*! Possible command line flags recognized by the program. */
 	enum CmdLineFlags {
 		/*! If set '--no-splash', the splash screen is not shown . */
@@ -164,6 +165,8 @@ public:
 	*/
 	QString						m_installDir;
 
+	/*! Flags for command line settings. */
+	bool						m_flags[NumCmdLineFlags];
 
 	// *** Members below are stored in settings file ***
 
@@ -197,8 +200,10 @@ public:
 	*/
 	QString						m_langId;
 
-	/*! Flags for command line settings. */
-	bool						m_flags[NumCmdLineFlags];
+	/*! If this is true, the native dialogs (Windows/Gnome/MacOS) for file and color dialogs
+		will not be used, but the Qt-based dialog variants, instead.
+	*/
+	bool						m_dontUseNativeDialogs;
 
 	/*! Stores the logging threshold for console. */
 	IBK::verbosity_levels_t		m_userLogLevelConsole;

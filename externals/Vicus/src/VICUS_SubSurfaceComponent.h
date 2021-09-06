@@ -55,7 +55,7 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
@@ -78,7 +78,7 @@ public:
 	unsigned int					m_idWindow = INVALID_ID;					// XML:E
 
 	/*! Construction type ID in case of opaque component/door (used for all types but CT_Window). */
-	unsigned int					m_idConstruction = INVALID_ID;			// XML:E
+	unsigned int					m_idConstruction = INVALID_ID;				// XML:E
 
 	/*! Boundary condition ID for Side A (usually outside). */
 	unsigned int					m_idSideABoundaryCondition = INVALID_ID;	// XML:E

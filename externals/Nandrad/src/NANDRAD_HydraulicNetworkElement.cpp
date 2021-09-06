@@ -106,7 +106,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 
 			// all pipes need parameter Length
 			m_para[P_Length].checkedValue("Length", "m", "m", 0, false, std::numeric_limits<double>::max(), true,
-										   "Length must be > 0 m.");
+										  "Length must be > 0 m.");
 
 			// check number of parallel pipes, and if missing, default to 1
 			if (m_intPara[IP_NumberParallelPipes].name.empty())
@@ -114,7 +114,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 			if (m_intPara[IP_NumberParallelPipes].value <= 0)
 				throw IBK::Exception("Parameter 'NumberParallelPipes' must be > 0!", FUNC_ID);
 		}
-		break;
+			break;
 
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
@@ -125,8 +125,9 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
+		case HydraulicNetworkComponent::MT_ConstantPressureLossValve: // TODO Hauke, check!
 			// nothing to check for
-		break;
+			break;
 
 		case HydraulicNetworkComponent::NUM_MT:
 			throw IBK::Exception("Invalid network component model type!", FUNC_ID);

@@ -44,10 +44,10 @@ namespace QtExt {
 class BrowseFilenameWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit BrowseFilenameWidget(QWidget *parent = 0);
+	explicit BrowseFilenameWidget(QWidget *parent = nullptr);
 
 	/*! Sets up line edit. */
-	void setup(const QString & filename, bool filenameMode, bool fileMustExist, const QString & filter);
+	void setup(const QString & filename, bool filenameMode, bool fileMustExist, const QString & filter, bool dontUseNativeFilenameDialog);
 
 	/*! Sets a filename in the line edit. */
 	void setFilename(const QString & filename);
@@ -80,6 +80,8 @@ private:
 	bool			m_fileMustExist;
 	/*! Filter to use in file dialog (only applicable for filename-mode). */
 	QString			m_filter;
+	/*! If true, the Qt-own file dialog is used. */
+	bool			m_dontUseNativeFilenameDialog;
 
 	/*! The line edit. */
 	QLineEdit		*m_lineEdit;

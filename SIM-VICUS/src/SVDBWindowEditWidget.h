@@ -68,7 +68,7 @@ public:
 private slots:
 	void on_lineEditName_editingFinished();
 
-	void on_pushButtonWindowColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 
 	void on_toolButtonSelectGlazingSystemName_clicked();
 

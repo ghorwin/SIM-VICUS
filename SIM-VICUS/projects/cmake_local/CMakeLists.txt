@@ -2,6 +2,13 @@
 
 project( SIM-VICUS )
 
+if (COMMAND cmake_policy)
+  # set linker search policy new
+  cmake_policy(SET CMP0003 NEW)
+  # Policy CMP0020: Automatically link Qt executables to qtmain target on Windows.
+  cmake_policy(SET CMP0020 NEW)
+endif (COMMAND cmake_policy)
+
 # add include directories
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
@@ -95,9 +102,25 @@ if( WIN32 )
 	set(WIN_FRAMEWORKS iphlpapi gdiplus gdi32 user32 ole32)
 	
 	# enable console window (to see debug/profiler messages)
-	set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
+	# Mind: when commenting out next line, you need to link against WinMain
+	#set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
 	
 endif( WIN32 ) 
+
+# Note: this is just so that the manually build app bundle is basically configured when testing in 
+#       MACOS and has a decent icon. In deployment mode, the same PList file needs to be used.
+if( APPLE )
+  set( GUI_TYPE MACOSX_BUNDLE )
+  set( MACOSX_BUNDLE_BUNDLE_NAME SIM-VICUS )
+  set( MACOSX_BUNDLE_BUNDLE_VERSION 0.6 )
+  set( MACOSX_BUNDLE_COPYRIGHT "SIM-VICUS Team 2020-today, GPL Licensed" )
+  set( MACOSX_BUNDLE_GUI_IDENTIFIER com.IBK.SIM-VICUS )
+  set( MACOSX_BUNDLE_INFO_STRING "SIM-VICUS 0.6" )
+  set( MACOSX_BUNDLE_LONG_VERSION_STRING "Version 0.6.1" )
+  set( MACOSX_BUNDLE_SHORT_VERSION_STRING "0.6" ) # the version shown in Finder
+  set( MACOSX_BUNDLE_ICON_FILE SIM-VICUS.icns )
+  SET_SOURCE_FILES_PROPERTIES( ${PROJECT_SOURCE_DIR}/../../resources/gfx/SIM-VICUS.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+endif( APPLE )
 
 if( UNIX )
 	if( APPLE )

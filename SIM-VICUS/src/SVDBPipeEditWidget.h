@@ -61,7 +61,7 @@ private slots:
 	void on_lineEditWallRoughness_editingFinishedSuccessfully();
 	void on_lineEditInsulationThickness_editingFinishedSuccessfully();
 	void on_lineEditInsulationLambda_editingFinishedSuccessfully();
-	void on_pushButtonPipeColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 	void on_lineEditCategory_editingFinished();
 
 private:

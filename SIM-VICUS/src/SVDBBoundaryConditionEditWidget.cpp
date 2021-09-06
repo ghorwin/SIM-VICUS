@@ -49,6 +49,8 @@ SVDBBoundaryConditionEditWidget::SVDBBoundaryConditionEditWidget(QWidget *parent
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption("Boundary condition identification name");
 
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
+
 	m_ui->lineEditSolarAbsorptionCoefficient->setup(0, 1, tr("Solar Absorption (short wave)"), true, true);
 	m_ui->lineEditLongWaveEmissivity->setup(0, 1, tr("Thermal Absorption (long wave)"), true, true);
 	m_ui->lineEditHeatTransferCoefficient->setup(0, 500, tr("Thermal conductivity"), true, true);

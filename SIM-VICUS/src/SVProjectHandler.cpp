@@ -287,10 +287,8 @@ SVProjectHandler::SaveResult SVProjectHandler::saveWithNewFilename(QWidget * par
 			tr("Specify SIM-VICUS project file"),
 			currentPath,
 			tr("SIM-VICUS project files (*%1);;All files (*.*)").arg(SVSettings::instance().m_projectFileSuffix),
-			nullptr
-#ifdef QTEXT_DONT_USE_NATIVE_FILEDIALOG
-			,QFileDialog::DontUseNativeDialog
-#endif // QTEXT_DONT_USE_NATIVE_FILEDIALOG
+			nullptr,
+			SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
 		);
 
 
@@ -446,7 +444,7 @@ bool SVProjectHandler::read(const QString & fname) {
 	// check that we have a project, should be newly created
 	Q_ASSERT(isValid());
 
-	if (!QFileInfo(fname).exists()) {
+	if (!QFileInfo::exists(fname)) {
 		IBK::IBK_Message(IBK::FormatString("File '%1' does not exist or permissions are missing for accessing the file.")
 						 .arg(fname.toUtf8().data()), IBK::MSG_ERROR, FUNC_ID);
 		return false;

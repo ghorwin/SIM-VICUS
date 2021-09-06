@@ -36,6 +36,7 @@
 #include "SVMainWindow.h"
 #include "SVConstants.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVSettings.h"
 
 SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget *parent) :
 	SVAbstractDatabaseEditWidget(parent),
@@ -66,6 +67,8 @@ SVDBZoneControlThermostatEditWidget::SVDBZoneControlThermostatEditWidget(QWidget
 
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), THIRD_LANGUAGE, true);
 	m_ui->lineEditName->setDialog3Caption(tr("Zone control thermostat model name"));
+
+	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
 	m_ui->lineEditTolerance->setup(0.1, 50, tr("Thermostat tolerance for heating and/or cooling mode. Min 0.1 C, Max 50 C."), true, true);
 

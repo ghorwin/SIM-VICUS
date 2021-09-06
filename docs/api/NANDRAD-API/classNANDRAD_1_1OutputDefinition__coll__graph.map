@@ -1,5 +1,5 @@
 <map id="NANDRAD::OutputDefinition" name="NANDRAD::OutputDefinition">
 <area shape="rect" id="node2" href="$classNANDRAD_1_1OutputGrid.html" title="An OutputGrid defines time intervals with a given output step size per interval. " alt="" coords="5,95,167,121"/>
 <area shape="rect" id="node3" href="$classNANDRAD_1_1ObjectList.html" title="An ObjectList is used to select model instances based on reference type and ids. " alt="" coords="191,95,349,121"/>
-<area shape="rect" id="node4" href="$classNANDRAD_1_1IDGroup.html" title="Declaration for class IDGroup. " alt="" coords="197,5,343,32"/>
+<area shape="rect" id="node4" href="$classNANDRAD_1_1IDGroup.html" title="An IDGroup references one or more IDs and handles the encoding/decoding of an IDGroup&#45;string. " alt="" coords="197,5,343,32"/>
 </map>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::NaturalVentilationModel Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::NaturalVentilationModel Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -61,6 +62,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1NaturalVentilationMode
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1NaturalVentilationModel-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -78,21 +80,40 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1NaturalVentilationMode
 Public Types</h2></td></tr>
 <tr class="memitem:ad13551095c06af6795353ea0d1519f19"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ad13551095c06af6795353ea0d1519f19">modelType_t</a> { <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ad13551095c06af6795353ea0d1519f19a92f7a2921529f06874f47cc55d2e6cd6">MT_Constant</a>, 
 <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ad13551095c06af6795353ea0d1519f19aa84797d3a95cb308bb2ffbeddd38494f">MT_Scheduled</a>, 
+<a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ad13551095c06af6795353ea0d1519f19a28d7b122294ec5bc88bdbf482ee7733a">MT_ScheduledWithBaseACR</a>, 
 <b>NUM_MT</b>
  }<tr class="memdesc:ad13551095c06af6795353ea0d1519f19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Different model variants.  <a href="classNANDRAD_1_1NaturalVentilationModel.html#ad13551095c06af6795353ea0d1519f19">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:ad13551095c06af6795353ea0d1519f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac38ace57331787d4c52b14d760197e05"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ac38ace57331787d4c52b14d760197e05">para_t</a> { <b>P_VentilationRate</b>, 
+<tr class="memitem:ac38ace57331787d4c52b14d760197e05"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ac38ace57331787d4c52b14d760197e05">para_t</a> { <br />
+&#160;&#160;<b>P_VentilationRate</b>, 
+<b>P_MaximumRoomAirTemperatureACRLimit</b>, 
+<b>P_MinimumRoomAirTemperatureACRLimit</b>, 
+<b>P_MaximumEnviromentAirTemperatureACRLimit</b>, 
+<br />
+&#160;&#160;<b>P_MinimumEnviromentAirTemperatureACRLimit</b>, 
+<b>P_DeltaTemperatureACRLimit</b>, 
+<b>P_WindSpeedACRLimit</b>, 
 <b>NUM_P</b>
+<br />
  }<tr class="memdesc:ac38ace57331787d4c52b14d760197e05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Model parameters.  <a href="classNANDRAD_1_1NaturalVentilationModel.html#ac38ace57331787d4c52b14d760197e05">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:ac38ace57331787d4c52b14d760197e05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:ae3e377110ded6d9be886ae2a16ff22cd"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#ae3e377110ded6d9be886ae2a16ff22cd">checkParameters</a> () const</td></tr>
+<tr class="memdesc:ae3e377110ded6d9be886ae2a16ff22cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks parameters for valid values.  <a href="#ae3e377110ded6d9be886ae2a16ff22cd">More...</a><br /></td></tr>
+<tr class="separator:ae3e377110ded6d9be886ae2a16ff22cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae3d5f0c2aa9c0343d7af8a3c62bacce"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#aae3d5f0c2aa9c0343d7af8a3c62bacce">equal</a> (const <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a> &amp;other) const</td></tr>
+<tr class="memdesc:aae3d5f0c2aa9c0343d7af8a3c62bacce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Comparies objects by physical parametrization (excluding ID and displayname and object list).  <a href="#aae3d5f0c2aa9c0343d7af8a3c62bacce">More...</a><br /></td></tr>
+<tr class="separator:aae3d5f0c2aa9c0343d7af8a3c62bacce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a3555d551959759a4eac1027e9a98fe76"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#a3555d551959759a4eac1027e9a98fe76">m_id</a> = NANDRAD::INVALID_ID</td></tr>
-<tr class="memdesc:a3555d551959759a4eac1027e9a98fe76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique ID-number for this ventilation rate model.  <a href="#a3555d551959759a4eac1027e9a98fe76">More...</a><br /></td></tr>
-<tr class="separator:a3555d551959759a4eac1027e9a98fe76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af34705378527a2b00d5a6e09c4c601ba"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#af34705378527a2b00d5a6e09c4c601ba">m_id</a> = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">NANDRAD::INVALID_ID</a></td></tr>
+<tr class="memdesc:af34705378527a2b00d5a6e09c4c601ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique ID-number for this ventilation rate model.  <a href="#af34705378527a2b00d5a6e09c4c601ba">More...</a><br /></td></tr>
+<tr class="separator:af34705378527a2b00d5a6e09c4c601ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a7c7eff6c5c1816eda83ac7d618dbd2"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html#a7a7c7eff6c5c1816eda83ac7d618dbd2">m_displayName</a></td></tr>
 <tr class="memdesc:a7a7c7eff6c5c1816eda83ac7d618dbd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some display/comment name for this model (optional).  <a href="#a7a7c7eff6c5c1816eda83ac7d618dbd2">More...</a><br /></td></tr>
 <tr class="separator:a7a7c7eff6c5c1816eda83ac7d618dbd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -123,7 +144,9 @@ Public Attributes</h2></td></tr>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad13551095c06af6795353ea0d1519f19a92f7a2921529f06874f47cc55d2e6cd6"></a>MT_Constant&#160;</td><td class="fielddoc"><p>Ventilation rate is given as constant parameter. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="ad13551095c06af6795353ea0d1519f19aa84797d3a95cb308bb2ffbeddd38494f"></a>MT_Scheduled&#160;</td><td class="fielddoc"><p>Ventilation rate is provided as 'NaturalVentilationRate' schedule parameter. </p>
+<tr><td class="fieldname"><a id="ad13551095c06af6795353ea0d1519f19aa84797d3a95cb308bb2ffbeddd38494f"></a>MT_Scheduled&#160;</td><td class="fielddoc"><p>Ventilation rate is provided as 'VentilationRateSchedule' schedule parameter. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad13551095c06af6795353ea0d1519f19a28d7b122294ec5bc88bdbf482ee7733a"></a>MT_ScheduledWithBaseACR&#160;</td><td class="fielddoc"><p>Increased day time ventilation. </p>
 </td></tr>
 </table>
 
@@ -145,26 +168,66 @@ Public Attributes</h2></td></tr>
 
 <p>Model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00045">45</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00047">47</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a3555d551959759a4eac1027e9a98fe76"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3555d551959759a4eac1027e9a98fe76">&#9670;&nbsp;</a></span>m_id</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae3e377110ded6d9be886ae2a16ff22cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3e377110ded6d9be886ae2a16ff22cd">&#9670;&nbsp;</a></span>checkParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE unsigned int NANDRAD::NaturalVentilationModel::m_id = NANDRAD::INVALID_ID</td>
+          <td class="memname">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void NANDRAD::NaturalVentilationModel::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks parameters for valid values. </p>
+
+</div>
+</div>
+<a id="aae3d5f0c2aa9c0343d7af8a3c62bacce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae3d5f0c2aa9c0343d7af8a3c62bacce">&#9670;&nbsp;</a></span>equal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool NANDRAD::NaturalVentilationModel::equal </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Comparies objects by physical parametrization (excluding ID and displayname and object list). </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="af34705378527a2b00d5a6e09c4c601ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af34705378527a2b00d5a6e09c4c601ba">&#9670;&nbsp;</a></span>m_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int NANDRAD::NaturalVentilationModel::m_id = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">NANDRAD::INVALID_ID</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Unique ID-number for this ventilation rate model. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00053">53</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00068">68</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
@@ -182,7 +245,7 @@ Public Attributes</h2></td></tr>
 
 <p>Some display/comment name for this model (optional). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00055">55</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00070">70</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
@@ -200,7 +263,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model type. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00058">58</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00073">73</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
@@ -218,7 +281,7 @@ Public Attributes</h2></td></tr>
 
 <p>Object list with zones that this model is to be apply to. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00061">61</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00076">76</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
@@ -236,7 +299,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00064">64</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html#l00079">79</a> of file <a class="el" href="NANDRAD__NaturalVentilationModel_8h_source.html">NANDRAD_NaturalVentilationModel.h</a>.</p>
 
 </div>
 </div>
@@ -248,8 +311,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

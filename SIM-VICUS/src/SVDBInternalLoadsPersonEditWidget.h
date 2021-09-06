@@ -57,7 +57,7 @@ private slots:
 	void on_comboBoxPersonMethod_currentIndexChanged(int index);
 	void on_lineEditPersonCount_editingFinishedSuccessfully();
 	void on_lineEditConvectiveFactor_editingFinishedSuccessfully();
-	void on_pushButtonPersonColor_colorChanged();
+	void on_pushButtonColor_colorChanged();
 	void on_toolButtonSelectOccupancy_clicked();
 	void on_toolButtonSelectActivity_clicked();
 

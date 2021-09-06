@@ -31,7 +31,7 @@
     <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
    </item>
    <item row="0" column="3">
-    <widget class="QtExt::ColorButton" name="pushButtonWindowColor">
+    <widget class="QtExt::ColorButton" name="pushButtonColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -193,6 +193,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>

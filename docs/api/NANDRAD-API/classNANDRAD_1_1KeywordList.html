@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::KeywordList Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::KeywordList Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -68,48 +69,54 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1KeywordList.html','');
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The class <a class="el" href="classNANDRAD_1_1KeywordList.html" title="The class KeywordList provides conversion functionality between keyword strings and their respective ...">KeywordList</a> provides conversion functionality between keyword strings and their respective enumeration values. </p>
-<p>Keyword strings are used in the Delphin project files as identifyer. In the code we use the enumeration values. You can obtain a keyword for a given enumeration value with the static function <a class="el" href="classNANDRAD_1_1KeywordList.html#a6210561cc8c3aef05a41bf107fd91785" title="Returns a keyword for an enum value t of type enumtype. ">Keyword()</a>. The corresponding enumeration value can be obtained with <a class="el" href="classNANDRAD_1_1KeywordList.html#ac277ef6d70c1dcb8cbb733b2608119f7" title="Returns an enumeration value for a given keyword kw of type enumtype. ">Enumeration()</a>, as shown in the example below. </p><div class="fragment"><div class="line"><span class="comment">// to get the keyword string use</span></div><div class="line"><span class="keywordtype">string</span> kw = <a class="code" href="classNANDRAD_1_1KeywordList.html#a6210561cc8c3aef05a41bf107fd91785">KeywordList::Keyword</a>(<span class="stringliteral">&quot;Assignment::type_t&quot;</span>, Assignment::ST_MATERIAL);</div><div class="line"><span class="comment">// and to get the enumeration value</span></div><div class="line">Assignment::type_t t = <a class="code" href="classNANDRAD_1_1KeywordList.html#ac277ef6d70c1dcb8cbb733b2608119f7">KeywordList::Enumeration</a>(<span class="stringliteral">&quot;Assignment::type_t}&quot;</span>, kw);</div><div class="line"><span class="comment">// the string &quot;Assignment::type_t&quot; is the full enumeration type and formed from the class</span></div><div class="line"><span class="comment">// name and the enumeration type name</span></div></div><!-- fragment --><p> Remember to pass the correct and full enumeration type as first argument to Keyword. </p><dl class="section note"><dt>Note</dt><dd>Instead of overloading the <a class="el" href="classNANDRAD_1_1KeywordList.html#a6210561cc8c3aef05a41bf107fd91785" title="Returns a keyword for an enum value t of type enumtype. ">Keyword()</a> function for different types in the current implementation we use a generic form in order to avoid adding compilation dependencies for all CPP files in the project that include the keyword list. </dd></dl>
+<p>Keyword strings are used in the <a class="el" href="namespaceNANDRAD.html" title="The namespace NANDRAD contains the data model classes that make up the NANDRAD solver input data...">NANDRAD</a> project files as identifier. In the code we use the enumeration values. You can obtain a keyword for a given enumeration value with the static function <a class="el" href="classNANDRAD_1_1KeywordList.html#a4b4cab91e7e09640377860498f0291ff" title="Returns a keyword for an enum value t of type enumtype. ">Keyword()</a>. The corresponding enumeration value can be obtained with <a class="el" href="classNANDRAD_1_1KeywordList.html#a9414cf132597fa35fed31fadde7bc4a9" title="Returns an enumeration value for a given keyword kw of type enumtype. ">Enumeration()</a>, as shown in the example below. </p><div class="fragment"><div class="line"><span class="comment">// to get the keyword string use</span></div><div class="line"><span class="keywordtype">string</span> kw = <a class="code" href="classNANDRAD_1_1KeywordList.html#a4b4cab91e7e09640377860498f0291ff">KeywordList::Keyword</a>(<span class="stringliteral">&quot;Assignment::type_t&quot;</span>, Assignment::ST_MATERIAL);</div><div class="line"><span class="comment">// and to get the enumeration value</span></div><div class="line">Assignment::type_t t = <a class="code" href="classNANDRAD_1_1KeywordList.html#a9414cf132597fa35fed31fadde7bc4a9">KeywordList::Enumeration</a>(<span class="stringliteral">&quot;Assignment::type_t}&quot;</span>, kw);</div><div class="line"><span class="comment">// the string &quot;Assignment::type_t&quot; is the full enumeration type and formed from the class</span></div><div class="line"><span class="comment">// name and the enumeration type name</span></div></div><!-- fragment --><p> Remember to pass the correct and full enumeration type as first argument to Keyword. </p><dl class="section note"><dt>Note</dt><dd>Instead of overloading the <a class="el" href="classNANDRAD_1_1KeywordList.html#a4b4cab91e7e09640377860498f0291ff" title="Returns a keyword for an enum value t of type enumtype. ">Keyword()</a> function for different types in the current implementation we use a generic form in order to avoid adding compilation dependencies for all CPP files in the project that include the keyword list. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8h_source.html#l00050">50</a> of file <a class="el" href="NANDRAD__KeywordList_8h_source.html">NANDRAD_KeywordList.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8h_source.html#l00053">53</a> of file <a class="el" href="NANDRAD__KeywordList_8h_source.html">NANDRAD_KeywordList.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__KeywordList_8h_source.html">NANDRAD_KeywordList.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6210561cc8c3aef05a41bf107fd91785"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a6210561cc8c3aef05a41bf107fd91785">Keyword</a> (const char *const enumtype, int t)</td></tr>
-<tr class="memdesc:a6210561cc8c3aef05a41bf107fd91785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a keyword for an enum value t of type enumtype.  <a href="#a6210561cc8c3aef05a41bf107fd91785">More...</a><br /></td></tr>
-<tr class="separator:a6210561cc8c3aef05a41bf107fd91785"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaf05a4427dcfbee34608cc46d40616b6"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#aaf05a4427dcfbee34608cc46d40616b6">Description</a> (const char *const enumtype, int t, bool *no_description=nullptr)</td></tr>
-<tr class="memdesc:aaf05a4427dcfbee34608cc46d40616b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a description for an enum value t of type enumtype.  <a href="#aaf05a4427dcfbee34608cc46d40616b6">More...</a><br /></td></tr>
-<tr class="separator:aaf05a4427dcfbee34608cc46d40616b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7aae4567f598dc3159ef32bad27bf234"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a7aae4567f598dc3159ef32bad27bf234">Unit</a> (const char *const enumtype, int t)</td></tr>
-<tr class="memdesc:a7aae4567f598dc3159ef32bad27bf234"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a default unit for an enum value t of type enumtype.  <a href="#a7aae4567f598dc3159ef32bad27bf234">More...</a><br /></td></tr>
-<tr class="separator:a7aae4567f598dc3159ef32bad27bf234"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f14a1c63b8e757447f7f1caf028fffc"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a3f14a1c63b8e757447f7f1caf028fffc">Color</a> (const char *const enumtype, int t)</td></tr>
-<tr class="memdesc:a3f14a1c63b8e757447f7f1caf028fffc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a color string for an enum value t of type enumtype.  <a href="#a3f14a1c63b8e757447f7f1caf028fffc">More...</a><br /></td></tr>
-<tr class="separator:a3f14a1c63b8e757447f7f1caf028fffc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d818e60e03999140dcb927f08c09113"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a4d818e60e03999140dcb927f08c09113">DefaultValue</a> (const char *const enumtype, int t)</td></tr>
-<tr class="memdesc:a4d818e60e03999140dcb927f08c09113"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a default value for an enum value t of type enumtype.  <a href="#a4d818e60e03999140dcb927f08c09113">More...</a><br /></td></tr>
-<tr class="separator:a4d818e60e03999140dcb927f08c09113"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac277ef6d70c1dcb8cbb733b2608119f7"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#ac277ef6d70c1dcb8cbb733b2608119f7">Enumeration</a> (const char *const enumtype, const std::string &amp;kw, bool *deprecated=nullptr)</td></tr>
-<tr class="memdesc:ac277ef6d70c1dcb8cbb733b2608119f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an enumeration value for a given keyword kw of type enumtype.  <a href="#ac277ef6d70c1dcb8cbb733b2608119f7">More...</a><br /></td></tr>
-<tr class="separator:ac277ef6d70c1dcb8cbb733b2608119f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a186bd7ec167ef00a7b20c357428a9fab"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a186bd7ec167ef00a7b20c357428a9fab">MaxIndex</a> (const char *const enumtype)</td></tr>
-<tr class="memdesc:a186bd7ec167ef00a7b20c357428a9fab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum index for entries of a category in the keyword list.  <a href="#a186bd7ec167ef00a7b20c357428a9fab">More...</a><br /></td></tr>
-<tr class="separator:a186bd7ec167ef00a7b20c357428a9fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3c0042f5baf5ab26d4415792856b1014"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a3c0042f5baf5ab26d4415792856b1014">Count</a> (const char *const enumtype)</td></tr>
-<tr class="memdesc:a3c0042f5baf5ab26d4415792856b1014"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of keywords in this category.  <a href="#a3c0042f5baf5ab26d4415792856b1014">More...</a><br /></td></tr>
-<tr class="separator:a3c0042f5baf5ab26d4415792856b1014"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af7d34a82fe751095b2a287dc57a35ed9"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#af7d34a82fe751095b2a287dc57a35ed9">KeywordExists</a> (const char *const enumtype, const std::string &amp;kw)</td></tr>
-<tr class="memdesc:af7d34a82fe751095b2a287dc57a35ed9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a keyword exists in the enumeration of type enumtype.  <a href="#af7d34a82fe751095b2a287dc57a35ed9">More...</a><br /></td></tr>
-<tr class="separator:af7d34a82fe751095b2a287dc57a35ed9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af19edc277161ec2230e1e1ee95c93a82"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#af19edc277161ec2230e1e1ee95c93a82">CategoryExists</a> (const char *const enumtype)</td></tr>
-<tr class="memdesc:af19edc277161ec2230e1e1ee95c93a82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a category of type enumtype exists.  <a href="#af19edc277161ec2230e1e1ee95c93a82">More...</a><br /></td></tr>
-<tr class="separator:af19edc277161ec2230e1e1ee95c93a82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b4cab91e7e09640377860498f0291ff"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a4b4cab91e7e09640377860498f0291ff">Keyword</a> (const char *const enumtype, int t)</td></tr>
+<tr class="memdesc:a4b4cab91e7e09640377860498f0291ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a keyword for an enum value t of type enumtype.  <a href="#a4b4cab91e7e09640377860498f0291ff">More...</a><br /></td></tr>
+<tr class="separator:a4b4cab91e7e09640377860498f0291ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa167106923268b71e7f01d38ec7ca38a"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#aa167106923268b71e7f01d38ec7ca38a">Description</a> (const char *const enumtype, int t, bool *no_description=nullptr)</td></tr>
+<tr class="memdesc:aa167106923268b71e7f01d38ec7ca38a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a description for an enum value t of type enumtype.  <a href="#aa167106923268b71e7f01d38ec7ca38a">More...</a><br /></td></tr>
+<tr class="separator:aa167106923268b71e7f01d38ec7ca38a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86396c90c553df6b4a857b88f2bec9d3"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a86396c90c553df6b4a857b88f2bec9d3">Unit</a> (const char *const enumtype, int t)</td></tr>
+<tr class="memdesc:a86396c90c553df6b4a857b88f2bec9d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a default unit for an enum value t of type enumtype.  <a href="#a86396c90c553df6b4a857b88f2bec9d3">More...</a><br /></td></tr>
+<tr class="separator:a86396c90c553df6b4a857b88f2bec9d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee74cf0ad13ed0f9eec73427a8bb89c4"><td class="memItemLeft" align="right" valign="top">static const char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#aee74cf0ad13ed0f9eec73427a8bb89c4">Color</a> (const char *const enumtype, int t)</td></tr>
+<tr class="memdesc:aee74cf0ad13ed0f9eec73427a8bb89c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a color string for an enum value t of type enumtype.  <a href="#aee74cf0ad13ed0f9eec73427a8bb89c4">More...</a><br /></td></tr>
+<tr class="separator:aee74cf0ad13ed0f9eec73427a8bb89c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f84c90c0af9683d37d110133e9bf296"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a6f84c90c0af9683d37d110133e9bf296">DefaultValue</a> (const char *const enumtype, int t)</td></tr>
+<tr class="memdesc:a6f84c90c0af9683d37d110133e9bf296"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a default value for an enum value t of type enumtype.  <a href="#a6f84c90c0af9683d37d110133e9bf296">More...</a><br /></td></tr>
+<tr class="separator:a6f84c90c0af9683d37d110133e9bf296"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9414cf132597fa35fed31fadde7bc4a9"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a9414cf132597fa35fed31fadde7bc4a9">Enumeration</a> (const char *const enumtype, const std::string &amp;kw, bool *deprecated=nullptr)</td></tr>
+<tr class="memdesc:a9414cf132597fa35fed31fadde7bc4a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an enumeration value for a given keyword kw of type enumtype.  <a href="#a9414cf132597fa35fed31fadde7bc4a9">More...</a><br /></td></tr>
+<tr class="separator:a9414cf132597fa35fed31fadde7bc4a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a338bc0e6945e74c9a6ddb3f5a193e442"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a338bc0e6945e74c9a6ddb3f5a193e442">MaxIndex</a> (const char *const enumtype)</td></tr>
+<tr class="memdesc:a338bc0e6945e74c9a6ddb3f5a193e442"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the maximum index for entries of a category in the keyword list.  <a href="#a338bc0e6945e74c9a6ddb3f5a193e442">More...</a><br /></td></tr>
+<tr class="separator:a338bc0e6945e74c9a6ddb3f5a193e442"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac12dca5d959a6377e2279cfd41fff5c8"><td class="memItemLeft" align="right" valign="top">static unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#ac12dca5d959a6377e2279cfd41fff5c8">Count</a> (const char *const enumtype)</td></tr>
+<tr class="memdesc:ac12dca5d959a6377e2279cfd41fff5c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of keywords in this category.  <a href="#ac12dca5d959a6377e2279cfd41fff5c8">More...</a><br /></td></tr>
+<tr class="separator:ac12dca5d959a6377e2279cfd41fff5c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaea35f12cf9c4851d830684fa7c067cc"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#aaea35f12cf9c4851d830684fa7c067cc">KeywordExists</a> (const char *const enumtype, const std::string &amp;kw)</td></tr>
+<tr class="memdesc:aaea35f12cf9c4851d830684fa7c067cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a keyword exists in the enumeration of type enumtype.  <a href="#aaea35f12cf9c4851d830684fa7c067cc">More...</a><br /></td></tr>
+<tr class="separator:aaea35f12cf9c4851d830684fa7c067cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf4ecd45ae5f9b550fba0cffe7770b05"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#adf4ecd45ae5f9b550fba0cffe7770b05">CategoryExists</a> (const char *const enumtype)</td></tr>
+<tr class="memdesc:adf4ecd45ae5f9b550fba0cffe7770b05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether a category of type enumtype exists.  <a href="#adf4ecd45ae5f9b550fba0cffe7770b05">More...</a><br /></td></tr>
+<tr class="separator:adf4ecd45ae5f9b550fba0cffe7770b05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30a876398e0864de4a0a66618edf187a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#a30a876398e0864de4a0a66618edf187a">setParameter</a> (IBK::Parameter para[], const char *const enumtype, int n, const double &amp;val)</td></tr>
+<tr class="memdesc:a30a876398e0864de4a0a66618edf187a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convenience function to set an IBK::Parameter inside a static C-array of IBK::Parameters with correct name, value and unit.  <a href="#a30a876398e0864de4a0a66618edf187a">More...</a><br /></td></tr>
+<tr class="separator:a30a876398e0864de4a0a66618edf187a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa19e60096120c9d9ebd40cd01395e8c9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1KeywordList.html#aa19e60096120c9d9ebd40cd01395e8c9">setIntPara</a> (IBK::IntPara para[], const char *const enumtype, int n, const int &amp;val)</td></tr>
+<tr class="memdesc:aa19e60096120c9d9ebd40cd01395e8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">As <a class="el" href="classNANDRAD_1_1KeywordList.html#a30a876398e0864de4a0a66618edf187a" title="Convenience function to set an IBK::Parameter inside a static C-array of IBK::Parameters with correct...">setParameter()</a>, but for IBK::IntPara.  <a href="#aa19e60096120c9d9ebd40cd01395e8c9">More...</a><br /></td></tr>
+<tr class="separator:aa19e60096120c9d9ebd40cd01395e8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a6210561cc8c3aef05a41bf107fd91785"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6210561cc8c3aef05a41bf107fd91785">&#9670;&nbsp;</a></span>Keyword()</h2>
+<a id="a4b4cab91e7e09640377860498f0291ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b4cab91e7e09640377860498f0291ff">&#9670;&nbsp;</a></span>Keyword()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -118,7 +125,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const char * NANDRAD::KeywordList::Keyword </td>
+          <td class="memname">static const char* NANDRAD::KeywordList::Keyword </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -144,12 +151,10 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Returns a keyword for an enum value t of type enumtype. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l02157">2157</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="aaf05a4427dcfbee34608cc46d40616b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf05a4427dcfbee34608cc46d40616b6">&#9670;&nbsp;</a></span>Description()</h2>
+<a id="aa167106923268b71e7f01d38ec7ca38a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa167106923268b71e7f01d38ec7ca38a">&#9670;&nbsp;</a></span>Description()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -158,7 +163,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const char * NANDRAD::KeywordList::Description </td>
+          <td class="memname">static const char* NANDRAD::KeywordList::Description </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -198,12 +203,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l00719">719</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a7aae4567f598dc3159ef32bad27bf234"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7aae4567f598dc3159ef32bad27bf234">&#9670;&nbsp;</a></span>Unit()</h2>
+<a id="a86396c90c553df6b4a857b88f2bec9d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86396c90c553df6b4a857b88f2bec9d3">&#9670;&nbsp;</a></span>Unit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -212,7 +215,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const char * NANDRAD::KeywordList::Unit </td>
+          <td class="memname">static const char* NANDRAD::KeywordList::Unit </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -245,12 +248,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l01035">1035</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a3f14a1c63b8e757447f7f1caf028fffc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f14a1c63b8e757447f7f1caf028fffc">&#9670;&nbsp;</a></span>Color()</h2>
+<a id="aee74cf0ad13ed0f9eec73427a8bb89c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee74cf0ad13ed0f9eec73427a8bb89c4">&#9670;&nbsp;</a></span>Color()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -259,7 +260,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const char * NANDRAD::KeywordList::Color </td>
+          <td class="memname">static const char* NANDRAD::KeywordList::Color </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -292,12 +293,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l01349">1349</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a4d818e60e03999140dcb927f08c09113"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d818e60e03999140dcb927f08c09113">&#9670;&nbsp;</a></span>DefaultValue()</h2>
+<a id="a6f84c90c0af9683d37d110133e9bf296"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f84c90c0af9683d37d110133e9bf296">&#9670;&nbsp;</a></span>DefaultValue()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,7 +305,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double NANDRAD::KeywordList::DefaultValue </td>
+          <td class="memname">static double NANDRAD::KeywordList::DefaultValue </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -339,12 +338,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l01663">1663</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="ac277ef6d70c1dcb8cbb733b2608119f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac277ef6d70c1dcb8cbb733b2608119f7">&#9670;&nbsp;</a></span>Enumeration()</h2>
+<a id="a9414cf132597fa35fed31fadde7bc4a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9414cf132597fa35fed31fadde7bc4a9">&#9670;&nbsp;</a></span>Enumeration()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -353,7 +350,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int NANDRAD::KeywordList::Enumeration </td>
+          <td class="memname">static int NANDRAD::KeywordList::Enumeration </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -393,12 +390,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l02187">2187</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a186bd7ec167ef00a7b20c357428a9fab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a186bd7ec167ef00a7b20c357428a9fab">&#9670;&nbsp;</a></span>MaxIndex()</h2>
+<a id="a338bc0e6945e74c9a6ddb3f5a193e442"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a338bc0e6945e74c9a6ddb3f5a193e442">&#9670;&nbsp;</a></span>MaxIndex()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -407,7 +402,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">int NANDRAD::KeywordList::MaxIndex </td>
+          <td class="memname">static int NANDRAD::KeywordList::MaxIndex </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em></td><td>)</td>
@@ -429,12 +424,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l02068">2068</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="a3c0042f5baf5ab26d4415792856b1014"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3c0042f5baf5ab26d4415792856b1014">&#9670;&nbsp;</a></span>Count()</h2>
+<a id="ac12dca5d959a6377e2279cfd41fff5c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac12dca5d959a6377e2279cfd41fff5c8">&#9670;&nbsp;</a></span>Count()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -443,7 +436,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int NANDRAD::KeywordList::Count </td>
+          <td class="memname">static unsigned int NANDRAD::KeywordList::Count </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em></td><td>)</td>
@@ -465,12 +458,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l01978">1978</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="af7d34a82fe751095b2a287dc57a35ed9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7d34a82fe751095b2a287dc57a35ed9">&#9670;&nbsp;</a></span>KeywordExists()</h2>
+<a id="aaea35f12cf9c4851d830684fa7c067cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaea35f12cf9c4851d830684fa7c067cc">&#9670;&nbsp;</a></span>KeywordExists()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -479,7 +470,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool NANDRAD::KeywordList::KeywordExists </td>
+          <td class="memname">static bool NANDRAD::KeywordList::KeywordExists </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em>, </td>
@@ -506,12 +497,10 @@ Static Public Member Functions</h2></td></tr>
 <p>Checks whether a keyword exists in the enumeration of type enumtype. </p>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if the keyword is valid, otherwise false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l02166">2166</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
-
 </div>
 </div>
-<a id="af19edc277161ec2230e1e1ee95c93a82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af19edc277161ec2230e1e1ee95c93a82">&#9670;&nbsp;</a></span>CategoryExists()</h2>
+<a id="adf4ecd45ae5f9b550fba0cffe7770b05"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf4ecd45ae5f9b550fba0cffe7770b05">&#9670;&nbsp;</a></span>CategoryExists()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -520,7 +509,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool NANDRAD::KeywordList::CategoryExists </td>
+          <td class="memname">static bool NANDRAD::KeywordList::CategoryExists </td>
           <td>(</td>
           <td class="paramtype">const char *const&#160;</td>
           <td class="paramname"><em>enumtype</em></td><td>)</td>
@@ -537,21 +526,127 @@ Static Public Member Functions</h2></td></tr>
 <p>Checks whether a category of type enumtype exists. </p>
 <dl class="section return"><dt>Returns</dt><dd>Returns true if the category/enum type exists, otherwise false. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__KeywordList_8cpp_source.html#l02213">2213</a> of file <a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a>.</p>
+</div>
+</div>
+<a id="a30a876398e0864de4a0a66618edf187a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30a876398e0864de4a0a66618edf187a">&#9670;&nbsp;</a></span>setParameter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void NANDRAD::KeywordList::setParameter </td>
+          <td>(</td>
+          <td class="paramtype">IBK::Parameter&#160;</td>
+          <td class="paramname"><em>para</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *const&#160;</td>
+          <td class="paramname"><em>enumtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double &amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Convenience function to set an IBK::Parameter inside a static C-array of IBK::Parameters with correct name, value and unit. </p>
+<div class="fragment"><div class="line"><span class="comment">// Example: in declaration of class &#39;MyClass&#39;</span></div><div class="line"></div><div class="line"><span class="keyword">enum</span> MyParameters {</div><div class="line">    MP_Temperature,         <span class="comment">// Keyword: Temperature   [C]   &#39;Some temperatures&#39;</span></div><div class="line">    MP_Mass,                <span class="comment">// Keyword: Mass [kg]           &#39;Some mass&#39;</span></div><div class="line">    NUM_MP</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">// static array with parameter values</span></div><div class="line">IBK::Parameter m_para[NUM_MP];</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">// setting the parameter in code</span></div><div class="line"></div><div class="line">NANDRAD::setParameter(m_para, <span class="stringliteral">&quot;MyClass::MyParameters&quot;</span>, MP_Temperature, 23.5);</div><div class="line">NANDRAD::setParameter(m_para, <span class="stringliteral">&quot;MyClass::MyParameters&quot;</span>, MP_Mass, 1500);</div></div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">para</td><td>Pointer to begin of array with IBK::Parameters </td></tr>
+    <tr><td class="paramname">enumtype</td><td>The enumeration type (class::enumtypename) </td></tr>
+    <tr><td class="paramname">n</td><td>Enumeration value (which parameter to set) </td></tr>
+    <tr><td class="paramname">val</td><td>The value (given in the unit specified for the parameter; requires a unit to be given) </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a id="aa19e60096120c9d9ebd40cd01395e8c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa19e60096120c9d9ebd40cd01395e8c9">&#9670;&nbsp;</a></span>setIntPara()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void NANDRAD::KeywordList::setIntPara </td>
+          <td>(</td>
+          <td class="paramtype">IBK::IntPara&#160;</td>
+          <td class="paramname"><em>para</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *const&#160;</td>
+          <td class="paramname"><em>enumtype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int &amp;&#160;</td>
+          <td class="paramname"><em>val</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>As <a class="el" href="classNANDRAD_1_1KeywordList.html#a30a876398e0864de4a0a66618edf187a" title="Convenience function to set an IBK::Parameter inside a static C-array of IBK::Parameters with correct...">setParameter()</a>, but for IBK::IntPara. </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__KeywordList_8h_source.html">NANDRAD_KeywordList.h</a></li>
-<li><a class="el" href="NANDRAD__KeywordList_8cpp_source.html">NANDRAD_KeywordList.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1KeywordList.html">KeywordList</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1KeywordList.html">KeywordList</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

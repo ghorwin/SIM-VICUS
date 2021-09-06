@@ -375,7 +375,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 
 
 void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
-	QComboBox * buildingCombo;
+	QComboBox * buildingCombo = nullptr;
 	QComboBox * buildingLevelCombo;
 	if (sender() == m_ui->toolButtonAddBuildingLevel) {
 		buildingCombo = m_ui->comboBoxBuilding;
@@ -492,7 +492,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
-		s.m_color = QColor("#206000");
+		s.m_displayColor = s.m_color = QColor("#206000");
 		s.m_id = VICUS::uniqueId(project().m_plainGeometry);
 		// modify project
 		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
@@ -510,6 +510,8 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		s.initializeColorBasedOnInclination(); // set color based on orientation
 		// the surface will get the unique ID as persistant ID
 		s.m_id = s.uniqueID();
+		s.initializeColorBasedOnInclination();
+		s.m_color = s.m_displayColor;
 		// also store component information
 		VICUS::ComponentInstance compInstance;
 		compInstance.m_id = VICUS::uniqueId(project().m_componentInstances);
