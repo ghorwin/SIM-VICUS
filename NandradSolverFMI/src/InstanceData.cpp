@@ -25,6 +25,7 @@
 #include <SOLFRA_SolverControlFramework.h>
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_LESDense.h>
+#include <SOLFRA_LESKLU.h>
 #include <SOLFRA_PrecondInterface.h>
 #include <SOLFRA_JacobianInterface.h>
 #include <SOLFRA_OutputScheduler.h>
@@ -319,18 +320,54 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 
 
 void InstanceData::computeFMUStateSize() {
-#if 0
+
 	const char * const FUNC_ID = "[InstanceData::computeFMUStateSize]";
 	IBK_ASSERT(!m_modelExchange);
 
+//	// ask all components of the integration framework for size
+//	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
 
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
+//	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
+//	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
+//	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
+//	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
 
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
+//	m_fmuStateSize = 8; // 8 bytes for leading size header
+
+//	size_t s = integrator->serializationSize();
+//	if (s == 0)
+//		throw IBK::Exception("Integrator does not support serialization.", FUNC_ID);
+//	m_fmuStateSize += s;
+
+//	if (lesSolver != nullptr) {
+//		s = lesSolver->serializationSize();
+//		if (s == 0)
+//			throw IBK::Exception("LES solver does not support serialization.", FUNC_ID);
+//		m_fmuStateSize += s;
+//	}
+
+//	if (precond != nullptr) {
+//		s = precond->serializationSize();
+//		if (s == 0)
+//			throw IBK::Exception("Preconditioner does not support serialization.", FUNC_ID);
+//		m_fmuStateSize += s;
+//	}
+
+//	if (jacobian != nullptr) {
+//		s = jacobian->serializationSize();
+//		if (s == 0)
+//			throw IBK::Exception("Jacobian matrix generator does not support serialization.", FUNC_ID);
+//		m_fmuStateSize += s;
+//	}
+
+//	s = modelInterface->serializationSize();
+//	// we allow s == 0
+//	m_fmuStateSize += s;
+
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
 
 	m_fmuStateSize = 8; // 8 bytes for leading size header
 
@@ -339,81 +376,107 @@ void InstanceData::computeFMUStateSize() {
 		throw IBK::Exception("Integrator does not support serialization.", FUNC_ID);
 	m_fmuStateSize += s;
 
-	if (lesSolver != NULL) {
+	if (lesSolver != nullptr) {
 		s = lesSolver->serializationSize();
 		if (s == 0)
 			throw IBK::Exception("LES solver does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	if (precond != NULL) {
+	if (precond != nullptr) {
 		s = precond->serializationSize();
 		if (s == 0)
 			throw IBK::Exception("Preconditioner does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	if (jacobian != NULL) {
+	if (jacobian != nullptr) {
 		s = jacobian->serializationSize();
 		if (s == 0)
 			throw IBK::Exception("Jacobian matrix generator does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	s = modelInterface->serializationSize();
+	s = m_model.serializationSize();
 	// we allow s == 0
 	m_fmuStateSize += s;
-#endif
 }
 
 
 void InstanceData::serializeFMUstate(void * FMUstate) {
 	IBK_ASSERT(!m_modelExchange);
-#if 0
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
+//	// ask all components of the integration framework for size
+//	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
+//	// update self pointer - needed when multiple instances of the solver used concurrently in a model
+//	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
+//	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
+//	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
+//	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
+//	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
+
+//	void * dataStart = (char*)FMUstate + 8;
+//	integrator->serialize(dataStart);
+//	if (lesSolver != nullptr)
+//		lesSolver->serialize(dataStart);
+//	if (precond != nullptr)
+//		precond->serialize(dataStart);
+//	if (jacobian != nullptr)
+//		jacobian->serialize(dataStart);
+//	modelInterface->serialize(dataStart);
+
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
 
 	void * dataStart = (char*)FMUstate + 8;
 	integrator->serialize(dataStart);
-	if (lesSolver != NULL)
+	if (lesSolver != nullptr)
 		lesSolver->serialize(dataStart);
-	if (precond != NULL)
+	if (precond != nullptr)
 		precond->serialize(dataStart);
-	if (jacobian != NULL)
+	if (jacobian != nullptr)
 		jacobian->serialize(dataStart);
-	modelInterface->serialize(dataStart);
-#endif
+	m_model.serialize(dataStart);
 }
 
 
 void InstanceData::deserializeFMUstate(void * FMUstate) {
 	IBK_ASSERT(!m_modelExchange);
-#if 0
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
+//	// ask all components of the integration framework for size
+//	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
+//	// update self pointer - needed when multiple instances of the solver used concurrently in a model
+//	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
+//	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
+//	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
+//	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
+//	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
+
+//	void * dataStart = (char*)FMUstate + 8;
+//	integrator->deserialize(dataStart);
+//	if (lesSolver != nullptr)
+//		lesSolver->deserialize(dataStart);
+//	if (precond != nullptr)
+//		precond->deserialize(dataStart);
+//	if (jacobian != nullptr)
+//		jacobian->deserialize(dataStart);
+//	modelInterface->deserialize(dataStart);
+
+
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
 
 	void * dataStart = (char*)FMUstate + 8;
 	integrator->deserialize(dataStart);
-	if (lesSolver != NULL)
+	if (lesSolver != nullptr)
 		lesSolver->deserialize(dataStart);
-	if (precond != NULL)
+	if (precond != nullptr)
 		precond->deserialize(dataStart);
-	if (jacobian != NULL)
+	if (jacobian != nullptr)
 		jacobian->deserialize(dataStart);
-	modelInterface->deserialize(dataStart);
-#endif
+	m_model.deserialize(dataStart);
 }
 
 void InstanceData::finish()

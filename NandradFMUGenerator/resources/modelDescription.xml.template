@@ -29,8 +29,8 @@
 		canInterpolateInputs="false"
 		maxOutputDerivativeOrder="0"
 		canNotUseMemoryManagementFunctions="true"
-		canGetAndSetFMUstate="false"
-		canSerializeFMUstate="false"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
 	/>
 
 ${UNIT_DEFINITIONS}

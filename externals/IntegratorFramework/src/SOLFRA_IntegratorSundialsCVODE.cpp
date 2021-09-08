@@ -1,5 +1,7 @@
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 
+#include "SOLFRA_LESKLU.h"
+
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -445,6 +447,10 @@ IntegratorInterface::StepResultType IntegratorSundialsCVODE::step() {
 		return IntegratorInterface::StepCriticalError;
 	}
 
+	if(dynamic_cast<LESKLU*> (m_impl->m_model->lesInterface() ) != nullptr )
+		// reset linear setup to default value
+		CVodeSetLSetupFrequency(m_impl->m_mem, 0);
+
 	return IntegratorInterface::StepSuccess;
 }
 
@@ -631,6 +637,9 @@ void IntegratorSundialsCVODE::deserialize(void* & dataPtr) {
 	dataPtr = (char*)dataPtr + sizeof(double);
 	m_impl->m_dt = *(double*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(double);
+	// enforce linear setup for KLU
+	if(dynamic_cast<LESKLU*> (m_impl->m_model->lesInterface() ) != nullptr )
+		CVodeSetLSetupFrequency(m_impl->m_mem, 1);
 }
 
 
