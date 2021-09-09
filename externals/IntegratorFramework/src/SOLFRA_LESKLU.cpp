@@ -3,6 +3,7 @@
 #include <IBKMK_SparseMatrixCSR.h>
 #include <IBK_messages.h>
 
+#include <cvode/cvode.h>
 #include <cvode/cvode_klu.h>
 #include <cvode/cvode_sparse.h>
 #include <nvector/nvector_serial.h>
@@ -151,15 +152,13 @@ void LESKLU::updateSUNDIALSStatistics() {
 }
 
 
-size_t LESKLU::serializationSize() const
-{
+size_t LESKLU::serializationSize() const {
 	// we only need to serialize the actual data and statistics
 	return 2 * sizeof(unsigned int);
 }
 
 
-void LESKLU::serialize(void *& dataPtr) const
-{
+void LESKLU::serialize(void *& dataPtr) const {
 	*(unsigned int*)dataPtr = m_statNumJacEvals;
 	dataPtr = (char*)dataPtr + sizeof(unsigned int);
 	*(unsigned int*)dataPtr = m_statNumRhsEvals;
@@ -167,12 +166,14 @@ void LESKLU::serialize(void *& dataPtr) const
 }
 
 
-void LESKLU::deserialize(void *& dataPtr)
-{
+void LESKLU::deserialize(void *& dataPtr) {
 	m_statNumJacEvals = *(unsigned int*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(unsigned int);
 	m_statNumRhsEvals = *(unsigned int*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(unsigned int);
+	IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator);
+	if (intCVODE != nullptr)
+		CVodeSetLSetupFrequency(intCVODE->cvodeMem(), 1);
 }
 
 } // namespace SOLFRA
