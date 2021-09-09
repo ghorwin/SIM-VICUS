@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.2 (03.09.2021)</span>
+<span id="revnumber">version 0.6 (09.09.2021)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -8138,7 +8138,7 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <div class="sect3">
 <h4 id="_modelltyp_controlledpump">18.4.5. Modelltyp: ControlledPump</h4>
 <div class="paragraph">
-<p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, nur dass diesmal die Druckhöhe nicht fest vorgegeben ist, sonder anhand verschiedener Regelmodelle angepasst wird.</p>
+<p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <a href="#NetworkControlElements">Section 18.8</a>).</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 64. Definition einer ControlledPump</div>
@@ -8149,6 +8149,8 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">displayName=</span><span class="s">"Pump"</span> <span class="na">modelType=</span><span class="s">"ControlledPump"</span><span class="nt">&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PumpEfficiency"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>1<span class="nt">&lt;/IBK:Parameter&gt;</span>
   <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>0.01<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaximumPressureHead"</span> <span class="na">unit=</span><span class="s">"Pa"</span><span class="nt">&gt;</span>10000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+  <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PumpMaximumElectricalPower"</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>50<span class="nt">&lt;/IBK:Parameter&gt;</span>
 <span class="nt">&lt;/HydraulicNetworkComponent&gt;</span>
 
 ...
@@ -8160,10 +8162,68 @@ Z. B. ist <code>Model&lt;IdealSurfaceHeatingCoolingModel_id&gt;).ActiveLayerTher
 </div>
 </div>
 <div class="paragraph">
-<p>Die Parameter und Attribute der <code>ControlledPump</code> Definition entsprechen denen der <code>ConstantPressurePump</code>. Der Parameter <code>PressureHead</code> wird nicht benötigt.</p>
+<p>Für das Model <code>ControlledPump</code> werden diese Parameter benötigt:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Einheit</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Wertebereich</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PumpEfficiency</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gesamtwirkungsgrad der Pumpe</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1,&#160;&gt;&#160;0.0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>FractionOfMotorInefficienciesToFluidStream</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1,&#160;&gt;&#160;0.0</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>optional für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluid volume inside the pump</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaximumPressureHead</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Pa</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum pressure head at point of minimal mass flow</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PumpMaximumElectricalPower</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum electrical power at point of optimal operation</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Aus der maximalen Druckhöhe bei minimalem Durchfluss (<code>MaximumPressureHead</code>) und der maximalen Leistung im optimalen Betriebspunkt (<code>PumpMaximumElectricalPower</code>) berechnet das Modell die tatsächliche maximale Druckhöhe in Abhängigkeit des aktuellen Massenstroms. Diese tatsächliche maximale Druckhöhe sinkt mit zunehmenden Massenstrom linear und ist somit in der Regel geringer als die maximale Druckhöhe bei minimalem Durchfluss (<code>MaximumPressureHead</code>).</p>
 </div>
 <div class="paragraph">
-<p>Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkontrollmodells, welches vom Netzwerelement im Attribut <code>controlElementId</code> referenziert wird (siehe auch <a href="#NetworkControlElements">Section 18.8</a>).</p>
+<p>Das jeweilige Strömungselement (<a href="#NetworkElements">Section 18.5</a>) referenziert im Attribut <code>controlElementId</code> einen Regler (siehe auch <a href="#NetworkControlElements">Section 18.8</a>). Dieser bestimmt das Regelverhalten der Pumpe.</p>
 </div>
 </div>
 <div class="sect3">
@@ -10048,8 +10108,8 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2 (03.09.2021)<br>
-Last updated 2021-09-03 10:52:27 +0200
+Version 0.6 (09.09.2021)<br>
+Last updated 2021-09-09 13:54:08 +0200
 </div>
 </div>
 <style>
