@@ -238,14 +238,11 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! unique ID of network */
-	unsigned int					m_id = INVALID_ID;							// XML:A:required
+	//:inherited	unsigned int					m_id = INVALID_ID;					// XML:A:required
+	//:inherited	QString							m_displayName;						// XML:A
 
-	/*! fluid id */
-	unsigned int					m_idFluid = INVALID_ID;						// XML:A
-
-	/*! Network name */
-	//:inherited	QString			m_displayName;								// XML:A
+	/*! Fluid id */
+	unsigned int							m_idFluid = INVALID_ID;						// XML:A
 
 	/*! Nodes id must not match index in vector. To obtain a node by id use nodeById() function
 	*/

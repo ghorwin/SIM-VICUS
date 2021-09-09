@@ -161,7 +161,7 @@ public:
 	*/
 	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack) const;
 
 
 	// *** STATIC FUNCTIONS ***
