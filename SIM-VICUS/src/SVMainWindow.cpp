@@ -1599,6 +1599,8 @@ void SVMainWindow::onFixProjectAfterRead() {
 			IBK::IBK_Message( IBK::FormatString("NANDRAD project file '%1' generated.\n").arg(targetNandradFile.absolutePath()), IBK::MSG_PROGRESS, FUNC_ID);
 		}
 		catch (IBK::Exception & ex) {
+			for (const QString & s : errorStack)
+				IBK::IBK_Message(s.toStdString(), IBK::MSG_ERROR, FUNC_ID);
 			// just show a generic error message
 			ex.writeMsgStackToError();
 			IBK::IBK_Message("An error occurred during NANDRAD project generation.", IBK::MSG_ERROR, FUNC_ID);
