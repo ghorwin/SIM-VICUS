@@ -479,8 +479,8 @@ void InstanceData::deserializeFMUstate(void * FMUstate) {
 	m_model.deserialize(dataStart);
 }
 
-void InstanceData::finish()
-{
+
+void InstanceData::finish() {
 	m_model.writeFinalOutputs();
 }
 

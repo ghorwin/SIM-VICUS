@@ -377,6 +377,9 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 
 
 void NandradModel::writeFinalOutputs() {
+	// guard against call if we haven't even initialized our model
+	if (m_outputHandler == nullptr)
+		return;
 	SUNDIALS_TIMED_FUNCTION( SUNDIALS_TIMER_WRITE_OUTPUTS,
 		m_outputHandler->flushCache();
 	);
