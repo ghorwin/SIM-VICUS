@@ -330,7 +330,7 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "bool")
 				{
 					// for unsigned int, check for invalid ID first, before writing the attribute - we do not want invalid IDs in the project file!
-					if (xmlInfo.typeStr == "unsigned int") {
+					if (xmlInfo.typeStr == "unsigned int" || xmlInfo.typeStr == "IDType") {
 						attribs += "	if (m_"+attribName+" != "+m_prefix+"::INVALID_ID)\n	";
 						includes.insert(m_prefix+"_Constants.h");
 					}
