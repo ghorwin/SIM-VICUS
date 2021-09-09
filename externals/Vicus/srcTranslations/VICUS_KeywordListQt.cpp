@@ -125,8 +125,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Fluid temperature for hydraulic calculation, else initial temperature");
 	tr("Initial Fluid temperature for thermo-hydraulic calculation");
 	tr("Maximum discretization step for dynamic pipe model");
-	tr("Distance between supply pipe and return pipe");
-	tr("Distance between pipes and soil surface");
+	tr("Sand");
+	tr("Loam");
+	tr("Silt");
+	tr("Spacing between supply and return pipes");
+	tr("Distance between soil surface and pipes");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");

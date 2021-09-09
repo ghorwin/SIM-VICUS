@@ -156,6 +156,8 @@ void Network::readXML(const TiXmlElement * element) {
 						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
 				}
 			}
+			else if (cName == "NetworkBuriedPipeProperties")
+				m_buriedPipeProperties.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -240,6 +242,8 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	if (m_selectedForSimulation != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "SelectedForSimulation", nullptr, std::string(), IBK::val2string<unsigned int>(m_selectedForSimulation));
 	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
+
+	m_buriedPipeProperties.writeXML(e);
 	return e;
 }
 

@@ -143,18 +143,6 @@ void HydraulicNetwork::readXMLPrivate(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "SoilModels") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "HydraulicNetworkSoilModel")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					HydraulicNetworkSoilModel obj;
-					obj.readXML(c2);
-					m_soilModels.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "HydraulicFluid")
 				m_fluid.readXML(c);
 			else {
@@ -235,18 +223,6 @@ TiXmlElement * HydraulicNetwork::writeXMLPrivate(TiXmlElement * parent) const {
 
 		for (std::vector<HydraulicNetworkControlElement>::const_iterator it = m_controlElements.begin();
 			it != m_controlElements.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
-
-	if (!m_soilModels.empty()) {
-		TiXmlElement * child = new TiXmlElement("SoilModels");
-		e->LinkEndChild(child);
-
-		for (std::vector<HydraulicNetworkSoilModel>::const_iterator it = m_soilModels.begin();
-			it != m_soilModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

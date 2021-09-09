@@ -32,9 +32,8 @@
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_NetworkBuriedPipeProperties.h"
 
-#include <vector>
-#include <set>
 
 namespace VICUS {
 

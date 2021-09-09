@@ -84,8 +84,6 @@ public:
 		P_DefaultFluidTemperature,			// Keyword: DefaultFluidTemperature				[C]		'Fluid temperature for hydraulic calculation, else initial temperature'
 		P_InitialFluidTemperature,			// Keyword: InitialFluidTemperature				[C]		'Initial Fluid temperature for thermo-hydraulic calculation'
 		P_MaxPipeDiscretization,			// Keyword: MaxPipeDiscretization				[m]		'Maximum discretization step for dynamic pipe model'
-		P_PipeSpacing,						// Keyword: PipeSpacing							[m]		'Distance between supply pipe and return pipe'
-		P_PipeDepth,						// Keyword: PipeDepth							[m]		'Distance between pipes and soil surface'
 		NUM_P
 	};
 
@@ -212,10 +210,6 @@ public:
 	/*! returns the number of nodes with type NT_Building */
 	size_t numberOfBuildings() const;
 
-	/*! sets default values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
-	 * before calling sizePipeDimensions() */
-	void setDefaultSizingParams();
-
 	/*! sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
 	 * and heat demands (nodes)
 	*/
@@ -283,7 +277,11 @@ public:
 	/*! Determines if this network is currently selected for simulation */
 	unsigned int							m_selectedForSimulation = false;			// XML:E
 
+	/*! Determines wether the entire network has heat exchange with the ground */
 	bool									m_hasHeatExchangeWithGround = false;		// XML:E
+
+	/*! Describes all properties for a buried pipe in the ground */
+	NetworkBuriedPipeProperties				m_buriedPipeProperties;						// XML:E
 
 
 	/*! Stores visibility information for this network.

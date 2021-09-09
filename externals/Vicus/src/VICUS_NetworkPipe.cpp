@@ -45,10 +45,10 @@ double NetworkPipe::UValue() const {
 	double di = diameterInside();
 	double r;
 	if (dInsulation > 0)
-		r =   1/(2*lambdaWall) * IBK::f_log(da / di)
-			+ 1/(2*lambdaInsulation) * IBK::f_log((da + 2*dInsulation) / da);
+		r =   1./(2*lambdaWall) * IBK::f_log(da / di)
+			+ 1./(2*lambdaInsulation) * IBK::f_log((da + 2*dInsulation) / da);
 	else
-		r =   1/(2*lambdaWall) * IBK::f_log(da / di);
+		r =   1./(2*lambdaWall) * IBK::f_log(da / di);
 
 	double UValue = PI/r;
 	return UValue;

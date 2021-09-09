@@ -2192,6 +2192,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateNetworkProjectData);
 
+
 	// get selected Vicus Network
 	unsigned int networkId = VICUS::INVALID_ID;
 	for (const VICUS::Network &net: m_geometricNetworks){
@@ -2397,8 +2398,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
 
 		// for each vicus geometric node: store two new node ids (supply and return) for the nandrad network
-		supplyNodeIdMap[node.m_id] = VICUS::uniqueIdAdd(allNodeIds);
-		returnNodeIdMap[node.m_id] = VICUS::uniqueIdAdd(allNodeIds);
+		supplyNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
+		returnNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
 
 		// if this is a mixer continue
 		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
@@ -2454,7 +2455,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 			// 1. copy the element and create a unique element id for it
 			NANDRAD::HydraulicNetworkElement newElement = elem;
-			newElement.m_id = VICUS::uniqueIdAdd(allElementIds);
+			newElement.m_id = uniqueIdAdd(allElementIds);
 
 			// 2. set the new elements inlet and outlet id using the map that we created
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
@@ -2529,6 +2530,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	unsigned int fmiValueRef = 42; // start value
 	unsigned int idSoilModel = 0; // start value
 
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
+
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
 	std::vector<const VICUS::NetworkEdge *> orderedEdges;
@@ -2571,7 +2575,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		// if there was none, add respective component for pipe
 		if (!pipeComponentExists){
 			NANDRAD::HydraulicNetworkComponent comp;
-			comp.m_id = VICUS::uniqueIdAdd(compIds);
+			comp.m_id = uniqueIdAdd(compIds);
 			comp.m_modelType = pipeModelType;
 			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
 
@@ -2676,23 +2680,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			const_cast<NetworkEdge*>(edge)->m_idNandradReturnPipe = returnPipe.m_id;
 
 			// einfacher Ansatz: für jede Edge ein Delphin Modell
-			NANDRAD::HydraulicNetworkSoilModel soilModel;
-			soilModel.m_id = ++idSoilModel;
 
-			soilModel.m_supplyPipeIds.push_back(supplyPipe.m_id);
-			soilModel.m_returnPipeIds.push_back(returnPipe.m_id);
-			if (vicusNetwork.m_para[Network::P_PipeDepth].empty())
-				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no determined pipe depth. This is required for FMI coupling.")
-									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
-			soilModel.m_pipeDepth = vicusNetwork.m_para[Network::P_PipeDepth];
-			if (vicusNetwork.m_para[Network::P_PipeSpacing].empty())
-				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no determined pipe spacing. This is required for FMI coupling.")
-									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
-			soilModel.m_pipeSpacing = vicusNetwork.m_para[Network::P_PipeSpacing];
-			soilModel.m_pipeOuterDiameter = IBK::Parameter("PipeOuterDiameter", pipe->m_para[NetworkPipe::P_DiameterOutside].value, "m");
-			soilModel.m_pipeLength = IBK::Parameter("PipeLength", edge->length(), "m");
+			++idSoilModel;
+			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
+			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
 
-			nandradNetwork.m_soilModels.push_back(soilModel);
 		}
 	}
 
@@ -2708,6 +2700,22 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 //			edge->m_supplyPipeId ...
 //	}
 
+	#include <stdio.h>
+	std::ofstream f;
+	std::string file = "/home/hauke/Dokumente/Soil2PipeMapping.txt";
+	f.open(file, std::ofstream::out | std::ofstream::trunc);
+	f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+	for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
+		unsigned int soilId = it->first;
+		f << soilId << "\t";
+		for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
+			f << supplyId << ",";
+		f << "\t";
+		for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
+			f << returnId << ",";
+		f << std::endl;
+	}
+	f.close();
 
 
 	 // we are DONE !!!

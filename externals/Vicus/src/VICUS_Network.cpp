@@ -47,7 +47,17 @@ namespace VICUS {
 
 
 Network::Network() {
-	setDefaultSizingParams();
+
+	// set default parameters for pipe sizing
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureSetpoint, 278.15);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
+
+	// other default parameters
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPipeDiscretization, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_DefaultFluidTemperature, 293.15);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_InitialFluidTemperature, 293.15);
+
 }
 
 
@@ -897,13 +907,6 @@ size_t Network::numberOfBuildings() const{
 			++count;
 	}
 	return count;
-}
-
-
-void Network::setDefaultSizingParams() {
-	m_para[Network::para_t::P_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
 }
 
 
