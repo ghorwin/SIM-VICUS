@@ -159,9 +159,9 @@ public:
 		This function throws an error message in case the conversion failed.
 		\param p The NANDRAD project to be populated.
 	*/
-	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
+	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 
 
 	// *** STATIC FUNCTIONS ***

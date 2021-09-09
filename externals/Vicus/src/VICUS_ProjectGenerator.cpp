@@ -7,6 +7,8 @@
 
 #include "VICUS_utilities.h"
 
+#include <fstream>
+
 namespace VICUS {
 
 inline QString MultiLangString2QString(const IBK::MultiLanguageString & mls) {
@@ -1633,6 +1635,7 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 		m_schedules.push_back(scheds);
 		m_objLists.push_back(ol);
 		m_objListNames.push_back(ol.m_name);
+
 	}
 }
 
@@ -1959,9 +1962,8 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 
 // *** NETWORK STUFF ***
 
-void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack) const {
+void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &errorStack, const std::string & nandradProjectPath) const {
 	FUNCID(Project::generateNetworkProjectData);
-
 
 	// get selected Vicus Network
 	unsigned int networkId = VICUS::INVALID_ID;
@@ -2415,43 +2417,46 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 			// create FMI input definitions
 			// --> supply pipe
-			NANDRAD::FMIVariableDefinition inputDefSupplyPipeTemp;
-			inputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
-			inputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.Temperature").arg(supplyPipe.m_id).str(); // custom name
-			inputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+			NANDRAD::FMIVariableDefinition inputDefSupplyPipe;
+			inputDefSupplyPipe.m_objectId = supplyPipe.m_id;
+			inputDefSupplyPipe.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.Temperature").arg(supplyPipe.m_id).str(); // custom name
+			inputDefSupplyPipe.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
-			inputDefSupplyPipeTemp.m_varName += ".HeatExchangeTemperature";
-			inputDefSupplyPipeTemp.m_unit = "K";
-			inputDefSupplyPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			inputDefSupplyPipeTemp.m_fmiVarDescription = "Pre-described external temperature";
-			inputDefSupplyPipeTemp.m_fmiStartValue = vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature].value;
-			p.m_fmiDescription.m_inputVariables.push_back(inputDefSupplyPipeTemp);
+			inputDefSupplyPipe.m_varName += ".HeatExchangeTemperature";
+			inputDefSupplyPipe.m_unit = "K";
+			inputDefSupplyPipe.m_fmiValueRef = ++fmiValueRef;
+			inputDefSupplyPipe.m_fmiVarDescription = "Pre-described external temperature";
+			inputDefSupplyPipe.m_fmiStartValue = vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature].value;
+			p.m_fmiDescription.m_inputVariables.push_back(inputDefSupplyPipe);
+
 			// --> return pipe
-			NANDRAD::FMIVariableDefinition inputDefReturnPipeTemp = inputDefSupplyPipeTemp;
-			inputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
-			inputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.Temperature").arg(returnPipe.m_id).str(); // custom name
-			inputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			p.m_fmiDescription.m_inputVariables.push_back(inputDefReturnPipeTemp);
+			NANDRAD::FMIVariableDefinition inputDefReturnPipe = inputDefSupplyPipe;
+			inputDefReturnPipe.m_objectId = returnPipe.m_id;
+			inputDefReturnPipe.m_fmiVarName = IBK::FormatString("returnPipe_id%1.Temperature").arg(returnPipe.m_id).str(); // custom name
+			inputDefReturnPipe.m_fmiValueRef = ++fmiValueRef;
+			p.m_fmiDescription.m_inputVariables.push_back(inputDefReturnPipe);
+
 
 			// create FMI output definitions
 			// --> supply pipe
-			NANDRAD::FMIVariableDefinition outputDefSupplyPipeTemp;
-			outputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
-			outputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
-			outputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+			NANDRAD::FMIVariableDefinition outputDefSupplyPipe;
+			outputDefSupplyPipe.m_objectId = supplyPipe.m_id;
+			outputDefSupplyPipe.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
+			outputDefSupplyPipe.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
-			outputDefSupplyPipeTemp.m_varName += ".FlowElementHeatLoss";
-			outputDefSupplyPipeTemp.m_unit = "W";
-			outputDefSupplyPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			outputDefSupplyPipeTemp.m_fmiVarDescription = "Heat flux from flow element into environment";
-			outputDefSupplyPipeTemp.m_fmiStartValue = 0;
-			p.m_fmiDescription.m_outputVariables.push_back(outputDefSupplyPipeTemp);
+			outputDefSupplyPipe.m_varName += ".FlowElementHeatLoss";
+			outputDefSupplyPipe.m_unit = "W";
+			outputDefSupplyPipe.m_fmiValueRef = ++fmiValueRef;
+			outputDefSupplyPipe.m_fmiVarDescription = "Heat flux from flow element into environment";
+			outputDefSupplyPipe.m_fmiStartValue = 0;
+			p.m_fmiDescription.m_outputVariables.push_back(outputDefSupplyPipe);
+
 			// --> return pipe
-			NANDRAD::FMIVariableDefinition outputDefReturnPipeTemp = outputDefSupplyPipeTemp;
-			outputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
-			outputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
-			outputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipeTemp);
+			NANDRAD::FMIVariableDefinition outputDefReturnPipe = outputDefSupplyPipe;
+			outputDefReturnPipe.m_objectId = returnPipe.m_id;
+			outputDefReturnPipe.m_fmiVarName = IBK::FormatString("returnPipe_id%1.HeatLoss").arg(returnPipe.m_id).str(); // custom name
+			outputDefReturnPipe.m_fmiValueRef = ++fmiValueRef;
+			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipe);
 
 
 			// store Nandrad element id in edge so they can be used later on
@@ -2463,6 +2468,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			++idSoilModel;
 			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
 			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
+
 
 		}
 	}
@@ -2479,10 +2485,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 //			edge->m_supplyPipeId ...
 //	}
 
-#if 0
-	#include <stdio.h>
+
+	// write mapping file
 	std::ofstream f;
-	std::string file = "/home/hauke/Dokumente/Soil2PipeMapping.txt";
+	std::string file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".mapping";
 	f.open(file, std::ofstream::out | std::ofstream::trunc);
 	f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
 	for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
@@ -2496,7 +2502,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		f << std::endl;
 	}
 	f.close();
-#endif
+
 
 	 // we are DONE !!!
 	 // finally add to nandrad project

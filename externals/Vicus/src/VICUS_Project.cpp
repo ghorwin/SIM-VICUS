@@ -711,7 +711,7 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 
 
 
-void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const {
+void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const {
 	FUNCID(Project::generateNandradProject);
 
 	// simulation settings
@@ -740,7 +740,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	generateNetworkProjectData(p, errorStack);
+	generateNetworkProjectData(p, errorStack, nandradProjectPath);
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during network data conversion.", FUNC_ID);
 

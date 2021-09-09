@@ -466,7 +466,7 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 		//add default placeholder
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-		m_localProject.generateNandradProject(p, errorStack);
+		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
 	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
