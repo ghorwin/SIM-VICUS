@@ -2,11 +2,11 @@
 <VicusProject fileVersion="0.6">
 	<ProjectInfo>
 		<Created>Do Dez 10 12:42:13 2020</Created>
-		<LastEdited>Mi. Sep. 8 16:24:20 2021</LastEdited>
+		<LastEdited>Do. Sept. 9 15:20:30 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/hauke/git/SIM-VICUS/data</Placeholder>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
 	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
@@ -50,12 +50,12 @@
 		<ViewSettings>
 			<GridSpacing>100</GridSpacing>
 			<GridWidth>500</GridWidth>
-			<CameraTranslation>-19.7493 -75.9784 104.924</CameraTranslation>
+			<CameraTranslation>-39.1979 -61.384 107.663</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.859359</Wp>
-				<X>-0.448694</X>
-				<Y>0.113174</Y>
-				<Z>0.217382</Z>
+				<Wp>-0.862392</Wp>
+				<X>-0.308449</X>
+				<Y>0.129585</Y>
+				<Z>0.379779</Z>
 			</RotationMatrix>
 			<FarDistance>1700</FarDistance>
 		</ViewSettings>
@@ -67,7 +67,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">19347.3</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
-								<TSVFile>/home/hauke/Promotion/8_DESTEST/Destest_heat_demand.tsv</TSVFile>
+								<TSVFile>${Project Directory}/Destest_heat_demand.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -76,7 +76,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">19347.3</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
-								<TSVFile>/home/hauke/Promotion/8_DESTEST/Destest_heat_demand.tsv</TSVFile>
+								<TSVFile>${Project Directory}/Destest_heat_demand.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>

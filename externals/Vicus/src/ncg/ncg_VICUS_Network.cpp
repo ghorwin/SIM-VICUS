@@ -51,10 +51,10 @@ void Network::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "idFluid")
-				m_idFluid = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "idFluid")
+				m_idFluid = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (ModelType)KeywordList::Enumeration("Network::ModelType", attrib->ValueStr());
@@ -179,10 +179,10 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_idFluid != VICUS::INVALID_ID)
-		e->SetAttribute("idFluid", IBK::val2string<unsigned int>(m_idFluid));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_idFluid != VICUS::INVALID_ID)
+		e->SetAttribute("idFluid", IBK::val2string<unsigned int>(m_idFluid));
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("Network::ModelType",  m_modelType));
 	if (m_visible != Network().m_visible)
