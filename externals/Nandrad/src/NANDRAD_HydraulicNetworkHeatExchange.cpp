@@ -48,7 +48,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 												   "Temperature must be >= -200 C.");
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -68,7 +68,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -98,7 +98,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -145,7 +145,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)),
+			 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)),
 			 FUNC_ID);
 	}
 }

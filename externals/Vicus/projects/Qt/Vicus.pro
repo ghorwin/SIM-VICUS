@@ -88,7 +88,8 @@ HEADERS += \
 	../../src/VICUS_ZoneControlThermostat.h \
 	../../src/VICUS_ZoneIdealHeatingCooling.h \
 	../../src/VICUS_ZoneTemplate.h \
-	../../src/VICUS_utilities.h
+	../../src/VICUS_utilities.h \
+    ../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -179,4 +180,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneControlShading.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlThermostat.cpp \
 	../../src/ncg/ncg_VICUS_ZoneIdealHeatingCooling.cpp \
-	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
+	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
+    ../../src/VICUS_NetworkBuriedPipeProperties.cpp \
+    ../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp

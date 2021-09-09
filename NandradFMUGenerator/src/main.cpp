@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 		}
 		if (args.hasOption("generate")) {
 			if (!w.m_nandradFilePath.isValid()) {
-				throw IBK::Exception("Oroject file argument expected when using '--generate'.", FUNC_ID);
+				throw IBK::Exception("Project file argument expected when using '--generate'.", FUNC_ID);
 			}
 			w.m_silent = true; // set widget into silent mode
 			w.m_autoExportModelName = QString::fromStdString(args.option("generate"));

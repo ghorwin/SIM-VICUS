@@ -350,7 +350,7 @@ Die Berechnung der Verlustwärme und elektrischen Leistung erfolgt analog zur `C
 
 ### Modelltyp: ControlledPump
 
-Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druckhöhe nicht fest vorgegeben ist, sonder anhand verschiedener Regelmodelle angepasst wird.
+Dieses Modell ist ähnlich der `ConstantPressurePump`, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <<NetworkControlElements>>).
 
 .Definition einer ControlledPump
 ====
@@ -360,6 +360,8 @@ Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druc
 <HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
 	<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+	<IBK:Parameter name="MaximumPressureHead" unit="Pa">10000</IBK:Parameter>
+	<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
 </HydraulicNetworkComponent>
 
 ...
@@ -369,9 +371,24 @@ Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druc
 ----
 ====
 
-Die Parameter und Attribute der `ControlledPump` Definition entsprechen denen der `ConstantPressurePump`. Der Parameter `PressureHead` wird nicht benötigt.
 
-Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkontrollmodells, welches vom Netzwerelement im Attribut `controlElementId` referenziert wird (siehe auch <<NetworkControlElements>>).
+Für das Model `ControlledPump` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximum pressure head at point of minimal mass flow
+| {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximum electrical power at point of optimal operation
+| {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+Aus der maximalen Druckhöhe bei minimalem Durchfluss (`MaximumPressureHead`) und der maximalen Leistung im optimalen Betriebspunkt (`PumpMaximumElectricalPower`) berechnet das Modell die tatsächliche maximale Druckhöhe in Abhängigkeit des aktuellen Massenstroms. Diese tatsächliche maximale Druckhöhe sinkt mit zunehmenden Massenstrom linear und ist somit in der Regel geringer als die maximale Druckhöhe bei minimalem Durchfluss (`MaximumPressureHead`).
+
+Das jeweilige Strömungselement (<<NetworkElements>>) referenziert im Attribut `controlElementId` einen Regler (siehe auch <<NetworkControlElements>>). Dieser bestimmt das Regelverhalten der Pumpe.
 
 
 [[HydraulicElement_ConstantPressureLossValve]]

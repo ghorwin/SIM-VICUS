@@ -330,6 +330,15 @@ The annotations can be used for quite a few data types. Rules for these are give
 There are a few special syntax forms supported by the code generator, see <<xml_serialization_rules>> for details.
 
 
+#### Naming convention for XML attributes and tag names
+
+Note that attributes (XML:A) will always start with lowercase letter:
+"m_idComponent" --> "idComponent"
+
+while tag names (XML:E) will start with capital letter:
+"m_idSurfaceHeating" --> "IdSurfaceHeating"
+
+
 ### Utility Macros
 
 Since the declaration for the `readXML()` and `writeXML()` functions are always the same, we can avoid typing errors by using a define:

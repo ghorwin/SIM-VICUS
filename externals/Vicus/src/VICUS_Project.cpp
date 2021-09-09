@@ -739,7 +739,12 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** generate network data ***
 
-	generateNetworkProjectData(p);
+	try {
+		generateNetworkProjectData(p);
+	} catch (IBK::Exception &ex) {
+		ex.writeMsgStackToError();
+	}
+
 
 
 	// *** outputs ***
@@ -827,8 +832,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		NANDRAD::Outputs outputs;
 		outputs.m_timeUnit = IBK::Unit("h");
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" , "InletNodeTemperature",
-											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference",
-											  "HeatSuppliedToFluid"};
+											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
@@ -2188,6 +2192,7 @@ void Project::generateBuildingProjectData(NANDRAD::Project & p) const {
 void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	FUNCID(Project::generateNetworkProjectData);
 
+
 	// get selected Vicus Network
 	unsigned int networkId = VICUS::INVALID_ID;
 	for (const VICUS::Network &net: m_geometricNetworks){
@@ -2393,8 +2398,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
 
 		// for each vicus geometric node: store two new node ids (supply and return) for the nandrad network
-		supplyNodeIdMap[node.m_id] = VICUS::uniqueIdAdd(allNodeIds);
-		returnNodeIdMap[node.m_id] = VICUS::uniqueIdAdd(allNodeIds);
+		supplyNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
+		returnNodeIdMap[node.m_id] = uniqueIdAdd(allNodeIds);
 
 		// if this is a mixer continue
 		if (node.m_type == VICUS::NetworkNode::NT_Mixer)
@@ -2450,7 +2455,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 			// 1. copy the element and create a unique element id for it
 			NANDRAD::HydraulicNetworkElement newElement = elem;
-			newElement.m_id = VICUS::uniqueIdAdd(allElementIds);
+			newElement.m_id = uniqueIdAdd(allElementIds);
 
 			// 2. set the new elements inlet and outlet id using the map that we created
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
@@ -2524,9 +2529,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 
 	unsigned int fmiValueRef = 42; // start value
 	unsigned int idSoilModel = 0; // start value
-	std::map<unsigned int, unsigned int> mapSoilModel2NetworkSupplyPipe;
-	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
-//	std::map<unsigned int, unsigned int> mapSoilModel2NetworkReturnPipe;
+
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
 
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
@@ -2557,18 +2562,20 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		}
 
 		// check if a pipe component with this model type exists already
-		const NANDRAD::HydraulicNetworkComponent *pipeComp = nullptr;
+		NANDRAD::HydraulicNetworkComponent pipeComp;
+		bool pipeComponentExists = false;
 		for (const NANDRAD::HydraulicNetworkComponent &comp: nandradNetwork.m_components){
 			if (comp.m_modelType == pipeModelType){
-				pipeComp = &comp;
+				pipeComp = comp;
+				pipeComponentExists = true;
 				break;
 			}
 		}
 
 		// if there was none, add respective component for pipe
-		if (pipeComp == nullptr){
+		if (!pipeComponentExists){
 			NANDRAD::HydraulicNetworkComponent comp;
-			comp.m_id = VICUS::uniqueIdAdd(compIds);
+			comp.m_id = uniqueIdAdd(compIds);
 			comp.m_modelType = pipeModelType;
 			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
 
@@ -2581,7 +2588,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 													vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].value);
 			}
 			nandradNetwork.m_components.push_back(comp);
-			pipeComp = &comp;
+			pipeComp = comp;
 		}
 
 		// check if there is a reference to a pipe from DB
@@ -2603,7 +2610,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement supplyPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
-													pipeComp->m_id,
+													pipeComp.m_id,
 													edge->m_idPipe,
 													edge->length());
 		supplyPipe.m_displayName = "SupplyPipe." + pipeName.str();
@@ -2616,22 +2623,22 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 		NANDRAD::HydraulicNetworkElement returnPipe(uniqueIdAdd(allElementIds),
 													inletNode,
 													outletNode,
-													pipeComp->m_id,
+													pipeComp.m_id,
 													edge->m_idPipe,
 													edge->length());
-		// create name
 		returnPipe.m_displayName = "ReturnPipe." + pipeName.str();
 		returnPipe.m_heatExchange = edge->m_heatExchange;
 		nandradNetwork.m_elements.push_back(returnPipe);
 
 
 		// Create FMI Input Output Definitions
-		if (edge->m_hasHeatExchangeWithGround){
+		if (vicusNetwork.m_hasHeatExchangeWithGround){
 
 			// create FMI input definitions
 			// --> supply pipe
 			NANDRAD::FMIVariableDefinition inputDefSupplyPipeTemp;
-			inputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".Temperature"; // custom name
+			inputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
+			inputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.Temperature").arg(supplyPipe.m_id).str(); // custom name
 			inputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 			inputDefSupplyPipeTemp.m_varName += ".HeatExchangeTemperature";
@@ -2642,14 +2649,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			p.m_fmiDescription.m_inputVariables.push_back(inputDefSupplyPipeTemp);
 			// --> return pipe
 			NANDRAD::FMIVariableDefinition inputDefReturnPipeTemp = inputDefSupplyPipeTemp;
-			inputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			inputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
+			inputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.Temperature").arg(returnPipe.m_id).str(); // custom name
 			inputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
 			p.m_fmiDescription.m_inputVariables.push_back(inputDefReturnPipeTemp);
 
 			// create FMI output definitions
 			// --> supply pipe
 			NANDRAD::FMIVariableDefinition outputDefSupplyPipeTemp;
-			outputDefSupplyPipeTemp.m_fmiVarName = supplyPipe.m_displayName + ".HeatLoss"; // custom name
+			outputDefSupplyPipeTemp.m_objectId = supplyPipe.m_id;
+			outputDefSupplyPipeTemp.m_fmiVarName = IBK::FormatString("supplyPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
 			outputDefSupplyPipeTemp.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 			outputDefSupplyPipeTemp.m_varName += ".FlowElementHeatLoss";
@@ -2660,9 +2669,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			p.m_fmiDescription.m_outputVariables.push_back(outputDefSupplyPipeTemp);
 			// --> return pipe
 			NANDRAD::FMIVariableDefinition outputDefReturnPipeTemp = outputDefSupplyPipeTemp;
-			outputDefReturnPipeTemp.m_fmiVarName = returnPipe.m_displayName + ".Temperature";
+			outputDefReturnPipeTemp.m_objectId = returnPipe.m_id;
+			outputDefReturnPipeTemp.m_fmiVarName = IBK::FormatString("returnPipe_id%1.HeatLoss").arg(supplyPipe.m_id).str(); // custom name
 			outputDefReturnPipeTemp.m_fmiValueRef = ++fmiValueRef;
-			p.m_fmiDescription.m_inputVariables.push_back(outputDefReturnPipeTemp);
+			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipeTemp);
 
 
 			// store Nandrad element id in edge so they can be used later on
@@ -2670,12 +2680,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 			const_cast<NetworkEdge*>(edge)->m_idNandradReturnPipe = returnPipe.m_id;
 
 			// einfacher Ansatz: für jede Edge ein Delphin Modell
+
 			++idSoilModel;
-			mapSoilModel2NetworkSupplyPipe[idSoilModel] = supplyPipe.m_id;
-			mapSoilModel2NetworkReturnPipe[idSoilModel] = returnPipe.m_id;
-			//
-			// hier noch edge.m_para parameters für jedes Delphin Model in einer Map o.ä. speichern...
-			//
+			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
+			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
+
 		}
 	}
 
@@ -2691,8 +2700,22 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p) const {
 //			edge->m_supplyPipeId ...
 //	}
 
-
-	// die Delphin Maps als txt Dateien speichern ...
+	#include <stdio.h>
+	std::ofstream f;
+	std::string file = "/home/hauke/Dokumente/Soil2PipeMapping.txt";
+	f.open(file, std::ofstream::out | std::ofstream::trunc);
+	f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+	for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
+		unsigned int soilId = it->first;
+		f << soilId << "\t";
+		for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
+			f << supplyId << ",";
+		f << "\t";
+		for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
+			f << returnId << ",";
+		f << std::endl;
+	}
+	f.close();
 
 
 	 // we are DONE !!!

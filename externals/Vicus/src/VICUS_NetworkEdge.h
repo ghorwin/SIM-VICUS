@@ -32,9 +32,8 @@
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_NetworkBuriedPipeProperties.h"
 
-#include <vector>
-#include <set>
 
 namespace VICUS {
 
@@ -56,13 +55,6 @@ public:
 		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
 		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
 		NUM_PM
-	};
-
-	/*! Parameters used to create soil model (FMU) for heat exchange with the ground */
-	enum para_t {
-		P_PipeSpacing,			// Keyword: PipeSpacing		[m]		'Distance between supply pipe and return pipe'
-		P_PipeDepth,			// Keyword: PipeDepth		[m]		'Distance between pipes and soil surface'
-		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -145,15 +137,6 @@ public:
 	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
 	NANDRAD::HydraulicNetworkHeatExchange				m_heatExchange;					// XML:E
 
-	/*! Defines wether this edge has heat exchange with the ground.
-	 * We dont store this information in NANDRAD::HydraulicNetworkHeatExchange, because it is actually not used (yet)
-	 * within the Nandrad Solver. We only use this to create the according FMI inputs/outputs and the
-	 * coupling information for the soil FMUs */
-	bool												m_hasHeatExchangeWithGround = false; // XML:E
-
-
-	/*! Parameters used for coupling with ground heat exchange model */
-	para_t												m_para;
 
 	// *** RUNTIME VARIABLES ***
 

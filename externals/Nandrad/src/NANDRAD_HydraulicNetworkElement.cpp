@@ -125,7 +125,7 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
-		case HydraulicNetworkComponent::MT_ConstantPressureLossValve: // TODO Hauke, check!
+		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
 			// nothing to check for
 			break;
 

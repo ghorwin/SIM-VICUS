@@ -27,6 +27,10 @@ private slots:
 	void on_lineEditReferencePressure_editingFinished();
 	void on_lineEditMaxPipeDiscretization_editingFinished();
 
+	void on_lineEditPipeSpacing_editingFinished();
+
+	void on_lineEditPipeDepth_editingFinished();
+
 private:
 	Ui::SVSimulationNetworkOptions *m_ui;
 
