@@ -133,7 +133,8 @@ TiXmlElement * HydraulicNetworkControlElement::writeXML(TiXmlElement * parent) c
 	TiXmlElement * e = new TiXmlElement("HydraulicNetworkControlElement");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("HydraulicNetworkControlElement::ModelType",  m_modelType));
 	if (m_controllerType != NUM_CT)

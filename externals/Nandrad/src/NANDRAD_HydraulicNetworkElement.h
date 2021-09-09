@@ -97,16 +97,16 @@ public:
 	*/
 	IDType							m_id				= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Inlet node ID. */
-	unsigned int					m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_inletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Outlet node ID. */
-	unsigned int					m_outletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_outletNodeId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Hydraulic component ID. */
-	unsigned int					m_componentId		= NANDRAD::INVALID_ID;				// XML:A:required
+	IDType							m_componentId		= NANDRAD::INVALID_ID;				// XML:A:required
 	/*! Pipe ID (only needed for elements that are pipes). */
-	unsigned int					m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
+	IDType							m_pipePropertiesId	= NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Optional reference to a flow controller element. */
-	unsigned int					m_controlElementId = NANDRAD::INVALID_ID;				// XML:A
+	IDType							m_controlElementId	= NANDRAD::INVALID_ID;				// XML:A
 
 	/*! Display name. */
 	std::string						m_displayName;											// XML:A
