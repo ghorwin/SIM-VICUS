@@ -9,9 +9,7 @@
 namespace VICUS {
 
 
-class NetworkBuriedPipeProperties
-{
-
+class NetworkBuriedPipeProperties {
 public:
 
 	VICUS_READWRITE

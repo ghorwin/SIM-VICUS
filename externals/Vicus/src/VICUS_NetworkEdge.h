@@ -32,7 +32,6 @@
 #include "VICUS_Object.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkComponent.h"
-#include "VICUS_NetworkBuriedPipeProperties.h"
 
 
 namespace VICUS {
@@ -127,7 +126,7 @@ public:
 	bool												m_supply;						// XML:A
 
 	/*! ID of pipe in database */
-	unsigned int										m_idPipe = INVALID_ID;			// XML:A
+	IDType												m_idPipe = INVALID_ID;			// XML:A
 
 	//:inherited	QString								m_displayName;					// XML:A
 

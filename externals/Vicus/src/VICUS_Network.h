@@ -26,12 +26,6 @@
 #ifndef VICUS_NetworkH
 #define VICUS_NetworkH
 
-#include "VICUS_NetworkEdge.h"
-#include "VICUS_NetworkNode.h"
-#include "VICUS_CodeGenMacros.h"
-#include "VICUS_NetworkPipe.h"
-#include "VICUS_Database.h"
-
 #include <vector>
 #include <set>
 #include <string>
@@ -43,7 +37,13 @@
 #include <NANDRAD_HydraulicNetwork.h>
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
+#include "VICUS_NetworkEdge.h"
+#include "VICUS_NetworkNode.h"
+#include "VICUS_CodeGenMacros.h"
+#include "VICUS_NetworkPipe.h"
+#include "VICUS_Database.h"
 #include "VICUS_Object.h"
+#include "VICUS_NetworkBuriedPipeProperties.h"
 
 namespace IBK {
 	class Path;
