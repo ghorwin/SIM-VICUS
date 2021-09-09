@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <NandradProject fileVersion="1.999">
 	<Project>
-		<ProjectInfo />
+		<ProjectInfo>
+			<Comment>Two zones, both with the same outside wall to constant -10 C climate. Both have a floor heating,
+			but floor of zone 2 is half the size (5 m2) than floor to zone 1 (10 m2).
+			
+			Both have a thermostat each that requires 22 C room temperature.
+			
+			Floor heating pipes are parallel. Each floor heating pipe has its own thermostat controller matching the heated zone.
+			Control element #1 is for the pump and limits its pressure drop.
+			
+			TODO : revise test case!
+			</Comment>
+		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
@@ -181,7 +192,7 @@
 						<Y unit="m2/s">1.307e-06 1.307e-06</Y>
 					</LinearSplineParameter>
 				</HydraulicFluid>
-				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">30</IBK:Parameter>
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<PipeProperties>
 					<!-- Standardrohr: dn = 16 mm, en = 2 mm, lambda = 0.35 W/mK -->
@@ -195,6 +206,8 @@
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">30000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
@@ -208,8 +221,6 @@
 							 expected at a nominal flow rate of 0.01 kg/s is 40000 Pa you need, kP = 40000/0.001 = 4e7
 						-->
 						<IBK:Parameter name="Kp" unit="---">1e8</IBK:Parameter>
-						<!-- Maximale Druckhöhe (Pressure Head) in Pa -->
-						<MaximumControllerResultValue>30000</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 
 					<!-- Thermostat für Zone 1 -->
@@ -383,7 +394,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
