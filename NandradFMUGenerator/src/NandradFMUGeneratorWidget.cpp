@@ -1169,13 +1169,32 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// modify reference in project file
 	p.m_location.m_climateFilePath = "${Project Directory}/" + targetFName;
 
+	// copy used resources/tsv files
+
+	// schedules with tsv-files
+
+	// network heatexchange spline data
+	for (NANDRAD::HydraulicNetwork & n : p.m_hydraulicNetworks)
+		for (NANDRAD::HydraulicNetworkElement & elem : n.m_elements) {
+			for (int i=0; i<NANDRAD::HydraulicNetworkHeatExchange::NUM_SPL; ++i)
+				if (!elem.m_heatExchange.m_splPara[i].m_name.empty() && elem.m_heatExchange.m_splPara[i].m_tsvFile.isValid()) {
+					// Mind: tsv file path may be relative path to project directory or elsewhere
+					IBK::Path tsvFilePath = elem.m_heatExchange.m_splPara[i].m_tsvFile.withReplacedPlaceholders(p.m_placeholders);
+					IBK::Path targetPath = resourcePath / tsvFilePath.filename();
+					IBK::Path::copy(tsvFilePath, targetPath);
+					// change tsv file to point to relative path
+					elem.m_heatExchange.m_splPara[i].m_tsvFile = IBK::Path("${Project Directory}/" + tsvFilePath.filename().str());
+				}
+		}
+
+
 	// now all referenced files are stored alongside the project
 	// remove not needed Database placeholder from placeholders list (but keep all custom placeholders!)
 	auto it = p.m_placeholders.find("Database");
 	if (it != p.m_placeholders.end())
 		p.m_placeholders.erase(it);
 
-	// now write the project into the export directory, it will always be called "project.nandrad"
+	// now write the project into the export directory, it will always be called "Project.nandrad"
 	p.writeXML(resourcePath / "Project.nandrad");
 	IBK::IBK_Message( IBK::FormatString("Creating 'Project.nandrad' in '<fmu>/resources'\n"),
 					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -1316,6 +1335,8 @@ bool  NandradFMUGeneratorWidget::generate() {
 //	// create thumbnail image and copy into FMU
 //	QString thumbPath = saveThumbNail();
 //	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
+
+
 
 
 	bool success = true;
