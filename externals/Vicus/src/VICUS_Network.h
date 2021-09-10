@@ -146,9 +146,9 @@ public:
 	/*! returns the first id in m_nodes, which is an unconnected building */
 	int nextUnconnectedBuilding() const;
 
-	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
-	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
-	void cleanDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
+	/*! remove all nodes and their adjacent edges when the respective node is a "dead end",
+		meaning that none of the neighboring nodes is a building or source */
+	void cleanDeadEnds();
 
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
