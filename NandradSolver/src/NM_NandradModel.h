@@ -489,6 +489,9 @@ private:
 	*/
 	std::vector<unsigned int>								m_networkVariableOffset;
 
+	/*! Used to translates generic variable names ('NetwokElement(id=3)') to displayNames ('HeatExchanger_id3') */
+	std::map<std::string, std::string>						m_varSubstitutionMap;
+
 	// *** Models and sub-models ***
 
 	/*! Climatic loads calculation model (exists as single instance).

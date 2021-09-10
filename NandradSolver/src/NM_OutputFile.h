@@ -126,8 +126,10 @@ private:
 		\param binary If true, files are written in binary mode
 		\param timeColumnLabel Label of the time column
 		\param outputPath Path to output directory.
+		\param varSubstitutionMap map containing substitutions for header labels
 	*/
-	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
+	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath,
+					const std::map<std::string, std::string> & varSubstitutionMap);
 
 	/*! Retrieves current output values and appends values to cache.
 		This function only caches current output values. The data is written to file in the next call to flushCache().
