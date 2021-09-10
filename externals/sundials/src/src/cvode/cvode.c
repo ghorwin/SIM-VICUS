@@ -245,7 +245,6 @@
 #define DGMAX  RCONST(0.3)
 
 #define RDIV      TWO
-#define MSBP       20
 
 /*=================================================================*/
 /*             Private Helper Functions Prototypes                 */

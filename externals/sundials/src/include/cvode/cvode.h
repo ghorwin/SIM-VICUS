@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4378 $
  * $Date: 2015-02-19 10:55:14 -0800 (Thu, 19 Feb 2015) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh, Radu Serban
  *                and Dan Shumaker @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -148,16 +148,16 @@ extern "C" {
  * every time it is called.
  *
  * A CVRhsFn should return 0 if successful, a negative value if
- * an unrecoverable error occured, and a positive value if a 
- * recoverable error (e.g. invalid y values) occured. 
- * If an unrecoverable occured, the integration is halted. 
+ * an unrecoverable error occured, and a positive value if a
+ * recoverable error (e.g. invalid y values) occured.
+ * If an unrecoverable occured, the integration is halted.
  * If a recoverable error occured, then (in most cases) CVODE
  * will try to correct and retry.
  * -----------------------------------------------------------------
  */
 
 typedef int (*CVRhsFn)(realtype t, N_Vector y,
-		       N_Vector ydot, void *user_data);
+           N_Vector ydot, void *user_data);
 
 /*
  * -----------------------------------------------------------------
@@ -188,11 +188,11 @@ typedef int (*CVRootFn)(realtype t, N_Vector y, realtype *gout, void *user_data)
  * type CVEwtFn.
  * The function e takes as input the current dependent variable y.
  * It must set the vector of error weights used in the WRMS norm:
- * 
+ *
  *   ||y||_WRMS = sqrt [ 1/N * sum ( ewt_i * y_i)^2 ]
  *
  * Typically, the vector ewt has components:
- * 
+ *
  *   ewt_i = 1 / (reltol * |y_i| + abstol_i)
  *
  * The user_data parameter is the same as that passed by the user
@@ -214,17 +214,17 @@ typedef int (*CVEwtFn)(N_Vector y, N_Vector ewt, void *user_data);
  * The function eh takes as input the error code, the name of the
  * module reporting the error, the error message, and a pointer to
  * user data, the same as that passed to CVodeSetUserData.
- * 
- * All error codes are negative, except CV_WARNING which indicates 
+ *
+ * All error codes are negative, except CV_WARNING which indicates
  * a warning (the solver continues).
  *
  * A CVErrHandlerFn has no return value.
  * -----------------------------------------------------------------
  */
 
-typedef void (*CVErrHandlerFn)(int error_code, 
-			       const char *module, const char *function, 
-			       char *msg, void *user_data); 
+typedef void (*CVErrHandlerFn)(int error_code,
+             const char *module, const char *function,
+             char *msg, void *user_data);
 
 /*
  * =================================================================
@@ -272,11 +272,11 @@ SUNDIALS_EXPORT void *CVodeCreate(int lmm, int iter);
  * CVodeSetErrFile         | the file pointer for an error file
  *                         | where all CVODE warning and error
  *                         | messages will be written if the default
- *                         | internal error handling function is used. 
- *                         | This parameter can be stdout (standard 
- *                         | output), stderr (standard error), or a 
- *                         | file pointer (corresponding to a user 
- *                         | error file opened for writing) returned 
+ *                         | internal error handling function is used.
+ *                         | This parameter can be stdout (standard
+ *                         | output), stderr (standard error), or a
+ *                         | file pointer (corresponding to a user
+ *                         | error file opened for writing) returned
  *                         | by fopen.
  *                         | If not called, then all messages will
  *                         | be written to the standard error stream.
@@ -355,7 +355,7 @@ SUNDIALS_EXPORT void *CVodeCreate(int lmm, int iter);
  *                            |
  * CVodeSetNoInactiveRootWarn | disable warning about possible
  *                            | g==0 at beginning of integration
- *                            | 
+ *                            |
  * -----------------------------------------------------------------
 
  * -----------------------------------------------------------------
@@ -381,6 +381,7 @@ SUNDIALS_EXPORT int CVodeSetMaxErrTestFails(void *cvode_mem, int maxnef);
 SUNDIALS_EXPORT int CVodeSetMaxNonlinIters(void *cvode_mem, int maxcor);
 SUNDIALS_EXPORT int CVodeSetMaxConvFails(void *cvode_mem, int maxncf);
 SUNDIALS_EXPORT int CVodeSetNonlinConvCoef(void *cvode_mem, realtype nlscoef);
+SUNDIALS_EXPORT int CVodeSetLSetupFrequency(void *cvode_mem, long int msbp);
 
 SUNDIALS_EXPORT int CVodeSetIterType(void *cvode_mem, int iter);
 
@@ -461,7 +462,7 @@ SUNDIALS_EXPORT int CVodeReInit(void *cvode_mem, realtype t0, N_Vector y0);
  *
  * CVodeSStolerances specifies scalar relative and absolute tolerances.
  * CVodeSVtolerances specifies scalar relative tolerance and a vector
- *   absolute tolerance (a potentially different absolute tolerance 
+ *   absolute tolerance (a potentially different absolute tolerance
  *   for each vector component).
  * CVodeWFtolerances specifies a user-provides function (of type CVEwtFn)
  *   which will be called to set the error weight vector.
@@ -538,7 +539,7 @@ SUNDIALS_EXPORT int CVodeRootInit(void *cvode_mem, int nrtfn, CVRootFn g);
  * integration and the rough scale of the t variable. If tstop is
  * enabled (through a call to CVodeSetStopTime), then CVode returns
  * the solution at tstop. Once the integrator returns at a tstop
- * time, any future testing for tstop is disabled (and can be 
+ * time, any future testing for tstop is disabled (and can be
  * reenabled only though a new call to CVodeSetStopTime).
  * The time reached by the solver is placed in (*tret). The
  * user is responsible for allocating the memory for this value.
@@ -600,7 +601,7 @@ SUNDIALS_EXPORT int CVodeRootInit(void *cvode_mem, int nrtfn, CVRootFn g);
  *                  times (= MXNCF = 10) during one internal time
  *                  step or occurred with |h| = hmin.
  *
- * CV_LINIT_FAIL:   The linear solver's initialization function 
+ * CV_LINIT_FAIL:   The linear solver's initialization function
  *                  failed.
  *
  * CV_LSETUP_FAIL:  The linear solver's setup routine failed in an
@@ -612,7 +613,7 @@ SUNDIALS_EXPORT int CVodeRootInit(void *cvode_mem, int nrtfn, CVRootFn g);
  */
 
 SUNDIALS_EXPORT int CVode(void *cvode_mem, realtype tout, N_Vector yout,
-			  realtype *tret, int itask);
+        realtype *tret, int itask);
 
 /*
  * -----------------------------------------------------------------
@@ -696,9 +697,9 @@ SUNDIALS_EXPORT int CVodeGetDky(void *cvode_mem, realtype t, int k, N_Vector dky
  *                        for ele.
  * CVodeGetNumGEvals returns the number of calls to the user's
  *                   g function (for rootfinding)
- * CVodeGetRootInfo returns the indices for which g_i was found to 
- *                  have a root. The user must allocate space for 
- *                  rootsfound. For i = 0 ... nrtfn-1, 
+ * CVodeGetRootInfo returns the indices for which g_i was found to
+ *                  have a root. The user must allocate space for
+ *                  rootsfound. For i = 0 ... nrtfn-1,
  *                  rootsfound[i] = 1 if g_i has a root, and = 0 if not.
  *
  * CVodeGet* return values:
@@ -734,10 +735,10 @@ SUNDIALS_EXPORT int CVodeGetRootInfo(void *cvode_mem, int *rootsfound);
  */
 
 SUNDIALS_EXPORT int CVodeGetIntegratorStats(void *cvode_mem, long int *nsteps,
-					    long int *nfevals, long int *nlinsetups,
-					    long int *netfails, int *qlast,
-					    int *qcur, realtype *hinused, realtype *hlast,
-					    realtype *hcur, realtype *tcur);
+              long int *nfevals, long int *nlinsetups,
+              long int *netfails, int *qlast,
+              int *qcur, realtype *hinused, realtype *hlast,
+              realtype *hcur, realtype *tcur);
 
 /*
  * -----------------------------------------------------------------
@@ -764,11 +765,11 @@ SUNDIALS_EXPORT int CVodeGetNumNonlinSolvConvFails(void *cvode_mem, long int *nn
  */
 
 SUNDIALS_EXPORT int CVodeGetNonlinSolvStats(void *cvode_mem, long int *nniters,
-					    long int *nncfails);
+              long int *nncfails);
 
 /*
  * -----------------------------------------------------------------
- * The following function returns the name of the constant 
+ * The following function returns the name of the constant
  * associated with a CVODE return flag
  * -----------------------------------------------------------------
  */
