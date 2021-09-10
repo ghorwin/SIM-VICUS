@@ -41,6 +41,13 @@ public:
 					  PrecondInterface * precond,
 					  JacobianInterface * jacobian) override;
 
+	/*! Specifies the frequency for calling the linear solver setup function to
+		recompute the Jacobian matrix and/or preconditioner.
+		Set 0 to restore default.
+		\note This function just relays the call to CVodeSetLSetupFrequency().
+	*/
+	void setLinearSetupFrequency(int msbp);
+
 	/*! Advances the solution from the current time to the next, thereby
 		adjusting the time step.
 		If the step was completed sucessfully, the functions t() and dt() can be
