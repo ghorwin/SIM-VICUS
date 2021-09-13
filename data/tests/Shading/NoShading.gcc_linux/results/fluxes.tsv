@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).WindowSolarRadiationFluxSum [W]	Zone(id=1).WindowSolarRadiationLoad [W]	EmbeddedObject(id=1001).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1002).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1003).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1004).FluxShortWaveRadiationB [W]
+Time [h]	Room.WindowSolarRadiationFluxSum [W]	Room.WindowSolarRadiationLoad [W]	EmbeddedObject(id=1001).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1002).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1003).FluxShortWaveRadiationB [W]	EmbeddedObject(id=1004).FluxShortWaveRadiationB [W]
 4344	0	0	0	0	0	0
 4344.17	0	0	0	0	0	0
 4344.33	0	0	0	0	0	0

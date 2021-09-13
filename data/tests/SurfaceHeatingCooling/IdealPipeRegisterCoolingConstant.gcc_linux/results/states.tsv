@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	Zone(id=1).AirTemperature [C]	Model(id=701).ReturnTemperature(id=3001) [C]
+Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	dummy.AirTemperature [C]	Model(id=701).ReturnTemperature(id=3001) [C]
 0	22	22	22
 1	22.2122	25.9851	22.2122
 2	22.0504	26.0113	22.0198
