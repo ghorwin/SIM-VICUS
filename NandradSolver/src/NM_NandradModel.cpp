@@ -368,7 +368,7 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
 	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
-	m_outputHandler->writeOutputs(t_out, t_secondsOfYear);
+	m_outputHandler->writeOutputs(t_out, t_secondsOfYear, m_varSubstitutionMap);
 
 	// write feedback to user
 	IBK_ASSERT(m_t == t_out);
@@ -2172,8 +2172,6 @@ void NandradModel::initOutputReferenceList() {
 	// name as it appears in the output file to the dispay name of the object that this variable
 	// originates from.
 
-	// storage member to collect variable reference substitution map - ref-prefix vs displayname, if given
-	std::map<std::string, std::string> varSubstMap;
 
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	{
@@ -2183,7 +2181,7 @@ void NandradModel::initOutputReferenceList() {
 		std::map<std::string, std::vector<QuantityDescription> > refDescs;
 		for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
 			AbstractModel * currentModel = m_modelContainer[i];
-			currentModel->variableReferenceSubstitutionMap(varSubstMap); // for most model instances, this does nothing
+			currentModel->variableReferenceSubstitutionMap(m_varSubstitutionMap); // for most model instances, this does nothing
 
 			NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
 			// skip models that do not generate outputs
@@ -2313,7 +2311,7 @@ void NandradModel::initOutputReferenceList() {
 		if (zone.m_displayName.empty())
 			continue;
 		std::string zoneObjectRef = IBK::FormatString("Zone(id=%1)").arg(zone.m_id).str();
-		varSubstMap[zoneObjectRef] = zone.m_displayName;
+		m_varSubstitutionMap[zoneObjectRef] = zone.m_displayName;
 	}
 
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -2324,7 +2322,7 @@ void NandradModel::initOutputReferenceList() {
 	// create the mapping file
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
-	for (auto m : varSubstMap)
+	for (auto m : m_varSubstitutionMap)
 		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 

@@ -146,9 +146,9 @@ public:
 	/*! returns the first id in m_nodes, which is an unconnected building */
 	int nextUnconnectedBuilding() const;
 
-	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
-	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
-	void cleanDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
+	/*! remove all nodes and their adjacent edges when the respective node is a "dead end",
+		meaning that none of the neighboring nodes is a building or source */
+	void cleanDeadEnds();
 
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
@@ -236,10 +236,12 @@ public:
 	 */
 	unsigned int indexOfNode(unsigned int id) const;
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int					m_id = INVALID_ID;					// XML:A:required
-	//:inherited	QString							m_displayName;						// XML:A
+	//:inherited	unsigned int			m_id = INVALID_ID		;					// XML:A:required
+	//:inherited	QString					m_displayName;								// XML:A
+	//:inherited	bool					m_visible = true;							// XML:A
 
 	/*! Fluid id */
 	unsigned int							m_idFluid = INVALID_ID;						// XML:A
@@ -280,12 +282,6 @@ public:
 	/*! Describes all properties for a buried pipe in the ground */
 	NetworkBuriedPipeProperties				m_buriedPipeProperties;						// XML:E
 
-
-	/*! Stores visibility information for this network.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool					m_visible = true;							// XML:A
 
 	// *** RUNTIME VARIABLES ***
 

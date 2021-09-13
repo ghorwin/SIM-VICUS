@@ -69,11 +69,12 @@ public:
 	}
 
 	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
-		m_id(id),
 		m_position(v),
 		m_type(type),
 		m_maxHeatingDemand("MaxHeatingDemand", heatDemand, "W")
-	{}
+	{
+		m_id = id;
+	}
 
 	/*! check connectivity of graph trhough recursive search */
 	void collectConnectedEdges(std::set<const NetworkNode*> & connectedNodes, std::set<const NetworkEdge*> & connectedEdge) const;
@@ -119,7 +120,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int								m_id  = INVALID_ID;										// XML:A:required
+	//:inherited	unsigned int				m_id = INVALID_ID;										// XML:A:required
+	//:inherited	QString						m_displayName;											// XML:A
+	//:inherited	bool						m_visible = true;										// XML:A
 
 	IBKMK::Vector3D								m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 
@@ -131,12 +134,8 @@ public:
 	/*! Reference id to a VICUS::SubNetwork */
 	unsigned int								m_idSubNetwork = INVALID_ID;							// XML:A
 
-	//:inherited	QString						m_displayName;											// XML:A
-
 	NANDRAD::HydraulicNetworkHeatExchange		m_heatExchange;											// XML:E
 
-	/*! Whether the node is visible or not. */
-	//:inherited	bool						m_visible = true;										// XML:A
 
 	// *** RUNTIME VARIABLES ***
 

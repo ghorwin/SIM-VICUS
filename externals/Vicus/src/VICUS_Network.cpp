@@ -455,19 +455,21 @@ int Network::nextUnconnectedBuilding() const{
 }
 
 
-// TODO : no copy needed anymore with new data structure ?
-void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
+void Network::cleanDeadEnds(){
 
-	for (unsigned step=0; step<maxSteps; ++step){
-		for (const NetworkNode &n: m_nodes)
+	for (unsigned i=0; i<m_nodes.size(); ++i){
+		for (const NetworkNode &n: m_nodes){
+			// look if this is a dead end
 			nodeById(n.m_id)->updateIsDeadEnd();
-	}
-	for (const NetworkEdge &edge: m_edges){
-		if (edge.m_node1->m_isDeadEnd || edge.m_node2->m_isDeadEnd)
-			continue;
-		unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
-		unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
+			if (n.m_isDeadEnd){
+				// if so, remove all edges and the node itself
+				for (NetworkEdge *e: n.m_edges)
+					m_edges.erase(m_edges.begin() + indexOfEdge(e->nodeId1(), e->nodeId2()) );
+				m_nodes.erase(m_nodes.begin() + indexOfNode(n.m_id));
+				updateNodeEdgeConnectionPointers();
+				break;
+			}
+		}
 	}
 }
 

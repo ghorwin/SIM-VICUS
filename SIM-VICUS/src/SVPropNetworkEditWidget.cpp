@@ -948,14 +948,10 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 {
 	if (!setNetwork())
 		return;
-	// copy only base parameters
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.cleanDeadEnds(newNetwork);
-	newNetwork.updateNodeEdgeConnectionPointers();
-	// we exchange the current one with the old one
+	m_currentNetwork.cleanDeadEnds();
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
-	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, newNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
 
@@ -972,16 +968,15 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	undoMod->push(); // modifies project and updates views
 
 	// make copy with reduced nodes
-	VICUS::Network newNetwork = m_currentNetwork.copyWithBaseParameters();
+	VICUS::Network newNetwork = m_currentNetwork.clone();
+	newNetwork.m_edges.clear();
+	newNetwork.m_nodes.clear();
 	newNetwork.m_displayName = QString("%1_noRedundants").arg(m_currentNetwork.m_displayName);
-	newNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);
 	newNetwork.setVisible(true);
 
 	// algorithm
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.cleanRedundantEdges(newNetwork);
-	const VICUS::Project & p = project();
-	newNetwork.m_id = VICUS::uniqueId(p.m_geometricNetworks);
 	newNetwork.updateNodeEdgeConnectionPointers();
 	newNetwork.updateExtends();
 
