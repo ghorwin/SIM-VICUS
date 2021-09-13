@@ -1175,7 +1175,7 @@ void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
 		return; // dialog was cancelled
 	}
 
-	m_nandradFilePath = IBK::Path(fname.toStdString());
+	m_nandradFilePath = dir;
 
 	init();
 }
