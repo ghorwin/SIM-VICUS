@@ -47,6 +47,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES +=  \
+	../../src/FMUVariableTableModel.cpp \
 	../../src/NandradFMUGeneratorWidget.cpp \
 	../../src/main.cpp
 
@@ -54,6 +55,7 @@ FORMS += \
 	../../src/NandradFMUGeneratorWidget.ui
 
 HEADERS += \
+	../../src/FMUVariableTableModel.h \
 	../../src/NandradFMUGeneratorWidget.h
 
 RESOURCES += \

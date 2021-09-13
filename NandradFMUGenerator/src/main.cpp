@@ -60,17 +60,21 @@ int main(int argc, char *argv[]) {
 				projectFile = projectFile.substr(7);
 			w.m_nandradFilePath = IBK::Path(projectFile);
 		}
+
+		// check for: NandradFMUGenerator --generate=MyModel  /path/to/MyModelProject.nandrad
 		if (args.hasOption("generate")) {
 			if (!w.m_nandradFilePath.isValid()) {
 				throw IBK::Exception("Project file argument expected when using '--generate'.", FUNC_ID);
 			}
 			w.m_silent = true; // set widget into silent mode
 			w.m_autoExportModelName = QString::fromStdString(args.option("generate"));
+			// TODO : check if export model name is valid
 		}
 
-		w.init();
+		// handle initial state (reading project given by command line etc.)
 		w.resize(1600,800);
 		w.show(); // show widget
+		w.init();
 
 		// start event loop
 		res = a.exec();

@@ -24,6 +24,8 @@
 #include <Windows.h>
 #endif
 
+#include "FMUVariableTableModel.h"
+
 const char * const ORGANIZATION = "IBK";
 const char * const PROGRAM_NAME = "NANDRADFMUGenerator";
 
@@ -94,11 +96,20 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 
 NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::NandradFMUGeneratorWidget)
+	m_ui(new Ui::NandradFMUGeneratorWidget),
+	m_inputVariablesTableModel(new FMUVariableTableModel(this, true)),
+	m_outputVariablesTableModel(new FMUVariableTableModel(this, false))
 {
 	m_ui->setupUi(this);
 
 	m_ui->lineEditTargetDirectory->setup("", false, true, QString(), true);
+
+	// configure models
+
+	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
+	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
+	m_ui->tableViewInputVars->setModel(m_inputVariablesTableModel);
+	m_ui->tableViewOutputVars->setModel(m_outputVariablesTableModel);
 
 	QTableView * v = m_ui->tableViewInputVars;
 	v->verticalHeader()->setDefaultSectionSize(19);
@@ -404,6 +415,8 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	if (proc.exitStatus() == QProcess::NormalExit) {
 		if (proc.exitCode() != 0) {
 			QMessageBox::critical(this, QString(), tr("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!"));
+
+			// TODO : Dirk, handle error case : m_silent -> error message, program abort with error code; otherwise message box, and GUI state to "off"
 			return;
 		}
 	}
@@ -419,13 +432,17 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 
 	m_availableInputVariables.clear();
 	QString inputVarsFile = QString::fromStdString( (varDir / "input_reference_list.txt").str() );
-	if (!parseVariableList(inputVarsFile, m_availableInputVariables))
+	if (!parseVariableList(inputVarsFile, m_availableInputVariables)) {
+		m_inputVariablesTableModel->reset();
 		return;
+	}
 
 	m_availableOutputVariables.clear();
 	QString outputVarsFile = QString::fromStdString( (varDir / "output_reference_list.txt").str() );
-	if (!parseVariableList(outputVarsFile, m_availableOutputVariables))
+	if (!parseVariableList(outputVarsFile, m_availableOutputVariables)) {
+		m_outputVariablesTableModel->reset();
 		return;
+	}
 
 	// now we set units and descriptions in input variables that match output variables
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
@@ -458,6 +475,9 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 							 .arg(m_availableInputVariables.size()).arg(m_availableOutputVariables.size()));
 
 	updateFMUVariableTables();
+
+	m_inputVariablesTableModel->reset();
+	m_outputVariablesTableModel->reset();
 }
 
 
@@ -468,6 +488,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 	if (!inputVarF.open(QFile::ReadOnly)) {
 			QMessageBox::critical(this, QString(), tr("Could not read file '%1'. Re-run solver initialization!")
 								  .arg(varsFile));
+		// TODO : Dirk, error handling
 		return false;
 	}
 
@@ -727,10 +748,6 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 
 
 
-
-void NandradFMUGeneratorWidget::appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var) {
-
-}
 
 void NandradFMUGeneratorWidget::dumpUsedValueRefs() const {
 #if 0
@@ -1129,11 +1146,3 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 
 
 
-void NandradFMUGeneratorWidget::on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item) {
-
-}
-
-
-void NandradFMUGeneratorWidget::on_tableWidgetOutputVars_itemChanged(QTableWidgetItem *item) {
-
-}
