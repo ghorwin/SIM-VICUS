@@ -17,8 +17,10 @@ public:
 	QVariant data(const QModelIndex & index, int role) const override;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
-
+	/*! Performs a model reset. */
 	void reset();
+	/*! Informs users of this model about a change of this variable (row). */
+	void variableModified(unsigned int row);
 
 	bool	m_inputVariableTable;
 	std::vector<NANDRAD::FMIVariableDefinition> * m_availableVariables = nullptr;

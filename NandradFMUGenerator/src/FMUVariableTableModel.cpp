@@ -68,3 +68,11 @@ void FMUVariableTableModel::reset() {
 	beginResetModel();
 	endResetModel();
 }
+
+
+void FMUVariableTableModel::variableModified(unsigned int row) {
+	// get index range
+	QModelIndex left = index((int)row, 0);
+	QModelIndex right = index((int)row, 7);
+	emit dataChanged(left, right);
+}
