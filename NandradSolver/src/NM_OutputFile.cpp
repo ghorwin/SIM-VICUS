@@ -288,7 +288,8 @@ void OutputFile::createInputReferences() {
 
 
 void OutputFile::createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath,
-							const std::map<std::string, std::string> & varSubstitutionMap) {
+							const std::map<std::string, std::string> & varSubstitutionMap)
+{
 	FUNCID(OutputFile::createFile);
 
 	m_binary = binary;
@@ -349,8 +350,9 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 		std::vector<std::string> tokens;
 		for (unsigned int i=0; i<m_numCols; ++i){
 			IBK::explode(headerLabels[i], tokens, ".", IBK::EF_NoFlags); // we need to split element name and quantity
-			if ( varSubstitutionMap.find(tokens[0]) != varSubstitutionMap.end() )
-				headerLabels[i] = varSubstitutionMap.at(tokens[0]) + "." + tokens[1]; // and merge quantity with substituted element name
+			std::map<std::string, std::string>::const_iterator varSubst = varSubstitutionMap.find(tokens[0]);
+			if (varSubst != varSubstitutionMap.end() )
+				headerLabels[i] = varSubst->second + "." + tokens[1]; // and merge quantity with substituted element name
 		}
 	}
 
