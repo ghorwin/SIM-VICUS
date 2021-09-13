@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<NandradProject fileVersion="1.99">
+<NandradProject fileVersion="1.999">
 	<Project>
 		<ProjectInfo>
 			<Comment>Tests single zone connected to single outside constructiuon</Comment>
@@ -8,6 +8,7 @@
 			<IBK:Parameter name="Latitude" unit="Deg">51</IBK:Parameter>
 			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>13</TimeZone>
 			<ClimateFilePath>${Project Directory}/../climate/TF03-Sprung2.c6b</ClimateFilePath>
 		</Location>
 		<SimulationParameter>
@@ -17,9 +18,9 @@
 			</Interval>
 		</SimulationParameter>
 		<SolverParameter>
-			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
-			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
 			<IBK:Parameter name="InitialTimeStep" unit="s">0.01</IBK:Parameter>
+			<IBK:Parameter name="DiscMinDx" unit="mm">2</IBK:Parameter>
+			<IBK:Parameter name="DiscStretchFactor" unit="---">4</IBK:Parameter>
 		</SolverParameter>
 		<Zones>
 			<Zone id="1" displayName="Room" type="Active">
@@ -34,16 +35,16 @@
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<InterfaceA id="1" zoneId="1">
-						<!--Interface to 'Room'-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceA>
 				<InterfaceB id="2" zoneId="0">
-						<!--Interface to outside-->
-						<InterfaceHeatConduction modelType="Constant">
-							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-						</InterfaceHeatConduction>
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
 				</InterfaceB>
 			</ConstructionInstance>
 		</ConstructionInstances>
@@ -73,6 +74,8 @@
 				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 			</Material>
 		</Materials>
+		<Schedules />
+		<Models />
 		<Outputs>
 			<Definitions>
 				<OutputDefinition>
@@ -98,5 +101,8 @@
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 		</ObjectLists>
+		<FMIDescription>
+			<ModelName>SingleZoneSingleOutdoorsConstruction</ModelName>
+		</FMIDescription>
 	</Project>
 </NandradProject>

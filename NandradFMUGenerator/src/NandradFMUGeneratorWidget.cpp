@@ -43,8 +43,8 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	si.cb = sizeof(si);
 	std::string utf8String = projectFile.toStdString().data();
 	si.lpTitle = (LPSTR)utf8String.c_str();
-//	si.dwFlags = STARTF_USESHOWWINDOW;
-//	si.wShowWindow = SW_SHOW;
+	//	si.dwFlags = STARTF_USESHOWWINDOW;
+	//	si.wShowWindow = SW_SHOW;
 	ZeroMemory( &pi, sizeof(pi) );
 	const unsigned int lower_priority = 0x00004000;
 	QString cmdLine = QString("\"%1\" %2 \"%3\"").arg(executable, commandLineArgs.join(" "), projectFile);
@@ -52,16 +52,16 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	std::string cmd = cmdLine.toLatin1().data();
 	// Start the child process.
 	if( !CreateProcessA( nullptr,	// No module name (use command line).
-		&cmd[0],					// Command line.
-		nullptr,					// Process handle not inheritable.
-		nullptr,					// Thread handle not inheritable.
-		FALSE,						// Set handle inheritance to FALSE.
-		lower_priority,				// Create with priority lower then normal.
-		nullptr,					// Use parent's environment block.
-		nullptr,					// Use parent's starting directory.
-		&si,						// Pointer to STARTUPINFO structure.
-		&pi )						// Pointer to PROCESS_INFORMATION structure.
-	)
+						 &cmd[0],					// Command line.
+						 nullptr,					// Process handle not inheritable.
+						 nullptr,					// Thread handle not inheritable.
+						 FALSE,						// Set handle inheritance to FALSE.
+						 lower_priority,				// Create with priority lower then normal.
+						 nullptr,					// Use parent's environment block.
+						 nullptr,					// Use parent's starting directory.
+						 &si,						// Pointer to STARTUPINFO structure.
+						 &pi )						// Pointer to PROCESS_INFORMATION structure.
+			)
 	{
 		return false;
 	}
@@ -71,7 +71,7 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 
 	// append project file to arguments, no quotes needed, since Qt takes care of that
 	commandLineArgs << projectFile;
-//	qint64 pid;
+	//	qint64 pid;
 	commandLineArgs = QStringList() << "-hold"
 									<< "-fa" << "'Monospace'"
 									<< "-fs" << "9"
@@ -85,7 +85,7 @@ bool startProcess(const QString & executable, QStringList commandLineArgs, const
 	proc.start();
 	bool success = proc.waitForFinished();
 
-//	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
+	//	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 
 	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
 	return success;
@@ -231,8 +231,8 @@ int NandradFMUGeneratorWidget::setup() {
 	// now test-init the solver and update the variable tables
 	try {
 		updateVariableLists();
-
-	}  catch (IBK::Exception &ex) {
+	}
+	catch (IBK::Exception &ex) {
 		//console
 		if(m_silent){
 			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
@@ -349,6 +349,7 @@ void NandradFMUGeneratorWidget::setGUIState(bool active) {
 	if (!active)
 		m_ui->tabWidget->setCurrentIndex(0);
 	m_ui->pushButtonGenerate->setEnabled(active);
+	m_ui->pushButtonRefresh->setEnabled(active);
 	m_ui->pushButtonSaveNandradProject->setEnabled(active);
 	m_ui->lineEditModelName->setEnabled(active);
 	m_ui->lineEditTargetDirectory->setEnabled(active);
@@ -403,7 +404,7 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	commandLineArgs.append("-x"); // do not show "press key"
 #endif
 
-//	bool success = startProcess(m_nandradSolverExecutable, commandLineArgs, QString::fromStdString(m_nandradFilePath.str()));
+	//	bool success = startProcess(m_nandradSolverExecutable, commandLineArgs, QString::fromStdString(m_nandradFilePath.str()));
 
 	commandLineArgs.append(QString::fromStdString(m_nandradFilePath.str()));
 
@@ -499,8 +500,8 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 	FUNCID(NandradFMUGeneratorWidget::parseVariableList);
 	QFile inputVarF(varsFile);
 	if (!inputVarF.open(QFile::ReadOnly)) {
-			throw IBK::Exception(IBK::FormatString("Could not read file '%1'. Re-run solver initialization!")
-								 .arg(varsFile.toStdString()), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Could not read file '%1'. Re-run solver initialization!")
+							 .arg(varsFile.toStdString()), FUNC_ID);
 	}
 
 	QStringList vars = QString(inputVarF.readAll()).split('\n');
@@ -523,7 +524,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		QStringList tokens = vars[j].split('\t');
 		if (tokens.count() < 3) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Re-run solver initialization!")
-				.arg(varsFile));
+								  .arg(varsFile));
 			return false;
 		}
 
@@ -531,7 +532,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		QStringList varNameTokens = tokens[0].trimmed().split(".");
 		if (varNameTokens.count() != 2) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
-				.arg(varsFile).arg(tokens[0]));
+								  .arg(varsFile).arg(tokens[0]));
 			return false;
 		}
 		QString objTypeName = varNameTokens[0];			// "Zone"
@@ -542,8 +543,8 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 			try {
 				// convert to base SI unit, except for some commonly used units without conversion factor to base unit
 				if (unit != "W" &&
-					unit != "W/m2" &&
-					unit != "W/m3")
+						unit != "W/m2" &&
+						unit != "W/m3")
 				{
 					IBK::Unit u(unit.toStdString());
 					unit = QString::fromStdString(u.base_unit().name());
@@ -551,7 +552,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 			}
 			catch (...) {
 				QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Unrecognized unit '%2'. Re-run solver initialization!")
-					.arg(varsFile).arg(unit));
+									  .arg(varsFile).arg(unit));
 			}
 		}
 		QString description;
@@ -565,7 +566,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		QString idString = tokens[1].trimmed();
 		if (idString.isEmpty()) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Object ID required for variable '%2'. Re-run solver initialization!")
-				.arg(varsFile).arg(tokens[0]));
+								  .arg(varsFile).arg(tokens[0]));
 			return false;
 		}
 		QStringList ids = idString.split(",");
@@ -677,8 +678,8 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableInputVariables.begin();
 		for (; it != m_availableInputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName &&
-				var.m_objectId == it->m_objectId &&
-				var.m_vectorIndex == it->m_vectorIndex)
+					var.m_objectId == it->m_objectId &&
+					var.m_vectorIndex == it->m_vectorIndex)
 			{
 				break; // match found - stop search
 			}
@@ -723,8 +724,8 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 		std::vector<NANDRAD::FMIVariableDefinition>::iterator it = m_availableOutputVariables.begin();
 		for (; it != m_availableOutputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName &&
-				var.m_objectId == it->m_objectId &&
-				var.m_vectorIndex == it->m_vectorIndex)
+					var.m_objectId == it->m_objectId &&
+					var.m_vectorIndex == it->m_vectorIndex)
 			{
 				break; // match found - stop search
 			}
@@ -827,12 +828,12 @@ bool  NandradFMUGeneratorWidget::generate() {
 	if (!fullClimatePath.isFile()) {
 		if (m_silent) {
 			IBK_Message(IBK::FormatString("The referenced climate data file '%1' does not exist. Please select a climate data file!")
-					.arg(fullClimatePath.str()), IBK::MSG_ERROR, FUNC_ID);
+						.arg(fullClimatePath.str()), IBK::MSG_ERROR, FUNC_ID);
 		}
 		else {
 			QMessageBox::critical(this, tr("FMU Export Error"),
-				tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
-					.arg(QString::fromStdString(fullClimatePath.str())) );
+								  tr("The referenced climate data file '%1' does not exist. Please select a climate data file!")
+								  .arg(QString::fromStdString(fullClimatePath.str())) );
 		}
 		return false;
 	}
@@ -844,9 +845,9 @@ bool  NandradFMUGeneratorWidget::generate() {
 					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
 		QMessageBox::critical(this, tr("FMU Export Error"),
-			tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
-				.arg(QString::fromStdString(fullClimatePath.str()))
-				.arg(QString::fromStdString(resourcePath.str())) );
+							  tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
+							  .arg(QString::fromStdString(fullClimatePath.str()))
+							  .arg(QString::fromStdString(resourcePath.str())) );
 	// modify reference in project file
 	p.m_location.m_climateFilePath = "${Project Directory}/" + targetFName;
 
@@ -984,10 +985,10 @@ bool  NandradFMUGeneratorWidget::generate() {
 	modelDesc.replace("${MODELVARIABLES}", modelVariables);
 
 	// compose unit definitions section
-//		<UnitDefinitions>
-//			<Unit name="C"/>
-//			<Unit name="W/m2"/>
-//		</UnitDefinitions>
+	//		<UnitDefinitions>
+	//			<Unit name="C"/>
+	//			<Unit name="W/m2"/>
+	//		</UnitDefinitions>
 
 	QString unitDefs;
 	if (!units.isEmpty()) {
@@ -1013,9 +1014,9 @@ bool  NandradFMUGeneratorWidget::generate() {
 	of.write(modelDesc.toUtf8());
 	of.close();
 
-//	// create thumbnail image and copy into FMU
-//	QString thumbPath = saveThumbNail();
-//	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
+	//	// create thumbnail image and copy into FMU
+	//	QString thumbPath = saveThumbNail();
+	//	QFile::copy(thumbPath, baseDir.absoluteFilePath("model.png"));
 
 
 
@@ -1154,6 +1155,27 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 	}
 }
 
+void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
 
+	QString fname = m_ui->lineEditNandradProjectFilePath->text();
 
+	IBK::Path dir (fname.toStdString());
+	// read NANDRAD project
+	if (!dir.isValid()) {
+		QMessageBox::critical(this, "Error in project file path", "Project file path is empty. Please enter a valid project file path.");
+		m_ui->lineEditNandradProjectFilePath->setFocus();
+		setGUIState(false);
+		return; // dialog was cancelled
+	}
 
+	if (!dir.isFile()) {
+		QMessageBox::critical(this, "Error in project file path", "Project file path does not specify an existing file. Please enter a valid project file path.");
+		m_ui->lineEditNandradProjectFilePath->setFocus();
+		setGUIState(false);
+		return; // dialog was cancelled
+	}
+
+	m_nandradFilePath = IBK::Path(fname.toStdString());
+
+	init();
+}

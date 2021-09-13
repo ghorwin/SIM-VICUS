@@ -68,6 +68,9 @@ private slots:
 	void on_pushButtonSaveNandradProject_clicked();
 	void on_pushButtonSelectNandradProject_clicked();
 
+	/*! Refreshes the project data when smth inside the project file changes */
+	void on_pushButtonRefresh_clicked();
+
 	/*! Called when solver process was started successfully. */
 	void onProcessStarted();
 	/*! Called when solver process could not be started. */
