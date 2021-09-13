@@ -813,6 +813,43 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			p.m_objectLists.push_back(ol);
 		}
+
+		// object lists for location TODO check if exist !!!
+		// make standard output for temperature direct and diffuse radiation
+		std::string olName = "Location";
+		{
+			NANDRAD::ObjectList ol;
+			ol.m_name = olName;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+			p.m_objectLists.push_back(ol);
+		}
+
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "Temperature";
+			od.m_objectListName = olName;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "SWRadDirectNormal";
+			od.m_objectListName = olName;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "SWRadDiffuseHorizontal";
+			od.m_objectListName = olName;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+
 	}
 
 
