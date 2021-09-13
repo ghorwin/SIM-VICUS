@@ -188,6 +188,7 @@ void NandradFMUGeneratorWidget::setModelName(const QString & modelName) {
 
 
 int NandradFMUGeneratorWidget::setup() {
+	FUNCID(NandradFMUGeneratorWidget::setup);
 
 	// read NANDRAD project
 	try {
@@ -228,7 +229,20 @@ int NandradFMUGeneratorWidget::setup() {
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
 	// now test-init the solver and update the variable tables
-	updateVariableLists();
+	try {
+		updateVariableLists();
+
+	}  catch (IBK::Exception &ex) {
+		//console
+		if(m_silent){
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		else{
+			QMessageBox::critical(this, QString(), ex.what());
+		}
+
+		return 1; // error
+	}
 
 	return 0; // success
 }
@@ -379,6 +393,7 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 
 
 void NandradFMUGeneratorWidget::updateVariableLists() {
+	FUNCID(NandradFMUGeneratorWidget::updateVariableLists);
 	// Test-Init project and then read input/output value refs
 
 	QStringList commandLineArgs;
@@ -414,10 +429,7 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 
 	if (proc.exitStatus() == QProcess::NormalExit) {
 		if (proc.exitCode() != 0) {
-			QMessageBox::critical(this, QString(), tr("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!"));
-
-			// TODO : Dirk, handle error case : m_silent -> error message, program abort with error code; otherwise message box, and GUI state to "off"
-			return;
+			throw IBK::Exception("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!", FUNC_ID );
 		}
 	}
 
@@ -484,12 +496,11 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 												  std::vector<NANDRAD::FMIVariableDefinition> & modelVariables)
 {
+	FUNCID(NandradFMUGeneratorWidget::parseVariableList);
 	QFile inputVarF(varsFile);
 	if (!inputVarF.open(QFile::ReadOnly)) {
-			QMessageBox::critical(this, QString(), tr("Could not read file '%1'. Re-run solver initialization!")
-								  .arg(varsFile));
-		// TODO : Dirk, error handling
-		return false;
+			throw IBK::Exception(IBK::FormatString("Could not read file '%1'. Re-run solver initialization!")
+								 .arg(varsFile.toStdString()), FUNC_ID);
 	}
 
 	QStringList vars = QString(inputVarF.readAll()).split('\n');
