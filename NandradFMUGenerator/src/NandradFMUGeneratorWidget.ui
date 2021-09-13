@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -139,9 +139,6 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QTableWidget" name="tableWidgetInputVars"/>
-       </item>
        <item row="1" column="1">
         <widget class="QToolButton" name="toolButtonRemoveInputVariable">
          <property name="icon">
@@ -155,6 +152,9 @@
           </size>
          </property>
         </widget>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableView" name="tableViewInputVars"/>
        </item>
       </layout>
      </widget>
@@ -176,9 +176,6 @@
           </size>
          </property>
         </widget>
-       </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QTableWidget" name="tableWidgetOutputVars"/>
        </item>
        <item row="1" column="0">
         <widget class="QToolButton" name="toolButtonAddOutputVariable">
@@ -206,6 +203,9 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="0" colspan="3">
+        <widget class="QTableView" name="tableViewOutputVars"/>
        </item>
       </layout>
      </widget>

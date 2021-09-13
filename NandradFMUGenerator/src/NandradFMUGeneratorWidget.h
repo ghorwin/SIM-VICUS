@@ -59,16 +59,6 @@ private slots:
 
 	void autoGenerate();
 
-	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-
-	void on_toolButtonAddInputVariable_clicked();
-	void on_toolButtonRemoveInputVariable_clicked();
-	void on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem *item);
-
-	void on_toolButtonAddOutputVariable_clicked();
-	void on_toolButtonRemoveOutputVariable_clicked();
-	void on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem *item);
 
 	void on_pushButtonGenerate_clicked();
 
@@ -117,9 +107,6 @@ private:
 		are shown in gray and italic (as invalid!).
 	*/
 	void updateFMUVariableTables();
-
-	/*! This fills in a table with FMI variables. */
-	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars);
 
 	/*! Adds a new row to a table widget.
 		\param tableWidget The target table widget.
