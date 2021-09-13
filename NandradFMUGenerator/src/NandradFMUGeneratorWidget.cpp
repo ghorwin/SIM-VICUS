@@ -111,6 +111,11 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	m_ui->tableViewInputVars->setModel(m_inputVariablesTableModel);
 	m_ui->tableViewOutputVars->setModel(m_outputVariablesTableModel);
 
+	connect(m_ui->tableViewInputVars->selectionModel(), &QItemSelectionModel::currentChanged,
+			this, &NandradFMUGeneratorWidget::onInputVarsCurrentChanged);
+	connect(m_ui->tableViewOutputVars->selectionModel(), &QItemSelectionModel::currentChanged,
+			this, &NandradFMUGeneratorWidget::onOutputVarsCurrentChanged);
+
 	QTableView * v = m_ui->tableViewInputVars;
 	v->verticalHeader()->setDefaultSectionSize(19);
 	v->verticalHeader()->setVisible(false);
@@ -1178,4 +1183,64 @@ void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
 	m_nandradFilePath = dir;
 
 	init();
+}
+
+
+void NandradFMUGeneratorWidget::on_tableViewInputVars_doubleClicked(const QModelIndex &index) {
+	// double-click allows editing of variable name and value ref
+
+
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
+	// configure new input var - requires valid selection
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
+	// remove configured input var - requires valid selection
+}
+
+
+void NandradFMUGeneratorWidget::onInputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+	m_ui->toolButtonAddInputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+	if (!current.isValid())
+		return;
+	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
+	// already configured?
+	if (valueRef == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
+}
+
+
+void NandradFMUGeneratorWidget::on_tableViewOutputVars_doubleClicked(const QModelIndex & index) {
+	// double-click allows editing of variable name and value ref
+
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
+
+}
+
+void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
+
+}
+
+
+void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+	m_ui->toolButtonAddOutputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
+	if (!current.isValid())
+		return;
+	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
+	// already configured?
+	if (valueRef == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
 }

@@ -76,6 +76,21 @@ private slots:
 	/*! Called when solver process could not be started. */
 	void onProcessErrorOccurred();
 
+
+	// ** Input Variable Table **
+
+	void on_tableViewInputVars_doubleClicked(const QModelIndex &index);
+	void on_toolButtonAddInputVariable_clicked();
+	void on_toolButtonRemoveInputVariable_clicked();
+	void onInputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+
+	// ** Output Variable Table **
+
+	void on_tableViewOutputVars_doubleClicked(const QModelIndex &index);
+	void on_toolButtonAddOutputVariable_clicked();
+	void on_toolButtonRemoveOutputVariable_clicked();
+	void onOutputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
