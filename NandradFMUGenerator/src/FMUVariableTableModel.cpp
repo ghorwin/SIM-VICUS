@@ -34,6 +34,10 @@ QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const 
 		case Qt::ForegroundRole :
 			// vars with INVALID valueRef -> grey italic
 		break;
+
+		// UserRole returns value reference
+		case Qt::UserRole :
+			return (*m_availableVariables)[(size_t)index.row()].m_fmiValueRef;
 	}
 	return QVariant();
 }
