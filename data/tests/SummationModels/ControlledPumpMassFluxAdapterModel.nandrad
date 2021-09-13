@@ -3,14 +3,36 @@
 	<Project>
 		<ProjectInfo>
 			<Comment>Two zones, both with the same outside wall to constant -10 C climate. Both have a floor heating,
-			but floor of zone 2 is half the size (5 m2) than floor to zone 1 (10 m2).
+			but floor of zone 2 is half the size (10 m2) than floor to zone 1 (20 m2).
 			
 			Both have a thermostat each that requires 22 C room temperature.
 			
 			Floor heating pipes are parallel. Each floor heating pipe has its own thermostat controller matching the heated zone.
-			Control element #1 is for the pump and limits its pressure drop.
+
+			Flow element #1 is for the pump and controls the pump pressure.
 			
-			TODO : revise test case!
+			Flow element #4 is an ideal heater, providing 40 C fluid temperature as inlet to both floor heating systems.
+			
+			When the thermostats indicate heating demand for the floor heating, their pressure loss coefficient (valve) is 
+			reduced and mass flow goes through the floor heating models. The mass flux through the pump is split 
+			between both parallel floor heatings. If both thermostats indicate that the values shall be closed, the pressure drop 
+			in both floor heatings increases and the pump's pressure drop limiter causes the mass flux through the pump
+			(and thus entire network) to be reduced.
+			
+			The heating system's functionality is completely independent from the adapter model tested in this
+			regression test. Given a pre-defined mass flux through the adapter model (schedule "Adapter Model", constant 40 C and
+			0.05 kg/s mass flux, the energy loss from the fluid in the actual heating cycle is used to compute a matching 
+			return temperature. The expectation is: whenever any of the floor heating values is open and heat transfer happens
+			in the floor heatings, the return temperature drops.
+			
+			Explanation of the curves:
+			
+			The simulation starts with initially 21.9 C system temperature, so both thermostats indicate moderate amount of heating.
+			Hence, both valves will be open and the heated layer temperature increases (towards 40 C fluid temperature). Once room temperature
+			is high enough, valves of the floor heatings are closed (pressure drop increases dramatically) and the pump's power
+			limitation causes the overall mass flux in the system to be reduced. This stays that way until the thermostats indicate
+			heating demand again, valves open (not at the same time, due to 
+			
 			</Comment>
 		</ProjectInfo>
 		<Location>
@@ -63,7 +85,7 @@
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">20</IBK:Parameter>
 				<InterfaceA id="3" zoneId="1">
 					<!--Interface to 'Room 1'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -96,7 +118,7 @@
 				<ConstructionTypeId>10001</ConstructionTypeId>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<InterfaceA id="6" zoneId="2">
 					<!--Interface to 'Room 2'-->
 					<InterfaceHeatConduction modelType="Constant">
@@ -192,7 +214,7 @@
 						<Y unit="m2/s">1.307e-06 1.307e-06</Y>
 					</LinearSplineParameter>
 				</HydraulicFluid>
-				<IBK:Parameter name="InitialFluidTemperature" unit="C">30</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">21.9</IBK:Parameter>
 				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
 				<PipeProperties>
 					<!-- Standardrohr: dn = 16 mm, en = 2 mm, lambda = 0.35 W/mK -->
@@ -220,19 +242,19 @@
 						<!-- Protortionalitätsfaktor hat die Einheit: Pa/(kg/s). If the mass flux shall be accurate to 0.001, and the pressure head
 							 expected at a nominal flow rate of 0.01 kg/s is 40000 Pa you need, kP = 40000/0.001 = 4e7
 						-->
-						<IBK:Parameter name="Kp" unit="---">1e8</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e9</IBK:Parameter>
 					</HydraulicNetworkControlElement>
 
-					<!-- Thermostat für Zone 1 -->
+					<!-- Thermostat-based controller for Zone 1 -->
 					<HydraulicNetworkControlElement id="2" modelType="Constant" controllerType="PController" controlledProperty="ThermostatValue">
-						<IBK:Parameter name="Kp" unit="---">1e5</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
 						<ThermostatZoneId>1</ThermostatZoneId>
 						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
 
-					<!-- Thermostat für Zone 2 -->
+					<!-- Thermostat-based controller for Zone 2 -->
 					<HydraulicNetworkControlElement id="3" modelType="Constant" controllerType="PController" controlledProperty="ThermostatValue">
-						<IBK:Parameter name="Kp" unit="---">1e5</IBK:Parameter>
+						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
 						<ThermostatZoneId>2</ThermostatZoneId>
 						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
 					</HydraulicNetworkControlElement>
@@ -257,8 +279,8 @@
 						</HydraulicNetworkHeatExchange>
 					</HydraulicNetworkElement>
 
-					<!-- Supply temperature adapter-->
-					<HydraulicNetworkElement id="4" inletNodeId="101" outletNodeId="100" componentId="3" displayName="Supply temperature adapter"/>
+					<!-- Ideal fluid heater/cooler element - enforces constant 40 C fluid temperature -->
+					<HydraulicNetworkElement id="4" inletNodeId="101" outletNodeId="100" componentId="3" displayName="Ideal fluid heater/cooler"/>
 
 				</Elements>
 			</HydraulicNetwork>
@@ -343,6 +365,12 @@
 				</OutputDefinition>
 
 				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
 					<Quantity>FluidVelocity</Quantity>
 					<ObjectListName>Surface Heating</ObjectListName>
 					<GridName>hourly</GridName>
@@ -394,7 +422,7 @@
 				<OutputGrid name="hourly">
 					<Intervals>
 						<Interval>
-							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
 						</Interval>
 					</Intervals>
 				</OutputGrid>
