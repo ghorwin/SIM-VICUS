@@ -1062,9 +1062,29 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 
 
 void NandradFMUGeneratorWidget::storeFMIVariables(NANDRAD::Project & prj) {
-	// TODO : Anne, process m_availableInputVariables and m_availableOutputVariables and
-	//        copy all FMIVariableDefinitions that have valueRef != INVALID_ID to project
-	//        (clear m_project.m_fmiDescription first)
+
+	// clear fmi description inside NANDRAD::Project
+	prj.m_fmiDescription.m_inputVariables.clear();
+	prj.m_fmiDescription.m_outputVariables.clear();
+
+	// rewrite model input variables
+	// (all available input variables with valid id)
+	for( const NANDRAD::FMIVariableDefinition &inputVar : m_availableInputVariables) {
+		// skip inactive variables
+		if (inputVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+			continue;
+		// add to fmi description
+		prj.m_fmiDescription.m_inputVariables.push_back(inputVar);
+	}
+	// rewrite model output variables
+	// (all available output variables with valid id)
+	for( const NANDRAD::FMIVariableDefinition &outputVar : m_availableOutputVariables) {
+		// skip inactive variables
+		if (outputVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+			continue;
+		// add to fmi description
+		prj.m_fmiDescription.m_outputVariables.push_back(outputVar);
+	}
 }
 
 
