@@ -537,6 +537,10 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 				var.m_fmiVarDescription = varInfoIt->second.second;
 			}
 		}
+		// if we haven't set a unit yet, we set it to "-" as we need one when saving the variable
+		// (otherwise we get an error when reading the same project because unit is required)
+		if (var.m_unit.empty())
+			var.m_unit = "-";
 	}
 
 	if (!m_silent)
