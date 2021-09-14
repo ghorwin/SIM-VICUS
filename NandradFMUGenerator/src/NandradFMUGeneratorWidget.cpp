@@ -113,7 +113,9 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// proxy models
 
 	m_inputVariablesProxyModel = new QSortFilterProxyModel(this);
+	m_inputVariablesProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	m_outputVariablesProxyModel = new QSortFilterProxyModel(this);
+	m_outputVariablesProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_inputVariablesProxyModel->setSourceModel(m_inputVariablesTableModel);
 	m_outputVariablesProxyModel->setSourceModel(m_outputVariablesTableModel);
@@ -133,7 +135,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setAlternatingRowColors(true);
-	v->setSortingEnabled(false);
+	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
 	// smaller font for entire table
 	QFont f;
@@ -150,7 +152,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setAlternatingRowColors(true);
-	v->setSortingEnabled(false);
+	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
@@ -1509,5 +1511,28 @@ void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & c
 
 
 void NandradFMUGeneratorWidget::on_lineEditInputVarNameFilter_textEdited(const QString &arg1) {
+	m_ui->lineEditInputVarDescFilter->clear();
 	m_inputVariablesProxyModel->setFilterWildcard(arg1);
+	m_inputVariablesProxyModel->setFilterKeyColumn(0);
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditInputVarDescFilter_textEdited(const QString &arg1) {
+	m_ui->lineEditInputVarNameFilter->clear();
+	m_inputVariablesProxyModel->setFilterWildcard(arg1);
+	m_inputVariablesProxyModel->setFilterKeyColumn(7);
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditOutputVarNameFilter_textEdited(const QString &arg1) {
+	m_ui->lineEditOutputVarDescFilter->clear();
+	m_outputVariablesProxyModel->setFilterWildcard(arg1);
+	m_outputVariablesProxyModel->setFilterKeyColumn(0);
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditOutputVarDescFilter_textEdited(const QString &arg1) {
+	m_ui->lineEditOutputVarNameFilter->clear();
+	m_outputVariablesProxyModel->setFilterWildcard(arg1);
+	m_outputVariablesProxyModel->setFilterKeyColumn(7);
 }

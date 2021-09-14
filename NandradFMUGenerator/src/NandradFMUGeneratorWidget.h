@@ -88,6 +88,12 @@ private slots:
 
 	void on_lineEditInputVarNameFilter_textEdited(const QString &arg1);
 
+	void on_lineEditInputVarDescFilter_textEdited(const QString &arg1);
+
+	void on_lineEditOutputVarNameFilter_textEdited(const QString &arg1);
+
+	void on_lineEditOutputVarDescFilter_textEdited(const QString &arg1);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
