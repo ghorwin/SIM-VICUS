@@ -775,6 +775,65 @@ void NandradFMUGeneratorWidget::dumpUsedValueRefs() const {
 }
 
 
+void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
+	// initialize variables
+	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
+	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
+	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+
+	// configure new input var - requires valid selection
+	QModelIndex proxyIndex = variableTableView->currentIndex();
+	Q_ASSERT(proxyIndex.isValid());
+
+	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+
+	unsigned int row = (unsigned int)srcIndex.row();
+	Q_ASSERT(row < availableVars.size());
+	NANDRAD::FMIVariableDefinition & var = availableVars[row];
+	unsigned int valRef = var.m_fmiValueRef;
+	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be an unused reference
+
+	// take the highest currently used value reference and add 1
+	unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
+
+	// now create a copy of the variable description, copy it to the project and assign a valid value reference
+
+	// check if there is already another configured FMI variable with same name
+	unsigned int otherValueRef = 0;
+	for (unsigned int j=0; j<availableVars.size(); ++j) {
+		if (row == j) continue; // skip ourself
+		if (availableVars[j].m_fmiValueRef != NANDRAD::INVALID_ID &&
+			availableVars[j].m_fmiVarName == var.m_fmiVarName)
+		{
+			otherValueRef = availableVars[j].m_fmiValueRef;
+			break;
+		}
+	}
+	if (otherValueRef != 0)
+		newValueRef = otherValueRef;
+
+	// assign and remember new fmiValueRef
+	m_usedValueRefs.insert(newValueRef);
+	var.m_fmiValueRef = newValueRef;
+
+	// add variable definition to project
+	if (inputVar)
+		m_project.m_fmiDescription.m_inputVariables.push_back(var);
+	else
+		m_project.m_fmiDescription.m_outputVariables.push_back(var);
+
+	dumpUsedValueRefs();
+
+	// now inform model that it can tell the table view of its modifications
+	varModel->variableModified(row); // we pass the source row
+}
+
+
+void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
+
+}
+
+
 bool  NandradFMUGeneratorWidget::generate() {
 	FUNCID(NandradFMUGeneratorWidget::generate);
 
@@ -1203,53 +1262,12 @@ void NandradFMUGeneratorWidget::on_tableViewInputVars_doubleClicked(const QModel
 
 
 void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
-	// configure new input var - requires valid selection
-	QModelIndex proxyIndex = m_ui->tableViewInputVars->currentIndex();
-	Q_ASSERT(proxyIndex.isValid());
-
-	QModelIndex srcIndex = proxyIndex; // TODO : map2src
-
-	unsigned int row = (unsigned int)srcIndex.row();
-	Q_ASSERT(row < m_availableInputVariables.size());
-	NANDRAD::FMIVariableDefinition & var = m_availableInputVariables[row];
-	unsigned int valRef = var.m_fmiValueRef;
-	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be an unused reference
-
-	// take the highest currently used value reference and add 1
-	unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
-
-	// now create a copy of the variable description, copy it to the project and assign a valid value reference
-
-	// check if there is already another configured FMI variable with same name
-	unsigned int otherValueRef = 0;
-	for (unsigned int j=0; j<m_availableInputVariables.size(); ++j) {
-		if (row == j) continue; // skip ourself
-		if (m_availableInputVariables[j].m_fmiValueRef != NANDRAD::INVALID_ID &&
-			m_availableInputVariables[j].m_fmiVarName == var.m_fmiVarName)
-		{
-			otherValueRef = m_availableInputVariables[j].m_fmiValueRef;
-			break;
-		}
-	}
-	if (otherValueRef != 0)
-		newValueRef = otherValueRef;
-
-	// assign and remember new fmiValueRef
-	m_usedValueRefs.insert(newValueRef);
-	var.m_fmiValueRef = newValueRef;
-
-	// add variable definition to project
-	m_project.m_fmiDescription.m_inputVariables.push_back(var);
-
-	dumpUsedValueRefs();
-
-	// now inform model that it can tell the table view of its modifications
-	m_inputVariablesTableModel->variableModified(row); // we pass the source row
+	addVariable(true);
 }
 
 
 void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
-	// remove configured input var - requires valid selection
+	removeVariable(true);
 }
 
 
@@ -1284,11 +1302,12 @@ void NandradFMUGeneratorWidget::on_tableViewOutputVars_doubleClicked(const QMode
 
 
 void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
-
+	addVariable(false);
 }
 
-void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 
+void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
+	removeVariable(false);
 }
 
 

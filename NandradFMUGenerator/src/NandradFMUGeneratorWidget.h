@@ -123,6 +123,12 @@ private:
 
 	void dumpUsedValueRefs() const;
 
+	/*! Add a new variable as input/output FMI variable and assign unique value reference. */
+	void addVariable(bool inputVar);
+
+	/*! Removes an already configured FMI variable. */
+	void removeVariable(bool inputVar);
+
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
 		The variables are defined in the NandradSolver sources, some with keyword list support, some without.
