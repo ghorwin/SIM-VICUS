@@ -9,6 +9,7 @@
 #include <QFileDialog>
 #include <QSettings>
 #include <QDebug>
+#include <QSortFilterProxyModel>
 
 #include <QtExt_Directories.h>
 
@@ -108,8 +109,17 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 
 	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
 	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
-	m_ui->tableViewInputVars->setModel(m_inputVariablesTableModel);
-	m_ui->tableViewOutputVars->setModel(m_outputVariablesTableModel);
+
+	// proxy models
+
+	m_inputVariablesProxyModel = new QSortFilterProxyModel(this);
+	m_outputVariablesProxyModel = new QSortFilterProxyModel(this);
+
+	m_inputVariablesProxyModel->setSourceModel(m_inputVariablesTableModel);
+	m_outputVariablesProxyModel->setSourceModel(m_outputVariablesTableModel);
+
+	m_ui->tableViewInputVars->setModel(m_inputVariablesProxyModel);
+	m_ui->tableViewOutputVars->setModel(m_outputVariablesProxyModel);
 
 	connect(m_ui->tableViewInputVars->selectionModel(), &QItemSelectionModel::currentChanged,
 			this, &NandradFMUGeneratorWidget::onInputVarsCurrentChanged);
@@ -1408,4 +1418,9 @@ void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & c
 		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
 	else
 		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditInputVarNameFilter_textEdited(const QString &arg1) {
+	m_inputVariablesProxyModel->setFilterWildcard(arg1);
 }

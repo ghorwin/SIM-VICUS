@@ -10,6 +10,7 @@ namespace Ui {
 }
 
 class FMUVariableTableModel;
+class QSortFilterProxyModel;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -91,6 +92,8 @@ private slots:
 	void on_toolButtonRemoveOutputVariable_clicked();
 	void onOutputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
 
+	void on_lineEditInputVarNameFilter_textEdited(const QString &arg1);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
@@ -166,6 +169,9 @@ private:
 	FMUVariableTableModel							*m_inputVariablesTableModel = nullptr;
 	/*! Table model instance for output vars. */
 	FMUVariableTableModel							*m_outputVariablesTableModel = nullptr;
+
+	QSortFilterProxyModel							*m_inputVariablesProxyModel = nullptr;
+	QSortFilterProxyModel							*m_outputVariablesProxyModel = nullptr;
 
 	std::map<std::string, std::pair<std::string, std::string> > m_variableInfoMap;
 };
