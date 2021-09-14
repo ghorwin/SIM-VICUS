@@ -49,6 +49,10 @@ QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const 
 			}
 		break;
 
+		case Qt::EditRole :
+			Q_ASSERT(index.column() == 4);
+			return QString::fromStdString(var.m_fmiVarName);
+
 		case Qt::FontRole :
 			// vars with INVALID valueRef -> grey italic
 			//      with valid value -> black, bold
@@ -95,6 +99,30 @@ QVariant FMUVariableTableModel::headerData(int section, Qt::Orientation orientat
 			return headers[section];
 	}
 	return QVariant();
+}
+
+
+Qt::ItemFlags FMUVariableTableModel::flags(const QModelIndex & index) const {
+	if (index.column() == 4)
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+	return QAbstractTableModel::flags(index); // call base class implementation
+}
+
+
+bool FMUVariableTableModel::setData(const QModelIndex & index, const QVariant & value, int /*role*/) {
+	Q_ASSERT(index.isValid());
+	Q_ASSERT(index.column() == 4);
+	// error handling
+	QString fmiVarName = value.toString().trimmed();
+	// TODO : Rene, other fmi variable consistency checks
+	if (fmiVarName.isEmpty())
+		return false;
+
+	// get variable that we modified
+	NANDRAD::FMIVariableDefinition & var = (*m_availableVariables)[(size_t)index.row()];
+	var.m_fmiVarName = value.toString().toStdString();
+	emit dataChanged(index, index);
+	return true;
 }
 
 

@@ -154,7 +154,11 @@
         </widget>
        </item>
        <item row="0" column="0" colspan="3">
-        <widget class="QTableView" name="tableViewInputVars"/>
+        <widget class="QTableView" name="tableViewInputVars">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ContiguousSelection</enum>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

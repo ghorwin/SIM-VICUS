@@ -523,6 +523,12 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 
 	m_inputVariablesTableModel->reset();
 	m_outputVariablesTableModel->reset();
+
+	// initially, there is no selection in neither table views, hence we deactivate tool buttons
+	m_ui->toolButtonAddInputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+	m_ui->toolButtonAddOutputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
 }
 
 
@@ -797,10 +803,7 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	m_project.m_fmiDescription.m_outputVariables.swap(validOutputVars);
 
 	dumpUsedValueRefs();
-
 }
-
-
 
 
 void NandradFMUGeneratorWidget::dumpUsedValueRefs() const {
@@ -853,16 +856,21 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 	m_usedValueRefs.insert(newValueRef);
 	var.m_fmiValueRef = newValueRef;
 
-	// add variable definition to project
-	if (inputVar)
-		m_project.m_fmiDescription.m_inputVariables.push_back(var);
-	else
-		m_project.m_fmiDescription.m_outputVariables.push_back(var);
-
 	dumpUsedValueRefs();
 
 	// now inform model that it can tell the table view of its modifications
 	varModel->variableModified(row); // we pass the source row
+
+	// change of model does not invalidate selection -> hence, currentChanged() signal is not emitted and
+	// button state needs to be updated, manually
+	if (inputVar) {
+		m_ui->toolButtonAddInputVariable->setEnabled(false);
+		m_ui->toolButtonRemoveInputVariable->setEnabled(true);
+	}
+	else {
+		m_ui->toolButtonAddOutputVariable->setEnabled(false);
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(true);
+	}
 }
 
 
@@ -871,7 +879,6 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
 	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
-	std::vector<NANDRAD::FMIVariableDefinition> & projectVars	= inputVar ? m_project.m_fmiDescription.m_inputVariables : m_project.m_fmiDescription.m_outputVariables;
 
 	// configure new input var - requires valid selection
 	QModelIndex proxyIndex = variableTableView->currentIndex();
@@ -886,15 +893,6 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 	// remove value reference from set of used value references
 	m_usedValueRefs.erase(valRef);
 
-	// lookup existing definition in m_project and remove it there
-	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = projectVars.begin();
-		 it != projectVars.end(); ++it)
-	{
-		if (it->m_fmiVarName == var.m_fmiVarName) {
-			projectVars.erase(it);
-			break;
-		}
-	}
 	// lookup existing definition in m_availableInputVariables and clear the value reference there
 	var.m_fmiValueRef = NANDRAD::INVALID_ID;
 
@@ -902,6 +900,23 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 
 	// now inform model that it can tell the table view of its modifications
 	varModel->variableModified(row); // we pass the source row
+
+	if (inputVar) {
+		m_ui->toolButtonAddInputVariable->setEnabled(true);
+		m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+	}
+	else {
+		m_ui->toolButtonAddOutputVariable->setEnabled(true);
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
+	}
+
+}
+
+
+void NandradFMUGeneratorWidget::storeFMIVariables(NANDRAD::Project & prj) {
+	// TODO : Anne, process m_availableInputVariables and m_availableOutputVariables and
+	//        copy all FMIVariableDefinitions that have valueRef != INVALID_ID to project
+	//        (clear m_project.m_fmiDescription first)
 }
 
 
