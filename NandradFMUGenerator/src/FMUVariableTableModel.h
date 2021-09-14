@@ -7,6 +7,8 @@
 #include <QObject>
 #include <QFont>
 
+#include <set>
+
 class FMUVariableTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -28,7 +30,10 @@ public:
 	QFont	m_itemFont;
 
 	bool	m_inputVariableTable;
+	// pointer to all input variables
 	std::vector<NANDRAD::FMIVariableDefinition> * m_availableVariables = nullptr;
+	// pointer to all global used value references
+	std::set<unsigned int>						* m_usedValueRefs = nullptr;
 };
 
 
