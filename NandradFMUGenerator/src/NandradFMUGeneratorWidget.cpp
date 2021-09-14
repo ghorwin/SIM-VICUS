@@ -135,7 +135,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->verticalHeader()->setVisible(false);
 	v->horizontalHeader()->setMinimumSectionSize(19);
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
-	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
@@ -152,7 +152,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->verticalHeader()->setVisible(false);
 	v->horizontalHeader()->setMinimumSectionSize(19);
 	v->setSelectionBehavior(QAbstractItemView::SelectRows);
-	v->setSelectionMode(QAbstractItemView::SingleSelection);
+	v->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
@@ -888,46 +888,58 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
 	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+	QSortFilterProxyModel * proxyModel							= inputVar ? m_inputVariablesProxyModel: m_outputVariablesProxyModel;
 
-	// configure new input var - requires valid selection
-	QModelIndex proxyIndex = variableTableView->currentIndex();
-	Q_ASSERT(proxyIndex.isValid());
+	for (const QModelIndex & proxyIndex: variableTableView->selectionModel()->selectedRows()){
 
-	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+		// configure new input var - requires valid selection
+		Q_ASSERT(proxyIndex.isValid());
 
-	unsigned int row = (unsigned int)srcIndex.row();
-	Q_ASSERT(row < availableVars.size());
-	NANDRAD::FMIVariableDefinition & var = availableVars[row];
-	unsigned int valRef = var.m_fmiValueRef;
-	Q_ASSERT(valRef == NANDRAD::INVALID_ID); // must be an unused reference
+		// map 2 source index
+		QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
 
-	// take the highest currently used value reference and add 1
-	unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
+		unsigned int row = (unsigned int)srcIndex.row();
+		Q_ASSERT(row < availableVars.size());
+		NANDRAD::FMIVariableDefinition & var = availableVars[row];
+		unsigned int valRef = var.m_fmiValueRef;
 
-	// now create a copy of the variable description, copy it to the project and assign a valid value reference
+		// if the value reference has already been used then we have a mixed selection
+		// where one selected item has valRef already, so we skip this one
+		if (std::find(m_usedValueRefs.begin(), m_usedValueRefs.end(), valRef) != m_usedValueRefs.end())
+			continue;
 
-	// check if there is already another configured FMI variable with same name
-	unsigned int otherValueRef = 0;
-	for (unsigned int j=0; j<availableVars.size(); ++j) {
-		if (row == j) continue; // skip ourself
-		if (availableVars[j].m_fmiValueRef != NANDRAD::INVALID_ID &&
-			availableVars[j].m_fmiVarName == var.m_fmiVarName)
-		{
-			otherValueRef = availableVars[j].m_fmiValueRef;
-			break;
+		Q_ASSERT(valRef == NANDRAD::INVALID_ID);
+
+		// take the highest currently used value reference and add 1
+		unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
+
+		// now create a copy of the variable description, copy it to the project and assign a valid value reference
+
+		// check if there is already another configured FMI variable with same name
+		unsigned int otherValueRef = 0;
+		for (unsigned int j=0; j<availableVars.size(); ++j) {
+			if (row == j)
+				continue; // skip ourself
+			if (availableVars[j].m_fmiValueRef != NANDRAD::INVALID_ID &&
+				availableVars[j].m_fmiVarName == var.m_fmiVarName)
+			{
+				otherValueRef = availableVars[j].m_fmiValueRef;
+				break;
+			}
 		}
+		if (otherValueRef != 0)
+			newValueRef = otherValueRef;
+
+		// assign and remember new fmiValueRef
+		m_usedValueRefs.insert(newValueRef);
+		var.m_fmiValueRef = newValueRef;
+
+		dumpUsedValueRefs();
+
+		// now inform model that it can tell the table view of its modifications
+		varModel->variableModified(row); // we pass the source row
+
 	}
-	if (otherValueRef != 0)
-		newValueRef = otherValueRef;
-
-	// assign and remember new fmiValueRef
-	m_usedValueRefs.insert(newValueRef);
-	var.m_fmiValueRef = newValueRef;
-
-	dumpUsedValueRefs();
-
-	// now inform model that it can tell the table view of its modifications
-	varModel->variableModified(row); // we pass the source row
 
 	// change of model does not invalidate selection -> hence, currentChanged() signal is not emitted and
 	// button state needs to be updated, manually
@@ -947,27 +959,37 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
 	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+	QSortFilterProxyModel * proxyModel							= inputVar ? m_inputVariablesProxyModel: m_outputVariablesProxyModel;
 
-	// configure new input var - requires valid selection
-	QModelIndex proxyIndex = variableTableView->currentIndex();
-	Q_ASSERT(proxyIndex.isValid());
+	for (const QModelIndex & proxyIndex: variableTableView->selectionModel()->selectedRows()){
 
-	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+		// configure new input var - requires valid selection
+		Q_ASSERT(proxyIndex.isValid());
 
-	unsigned int row = (unsigned int)srcIndex.row();
-	Q_ASSERT(row < availableVars.size());
-	NANDRAD::FMIVariableDefinition & var = availableVars[row];
-	unsigned int valRef = var.m_fmiValueRef;
-	// remove value reference from set of used value references
-	m_usedValueRefs.erase(valRef);
+		// map 2 source index
+		QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
 
-	// lookup existing definition in m_availableInputVariables and clear the value reference there
-	var.m_fmiValueRef = NANDRAD::INVALID_ID;
+		unsigned int row = (unsigned int)srcIndex.row();
+		Q_ASSERT(row < availableVars.size());
+		NANDRAD::FMIVariableDefinition & var = availableVars[row];
+		unsigned int valRef = var.m_fmiValueRef;
 
-	dumpUsedValueRefs();
+		// we might have a mixed selection where one item has no valRef yet, so we skip this one
+		if (valRef == NANDRAD::INVALID_ID)
+			continue;
 
-	// now inform model that it can tell the table view of its modifications
-	varModel->variableModified(row); // we pass the source row
+		// remove value reference from set of used value references
+		m_usedValueRefs.erase(valRef);
+
+		// lookup existing definition in m_availableInputVariables and clear the value reference there
+		var.m_fmiValueRef = NANDRAD::INVALID_ID;
+
+		dumpUsedValueRefs();
+
+		// now inform model that it can tell the table view of its modifications
+		varModel->variableModified(row); // we pass the source row
+
+	}
 
 	if (inputVar) {
 		m_ui->toolButtonAddInputVariable->setEnabled(true);
