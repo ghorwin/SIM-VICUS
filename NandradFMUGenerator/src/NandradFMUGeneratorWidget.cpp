@@ -365,6 +365,118 @@ void NandradFMUGeneratorWidget::onProcessErrorOccurred() {
 }
 
 
+
+void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
+
+	QString fname = m_ui->lineEditNandradProjectFilePath->text();
+
+	IBK::Path dir (fname.toStdString());
+	// read NANDRAD project
+	if (!dir.isValid()) {
+		QMessageBox::critical(this, "Error in project file path", "Project file path is empty. Please enter a valid project file path.");
+		m_ui->lineEditNandradProjectFilePath->setFocus();
+		setGUIState(false);
+		return; // dialog was cancelled
+	}
+
+	if (!dir.isFile()) {
+		QMessageBox::critical(this, "Error in project file path", "Project file path does not specify an existing file. Please enter a valid project file path.");
+		m_ui->lineEditNandradProjectFilePath->setFocus();
+		setGUIState(false);
+		return; // dialog was cancelled
+	}
+
+	m_nandradFilePath = dir;
+
+	init();
+}
+
+
+void NandradFMUGeneratorWidget::on_tableViewInputVars_doubleClicked(const QModelIndex &index) {
+	// double-click allows editing of variable name and value ref
+
+	// depending on the state of the buttons, call either add or edit
+	if (m_ui->toolButtonAddInputVariable->isEnabled())
+		on_toolButtonAddInputVariable_clicked(); // add variable
+	else if (m_ui->toolButtonRemoveInputVariable->isEnabled()) {
+		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
+		// Mind: the sort-filter-proxy model does not filter-out columns - so index is the same for source and proxy
+		if (index.column() != 4)
+			on_toolButtonRemoveInputVariable_clicked();
+		// fall through - double-click is picked up by model which allows editing
+	}
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
+	addVariable(true);
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
+	removeVariable(true);
+}
+
+
+void NandradFMUGeneratorWidget::onInputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+	m_ui->toolButtonAddInputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+	if (!current.isValid())
+		return;
+	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
+	// already configured?
+	if (valueRef == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
+}
+
+
+void NandradFMUGeneratorWidget::on_tableViewOutputVars_doubleClicked(const QModelIndex & index) {
+	// double-click allows editing of variable name and value ref
+
+	// depending on the state of the buttons, call either add or edit
+	if (m_ui->toolButtonAddOutputVariable->isEnabled())
+		on_toolButtonAddOutputVariable_clicked(); // add variable
+	else if (m_ui->toolButtonRemoveOutputVariable->isEnabled()) {
+		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
+		// Mind: the sort-filter-proxy model does not filter-out columns - so index is the same for source and proxy
+		if (index.column() != 4)
+			on_toolButtonRemoveOutputVariable_clicked();
+		// fall through - double-click is picked up by model which allows editing
+	}
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
+	addVariable(false);
+}
+
+
+void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
+	removeVariable(false);
+}
+
+
+void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+	m_ui->toolButtonAddOutputVariable->setEnabled(false);
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
+	if (!current.isValid())
+		return;
+	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
+	// already configured?
+	if (valueRef == NANDRAD::INVALID_ID)
+		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
+	else
+		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
+}
+
+
+void NandradFMUGeneratorWidget::on_lineEditInputVarNameFilter_textEdited(const QString &arg1) {
+	m_inputVariablesProxyModel->setFilterWildcard(arg1);
+}
+
+
 // *** PRIVATE MEMBER FUNCTIONS ****
 
 
@@ -854,12 +966,13 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
 	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+	QSortFilterProxyModel *	proxyModel							= inputVar ? m_inputVariablesProxyModel : m_outputVariablesProxyModel;
 
 	// configure new input var - requires valid selection
 	QModelIndex proxyIndex = variableTableView->currentIndex();
 	Q_ASSERT(proxyIndex.isValid());
 
-	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+	QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
 
 	unsigned int row = (unsigned int)srcIndex.row();
 	Q_ASSERT(row < availableVars.size());
@@ -913,12 +1026,13 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
 	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+	QSortFilterProxyModel *	proxyModel							= inputVar ? m_inputVariablesProxyModel : m_outputVariablesProxyModel;
 
 	// configure new input var - requires valid selection
 	QModelIndex proxyIndex = variableTableView->currentIndex();
 	Q_ASSERT(proxyIndex.isValid());
 
-	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+	QModelIndex srcIndex = proxyModel->mapToSource(proxyIndex);
 
 	unsigned int row = (unsigned int)srcIndex.row();
 	Q_ASSERT(row < availableVars.size());
@@ -1337,114 +1451,4 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 		unit = it->second.m_unit;
 		fmuType = it->second.m_fmuVarType;
 	}
-}
-
-void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
-
-	QString fname = m_ui->lineEditNandradProjectFilePath->text();
-
-	IBK::Path dir (fname.toStdString());
-	// read NANDRAD project
-	if (!dir.isValid()) {
-		QMessageBox::critical(this, "Error in project file path", "Project file path is empty. Please enter a valid project file path.");
-		m_ui->lineEditNandradProjectFilePath->setFocus();
-		setGUIState(false);
-		return; // dialog was cancelled
-	}
-
-	if (!dir.isFile()) {
-		QMessageBox::critical(this, "Error in project file path", "Project file path does not specify an existing file. Please enter a valid project file path.");
-		m_ui->lineEditNandradProjectFilePath->setFocus();
-		setGUIState(false);
-		return; // dialog was cancelled
-	}
-
-	m_nandradFilePath = dir;
-
-	init();
-}
-
-
-void NandradFMUGeneratorWidget::on_tableViewInputVars_doubleClicked(const QModelIndex &index) {
-	// double-click allows editing of variable name and value ref
-
-	// depending on the state of the buttons, call either add or edit
-	if (m_ui->toolButtonAddInputVariable->isEnabled())
-		on_toolButtonAddInputVariable_clicked(); // add variable
-	else if (m_ui->toolButtonRemoveInputVariable->isEnabled()) {
-		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
-		// Mind: the sort-filter-proxy model does not filter-out columns - so index is the same for source and proxy
-		if (index.column() != 4)
-			on_toolButtonRemoveInputVariable_clicked();
-		// fall through - double-click is picked up by model which allows editing
-	}
-}
-
-
-void NandradFMUGeneratorWidget::on_toolButtonAddInputVariable_clicked() {
-	addVariable(true);
-}
-
-
-void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
-	removeVariable(true);
-}
-
-
-void NandradFMUGeneratorWidget::onInputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
-	m_ui->toolButtonAddInputVariable->setEnabled(false);
-	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
-	if (!current.isValid())
-		return;
-	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
-	// already configured?
-	if (valueRef == NANDRAD::INVALID_ID)
-		m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
-	else
-		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
-}
-
-
-void NandradFMUGeneratorWidget::on_tableViewOutputVars_doubleClicked(const QModelIndex & index) {
-	// double-click allows editing of variable name and value ref
-
-	// depending on the state of the buttons, call either add or edit
-	if (m_ui->toolButtonAddOutputVariable->isEnabled())
-		on_toolButtonAddOutputVariable_clicked(); // add variable
-	else if (m_ui->toolButtonRemoveOutputVariable->isEnabled()) {
-		// special case, if in column 4, do not disable variable, since double-click is needed for "edit" mode
-		// Mind: the sort-filter-proxy model does not filter-out columns - so index is the same for source and proxy
-		if (index.column() != 4)
-			on_toolButtonRemoveOutputVariable_clicked();
-		// fall through - double-click is picked up by model which allows editing
-	}
-}
-
-
-void NandradFMUGeneratorWidget::on_toolButtonAddOutputVariable_clicked() {
-	addVariable(false);
-}
-
-
-void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
-	removeVariable(false);
-}
-
-
-void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
-	m_ui->toolButtonAddOutputVariable->setEnabled(false);
-	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
-	if (!current.isValid())
-		return;
-	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
-	// already configured?
-	if (valueRef == NANDRAD::INVALID_ID)
-		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
-	else
-		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
-}
-
-
-void NandradFMUGeneratorWidget::on_lineEditInputVarNameFilter_textEdited(const QString &arg1) {
-	m_inputVariablesProxyModel->setFilterWildcard(arg1);
 }

@@ -59,7 +59,6 @@ private slots:
 
 	void autoGenerate();
 
-
 	void on_pushButtonGenerate_clicked();
 
 	void on_lineEditModelName_editingFinished();
@@ -134,6 +133,7 @@ private:
 
 	/*! Updates FMI configuration in project. */
 	void storeFMIVariables(NANDRAD::Project & prj);
+
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
