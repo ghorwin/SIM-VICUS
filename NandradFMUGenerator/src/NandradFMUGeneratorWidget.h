@@ -24,9 +24,6 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
-	/*! Sets the target FMU filename. */
-	void setModelName(const QString & fname);
-
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
 		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
@@ -56,8 +53,6 @@ public:
 private slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
 	void setup();
-
-	void autoGenerate();
 
 	void on_pushButtonGenerate_clicked();
 

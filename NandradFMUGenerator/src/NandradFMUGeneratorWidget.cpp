@@ -189,19 +189,20 @@ void NandradFMUGeneratorWidget::init() {
 		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::on_pushButtonSelectNandradProject_clicked);
 	}
 	else {
-		// setup user interface with project file data
-		QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::setup);
-
-		// afterwards trigger auto-export, if requested
-		if (!m_autoExportModelName.isEmpty())
-			QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::autoGenerate);
+		// when running in scripted mode, just run through all steps without user interaction
+		if (!m_autoExportModelName.isEmpty()) {
+			setup(); // in case of error, program is aborted here
+			bool success = generate(); // in case of errors, error messages have been written here already
+			if (!success)
+				QApplication::exit(1); // exit with return code 1
+			else
+				QApplication::quit(); // exit with return code 0 = success
+		}
+		else {
+			// setup user interface with project file data
+			QTimer::singleShot(0, this, &NandradFMUGeneratorWidget::setup);
+		}
 	}
-}
-
-
-void NandradFMUGeneratorWidget::setModelName(const QString & modelName) {
-	m_ui->lineEditModelName->setText(modelName);
-	on_lineEditModelName_editingFinished();
 }
 
 
@@ -244,14 +245,17 @@ void NandradFMUGeneratorWidget::setup() {
 	if (m_project.m_fmiDescription.m_modelName.empty())
 		m_project.m_fmiDescription.m_modelName = m_nandradFilePath.filename().withoutExtension().str();
 
-	// initialize fmu export path from project file if still empty
-	if (!m_fmuExportDirectory.isValid())
+	// initialize fmu export path from project file if still empty, or if in scripted mode
+	if (!m_fmuExportDirectory.isValid() || !m_autoExportModelName.isEmpty())
 		m_fmuExportDirectory = m_nandradFilePath.parentPath();
 
 	// *** transfer general parameters
 
 	m_ui->lineEditNandradProjectFilePath->setText( QString::fromStdString(m_nandradFilePath.str()) );
-	m_ui->lineEditModelName->setText( QString::fromStdString(m_project.m_fmiDescription.m_modelName) );
+	if (!m_autoExportModelName.isEmpty())
+		m_ui->lineEditModelName->setText( m_autoExportModelName );
+	else
+		m_ui->lineEditModelName->setText( QString::fromStdString(m_project.m_fmiDescription.m_modelName) );
 	m_ui->lineEditTargetDirectory->setFilename( QString::fromStdString(m_fmuExportDirectory.str()) );
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
@@ -264,17 +268,6 @@ void NandradFMUGeneratorWidget::setup() {
 
 	m_ui->tableViewInputVars->resizeColumnsToContents();
 	m_ui->tableViewOutputVars->resizeColumnsToContents();
-}
-
-
-void NandradFMUGeneratorWidget::autoGenerate() {
-	// set override model name
-	setModelName(m_autoExportModelName);
-	bool success = generate();
-	if (!success)
-		QApplication::exit(1); // exit with return code 1
-	else
-		QApplication::quit(); // exit with return code 0 = success
 }
 
 
@@ -393,8 +386,13 @@ void NandradFMUGeneratorWidget::setGUIState(bool active) {
 
 
 bool NandradFMUGeneratorWidget::checkModelName() {
+	FUNCID(NandradFMUGeneratorWidget::checkModelName);
 	QString modelName = m_ui->lineEditModelName->text().trimmed();
 	if (modelName.isEmpty()) {
+		if (m_silent) {
+			IBK::IBK_Message("Empty model name is not allowed.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, QString(), tr("Missing model name."));
 		return false;
 	}
@@ -409,17 +407,29 @@ bool NandradFMUGeneratorWidget::checkModelName() {
 		if (ch >= '0' && ch <= '9') continue;
 		// check any other acceptable chars
 		if (allowedChars.find(ch.toLatin1()) != std::string::npos) continue;
+		if (m_silent) {
+			IBK::IBK_Message("Model name contains invalid characters.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, QString(), tr("Model name contains invalid characters."));
 		return false;
 	}
 
 	// check leading 0
 	if (modelName[0] >= '0' && modelName[0] <= '9') {
+		if (m_silent) {
+			IBK::IBK_Message("Model name must not start with a number character.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, QString(), tr("Model name must not start with a number character."));
 		return false;
 	}
 
 	if (m_ui->lineEditTargetDirectory->filename().trimmed().isEmpty()) {
+		if (m_silent) {
+			IBK::IBK_Message("NANDRAD project file should be specified will full path.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, QString(), tr("Missing target path name."));
 		return false;
 	}
@@ -509,8 +519,7 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
 		// lookup matching output variable by name
 		std::vector<NANDRAD::FMIVariableDefinition>::const_iterator it = m_availableOutputVariables.begin();
-		for (; it != m_availableOutputVariables.end(); ++it)
-		{
+		for (; it != m_availableOutputVariables.end(); ++it) {
 			if (var.m_varName == it->m_varName) {
 				var.m_unit = it->m_unit;
 				var.m_fmiVarDescription = it->m_fmiVarDescription;
@@ -526,7 +535,8 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 		}
 	}
 
-	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
+	if (!m_silent)
+		QMessageBox::information(this, tr("NANDRAD Test-init successful"),
 							 tr("NANDRAD solver was started and the project was initialised, successfully. "
 								"%1 FMU input-variables and %2 output variables available.")
 							 .arg(m_availableInputVariables.size()).arg(m_availableOutputVariables.size()));
@@ -712,6 +722,8 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 
 
 void NandradFMUGeneratorWidget::updateFMUVariableTables() {
+	FUNCID(NandradFMUGeneratorWidget::updateFMUVariableTables);
+
 	// ok, we have:
 	// - m_availableInputVariables - list of input variables to NANDRAD and default fmi variable names
 	// - m_availableOutputVariables - list of output variables from NANDRAD and default fmi variable names
@@ -837,6 +849,22 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	// now we keep only valid variables in project
 	m_project.m_fmiDescription.m_inputVariables.swap(validInputVars);
 	m_project.m_fmiDescription.m_outputVariables.swap(validOutputVars);
+
+	if (!invalidInputVars.empty() || !invalidOutputVars.empty()) {
+		IBK::IBK_Message("There are invalid FMI variable definitions in the project:\n", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		if (!invalidInputVars.empty()) {
+			IBK::IBK_Message("Invalid input variables:\n", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			for (const NANDRAD::FMIVariableDefinition & var : invalidInputVars)
+				IBK::IBK_Message(IBK::FormatString("  %1 [valueRef=%2]").arg(var.m_varName).arg(var.m_fmiValueRef), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		if (!invalidOutputVars.empty()) {
+			IBK::IBK_Message("Invalid output variables:\n", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			for (const NANDRAD::FMIVariableDefinition & var : invalidOutputVars)
+				IBK::IBK_Message(IBK::FormatString("  %1 [valueRef=%2]").arg(var.m_varName).arg(var.m_fmiValueRef), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		if (m_silent)
+			qApp->exit(1);
+	}
 
 	dumpUsedValueRefs();
 }
@@ -1052,11 +1080,19 @@ bool  NandradFMUGeneratorWidget::generate() {
 	IBK::Path targetClimatePath = resourcePath / targetFName;
 	IBK::IBK_Message( IBK::FormatString("Copying climate data file '%1' to '<fmu>/resources'\n").arg(fullClimatePath.filename()),
 					  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
-	if (!IBK::Path::copy(fullClimatePath, targetClimatePath))
-		QMessageBox::critical(this, tr("FMU Export Error"),
-							  tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
-							  .arg(QString::fromStdString(fullClimatePath.str()))
-							  .arg(QString::fromStdString(resourcePath.str())) );
+	if (!IBK::Path::copy(fullClimatePath, targetClimatePath)) {
+		if (m_silent) {
+			IBK_Message(IBK::FormatString("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
+						.arg(fullClimatePath.str()).arg(resourcePath.str()), IBK::MSG_ERROR, FUNC_ID);
+		}
+		else {
+			QMessageBox::critical(this, tr("FMU Export Error"),
+								  tr("Cannot copy the referenced climate data file '%1' to target directory '%2'.")
+								  .arg(QString::fromStdString(fullClimatePath.str()))
+								  .arg(QString::fromStdString(resourcePath.str())) );
+		}
+		return false;
+	}
 	// modify reference in project file
 	p.m_location.m_climateFilePath = "${Project Directory}/" + targetFName;
 
@@ -1316,7 +1352,9 @@ bool  NandradFMUGeneratorWidget::generate() {
 	QtExt::Directories::removeDirRecursively(baseDir.absolutePath());
 
 	if (success) {
-		if (!m_silent)
+		if (m_silent)
+			IBK::IBK_Message(IBK::FormatString("FMU created successfully.\n").arg(targetPath.toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		else
 			QMessageBox::information(this, tr("FMU Export complete"), tr("FMU '%1' created.").arg(targetPath));
 		return true;
 	}
