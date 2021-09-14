@@ -145,6 +145,9 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
 
+	m_inputVariablesTableModel->m_itemFont = f;
+	m_outputVariablesTableModel->m_itemFont = f;
+
 	m_ui->tabWidget->setCurrentIndex(0);
 
 	// variable units/descriptions that are used as input vars, yet no matching output vars
@@ -248,6 +251,9 @@ void NandradFMUGeneratorWidget::setup() {
 	// the application is terminated with error message, otherwise a message box is shown and
 	// ui state is disabled
 	updateVariableLists();
+
+	m_ui->tableViewInputVars->resizeColumnsToContents();
+	m_ui->tableViewOutputVars->resizeColumnsToContents();
 }
 
 

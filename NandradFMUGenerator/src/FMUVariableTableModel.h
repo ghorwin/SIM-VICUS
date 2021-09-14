@@ -5,6 +5,7 @@
 
 #include <QAbstractTableModel>
 #include <QObject>
+#include <QFont>
 
 class FMUVariableTableModel : public QAbstractTableModel {
 	Q_OBJECT
@@ -21,6 +22,8 @@ public:
 	void reset();
 	/*! Informs users of this model about a change of this variable (row). */
 	void variableModified(unsigned int row);
+
+	QFont	m_itemFont;
 
 	bool	m_inputVariableTable;
 	std::vector<NANDRAD::FMIVariableDefinition> * m_availableVariables = nullptr;

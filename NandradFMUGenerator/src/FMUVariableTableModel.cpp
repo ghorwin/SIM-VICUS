@@ -1,5 +1,7 @@
 #include "FMUVariableTableModel.h"
 
+#include <QColor>
+
 FMUVariableTableModel::FMUVariableTableModel(QObject * parent, bool inputVariableTable) :
 	QAbstractTableModel(parent),
 	m_inputVariableTable(inputVariableTable)
@@ -18,26 +20,58 @@ int FMUVariableTableModel::columnCount(const QModelIndex & /*parent*/) const {
 
 
 QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const {
+	if (!index.isValid())
+		return QVariant();
+	const NANDRAD::FMIVariableDefinition & var = (*m_availableVariables)[(size_t)index.row()];
 	switch (role) {
 		case Qt::DisplayRole :
 			switch (index.column()) {
+				case 0 : // name
+					return QString::fromStdString(var.m_varName);
 				case 1 : // object ID
-					return (*m_availableVariables)[(size_t)index.row()].m_objectId;
+					return var.m_objectId;
+				case 2 : // vector value ID
+					if (var.m_vectorIndex == NANDRAD::INVALID_ID)
+						return QVariant();
+					return var.m_vectorIndex;
+				case 3 : // unit
+					return QString::fromStdString(var.m_unit);
+				case 4 : // FMI Variable Name
+					return QString::fromStdString(var.m_fmiVarName);
+				case 5 : // FMI value ref
+					if (var.m_fmiValueRef == NANDRAD::INVALID_ID)
+						return "---";
+					return var.m_fmiValueRef;
+				case 6 : // FMI type
+					return QString::fromStdString(var.m_fmiTypeName);
+				case 7 : // Description
+					return QString::fromStdString(var.m_fmiVarDescription);
 			}
 		break;
 
 		case Qt::FontRole :
 			// vars with INVALID valueRef -> grey italic
 			//      with valid value -> black, bold
-		break;
+			if (var.m_fmiValueRef == NANDRAD::INVALID_ID) {
+				QFont f(m_itemFont);
+				f.setItalic(true);
+				return f;
+			}
+			else {
+				QFont f(m_itemFont);
+				f.setBold(true);
+				return f;
+			}
 
 		case Qt::ForegroundRole :
 			// vars with INVALID valueRef -> grey italic
+			if (var.m_fmiValueRef == NANDRAD::INVALID_ID)
+				return QColor(Qt::gray);
 		break;
 
 		// UserRole returns value reference
 		case Qt::UserRole :
-			return (*m_availableVariables)[(size_t)index.row()].m_fmiValueRef;
+			return var.m_fmiValueRef;
 	}
 	return QVariant();
 }
