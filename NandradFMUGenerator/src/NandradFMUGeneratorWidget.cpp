@@ -571,6 +571,12 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		// Note: vars[j] must not be trimmed before calling split, since we may have several trailing \t which are important!
 		QStringList tokens = vars[j].split('\t');
 		if (tokens.count() < 3) {
+			if (m_silent) {
+				IBK::IBK_Message(IBK::FormatString("Invalid data in file '%1'. Re-run solver initialization!")
+												   .arg(varsFile.toStdString()),
+								 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+				qApp->exit(1);
+			}
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Re-run solver initialization!")
 								  .arg(varsFile));
 			setGUIState(false);
@@ -580,6 +586,12 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		// extract all the data we need from the strings
 		QStringList varNameTokens = tokens[0].trimmed().split(".");
 		if (varNameTokens.count() != 2) {
+			if (m_silent) {
+				IBK::IBK_Message(IBK::FormatString("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
+												   .arg(varsFile.toStdString()).arg(tokens[0].toStdString()),
+								 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+				qApp->exit(1);
+			}
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
 								  .arg(varsFile).arg(tokens[0]));
 			setGUIState(false);
@@ -601,6 +613,12 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 				}
 			}
 			catch (...) {
+				if (m_silent) {
+					IBK::IBK_Message(IBK::FormatString("Invalid data in file '%1'. Unrecognized unit '%2'. Re-run solver initialization!")
+													   .arg(varsFile.toStdString()).arg(unit.toStdString()),
+									 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+					qApp->exit(1);
+				}
 				QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Unrecognized unit '%2'. Re-run solver initialization!")
 									  .arg(varsFile).arg(unit));
 				setGUIState(false);
@@ -617,6 +635,12 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		std::vector<unsigned int>	m_vectorIndexes;
 		QString idString = tokens[1].trimmed();
 		if (idString.isEmpty()) {
+			if (m_silent) {
+				IBK::IBK_Message(IBK::FormatString("Invalid data in file '%1'. Object ID required for variable '%2'. Re-run solver initialization!")
+												   .arg(varsFile.toStdString()).arg(tokens[0].toStdString()),
+								 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+				qApp->exit(1);
+			}
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Object ID required for variable '%2'. Re-run solver initialization!")
 								  .arg(varsFile).arg(tokens[0]));
 			setGUIState(false);
