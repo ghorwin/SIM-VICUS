@@ -830,7 +830,41 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 
 
 void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
+	// initialize variables
+	QTableView * variableTableView								= inputVar ? m_ui->tableViewInputVars : m_ui->tableViewOutputVars;
+	FMUVariableTableModel * varModel							= inputVar ? m_inputVariablesTableModel : m_outputVariablesTableModel;
+	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
+	std::vector<NANDRAD::FMIVariableDefinition> & projectVars	= inputVar ? m_project.m_fmiDescription.m_inputVariables : m_project.m_fmiDescription.m_outputVariables;
 
+	// configure new input var - requires valid selection
+	QModelIndex proxyIndex = variableTableView->currentIndex();
+	Q_ASSERT(proxyIndex.isValid());
+
+	QModelIndex srcIndex = proxyIndex; // TODO : map2src
+
+	unsigned int row = (unsigned int)srcIndex.row();
+	Q_ASSERT(row < availableVars.size());
+	NANDRAD::FMIVariableDefinition & var = availableVars[row];
+	unsigned int valRef = var.m_fmiValueRef;
+	// remove value reference from set of used value references
+	m_usedValueRefs.erase(valRef);
+
+	// lookup existing definition in m_project and remove it there
+	for (std::vector<NANDRAD::FMIVariableDefinition>::iterator it = projectVars.begin();
+		 it != projectVars.end(); ++it)
+	{
+		if (it->m_fmiVarName == var.m_fmiVarName) {
+			projectVars.erase(it);
+			break;
+		}
+	}
+	// lookup existing definition in m_availableInputVariables and clear the value reference there
+	var.m_fmiValueRef = NANDRAD::INVALID_ID;
+
+	dumpUsedValueRefs();
+
+	// now inform model that it can tell the table view of its modifications
+	varModel->variableModified(row); // we pass the source row
 }
 
 
