@@ -192,8 +192,14 @@ void NandradFMUGeneratorWidget::setModelName(const QString & modelName) {
 }
 
 
-int NandradFMUGeneratorWidget::setup() {
+void NandradFMUGeneratorWidget::setup() {
 	FUNCID(NandradFMUGeneratorWidget::setup);
+
+	// clear entire data storage
+	m_availableInputVariables.clear();
+	m_availableOutputVariables.clear();
+	m_inputVariablesTableModel->reset();
+	m_outputVariablesTableModel->reset();
 
 	// read NANDRAD project
 	try {
@@ -205,11 +211,14 @@ int NandradFMUGeneratorWidget::setup() {
 	}
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
+		if (m_silent) {
+			IBK::IBK_Message("Error reading NANDRAD project.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, tr("Error reading NANDRAD project"),
 							  tr("Reading of NANDRAD project file '%1' failed.").arg(QString::fromStdString(m_nandradFilePath.str())) );
 		// disable all GUI elements
 		setGUIState(false);
-		return 1;
 	}
 
 	// store project file for next start of generator tool
@@ -234,22 +243,11 @@ int NandradFMUGeneratorWidget::setup() {
 	// check correct FMU name and update target file path
 	on_lineEditModelName_editingFinished();
 	// now test-init the solver and update the variable tables
-	try {
-		updateVariableLists();
-	}
-	catch (IBK::Exception &ex) {
-		//console
-		if(m_silent){
-			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
-		}
-		else{
-			QMessageBox::critical(this, QString(), ex.what());
-		}
 
-		return 1; // error
-	}
-
-	return 0; // success
+	// in case of error, function handles that appropriately: in scripted mode (m_silent == true),
+	// the application is terminated with error message, otherwise a message box is shown and
+	// ui state is disabled
+	updateVariableLists();
 }
 
 
@@ -278,9 +276,16 @@ void NandradFMUGeneratorWidget::on_pushButtonGenerate_clicked() {
 
 
 void NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished() {
+	FUNCID(NandradFMUGeneratorWidget::on_lineEditModelName_editingFinished);
 	m_ui->lineEditFMUPath->setText("---");
-	if (!checkModelName())
+	if (!checkModelName()) {
+		// in scripted mode, bail out
+		if (m_silent) {
+			IBK::IBK_Message("Invalid FMU model name.", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		return;
+	}
 	QString modelName = m_ui->lineEditModelName->text();
 	// update FMU path
 	m_ui->lineEditFMUPath->setText( QString::fromStdString(m_fmuExportDirectory.str()) + "/" + modelName + ".fmu");
@@ -348,6 +353,13 @@ void NandradFMUGeneratorWidget::onProcessErrorOccurred() {
 
 
 void NandradFMUGeneratorWidget::setGUIState(bool active) {
+	if (!active) {
+		// clear entire data storage for invalid state
+		m_availableInputVariables.clear();  // TODO Stephan, add clear() function to model and wrap m_availableInputVariables.clear() in beginResetModel() and endResetModel()
+		m_availableOutputVariables.clear();
+		m_inputVariablesTableModel->reset();
+		m_outputVariablesTableModel->reset();
+	}
 	// if active, all table widgets and push buttons are enabled, otherwise disabled
 	m_ui->tabInputVariables->setEnabled(active);
 	m_ui->tabOutputVariables->setEnabled(active);
@@ -419,6 +431,8 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	proc.setProgram(solverExecutable);
 	proc.setArguments(commandLineArgs);
 
+	// TODO : change to non-event-loop call for "scripted" execution
+
 	connect(&proc, &QProcess::started, this, &NandradFMUGeneratorWidget::onProcessStarted);
 #if QT_VERSION >= 0x050600
 	connect(&proc, &QProcess::errorOccurred, this, &NandradFMUGeneratorWidget::onProcessErrorOccurred);
@@ -427,7 +441,12 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	// start process
 	bool success = proc.waitForStarted();
 	if (!success) {
+		if (m_silent) {
+			IBK::IBK_Message(IBK::FormatString("Could not run solver '%1'").arg(solverExecutable.toStdString()), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			qApp->exit(1);
+		}
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(solverExecutable));
+		setGUIState(false);
 		return;
 	}
 
@@ -435,7 +454,13 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 
 	if (proc.exitStatus() == QProcess::NormalExit) {
 		if (proc.exitCode() != 0) {
-			throw IBK::Exception("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!", FUNC_ID );
+			if (m_silent) {
+				IBK::IBK_Message("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+				qApp->exit(1);
+			}
+			QMessageBox::critical(this, QString(), tr("There were errors during project test-initialization. Please ensure that the NANDRAD project runs successfully!"));
+			setGUIState(false);
+			return;
 		}
 	}
 
@@ -483,10 +508,6 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 		}
 	}
 
-	// now update set of used value references
-	m_usedValueRefs.clear();
-	m_usedValueRefs.insert(42); // reserve value ref for ResultsRootDir
-
 	QMessageBox::information(this, tr("NANDRAD Test-init successful"),
 							 tr("NANDRAD solver was started and the project was initialised, successfully. "
 								"%1 FMU input-variables and %2 output variables available.")
@@ -530,6 +551,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		if (tokens.count() < 3) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Re-run solver initialization!")
 								  .arg(varsFile));
+			setGUIState(false);
 			return false;
 		}
 
@@ -538,6 +560,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		if (varNameTokens.count() != 2) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Malformed variable name '%2'. Re-run solver initialization!")
 								  .arg(varsFile).arg(tokens[0]));
+			setGUIState(false);
 			return false;
 		}
 		QString objTypeName = varNameTokens[0];			// "Zone"
@@ -558,6 +581,8 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 			catch (...) {
 				QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Unrecognized unit '%2'. Re-run solver initialization!")
 									  .arg(varsFile).arg(unit));
+				setGUIState(false);
+				return false;
 			}
 		}
 		QString description;
@@ -572,6 +597,7 @@ bool NandradFMUGeneratorWidget::parseVariableList(const QString & varsFile,
 		if (idString.isEmpty()) {
 			QMessageBox::critical(this, QString(), tr("Invalid data in file '%1'. Object ID required for variable '%2'. Re-run solver initialization!")
 								  .arg(varsFile).arg(tokens[0]));
+			setGUIState(false);
 			return false;
 		}
 		QStringList ids = idString.split(",");
@@ -661,6 +687,11 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 	// first process all defined input variables
 	std::vector<NANDRAD::FMIVariableDefinition> invalidInputVars;
 	std::vector<NANDRAD::FMIVariableDefinition> validInputVars;
+
+	// now update set of used value references
+	m_usedValueRefs.clear();
+	m_usedValueRefs.insert(42); // reserve value ref for ResultsRootDir
+
 	QStringList errors;
 	for (NANDRAD::FMIVariableDefinition & var : m_project.m_fmiDescription.m_inputVariables) {
 

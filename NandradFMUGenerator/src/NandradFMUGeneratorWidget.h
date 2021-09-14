@@ -54,7 +54,7 @@ public:
 
 private slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
-	int setup();
+	void setup();
 
 	void autoGenerate();
 
