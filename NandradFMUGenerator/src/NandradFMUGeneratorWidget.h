@@ -24,6 +24,13 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
+	/*! This function is called by the table model in setData()*/
+	bool renameInputVariable(NANDRAD::FMIVariableDefinition &inputVar, const QString &newVarName);
+
+	/*! Perform a renaming of an output variable and returns true, if renaming is valid, false otherwise.
+		This function is called by the table model in setData()*/
+	bool renameOutputVariable(NANDRAD::FMIVariableDefinition &outputVar, const QString &newVarName);
+
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
 		\param silent If true, the generation process does not pop-up any message box or dialog in case of error, but
@@ -135,6 +142,9 @@ private:
 	/*! Updates FMI configuration in project. */
 	void storeFMIVariables(NANDRAD::Project & prj);
 
+	/*! Helper function for removing value reference of current input variable (if and only
+		if not used by any other input variable). */
+	void removeUsedInputValueRef(const NANDRAD::FMIVariableDefinition &inputVar, unsigned int fmiVarRef);
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?

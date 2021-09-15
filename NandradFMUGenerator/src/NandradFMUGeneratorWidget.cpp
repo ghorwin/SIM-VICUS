@@ -108,11 +108,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// configure models
 
 	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
-	m_inputVariablesTableModel->m_otherVariables = &m_availableOutputVariables);
-	m_inputVariablesTableModel->m_usedValueRefs = &m_usedValueRefs;
 	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
-	m_outputVariablesTableModel->m_otherVariables = &m_availableInputVariables);
-	m_outputVariablesTableModel->m_usedValueRefs = &m_usedValueRefs;
 
 	// proxy models
 
@@ -274,6 +270,183 @@ void NandradFMUGeneratorWidget::setup() {
 
 	m_ui->tableViewInputVars->resizeColumnsToContents();
 	m_ui->tableViewOutputVars->resizeColumnsToContents();
+}
+
+
+bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefinition & inputVar, const QString & newVarName)
+{
+	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
+	//
+	// See FMI Standard 2.2.7: "name: The full, unique name of the variable. Every variable is uniquely identified within an
+	//                          FMU instance by this name"
+	//
+	// Every FMU variable shall have a unique name. So we must test if the newly entered FMU name is anywhere used already.
+	// However, we have different handling for output variables and input variables.
+	//
+	// Input variables:
+	// (1) user must not select a variable name that is already used for another *output* variable; in such cases
+	//     the function shall return show an error message and return false and the data shall not be modified.
+	//
+	// (2) if user has edited a variable with unique name and has now selected a name that is already used by another
+	//     *input* variable, we expect:
+	//   - the value reference assigned to the other, existing variable shall be set also to the freshly renamed variable,
+	//     this both NANDRAD model variables share the same (single and unique) FMU input variable
+	//   - if the existing other variable with same name has a different unit, the renaming is invalid, an error message
+	//     shall be shown and the function returns with false (no data is modified)
+	//
+	//     Rational: in more complex models, an externally computed control parameter may be needed as input for many
+	//               NANDRAD model objects. In such situations the FMU may only have one external FMI input variable
+	//               that is, however, configured to be linked to several NANDRAD model object inputs. Hence, it must
+	//               be possible to assign the same variable name and value reference to different NANDRAD variables in
+	//               the table.
+	//
+	// (3) if user has edited a variable that shares the same name and value reference as another input variable,
+	//     first the condition for (3) shall be checked and if matching, the steps for option (3) shall be followed.
+	//     If the new variable name is unique, the FMI variable shall receive a new unique value reference.
+
+	unsigned int newVarRef = inputVar.m_fmiValueRef;
+	// set a valid entry
+	if(	newVarRef == NANDRAD::INVALID_ID)
+		newVarRef = (*m_usedValueRefs.rbegin()) + 1;
+
+	// check name against output value references
+	for( const NANDRAD::FMIVariableDefinition &otherVar : m_availableOutputVariables) {
+		// skip non-selected variables
+		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+			continue;
+		// error: name already exists in forbidden list
+		if(newVarName.toStdString() == otherVar.m_fmiVarName) {
+			QMessageBox::critical(this, tr("FMU Export Error"),
+				  tr("FMI Variable Name '%1' is already used as an output variable name!")
+					.arg(newVarName));
+			return false;
+		}
+	}
+	// check name against existing name of references
+	for( const NANDRAD::FMIVariableDefinition &otherVar : m_availableInputVariables) {
+		// skip non-selected variables
+		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+			continue;
+		// existing name: copy reference
+		if(newVarName.toStdString() == otherVar.m_fmiVarName) {
+			// check unit
+			if(inputVar.m_unit != otherVar.m_unit) {
+				// if units are not equal than convert into each other
+				try {
+					IBK::Unit newUnit(inputVar.m_unit);
+					IBK::Unit oldUnit(otherVar.m_unit);
+					// check ids
+					if(newUnit.base_id() != oldUnit.base_id()) {
+						QMessageBox::critical(this, tr("FMU Export Error"),
+							  tr("Invalid unit '%1' for FMI Variable Name '%2'! Expected unit '%3'.")
+								.arg(QString::fromStdString(inputVar.m_unit))
+								.arg(newVarName)
+								.arg(QString::fromStdString(otherVar.m_unit)) );
+						return false;
+					}
+				}
+				catch(IBK::Exception &) {
+					QMessageBox::critical(this, tr("FMU Export Error"),
+						  tr("Malformed unit '%1' for FMI Variable Name '%2'!")
+							.arg(QString::fromStdString(inputVar.m_unit)).arg(newVarName));
+					return false;
+				}
+			}
+			newVarRef = otherVar.m_fmiValueRef;
+			break;
+		}
+		//	existing reference and different name: temporarilly create a new reference
+		else if(!inputVar.sameModelVarAs(otherVar) &&
+				inputVar.m_fmiValueRef == otherVar.m_fmiValueRef) {
+			// create a new reference (use the highest value and count one)
+			newVarRef = *(m_usedValueRefs.rbegin()) + 1;
+		}
+	}
+
+	// rename variable
+	inputVar.m_fmiVarName = newVarName.toStdString();
+
+	// change reference
+	if(newVarRef != inputVar.m_fmiValueRef) {
+		unsigned int oldVarRef = inputVar.m_fmiValueRef;
+		// change id
+		inputVar.m_fmiValueRef = newVarRef;
+		// decide whether to remove an unused value reference from
+		// usedValueRefs container
+		removeUsedInputValueRef(inputVar, oldVarRef);
+		// add new value ref to container
+		m_usedValueRefs.insert(newVarRef);
+
+		dumpUsedValueRefs();
+	}
+
+	return true;
+}
+
+
+bool NandradFMUGeneratorWidget::renameOutputVariable(NANDRAD::FMIVariableDefinition & outputVar, const QString & newVarName)
+{
+	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
+	//
+	// See FMI Standard 2.2.7: "name: The full, unique name of the variable. Every variable is uniquely identified within an
+	//                          FMU instance by this name"
+	//
+	// Every FMU variable shall have a unique name. So we must test if the newly entered FMU name is anywhere used already.
+	// However, we have different handling for output variables and input variables.
+	//
+	// Output variables:
+	// (1) user must not select a variable name that is already used for another output/input variable; in such cases
+	//     the function shall return false and the data shall not be modified.
+
+	unsigned int newVarRef = outputVar.m_fmiValueRef;
+	// set a valid entry
+	if(	newVarRef == NANDRAD::INVALID_ID)
+		newVarRef = (*m_usedValueRefs.rbegin()) + 1;
+
+	// perform a duplicate check for al variables
+	std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableInputVariables;
+	allVariables.insert(allVariables.end(), m_availableOutputVariables.begin(), m_availableOutputVariables.end());
+
+	unsigned int j=0;
+	for ( ; j<allVariables.size(); ++j) {
+		const NANDRAD::FMIVariableDefinition &otherVar = allVariables[j];
+
+		if (otherVar.m_fmiValueRef != NANDRAD::INVALID_ID &&
+			otherVar.m_fmiVarName == newVarName.toStdString())
+		{
+			newVarRef = otherVar.m_fmiValueRef;
+			break;
+		}
+	}
+
+	// found another variable with the same name
+	if(newVarRef != outputVar.m_fmiValueRef && j < allVariables.size()) {
+		// check if we have an input or output variable
+		if(j < m_availableInputVariables.size())
+			QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as input variable. "
+													  "Please rename other variable first!")
+													  .arg(newVarName) );
+		else
+			QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used. "
+													  "Please rename other variable first!")
+													  .arg(newVarName) );
+		return false;
+	}
+
+	// rename variable
+	outputVar.m_fmiVarName = newVarName.toStdString();
+
+	// change reference
+	if(newVarRef != outputVar.m_fmiValueRef) {
+		// change id
+		outputVar.m_fmiValueRef = newVarRef;
+		// add to container
+		m_usedValueRefs.insert(newVarRef);
+
+		dumpUsedValueRefs();
+	}
+
+	return true;
 }
 
 
@@ -923,18 +1096,77 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 
 		// check if there is already another configured FMI variable with same name
 		unsigned int otherValueRef = 0;
-		for (unsigned int j=0; j<availableVars.size(); ++j) {
+		NANDRAD::FMIVariableDefinition otherVar;
+
+		// perform a duplicate check for al variables
+		std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableInputVariables;
+		allVariables.insert(allVariables.end(), m_availableOutputVariables.begin(), m_availableOutputVariables.end());
+
+		unsigned int j=0;
+		for ( ; j<allVariables.size(); ++j) {
 			if (row == j)
 				continue; // skip ourself
-			if (availableVars[j].m_fmiValueRef != NANDRAD::INVALID_ID &&
-				availableVars[j].m_fmiVarName == var.m_fmiVarName)
+			const NANDRAD::FMIVariableDefinition &otherVar = allVariables[j];
+
+			if (otherVar.m_fmiValueRef != NANDRAD::INVALID_ID &&
+				otherVar.m_fmiVarName == var.m_fmiVarName)
 			{
 				otherValueRef = availableVars[j].m_fmiValueRef;
 				break;
 			}
 		}
-		if (otherValueRef != 0)
+
+		// found another variable with the same name
+		if (otherValueRef != 0) {
+			// input variable
+			if(inputVar) {
+				// check if we have an output variable
+				if(j >= m_availableInputVariables.size())
+					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as output variable. "
+															  "Please rename other variable first!")
+															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+
+				// check if we have a convertable unit
+				if(var.m_unit != otherVar.m_unit) {
+					// if units are not equal than convert into each other
+					try {
+						IBK::Unit newUnit(var.m_unit);
+						IBK::Unit oldUnit(otherVar.m_unit);
+						// check ids
+						if(newUnit.base_id() != oldUnit.base_id()) {
+							QMessageBox::critical(this, QString(),
+								  tr("Input variable '%1' already used with mismatching unit '%2'. "
+									 "Please rename other variable first!")
+									.arg(QString::fromStdString(var.m_fmiVarName))
+									.arg(QString::fromStdString(otherVar.m_unit)) );
+							return;
+						}
+					}
+					catch(IBK::Exception &) {
+						QMessageBox::critical(this, QString(),
+							  tr("Malformed unit '%1' for input variable '%2'!")
+								.arg(QString::fromStdString(var.m_unit))
+								.arg(QString::fromStdString(var.m_fmiVarName)) );
+						return;
+					}
+				}
+			}
+			// output variable
+			else {
+				// check if we have an input or output variable
+				if(j < m_availableInputVariables.size())
+					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as input variable. "
+															  "Please rename other variable first!")
+															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+				else
+					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used. "
+															  "Please rename other variable first!")
+															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+				return;
+			}
+			// copy name
 			newValueRef = otherValueRef;
+		}
 
 		// assign and remember new fmiValueRef
 		m_usedValueRefs.insert(newValueRef);
@@ -985,7 +1217,12 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 			continue;
 
 		// remove value reference from set of used value references
-		m_usedValueRefs.erase(valRef);
+		if(inputVar)
+			// decide whether to remove an unused value reference from
+			// usedValueRefs container
+			removeUsedInputValueRef(var, valRef);
+		else
+			m_usedValueRefs.erase(valRef);
 
 		// lookup existing definition in m_availableInputVariables and clear the value reference there
 		var.m_fmiValueRef = NANDRAD::INVALID_ID;
@@ -1033,6 +1270,33 @@ void NandradFMUGeneratorWidget::storeFMIVariables(NANDRAD::Project & prj) {
 		// add to fmi description
 		prj.m_fmiDescription.m_outputVariables.push_back(outputVar);
 	}
+}
+
+
+void NandradFMUGeneratorWidget::removeUsedInputValueRef(const NANDRAD::FMIVariableDefinition & inputVar, unsigned int fmiVarRef)
+{
+	// for invalid references we need to do nothing
+	if(fmiVarRef == NANDRAD::INVALID_ID)
+		return;
+
+	bool varRefUsed = false;
+	for (NANDRAD::FMIVariableDefinition & otherVar : m_availableInputVariables) {
+		// skip invalid references
+		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+			continue;
+		// skip the same variable
+		if(otherVar.sameModelVarAs(inputVar))
+			continue;
+		// variable reference is used by another quantity
+		if(otherVar.m_fmiValueRef == fmiVarRef) {
+			varRefUsed = true;
+			break;
+		}
+	}
+
+	// remove variable reference
+	if(!varRefUsed)
+		m_usedValueRefs.erase(fmiVarRef);
 }
 
 
