@@ -108,8 +108,10 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// configure models
 
 	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
+	m_inputVariablesTableModel->m_otherVariables = &m_availableOutputVariables);
 	m_inputVariablesTableModel->m_usedValueRefs = &m_usedValueRefs;
 	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
+	m_outputVariablesTableModel->m_otherVariables = &m_availableInputVariables);
 	m_outputVariablesTableModel->m_usedValueRefs = &m_usedValueRefs;
 
 	// proxy models

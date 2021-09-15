@@ -154,55 +154,90 @@ bool FMUVariableTableModel::setData(const QModelIndex & index, const QVariant & 
 	// get variable that we modified
 	NANDRAD::FMIVariableDefinition & var = (*m_availableVariables)[(size_t)index.row()];
 
-	// TODO : revise code below according to rules above
-
 	unsigned int newVarRef = var.m_fmiValueRef;
 	// set a valid entry
 	if(	newVarRef == NANDRAD::INVALID_ID)
 		newVarRef = *(m_usedValueRefs->rbegin()) + 1;
 
-	bool varRefUsedFromOtherVar = false;
-
-	// check name against existing name of references
-	for( const NANDRAD::FMIVariableDefinition &otherVar : *m_availableVariables) {
-		// skip non-selected variables
-		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
-			continue;
-		// existing name: copy reference
-		if(otherVar.m_fmiVarName == fmiVarName.toStdString()) {
-			// error: output name must always be unique
-			if(!m_inputVariableTable) {
+	// special treatment for outputs
+	if(!m_inputVariableTable) {
+		// check name against output value references
+		for( const NANDRAD::FMIVariableDefinition &otherVar : *m_otherVariables) {
+			// skip non-selected variables
+			if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+				continue;
+			// error: name already exists in forbidden list
+			if(otherVar.m_fmiVarName == fmiVarName.toStdString()) {
 //				TODO: error handling
 //				QMessageBox::critical(this, tr("FMU Export Error"),
-//									  tr("Duplicate FMI Variable Name '%1'. Please select a unique name!")
-//									  .arg(fmiVarName)) );
+//					  tr("FMI Variable Name '%1' is already used as an input variable name!")
+//						.arg(fmiVarName)) );
 				return false;
 			}
-			newVarRef = otherVar.m_fmiValueRef;
 		}
-		//	existing reference and different name: check whether a new reference should be created
-		else if(var.m_fmiValueRef == otherVar.m_fmiValueRef) {
-			Q_ASSERT(m_inputVariableTable);
-			// store information that var id is used from another quantity
-			// (that have owned the same name before)
-			varRefUsedFromOtherVar = true;
-			// create a new reference (use the highest value and count one)
-			// - but only, if not set to another value
-			if(newVarRef == var.m_fmiValueRef)
+		// check name against output value references
+		for( const NANDRAD::FMIVariableDefinition &otherVar : *m_availableVariables) {
+			// skip non-selected variables
+			if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+				continue;
+			// error: name already exists in forbidden list
+			if(otherVar.m_fmiVarName == fmiVarName.toStdString()) {
+//				TODO: error handling
+//				QMessageBox::critical(this, tr("FMU Export Error"),
+//					  tr("Duplicate FMI Variable Name '%1'. Please select a unique name!")
+//								  .arg(fmiVarName)) );
+				return false;
+			}
+		}
+	}
+	// special treatment for inputs
+	else {
+		// some readability improvement
+		std::string fmuUnit = var.m_unit;
+
+		// check name against output value references
+		for( const NANDRAD::FMIVariableDefinition &otherVar : *m_otherVariables) {
+			// skip non-selected variables
+			if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+				continue;
+			// error: name already exists in forbidden list
+			if(otherVar.m_fmiVarName == fmiVarName.toStdString()) {
+//				TODO: error handling
+//				QMessageBox::critical(this, tr("FMU Export Error"),
+//					  tr("FMI Variable Name '%1' is already used as an output variable name!")
+//						.arg(fmiVarName)) );
+				return false;
+			}
+		}
+		// check name against existing name of references
+		for( const NANDRAD::FMIVariableDefinition &otherVar : *m_availableVariables) {
+			// skip non-selected variables
+			if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
+				continue;
+			// existing name: copy reference
+			if(fmiVarName.toStdString() == otherVar.m_fmiVarName) {
+				// check unit (always SI-unit)
+				if(var.m_unit != otherVar.m_unit)
+				newVarRef = otherVar.m_fmiValueRef;
+				break;
+			}
+			//	existing reference and different name: temporarilly create a new reference
+			else if(var.m_fmiValueRef == otherVar.m_fmiValueRef) {
+				// create a new reference (use the highest value and count one)
 				newVarRef = *(m_usedValueRefs->rbegin()) + 1;
+			}
 		}
 	}
 
 	var.m_fmiVarName = value.toString().toStdString();
 	// change reference
 	if(newVarRef != var.m_fmiValueRef) {
-		// remove unused references
-		if(!varRefUsedFromOtherVar)
-			m_usedValueRefs->erase(var.m_fmiValueRef);
 		// change id
 		var.m_fmiValueRef = newVarRef;
 		// add to container
 		m_usedValueRefs->insert(newVarRef);
+		// TODO: decide whether to remove an unused value reference from
+		// usedValueRefs container
 	}
 
 	emit dataChanged(index, index);

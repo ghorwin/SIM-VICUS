@@ -30,8 +30,10 @@ public:
 	QFont	m_itemFont;
 
 	bool	m_inputVariableTable;
-	// pointer to all input variables
+	// pointer to all available (input our output) variables
 	std::vector<NANDRAD::FMIVariableDefinition> * m_availableVariables = nullptr;
+	// pointer to all variables in oposite list (output or input)
+	std::vector<NANDRAD::FMIVariableDefinition> * m_otherVariables = nullptr;
 	// pointer to all global used value references
 	std::set<unsigned int>						* m_usedValueRefs = nullptr;
 };
