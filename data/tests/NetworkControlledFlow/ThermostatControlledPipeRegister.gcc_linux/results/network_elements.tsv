@@ -1,4 +1,4 @@
-Time [h]	NetworkElement(id=2).FluidMassFlux [kg/s]	NetworkElement(id=2).FluidVelocity [m/s]	NetworkElement(id=1).FluidTemperature [C]	NetworkElement(id=2).FluidTemperature [C]	NetworkElement(id=3).FluidTemperature [C]
+Time [h]	Floor heating.FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	NetworkElement(id=3).FluidTemperature [C]
 0	5.32088e-05	0.000346343	20	20	35
 0.0166667	0.021642	0.140871	21.0082	19.7513	35
 0.0333333	0.021642	0.140871	22.7102	19.7106	35

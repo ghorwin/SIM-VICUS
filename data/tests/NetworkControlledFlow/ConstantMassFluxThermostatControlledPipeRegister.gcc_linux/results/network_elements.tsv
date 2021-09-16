@@ -1,4 +1,4 @@
-Time [h]	NetworkElement(id=1).FluidMassFlux [kg/s]	NetworkElement(id=2).FluidMassFlux [kg/s]	NetworkElement(id=3).FluidMassFlux [kg/s]	NetworkElement(id=4).FluidMassFlux [kg/s]	NetworkElement(id=2).FluidVelocity [m/s]	NetworkElement(id=1).FluidTemperature [C]	NetworkElement(id=2).FluidTemperature [C]	NetworkElement(id=3).FluidTemperature [C]	NetworkElement(id=4).FluidTemperature [C]
+Time [h]	Pump.FluidMassFlux [kg/s]	Floor heating.FluidMassFlux [kg/s]	Bypass.FluidMassFlux [kg/s]	NetworkElement(id=4).FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	Bypass.FluidTemperature [C]	NetworkElement(id=4).FluidTemperature [C]
 0	0.02	0.00269643	0.0173036	0.02	0.0175514	20	20	20	35
 0.0166667	0.02	0.0184955	0.00150453	0.02	0.12039	21.6994	19.7781	20.4315	35
 0.0333333	0.02	0.0184955	0.00150453	0.02	0.12039	23.2062	19.746	20.8433	35
