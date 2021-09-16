@@ -273,7 +273,7 @@ void NandradFMUGeneratorWidget::setup() {
 }
 
 
-bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefinition & inputVar, const QString & newVarName)
+bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QString & newVarName)
 {
 	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
 	//
@@ -304,7 +304,11 @@ bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefiniti
 	//     first the condition for (3) shall be checked and if matching, the steps for option (3) shall be followed.
 	//     If the new variable name is unique, the FMI variable shall receive a new unique value reference.
 
+	Q_ASSERT(index < m_availableInputVariables.size());
+
+	NANDRAD::FMIVariableDefinition &inputVar = m_availableInputVariables[index];
 	unsigned int newVarRef = inputVar.m_fmiValueRef;
+
 	// set a valid entry
 	if(	newVarRef == NANDRAD::INVALID_ID)
 		newVarRef = (*m_usedValueRefs.rbegin()) + 1;
@@ -323,7 +327,12 @@ bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefiniti
 		}
 	}
 	// check name against existing name of references
-	for( const NANDRAD::FMIVariableDefinition &otherVar : m_availableInputVariables) {
+	for(unsigned int j = 0; j < m_availableInputVariables.size(); ++j) {
+		// skip equal variable in list
+		if( j == index)
+			continue;
+
+		const NANDRAD::FMIVariableDefinition &otherVar = m_availableInputVariables[j];
 		// skip non-selected variables
 		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
 			continue;
@@ -373,7 +382,7 @@ bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefiniti
 		inputVar.m_fmiValueRef = newVarRef;
 		// decide whether to remove an unused value reference from
 		// usedValueRefs container
-		removeUsedInputValueRef(inputVar, oldVarRef);
+		removeUsedInputValueRef(index, oldVarRef);
 		// add new value ref to container
 		m_usedValueRefs.insert(newVarRef);
 
@@ -384,7 +393,7 @@ bool NandradFMUGeneratorWidget::renameInputVariable(NANDRAD::FMIVariableDefiniti
 }
 
 
-bool NandradFMUGeneratorWidget::renameOutputVariable(NANDRAD::FMIVariableDefinition & outputVar, const QString & newVarName)
+bool NandradFMUGeneratorWidget::renameOutputVariable(unsigned int index, const QString & newVarName)
 {
 	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
 	//
@@ -398,17 +407,25 @@ bool NandradFMUGeneratorWidget::renameOutputVariable(NANDRAD::FMIVariableDefinit
 	// (1) user must not select a variable name that is already used for another output/input variable; in such cases
 	//     the function shall return false and the data shall not be modified.
 
+	Q_ASSERT(index < m_availableOutputVariables.size());
+
+	NANDRAD::FMIVariableDefinition &outputVar = m_availableOutputVariables[index];
+
 	unsigned int newVarRef = outputVar.m_fmiValueRef;
 	// set a valid entry
 	if(	newVarRef == NANDRAD::INVALID_ID)
 		newVarRef = (*m_usedValueRefs.rbegin()) + 1;
 
 	// perform a duplicate check for al variables
-	std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableInputVariables;
-	allVariables.insert(allVariables.end(), m_availableOutputVariables.begin(), m_availableOutputVariables.end());
+	std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableOutputVariables;
+	allVariables.insert(allVariables.end(), m_availableInputVariables.begin(), m_availableInputVariables.end());
 
 	unsigned int j=0;
 	for ( ; j<allVariables.size(); ++j) {
+		// skip equal variable
+		if(j == index)
+			continue;
+
 		const NANDRAD::FMIVariableDefinition &otherVar = allVariables[j];
 
 		if (otherVar.m_fmiValueRef != NANDRAD::INVALID_ID &&
@@ -1220,7 +1237,7 @@ void NandradFMUGeneratorWidget::removeVariable(bool inputVar) {
 		if(inputVar)
 			// decide whether to remove an unused value reference from
 			// usedValueRefs container
-			removeUsedInputValueRef(var, valRef);
+			removeUsedInputValueRef(row, valRef);
 		else
 			m_usedValueRefs.erase(valRef);
 
@@ -1273,29 +1290,31 @@ void NandradFMUGeneratorWidget::storeFMIVariables(NANDRAD::Project & prj) {
 }
 
 
-void NandradFMUGeneratorWidget::removeUsedInputValueRef(const NANDRAD::FMIVariableDefinition & inputVar, unsigned int fmiVarRef)
+void NandradFMUGeneratorWidget::removeUsedInputValueRef(unsigned int index, unsigned int fmiVarRef)
 {
 	// for invalid references we need to do nothing
 	if(fmiVarRef == NANDRAD::INVALID_ID)
 		return;
 
-	bool varRefUsed = false;
-	for (NANDRAD::FMIVariableDefinition & otherVar : m_availableInputVariables) {
+	Q_ASSERT(index < m_availableInputVariables.size());
+
+	unsigned int j = 0;
+	for (; j < m_availableInputVariables.size(); ++j) {
+		// skip current variable
+		if(j == index)
+			continue;
+		const NANDRAD::FMIVariableDefinition &otherVar = m_availableInputVariables[j];
 		// skip invalid references
 		if(otherVar.m_fmiValueRef == NANDRAD::INVALID_ID)
 			continue;
-		// skip the same variable
-		if(otherVar.sameModelVarAs(inputVar))
-			continue;
 		// variable reference is used by another quantity
 		if(otherVar.m_fmiValueRef == fmiVarRef) {
-			varRefUsed = true;
 			break;
 		}
 	}
 
 	// remove variable reference
-	if(!varRefUsed)
+	if(j == m_availableInputVariables.size())
 		m_usedValueRefs.erase(fmiVarRef);
 }
 

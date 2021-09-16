@@ -153,21 +153,18 @@ bool FMUVariableTableModel::setData(const QModelIndex & index, const QVariant & 
 	//     first the condition for (3) shall be checked and if matching, the steps for option (3) shall be followed.
 	//     If the new variable name is unique, the FMI variable shall receive a new unique value reference.
 
-	// get variable that we modified
-	NANDRAD::FMIVariableDefinition & var = (*m_availableVariables)[(size_t)index.row()];
-
 	// ask Widged to rename and check variable
 	NandradFMUGeneratorWidget *parentWidged = dynamic_cast<NandradFMUGeneratorWidget *>(parent());
 	Q_ASSERT(parentWidged != nullptr);
 
 	if(m_inputVariableTable) {
 		// error handling is performed in 'NandradFMUGeneratorWidget'
-		if(!parentWidged->renameInputVariable(var, fmiVarName) )
+		if(!parentWidged->renameInputVariable((size_t)index.row(), fmiVarName) )
 			return false;
 	}
 	else {
 		// error handling is performed in 'NandradFMUGeneratorWidget'
-		if(!parentWidged->renameOutputVariable(var, fmiVarName) )
+		if(!parentWidged->renameOutputVariable((size_t)index.row(), fmiVarName) )
 			return false;
 	}
 

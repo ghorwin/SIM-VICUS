@@ -25,11 +25,11 @@ public:
 	void init();
 
 	/*! This function is called by the table model in setData()*/
-	bool renameInputVariable(NANDRAD::FMIVariableDefinition &inputVar, const QString &newVarName);
+	bool renameInputVariable(unsigned int index, const QString &newVarName);
 
 	/*! Perform a renaming of an output variable and returns true, if renaming is valid, false otherwise.
 		This function is called by the table model in setData()*/
-	bool renameOutputVariable(NANDRAD::FMIVariableDefinition &outputVar, const QString &newVarName);
+	bool renameOutputVariable(unsigned int index, const QString &newVarName);
 
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
@@ -144,7 +144,7 @@ private:
 
 	/*! Helper function for removing value reference of current input variable (if and only
 		if not used by any other input variable). */
-	void removeUsedInputValueRef(const NANDRAD::FMIVariableDefinition &inputVar, unsigned int fmiVarRef);
+	void removeUsedInputValueRef(unsigned int index, unsigned int fmiVarRef);
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
