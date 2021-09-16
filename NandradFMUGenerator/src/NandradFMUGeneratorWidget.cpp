@@ -1106,88 +1106,97 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 
 		Q_ASSERT(valRef == NANDRAD::INVALID_ID);
 
-		// take the highest currently used value reference and add 1
-		unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
-
-		// now create a copy of the variable description, copy it to the project and assign a valid value reference
-
-		// check if there is already another configured FMI variable with same name
-		unsigned int otherValueRef = 0;
-		NANDRAD::FMIVariableDefinition otherVar;
-
-		// perform a duplicate check for al variables
-		std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableInputVariables;
-		allVariables.insert(allVariables.end(), m_availableOutputVariables.begin(), m_availableOutputVariables.end());
-
-		unsigned int j=0;
-		for ( ; j<allVariables.size(); ++j) {
-			if (row == j)
-				continue; // skip ourself
-			const NANDRAD::FMIVariableDefinition &otherVar = allVariables[j];
-
-			if (otherVar.m_fmiValueRef != NANDRAD::INVALID_ID &&
-				otherVar.m_fmiVarName == var.m_fmiVarName)
-			{
-				otherValueRef = availableVars[j].m_fmiValueRef;
-				break;
-			}
-		}
-
-		// found another variable with the same name
-		if (otherValueRef != 0) {
-			// input variable
-			if(inputVar) {
-				// check if we have an output variable
-				if(j >= m_availableInputVariables.size())
-					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as output variable. "
-															  "Please rename other variable first!")
-															  .arg(QString::fromStdString(var.m_fmiVarName)) );
-
-				// check if we have a convertable unit
-				if(var.m_unit != otherVar.m_unit) {
-					// if units are not equal than convert into each other
-					try {
-						IBK::Unit newUnit(var.m_unit);
-						IBK::Unit oldUnit(otherVar.m_unit);
-						// check ids
-						if(newUnit.base_id() != oldUnit.base_id()) {
-							QMessageBox::critical(this, QString(),
-								  tr("Input variable '%1' already used with mismatching unit '%2'. "
-									 "Please rename other variable first!")
-									.arg(QString::fromStdString(var.m_fmiVarName))
-									.arg(QString::fromStdString(otherVar.m_unit)) );
-							return;
-						}
-					}
-					catch(IBK::Exception &) {
-						QMessageBox::critical(this, QString(),
-							  tr("Malformed unit '%1' for input variable '%2'!")
-								.arg(QString::fromStdString(var.m_unit))
-								.arg(QString::fromStdString(var.m_fmiVarName)) );
-						return;
-					}
-				}
-			}
-			// output variable
-			else {
-				// check if we have an input or output variable
-				if(j < m_availableInputVariables.size())
-					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as input variable. "
-															  "Please rename other variable first!")
-															  .arg(QString::fromStdString(var.m_fmiVarName)) );
-				else
-					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used. "
-															  "Please rename other variable first!")
-															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+		// try to use a central naming management
+		if(inputVar) {
+			if(!renameInputVariable(row, QString::fromStdString(var.m_fmiVarName)) )
 				return;
-			}
-			// copy name
-			newValueRef = otherValueRef;
 		}
+		else {
+			if(!renameOutputVariable(row, QString::fromStdString(var.m_fmiVarName)) )
+				return;
+		}
+//		// take the highest currently used value reference and add 1
+//		unsigned int newValueRef = *m_usedValueRefs.rbegin() + 1;
 
-		// assign and remember new fmiValueRef
-		m_usedValueRefs.insert(newValueRef);
-		var.m_fmiValueRef = newValueRef;
+//		// now create a copy of the variable description, copy it to the project and assign a valid value reference
+
+//		// check if there is already another configured FMI variable with same name
+//		unsigned int otherValueRef = 0;
+//		NANDRAD::FMIVariableDefinition otherVar;
+
+//		// perform a duplicate check for al variables
+//		std::vector<NANDRAD::FMIVariableDefinition> allVariables = m_availableInputVariables;
+//		allVariables.insert(allVariables.end(), m_availableOutputVariables.begin(), m_availableOutputVariables.end());
+
+//		unsigned int j=0;
+//		for ( ; j<allVariables.size(); ++j) {
+//			if (row == j)
+//				continue; // skip ourself
+//			const NANDRAD::FMIVariableDefinition &otherVar = allVariables[j];
+
+//			if (otherVar.m_fmiValueRef != NANDRAD::INVALID_ID &&
+//				otherVar.m_fmiVarName == var.m_fmiVarName)
+//			{
+//				otherValueRef = availableVars[j].m_fmiValueRef;
+//				break;
+//			}
+//		}
+
+//		// found another variable with the same name
+//		if (otherValueRef != 0) {
+//			// input variable
+//			if(inputVar) {
+//				// check if we have an output variable
+//				if(j >= m_availableInputVariables.size())
+//					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as output variable. "
+//															  "Please rename other variable first!")
+//															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+
+//				// check if we have a convertable unit
+//				if(var.m_unit != otherVar.m_unit) {
+//					// if units are not equal than convert into each other
+//					try {
+//						IBK::Unit newUnit(var.m_unit);
+//						IBK::Unit oldUnit(otherVar.m_unit);
+//						// check ids
+//						if(newUnit.base_id() != oldUnit.base_id()) {
+//							QMessageBox::critical(this, QString(),
+//								  tr("Input variable '%1' already used with mismatching unit '%2'. "
+//									 "Please rename other variable first!")
+//									.arg(QString::fromStdString(var.m_fmiVarName))
+//									.arg(QString::fromStdString(otherVar.m_unit)) );
+//							return;
+//						}
+//					}
+//					catch(IBK::Exception &) {
+//						QMessageBox::critical(this, QString(),
+//							  tr("Malformed unit '%1' for input variable '%2'!")
+//								.arg(QString::fromStdString(var.m_unit))
+//								.arg(QString::fromStdString(var.m_fmiVarName)) );
+//						return;
+//					}
+//				}
+//			}
+//			// output variable
+//			else {
+//				// check if we have an input or output variable
+//				if(j < m_availableInputVariables.size())
+//					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used as input variable. "
+//															  "Please rename other variable first!")
+//															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+//				else
+//					QMessageBox::critical(this, QString(), tr("Output variable name '%1' already used. "
+//															  "Please rename other variable first!")
+//															  .arg(QString::fromStdString(var.m_fmiVarName)) );
+//				return;
+//			}
+//			// copy name
+//			newValueRef = otherValueRef;
+//		}
+
+//		// assign and remember new fmiValueRef
+//		m_usedValueRefs.insert(newValueRef);
+//		var.m_fmiValueRef = newValueRef;
 
 		dumpUsedValueRefs();
 
