@@ -1487,6 +1487,8 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 void NandradFMUGeneratorWidget::onInputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
 	m_ui->toolButtonAddInputVariable->setEnabled(false);
 	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
+
+	// TODO Hauke, fix this for multiselection, when a configured and not-configured variable are selected at the same time
 	if (!current.isValid())
 		return;
 	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
@@ -1527,6 +1529,8 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
 	m_ui->toolButtonAddOutputVariable->setEnabled(false);
 	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
+
+	// TODO Hauke, fix this for multiselection, when a configured and not-configured variable are selected at the same time
 	if (!current.isValid())
 		return;
 	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
