@@ -11,6 +11,7 @@ namespace Ui {
 
 class FMUVariableTableModel;
 class QSortFilterProxyModel;
+class QItemSelection;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -77,14 +78,15 @@ private slots:
 	void on_tableViewInputVars_doubleClicked(const QModelIndex &index);
 	void on_toolButtonAddInputVariable_clicked();
 	void on_toolButtonRemoveInputVariable_clicked();
-	void onInputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+	void onInputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
 
 	// ** Output Variable Table **
 
 	void on_tableViewOutputVars_doubleClicked(const QModelIndex &index);
 	void on_toolButtonAddOutputVariable_clicked();
 	void on_toolButtonRemoveOutputVariable_clicked();
-	void onOutputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+	void onOutputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 	void on_lineEditInputVarNameFilter_textEdited(const QString &arg1);
 

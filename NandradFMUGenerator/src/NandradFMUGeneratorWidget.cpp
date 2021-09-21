@@ -30,71 +30,6 @@
 const char * const ORGANIZATION = "IBK";
 const char * const PROGRAM_NAME = "NANDRADFMUGenerator";
 
-
-bool startProcess(const QString & executable, QStringList commandLineArgs, const QString & projectFile) {
-	// spawn process
-#ifdef Q_OS_WIN
-
-	/// \todo use wide-string version of API and/or encapsulate spawn process into a function
-
-	// Use WinAPI to create a solver process
-	STARTUPINFOA si;
-	PROCESS_INFORMATION pi;
-	ZeroMemory( &si, sizeof(si) );
-	si.cb = sizeof(si);
-	std::string utf8String = projectFile.toStdString().data();
-	si.lpTitle = (LPSTR)utf8String.c_str();
-	//	si.dwFlags = STARTF_USESHOWWINDOW;
-	//	si.wShowWindow = SW_SHOW;
-	ZeroMemory( &pi, sizeof(pi) );
-	const unsigned int lower_priority = 0x00004000;
-	QString cmdLine = QString("\"%1\" %2 \"%3\"").arg(executable, commandLineArgs.join(" "), projectFile);
-
-	std::string cmd = cmdLine.toLatin1().data();
-	// Start the child process.
-	if( !CreateProcessA( nullptr,	// No module name (use command line).
-						 &cmd[0],					// Command line.
-						 nullptr,					// Process handle not inheritable.
-						 nullptr,					// Thread handle not inheritable.
-						 FALSE,						// Set handle inheritance to FALSE.
-						 lower_priority,				// Create with priority lower then normal.
-						 nullptr,					// Use parent's environment block.
-						 nullptr,					// Use parent's starting directory.
-						 &si,						// Pointer to STARTUPINFO structure.
-						 &pi )						// Pointer to PROCESS_INFORMATION structure.
-			)
-	{
-		return false;
-	}
-	return true;
-
-#else // Q_OS_WIN
-
-	// append project file to arguments, no quotes needed, since Qt takes care of that
-	commandLineArgs << projectFile;
-	//	qint64 pid;
-	commandLineArgs = QStringList() << "-hold"
-									<< "-fa" << "'Monospace'"
-									<< "-fs" << "9"
-									<< "-geometry" << "120x40" << "-e" << executable << commandLineArgs;
-	QString terminalProgram = "xterm";
-
-	QProcess proc;
-	proc.setProgram(terminalProgram);
-	proc.setArguments(commandLineArgs);
-
-	proc.start();
-	bool success = proc.waitForFinished();
-
-	//	success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
-
-	// TODO : do something with the process identifier... mayby check after a few seconds, if the process is still running?
-	return success;
-
-#endif // Q_OS_WIN
-}
-
-
 NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	QWidget(parent),
 	m_ui(new Ui::NandradFMUGeneratorWidget),
@@ -125,10 +60,11 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	m_ui->tableViewInputVars->setModel(m_inputVariablesProxyModel);
 	m_ui->tableViewOutputVars->setModel(m_outputVariablesProxyModel);
 
-	connect(m_ui->tableViewInputVars->selectionModel(), &QItemSelectionModel::currentChanged,
-			this, &NandradFMUGeneratorWidget::onInputVarsCurrentChanged);
-	connect(m_ui->tableViewOutputVars->selectionModel(), &QItemSelectionModel::currentChanged,
-			this, &NandradFMUGeneratorWidget::onOutputVarsCurrentChanged);
+	connect(m_ui->tableViewInputVars->selectionModel(), &QItemSelectionModel::selectionChanged,
+			this, &NandradFMUGeneratorWidget::onInputVarsSelectionChanged);
+
+	connect(m_ui->tableViewOutputVars->selectionModel(), &QItemSelectionModel::selectionChanged,
+			this, &NandradFMUGeneratorWidget::onOutputVarsSelectionChanged);
 
 	QTableView * v = m_ui->tableViewInputVars;
 	v->verticalHeader()->setDefaultSectionSize(19);
@@ -139,6 +75,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(true);
 	v->sortByColumn(0, Qt::AscendingOrder);
+	v->horizontalHeader()->setStretchLastSection(true);
 	// smaller font for entire table
 	QFont f;
 #ifdef Q_OS_LINUX
@@ -158,6 +95,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	v->sortByColumn(0, Qt::AscendingOrder);
 	v->setFont(f);
 	v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
+	v->horizontalHeader()->setStretchLastSection(true);
 
 	m_inputVariablesTableModel->m_itemFont = f;
 	m_outputVariablesTableModel->m_itemFont = f;
@@ -894,7 +832,7 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 	std::vector<NANDRAD::FMIVariableDefinition> & availableVars	= inputVar ? m_availableInputVariables : m_availableOutputVariables;
 	QSortFilterProxyModel * proxyModel							= inputVar ? m_inputVariablesProxyModel: m_outputVariablesProxyModel;
 
-	for (const QModelIndex & proxyIndex: variableTableView->selectionModel()->selectedRows()){
+	for (const QModelIndex & proxyIndex: variableTableView->selectionModel()->selectedRows()) {
 
 		// configure new input var - requires valid selection
 		Q_ASSERT(proxyIndex.isValid());
@@ -1484,19 +1422,29 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveInputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::onInputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+void NandradFMUGeneratorWidget::onInputVarsSelectionChanged(const QItemSelection &, const QItemSelection &) {
 	m_ui->toolButtonAddInputVariable->setEnabled(false);
 	m_ui->toolButtonRemoveInputVariable->setEnabled(false);
 
-	// TODO Hauke, fix this for multiselection, when a configured and not-configured variable are selected at the same time
-	if (!current.isValid())
-		return;
-	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
-	// already configured?
-	if (valueRef == NANDRAD::INVALID_ID)
-		m_ui->toolButtonAddInputVariable->setEnabled(true); // not yet configured -> add button on
-	else
-		m_ui->toolButtonRemoveInputVariable->setEnabled(true); // already configured -> remove button on
+	// process all selected items and check if they are all configured or all unconfigured
+	bool configured = false;
+	bool unconfigured = false;
+	for (const QModelIndex & proxyIndex: m_ui->tableViewInputVars->selectionModel()->selectedRows()) {
+
+		// configure new input var - requires valid selection
+		Q_ASSERT(proxyIndex.isValid());
+		unsigned int valueRef = proxyIndex.data(Qt::UserRole).toUInt();
+		// already configured?
+		if (valueRef == NANDRAD::INVALID_ID)
+			unconfigured = true;
+		else
+			configured = true;
+	}
+
+	// any unconfigured variables?
+	m_ui->toolButtonAddInputVariable->setEnabled(unconfigured); // not yet configured -> add button on
+	// any already configured?
+	m_ui->toolButtonRemoveInputVariable->setEnabled(configured); // already configured -> remove button on
 }
 
 
@@ -1526,19 +1474,29 @@ void NandradFMUGeneratorWidget::on_toolButtonRemoveOutputVariable_clicked() {
 }
 
 
-void NandradFMUGeneratorWidget::onOutputVarsCurrentChanged(const QModelIndex & current, const QModelIndex &) {
+void NandradFMUGeneratorWidget::onOutputVarsSelectionChanged(const QItemSelection &, const QItemSelection &) {
 	m_ui->toolButtonAddOutputVariable->setEnabled(false);
 	m_ui->toolButtonRemoveOutputVariable->setEnabled(false);
 
-	// TODO Hauke, fix this for multiselection, when a configured and not-configured variable are selected at the same time
-	if (!current.isValid())
-		return;
-	unsigned int valueRef = current.data(Qt::UserRole).toUInt();
-	// already configured?
-	if (valueRef == NANDRAD::INVALID_ID)
-		m_ui->toolButtonAddOutputVariable->setEnabled(true); // not yet configured -> add button on
-	else
-		m_ui->toolButtonRemoveOutputVariable->setEnabled(true); // already configured -> remove button on
+	// process all selected items and check if they are all configured or all unconfigured
+	bool configured = false;
+	bool unconfigured = false;
+	for (const QModelIndex & proxyIndex: m_ui->tableViewOutputVars->selectionModel()->selectedRows()){
+
+		// configure new input var - requires valid selection
+		Q_ASSERT(proxyIndex.isValid());
+		unsigned int valueRef = proxyIndex.data(Qt::UserRole).toUInt();
+		// already configured?
+		if (valueRef == NANDRAD::INVALID_ID)
+			unconfigured = true;
+		else
+			configured = true;
+	}
+
+	// any unconfigured variables?
+	m_ui->toolButtonAddOutputVariable->setEnabled(unconfigured); // not yet configured -> add button on
+	// any already configured?
+	m_ui->toolButtonRemoveOutputVariable->setEnabled(configured); // already configured -> remove button on
 }
 
 

@@ -43,7 +43,7 @@ QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const 
 						return "---";
 					return var.m_fmiValueRef;
 				case 6 : // FMI type
-					return QString::fromStdString(var.m_fmiTypeName);
+					return "Real"; // for now always Real, QString::fromStdString(var.m_fmiTypeName);
 				case 7 : // Description
 					return QString::fromStdString(var.m_fmiVarDescription);
 			}
