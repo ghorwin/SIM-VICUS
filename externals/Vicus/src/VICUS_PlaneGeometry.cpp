@@ -262,7 +262,7 @@ void PlaneGeometry::triangulate() {
 
 		// now the 'points' vector holds vertexes of the outer polygon and all the holes
 
-		IBK::IBK_Message("Edges\n", IBK::MSG_PROGRESS, "");
+//		IBK::IBK_Message("Edges\n", IBK::MSG_PROGRESS, "");
 		// add edges
 		std::vector<std::pair<unsigned int, unsigned int> > holeOnlyEdges;
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
@@ -271,7 +271,7 @@ void PlaneGeometry::triangulate() {
 			// add edge to global edge list (for outer polygon), but only, if polygon is entirely valid
 			if (polygonStatus[holeIdx] == 2) {
 				edges.push_back(std::make_pair(i1, i2));
-				IBK::IBK_Message(IBK::FormatString("   edges[%1]    = (%2, %3)\n").arg(i).arg(i1).arg(i2), IBK::MSG_PROGRESS, "");
+	//			IBK::IBK_Message(IBK::FormatString("   edges[%1]    = (%2, %3)\n").arg(i).arg(i1).arg(i2), IBK::MSG_PROGRESS, "");
 			}
 
 			// add edge to vector with only hole edges (numbered from 0...vertexCount-1)
@@ -298,7 +298,6 @@ void PlaneGeometry::triangulate() {
 
 		// and copy the triangle data and remap the points
 		for (auto tri : triangu.m_triangles) {
-			IBKMK::Triangulation::triangle_t triangle;
 			if (tri.isDegenerated()) // protect against -1 vertex indexes
 				continue;
 			m_holeTriangulationData[holeIdx].m_triangles.push_back(tri);
@@ -309,7 +308,7 @@ void PlaneGeometry::triangulate() {
 
 	// now generate the triangulation data for the entire surface, without subsurface polygons
 
-#if 1
+#if 0
 	for (auto p : points)
 		IBK::IBK_Message(IBK::FormatString("	points.push_back( IBK::point2D<double>(%1,%2));\n")
 						 .arg(p.m_x).arg(p.m_y), IBK::MSG_PROGRESS, "");
@@ -321,13 +320,13 @@ void PlaneGeometry::triangulate() {
 	// Note: IBK::point2D<double> is a IBKMK::Vector2D
 	triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), edges);
 
-	IBK::IBK_Message("Triangulation\n", IBK::MSG_PROGRESS, "");
+//	IBK::IBK_Message("Triangulation\n", IBK::MSG_PROGRESS, "");
 	for (auto tri : triangu.m_triangles) {
 		// skip degenerated triangles
 		if (tri.isDegenerated())
 			continue;
 		m_triangulationData.m_triangles.push_back(tri);
-		IBK::IBK_Message(IBK::FormatString("%1, %2, %3\n").arg(tri.i1).arg(tri.i2).arg(tri.i3), IBK::MSG_PROGRESS, "");
+//		IBK::IBK_Message(IBK::FormatString("%1, %2, %3\n").arg(tri.i1).arg(tri.i2).arg(tri.i3), IBK::MSG_PROGRESS, "");
 	}
 
 	// store vertexes for triangles

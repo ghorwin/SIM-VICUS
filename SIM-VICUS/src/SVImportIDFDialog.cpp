@@ -114,7 +114,7 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 
 
 void updateProgress(QProgressDialog * dlg, QElapsedTimer & progressTimer, int count) {
-	const unsigned int PROGRESS_TIMER_MSEC_DELAY = 50;
+	const unsigned int PROGRESS_TIMER_MSEC_DELAY = 400;
 	double elapsed = progressTimer.elapsed();
 	if (elapsed > PROGRESS_TIMER_MSEC_DELAY) {
 		dlg->setValue(count);
@@ -214,7 +214,7 @@ void SVImportIDFDialog::transferDataDirk(const EP::Project &prj){
 	QProgressDialog dlg(tr("Importing IDF project"), tr("Abort"), 0, elementsToImport, this);
 	dlg.setWindowModality(Qt::WindowModal);
 	dlg.setValue(0);
-	dlg.setMinimumDuration(0);
+	dlg.setMinimumDuration(400);
 
 	QElapsedTimer progressTimer;
 	progressTimer.start();
@@ -411,11 +411,9 @@ void SVImportIDFDialog::transferDataDirk(const EP::Project &prj){
 			else if(vecPos != prj.m_constructions.size())
 				isConstructionImported[vecPos] = 1;
 		}
-
-
 	}
-
 }
+
 
 void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	FUNCID(SVImportIDFDialog::transferData);
@@ -1511,25 +1509,55 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 
-
-
 	// set site properties based on extends of imported geometry
 	double maxDist = 100;
 	maxDist = std::max(maxDist, maxCoords.m_x - minCoords.m_x);
 	maxDist = std::max(maxDist, maxCoords.m_y - minCoords.m_y);
 	maxDist = std::max(maxDist, maxCoords.m_z - minCoords.m_z);
 	vp.m_viewSettings.m_farDistance = maxDist*4;
-	vp.m_viewSettings.m_gridWidth = maxDist;
-	if (maxDist < 10)
+	vp.m_viewSettings.m_gridWidth = maxDist*2;
+	if (maxDist < 10) {
 		vp.m_viewSettings.m_gridSpacing = 0.1;
-	else if (maxDist < 100)
+		vp.m_viewSettings.m_gridWidth = 20;
+	}
+	else if (maxDist < 100) {
 		vp.m_viewSettings.m_gridSpacing = 1;
-	else if (maxDist < 500)
+		vp.m_viewSettings.m_gridWidth = 200;
+	}
+	else if (maxDist < 500) {
 		vp.m_viewSettings.m_gridSpacing = 10;
-	else if (maxDist < 1000)
+		vp.m_viewSettings.m_gridWidth = 1000;
+	}
+	else if (maxDist < 1000) {
 		vp.m_viewSettings.m_gridSpacing = 50;
+		vp.m_viewSettings.m_gridWidth = 2000;
+	}
 	else
 		vp.m_viewSettings.m_gridSpacing = 100;
+
+	// now that we have the center of the building, we can compute the horizontal transformation
+	double centerX = 0.5*(maxCoords.m_x + minCoords.m_x);
+	double centerY = 0.5*(maxCoords.m_y + minCoords.m_y);
+
+	// now translate entire geometry to the center of the scene
+	IBKMK::Vector3D trans(-centerX, -centerY, 0);
+	for (VICUS::Surface & s : vp.m_plainGeometry) {
+		std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon().vertexes();
+		for (IBKMK::Vector3D & v : vertexes)
+			v += trans;
+		s.setPolygon3D(VICUS::Polygon3D(vertexes));
+	}
+
+	for (VICUS::Building & b : vp.m_buildings)
+		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (VICUS::Room & r : bl.m_rooms)
+				for (VICUS::Surface & s : r.m_surfaces) {
+					std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon().vertexes();
+					for (IBKMK::Vector3D & v : vertexes)
+						v += trans;
+					s.setPolygon3D(VICUS::Polygon3D(vertexes));
+				}
+
 }
 
 
