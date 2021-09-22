@@ -1,7 +1,7 @@
 NANDRAD FMU-Generator
 =====================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.0 (03.09.2021)
+v1.0 (22.09.2021)
 // v1.0 date_on_line_above
 :Author Initials: AN
 :toc: left
@@ -25,6 +25,10 @@ v1.0 (03.09.2021)
 :table-caption: Tabelle
 
 
+// Bildskalierung: 1400px/16cm  : 16cm/1400px = 0,011429 cm/px
+//
+// Beispiel: Bildbreite = 1076  -> Breite in cm = 1076 * 0,011428 = 12.2 cm
+
 ## Überblick
 
 Dieses Dokument enthält eine Beschreibung des _NANDRAD FMU-Generators_, einem kleinen Programm, welches recht komfortabel NANDRAD Simulationsmodelle in _Functional Mock-Up Units_ (FMUs) verpackt und bei der Definition der Ein- und Ausgangsvariablen hilft.
@@ -39,23 +43,7 @@ Der grundlegende Arbeitsablauf ist in Abbildung <<fig_workflow.svg>> gezeigt.
 .Arbeitsablauf bei der Erstellung einer FMU aus einer NANDRAD Projektdatei
 image::workflow.svg[]
 
-1. Beginnend von einer fertigen NANDRAD-Projektdatei wird eine Test-Initialisierung durchgeführt. Dies entspricht dem Ausführen des NANDRAD-Rechenkerns mit der Kommandozeilenoption `--test-init`.
-+
-.Durchführen der Test-Initialisierung in der Kommandozeile
-```bash
-> NandradSolver --test-init /path/to/Nandrad/Project.nandrad
-```
-+
-Dieser Schritt dient einem doppelten Zweck: 
-+
-- einerseits wird geprüft, ob das Projekt korrekt parametriert wurde und die Projektdatei syntaktisch richtig ist (dies ist vor allem bei geskripteter Projektdatenanpassung wichtig),
-- andererseits werden die Dateien `input_reference_list.txt` und `output_reference_list.txt` erstellt, welche die Gesamtheit aller Ein- und Ausgangsvariablen des NANDRAD-Modells enthalten.
-+
-2. Beim Start des _NANDRAD FMU-Generators_ werden diese Dateien nun eingelesen und der Anwender kann die FMI-Schnittstellenvariablen auswählen.
-3. Der _NANDRAD FMU-Generator_ erstellt die FMU, indem die Projektdatei und alle referenzierten Resourcen (Klimadatei, Zeitreihen-Dateien, etc.) in das FMU-Archiv kopiert werden. Außerdem werden in der modifizierten Projektdatei die konfigurierten FMI-Variablen abgelegt, sodass der NANDRAD-FMU-Rechenkern Kenntnis davon erhält.
-4. Die `modelDescription.xml` wird generiert und die FMU erstellt.
-
-In Schritt (3) wird außerdem noch die originale NANDRAD-Projektdatei mit den bereits definierten FMI-Variablen ergänzt, sodass beim nächsten Start des _NANDRAD FMU-Generators_ diese Informationen bereits vorliegen (man spart sich das erneute Definieren von bereits konfigurierten FMI-Variablen).
+_NANDRAD FMU-Generator_ übernimmt die meisten der Arbeitsschritte (siehe Abschnitt <<InDetail>> für Einzelheiten zu den internen Algorithmen).
 
 ## Starten des Tools
 
@@ -68,7 +56,6 @@ Alternativ kann das Programm auch direkt mit einer Projektdatei geöffnet werden
 ```
 
 oder in der Dateiverwaltung durch Öffnen einer `*.nandrad`-Datei via "Öffnen mit..." und Auswahl von _NANDRAD FMU-Generator_.
-
 
 ### Automatisierte FMU-Erstellung
 
@@ -99,5 +86,93 @@ C:\Program Files\IBK\SIM-VICUS 0.6\NandradFMUGenerator.exe --generate=Hausmodell
 
 ## Die Programmoberfläche
 
-...
+Die Programmoberfläche ist in 3 Eingabeseiten gegliedert. Die erste Seite enthält allgemeine Einstellungen (<<fig_general>>).
 
+[[fig_general]]
+.Generelle FMU Einstellungen/Pfade
+image::general.png[width="1418", pdfwidth=16cm]
+
+Die Bedienelemente sind:
+
+1. Öffnet Datei-Dialog zur Auswahl einer `nandrad`-Datei. Nach Auswahl der Datei wird automatisch eine Testinitialisierung durchgeführt und so geprüft, ob die Projektdatei eine gültige und vollständige Parametrierung beinhaltet (siehe <<InDetail>>).
+2. Eingabe für den FMU Modellnamen; dieser bestimmt auch den Namen der generierten `fmu`-Datei
+3. Auswahl des Zielverzeichnis; standardmäßig wird hier der Pfad der ursprünglichen `nandrad`-Datei eingetragen
+4. Hier wird der komplete Pfad zur generierten FMU angezeigt. Er ergibt sich aus dem Modellnamen und dem Zielpfad.
+5. Diese Schaltfläche speichert die aktuelle FMU-Konfiguration in der `nandrad`-Projektdatei. Somit können alle Einstellungen beim nächsten Start des Programms und beim erneuten Einladen der Projektdatei wiederhergestellt werden.
+6. Damit wird die zuletzt in der Projektdatei gespeicherte FMU-Konfiguration wiederhergestellt. Alle aktuellen Änderungen werden zurückgesetzt.
+7. Die Schaltfläche speichert zunächst alle Einstellungen in der `nandrad`-Projektdatei und erstellt dann die FMU.
+
+Nachdem die grundlegenden FMU-Pfad- und Namenseinstellungen getroffen wurden, müssen noch die Ein- und Ausgabevariablen konfiguriert werden. Dies erfolgt in den anderen beiden Registerkarten.
+
+### Konfiguration von FMU Eingangsvariablen
+
+[[fig_inputvars]]
+.Definition und Konfiguration von FMI-Eingangsvariablen
+image::inputvars.png[width="1418", pdfwidth=16cm]
+
+<<fig_inputvars>> zeigt die Liste der NANDRAD-Modellvariablen, welche durch die FMU Schnittstelle in die Simulation importiert werden können. Diese Liste wird aus der Datei `input_reference_list.txt` erstellt. Analog wird die Liste der Ausgabevariablen in der letzten Registerkarte aus der Datei `output_reference_list.txt` befüllt.
+
+[TIP]
+====
+Die Tabellenspalten können mit Klick auf die Kopfzeilen sortiert werden.
+====
+
+Die Tabelle zeigt in den ersten 4 Spalten die Eigenschaften der veröffentlichten NANDRAD Modellvariablen. Danach folgen Spalten mit FMI-Variablen-Definitionen. In <<fig_inputvars>> sind folgende Elemente beziffert:
+
+1. Fett-gedruckt sind alle NANDRAD-Variablen, welche als FMU-Eingangsvariablen konfiguriert sind. 
+2. Sobald eine oder mehrere Variablen ausgewählt sind, welche noch nicht konfiguriert wurden, ist der "Plus"-Knopf aktiv. Damit (oder per Doppelklick auf eine Zeile) werden die Variablen konfiguriert. Dies bedeutet, dass ihnen ein *eindeutiger* FMI-Variablenname und eine *eindeutige* _FMI value reference_ zugewiesen wird.
+
+3. Analog können konfigurierte FMU-Variablen wieder entfernt werden. Die "Minus"-Schaltfläche ist aktiv, wenn mindestens eine bereits konfigurierte Variable ausgewählt ist.
+
+4. Bei größeren Modellen kann es sich lohnen, die Variablenliste zu filtern. Eingaben in diesem Feld werden dazu benutzt, nach NANDRAD Variablennamen zu filtern. Dabei kann der Platzhalter `*`  verwendet werden. Beispielsweise zeigt `Model*Temp` Variablen wie `Model(12).AirTemperature` oder `Model(112).FluidTemperature` an.
+
+5. Alternativ kann auch nach einem Text in der Beschreibung gefiltert werden. 
+
+[TIP]
+====
+Filtertexte sind immer unabhängig von der Groß-/Kleinschreibung.
+====
+
+
+### Konfiguration von FMU Ausgangsvariablen
+
+Ausgabevariablen werden ganz genauso wie Eingangsvariablen definiert. Es gibt aber unterschiedliche Regeln für das Umbenennen von FMI Variablennamen.
+
+### Umbenennung von FMI Variablennamen
+
+Der _NANDRAD FMU-Generator_ legt standardmäßig FMI Variablennamen ausgehend von NANDRAD Modellvariablen an. Manchmal möchte man für die FMU Schnittstelle aber eigene Variablennamen definieren, beispielsweise für die Ausgabe einer Raumlufttemperatur statt `Zone(2).AirTemperature` einfach nur `Temperature` verwenden.
+
+Einen Variablennamen kann man durch *Doppelklick* auf den FMI-Variablennamen (4. Spalte) ändern (<<fig_rename>>).
+
+[[fig_rename]]
+.Umbenennen eines FMI Variablennamens
+image::rename.png[width="1067", pdfwidth=12.2cm]
+
+Dabei gelten folgende Regeln:
+
+1. Ausgabevariablen müssen global eindeutig benannt sein.
+2. Eingangsvariablen können den gleichen Namen bekommen. Damit kann man eine FMU-Eingangsvariable definieren, deren Wert dann mehreren NANDRAD-Modellvariablen zugewiesen wird. Dafür muss die Variableneinheit identisch sein.
+
+
+[[InDetail]]
+## Hinter den Kulissen
+
+Der _NANDRAD FMU-Generator_ verwendet intern den NANDRAD-Rechenkern, um die Listen der Variablen zu beziehen und mit eventuell vorkonfigurierten FMI-Variablen abzugleichen. Dabei werden folgend e Schritte intern durchgeführt:
+
+1. Beginnend von einer fertigen NANDRAD-Projektdatei wird eine Test-Initialisierung durchgeführt. Dies entspricht dem Ausführen des NANDRAD-Rechenkerns mit der Kommandozeilenoption `--test-init`.
++
+.Durchführen der Test-Initialisierung in der Kommandozeile
+```bash
+> NandradSolver --test-init /path/to/Nandrad/Project.nandrad
+```
++
+Dieser Schritt dient einem doppelten Zweck: 
++
+- einerseits wird geprüft, ob das Projekt korrekt parametriert wurde und die Projektdatei syntaktisch richtig ist (dies ist vor allem bei geskripteter Projektdatenanpassung wichtig),
+- andererseits werden die Dateien `input_reference_list.txt` und `output_reference_list.txt` erstellt, welche die Gesamtheit aller Ein- und Ausgangsvariablen des NANDRAD-Modells enthalten.
++
+2. Beim Start des _NANDRAD FMU-Generators_ werden diese Dateien nun eingelesen und der Anwender kann die FMI-Schnittstellenvariablen auswählen.
+3. Der _NANDRAD FMU-Generator_ erstellt die FMU, indem die Projektdatei und alle referenzierten Resourcen (Klimadatei, Zeitreihen-Dateien, etc.) in das FMU-Archiv kopiert werden. Außerdem werden in der modifizierten Projektdatei die konfigurierten FMI-Variablen abgelegt, sodass der NANDRAD-FMU-Rechenkern Kenntnis davon erhält.
+4. Die `modelDescription.xml` wird generiert und die FMU erstellt.
+
+In Schritt (3) wird außerdem noch die originale NANDRAD-Projektdatei mit den bereits definierten FMI-Variablen ergänzt, sodass beim nächsten Start des _NANDRAD FMU-Generators_ diese Informationen bereits vorliegen (man spart sich das erneute Definieren von bereits konfigurierten FMI-Variablen).
