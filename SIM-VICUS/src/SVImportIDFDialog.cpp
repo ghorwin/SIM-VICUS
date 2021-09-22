@@ -1353,7 +1353,10 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 										 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 
 				// we keep the subsurface component and generate the component instance, but with a dummy window
-				com.m_idWindow = db.m_windows.begin()->first;
+				if (!db.m_windows.empty())
+					com.m_idWindow = db.m_windows.begin()->first;
+				else
+					continue;
 			}
 
 			const VICUS::Window * window = db.m_windows[com.m_idWindow];
