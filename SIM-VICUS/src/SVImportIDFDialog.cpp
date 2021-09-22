@@ -1633,12 +1633,12 @@ void SVImportMessageHandler::msg(const std::string& msg,
 
 	switch (t) {
 		case IBK::MSG_WARNING :
-			msg2 = "<span style=\"color:#e0c000\">" + msg2 + "</span>";
+			msg2 = "<span style=\"color:#e0c000\">" + msg2 + "</span><br>";
 			m_plainTextEdit->appendHtml(QString::fromStdString(msg2));
 		break;
 
 		case IBK::MSG_ERROR :
-			msg2 = "<span style=\"color:#d00000\">" + msg2 + "</span>";
+			msg2 = "<span style=\"color:#d00000\">" + msg2 + "</span><br>";
 			m_plainTextEdit->appendHtml(QString::fromStdString(msg2));
 		break;
 
