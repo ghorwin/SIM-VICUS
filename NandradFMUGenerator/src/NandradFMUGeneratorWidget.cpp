@@ -17,6 +17,8 @@
 
 #include <IBK_messages.h>
 
+#include <NANDRAD_Constants.h>
+
 #ifdef Q_OS_WIN
 #undef UNICODE
 #ifndef NOMINMAX
@@ -37,6 +39,10 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	m_outputVariablesTableModel(new FMUVariableTableModel(this, false))
 {
 	m_ui->setupUi(this);
+
+	qApp->setApplicationName(QString("NANDRAD FMU Generator %1").arg(NANDRAD::LONG_VERSION));
+	qApp->setWindowIcon(QIcon(":/NandradIcon_64.png"));
+	setWindowTitle(QString("NANDRAD FMU Generator %1").arg(NANDRAD::LONG_VERSION));
 
 	m_ui->lineEditTargetDirectory->setup("", false, true, QString(), true);
 

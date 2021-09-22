@@ -23,9 +23,6 @@ int main(int argc, char *argv[]) {
 	setlocale(LC_NUMERIC,"C");
 #endif
 
-	qApp->setApplicationName("NANDRAD FMU Generator");
-	qApp->setWindowIcon(QIcon(":/NandradIcon_64.png"));
-
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
 	QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
