@@ -2093,10 +2093,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		NANDRAD::HydraulicNetworkComponent nandradComp;
 		nandradComp.m_id = comp->m_id;
 		nandradComp.m_displayName = comp->m_displayName.string(IBK::MultiLanguageString::m_language, "en");
-		nandradComp.m_modelType = (NANDRAD::HydraulicNetworkComponent::ModelType) comp->m_modelType;
+		nandradComp.m_modelType = VICUS::NetworkComponent::nandradNetworkComponentModelType(comp->m_modelType);
+		comp->nandradNetworkComponentParameter(nandradComp.m_para);
 		nandradComp.m_polynomCoefficients = comp->m_polynomCoefficients;
-		for (int i=0; i<VICUS::NetworkComponent::NUM_P; ++i)
-			nandradComp.m_para[i] = comp->m_para[i];
 
 		nandradNetwork.m_components.push_back(nandradComp);
 	}
@@ -2135,6 +2134,13 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
 		pipeIds.insert(edge.m_idPipe);
 	}
+	for (unsigned int compId: componentIds){
+		const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, compId);
+		Q_ASSERT(comp != nullptr);
+		if (comp->m_pipePropertiesId != INVALID_ID) // Note: we have checked the existence of comp above already
+			pipeIds.insert(comp->m_pipePropertiesId);
+	}
+
 
 	// --> transfer
 	for(unsigned int pipeId: pipeIds) {
@@ -2257,6 +2263,19 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			if (elem.m_id == sub->m_idHeatExchangeElement)
 				newElement.m_heatExchange = node.m_heatExchange;
 
+			// SPECIAL CASE :
+			// Ground Heat Exchanger: retrieve parameters from the component
+			if (comp->m_modelType == VICUS::NetworkComponent::MT_HorizontalGroundHeatExchanger){
+				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
+												   NANDRAD::HydraulicNetworkElement::P_Length,
+												   comp->m_para[VICUS::NetworkComponent::P_LengthOfGroundHeatExchangerPipes].value);
+				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberOfParallelPipes];
+			}
+
+			// some components store a pipe properties id, so we transfer them to the element
+			if (VICUS::NetworkComponent::hasPipeProperties(comp->m_modelType))
+				newElement.m_pipePropertiesId = comp->m_pipePropertiesId;
+
 			// 6. add element to the nandrad network
 			nandradNetwork.m_elements.push_back(newElement);
 
@@ -2290,7 +2309,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		// get a list with required schedule names, they correspond to the component schedule ids
 		std::vector<std::string> scheduleNames= NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(
-					NANDRAD::HydraulicNetworkComponent::ModelType(comp->m_modelType));
+					NetworkComponent::nandradNetworkComponentModelType(comp->m_modelType));
 		Q_ASSERT(scheduleNames.size() == comp->m_scheduleIds.size());
 
 		// add schedules of component to nandrad
