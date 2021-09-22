@@ -24,6 +24,7 @@
 */
 
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_KeywordList.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -32,12 +33,33 @@ namespace VICUS {
 
 bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 
-	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = NANDRAD::HydraulicNetworkComponent::ModelType (m_modelType);
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = nandradNetworkComponentModelType(m_modelType);
 
+	// check standard parameter
 	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	for (unsigned int i: paraVec){
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(m_para[i], i);
+		} catch (IBK::Exception) {
+			return false;
+		}
+	}
+
+	// check additional parameter
+	std::vector<unsigned int> paraVecAdd = additionalRequiredParameter(m_modelType);
+	for (unsigned int i: paraVecAdd){
+		try {
+			checkAdditionalParameter(m_para[i], i);
+		} catch (IBK::Exception) {
+			return false;
+		}
+	}
+
+	// check integer parameter
+	std::vector<unsigned int> paraVecInt = requiredIntParameter(m_modelType);
+	for (unsigned int i: paraVecInt){
+		try {
+			checkIntParameter(m_intPara[i], i);
 		} catch (IBK::Exception) {
 			return false;
 		}
@@ -59,6 +81,10 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 			return false;
 	}
 
+	// pipe properties
+	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID)
+		return false;
+
 	return true;
 }
 
@@ -67,10 +93,6 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 
 	const NetworkComponent * otherNetComp = dynamic_cast<const NetworkComponent*>(other);
 	if (otherNetComp == nullptr)
-		return Different;
-
-	// check id
-	if (m_id != otherNetComp->m_id)
 		return Different;
 
 	//check parameters
@@ -94,6 +116,134 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+
+NANDRAD::HydraulicNetworkComponent::ModelType NetworkComponent::nandradNetworkComponentModelType(NetworkComponent::ModelType modelType) {
+	// special case handling
+	if (modelType == MT_HorizontalGroundHeatExchanger)
+		return NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
+	else
+	// default
+		Q_ASSERT((unsigned int)modelType <= (unsigned int)NANDRAD::HydraulicNetworkComponent::NUM_MT);
+		return NANDRAD::HydraulicNetworkComponent::ModelType(modelType);
+}
+
+
+void NetworkComponent::nandradNetworkComponentParameter(IBK::Parameter *para) const {
+	for (unsigned int i=0; i<P_LengthOfGroundHeatExchangerPipes; ++i)
+		para[i] = m_para[i];
+}
+
+
+std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const NetworkComponent::ModelType modelType) {
+	// we use switch for maintanance reasons
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_ConstantPressurePump:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpRealSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case NUM_MT:
+			return {};
+		case MT_HorizontalGroundHeatExchanger:
+			return {P_LengthOfGroundHeatExchangerPipes};
+	}
+}
+
+std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
+	// we use switch for maintanance reasons
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_ConstantPressurePump:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpRealSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case NUM_MT:
+			return {};
+		case MT_HorizontalGroundHeatExchanger:
+			return {IP_NumberOfParallelPipes};
+	}
+}
+
+void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, const unsigned int numPara) {
+	const char * enumName = "NetworkComponent::para_t";
+	const char * name = KeywordList::Keyword(enumName, (int)numPara);
+	const char * unit = KeywordList::Unit(enumName, (int)numPara);
+	// we use switch for maintanance reasons
+	switch ((para_t)numPara) {
+		case P_HydraulicDiameter:
+		case P_Volume:
+		case P_MaximumHeatingPower:
+		case P_MaximumPressureHead:
+		case P_PumpMaximumElectricalPower:
+		case P_PipeMaxDiscretizationWidth:
+		case P_MassFlux:
+		case P_PressureLoss:
+		case P_PressureLossCoefficient:
+		case P_CarnotEfficiency:
+		case P_PumpEfficiency:
+		case P_FractionOfMotorInefficienciesToFluidStream:
+		case P_PressureHead: {
+			Q_ASSERT(false); // it is not intendet to check these parameters here
+		} break;
+		case P_LengthOfGroundHeatExchangerPipes:
+			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
+		break;
+		case NUM_P: break;
+	}
+}
+
+
+void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsigned int numPara) {
+	FUNCID(NetworkComponent::checkIntParameter);
+	const char * enumName = "NetworkComponent::para_t";
+	const char * name = KeywordList::Keyword(enumName, (int)numPara);
+	switch (numPara) {
+		case IP_NumberOfParallelPipes:{
+			if (para.value < 1)
+				throw IBK::Exception(IBK::FormatString("% must be > 1").arg(name), FUNC_ID);
+		} break;
+		case NUM_IP: break;
+	}
+
+}
+
+
+bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType modelType)
+{
+	switch (modelType) {
+		case MT_ConstantPressurePump:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpRealSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case NUM_MT:
+			return false;
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_HorizontalGroundHeatExchanger:
+			return true;
+	}
 }
 
 
