@@ -23,6 +23,9 @@ import datetime
 
 from print_funcs import *
 
+from colorama import init
+init()
+
 PRINT_FILE_SUFFIX = "-print"
 
 def processAdoc(fpath, mode, scriptPath):
