@@ -276,7 +276,7 @@ void NandradFMUGeneratorWidget::setup() {
 }
 
 
-bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QString & newVarName, bool autoAdjustName) {
+bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, QString newVarName, bool autoAdjustName) {
 
 	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
 	//
@@ -322,12 +322,23 @@ bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QS
 			continue;
 		// error: name already exists as configured output variable
 		if (newVarName.toStdString() == otherVar.m_fmiVarName) {
-			QMessageBox::critical(this, QString(),
-				  tr("FMI variable name '%1' is already used by an output variable!")
-					.arg(newVarName));
-			return false;
+			// if we can automatically adjust the name (when adding new variables)
+			// generate a new unique name and continue with it
+			if (autoAdjustName) {
+				newVarName = generateUniqueVariableName(newVarName);
+				break;
+			}
+			else {
+				QMessageBox::critical(this, QString(),
+					  tr("FMI variable name '%1' is already used by an output variable!")
+						.arg(newVarName));
+				return false;
+			}
 		}
 	}
+
+	// in case the variable was renamed above, the loop below is useless, but we keep it for simplicity.
+
 	// check name against existing name of references
 	for (unsigned int j = 0; j < m_availableInputVariables.size(); ++j) {
 		// skip equal variable in list
@@ -342,6 +353,11 @@ bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QS
 		if (newVarName.toStdString() == otherVar.m_fmiVarName) {
 			// check unit
 			if (inputVar.m_unit != otherVar.m_unit) {
+				if (autoAdjustName) {
+					newVarName = generateUniqueVariableName(newVarName); // Mind: we keep our own/new value ref
+					break;
+				}
+
 				// if units are not equal than convert into each other
 				QMessageBox::critical(this, QString(),
 					  tr("There is already a configured FMI variable with name '%1' and unit '%2', but the currently selected variable has unit '%3'.")
@@ -351,9 +367,12 @@ bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QS
 			newVarRef = otherVar.m_fmiValueRef;
 			break;
 		}
-		//	existing reference and different name: temporarily create a new reference
-		else if(!inputVar.sameModelVarAs(otherVar) &&
-				inputVar.m_fmiValueRef == otherVar.m_fmiValueRef) {
+
+		// We have a variable that used to share its name and value reference with another variable.
+		// Now the name is different, and hence we need to assign it a new value reference.
+		// Its current value reference still matches that of another variable -> this we check and if found
+		// we generate a new value reference.
+		if (inputVar.m_fmiValueRef == otherVar.m_fmiValueRef) {
 			// create a new reference (use the highest value and count one)
 			newVarRef = *(m_usedValueRefs.rbegin()) + 1;
 		}
@@ -362,8 +381,12 @@ bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QS
 	// rename variable
 	inputVar.m_fmiVarName = newVarName.toStdString();
 
-	// change reference
-	if(newVarRef != inputVar.m_fmiValueRef) {
+	// We handle two cases:
+	// a) variable has been renamed to another variable with same name and the value refs are new equal
+	//    -> remove old value ref from m_usedValueRefs container
+	// b) variable has been renamed from a same-named variable and received a new unqiue ID
+	//    -> add new ID to used value refs
+	if (newVarRef != inputVar.m_fmiValueRef) {
 		unsigned int oldVarRef = inputVar.m_fmiValueRef;
 		// change id
 		inputVar.m_fmiValueRef = newVarRef;
@@ -372,9 +395,8 @@ bool NandradFMUGeneratorWidget::renameInputVariable(unsigned int index, const QS
 		removeUsedInputValueRef(index, oldVarRef);
 		// add new value ref to container
 		m_usedValueRefs.insert(newVarRef);
-
-		dumpUsedValueRefs();
 	}
+	dumpUsedValueRefs();
 
 	return true;
 }
@@ -1099,6 +1121,8 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 		// Note: may be adjusted again in renameXXXVariable() call below, if in case of input variable
 		//       an FMI variable with same name exists already
 		var.m_fmiValueRef = (*m_usedValueRefs.rbegin()) + 1;
+		// also insert the new value reference to list of used value refs
+		m_usedValueRefs.insert(var.m_fmiValueRef);
 
 		// When we configure the variable, we must check against other variables with the same name.
 		// Unfortunately, this may give rise to a usability problem. Suppose I want to configure
@@ -1115,8 +1139,6 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 		}
 		else {
 			renameOutputVariable(row, QString::fromStdString(var.m_fmiVarName), true);
-			// also insert the new value reference of the renamed output variable
-			m_usedValueRefs.insert(var.m_fmiValueRef);
 		}
 
 		dumpUsedValueRefs();
@@ -1245,8 +1267,20 @@ void NandradFMUGeneratorWidget::removeUsedInputValueRef(unsigned int index, unsi
 
 
 QString NandradFMUGeneratorWidget::generateUniqueVariableName(const QString & suggestedName) const {
-	// TODO
-	return suggestedName;
+	std::set<QString> names;
+	for (const NANDRAD::FMIVariableDefinition & var : m_availableInputVariables)
+		names.insert(QString::fromStdString(var.m_fmiVarName));
+	for (const NANDRAD::FMIVariableDefinition & var : m_availableOutputVariables)
+		names.insert(QString::fromStdString(var.m_fmiVarName));
+
+	QString name;
+	unsigned int counter = 1;
+	do {
+		// compose new name based on pattern "basename_<nr>"
+		name = suggestedName + QString("_%1").arg(++counter);
+	}
+	while (names.find(name) != names.end());
+	return name;
 }
 
 

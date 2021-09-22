@@ -29,8 +29,9 @@ public:
 		This function is called by the table model in setData().
 		If all error checks are passed, the data storage vectors (used by the models) are modified accordingly and the function
 		returns true. Otherwise the function returns false and no changes are made to the data.
+		\note newVarName is passed by value since it may be modified in the function.
 	*/
-	bool renameInputVariable(unsigned int index, const QString &newVarName, bool autoAdjustName = false);
+	bool renameInputVariable(unsigned int index, QString newVarName, bool autoAdjustName = false);
 
 	/*! Performs a renaming of an output variable.
 		This function is called by the table model in setData().
