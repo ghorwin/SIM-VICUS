@@ -1,8 +1,8 @@
 NANDRAD FMU-Generator
 =====================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-v1.0 (22.09.2021)
-// v1.0 date_on_line_above
+v2.0 (22.09.2021)
+// v2.0 date_on_line_above
 :Author Initials: AN
 :toc: left
 :toclevels: 3
@@ -17,33 +17,42 @@ v1.0 (22.09.2021)
 :stylesdir: ../adoc_utils/css
 :stylesheet: roboto_ubuntu.css
 :tabsize: 2
-:title-page:
+
 
 :caution-caption: Achtung
 :example-caption: Beispiel
 :figure-caption: Abbildung
 :table-caption: Tabelle
+:section-refsig: Abschnitt
 
 
 // Bildskalierung: 1400px/16cm  : 16cm/1400px = 0,011429 cm/px
 //
 // Beispiel: Bildbreite = 1076  -> Breite in cm = 1076 * 0,011428 = 12.2 cm
 
+:xrefstyle: short
+
 ## Überblick
 
 Dieses Dokument enthält eine Beschreibung des _NANDRAD FMU-Generators_, einem kleinen Programm, welches recht komfortabel NANDRAD Simulationsmodelle in _Functional Mock-Up Units_ (FMUs) verpackt und bei der Definition der Ein- und Ausgangsvariablen hilft.
 
-NANDRAD Modelle bestehen intern aus einer Reihe von Modellobjekten, die selbst untereinander mittels Ergebnisgrößen und Eingangsgrößen kommunizieren.  Jede dieser Ein- und Ausgangsgrößen kann nun über die FMU-Schnittstelle nach außen geführt werden (wobei man aber notwendige Modellobjektverknüpfungen nicht auftrennen sollte - außer man will es so). In der Programmoberfläche des _NANDRAD FMU-Generators_ kann man die Variablen für die FMU-Schnittstelle auswählen und konfigurieren.
-
-Die Listen aller Ein- und Ausgangsgrößen werden bei der Initialisierung der Simulation erstellt, weswegen der Arbeitsablauf zur FMU-Erstellung mit dem Durchlaufen der Simulationsinitialisierung beginnt.
-
-Der grundlegende Arbeitsablauf ist in Abbildung <<fig_workflow.svg>> gezeigt.
+NANDRAD-Simulationsmodelle werden aus der Modellierungsumgebung _SIM-VICUS_ automatisch generiert. <<fig_workflow.svg>> zeigt einen Überblick über den Datenfluss, beteiligte Programme und Dateien.
 
 [[fig_workflow.svg]]
-.Arbeitsablauf bei der Erstellung einer FMU aus einer NANDRAD Projektdatei
-image::workflow.svg[]
+.Kollaborationsdiagramm / Überblick über die SIM-VICUS Tool-Kette
+image::workflow.svg[width="1418", pdfwidth=12cm]
 
-_NANDRAD FMU-Generator_ übernimmt die meisten der Arbeitsschritte (siehe Abschnitt <<InDetail>> für Einzelheiten zu den internen Algorithmen).
+Die Modellierung von Gebäuden und Quartieren erfolgt in der grafischen SIM-VICUS Modellierungsumgebung, welche die Modelle in `*.vicus`-Projektdateien speichert. Beim Starten einer Gebäude-/Quartierssimulation wird zunächst eine NANDRAD-Projektdatei erstellt (`*.nandrad`). Diese enthält eine auf den Rechenkern zugeschnittene und optimierte Parametrierung des Simulationsmodells.
+
+Dieses NANDRAD-Projekt wird nun bei typischen Simulationsrechnungen durch den _NANDRAD-Rechennkern_ verarbeitet, d.h. die Simulation wird durchgeführt. Die Ergebnisgrößen (Zeitreihen) werden in `*.tsv`-Dateien abgelegt, welche dann komfortable in einer Post-Processing-Software (z.B. https://bauklimatik-dresden.de/postproc[PostProc 2]) analysiert werden können.
+
+Alternativ können NANDRAD-Projektdateien zusammen mit dem Rechenkern in _FMUs_ verpackt werden. Dafür werden diese vom _NANDRAD FMU-Generator_ eingelesen und nach Konfiguration aller Variablen in eine `*.fmu`-Datei überführt. Diese kann dann von einem Co-Simulations-Masterprogramm (z.B. https://bauklimatik-dresden.de/mastersim[MasterSim]) mit anderen FMUs verknüpft werden, welche die Funktionalität des NANDRAD-Modells entsprechend erweitern.
+
+### Datenaustauschkonzept
+
+NANDRAD Modelle bestehen intern aus einer Reihe von Modellobjekten, die selbst untereinander mittels Ergebnisgrößen und Eingangsgrößen kommunizieren.  Jede dieser Ein- und Ausgangsgrößen kann nun über die FMU-Schnittstelle nach außen geführt werden. In der Programmoberfläche des _NANDRAD FMU-Generators_ kann man die Variablen für die FMU-Schnittstelle auswählen und konfigurieren. Der _NANDRAD-Rechennkern_ erkennt dann bei der Initialisierung, dass eine Ergebnisgröße eines Modellobjekts stattdessen von einer FMU-Eingangsvariable bereitgestellt wird. Beim Verknüpfen der Modellobjekte wird dann der Variablenbezug auf die FMI-Variable _umgebogen_. So kann man an beliebigen Stellen den Signalfluss aufbrechen und Kontroll-/Berechnungslogik durch externe Modelle integrieren.
+
+Die Listen aller verfügbaren/veröffentlichten Ein- und Ausgangsgrößen werden bei der Initialisierung der NANDRAD-Simulation erstellt, weswegen der Arbeitsablauf zur FMU-Erstellung mit dem Durchlaufen der Simulationsinitialisierung beginnt.
 
 ## Starten des Tools
 
@@ -51,9 +60,10 @@ Wird der _NANDRAD FMU-Generator_ ohne Kommandozeilenoption gestartet, so öffnet
 
 Alternativ kann das Programm auch direkt mit einer Projektdatei geöffnet werden, über die Kommandozeile:
 
-```bash
+[source,bash]
+----
 /path/to/NandradFMUGenerator /path/to/Nandard/Project.nandrad
-```
+----
 
 oder in der Dateiverwaltung durch Öffnen einer `*.nandrad`-Datei via "Öffnen mit..." und Auswahl von _NANDRAD FMU-Generator_.
 
@@ -61,9 +71,10 @@ oder in der Dateiverwaltung durch Öffnen einer `*.nandrad`-Datei via "Öffnen m
 
 Ist eine NANDRAD-Projektdatei bereits ausreichend konfiguriert und enthält alle FMI-Variablendefinitionen, kann man die FMU auch komplett automatisch erstellen. Dabei wird folgende Kommandozeile verwendet:
 
-```bash
+[source,bash]
+----
 /path/to/NandradFMUGenerator --generate=MyModelName /path/to/Nandard/Project.nandrad
-```
+----
 
 Das Argument hinter `--generate` ist der FMU-Modellname, d.h. `MyModelName` muss ein Name sein, der den Anforderungen des FMI-Standards für Modellbezeichner entspricht (keine Leerzeichen/Sonderzeichen, darf nicht mit einer Zahl beginnen, etc.).
 
@@ -71,16 +82,12 @@ Im geskripteten Ausführungsmodus wird keine Oberfläche angezeigt und es gibt k
 
 [NOTE]
 ====
-Bei der geskripteten/automatischen Ausführung wird die `fmu`-Datei immer im gleichen Verzeichnis wie die 'nandrad`-Datei ausgegeben. Hier muss _NANDRAD FMU-Generator_ also Schreibrechte haben.
+Bei der geskripteten/automatischen Ausführung wird die `fmu`-Datei immer im gleichen Verzeichnis wie die 'nandrad`-Datei ausgegeben. In diesem Verzeichnis muss _NANDRAD FMU-Generator_ also Schreibrechte haben.
 
-Beispiel:
+Beispielsweise wird bei folgendem Aufruf des `NandradFMUGenerator`-Programms unter Windows die Datei `D:\Projekte\Hausmodell1.fmu` erstellt:
 
-```batch
-:: Aufruf des NandradFMUGenerator Programms unter Windows
-C:\Program Files\IBK\SIM-VICUS 0.6\NandradFMUGenerator.exe --generate=Hausmodell1 D:\Projekte\Haus.nandrad
-
-:: erstellt die Datei
-:: D:\Projekte\Hausmodell1.fmu
+```bash
+D:\SIM-VICUS\NandradFMUGenerator.exe --generate=Hausmodell1 D:\Projekte\Haus.nandrad
 ```
 ====
 
@@ -101,6 +108,15 @@ Die Bedienelemente sind:
 5. Diese Schaltfläche speichert die aktuelle FMU-Konfiguration in der `nandrad`-Projektdatei. Somit können alle Einstellungen beim nächsten Start des Programms und beim erneuten Einladen der Projektdatei wiederhergestellt werden.
 6. Damit wird die zuletzt in der Projektdatei gespeicherte FMU-Konfiguration wiederhergestellt. Alle aktuellen Änderungen werden zurückgesetzt.
 7. Die Schaltfläche speichert zunächst alle Einstellungen in der `nandrad`-Projektdatei und erstellt dann die FMU.
+
+[TIP]
+====
+Sind in der NANDRAD-Projektdatei bereits FMU-Variablendefinitionen enthalten, so kann der _NANDRAD FMU-Generator_ diese erneut einlesen. Dies ermöglicht auch eine _vollständig automatisierte FMU-Erstellung_:
+
+1. VICUS-Modell in eine NANDRAD-Projektdatei überführen
+2. NANDRAD-Projektdatei (XML-Datei) mit FMI-Variablendefinitionen anreichern (siehe https://ghorwin.github.io/SIM-VICUS/NANDRAD-Model-Reference/index.html#FMU_export[FMU-Export-Spezifikation])
+3. _NANDRAD FMU-Generator_ mit `--generate` Kommandozeilenargument aufrufen (siehe oben)
+====
 
 Nachdem die grundlegenden FMU-Pfad- und Namenseinstellungen getroffen wurden, müssen noch die Ein- und Ausgabevariablen konfiguriert werden. Dies erfolgt in den anderen beiden Registerkarten.
 
@@ -154,10 +170,15 @@ Dabei gelten folgende Regeln:
 2. Eingangsvariablen können den gleichen Namen bekommen. Damit kann man eine FMU-Eingangsvariable definieren, deren Wert dann mehreren NANDRAD-Modellvariablen zugewiesen wird. Dafür muss die Variableneinheit identisch sein.
 
 
+### Generierung der FMU-Datei
+
+Der _NANDRAD FMU-Generator_ übernimmt vollautomatisch alle Arbeitsschritte für die Zusammenstellung des FMU-Archivs (siehe <<InDetail>> für Einzelheiten zu den internen Algorithmen).
+
+
 [[InDetail]]
 ## Hinter den Kulissen
 
-Der _NANDRAD FMU-Generator_ verwendet intern den NANDRAD-Rechenkern, um die Listen der Variablen zu beziehen und mit eventuell vorkonfigurierten FMI-Variablen abzugleichen. Dabei werden folgend e Schritte intern durchgeführt:
+Der _NANDRAD FMU-Generator_ verwendet intern den NANDRAD-Rechenkern, um die Listen der Variablen zu beziehen und mit eventuell vorkonfigurierten FMI-Variablen abzugleichen. Dabei werden folgende Schritte intern durchgeführt:
 
 1. Beginnend von einer fertigen NANDRAD-Projektdatei wird eine Test-Initialisierung durchgeführt. Dies entspricht dem Ausführen des NANDRAD-Rechenkerns mit der Kommandozeilenoption `--test-init`.
 +

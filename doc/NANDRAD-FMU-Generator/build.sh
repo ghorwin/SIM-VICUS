@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ADOC=NANDRAD-FMU-Generator.adoc
+ADOC=NANDRAD-FMU-Generator
 
 echo '*** Generating html ***' &&
 python ../adoc_utils/scripts/adoc-image-prep.py html . &&
@@ -25,9 +25,7 @@ fi &&
 mv $ADOC.html ../../docs/$ADOC/index.html &&
 mv $ADOC.pdf ../../docs &&
 
-imgFiles=(./images/*.png) &&
-if [ ${#imgFiles[@]} -gt 0 ]; then
-	echo 'Copying '${#imgFiles[@]}' images to ../../docs/'$ADOC'/images' &&
-	cp -r ./images/*.png ../../docs/$ADOC/images
-fi
+echo 'Copying images to ../../docs/'$ADOC'/images' &&
+cp -r ./images/*.png ../../docs/$ADOC/images &&
+cp -r ./images/*.svg ../../docs/$ADOC/images
 
