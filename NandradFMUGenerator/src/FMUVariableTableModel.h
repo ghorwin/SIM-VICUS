@@ -29,11 +29,10 @@ public:
 
 	QFont	m_itemFont;
 
+	/*! Indicates whether this is a model for input or output variables. */
 	bool	m_inputVariableTable;
-	// pointer to all input variables
+	/*! Pointer to all available (input or output) variables. */
 	std::vector<NANDRAD::FMIVariableDefinition> * m_availableVariables = nullptr;
-	// pointer to all global used value references
-	std::set<unsigned int>						* m_usedValueRefs = nullptr;
 };
 
 
