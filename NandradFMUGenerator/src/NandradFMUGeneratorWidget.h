@@ -11,6 +11,7 @@ namespace Ui {
 
 class FMUVariableTableModel;
 class QSortFilterProxyModel;
+class QItemSelection;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -24,12 +25,19 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
-	/*! This function is called by the table model in setData()*/
-	bool renameInputVariable(unsigned int index, const QString &newVarName);
+	/*! Performs a renaming of an input variable.
+		This function is called by the table model in setData().
+		If all error checks are passed, the data storage vectors (used by the models) are modified accordingly and the function
+		returns true. Otherwise the function returns false and no changes are made to the data.
+	*/
+	bool renameInputVariable(unsigned int index, const QString &newVarName, bool autoAdjustName = false);
 
-	/*! Perform a renaming of an output variable and returns true, if renaming is valid, false otherwise.
-		This function is called by the table model in setData()*/
-	bool renameOutputVariable(unsigned int index, const QString &newVarName);
+	/*! Performs a renaming of an output variable.
+		This function is called by the table model in setData().
+		If all error checks are passed, the data storage vectors (used by the models) are modified accordingly and the function
+		returns true. Otherwise the function returns false and no changes are made to the data.
+	*/
+	bool renameOutputVariable(unsigned int index, const QString &newVarName, bool autoAdjustName = false);
 
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
@@ -84,14 +92,15 @@ private slots:
 	void on_tableViewInputVars_doubleClicked(const QModelIndex &index);
 	void on_toolButtonAddInputVariable_clicked();
 	void on_toolButtonRemoveInputVariable_clicked();
-	void onInputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+	void onInputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
 
 	// ** Output Variable Table **
 
 	void on_tableViewOutputVars_doubleClicked(const QModelIndex &index);
 	void on_toolButtonAddOutputVariable_clicked();
 	void on_toolButtonRemoveOutputVariable_clicked();
-	void onOutputVarsCurrentChanged(const QModelIndex &current, const QModelIndex &previous);
+	void onOutputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
 	void on_lineEditInputVarNameFilter_textEdited(const QString &arg1);
 
@@ -145,6 +154,9 @@ private:
 	/*! Helper function for removing value reference of current input variable (if and only
 		if not used by any other input variable). */
 	void removeUsedInputValueRef(unsigned int index, unsigned int fmiVarRef);
+
+	/*! Generates a new variable name based on the suggestedName that is unique among all available input/output variables. */
+	QString generateUniqueVariableName(const QString & suggestedName) const;
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?

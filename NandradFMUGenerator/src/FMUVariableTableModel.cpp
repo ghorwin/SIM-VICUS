@@ -106,7 +106,9 @@ QVariant FMUVariableTableModel::headerData(int section, Qt::Orientation orientat
 
 Qt::ItemFlags FMUVariableTableModel::flags(const QModelIndex & index) const {
 	if (index.column() == 4)
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+		// only allow name editing when variable is already configured
+		if (index.data(Qt::UserRole).toUInt() != NANDRAD::INVALID_ID)
+			return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return QAbstractTableModel::flags(index); // call base class implementation
 }
 
@@ -120,51 +122,18 @@ bool FMUVariableTableModel::setData(const QModelIndex & index, const QVariant & 
 	if (fmiVarName.isEmpty())
 		return false;
 
-	// Note: NANDRAD FMUs use structured variable naming, to "." is ok as variable name, like in "Office.AirTemperature"
-	//
-	// See FMI Standard 2.2.7: "name: The full, unique name of the variable. Every variable is uniquely identified within an
-	//                          FMU instance by this name"
-	//
-	// Every FMU variable shall have a unique name. So we must test if the newly entered FMU name is anywhere used already.
-	// However, we have different handling for output variables and input variables.
-	//
-	// Output variables:
-	// (1) user must not select a variable name that is already used for another output/input variable; in such cases
-	//     the function shall return false and the data shall not be modified.
-	//
-	// Input variables:
-	// (2) user must not select a variable name that is already used for another *output* variable; in such cases
-	//     the function shall return show an error message and return false and the data shall not be modified.
-	//
-	// (3) if user has edited a variable with unique name and has now selected a name that is already used by another
-	//     *input* variable, we expect:
-	//   - the value reference assigned to the other, existing variable shall be set also to the freshly renamed variable,
-	//     this both NANDRAD model variables share the same (single and unique) FMU input variable
-	//   - if the existing other variable with same name has a different unit, the renaming is invalid, an error message
-	//     shall be shown and the function returns with false (no data is modified)
-	//
-	//     Rational: in more complex models, an externally computed control parameter may be needed as input for many
-	//               NANDRAD model objects. In such situations the FMU may only have one external FMI input variable
-	//               that is, however, configured to be linked to several NANDRAD model object inputs. Hence, it must
-	//               be possible to assign the same variable name and value reference to different NANDRAD variables in
-	//               the table.
-	//
-	// (4) if user has edited a variable that shares the same name and value reference as another input variable,
-	//     first the condition for (3) shall be checked and if matching, the steps for option (3) shall be followed.
-	//     If the new variable name is unique, the FMI variable shall receive a new unique value reference.
-
 	// ask Widged to rename and check variable
 	NandradFMUGeneratorWidget *parentWidged = dynamic_cast<NandradFMUGeneratorWidget *>(parent());
 	Q_ASSERT(parentWidged != nullptr);
 
-	if(m_inputVariableTable) {
+	if (m_inputVariableTable) {
 		// error handling is performed in 'NandradFMUGeneratorWidget'
-		if(!parentWidged->renameInputVariable((size_t)index.row(), fmiVarName) )
+		if (!parentWidged->renameInputVariable((size_t)index.row(), fmiVarName) )
 			return false;
 	}
 	else {
 		// error handling is performed in 'NandradFMUGeneratorWidget'
-		if(!parentWidged->renameOutputVariable((size_t)index.row(), fmiVarName) )
+		if (!parentWidged->renameOutputVariable((size_t)index.row(), fmiVarName) )
 			return false;
 	}
 
