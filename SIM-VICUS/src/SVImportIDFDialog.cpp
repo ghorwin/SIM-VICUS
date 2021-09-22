@@ -98,6 +98,9 @@ SVImportIDFDialog::ImportResults SVImportIDFDialog::import(const QString & fname
 		m_idfProject->readIDF(parser);
 		m_ui->pushButtonImport->setEnabled(true);
 
+		IBK::IBK_Message("\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+		updateEncodingPreview();
+
 	}
 	catch (IBK::Exception & ex) {
 		ex.writeMsgStackToError();
@@ -1652,3 +1655,63 @@ void SVImportMessageHandler::msg(const std::string& msg,
 }
 
 
+
+void SVImportIDFDialog::on_comboBoxEncoding_currentIndexChanged(int) {
+	m_ui->plainTextEdit->clear();
+	updateEncodingPreview();
+}
+
+void SVImportIDFDialog::updateEncodingPreview() {
+	// display zone and construction names in selected encoding
+	QTextCodec * codec = QTextCodec::codecForName(m_ui->comboBoxEncoding->currentText().toLocal8Bit());
+	IBK::IBK_Message(IBK::FormatString("Preview names with non-latin1 characters in selected encoding '%1'\n").arg(m_ui->comboBoxEncoding->currentText().toStdString()));
+	if (!m_idfProject->m_materials.empty()) {
+		IBK::IBK_Message("\nMaterials:\n");
+		IBK::MessageIndentor indent;(void)indent;
+		for (const EP::Material & m : m_idfProject->m_materials) {
+			bool haveNonLatin1 = false;
+			for (char ch : m.m_name)
+				if ((unsigned int)ch > 128) {
+					haveNonLatin1 = true;
+					break;
+				}
+			if (!haveNonLatin1)
+				continue;
+			QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+			IBK::IBK_Message(matName.toStdString() + "\n", IBK::MSG_PROGRESS);
+		}
+	}
+	if (!m_idfProject->m_constructions.empty()) {
+		IBK::IBK_Message("\nConstructions:\n");
+		IBK::MessageIndentor indent;(void)indent;
+		for (const EP::Construction & m : m_idfProject->m_constructions) {
+			bool haveNonLatin1 = false;
+			for (char ch : m.m_name)
+				if ((unsigned int)ch > 128) {
+					haveNonLatin1 = true;
+					break;
+				}
+			if (!haveNonLatin1)
+				continue;
+			QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+			IBK::IBK_Message(matName.toStdString() + "\n", IBK::MSG_PROGRESS);
+		}
+	}
+	if (!m_idfProject->m_zones.empty()) {
+		IBK::IBK_Message("\nZones:\n");
+		IBK::MessageIndentor indent;(void)indent;
+		for (const EP::Zone & m : m_idfProject->m_zones) {
+			bool haveNonLatin1 = false;
+			for (char ch : m.m_name)
+				if ((unsigned int)ch > 128) {
+					haveNonLatin1 = true;
+					break;
+				}
+			if (!haveNonLatin1)
+				continue;
+			QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+			IBK::IBK_Message(matName.toStdString() + "\n", IBK::MSG_PROGRESS);
+		}
+	}
+
+}
