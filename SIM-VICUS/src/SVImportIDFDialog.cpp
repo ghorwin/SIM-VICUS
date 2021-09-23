@@ -1665,6 +1665,7 @@ void SVImportIDFDialog::updateEncodingPreview() {
 	// display zone and construction names in selected encoding
 	QTextCodec * codec = QTextCodec::codecForName(m_ui->comboBoxEncoding->currentText().toLocal8Bit());
 	IBK::IBK_Message(IBK::FormatString("Preview names with non-latin1 characters in selected encoding '%1'\n").arg(m_ui->comboBoxEncoding->currentText().toStdString()));
+	IBK::IBK_Message("(only names with non-latin 1 characters are shown...if there aren't any, the encoding doesn't matter)\n");
 	if (!m_idfProject->m_materials.empty()) {
 		IBK::IBK_Message("\nMaterials:\n");
 		IBK::MessageIndentor indent;(void)indent;

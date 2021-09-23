@@ -10,8 +10,6 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 //	if(version != EP::Version::VN_8_3)
 //		return;
 
-
-
 	m_name = str[1];
 	/* ignore elements:
 	Direction of North
@@ -19,7 +17,7 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 	Type
 	Multiplier
 	*/
-	if(IBK::tolower_string(str[8]) != "autocalculate") {
+	if (!str[8].empty() && IBK::tolower_string(str[8]) != "autocalculate") {
 		try {
 			m_ceilingHeight = IBK::string2val<double>(str[8]);
 		} catch (...) {
@@ -29,12 +27,12 @@ void Zone::read(const std::vector<std::string> & str, unsigned int /*version*/) 
 	else
 		m_ceilingHeight = -1;
 
-	if(IBK::tolower_string(str[9]) != "autocalculate")
+	if (!str[8].empty() && IBK::tolower_string(str[9]) != "autocalculate")
 		m_volume = IBK::string2val<double>(str[9]);
 	else
 		m_volume = -1;
 
-	if(IBK::tolower_string(str[10]) != "autocalculate")
+	if (!str[8].empty() && IBK::tolower_string(str[10]) != "autocalculate")
 		m_floorArea = IBK::string2val<double>(str[10]);
 	else
 		m_floorArea = -1;
