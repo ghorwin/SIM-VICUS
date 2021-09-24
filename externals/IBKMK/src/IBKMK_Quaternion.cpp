@@ -49,10 +49,6 @@ namespace IBKMK {
 
 Quaternion::Quaternion(void)
 {
-	m_x = 0;
-	m_y = 0;
-	m_z = 0;
-	m_w = 0;
 }
 
 
@@ -185,8 +181,8 @@ void Quaternion::axisAndAngle(double &angle, IBKMK::Vector3D &v) const
 	angle = 0;
 	if ((m_w >= ((double)1)) || (m_w <= (double)(-1)))
 	{
-		// identity; this check is necessary to avoid problems with acos if s is 1 + eps
-		v.set(1,0,0);
+		// invalidity; this check is necessary to avoid problems with acos if s is 1 + eps
+		v.set(0,0,0);
 		return;
 	}
 
@@ -196,14 +192,30 @@ void Quaternion::axisAndAngle(double &angle, IBKMK::Vector3D &v) const
 	if (sin2 == 0.)
 	{
 		// identity rotation; angle is zero, any axis is equally good
-		v.set(1,0,0);
+		v.set(0,0,0);
 	}
 	else
 	{
 		double inv = 1.0 / sqrt(sin2); // note: *angle / 2.0 is on [0,pi], so sin(*angle / 2.0) >= 0, and therefore the sign of sqrt can be safely taken positive
 		v.set(m_x * inv, m_y * inv, m_z * inv);
 	}
-	return;
+}
+
+
+void Quaternion::rotationMatrix(double * R) const
+{
+	// first row
+	R[0] = 1 - 2. * m_y * m_y - 2. * m_z * m_z;
+	R[1] = 2. * m_x * m_y - 2. * m_w * m_z;
+	R[2] = 2. * m_x * m_z + 2. * m_w * m_y;
+	// second row
+	R[3] = 2. * m_x * m_y + 2. * m_w * m_z;
+	R[4] = 1 - 2. * m_x* m_x - 2. * m_z * m_z;
+	R[5] = 2. * m_y* m_z - 2. * m_w * m_x;
+	// third row
+	R[6] = 2. * m_x * m_z - 2. * m_w * m_y;
+	R[7] = 2. * m_y * m_z + 2. * m_w * m_x;
+	R[8] = 1 - 2. * m_x * m_x - 2. * m_y * m_y;
 }
 
 

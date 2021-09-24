@@ -29,6 +29,7 @@
 #include <IBK_physics.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_Quaternion.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_Object.h>
@@ -390,12 +391,15 @@ void SVPropEditGeometry::scale() {
 
 
 void SVPropEditGeometry::rotate() {
+
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
-	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
+	QVector4D qrotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation().toVector4D();
 	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
+	// use IBKMK class to permorm rotation with IBKMK Vector3D
+	IBKMK::Quaternion rotate((double) qrotate.w(),(double) qrotate.x(),(double) qrotate.y(),(double) qrotate.z());
 
-	if (rotate == QQuaternion())
+	if (rotate == IBKMK::Quaternion())
 		return;
 
 	// compose vector of modified surface geometries
@@ -411,11 +415,16 @@ void SVPropEditGeometry::rotate() {
 			const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
 			std::vector<IBKMK::Vector3D> newVertexes;
 
-			IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
-			IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
+			// rotate o copy of polyline vector
+			IBKMK::Vector3D rotaLocalX = poly.localX();
+			IBKMK::Vector3D rotaLocalY = poly.localY();
+			rotate.rotateVector(rotaLocalX);
+			rotate.rotateVector(rotaLocalY);
 
 			newVertexes.resize(vertexes.size() );
-			newVertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+			// rotate vertexes and store in new vector
+			newVertexes[0] = vertexes[0];
+			rotate.rotateVector(newVertexes[0]);
 
 			VICUS::Polygon3D newPoly;
 			newPoly.addVertex(newVertexes[0]);

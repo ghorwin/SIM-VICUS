@@ -144,6 +144,10 @@ public:
 	*/
 	void axisAndAngle(double &angle, IBKMK::Vector3D &v) const;
 
+	/*! Caluclates the corresponding 3x3 rotation matrix in row major order.
+		The quaternion is assumed to be a unit quaternion and R a vector of size 9.*/
+	void rotationMatrix(double * R) const;
+
 	/*! Scales quaternion with scalar s.
 	*/
 	Quaternion scaled(double s) const;
@@ -165,10 +169,10 @@ public:
 	void rotateVector(IBKMK::Vector3D &v) const;
 
 private:
-	double m_w;		///< Real coefficient
-	double m_x;		///< Coefficient for complex dimension i
-	double m_y;		///< Coefficient for complex dimension j
-	double m_z;		///< Coefficient for complex dimension k
+	double m_w = 0;		///< Real coefficient (= null for non-initialized Quaternion)
+	double m_x = 0;		///< Coefficient for complex dimension i (= null for non-initialized Quaternion)
+	double m_y = 0;		///< Coefficient for complex dimension j (= null for non-initialized Quaternion)
+	double m_z = 0;		///< Coefficient for complex dimension k (= null for non-initialized Quaternion)
 
 };
 
