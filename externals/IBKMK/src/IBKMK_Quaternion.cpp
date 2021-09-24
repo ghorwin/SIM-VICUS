@@ -164,6 +164,30 @@ bool Quaternion::operator == (const Quaternion& q)
 }
 
 
+double Quaternion::w() const
+{
+	return m_w;
+}
+
+
+double Quaternion::x() const
+{
+	return m_x;
+}
+
+
+double Quaternion::y() const
+{
+	return m_y;
+}
+
+
+double Quaternion::z() const
+{
+	return m_z;
+}
+
+
 double Quaternion::norm() const
 {
 	return (m_w*m_w + m_x*m_x + m_y*m_y + m_z*m_z);

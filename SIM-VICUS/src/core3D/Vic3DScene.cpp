@@ -37,6 +37,7 @@
 #include <QtExt_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_Quaternion.h>
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
@@ -709,7 +710,10 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+								QVector4D qVec = q.toVector4D();
+								IBKMK::Quaternion qDouble((double) qVec.w(), (double) qVec.x(), (double) qVec.y(), (double) qVec.z());
+								IBKMK::Vector3D newCenter = m_boundingBoxCenterPoint;
+								qDouble.rotateVector(newCenter);
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation

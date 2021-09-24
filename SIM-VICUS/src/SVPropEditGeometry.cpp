@@ -1192,11 +1192,13 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1221,10 +1223,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter ) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1245,11 +1249,13 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();

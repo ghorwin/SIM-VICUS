@@ -127,6 +127,22 @@ public:
 
 	//other methods: norm, inverse, conjugate, toEuler
 
+	/*! Returns real coefficient.
+	*/
+	double w() const;
+
+	/*! Returns coefficient of complex dimension i.
+	*/
+	double x() const;
+
+	/*! Returns coefficient of complex dimension j.
+	*/
+	double y() const;
+
+	/*! Returns coefficient of complex dimension k.
+	*/
+	double z() const;
+
 	/*! Calculations the norm of quaternion.
 	*/
 	double norm() const;
