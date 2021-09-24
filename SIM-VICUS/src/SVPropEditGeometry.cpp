@@ -390,6 +390,9 @@ void SVPropEditGeometry::scale() {
 
 
 void SVPropEditGeometry::rotate() {
+
+	FUNCID("SVPropEditGeometry::rotate");
+
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
 	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
@@ -438,7 +441,8 @@ void SVPropEditGeometry::rotate() {
 			}
 
 			// we also want to translate all points back to its original center
-			for ( IBKMK::Vector3D & v : const_cast<std::vector<IBKMK::Vector3D>&>(newPoly.vertexes() ) ) {
+//			for ( IBKMK::Vector3D & v : const_cast<std::vector<IBKMK::Vector3D>&>(newPoly.vertexes() ) ) {
+			for ( IBKMK::Vector3D & v : newVertexes ) {
 
 				Vic3D::Transform3D t;
 				t.setTranslation(QtExt::IBKVector2QVector(v) );
@@ -449,8 +453,13 @@ void SVPropEditGeometry::rotate() {
 			}
 			VICUS::Surface modS = *s;
 			// modS.setPolygon3D( VICUS::Polygon3D(newVertexes) );
-			modS.setPolygon3D( newPoly );
-			modifiedSurfaces.push_back(modS);
+			modS.setPolygon3D( newVertexes );
+			if ( modS.polygon3D().isValid() )
+				modifiedSurfaces.push_back(modS);
+			else
+				IBK::IBK_Message(IBK::FormatString("Geometry of surface %1 is broken after rotation.")
+								 .arg(modS .m_displayName.toStdString()),
+								 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 		}
 		// TODO : Netzwerk zeugs
 	}
