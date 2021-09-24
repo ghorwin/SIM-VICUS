@@ -390,13 +390,12 @@ void SVPropEditGeometry::scale() {
 
 
 void SVPropEditGeometry::rotate() {
-
 	FUNCID("SVPropEditGeometry::rotate");
 
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
 	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
-	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
+	IBKMK::Vector3D trans = QtExt::QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
 
 	if (rotate == QQuaternion())
 		return;
@@ -408,59 +407,51 @@ void SVPropEditGeometry::rotate() {
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s != nullptr) {
+		if (s == nullptr) continue; // skip all others
 
-			const VICUS::Polygon3D &poly = s->polygon3D();
-			const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
-			std::vector<IBKMK::Vector3D> newVertexes;
+		const VICUS::Polygon3D &poly = s->polygon3D();
+		// TODO : Stephan, can we fix already broken polygons?
+		if (!poly.isValid())
+			continue; // skip invalid polygons
 
-			IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
-			IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
+		// original 3D vertexes
+		const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
+		// vertexes of the 2D polygon
+		const std::vector<IBKMK::Vector2D> &polylineVertexes = poly.polyline().vertexes();
 
-			newVertexes.resize(vertexes.size() );
-			newVertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+		// create vector for modified vertexes, already resized correctly
+		std::vector<IBKMK::Vector3D> newVertexes(vertexes.size());
 
-			VICUS::Polygon3D newPoly;
-			newPoly.addVertex(newVertexes[0]);
+		// rotate our local coordinate axes
+		IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
+		IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
 
-			// check if we already have broken geometries
-			if ( poly.polyline().vertexes().size() != vertexes.size() )
-				continue;
+		// rotate the polygon's offset point
+		newVertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
 
-
-			for ( unsigned int i=1; i<vertexes.size(); ++i ) {
-
-				const std::vector<IBKMK::Vector2D> &polylineVertexes = poly.polyline().vertexes();
-
-				// we take our polyline and rotated local Axes to construct our
-				// rotated polygon3D
-				newVertexes[i] = newVertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
-
-				newPoly.addVertex(newVertexes[i]);
-
-			}
-
-			// we also want to translate all points back to its original center
-//			for ( IBKMK::Vector3D & v : const_cast<std::vector<IBKMK::Vector3D>&>(newPoly.vertexes() ) ) {
-			for ( IBKMK::Vector3D & v : newVertexes ) {
-
-				Vic3D::Transform3D t;
-				t.setTranslation(QtExt::IBKVector2QVector(v) );
-				t.translate(trans);
-
-				v = QtExt::QVector2IBKVector(t.translation() );
-
-			}
-			VICUS::Surface modS = *s;
-			// modS.setPolygon3D( VICUS::Polygon3D(newVertexes) );
-			modS.setPolygon3D( newVertexes );
-			if ( modS.polygon3D().isValid() )
-				modifiedSurfaces.push_back(modS);
-			else
-				IBK::IBK_Message(IBK::FormatString("Geometry of surface %1 is broken after rotation.")
-								 .arg(modS .m_displayName.toStdString()),
-								 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		// transform the other vertexes
+		// we take our polyline and rotated local axes to construct our rotated polygon3D
+		// this operation is faster than rotating the individual vertexes and also less prone to rounding errors
+		for (unsigned int i=1; i<vertexes.size(); ++i) {
+			newVertexes[i] = newVertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
 		}
+
+		// we also want to translate all points back to its original center
+		for ( IBKMK::Vector3D & v : newVertexes )
+			v += trans;
+
+		// create a copy of our modified surface
+		VICUS::Surface modS = *s;
+		modS.setPolygon3D( newVertexes );
+		// TODO : Stephan, if the surface didn't "survive" the rotation, this will rip the building geometry apart...
+		//        can't we fix this somehow? Or at least check, why it is broken?
+		if (modS.polygon3D().isValid() )
+			modifiedSurfaces.push_back(modS);
+		else
+			IBK::IBK_Message(IBK::FormatString("Geometry of surface %1 is broken after rotation.")
+							 .arg(modS .m_displayName.toStdString()),
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+
 		// TODO : Netzwerk zeugs
 	}
 
