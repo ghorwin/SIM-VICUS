@@ -1049,70 +1049,84 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.m_id = surf.uniqueID();
 		surf.m_displayName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
-		const std::vector<IBKMK::Vector3D> &poly3D = bsd.m_polyline;
-		for ( IBKMK::Vector3D v : poly3D )
-			const_cast<VICUS::PlaneGeometry&>(surf.geometry()).addVertex(v);
-
+		// set the polygon of the BSD in the surface; the polygon will be checked and the triangulation will be computed,
+		// however, yet without holes
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
 
 		// we can only import a subsurface, if the surface itself has a valid polygon
 		if (!surf.geometry().isValid()) {
+			surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+			const std::vector<IBKMK::Vector3D> &poly3D = bsd.m_polyline;
 
-			IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2]\n : Geometry of Surface is broken. Trying to heal it!")
+			IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2]\n : Geometry of imported surface is broken. Trying to heal it!")
 							 .arg(surf.m_displayName.toStdString())
 							 .arg(surf.m_id)
 							 .arg(bl.m_rooms[idx].m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 
-			// we take a vector to hold our deviations
+			// TODO  Stephan, there can be a number of reasons why the polygon is broken: collinear points, only 2 points,
+			//                winding... we should check also for these problems before trying to fix the rest. Otherwise
+			//                we might end up using not initialized normal vectors etc.
+
+			// We assume that the polyon is invalid due to rounding errors that cause one or more vertexes to be slightly
+			// out of the plane. The plane is defined by the points 0 and 1 and the polygon's normal vector.
+			// We now correct all vertexes that are too far away from the plane by replacing their coordinates with
+			// the coordinates of the orthogonal projection point onto the surface's plane.
+			//
+			// However, it may just be, that the offending vertex is vertex #0 or #1, hence the plane itself (and the
+			// normal vector constructed for it) are botched. So, we use the "democratic" fix and select those
+			// two points of the polygon that yield a plane where the majority of the vertexes have the least deviation.
+			// We do this by checking all plane variants that could possibly be created from the polygon.
+
+			// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
 			std::vector<double> deviations (poly3D.size(), 0);
+			// create a vector to hold the projected points for each of the plane variants
 			std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
 
 			// we iterate through all points and construct planes
-			for ( unsigned int i = 0; i<poly3D.size(); ++i ) {
+			double smallestDeviation = std::numeric_limits<double>::max();
+			unsigned int index = (unsigned int)-1;
+			for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
 
-				IBKMK::Vector3D offset = poly3D[i];
+				const IBKMK::Vector3D & offset = poly3D[i];
 
-				IBKMK::Vector3D a = poly3D[modPlus(i, poly3D.size())] - offset;
-				IBKMK::Vector3D b = poly3D[modMinus(i, poly3D.size())] - offset;
+				const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
+				const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
 
 				// we find our plane
 				// we now iterate again through all point of the polygon and
-				for ( unsigned int j = 0; j<poly3D.size(); ++j ) {
+				for (unsigned int j = 0; j<count; ++j ) {
 
 					if ( i == j ) {
 						projectedPoints[i][j] = offset;
 						continue;
 					}
 
-					double x, y;
-
 					// we take the current point
-					IBKMK::Vector3D vector = poly3D[j];
+					const IBKMK::Vector3D & vertex = poly3D[j];
 
 					// we find our projected points onto the plane
-					IBKMK::planeCoordinates(offset, a, b, vector, x, y, 1e-2);
+					double x, y;
+					IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
 
 					// now we construct our projected points and find the deviation between the original points
 					// and their projection
 					projectedPoints[i][j] = offset + a*x + b*y;
 
-					deviations[i] += IBKMK::Vector3D( projectedPoints[i][j] - vector ).magnitude();
+					// add up the distance between original vertex and projected point
+					// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
+					//       the expensive square-root calculation
+					deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+				}
+
+				// determines smallest deviation
+				if (deviations[i] < smallestDeviation) {
+					index = i;
+					smallestDeviation = deviations[i];
 				}
 			}
 
-
-			unsigned int index = 0;
-			for ( unsigned int i = 1; i < deviations.size(); ++i ) {
-				if ( deviations[i] < deviations[index] )
-					index = i;
-			}
-
-			for ( IBKMK::Vector3D v : projectedPoints[index] )
-				const_cast<VICUS::PlaneGeometry&>(surf.geometry()).addVertex(v);
-
+			// take the best vertex set and use it for the polygon
 			surf.setPolygon3D(projectedPoints[index]);
-
-
 
 			// we can only import a subsurface, if the surface itself has a valid polygon
 			if ( surf.geometry().polygon().vertexes().size() != bsd.m_polyline.size() ||  !surf.geometry().isValid()) {
