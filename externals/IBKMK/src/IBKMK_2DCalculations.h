@@ -60,8 +60,10 @@ bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 */
 int pointInPolygon(const std::vector<Vector2D> & poly, const IBK::point2D<double> &p);
 
-/*! Eleminates colinear points in a polygon. */
-void eleminateColinearPoints(std::vector<IBKMK::Vector2D> & polygon);
+/*! Eliminates collinear points in a polygon.
+	All points that are closer together than the provided epsilon will be merged.
+*/
+void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double epsilon = 1e-4);
 
 } // namespace IBKMK
 

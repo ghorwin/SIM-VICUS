@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#encoding: utf-8
 
 # This file is part of asciidoctor-publishing git repo.
 # Written by Andreas Nicolai <andreas.nicolai -at- gmx[dot]net>.
@@ -30,6 +31,9 @@ import sys
 import ntpath
 
 from print_funcs import *
+
+from colorama import init
+init()
 
 def findLinkLabel(label, links):
 	"""Checks if given label exists in list of link labels.
@@ -175,6 +179,7 @@ def checkReferences(fpath, links):
 # --- Main program start ---
 
 try:
+
 	# get current working directory, in case we need to resolve relative paths
 	scriptFilePath = os.getcwd()
 

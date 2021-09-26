@@ -31,10 +31,13 @@ CONFIG(release, debug|release) {
 
 linux-g++ | linux-g++-64 | macx {
 
-		# our code doesn't check errno after calling math functions
+	# our code doesn't check errno after calling math functions
 	# so it is perfectly safe to disable it in favor of better performance
 	# use *= to uniquely assign option
 	QMAKE_CXXFLAGS   *= -fno-math-errno
+
+	# create "Position Independent Code"
+	QMAKE_CXXFLAGS   *= -fPIC
 }
 
 contains( OPTIONS, sanitize_checks ) {

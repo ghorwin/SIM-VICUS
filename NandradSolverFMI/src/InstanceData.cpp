@@ -264,10 +264,15 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		while (t < tCommunicationIntervalEnd) {
 
 			// (contains parallel code)
-			SOLFRA::IntegratorInterface::StepResultType res =integrator->step();
+			SOLFRA::IntegratorInterface::StepResultType res = integrator->step();
 			if (res != SOLFRA::IntegratorInterface::StepSuccess) {
 				throw IBK::Exception("Integrator step failed!", FUNC_ID);
 			}
+
+			SOLFRA::IntegratorSundialsCVODE * cvodeIntegrator = dynamic_cast<SOLFRA::IntegratorSundialsCVODE *>(integrator);
+			if (cvodeIntegrator != nullptr)
+				// reset linear setup to default value
+				cvodeIntegrator->setLinearSetupFrequency(0);
 
 			// get new time point and time step size
 			t = integrator->t();

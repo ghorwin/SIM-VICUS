@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.4">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="1">ControlledPumpMassFluxAdapterModel</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">ControlledPumpMassFluxAdapterModel.gcc_linux</SubDir>
+			<SubDir Color="#ff007f" Checked="0">IdealFloorHeatingAdapterModel</SubDir>
+			<SubDir Color="#7141d1" Checked="0">IdealFloorHeatingAdapterModel.gcc_linux</SubDir>
+			<SubDir Color="#ffee00" Checked="0">IdealFloorHeatingInterface</SubDir>
+			<SubDir Color="#45ad45" Checked="0">IdealFloorHeatingInterface.gcc_linux</SubDir>
+			<SubDir Color="#005500" Checked="0">IdealFloorHeatingSummationModel</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">IdealFloorHeatingSummationModel.gcc_linux</SubDir>
+			<SubDir Color="#005500" Checked="0">IdealPipeRegisterAdapterModel</SubDir>
+			<SubDir Color="#550000" Checked="0">IdealPipeRegisterAdapterModel.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">IdealPipeRegisterSummationModel</SubDir>
+			<SubDir Color="#c66300" Checked="0">IdealPipeRegisterSummationModel.gcc_linux</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Quantity translation map.-->
+	<QuantityTranslations>
+		<Entry org="ConstructionInstance(id=3001)">Floor 1 (20 m2)</Entry>
+		<Entry org="ConstructionInstance(id=3002)">Floor 1 (10 m1)</Entry>
+		<Entry org="Network(id=1)">Network</Entry>
+		<Entry org="NetworkElement(id=1)">Pump</Entry>
+		<Entry org="NetworkElement(id=2)">Ground floor heating</Entry>
+		<Entry org="NetworkElement(id=3)">Upper floor heating</Entry>
+		<Entry org="NetworkElement(id=4)">Ideal fluid heater/cooler</Entry>
+		<Entry org="Zone(id=1)">Room 1</Entry>
+		<Entry org="Zone(id=2)">Room 2</Entry>
+	</QuantityTranslations>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/states.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/states.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/states.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>4</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/states.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/states.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#8ae234</PenColor>
+						<MarkerColor>#8ae234</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ef2929</PenColor>
+						<MarkerColor>#ef2929</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#3465a4</PenColor>
+						<MarkerColor>#3465a4</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#4e9a06</PenColor>
+						<MarkerColor>#4e9a06</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#a40000</PenColor>
+						<MarkerColor>#a40000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project</TitleText>
+					<TitleFont>Roboto Condensed,11,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<MaxColumns>2</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/network_elements.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/network_elements.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>ControlledPumpMassFluxAdapterModel/results/network_elements.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#73d216</PenColor>
+						<MarkerColor>#73d216</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>0.40000000000000002</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">kg/s</IBK:Unit>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText />
+					<TitleFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>4</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="394" size2="590" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="1" size1="394" size2="590" orientation="2" />
+		<FocusedWidget>2</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

@@ -51,8 +51,8 @@ int CVodeSetErrHandlerFn(void *cvode_mem, CVErrHandlerFn ehfun, void *eh_data)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetErrHandlerFn", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetErrHandlerFn", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -74,8 +74,8 @@ int CVodeSetErrFile(void *cvode_mem, FILE *errfp)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetErrFile", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetErrFile", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -96,15 +96,15 @@ int CVodeSetIterType(void *cvode_mem, int iter)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetIterType", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetIterType", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if ((iter != CV_FUNCTIONAL) && (iter != CV_NEWTON)) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetIterType", MSGCV_BAD_ITER);
-	return (CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetIterType", MSGCV_BAD_ITER);
+    return (CV_ILL_INPUT);
   }
 
   cv_mem->cv_iter = iter;
@@ -123,8 +123,8 @@ int CVodeSetUserData(void *cvode_mem, void *user_data)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetUserData", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetUserData", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -146,24 +146,24 @@ int CVodeSetMaxOrd(void *cvode_mem, int maxord)
   int qmax_alloc;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxOrd", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxOrd", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if (maxord <= 0) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxOrd", MSGCV_NEG_MAXORD);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxOrd", MSGCV_NEG_MAXORD);
+    return(CV_ILL_INPUT);
   }
 
   /* Cannot increase maximum order beyond the value that
-	 was used when allocating memory */
+     was used when allocating memory */
   qmax_alloc = cv_mem->cv_qmax_alloc;
 
   if (maxord > qmax_alloc) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxOrd", MSGCV_BAD_MAXORD);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxOrd", MSGCV_BAD_MAXORD);
+    return(CV_ILL_INPUT);
   }
 
   cv_mem->cv_qmax = maxord;
@@ -182,8 +182,8 @@ int CVodeSetMaxNumSteps(void *cvode_mem, long int mxsteps)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxNumSteps", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxNumSteps", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -191,9 +191,9 @@ int CVodeSetMaxNumSteps(void *cvode_mem, long int mxsteps)
   /* Passing mxsteps=0 sets the default. Passing mxsteps<0 disables the test. */
 
   if (mxsteps == 0)
-	cv_mem->cv_mxstep = MXSTEP_DEFAULT;
+    cv_mem->cv_mxstep = MXSTEP_DEFAULT;
   else
-	cv_mem->cv_mxstep = mxsteps;
+    cv_mem->cv_mxstep = mxsteps;
 
   return(CV_SUCCESS);
 }
@@ -209,8 +209,8 @@ int CVodeSetMaxHnilWarns(void *cvode_mem, int mxhnil)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxHnilWarns", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxHnilWarns", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -231,15 +231,15 @@ int CVodeSetStabLimDet(void *cvode_mem, booleantype sldet)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetStabLimDet", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetStabLimDet", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if( sldet && (cv_mem->cv_lmm != CV_BDF) ) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetStabLimDet", MSGCV_SET_SLDET);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetStabLimDet", MSGCV_SET_SLDET);
+    return(CV_ILL_INPUT);
   }
 
   cv_mem->cv_sldeton = sldet;
@@ -258,8 +258,8 @@ int CVodeSetInitStep(void *cvode_mem, realtype hin)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetInitStep", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetInitStep", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -280,26 +280,26 @@ int CVodeSetMinStep(void *cvode_mem, realtype hmin)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMinStep", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMinStep", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if (hmin<0) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMinStep", MSGCV_NEG_HMIN);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMinStep", MSGCV_NEG_HMIN);
+    return(CV_ILL_INPUT);
   }
 
   /* Passing 0 sets hmin = zero */
   if (hmin == ZERO) {
-	cv_mem->cv_hmin = HMIN_DEFAULT;
-	return(CV_SUCCESS);
+    cv_mem->cv_hmin = HMIN_DEFAULT;
+    return(CV_SUCCESS);
   }
 
   if (hmin * cv_mem->cv_hmax_inv > ONE) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMinStep", MSGCV_BAD_HMIN_HMAX);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMinStep", MSGCV_BAD_HMIN_HMAX);
+    return(CV_ILL_INPUT);
   }
 
   cv_mem->cv_hmin = hmin;
@@ -319,27 +319,27 @@ int CVodeSetMaxStep(void *cvode_mem, realtype hmax)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxStep", MSGCV_NO_MEM);
-	return (CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxStep", MSGCV_NO_MEM);
+    return (CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if (hmax < 0) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxStep", MSGCV_NEG_HMAX);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxStep", MSGCV_NEG_HMAX);
+    return(CV_ILL_INPUT);
   }
 
   /* Passing 0 sets hmax = infinity */
   if (hmax == ZERO) {
-	cv_mem->cv_hmax_inv = HMAX_INV_DEFAULT;
-	return(CV_SUCCESS);
+    cv_mem->cv_hmax_inv = HMAX_INV_DEFAULT;
+    return(CV_SUCCESS);
   }
 
   hmax_inv = ONE/hmax;
   if (hmax_inv * cv_mem->cv_hmin > ONE) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxStep", MSGCV_BAD_HMIN_HMAX);
-	return(CV_ILL_INPUT);
+    cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetMaxStep", MSGCV_BAD_HMIN_HMAX);
+    return(CV_ILL_INPUT);
   }
 
   cv_mem->cv_hmax_inv = hmax_inv;
@@ -358,8 +358,8 @@ int CVodeSetStopTime(void *cvode_mem, realtype tstop)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetStopTime", MSGCV_NO_MEM);
-	return (CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetStopTime", MSGCV_NO_MEM);
+    return (CV_MEM_NULL);
   }
   cv_mem = (CVodeMem) cvode_mem;
 
@@ -369,10 +369,10 @@ int CVodeSetStopTime(void *cvode_mem, realtype tstop)
    * tstop will be checked in CVode. */
   if (cv_mem->cv_nst > 0) {
 
-	if ( (tstop - cv_mem->cv_tn) * cv_mem->cv_h < ZERO ) {
-	  cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetStopTime", MSGCV_BAD_TSTOP, tstop, cv_mem->cv_tn);
-	  return(CV_ILL_INPUT);
-	}
+    if ( (tstop - cv_mem->cv_tn) * cv_mem->cv_h < ZERO ) {
+      cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetStopTime", MSGCV_BAD_TSTOP, tstop, cv_mem->cv_tn);
+      return(CV_ILL_INPUT);
+    }
 
   }
 
@@ -394,8 +394,8 @@ int CVodeSetMaxErrTestFails(void *cvode_mem, int maxnef)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxErrTestFails", MSGCV_NO_MEM);
-	return (CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxErrTestFails", MSGCV_NO_MEM);
+    return (CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -417,8 +417,8 @@ int CVodeSetMaxConvFails(void *cvode_mem, int maxncf)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxConvFails", MSGCV_NO_MEM);
-	return (CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxConvFails", MSGCV_NO_MEM);
+    return (CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -440,8 +440,8 @@ int CVodeSetMaxNonlinIters(void *cvode_mem, int maxcor)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxNonlinIters", MSGCV_NO_MEM);
-	return (CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetMaxNonlinIters", MSGCV_NO_MEM);
+    return (CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -463,8 +463,8 @@ int CVodeSetNonlinConvCoef(void *cvode_mem, realtype nlscoef)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetNonlinConvCoef", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetNonlinConvCoef", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -473,6 +473,7 @@ int CVodeSetNonlinConvCoef(void *cvode_mem, realtype nlscoef)
 
   return(CV_SUCCESS);
 }
+
 
 /*
  * CVodeSetLSetupFrequency
@@ -486,18 +487,18 @@ int CVodeSetLSetupFrequency(void *cvode_mem, long int msbp)
   CVodeMem cv_mem;
 
   if (cvode_mem == NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetLSetupFrequency",
-				   MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+  cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetLSetupFrequency",
+           MSGCV_NO_MEM);
+  return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   /* check for a valid input */
   if (msbp < 0) {
-	cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetLSetupFrequency",
-				   "A negative setup frequency was provided");
-	return(CV_ILL_INPUT);
+  cvProcessError(cv_mem, CV_ILL_INPUT, "CVODE", "CVodeSetLSetupFrequency",
+           "A negative setup frequency was provided");
+  return(CV_ILL_INPUT);
   }
 
   /* use default or user provided value */
@@ -519,16 +520,16 @@ int CVodeSetRootDirection(void *cvode_mem, int *rootdir)
   int i, nrt;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetRootDirection", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetRootDirection", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   nrt = cv_mem->cv_nrtfn;
   if (nrt==0) {
-	cvProcessError(NULL, CV_ILL_INPUT, "CVODE", "CVodeSetRootDirection", MSGCV_NO_ROOT);
-	return(CV_ILL_INPUT);
+    cvProcessError(NULL, CV_ILL_INPUT, "CVODE", "CVodeSetRootDirection", MSGCV_NO_ROOT);
+    return(CV_ILL_INPUT);
   }
 
   for(i=0; i<nrt; i++) cv_mem->cv_rootdir[i] = rootdir[i];
@@ -548,8 +549,8 @@ int CVodeSetNoInactiveRootWarn(void *cvode_mem)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetNoInactiveRootWarn", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeSetNoInactiveRootWarn", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -604,8 +605,8 @@ int CVodeGetNumSteps(void *cvode_mem, long int *nsteps)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumSteps", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumSteps", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -626,8 +627,8 @@ int CVodeGetNumRhsEvals(void *cvode_mem, long int *nfevals)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumRhsEvals", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumRhsEvals", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -648,8 +649,8 @@ int CVodeGetNumLinSolvSetups(void *cvode_mem, long int *nlinsetups)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumLinSolvSetups", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumLinSolvSetups", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -670,8 +671,8 @@ int CVodeGetNumErrTestFails(void *cvode_mem, long int *netfails)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumErrTestFails", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumErrTestFails", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -692,8 +693,8 @@ int CVodeGetLastOrder(void *cvode_mem, int *qlast)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetLastOrder", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetLastOrder", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -714,8 +715,8 @@ int CVodeGetCurrentOrder(void *cvode_mem, int *qcur)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentOrder", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentOrder", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -737,16 +738,16 @@ int CVodeGetNumStabLimOrderReds(void *cvode_mem, long int *nslred)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumStabLimOrderReds", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumStabLimOrderReds", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
 
   if (sldeton==FALSE)
-	*nslred = 0;
+    *nslred = 0;
   else
-	*nslred = nor;
+    *nslred = nor;
 
   return(CV_SUCCESS);
 }
@@ -762,8 +763,8 @@ int CVodeGetActualInitStep(void *cvode_mem, realtype *hinused)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetActualInitStep", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetActualInitStep", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -784,8 +785,8 @@ int CVodeGetLastStep(void *cvode_mem, realtype *hlast)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetLastStep", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetLastStep", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -806,8 +807,8 @@ int CVodeGetCurrentStep(void *cvode_mem, realtype *hcur)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentStep", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentStep", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -828,8 +829,8 @@ int CVodeGetCurrentTime(void *cvode_mem, realtype *tcur)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentTime", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetCurrentTime", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -850,8 +851,8 @@ int CVodeGetTolScaleFactor(void *cvode_mem, realtype *tolsfact)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetTolScaleFactor", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetTolScaleFactor", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -872,8 +873,8 @@ int CVodeGetErrWeights(void *cvode_mem, N_Vector eweight)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetErrWeights", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetErrWeights", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -894,8 +895,8 @@ int CVodeGetEstLocalErrors(void *cvode_mem, N_Vector ele)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetEstLocalErrors", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetEstLocalErrors", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -916,8 +917,8 @@ int CVodeGetWorkSpace(void *cvode_mem, long int *lenrw, long int *leniw)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetWorkSpace", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetWorkSpace", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -935,15 +936,15 @@ int CVodeGetWorkSpace(void *cvode_mem, long int *lenrw, long int *leniw)
  */
 
 int CVodeGetIntegratorStats(void *cvode_mem, long int *nsteps, long int *nfevals,
-							long int *nlinsetups, long int *netfails, int *qlast,
-							int *qcur, realtype *hinused, realtype *hlast,
-							realtype *hcur, realtype *tcur)
+                            long int *nlinsetups, long int *netfails, int *qlast,
+                            int *qcur, realtype *hinused, realtype *hlast,
+                            realtype *hcur, realtype *tcur)
 {
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetIntegratorStats", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetIntegratorStats", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -973,8 +974,8 @@ int CVodeGetNumGEvals(void *cvode_mem, long int *ngevals)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumGEvals", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumGEvals", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -996,8 +997,8 @@ int CVodeGetRootInfo(void *cvode_mem, int *rootsfound)
   int i, nrt;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetRootInfo", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetRootInfo", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -1021,8 +1022,8 @@ int CVodeGetNumNonlinSolvIters(void *cvode_mem, long int *nniters)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumNonlinSolvIters", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumNonlinSolvIters", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -1044,8 +1045,8 @@ int CVodeGetNumNonlinSolvConvFails(void *cvode_mem, long int *nncfails)
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumNonlinSolvConvFails", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNumNonlinSolvConvFails", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -1062,13 +1063,13 @@ int CVodeGetNumNonlinSolvConvFails(void *cvode_mem, long int *nncfails)
  */
 
 int CVodeGetNonlinSolvStats(void *cvode_mem, long int *nniters,
-							long int *nncfails)
+                            long int *nncfails)
 {
   CVodeMem cv_mem;
 
   if (cvode_mem==NULL) {
-	cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNonlinSolvStats", MSGCV_NO_MEM);
-	return(CV_MEM_NULL);
+    cvProcessError(NULL, CV_MEM_NULL, "CVODE", "CVodeGetNonlinSolvStats", MSGCV_NO_MEM);
+    return(CV_MEM_NULL);
   }
 
   cv_mem = (CVodeMem) cvode_mem;
@@ -1089,76 +1090,76 @@ char *CVodeGetReturnFlagName(long int flag)
 
   switch(flag) {
   case CV_SUCCESS:
-	sprintf(name,"CV_SUCCESS");
-	break;
+    sprintf(name,"CV_SUCCESS");
+    break;
   case CV_TSTOP_RETURN:
-	sprintf(name,"CV_TSTOP_RETURN");
-	break;
+    sprintf(name,"CV_TSTOP_RETURN");
+    break;
   case CV_ROOT_RETURN:
-	sprintf(name,"CV_ROOT_RETURN");
-	break;
+    sprintf(name,"CV_ROOT_RETURN");
+    break;
   case CV_TOO_MUCH_WORK:
-	sprintf(name,"CV_TOO_MUCH_WORK");
-	break;
+    sprintf(name,"CV_TOO_MUCH_WORK");
+    break;
   case CV_TOO_MUCH_ACC:
-	sprintf(name,"CV_TOO_MUCH_ACC");
-	break;
+    sprintf(name,"CV_TOO_MUCH_ACC");
+    break;
   case CV_ERR_FAILURE:
-	sprintf(name,"CV_ERR_FAILURE");
-	break;
+    sprintf(name,"CV_ERR_FAILURE");
+    break;
   case CV_CONV_FAILURE:
-	sprintf(name,"CV_CONV_FAILURE");
-	break;
+    sprintf(name,"CV_CONV_FAILURE");
+    break;
   case CV_LINIT_FAIL:
-	sprintf(name,"CV_LINIT_FAIL");
-	break;
+    sprintf(name,"CV_LINIT_FAIL");
+    break;
   case CV_LSETUP_FAIL:
-	sprintf(name,"CV_LSETUP_FAIL");
-	break;
+    sprintf(name,"CV_LSETUP_FAIL");
+    break;
   case CV_LSOLVE_FAIL:
-	sprintf(name,"CV_LSOLVE_FAIL");
-	break;
+    sprintf(name,"CV_LSOLVE_FAIL");
+    break;
   case CV_RHSFUNC_FAIL:
-	sprintf(name,"CV_RHSFUNC_FAIL");
-	break;
+    sprintf(name,"CV_RHSFUNC_FAIL");
+    break;
   case CV_FIRST_RHSFUNC_ERR:
-	sprintf(name,"CV_FIRST_RHSFUNC_ERR");
-	break;
+    sprintf(name,"CV_FIRST_RHSFUNC_ERR");
+    break;
   case CV_REPTD_RHSFUNC_ERR:
-	sprintf(name,"CV_REPTD_RHSFUNC_ERR");
-	break;
+    sprintf(name,"CV_REPTD_RHSFUNC_ERR");
+    break;
   case CV_UNREC_RHSFUNC_ERR:
-	sprintf(name,"CV_UNREC_RHSFUNC_ERR");
-	break;
+    sprintf(name,"CV_UNREC_RHSFUNC_ERR");
+    break;
   case CV_RTFUNC_FAIL:
-	sprintf(name,"CV_RTFUNC_FAIL");
-	break;
+    sprintf(name,"CV_RTFUNC_FAIL");
+    break;
   case CV_MEM_FAIL:
-	sprintf(name,"CV_MEM_FAIL");
-	break;
+    sprintf(name,"CV_MEM_FAIL");
+    break;
   case CV_MEM_NULL:
-	sprintf(name,"CV_MEM_NULL");
-	break;
+    sprintf(name,"CV_MEM_NULL");
+    break;
   case CV_ILL_INPUT:
-	sprintf(name,"CV_ILL_INPUT");
-	break;
+    sprintf(name,"CV_ILL_INPUT");
+    break;
   case CV_NO_MALLOC:
-	sprintf(name,"CV_NO_MALLOC");
-	break;
+    sprintf(name,"CV_NO_MALLOC");
+    break;
   case CV_BAD_K:
-	sprintf(name,"CV_BAD_K");
-	break;
+    sprintf(name,"CV_BAD_K");
+    break;
   case CV_BAD_T:
-	sprintf(name,"CV_BAD_T");
-	break;
+    sprintf(name,"CV_BAD_T");
+    break;
   case CV_BAD_DKY:
-	sprintf(name,"CV_BAD_DKY");
-	break;
+    sprintf(name,"CV_BAD_DKY");
+    break;
   case CV_TOO_CLOSE:
-	sprintf(name,"CV_TOO_CLOSE");
-	break;
+    sprintf(name,"CV_TOO_CLOSE");
+    break;
   default:
-	sprintf(name,"NONE");
+    sprintf(name,"NONE");
   }
 
   return(name);

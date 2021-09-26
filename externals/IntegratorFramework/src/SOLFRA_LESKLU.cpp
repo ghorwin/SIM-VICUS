@@ -3,7 +3,6 @@
 #include <IBKMK_SparseMatrixCSR.h>
 #include <IBK_messages.h>
 
-#include <cvode/cvode.h>
 #include <cvode/cvode_klu.h>
 #include <cvode/cvode_sparse.h>
 #include <nvector/nvector_serial.h>
@@ -173,7 +172,7 @@ void LESKLU::deserialize(void *& dataPtr) {
 	dataPtr = (char*)dataPtr + sizeof(unsigned int);
 	IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator);
 	if (intCVODE != nullptr)
-		CVodeSetLSetupFrequency(intCVODE->cvodeMem(), 1);
+		intCVODE->setLinearSetupFrequency(1);
 }
 
 } // namespace SOLFRA

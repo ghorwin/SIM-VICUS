@@ -1,7 +1,5 @@
 #include "SOLFRA_IntegratorSundialsCVODE.h"
 
-#include "SOLFRA_LESKLU.h"
-
 #include <iomanip>
 #include <iostream>
 #include <fstream>
@@ -397,6 +395,11 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 }
 
 
+void IntegratorSundialsCVODE::setLinearSetupFrequency(int msbp) {
+	CVodeSetLSetupFrequency(m_impl->m_mem, msbp);
+}
+
+
 IntegratorInterface::StepResultType IntegratorSundialsCVODE::step() {
 
 	// if a stop time has been set, set it in CVode with CVodeSetStopTime()...
@@ -446,10 +449,6 @@ IntegratorInterface::StepResultType IntegratorSundialsCVODE::step() {
 	else {
 		return IntegratorInterface::StepCriticalError;
 	}
-
-	if(dynamic_cast<LESKLU*> (m_impl->m_model->lesInterface() ) != nullptr )
-		// reset linear setup to default value
-		CVodeSetLSetupFrequency(m_impl->m_mem, 0);
 
 	return IntegratorInterface::StepSuccess;
 }

@@ -271,7 +271,8 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("path1", m_path1.str());
 	if (m_u1.id() != 0)
 		e->SetAttribute("u1", m_u1.name());
-	e->SetAttribute("someStuffIDAsAttrib", IBK::val2string<IDType>(m_someStuffIDAsAttrib));
+	if (m_someStuffIDAsAttrib != NANDRAD::INVALID_ID)
+		e->SetAttribute("someStuffIDAsAttrib", IBK::val2string<IDType>(m_someStuffIDAsAttrib));
 	TiXmlElement::appendSingleAttributeElement(e, "Id3", nullptr, std::string(), IBK::val2string<int>(m_id3));
 	if (m_id4 != NANDRAD::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "Id4", nullptr, std::string(), IBK::val2string<unsigned int>(m_id4));

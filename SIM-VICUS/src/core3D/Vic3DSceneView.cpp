@@ -376,12 +376,9 @@ void SceneView::paintGL() {
 		return;
 
 	// process input, i.e. check if any keys have been pressed
-	bool needRepaint = true;
-	if (m_inputEventReceived) {
-		// if paintGl was called because of an input event,
-		// only repaint if needed
-		needRepaint = processInput();
-	}
+	if (m_inputEventReceived)
+		processInput();
+
 
 #ifdef SHOW_TIMINGS
 	m_gpuTimers.reset();

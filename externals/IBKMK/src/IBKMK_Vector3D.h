@@ -83,6 +83,11 @@ public:
 		return std::sqrt(m_x*m_x + m_y*m_y + m_z*m_z);
 	}
 
+	/*! Returns the magnitude squared of the vector. */
+	double magnitudeSquared() const {
+		return m_x*m_x + m_y*m_y + m_z*m_z;
+	}
+
 	/*! Returns the cross product of this vector with another.
 		Computes result = this x other.
 	*/

@@ -109,7 +109,7 @@ void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal,
 						  const Vector3D & p, Vector3D & projectedP);
 
 /*! Eleminates colinear points in a polygon. */
-void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon);
+void eliminateCollinearPoints(std::vector<IBKMK::Vector3D> & polygon, double epsilon = 1e-5);
 
 /*! Returns the inner Angle between two Vectors of a Polygon in Degree (0..360). */
 inline double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {

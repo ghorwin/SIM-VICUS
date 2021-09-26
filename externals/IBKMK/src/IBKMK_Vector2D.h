@@ -73,6 +73,11 @@ public:
 		return std::sqrt(m_x*m_x + m_y*m_y);
 	}
 
+	/*! Returns the magnitude squared of the vector. */
+	double magnitudeSquared() const {
+		return m_x*m_x + m_y*m_y;
+	}
+
 	/*! Returns the scalar product of this and another vector. */
 	double scalarProduct(const Vector2D & other) const {
 		return m_x*other.m_x + m_y*other.m_y;

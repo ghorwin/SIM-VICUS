@@ -191,14 +191,13 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_HydraulicDiameter:
 		case P_Volume:
 		case P_MaximumHeatingPower:
-		case P_MaximumPressureHead:
-		case P_PumpMaximumElectricalPower:
 		case P_PipeMaxDiscretizationWidth: {
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-
 		// value must be >= 0
+		case P_MaximumPressureHead:
+		case P_PumpMaximumElectricalPower:
 		case P_MassFlux:
 		case P_PressureLoss:
 		case P_PressureLossCoefficient:{
