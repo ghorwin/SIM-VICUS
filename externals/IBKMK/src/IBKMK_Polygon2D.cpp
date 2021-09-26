@@ -198,7 +198,7 @@ bool Polygon2D::isSimplePolygon() const {
 }
 
 void Polygon2D::eleminateColinearPts() {
-	IBKMK::eleminateColinearPoints(m_vertexes);
+	IBKMK::eliminateCollinearPoints(m_vertexes);
 }
 
 

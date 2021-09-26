@@ -195,7 +195,7 @@ void Polygon3D::detectType() {
 
 
 void Polygon3D::eleminateColinearPts() {
-	IBKMK::eleminateColinearPoints(m_vertexes);
+	IBKMK::eliminateCollinearPoints(m_vertexes);
 }
 
 

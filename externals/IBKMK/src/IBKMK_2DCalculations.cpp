@@ -102,7 +102,7 @@ int pointInPolygon(const std::vector<Vector2D> & polygon, const IBK::point2D<dou
 
 
 // Eleminate one coolinear point. If a point is erased return true.
-static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector2D> &polyline) {
+static bool eliminateCollinearPtsHelper(std::vector<IBKMK::Vector2D> &polyline) {
 
 	if(polyline.size()<=2)
 		return false;
@@ -131,88 +131,43 @@ static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector2D> &polyline) {
 	return false;
 }
 
-void eleminateColinearPoints(std::vector<IBKMK::Vector2D> & polygon) {
-	if(polygon.size()<2)
+
+void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double epsilon) {
+	if (polygon.size()<2)
 		return;
-	//check for duplicate points in polyline and remove duplicates
-	for (int i=(int)polygon.size()-1; i>=0; --i) {
-		if(polygon.size()<2)
-			return;
-		size_t j=(size_t)i-1;
-		if(i==0)
-			j=polygon.size()-1;
-		if((polygon[(size_t)i]-polygon[j]).magnitude()<0.001)
-			polygon.erase(polygon.begin()+i);
+
+	// check for duplicate points in polyline and remove duplicates
+
+	// the algorithm works as follows:
+	// - we start at current index 0
+	// - we compare the vertex at current index with that of the next vertex
+	//    - if both are close enough together, we elminate the current vertex and try again
+	//    - otherwise both vertexes are ok, and we advance the current index
+	// - algorithm is repeated until we have processed the last point of the polygon
+	// Note: when checking the last point of the polygon, we compare it with the first vertex (using modulo operation).
+	unsigned int i=0;
+	double eps2 = epsilon*epsilon;
+	while (polygon.size() > 1 && i < polygon.size()) {
+		// distance between current and next point
+		IBKMK::Vector2D diff = polygon[i] - polygon[(i+1) % polygon.size()]; // Note: when i = size-1, we take different between last and first element
+		if (diff.magnitudeSquared() < eps2)
+			polygon.erase(polygon.begin()+i); // remove point and try again
+		else
+			++i;
 	}
+
+	// Now we have only different points. We process the polygon again and compute the angle between all
+	// polygon edges and remove all vertexes between collinear edges
+	// TODO : the algorithm can be reworked to use the following logic:
+	//        - take 3 subsequent vertexes, compute lines from vertex 1-2 and 1-3
+	//        - compute projection of line 1 onto 2
+	//        - compute projected end point of line 1 in line 2
+	//        - if distance between projected point and original vertex 2 is < epsison, remove vertex 2
 
 	bool tryAgain =true;
 	while (tryAgain)
-		tryAgain = eleminateColinearPtsHelper(polygon);
+		tryAgain = eliminateCollinearPtsHelper(polygon);
 }
 
-
-#if 0
-
-// TODO : Dirk, move the 2 functions below to IBKMK_2DCalculations and port them to
-//        use Vector2D or point2D
-
-/*!
-	Copyright 2000 softSurfer, 2012 Dan Sunday
-	This code may be freely used and modified for any purpose
-	providing that this copyright notice is included with it.
-	SoftSurfer makes no warranty for this code, and cannot be held
-	liable for any real or imagined damage resulting from its use.
-	Users of this code must verify correctness for their application.
-
-	 isLeft(): tests if a point is Left|On|Right of an infinite line.
-		Input:  three points P0, P1, and P2
-		Return: >0 for P2 left of the line through P0 and P1
-				=0 for P2  on the line
-				<0 for P2  right of the line
-		See: Algorithm 1 "Area of Triangles and Polygons"
-	*/
-
-
-inline int isLeft( QPoint P0, QPoint P1, QPoint P2 )
-{
-	return ( (P1.x() - P0.x()) * (P2.y() - P0.y())
-			- (P2.x() -  P0.x()) * (P1.y() - P0.y()) );
-}
-
-/*!
-	URL: http://geomalgorithms.com/a03-_inclusion.html
-
-	Copyright 2000 softSurfer, 2012 Dan Sunday
-	This code may be freely used and modified for any purpose
-	providing that this copyright notice is included with it.
-	SoftSurfer makes no warranty for this code, and cannot be held
-	liable for any real or imagined damage resulting from its use.
-	Users of this code must verify correctness for their application.
-
-	wn_PnPoly(): winding number test for a point in a polygon
-	  Input:   P = a point,
-			   V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-	  Return:  wn = the winding number (=0 only when P is outside)
-	*/
-int wn_PnPoly( QPoint P, QPoint *V, int n )
-{
-	int wn = 0;											// the  winding number counter
-
-	// loop through all edges of the polygon
-	for (int i=0; i<n; i++) {							// edge from V[i] to  V[i+1]
-		if (V[i].y() <= P.y()) {						// start y <= P.y
-			if (V[i+1].y()  > P.y())					// an upward crossing
-				 if (isLeft( V[i], V[i+1], P) > 0)		// P left of  edge
-					 ++wn;								// have  a valid up intersect
-		}
-		else {											// start y > P.y (no test needed)
-			if (V[i+1].y()  <= P.y())					// a downward crossing
-				 if (isLeft( V[i], V[i+1], P) < 0)		// P right of  edge
-					 --wn;								// have  a valid down intersect
-		}
-	}
-	return wn;
-}
-#endif
 
 } // namespace IBKMK
