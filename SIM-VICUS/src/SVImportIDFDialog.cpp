@@ -1055,7 +1055,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// we can only import a subsurface, if the surface itself has a valid polygon
 		if (!surf.geometry().isValid()) {
-			surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+//			surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) ); // for debugging purposes - to see, why polygon isn't valid
 			const std::vector<IBKMK::Vector3D> &poly3D = bsd.m_polyline;
 
 			IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2]\n : Geometry of imported surface is broken. Trying to heal it!")
