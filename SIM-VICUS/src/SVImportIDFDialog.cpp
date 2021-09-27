@@ -32,6 +32,7 @@
 #include <QElapsedTimer>
 #include <QPlainTextEdit>
 #include <QTextCodec>
+#include <QScrollBar>
 
 #include <QtExt_Conversions.h>
 
@@ -1128,7 +1129,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 								 .arg(projectedPoints[index][index].m_x, 0, 'f', 2)
 								 .arg(projectedPoints[index][index].m_y, 0, 'f', 2)
 								 .arg(projectedPoints[index][index].m_z, 0, 'f', 2)
-								 .arg(deviations[index], 'f', 2), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
+								 .arg(deviations[index], 0, 'f', 2), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
 			}
 		}
 
@@ -1741,6 +1742,7 @@ void SVImportMessageHandler::msg(const std::string& msg,
 	default:
 		m_plainTextEdit->appendPlainText(QString::fromStdString(msg2));
 	}
+	m_plainTextEdit->verticalScrollBar()->setValue(m_plainTextEdit->verticalScrollBar()->maximum());
 
 	m_defaultMsgHandler->msg(msg, t, func_id, verbose_level);
 	if (verbose_level > m_requestedConsoleVerbosityLevel)
