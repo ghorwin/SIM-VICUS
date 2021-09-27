@@ -396,9 +396,9 @@ void SVPropEditGeometry::rotate() {
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
 	QVector4D qrotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation().toVector4D();
-	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
 	// use IBKMK class to permorm rotation with IBKMK Vector3D
 	IBKMK::Quaternion rotate((double) qrotate.w(),(double) qrotate.x(),(double) qrotate.y(),(double) qrotate.z());
+	IBKMK::Vector3D trans = QtExt::QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
 
 	if (rotate == IBKMK::Quaternion())
 		return;
@@ -416,8 +416,6 @@ void SVPropEditGeometry::rotate() {
 		// TODO : Stephan, can we fix already broken polygons?
 		if (!poly.isValid())
 			continue; // skip invalid polygons
-			
-
 
 		// original 3D vertexes
 		const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
