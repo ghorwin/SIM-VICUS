@@ -94,7 +94,7 @@ public:
 
 	/*! Whole number parameters. */
 	enum intPara_t {
-		IP_NumberOfParallelPipes,				// Keyword: NumberOfParallelPipes				[---]	'Number of parallel pipes in ground heat exchanger'
+		IP_NumberParallelPipes,					// Keyword: NumberParallelPipes				[---]	'Number of parallel pipes in ground heat exchanger'
 		NUM_IP
 	};
 

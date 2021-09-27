@@ -2269,7 +2269,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
 												   NANDRAD::HydraulicNetworkElement::P_Length,
 												   comp->m_para[VICUS::NetworkComponent::P_LengthOfGroundHeatExchangerPipes].value);
-				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberOfParallelPipes];
+				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelPipes];
 			}
 
 			// some components store a pipe properties id, so we transfer them to the element

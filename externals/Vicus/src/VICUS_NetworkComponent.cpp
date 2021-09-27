@@ -123,10 +123,9 @@ NANDRAD::HydraulicNetworkComponent::ModelType NetworkComponent::nandradNetworkCo
 	// special case handling
 	if (modelType == MT_HorizontalGroundHeatExchanger)
 		return NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
-	else
 	// default
-		Q_ASSERT((unsigned int)modelType <= (unsigned int)NANDRAD::HydraulicNetworkComponent::NUM_MT);
-		return NANDRAD::HydraulicNetworkComponent::ModelType(modelType);
+	Q_ASSERT((unsigned int)modelType <= (unsigned int)NANDRAD::HydraulicNetworkComponent::NUM_MT);
+	return NANDRAD::HydraulicNetworkComponent::ModelType(modelType);
 }
 
 
@@ -176,7 +175,7 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case NUM_MT:
 			return {};
 		case MT_HorizontalGroundHeatExchanger:
-			return {IP_NumberOfParallelPipes};
+			return {IP_NumberParallelPipes};
 	}
 }
 
@@ -214,7 +213,7 @@ void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsign
 	const char * enumName = "NetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	switch (numPara) {
-		case IP_NumberOfParallelPipes:{
+		case IP_NumberParallelPipes:{
 			if (para.value < 1)
 				throw IBK::Exception(IBK::FormatString("% must be > 1").arg(name), FUNC_ID);
 		} break;
