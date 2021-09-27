@@ -113,7 +113,7 @@ void Polygon3D::checkPolygon() {
 	update2DPolyline();
 
 	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
-	m_valid = m_polyline.isSimplePolygon();
+	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
 }
 
 
