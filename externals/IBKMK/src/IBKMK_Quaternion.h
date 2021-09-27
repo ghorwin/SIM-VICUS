@@ -36,9 +36,8 @@
 
 */
 
-
-#ifndef IBKMK_QUATERNIONH
-#define IBKMK_QUATERNIONH
+#ifndef IBKMK_QuaternionH
+#define IBKMK_QuaternionH
 
 #include <iostream>
 #include <cmath>
@@ -46,7 +45,6 @@
 namespace IBKMK {
 
 class Vector3D;
-
 
 /*! This class implements a quaternion and the commonly used
 	algebraic operations. The class works with double precicion.
@@ -57,16 +55,14 @@ class Vector3D;
 	calculation rules (including addition, multiplicatiojn, division) as well as complex
 	vector operation (normalization, conjugation, inverse).
 	We use the representation: q = w + x * i + y * j + z * k with i, j, k denoting the complex
-	dimensions.*/
-
-
-class Quaternion
-{
+	dimensions.
+*/
+class Quaternion {
 
 public:
 
-	/*! Default constructor, creates an empty quaternion. */
-	Quaternion();
+	/*! Default constructor, creates an empty quaternion (all coefficients 0). */
+	Quaternion() {}
 
 	/*! Constructor, creates quaternion with given real and complex coefficients. */
 	Quaternion(double w, double x, double y, double z);
@@ -75,80 +71,56 @@ public:
 	Quaternion(double angle, const IBKMK::Vector3D &v);
 
 	/*! Copy constructor. */
-	Quaternion(const Quaternion& q);
+//	Quaternion(const Quaternion& q);
 
-	/*! Operator + for adding two quaternions.
-	*/
+	/*! Operator + for adding two quaternions. */
 	Quaternion operator + (const Quaternion& q) const;
 
-	/*! Operator + for subtracting two quaternions.
-	*/
+	/*! Operator + for subtracting two quaternions. */
 	Quaternion operator - (const Quaternion& q) const;
 
-	/*! Operator * for exterior product of two quaternions.
-	*/
+	/*! Operator * for exterior product of two quaternions. */
 	Quaternion operator * (const Quaternion& q) const;
 
-	/*! Operator / , inverts esterior producr of two quadrions.
-	*/
+	/*! Operator / , inverts esterior producr of two quadrions. */
 	Quaternion operator / (Quaternion& q) const;
 
-	/*! Operator += for adding another quaternion.
-	*/
+	/*! Operator += for adding another quaternion. */
 	Quaternion& operator += (const Quaternion& q);
 
-	/*! Operator -= for subtracting another quaternion.
-	*/
+	/*! Operator -= for subtracting another quaternion. */
 	Quaternion& operator -= (const Quaternion& q);
 
-	/*! Operator *= for multiplying another quaternion (exterior product).
-	*/
+	/*! Operator *= for multiplying another quaternion (exterior product). */
 	Quaternion& operator *= (const Quaternion& q);
 
-	/*! Operator /= for dividing another quaternion (inverse of exterior product).
-	*/
+	/*! Operator /= for dividing another quaternion (inverse of exterior product). */
 	Quaternion& operator /= (Quaternion& q);
 
-	/*! Operator << for printing quaterion.
-	*/
-	friend inline std::ostream& operator << (std::ostream& output, const Quaternion& q)
-	{
-		output << "[" << q.m_w << ", " << "(" << q.m_x << ", " << q.m_y << ", " << q.m_z << ")]";
-		return output;
-	}
+	/*! Operator != comparing two quaternions. */
+	bool operator != (const Quaternion& q) const { return !(*this == q); }
 
-	/*! Operator != comparing two quaternions.
-	*/
-	bool operator != (const Quaternion& q);
-
-	/*! Operator == comparing two quaternions.
-	*/
-	bool operator == (const Quaternion& q);
+	/*! Operator == comparing two quaternions. */
+	bool operator == (const Quaternion& q) const ;
 
 	//other methods: norm, inverse, conjugate, toEuler
 
-	/*! Returns real coefficient.
-	*/
-	double w() const;
+	/*! Returns real coefficient. */
+	double w() const { return m_w; }
 
-	/*! Returns coefficient of complex dimension i.
-	*/
-	double x() const;
+	/*! Returns coefficient of complex dimension i. */
+	double x() const { return m_x; }
 
-	/*! Returns coefficient of complex dimension j.
-	*/
-	double y() const;
+	/*! Returns coefficient of complex dimension j. */
+	double y() const { return m_y; }
 
-	/*! Returns coefficient of complex dimension k.
-	*/
-	double z() const;
+	/*! Returns coefficient of complex dimension k. */
+	double z() const { return m_z; }
 
-	/*! Calculations the norm of quaternion.
-	*/
+	/*! Calculations the norm of quaternion. */
 	double norm() const;
 
-	/*! Calculations the magnitude (lenght) of quaternion.
-	*/
+	/*! Calculations the magnitude (lenght) of quaternion. */
 	double magnitude() const;
 
 	/*! Returns rotation angle and the unit rotation axis corresponding to the quaternion.
@@ -164,24 +136,19 @@ public:
 		The quaternion is assumed to be a unit quaternion and R a vector of size 9.*/
 	void rotationMatrix(double * R) const;
 
-	/*! Scales quaternion with scalar s.
-	*/
+	/*! Scales quaternion with scalar s. */
 	Quaternion scaled(double s) const;
 
-	/*! Returns inverse of current quaternion.
-	*/
+	/*! Returns inverse of current quaternion. */
 	Quaternion inverse() const;
 
-	/*! Returns conjugated quaternion (== invers for a normalized quaternion).
-	*/
+	/*! Returns conjugated quaternion (== invers for a normalized quaternion). */
 	Quaternion conjugated() const;
 
-	/*! Return normalized quaternion (with magnitude = 1).
-	*/
+	/*! Return normalized quaternion (with magnitude = 1). */
 	Quaternion normalized() const;
 
-	/*! Rotated a given vector around quaternion axis by quaternion rotation angle.
-	*/
+	/*! Rotated a given vector around quaternion axis by quaternion rotation angle. 	*/
 	void rotateVector(IBKMK::Vector3D &v) const;
 
 private:
@@ -190,14 +157,21 @@ private:
 	double m_y = 0;		///< Coefficient for complex dimension j (= null for non-initialized Quaternion)
 	double m_z = 0;		///< Coefficient for complex dimension k (= null for non-initialized Quaternion)
 
+	friend std::ostream& operator << (std::ostream& output, const Quaternion& q);
 };
+
+/*! Operator << for printing quaterion. */
+inline std::ostream& operator << (std::ostream& output, const Quaternion& q) {
+	output << "[" << q.m_w << ", " << "(" << q.m_x << ", " << q.m_y << ", " << q.m_z << ")]";
+	return output;
+}
 
 }  // namespace IBKMK
 
 
 /*! \file IBKMK_Quaternion.h
-	\brief Contains the declaration of the class CRSpline.
+	\brief Contains the declaration of the class Quaternion.
 */
 
-#endif
+#endif // IBKMK_QuaternionH
 
