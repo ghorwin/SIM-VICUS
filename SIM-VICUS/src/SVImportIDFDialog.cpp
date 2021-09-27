@@ -47,22 +47,6 @@
 
 #include <IBKMK_3DCalculations.h>
 
-static unsigned int modMinus( unsigned int a, unsigned int b ) {
-	int ret = static_cast<int>(a-1) % static_cast<int>(b);
-	if(ret < 0)
-		ret+=b;
-	return static_cast<unsigned int>(ret);
-}
-
-static unsigned int modPlus( unsigned int a, unsigned int b ) {
-	int ret = static_cast<int>(a+1) % static_cast<int>(b);
-	if(ret < 0)
-		ret+=b;
-	return static_cast<unsigned int>(ret);
-}
-
-
-
 SVImportIDFDialog::SVImportIDFDialog(QWidget *parent) :
 	QDialog(parent
 			#ifdef Q_OS_LINUX
@@ -1054,7 +1038,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
 
 		// we can only import a subsurface, if the surface itself has a valid polygon
-		if (!surf.geometry().isValid()) {
+		if (!surf.geometry().isValid() && surf.polygon3D().vertexes().size() > 2) {
 //			surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) ); // for debugging purposes - to see, why polygon isn't valid
 			const std::vector<IBKMK::Vector3D> &poly3D = bsd.m_polyline;
 
