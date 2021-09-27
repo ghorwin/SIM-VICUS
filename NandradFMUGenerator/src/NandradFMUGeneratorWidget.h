@@ -111,6 +111,8 @@ private slots:
 
 	void on_lineEditOutputVarDescFilter_textEdited(const QString &arg1);
 
+	void on_checkBoxUseDisplayNames_clicked(bool checked);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
@@ -159,6 +161,9 @@ private:
 	/*! Generates a new variable name based on the suggestedName that is unique among all available input/output variables. */
 	QString generateUniqueVariableName(const QString & suggestedName) const;
 
+	/*! translates FMI variable names using the substitution map that is created during setup process */
+	void translateFMIVariableNames(std::vector<NANDRAD::FMIVariableDefinition> &availablevariables, bool varName2Displayname);
+
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
 		The variables are defined in the NandradSolver sources, some with keyword list support, some without.
@@ -196,6 +201,11 @@ private:
 
 	QSortFilterProxyModel							*m_inputVariablesProxyModel = nullptr;
 	QSortFilterProxyModel							*m_outputVariablesProxyModel = nullptr;
+
+	/*! map that translates fmi variable names to display names */
+	std::map<std::string, std::string>				m_mapVarName2DisplayName;
+	/*! map that translates display names to fmi variable names*/
+	std::map<std::string, std::string>				m_mapDisplayName2VarName;
 
 	std::map<std::string, std::pair<std::string, std::string> > m_variableInfoMap;
 };

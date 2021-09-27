@@ -664,6 +664,35 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 		return;
 	}
 
+
+	// *** read substitution map file
+	QFile substitutionFile(QString::fromStdString( (varDir / "objectref_substitutions.txt").str() ));
+	if (!substitutionFile.open(QFile::ReadOnly)) {
+		throw IBK::Exception(IBK::FormatString("Could not read file '%1'. Re-run solver initialization!")
+							 .arg(substitutionFile.fileName().toStdString()), FUNC_ID);
+	}
+
+	// create maps for fast translation
+	QStringList vars = QString(substitutionFile.readAll()).split('\n');
+	for (QString &str: vars){
+		if (str.isEmpty())
+			continue;
+		QStringList tokens = str.split('\t');
+		// remove "id=" from var name
+		std::string name = tokens[0].toStdString();
+		size_t pos = name.find("id=");
+		if (pos != std::string::npos){
+			name.erase(pos, 3);
+		}
+		// remove any points and whitespaces from display name
+		std::string displayName = IBK::replace_string(tokens[1].toStdString(), ".", "_");
+		displayName = IBK::replace_string(displayName, " ", "_");
+		IBK::trim(displayName);
+		m_mapVarName2DisplayName[name] = displayName;
+		m_mapDisplayName2VarName[displayName] = name;
+	}
+
+
 	// now we set units and descriptions in input variables that match output variables
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
 		// lookup matching output variable by name
@@ -1224,6 +1253,28 @@ QString NandradFMUGeneratorWidget::generateUniqueVariableName(const QString & su
 	return name;
 }
 
+void NandradFMUGeneratorWidget::translateFMIVariableNames(std::vector<NANDRAD::FMIVariableDefinition> & availablevariables, bool varName2Displayname)
+{
+	std::vector<std::string> tokens;
+	for (NANDRAD::FMIVariableDefinition &var: availablevariables){
+		if (var.m_fmiValueRef == NANDRAD::INVALID_ID){
+			IBK::explode(var.m_fmiVarName, tokens, ".", true);
+			if (tokens.size() < 2)
+				continue;
+			if (varName2Displayname){
+				auto it = m_mapVarName2DisplayName.find(tokens[0]);
+				if (it != m_mapVarName2DisplayName.end())
+					var.m_fmiVarName = it->second + "." + tokens[1];
+			}
+			else{
+				auto it = m_mapDisplayName2VarName.find(tokens[0]);
+				if (it != m_mapDisplayName2VarName.end())
+					var.m_fmiVarName = it->second + "." + tokens[1];
+			}
+		}
+	}
+}
+
 
 bool  NandradFMUGeneratorWidget::generate() {
 	FUNCID(NandradFMUGeneratorWidget::generate);
@@ -1778,4 +1829,13 @@ void NandradFMUGeneratorWidget::on_lineEditOutputVarDescFilter_textEdited(const 
 	m_ui->lineEditOutputVarNameFilter->clear();
 	m_outputVariablesProxyModel->setFilterWildcard(arg1);
 	m_outputVariablesProxyModel->setFilterKeyColumn(7);
+}
+
+
+void NandradFMUGeneratorWidget::on_checkBoxUseDisplayNames_clicked(bool checked)
+{
+	translateFMIVariableNames(m_availableInputVariables, checked);
+	m_inputVariablesTableModel->reset();
+	translateFMIVariableNames(m_availableOutputVariables, checked);
+	m_outputVariablesTableModel->reset();
 }

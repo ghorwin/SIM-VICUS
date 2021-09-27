@@ -312,6 +312,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBoxUseDisplayNames">
+       <property name="text">
+        <string>use display name for FMI Variables</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButtonGenerate">
        <property name="font">
         <font>
