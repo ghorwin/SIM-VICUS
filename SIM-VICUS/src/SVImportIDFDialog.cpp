@@ -1125,9 +1125,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 								 .arg(surf.m_displayName.toStdString())
 								 .arg(surf.m_id)
 								 .arg(bl.m_rooms[idx].m_displayName.toStdString())
-								 .arg(QString::number(projectedPoints[index][index].m_x, 'f', 2).toStdString())
-								 .arg(projectedPoints[index][index].m_y, 'f', 2)
-								 .arg(projectedPoints[index][index].m_z, 'f', 2)
+								 .arg(projectedPoints[index][index].m_x, 0, 'f', 2)
+								 .arg(projectedPoints[index][index].m_y, 0, 'f', 2)
+								 .arg(projectedPoints[index][index].m_z, 0, 'f', 2)
 								 .arg(deviations[index], 'f', 2), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
 			}
 		}
