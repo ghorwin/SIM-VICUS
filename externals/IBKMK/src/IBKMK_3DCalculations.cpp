@@ -258,6 +258,16 @@ void eliminateCollinearPoints(std::vector<IBKMK::Vector3D> & polygon, double eps
 		IBKMK::Vector3D a = next - last; // vector to project on
 		IBKMK::Vector3D b = polygon[i] - last; // vector that shall be projected
 		double anorm2 = a.magnitudeSquared();
+		if (anorm2 < eps2) {
+			// next and last vectors are nearly identical, hence we have a "spike" geometry and need to remove
+			// both the spike and one of the identical vertexes
+			polygon.erase(polygon.begin()+i); // remove point (might be the last)
+			if (i < polygon.size())
+				polygon.erase(polygon.begin()+i); // not the last point, remove next as well
+			else
+				polygon.erase(polygon.begin()+i-1); // remove previous point
+			continue;
+		}
 
 		// compute projection vector
 		IBKMK::Vector3D astar = a.scalarProduct(b)/anorm2 * a;

@@ -101,37 +101,6 @@ int pointInPolygon(const std::vector<Vector2D> & polygon, const IBK::point2D<dou
 }
 
 
-// Eleminate one coolinear point. If a point is erased return true.
-static bool eliminateCollinearPtsHelper(std::vector<IBKMK::Vector2D> &polyline) {
-
-	if(polyline.size()<=2)
-		return false;
-
-	const double eps = 1e-4;
-	unsigned int polySize = (unsigned int)polyline.size();
-
-	for(unsigned int idx=0; idx<polySize; ++idx){
-		unsigned int idx0 = idx-1;
-		if(idx==0)
-			idx0 = polySize-1;
-
-		IBKMK::Vector2D a = polyline.at(idx0) - polyline.at(idx);
-		IBKMK::Vector2D b = polyline.at((idx+1) % polySize) - polyline.at(idx);
-		a.normalize();
-		b.normalize();
-
-		double cosAngle = a.scalarProduct(b);
-
-
-		if(cosAngle < -1+eps || cosAngle > 1-eps){
-			polyline.erase(polyline.begin()+idx);
-			return true;
-		}
-	}
-	return false;
-}
-
-
 void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double epsilon) {
 	if (polygon.size()<2)
 		return;
@@ -156,17 +125,45 @@ void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double eps
 			++i;
 	}
 
-	// Now we have only different points. We process the polygon again and compute the angle between all
-	// polygon edges and remove all vertexes between collinear edges
-	// TODO : the algorithm can be reworked to use the following logic:
-	//        - take 3 subsequent vertexes, compute lines from vertex 1-2 and 1-3
-	//        - compute projection of line 1 onto 2
-	//        - compute projected end point of line 1 in line 2
-	//        - if distance between projected point and original vertex 2 is < epsison, remove vertex 2
+	// Now we have only different points. We process the polygon again and remove all vertexes between collinear edges.
+	// The algorithm uses the following logic:
+	//    - take 3 subsequent vertexes, compute lines from vertex 1-2 and 1-3
+	//    - compute projection of line 1 onto 2
+	//    - compute projected end point of line 1 in line 2
+	//    - if distance between projected point and original vertex 2 is < epsison, remove vertex 2
 
-	bool tryAgain =true;
-	while (tryAgain)
-		tryAgain = eliminateCollinearPtsHelper(polygon);
+	i=0;
+	while (polygon.size() > 1 && i < polygon.size()) {
+		// we check if we can remove the current vertex i
+		// take the last and next vertex
+		const IBKMK::Vector2D & last = polygon[(i + polygon.size() - 1) % polygon.size()];
+		const IBKMK::Vector2D & next = polygon[(i+1) % polygon.size()];
+		// compute vertex a and b and normalize
+		IBKMK::Vector2D a = next - last; // vector to project on
+		IBKMK::Vector2D b = polygon[i] - last; // vector that shall be projected
+		double anorm2 = a.magnitudeSquared();
+		if (anorm2 < eps2) {
+			// next and last vectors are nearly identical, hence we have a "spike" geometry and need to remove
+			// both the spike and one of the identical vertexes
+			polygon.erase(polygon.begin()+i); // remove point (might be the last)
+			if (i < polygon.size())
+				polygon.erase(polygon.begin()+i); // not the last point, remove next as well
+			else
+				polygon.erase(polygon.begin()+i-1); // remove previous point
+			continue;
+		}
+
+		// compute projection vector
+		IBKMK::Vector2D astar = a.scalarProduct(b)/anorm2 * a;
+		// get vertex along vector b
+		astar += last;
+		// compute difference
+		IBKMK::Vector2D diff = polygon[i] - astar;
+		if (diff.magnitudeSquared() < eps2)
+			polygon.erase(polygon.begin()+i); // remove point and try again
+		else
+			++i;
+	}
 }
 
 
