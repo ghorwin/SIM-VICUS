@@ -29,6 +29,7 @@
 #include <IBK_physics.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_Quaternion.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_Object.h>
@@ -394,10 +395,12 @@ void SVPropEditGeometry::rotate() {
 
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
-	QQuaternion rotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation();
-	IBKMK::Vector3D trans = QtExt::QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
+	QVector4D qrotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation().toVector4D();
+	QVector3D trans = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation();
+	// use IBKMK class to permorm rotation with IBKMK Vector3D
+	IBKMK::Quaternion rotate((double) qrotate.w(),(double) qrotate.x(),(double) qrotate.y(),(double) qrotate.z());
 
-	if (rotate == QQuaternion())
+	if (rotate == IBKMK::Quaternion())
 		return;
 
 	// compose vector of modified surface geometries
@@ -413,6 +416,8 @@ void SVPropEditGeometry::rotate() {
 		// TODO : Stephan, can we fix already broken polygons?
 		if (!poly.isValid())
 			continue; // skip invalid polygons
+			
+
 
 		// original 3D vertexes
 		const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
@@ -422,12 +427,15 @@ void SVPropEditGeometry::rotate() {
 		// create vector for modified vertexes, already resized correctly
 		std::vector<IBKMK::Vector3D> newVertexes(vertexes.size());
 
-		// rotate our local coordinate axes
-		IBKMK::Vector3D rotaLocalX = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localX() ) ) );
-		IBKMK::Vector3D rotaLocalY = QtExt::QVector2IBKVector(rotate.rotatedVector(QtExt::IBKVector2QVector( poly.localY() ) ) );
+		// rotate o copy of polyline vector
+		IBKMK::Vector3D rotaLocalX = poly.localX();
+		IBKMK::Vector3D rotaLocalY = poly.localY();
+		rotate.rotateVector(rotaLocalX);
+		rotate.rotateVector(rotaLocalY);
 
-		// rotate the polygon's offset point
-		newVertexes[0] = QtExt::QVector2IBKVector(rotate.rotatedVector( QtExt::IBKVector2QVector(vertexes[0]) ) );
+		// rotate vertexes and store in new vector
+		newVertexes[0] = vertexes[0];
+		rotate.rotateVector(newVertexes[0]);
 
 		// transform the other vertexes
 		// we take our polyline and rotated local axes to construct our rotated polygon3D
@@ -1183,11 +1191,13 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1212,10 +1222,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter ) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1236,11 +1248,13 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
-					QQuaternion centerRota = rota.rotation();
-					QVector3D newCenter = centerRota.rotatedVector(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+					QVector4D rotVec = rota.rotation().toVector4D();
+					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) - newCenter );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();

@@ -53,7 +53,8 @@ SOURCES += \
 	../../src/IBKMK_SparseMatrixEID.cpp \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
 	../../src/IBKMK_Triangulation.cpp \
-	../../src/IBKMK_TridiagMatrix.cpp
+	../../src/IBKMK_TridiagMatrix.cpp \
+    ../../src/IBKMK_Quaternion.cpp
 
 
 HEADERS += \
@@ -90,7 +91,8 @@ HEADERS += \
 	../../src/IBKMK_TridiagMatrix.h \
 	../../src/IBKMK_Vector2D.h \
 	../../src/CDT/CDT.h \
-	../../src/IBKMK_Vector3D.h
+	../../src/IBKMK_Vector3D.h \
+    ../../src/IBKMK_Quaternion.h
 
 DISTFILES += \
 	../../doc/IBKMK_mainpage \
