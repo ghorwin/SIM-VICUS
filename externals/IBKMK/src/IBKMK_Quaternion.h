@@ -70,9 +70,6 @@ public:
 	/*! Constructor, creates quaternion from angle and rotation axis. */
 	Quaternion(double angle, const IBKMK::Vector3D &v);
 
-	/*! Copy constructor. */
-//	Quaternion(const Quaternion& q);
-
 	/*! Operator + for adding two quaternions. */
 	Quaternion operator + (const Quaternion& q) const;
 

@@ -49,14 +49,6 @@ Quaternion::Quaternion(double w, double x, double y, double z) {
 }
 
 
-//Quaternion::Quaternion(const Quaternion& q) {
-//	m_w = q.m_w;
-//	m_x = q.m_x;
-//	m_y = q.m_y;
-//	m_z = q.m_z;
-//}
-
-
 Quaternion::Quaternion(double angle, const IBKMK::Vector3D &v) {
 	m_w = cos(angle/2.0);
 	double sin2 = sin(angle/2.0);
