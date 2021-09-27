@@ -1404,6 +1404,12 @@ void Scene::generateTransparentBuildingGeometry() {
 		connectedSurfaces.insert(ci.m_sideASurface);
 		connectedSurfaces.insert(ci.m_sideBSurface);
 
+		// both polygons must be valid to continue, otherwise we cannot draw a connection line
+		// invalid polygons should be highlighted somewhere else
+
+		if (!ci.m_sideASurface->geometry().isValid() ||
+			!ci.m_sideBSurface->geometry().isValid())
+			continue;
 		// generate geometry for the "Links"
 
 		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
