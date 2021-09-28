@@ -124,7 +124,7 @@ void Polygon3D::checkPolygon() {
 		// When constructing the polyline, these vertexes will be removed.
 		// In these situations we re-compute 3D vertexes from polyline to have again
 		// a consistent polygon. Note: if the polyline is valid, we have at least 3 vertexes.
-		update3DVertexesFromPolyline(IBKMK::Vector3D(m_vertexes[0]));
+		update3DVertexesFromPolyline(m_vertexes[0]);
 	}
 }
 
@@ -303,11 +303,12 @@ void Polygon3D::update2DPolyline() {
 }
 
 
-void IBKMK::Polygon3D::update3DVertexesFromPolyline(const IBKMK::Vector3D & offset) {
+void IBKMK::Polygon3D::update3DVertexesFromPolyline(IBKMK::Vector3D offset) {
 	const std::vector<IBKMK::Vector2D> &polylineVertexes = m_polyline.vertexes();
 	m_vertexes.resize(polylineVertexes.size());
-	m_vertexes[0] = offset;
-	for (unsigned int i=1; i<m_vertexes.size(); ++i)
+	// Mind: we may have the case, that due to collinear points in polyline we have removed vertex (0,0), and
+	//       now the first 3D vertex no longer matches offset. Hence, we also compute the offset vertex again.
+	for (unsigned int i=0; i<m_vertexes.size(); ++i)
 		m_vertexes[i] = offset + m_localX * polylineVertexes[i].m_x + m_localY * polylineVertexes[i].m_y;
 }
 
