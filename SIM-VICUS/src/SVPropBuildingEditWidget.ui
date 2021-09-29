@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>7</number>
      </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
@@ -720,7 +720,7 @@
           <item row="4" column="0">
            <widget class="QPushButton" name="pushButtonRemoveSurfaceHeating">
             <property name="text">
-             <string>Remove selected definitions</string>
+             <string>Remove selected surface heating definitions</string>
             </property>
             <property name="iconSize">
              <size>
@@ -793,22 +793,54 @@
        <item>
         <widget class="QGroupBox" name="groupBoxSelectedComponent2">
          <property name="title">
-          <string>Selected components</string>
+          <string>Selected component instances with active layers</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_12">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="labelSelectedCIWithActiveLayer">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
-             <string>Selected component:</string>
+             <string>TextLabel</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item>
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QPushButton" name="pushButtonAssignSurfaceHeating">
               <property name="text">
                <string>Assign surface heating...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignSurfaceHeatingControlZone">
+              <property name="text">
+               <string>Set control zone...</string>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>24</width>
+                <height>24</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonAssignSurfaceHeatingNetwork">
+              <property name="text">
+               <string>Assign network...</string>
               </property>
               <property name="iconSize">
                <size>
@@ -832,19 +864,6 @@
              </spacer>
             </item>
            </layout>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="labelSelectedComponents2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>TextLabel</string>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>

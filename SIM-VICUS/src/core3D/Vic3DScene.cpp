@@ -1738,6 +1738,15 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							if (ci.m_sideBSurface != nullptr)
 								ci.m_sideBSurface->m_color = surfHeat->m_color;
 						}
+						else {
+							if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
+								if (ci.m_sideASurface != nullptr)
+									ci.m_sideASurface->m_color = QColor("#758eb3");
+								if (ci.m_sideBSurface != nullptr)
+									ci.m_sideBSurface->m_color = QColor("#758eb3");
+							}
+
+						}
 					}
 					break;
 
