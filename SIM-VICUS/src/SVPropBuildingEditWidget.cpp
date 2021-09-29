@@ -1960,18 +1960,52 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clic
 	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
 	dlg.setLayout(vboxLayout);
 
-	// populate combo box
+	// populate combo box:
+	// suggest all rooms (of all buildings and building levels)
+	// at the first litter
+	const std::vector<VICUS::Building> &buildings = project().m_buildings;
 
-	// building.level.room
-
-	unsigned int roomID = 15;
-	combo->addItem("building.firstfloor.bath", roomID); // second argument is the Qt::UserRole value
+	// loop over all buildings
+	for(const VICUS::Building &building : buildings) {
+		const std::vector<VICUS::BuildingLevel> &blevels = building.m_buildingLevels;
+		// loop over all building levels
+		for(const VICUS::BuildingLevel &blevel : blevels) {
+			const std::vector<VICUS::Room> rooms = blevel.m_rooms;
+			// loop over all rooms
+			for(const VICUS::Room &room : rooms) {
+				unsigned int roomID = room.m_id;
+				QString roomName = tr("%1.%2.%3").arg(building.m_displayName).arg(blevel.m_displayName).arg(room.m_displayName);
+				combo->addItem(roomName, roomID); // second argument is the Qt::UserRole value
+			}
+		}
+	}
 
 	if (dlg.exec() == QDialog::Accepted) {
+		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
 		// retrieve assigned roomID
 		unsigned int zoneId = combo->currentData(Qt::UserRole).toUInt();
-
 		// process all selected surface heatings as in on_pushButtonRemoveSelectedSurfaceHeating_clicked and compose
-		// SVUndoModifyComponentInstances
+
+		for (VICUS::ComponentInstance & ci : cis) {
+			// check if current ci is in list of selected component instances
+			std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+			for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+				if ((*ciIt)->m_id == ci.m_id)
+					break;
+			}
+			if (ciIt == m_selectedComponentInstances.end())
+				continue;
+			// if component instance does not have an active layer assigned, skip
+			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+			if (comp == nullptr)
+				continue;
+			// check if no active layer is present
+			if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+				continue;
+			ci.m_idSurfaceHeatingControlZone = zoneId;
+		}
+		// perform an undo action in order to redo/revert current operation
+		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+		undo->push();
 	}
 }
