@@ -165,6 +165,8 @@ private slots:
 
 	void on_pushButtonRemoveSelectedSurfaceHeating_clicked();
 
+	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
