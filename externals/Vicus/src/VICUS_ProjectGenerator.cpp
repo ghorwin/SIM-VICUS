@@ -2175,9 +2175,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	// estimated number of elements
 	nandradNetwork.m_elements.reserve(vicusNetwork.m_nodes.size() * maxNumberElements + 2 * vicusNetwork.m_edges.size());
 
+	unsigned int fmiValueRef = 100;
+
 	std::map<unsigned int, std::vector<unsigned int>> componentElementMap; // this map stores the element ids for each component
-	std::vector<unsigned int> allNodeIds = {0};			// stores all nodeIds of the network (the ids which are used to connect elements)
-	std::vector<unsigned int> allElementIds = {0};		// stores all element ids of the network
+	std::vector<unsigned int> allNodeIds = {};			// stores all nodeIds of the network (the ids which are used to connect elements)
+	std::vector<unsigned int> allElementIds = {};		// stores all element ids of the network
 	std::map<unsigned int, unsigned int> supplyNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD inlet node
 	std::map<unsigned int, unsigned int> returnNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD outlet node
 
@@ -2263,23 +2265,50 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			if (elem.m_id == sub->m_idHeatExchangeElement)
 				newElement.m_heatExchange = node.m_heatExchange;
 
-			// SPECIAL CASE :
-			// Ground Heat Exchanger: retrieve parameters from the component
+			// 6. SPECIAL CASE: Ground Heat Exchanger
 			if (comp->m_modelType == VICUS::NetworkComponent::MT_HorizontalGroundHeatExchanger){
+				// --> retrieve parameters from the component
 				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
 												   NANDRAD::HydraulicNetworkElement::P_Length,
 												   comp->m_para[VICUS::NetworkComponent::P_LengthOfGroundHeatExchangerPipes].value);
 				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes] = comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelPipes];
+
+				// --> set FMI input
+				NANDRAD::FMIVariableDefinition inputDefGHX;
+				inputDefGHX.m_objectId = newElement.m_id;
+				inputDefGHX.m_fmiVarName = newElement.m_displayName + ".Temperature";
+				inputDefGHX.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+																	NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
+				inputDefGHX.m_varName += ".HeatExchangeTemperature";
+				inputDefGHX.m_unit = "C";
+				inputDefGHX.m_fmiValueRef = ++fmiValueRef;
+				inputDefGHX.m_fmiVarDescription = "Pre-described external temperature";
+				inputDefGHX.m_fmiStartValue = vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature].value;
+				p.m_fmiDescription.m_inputVariables.push_back(inputDefGHX);
+
+				// --> set FMI output
+				NANDRAD::FMIVariableDefinition outputDefGHX;
+				outputDefGHX.m_objectId = newElement.m_id;
+				outputDefGHX.m_fmiVarName = newElement.m_displayName + ".HeatLoss";
+				outputDefGHX.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
+																	NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
+				outputDefGHX.m_varName += ".FlowElementHeatLoss";
+				outputDefGHX.m_unit = "W";
+				outputDefGHX.m_fmiValueRef = ++fmiValueRef;
+				outputDefGHX.m_fmiVarDescription = "Heat flux from flow element into environment";
+				outputDefGHX.m_fmiStartValue = 0;
+				p.m_fmiDescription.m_outputVariables.push_back(outputDefGHX);
 			}
 
-			// some components store a pipe properties id, so we transfer them to the element
+
+			// 7. some components store a pipe properties id, so we transfer them to the element
 			if (VICUS::NetworkComponent::hasPipeProperties(comp->m_modelType))
 				newElement.m_pipePropertiesId = comp->m_pipePropertiesId;
 
-			// 6. add element to the nandrad network
+			// 8. add element to the nandrad network
 			nandradNetwork.m_elements.push_back(newElement);
 
-			// we store the element ids for each component, with this info we can create the schedules and object lists
+			// 9. we store the element ids for each component, with this info we can create the schedules and object lists
 			componentElementMap[elem.m_componentId].push_back(newElement.m_id);
 		}
 
@@ -2327,7 +2356,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
 
-	unsigned int fmiValueRef = 42; // start value
 	unsigned int idSoilModel = 0; // start value
 
 	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
@@ -2442,7 +2470,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			inputDefSupplyPipe.m_varName = NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t",
 																NANDRAD::ModelInputReference::MRT_NETWORKELEMENT );
 			inputDefSupplyPipe.m_varName += ".HeatExchangeTemperature";
-			inputDefSupplyPipe.m_unit = "K";
+			inputDefSupplyPipe.m_unit = "C";
 			inputDefSupplyPipe.m_fmiValueRef = ++fmiValueRef;
 			inputDefSupplyPipe.m_fmiVarDescription = "Pre-described external temperature";
 			inputDefSupplyPipe.m_fmiStartValue = vicusNetwork.m_para[VICUS::Network::P_InitialFluidTemperature].value;
