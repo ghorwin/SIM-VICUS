@@ -163,6 +163,8 @@ private slots:
 
 	void on_tableWidgetSurfaceHeating_itemSelectionChanged();
 
+	void on_pushButtonRemoveSelectedSurfaceHeating_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;

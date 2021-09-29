@@ -27,6 +27,7 @@
 #include "ui_SVPropBuildingEditWidget.h"
 
 #include <QMessageBox>
+#include <QDialogButtonBox>
 
 #include <VICUS_Component.h>
 #include <VICUS_utilities.h>
@@ -1244,6 +1245,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		m_ui->pushButtonAssignSurfaceHeating->setEnabled(false);
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(false);
 		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(false);
+		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(false);
 	}
 	else {
 		m_ui->labelSelectedCIWithActiveLayer->setText(tr("%1 component instance(s)").arg(selectedCI.size()));
@@ -1252,6 +1254,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		// other buttons are only active if a configured surface heating component instances is selected
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(!selectedSurfaceHeatingCI.empty());
+		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
 }
 
@@ -1914,4 +1917,61 @@ void SVPropBuildingEditWidget::on_tableWidgetSurfaceHeating_itemSelectionChanged
 		}
 	}
 	m_ui->pushButtonRemoveSurfaceHeating->setEnabled(haveSurfaceHeating);
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonRemoveSelectedSurfaceHeating_clicked() {
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// clear surface heating
+		ci.m_idSurfaceHeating = VICUS::INVALID_ID;
+		ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+	}
+
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heatings"), cis);
+	undo->push();
+}
+
+
+void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clicked() {
+	// popup dialog with zone selection
+
+	QDialog dlg(this);
+
+	QVBoxLayout * vboxLayout = new QVBoxLayout(&dlg);
+	QComboBox * combo = new QComboBox(&dlg);
+
+	vboxLayout->addWidget(combo);
+
+	// finally a button bar with ok and cancel buttons
+	QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
+	vboxLayout->addWidget(buttonBox);
+	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
+	dlg.setLayout(vboxLayout);
+
+	// populate combo box
+
+	// building.level.room
+
+	unsigned int roomID = 15;
+	combo->addItem("building.firstfloor.bath", roomID); // second argument is the Qt::UserRole value
+
+	if (dlg.exec() == QDialog::Accepted) {
+		// retrieve assigned roomID
+		unsigned int zoneId = combo->currentData(Qt::UserRole).toUInt();
+
+		// process all selected surface heatings as in on_pushButtonRemoveSelectedSurfaceHeating_clicked and compose
+		// SVUndoModifyComponentInstances
+	}
 }
