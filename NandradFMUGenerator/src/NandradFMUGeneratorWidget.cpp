@@ -1044,6 +1044,11 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 			for (const NANDRAD::FMIVariableDefinition & var : invalidOutputVars)
 				IBK::IBK_Message(IBK::FormatString("  %1 [valueRef=%2]").arg(var.m_varName).arg(var.m_fmiValueRef), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 		}
+		if (!errors.empty()){
+			IBK::IBK_Message("\nProblems:\n", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			for (const QString &err: errors)
+				IBK::IBK_Message(err.toStdString(), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
 		if (m_silent)
 			qApp->exit(1);
 	}
