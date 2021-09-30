@@ -40,6 +40,7 @@
 #include "SVDatabase.h"
 #include "SVSettings.h"
 
+
 SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVSmartSelectDialog)
@@ -48,6 +49,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 
 	m_ui->verticalLayoutNetwork->setContentsMargins(0,6,0,0);
 	m_ui->gridLayoutBuildings->setContentsMargins(0,6,0,0);
+	m_ui->labelFilterInfo->setText("");
 
 	QPushButton * btn = new QPushButton(tr("Select"));
 	m_ui->buttonBox->addButton(btn, QDialogButtonBox::NoRole);

@@ -29,6 +29,8 @@
 #include <QDialog>
 #include <set>
 
+class QLabel;
+
 namespace Ui {
 class SVSmartSelectDialog;
 }
@@ -104,5 +106,6 @@ private:
 
 	std::vector<QPushButton*>	m_optionButtons;
 };
+
 
 #endif // SVSmartSelectDialogH

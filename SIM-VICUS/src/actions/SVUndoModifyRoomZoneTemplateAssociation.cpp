@@ -62,6 +62,7 @@ void SVUndoModifyRoomZoneTemplateAssociation::undo() {
 			}
 		}
 	}
+	theProject().updatePointers();
 
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingTopologyChanged);
 }

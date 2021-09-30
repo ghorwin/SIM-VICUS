@@ -46,6 +46,7 @@ void SVUndoAddBuildingLevel::undo() {
 	Q_ASSERT(!b->m_buildingLevels.empty());
 
 	const_cast<VICUS::Building *>(b)->m_buildingLevels.pop_back();
+	theProject().updatePointers();
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	if (m_topologyOnly)

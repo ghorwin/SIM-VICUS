@@ -42,6 +42,7 @@ void SVUndoAddBuilding::undo() {
 	Q_ASSERT(!theProject().m_buildings.empty());
 
 	theProject().m_buildings.pop_back();
+	theProject().updatePointers();
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	if (m_topologyOnly)
