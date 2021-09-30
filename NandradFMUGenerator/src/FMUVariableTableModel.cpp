@@ -188,7 +188,7 @@ QString FMUVariableTableModel::modelName(const NANDRAD::FMIVariableDefinition & 
 			continue;
 		if (displayName.m_modelType != tokens[0].toStdString())
 			continue;
-		return QString("%1(\"%2\").%3)")
+		return QString("%1(\"%2\").%3")
 				.arg(tokens[0])
 				.arg(QString::fromStdString(displayName.m_displayName))
 				.arg(tokens[1]);
