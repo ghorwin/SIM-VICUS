@@ -1,0 +1,72 @@
+{
+    "variables": [
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "ReturnTemperature", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "293.15", 
+            "unit": "K", 
+            "description": "Return temperature from building"
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "MassFlux", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "0", 
+            "unit": "kg/s", 
+            "description": "Mass flux from building as result of provided pressure head."
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "output", 
+            "name": "SupplyTemperature", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "calculated", 
+            "startValue": "", 
+            "unit": "K", 
+            "description": "Supply temperature of HVAC system provided to building."
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "output", 
+            "name": "PressureHead", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "calculated", 
+            "startValue": "1000", 
+            "unit": "Pa", 
+            "description": "Control value for controlled pump"
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "input", 
+            "name": "AmbientTemperature", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "exact", 
+            "startValue": "293.15", 
+            "unit": "K", 
+            "description": "Outside air temperature."
+        }, 
+        {
+            "variability": "continuous", 
+            "causality": "output", 
+            "name": "HeatingPower", 
+            "typeID": "Real", 
+            "valueRef": -1, 
+            "initial": "calculated", 
+            "startValue": "0", 
+            "unit": "W", 
+            "description": "Heating power supplied to fluid."
+        }
+    ], 
+    "modelName": "TestAnlage1", 
+    "description": ""
+}
