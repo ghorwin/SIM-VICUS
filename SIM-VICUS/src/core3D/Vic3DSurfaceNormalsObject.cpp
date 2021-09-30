@@ -74,9 +74,9 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 
 	const VICUS::Project & prj = project();
 
-	// get all visible objects
+	// get all visible and selected objects
 	std::set<const VICUS::Object*> objs;
-	prj.selectObjects(objs, VICUS::Project::SG_Building, false, true);
+	prj.selectObjects(objs, VICUS::Project::SG_Building, true, true);
 
 	// now process all surface objects
 	for (const VICUS::Object* o : objs) {
