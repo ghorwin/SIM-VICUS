@@ -786,16 +786,11 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (wheelDelta < -2)
 			wheelDelta = -2;
 #endif
-		double transSpeed = 5.;
+		double transSpeed = 0.05;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed *= 0.1;
 		if (!pickObject.m_candidates.empty()) {
-			// 2% of translation distance from camera to selected object
-			IBKMK::Vector3D moveDist = 0.05*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
-			double transDist = moveDist.magnitude();
-			if (transDist < transSpeed) {
-				moveDist *= transSpeed/(transDist+1e-8);
-			}
+			IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 			// move camera along line of sight towards selected object
 			m_camera.translate(QtExt::IBKVector2QVector(wheelDelta*moveDist));
 		}
