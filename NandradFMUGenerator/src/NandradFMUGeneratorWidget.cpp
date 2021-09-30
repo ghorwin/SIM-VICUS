@@ -49,7 +49,11 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// configure models
 
 	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
+	m_inputVariablesTableModel->m_displayNames = &m_displayNameTable;
+	m_inputVariablesTableModel->setUseDisplayNames(m_ui->checkBoxUseDisplayNames->isChecked());
 	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
+	m_outputVariablesTableModel->m_displayNames = &m_displayNameTable;
+	m_outputVariablesTableModel->setUseDisplayNames(m_ui->checkBoxUseDisplayNames->isChecked());
 
 	// proxy models
 
@@ -673,6 +677,7 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 	}
 
 	// create maps for fast translation
+	m_displayNameTable.clear();
 	QStringList vars = QString(substitutionFile.readAll()).split('\n');
 	for (QString &str: vars){
 		if (str.isEmpty())
@@ -683,16 +688,28 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 			continue;
 		// remove "id=" from var name
 		std::string name = tokens[0].toStdString();
-		size_t pos = name.find("id=");
-		if (pos != std::string::npos){
-			name.erase(pos, 3);
+		size_t pos = name.find("(id=");
+		if (pos == std::string::npos)
+			continue; // definition line is broken
+
+		size_t pos2 = name.find(")", pos+1);
+
+		if (pos2 == std::string::npos)
+			continue; // definition line is broken
+		std::string id = name.substr(pos+4, pos2-pos-4);
+		unsigned int objectId;
+		try {
+			objectId = IBK::string2val<unsigned int>(id);
+		} catch (...) {
+			continue; // definition line is broken
 		}
-		// remove any points and whitespaces from display name
-		std::string displayName = IBK::replace_string(tokens[1].toStdString(), ".", "_");
-		displayName = IBK::replace_string(displayName, " ", "_");
-		IBK::trim(displayName);
-		m_mapVarName2DisplayName[name] = displayName;
-		m_mapDisplayName2VarName[displayName] = name;
+
+		// remember substitution
+		FMUVariableTableModel::DisplayNameSubstitution subst;
+		subst.m_objectId = objectId;
+		subst.m_modelType = name.substr(0, pos);
+		subst.m_displayName = tokens[1].toStdString();
+		m_displayNameTable.push_back(subst);
 	}
 
 
@@ -1095,12 +1112,21 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 			continue;
 
 		Q_ASSERT(valRef == NANDRAD::INVALID_ID);
+
+		// transfer default generated fmi variable name
+		// Mind: we need to request the default-fmi-variable from the model, *before* we set
+		//       a valid value reference. The model recognizes already configured variables
+		//       by a value reference and does no longer to variable substitutions there.
+		QModelIndex fmiVarIndex = varModel->index((int)row, 4);
+		var.m_fmiVarName = fmiVarIndex.data().toString().toStdString();
+
 		// generate a new unique value reference for the newly configured variable
 		// Note: may be adjusted again in renameXXXVariable() call below, if in case of input variable
 		//       an FMI variable with same name exists already
 		var.m_fmiValueRef = (*m_usedValueRefs.rbegin()) + 1;
 		// also insert the new value reference to list of used value refs
 		m_usedValueRefs.insert(var.m_fmiValueRef);
+
 
 		// When we configure the variable, we must check against other variables with the same name.
 		// Unfortunately, this may give rise to a usability problem. Suppose I want to configure
@@ -1259,28 +1285,6 @@ QString NandradFMUGeneratorWidget::generateUniqueVariableName(const QString & su
 	}
 	while (names.find(name) != names.end());
 	return name;
-}
-
-
-void NandradFMUGeneratorWidget::translateFMIVariableNames(std::vector<NANDRAD::FMIVariableDefinition> & availablevariables, bool varName2Displayname) {
-	std::vector<std::string> tokens;
-	for (NANDRAD::FMIVariableDefinition &var: availablevariables){
-		if (var.m_fmiValueRef == NANDRAD::INVALID_ID){
-			IBK::explode(var.m_fmiVarName, tokens, ".", true);
-			if (tokens.size() < 2)
-				continue;
-			if (varName2Displayname){
-				auto it = m_mapVarName2DisplayName.find(tokens[0]);
-				if (it != m_mapVarName2DisplayName.end())
-					var.m_fmiVarName = it->second + "." + tokens[1];
-			}
-			else{
-				auto it = m_mapDisplayName2VarName.find(tokens[0]);
-				if (it != m_mapDisplayName2VarName.end())
-					var.m_fmiVarName = it->second + "." + tokens[1];
-			}
-		}
-	}
 }
 
 
@@ -1682,6 +1686,7 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 	}
 }
 
+
 void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
 
 	QString fname = m_ui->lineEditNandradProjectFilePath->text();
@@ -1840,10 +1845,7 @@ void NandradFMUGeneratorWidget::on_lineEditOutputVarDescFilter_textEdited(const 
 }
 
 
-void NandradFMUGeneratorWidget::on_checkBoxUseDisplayNames_clicked(bool checked)
-{
-	translateFMIVariableNames(m_availableInputVariables, checked);
-	m_inputVariablesTableModel->reset();
-	translateFMIVariableNames(m_availableOutputVariables, checked);
-	m_outputVariablesTableModel->reset();
+void NandradFMUGeneratorWidget::on_checkBoxUseDisplayNames_clicked(bool checked) {
+	m_inputVariablesTableModel->setUseDisplayNames(checked);
+	m_outputVariablesTableModel->setUseDisplayNames(checked);
 }

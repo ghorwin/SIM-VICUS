@@ -283,11 +283,28 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBoxUseDisplayNames">
+     <property name="text">
+      <string>Use display name for FMI Variables</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="pushButtonSaveNandradProject">
        <property name="text">
         <string>Save FMU specification in NANDRAD project file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRefresh">
+       <property name="text">
+        <string>Reload project and update variable lists</string>
        </property>
       </widget>
      </item>
@@ -303,20 +320,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonRefresh">
-       <property name="text">
-        <string>Reload project and update variable lists</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="checkBoxUseDisplayNames">
-       <property name="text">
-        <string>use display name for FMI Variables</string>
-       </property>
-      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonGenerate">
