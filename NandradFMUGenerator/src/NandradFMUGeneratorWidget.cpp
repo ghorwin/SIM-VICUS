@@ -678,6 +678,9 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 		if (str.isEmpty())
 			continue;
 		QStringList tokens = str.split('\t');
+		// Mind: if file is broken, we may only have one token, but we need at least 2, so skip lines with fewer tokens
+		if (tokens.count() < 2)
+			continue;
 		// remove "id=" from var name
 		std::string name = tokens[0].toStdString();
 		size_t pos = name.find("id=");
@@ -1258,8 +1261,8 @@ QString NandradFMUGeneratorWidget::generateUniqueVariableName(const QString & su
 	return name;
 }
 
-void NandradFMUGeneratorWidget::translateFMIVariableNames(std::vector<NANDRAD::FMIVariableDefinition> & availablevariables, bool varName2Displayname)
-{
+
+void NandradFMUGeneratorWidget::translateFMIVariableNames(std::vector<NANDRAD::FMIVariableDefinition> & availablevariables, bool varName2Displayname) {
 	std::vector<std::string> tokens;
 	for (NANDRAD::FMIVariableDefinition &var: availablevariables){
 		if (var.m_fmiValueRef == NANDRAD::INVALID_ID){
