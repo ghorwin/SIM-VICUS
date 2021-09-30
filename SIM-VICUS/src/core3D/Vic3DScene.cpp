@@ -2744,6 +2744,7 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 		const VICUS::Object * obj = project().objectById(uniqueID);
 
 		// if using shift-click, we go up one level, select the parent and all its children
+		bool selectChildren = true;
 		if (keyboardHandler.keyDown(Qt::Key_Shift)) {
 			// check for valid parent - anonymous geometry does not have parents!
 			if (obj->m_parent != nullptr) {
@@ -2752,11 +2753,15 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 			}
 		}
 
+		else if (keyboardHandler.keyDown(Qt::Key_Alt)) {
+			selectChildren = false;
+		}
+
 		// create undo-action that toggles the selection
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
 															   SVUndoTreeNodeState::SelectedState,
 															   uniqueID,
-															   true, // always select all children
+															   selectChildren, // if true, select all children, otherwise only the object itself
 															   !obj->m_selected);
 		action->push();
 		return;

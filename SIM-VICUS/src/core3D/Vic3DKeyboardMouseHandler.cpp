@@ -79,6 +79,8 @@ void KeyboardMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
 	// be set manually.
 	if (event->modifiers() & Qt::ShiftModifier)
 		pressKey(Qt::Key_Shift);
+	if (event->modifiers() & Qt::AltModifier)
+		pressKey(Qt::Key_Alt);
 	if (event->modifiers() & Qt::ControlModifier)
 		pressKey(Qt::Key_Control);
 }

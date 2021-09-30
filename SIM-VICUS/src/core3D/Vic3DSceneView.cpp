@@ -56,6 +56,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Alt);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
