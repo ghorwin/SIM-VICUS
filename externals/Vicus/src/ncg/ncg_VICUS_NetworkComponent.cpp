@@ -82,6 +82,20 @@ void NetworkComponent::readXML(const TiXmlElement * element) {
 				m_dataSource.setEncodedString(c->GetText());
 			else if (cName == "ScheduleIds")
 				NANDRAD::readVector(c, "ScheduleIds", m_scheduleIds);
+			else if (cName == "IBK:IntPara") {
+				IBK::IntPara p;
+				NANDRAD::readIntParaElement(c, p);
+				bool success = false;
+				try {
+					intPara_t ptype = (intPara_t)KeywordList::Enumeration("NetworkComponent::intPara_t", p.name);
+					m_intPara[ptype] = p; success = true;
+				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			else if (cName == "PipePropertiesId")
+				m_pipePropertiesId = (IDType)NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -131,6 +145,14 @@ TiXmlElement * NetworkComponent::writeXML(TiXmlElement * parent) const {
 	if (!m_dataSource.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "DataSource", nullptr, std::string(), m_dataSource.encodedString());
 	NANDRAD::writeVector(e, "ScheduleIds", m_scheduleIds);
+
+	for (unsigned int i=0; i<NUM_IP; ++i) {
+		if (!m_intPara[i].name.empty()) {
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:IntPara", "name", m_intPara[i].name, IBK::val2string(m_intPara[i].value));
+		}
+	}
+	if (m_pipePropertiesId != VICUS::INVALID_ID)
+			TiXmlElement::appendSingleAttributeElement(e, "PipePropertiesId", nullptr, std::string(), IBK::val2string<unsigned int>(m_pipePropertiesId));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

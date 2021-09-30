@@ -502,7 +502,7 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 
 	// now get the available heat exchange types
 	std::vector<NANDRAD::HydraulicNetworkHeatExchange::ModelType> availableHxTypes =
-			NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(NANDRAD::HydraulicNetworkComponent::ModelType(modelType));
+			NANDRAD::HydraulicNetworkHeatExchange::availableHeatExchangeTypes(VICUS::NetworkComponent::nandradNetworkComponentModelType(modelType));
 
 	// if no hx type is possible return
 	if (availableHxTypes.empty())

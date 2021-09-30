@@ -49,7 +49,11 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	// configure models
 
 	m_inputVariablesTableModel->m_availableVariables = &m_availableInputVariables;
+	m_inputVariablesTableModel->m_displayNames = &m_displayNameTable;
+	m_inputVariablesTableModel->setUseDisplayNames(m_ui->checkBoxUseDisplayNames->isChecked());
 	m_outputVariablesTableModel->m_availableVariables = &m_availableOutputVariables;
+	m_outputVariablesTableModel->m_displayNames = &m_displayNameTable;
+	m_outputVariablesTableModel->setUseDisplayNames(m_ui->checkBoxUseDisplayNames->isChecked());
 
 	// proxy models
 
@@ -664,6 +668,51 @@ void NandradFMUGeneratorWidget::updateVariableLists() {
 		return;
 	}
 
+
+	// *** read substitution map file
+	QFile substitutionFile(QString::fromStdString( (varDir / "objectref_substitutions.txt").str() ));
+	if (!substitutionFile.open(QFile::ReadOnly)) {
+		throw IBK::Exception(IBK::FormatString("Could not read file '%1'. Re-run solver initialization!")
+							 .arg(substitutionFile.fileName().toStdString()), FUNC_ID);
+	}
+
+	// create maps for fast translation
+	m_displayNameTable.clear();
+	QStringList vars = QString(substitutionFile.readAll()).split('\n');
+	for (QString &str: vars){
+		if (str.isEmpty())
+			continue;
+		QStringList tokens = str.split('\t');
+		// Mind: if file is broken, we may only have one token, but we need at least 2, so skip lines with fewer tokens
+		if (tokens.count() < 2)
+			continue;
+		// remove "id=" from var name
+		std::string name = tokens[0].toStdString();
+		size_t pos = name.find("(id=");
+		if (pos == std::string::npos)
+			continue; // definition line is broken
+
+		size_t pos2 = name.find(")", pos+1);
+
+		if (pos2 == std::string::npos)
+			continue; // definition line is broken
+		std::string id = name.substr(pos+4, pos2-pos-4);
+		unsigned int objectId;
+		try {
+			objectId = IBK::string2val<unsigned int>(id);
+		} catch (...) {
+			continue; // definition line is broken
+		}
+
+		// remember substitution
+		FMUVariableTableModel::DisplayNameSubstitution subst;
+		subst.m_objectId = objectId;
+		subst.m_modelType = name.substr(0, pos);
+		subst.m_displayName = tokens[1].toStdString();
+		m_displayNameTable.push_back(subst);
+	}
+
+
 	// now we set units and descriptions in input variables that match output variables
 	for (NANDRAD::FMIVariableDefinition & var : m_availableInputVariables) {
 		// lookup matching output variable by name
@@ -1015,6 +1064,11 @@ void NandradFMUGeneratorWidget::updateFMUVariableTables() {
 			for (const NANDRAD::FMIVariableDefinition & var : invalidOutputVars)
 				IBK::IBK_Message(IBK::FormatString("  %1 [valueRef=%2]").arg(var.m_varName).arg(var.m_fmiValueRef), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 		}
+		if (!errors.empty()){
+			IBK::IBK_Message("\nProblems:\n", IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			for (const QString &err: errors)
+				IBK::IBK_Message(err.toStdString(), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
 		if (m_silent)
 			qApp->exit(1);
 	}
@@ -1058,12 +1112,21 @@ void NandradFMUGeneratorWidget::addVariable(bool inputVar) {
 			continue;
 
 		Q_ASSERT(valRef == NANDRAD::INVALID_ID);
+
+		// transfer default generated fmi variable name
+		// Mind: we need to request the default-fmi-variable from the model, *before* we set
+		//       a valid value reference. The model recognizes already configured variables
+		//       by a value reference and does no longer to variable substitutions there.
+		QModelIndex fmiVarIndex = varModel->index((int)row, 4);
+		var.m_fmiVarName = fmiVarIndex.data().toString().toStdString();
+
 		// generate a new unique value reference for the newly configured variable
 		// Note: may be adjusted again in renameXXXVariable() call below, if in case of input variable
 		//       an FMI variable with same name exists already
 		var.m_fmiValueRef = (*m_usedValueRefs.rbegin()) + 1;
 		// also insert the new value reference to list of used value refs
 		m_usedValueRefs.insert(var.m_fmiValueRef);
+
 
 		// When we configure the variable, we must check against other variables with the same name.
 		// Unfortunately, this may give rise to a usability problem. Suppose I want to configure
@@ -1623,6 +1686,7 @@ void NandradFMUGeneratorWidget::variableInfo(const std::string & fullVarName, QS
 	}
 }
 
+
 void NandradFMUGeneratorWidget::on_pushButtonRefresh_clicked() {
 
 	QString fname = m_ui->lineEditNandradProjectFilePath->text();
@@ -1778,4 +1842,10 @@ void NandradFMUGeneratorWidget::on_lineEditOutputVarDescFilter_textEdited(const 
 	m_ui->lineEditOutputVarNameFilter->clear();
 	m_outputVariablesProxyModel->setFilterWildcard(arg1);
 	m_outputVariablesProxyModel->setFilterKeyColumn(7);
+}
+
+
+void NandradFMUGeneratorWidget::on_checkBoxUseDisplayNames_clicked(bool checked) {
+	m_inputVariablesTableModel->setUseDisplayNames(checked);
+	m_outputVariablesTableModel->setUseDisplayNames(checked);
 }

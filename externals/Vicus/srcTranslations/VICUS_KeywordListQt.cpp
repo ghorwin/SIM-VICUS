@@ -142,6 +142,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
+	tr("Parallel dynamic pipes buried horizontally in the ground");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
@@ -152,9 +153,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum width/length of discretized volumes in pipe");
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
-	tr("Pressure loss for Valve");
+	tr("Pressure loss for valve");
 	tr("Maximum pressure head at point of minimal mass flow of pump");
 	tr("Maximum electrical power at point of optimal operation of pump");
+	tr("Length of pipes in the ground heat exchanger");
+	tr("Number of parallel pipes in ground heat exchanger");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

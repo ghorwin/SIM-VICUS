@@ -28,6 +28,7 @@
 
 #include <IBK_MultiLanguageString.h>
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 #include <QColor>
 
@@ -52,6 +53,7 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
+		// from NANDRAD::HydraulicNetworkComponent
 		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
@@ -64,11 +66,14 @@ public:
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
+		// aditional model types
+		MT_HorizontalGroundHeatExchanger,	// Keyword: HorizontalGroundHeatExchanger	'Parallel dynamic pipes buried horizontally in the ground'
 		NUM_MT
 	};
 
 	/*! Parameters for the component. */
 	enum para_t {
+		// from NANDRAD::HydraulicNetworkComponent
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
 		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
@@ -79,10 +84,18 @@ public:
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width/length of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
-		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for Valve'
+		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for valve'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
+		// additional parameters
+		P_LengthOfGroundHeatExchangerPipes,		// Keyword: LengthOfGroundHeatExchangerPipes	[m]		'Length of pipes in the ground heat exchanger'
 		NUM_P
+	};
+
+	/*! Whole number parameters. */
+	enum intPara_t {
+		IP_NumberParallelPipes,					// Keyword: NumberParallelPipes				[---]	'Number of parallel pipes in ground heat exchanger'
+		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -96,6 +109,30 @@ public:
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	/*! returns the NANDRAD::HydraulicNetworkComponent parameters which may deviates from the VICUS one as we use the VICUS model
+	 * for GUI and preprocessing */
+	void nandradNetworkComponentParameter(IBK::Parameter *para) const;
+
+	// *** Static Functions
+
+	/*! returns the NANDRAD::HydraulicNetworkComponent ModelType which may deviates from the VICUS one as we use the VICUS model
+	 * for GUI and preprocessing */
+	static NANDRAD::HydraulicNetworkComponent::ModelType nandradNetworkComponentModelType(ModelType modelType);
+
+	/*! returns additional required parameters, not included in NANDRAD::HydraulicNetworkComponent */
+	static std::vector<unsigned int> additionalRequiredParameter(const ModelType modelType);
+
+	/*! returns additional required parameters */
+	static std::vector<unsigned int> requiredIntParameter(const ModelType modelType);
+
+	/*! checks additional required parameters, not included in NANDRAD::HydraulicNetworkComponent */
+	static void checkAdditionalParameter(const IBK::Parameter &para, const unsigned int numPara);
+
+	/*! checks required integer parameters */
+	static void checkIntParameter(const IBK::IntPara &para, const unsigned int numPara);
+
+	static bool hasPipeProperties(const ModelType modelType);
 
 	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
 
@@ -114,6 +151,12 @@ public:
 
 	/*! Schedules for this component */
 	std::vector<unsigned int>			m_scheduleIds;									// XML:E
+
+	/*! Integer parameters. */
+	IBK::IntPara						m_intPara[NUM_IP];								// XML:E
+
+	/*! Reference id fo pipe properties for e.g. the GroundHeatExchanger model */
+	IDType								m_pipePropertiesId = INVALID_ID;				// XML:E
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***

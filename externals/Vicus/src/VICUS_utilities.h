@@ -73,7 +73,7 @@ unsigned int uniqueId(const std::vector<T>& vec) {
 			return id+1;
 		++id;
 	}
-	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	return id;
 }
 
 
@@ -87,7 +87,7 @@ inline unsigned int uniqueId(const std::vector<unsigned int>& vec) {
 			return id+1;
 		++id;
 	}
-	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	return id;
 }
 
 

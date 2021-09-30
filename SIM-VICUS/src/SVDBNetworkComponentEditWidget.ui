@@ -85,7 +85,11 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditSchedule1"/>
+       <widget class="QLineEdit" name="lineEditSchedule1">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1">
        <widget class="QToolButton" name="toolButtonSchedule1">
@@ -94,11 +98,38 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLineEdit" name="lineEditSchedule2"/>
-      </item>
       <item row="1" column="1">
        <widget class="QToolButton" name="toolButtonSchedule2">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="lineEditSchedule2">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxPipeProperties">
+     <property name="title">
+      <string>Pipe properties</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QLineEdit" name="lineEditPipeProperties">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="toolButtonPipeProperties">
         <property name="text">
          <string>...</string>
         </property>

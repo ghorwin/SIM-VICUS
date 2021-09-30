@@ -2314,6 +2314,12 @@ void NandradModel::initOutputReferenceList() {
 		m_varSubstitutionMap[zoneObjectRef] = zone.m_displayName;
 	}
 
+	// *** replace any "[" and "]" in the display names to avoid problems in post proc
+	for (std::map<std::string, std::string>::iterator it = m_varSubstitutionMap.begin(); it != m_varSubstitutionMap.end(); ++it ){
+		it->second = IBK::replace_string(it->second, "[", "(");
+		it->second = IBK::replace_string(it->second, "]", ")");
+	}
+
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK_MSG_INDENT;
 	IBK::Path m_mappingFilePath = (m_dirs.m_varDir / "objectref_substitutions.txt");

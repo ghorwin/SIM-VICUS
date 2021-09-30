@@ -29,7 +29,7 @@ QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const 
 		case Qt::DisplayRole :
 			switch (index.column()) {
 				case 0 : // name
-					return QString::fromStdString(var.m_varName);
+					return modelName(var);
 				case 1 : // object ID
 					return var.m_objectId;
 				case 2 : // vector value ID
@@ -39,7 +39,7 @@ QVariant FMUVariableTableModel::data(const QModelIndex & index, int role) const 
 				case 3 : // unit
 					return QString::fromStdString(var.m_unit);
 				case 4 : // FMI Variable Name
-					return QString::fromStdString(var.m_fmiVarName);
+					return fmiVariableName(var);
 				case 5 : // FMI value ref
 					if (var.m_fmiValueRef == NANDRAD::INVALID_ID)
 						return "---";
@@ -142,6 +142,16 @@ bool FMUVariableTableModel::setData(const QModelIndex & index, const QVariant & 
 }
 
 
+void FMUVariableTableModel::setUseDisplayNames(bool useDisplayNames) {
+	m_useDisplayNames = useDisplayNames;
+	if (m_availableVariables->empty())
+		return; // no signal needed
+	// signal update needed for entire column 0 and column 4
+	emit dataChanged(index(0,0), index(m_availableVariables->size()-1, 0) );
+	emit dataChanged(index(0,4), index(m_availableVariables->size()-1, 4) );
+}
+
+
 void FMUVariableTableModel::reset() {
 	beginResetModel();
 	endResetModel();
@@ -153,4 +163,77 @@ void FMUVariableTableModel::variableModified(unsigned int row) {
 	QModelIndex left = index((int)row, 0);
 	QModelIndex right = index((int)row, 7);
 	emit dataChanged(left, right);
+}
+
+
+QString FMUVariableTableModel::modelName(const NANDRAD::FMIVariableDefinition & var) const {
+	if (!m_useDisplayNames)
+		return QString::fromStdString(var.m_varName);
+
+	// var.m_varName is of format "Zone.AirTemperatur" or "NetworkElement.FluidTemperature"
+	// if display name usage is enabled, we want to show
+	//   Zone("Bathroom").AirTemperatur" or NetworkElement("Constant pressure pump").FluidTemperature
+	// instead.
+
+	// We lookup displayname via type and object id in our substitution table.
+
+	// Extract type name
+	QStringList tokens = QString::fromStdString(var.m_varName).split(".");
+	Q_ASSERT(tokens.size() == 2); // nothing else is allowed!
+
+	// simple linear search is enough here, since ID comparisons are fast
+	Q_ASSERT(m_displayNames != nullptr);
+	for (const DisplayNameSubstitution & displayName : *m_displayNames) {
+		if (displayName.m_objectId != var.m_objectId)
+			continue;
+		if (displayName.m_modelType != tokens[0].toStdString())
+			continue;
+		return QString("%1(\"%2\").%3")
+				.arg(tokens[0])
+				.arg(QString::fromStdString(displayName.m_displayName))
+				.arg(tokens[1]);
+	}
+
+	// fall back on default
+	return QString::fromStdString(var.m_varName);
+}
+
+
+QString FMUVariableTableModel::fmiVariableName(const NANDRAD::FMIVariableDefinition & var) const {
+	if (!m_useDisplayNames)
+		return QString::fromStdString(var.m_fmiVarName);
+
+	// if the FMI variable is already configured, do not temper with FMI variable name
+	if (var.m_fmiValueRef != NANDRAD::INVALID_ID)
+		return QString::fromStdString(var.m_fmiVarName);
+
+	// var.m_fmiVarName is of format "Zone(1).AirTemperatur" or "NetworkElement(2).FluidTemperature"
+	// if display name usage is enabled, we want to show
+	//   Bathroom.AirTemperatur" or Constant_pressure_pump.FluidTemperature
+	// instead.
+
+	// We lookup displayname via type and object id in our substitution table.
+
+	// Extract type name
+	QStringList tokens = QString::fromStdString(var.m_varName).split(".");
+	Q_ASSERT(tokens.size() == 2); // nothing else is allowed!
+
+	// simple linear search is enough here, since ID comparisons are fast
+	Q_ASSERT(m_displayNames != nullptr);
+	for (const DisplayNameSubstitution & displayName : *m_displayNames) {
+		if (displayName.m_objectId != var.m_objectId)
+			continue;
+		if (displayName.m_modelType != tokens[0].toStdString())
+			continue;
+
+		// prepare displayname for FMI usage
+		// TODO : displaynames must not start with numbers!!
+		std::string dispName = IBK::replace_string(displayName.m_displayName, ".", "_");
+		dispName = IBK::replace_string(dispName, " ", "_");
+		IBK::trim(dispName);
+
+		return QString::fromStdString(dispName) + "." + tokens[1];
+	}
+
+	return QString::fromStdString(var.m_fmiVarName);
 }

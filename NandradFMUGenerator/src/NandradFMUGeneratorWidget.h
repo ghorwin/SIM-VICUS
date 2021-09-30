@@ -4,12 +4,12 @@
 #include <QWidget>
 
 #include <NANDRAD_Project.h>
+#include "FMUVariableTableModel.h"
 
 namespace Ui {
 	class NandradFMUGeneratorWidget;
 }
 
-class FMUVariableTableModel;
 class QSortFilterProxyModel;
 class QItemSelection;
 
@@ -111,6 +111,8 @@ private slots:
 
 	void on_lineEditOutputVarDescFilter_textEdited(const QString &arg1);
 
+	void on_checkBoxUseDisplayNames_clicked(bool checked);
+
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
 	void setGUIState(bool active);
@@ -196,6 +198,9 @@ private:
 
 	QSortFilterProxyModel							*m_inputVariablesProxyModel = nullptr;
 	QSortFilterProxyModel							*m_outputVariablesProxyModel = nullptr;
+
+	/*! List of known display names for different model objects. */
+	std::vector<FMUVariableTableModel::DisplayNameSubstitution>		m_displayNameTable;
 
 	std::map<std::string, std::pair<std::string, std::string> > m_variableInfoMap;
 };
