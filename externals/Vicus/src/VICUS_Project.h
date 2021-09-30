@@ -117,6 +117,7 @@ public:
 
 	/*! Searches through all buildings and tries to find a surface with given surface ID (this
 		is not the uniqueID, but the persistant id from the data model.
+		\note This function is rather expensive, try to limit its use.
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
 

@@ -312,7 +312,6 @@ void Project::writeXML(const IBK::Path & filename) const {
 	// other files
 
 	doc.SaveFile( filename.c_str() );
-
 }
 
 
@@ -395,10 +394,11 @@ void Project::writeDirectoryPlaceholdersXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e1, "Placeholder", "name", *it, pit->second.str());
 	}
 }
-// ----------------------------------------------------------------------------
+
 
 void Project::clean() {
-
+	// TODO : Implement cleanup, i.e. removal of ComponentInstances and SubSurfaceComponentInstance that no longer
+	//        reference valid surfaces etc.
 }
 
 
@@ -420,11 +420,25 @@ void Project::updatePointers() {
 				}
 		}
 
+	// create a cache data structure to speedup lookups
+	std::map<unsigned int, VICUS::Surface *>	surfaceIDMap;
+	std::map<unsigned int, VICUS::SubSurface *> subSurfaceIDMap;
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				for (Surface & s : r.m_surfaces) {
+					surfaceIDMap[s.m_id] = &s;
+					for (const SubSurface & sub : s.subSurfaces())
+						subSurfaceIDMap[sub.m_id] = const_cast<SubSurface*>(&sub);
+				}
+
+
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
 		// lookup surfaces
-		ci.m_sideASurface = surfaceByID(ci.m_idSideASurface);
-		if (ci.m_sideASurface != nullptr) {
+		auto sit = surfaceIDMap.find(ci.m_idSideASurface);
+		if (sit != surfaceIDMap.end()) {
+			ci.m_sideASurface = sit->second;
 			// check that no two components reference the same surface
 			if (ci.m_sideASurface->m_componentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
@@ -434,9 +448,12 @@ void Project::updatePointers() {
 				ci.m_sideASurface->m_componentInstance = &ci;
 			}
 		}
+		else
+			ci.m_sideASurface = nullptr;
 
-		ci.m_sideBSurface = surfaceByID(ci.m_idSideBSurface);
-		if (ci.m_sideBSurface != nullptr) {
+		sit = surfaceIDMap.find(ci.m_idSideBSurface);
+		if (sit != surfaceIDMap.end()) {
+			ci.m_sideBSurface = sit->second;
 			// check that no two components reference the same surface
 			if (ci.m_sideBSurface->m_componentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
@@ -446,6 +463,9 @@ void Project::updatePointers() {
 				ci.m_sideBSurface->m_componentInstance = &ci;
 			}
 		}
+		else
+			ci.m_sideBSurface = nullptr;
+
 		if (ci.m_idSurfaceHeatingControlZone != VICUS::INVALID_ID) {
 			for (VICUS::Building & b : m_buildings)
 				for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
@@ -458,8 +478,9 @@ void Project::updatePointers() {
 	// update pointers in subsurfaces
 	for (VICUS::SubSurfaceComponentInstance & ci : m_subSurfaceComponentInstances) {
 		// lookup surfaces
-		ci.m_sideASubSurface = subSurfaceByID(ci.m_idSideASurface);
-		if (ci.m_sideASubSurface != nullptr) {
+		auto sit = subSurfaceIDMap.find(ci.m_idSideASurface);
+		if (sit != subSurfaceIDMap.end()) {
+			ci.m_sideASubSurface = sit->second;
 			// check that no two components reference the same surface
 			if (ci.m_sideASubSurface->m_subSurfaceComponentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
@@ -469,9 +490,12 @@ void Project::updatePointers() {
 				ci.m_sideASubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
+		else
+			ci.m_sideASubSurface = nullptr;
 
-		ci.m_sideBSubSurface = subSurfaceByID(ci.m_idSideBSurface);
-		if (ci.m_sideBSubSurface != nullptr) {
+		sit = subSurfaceIDMap.find(ci.m_idSideBSurface);
+		if (sit != subSurfaceIDMap.end()) {
+			ci.m_sideBSubSurface = sit->second;
 			// check that no two components reference the same surface
 			if (ci.m_sideBSubSurface->m_subSurfaceComponentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
@@ -481,13 +505,13 @@ void Project::updatePointers() {
 				ci.m_sideBSubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
+		else
+			ci.m_sideBSubSurface = nullptr;
 
 	}
 
-
-	for (VICUS::Network & n : m_geometricNetworks) {
+	for (VICUS::Network & n : m_geometricNetworks)
 		n.updateNodeEdgeConnectionPointers();
-	}
 }
 
 
@@ -558,6 +582,7 @@ bool selectionCheck(const VICUS::Object & o, bool takeSelected, bool takeVisible
 	bool visCheck = takeVisible ? o.m_visible : true;
 	return (selCheck && visCheck);
 }
+
 
 void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGroups sg,
 							bool takeSelected, bool takeVisible) const
