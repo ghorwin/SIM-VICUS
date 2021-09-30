@@ -28,6 +28,7 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
+//#include <QDebug>
 
 namespace Vic3D {
 
@@ -62,6 +63,12 @@ void KeyboardMouseHandler::keyReleaseEvent(QKeyEvent *event) {
 	else {
 		releaseKey(static_cast<Qt::Key>(event->key()));
 	}
+	if (!(event->modifiers() & Qt::ShiftModifier))
+		releaseKey(Qt::Key_Shift);
+	if (!(event->modifiers() & Qt::AltModifier))
+		releaseKey(Qt::Key_Alt);
+	if (!(event->modifiers() & Qt::ControlModifier))
+		releaseKey(Qt::Key_Control);
 }
 
 
@@ -136,6 +143,7 @@ bool KeyboardMouseHandler::pressKey(Qt::Key k) {
 	for (unsigned int i=0; i<m_keys.size(); ++i) {
 		if (m_keys[i] == k) {
 			m_keyStates[i] = StateHeld;
+//			qDebug() << k << "Held";
 			return true;
 		}
 	}
@@ -147,6 +155,7 @@ bool KeyboardMouseHandler::releaseKey(Qt::Key k) {
 	for (unsigned int i=0; i<m_keys.size(); ++i) {
 		if (m_keys[i] == k) {
 			m_keyStates[i] = StateWasPressed;
+//			qDebug() << k << "released";
 			return true;
 		}
 	}

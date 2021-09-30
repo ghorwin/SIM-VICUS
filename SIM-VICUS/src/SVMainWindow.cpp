@@ -853,6 +853,9 @@ void SVMainWindow::on_actionFileSaveAs_triggered() {
 	setFocus();
 	m_projectHandler.saveWithNewFilename(this); // emits updateActions() if project was successfully saved
 	saveThumbNail();
+	// clear shift-keyboard state, since user has likely released shift key when using the open file dialog
+	QKeyEvent * e = new QKeyEvent (QEvent::KeyRelease,Qt::Key_S,Qt::ShiftModifier,"s");
+	qApp->postEvent((QObject*)m_geometryView->sceneView(),(QEvent *)e);
 }
 
 
