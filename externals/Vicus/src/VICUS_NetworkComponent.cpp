@@ -151,10 +151,11 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT:
-			return {};
+			break;
 		case MT_HorizontalGroundHeatExchanger:
 			return {P_LengthOfGroundHeatExchangerPipes};
 	}
+	return {};
 }
 
 std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
@@ -173,10 +174,11 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT:
-			return {};
+			break;
 		case MT_HorizontalGroundHeatExchanger:
 			return {IP_NumberParallelPipes};
 	}
+	return {};
 }
 
 void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, const unsigned int numPara) {
@@ -237,12 +239,13 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT:
-			return false;
+			break;
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
 		case MT_HorizontalGroundHeatExchanger:
 			return true;
 	}
+	return false;
 }
 
 
