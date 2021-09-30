@@ -1764,7 +1764,11 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 		if (s != nullptr) {
 			VICUS::Surface modS(*s);
 			modS.flip();
-			modifiedSurfaces.push_back(modS);
+			if (modS.geometry().isValid() )
+				modifiedSurfaces.push_back(modS);
+			else
+				IBK::IBK_Message(IBK::FormatString("Surface %1 could not be flipped.").arg(modS.m_displayName.toStdString()),
+								 IBK::MSG_WARNING, "Surface::flip", IBK::VL_STANDARD);
 		}
 	}
 
