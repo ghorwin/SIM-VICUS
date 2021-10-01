@@ -45,7 +45,7 @@ public:
 	class ModifiedNodes : public ModificationInfo {
 	public:
 		NodeState					m_changedStateType;
-		std::vector<unsigned int>	m_nodeIDs;
+		std::vector<unsigned int>	m_nodeIDs; // unique IDs
 	};
 
 
