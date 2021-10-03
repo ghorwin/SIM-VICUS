@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # Script to update all files within reference directories (with given suffix) from currently computed cases
 #

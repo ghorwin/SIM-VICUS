@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
 # Script to update all files within reference directories (with given suffix) from currently computed cases
 #
@@ -101,7 +101,7 @@ def processCaseDir(c, rootDir, suffix, caseDirFilter, copyAll=False):
 	  pass empty set to always check case directory
 	"""
 	caseDir = os.path.join(rootDir, c)
-	print "Case: '{}'".format(c)
+	print ("Case: '{}'".format(c))
 
 	refDirs = [fname for fname in os.listdir(caseDir )
 		       if os.path.isdir(os.path.join(caseDir, fname)) and fname.endswith(suffix)]
@@ -113,9 +113,9 @@ def processCaseDir(c, rootDir, suffix, caseDirFilter, copyAll=False):
 		fullPathToSrcDir = os.path.abspath(os.path.join(caseDir, srcDir))
 		if len(caseDirFilter) > 0:
 			if not fullPathToSrcDir in caseDirFilter:
-				print "  Project '{}' is not in filter list, skipped".format(os.path.relpath(fullPathToSrcDir, rootDir))
+				print ("  Project '{}' is not in filter list, skipped".format(os.path.relpath(fullPathToSrcDir, rootDir)))
 				continue
-		print "  Project: '{}'".format(os.path.relpath(fullPathToSrcDir, rootDir))
+		print ("  Project: '{}'".format(os.path.relpath(fullPathToSrcDir, rootDir)))
 
 		# process all files in each directory
 		# if file with same name exists in base directory (without suffix), copy file over
@@ -131,13 +131,13 @@ def processCaseDir(c, rootDir, suffix, caseDirFilter, copyAll=False):
 					# special handling for output files where only time stamp of creation has changed
 					if fullPath[-3:] == 'd6o':
 						if copyIfNotEqualD6O(srcFilePath, fullPath):
-							print "    Updated: {}".format(os.path.relpath(fullPath, caseDir))
+							print ("    Updated: {}".format(os.path.relpath(fullPath, caseDir)))
 					elif srcFilePath.endswith("summary.txt"):
 #						print "Comparing summary.txt files"
 						if copyAll:
 							shutil.copyfile(srcFilePath, fullPath)
 						elif copyIfNotEqualSummary(srcFilePath, fullPath):
-							print "    Updated: {}".format(os.path.relpath(fullPath, caseDir))
+							print ("    Updated: {}".format(os.path.relpath(fullPath, caseDir)))
 					else:
-						print "    Updated: {}".format(os.path.relpath(fullPath, caseDir))
+						print ("    Updated: {}".format(os.path.relpath(fullPath, caseDir)))
 						shutil.copyfile(srcFilePath, fullPath)
