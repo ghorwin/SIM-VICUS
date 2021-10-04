@@ -404,41 +404,37 @@ void Project::clean() {
 
 void Project::updatePointers() {
 	FUNCID(Project::updatePointers);
+
+	m_objectPtr.clear();
 	// update hierarchy
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
 
 	// clear component/surface pointers (this is needed to check for duplicate IDs later on)
-	for (VICUS::Building & b : m_buildings)
+	for (VICUS::Building & b : m_buildings) {
+		m_objectPtr[b.uniqueID()] = &b;
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			m_objectPtr[bl.uniqueID()] = &bl;
 			// TODO : Dirk, sum up net floor area and update bl.m_netFloorArea
-			for (VICUS::Room & r : bl.m_rooms)
+			for (VICUS::Room & r : bl.m_rooms) {
+				m_objectPtr[r.uniqueID()] = &r;
 				for (VICUS::Surface & s : r.m_surfaces) {
+					m_objectPtr[s.uniqueID()] = &s;
 					s.m_componentInstance = nullptr;
-					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) )
+					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) ) {
+						m_objectPtr[sub.uniqueID()] = &sub;
 						sub.m_subSurfaceComponentInstance = nullptr;
+					}
 				}
+			}
 		}
-
-	// create a cache data structure to speedup lookups
-	std::map<unsigned int, VICUS::Surface *>	surfaceIDMap;
-	std::map<unsigned int, VICUS::SubSurface *> subSurfaceIDMap;
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				for (Surface & s : r.m_surfaces) {
-					surfaceIDMap[s.m_id] = &s;
-					for (const SubSurface & sub : s.subSurfaces())
-						subSurfaceIDMap[sub.m_id] = const_cast<SubSurface*>(&sub);
-				}
-
+	}
 
 	// update pointers
 	for (VICUS::ComponentInstance & ci : m_componentInstances) {
 		// lookup surfaces
-		auto sit = surfaceIDMap.find(ci.m_idSideASurface);
-		if (sit != surfaceIDMap.end()) {
-			ci.m_sideASurface = sit->second;
+		ci.m_sideASurface = surfaceByID(ci.m_idSideASurface);
+		if (ci.m_sideASurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideASurface->m_componentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
@@ -448,12 +444,9 @@ void Project::updatePointers() {
 				ci.m_sideASurface->m_componentInstance = &ci;
 			}
 		}
-		else
-			ci.m_sideASurface = nullptr;
 
-		sit = surfaceIDMap.find(ci.m_idSideBSurface);
-		if (sit != surfaceIDMap.end()) {
-			ci.m_sideBSurface = sit->second;
+		ci.m_sideBSurface = surfaceByID(ci.m_idSideBSurface);
+		if (ci.m_sideBSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideBSurface->m_componentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
@@ -463,9 +456,6 @@ void Project::updatePointers() {
 				ci.m_sideBSurface->m_componentInstance = &ci;
 			}
 		}
-		else
-			ci.m_sideBSurface = nullptr;
-
 		if (ci.m_idSurfaceHeatingControlZone != VICUS::INVALID_ID) {
 			for (VICUS::Building & b : m_buildings)
 				for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
@@ -478,9 +468,8 @@ void Project::updatePointers() {
 	// update pointers in subsurfaces
 	for (VICUS::SubSurfaceComponentInstance & ci : m_subSurfaceComponentInstances) {
 		// lookup surfaces
-		auto sit = subSurfaceIDMap.find(ci.m_idSideASurface);
-		if (sit != subSurfaceIDMap.end()) {
-			ci.m_sideASubSurface = sit->second;
+		ci.m_sideASubSurface = subSurfaceByID(ci.m_idSideASurface);
+		if (ci.m_sideASubSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideASubSurface->m_subSurfaceComponentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
@@ -490,12 +479,9 @@ void Project::updatePointers() {
 				ci.m_sideASubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
-		else
-			ci.m_sideASubSurface = nullptr;
 
-		sit = subSurfaceIDMap.find(ci.m_idSideBSurface);
-		if (sit != subSurfaceIDMap.end()) {
-			ci.m_sideBSubSurface = sit->second;
+		ci.m_sideBSubSurface = subSurfaceByID(ci.m_idSideBSurface);
+		if (ci.m_sideBSubSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideBSubSurface->m_subSurfaceComponentInstance != nullptr) {
 				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
@@ -505,51 +491,34 @@ void Project::updatePointers() {
 				ci.m_sideBSubSurface->m_subSurfaceComponentInstance = &ci;
 			}
 		}
-		else
-			ci.m_sideBSubSurface = nullptr;
 
 	}
 
-	for (VICUS::Network & n : m_geometricNetworks)
+	// networks
+
+	for (VICUS::Network & n : m_geometricNetworks) {
+		m_objectPtr[n.uniqueID()] = &n;
+		for (VICUS::NetworkEdge & e : n.m_edges)
+			m_objectPtr[e.uniqueID()] = &e;
+		for (VICUS::NetworkNode & nod : n.m_nodes)
+			m_objectPtr[nod.uniqueID()] = &nod;
+
 		n.updateNodeEdgeConnectionPointers();
+	}
+
+	// plain geometry
+
+	for (VICUS::Surface & s : m_plainGeometry)
+		m_objectPtr[s.uniqueID()] = &s;
+
 }
 
 
 const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
-	FUNCID(Project::objectById);
-	const VICUS::Object * obj = nullptr;
-	// search in buildings
-	for (const VICUS::Building & b : m_buildings) {
-		obj = b.findChild(uniqueID);
-		if (obj != nullptr)
-			break;
-	}
-	// now look in plain geometry
-	if (obj == nullptr) {
-		for (const VICUS::Surface & s : m_plainGeometry) {
-			if (s.uniqueID() == uniqueID) {
-				obj = &s;
-				break;
-			}
-		}
-	}
-	// now look in geometric networks
-	if (obj == nullptr) {
-		for (const VICUS::Network & n : m_geometricNetworks) {
-			if (n.uniqueID() == uniqueID) {
-				obj = &n;
-				break;
-			}
-			obj = n.findChild(uniqueID);
-			if (obj != nullptr)
-				break;
-		}
-	}
-	if (obj == nullptr)
-		throw IBK::Exception(IBK::FormatString("Missing object with unique ID %1.").arg(uniqueID), FUNC_ID);
-	return obj;
+	auto objPtrIt = m_objectPtr.find(uniqueID);
+	Q_ASSERT(objPtrIt != m_objectPtr.end());
+	return objPtrIt->second;
 }
-
 
 Surface * Project::surfaceByID(unsigned int surfaceID) {
 	for (Building & b : m_buildings)

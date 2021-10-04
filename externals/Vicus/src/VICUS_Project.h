@@ -250,6 +250,10 @@ private:
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
 
+	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() function.
+		This map is updated in updatePointers().
+	*/
+	std::map<unsigned int, const VICUS::Object*>		m_objectPtr;
 
 #if 0
 	// *** DIRK REMOVE BELOW ***
