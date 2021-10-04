@@ -54,6 +54,7 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 
 	// register item delegate that paints the "visible" bulb
 	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+	m_ui->treeWidget->setUniformRowHeights(true);
 
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
