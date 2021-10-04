@@ -2078,7 +2078,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		if (sub->m_elements.size() > maxNumberElements)
 			maxNumberElements = sub->m_elements.size();
 
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+		for (const NetworkElement &el: sub->m_elements){
 			componentIds.insert(el.m_componentId);
 			if (el.m_controlElementId != NANDRAD::INVALID_ID)
 				controllerIds.insert(el.m_controlElementId);
@@ -2229,7 +2229,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		bool subInletFound = false;
 		bool subOutletFound = false;
 		std::map<unsigned int, unsigned int> subNetNodeIdMap;
-		for (const NANDRAD::HydraulicNetworkElement &elem: sub->m_elements){
+		for (const NetworkElement &elem: sub->m_elements){
 
 			if (elem.m_inletNodeId == VICUS::SubNetwork::INLET_ID){
 				subInletFound = true;
@@ -2262,11 +2262,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 
 		// now we can create the new nandrad elements and map the repsctive nodes
-		for (const NANDRAD::HydraulicNetworkElement &elem: sub->m_elements){
+		for (const NetworkElement &elem: sub->m_elements){
 
 			// 1. copy the element and create a unique element id for it
-			NANDRAD::HydraulicNetworkElement newElement = elem;
-			newElement.m_id = uniqueIdAdd(allElementIds);
+			unsigned int id = uniqueIdAdd(allElementIds);
+			NANDRAD::HydraulicNetworkElement newElement(id, elem.m_inletNodeId, elem.m_outletNodeId, elem.m_componentId);
 
 			// 2. set the new elements inlet and outlet id using the map that we created
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
@@ -2537,13 +2537,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			outputDefReturnPipe.m_fmiValueRef = ++fmiValueRef;
 			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipe);
 
-
-			// store Nandrad element id in edge so they can be used later on
-			const_cast<NetworkEdge*>(edge)->m_idNandradSupplyPipe = supplyPipe.m_id;
-			const_cast<NetworkEdge*>(edge)->m_idNandradReturnPipe = returnPipe.m_id;
+			edge->m_idNandradSupplyPipe = supplyPipe.m_id;
+			edge->m_idNandradReturnPipe = returnPipe.m_id;
 
 			// einfacher Ansatz: für jede Edge ein Delphin Modell
-
 			++idSoilModel;
 			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
 			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
@@ -2556,15 +2553,18 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	// besserer Ansatz: entlang der Pfade gehen und entsprechend des TempChangeIndicator die Delphin Modelle zuweisen...
 
-//	vicusNetwork.calcTemperatureChangeIndicator()
-//	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
-//	vicusNetwork.findShortestPathForBuildings(shortestPaths);
+	Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
+	dbPipes.setData(m_embeddedDB.m_pipes);
+	vicusNetwork.calcTemperatureChangeIndicator(fluid, dbPipes);
+	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	vicusNetwork.findShortestPathForBuildings(shortestPaths);
 
-//	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-//		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-//		for (NetworkEdge * edge: shortestPath)
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (NetworkEdge * edge: shortestPath)
+			int a=1;
 //			edge->m_supplyPipeId ...
-//	}
+	}
 
 
 	// write mapping file

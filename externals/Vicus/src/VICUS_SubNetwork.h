@@ -8,6 +8,7 @@
 #include "VICUS_Database.h"
 #include "VICUS_NetworkComponent.h"
 #include "VICUS_NetworkController.h"
+#include "VICUS_NetworkElement.h"
 
 #include <NANDRAD_HydraulicNetworkElement.h>
 
@@ -58,7 +59,7 @@ public:
 		NOTE: the heat exchange property of the elements are not used, instead, we assign the heat exchange property
 		of the correspoinding node (the parent of this SubNetwork) using the heatExchangeElementId
 	*/
-	std::vector<NANDRAD::HydraulicNetworkElement>		m_elements;								// XML:E
+	std::vector<NetworkElement>							m_elements;								// XML:E
 
 	/*! Stores id of element with heat exchange parameterization. INVALID_ID means no heat exchange. */
 	unsigned int										m_idHeatExchangeElement = INVALID_ID;	// XML:A
