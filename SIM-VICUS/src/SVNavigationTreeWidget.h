@@ -78,19 +78,16 @@ private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);
 
-	/*! Modifies a tree node. */
-	void setFlags(unsigned int uniqueID, bool visible, bool selected);
-
 	/*! Relates unique object ID to tree widget item.
-		This map is updated whenever the tree widget is modified in onModified().
+		This map is updated whenever the tree data is modified entirely in onModified().
 	*/
 	std::map<unsigned int, QTreeWidgetItem*>	m_treeItemMap;
 
 	/*! Ui pointer. */
-	Ui::SVNavigationTreeWidget			*m_ui;
+	Ui::SVNavigationTreeWidget					*m_ui;
 
 	/*! The smart selection dialog. */
-	SVSmartSelectDialog					*m_smartSelectDialog = nullptr;
+	SVSmartSelectDialog							*m_smartSelectDialog = nullptr;
 };
 
 #endif // SVNavigationTreeWidgetH
