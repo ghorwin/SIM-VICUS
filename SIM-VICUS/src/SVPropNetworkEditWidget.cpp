@@ -1100,7 +1100,8 @@ void SVPropNetworkEditWidget::on_pushButtonTempChangeIndicator_clicked()
 	const SVDatabase & db = SVSettings::instance().m_db;
 	const VICUS::NetworkFluid *fluid = db.m_fluids[m_currentNetwork.m_idFluid];
 	Q_ASSERT(fluid!=nullptr);
-	m_currentNetwork.calcTemperatureChangeIndicator(fluid, db.m_pipes);
+	std::map<unsigned int, std::vector<VICUS::NetworkEdge *> > shortestPaths;
+	m_currentNetwork.calcTemperatureChangeIndicator(fluid, db.m_pipes, shortestPaths);
 
 	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
