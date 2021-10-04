@@ -729,7 +729,8 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) const{
+void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB,
+											 std::map<unsigned int, std::vector<NetworkEdge *> > &shortestPaths) const{
 	FUNCID(Network::calcTemperatureChangeIndicator);
 
 	// check for source
@@ -743,7 +744,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 		edge.m_nominalHeatingDemand = 0;
 
 	// find shortest path for each building node to closest source node
-	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	shortestPaths.clear();
 	findShortestPathForBuildings(shortestPaths);
 
 	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
@@ -796,7 +797,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 
 
 void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
-	for (NetworkNode n: m_nodes){
+	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Source)
 			sources.push_back(n);
 	}
@@ -905,14 +906,24 @@ size_t Network::numberOfBuildings() const{
 	return count;
 }
 
-
-void Network::writeNetworkCSV(const IBK::Path &file) const{
+void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	for (const NetworkEdge &e: m_edges){
+	for (const NetworkNode &n: m_nodes){
+		f.precision(0);
+		f << std::fixed << n.m_id << "\t";
 		f.precision(10);
-		f << std::fixed << e.m_node1->m_position.m_x << "\t" << e.m_node1->m_position.m_y << "\t"
-		  << e.m_node2->m_position.m_x << "\t" << e.m_node2->m_position.m_y << "\t" << e.length() << std::endl;
+		f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << std::endl;
+	}
+	f.close();
+}
+
+void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
+	std::ofstream f;
+	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
+	f.precision(0);
+	for (const NetworkEdge &e: m_edges){
+		f << std::fixed << e.nodeId1() << "\t" <<e.nodeId2() << "\t" << e.m_idSoil << std::endl;
 	}
 	f.close();
 }

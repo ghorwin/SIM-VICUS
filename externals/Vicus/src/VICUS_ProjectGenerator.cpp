@@ -2386,11 +2386,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
 
-	unsigned int idSoilModel = 0; // start value
-
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
-
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
 	std::vector<const VICUS::NetworkEdge *> orderedEdges;
@@ -2540,10 +2535,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			edge->m_idNandradSupplyPipe = supplyPipe.m_id;
 			edge->m_idNandradReturnPipe = returnPipe.m_id;
 
-			// einfacher Ansatz: für jede Edge ein Delphin Modell
-			++idSoilModel;
-			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
-			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
+//			// einfacher Ansatz: für jede Edge ein Delphin Modell
+//			++idSoilModel;
+//			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
+//			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
 
 		}
 	}  // end of iteration over edges
@@ -2555,15 +2550,52 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
 	dbPipes.setData(m_embeddedDB.m_pipes);
-	vicusNetwork.calcTemperatureChangeIndicator(fluid, dbPipes);
 	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
-	vicusNetwork.findShortestPathForBuildings(shortestPaths);
+	vicusNetwork.calcTemperatureChangeIndicator(fluid, dbPipes, shortestPaths);
+
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
+	std::vector<unsigned int> allSoilModelIds;
+	unsigned int soilModelId = 1;
+
+	for (const NetworkEdge &e: vicusNetwork.m_edges)
+		e.m_idSoil = VICUS::INVALID_ID;
+
+	double thresholdTempChangeInd = vicusNetwork.m_buriedPipeProperties.m_para[
+											VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].value;
 
 	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+
+		double tempChangeindicatorSum = 0;
+
 		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-		for (NetworkEdge * edge: shortestPath)
-			int a=1;
-//			edge->m_supplyPipeId ...
+
+		for (const NetworkEdge * edge: shortestPath){
+
+			// 1. calculate the cumulative temperature change indicator
+			tempChangeindicatorSum += edge->m_tempChangeIndicator;
+
+			// 2. lookup if the same supply pipe has already been processed,
+			// if this is the case: set the according soilModelId and jump to next edge
+			if (edge->m_idSoil != VICUS::INVALID_ID){
+				soilModelId = edge->m_idSoil;
+				continue;
+			}
+
+			// 3. check if the cumulative temperature change indicator is above threshold
+			// if this is the case: create a new soil model id and reset the cumulative temperature change indicator
+			if (tempChangeindicatorSum > thresholdTempChangeInd){
+				soilModelId = uniqueIdAdd(allSoilModelIds);
+				tempChangeindicatorSum = 0;
+			}
+
+			// 4. finally map the soilModelId to the supply and return pipe ids
+			// (and also the reverse map for supply pipe ids)
+			edge->m_idSoil = soilModelId;
+			mapSoil2SupplyPipes[soilModelId].push_back(edge->m_idNandradSupplyPipe);
+			mapSoil2ReturnPipes[soilModelId].push_back(edge->m_idNandradReturnPipe);
+		}
+
 	}
 
 
@@ -2583,6 +2615,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		f << std::endl;
 	}
 	f.close();
+
+
+	vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
+	vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
 
 
 	 // we are DONE !!!

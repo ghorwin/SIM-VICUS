@@ -169,11 +169,14 @@ public:
 	 * each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
 	 * each edge.
 	 */
-	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) const;
+	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB,
+										std::map<unsigned int, std::vector<NetworkEdge *> > &shortestPaths) const;
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
-	void writeNetworkCSV(const IBK::Path &file) const;
+	void writeNetworkEdgesCSV(const IBK::Path &file) const;
+
+	void writeNetworkNodesCSV(const IBK::Path &file) const;
 
 	void writePathCSV(const IBK::Path &file, const NetworkNode & nodeById, const std::vector<NetworkEdge *> &path) const;
 

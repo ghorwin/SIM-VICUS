@@ -24,8 +24,9 @@ public:
 
 	/*! parameters of buried pipes */
 	enum para_t {
-		P_PipeSpacing,			// Keyword: PipeSpacing		[m]		'Spacing between supply and return pipes'
-		P_PipeDepth,			// Keyword: PipeDepth		[m]		'Distance between soil surface and pipes'
+		P_PipeSpacing,				// Keyword: PipeSpacing		[m]		'Spacing between supply and return pipes'
+		P_PipeDepth,				// Keyword: PipeDepth		[m]		'Distance between soil surface and pipes'
+		P_MaxTempChangeIndicator,	// Keyword: MaxTempChangeIndicator		[---]		'MaxTempChangeIndicator'
 		NUM_P
 	};
 

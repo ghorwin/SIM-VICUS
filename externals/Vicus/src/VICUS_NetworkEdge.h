@@ -167,6 +167,8 @@ public:
 	mutable unsigned int										m_idNandradSupplyPipe = INVALID_ID;
 	mutable unsigned int										m_idNandradReturnPipe = INVALID_ID;
 
+	mutable unsigned int										m_idSoil = INVALID_ID;
+
 
 private:
 
