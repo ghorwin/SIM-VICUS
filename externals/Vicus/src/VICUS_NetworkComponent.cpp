@@ -107,6 +107,14 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 	if (m_polynomCoefficients != otherNetComp->m_polynomCoefficients)
 		return Different;
 
+	// check schedule ids
+	if (m_scheduleIds.size() != otherNetComp->m_scheduleIds.size())
+		return Different;
+	for (unsigned int i=0; i<m_scheduleIds.size(); ++i){
+		if (m_scheduleIds[i] != otherNetComp->m_scheduleIds[i])
+			return Different;
+	}
+
 	//check meta data
 	if (m_displayName != otherNetComp->m_displayName ||
 			m_color != otherNetComp->m_color ||

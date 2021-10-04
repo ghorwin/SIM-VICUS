@@ -147,25 +147,25 @@ public:
 	mutable QColor										m_color;
 
 	/*! Sum of maximum heating demand of all connected buildings [W], will be determined in sizePipeDimensions() */
-	double												m_nominalHeatingDemand = 0;
+	mutable double										m_nominalHeatingDemand = 0;
 
 	/*! Mass flow [kg/s] at nominal temperature difference, will be determined in sizePipeDimensions() */
-	double												m_nominalMassFlow = 0;
+	mutable double												m_nominalMassFlow = 0;
 
 	/*! Describes the fluid temperature change along this pipe with nominal mass flow, when there is a temperature difference of 1 K
 		between fluid and sourrunding soil. This information can be used to create according soil models.
 		Is dimensionless, but for interpretation, unit [K/K] can be used
 	*/
-	double												m_tempChangeIndicator = -1;
+	mutable double												m_tempChangeIndicator = -1;
 
-	NetworkNode											* m_node1 = nullptr;
-	NetworkNode											* m_node2 = nullptr;
+	mutable NetworkNode											* m_node1 = nullptr;
+	mutable NetworkNode											* m_node2 = nullptr;
 
-	unsigned int										m_idNodeInlet = INVALID_ID;
-	unsigned int										m_idNodeOutlet = INVALID_ID;
+	mutable unsigned int										m_idNodeInlet = INVALID_ID;
+	mutable unsigned int										m_idNodeOutlet = INVALID_ID;
 
-	unsigned int										m_idNandradSupplyPipe = INVALID_ID;
-	unsigned int										m_idNandradReturnPipe = INVALID_ID;
+	mutable unsigned int										m_idNandradSupplyPipe = INVALID_ID;
+	mutable unsigned int										m_idNandradReturnPipe = INVALID_ID;
 
 
 private:

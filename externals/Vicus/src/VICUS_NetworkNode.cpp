@@ -141,10 +141,10 @@ bool NetworkNode::findPathToSource(std::set<NetworkEdge*> &path, std::set<Networ
 }
 
 
-void NetworkNode::updateNeighbourDistances() {
+void NetworkNode::updateNeighbourDistances() const{
 	// calculate alternative distance to neighbour.
 	// If it is shorter than current one: set it as its current distance
-	for (NetworkEdge *e :m_edges){
+	for (const NetworkEdge *e :m_edges){
 		NetworkNode * neighbour = e->neighbourNode(this);
 		double alternativeDistance = m_distanceToStart + e->length();
 		if (alternativeDistance < neighbour->m_distanceToStart){
@@ -155,7 +155,7 @@ void NetworkNode::updateNeighbourDistances() {
 }
 
 
-void NetworkNode::pathToNull(std::vector<NetworkEdge*> &path){
+void NetworkNode::pathToNull(std::vector<NetworkEdge*> &path) const{
 	if (m_predecessor == nullptr)
 		return;
 	for (NetworkEdge * e: m_edges){

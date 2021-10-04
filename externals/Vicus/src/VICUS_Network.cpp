@@ -121,7 +121,7 @@ void Network::updateNodeEdgeConnectionPointers() {
 	// resolve all node and edge pointers
 
 	// first clear edge pointers in all nodes
-	for (NetworkNode & n : m_nodes)
+	for (const NetworkNode & n : m_nodes)
 		n.m_edges.clear();
 
 	// loop over all edges
@@ -587,10 +587,8 @@ void Network::removeShortEdges(const double &thresholdLength) {
 }
 
 
-void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) {
+void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) const{
 	FUNCID(Network::findShortestPathForBuildings);
-
-	updateNodeEdgeConnectionPointers();
 
 	// check for source
 	std::vector<NetworkNode> sources;
@@ -600,7 +598,7 @@ void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<Ne
 
 	// iterate over all buildings
 	minPathMap.clear();
-	for (NetworkNode &node: m_nodes) {
+	for (const NetworkNode &node: m_nodes) {
 
 		if (node.m_type != NetworkNode::NT_Building)
 			continue;
@@ -731,7 +729,7 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) {
+void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) const{
 	FUNCID(Network::calcTemperatureChangeIndicator);
 
 	// check for source
@@ -741,11 +739,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
 	// set all edges heating demand = 0
-	for (NetworkEdge &edge: m_edges)
-		edge.m_nominalHeatingDemand = 0;
-
-	// set all edges heating demand = 0
-	for (NetworkEdge &edge: m_edges)
+	for (const NetworkEdge &edge: m_edges)
 		edge.m_nominalHeatingDemand = 0;
 
 	// find shortest path for each building node to closest source node
@@ -754,14 +748,14 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 
 	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
 	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-		NetworkNode *building = nodeById(it->first);			// get pointer to building node
+		const NetworkNode *building = nodeById(it->first);			// get pointer to building node
 		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
 		for (NetworkEdge * edge: shortestPath)
 			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
-	for (NetworkEdge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 		if (e.m_nominalHeatingDemand <= 0){
 			std::set<NetworkEdge *> edges1, edges2;
 			e.m_nominalHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
@@ -776,7 +770,7 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 	const double &lambda = fluid->m_para[NetworkFluid::P_Conductivity].value;
 
 	// calculate temperature change indicator for each edge
-	for (NetworkEdge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 
 		const NetworkPipe *pipe = pipeDB[e.m_idPipe];
 		Q_ASSERT(pipe != nullptr);
@@ -809,11 +803,11 @@ void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
 }
 
 
-void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode,
-										   std::vector<NetworkEdge*> &pathEndToStart){
+void Network::dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
+										   std::vector<NetworkEdge*> &pathEndToStart) const{
 
 	// init: all nodes have infinte distance to start node and no predecessor
-	for (NetworkNode &n: m_nodes){
+	for (const NetworkNode &n: m_nodes){
 		n.m_distanceToStart = std::numeric_limits<double>::max();
 		n.m_predecessor = nullptr;
 	}
@@ -824,11 +818,11 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const Network
 	while (visitedNodes.size() <= m_nodes.size()){
 		// find node with currently smallest distance to start, which has not yet been visited:
 		double minDistance = std::numeric_limits<double>::max();
-		NetworkNode *nMin = nullptr;
-		for (unsigned id = 0; id < m_nodes.size(); ++id){
-			if (visitedNodes.find(id) == visitedNodes.end() && nodeById(id)->m_distanceToStart < minDistance){
-				minDistance = nodeById(id)->m_distanceToStart;
-				nMin = nodeById(id);
+		const NetworkNode *nMin = nullptr;
+		for (const NetworkNode &n: m_nodes){
+			if (visitedNodes.find(n.m_id) == visitedNodes.end() && n.m_distanceToStart < minDistance){
+				minDistance = n.m_distanceToStart;
+				nMin = &n;
 			}
 		}
 		IBK_ASSERT(nMin != nullptr);
