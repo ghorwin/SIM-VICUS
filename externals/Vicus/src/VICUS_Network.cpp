@@ -923,7 +923,8 @@ void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(0);
 	for (const NetworkEdge &e: m_edges){
-		f << std::fixed << e.nodeId1() << "\t" <<e.nodeId2() << "\t" << e.m_idSoil << std::endl;
+		f << std::fixed << e.nodeId1() << "\t" <<e.nodeId2() << "\t" << e.m_idSoil
+		  << "\t" << f.precision(10) << e.m_cumulativeTempChangeIndicator << std::endl;
 	}
 	f.close();
 }

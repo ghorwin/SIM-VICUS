@@ -2558,43 +2558,72 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	std::vector<unsigned int> allSoilModelIds;
 	unsigned int soilModelId = 1;
 
-	for (const NetworkEdge &e: vicusNetwork.m_edges)
+	for (const NetworkEdge &e: vicusNetwork.m_edges){
 		e.m_idSoil = VICUS::INVALID_ID;
+		e.m_cumulativeTempChangeIndicator = -1;
+	}
 
 	double thresholdTempChangeInd = vicusNetwork.m_buriedPipeProperties.m_para[
 											VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].value;
 
 	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
 
-		double tempChangeindicatorSum = 0;
-
 		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-
+		double cumTempChangeindicator = 0;
+		double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
+		double cumTempChangeindicatorMax = 0;
 		for (const NetworkEdge * edge: shortestPath){
 
 			// 1. calculate the cumulative temperature change indicator
-			tempChangeindicatorSum += edge->m_tempChangeIndicator;
+			cumTempChangeindicator += edge->m_tempChangeIndicator;
 
-			// 2. lookup if the same supply pipe has already been processed,
-			// if this is the case: set the according soilModelId and jump to next edge
-			if (edge->m_idSoil != VICUS::INVALID_ID){
-				soilModelId = edge->m_idSoil;
-				continue;
-			}
+			if (edge->m_cumulativeTempChangeIndicator < 0)
+				edge->m_cumulativeTempChangeIndicator = cumTempChangeindicator;
 
-			// 3. check if the cumulative temperature change indicator is above threshold
-			// if this is the case: create a new soil model id and reset the cumulative temperature change indicator
-			if (tempChangeindicatorSum > thresholdTempChangeInd){
-				soilModelId = uniqueIdAdd(allSoilModelIds);
-				tempChangeindicatorSum = 0;
-			}
-
-			// 4. finally map the soilModelId to the supply and return pipe ids
-			// (and also the reverse map for supply pipe ids)
-			edge->m_idSoil = soilModelId;
-			mapSoil2SupplyPipes[soilModelId].push_back(edge->m_idNandradSupplyPipe);
-			mapSoil2ReturnPipes[soilModelId].push_back(edge->m_idNandradReturnPipe);
+			if (cumTempChangeindicator > cumTempChangeindicatorMax)
+				cumTempChangeindicatorMax = cumTempChangeindicator;
+			if (cumTempChangeindicator < cumTempChangeindicatorMin)
+				cumTempChangeindicatorMin = cumTempChangeindicator;
 		}
+
+		unsigned int Nranges = 10;
+		std::vector<double> ranges(Nranges);
+		for (unsigned int i=0; i<Nranges; ++i){
+			ranges[i] = cumTempChangeindicatorMin  +
+					(i+1) * (cumTempChangeindicatorMax - cumTempChangeindicatorMin) / Nranges;
+		}
+
+		for (const NetworkEdge &edge: vicusNetwork.m_edges){
+			for (unsigned int i=0; i<Nranges; ++i){
+				if (edge.m_cumulativeTempChangeIndicator <= ranges[i]){
+					edge.m_idSoil = i+1;
+					mapSoil2SupplyPipes[i+1].push_back(edge.m_idNandradSupplyPipe);
+					mapSoil2ReturnPipes[i+1].push_back(edge.m_idNandradReturnPipe);
+					break;
+				}
+			}
+		}
+
+//			// 2. lookup if the same supply pipe has already been processed,
+//			// if this is the case: set the according soilModelId and jump to next edge
+//			if (edge->m_idSoil != VICUS::INVALID_ID){
+//				soilModelId = edge->m_idSoil;
+//				continue;
+//			}
+
+//			// 3. check if the cumulative temperature change indicator is above threshold
+//			// if this is the case: create a new soil model id and reset the cumulative temperature change indicator
+//			if (cumTempChangeindicator > thresholdTempChangeInd){
+//				soilModelId = uniqueIdAdd(allSoilModelIds);
+//				cumTempChangeindicator = 0;
+//			}
+
+//			// 4. finally map the soilModelId to the supply and return pipe ids
+//			// (and also the reverse map for supply pipe ids)
+//			edge->m_idSoil = soilModelId;
+//			mapSoil2SupplyPipes[soilModelId].push_back(edge->m_idNandradSupplyPipe);
+//			mapSoil2ReturnPipes[soilModelId].push_back(edge->m_idNandradReturnPipe);
+//		}
 
 	}
 
