@@ -71,6 +71,10 @@ private slots:
 	/*! Triggered when any of the filter buttons has been pressed. */
 	void onOptionButtonPressed();
 
+	void on_checkBoxMaxHeatingDemandEqualTo_stateChanged(int arg1);
+
+	void on_checkBoxNodeDisplayName_stateChanged(int arg1);
+
 private:
 	/*! Based on available options and current m_selections info, the button grid is updated. */
 	void updateButtonGrid();
