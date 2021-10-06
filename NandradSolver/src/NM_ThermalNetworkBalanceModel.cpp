@@ -409,15 +409,19 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 		std::vector<std::pair<const double *, const double *> > deps;
 		// special handling for elements without states
 		if (fe->nInternalStates() == 0) {
+			// mass flux and temperature dependencies: only consider mass flux of the first element as
+			// representative for all others
 			fe->dependencies(nullptr, nullptr,
-							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 m_statesModel->m_p->m_fluidMassFluxes,
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
 							 deps);
 		}
 		else {
+			// mass flux and temperature dependencies: only consider mass flux of the first element as
+			// representative for all others
 			fe->dependencies(&m_ydot[offset], &m_statesModel->m_y[offset],
-							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 m_statesModel->m_p->m_fluidMassFluxes,
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
 							 deps);
