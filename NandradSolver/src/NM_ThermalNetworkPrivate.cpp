@@ -135,7 +135,7 @@ int ThermalNetworkModelImpl::update() {
 
 void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
-	// we only use one representative mass flux entry
+	// NOTE: we only use one representative mass flux entry, see documentation in HydraulicNetworkModel::stateDependencies()
 	const double* massFluxRef = m_fluidMassFluxes;
 	// dependencies of all nodal temperatures to flow element mass fluxes and temperatures
 	for (unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
