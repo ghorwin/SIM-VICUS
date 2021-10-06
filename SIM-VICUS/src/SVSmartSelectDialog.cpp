@@ -79,11 +79,9 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->checkBoxMaxHeatingDemandAbove->setChecked(false);
 	m_ui->checkBoxLengthBelow->setChecked(false);
 	m_ui->checkBoxLengthAbove->setChecked(false);
-
-	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(false);
-	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(false);
-	m_ui->lineEditLengthAbove->setEnabled(false);
-	m_ui->lineEditLengthBelow->setEnabled(false);
+	m_ui->checkBoxNodeId->setChecked(false);
+	m_ui->checkBoxNodeDisplayName->setChecked(false);
+	m_ui->checkBoxMaxHeatingDemandEqualTo->setChecked(false);
 
 
 	// populate static options
