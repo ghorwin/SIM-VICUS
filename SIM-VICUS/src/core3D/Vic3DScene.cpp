@@ -166,61 +166,12 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
-			// we need to implement the following logic:
-			//
-			// a) object is visible, but not selected -> draw object with regular geometry shader
-			// b) object is visible and selected -> object is hidden from regular geometry shader but shown in wireframe object
-			// c) object is not visible and either selected/not selected -> object is hidden
-			//
-			// In the loop below we first update the colors painted with the opaque regular geometry shaders.
-			// All visible and not selected objects/surfaces (option a) will get painted with the
-			// current property color.
-			// In order to keep the memory transfor to the GPU small, we remember first and last vertex index to be changed
-			// and only copy the affected color buffer into GPU memory.
-#if 0
-			// we need to update the colors of some building elements
-			bool updateOpaqueGeometryNeeded = false;
-			unsigned int smallestVertexIndexOpaqueGeometry = m_opaqueGeometryObject.m_vertexBufferData.size();
-			unsigned int largestVertexIndexOpaqueGeometry = 0;
-			bool updateNetworkGeometryNeeded = false;
-			unsigned int smallestVertexIndexNetworks = m_networkGeometryObject.m_vertexBufferData.size();
-			unsigned int largestVertexIndexNetworks = 0;
+			// for now trigger update of building and network geometry objects
+			// TODO : for large objects this may not necessarily be fast, especially if only few
+			//        elements are selected, but at least this is very robust
+			updateBuilding = true;
+			updateNetwork = true;
 
-			// first decode the modification info object
-			// we determine which objects need to be recolored and memory range needs to be pushed to the GPU
-			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
-			Q_ASSERT(info != nullptr);
-
-			for (const std::pair<SVUndoTreeNodeState::ModifiedNodes::ObjectType, unsigned int> & modIDs : info->m_nodeIDs) {
-				switch (modIDs.first) {
-					case SVUndoTreeNodeState::ModifiedNodes::OT_OpaqueBuilding :
-						updateOpaqueGeometryNeeded = true;
-						smallestVertexIndexOpaqueGeometry = std::min(smallestVertexIndexOpaqueGeometry, modIDs.second);
-						largestVertexIndexOpaqueGeometry = std::max(smallestVertexIndexOpaqueGeometry, modIDs.second);
-					break;
-
-					case SVUndoTreeNodeState::ModifiedNodes::OT_NetworkElement :
-						updateNetworkGeometryNeeded = true;
-						smallestVertexIndexNetworks = std::min(smallestVertexIndexNetworks, modIDs.second);
-						largestVertexIndexNetworks = std::max(largestVertexIndexNetworks, modIDs.second);
-					break;
-
-					// TODO : Transparent windows
-				}
-			}
-#endif
-			// finally, transfer only the modified portion of the color buffer to GPU memory
-			refreshColors(); // For now, this updates everything - works in all cases but is slow in large models
-
-			// TODO : Andreas, performance upgrade: instead of using refreshColors() above that also
-			//        regenerates the entire geometry and pushes everything to the GPU buffer,
-			//        we can just modify the affected surfaces and push only the necessary changes to the GPU
-#if 0
-			if (updateOpaqueGeometryNeeded)
-				m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndexOpaqueGeometry, largestVertexIndexOpaqueGeometry-smallestVertexIndexOpaqueGeometry);
-			if (updateNetworkGeometryNeeded)
-				m_networkGeometryObject.updateColorBuffer(smallestVertexIndexNetworks, largestVertexIndexNetworks-smallestVertexIndexNetworks);
-#endif
 			// Now check if our new selection set is different from the previous selection set.
 			std::set<const VICUS::Object*> selectedObjects;
 
