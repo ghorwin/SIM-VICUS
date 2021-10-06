@@ -135,26 +135,13 @@ int ThermalNetworkModelImpl::update() {
 
 void ThermalNetworkModelImpl::dependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
+	// we only use one representative mass flux entry
+	const double* massFluxRef = m_fluidMassFluxes;
 	// dependencies of all nodal temperatures to flow element mass fluxes and temperatures
 	for (unsigned int i = 0; i < m_network->m_nodes.size(); ++i) {
 		// result quantities
 		const double* tempPtr = &m_nodalTemperatures[i];
-
-		std::vector<unsigned int> inletIdxs	 = m_network->m_nodes[i].m_elementIndexesInlet;
-		std::vector<unsigned int> outletIdxs = m_network->m_nodes[i].m_elementIndexesOutlet;
-
-		for (unsigned int idx : inletIdxs) {
-			// mass flux dependencies: only consider mass flux of the first element as
-			// representative for all others
-			const double* massFluxRef = m_fluidMassFluxes;
-			resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
-		}
-		for (unsigned int idx : outletIdxs) {
-			// mass flux dependencies: only consider mass flux of the first element as
-			// representative for all others
-			const double* massFluxRef = m_fluidMassFluxes;
-			resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
-		}
+		resultInputValueReferences.push_back(std::make_pair(tempPtr, massFluxRef) );
 	}
 }
 
