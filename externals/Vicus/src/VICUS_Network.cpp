@@ -55,8 +55,9 @@ Network::Network() {
 
 	// other default parameters
 	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPipeDiscretization, 5);
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_DefaultFluidTemperature, 293.15);
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_InitialFluidTemperature, 293.15);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_DefaultFluidTemperature, 20);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_InitialFluidTemperature, 20);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_ReferencePressure, 0);
 
 }
 
@@ -923,8 +924,9 @@ void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
 	f.precision(0);
 	for (const NetworkEdge &e: m_edges){
-		f << std::fixed << e.nodeId1() << "\t" <<e.nodeId2() << "\t" << e.m_idSoil
-		  << "\t" << f.precision(10) << e.m_cumulativeTempChangeIndicator << std::endl;
+		f << std::fixed << e.nodeId1() << "\t" <<e.nodeId2() << "\t" << e.m_idSoil;
+		f.precision(10);
+		f << "\t" << e.m_cumulativeTempChangeIndicator << std::endl;
 	}
 	f.close();
 }

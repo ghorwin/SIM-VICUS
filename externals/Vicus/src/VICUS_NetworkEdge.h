@@ -157,7 +157,7 @@ public:
 		Is dimensionless, but for interpretation, unit [K/K] can be used
 	*/
 	mutable double												m_tempChangeIndicator = -1;
-	mutable double												m_cumulativeTempChangeIndicator = 0;
+	mutable double												m_cumulativeTempChangeIndicator = -1;
 
 	mutable NetworkNode											* m_node1 = nullptr;
 	mutable NetworkNode											* m_node2 = nullptr;
