@@ -41,6 +41,22 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 	m_pipePropertiesId(pipeID)
 {
 	KeywordList::setParameter(m_para, "HydraulicNetworkElement::para_t", P_Length, length);
+	for(IBK::IntPara &i : m_intPara)
+		i.value = (int) NANDRAD::INVALID_ID;
+}
+
+
+HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+						unsigned int componentId, unsigned int controlElemId):
+	m_id(id),
+	m_inletNodeId(inletNodeId),
+	m_outletNodeId(outletNodeId),
+	m_componentId(componentId),
+	m_pipePropertiesId(INVALID_ID),
+	m_controlElementId(controlElemId)
+{
+	for(IBK::IntPara &i : m_intPara)
+		i.value = (int) NANDRAD::INVALID_ID;
 }
 
 
