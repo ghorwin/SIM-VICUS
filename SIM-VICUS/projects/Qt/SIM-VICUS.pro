@@ -94,6 +94,7 @@ SOURCES += \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
+	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
 	../../src/actions/SVUndoAddNetwork.cpp \
@@ -250,6 +251,7 @@ HEADERS  += \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
+	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
 	../../src/actions/SVUndoAddBuildingLevel.h \
 	../../src/actions/SVUndoAddNetwork.h \
@@ -459,7 +461,8 @@ FORMS    += \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
-	../../src/SVWelcomeScreen.ui
+	../../src/SVWelcomeScreen.ui \
+	../../src/SVZoneSelectionDialog.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8
