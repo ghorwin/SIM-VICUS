@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.6">
+	<ProjectInfo>
+		<Created>Di. Sep. 21 10:23:08 2021</Created>
+		<LastEdited>Do Sep 30 15:36:50 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter />
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>136.706</GridWidth>
+			<CameraTranslation>40.3417 -62.9628 19.0428</CameraTranslation>
+			<RotationMatrix>
+				<Wp>-0.823614</Wp>
+				<X>-0.550888</X>
+				<Y>-0.0750606</Y>
+				<Z>-0.111961</Z>
+			</RotationMatrix>
+			<FarDistance>546.824</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="8" displayName="Imported IDF Building Geometry">
+				<BuildingLevels>
+					<BuildingLevel id="9" displayName="Default building level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="667" displayName="KucheEssen_40104">
+								<IBK:Parameter name="Area" unit="m2">56.68</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">153.13</IBK:Parameter>
+								<Surfaces>
+									<Surface id="12617" displayName="Wall(9009)_3">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>28.6353 -44.7353 15.55, 25.7435 -38.6693 15.55, 25.7435 -38.6693 14.55, 28.6245 -44.7127 14.55, 28.6245 -44.7127 12.85, 28.6353 -44.7353 12.85</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="8514" idComponent="50105" idSideASurface="12617" />
+		</ComponentInstances>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10032" displayName="DE: Kalkzementputz |EN: &lt;new material&gt;" color="#5aff82">
+					<DataSource>DE: Bockwen EFH</DataSource>
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1270</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">960</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.55</IBK:Parameter>
+				</Material>
+				<Material id="10044" displayName="XPS Extruded Polystyrene  - CO2 Blowing_.122" color="#2da6ff">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">35</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1400</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.034</IBK:Parameter>
+				</Material>
+				<Material id="10069" displayName="Kalksandstein__240mm" color="#2cc1ff">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1600</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.79</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="20054" displayName="Bamberg_AW_WDVS_WG">
+					<DataSource>IDF Import</DataSource>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10032">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10044">
+							<IBK:Parameter name="Thickness" unit="m">0.23</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10069">
+							<IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="40009" displayName="Inside surface" color="#006bf6">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6.8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="40012" displayName="Outside surface" color="#e5f300">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="50105" displayName="Bamberg_AW_WDVS_WG-component" color="#32ffab">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20054</IdConstruction>
+					<IdSideABoundaryCondition>40009</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40012</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
