@@ -2132,18 +2132,16 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
-	if (m_gridVisible) {
-		for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-			int holeIndex;
-			if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
-				// got an intersection point, store it
-				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_GridPlane;
-				r.m_uniqueObjectID = i;
-				r.m_depth = t;
-				r.m_pickPoint = intersectionPoint;
-				pickObject.m_candidates.push_back(r);
-			}
+	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
+		int holeIndex;
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
+			// got an intersection point, store it
+			PickObject::PickResult r;
+			r.m_snapPointType = PickObject::RT_GridPlane;
+			r.m_uniqueObjectID = i;
+			r.m_depth = t;
+			r.m_pickPoint = intersectionPoint;
+			pickObject.m_candidates.push_back(r);
 		}
 	}
 
