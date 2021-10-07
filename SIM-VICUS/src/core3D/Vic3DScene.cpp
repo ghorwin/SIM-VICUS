@@ -1356,6 +1356,11 @@ void Scene::generateTransparentBuildingGeometry() {
 		if (!ci.m_sideASurface->geometry().isValid() ||
 			!ci.m_sideBSurface->geometry().isValid())
 			continue;
+
+		// both polygons must be visible
+		if (!ci.m_sideASurface->m_visible || !ci.m_sideBSurface->m_visible)
+			continue;
+
 		// generate geometry for the "Links"
 
 		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
