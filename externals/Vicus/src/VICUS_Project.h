@@ -121,6 +121,11 @@ public:
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
 
+	/*! Const-version of the function above. */
+	const VICUS::Surface * surfaceByID(unsigned int surfaceID) const {
+		return const_cast<Project*>(this)->surfaceByID(surfaceID);
+	}
+
 	/*! Searches through all buildings and tries to find a subsurface with given subsurface ID (this
 		is not the uniqueID, but the persistant id from the data model).
 	*/

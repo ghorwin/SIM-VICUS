@@ -1418,6 +1418,14 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 					else
 						newCi.m_idSideASurface = (*m_selectedSurfaces.begin())->m_id;
 				}
+				// check that both surfaces do not belong to the same room
+				const VICUS::Surface * surfA = project().surfaceByID(newCi.m_idSideASurface);
+				const VICUS::Surface * surfB = project().surfaceByID(newCi.m_idSideBSurface);
+				Q_ASSERT(surfA != nullptr && surfB != nullptr);
+				if (surfA->m_parent == surfB->m_parent) {
+					QMessageBox::critical(this, QString(), tr("Both surfaces belong to the same room."));
+					return;
+				}
 				// remember modified component instance
 				compInstances.push_back(newCi);
 			}
