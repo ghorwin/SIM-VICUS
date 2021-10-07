@@ -35,6 +35,7 @@ class SVNavigationTreeWidget;
 class ModificationInfo;
 class QTreeWidgetItem;
 class SVSmartSelectDialog;
+class SVNavigationTreeItemDelegate;
 
 /*! The tree widget with all building/rooms/etc.. */
 class SVNavigationTreeWidget : public QWidget {
@@ -85,6 +86,9 @@ private:
 
 	/*! The smart selection dialog. */
 	SVSmartSelectDialog							*m_smartSelectDialog = nullptr;
+
+	/*! The item delegate that renders the tree items. */
+	SVNavigationTreeItemDelegate				*m_navigationTreeItemDelegate = nullptr;
 };
 
 #endif // SVNavigationTreeWidgetH

@@ -29,11 +29,12 @@
 #include <QDebug>
 #include <QEvent>
 #include <QMouseEvent>
+#include <QTreeView>
 
 #include "SVUndoTreeNodeState.h"
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
-	QItemDelegate(parent)
+	QStyledItemDelegate(parent)
 {
 	m_lightBulbOn = QImage("://gfx/actions/16x16/help-hint.png");
 	m_lightBulbOff = QImage("://gfx/actions/16x16/help-hint_gray.png");
@@ -52,6 +53,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 
 	unsigned int uniqueObjectId = index.data(NodeID).toUInt();
 
+	// root items or items without object Id are never current or selected
 	if (index.parent() == QModelIndex() || uniqueObjectId == 0) {
 		// check if item is selected/current
 		bool isSelected = option.state & QStyle::State_Selected;
@@ -63,6 +65,14 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 //		painter->setPen( Qt::green);
 		painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 		return;
+	}
+
+	// if item is current, draw the background
+	const QTreeView * treeView = qobject_cast<const QTreeView *>(parent());
+	Q_ASSERT(treeView != nullptr);
+	bool isCurrent = (index == treeView->currentIndex());
+	if (isCurrent) {
+		painter->fillRect(targetRect, QColor(33, 174, 191));
 	}
 
 	// TODO : find out if the element we are painting is visible or not
@@ -102,7 +112,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index) {
 	// top-level index does not have any attributes
 	if (index.parent() == QModelIndex()) {
-		return QItemDelegate::editorEvent(event, model, option, index);
+		return QStyledItemDelegate::editorEvent(event, model, option, index);
 	}
 	if (event->type() == QEvent::MouseButtonRelease) {
 		QMouseEvent * mouseEvent = dynamic_cast<QMouseEvent*>(event);
@@ -146,20 +156,19 @@ bool SVNavigationTreeItemDelegate::editorEvent(QEvent * event, QAbstractItemMode
 
 	}
 
-	return QItemDelegate::editorEvent(event, model, option, index);
+	return QStyledItemDelegate::editorEvent(event, model, option, index);
 }
 
 
 void SVNavigationTreeItemDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index) const {
-	QItemDelegate::updateEditorGeometry(editor, option, index);
+	QStyledItemDelegate::updateEditorGeometry(editor, option, index);
 	// move inside a little
 	editor->setGeometry(editor->pos().x() + 34, editor->pos().y(),  editor->width()-34, editor->height());
 }
 
 
 QSize SVNavigationTreeItemDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const {
-	QSize sh = QItemDelegate::sizeHint(option, index);
+	QSize sh = QStyledItemDelegate::sizeHint(option, index);
 	sh.setHeight(16); // enough space for 16x16 icon
 	return sh;
-
 }

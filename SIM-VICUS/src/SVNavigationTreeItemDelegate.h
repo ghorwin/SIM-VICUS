@@ -26,10 +26,10 @@
 #ifndef SVNavigationTreeItemDelegateH
 #define SVNavigationTreeItemDelegateH
 
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 
 /*! The item delegate that displays the object state in the navigation tree widget. */
-class SVNavigationTreeItemDelegate : public QItemDelegate {
+class SVNavigationTreeItemDelegate : public QStyledItemDelegate {
 	Q_OBJECT
 public:
 	enum DataRoles {

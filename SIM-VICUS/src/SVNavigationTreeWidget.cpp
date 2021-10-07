@@ -53,9 +53,9 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	SVStyle::formatDatabaseTreeView(m_ui->treeWidget);
 
 	// register item delegate that paints the "visible" bulb
-	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+	m_navigationTreeItemDelegate = new SVNavigationTreeItemDelegate(m_ui->treeWidget); // Mind: treeView must be parent of delegate, see SVNavigationTreeItemDelegate::paint()
+	m_ui->treeWidget->setItemDelegate(m_navigationTreeItemDelegate);
 	m_ui->treeWidget->setUniformRowHeights(true);
-
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
@@ -134,6 +134,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
+	root->setFlags(Qt::ItemIsEnabled);
 //	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
 //	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
@@ -272,8 +273,10 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 void SVNavigationTreeWidget::scrollToObject(unsigned int uniqueID) {
 	auto objPtrIt = m_treeItemMap.find(uniqueID);
 	Q_ASSERT(objPtrIt != m_treeItemMap.end());
-	m_ui->treeWidget->expandItem(objPtrIt->second);
-	m_ui->treeWidget->scrollToItem(objPtrIt->second, QAbstractItemView::PositionAtCenter);
+	QTreeWidgetItem * item = objPtrIt->second;
+	m_ui->treeWidget->expandItem(item);
+	m_ui->treeWidget->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+	m_ui->treeWidget->setCurrentItem(item);
 }
 
 
