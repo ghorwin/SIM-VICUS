@@ -274,7 +274,7 @@ void SVNavigationTreeWidget::scrollToObject(unsigned int uniqueID) {
 	auto objPtrIt = m_treeItemMap.find(uniqueID);
 	Q_ASSERT(objPtrIt != m_treeItemMap.end());
 	QTreeWidgetItem * item = objPtrIt->second;
-	m_ui->treeWidget->expandItem(item);
+	m_ui->treeWidget->expandItem(item->parent());
 	m_ui->treeWidget->scrollToItem(item, QAbstractItemView::PositionAtCenter);
 	m_ui->treeWidget->setCurrentItem(item);
 }
