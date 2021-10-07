@@ -269,6 +269,14 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 }
 
 
+void SVNavigationTreeWidget::scrollToObject(unsigned int uniqueID) {
+	auto objPtrIt = m_treeItemMap.find(uniqueID);
+	Q_ASSERT(objPtrIt != m_treeItemMap.end());
+	m_ui->treeWidget->expandItem(objPtrIt->second);
+	m_ui->treeWidget->scrollToItem(objPtrIt->second, QAbstractItemView::PositionAtCenter);
+}
+
+
 
 void SVNavigationTreeWidget::collapseTreeWidgetItem(QTreeWidgetItem * parent) {
 	for (int i=0; i<parent->childCount(); ++i) {

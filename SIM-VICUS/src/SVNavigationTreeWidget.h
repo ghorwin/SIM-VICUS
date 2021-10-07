@@ -47,7 +47,10 @@ public:
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
-	void onModified( int modificationType, ModificationInfo * data );
+	void onModified( int modificationType, ModificationInfo * data);
+
+	/*! Expand node if not yet done and scroll to view. */
+	void scrollToObject(unsigned int uniqueID);
 
 signals:
 	void removeSelected();
@@ -60,17 +63,11 @@ private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
 
 	void on_actionRemoveSelected_triggered();
-
 	void on_actionShowSelected_triggered();
-
 	void on_actionHideSelected_triggered();
-
 	void on_actionSelect_all_triggered();
-
 	void on_actionDeselect_all_triggered();
-
 	void on_actionSmartSelect_triggered();
-
 
 	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 

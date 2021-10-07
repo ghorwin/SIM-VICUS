@@ -53,6 +53,7 @@
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoDeleteSelected.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVNavigationTreeWidget.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -2713,6 +2714,11 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 															   selectChildren, // if true, select all children, otherwise only the object itself
 															   !obj->m_selected);
 		action->push();
+
+		// now the data model and the views have been updated, also now signal the navigation tree view to scroll
+		// to the first node
+		SVViewStateHandler::instance().m_navigationTreeWidget->scrollToObject(uniqueID);
+
 		return;
 	}
 }
