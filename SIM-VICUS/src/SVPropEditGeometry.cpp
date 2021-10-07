@@ -1094,9 +1094,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
 					// so we know how big the absolute translation has to be
 					IBKMK::Vector3D trans;
-					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
-					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
-					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
+
+					const QVector3D &transObj = SVViewStateHandler::instance().m_coordinateSystemObject->transform().translation()
+
+					trans.m_x = transObj.x() < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.m_x );
+					trans.m_y = transObj.y() < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.m_y );
+					trans.m_z = transObj.z() < 1E-4 ? 0.0 : transObj.z() * ( 1 - scale.m_z );
 					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
 
 					// we give our transformation to the wire frame object
