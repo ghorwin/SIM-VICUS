@@ -487,15 +487,15 @@ void SVSettings::linuxDesktopIntegration(QWidget * parent,
 	// icon-name:    simvicus         (prefix must match mimetype)
 	// desktop-file: simvicus.desktop
 
-	QString desktopFile = QDir::home().absoluteFilePath(".local/share/applications/simvicus.desktop");
+	QString desktopFile = QDir::home().absoluteFilePath(QString(".local/share/applications/%1.desktop").arg(appIDname));
 	if (QFileInfo::exists(desktopFile)) {
-		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should the existing desktop integration and vicus-file type association be updated?"),
+		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should the existing desktop integration and %2-file type association be updated?").arg(fileExtension),
 										QMessageBox::Yes | QMessageBox::No);
 		if (res == QMessageBox::No)
 			return;
 	}
 	else {
-		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should %1 set up the desktop integration and associate vicus-file types with %1?").arg(appname),
+		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should %1 set up the desktop integration and associate %2-file types with %1?").arg(appname).arg(fileExtension),
 										QMessageBox::Yes | QMessageBox::No);
 		if (res == QMessageBox::No)
 			return;
@@ -539,7 +539,7 @@ void SVSettings::linuxDesktopIntegration(QWidget * parent,
 			"Type=Application\n"
 			"Categories=Science\n"
 			"StartupNotify=true\n"
-			"MimeType=application/%4";
+			"MimeType=application/%4\n";
 	desktopFileContents = desktopFileContents.arg(appname, desktopAppComment, desktopAppExec, appIDname);
 	QFile deskFile(desktopFile);
 	deskFile.open(QFile::WriteOnly);
