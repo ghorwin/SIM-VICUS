@@ -316,8 +316,7 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
-
-
+	void on_actionHelpLinuxDesktopIntegration_triggered();
 
 
 private:

@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -75,6 +75,8 @@
     <addaction name="actionHelpCheckForUpdates"/>
     <addaction name="actionHelpBugReport"/>
     <addaction name="actionHelpVisitDiscussionForum"/>
+    <addaction name="separator"/>
+    <addaction name="actionHelpLinuxDesktopIntegration"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
     <addaction name="actionHelpAboutQt"/>
@@ -696,6 +698,14 @@
    </property>
    <property name="toolTip">
     <string>Shows grid at z coordinate 0</string>
+   </property>
+  </action>
+  <action name="actionHelpLinuxDesktopIntegration">
+   <property name="text">
+    <string>Desktop integration (Linux)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Desktop integration (Linux),  creates .desktop file and vicus-file association.</string>
    </property>
   </action>
  </widget>

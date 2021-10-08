@@ -140,6 +140,10 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// give the splashscreen a few miliseconds to show on X11 before we start our
 	// potentially lengthy initialization
 	QTimer::singleShot(25, this, SLOT(setup()));
+
+#ifndef Q_OS_LINUX
+	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
+#endif
 }
 
 
@@ -1318,6 +1322,87 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
+void SVMainWindow::on_actionHelpLinuxDesktopIntegration_triggered() {
+	// compose path to desktop-file, if existing, prompt user to "update" system integration, otherwise prompt to
+	// "setup" integration
+
+	QStringList dirs = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
+	if (dirs.empty()) return; // cannot continue
+
+	QString desktopFile = dirs[0] + "/sim-vicus.desktop";
+	if (QFileInfo::exists(desktopFile)) {
+		int res = QMessageBox::question(this, tr("Update Desktop Integration"), tr("Should the existing desktop integration and vicus-file type association be updated?"),
+										QMessageBox::Yes | QMessageBox::No);
+		if (res == QMessageBox::No)
+			return;
+	}
+	else {
+		int res = QMessageBox::question(this, tr("Update Desktop Integration"), tr("Should SIM-VICUS set up the desktop integration and associate vicus-file types with SIM-VICUS?"),
+										QMessageBox::Yes | QMessageBox::No);
+		if (res == QMessageBox::No)
+			return;
+	}
+
+	// copy icon files, unless existing already
+#ifdef IBK_DEPLOYMENT
+	QString iconLocation = QtExt::Directories::resourcesRootDir();
+#else
+	QString iconLocation = QtExt::Directories::resourcesRootDir() + "/logo/icons";
+#endif
+	QStringList iconSizes;
+	iconSizes << "16" << "32" << "48" << "64" << "128" << "256" << "512";
+	QString targetPath = QDir::home().absoluteFilePath(".local/share/icons/hicolor/%1x%1/apps/SIM-VICUS.png");
+	foreach (QString s, iconSizes) {
+		QString iconFile = iconLocation + "/Icon_" + s + ".png";
+		QDir::home().mkpath( QString(".local/share/icons/hicolor/%1x%1/apps").arg(s));
+		QString targetFile = targetPath.arg(s);
+		Q_ASSERT(QFile::exists(iconFile));
+		QFile::copy(iconFile, targetFile);
+	}
+
+	// generate .desktop file, if it does not exist yet
+	QString desktopFileContents =
+			"[Desktop Entry]\n"
+			"Name=SIM-VICUS %1\n"
+			"Comment=Building Energy Performance and District Simulation\n"
+			"Exec=%2/SIM-VICUS\n"
+			"Icon=SIM-VICUS\n"
+			"Terminal=false\n"
+			"Type=Application\n"
+			"Categories=Science\n"
+			"StartupNotify=true\n"
+			"MimeType=application/x-simvicus";
+	desktopFileContents = desktopFileContents.arg(VICUS::LONG_VERSION).arg(SVSettings::instance().m_installDir);
+	QFile deskFile(desktopFile);
+	deskFile.open(QFile::WriteOnly);
+	QTextStream strm(&deskFile);
+	strm << desktopFileContents;
+	deskFile.setPermissions((QFile::Permission)0x7755);
+	deskFile.close();
+
+	// also create Mime file for file type associations for 'application/x-simvicus'
+	QString mimeFileContents =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>\n"
+			"	<mime-type type=\"application/x-simvicus\">\n"
+			"		<comment>SIM-VICUS project file</comment>\n"
+			"		<glob pattern=\"*.vicus\"/>\n"
+			"	</mime-type>\n"
+			"</mime-info>\n";
+	QString mimeDir = dirs[0] + "/../mime";
+	QString mimeFile = mimeDir + "/packages/x-simvicus.xml";
+	QFile mimeF(mimeFile);
+	mimeF.open(QFile::WriteOnly);
+	QTextStream strm2(&mimeF);
+	strm2 << mimeFileContents;
+	mimeF.close();
+
+	// mime-type database update is still needed; if that doesn't work, we can't help it
+	QProcess::execute("update-mime-database", QStringList() << mimeDir);
+
+	QMessageBox::information(this, tr("Update Desktop Integration"), tr("Created and installed 'sim-vicus.desktop' and 'mime/packages/`x-simvicus.xml' for local user."));
+}
+
 
 // *** other slots (not main menu slots) ***
 
@@ -1895,6 +1980,7 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
 
 
 
