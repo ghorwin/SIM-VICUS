@@ -84,13 +84,14 @@ public:
 	enum ModificationType {
 		MT_Translate,
 		MT_Rotate,
-		MT_Scale
+		MT_Scale,
+		NUM_MT
 	};
 
 	enum ModificationState {
 		MS_Absolute,
 		MS_Relative,
-		MS_Local
+		NUM_MS
 	};
 
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
@@ -222,6 +223,8 @@ private slots:
 	void on_pushButtonFlipNormals_clicked();
 
 
+	void on_toolButtonLocalCoordinateOrentation_clicked(bool checked);
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -250,7 +253,10 @@ private:
 		The value is updated when user changes the combo-box, and when operation is changed,
 		the value is used to update the combo box's current index.
 	*/
-	ModificationState					m_modificationState[MS_Local+1];
+	ModificationState					m_modificationState[NUM_MT];
+
+	/*! Implies wheather local coordinate system rotation should be used */
+	bool								m_useLocalCoordOrientation = false;
 
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
