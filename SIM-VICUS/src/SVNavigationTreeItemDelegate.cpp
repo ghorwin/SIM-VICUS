@@ -60,9 +60,6 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 		QFont f = painter->font();
 		f.setBold(isSelected);
 		painter->setFont(f);
-		// TODO  : change text color in case of invalid properties
-//		painter->setPen( option.palette.color(QPalette::Text));
-//		painter->setPen( Qt::green);
 		painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());
 		return;
 	}
@@ -75,7 +72,7 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 		painter->fillRect(targetRect, QColor(33, 174, 191));
 	}
 
-	// TODO : find out if the element we are painting is visible or not
+	// find out if the element we are painting is visible or not
 	bool visible = index.data(VisibleFlag).toBool();
 
 	const QImage * bulbImg = nullptr;
