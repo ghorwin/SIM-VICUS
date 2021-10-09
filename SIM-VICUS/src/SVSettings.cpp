@@ -31,6 +31,9 @@
 #include <QDebug>
 #include <QProcess>
 #include <QFontInfo>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QDir>
 
 #ifdef Q_OS_WIN
 #undef UNICODE
@@ -464,12 +467,6 @@ void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
 	}
 }
 
-
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QDir>
-#include <QDebug>
-#include <QProcess>
 
 void SVSettings::linuxDesktopIntegration(QWidget * parent,
 							 const QString & iconLocation,
