@@ -144,7 +144,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Buildings
 	for (const VICUS::Building & b : prj.m_buildings) {
-		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
+		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << b.m_displayName, QTreeWidgetItem::Type);
 		m_treeItemMap[b.uniqueID()] = building;
 		building->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		building->setData(0, SVNavigationTreeItemDelegate::NodeID, b.uniqueID());
@@ -204,7 +204,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
-		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(n.m_displayName), QTreeWidgetItem::Type);
+		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << n.m_displayName, QTreeWidgetItem::Type);
 		m_treeItemMap[n.uniqueID()] = networkItem;
 		root->addChild(networkItem);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
