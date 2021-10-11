@@ -1232,8 +1232,16 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	// lookup boundary condition definition in embedded database
 	const VICUS::BoundaryCondition * bc = VICUS::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
 	if (bc == nullptr){
-		errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
-				.arg(ci.m_idComponent).arg(s->m_id));
+
+		if(s == nullptr)
+			s = !takeASide ? ci.m_sideASurface : ci.m_sideBSurface;
+
+		if(s== nullptr)
+			errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference.")
+				.arg(ci.m_idComponent));
+		else
+			errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
+							  .arg(ci.m_idComponent).arg(s->m_id));
 		return NANDRAD::Interface();
 	}
 	if (!bc->isValid())
@@ -1263,7 +1271,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		return iface;
 	}
 	else {
-		// no surface? must be an interface to the outside
+		// no surface == true -> must be an interface to the outside
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
@@ -1301,7 +1309,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
 		double area = 0;
 
-		bool bothSidesHasSurfaces = false;
+		bool bothSidesHaveSurfaces = false;
 		// we have either one or two surfaces associated
 		if (compInstaVicus.m_sideASurface != nullptr) {
 			// get area of surface A
@@ -1309,7 +1317,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			// do we have surfaces at both sides?
 			if (compInstaVicus.m_sideBSurface != nullptr) {
 				// have both
-				bothSidesHasSurfaces = true;
+				bothSidesHaveSurfaces = true;
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
@@ -1346,7 +1354,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			//for the first time we support only sub surfaces to outside air
-			if(!bothSidesHasSurfaces){
+			if(!bothSidesHaveSurfaces){
 				// sub surface
 				const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideASurface->subSurfaces();
 				if(subSurfs.size()>0){
