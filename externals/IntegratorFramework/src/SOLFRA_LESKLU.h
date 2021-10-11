@@ -31,7 +31,7 @@ public:
 	*/
 	virtual void updateSUNDIALSStatistics() override;
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

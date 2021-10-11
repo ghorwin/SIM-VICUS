@@ -787,7 +787,7 @@ std::size_t LESGMRES::serializationSize() const {
 		return s;
 	}
 	else {
-		return 0; // serialization not supported
+		 return NON_SUPPORTED_FUNCTION;  // serialization not supported
 	}
 }
 
