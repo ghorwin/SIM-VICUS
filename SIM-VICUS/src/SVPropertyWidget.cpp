@@ -127,6 +127,7 @@ void SVPropertyWidget::onViewStateChanged() {
 		case SVViewState::PM_NetworkProperties : {
 			showPropertyWidget<SVPropNetworkEditWidget>(M_NetworkProperties);
 			SVPropNetworkEditWidget *propNetworkEditWidget = qobject_cast<SVPropNetworkEditWidget*>(m_propWidgets[M_NetworkProperties]);
+			propNetworkEditWidget->m_propModeSelectionWidget = m_propModeSelectionWidget;
 			// select highlighting/edit mode -> this will send a signal to update the scene's geometry coloring
 			int networkPropertyType = m_propModeSelectionWidget->currentNetworkPropertyType();
 			propNetworkEditWidget->setPropertyMode(networkPropertyType);

@@ -43,6 +43,7 @@
 #include "SVViewStateHandler.h"
 #include "SVNavigationTreeWidget.h"
 #include "SVUndoAddNetwork.h"
+#include "SVUndoDeleteNetwork.h"
 #include "SVUndoModifyNetwork.h"
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
@@ -51,6 +52,7 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVDBNetworkFluidEditWidget.h"
 #include "SVStyle.h"
+#include "SVPropModeSelectionWidget.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -451,6 +453,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 else
 			 item->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
 		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		 item->setData(Qt::UserRole, subNet->m_id);
 		 m_ui->tableWidgetSubNetworks->setItem(row, 1, item);
 
 		 ++row;
@@ -707,7 +710,6 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 		else
 			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
 
-		// TODO Hauke: relativer Pfad ???
 
 		// set data file
 		IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
@@ -715,10 +717,11 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser)){
 			// get relative file path
 			IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
-	//		IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
+			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",
 																	 NANDRAD::LinearSplineParameter::I_LINEAR,
-																	tsvFile);
+																	IBK::Path("${Project Directory}" / tsvFile.relativePath(curr)));
+			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss].m_wrapMethod = NANDRAD::LinearSplineParameter::C_CYCLIC;
 		}
 		else
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter();
@@ -726,10 +729,11 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 		if (tsvFile.isValid() && modelType == NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline){
 			// get relative file path
 			IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
-	//		IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
+			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = NANDRAD::LinearSplineParameter("Temperature",
 																	 NANDRAD::LinearSplineParameter::I_LINEAR,
-																	tsvFile);
+																	IBK::Path("${Project Directory}" / tsvFile.relativePath(curr)));
+			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature].m_wrapMethod = NANDRAD::LinearSplineParameter::C_CYCLIC;
 		}
 		else
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_Temperature] = NANDRAD::LinearSplineParameter();
@@ -985,6 +989,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 
 	// make copy with reduced nodes
 	VICUS::Network newNetwork = m_currentNetwork.clone();
+	newNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);  // new unique id
 	newNetwork.m_edges.clear();
 	newNetwork.m_nodes.clear();
 	newNetwork.m_displayName = QString("%1_noRedundants").arg(m_currentNetwork.m_displayName);
@@ -998,6 +1003,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 
 	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), newNetwork);
 	undo->push(); // modifies project and updates views
+	m_propModeSelectionWidget->setCurrentNetwork(newNetwork.m_id);
 }
 
 
@@ -1014,6 +1020,7 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 
 	// make a copy which will keep the original network data
 	VICUS::Network reducedNetwork = m_currentNetwork.clone();
+	reducedNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);  // new unique id
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.setVisible(false);
 	reducedNetwork.setVisible(false);
@@ -1030,6 +1037,7 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 
 	SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("modified network"), reducedNetwork);
 	undo->push(); // modifies project and updates views
+	m_propModeSelectionWidget->setCurrentNetwork(reducedNetwork.m_id);
 }
 
 
@@ -1091,8 +1099,9 @@ void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
 void SVPropNetworkEditWidget::on_pushButtonEditSubNetworks_clicked()
 {
 	unsigned int currentId = 0;
-	if (m_currentNodes.size() > 0)
-		currentId = m_currentNodes[0]->m_idSubNetwork;
+	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->item(m_ui->tableWidgetSubNetworks->currentRow(), 1);
+	if (item != nullptr)
+		currentId = item->data(Qt::UserRole).toUInt();
 	SVMainWindow::instance().dbSubNetworkEditDialog()->edit(currentId);
 }
 
@@ -1125,6 +1134,15 @@ void SVPropNetworkEditWidget::on_pushButtonTempChangeIndicator_clicked()
 	updateNetworkProperties();
 }
 
+
+void SVPropNetworkEditWidget::on_pushButtonDeleteNetwork_clicked()
+{
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoDeleteNetwork * undo = new SVUndoDeleteNetwork(tr("Network deleted"), networkIndex);
+	undo->push(); // modifies project and updates views
+	if (project().m_geometricNetworks.size()>0)
+		m_propModeSelectionWidget->setCurrentNetwork(project().m_geometricNetworks[0].m_id);
+}
 
 void SVPropNetworkEditWidget::on_pushButtonRecalculateLength_clicked()
 {
@@ -1174,4 +1192,6 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
+
+
 

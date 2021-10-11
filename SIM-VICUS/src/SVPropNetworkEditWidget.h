@@ -41,6 +41,7 @@ namespace Ui {
 }
 
 class ModificationInfo;
+class SVPropModeSelectionWidget;
 
 /*! A property widget for editing network properties. */
 class SVPropNetworkEditWidget : public QWidget {
@@ -62,6 +63,8 @@ public:
 		selection in the project.
 	*/
 	void selectionChanged(unsigned int networkId);
+
+	SVPropModeSelectionWidget				* m_propModeSelectionWidget;
 
 public slots:
 
@@ -125,6 +128,8 @@ private slots:
 	void on_pushButtonRemoveSmallEdge_clicked();
 
 	void on_pushButtonRecalculateLength_clicked();
+
+	void on_pushButtonDeleteNetwork_clicked();
 
 private:
 
@@ -192,7 +197,6 @@ private:
 	std::vector<const VICUS::NetworkEdge *> m_currentEdges;
 
 	std::vector<const VICUS::NetworkNode *> m_currentNodes;
-
 };
 
 

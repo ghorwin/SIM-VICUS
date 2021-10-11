@@ -224,6 +224,12 @@ unsigned int SVPropModeSelectionWidget::currentNetworkId() const {
 	return m_ui->comboBoxSelectedNetwork->currentData().toUInt();
 }
 
+void SVPropModeSelectionWidget::setCurrentNetwork(unsigned networkId)
+{
+	return m_ui->comboBoxSelectedNetwork->setCurrentIndex(
+				m_ui->comboBoxSelectedNetwork->findData(networkId));
+}
+
 
 void SVPropModeSelectionWidget::setDefaultViewState() {
 	// this function is called when we return from any intermediate mode like "align
