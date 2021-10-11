@@ -48,6 +48,8 @@ private slots:
 
 	void on_pushButtonColor_clicked();
 
+	void on_lineEditMaxControllerResultValue_editingFinished();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

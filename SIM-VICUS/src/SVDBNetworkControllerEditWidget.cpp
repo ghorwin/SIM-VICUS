@@ -33,7 +33,10 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 	// setup line edits
 	m_ui->lineEditKi->setup(0, std::numeric_limits<double>::max(), "Integration Constant", false, true);
 	m_ui->lineEditKp->setup(0, std::numeric_limits<double>::max(), "Controller Gain", false, true);
+	m_ui->lineEditKp->setFormat('e', 0);
 	m_ui->lineEditSetpoint->setup(0, std::numeric_limits<double>::max(), "Set Point", false, true);
+	m_ui->lineEditMaxControllerResultValue->setup(0, std::numeric_limits<double>::max(), "Max Y", true, true);
+	m_ui->lineEditMaxControllerResultValue->setFormat('e', 0);
 
 }
 
@@ -119,6 +122,7 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 	m_ui->lineEditKp->setValue(m_current->m_para[VICUS::NetworkController::P_Kp].value);
 	m_ui->lineEditKi->setEnabled(m_current->m_controllerType == VICUS::NetworkController::CT_PIController);
 	m_ui->lineEditKi->setValue(m_current->m_para[VICUS::NetworkController::P_Ki].value);
+	m_ui->lineEditMaxControllerResultValue->setValue(m_current->m_maximumControllerResultValue);
 	m_ui->radioButtonSchedule->setChecked(m_current->m_modelType == VICUS::NetworkController::MT_Scheduled);
 	m_ui->radioButtonFixedSetPoint->setChecked(m_current->m_modelType == VICUS::NetworkController::MT_Constant);
 	toggleLineEdits();
@@ -273,6 +277,19 @@ void SVDBNetworkControllerEditWidget::on_pushButtonColor_clicked()
 	Q_ASSERT(m_current != nullptr);
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
+		modelModify();
+	}
+}
+
+void SVDBNetworkControllerEditWidget::on_lineEditMaxControllerResultValue_editingFinished()
+{
+	if (!m_ui->lineEditMaxControllerResultValue->isValid())
+		return;
+	Q_ASSERT(m_current != nullptr);
+	double val = m_ui->lineEditMaxControllerResultValue->value();
+	if (m_current->m_maximumControllerResultValue < val ||
+		m_current->m_maximumControllerResultValue > val ){
+		m_current->m_maximumControllerResultValue = val;
 		modelModify();
 	}
 }
