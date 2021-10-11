@@ -35,7 +35,6 @@
 #include <IBK_rectangle.h>
 
 #include <NANDRAD_HydraulicNetwork.h>
-#include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"

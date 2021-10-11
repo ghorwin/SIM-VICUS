@@ -2276,8 +2276,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// 3. get component name in display name
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			newElement.m_displayName = IBK::FormatString("%1_%2#%3")
-					.arg(comp->m_displayName.string()).arg(node.m_displayName.toStdString()).arg(node.m_id).str();
+			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(elem.m_id);
+			newElement.m_displayName = IBK::replace_string(name.toStdString(), " ", "_");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
 			if (node.m_type == VICUS::NetworkNode::NT_Source)
