@@ -1181,6 +1181,11 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 }
 
 
+void SVMainWindow::on_actionViewFindSelectedGeometry_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(6);
+}
+
+
 void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
 	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
@@ -1940,6 +1945,7 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
 
 
 

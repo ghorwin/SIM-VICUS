@@ -86,6 +86,8 @@
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionViewFindSelectedGeometry"/>
+    <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
     <addaction name="actionViewFromNorth"/>
     <addaction name="actionViewFromEast"/>
@@ -767,6 +769,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="actionViewFindSelectedGeometry">
+   <property name="text">
+    <string>Find selected geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to close to the currently selected geometry</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

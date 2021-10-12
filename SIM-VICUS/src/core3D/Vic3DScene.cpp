@@ -141,6 +141,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
+			updateCamera = true;
 			break;
 
 		case SVProjectHandler::NetworkModified :

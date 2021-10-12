@@ -40,6 +40,7 @@
 #include "SVSettings.h"
 #include "Vic3DConstants.h"
 #include "SVViewStateHandler.h"
+#include "QtExt_Conversions.h"
 
 namespace Vic3D {
 
@@ -236,18 +237,41 @@ void SceneView::resetCamera(int position) {
 			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
 			break;
 
-//		std::vector<const VICUS::Surface*> surfaces;
-//		std::vector<const VICUS::SubSurface*> subsurfaces;
-//		std::set<const VICUS::Object *> visibleObjects;
-//		project().selectObjects(visibleObjects, VICUS::Project::SG_All, false, true);
-//		IBKMK::Vector3D center;
-//		// compute bounding box of visible geometry
-//		IBKMK::Vector3D bb = project().boundingBox(surfaces, subsurfaces, center);
-//		//
+		case 6 : {
+			std::vector<const VICUS::Surface*> surfaces;
+			std::vector<const VICUS::SubSurface*> subsurfaces;
+			std::set<const VICUS::Object *> selectedObjects;
+			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			if (selectedObjects.empty())
+				return; // nothing selected/visible, do nothing
+			for (const VICUS::Object * o : selectedObjects) {
+				const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
+				if (s != nullptr)
+					surfaces.push_back(s);
+				else {
+					const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
+					if (sub != nullptr)
+						subsurfaces.push_back(sub);
+				}
+			}
+
+			IBKMK::Vector3D center;
+			// compute bounding box of visible geometry
+			project().boundingBox(surfaces, subsurfaces, center);
+			// move camera to position and a little bit back
+			Camera c;
+			c.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
+			QVector3D offset = -2*c.forward();
+			center.m_x += (double)offset.x();
+			center.m_y += (double)offset.y();
+			center.m_z += (double)offset.z();
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center;
+
+		} break;
 
 	}
 	// trick scene into updating
-	onModified(SVProjectHandler::AllModified, nullptr);
+	onModified(SVProjectHandler::GridModified, nullptr);
 }
 
 
