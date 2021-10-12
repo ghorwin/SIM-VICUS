@@ -1614,7 +1614,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	maxDist = std::max(maxDist, maxCoords.m_x - minCoords.m_x);
 	maxDist = std::max(maxDist, maxCoords.m_y - minCoords.m_y);
 	maxDist = std::max(maxDist, maxCoords.m_z - minCoords.m_z);
-	vp.m_viewSettings.m_farDistance = maxDist*4;
+	vp.m_viewSettings.m_farDistance = 10000;
 	vp.m_viewSettings.m_gridWidth = maxDist*2;
 	if (maxDist < 10) {
 		vp.m_viewSettings.m_gridSpacing = 0.1;
