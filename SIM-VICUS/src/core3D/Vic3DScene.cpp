@@ -134,20 +134,39 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			refreshColors();
 		break;
 
-		case SVProjectHandler::BuildingGeometryChanged :
+		case SVProjectHandler::BuildingGeometryChanged : {
 			updateBuilding = true;
 			updateSelection = true;
-			break;
+			// we might have just deleted all selected items, in this case switch back to
+
+			std::set<const VICUS::Object*> selectedObjects;
+
+			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+				if (selectedObjects.empty()) {
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+				}
+				else {
+					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+					// Do not modify property widget mode
+				}
+				SVViewStateHandler::instance().setViewState(vs);
+			}
+
+		} break;
 
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
 			updateCamera = true;
-			break;
+		break;
 
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
 			updateSelection = true;
-			break;
+		break;
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -159,12 +178,11 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			return;
 		}
 
-		case SVProjectHandler::SubSurfaceComponentInstancesModified : {
+		case SVProjectHandler::SubSurfaceComponentInstancesModified :
 			// changes in sub-surface assignments may change the transparency of constructions, hence
 			// requires a re-setup of building geometry
 			updateBuilding = true;
-			break;
-		}
+		break;
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
