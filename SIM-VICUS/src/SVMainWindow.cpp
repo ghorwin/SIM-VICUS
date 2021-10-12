@@ -1416,9 +1416,15 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionNetworkEdit->setEnabled(have_project);
 
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
+	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
 	m_ui->actionViewShowGrid->setEnabled(have_project);
+	m_ui->actionViewFromNorth->setEnabled(have_project);
+	m_ui->actionViewFromEast->setEnabled(have_project);
+	m_ui->actionViewFromSouth->setEnabled(have_project);
+	m_ui->actionViewFromWest->setEnabled(have_project);
+	m_ui->actionViewFromAbove->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
