@@ -669,6 +669,7 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 	}
 	for (const VICUS::SubSurface *sub : subsurfaces ) {
 		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
+		if (!s->geometry().isValid()) continue;
 		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
 			if (&(s->subSurfaces()[i]) == sub) {
 				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {

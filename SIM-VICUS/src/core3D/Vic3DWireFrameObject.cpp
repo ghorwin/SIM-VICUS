@@ -137,6 +137,7 @@ void WireFrameObject::updateBuffers() {
 
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s != nullptr) {
+			if (!s->geometry().isValid()) continue;
 			addPlane(s->geometry().triangulationData(), currentVertexIndex, currentElementIndex, m_vertexBufferData, m_indexBufferData);
 			continue;
 		}
@@ -145,6 +146,7 @@ void WireFrameObject::updateBuffers() {
 		if (sub != nullptr) {
 			const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
 			IBK_ASSERT(surf != nullptr);
+			if (!surf->geometry().isValid()) continue;
 			// get index of subsurface
 			for (unsigned int i=0; i<surf->subSurfaces().size(); ++i) {
 				if (&surf->subSurfaces()[i] == sub) { // Pointer comparison or comparison by unique ID?
