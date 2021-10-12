@@ -1,4 +1,4 @@
-Time [h]	pump.OutletNodeTemperature [C]	pipe.OutletNodeTemperature [C]	heatpump.OutletNodeTemperature [C]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	heatpump.FluidMassFlux [kg/s]	pump.FlowElementHeatLoss [W]	pipe.FlowElementHeatLoss [W]	heatpump.FlowElementHeatLoss [W]	heatpump.COP [---]	heatpump.ElectricalPower [W]	heatpump.CondenserHeatFlux [W]	heatpump.EvaporatorInletTemperature [C]	NetworkElement(id=1003).CondenserOutletTemperature [C]
+Time [h]	pump.OutletNodeTemperature [C]	pipe.OutletNodeTemperature [C]	heatpump.OutletNodeTemperature [C]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	heatpump.FluidMassFlux [kg/s]	pump.FlowElementHeatLoss [W]	pipe.FlowElementHeatLoss [W]	heatpump.FlowElementHeatLoss [W]	heatpump.COP [---]	heatpump.ElectricalPower [W]	heatpump.CondenserHeatFlux [W]	heatpump.EvaporatorInletTemperature [C]	heatpump.CondenserOutletTemperature [C]
 0	20	20	20	0.0816177	0.0816177	0.0816177	-0	4942.37	0	0	0	0	-273.15	-273.15
 1	9.00913	9.00878	9.00895	0.0921181	0.0921181	0.0921181	-0	3.94831	0	0	0	0	-273.15	-273.15
 2	-11.8657	9.00001	-11.774	0.098875	0.098875	0.098875	-0	-2153.47	8549.4	6.08213	1682.25	10231.6	9.00001	35

@@ -1,4 +1,4 @@
-Time [h]	Room 1.AirTemperature [C]	Zone(id=2).AirTemperature [C]
+Time [h]	Room 1.AirTemperature [C]	Room 2.AirTemperature [C]
 0	20	20
 1	22.3617	22.5361
 2	22.1336	22.395

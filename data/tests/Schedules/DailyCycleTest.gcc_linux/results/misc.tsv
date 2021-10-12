@@ -1,4 +1,4 @@
-Time [h]	Office.PersonHeatLoadPerAreaSchedule [W/m2]	Zone(id=1).EquipmentHeatLoadPerAreaSchedule [W/m2]
+Time [h]	Office.PersonHeatLoadPerAreaSchedule [W/m2]	Office.EquipmentHeatLoadPerAreaSchedule [W/m2]
 2880	0	0
 2880.17	0	0
 2880.33	0	0

@@ -1,4 +1,4 @@
-Time [h]	pump.OutletNodeTemperature [C]	pipe.OutletNodeTemperature [C]	pump.OutletNodePressure [Pa]	pipe.OutletNodePressure [Pa]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	pump.FluidTemperature [C]	NetworkElement(id=1002).FluidTemperature [C]
+Time [h]	pump.OutletNodeTemperature [C]	pipe.OutletNodeTemperature [C]	pump.OutletNodePressure [Pa]	pipe.OutletNodePressure [Pa]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	pump.FluidTemperature [C]	pipe.FluidTemperature [C]
 0	20	20	1000	1.002e-14	0.0577065	0.0577065	20	20
 1	20	20	1000	-3.87166e-15	0.0577065	0.0577065	20	20
 2	20	20	1000	-3.87166e-15	0.0577065	0.0577065	20	20

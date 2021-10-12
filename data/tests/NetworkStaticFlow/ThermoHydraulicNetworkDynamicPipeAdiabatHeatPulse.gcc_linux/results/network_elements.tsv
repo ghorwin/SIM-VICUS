@@ -1,4 +1,4 @@
-Time [h]	pipe.OutletNodeTemperature [C]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	NetworkElement(id=101).FluidVelocity [m/s]
+Time [h]	pipe.OutletNodeTemperature [C]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	pipe.FluidVelocity [m/s]
 0	20	20	20	1944.76
 0.0166667	20	20	20	0.161744
 0.0333333	20	20	20	0.161744

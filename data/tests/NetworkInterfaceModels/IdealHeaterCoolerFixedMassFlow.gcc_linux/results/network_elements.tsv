@@ -1,4 +1,4 @@
-Time [h]	Floor heating.FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	Perfect heater cooler.FluidTemperature [C]	Pump.FlowElementHeatLoss [W]	Floor heating.FlowElementHeatLoss [W]	NetworkElement(id=3).FlowElementHeatLoss [W]
+Time [h]	Floor heating.FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	Perfect heater cooler.FluidTemperature [C]	Pump.FlowElementHeatLoss [W]	Floor heating.FlowElementHeatLoss [W]	Perfect heater cooler.FlowElementHeatLoss [W]
 0	0.0175651	0.114334	20	20	22	-0	5.46179e-11	-146.845
 1	0.0175651	0.114334	21.9964	20.7259	22	-0	93.6435	-93.547
 2	0.0175651	0.114334	22	20.6785	22	-0	97.9805	-97.0291

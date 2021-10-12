@@ -1,4 +1,4 @@
-Time [h]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	NetworkElement(id=201).FlowElementHeatLoss [W]
+Time [h]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	pump.FlowElementHeatLoss [W]
 0	0.0577065	0.0577065	20	20	-0.0867332
 1	0.0577065	0.0577065	20.0014	20.0018	-0.0867332
 2	0.0577065	0.0577065	20.0028	20.0032	-0.0867332

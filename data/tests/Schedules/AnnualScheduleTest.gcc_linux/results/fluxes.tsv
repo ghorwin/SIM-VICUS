@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]
+Time [h]	Office.VentilationHeatLoad [W]
 2880	227.293
 2881	-804.619
 2882	-1645.22

@@ -1,4 +1,4 @@
-Time [h]	node 0.FluidTemperature [C]	NetworkElement(id=2).FluidTemperature [C]	node 1.FluidTemperature [C]	node 0.FluidMassFlux [kg/s]	NetworkElement(id=2).FluidMassFlux [kg/s]	node 1.FluidMassFlux [kg/s]	node 0.FlowElementHeatLoss [W]	NetworkElement(id=2).FlowElementHeatLoss [W]	NetworkElement(id=3).FlowElementHeatLoss [W]
+Time [h]	node 0.FluidTemperature [C]	NetworkElement(id=2).FluidTemperature [C]	node 1.FluidTemperature [C]	node 0.FluidMassFlux [kg/s]	NetworkElement(id=2).FluidMassFlux [kg/s]	node 1.FluidMassFlux [kg/s]	node 0.FlowElementHeatLoss [W]	NetworkElement(id=2).FlowElementHeatLoss [W]	node 1.FlowElementHeatLoss [W]
 0	20	20	20	0.0500959	0.0500959	0.0500959	-0	2.10988e-11	-500
 1	20.8545	20.1381	20.8961	0.0500959	0.0500959	0.0500959	-0	144.013	-500
 2	21.4801	20.2459	21.5088	0.0500959	0.0500959	0.0500959	-0	251.107	-500

@@ -1,4 +1,4 @@
-Time [h]	Room.AirTemperature [C]	Zone(id=1).OperativeTemperature [C]
+Time [h]	Room.AirTemperature [C]	Room.OperativeTemperature [C]
 4560	20	20
 4560.5	22.2428	21.2643
 4561	21.643	21.0255

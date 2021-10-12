@@ -1,4 +1,4 @@
-Time [h]	Pump.FluidMassFlux [kg/s]	Heat exchanger.FluidMassFlux [kg/s]	Pipe.FluidMassFlux [kg/s]	Pump.OutletNodeTemperature [C]	Heat exchanger.OutletNodeTemperature [C]	Pipe.OutletNodeTemperature [C]	Pump.PressureDifference [Pa]	Heat exchanger.PressureDifference [Pa]	Pipe.PressureDifference [Pa]	Heat exchanger.ControllerResultValue [---]	NetworkElement(id=2).TemperatureDifference [K]
+Time [h]	Pump.FluidMassFlux [kg/s]	Heat exchanger.FluidMassFlux [kg/s]	Pipe.FluidMassFlux [kg/s]	Pump.OutletNodeTemperature [C]	Heat exchanger.OutletNodeTemperature [C]	Pipe.OutletNodeTemperature [C]	Pump.PressureDifference [Pa]	Heat exchanger.PressureDifference [Pa]	Pipe.PressureDifference [Pa]	Heat exchanger.ControllerResultValue [---]	Heat exchanger.TemperatureDifference [K]
 0	0.00103473	0.00103473	0.00103473	10	10	10	-10000	9999.97	0.0258247	3e+06	0
 1	0.00215757	0.00215757	0.00215757	9.9998	9.2784	9.99874	-10000	9999.95	0.0538486	689970	2.31003
 2	0.00361856	0.00361856	0.00361856	9.99593	8.04124	9.98932	-10000	9999.91	0.0903119	245283	2.75472

@@ -1,4 +1,4 @@
-Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	Zone(id=1).AirTemperature [C]
+Time [h]	ConstructionInstance(id=3001).ActiveLayerTemperature [C]	dummy.AirTemperature [C]
 0	17.9	17.9
 0.5	22.4658	16.5202
 1	22.9132	16.9324

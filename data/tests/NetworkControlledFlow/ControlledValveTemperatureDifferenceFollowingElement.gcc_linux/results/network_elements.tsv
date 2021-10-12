@@ -1,4 +1,4 @@
-Time [h]	Pump.OutletNodeTemperature [C]	Pipe.OutletNodeTemperature [C]	Control Valve.OutletNodeTemperature [C]	Heat Pump.OutletNodeTemperature [C]	Pump.FluidMassFlux [kg/s]	Pipe.FluidMassFlux [kg/s]	Control Valve.FluidMassFlux [kg/s]	Heat Pump.FluidMassFlux [kg/s]	Heat Pump.FlowElementHeatLoss [W]	Control Valve.ControllerResultValue [---]	NetworkElement(id=401).TemperatureDifference [K]
+Time [h]	Pump.OutletNodeTemperature [C]	Pipe.OutletNodeTemperature [C]	Control Valve.OutletNodeTemperature [C]	Heat Pump.OutletNodeTemperature [C]	Pump.FluidMassFlux [kg/s]	Pipe.FluidMassFlux [kg/s]	Control Valve.FluidMassFlux [kg/s]	Heat Pump.FluidMassFlux [kg/s]	Heat Pump.FlowElementHeatLoss [W]	Control Valve.ControllerResultValue [---]	Heat Pump.TemperatureDifference [K]
 0	20	20	20	20	0.010275	0.010275	0.010275	0.010275	878.306	500000	0
 1	-1.94894	2.6586	2.6647	-1.95525	0.037179	0.037179	0.037179	0.037179	718.925	38004.5	4.61995
 2	-2.12915	2.49024	2.4903	-2.12922	0.0371579	0.0371579	0.0371579	0.0371579	717.512	38048	4.61952

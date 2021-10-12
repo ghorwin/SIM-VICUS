@@ -1,4 +1,4 @@
-Time [h]	pipe.OutletNodePressure [Pa]	pump.OutletNodePressure [Pa]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	pipe.FlowElementHeatLoss [W]	pump.FlowElementHeatLoss [W]	pipe.Reynolds [---]	pipe.FluidVelocity [m/s]	pipe.FluidVolumeFlow [m3/h]	NetworkElement(id=101).FluidViscosity [m2/s]
+Time [h]	pipe.OutletNodePressure [Pa]	pump.OutletNodePressure [Pa]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	pipe.FlowElementHeatLoss [W]	pump.FlowElementHeatLoss [W]	pipe.Reynolds [---]	pipe.FluidVelocity [m/s]	pipe.FluidVolumeFlow [m3/h]	pipe.FluidViscosity [m2/s]
 0	-9.99997e-15	2000	0.0789998	0.0789998	20	20	2814.86	-0	3921.32	0.153789	0.284969	1.004e-06
 0.5	-9.99998e-15	2000	0.081911	0.081911	6.32838	6.37772	879.428	-0	2748.06	0.159456	0.295471	1.48544e-06
 1	-9.99997e-15	2000	0.0827473	0.0827473	2.03023	2.04575	279.685	-0	2433.86	0.161084	0.298487	1.69433e-06
