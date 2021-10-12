@@ -140,6 +140,16 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::MT_VariablePressureHeadPump:
+			{
+				HNVariablePressureHeadPump * pumpElement = new HNVariablePressureHeadPump(e.m_id, *e.m_component,
+																						  m_hydraulicNetwork->m_fluid);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
+			} break;
+
+
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide :

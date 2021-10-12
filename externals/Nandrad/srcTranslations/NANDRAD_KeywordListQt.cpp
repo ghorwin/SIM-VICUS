@@ -48,6 +48,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump with constant/externally defined pressure");
 	tr("Pump with constant/externally defined mass flux");
 	tr("Pump with pressure head controlled based on flow controller");
+	tr("Pump with linear pressure head curve (dp-v controlled pump)");
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
@@ -68,6 +69,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Pressure loss for valve");
 	tr("Maximum pressure head at point of minimal mass flow of pump");
 	tr("Maximum electrical power at point of optimal operation of pump");
+	tr("design pressure head");
+	tr("design mass flux");
+	tr("Factor to reduced pressure head");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

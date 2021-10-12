@@ -709,6 +709,8 @@ void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) 
 	if (m_controlElement == nullptr)
 		return; 	// only handle input reference when there is a controller
 
+
+
 	switch (m_controlElement->m_controlledProperty) {
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
@@ -917,6 +919,75 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
+
+
+// *** HNVariablePressureHeadPump ***
+
+HNVariablePressureHeadPump::HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
+													   const NANDRAD::HydraulicFluid & fluid) :
+	m_id(id)
+{
+	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
+	m_designPressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignPressureHead].value;
+	m_minimumPressureHead = m_designPressureHead * component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHeadReduction].value;
+	m_designMassFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignMassFlux].value;
+	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_eta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
+	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
+	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
+
+}
+
+
+double HNVariablePressureHeadPump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	return p_inlet - p_outlet + pressureHead(mdot);
+}
+
+
+void HNVariablePressureHeadPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+void HNVariablePressureHeadPump::modelQuantities(std::vector<QuantityDescription> &quantities) const {
+	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
+}
+
+void HNVariablePressureHeadPump::modelQuantityValueRefs(std::vector<const double *> &valRefs) const {
+	valRefs.push_back(&m_pressureHead);
+}
+
+void HNVariablePressureHeadPump::updateResults(double mdot, double p_inlet, double p_outlet) {
+	m_pressureHead = pressureHead(mdot);
+}
+
+double HNVariablePressureHeadPump::pressureHead(double mdot) const
+{
+	if (mdot <= 0)
+		return m_minimumPressureHead;
+
+	// slope of linear dp-v curve
+	double slope = (m_designPressureHead - m_minimumPressureHead) / m_designMassFlux;
+	// current point of operation on dp-v curve
+	double dp = m_minimumPressureHead + slope * mdot;
+
+	// calculation of actual maximum pressure head which depends on mass flux
+	// --> point of maximum volume flow (at minimum pressure head)
+	const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
+	// --> pressHeadMax = f (V_dot)
+	double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
+
+	// clipping
+	if (dp > pressHeadMax)
+		dp = pressHeadMax;
+
+	return dp;
+}
+
 
 
 

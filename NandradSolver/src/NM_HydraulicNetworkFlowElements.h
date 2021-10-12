@@ -288,7 +288,7 @@ private:
 	/*! Value reference to target mass flux [kg/s] */
 	const double					*m_massFluxRef = nullptr;
 
-}; // HNControlledPump
+}; // HNConstantMassFluxPump
 
 
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
@@ -363,11 +363,57 @@ private:
 	/*! maximum pressure head at point of minimal mass flow in Pa */
 	double							m_maxPressureHeadMinFlow = -999;
 
-
-
-
-
 }; // HNControlledPump
+
+
+/*! Pump model where pressure head is controlled based on mass flux requirements. */
+class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+								const NANDRAD::HydraulicFluid & fluid);
+
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
+	/*! Return value reference of pressure head computed by flow element. */
+	const double * pressureHeadRef() const { return &m_pressureHead; }
+
+private:
+
+	double pressureHead(double mdot) const;
+
+	double							m_pressureHead = -999;
+
+	double							m_designPressureHead = -999;
+	double							m_minimumPressureHead = -999;
+	double							m_designMassFlux = -999;
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! fluid density in kg/m3 */
+	double							m_density = -999;
+	/*! efficiency of pump in - */
+	double							m_eta = -999;
+	/*! maximum electrical power (in optimal operation point)  in W */
+	double							m_maxElectricalPower = -999;
+	/*! maximum pressure head at point of minimal mass flow in Pa */
+	double							m_maxPressureHeadMinFlow = -999;
+	/*! minimum pressure head at point of minimal mass flow in Pa */
+	double							m_minPressureHeadMinFlow = -999;
+
+
+
+}; // HNVariablePressureHeadPump
 
 } // namespace NANDRAD_MODEL
 
