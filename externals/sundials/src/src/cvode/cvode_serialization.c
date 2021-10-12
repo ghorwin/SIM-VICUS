@@ -412,8 +412,6 @@ size_t CVDlsSerializationPrivate(int op, void *dls_mem, void ** storageDataPtr) 
   CVODE_SERIALIZE_DLSMAT(op, storageDataPtr, cvdls_mem->d_savedJ, memSize);
 
   for (i = 0; i < cvdls_mem->d_n; ++i)
-    CVODE_SERIALIZE_A(op, int, *storageDataPtr, cvdls_mem->d_pivots[i], memSize);
-  for (i = 0; i < cvdls_mem->d_n; ++i)
     CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_lpivots[i], memSize);
 
   CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_nstlj, memSize);
