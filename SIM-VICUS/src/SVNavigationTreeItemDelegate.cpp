@@ -32,6 +32,7 @@
 #include <QTreeView>
 
 #include "SVUndoTreeNodeState.h"
+#include "SVSettings.h"
 
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
@@ -100,6 +101,22 @@ void SVNavigationTreeItemDelegate::paint(QPainter * painter, const QStyleOptionV
 	bool isSelected = option.state & QStyle::State_Selected;
 	QFont f = painter->font();
 	f.setBold(isSelected);
+
+	bool isInvalid = index.data(InvalidGeometryFlag).toBool();
+	if (isInvalid)
+		painter->setPen(QColor(196,0,0));
+	else {
+		switch (SVSettings::instance().m_theme) {
+			case SVSettings::NUM_TT:
+			case SVSettings::TT_White:
+				painter->setPen(Qt::black);
+			break;
+
+			case SVSettings::TT_Dark:
+				painter->setPen(QColor(240,240,240));
+			break;
+		}
+	}
 	painter->setFont(f);
 
 	painter->drawText(targetRect, Qt::AlignLeft | Qt::AlignVCenter, index.data(Qt::DisplayRole).toString());

@@ -166,6 +166,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				rooms->setData(0, SVNavigationTreeItemDelegate::NodeID, r.uniqueID());
 				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, r.m_visible);
 				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, r.m_selected);
+				rooms->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, false);
 				if (rooms->text(0).isEmpty())
 					rooms->setText(0, tr("unnamed"));
 				buildingLevel->addChild(rooms);
@@ -177,6 +178,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+					if (!s.geometry().isValid()) {
+						surface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+						surface->setData(0, Qt::ToolTipRole, tr("Invalid polygon/hole geometry"));
+					}
+
 					for (unsigned int holeIdx = 0; holeIdx < s.subSurfaces().size(); ++holeIdx) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[holeIdx];
 
@@ -194,6 +200,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 						subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub.uniqueID());
 						subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub.m_visible);
 						subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub.m_selected);
+						if (!sub.m_polygon2D.isValid()) {
+							subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+							subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
+						}
+
 					}
 				}
 			}
