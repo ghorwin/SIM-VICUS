@@ -78,5 +78,6 @@
         <file>gfx/actions/filter.png</file>
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen.png</file>
         <file>logo/icons/Icon_64.png</file>
+        <file>gfx/actions/16x16/checkbox-inverted.png</file>
     </qresource>
 </RCC>

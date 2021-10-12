@@ -350,3 +350,25 @@ void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, in
 	SVUndoModifyObjectName * undo = new SVUndoModifyObjectName(tr("Renamed object to '%1'").arg(newText), o, newText);
 	undo->push();
 }
+
+
+void SVNavigationTreeWidget::on_actionInvertSelection_triggered() {
+	// invert selection, i.e. select all surfaces currently not selected
+
+	// we process all objects in the project() and store unique IDs of all objects that are currently not
+	std::set<const VICUS::Object *> allObjects;
+	project().selectObjects(allObjects, VICUS::Project::SG_All, false, true);
+	std::set<unsigned int> selectedObjectIDs;
+	std::set<unsigned int> deselectedObjectIDs;
+	for (const VICUS::Object * o : allObjects) {
+		if (o->m_selected)
+			selectedObjectIDs.insert(o->uniqueID());
+		else
+			deselectedObjectIDs.insert(o->uniqueID());
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, deselectedObjectIDs, true);
+	undo->push();
+	undo = new SVUndoTreeNodeState(tr("De-selecting objects"), SVUndoTreeNodeState::SelectedState, selectedObjectIDs, false);
+	undo->push();
+}

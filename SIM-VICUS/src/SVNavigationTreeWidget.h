@@ -72,6 +72,8 @@ private slots:
 
 	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
 
+	void on_actionInvertSelection_triggered();
+
 private:
 	/*! Recursively collapses all children. */
 	void collapseTreeWidgetItem(QTreeWidgetItem * parent);

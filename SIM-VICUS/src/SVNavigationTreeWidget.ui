@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>291</width>
+    <width>327</width>
     <height>637</height>
    </rect>
   </property>
@@ -44,6 +44,7 @@
      <addaction name="actionHideSelected"/>
      <addaction name="actionShowSelected"/>
      <addaction name="actionSelect_all"/>
+     <addaction name="actionInvertSelection"/>
      <addaction name="actionSmartSelect"/>
     </widget>
    </item>
@@ -150,6 +151,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="actionInvertSelection">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/16x16/checkbox-inverted.png</normaloff>:/gfx/actions/16x16/checkbox-inverted.png</iconset>
+   </property>
+   <property name="text">
+    <string>Invert selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Inverts current selection (Ctrl + I)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>
