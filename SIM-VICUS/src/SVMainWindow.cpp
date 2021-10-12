@@ -1183,9 +1183,33 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 
 void SVMainWindow::on_actionViewResetView_triggered() {
 	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera();
+	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
 }
 
+
+void SVMainWindow::on_actionViewFromNorth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+}
+
+
+void SVMainWindow::on_actionViewFromEast_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
+}
+
+
+void SVMainWindow::on_actionViewFromSouth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
+}
+
+
+void SVMainWindow::on_actionViewFromWest_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+}
+
+
+void SVMainWindow::on_actionViewFromAbove_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+}
 
 
 void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
@@ -1916,10 +1940,6 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-
-
-
 
 
 

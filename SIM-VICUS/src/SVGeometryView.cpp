@@ -141,8 +141,8 @@ void SVGeometryView::refreshSceneView() {
 	m_sceneView->renderLater();
 }
 
-void SVGeometryView::resetCamera() {
-	m_sceneView->resetCamera();
+void SVGeometryView::resetCamera(int positionID) {
+	m_sceneView->resetCamera(positionID);
 }
 
 

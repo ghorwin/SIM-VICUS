@@ -203,10 +203,49 @@ void SceneView::toggleTranslateCoordinateSystem() {
 }
 
 
-void SceneView::resetCamera() {
-	// reset camera positino
-	SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
-	SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
+void SceneView::resetCamera(int position) {
+	// reset camera position
+	switch (position) {
+		case 0 :
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
+			break;
+
+		case 1 : // from north
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 2 : // from east
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(-100, 0, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 3 : // from south
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, +100, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 4 : // from west
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(100, 0, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 5 : // from above
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, 0, 100);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+			break;
+
+//		std::vector<const VICUS::Surface*> surfaces;
+//		std::vector<const VICUS::SubSurface*> subsurfaces;
+//		std::set<const VICUS::Object *> visibleObjects;
+//		project().selectObjects(visibleObjects, VICUS::Project::SG_All, false, true);
+//		IBKMK::Vector3D center;
+//		// compute bounding box of visible geometry
+//		IBKMK::Vector3D bb = project().boundingBox(surfaces, subsurfaces, center);
+//		//
+
+	}
 	// trick scene into updating
 	onModified(SVProjectHandler::AllModified, nullptr);
 }
