@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.6">
+	<ProjectInfo>
+		<Created>Di. Okt. 12 16:10:48 2021</Created>
+		<LastEdited>Mi. Okt. 13 06:59:24 2021</LastEdited>
+	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
+	<Project>
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
+		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>-17.8532 19.6706 13.2756</CameraTranslation>
+			<RotationMatrix>
+				<Wp>-0.343052</Wp>
+				<X>-0.242705</X>
+				<Y>0.524091</Y>
+				<Z>0.740767</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="EG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="57" displayName="Wohnen">
+								<IdZoneTemplate>80026</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">80</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">216</IBK:Parameter>
+								<Surfaces>
+									<Surface id="58" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 6 0, 5 6 0, 5 10 0, 10 10 0, 10 0 0, 0 0 0</Polygon3D>
+									</Surface>
+									<Surface id="59" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>0 0 2.7, 10 0 2.7, 10 10 2.7, 5 10 2.7, 5 6 2.7, 0 6 2.7</Polygon3D>
+									</Surface>
+									<Surface id="60" displayName="Wall 1">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5 6 0, 0 6 0, 0 6 2.7, 5 6 2.7</Polygon3D>
+									</Surface>
+									<Surface id="61" displayName="Wall 2">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5 10 0, 5 6 0, 5 6 2.7, 5 10 2.7</Polygon3D>
+									</Surface>
+									<Surface id="62" displayName="Wall 3">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>10 10 0, 5 10 0, 5 10 2.7, 10 10 2.7</Polygon3D>
+									</Surface>
+									<Surface id="63" displayName="Wall 4">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>10 0 0, 10 10 0, 10 10 2.7, 10 0 2.7</Polygon3D>
+									</Surface>
+									<Surface id="64" displayName="Wall 5">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 0 0, 10 0 0, 10 0 2.7, 0 0 2.7</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="103" displayName="Window #">
+												<Polygon2D>0.188312 0.01, 1.24026 0.01, 1.24026 2.21, 0.188312 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="104" displayName="Window #">
+												<Polygon2D>1.61688 0.01, 2.66883 0.01, 2.66883 2.21, 1.61688 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="105" displayName="Window #">
+												<Polygon2D>3.04545 0.01, 4.0974 0.01, 4.0974 2.21, 3.04545 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="106" displayName="Window #">
+												<Polygon2D>4.47403 0.01, 5.52597 0.01, 5.52597 2.21, 4.47403 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="107" displayName="Window #">
+												<Polygon2D>5.9026 0.01, 6.95455 0.01, 6.95455 2.21, 5.9026 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="108" displayName="Window #">
+												<Polygon2D>7.33117 0.01, 8.38312 0.01, 8.38312 2.21, 7.33117 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="109" displayName="Window #">
+												<Polygon2D>8.75974 0.01, 9.81169 0.01, 9.81169 2.21, 8.75974 2.21</Polygon2D>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+									<Surface id="65" displayName="Wall 6">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0 6 0, 0 0 0, 0 0 2.7, 0 6 2.7</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="110" displayName="Window #">
+												<Polygon2D>0.197727 0.01, 1.30227 0.01, 1.30227 2.21, 0.197727 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="111" displayName="Window #">
+												<Polygon2D>1.69773 0.01, 2.80227 0.01, 2.80227 2.21, 1.69773 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="112" displayName="Window #">
+												<Polygon2D>3.19773 0.01, 4.30227 0.01, 4.30227 2.21, 3.19773 2.21</Polygon2D>
+											</SubSurface>
+											<SubSurface id="113" displayName="Window #">
+												<Polygon2D>4.69773 0.01, 5.80227 0.01, 5.80227 2.21, 4.69773 2.21</Polygon2D>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+					<BuildingLevel id="2" displayName="DG">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="67" displayName="Dach">
+								<IdZoneTemplate>80027</IdZoneTemplate>
+								<IBK:Parameter name="Area" unit="m2">80</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
+								<Surfaces>
+									<Surface id="68" displayName="Floor">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>0 0 2.9, 10 0 2.9, 10 10 2.9, 5 10 2.9, 5 6 2.9, 0 6 2.9</Polygon3D>
+									</Surface>
+									<Surface id="69" displayName="Roof surface 1">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>5 6 2.9, 2.5 3 5.6, 7.5 3 5.6</Polygon3D>
+									</Surface>
+									<Surface id="70" displayName="Roof surface 2">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 0 2.9, 10 0 2.9, 7.5 3 5.6</Polygon3D>
+									</Surface>
+									<Surface id="71" displayName="Roof surface 3">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>7.5 3 5.6, 2.5 3 5.6, 0 0 2.9</Polygon3D>
+									</Surface>
+									<Surface id="72" displayName="Roof surface 4">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>7.5 3 5.6, 7.5 8 5.6, 5 6 2.9</Polygon3D>
+									</Surface>
+									<Surface id="73" displayName="Roof surface 5">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>7.5 3 5.6, 10 0 2.9, 10 10 2.9</Polygon3D>
+									</Surface>
+									<Surface id="74" displayName="Roof surface 6">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>10 10 2.9, 7.5 8 5.6, 7.5 3 5.6</Polygon3D>
+									</Surface>
+									<Surface id="75" displayName="Roof surface 7">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>5 10 2.9, 5 6 2.9, 7.5 8 5.6</Polygon3D>
+									</Surface>
+									<Surface id="76" displayName="Roof surface 8">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>7.5 8 5.6, 10 10 2.9, 5 10 2.9</Polygon3D>
+									</Surface>
+									<Surface id="77" displayName="Roof surface 9">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 6 2.9, 0 0 2.9, 2.5 3 5.6</Polygon3D>
+									</Surface>
+									<Surface id="78" displayName="Roof surface 10">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>2.5 3 5.6, 5 6 2.9, 0 6 2.9</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" idComponent="50336" idSideASurface="58" />
+			<ComponentInstance id="3" idComponent="50338" idSideASurface="68" idSideBSurface="59" />
+			<ComponentInstance id="4" idComponent="50335" idSideASurface="60" />
+			<ComponentInstance id="5" idComponent="50335" idSideASurface="61" />
+			<ComponentInstance id="6" idComponent="50335" idSideASurface="62" />
+			<ComponentInstance id="7" idComponent="50335" idSideASurface="63" />
+			<ComponentInstance id="8" idComponent="50335" idSideASurface="64" />
+			<ComponentInstance id="9" idComponent="50335" idSideASurface="65" />
+			<ComponentInstance id="11" idComponent="50337" idSideASurface="69" />
+			<ComponentInstance id="12" idComponent="50337" idSideASurface="70" />
+			<ComponentInstance id="13" idComponent="50337" idSideASurface="71" />
+			<ComponentInstance id="14" idComponent="50337" idSideASurface="72" />
+			<ComponentInstance id="15" idComponent="50337" idSideASurface="73" />
+			<ComponentInstance id="16" idComponent="50337" idSideASurface="74" />
+			<ComponentInstance id="17" idComponent="50337" idSideASurface="75" />
+			<ComponentInstance id="18" idComponent="50337" idSideASurface="76" />
+			<ComponentInstance id="19" idComponent="50337" idSideASurface="77" />
+			<ComponentInstance id="20" idComponent="50337" idSideASurface="78" />
+		</ComponentInstances>
+		<SubSurfaceComponentInstances>
+			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="160016" idSideASurface="103" />
+			<SubSurfaceComponentInstance id="2" idSubSurfaceComponent="160016" idSideASurface="104" />
+			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="160016" idSideASurface="105" />
+			<SubSurfaceComponentInstance id="4" idSubSurfaceComponent="160016" idSideASurface="106" />
+			<SubSurfaceComponentInstance id="5" idSubSurfaceComponent="160016" idSideASurface="107" />
+			<SubSurfaceComponentInstance id="6" idSubSurfaceComponent="160016" idSideASurface="108" />
+			<SubSurfaceComponentInstance id="7" idSubSurfaceComponent="160016" idSideASurface="109" />
+			<SubSurfaceComponentInstance id="8" idSubSurfaceComponent="160016" idSideASurface="110" />
+			<SubSurfaceComponentInstance id="9" idSubSurfaceComponent="160016" idSideASurface="111" />
+			<SubSurfaceComponentInstance id="10" idSubSurfaceComponent="160016" idSideASurface="112" />
+			<SubSurfaceComponentInstance id="11" idSubSurfaceComponent="160016" idSideASurface="113" />
+		</SubSurfaceComponentInstances>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				</Material>
+				<Material id="10026" displayName="DE: Mineralwolle |EN: &lt;new material&gt;" color="#5ac5ff">
+					<DataSource>DE: Bockwen EFH</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">830</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.035</IBK:Parameter>
+				</Material>
+				<Material id="10027" displayName="DE: Gipskarton |EN: &lt;new material&gt;" color="#fe5aff">
+					<DataSource>DE: Bockwen EFH</DataSource>
+					<Category>BuildingBoards</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">700</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">830</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.2</IBK:Parameter>
+				</Material>
+				<Material id="10042" displayName="DE: SimQ_Estrich" color="#ecf400">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.4</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="20004" displayName="DE: SimQ_Geschossdecke">
+					<UsageType>Ceiling</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10042">
+							<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20013" displayName="DE: Schrägdach |EN: &lt;new construction type&gt;">
+					<UsageType>SlopedRoof</UsageType>
+					<InsulationKind>OutsideInsulation</InsulationKind>
+					<MaterialKind>Wood</MaterialKind>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10027">
+							<IBK:Parameter name="Thickness" unit="m">0.0125</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10026">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20072" displayName="DE: SimQ_Bodenplatte">
+					<UsageType>FloorToCellar</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10042">
+							<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.02</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.18</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20147" displayName="DE: [Webinar] AW Konstruktion |EN: &lt;new construction type&gt;">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<Windows>
+				<Window id="30002" displayName="DE: Fenster" color="#80ff5a" idGlazingSystem="300002" methodFrame="None" methodDivider="None" />
+			</Windows>
+			<WindowGlazingSystems>
+				<WindowGlazingSystem id="300002" displayName="DE: Fenster Bockwen senkrecht" color="#85ff5a" modelType="Simple">
+					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">1.1</IBK:Parameter>
+					<LinearSplineParameter name="SHGC" interpolationMethod="linear">
+						<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="---">0.6 0.6 0.6 0.59 0.57 0.45 0.3 0.2 0.1 0 </Y>
+					</LinearSplineParameter>
+				</WindowGlazingSystem>
+			</WindowGlazingSystems>
+			<BoundaryConditions>
+				<BoundaryCondition id="40001" displayName="DE: Randbedingung außen |EN: &lt;new boundary condition&gt;" color="#ffff00">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">25</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+					<InterfaceLongWaveEmission modelType="Constant">
+						<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+					</InterfaceLongWaveEmission>
+				</BoundaryCondition>
+				<BoundaryCondition id="40008" displayName="DE: Randbedingung innen |EN: &lt;new boundary condition&gt;" color="#ff0000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">7.6923</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="50335" displayName="DE: [Webinar] AW |EN: &lt;new component type&gt;" color="#ffff00">
+					<Type>OutsideWall</Type>
+					<IdConstruction>20147</IdConstruction>
+					<IdSideABoundaryCondition>40008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50336" displayName="DE: [Webinar] Bodenplatte |EN: &lt;new component type&gt;" color="#aa5500">
+					<Type>FloorToAir</Type>
+					<IdConstruction>20072</IdConstruction>
+					<IdSideABoundaryCondition>40008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50337" displayName="DE: [Webinar] Dach |EN: &lt;new component type&gt;" color="#ff0000">
+					<Type>ColdRoof</Type>
+					<IdConstruction>20013</IdConstruction>
+					<IdSideABoundaryCondition>40008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50338" displayName="DE: [Webinar] Geschossdecke |EN: &lt;new component type&gt;" color="#00007f">
+					<Type>Ceiling</Type>
+					<IdConstruction>20004</IdConstruction>
+					<IdSideABoundaryCondition>40008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40001</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+			<SubSurfaceComponents>
+				<SubSurfaceComponent id="160016" displayName="DE: [Webinar] Fenster |EN: &lt;new sub-surface&gt;" color="#00ffff">
+					<Type>Window</Type>
+					<IdWindow>30002</IdWindow>
+					<IdSideABoundaryCondition>40008</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40001</IdSideBBoundaryCondition>
+				</SubSurfaceComponent>
+			</SubSurfaceComponents>
+			<Schedules>
+				<Schedule id="60023" displayName="DE: Heizsollwert Bockwen Wohnen |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>0</UseLinearInterpolation>
+					<HaveAnnualSchedule>0</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9</DayTypes>
+									<TimePoints>0,6,21</TimePoints>
+									<Values>21,22,21</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+				<Schedule id="60036" displayName="DE: [FMI4BIM] Townhouse ElectrEquip Sched |EN: &lt;new schedule&gt;">
+					<UseLinearInterpolation>0</UseLinearInterpolation>
+					<HaveAnnualSchedule>0</HaveAnnualSchedule>
+					<Periods>
+						<ScheduleInterval intervalStartDay="0">
+							<DailyCycles>
+								<DailyCycle>
+									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
+									<TimePoints>0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23</TimePoints>
+									<Values>0.43,0.32,0.27,0.25,0.27,0.37,0.53,0.7,0.86,0.91,0.96,1,0.94,0.79,0.7,0.63,0.67,0.86,0.97,0.91,0.81,0.74,0.58</Values>
+								</DailyCycle>
+							</DailyCycles>
+						</ScheduleInterval>
+					</Periods>
+				</Schedule>
+			</Schedules>
+			<InternalLoads>
+				<InternalLoad id="70020" displayName="DE: [FMI4BIM] Townhouse ElecEquip |EN: &lt;new internal load model&gt;" color="#a25aff">
+					<Category>ElectricEquiment</Category>
+					<PowerMethod>PowerPerArea</PowerMethod>
+					<IdPowerManagementSchedule>60036</IdPowerManagementSchedule>
+					<IBK:Parameter name="Power" unit="W">0</IBK:Parameter>
+					<IBK:Parameter name="PowerPerArea" unit="W/m2">1.9</IBK:Parameter>
+					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
+					<IBK:Parameter name="LatentHeatFactor" unit="---">0</IBK:Parameter>
+					<IBK:Parameter name="LossHeatFactor" unit="---">0</IBK:Parameter>
+				</InternalLoad>
+			</InternalLoads>
+			<ZoneControlThermostats>
+				<ZoneControlThermostat id="110003" displayName="DE: Thermostat Bockwen Wohnen |EN: &lt;new zone control thermostat model&gt;" color="#69ff2a">
+					<ControlValue>AirTemperature</ControlValue>
+					<ControllerType>Analog</ControllerType>
+					<IdHeatingSetpointSchedule>60023</IdHeatingSetpointSchedule>
+					<IBK:Parameter name="Tolerance" unit="K">0.1</IBK:Parameter>
+				</ZoneControlThermostat>
+			</ZoneControlThermostats>
+			<ZoneIdealHeatingCooling>
+				<ZoneIdealHeatingCooling id="200001" displayName="DE: Idea01 |EN: &lt;new zone ideal heating cooling model&gt;" color="#5aff82">
+					<IBK:Parameter name="HeatingLimit" unit="W/m2">50</IBK:Parameter>
+				</ZoneIdealHeatingCooling>
+			</ZoneIdealHeatingCooling>
+			<Infiltration>
+				<Infiltration id="140001" displayName="DE: Bockwen Infiltration |EN: &lt;new zone control infiltration model&gt;" color="#5a6eff">
+					<AirChangeType>normal</AirChangeType>
+					<IBK:Parameter name="AirChangeRate" unit="1/h">0.3</IBK:Parameter>
+				</Infiltration>
+			</Infiltration>
+			<ZoneTemplates>
+				<ZoneTemplate id="80026" displayName="DE: [Webinar] Wohnen |EN: &lt;new zone template&gt;" color="#00c353">
+					<IntLoadEquipment>70020</IntLoadEquipment>
+					<ControlThermostat>110003</ControlThermostat>
+					<Infiltration>140001</Infiltration>
+					<IdealHeatingCooling>200001</IdealHeatingCooling>
+				</ZoneTemplate>
+				<ZoneTemplate id="80027" displayName="DE: [Webinar] Unbeheizt |EN: &lt;new zone template&gt;" color="#00f7ec">
+					<Infiltration>140001</Infiltration>
+				</ZoneTemplate>
+			</ZoneTemplates>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
