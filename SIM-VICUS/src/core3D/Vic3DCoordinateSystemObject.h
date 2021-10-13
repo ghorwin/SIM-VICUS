@@ -102,7 +102,7 @@ public:
 	/*! Modifies the location of the local coordinate system.
 		This function also tells the edit geometry widget its new position.
 	*/
-	void setTranslation(const QVector3D & translation);
+	void setTranslation(const QVector3D & translation, bool updateEditGeometry = true);
 
 	/*! Returns the current translation of the coordinate system. */
 	const QVector3D & translation() const { return m_transform.translation(); }
