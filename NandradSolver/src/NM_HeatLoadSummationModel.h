@@ -34,9 +34,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
-/*! A model for ideal heating/cooling (air heating).
+/*! A model to sum
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
-	It implements ideal heating/cooling loads for all zones referenced in the object list.
 
 	For each zone in the object list, the model requests HeatingControlValue and CoolingControlValue quantities, that
 	are provided by thermostat models. Also, it retrieves the zone's net floor area and computed together with
