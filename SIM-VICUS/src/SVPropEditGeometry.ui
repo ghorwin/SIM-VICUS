@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1739</width>
+    <width>1163</width>
     <height>1111</height>
    </rect>
   </property>
@@ -736,18 +736,11 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QPushButton" name="pushButtonCopySurfaces">
+             <widget class="QPushButton" name="pushButtonCopyBuilding">
               <property name="text">
-               <string>Surfaces</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pushButtonCopyRooms">
-              <property name="text">
-               <string>Rooms</string>
+               <string>Buildings</string>
               </property>
              </widget>
             </item>
@@ -759,9 +752,23 @@
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="pushButtonCopyBuilding">
+             <widget class="QPushButton" name="pushButtonCopyRooms">
               <property name="text">
-               <string>Buildings</string>
+               <string>Rooms</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonCopySurfaces">
+              <property name="text">
+               <string>Surfaces</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushButtonCopySubSurfaces">
+              <property name="text">
+               <string>Sub Surfaces</string>
               </property>
              </widget>
             </item>

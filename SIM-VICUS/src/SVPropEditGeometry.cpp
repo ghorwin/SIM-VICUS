@@ -48,9 +48,11 @@
 #include "SVUndoAddZone.h"
 #include "SVUndoCopyZones.h"
 #include "SVUndoCopySurfaces.h"
+#include "SVUndoCopySubSurfaces.h"
 #include "SVPropVertexListWidget.h"
 #include "SVGeometryView.h"
 #include "SVPropAddWindowWidget.h"
+#include "SVLocalCoordinateView.h"
 
 #include "Vic3DNewGeometryObject.h"
 #include "Vic3DCoordinateSystemObject.h"
@@ -347,6 +349,7 @@ void SVPropEditGeometry::scale() {
 
 	if (scale == IBKMK::Vector3D())
 		return;
+	QVector3D transLCSO = SVViewStateHandler::instance().m_coordinateSystemObject->translation();
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
@@ -389,6 +392,7 @@ void SVPropEditGeometry::scale() {
 	undo->push();
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(transLCSO);
 }
 
 
@@ -512,10 +516,13 @@ void SVPropEditGeometry::updateUi() {
 	m_selSurfaces.clear();
 	m_selRooms.clear();
 	m_selSubSurfaces.clear();
+	m_selBuildings.clear();
+	m_selBuildingLevels.clear();
 
 	m_subSurfNames.clear();
 	m_surfNames.clear();
-	m_subSurfNames.clear();
+	m_buildingNames.clear();
+	m_buildingLevelNames.clear();
 
 
 	// process all selected objects and sort them into vectors
@@ -538,14 +545,26 @@ void SVPropEditGeometry::updateUi() {
 			if (sub->m_selected && sub->m_visible)
 				m_selSubSurfaces.push_back(sub);
 		}
+		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel *>(o);
+		if (bl != nullptr ) {
+			m_buildingLevelNames.insert(bl->m_displayName );
+			if (bl->m_selected && bl->m_visible)
+				m_selBuildingLevels.push_back(bl);
+		}
+		const VICUS::Building * b = dynamic_cast<const VICUS::Building *>(o);
+		if (b != nullptr ) {
+			m_subSurfNames.insert(b->m_displayName );
+			if (b->m_selected && b->m_visible)
+				m_selBuildings.push_back(b);
+		}
 	}
 
 	// enable copy functions only if respective objects are selected
 	m_ui->pushButtonCopySurfaces->setEnabled(!m_selSurfaces.empty());
 	m_ui->pushButtonCopyRooms->setEnabled(!m_selRooms.empty());
 	// TODO Stephan
-//	m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
-//	m_ui->pushButtonCopyBuilding->setEnabled(false);
+	m_ui->pushButtonCopyBuildingLevels->setEnabled(!m_selBuildingLevels.empty());
+	m_ui->pushButtonCopyBuilding->setEnabled(!m_selBuildings.empty());
 
 	// handling if surfaces are selected
 	if (!m_selSurfaces.empty()) {
@@ -1103,17 +1122,44 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
 					QVector3D  scale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
 					// compute offset from current local coordinate system position
+					const Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+
+					QVector3D lcsTrans = cso->translation();
 
 					QVector3D newScale;
 					if (m_useLocalCoordOrientation) {
-						const Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-						const QQuaternion &q = cso->transform().rotation();
-						scale = q*scale;
+//						const QQuaternion &q = cso->transform().rotation();
+//						scale = q*scale;
+						scale.setX( scale.x() - 1 );
+						scale.setY( scale.y() - 1 );
+						scale.setZ( scale.z() - 1 );
+
+						newScale.setX( ( m_boundingBoxDimension.m_x
+									   + scale.x() * cso->localXAxis().x()
+									   + scale.y() * cso->localYAxis().x()
+									   + scale.z() * cso->localZAxis().x() ) /
+									   m_boundingBoxDimension.m_x );
+
+						newScale.setY( ( m_boundingBoxDimension.m_y
+									   + scale.x() * cso->localXAxis().y()
+									   + scale.y() * cso->localYAxis().y()
+									   + scale.z() * cso->localZAxis().y() ) /
+										m_boundingBoxDimension.m_y );
+
+						newScale.setZ( ( m_boundingBoxDimension.m_z
+									   + scale.x() * cso->localXAxis().z()
+									   + scale.y() * cso->localYAxis().z()
+									   + scale.z() * cso->localZAxis().z() ) /
+									   m_boundingBoxDimension.m_z );
+
+
+						scale = newScale;
+
 					}
 
 
 					Vic3D::Transform3D scaling;
-					scaling.setScale(newScale);
+					scaling.setScale(scale);
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
@@ -1131,6 +1177,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+
 				} break;
 
 			}
@@ -1734,4 +1781,93 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 void SVPropEditGeometry::on_toolButtonLocalCoordinateOrentation_clicked(bool checked) {
 	m_ui->toolButtonLocalCoordinateOrentation->setChecked(checked);
 	m_useLocalCoordOrientation = checked;
+}
+
+void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
+
+	// now create a vector for the new surfaces
+	std::vector<VICUS::SubSurface> newSubSurfaces;
+	std::set<unsigned int> deselectedSubSurfaceUniqueIDs;
+
+	// this map stores the old vs. new ID association, needed for copying component instance
+	std::map<unsigned int, unsigned int> oldNewIDMap;
+
+
+	for ( unsigned int i = 0; i<m_selSubSurfaces.size(); ++i ) {
+
+		// we now copy our sub surface --> means we copy the object itself
+		// and we update the 2D Geometry of it
+		// also we have to update the sub surface component instance
+		// There you go then
+
+		const VICUS::SubSurface &subSurf = *m_selSubSurfaces[i];
+
+		deselectedSubSurfaceUniqueIDs.insert(subSurf.uniqueID());
+
+		VICUS::SubSurface newSubSurf = subSurf.clone(); // clone the object with an unique ID
+		newSubSurf.m_displayName = VICUS::uniqueName(subSurf.m_displayName, m_subSurfNames); // get a unique name back
+		// update 2D Coordinates
+		// How are we going to do this?
+		Q_ASSERT(newSubSurf.m_parent != nullptr);
+
+		const VICUS::Surface *surf = dynamic_cast<VICUS::Surface*>(newSubSurf.m_parent);
+
+		IBKMK::Vector3D offset3d = dynamic_cast<VICUS::Surface*>(newSubSurf.m_parent)->geometry().polygon().vertexes()[0];
+		IBKMK::Vector2D offset2d = newSubSurf.offset();
+
+		std::vector<IBKMK::Vector2D> newVertexes (subSurf.m_polygon2D.vertexes().size() );
+
+		for ( unsigned int j = 0; j<newSubSurf.m_polygon2D.vertexes().size(); ++j ) {
+			IBKMK::Vector2D v = newSubSurf.m_polygon2D.vertexes()[j];
+
+			// first we calc the 3D Point
+			// then we transform it
+			// and finally we project it onto our plane
+			// so that our window is always in our plane
+
+			// 1) Calc 3D Point
+			IBKMK::Vector3D p = offset3d	+ v.m_x * surf->geometry().localX()
+											+ v.m_y * surf->geometry().localY()	+ m_translation;
+			IBKMK::planeCoordinates(offset3d, surf->geometry().localX(), surf->geometry().localY(), p, newVertexes[j].m_x, newVertexes[j].m_y);
+
+		}
+
+		newSubSurf.m_polygon2D.setVertexes(newVertexes);
+
+
+		newSubSurfaces.push_back(newSubSurf);
+
+	}
+
+	std::vector<VICUS::SubSurfaceComponentInstance> newSubSurfaceComponentInstances;
+	std::vector<unsigned int> compInstanceIDs;
+	// TODO Stephan, also copy sub-surface component instances
+	// process all existing component instances
+	for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+		// we create a copy of the component instance
+		bool leftSideUsed =
+				(ci.m_idSideASurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideASurface) ) );
+		bool rightSideUsed =
+				(ci.m_idSideBSurface != VICUS::INVALID_ID &&
+					( VICUS::contains(m_selSubSurfaces, ci.m_idSideBSurface) ) );
+
+		// skip unrelated component instances
+		if (!leftSideUsed && !rightSideUsed)
+			continue;
+
+		// create copy of CI
+		VICUS::SubSurfaceComponentInstance newCi;
+		newCi.m_id = VICUS::uniqueId(compInstanceIDs);
+		compInstanceIDs.push_back(newCi.m_id);
+		newCi.m_idSubSurfaceComponent = ci.m_idSubSurfaceComponent;
+		if (leftSideUsed)
+			newCi.m_idSideASurface = oldNewIDMap[ci.m_idSideASurface];
+		if (rightSideUsed)
+			newCi.m_idSideBSurface = oldNewIDMap[ci.m_idSideBSurface];
+		newSubSurfaceComponentInstances.push_back(newCi);
+	}
+
+	SVUndoCopySubSurfaces *undo = new SVUndoCopySubSurfaces("Copied Sub Surfaces.", newSubSurfaces, deselectedSubSurfaceUniqueIDs, newSubSurfaceComponentInstances);
+	undo->push();
 }

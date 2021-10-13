@@ -225,6 +225,8 @@ private slots:
 
 	void on_toolButtonLocalCoordinateOrentation_clicked(bool checked);
 
+	void on_pushButtonCopySubSurfaces_clicked();
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
