@@ -800,6 +800,22 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			p.m_outputs.m_definitions.push_back(od);
 		}
 
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "IdealHeatingLoad";
+			od.m_objectListName = objectListAllZones;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+		{
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "IdealCoolingLoad";
+			od.m_objectListName = objectListAllZones;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
 		// and also generate the needed object lists
 		{
 			NANDRAD::ObjectList ol;
