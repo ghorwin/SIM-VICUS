@@ -455,12 +455,14 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 						}
 
 						// apply
-						if (m_lastZetaControlled > 0) {
-							double zetaDerivMax = 1e5; // max change/s
-							double timeStep = m_currTimePoint - m_lastTimePoint;
-							double zetaDeriv = (zetaControlled - m_lastZetaControlled) / timeStep;
+						if (m_zetaControlledLast > 0) {
+							double zetaDerivMax = 1e5; // max change per s
+							double timeStep = m_timePointCurrent - m_timePointLast;
+							double zetaDeriv = (zetaControlled - m_zetaControlledLast) / timeStep;
 							if (zetaDeriv > zetaDerivMax)
-								zetaControlled = m_lastZetaControlled + zetaDerivMax * timeStep;
+								zetaControlled = m_zetaControlledLast + zetaDerivMax * timeStep;
+							else if (zetaDeriv < -zetaDerivMax)
+								zetaControlled = m_zetaControlledLast - zetaDerivMax * timeStep;
 						}
 
 
@@ -553,13 +555,13 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 void HNPressureLossCoeffElement::stepCompleted(double t)
 {
-	m_lastTimePoint = t;
-	m_lastZetaControlled = m_zetaControlled;
+	m_timePointLast = t;
+	m_zetaControlledLast = m_zetaControlled;
 }
 
 int HNPressureLossCoeffElement::setTime(double t)
 {
-	m_currTimePoint = t;
+	m_timePointCurrent = t;
 	return 0;
 }
 

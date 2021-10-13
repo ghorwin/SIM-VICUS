@@ -172,9 +172,9 @@ public:
 
 private:
 
-	double				m_lastTimePoint = 0;
-	double				m_currTimePoint = 0;
-	double				m_lastZetaControlled = 0;
+	double				m_timePointLast = 0;
+	double				m_timePointCurrent = 0;
+	double				m_zetaControlledLast = 0;
 
 
 	/*! Computes the controlled zeta-value if a control-model is implemented.
