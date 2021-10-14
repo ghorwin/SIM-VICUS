@@ -23,7 +23,7 @@
 
 # Require a fairly recent cmake version
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1...3.10)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8...3.10)
 
 # Set CMake policy to allow examples to build
 if(COMMAND cmake_policy)

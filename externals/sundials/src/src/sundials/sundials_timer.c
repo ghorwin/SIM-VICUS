@@ -45,7 +45,7 @@ void TimerStart(int idx) {
 #if defined(_WIN32)
   /* Windows */
   if (performanceFrequency_.QuadPart == 0)
-	QueryPerformanceFrequency(&performanceFrequency_);
+        QueryPerformanceFrequency(&performanceFrequency_);
 
   QueryPerformanceCounter(timerStartValues_ + idx);
 
@@ -66,7 +66,7 @@ realtype TimerStop(int idx) {
   LARGE_INTEGER secs;
 
   if (timerDifference_[idx] != 0)
-	return timerDifference_[idx];
+        return timerDifference_[idx];
 
   QueryPerformanceCounter(timerStopValues_ + idx);
   secs.QuadPart = timerStopValues_[idx].QuadPart - timerStartValues_[idx].QuadPart;

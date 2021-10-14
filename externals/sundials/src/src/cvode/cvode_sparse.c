@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4075 $
  * $Date: 2014-04-24 10:46:58 -0700 (Thu, 24 Apr 2014) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Carol S. Woodward @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -19,7 +19,7 @@
  * -----------------------------------------------------------------
  */
 
-/* 
+/*
  * =================================================================
  * IMPORTED HEADER FILES
  * =================================================================
@@ -32,7 +32,7 @@
 #include "cvode_sparse_impl.h"
 #include <sundials/sundials_math.h>
 
-/* 
+/*
  * =================================================================
  * FUNCTION SPECIFIC CONSTANTS
  * =================================================================
@@ -42,12 +42,12 @@
 #define ONE          RCONST(1.0)
 #define TWO          RCONST(2.0)
 
-/* 
+/*
  * =================================================================
  * EXPORTED FUNCTIONS FOR IMPLICIT INTEGRATION
  * =================================================================
  */
-              
+
 /*
  * CVSlsSetSparseJacFn specifies the sparse Jacobian function.
  */
@@ -58,15 +58,15 @@ int CVSlsSetSparseJacFn(void *cvode_mem, CVSlsSparseJacFn jac)
 
   /* Return immediately if cvode_mem is NULL */
   if (cvode_mem == NULL) {
-    cvProcessError(NULL, CVSLS_MEM_NULL, "CVSLS", "CVSlsSetSparseJacFn", 
-		    MSGSP_CVMEM_NULL);
+    cvProcessError(NULL, CVSLS_MEM_NULL, "CVSLS", "CVSlsSetSparseJacFn",
+                    MSGSP_CVMEM_NULL);
     return(CVSLS_MEM_NULL);
   }
   cv_mem = (CVodeMem) cvode_mem;
 
   if (cv_mem->cv_lmem == NULL) {
-    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS", 
-		    "CVSlsSetSparseJacFn", MSGSP_LMEM_NULL);
+    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS",
+                    "CVSlsSetSparseJacFn", MSGSP_LMEM_NULL);
     return(CVSLS_LMEM_NULL);
   }
   cvsls_mem = (CVSlsMem) cv_mem->cv_lmem;
@@ -92,8 +92,8 @@ int CVSlsGetNumJacEvals(void *cvode_mem, long int *njevals)
   cv_mem = (CVodeMem) cvode_mem;
 
   if (cv_mem->cv_lmem == NULL) {
-    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS", 
-		    "CVSlsGetNumJacEvals", MSGSP_LMEM_NULL);
+    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS",
+                    "CVSlsGetNumJacEvals", MSGSP_LMEM_NULL);
     return(CVSLS_LMEM_NULL);
   }
   cvsls_mem = (CVSlsMem) cv_mem->cv_lmem;
@@ -116,7 +116,7 @@ char *CVSlsGetReturnFlagName(long int flag)
   switch(flag) {
   case CVSLS_SUCCESS:
     sprintf(name,"CVSLS_SUCCESS");
-    break;   
+    break;
   case CVSLS_MEM_NULL:
     sprintf(name,"CVSLS_MEM_NULL");
     break;
@@ -155,15 +155,15 @@ int CVSlsGetLastFlag(void *cvode_mem, long int *flag)
 
   /* Return immediately if cvode_mem is NULL */
   if (cvode_mem == NULL) {
-    cvProcessError(NULL, CVSLS_MEM_NULL, "CVSLS", "CVSlsGetLastFlag", 
-		    MSGSP_CVMEM_NULL);
+    cvProcessError(NULL, CVSLS_MEM_NULL, "CVSLS", "CVSlsGetLastFlag",
+                    MSGSP_CVMEM_NULL);
     return(CVSLS_MEM_NULL);
   }
   cv_mem = (CVodeMem) cvode_mem;
 
   if (cv_mem->cv_lmem == NULL) {
-    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS", 
-		    "CVSlsGetLastFlag", MSGSP_LMEM_NULL);
+    cvProcessError(cv_mem, CVSLS_LMEM_NULL, "CVSLS",
+                    "CVSlsGetLastFlag", MSGSP_LMEM_NULL);
     return(CVSLS_LMEM_NULL);
   }
   cvsls_mem = (CVSlsMem) cv_mem->cv_lmem;

@@ -47,12 +47,12 @@
 /* Prototypes for functions KINBBDPrecSetup and KINBBDPrecSolve */
 
 static int KINBBDPrecSetup(N_Vector uu, N_Vector uscale,
-                           N_Vector fval, N_Vector fscale, 
+                           N_Vector fval, N_Vector fscale,
                            void *p_data,
                            N_Vector vtemp1, N_Vector vtemp2);
 
 static int KINBBDPrecSolve(N_Vector uu, N_Vector uscale,
-                           N_Vector fval, N_Vector fscale, 
+                           N_Vector fval, N_Vector fscale,
                            N_Vector vv, void *p_data,
                            N_Vector vtemp);
 
@@ -88,10 +88,10 @@ static int KBBDDQJac(KBBDPrecData pdata,
  *-----------------------------------------------------------------
  */
 
-int KINBBDPrecInit(void *kinmem, long int Nlocal, 
+int KINBBDPrecInit(void *kinmem, long int Nlocal,
                    long int mudq, long int mldq,
                    long int mukeep, long int mlkeep,
-                   realtype dq_rel_uu, 
+                   realtype dq_rel_uu,
                    KINLocalFn gloc, KINCommFn gcomm)
 {
   KBBDPrecData pdata;
@@ -237,7 +237,7 @@ int KINBBDPrecGetWorkSpace(void *kinmem, long int *lenrwBBDP, long int *leniwBBD
   if (kinspils_mem->s_P_data == NULL) {
     KINProcessError(kin_mem, KINSPILS_PMEM_NULL, "KINBBDPRE", "KINBBDPrecGetWorkSpace", MSGBBD_PMEM_NULL);
     return(KINSPILS_PMEM_NULL);
-  } 
+  }
   pdata = (KBBDPrecData) kinspils_mem->s_P_data;
 
   *lenrwBBDP = pdata->rpwsize;
@@ -273,7 +273,7 @@ int KINBBDPrecGetNumGfnEvals(void *kinmem, long int *ngevalsBBDP)
   if (kinspils_mem->s_P_data == NULL) {
     KINProcessError(kin_mem, KINSPILS_PMEM_NULL, "KINBBDPRE", "KINBBDPrecGetNumGfnEvals", MSGBBD_PMEM_NULL);
     return(KINSPILS_PMEM_NULL);
-  } 
+  }
   pdata = (KBBDPrecData) kinspils_mem->s_P_data;
 
   *ngevalsBBDP = pdata->nge;
@@ -286,7 +286,7 @@ int KINBBDPrecGetNumGfnEvals(void *kinmem, long int *ngevalsBBDP)
  * preconditioner setup and solve functions
  *-----------------------------------------------------------------
  */
- 
+
 /*
  *-----------------------------------------------------------------
  * readability replacements
@@ -345,7 +345,7 @@ int KINBBDPrecGetNumGfnEvals(void *kinmem, long int *ngevalsBBDP)
  */
 
 static int KINBBDPrecSetup(N_Vector uu, N_Vector uscale,
-                           N_Vector fval, N_Vector fscale, 
+                           N_Vector fval, N_Vector fscale,
                            void *bbd_data,
                            N_Vector vtemp1, N_Vector vtemp2)
 {
@@ -413,7 +413,7 @@ static int KINBBDPrecSetup(N_Vector uu, N_Vector uscale,
  */
 
 static int KINBBDPrecSolve(N_Vector uu, N_Vector uscale,
-                           N_Vector fval, N_Vector fscale, 
+                           N_Vector fval, N_Vector fscale,
                            N_Vector vv, void *bbd_data,
                            N_Vector vtemp)
 {
@@ -438,7 +438,7 @@ static int KINBBDPrecFree(KINMem kin_mem)
 
   if (kin_mem->kin_lmem == NULL) return(0);
   kinspils_mem = (KINSpilsMem) kin_mem->kin_lmem;
-  
+
   if (kinspils_mem->s_P_data == NULL) return(0);
   pdata = (KBBDPrecData) kinspils_mem->s_P_data;
 
@@ -512,16 +512,16 @@ static int KBBDDQJac(KBBDPrecData pdata,
   ngroups = SUNMIN(width, Nlocal);
 
   /* loop over groups */
-  
+
   for (group = 1; group <= ngroups; group++) {
-  
+
     /* increment all u_j in group */
 
     for(j = group - 1; j < Nlocal; j += width) {
       inc = rel_uu * SUNMAX(SUNRabs(udata[j]), (ONE / uscdata[j]));
       utempdata[j] += inc;
     }
-  
+
     /* evaluate g with incremented u */
 
     retval = gloc(Nlocal, utemp, gtemp, user_data);
@@ -537,7 +537,7 @@ static int KBBDDQJac(KBBDPrecData pdata,
       i1 = SUNMAX(0, (j - mukeep));
       i2 = SUNMIN((j + mlkeep), (Nlocal - 1));
       for (i = i1; i <= i2; i++)
-	BAND_COL_ELEM(col_j, i, j) = inc_inv * (gtempdata[i] - gudata[i]);
+        BAND_COL_ELEM(col_j, i, j) = inc_inv * (gtempdata[i] - gudata[i]);
     }
   }
 

@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4378 $
  * $Date: 2015-02-19 10:55:14 -0800 (Thu, 19 Feb 2015) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer: Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -35,9 +35,9 @@ extern "C" {
  * =================================================================
  */
 
-/* 
+/*
  * -----------------------------------------------------------------
- * CVDLS return values 
+ * CVDLS return values
  * -----------------------------------------------------------------
  */
 
@@ -63,14 +63,14 @@ extern "C" {
  * Type: CVDlsDenseJacFn
  * -----------------------------------------------------------------
  *
- * A dense Jacobian approximation function Jac must be of type 
+ * A dense Jacobian approximation function Jac must be of type
  * CVDlsDenseJacFn. Its parameters are:
  *
  * N   is the problem size.
  *
  * Jac is the dense matrix (of type DlsMat) that will be loaded
- *     by a CVDlsDenseJacFn with an approximation to the Jacobian 
- *     matrix J = (df_i/dy_j) at the point (t,y). 
+ *     by a CVDlsDenseJacFn with an approximation to the Jacobian
+ *     matrix J = (df_i/dy_j) at the point (t,y).
  *
  * t   is the current value of the independent variable.
  *
@@ -86,49 +86,49 @@ extern "C" {
  * vectors of length N which can be used by a CVDlsDenseJacFn
  * as temporary storage or work space.
  *
- * A CVDlsDenseJacFn should return 0 if successful, a positive 
- * value if a recoverable error occurred, and a negative value if 
+ * A CVDlsDenseJacFn should return 0 if successful, a positive
+ * value if a recoverable error occurred, and a negative value if
  * an unrecoverable error occurred.
  *
  * -----------------------------------------------------------------
  *
- * NOTE: The following are two efficient ways to load a dense Jac:         
- * (1) (with macros - no explicit data structure references)      
- *     for (j=0; j < Neq; j++) {                                  
- *       col_j = DENSE_COL(Jac,j);                                 
- *       for (i=0; i < Neq; i++) {                                
- *         generate J_ij = the (i,j)th Jacobian element           
- *         col_j[i] = J_ij;                                       
- *       }                                                        
- *     }                                                          
- * (2) (without macros - explicit data structure references)      
- *     for (j=0; j < Neq; j++) {                                  
- *       col_j = (Jac->data)[j];                                   
- *       for (i=0; i < Neq; i++) {                                
- *         generate J_ij = the (i,j)th Jacobian element           
- *         col_j[i] = J_ij;                                       
- *       }                                                        
- *     }                                                          
- * A third way, using the DENSE_ELEM(A,i,j) macro, is much less   
- * efficient in general.  It is only appropriate for use in small 
- * problems in which efficiency of access is NOT a major concern. 
- *                                                                
- * NOTE: If the user's Jacobian routine needs other quantities,   
+ * NOTE: The following are two efficient ways to load a dense Jac:
+ * (1) (with macros - no explicit data structure references)
+ *     for (j=0; j < Neq; j++) {
+ *       col_j = DENSE_COL(Jac,j);
+ *       for (i=0; i < Neq; i++) {
+ *         generate J_ij = the (i,j)th Jacobian element
+ *         col_j[i] = J_ij;
+ *       }
+ *     }
+ * (2) (without macros - explicit data structure references)
+ *     for (j=0; j < Neq; j++) {
+ *       col_j = (Jac->data)[j];
+ *       for (i=0; i < Neq; i++) {
+ *         generate J_ij = the (i,j)th Jacobian element
+ *         col_j[i] = J_ij;
+ *       }
+ *     }
+ * A third way, using the DENSE_ELEM(A,i,j) macro, is much less
+ * efficient in general.  It is only appropriate for use in small
+ * problems in which efficiency of access is NOT a major concern.
+ *
+ * NOTE: If the user's Jacobian routine needs other quantities,
  *     they are accessible as follows: hcur (the current stepsize)
- *     and ewt (the error weight vector) are accessible through   
- *     CVodeGetCurrentStep and CVodeGetErrWeights, respectively 
- *     (see cvode.h). The unit roundoff is available as 
+ *     and ewt (the error weight vector) are accessible through
+ *     CVodeGetCurrentStep and CVodeGetErrWeights, respectively
+ *     (see cvode.h). The unit roundoff is available as
  *     UNIT_ROUNDOFF defined in sundials_types.h.
  *
  * -----------------------------------------------------------------
  */
-  
-  
+
+
 typedef int (*CVDlsDenseJacFn)(long int N, realtype t,
-			       N_Vector y, N_Vector fy, 
+			       N_Vector y, N_Vector fy,
 			       DlsMat Jac, void *user_data,
 			       N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
-  
+
 /*
  * -----------------------------------------------------------------
  * Type: CVDlsBandJacFn
@@ -206,13 +206,13 @@ typedef int (*CVDlsDenseJacFn)(long int N, realtype t,
  * as temporary storage or work space.
  *
  * A CVDlsBandJacFn should return 0 if successful, a positive value
- * if a recoverable error occurred, and a negative value if an 
+ * if a recoverable error occurred, and a negative value if an
  * unrecoverable error occurred.
  * -----------------------------------------------------------------
  */
 
 typedef int (*CVDlsBandJacFn)(long int N, long int mupper, long int mlower,
-			      realtype t, N_Vector y, N_Vector fy, 
+			      realtype t, N_Vector y, N_Vector fy,
 			      DlsMat Jac, void *user_data,
 			      N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 
@@ -222,15 +222,15 @@ typedef int (*CVDlsBandJacFn)(long int N, long int mupper, long int mlower,
  * Type: CVDlsBTridiagJacFn
  * -----------------------------------------------------------------
  *
- * A block-tridiagonal Jacobian approximation function Jac must 
+ * A block-tridiagonal Jacobian approximation function Jac must
  * have the prototype given below. Its parameters are:
  *
- * N is the length of all vector arguments, and equal to 
+ * N is the length of all vector arguments, and equal to
  *   Jac->N*Jac->M
  *
  * Jac->N    is the block-based dimension of the Jacobian matrix.
  *
- * Jac->M    is the dimension of the blocks, the blocks are 
+ * Jac->M    is the dimension of the blocks, the blocks are
  *           matricies of dimension Jac->M*Jac->M.
  *
  * t is the current value of the independent variable.
@@ -241,7 +241,7 @@ typedef int (*CVDlsBandJacFn)(long int N, long int mupper, long int mlower,
  * fy is the vector f(t,y).
  *
  * Jac is the band matrix (of type DlsMat) that will be loaded
- *     by a CVDlsBTridiagJacFn with an approximation to the 
+ *     by a CVDlsBTridiagJacFn with an approximation to the
  *     Jacobian matrix Jac = (df_i/dy_j) at the point (t,y).
  *     Three ways to load J are:
  *     (1) using access macros BTRIDIAG_ELEM(A,i,j)
@@ -270,23 +270,23 @@ typedef int (*CVDlsBandJacFn)(long int N, long int mupper, long int mlower,
  *       UNIT_ROUNDOFF defined in sundials_types.h
  *
  * tmp1, tmp2, and tmp3 are pointers to memory allocated for
- * vectors of length nb*blocksize which can be used by a 
+ * vectors of length nb*blocksize which can be used by a
  * CVDlsBTridiagJacFn as temporary storage or work space.
  *
  * A CVDlsBTridiagJacFn should return 0 if successful, a positive value
- * if a recoverable error occurred, and a negative value if an 
+ * if a recoverable error occurred, and a negative value if an
  * unrecoverable error occurred.
  * -----------------------------------------------------------------
  */
 
-typedef int (*CVDlsBTridiagJacFn)(long int N, realtype t, 
-          N_Vector y, N_Vector fy, 
+typedef int (*CVDlsBTridiagJacFn)(long int N, realtype t,
+          N_Vector y, N_Vector fy,
           DlsMat Jac, void *user_data,
           N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 
 /*
  * =================================================================
- *            E X P O R T E D    F U N C T I O N S 
+ *            E X P O R T E D    F U N C T I O N S
  * =================================================================
  */
 
@@ -344,7 +344,7 @@ SUNDIALS_EXPORT int CVDlsGetLastFlag(void *cvode_mem, long int *flag);
 
 /*
  * -----------------------------------------------------------------
- * The following function returns the name of the constant 
+ * The following function returns the name of the constant
  * associated with a CVDLS return flag
  * -----------------------------------------------------------------
  */

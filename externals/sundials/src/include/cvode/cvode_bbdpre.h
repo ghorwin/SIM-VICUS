@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4378 $
  * $Date: 2015-02-19 10:55:14 -0800 (Thu, 19 Feb 2015) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Michael Wittman, Alan C. Hindmarsh and
  *                Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -18,7 +18,7 @@
  * -----------------------------------------------------------------
  * This is the header file for the CVBBDPRE module, for a
  * band-block-diagonal preconditioner, i.e. a block-diagonal
- * matrix with banded blocks, for use with CVSPGMR/CVSPBCG/CVSPTFQMR, 
+ * matrix with banded blocks, for use with CVSPGMR/CVSPBCG/CVSPTFQMR,
  * and the parallel implementation of the NVECTOR module.
  *
  * Summary:
@@ -59,7 +59,7 @@
  *   ier = CVode(...);
  *   ...
  *   CVodeFree(&cvode_mem);
- * 
+ *
  *   Free y0
  *
  * The user-supplied routines required are:
@@ -133,8 +133,8 @@ extern "C" {
  * The user_data parameter is the same as that specified by the user
  * through the CVodeSetFdata routine.
  *
- * A CVLocalFn should return 0 if successful, a positive value if 
- * a recoverable error occurred, and a negative value if an 
+ * A CVLocalFn should return 0 if successful, a positive value if
+ * a recoverable error occurred, and a negative value if an
  * unrecoverable error occurred.
  * -----------------------------------------------------------------
  */
@@ -164,8 +164,8 @@ typedef int (*CVLocalFn)(long int Nlocal, realtype t, N_Vector y,
  * If all necessary communication was done by f, the user can
  * pass NULL for cfn in CVBBDPrecInit (see below).
  *
- * A CVCommFn should return 0 if successful, a positive value if 
- * a recoverable error occurred, and a negative value if an 
+ * A CVCommFn should return 0 if successful, a positive value if
+ * a recoverable error occurred, and a negative value if an
  * unrecoverable error occurred.
  * -----------------------------------------------------------------
  */
@@ -216,9 +216,9 @@ typedef int (*CVCommFn)(long int Nlocal, realtype t, N_Vector y,
  * -----------------------------------------------------------------
  */
 
-SUNDIALS_EXPORT int CVBBDPrecInit(void *cvode_mem, long int Nlocal, 
-                                  long int mudq, long int mldq, 
-                                  long int mukeep, long int mlkeep, 
+SUNDIALS_EXPORT int CVBBDPrecInit(void *cvode_mem, long int Nlocal,
+                                  long int mudq, long int mldq,
+                                  long int mukeep, long int mlkeep,
                                   realtype dqrely,
                                   CVLocalFn gloc, CVCommFn cfn);
 
@@ -228,9 +228,9 @@ SUNDIALS_EXPORT int CVBBDPrecInit(void *cvode_mem, long int Nlocal,
  * -----------------------------------------------------------------
  * CVBBDPrecReInit re-initializes the BBDPRE module when solving a
  * sequence of problems of the same size with CVSPGMR/CVBBDPRE or
- * CVSPBCG/CVBBDPRE or CVSPTFQMR/CVBBDPRE provided there is no change 
- * in Nlocal, mukeep, or mlkeep. After solving one problem, and after 
- * calling CVodeReInit to re-initialize the integrator for a subsequent 
+ * CVSPBCG/CVBBDPRE or CVSPTFQMR/CVBBDPRE provided there is no change
+ * in Nlocal, mukeep, or mlkeep. After solving one problem, and after
+ * calling CVodeReInit to re-initialize the integrator for a subsequent
  * problem, call CVBBDPrecReInit.
  *
  * All arguments have the same names and meanings as those
@@ -245,7 +245,7 @@ SUNDIALS_EXPORT int CVBBDPrecInit(void *cvode_mem, long int Nlocal,
  */
 
 SUNDIALS_EXPORT int CVBBDPrecReInit(void *cvode_mem, long int mudq, long int mldq,
-				    realtype dqrely);
+                                    realtype dqrely);
 
 /*
  * -----------------------------------------------------------------

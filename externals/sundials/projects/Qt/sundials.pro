@@ -126,7 +126,7 @@ contains( OPTIONS, lapack ) {
 }
 
 contains( OPTIONS, openmp ) {
-		HEADERS += 	../../src/include/nvector/nvector_openmp.h
-		SOURCES += 	../../src/src/nvec_openmp/nvector_openmp.c
+		HEADERS += 
+		SOURCES += 
 		message(Enabling OpenMP in Sundials)
 }
