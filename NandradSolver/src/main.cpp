@@ -49,9 +49,9 @@ const char * const PROGRAM_INFO =
 int main(int argc, char * argv[]) {
 	FUNCID(main);
 
-#ifdef WIN32
+#ifdef _WIN32
 	IBK::WaitOnExit wait;			// windows: default - wait
-#endif //WIN32
+#endif //_WIN32
 
 	try {
 		// a stopwatch to measure time needed for solver initialization
@@ -61,10 +61,10 @@ int main(int argc, char * argv[]) {
 		NANDRAD::ArgsParser args;
 		args.parse(argc, argv);
 
-#ifdef WIN32
+#ifdef _WIN32
 		// on windows, flag is interpreted as "close window at simulation end when flag is given"
 		wait.m_wait = !args.flagEnabled(IBK::SolverArgsParser::DO_CLOSE_ON_EXIT);
-#endif //WIN32
+#endif //_WIN32
 
 		// handle default arguments like help and man-page requests, which are printed to std::cout
 		if (args.handleDefaultFlags(std::cout))

@@ -77,7 +77,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 
 	// for now set the defaults states hard-coded, later this should be read from stored settings
 	m_ui->comboBoxVerboseLevel->setCurrentIndex(1);
-#ifdef WIN32
+#ifdef _WIN32
 	m_ui->checkBoxCloseConsoleWindow->setChecked(true);
 	m_ui->labelTerminalEmulator->setVisible(false);
 	m_ui->comboBoxTermEmulator->setVisible(false);

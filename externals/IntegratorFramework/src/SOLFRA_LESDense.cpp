@@ -15,7 +15,6 @@
 
 #include <cvode/cvode_dense.h>
 #include <cvode/cvode_serialization.h>
-#include <ida/ida_dense.h>
 
 
 namespace SOLFRA {

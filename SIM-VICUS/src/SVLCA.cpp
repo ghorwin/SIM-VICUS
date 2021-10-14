@@ -314,7 +314,7 @@ void LCA::readDatabaseOekobautdat(const IBK::Path & filename)
 	std::vector<std::string> lines;
 
 	IBK::FileReader::readAll(filename, lines, std::vector<std::string>{"\n"});
-#if WIN32
+#if _WIN32
 	std::string testStr = IBK::ANSIToUTF8String(lines[0]);
 #else
 	std::string testStr = lines[0];
