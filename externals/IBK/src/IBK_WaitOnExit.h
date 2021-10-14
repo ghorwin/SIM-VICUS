@@ -73,9 +73,9 @@ public:
 		//          feature.
 		//          The best way to get such a functionality would be to call a wrapper shell script with
 		//          a subsequent wait for keypress command once the application is finished.
-#ifdef WIN32
+#ifdef _WIN32
 		if (m_wait) system("pause");
-#endif // WIN32
+#endif // _WIN32
 	}
 
 
