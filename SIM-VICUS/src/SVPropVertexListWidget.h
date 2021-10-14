@@ -27,6 +27,7 @@
 #define SVPropVertexListWidgetH
 
 #include <QWidget>
+#include <VICUS_PlaneGeometry.h>
 
 namespace Ui {
 	class SVPropVertexListWidget;
@@ -187,6 +188,11 @@ private:
 
 	/*! If true, user requested rotation of polygon. */
 	bool						m_polygonRotation = false;
+
+	/*! All points of the polyline are held here. When switching from Complex to other roof shapes,
+	 *   only the first three points are used.*/
+	std::vector<IBKMK::Vector3D>	m_roofPolygon;
+
 };
 
 
