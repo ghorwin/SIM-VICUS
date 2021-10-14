@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -214,7 +214,7 @@ SUNDIALS_EXPORT int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vec
 
 #define SPTFQMR_SUCCESS            0  /* SPTFQMR algorithm converged          */
 #define SPTFQMR_RES_REDUCED        1  /* SPTFQMR did NOT converge, but the
-				         residual was reduced                 */
+					 residual was reduced                 */
 #define SPTFQMR_CONV_FAIL          2  /* SPTFQMR algorithm failed to converge */
 #define SPTFQMR_PSOLVE_FAIL_REC    3  /* psolve failed recoverably            */
 #define SPTFQMR_ATIMES_FAIL_REC    4  /* atimes failed recoverably            */

@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4075 $
  * $Date: 2014-04-24 10:46:58 -0700 (Thu, 24 Apr 2014) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Carol S. Woodward @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -19,7 +19,7 @@
  * -----------------------------------------------------------------
  */
 
-/* 
+/*
  * =================================================================
  * IMPORTED HEADER FILES
  * =================================================================
@@ -32,7 +32,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* 
+/*
  * =================================================================
  * FUNCTION SPECIFIC CONSTANTS
  * =================================================================
@@ -42,12 +42,12 @@
 #define ONE          RCONST(1.0)
 #define TWO          RCONST(2.0)
 
-/* 
+/*
  * =================================================================
- * EXPORTED FUNCTIONS 
+ * EXPORTED FUNCTIONS
  * =================================================================
  */
-              
+
 /*
  * KINSlsSetSparseJacFn specifies the sparse Jacobian function.
  */
@@ -60,14 +60,14 @@ int KINSlsSetSparseJacFn(void *kin_mem_v, KINSlsSparseJacFn jac)
 
   /* Return immediately if kin_mem is NULL */
   if (kin_mem == NULL) {
-    KINProcessError(NULL, KINSLS_MEM_NULL, "KINSLS", "KINSlsSetSparseJacFn", 
-		    MSGSP_KINMEM_NULL);
+    KINProcessError(NULL, KINSLS_MEM_NULL, "KINSLS", "KINSlsSetSparseJacFn",
+                    MSGSP_KINMEM_NULL);
     return(KINSLS_MEM_NULL);
   }
 
   if (kin_mem->kin_lmem == NULL) {
-    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS", 
-		    "KINSlsSetSparseJacFn", MSGSP_LMEM_NULL);
+    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS",
+                    "KINSlsSetSparseJacFn", MSGSP_LMEM_NULL);
     return(KINSLS_LMEM_NULL);
   }
   kinsls_mem = (KINSlsMem) kin_mem->kin_lmem;
@@ -94,8 +94,8 @@ int KINSlsGetNumJacEvals(void *kin_mem_v, long int *njevals)
   }
 
   if (kin_mem->kin_lmem == NULL) {
-    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS", 
-		    "KINSlsGetNumJacEvals", MSGSP_LMEM_NULL);
+    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS",
+                    "KINSlsGetNumJacEvals", MSGSP_LMEM_NULL);
     return(KINSLS_LMEM_NULL);
   }
   kinsls_mem = (KINSlsMem) kin_mem->kin_lmem;
@@ -118,7 +118,7 @@ char *KINSlsGetReturnFlagName(long int flag)
   switch(flag) {
   case KINSLS_SUCCESS:
     sprintf(name,"KINSLS_SUCCESS");
-    break;   
+    break;
   case KINSLS_MEM_NULL:
     sprintf(name,"KINSLS_MEM_NULL");
     break;
@@ -159,14 +159,14 @@ int KINSlsGetLastFlag(void *kin_mem_v, long int *flag)
 
   /* Return immediately if kin_mem is NULL */
   if (kin_mem == NULL) {
-    KINProcessError(NULL, KINSLS_MEM_NULL, "KINSLS", "KINSlsGetLastFlag", 
-		    MSGSP_KINMEM_NULL);
+    KINProcessError(NULL, KINSLS_MEM_NULL, "KINSLS", "KINSlsGetLastFlag",
+                    MSGSP_KINMEM_NULL);
     return(KINSLS_MEM_NULL);
   }
 
   if (kin_mem->kin_lmem == NULL) {
-    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS", 
-		    "KINSlsGetLastFlag", MSGSP_LMEM_NULL);
+    KINProcessError(kin_mem, KINSLS_LMEM_NULL, "KINSLS",
+                    "KINSlsGetLastFlag", MSGSP_LMEM_NULL);
     return(KINSLS_LMEM_NULL);
   }
   kinsls_mem = (KINSlsMem) kin_mem->kin_lmem;

@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -186,7 +186,7 @@ int SpbcgSolve(SpbcgMem mem, void *A_data, N_Vector x, N_Vector b,
   else {
     SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_ATIMES,
       ier = atimes(A_data, x, r_star);
-	);
+        );
     if (ier != 0)
       return((ier < 0) ? SPBCG_ATIMES_FAIL_UNREC : SPBCG_ATIMES_FAIL_REC);
     N_VLinearSum(ONE, b, -ONE, r_star, r_star);
@@ -197,8 +197,8 @@ int SpbcgSolve(SpbcgMem mem, void *A_data, N_Vector x, N_Vector b,
   if (preOnLeft) {
     SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_PRE_SOLVE,
       ier = psolve(P_data, r_star, r, PREC_LEFT);
-	);
-	(*nps)++;
+        );
+        (*nps)++;
     if (ier != 0) return((ier < 0) ? SPBCG_PSOLVE_FAIL_UNREC : SPBCG_PSOLVE_FAIL_REC);
   }
   else N_VScale(ONE, r_star, r);
@@ -249,7 +249,7 @@ int SpbcgSolve(SpbcgMem mem, void *A_data, N_Vector x, N_Vector b,
 
     SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_ATIMES,
       ier = atimes(A_data, vtemp, Ap );
-	);
+        );
     if (ier != 0)
       return((ier < 0) ? SPBCG_ATIMES_FAIL_UNREC : SPBCG_ATIMES_FAIL_REC);
 
@@ -368,7 +368,7 @@ int SpbcgSolve(SpbcgMem mem, void *A_data, N_Vector x, N_Vector b,
     if (preOnRight) {
       SUNDIALS_TIMED_FUNCTION(SUNDIALS_TIMER_PRE_SOLVE,
         ier = psolve(P_data, x, vtemp, PREC_RIGHT);
-	  );
+          );
       (*nps)++;
       if (ier != 0) return((ier < 0) ? SPBCG_PSOLVE_FAIL_UNREC : SPBCG_PSOLVE_FAIL_REC);
       N_VScale(ONE, vtemp, x);
