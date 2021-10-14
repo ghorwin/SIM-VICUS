@@ -231,14 +231,13 @@ void SVPropNetworkEditWidget::updateNodeProperties() {
 		m_ui->lineEditNodeMaxHeatingDemand->clear();
 
 	// current sub network name
+	m_ui->labelSelectedSubNetwork->clear();
 	const SVDatabase & db = SVSettings::instance().m_db;
 	if (uniformProperty(m_currentNodes, &VICUS::NetworkNode::m_idSubNetwork)){
 		const VICUS::SubNetwork *subNet = db.m_subNetworks[m_currentNodes[0]->m_idSubNetwork];
 		if (subNet != nullptr)
 			m_ui->labelSelectedSubNetwork->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
 	}
-	else
-		m_ui->labelSelectedSubNetwork->clear();
 
 	//  *** Update hx properties
 	updateHeatExchangeProperties();

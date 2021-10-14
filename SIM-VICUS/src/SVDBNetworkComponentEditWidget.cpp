@@ -139,19 +139,19 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSchedule2->setEnabled(reqScheduleNames.size()==2);
 
 
-	// TODO: Hauke: what happens if the schedule or pipe was deleted and we get an nullptr?
-	// Ein assert reicht da wahrscheinlich nicht ....
-
-
 	// update Schedule names (based on existing schedules)
 	if (m_current->m_scheduleIds.size()>0){
-		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[0]] != nullptr);
-		m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
+		if (m_db->m_schedules[m_current->m_scheduleIds[0]] == nullptr)
+			m_ui->lineEditSchedule1->setText(tr("Invalid Schedule"));
+		else
+			m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
 											 m_db->m_schedules[m_current->m_scheduleIds[0]]->m_displayName));
 	}
 	if (m_current->m_scheduleIds.size()>1){
-		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[1]] != nullptr);
-		m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
+		if (m_db->m_schedules[m_current->m_scheduleIds[1]] == nullptr)
+			m_ui->lineEditSchedule2->setText(tr("Invalid Schedule"));
+		else
+			m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
 											 m_db->m_schedules[m_current->m_scheduleIds[1]]->m_displayName));
 	}
 
