@@ -791,9 +791,13 @@ Das `HeatLoadSummationModel` muss mit den folgenden XML-Attributen definiert wer
 | Attribut | Beschreibung | Format | Verwendung 
 | `id` | Kennung des Modells | {nbsp}>{nbsp}0{nbsp} | _erforderlich_
 | `displayName` | Anzeigename/Beschreibung | string | _optional_
+| `useZoneCoolingLoad` | für die SUmmation idealer Zonenlasten, 'true' für Kühllasten, 'false' für Heizlasten (default) = 'false'  | string | _optional_
 |====================
 
-Ein `HeatLoadSummationModel` summiert die Heiz- und Kühlleistung mehrerer Konstruktionen. Dafür identifiziert der Objektlisten-tag `ObjectList` die Konstruktion, deren Heizlast erfasst und summiert werden soll.
+Ein `HeatLoadSummationModel` summiert die idealen Heiz- oder Kühllasten mehrerer Räume, die Wärmelasten in Konstruktionen oder in hydraulische Netzwerke. Nur
+einer der Typen `Zone`, `ConstuctionInstance`, `Networkelement` ist dabei im Modell erlaubt. Dafür identifiziert der Objektlisten-tag `ObjectList` den Objekttyp und die 
+Auswahl von Räumen/Konstruktionen/Netzwerkelementen, deren Heizlast erfasst und summiert werden soll. Im Fall der idealen Raumbeheizung oder Raumkühlung
+ist durch die Option `useZoneCoolingLoad` die passende Lastart (Heizung oder Kühlung) auszuwählen.
 
 [NOTE]
 ====
@@ -806,7 +810,8 @@ Das Modell liefert die Summe der thermischen Lasten in der Ergebnisgröße `Tota
 
 [NOTE]
 ====
-Die `TotalThermalLoad` ist positiv bei Beheizung der Fläche und negativ bei Kühlung.
+Die `TotalThermalLoad` ist positiv bei Beheizung von Räumen, Flächen und negativ bei Kühlung. Innerhalb von Netzwerken entspricht eine positive Last der Wärmeaufnahme des Fluides und negativ der
+Wärmeabgabe im Fluid. Imstationären Fall entspricht die `TotalThermalLoad` in allen aktiv geheizten Netzwerkelementen also exakt der `TotalThermalLoad` in die geheizten Konstruktionen.
 ====
 
 
