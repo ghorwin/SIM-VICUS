@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Two zones, both with the same outside wall to constant -10 C climate. Both have a floor heating,
+			but floor of zone 2 is half the size (10 m2) than floor to zone 1 (20 m2).
+			
+			Both have a thermostat each that requires 22 C room temperature.
+			
+			Floor heating pipes are parallel. Each floor heating pipe has its own thermostat controller matching the heated zone.
+
+			Flow element #1 is for the pump and controls the pump pressure.
+			
+			Flow element #4 is an ideal heater, providing 40 C fluid temperature as inlet to both floor heating systems.
+			
+			When the thermostats indicate heating demand for the floor heating, their pressure loss coefficient (valve) is 
+			reduced and mass flow goes through the floor heating models. The mass flux through the pump is split 
+			between both parallel floor heatings. If both thermostats indicate that the values shall be closed, the pressure drop 
+			in both floor heatings increases and the pump's pressure drop limiter causes the mass flux through the pump
+			(and thus entire network) to be reduced.
+			
+			The heating system's functionality is completely independent from the adapter model tested in this
+			regression test. Given a pre-defined mass flux through the adapter model (schedule "Adapter Model", constant 40 C and
+			0.05 kg/s mass flux, the energy loss from the fluid in the actual heating cycle is used to compute a matching 
+			return temperature. The expectation is: whenever any of the floor heating values is open and heat transfer happens
+			in the floor heatings, the return temperature drops.
+			
+			Explanation of the curves:
+			
+			The simulation starts with initially 21.9 C system temperature, so both thermostats indicate moderate amount of heating.
+			Hence, both valves will be open and the heated layer temperature increases (towards 40 C fluid temperature). Once room temperature
+			is high enough, valves of the floor heatings are closed (pressure drop increases dramatically) and the pump's power
+			limitation causes the overall mass flux in the system to be reduced. This stays that way until the thermostats indicate
+			heating demand again, valves open (not at the same time, due to 
+			
+			</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Constant_Min10C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">21.9</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Zones>
+			<Zone id="1" displayName="Room 1" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+			<Zone id="2" displayName="Room 2" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="2001" displayName="South">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="1">
+						<!--Interface to 'Room 1'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="2" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+
+			<ConstructionInstance id="3001" displayName="Ground Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">20</IBK:Parameter>
+				<InterfaceA id="3" zoneId="1">
+					<!--Interface to 'Room 1'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+			
+			
+			<ConstructionInstance id="2002" displayName="South">
+				<ConstructionTypeId>10003</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="4" zoneId="2">
+						<!--Interface to 'Room 2'-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="5" zoneId="0">
+						<!--Interface to outside-->
+						<InterfaceHeatConduction modelType="Constant">
+							<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+						</InterfaceHeatConduction>
+				</InterfaceB>
+			</ConstructionInstance>
+			
+			<ConstructionInstance id="3002" displayName="Upper Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="6" zoneId="2">
+					<!--Interface to 'Room 2'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		
+		
+		<ConstructionTypes>
+			<!-- Heated floor slab -->
+			<ConstructionType id="10001" displayName="Construction with heated slab">
+				<!-- Layer index starts with 0 (index matches index in MaterialLayers vector) -->
+				<ActiveLayerIndex>1</ActiveLayerIndex>
+				<MaterialLayers>
+					<MaterialLayer thickness="0.10" matId="1002" />
+					<MaterialLayer thickness="0.06" matId="1001" /> <!-- heated layer -->
+					<MaterialLayer thickness="0.20" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+			<!-- Insulated outside wall -->
+			<ConstructionType id="10003" displayName="Construction 3">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.2"   matId="1001" /> <!-- Brick      - inside -->
+					<MaterialLayer thickness="0.1"   matId="1002" /> <!-- Insulation -->
+					<MaterialLayer thickness="0.005" matId="1003" /> <!-- Board      - outside -->
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+
+		<Materials>
+			<Material id="1001" displayName="Brick">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Insulation">
+				<IBK:Parameter name="Density" unit="kg/m3">100</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1003" displayName="Board">
+				<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+			</Material>
+		</Materials>
+
+		<Models>
+
+			<Thermostats>
+				<Thermostat id="601" displayName="Constant air temperature thermostat" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<!-- A thermostat with scheduled heating set point, no cooling. Uses air temperature as sensor value. -->
+					<!-- Heating starts below 22 C -->
+					<IBK:Parameter name="HeatingSetpoint" unit="C">22</IBK:Parameter>
+					<!-- Cooling starts above 30 (effectively disabled) C -->
+					<IBK:Parameter name="CoolingSetpoint" unit="C">30</IBK:Parameter>
+					<!-- P-controller is accurate to 0.2 K -->
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+					<!-- Control temperature is "Air temperature", this is the default and could be omitted -->
+					<TemperatureType>AirTemperature</TemperatureType>
+					<!-- Controller type PController is the default, so we could omit this-->
+					<ControllerType>Analog</ControllerType>
+				</Thermostat>
+			</Thermostats>
+
+			<HeatLoadSummationModels>
+				<HeatLoadSummationModel id="801">
+					<!-- Define object list with heaters, whose loads should be summed up -->
+					<ObjectList>IdealHeater</ObjectList>
+				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="802">
+					<!-- Define object list with constructions, whose loads should be summed up -->
+					<ObjectList>Floors</ObjectList>
+				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="803">
+					<!-- Define object list with pipes, whose loads should be summed up -->
+					<ObjectList>Surface Heating</ObjectList>
+				</HeatLoadSummationModel>
+			</HeatLoadSummationModels>
+
+		</Models>
+
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="Network" modelType="ThermalHydraulicNetwork" referenceElementId="1">
+				<HydraulicFluid displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 90 </X>
+						<Y unit="m2/s">1.307e-06 1.307e-06</Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">21.9</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<PipeProperties>
+					<!-- Standardrohr: dn = 16 mm, en = 2 mm, lambda = 0.35 W/mK -->
+					<HydraulicNetworkPipeProperties id="9">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">31.6</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">30000</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>
+					<HydraulicNetworkComponent id="3" displayName="IdealHeaterCooler" modelType="IdealHeaterCooler"/>
+				</Components>
+
+				<ControlElements>
+					<!-- Massestrom-geregelte Pumpe -->
+					<HydraulicNetworkControlElement id="1" controlledProperty="MassFlux" controllerType="PController" modelType="Scheduled">
+						<!-- Protortionalitätsfaktor hat die Einheit: Pa/(kg/s). If the mass flux shall be accurate to 0.001, and the pressure head
+							 expected at a nominal flow rate of 0.01 kg/s is 40000 Pa you need, kP = 40000/0.001 = 4e7
+						-->
+						<IBK:Parameter name="Kp" unit="---">1e9</IBK:Parameter>
+					</HydraulicNetworkControlElement>
+
+					<!-- Thermostat-based controller for Zone 1 -->
+					<HydraulicNetworkControlElement id="2" modelType="Constant" controllerType="PController" controlledProperty="ThermostatValue">
+						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
+						<ThermostatZoneId>1</ThermostatZoneId>
+						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
+					</HydraulicNetworkControlElement>
+
+					<!-- Thermostat-based controller for Zone 2 -->
+					<HydraulicNetworkControlElement id="3" modelType="Constant" controllerType="PController" controlledProperty="ThermostatValue">
+						<IBK:Parameter name="Kp" unit="---">1e7</IBK:Parameter>
+						<ThermostatZoneId>2</ThermostatZoneId>
+						<MaximumControllerResultValue>1e8</MaximumControllerResultValue>
+					</HydraulicNetworkControlElement>
+
+				</ControlElements>
+
+				<Elements>
+
+					<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" controlElementId="1" displayName="Pump" />
+
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="9" controlElementId="2"  displayName="Ground floor heating">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstructionLayer">
+							<ConstructionInstanceId>3001</ConstructionInstanceId>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+
+					<HydraulicNetworkElement id="3" inletNodeId="0" outletNodeId="101" componentId="2" pipePropertiesId="9"  controlElementId="3" displayName="Upper floor heating">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstructionLayer">
+							<ConstructionInstanceId>3002</ConstructionInstanceId>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+
+					<!-- Ideal fluid heater/cooler element - enforces constant 40 C fluid temperature -->
+					<HydraulicNetworkElement id="4" inletNodeId="101" outletNodeId="100" componentId="3" displayName="Ideal fluid heater/cooler"/>
+
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				
+				<!-- IdealHeaterCooler schedule values -->
+				<ScheduleGroup objectList="IdealHeater">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>
+									SupplyTemperatureSchedule [C]:40
+								</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+
+				<!-- ControlledPump schedule values -->
+				<ScheduleGroup objectList="Pump">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>
+									MassFluxSetpointSchedule [kg/s]:0.05
+								</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+
+			</ScheduleGroups>
+		</Schedules>
+		
+		<Outputs>
+			<Definitions>
+				
+				<OutputDefinition>
+					<Quantity>ConstructionHeatConductionLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>ActiveLayerThermalLoad</Quantity>
+					<ObjectListName>Floors</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>ActiveLayerTemperature</Quantity>
+					<ObjectListName>Floors</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Surface Heating</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Pump</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>FluidVelocity</Quantity>
+					<ObjectListName>Surface Heating</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>FluidTemperature</Quantity>
+					<ObjectListName>Flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>OutletNodePressure</Quantity>
+					<ObjectListName>Flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
+					<ObjectListName>IdealHeater</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>InletNodeTemperature</Quantity>
+					<ObjectListName>IdealHeater</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>TotalHeatLoad</Quantity>
+					<ObjectListName>Summation Models</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Integral</TimeType>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>TotalHeatLoad</Quantity>
+					<ObjectListName>Summation Models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Flow elements">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Pump">
+				<FilterID>1</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Surface Heating">
+				<FilterID>2,3</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="IdealHeater">
+				<FilterID>4</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Floors">
+				<FilterID>*</FilterID>
+				<ReferenceType>ConstructionInstance</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Summation Models">
+				<FilterID>801,802,803</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		
+	</Project>
+</NandradProject>
