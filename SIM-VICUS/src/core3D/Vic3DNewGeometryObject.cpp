@@ -384,7 +384,7 @@ void NewGeometryObject::setZoneHeight(double height) {
 }
 
 
-void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
+void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon) {
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
 	// generate roof geometry
@@ -392,7 +392,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 	// we need all the time a local coordinate system where all points have a z-value of 0
 
 	// Get a _copy_ of the floor polygon
-	std::vector<IBKMK::Vector3D> polyline = m_polygonGeometry.polygon().vertexes();
+	std::vector<IBKMK::Vector3D> polyline = floorPolygon;
 
 	if (roofData.m_rotate) {
 		unsigned int vertexCount = polyline.size();
@@ -644,228 +644,254 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData) {
 		for(unsigned int i=1; i<polygons.size(); ++i)
 			polys.push_back(polygons[i]);
 	}
-	else if(roofData.m_type == RoofInputData::Complex && polyline.size()==3){
-		//create middle point of all 3 points
-		//then create 3 triangles
-		IBKMK::Vector2D p0(polyline[0].m_x, polyline[0].m_y);
-		IBKMK::Vector2D p1(polyline[1].m_x, polyline[1].m_y);
-		IBKMK::Vector2D p2(polyline[2].m_x, polyline[2].m_y);
-		IBKMK::Vector2D mid2D = ( p0 +  p1 + p2);
-		mid2D *= (1/3.);
-
-		//create 3x roof
-		for(unsigned int i=0; i<3; ++i){
+	else {
+		// create floor polygon
+		double zHeight = polyline.front().m_z;
+		{
 			VICUS::Polygon3D poly3d;
-			poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height));
-			poly3d.addVertex(IBKMK::Vector3D(polyline[i].m_x, polyline[i].m_y, 0));
-			poly3d.addVertex(IBKMK::Vector3D(polyline[(i+1)%3].m_x, polyline[(i+1)%3].m_y, 0));
-			polys.push_back(poly3d);
-		}
-	}
-	else if(roofData.m_type == RoofInputData::Complex){
-		//now create a complex roof structure
+			poly3d.setVertexes(polyline);
+			if(poly3d.normal().m_z == 0)
+			{
+				/// TODO Dirk Fehler abfangen wenn das Polygon senkrecht zur x-y-Ebene aufgebaut wird
+				return;
+			}
+			// transform all coordinates to x-y-plane
+			for(IBKMK::Vector3D &p : polyline)
+				p.m_z = zHeight;
 
-		unsigned int polySize = polyline.size();
-		std::vector<IBK::point2D<double>> points2D(polySize);
-		std::vector<std::pair<unsigned int, unsigned int>> edges;
-		/// TODO Dirk->Andreas transformieren der 3D Punkte in 2D Punkte
-		/// für polyline
-		/// jetzt geht das erstmal nur über weglassen der z-Koordinate
-		for(unsigned int i=0; i<polySize; ++i){
-			points2D[i].m_x = polyline[i].m_x;
-			points2D[i].m_y = polyline[i].m_y;
-			edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
+			poly3d.setVertexes(polyline);
+
+			if(poly3d.normal().m_z > 0)
+				poly3d.flip();
+			m_polygonGeometry.setPolygon(poly3d);
 		}
 
-		IBKMK::Triangulation triangu;
-		triangu.setPoints(points2D,edges);
+		if(polyline.size()==3){
 
-		// For each triangle, store all edges that have neighbors.
-		std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> neighboringEdgesOfTri;
-		for(unsigned int i=0; i<triangu.m_triangles.size(); ++i){
-			const IBKMK::Triangulation::triangle_t &tri1 = triangu.m_triangles[i];
 
-			//create a set with the first three point indicies
-			std::set<unsigned int> indexSet;
-			indexSet.insert(tri1.i1);
-			indexSet.insert(tri1.i2);
-			indexSet.insert(tri1.i3);
+			//create middle point of all 3 points
+			//then create 3 triangles
+			IBKMK::Vector2D p0(polyline[0].m_x, polyline[0].m_y);
+			IBKMK::Vector2D p1(polyline[1].m_x, polyline[1].m_y);
+			IBKMK::Vector2D p2(polyline[2].m_x, polyline[2].m_y);
+			IBKMK::Vector2D mid2D = ( p0 +  p1 + p2);
+			mid2D *= (1/3.);
 
-			for(unsigned int j=i+1; j<triangu.m_triangles.size(); ++j){
-				const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
-				unsigned int counter = 3;
-				std::set<unsigned int> tempSet;
-				std::vector<unsigned int> saveIdx;
-				tempSet = indexSet;
-				//check if 2 indicies are in the set --> then we have a midpoint
-				tempSet.insert(tri2.i1);
-				if(tempSet.size() == counter)
-					saveIdx.push_back(tri2.i1);
-				else
-					++counter;
-				tempSet.insert(tri2.i2);
-				if(tempSet.size() == counter)
-					saveIdx.push_back(tri2.i2);
-				else
-					++counter;
-				tempSet.insert(tri2.i3);
-				if(tempSet.size() == counter)
-					saveIdx.push_back(tri2.i3);
-				else
-					++counter;
-
-				//found midpoint
-				if(saveIdx.size()==2){
-					//Store the two indices of the points that form the center
-					neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
-					neighboringEdgesOfTri[j].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
-				}
+			//create 3x roof
+			for(unsigned int i=0; i<3; ++i){
+				VICUS::Polygon3D poly3d;
+				poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight));
+				poly3d.addVertex(IBKMK::Vector3D(polyline[i].m_x, polyline[i].m_y,  zHeight));
+				poly3d.addVertex(IBKMK::Vector3D(polyline[(i+1)%3].m_x, polyline[(i+1)%3].m_y,  + zHeight));
+				polys.push_back(poly3d);
 			}
 		}
+		else{
+			//now create a complex roof structure
 
+			unsigned int polySize = polyline.size();
+			std::vector<IBK::point2D<double>> points2D(polySize);
+			std::vector<std::pair<unsigned int, unsigned int>> edges;
+			/// TODO Dirk->Andreas transformieren der 3D Punkte in 2D Punkte
+			/// für polyline
+			/// jetzt geht das erstmal nur über weglassen der z-Koordinate
+			for(unsigned int i=0; i<polySize; ++i){
+				points2D[i].m_x = polyline[i].m_x;
+				points2D[i].m_y = polyline[i].m_y;
+				edges.push_back(std::pair<unsigned int, unsigned int>(i, (i+1)%polySize));
+			}
 
-		//Now three cases may have arisen.
-		//1. one high point -> two roof triangles are created
-		//2. two high points -> three roof triangles are created
-		//3. three high points -> four roof triangles are created, one of them forms a horizontal plane
-		for(auto &e : neighboringEdgesOfTri){
-			//get triangle
-			const IBKMK::Triangulation::triangle_t &tri = triangu.m_triangles[e.first];
-			//get points
-			std::vector<IBKMK::Vector3D> pts(3, IBKMK::Vector3D(0,0,0));
-			pts[0].m_x = points2D[tri.i1].m_x;
-			pts[0].m_y = points2D[tri.i1].m_y;
+			IBKMK::Triangulation triangu;
+			triangu.setPoints(points2D,edges);
 
-			pts[1].m_x = points2D[tri.i2].m_x;
-			pts[1].m_y = points2D[tri.i2].m_y;
+			// For each triangle, store all edges that have neighbors.
+			std::map<unsigned int, std::vector<std::pair<unsigned int, unsigned int>>> neighboringEdgesOfTri;
+			for(unsigned int i=0; i<triangu.m_triangles.size(); ++i){
+				const IBKMK::Triangulation::triangle_t &tri1 = triangu.m_triangles[i];
 
-			pts[2].m_x = points2D[tri.i3].m_x;
-			pts[2].m_y = points2D[tri.i3].m_y;
+				//create a set with the first three point indicies
+				std::set<unsigned int> indexSet;
+				indexSet.insert(tri1.i1);
+				indexSet.insert(tri1.i2);
+				indexSet.insert(tri1.i3);
 
-			switch(e.second.size()){
-				case 1 :{
-					IBKMK::Vector2D p1 = points2D[e.second.front().first];
-					IBKMK::Vector2D p2 = points2D[e.second.front().second];
-					IBKMK::Vector2D p3;
-					if(tri.i1 != e.second.front().first && tri.i1 != e.second.front().second)
-						p3 = points2D[tri.i1];
-					else if (tri.i2 != e.second.front().first && tri.i2 != e.second.front().second)
-						p3 = points2D[tri.i2];
+				for(unsigned int j=i+1; j<triangu.m_triangles.size(); ++j){
+					const IBKMK::Triangulation::triangle_t &tri2 = triangu.m_triangles[j];
+					unsigned int counter = 3;
+					std::set<unsigned int> tempSet;
+					std::vector<unsigned int> saveIdx;
+					tempSet = indexSet;
+					//check if 2 indicies are in the set --> then we have a midpoint
+					tempSet.insert(tri2.i1);
+					if(tempSet.size() == counter)
+						saveIdx.push_back(tri2.i1);
 					else
-						p3 = points2D[tri.i3];
+						++counter;
+					tempSet.insert(tri2.i2);
+					if(tempSet.size() == counter)
+						saveIdx.push_back(tri2.i2);
+					else
+						++counter;
+					tempSet.insert(tri2.i3);
+					if(tempSet.size() == counter)
+						saveIdx.push_back(tri2.i3);
+					else
+						++counter;
 
-					IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
-
-					VICUS::Polygon3D poly3d;
-					//first poly
-					poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height));
-					poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y, 0));
-					poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y, 0));
-					polys.push_back(poly3d);
-
-					//second poly
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height),
-										   IBKMK::Vector3D(p2.m_x, p2.m_y, 0),
-										   IBKMK::Vector3D(p3.m_x, p3.m_y, 0)
-									   });
-					polys.push_back(poly3d);
+					//found midpoint
+					if(saveIdx.size()==2){
+						//Store the two indices of the points that form the center
+						neighboringEdgesOfTri[i].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
+						neighboringEdgesOfTri[j].push_back(std::pair<unsigned int, unsigned int>(saveIdx[0], saveIdx[1]));
+					}
 				}
-				break;
-				case 2:{
-					std::vector<IBKMK::Vector2D> pts2DVec{
-						points2D[e.second.front().first],
-						points2D[e.second.front().second],
-						points2D[e.second.back().first],
-						points2D[e.second.back().second]
-					};
-					//index of the common point
-					IBKMK::Vector2D commonPoint;
-					IBKMK::Vector2D p1, p2;
+			}
 
-					//midpoints
-					IBKMK::Vector2D mid2Da = pts2DVec[0]+ (pts2DVec[1] - pts2DVec[0])*0.5;
-					IBKMK::Vector2D mid2Db = pts2DVec[2]+ (pts2DVec[3] - pts2DVec[2])*0.5;
 
-					//find common point and the other two points
-					if(pts2DVec[0] == pts2DVec[2] || pts2DVec[0] == pts2DVec[3]){
-						commonPoint = pts2DVec[0];
-						p1 = pts2DVec[1];
-					}
-					else{
-						p1 = pts2DVec[0];
-						commonPoint = pts2DVec[1];
-					}
-					p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
+			//Now three cases may have arisen.
+			//1. one high point -> two roof triangles are created
+			//2. two high points -> three roof triangles are created
+			//3. three high points -> four roof triangles are created, one of them forms a horizontal plane
+			for(auto &e : neighboringEdgesOfTri){
+				//get triangle
+				const IBKMK::Triangulation::triangle_t &tri = triangu.m_triangles[e.first];
+				//get points
+				std::vector<IBKMK::Vector3D> pts(3, IBKMK::Vector3D(0,0,0));
+				pts[0].m_x = points2D[tri.i1].m_x;
+				pts[0].m_y = points2D[tri.i1].m_y;
 
-					VICUS::Polygon3D poly3d;
-					//create first triangle with the two mid points and the common point
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
-										   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, 0)
-									   });
-					polys.push_back(poly3d);
+				pts[1].m_x = points2D[tri.i2].m_x;
+				pts[1].m_y = points2D[tri.i2].m_y;
 
-					//create second triangle with the one mid point and the two other points
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
-										   IBKMK::Vector3D(p1.m_x, p1.m_y,0),
-										   IBKMK::Vector3D(p2.m_x, p2.m_y,0)
-									   });
-					polys.push_back(poly3d);
+				pts[2].m_x = points2D[tri.i3].m_x;
+				pts[2].m_y = points2D[tri.i3].m_y;
 
-					//create third triangle with the two mid points and the one other point
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height),
-										   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height),
-										   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y,0) :
-										   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y,0)
-									   });
-					polys.push_back(poly3d);
+				switch(e.second.size()){
+					case 1 :{
+						IBKMK::Vector2D p1 = points2D[e.second.front().first];
+						IBKMK::Vector2D p2 = points2D[e.second.front().second];
+						IBKMK::Vector2D p3;
+						if(tri.i1 != e.second.front().first && tri.i1 != e.second.front().second)
+							p3 = points2D[tri.i1];
+						else if (tri.i2 != e.second.front().first && tri.i2 != e.second.front().second)
+							p3 = points2D[tri.i2];
+						else
+							p3 = points2D[tri.i3];
 
-				}
-				break;
-				case 3: {
+						IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
 
-					//index of the common point
-					unsigned int idxCommon = 0;
-					IBKMK::Vector2D commonPoint;
-					std::vector<IBKMK::Vector2D> pts2DVec{points2D[tri.i1],points2D[tri.i2],points2D[tri.i3]};
-					std::vector<IBKMK::Vector2D> midPts2DVec(3);
+						VICUS::Polygon3D poly3d;
+						//first poly
+						poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight));
+						poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y,  zHeight));
+						poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y,  zHeight));
+						polys.push_back(poly3d);
 
-					//midpoints
-					for(unsigned int i3=0; i3<3; ++i3){
-						unsigned int i2 = (i3+1)%3;
-						midPts2DVec[i3] = pts2DVec[i3] + (pts2DVec[i2]-pts2DVec[i3])*0.5;
-					}
-
-					VICUS::Polygon3D poly3d;
-					//create first triangle --> all mid points
-					poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-										   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, roofData.m_height),
-										   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, roofData.m_height),
-										   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, roofData.m_height)
-									   });
-					polys.push_back(poly3d);
-
-					//create three more triangles
-					//each has two mid points and a other point
-					for(unsigned int i3=0; i3<3; ++i3){
-						//find the other point which belongs to the two mid points
+						//second poly
 						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-											   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, roofData.m_height),
-											   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, roofData.m_height),
-											   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y,0)
+											   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(p2.m_x, p2.m_y,  zHeight),
+											   IBKMK::Vector3D(p3.m_x, p3.m_y,  zHeight)
+										   });
+						polys.push_back(poly3d);
+					}
+					break;
+					case 2:{
+						std::vector<IBKMK::Vector2D> pts2DVec{
+							points2D[e.second.front().first],
+							points2D[e.second.front().second],
+							points2D[e.second.back().first],
+							points2D[e.second.back().second]
+						};
+						//index of the common point
+						IBKMK::Vector2D commonPoint;
+						IBKMK::Vector2D p1, p2;
+
+						//midpoints
+						IBKMK::Vector2D mid2Da = pts2DVec[0]+ (pts2DVec[1] - pts2DVec[0])*0.5;
+						IBKMK::Vector2D mid2Db = pts2DVec[2]+ (pts2DVec[3] - pts2DVec[2])*0.5;
+
+						//find common point and the other two points
+						if(pts2DVec[0] == pts2DVec[2] || pts2DVec[0] == pts2DVec[3]){
+							commonPoint = pts2DVec[0];
+							p1 = pts2DVec[1];
+						}
+						else{
+							p1 = pts2DVec[0];
+							commonPoint = pts2DVec[1];
+						}
+						p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
+
+						VICUS::Polygon3D poly3d;
+						//create first triangle with the two mid points and the common point
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, zHeight)
 										   });
 						polys.push_back(poly3d);
 
+						//create second triangle with the one mid point and the two other points
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(p1.m_x, p1.m_y, zHeight),
+											   IBKMK::Vector3D(p2.m_x, p2.m_y, zHeight)
+										   });
+						polys.push_back(poly3d);
+
+						//create third triangle with the two mid points and the one other point
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height + zHeight),
+											   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y, zHeight) :
+											   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y, zHeight)
+										   });
+						polys.push_back(poly3d);
 
 					}
+					break;
+					case 3: {
+
+						//index of the common point
+						unsigned int idxCommon = 0;
+						IBKMK::Vector2D commonPoint;
+						std::vector<IBKMK::Vector2D> pts2DVec{points2D[tri.i1],points2D[tri.i2],points2D[tri.i3]};
+						std::vector<IBKMK::Vector2D> midPts2DVec(3);
+
+						//midpoints
+						for(unsigned int i3=0; i3<3; ++i3){
+							unsigned int i2 = (i3+1)%3;
+							midPts2DVec[i3] = pts2DVec[i3] + (pts2DVec[i2]-pts2DVec[i3])*0.5;
+						}
+
+						VICUS::Polygon3D poly3d;
+						//create first triangle --> all mid points
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, roofData.m_height + zHeight)
+										   });
+						polys.push_back(poly3d);
+
+						//create three more triangles
+						//each has two mid points and a other point
+						for(unsigned int i3=0; i3<3; ++i3){
+							//find the other point which belongs to the two mid points
+							poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+												   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, roofData.m_height + zHeight),
+												   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, roofData.m_height + zHeight),
+												   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y, zHeight)
+											   });
+							polys.push_back(poly3d);
+
+
+						}
+					}
+					break;
 				}
-				break;
 			}
 		}
+
 	}
 
 	m_generatedGeometry.clear();

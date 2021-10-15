@@ -313,6 +313,17 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
 
+			// get floor polyline from roof and save this for later
+			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+			if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+				return;
+
+
+			if(po->planeGeometry().polygon().vertexes().empty())
+				return;
+
+			m_roofPolygon = po->planeGeometry().polygon().vertexes();
+
 			updateRoofGeometry();
 		}
 		break;
@@ -1127,6 +1138,8 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
 		return;
 
+	// use saved polygon for further calculation
+
 	Vic3D::NewGeometryObject::RoofInputData roofData;
 
 	// get all data from UI
@@ -1140,7 +1153,7 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 
 	m_polygonRotation = false; // reset flag until next click
 
-	po->setRoofGeometry(roofData);
+	po->setRoofGeometry(roofData, m_roofPolygon);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
