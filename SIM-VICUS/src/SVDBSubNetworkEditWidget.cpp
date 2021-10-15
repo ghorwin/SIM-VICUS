@@ -52,6 +52,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id)
 		m_ui->lineEditSubNetworkName->setText(QString());
 		m_ui->lineEditComponent->clear();
 		m_ui->lineEditController->clear();
+		m_ui->lineEditController->setDisabled(true);
 		m_ui->tableWidgetElements->blockSignals(true);
 		m_ui->tableWidgetElements->clear();
 		m_ui->tableWidgetElements->blockSignals(false);
@@ -125,6 +126,12 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 
 	// get current row = idx of current element
 	m_currentElementIdx = m_ui->tableWidgetElements->currentRow();
+
+
+	// TODO Hauke: disable controller line edit if the according component can not use a controller
+
+	// rework entire widget ???
+
 
 	// if we have at least one element: update infos
 	if (m_currentElementIdx >= 0){
