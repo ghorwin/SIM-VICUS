@@ -28,6 +28,11 @@ namespace NANDRAD {
 void HeatLoadSummationModel::checkParameters() {
 	FUNCID(HeatLoadSummationModel::checkParameters);
 
+	// m_useZoneCoolingLoad only allows value 'true' or 'false'
+	if(m_useZoneCoolingLoad != "true" && m_useZoneCoolingLoad != "false")
+		throw IBK::Exception(IBK::FormatString("Invalid value '%1' for 'useZoneCoolingLoad' attribute "
+											"only 'true' or 'false' are allowed.")
+							 .arg(m_useZoneCoolingLoad), FUNC_ID);
 	// all models require an object list with indication of construction that this model applies to
 	// we enforce an object list for construction instances at the moment
 	if (m_objectList.empty())

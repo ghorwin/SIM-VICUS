@@ -50,7 +50,7 @@ void HeatLoadSummationModel::readXML(const TiXmlElement * element) {
 			else if (attribName == "displayName")
 				m_displayName = attrib->ValueStr();
 			else if (attribName == "useZoneCoolingLoad")
-				m_useZoneCoolingLoad = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+				m_useZoneCoolingLoad = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -90,8 +90,8 @@ TiXmlElement * HeatLoadSummationModel::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_useZoneCoolingLoad != HeatLoadSummationModel().m_useZoneCoolingLoad)
-		e->SetAttribute("useZoneCoolingLoad", IBK::val2string<bool>(m_useZoneCoolingLoad));
+	if (!m_useZoneCoolingLoad.empty())
+		e->SetAttribute("useZoneCoolingLoad", m_useZoneCoolingLoad);
 	if (!m_objectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ObjectList", nullptr, std::string(), m_objectList);
 	return e;

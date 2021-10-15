@@ -35,7 +35,10 @@ void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model
 	FUNCID(HeatLoadSummationModel::setup);
 
 	// copy necessary properties
-	m_useZoneCoolingLoad = model.m_useZoneCoolingLoad;
+	if(model.m_useZoneCoolingLoad == "true")
+		m_useZoneCoolingLoad = true;
+	else
+		m_useZoneCoolingLoad = false;
 
 	// all models require an object list with indication of zones that this model applies to
 	if (model.m_objectList.empty())

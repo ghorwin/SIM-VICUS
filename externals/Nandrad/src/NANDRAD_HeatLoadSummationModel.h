@@ -71,7 +71,7 @@ public:
 	/*! If true, and if the object list defines 'Zone' as reference type, then the variable
 		'IdealHeatingLoad' is requested, otherwise 'IdealHeatingLoad' is used (the default).
 	*/
-	bool				m_useZoneCoolingLoad = false;				// XML:A
+	std::string			m_useZoneCoolingLoad = "false";				// XML:A
 	/*! Object list with zones that this model is to be apply to. */
 	std::string			m_objectList;								// XML:E:required
 };
