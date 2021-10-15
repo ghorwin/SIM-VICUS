@@ -151,6 +151,7 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressureHeadPump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -174,6 +175,7 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressureHeadPump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -207,8 +209,12 @@ void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, con
 		case P_CarnotEfficiency:
 		case P_PumpEfficiency:
 		case P_FractionOfMotorInefficienciesToFluidStream:
-		case P_PressureHead: {
-			Q_ASSERT(false); // it is not intendet to check these parameters here
+		case P_PressureHead:
+		case P_PressureHeadReduction:
+		case P_DesignPressureHead:
+		case P_DesignMassFlux:
+		{
+			Q_ASSERT(false); // it is not intended to check these parameters here
 		} break;
 		case P_LengthOfGroundHeatExchangerPipes:
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
@@ -239,6 +245,7 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressureHeadPump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -247,13 +254,12 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
 		case NUM_MT:
-			break;
+			return false;
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
 		case MT_HorizontalGroundHeatExchanger:
 			return true;
 	}
-	return false;
 }
 
 

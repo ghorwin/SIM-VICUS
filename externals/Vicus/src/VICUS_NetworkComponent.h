@@ -59,6 +59,7 @@ public:
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
 		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump			'Pump with constant/externally defined mass flux'
 		MT_ControlledPump,					// Keyword: ControlledPump					'Pump with pressure head controlled based on flow controller'
+		MT_VariablePressureHeadPump,		// Keyword: VariablePressureHeadPump		'Pump with linear pressure head curve (dp-v controlled pump)'
 		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
@@ -87,6 +88,9 @@ public:
 		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for valve'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
+		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'design pressure head'
+		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'design mass flux'
+		P_PressureHeadReduction,				// Keyword: PressureHeadReduction				[---]	'Factor to reduced pressure head'
 		// additional parameters
 		P_LengthOfGroundHeatExchangerPipes,		// Keyword: LengthOfGroundHeatExchangerPipes	[m]		'Length of pipes in the ground heat exchanger'
 		NUM_P
