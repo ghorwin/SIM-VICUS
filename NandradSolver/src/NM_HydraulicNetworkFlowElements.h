@@ -174,7 +174,7 @@ private:
 
 	double				m_timePointLast = 0;
 	double				m_timePointCurrent = 0;
-	double				m_zetaControlledLast = 0;
+	double				m_zetaControlledLast = 100;
 
 
 	/*! Computes the controlled zeta-value if a control-model is implemented.

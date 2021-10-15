@@ -454,16 +454,16 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 							zetaControlled = y;
 						}
 
-						// apply
-						if (m_zetaControlledLast > 0) {
-							double zetaDerivMax = 1e5; // max change per s
-							double timeStep = m_timePointCurrent - m_timePointLast;
-							double zetaDeriv = (zetaControlled - m_zetaControlledLast) / timeStep;
-							if (zetaDeriv > zetaDerivMax)
-								zetaControlled = m_zetaControlledLast + zetaDerivMax * timeStep;
-							else if (zetaDeriv < -zetaDerivMax)
-								zetaControlled = m_zetaControlledLast - zetaDerivMax * timeStep;
-						}
+//						// apply
+//						if (m_zetaControlledLast > 0) {
+//							double zetaDerivMax = 1e5; // max change per s
+//							double timeStep = m_timePointCurrent - m_timePointLast;
+//							double zetaDeriv = (zetaControlled - m_zetaControlledLast) / timeStep;
+//							if (zetaDeriv > zetaDerivMax)
+//								zetaControlled = m_zetaControlledLast + zetaDerivMax * timeStep;
+//							else if (zetaDeriv < -zetaDerivMax)
+//								zetaControlled = m_zetaControlledLast - zetaDerivMax * timeStep;
+//						}
 
 
 					} break;
