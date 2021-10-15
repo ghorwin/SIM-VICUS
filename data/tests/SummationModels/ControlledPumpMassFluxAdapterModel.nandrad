@@ -190,7 +190,7 @@
 			<HeatLoadSummationModels>
 				<HeatLoadSummationModel id="801">
 					<!-- Define object list with constructions, whose loads should be summed up -->
-					<ObjectList>Floors</ObjectList>
+					<ObjectList>IdealHeater</ObjectList>
 				</HeatLoadSummationModel>
 			</HeatLoadSummationModels>
 
