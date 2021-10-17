@@ -33,6 +33,7 @@
 #include <VICUS_Surface.h>
 
 #include <Vic3DTransform3D.h>
+#include <Vic3DCoordinateSystemObject.h>
 
 namespace Vic3D {
 	class Transform3D;
@@ -94,6 +95,14 @@ public:
 		NUM_MS
 	};
 
+	enum RotationState {
+		RS_Normal,
+		RS_XAxis,
+		RS_YAxis,
+		RS_ZAxis,
+		NUM_RS
+	};
+
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
@@ -123,10 +132,14 @@ public:
 	/*! Checks/unchecks the tool buttons depending on the specified type.
 		Has no side-effects.
 	*/
-	void setToolButton(const ModificationType &type);
+	void setToolButton();
 
-	/*! Sets the items of the comboBox */
-	void setComboBox(const ModificationType &type, const ModificationState &state);
+	/*! Checks/unchecks the tool buttons depending on the specific absolute/local mode
+	*/
+	void setToolButtonAbsMode();
+
+	/*! Checks/unchecks the tool buttons for the specific absolute rotation mode */
+	void setToolButtonsRotationState();
 
 	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
 	void showDeg(const bool &show=true);
@@ -200,8 +213,6 @@ private slots:
 	void on_lineEditYCopy_editingFinished();
 	void on_lineEditZCopy_editingFinished();
 
-	/*! ComboBox Functions */
-	void on_comboBox_activated(int index);
 
 	/*! All tool button specific functions */
 	void on_toolButtonTrans_clicked();
@@ -226,6 +237,18 @@ private slots:
 	void on_toolButtonLocalCoordinateOrentation_clicked(bool checked);
 
 	void on_pushButtonCopySubSurfaces_clicked();
+
+	void on_toolButtonAbs_clicked(bool);
+
+	void on_toolButtonRel_clicked(bool);
+
+	void on_toolButtonNormal_clicked();
+
+	void on_toolButtonZ_clicked();
+
+	void on_toolButtonX_clicked();
+
+	void on_toolButtonY_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
@@ -263,6 +286,9 @@ private:
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
 
+	/*! Pointer to LocalCoordinateSystemObject */
+	Vic3D::CoordinateSystemObject		*m_cso;
+
 	/*! This is the dimension of the bounding box (dx, dy, dz). */
 	IBKMK::Vector3D						m_boundingBoxDimension;
 
@@ -272,10 +298,14 @@ private:
 	/*! Cached normal for absolute rotation */
 	IBKMK::Vector3D						m_normal;
 
+	/*! Cached state of abs roation mode */
+	RotationState						m_rotationState;
+
 	/*! Cached initial values to be used when user had entered invalid values.
 		These values depend on current modification type and state.
 	*/
 	IBKMK::Vector3D						m_originalValues;
+
 
 	/*! Cached Translation vector for copy operations. */
 	IBKMK::Vector3D						m_translation;

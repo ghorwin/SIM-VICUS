@@ -85,6 +85,83 @@ public:
 LineEditFormater::~LineEditFormater() {}
 
 
+IBKMK::Vector3D localBoundingBox(std::vector<const VICUS::Surface*> &surfaces,
+							std::vector<const VICUS::SubSurface*> &subsurfaces,
+							IBKMK::Vector3D &center,
+							const IBKMK::Vector3D &offset,
+							const IBKMK::Vector3D &xAxis,
+							const IBKMK::Vector3D &yAxis,
+							const IBKMK::Vector3D &zAxis )
+{
+
+	// store selected surfaces
+	if ( surfaces.empty() && subsurfaces.empty())
+		return IBKMK::Vector3D ( 0,0,0 );
+
+	double maxX = std::numeric_limits<double>::lowest();
+	double maxY = std::numeric_limits<double>::lowest();
+	double maxZ = std::numeric_limits<double>::lowest();
+	double minX = std::numeric_limits<double>::max();
+	double minY = std::numeric_limits<double>::max();
+	double minZ = std::numeric_limits<double>::max();
+	for (const VICUS::Surface *s : surfaces ) {
+		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
+
+			IBKMK::Vector3D vLocal, point;
+
+			IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
+			IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
+			IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
+
+			v = vLocal;
+
+			( v.m_x > maxX ) ? maxX = v.m_x : 0;
+			( v.m_y > maxY ) ? maxY = v.m_y : 0;
+			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+
+			( v.m_x < minX ) ? minX = v.m_x : 0;
+			( v.m_y < minY ) ? minY = v.m_y : 0;
+			( v.m_z < minZ ) ? minZ = v.m_z : 0;
+		}
+	}
+	for (const VICUS::SubSurface *sub : subsurfaces ) {
+		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
+		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
+			if (&(s->subSurfaces()[i]) == sub) {
+				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {
+
+					IBKMK::Vector3D vLocal, point;
+
+					IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
+					IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
+					IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
+
+					v = vLocal;
+
+					( v.m_x > maxX ) ? maxX = v.m_x : 0;
+					( v.m_y > maxY ) ? maxY = v.m_y : 0;
+					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
+
+					( v.m_x < minX ) ? minX = v.m_x : 0;
+					( v.m_y < minY ) ? minY = v.m_y : 0;
+					( v.m_z < minZ ) ? minZ = v.m_z : 0;
+				}
+			}
+		}
+	}
+
+	double dX = maxX - minX;
+	double dY = maxY - minY;
+	double dZ = maxZ - minZ;
+
+	center.set( offset.m_x + (minX + 0.5*dX) * xAxis.m_x + (minY + 0.5*dY) * yAxis.m_x + (minZ + 0.5*dZ) * zAxis.m_x ,
+				offset.m_y + (minX + 0.5*dX) * xAxis.m_y + (minY + 0.5*dY) * yAxis.m_y + (minZ + 0.5*dZ) * zAxis.m_y ,
+				offset.m_z + (minX + 0.5*dX) * xAxis.m_z + (minY + 0.5*dY) * yAxis.m_z + (minZ + 0.5*dZ) * zAxis.m_z );
+
+	// set bounding box;
+	return IBKMK::Vector3D ( dX, dY, dZ );
+}
+
 // *** Widget implementation ***
 
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
@@ -141,6 +218,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->widgetRota->layout()->setMargin(0);
 
 	on_toolButtonLocalCoordinateOrentation_clicked(false);
+
+	// we set the local coordinate system object
+	m_cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 
 }
 
@@ -349,7 +429,7 @@ void SVPropEditGeometry::scale() {
 
 	if (scale == IBKMK::Vector3D())
 		return;
-	QVector3D transLCSO = SVViewStateHandler::instance().m_coordinateSystemObject->translation();
+	QVector3D transLCSO = m_cso->translation();
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
@@ -392,7 +472,7 @@ void SVPropEditGeometry::scale() {
 	undo->push();
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(transLCSO);
+	m_cso->setTranslation(transLCSO);
 }
 
 
@@ -571,12 +651,32 @@ void SVPropEditGeometry::updateUi() {
 
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
-			m_ui->labelIndication->setText(tr("Normal:"));
+			m_ui->toolButtonNormal->setCheckable(true);
+			m_rotationState = RS_Normal;
+			setToolButtonsRotationState();
 			setRotation(s->geometry().normal() );
 		}
 		else {
-			m_ui->labelIndication->setText(tr("z-Axis:"));
-			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+
+			switch (m_rotationState) {
+				case SVPropEditGeometry::RS_XAxis:
+					setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
+				break;
+				case SVPropEditGeometry::RS_YAxis:
+					setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
+				break;
+				case SVPropEditGeometry::RS_Normal:
+				case SVPropEditGeometry::RS_ZAxis:
+					m_rotationState = RS_ZAxis;
+					setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+				break;
+				case SVPropEditGeometry::NUM_RS:
+				break;
+
+			}
+
+			m_ui->toolButtonNormal->setCheckable(false);
+			setToolButtonsRotationState();
 		}
 
 		// enable "add subsurface" button
@@ -591,21 +691,29 @@ void SVPropEditGeometry::updateUi() {
 			if ( m_selSubSurfaces.size() == 1 ) {
 				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
 				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
-				m_ui->labelIndication->setText(tr("Normal:"));
+				m_ui->toolButtonNormal->setChecked(true);
 				setRotation(s->geometry().normal() );
 			}
 			else {
-				m_ui->labelIndication->setText(tr("z-Axis:"));
-				setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+				m_ui->toolButtonZ->setChecked(true);
+				setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 			}
 		}
 	}
 
-
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+	if (m_useLocalCoordOrientation) {
+		m_boundingBoxDimension = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter,
+												  QtExt::QVector2IBKVector(m_cso->translation() ),
+												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+	}
+	else
+		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+
 	// position local coordinate system, but only if we are showing the edit page
-	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	m_cso->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 
 	// update local coordinates
 	Vic3D::Transform3D t;
@@ -642,8 +750,8 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 	// adjust appearance of local coordinate system
 	if (m_ui->stackedWidget->currentIndex() == 0) {
 		// put local coordinate system back into "plain" mode
-		if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != 0) {
-			SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = 0;
+		if (m_cso->m_geometryTransformMode != 0) {
+			m_cso->m_geometryTransformMode = 0;
 			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 		}
 	}
@@ -651,22 +759,22 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 		// put local coordinate system back into correct transform mode
 		switch (m_modificationType) {
 			case SVPropEditGeometry::MT_Translate:
-				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
-					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
+				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
+					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
 
 			case SVPropEditGeometry::MT_Rotate:
-				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
-					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
+				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
+					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
 
 			case SVPropEditGeometry::MT_Scale:
-				if (SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
-					SVViewStateHandler::instance().m_coordinateSystemObject->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
+				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
+					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
@@ -675,13 +783,6 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 }
 
 
-void SVPropEditGeometry::on_comboBox_activated(int newIndex) {
-	// set new state
-	m_modificationState[m_modificationType] = (ModificationState)newIndex;
-
-	// now update inputs
-	updateInputs();
-}
 
 
 bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
@@ -766,13 +867,16 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 void SVPropEditGeometry::setState(const SVPropEditGeometry::ModificationType & type,
 								  const SVPropEditGeometry::ModificationState & state)
 {
-	// check/uncheck operation buttons
-	setToolButton(type);
+	// we save our editing type (scale, translate, rotate)
 
-	// if combo box needs to be update (i.e. when a new operation has been selected), we need
-	// to re-populate the combo box
-	setComboBox(type, state); // triggers an update
+	m_modificationType = type;
 	m_modificationState[type] = state;
+
+	// check/uncheck operation buttons
+	setToolButton();
+
+	// we also set the state of the tool buttons
+	setToolButtonAbsMode();
 
 	updateInputs();
 	updateCoordinateSystemLook();
@@ -884,44 +988,56 @@ void SVPropEditGeometry::updateInputs() {
 }
 
 
-void SVPropEditGeometry::setToolButton(const SVPropEditGeometry::ModificationType & type) {
-	m_modificationType = type;
+void SVPropEditGeometry::setToolButton() {
+
 
 	m_ui->toolButtonTrans->setChecked(false);
 	m_ui->toolButtonRotate->setChecked(false);
 	m_ui->toolButtonScale->setChecked(false);
 
-	switch (type) {
+	switch (m_modificationType) {
 		case MT_Translate:		m_ui->toolButtonTrans->setChecked(true);			break;
 		case MT_Rotate:			m_ui->toolButtonRotate->setChecked(true);			break;
 		case MT_Scale:			m_ui->toolButtonScale->setChecked(true);			break;
 	}
 }
 
+void SVPropEditGeometry::setToolButtonAbsMode() {
+	m_ui->toolButtonRel->blockSignals(true);
+	m_ui->toolButtonAbs->blockSignals(true);
 
-void SVPropEditGeometry::setComboBox(const ModificationType & type, const ModificationState & state) {
-	m_ui->comboBox->blockSignals(true);
-	m_ui->comboBox->clear();
-
-	switch (type) {
+	switch (m_modificationType) {
 		case MT_Translate:
-			m_ui->comboBox->addItem( tr("Move to world coordinates") );
-			m_ui->comboBox->addItem( tr("Relative translation") );
+			m_ui->toolButtonAbs->setText( tr("Move to world coordinates") );
+			m_ui->toolButtonRel->setText( tr("Relative translation") );
 			break;
 		case MT_Rotate:
-			m_ui->comboBox->addItem( tr("Align surface to angles") );
-			m_ui->comboBox->addItem( tr("Relative rotation") );
+			m_ui->toolButtonAbs->setText( tr("Align surface to angles") );
+			m_ui->toolButtonRel->setText( tr("Relative rotation") );
 			break;
 		case MT_Scale:
-			m_ui->comboBox->addItem( tr("Resize surfaces") );
-			m_ui->comboBox->addItem( tr("Relative scaling") );
+			m_ui->toolButtonAbs->setText( tr("Resize surfaces") );
+			m_ui->toolButtonRel->setText( tr("Relative scaling") );
 			break;
 	}
 
-	m_ui->comboBox->setCurrentIndex((int)state);
-	m_ui->comboBox->blockSignals(false);
+	bool checkAbsState = m_modificationState[m_modificationType] == ModificationState::MS_Absolute;
 
-	on_comboBox_activated((int)state);
+	m_ui->toolButtonAbs->setChecked(checkAbsState);
+	m_ui->toolButtonRel->setChecked(!checkAbsState);
+
+	m_ui->toolButtonAbs->blockSignals(false);
+	m_ui->toolButtonRel->blockSignals(false);
+
+}
+
+void SVPropEditGeometry::setToolButtonsRotationState() {
+
+	m_ui->toolButtonNormal->setChecked(m_rotationState == RS_Normal);
+	m_ui->toolButtonX->setChecked(m_rotationState == RS_XAxis);
+	m_ui->toolButtonY->setChecked(m_rotationState == RS_YAxis);
+	m_ui->toolButtonZ->setChecked(m_rotationState == RS_ZAxis);
+
 }
 
 
@@ -967,7 +1083,7 @@ void SVPropEditGeometry::on_toolButtonRotate_clicked() {
 
 
 void SVPropEditGeometry::on_toolButtonScale_clicked() {
-	setState(MT_Scale, m_modificationState[MT_Rotate]);
+	setState(MT_Scale, m_modificationState[MT_Scale]);
 }
 
 
@@ -1062,6 +1178,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					QVector3D translation((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
+
+					if (m_useLocalCoordOrientation) {
+						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.x()*m_cso->localYAxis().x() + translation.x()*m_cso->localZAxis().z(),
+											translation.y()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.y()*m_cso->localZAxis().z(),
+											translation.z()*m_cso->localXAxis().z() + translation.z()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
+						translation = newTrans;
+					}
+
 					trans.setTranslation(translation);
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
@@ -1089,7 +1213,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					QVector3D newScale;
 					if (m_useLocalCoordOrientation) {
-						const Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+						const Vic3D::CoordinateSystemObject *cso = m_cso;
 						const QQuaternion &q = cso->transform().rotation();
 						scale = q*scale;
 					}
@@ -1104,7 +1228,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// so we know how big the absolute translation has to be
 					IBKMK::Vector3D trans;
 
-					const QVector3D &transObj = SVViewStateHandler::instance().m_coordinateSystemObject->transform().translation();
+					const QVector3D &transObj = m_cso->transform().translation();
 
 					trans.m_x = transObj.x() < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.x() );
 					trans.m_y = transObj.y() < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.y() );
@@ -1122,7 +1246,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
 					QVector3D  scale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
 					// compute offset from current local coordinate system position
-					const Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+					const Vic3D::CoordinateSystemObject *cso = m_cso;
 
 					QVector3D lcsTrans = cso->translation();
 
@@ -1165,7 +1289,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
 					// so we know how big the absolute translation has to be
 					IBKMK::Vector3D trans;
-					const QVector3D &transObj = SVViewStateHandler::instance().m_coordinateSystemObject->transform().translation();
+					const QVector3D &transObj = m_cso->transform().translation();
 
 					trans.m_x = transObj.x() < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.x() );
 					trans.m_y = transObj.y() < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.y() );
@@ -1870,4 +1994,49 @@ void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
 
 	SVUndoCopySubSurfaces *undo = new SVUndoCopySubSurfaces("Copied Sub Surfaces.", newSubSurfaces, deselectedSubSurfaceUniqueIDs, newSubSurfaceComponentInstances);
 	undo->push();
+}
+
+void SVPropEditGeometry::on_toolButtonAbs_clicked(bool /*checked*/) {
+
+	// set new state
+	m_modificationState[m_modificationType] = ModificationState::MS_Absolute;
+	// update tool buttons
+	setToolButtonAbsMode();
+	// now update inputs
+	updateInputs();
+}
+
+void SVPropEditGeometry::on_toolButtonRel_clicked(bool /*checked*/) {
+
+	m_ui->toolButtonAbs->setChecked(false);
+	// set new state
+	m_modificationState[m_modificationType] = ModificationState::MS_Relative;
+	// update tool buttons
+	setToolButtonAbsMode();
+	// now update inputs
+	updateInputs();
+}
+
+void SVPropEditGeometry::on_toolButtonNormal_clicked() {
+	m_rotationState = RS_Normal;
+	setToolButtonsRotationState();
+}
+
+void SVPropEditGeometry::on_toolButtonZ_clicked() {
+	m_rotationState = RS_ZAxis;
+	setToolButtonsRotationState();
+
+	setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+}
+
+void SVPropEditGeometry::on_toolButtonX_clicked() {
+	m_rotationState = RS_XAxis;
+	setToolButtonsRotationState();
+	setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
+}
+
+void SVPropEditGeometry::on_toolButtonY_clicked() {
+	m_rotationState = RS_YAxis;
+	setToolButtonsRotationState();
+	setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
 }
