@@ -28,9 +28,12 @@
 #include <QVector3D>
 #include <QOpenGLShaderProgram>
 #include <QElapsedTimer>
+#include <QMessageBox>
+#include <QTranslator>
 
 #include <VICUS_Project.h>
 #include <QtExt_Conversions.h>
+#include <QtExt_Settings.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -384,7 +387,7 @@ void NewGeometryObject::setZoneHeight(double height) {
 }
 
 
-void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon) {
+void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon, QWidget *parent) {
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
 	// generate roof geometry
@@ -409,13 +412,15 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 	// for all but complex shape
 	if (roofData.m_type != RoofInputData::Complex) {
 
+		/// TODO Dirk->Andreas wie binde ich das übersetzen ein?
+		//SVSettings::instance().showDoNotShowAgainMessage(this, "CreateNoComplexRoofType", tr("Roof creation.") tr("Square floor plans can be used for this type of roof."));
+
 		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
 		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
 		if(polyline.size() > 3)
 			polyline.erase(polyline.begin()+3, polyline.end());
 		// Add fourth point
 		polyline.push_back(polyline[2]+(polyline[0]-polyline[1]));
-
 		//make a horizontal plane
 		for(auto &p : polyline)
 			p.m_z = polyline[0].m_z;
