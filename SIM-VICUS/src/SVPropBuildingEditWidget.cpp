@@ -1453,16 +1453,29 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 
 		// process all componentInstances and for all that reference any of the selected surfaces, replace component
 		for (VICUS::ComponentInstance & ci : compInstances) {
-			std::set<const VICUS::Surface*>::iterator it = m_selectedSurfaces.find(ci.m_sideASurface);
-			if (it != m_selectedSurfaces.end()) {
+			std::set<const VICUS::Surface*>::iterator itA = m_selectedSurfaces.find(ci.m_sideASurface);
+			std::set<const VICUS::Surface*>::iterator itB= m_selectedSurfaces.find(ci.m_sideBSurface);
+			if (itA != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				m_selectedSurfaces.erase(it);
+				m_selectedSurfaces.erase(itA);
+
+				// we also want to know if the selection contains
+				// our already assigned component. If this is the case
+				// we erase also side B surface
+				if (itB != m_selectedSurfaces.end())
+					m_selectedSurfaces.erase(itB);
+
 				continue;
 			}
-			it = m_selectedSurfaces.find(ci.m_sideBSurface);
-			if (it != m_selectedSurfaces.end()) {
+			if (itB != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				m_selectedSurfaces.erase(it);
+				m_selectedSurfaces.erase(itB);
+
+				// we also want to know if the selection contains
+				// our already assigned component. If this is the case
+				// we erase also side B surface
+				if (itA != m_selectedSurfaces.end())
+					m_selectedSurfaces.erase(itA);
 			}
 		}
 
