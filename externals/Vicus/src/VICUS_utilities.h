@@ -94,13 +94,11 @@ inline unsigned int uniqueId(const std::vector<unsigned int>& vec) {
 /*! Function to generate unique (lowest not yet used) ID. */
 template <typename T>
 unsigned int uniqueId(const std::set<T>& vec) {
-	unsigned int id = 1;
-	for (std::set<unsigned int>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
-		if (*it - id > 1)
-			return id+1;
-		++id;
+	for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id) {
+		if (std::find(vec.begin(), vec.end(), id) == vec.end())
+			return id;
 	}
-	return id;
+	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 }
 
 
