@@ -348,7 +348,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	// modify headers using variable substitution map
 	if (!varSubstitutionMap.empty()){
 		std::vector<std::string> tokens;
-		for (unsigned int i=0; i<m_numCols; ++i){
+		for (unsigned int i=0; i<m_numCols + 1; ++i){ // numColumns + 1 (for time column)
 			IBK::explode(headerLabels[i], tokens, ".", IBK::EF_NoFlags); // we need to split element name and quantity
 			std::map<std::string, std::string>::const_iterator varSubst = varSubstitutionMap.find(tokens[0]);
 			if (varSubst != varSubstitutionMap.end() )
