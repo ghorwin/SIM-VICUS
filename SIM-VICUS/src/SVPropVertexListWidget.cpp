@@ -132,39 +132,9 @@ void SVPropVertexListWidget::setupButtons(){
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueId));
 	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelId));
 
+	// only enable button if building and building level exists
 	if(b != nullptr && bl != nullptr)
 		m_ui->toolButtonAddZone->setEnabled(true);
-
-//	try {
-//		try {
-
-//			double x=0;
-//			++x;
-
-//		}  catch (...) {
-
-//		}
-//	}  catch (...) {
-
-//	}
-
-//	// search if building and building level is selected in combo boxes and a zone can be created
-//	bool foundBuildingAndLevel = false;
-//	for(const VICUS::Building &b : project().m_buildings) {
-//		if(foundBuildingAndLevel)
-//			break;
-
-//		if(b.m_id == buildingUniqueId){
-//			for(const VICUS::BuildingLevel &bl : b.m_buildingLevels){
-//				if(bl.m_id == buildingLevelId){
-//					foundBuildingAndLevel = true;
-//					break;
-//				}
-//			}
-//		}
-//	}
-
-
 }
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
