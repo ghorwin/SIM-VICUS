@@ -963,6 +963,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 			}
 			else if (m_vertexList.size() == 2) {
+
 				// create a temporary plane geometry from the three given vertexes
 				IBKMK::Vector3D a = m_vertexList.front();
 				IBKMK::Vector3D b = m_vertexList.back();
@@ -971,6 +972,12 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				VICUS::PlaneGeometry pg(VICUS::Polygon3D::T_Rectangle, a, b, d);
 				addPlane(pg.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
+
+				if (m_vertexBufferData.empty() ) {
+					// we want to keep our line to show that we only need a moved local coordination system
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
+				}
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
 			}
