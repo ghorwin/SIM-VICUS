@@ -305,12 +305,34 @@ void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked()
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
-	assignComponent(false);
+
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
+								   "assigned to the selected surfaces."));
+
+	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+
+	if (selectedComponentId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	assignComponent(false, selectedComponentId);
 }
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
-	assignComponent(true);
+
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
+								   "assigned to the selected surfaces."));
+
+	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+
+	if (selectedComponentId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	assignComponent(true, selectedComponentId);
 }
 
 
@@ -1365,14 +1387,7 @@ void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
 }
 
 
-void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
-	// ask user to select a new component
-	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the database, which will then be "
-								   "assigned to the selected surfaces."));
-	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
-	if (selectedComponentId == VICUS::INVALID_ID)
-		return; // user aborted the dialog
+void SVPropBuildingEditWidget::assignComponent(bool insideWall, unsigned int selectedComponentId) {
 
 	Q_ASSERT(!m_selectedSurfaces.empty());
 
@@ -2001,3 +2016,12 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clic
 	undo->push();
 }
 
+
+void SVPropBuildingEditWidget::on_pushButtonAssignSelComponent_clicked() {
+	QTableWidgetItem *item = m_ui->tableWidgetComponents->selectedItems()[0];
+
+	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator  it = m_componentSurfacesMap.begin();
+	std::advance(it, item->row() );
+
+	assignComponent(false, it->first->m_id);
+}
