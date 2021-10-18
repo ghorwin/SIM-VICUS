@@ -103,6 +103,12 @@ public:
 		NUM_RS
 	};
 
+	enum OrientationMode {
+		OM_Local,
+		OM_Global,
+		NUM_OM
+	};
+
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
@@ -286,10 +292,10 @@ private:
 	ModificationState					m_modificationState[NUM_MT];
 
 	/*! Implies wheather local coordinate system rotation should be used
-		false:	use global coordinate system orientation
-		true:	use local coordinate system orientation
+		OM_Global:	use global coordinate system orientation
+		OM_Local:	use local coordinate system orientation
 	*/
-	bool								m_useLocalCoordOrientation = false;
+	OrientationMode						m_orientationMode = OM_Global;
 
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
@@ -297,11 +303,12 @@ private:
 	/*! Pointer to LocalCoordinateSystemObject */
 	Vic3D::CoordinateSystemObject		*m_cso;
 
-	/*! This is the dimension of the bounding box (dx, dy, dz). */
-	IBKMK::Vector3D						m_boundingBoxDimension;
+	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation. */
+	IBKMK::Vector3D						M_bbDim[NUM_OM];
 
-	/*! Cached center point of boinding box. */
-	IBKMK::Vector3D						m_boundingBoxCenter;
+	/*! Cached center point of boinding box in local/global Orientation. */
+	IBKMK::Vector3D						m_bbCenter[NUM_OM];
+
 
 	/*! Cached normal for absolute rotation */
 	IBKMK::Vector3D						m_normal;

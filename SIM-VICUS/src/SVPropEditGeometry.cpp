@@ -705,40 +705,36 @@ void SVPropEditGeometry::updateUi() {
 
 
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	if (m_useLocalCoordOrientation) {
-		m_boundingBoxDimension = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter,
+	M_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 												  QtExt::QVector2IBKVector(m_cso->translation() ),
 												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-	}
-	else
-		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+	M_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+
 
 	// position local coordinate system, but only if we are showing the edit page
-	m_cso->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	m_cso->setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode]) );
 
 	// update local coordinates
 	Vic3D::Transform3D t;
-	t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	t.setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode]) );
 	setCoordinates( t ); // calls updateInputs() internally
 
 }
 
 void SVPropEditGeometry::updateOrientationMode() {
 	// we update the button state
-	m_ui->toolButtonLocalCoordinateOrientation->setChecked(m_useLocalCoordOrientation);
+	m_ui->toolButtonLocalCoordinateOrientation->setChecked(m_orientationMode == OM_Local);
 
 	// we have to update our bounding box dimensions in our specific coordinate system
-	if (m_useLocalCoordOrientation) {
-		m_boundingBoxDimension = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter,
+	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
+	M_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 												  QtExt::QVector2IBKVector(m_cso->translation() ),
 												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-	}
-	else
-		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+	M_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	// we also update all the line edits and boxes
 	updateInputs();
@@ -986,11 +982,11 @@ void SVPropEditGeometry::updateInputs() {
 					m_ui->labelY->setText("W<sub>Y</sub>");
 					m_ui->labelZ->setText("H<sub>Z</sub>");
 
-					m_originalValues = m_boundingBoxCenter;
+					m_originalValues = m_bbCenter[m_orientationMode];
 
-					m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
-					m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
-					m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
+					m_ui->lineEditX->setValue(M_bbDim[m_orientationMode].m_x);
+					m_ui->lineEditY->setValue(M_bbDim[m_orientationMode].m_y);
+					m_ui->lineEditZ->setValue(M_bbDim[m_orientationMode].m_z);
 
 					break;
 				}
@@ -1201,7 +1197,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
 
-					if (m_useLocalCoordOrientation) {
+					if (m_orientationMode == OM_Local) {
 						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.x()*m_cso->localYAxis().x() + translation.x()*m_cso->localZAxis().z(),
 											translation.y()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.y()*m_cso->localZAxis().z(),
 											translation.z()*m_cso->localXAxis().z() + translation.z()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
@@ -1226,14 +1222,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// compute offset from current local coordinate system position
 					QVector3D scale;
 
-					scale.setX( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( m_boundingBoxDimension.m_x < 1E-4 ? 1.0 : m_boundingBoxDimension.m_x ) ) );
-					scale.setY( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( m_boundingBoxDimension.m_y < 1E-4 ? 1.0 : m_boundingBoxDimension.m_y ) ) );
-					scale.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) ) );
+					scale.setX( M_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( M_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_x ) ) );
+					scale.setY( M_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( M_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_y ) ) );
+					scale.setZ( M_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( M_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_z ) ) );
 					// now compose a transform object and set it in the wireframe object
 					// first we scale our selected objects
-					if (m_useLocalCoordOrientation) {
 
-					}
 
 					Vic3D::Transform3D scaling;
 					scaling.setScale(scale);
@@ -1267,30 +1261,30 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					QVector3D lcsTrans = cso->translation();
 
 					QVector3D newScale;
-					if (m_useLocalCoordOrientation) {
+					if (m_orientationMode == OM_Local) {
 //						const QQuaternion &q = cso->transform().rotation();
 //						scale = q*scale;
 						scale.setX( (scale.x()-1)/2 );
 						scale.setY( (scale.y()-1)/2);
 						scale.setZ( (scale.z()-1)/2);
 
-						newScale.setX( ( m_boundingBoxDimension.m_x
+						newScale.setX( ( M_bbDim[m_orientationMode].m_x
 									   + scale.x() * cso->localXAxis().x()
 									   + scale.y() * cso->localYAxis().x()
 									   + scale.z() * cso->localZAxis().x() ) /
-									   m_boundingBoxDimension.m_x );
+									   M_bbDim[m_orientationMode].m_x );
 
-						newScale.setY( ( m_boundingBoxDimension.m_y
+						newScale.setY( ( M_bbDim[m_orientationMode].m_y
 									   + scale.x() * cso->localXAxis().y()
 									   + scale.y() * cso->localYAxis().y()
 									   + scale.z() * cso->localZAxis().y() ) /
-										m_boundingBoxDimension.m_y );
+										M_bbDim[m_orientationMode].m_y );
 
-						newScale.setZ( ( m_boundingBoxDimension.m_z
+						newScale.setZ( ( M_bbDim[m_orientationMode].m_z
 									   + scale.x() * cso->localXAxis().z()
 									   + scale.y() * cso->localYAxis().z()
 									   + scale.z() * cso->localZAxis().z() ) /
-									   m_boundingBoxDimension.m_z );
+									   M_bbDim[m_orientationMode].m_z );
 
 						scale = newScale;
 
@@ -1352,12 +1346,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					// we take the QQuarternion to rotate
 					QVector4D rotVec = rota.rotation().toVector4D();
-					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Vector3D newCenter = m_bbCenter[m_orientationMode];
 					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
 					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode] - newCenter) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1378,12 +1372,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
 					QVector4D rotVec = rota.rotation().toVector4D();
-					IBKMK::Vector3D newCenter = m_boundingBoxCenter;
+					IBKMK::Vector3D newCenter = m_bbCenter[m_orientationMode];
 					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
 					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
+					rota.setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode] - newCenter) );
 
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
@@ -1919,7 +1913,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 
 void SVPropEditGeometry::on_toolButtonLocalCoordinateOrientation_clicked(bool checked) {
 	// we set the state of our local coordinate system
-	m_useLocalCoordOrientation = checked;
+	m_orientationMode = checked ? OM_Local : OM_Global;
 
 	// we update all the specific parameters
 	updateOrientationMode();
@@ -1946,21 +1940,29 @@ void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
 
 		deselectedSubSurfaceUniqueIDs.insert(subSurf.uniqueID());
 
-		VICUS::SubSurface newSubSurf = subSurf.clone(); // clone the object with an unique ID
-		newSubSurf.m_displayName = VICUS::uniqueName(subSurf.m_displayName, m_subSurfNames); // get a unique name back
+		VICUS::SubSurface clonedSubSurf = subSurf.clone(); // clone the object with an unique ID
+		clonedSubSurf.m_displayName = VICUS::uniqueName(subSurf.m_displayName, m_subSurfNames); // get a unique name back
+		// we also have to take care that we have to change the id (not unique id) of the surface
+		// for now I assume that I can take the unique id as the id
+		// needed for component instances
+		clonedSubSurf.m_id = clonedSubSurf.uniqueID();
+		clonedSubSurf.m_selected = true; // select copied surface
+
 		// update 2D Coordinates
 		// How are we going to do this?
-		Q_ASSERT(newSubSurf.m_parent != nullptr);
+		Q_ASSERT(clonedSubSurf.m_parent != nullptr);
 
-		const VICUS::Surface *surf = dynamic_cast<VICUS::Surface*>(newSubSurf.m_parent);
+		oldNewIDMap[subSurf.m_id] = clonedSubSurf.m_id;
 
-		IBKMK::Vector3D offset3d = dynamic_cast<VICUS::Surface*>(newSubSurf.m_parent)->geometry().polygon().vertexes()[0];
-		IBKMK::Vector2D offset2d = newSubSurf.offset();
+		const VICUS::Surface *surf = dynamic_cast<VICUS::Surface*>(clonedSubSurf.m_parent);
+
+		IBKMK::Vector3D offset3d = dynamic_cast<VICUS::Surface*>(clonedSubSurf.m_parent)->geometry().polygon().vertexes()[0];
+		IBKMK::Vector2D offset2d = clonedSubSurf.offset();
 
 		std::vector<IBKMK::Vector2D> newVertexes (subSurf.m_polygon2D.vertexes().size() );
 
-		for ( unsigned int j = 0; j<newSubSurf.m_polygon2D.vertexes().size(); ++j ) {
-			IBKMK::Vector2D v = newSubSurf.m_polygon2D.vertexes()[j];
+		for ( unsigned int j = 0; j<clonedSubSurf.m_polygon2D.vertexes().size(); ++j ) {
+			IBKMK::Vector2D v = clonedSubSurf.m_polygon2D.vertexes()[j];
 
 			// first we calc the 3D Point
 			// then we transform it
@@ -1974,10 +1976,10 @@ void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
 
 		}
 
-		newSubSurf.m_polygon2D.setVertexes(newVertexes);
+		clonedSubSurf.m_polygon2D.setVertexes(newVertexes);
 
 
-		newSubSurfaces.push_back(newSubSurf);
+		newSubSurfaces.push_back(clonedSubSurf);
 
 	}
 
