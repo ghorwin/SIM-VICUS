@@ -233,8 +233,7 @@ private slots:
 
 	void on_pushButtonFlipNormals_clicked();
 
-
-	void on_toolButtonLocalCoordinateOrentation_clicked(bool checked);
+	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
 
 	void on_pushButtonCopySubSurfaces_clicked();
 
@@ -260,6 +259,12 @@ private:
 	*/
 	void updateUi();
 
+	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
+		false: use global coordinate system orientation
+		true: use local coordinate system orientation
+	*/
+	void updateOrientationMode();
+
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
 
@@ -280,7 +285,10 @@ private:
 	*/
 	ModificationState					m_modificationState[NUM_MT];
 
-	/*! Implies wheather local coordinate system rotation should be used */
+	/*! Implies wheather local coordinate system rotation should be used
+		false:	use global coordinate system orientation
+		true:	use local coordinate system orientation
+	*/
 	bool								m_useLocalCoordOrientation = false;
 
 	/*! Contains position and rotation of local coordinate system object. */

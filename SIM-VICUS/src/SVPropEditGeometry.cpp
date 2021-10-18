@@ -217,7 +217,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->widgetXYZ->layout()->setMargin(0);
 	m_ui->widgetRota->layout()->setMargin(0);
 
-	on_toolButtonLocalCoordinateOrentation_clicked(false);
 
 	// we set the local coordinate system object
 	m_cso = SVViewStateHandler::instance().m_coordinateSystemObject;
@@ -491,6 +490,7 @@ void SVPropEditGeometry::rotate() {
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
+	QVector3D transLCSO = m_cso->translation();
 
 	// process all selected objects
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
@@ -556,6 +556,7 @@ void SVPropEditGeometry::rotate() {
 	undo->push();
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	m_cso->setTranslation(transLCSO);
 	blockSignals(false);
 }
 
@@ -701,6 +702,8 @@ void SVPropEditGeometry::updateUi() {
 		}
 	}
 
+
+
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
 	if (m_useLocalCoordOrientation) {
 		m_boundingBoxDimension = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter,
@@ -720,6 +723,25 @@ void SVPropEditGeometry::updateUi() {
 	t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
 	setCoordinates( t ); // calls updateInputs() internally
 
+}
+
+void SVPropEditGeometry::updateOrientationMode() {
+	// we update the button state
+	m_ui->toolButtonLocalCoordinateOrientation->setChecked(m_useLocalCoordOrientation);
+
+	// we have to update our bounding box dimensions in our specific coordinate system
+	if (m_useLocalCoordOrientation) {
+		m_boundingBoxDimension = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter,
+												  QtExt::QVector2IBKVector(m_cso->translation() ),
+												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+	}
+	else
+		m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
+
+	// we also update all the line edits and boxes
+	updateInputs();
 }
 
 
@@ -1254,9 +1276,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					if (m_useLocalCoordOrientation) {
 //						const QQuaternion &q = cso->transform().rotation();
 //						scale = q*scale;
-						scale.setX( scale.x() - 1 );
-						scale.setY( scale.y() - 1 );
-						scale.setZ( scale.z() - 1 );
+						scale.setX( (scale.x()-1)/2 );
+						scale.setY( (scale.y()-1)/2);
+						scale.setZ( (scale.z()-1)/2);
 
 						newScale.setX( ( m_boundingBoxDimension.m_x
 									   + scale.x() * cso->localXAxis().x()
@@ -1275,7 +1297,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 									   + scale.y() * cso->localYAxis().z()
 									   + scale.z() * cso->localZAxis().z() ) /
 									   m_boundingBoxDimension.m_z );
-
 
 						scale = newScale;
 
@@ -1902,9 +1923,12 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 
 
 
-void SVPropEditGeometry::on_toolButtonLocalCoordinateOrentation_clicked(bool checked) {
-	m_ui->toolButtonLocalCoordinateOrentation->setChecked(checked);
+void SVPropEditGeometry::on_toolButtonLocalCoordinateOrientation_clicked(bool checked) {
+	// we set the state of our local coordinate system
 	m_useLocalCoordOrientation = checked;
+
+	// we update all the specific parameters
+	updateOrientationMode();
 }
 
 void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {

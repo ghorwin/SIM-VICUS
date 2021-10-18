@@ -232,7 +232,7 @@
      <widget class="QWidget" name="page_2">
       <layout class="QVBoxLayout" name="verticalLayoutPage2">
        <item>
-        <widget class="QToolButton" name="toolButtonLocalCoordinateOrentation">
+        <widget class="QToolButton" name="toolButtonLocalCoordinateOrientation">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
            <horstretch>0</horstretch>
