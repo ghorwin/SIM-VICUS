@@ -227,6 +227,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	if (r == -1 || m_componentSurfacesMap.empty()) {
 		m_ui->pushButtonEditComponents->setEnabled(false);
 		m_ui->pushButtonExchangeComponents->setEnabled(false);
+		m_ui->pushButtonAssignSelComponent->setEnabled(false);
 		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
 		return;
 	}
@@ -234,6 +235,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
+	m_ui->pushButtonAssignSelComponent->setEnabled(enabled);
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
@@ -1668,6 +1670,7 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged(
 	// enable/disable buttons based on selection changed signal
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
+	m_ui->pushButtonAssignSelComponent->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
 }
 
@@ -2018,10 +2021,8 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clic
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignSelComponent_clicked() {
-	QTableWidgetItem *item = m_ui->tableWidgetComponents->selectedItems()[0];
-
-	std::map<const VICUS::Component*, std::vector<const VICUS::Surface *> >::const_iterator  it = m_componentSurfacesMap.begin();
-	std::advance(it, item->row() );
-
-	assignComponent(false, it->first->m_id);
+	// we take the currently selected component
+	const VICUS::Component * comp = currentlySelectedComponent();
+	// assign it to our selected surfaces
+	assignComponent(false, comp->m_id);
 }
