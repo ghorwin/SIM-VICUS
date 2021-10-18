@@ -40,6 +40,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_FormatString.h>
+#include <IBK_messages.h>
 
 
 namespace IBKMK {
@@ -134,10 +135,10 @@ void SparseMatrixPattern::set(unsigned int i, unsigned int j) {
 	unsigned int hash = i*m_n + j;
 	m_data.insert(hash);
 #else // STANDARD_IMPLEMENTATION
-	unsigned int chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
-	unsigned int indj = j / 32;
+	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
+	uint64_t indj = j / 32;
 	// generate index of chunk
-	unsigned int hash = i*chunksPerRow + indj;
+	uint64_t hash = i*chunksPerRow + indj;
 	// generate index of bit in chunk
 	unsigned int modj = j % 32;
 	unsigned int bitidx = 1 << modj;
@@ -161,11 +162,11 @@ bool SparseMatrixPattern::test(unsigned int i, unsigned int j) const {
 	unsigned int hash = i*m_n + j;
 	return m_data.find(hash) != m_data.end();
 #else // STANDARD_IMPLEMENTATION
-	unsigned int chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
-	unsigned int indj = j / 32;
+	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
+	uint64_t indj = j / 32;
 	// generate index of chunk
-	unsigned int hash = i*chunksPerRow + indj;
-	std::map<unsigned int, unsigned int>::const_iterator it = m_data.find(hash);
+	uint64_t hash = i*chunksPerRow + indj;
+	std::map<uint64_t, unsigned int>::const_iterator it = m_data.find(hash);
 	if (it == m_data.end())
 		return false;
 	// search bit
@@ -195,10 +196,10 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 	columnIndexes.clear(); // should be a no-op if vector is empty
 
 	// generate index of first chunk in row i
-	unsigned int chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
+	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
 	unsigned int colIndex = 0;
-	for (unsigned int hash = chunksPerRow*i; hash<chunksPerRow*(i+1); ++hash) {
-		std::map<unsigned int, unsigned int>::const_iterator it = m_data.find(hash);
+	for (uint64_t hash = chunksPerRow*i; hash<chunksPerRow*(i+1); ++hash) {
+		std::map<uint64_t, unsigned int>::const_iterator it = m_data.find(hash);
 		if (it == m_data.end()) {
 			colIndex += 32; // skip all bits in this chunk
 			continue; // no bit set in this chunk
@@ -207,8 +208,9 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 		// search for bits in chunk
 		unsigned int mask = 1;
 		for (unsigned int h=0; h<32; ++h) {
-			if (val & mask)
+			if (val & mask) {
 				columnIndexes.push_back(colIndex);
+			}
 			mask <<= 1;
 			++colIndex;
 		}
