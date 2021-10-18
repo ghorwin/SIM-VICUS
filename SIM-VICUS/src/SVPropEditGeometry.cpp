@@ -102,13 +102,13 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropEditGeometry::onViewStateChanged);
 
-	m_ui->lineEditX->setup(-1E5,1E5,tr("X Value"),true, true);
-	m_ui->lineEditY->setup(-1E5,1E5,tr("Y Value"),true, true);
-	m_ui->lineEditZ->setup(-1E5,1E5,tr("Z Value"),true, true);
+	m_ui->lineEditXValue->setup(-1E5,1E5,tr("X Value"),true, true);
+	m_ui->lineEditYValue->setup(-1E5,1E5,tr("Y Value"),true, true);
+	m_ui->lineEditZValue->setup(-1E5,1E5,tr("Z Value"),true, true);
 
-	m_ui->lineEditX->setFormatter(new LineEditFormater);
-	m_ui->lineEditY->setFormatter(new LineEditFormater);
-	m_ui->lineEditZ->setFormatter(new LineEditFormater);
+	m_ui->lineEditXValue->setFormatter(new LineEditFormater);
+	m_ui->lineEditYValue->setFormatter(new LineEditFormater);
+	m_ui->lineEditZValue->setFormatter(new LineEditFormater);
 	m_ui->lineEditInclination->setFormatter(new LineEditFormater);
 	m_ui->lineEditOrientation->setFormatter(new LineEditFormater);
 
@@ -116,9 +116,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditYCopy->setFormatter(new LineEditFormater);
 	m_ui->lineEditZCopy->setFormatter(new LineEditFormater);
 
-	m_ui->lineEditX->installEventFilter(this);
-	m_ui->lineEditY->installEventFilter(this);
-	m_ui->lineEditZ->installEventFilter(this);
+	m_ui->lineEditXValue->installEventFilter(this);
+	m_ui->lineEditYValue->installEventFilter(this);
+	m_ui->lineEditZValue->installEventFilter(this);
 	m_ui->lineEditInclination->installEventFilter(this);
 	m_ui->lineEditOrientation->installEventFilter(this);
 
@@ -286,17 +286,7 @@ void SVPropEditGeometry::on_pushButtonAddWindow_clicked() {
 }
 
 
-void SVPropEditGeometry::on_lineEditX_editingFinished() {
-	on_lineEditX_returnPressed();
-}
 
-void SVPropEditGeometry::on_lineEditY_editingFinished() {
-	on_lineEditY_returnPressed();
-}
-
-void SVPropEditGeometry::on_lineEditZ_editingFinished() {
-	on_lineEditZ_returnPressed();
-}
 
 
 void SVPropEditGeometry::translate() {
@@ -336,7 +326,6 @@ void SVPropEditGeometry::translate() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
-
 void SVPropEditGeometry::scale() {
 	// we now apply the already specified transformation
 	// get translation and scale vector from selected geometry object
@@ -357,11 +346,11 @@ void SVPropEditGeometry::scale() {
 			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
-				Vic3D::Transform3D t;
+				Vic3D::Transform3D t, vNew;
 				t.scale(QtExt::IBKVector2QVector(scale) );
 				t.translate(QtExt::IBKVector2QVector(trans) );
-				t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
-				v = QtExt::QVector2IBKVector(t.translation());
+				vNew.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
+				v = QtExt::QVector2IBKVector(vNew.translation());
 			}
 			VICUS::Surface modS(*s);
 
@@ -667,9 +656,9 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 
 	if ( event->type() == QEvent::Wheel ) {
 		// we listen to scroll wheel turns only for some line edits
-		if (target == m_ui->lineEditX ||
-				target == m_ui->lineEditY ||
-				target == m_ui->lineEditZ ||
+		if (target == m_ui->lineEditXValue ||
+				target == m_ui->lineEditYValue ||
+				target == m_ui->lineEditZValue ||
 				target == m_ui->lineEditInclination ||
 				target == m_ui->lineEditOrientation ||
 				target == m_ui->lineEditXCopy ||
@@ -691,55 +680,6 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 	}
 	return false;
 }
-
-
-void SVPropEditGeometry::on_lineEditX_returnPressed() {
-	// check if entered value is valid, if not reset it to its default
-
-	if ( !m_ui->lineEditX->isValid() ) {
-		m_ui->lineEditX->setValue( m_originalValues.m_x);
-		return;
-	}
-
-	//	double tempXValue = m_ui->lineEditX->value();
-	switch ( m_modificationType ) {
-		case MT_Translate: translate(); break;
-		case MT_Scale: scale(); break;
-		case MT_Rotate: rotate(); break;
-	}
-}
-
-void SVPropEditGeometry::on_lineEditY_returnPressed() {
-	// check if entered value is valid, if not reset it to its default
-
-	if ( !m_ui->lineEditY->isValid() ) {
-		m_ui->lineEditY->setValue( m_originalValues.m_y );
-		return;
-	}
-
-	//	double tempXValue = m_ui->lineEditX->value();
-	switch ( m_modificationType ) {
-		case MT_Translate: translate(); break;
-		case MT_Scale: scale(); break;
-		case MT_Rotate: rotate(); break;
-	}
-}
-
-void SVPropEditGeometry::on_lineEditZ_returnPressed(){
-	// check if entered value is valid, if not reset it to its default
-
-	if ( !m_ui->lineEditZ->isValid() ) {
-		m_ui->lineEditZ->setValue( m_originalValues.m_z );
-		return;
-	}
-
-	switch ( m_modificationType ) {
-		case MT_Translate: translate(); break;
-		case MT_Scale: scale(); break;
-		case MT_Rotate: rotate(); break;
-	}
-}
-
 
 
 void SVPropEditGeometry::setState(const SVPropEditGeometry::ModificationType & type,
@@ -778,9 +718,9 @@ void SVPropEditGeometry::updateInputs() {
 					m_originalValues = QtExt::QVector2IBKVector(m_localCoordinatePosition.translation());
 
 					IBKMK::Vector3D trans(QtExt::QVector2IBKVector(m_localCoordinatePosition.translation()));
-					m_ui->lineEditX->setValue(trans.m_x);
-					m_ui->lineEditY->setValue(trans.m_y);
-					m_ui->lineEditZ->setValue(trans.m_z);
+					m_ui->lineEditXValue->setValue(trans.m_x);
+					m_ui->lineEditYValue->setValue(trans.m_y);
+					m_ui->lineEditZValue->setValue(trans.m_z);
 				} break;
 
 				default:
@@ -790,9 +730,9 @@ void SVPropEditGeometry::updateInputs() {
 
 					m_originalValues = IBKMK::Vector3D();
 
-					m_ui->lineEditX->setValue(0);
-					m_ui->lineEditY->setValue(0);
-					m_ui->lineEditZ->setValue(0);
+					m_ui->lineEditXValue->setValue(0);
+					m_ui->lineEditYValue->setValue(0);
+					m_ui->lineEditZValue->setValue(0);
 			} // switch
 
 		} break;
@@ -812,16 +752,16 @@ void SVPropEditGeometry::updateInputs() {
 					showRotation();
 					showDeg(false);
 
-					m_ui->lineEditX->setValue(0);
-					m_ui->lineEditY->setValue(0);
-					m_ui->lineEditZ->setValue(0);
+					m_ui->lineEditXValue->setValue(0);
+					m_ui->lineEditYValue->setValue(0);
+					m_ui->lineEditZValue->setValue(0);
 				}
 					break;
 
 				default:
-					m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-					m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-					m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+					m_ui->lineEditXValue->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+					m_ui->lineEditYValue->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+					m_ui->lineEditZValue->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
 			}
 
 		} break;
@@ -841,9 +781,9 @@ void SVPropEditGeometry::updateInputs() {
 
 					m_originalValues = m_boundingBoxCenter;
 
-					m_ui->lineEditX->setValue(m_boundingBoxDimension.m_x);
-					m_ui->lineEditY->setValue(m_boundingBoxDimension.m_y);
-					m_ui->lineEditZ->setValue(m_boundingBoxDimension.m_z);
+					m_ui->lineEditXValue->setValue(m_boundingBoxDimension.m_x);
+					m_ui->lineEditYValue->setValue(m_boundingBoxDimension.m_y);
+					m_ui->lineEditZValue->setValue(m_boundingBoxDimension.m_z);
 
 					break;
 				}
@@ -854,9 +794,9 @@ void SVPropEditGeometry::updateInputs() {
 
 					m_originalValues = IBKMK::Vector3D( 1,1,1 );
 
-					m_ui->lineEditX->setValue(m_originalValues.m_x );
-					m_ui->lineEditY->setValue(m_originalValues.m_y );
-					m_ui->lineEditZ->setValue(m_originalValues.m_z );
+					m_ui->lineEditXValue->setValue(m_originalValues.m_x );
+					m_ui->lineEditYValue->setValue(m_originalValues.m_y );
+					m_ui->lineEditZValue->setValue(m_originalValues.m_z );
 			}
 		} break;
 	} // switch modification type
@@ -1027,7 +967,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			switch (state) {
 				case MS_Absolute : {
 					// for this operation, we need all three coordinates
-					QVector3D targetPos((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+					QVector3D targetPos((float)m_ui->lineEditXValue->value(), (float)m_ui->lineEditYValue->value(), (float)m_ui->lineEditZValue->value());
 					// compute offset from current local coordinate system position
 					QVector3D translation = targetPos - m_localCoordinatePosition.translation();
 					// now compose a transform object and set it in the wireframe object
@@ -1041,7 +981,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// inputs are global coordinate offsets
 				case MS_Relative : {
 					// for this operation, we need all three coordinates
-					QVector3D translation((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
+					QVector3D translation((float)m_ui->lineEditXValue->value(), (float)m_ui->lineEditYValue->value(), (float)m_ui->lineEditZValue->value());
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
 					trans.setTranslation(translation);
@@ -1060,9 +1000,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					QVector3D localX = rot.rotatedVector(LocalX);
 					QVector3D localY = rot.rotatedVector(LocalY);
 					QVector3D localZ = rot.rotatedVector(LocalZ);
-					QVector3D translation = localX*(float)m_ui->lineEditX->value()
-											+ localY*(float)m_ui->lineEditY->value()
-											+ localZ*(float)m_ui->lineEditZ->value();
+					QVector3D translation = localX*(float)m_ui->lineEditXValue->value()
+											+ localY*(float)m_ui->lineEditYValue->value()
+											+ localZ*(float)m_ui->lineEditZValue->value();
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
 					trans.setTranslation(translation);
@@ -1078,7 +1018,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			switch (state) {
 				case MS_Absolute: {
 					// for this operation, we need at first the dimensions of the bounding box from
-					IBKMK::Vector3D targetScale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
+					IBKMK::Vector3D targetScale(m_ui->lineEditXValue->value(), m_ui->lineEditYValue->value(), m_ui->lineEditZValue->value());
 					// compute offset from current local coordinate system position
 					IBKMK::Vector3D scale;
 
@@ -1113,9 +1053,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					const QVector3D yAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localYAxis();
 					const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
 
-					IBKMK::Vector3D scale(	m_ui->lineEditX->value()*double( xAxis.x()+yAxis.x()+zAxis.x() ),
-											m_ui->lineEditY->value()*double( xAxis.y()+yAxis.y()+zAxis.y() ),
-											m_ui->lineEditZ->value()*double( xAxis.z()+yAxis.z()+zAxis.z() ));
+					IBKMK::Vector3D scale(	m_ui->lineEditXValue->value()*double( xAxis.x()+yAxis.x()+zAxis.x() ),
+											m_ui->lineEditYValue->value()*double( xAxis.y()+yAxis.y()+zAxis.y() ),
+											m_ui->lineEditZValue->value()*double( xAxis.z()+yAxis.z()+zAxis.z() ));
 
 					Vic3D::Transform3D scaling;
 					scaling.setScale( QtExt::IBKVector2QVector(scale) );
@@ -1138,7 +1078,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				case MS_Relative: {
 					// for this operation, we get directly the surface scaling factors from the line edits
 					// so it is basically like the absolute scaling, but we do not have to calculate the scaling factors
-					IBKMK::Vector3D  scale(m_ui->lineEditX->value(), m_ui->lineEditY->value(), m_ui->lineEditZ->value());
+					IBKMK::Vector3D  scale(m_ui->lineEditXValue->value(), m_ui->lineEditYValue->value(), m_ui->lineEditZValue->value());
 					// compute offset from current local coordinate system position
 					Vic3D::Transform3D scaling;
 					scaling.setScale( QtExt::IBKVector2QVector(scale) );
@@ -1210,12 +1150,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					const QVector3D zAxis = SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis();
 
 					Vic3D::Transform3D rota;
-					if ( lineEdit == m_ui->lineEditX )
-						rota.setRotation((float)m_ui->lineEditX->value(), xAxis);
-					else if ( lineEdit == m_ui->lineEditY )
-						rota.setRotation((float)m_ui->lineEditY->value(), yAxis);
-					else if ( lineEdit == m_ui->lineEditZ )
-						rota.setRotation((float)m_ui->lineEditZ->value(), zAxis);
+					if ( lineEdit == m_ui->lineEditXValue )
+						rota.setRotation((float)m_ui->lineEditXValue->value(), xAxis);
+					else if ( lineEdit == m_ui->lineEditYValue )
+						rota.setRotation((float)m_ui->lineEditYValue->value(), yAxis);
+					else if ( lineEdit == m_ui->lineEditZValue )
+						rota.setRotation((float)m_ui->lineEditZValue->value(), zAxis);
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
@@ -1236,12 +1176,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				case MS_Relative: {
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D rota;
-					if ( lineEdit == m_ui->lineEditX )
-						rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
-					else if ( lineEdit == m_ui->lineEditY )
-						rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
-					else if ( lineEdit == m_ui->lineEditZ )
-						rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
+					if ( lineEdit == m_ui->lineEditXValue )
+						rota.setRotation((float)m_ui->lineEditXValue->value(), 1, 0, 0);
+					else if ( lineEdit == m_ui->lineEditYValue )
+						rota.setRotation((float)m_ui->lineEditYValue->value(), 0, 1, 0);
+					else if ( lineEdit == m_ui->lineEditZValue )
+						rota.setRotation((float)m_ui->lineEditZValue->value(), 0, 0, 1);
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
@@ -1264,16 +1204,16 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 }
 
 
-void SVPropEditGeometry::on_lineEditX_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditX);
+void SVPropEditGeometry::on_lineEditXValue_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditXValue);
 }
 
-void SVPropEditGeometry::on_lineEditY_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditY);
+void SVPropEditGeometry::on_lineEditYValue_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditYValue);
 }
 
-void SVPropEditGeometry::on_lineEditZ_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditZ);
+void SVPropEditGeometry::on_lineEditZValue_textChanged(const QString &) {
+	onLineEditTextChanged(m_ui->lineEditZValue);
 }
 
 void SVPropEditGeometry::on_lineEditOrientation_textChanged(const QString &) {
@@ -1784,4 +1724,53 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
 
+
+
+void SVPropEditGeometry::on_lineEditXValue_editingFinished() {
+	// check if entered value is valid, if not reset it to its default
+	if ( !m_ui->lineEditXValue->isValid() ) {
+		m_ui->lineEditXValue->setValue( m_originalValues.m_z );
+		return;
+	}
+	if ( ( m_originalValues.m_z - m_ui->lineEditXValue->value() ) < 1E-3 )
+		return;
+
+	switch ( m_modificationType ) {
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
+	}
+}
+
+void SVPropEditGeometry::on_lineEditYValue_editingFinished() {
+	// check if entered value is valid, if not reset it to its default
+	if ( !m_ui->lineEditYValue->isValid() ) {
+		m_ui->lineEditYValue->setValue( m_originalValues.m_y );
+		return;
+	}
+	if ( ( m_originalValues.m_y - m_ui->lineEditYValue->value() ) < 1E-3 )
+		return;
+
+	switch ( m_modificationType ) {
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
+	}
+}
+
+void SVPropEditGeometry::on_lineEditZValue_editingFinished() {
+	// check if entered value is valid, if not reset it to its default
+	if ( !m_ui->lineEditZValue->isValid() ) {
+		m_ui->lineEditZValue->setValue( m_originalValues.m_z );
+		return;
+	}
+	if ( ( m_originalValues.m_z - m_ui->lineEditZValue->value() ) < 1E-3 )
+		return;
+
+	switch ( m_modificationType ) {
+		case MT_Translate: translate(); break;
+		case MT_Scale: scale(); break;
+		case MT_Rotate: rotate(); break;
+	}
+}
 
