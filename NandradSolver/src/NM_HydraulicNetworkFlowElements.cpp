@@ -454,18 +454,6 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 							zetaControlled = y;
 						}
 
-//						// apply
-//						if (m_zetaControlledLast > 0) {
-//							double zetaDerivMax = 1e5; // max change per s
-//							double timeStep = m_timePointCurrent - m_timePointLast;
-//							double zetaDeriv = (zetaControlled - m_zetaControlledLast) / timeStep;
-//							if (zetaDeriv > zetaDerivMax)
-//								zetaControlled = m_zetaControlledLast + zetaDerivMax * timeStep;
-//							else if (zetaDeriv < -zetaDerivMax)
-//								zetaControlled = m_zetaControlledLast - zetaDerivMax * timeStep;
-//						}
-
-
 					} break;
 
 					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
@@ -515,8 +503,8 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
-
-
+//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
+//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
 	return 0.0;
 }
 
@@ -551,18 +539,6 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
-}
-
-void HNPressureLossCoeffElement::stepCompleted(double t)
-{
-	m_timePointLast = t;
-	m_zetaControlledLast = m_zetaControlled;
-}
-
-int HNPressureLossCoeffElement::setTime(double t)
-{
-	m_timePointCurrent = t;
-	return 0;
 }
 
 
@@ -988,18 +964,6 @@ void HNVariablePressureHeadPump::modelQuantityValueRefs(std::vector<const double
 
 void HNVariablePressureHeadPump::updateResults(double mdot, double p_inlet, double p_outlet) {
 	m_pressureHead = pressureHead(mdot);
-}
-
-int HNVariablePressureHeadPump::setTime(double t)
-{
-	m_currentTimePoint = t;
-	return 0;
-}
-
-void HNVariablePressureHeadPump::stepCompleted(double t)
-{
-	m_lastPressureHead = m_pressureHead;
-	m_lastTimePoint = t;
 }
 
 double HNVariablePressureHeadPump::pressureHead(double mdot) const

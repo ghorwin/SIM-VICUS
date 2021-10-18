@@ -127,7 +127,7 @@ public:
 	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Dummy, does nothing */
-	int setTime(double t) override;
+	int setTime(double t) override { (void)t; return 0; }
 
 	/*! Stores last solution from Newton solver as new initial solution for next call. */
 	void stepCompleted(double t) override;

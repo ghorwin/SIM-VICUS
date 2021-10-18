@@ -164,18 +164,7 @@ public:
 	flow element in order to control e.g. its temperature difference */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
-
-	// HydraulicNetworkAbstractFlowElement interface
-	void stepCompleted(double t) override;
-	int setTime(double t) override;
-
-
 private:
-
-	double				m_timePointLast = 0;
-	double				m_timePointCurrent = 0;
-	double				m_zetaControlledLast = 100;
-
 
 	/*! Computes the controlled zeta-value if a control-model is implemented.
 		Otherwise returns 0.
@@ -221,7 +210,6 @@ private:
 	friend class ThermalNetworkStatesModel;
 
 }; // HNFixedPressureLossCoeffElement
-
 
 
 /*! Pump model with fixed/scheduled constant pressure head */
@@ -402,26 +390,15 @@ public:
 	/*! Return value reference of pressure head computed by flow element. */
 	const double * pressureHeadRef() const { return &m_pressureHead; }
 
-	// HydraulicNetworkAbstractFlowElement interface
-	int setTime(double t) override;
-	void stepCompleted(double t) override;
-
 private:
 
 	double pressureHead(double mdot) const;
 
 	double							m_pressureHead = -999;
-	double							m_lastPressureHead = -999;
-
-	double							m_currentTimePoint = -999;
-	double							m_lastTimePoint = 0;
 
 	double							m_designPressureHead = -999;
 	double							m_minimumPressureHead = -999;
 	double							m_designMassFlux = -999;
-
-
-
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
 	/*! fluid density in kg/m3 */
@@ -434,6 +411,7 @@ private:
 	double							m_maxPressureHeadMinFlow = -999;
 	/*! minimum pressure head at point of minimal mass flow in Pa */
 	double							m_minPressureHeadMinFlow = -999;
+
 
 
 }; // HNVariablePressureHeadPump
