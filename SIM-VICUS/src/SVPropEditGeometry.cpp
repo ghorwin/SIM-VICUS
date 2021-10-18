@@ -1231,18 +1231,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					scale.setZ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( m_boundingBoxDimension.m_z < 1E-4 ? 1.0 : m_boundingBoxDimension.m_z ) ) );
 					// now compose a transform object and set it in the wireframe object
 					// first we scale our selected objects
-
-
-					QVector3D newScale;
 					if (m_useLocalCoordOrientation) {
-						const Vic3D::CoordinateSystemObject *cso = m_cso;
-						const QQuaternion &q = cso->transform().rotation();
-						scale = q*scale;
+
 					}
 
-
 					Vic3D::Transform3D scaling;
-					scaling.setScale(newScale);
+					scaling.setScale(scale);
 
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
