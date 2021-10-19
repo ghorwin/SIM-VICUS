@@ -1290,15 +1290,18 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
 
 	std::set<unsigned int> surfacesToDDeselect;
+
+	QStringList errorStack;
+
 	// loop over all components and look for a selected side - if there is more than one side of a component
 	// instance selected, show an error message
 	for (const VICUS::ComponentInstance * c : m_selectedComponentInstances) {
-		// both sides selected?
-		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected);
-		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected);
+		// both sides selected and VISIBLE?
+		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected && c->m_sideASurface->m_visible);
+		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected && c->m_sideBSurface->m_visible);
 		if (sideASelected && sideBSelected) {
-			QMessageBox::critical(this, QString(), tr("You must not select both surfaces of the same component!"));
-			return;
+			errorStack << c->m_sideASurface->m_displayName + " - " + c->m_sideBSurface->m_displayName;
+			continue;
 		}
 		// now lookup copied componentInstance by ID and swap sides if:
 		// - the selected side is side B and should be switched to side A
@@ -1317,6 +1320,10 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 		}
 	}
 
+	if(!errorStack.empty()){
+		QMessageBox::critical(this, QString(), tr("You must not select both surfaces of the same component! Surface names:\n") + errorStack.join("\n"));
+		return;
+	}
 	// if there was no change, inform the user and abort
 	if (surfacesToDDeselect.empty()) {
 		QMessageBox::information(this, QString(), tr("All of the selected surfaces are already aligned as requested."));
