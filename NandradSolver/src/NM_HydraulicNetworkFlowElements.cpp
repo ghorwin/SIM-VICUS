@@ -246,8 +246,10 @@ void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*
 HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementId,
 														const NANDRAD::HydraulicNetworkComponent &component,
 														const NANDRAD::HydraulicFluid &fluid,
-														const NANDRAD::HydraulicNetworkControlElement *controlElement):
+														const NANDRAD::HydraulicNetworkControlElement *controlElement,
+														unsigned int numberParallelElements):
 	m_id(flowElementId),
+	m_numberParallelElements(numberParallelElements),
 	m_controlElement(controlElement)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -397,7 +399,7 @@ void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double
 double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	// for negative mass flow: dp is negative
 	double area = PI / 4 * m_diameter * m_diameter;
-	double velocity = mdot / (m_fluidDensity * area); // signed!
+	double velocity = mdot / (m_fluidDensity * area * m_numberParallelElements); // signed!
 	double zeta = m_zeta;
 	if (m_controlElement != nullptr)
 		zeta += zetaControlled(mdot); // no clipping necessary here, function zetaControlled() takes care of that!
@@ -553,7 +555,7 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 }
 
 
-double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	return p_inlet - p_outlet + *m_pressureHeadRef;
 }
 
@@ -981,6 +983,9 @@ double HNVariablePressureHeadPump::pressureHead(double mdot) const
 	const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
 	// --> pressHeadMax = f (V_dot)
 	double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
+
+	if (pressHeadMax < 0)
+		pressHeadMax = 0;
 
 	// clipping
 	if (dp > pressHeadMax)

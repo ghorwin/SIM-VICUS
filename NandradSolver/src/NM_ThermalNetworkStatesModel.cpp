@@ -281,7 +281,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve: {
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+				case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement: {
 					TNAdiabaticElement * element = new TNAdiabaticElement( m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // no heat loss

@@ -131,7 +131,8 @@ public:
 	HNPressureLossCoeffElement(unsigned int flowElementId,
 							   const NANDRAD::HydraulicNetworkComponent & component,
 							   const NANDRAD::HydraulicFluid & fluid,
-							   const NANDRAD::HydraulicNetworkControlElement *controlElement);
+							   const NANDRAD::HydraulicNetworkControlElement *controlElement,
+							   unsigned int numberParallelElements);
 
 	/*! Publishes individual model quantities via descriptions. */
 	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
@@ -190,6 +191,9 @@ private:
 
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
+
+	/*! number of parallel elements (mass flux will be divided by this number) */
+	unsigned int					m_numberParallelElements = 1;
 
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
@@ -409,8 +413,6 @@ private:
 	double							m_maxElectricalPower = -999;
 	/*! maximum pressure head at point of minimal mass flow in Pa */
 	double							m_maxPressureHeadMinFlow = -999;
-	/*! minimum pressure head at point of minimal mass flow in Pa */
-	double							m_minPressureHeadMinFlow = -999;
 
 
 

@@ -155,11 +155,19 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
+			case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement:
 			{
 				// Note: HeatPumpIdealCarnotXXX does not use flow controller, but is still a regular pressure loss element
 
+				unsigned int numberParallelElements = 1;
+				if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement)
+					numberParallelElements = (unsigned int)e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].value;
+
 				// create pressure loss flow element - controller is set up later
-				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component,
+																									m_hydraulicNetwork->m_fluid,
+																									e.m_controlElement,
+																									numberParallelElements);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pressLossCoeffelement, e);
 				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
@@ -178,7 +186,9 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler :
 			{
 				// create pressure loss flow element
-				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component,
+																									m_hydraulicNetwork->m_fluid,
+																									e.m_controlElement, 1);
 				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
 			} break;
 
