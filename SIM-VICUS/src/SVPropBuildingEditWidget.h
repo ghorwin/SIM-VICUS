@@ -167,7 +167,7 @@ private slots:
 
 	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
 
-	void on_pushButtonAssignSelComponent_clicked();
+	void on_pushButtonAssignSelectedComponent_clicked();
 
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */

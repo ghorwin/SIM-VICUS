@@ -235,7 +235,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
-	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled);
+	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled && !m_selectedSurfaces.empty());
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
@@ -665,9 +665,11 @@ void SVPropBuildingEditWidget::updateUi() {
 		if (selSurfs.empty()) {
 			m_ui->labelSelectedComponents->setText("");
 			m_ui->groupBoxSelectedComponent->setEnabled(false);
+			m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		}
 		else {
 			m_ui->groupBoxSelectedComponent->setEnabled(true);
+			m_ui->pushButtonAssignSelectedComponent->setEnabled(true);
 		}
 		m_ui->pushButtonAssignInsideComponent->setEnabled(selSurfs.size() == 2);
 
@@ -1300,7 +1302,7 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected && c->m_sideASurface->m_visible);
 		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected && c->m_sideBSurface->m_visible);
 		if (sideASelected && sideBSelected) {
-			errorStack << c->m_sideASurface->m_displayName + " - " + c->m_sideBSurface->m_displayName;
+			errorStack << c->m_sideASurface->m_displayName + " <---> " + c->m_sideBSurface->m_displayName;
 			continue;
 		}
 		// now lookup copied componentInstance by ID and swap sides if:
@@ -2027,7 +2029,7 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clic
 }
 
 
-void SVPropBuildingEditWidget::on_pushButtonAssignSelComponent_clicked() {
+void SVPropBuildingEditWidget::on_pushButtonAssignSelectedComponent_clicked() {
 	// we take the currently selected component
 	const VICUS::Component * comp = currentlySelectedComponent();
 	// assign it to our selected surfaces
