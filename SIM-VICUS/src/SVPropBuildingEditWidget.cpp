@@ -227,7 +227,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	if (r == -1 || m_componentSurfacesMap.empty()) {
 		m_ui->pushButtonEditComponents->setEnabled(false);
 		m_ui->pushButtonExchangeComponents->setEnabled(false);
-		m_ui->pushButtonAssignSelComponent->setEnabled(false);
+		m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
 		return;
 	}
@@ -235,7 +235,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
-	m_ui->pushButtonAssignSelComponent->setEnabled(enabled);
+	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled);
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
@@ -347,12 +347,14 @@ void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionC
 		m_ui->pushButtonEditSubSurfaceComponents->setEnabled(false);
 		m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(false);
 		m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(false);
+		m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		return;
 	}
 	// enable/disable buttons that require valid components
 	bool enabled = (currentlySelectedSubSurfaceComponent() != nullptr);
 	m_ui->pushButtonEditSubSurfaceComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(enabled);
+	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled);
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(true);
@@ -1670,7 +1672,6 @@ void SVPropBuildingEditWidget::on_tableWidgetZoneTemplates_itemSelectionChanged(
 	// enable/disable buttons based on selection changed signal
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
-	m_ui->pushButtonAssignSelComponent->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
 }
 

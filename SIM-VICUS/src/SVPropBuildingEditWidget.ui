@@ -72,7 +72,7 @@
            </spacer>
           </item>
           <item row="1" column="4">
-           <widget class="QPushButton" name="pushButtonAssignSelComponent">
+           <widget class="QPushButton" name="pushButtonAssignSelectedComponent">
             <property name="text">
              <string>Assign selected component</string>
             </property>
