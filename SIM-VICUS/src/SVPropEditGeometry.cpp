@@ -44,6 +44,7 @@
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifySurfaceGeometry.h"
+#include "SVUndoModifySubSurfaceGeometry.h"
 #include "SVUndoAddSurface.h"
 #include "SVUndoAddZone.h"
 #include "SVUndoCopyZones.h"
@@ -391,6 +392,7 @@ void SVPropEditGeometry::translate() {
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Surface>			modifiedSubSurfaces;
 
 	// process all selected objects
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
@@ -410,21 +412,16 @@ void SVPropEditGeometry::translate() {
 		// TODO : Netzwerk zeugs
 
 
-	}
-
-	// SUB SURFACES
-	// process all selected objects
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
 		// handle only selected sub surfaces where parent is not selected
 		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (ss != nullptr) {
 
 			// we keep our original surface
 			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
-			if (parentSurf->m_selected && parentSurf->m_visible)
-				continue;
+			if (parentSurf != nullptr && parentSurf->m_selected && parentSurf->m_visible)
+				continue; //
 
-			parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
+			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
 			VICUS::Surface modS(*parentSurf);
 
 			// we cache our poldon data
@@ -469,17 +466,19 @@ void SVPropEditGeometry::translate() {
 			}
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
-			modifiedSurfaces.push_back(modS);
+			modifiedSubSurfaces.push_back(modS);
 		}
 	}
 
 
 	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
+	if (modifiedSurfaces.empty() && modifiedSubSurfaces.empty() )
 		return;
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Translated geometry"), modifiedSurfaces );
-	undo->push();
+	SVUndoModifySurfaceGeometry * undoSurf = new SVUndoModifySurfaceGeometry(tr("Translated surface geometry"), modifiedSurfaces );
+	undoSurf->push();
+	SVUndoModifySubSurfaceGeometry * undoSubSurf = new SVUndoModifySubSurfaceGeometry(tr("Translated sub surface geometry"), modifiedSubSurfaces );
+	undoSubSurf->push();
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
@@ -497,6 +496,7 @@ void SVPropEditGeometry::scale() {
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::vector<VICUS::Surface>			modifiedSubSurfaces;
 	std::set<const VICUS::SubSurface*>	scaledSubSurfaces;
 
 	// process all selected objects
@@ -568,24 +568,16 @@ void SVPropEditGeometry::scale() {
 
 			modifiedSurfaces.push_back(modS);
 		}
-	}
 
-	// SUB SURFACES
-	// process all selected objects
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
 		// handle only selected sub surfaces where parent is not selected
 		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (ss != nullptr) {
 
-			if (scaledSubSurfaces.find(ss) != scaledSubSurfaces.end())
-				continue; // already handled
-
-			// we keep our original surface
 			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
-			if (parentSurf == nullptr)
-				continue;
+			if (parentSurf != nullptr && ss->m_parent->m_selected && ss->m_parent->m_visible)
+				continue; // already handled by surface scaling
 
-			parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
+			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
 			VICUS::Surface modS(*parentSurf);
 
 			// we cache our poldon data
@@ -631,7 +623,7 @@ void SVPropEditGeometry::scale() {
 			}
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
-			modifiedSurfaces.push_back(modS);
+			modifiedSubSurfaces.push_back(modS);
 		}
 
 
@@ -641,12 +633,15 @@ void SVPropEditGeometry::scale() {
 	// ToDO Update Volumen
 
 	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
+	if (modifiedSurfaces.empty() && modifiedSubSurfaces.empty())
 		return;
 
 
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Scaled geometry"), modifiedSurfaces );
-	undo->push();
+	SVUndoModifySurfaceGeometry * undoSurf = new SVUndoModifySurfaceGeometry(tr("Scaled surface geometry."), modifiedSurfaces );
+	undoSurf->push();
+	SVUndoModifySubSurfaceGeometry * undoSubSurf = new SVUndoModifySubSurfaceGeometry(tr("Scaled sub surface geometry."), modifiedSubSurfaces );
+	undoSubSurf->push();
+
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	m_cso->setTranslation(transLCSO);
