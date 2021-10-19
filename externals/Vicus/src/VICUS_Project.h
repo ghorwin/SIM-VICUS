@@ -143,6 +143,13 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
+	/*! This function collects the pointers to all selected sub surfaces.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type SubSurface.
+		\returns Returns true if any sub surface is selected (same as subSurfaces.size() > 0).
+	*/
+	bool selectedSubSurfaces(std::vector<const SubSurface*> & subSurfaces, const VICUS::Project::SelectionGroups &sg) const;
+
 	/*! This function collects the pointers to all selected surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type Surface.
