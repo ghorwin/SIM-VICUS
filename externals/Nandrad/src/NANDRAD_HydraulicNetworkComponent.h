@@ -51,6 +51,7 @@ public:
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
+		MT_PressureLossElement,				// Keyword: PressureLossElement				'Adiabatic element with pressure loss defined by zeta-value'
 		NUM_MT
 	};
 
@@ -69,8 +70,8 @@ public:
 		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for valve'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
-		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'design pressure head'
-		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'design mass flux'
+		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'Design pressure head'
+		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux'
 		P_PressureHeadReduction,				// Keyword: PressureHeadReduction				[---]	'Factor to reduced pressure head'
 		NUM_P
 	};

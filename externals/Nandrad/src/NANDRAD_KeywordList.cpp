@@ -205,6 +205,7 @@ namespace NANDRAD {
 				case 10 : return "ControlledValve";
 				case 11 : return "IdealHeaterCooler";
 				case 12 : return "ConstantPressureLossValve";
+				case 13 : return "PressureLossElement";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -269,6 +270,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -831,6 +833,7 @@ namespace NANDRAD {
 				case 10 : return "ControlledValve";
 				case 11 : return "IdealHeaterCooler";
 				case 12 : return "ConstantPressureLossValve";
+				case 13 : return "PressureLossElement";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -895,6 +898,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -1458,6 +1462,7 @@ namespace NANDRAD {
 				case 10 : return "Valve with associated control model";
 				case 11 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 				case 12 : return "Valve with constant pressure loss";
+				case 13 : return "Adiabatic element with pressure loss defined by zeta-value";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -1522,6 +1527,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return "Number of parallel pipes";
+				case 1 : return "Number of parallel elements";
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -2084,6 +2090,7 @@ namespace NANDRAD {
 				case 10 : return "";
 				case 11 : return "";
 				case 12 : return "";
+				case 13 : return "";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2148,6 +2155,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return "";
+				case 1 : return "";
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -2710,6 +2718,7 @@ namespace NANDRAD {
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
+				case 13 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -2774,6 +2783,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -3336,6 +3346,7 @@ namespace NANDRAD {
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
+				case 13 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkComponent::para_t
 			case 10 :
@@ -3400,6 +3411,7 @@ namespace NANDRAD {
 			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
@@ -3911,7 +3923,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 3;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 13;
+			case 9 : return 14;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 16;
 			// HydraulicNetworkControlElement::ModelType
@@ -3927,7 +3939,7 @@ namespace NANDRAD {
 			// HydraulicNetworkElement::para_t
 			case 16 : return 1;
 			// HydraulicNetworkElement::intPara_t
-			case 17 : return 1;
+			case 17 : return 2;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 : return 8;
 			// HydraulicNetworkHeatExchange::para_t
@@ -4087,7 +4099,7 @@ namespace NANDRAD {
 			// HydraulicNetwork::para_t
 			case 8 : return 2;
 			// HydraulicNetworkComponent::ModelType
-			case 9 : return 12;
+			case 9 : return 13;
 			// HydraulicNetworkComponent::para_t
 			case 10 : return 15;
 			// HydraulicNetworkControlElement::ModelType
@@ -4103,7 +4115,7 @@ namespace NANDRAD {
 			// HydraulicNetworkElement::para_t
 			case 16 : return 0;
 			// HydraulicNetworkElement::intPara_t
-			case 17 : return 0;
+			case 17 : return 1;
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 : return 7;
 			// HydraulicNetworkHeatExchange::para_t

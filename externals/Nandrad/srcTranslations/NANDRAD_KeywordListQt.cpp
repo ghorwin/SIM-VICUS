@@ -56,6 +56,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
+	tr("Adiabatic element with pressure loss defined by zeta-value");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pressure head for a pump");
@@ -88,6 +89,7 @@ KeywordListQt::KeywordListQt() {
 	tr("ID of zone containing thermostat");
 	tr("Pipe length");
 	tr("Number of parallel pipes");
+	tr("Number of parallel elements");
 	tr("Difference to constant temperature");
 	tr("Difference to time-dependent temperature from spline");
 	tr("Evaporator medium temperature for heat pump");

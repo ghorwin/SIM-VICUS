@@ -65,6 +65,7 @@ public:
 	/*! Whole number parameters. */
 	enum intPara_t {
 		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes					'Number of parallel pipes'
+		IP_NumberParallelElements,		// Keyword: NumberParallelElements				'Number of parallel elements'
 		NUM_IP
 	};
 

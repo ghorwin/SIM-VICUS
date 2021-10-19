@@ -107,15 +107,14 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
 			case MT_HeatPumpRealSourceSide:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_HeatExchanger:
+			case MT_PressureLossElement:
+				case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
-			case MT_ControlledValve:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_ConstantPressureLossValve:
 				return {P_PressureLoss};
 			case MT_ControlledPump:
@@ -143,15 +142,14 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatPumpIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
+			case MT_PressureLossElement:
+			case MT_ControlledValve:
+			case MT_HeatPumpRealSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
-			case MT_ControlledValve:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
-			case MT_HeatPumpRealSourceSide:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_ConstantPressureLossValve:
 				return {P_PressureLoss, P_Volume};
 			case MT_IdealHeaterCooler: // no parameters needed
@@ -181,6 +179,7 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 		case MT_SimplePipe:
 		case MT_ControlledValve:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT: ;
 	}
 	return {};
@@ -197,7 +196,10 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_HydraulicDiameter:
 		case P_Volume:
 		case P_MaximumHeatingPower:
-		case P_PipeMaxDiscretizationWidth: {
+		case P_PipeMaxDiscretizationWidth:
+		case P_DesignMassFlux:
+		case P_DesignPressureHead:
+		{
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}

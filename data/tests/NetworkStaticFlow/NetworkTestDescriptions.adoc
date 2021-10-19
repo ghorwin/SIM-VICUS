@@ -74,6 +74,12 @@
 - In diesem Beispiel zirkuliert ein Teil des Fluids immer nur im oberen Kreis.
 
 
+### HydraulicNetworkPressureLossElement.nandrad
+
+- Pumpe mit konst. Massenstrom von 1 kg/s und 3 parallele Elemente mit zeta=10 und di=0.05 m. Ergebnis:
+```
+dp	144.39	Pa
+```
 
 ## Thermo-Hydraulic Tests - Milestone 1
 
