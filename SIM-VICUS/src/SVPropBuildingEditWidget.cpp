@@ -347,7 +347,6 @@ void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionC
 		m_ui->pushButtonEditSubSurfaceComponents->setEnabled(false);
 		m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(false);
 		m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(false);
-		m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		return;
 	}
 	// enable/disable buttons that require valid components
