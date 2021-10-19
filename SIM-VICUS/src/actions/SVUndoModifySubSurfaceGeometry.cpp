@@ -45,7 +45,8 @@ SVUndoModifySubSurfaceGeometry::SVUndoModifySubSurfaceGeometry(const QString & l
 
 void SVUndoModifySubSurfaceGeometry::undo() {
 
-	std::vector<const VICUS::SubSurface*> subSurfacesProject;
+	std::vector<const VICUS::SubSurface*>	subSurfacesProject;
+	std::set<const VICUS::Surface*>			modifiedSurfaces;
 
 	// since selection change is also an undo property, we can rely on having the same selection
 	// here as when the surface properties were modified
@@ -54,9 +55,12 @@ void SVUndoModifySubSurfaceGeometry::undo() {
 	for (const VICUS::SubSurface *ssOld : subSurfacesProject ) {
 		for ( VICUS::Surface &sNew : m_surfaces ) {
 			if ( ssOld->m_parent->uniqueID() == sNew.uniqueID() ) {
-				// we swap the surface's polygon and the subsurfaces polygons
+
+								// we swap the surface's polygon and the subsurfaces polygons
 				// and then update the geometry object
 				VICUS::Surface * oldS = dynamic_cast<VICUS::Surface *>(ssOld->m_parent);
+				if(modifiedSurfaces.find(oldS) != modifiedSurfaces.end())
+					break; // already handled this surface
 
 				Q_ASSERT(oldS != nullptr);
 
@@ -66,6 +70,8 @@ void SVUndoModifySubSurfaceGeometry::undo() {
 				std::vector<VICUS::SubSurface> oldSubSurfaces = oldS->subSurfaces();
 				oldS->setSubSurfaces(sNew.subSurfaces());
 				sNew.setSubSurfaces(oldSubSurfaces);
+
+				modifiedSurfaces.insert(oldS);
 
 				break;
 			}
