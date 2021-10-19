@@ -291,7 +291,10 @@ private:
 	*/
 	ModificationState					m_modificationState[NUM_MT];
 
-	/*! Implies wheather local coordinate system rotation should be used
+	/*! Implies whether the copy mode is active. */
+	bool								m_copyMode = false;
+
+	/*! Implies whether local coordinate system rotation should be used
 		OM_Global:	use global coordinate system orientation
 		OM_Local:	use local coordinate system orientation
 	*/

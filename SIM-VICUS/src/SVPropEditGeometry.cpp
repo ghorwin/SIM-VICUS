@@ -394,6 +394,8 @@ void SVPropEditGeometry::translate() {
 	std::vector<VICUS::Surface>			modifiedSurfaces;
 	std::vector<VICUS::Surface>			modifiedSubSurfaces;
 
+	std::set<VICUS::Surface*>			handledSurfaces;
+
 	// process all selected objects
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
 		// handle surfaces
@@ -420,6 +422,9 @@ void SVPropEditGeometry::translate() {
 			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
 			if (parentSurf != nullptr && parentSurf->m_selected && parentSurf->m_visible)
 				continue; //
+
+			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
+				continue; // surface already handled
 
 			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
 			VICUS::Surface modS(*parentSurf);
@@ -464,6 +469,9 @@ void SVPropEditGeometry::translate() {
 
 				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
 			}
+			// we cache that we already handled all selected sub surfaces of the surface
+			handledSurfaces.insert(parentSurf);
+
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
 			modifiedSubSurfaces.push_back(modS);
@@ -497,7 +505,8 @@ void SVPropEditGeometry::scale() {
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
 	std::vector<VICUS::Surface>			modifiedSubSurfaces;
-	std::set<const VICUS::SubSurface*>	scaledSubSurfaces;
+
+	std::set<const VICUS::Surface*>		handledSurfaces;
 
 	// process all selected objects
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
@@ -555,8 +564,6 @@ void SVPropEditGeometry::scale() {
 				}
 
 				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-
-				scaledSubSurfaces.insert(&s->subSurfaces()[i]);
 			}
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
@@ -576,6 +583,10 @@ void SVPropEditGeometry::scale() {
 			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
 			if (parentSurf != nullptr && ss->m_parent->m_selected && ss->m_parent->m_visible)
 				continue; // already handled by surface scaling
+
+
+			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
+				continue; // surface already handled
 
 			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
 			VICUS::Surface modS(*parentSurf);
@@ -621,6 +632,8 @@ void SVPropEditGeometry::scale() {
 
 				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
 			}
+			handledSurfaces.insert(parentSurf);
+
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
 			modifiedSubSurfaces.push_back(modS);
@@ -1002,6 +1015,15 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
 		}
 	}
+	else if ( event->type() == QEvent::KeyPress ) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+		if (keyEvent->matches(QKeySequence::Copy)) {
+			// we enter translation mode
+			m_modificationType = MT_Translate;
+			m_copyMode = true;
+		}
+	}
+
 	return false;
 }
 
