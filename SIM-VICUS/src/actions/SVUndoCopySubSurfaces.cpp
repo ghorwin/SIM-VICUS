@@ -42,7 +42,7 @@ SVUndoCopySubSurfaces::SVUndoCopySubSurfaces(const QString & label, const std::v
 void SVUndoCopySubSurfaces::undo() {
 	// append copied surfaces
 	for (const VICUS::SubSurface &ss : m_copiedSubSurfaces ) {
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(s->m_parent);
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(ss.m_parent);
 		if (s != nullptr) {
 			const_cast<std::vector<VICUS::SubSurface> &>(s->subSurfaces()).pop_back();
 			std::vector<VICUS::Polygon2D> holes = s->geometry().holes();
