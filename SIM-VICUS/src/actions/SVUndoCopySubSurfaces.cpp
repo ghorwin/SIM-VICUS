@@ -43,8 +43,12 @@ void SVUndoCopySubSurfaces::undo() {
 	// append copied surfaces
 	for (const VICUS::SubSurface &ss : m_copiedSubSurfaces ) {
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(s->m_parent);
-		if (s != nullptr)
+		if (s != nullptr) {
 			const_cast<std::vector<VICUS::SubSurface> &>(s->subSurfaces()).pop_back();
+			std::vector<VICUS::Polygon2D> holes = s->geometry().holes();
+			holes.pop_back();
+			const_cast<VICUS::PlaneGeometry &>(s->geometry()).setHoles(holes);
+		}
 	}
 
 	// re-select surfaces that were previously selected
