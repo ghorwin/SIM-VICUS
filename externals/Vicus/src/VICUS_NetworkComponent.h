@@ -67,6 +67,7 @@ public:
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
+		MT_PressureLossElement,				// Keyword: PressureLossElement				'Adiabatic element with pressure loss defined by zeta-value'
 		// aditional model types
 		MT_HorizontalGroundHeatExchanger,	// Keyword: HorizontalGroundHeatExchanger	'Parallel dynamic pipes buried horizontally in the ground'
 		NUM_MT
@@ -99,6 +100,7 @@ public:
 	/*! Whole number parameters. */
 	enum intPara_t {
 		IP_NumberParallelPipes,					// Keyword: NumberParallelPipes				[---]	'Number of parallel pipes in ground heat exchanger'
+		IP_NumberParallelElements,				// Keyword: NumberParallelElements			[---]	'Number of parallel elements'
 		NUM_IP
 	};
 

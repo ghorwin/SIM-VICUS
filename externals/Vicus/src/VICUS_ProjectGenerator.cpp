@@ -2288,7 +2288,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			if (elem.m_id == sub->m_idHeatExchangeElement)
 				newElement.m_heatExchange = node.m_heatExchange;
 
-			// 6. SPECIAL CASE: Ground Heat Exchanger
+			// 6. SPECIAL CASEs:
+			// Ground Heat Exchanger
 			if (comp->m_modelType == VICUS::NetworkComponent::MT_HorizontalGroundHeatExchanger){
 				// --> retrieve parameters from the component
 				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
@@ -2323,6 +2324,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				p.m_fmiDescription.m_outputVariables.push_back(outputDefGHX);
 			}
 
+			// PressureLossElement
+			if (comp->m_modelType == VICUS::NetworkComponent::MT_PressureLossElement){
+				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
+						comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements];
+			}
 
 			// 7. some components store a pipe properties id, so we transfer them to the element
 			if (VICUS::NetworkComponent::hasPipeProperties(comp->m_modelType))

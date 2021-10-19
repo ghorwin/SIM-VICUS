@@ -317,7 +317,8 @@ namespace VICUS {
 				case 10 : return "ControlledValve";
 				case 11 : return "IdealHeaterCooler";
 				case 12 : return "ConstantPressureLossValve";
-				case 13 : return "HorizontalGroundHeatExchanger";
+				case 13 : return "PressureLossElement";
+				case 14 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -344,6 +345,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -776,7 +778,8 @@ namespace VICUS {
 				case 10 : return "ControlledValve";
 				case 11 : return "IdealHeaterCooler";
 				case 12 : return "ConstantPressureLossValve";
-				case 13 : return "HorizontalGroundHeatExchanger";
+				case 13 : return "PressureLossElement";
+				case 14 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -803,6 +806,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -1236,7 +1240,8 @@ namespace VICUS {
 				case 10 : return "Valve with associated control model";
 				case 11 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 				case 12 : return "Valve with constant pressure loss";
-				case 13 : return "Parallel dynamic pipes buried horizontally in the ground";
+				case 13 : return "Adiabatic element with pressure loss defined by zeta-value";
+				case 14 : return "Parallel dynamic pipes buried horizontally in the ground";
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -1263,6 +1268,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "Number of parallel pipes in ground heat exchanger";
+				case 1 : return "Number of parallel elements";
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -1696,6 +1702,7 @@ namespace VICUS {
 				case 11 : return "";
 				case 12 : return "";
 				case 13 : return "";
+				case 14 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -1722,6 +1729,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "---";
+				case 1 : return "---";
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -2155,6 +2163,7 @@ namespace VICUS {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -2181,6 +2190,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -2614,6 +2624,7 @@ namespace VICUS {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 23 :
@@ -2640,6 +2651,7 @@ namespace VICUS {
 			case 24 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::ModelType
 			case 25 :
@@ -2907,11 +2919,11 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 21 : return 3;
 			// NetworkComponent::ModelType
-			case 22 : return 14;
+			case 22 : return 15;
 			// NetworkComponent::para_t
 			case 23 : return 17;
 			// NetworkComponent::intPara_t
-			case 24 : return 1;
+			case 24 : return 2;
 			// NetworkController::ModelType
 			case 25 : return 2;
 			// NetworkController::ControlledProperty
@@ -3027,11 +3039,11 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 21 : return 2;
 			// NetworkComponent::ModelType
-			case 22 : return 13;
+			case 22 : return 14;
 			// NetworkComponent::para_t
 			case 23 : return 16;
 			// NetworkComponent::intPara_t
-			case 24 : return 0;
+			case 24 : return 1;
 			// NetworkController::ModelType
 			case 25 : return 1;
 			// NetworkController::ControlledProperty

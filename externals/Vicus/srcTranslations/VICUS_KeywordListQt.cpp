@@ -144,6 +144,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
+	tr("Adiabatic element with pressure loss defined by zeta-value");
 	tr("Parallel dynamic pipes buried horizontally in the ground");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
@@ -163,6 +164,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Factor to reduced pressure head");
 	tr("Length of pipes in the ground heat exchanger");
 	tr("Number of parallel pipes in ground heat exchanger");
+	tr("Number of parallel elements");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

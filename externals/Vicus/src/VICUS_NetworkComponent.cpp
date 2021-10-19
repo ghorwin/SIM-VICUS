@@ -159,6 +159,7 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT:
 			break;
 		case MT_HorizontalGroundHeatExchanger:
@@ -187,6 +188,8 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 			break;
 		case MT_HorizontalGroundHeatExchanger:
 			return {IP_NumberParallelPipes};
+		case MT_PressureLossElement:
+			return {IP_NumberParallelElements};
 	}
 	return {};
 }
@@ -229,7 +232,9 @@ void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsign
 	const char * enumName = "NetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	switch (numPara) {
-		case IP_NumberParallelPipes:{
+		case IP_NumberParallelPipes:
+		case IP_NumberParallelElements:
+		{
 			if (para.value < 1)
 				throw IBK::Exception(IBK::FormatString("% must be > 1").arg(name), FUNC_ID);
 		} break;
@@ -253,6 +258,7 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT:
 			return false;
 		case MT_SimplePipe:
@@ -260,6 +266,7 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_HorizontalGroundHeatExchanger:
 			return true;
 	}
+	return false; // just for compiler
 }
 
 
