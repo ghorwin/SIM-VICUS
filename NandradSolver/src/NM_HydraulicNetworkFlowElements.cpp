@@ -964,34 +964,37 @@ void HNVariablePressureHeadPump::modelQuantityValueRefs(std::vector<const double
 	valRefs.push_back(&m_pressureHead);
 }
 
-void HNVariablePressureHeadPump::updateResults(double mdot, double p_inlet, double p_outlet) {
+void HNVariablePressureHeadPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
 	m_pressureHead = pressureHead(mdot);
 }
 
 double HNVariablePressureHeadPump::pressureHead(double mdot) const
 {
-	if (mdot <= 0)
-		return m_minimumPressureHead;
-
 	// slope of linear dp-v curve
 	double slope = (m_designPressureHead - m_minimumPressureHead) / m_designMassFlux;
-	// current point of operation on dp-v curve
-	double dp = m_minimumPressureHead + slope * mdot;
+
+	// for mass fluxes < 10% design mass flux, we keep a constant pressure head
+	double mdot_cut = 0.1 * m_designMassFlux;
+	double pressureHead;
+	if (mdot < mdot_cut)
+		return m_minimumPressureHead + slope * mdot_cut;
+
+	// linear dp-v curve
+	pressureHead = m_minimumPressureHead + slope * mdot;
 
 	// calculation of actual maximum pressure head which depends on mass flux
 	// --> point of maximum volume flow (at minimum pressure head)
 	const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
 	// --> pressHeadMax = f (V_dot)
 	double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
-
+	// prevent pressHeadMax from being below 0
 	if (pressHeadMax < 0)
 		pressHeadMax = 0;
-
 	// clipping
-	if (dp > pressHeadMax)
-		dp = pressHeadMax;
+	if (pressureHead > pressHeadMax)
+		pressureHead = pressHeadMax;
 
-	return dp;
+	return  pressureHead;
 }
 
 

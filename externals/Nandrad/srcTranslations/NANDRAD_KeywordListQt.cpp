@@ -70,9 +70,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Pressure loss for valve");
 	tr("Maximum pressure head at point of minimal mass flow of pump");
 	tr("Maximum electrical power at point of optimal operation of pump");
-	tr("design pressure head");
-	tr("design mass flux");
-	tr("Factor to reduced pressure head");
+	tr("Design pressure head of VariablePressureHeadPump");
+	tr("Design mass flux of VariablePressureHeadPump");
+	tr("Factor to reduced pressure head of VariablePressureHeadPump");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

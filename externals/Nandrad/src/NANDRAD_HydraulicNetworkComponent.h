@@ -70,9 +70,9 @@ public:
 		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for valve'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
-		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'Design pressure head'
-		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux'
-		P_PressureHeadReduction,				// Keyword: PressureHeadReduction				[---]	'Factor to reduced pressure head'
+		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'Design pressure head of VariablePressureHeadPump'
+		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux of VariablePressureHeadPump'
+		P_PressureHeadReduction,				// Keyword: PressureHeadReduction				[---]	'Factor to reduced pressure head of VariablePressureHeadPump'
 		NUM_P
 	};
 

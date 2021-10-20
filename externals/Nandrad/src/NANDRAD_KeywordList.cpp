@@ -1480,9 +1480,9 @@ namespace NANDRAD {
 				case 10 : return "Pressure loss for valve";
 				case 11 : return "Maximum pressure head at point of minimal mass flow of pump";
 				case 12 : return "Maximum electrical power at point of optimal operation of pump";
-				case 13 : return "design pressure head";
-				case 14 : return "design mass flux";
-				case 15 : return "Factor to reduced pressure head";
+				case 13 : return "Design pressure head of VariablePressureHeadPump";
+				case 14 : return "Design mass flux of VariablePressureHeadPump";
+				case 15 : return "Factor to reduced pressure head of VariablePressureHeadPump";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
