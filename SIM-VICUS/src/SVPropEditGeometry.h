@@ -307,7 +307,7 @@ private:
 	Vic3D::CoordinateSystemObject		*m_cso;
 
 	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation. */
-	IBKMK::Vector3D						M_bbDim[NUM_OM];
+	IBKMK::Vector3D						m_bbDim[NUM_OM];
 
 	/*! Cached center point of boinding box in local/global Orientation. */
 	IBKMK::Vector3D						m_bbCenter[NUM_OM];
