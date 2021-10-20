@@ -1309,6 +1309,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+		const double REL_TOL_AREAS = 0.05;
 		double minArea = 1e-4;
 		double area = 0;
 
@@ -1323,7 +1324,15 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				bothSidesHaveSurfaces = true;
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
+
+//#define ABS_TEST;
+#if defined (ABS_TEST)
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
+#else
+				// relative error check
+				// area is set as reference
+				if (std::fabs(areaB-area)/area > REL_TOL_AREAS) {
+#endif
 					errorStack.append(qApp->tr("Component/construction #%1 references surfaces #%2 '%6' and #%3 '%7', with mismatching "
 						   "areas %4 and %5 m2.")
 									  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_idSideASurface)
@@ -1333,8 +1342,8 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 									  .arg(compInstaVicus.m_sideBSurface->m_displayName));
 				}
 
-				/// TODO Dirk : do we need to also store a displayname for each component instance/construction instance?
-				///             We could also name internal walls automatically using zone names, such as
+				/// TODO Dirk :	do we need to also store a displayname for each component instance/construction instance?
+				///				We could also name internal walls automatically using zone names, such as
 				///				"Wall between 'Bath' and 'Kitchen'".
 				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2'")
 						.arg(compInstaVicus.m_sideASurface->m_displayName).arg(compInstaVicus.m_sideBSurface->m_displayName).toStdString();
