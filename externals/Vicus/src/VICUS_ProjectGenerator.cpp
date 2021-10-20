@@ -1475,13 +1475,9 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 	}
 
-	//only debug information
-	if(!warnings.empty()){
-		QString warn;
-		for(const QString &str : warnings)
-			IBK::IBK_Message(IBK::FormatString("%1").arg(str.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+	for(const QString &str : warnings)
+		IBK::IBK_Message(IBK::FormatString("%1").arg(str.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 
-	}
 
 }
 
