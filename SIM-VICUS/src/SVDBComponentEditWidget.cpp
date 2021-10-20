@@ -296,6 +296,7 @@ void SVDBComponentEditWidget::on_pushButtonColor_colorChanged() {
 void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	SVProjectHandler::instance().setModified( SVProjectHandler::ComponentInstancesModified);
 }
 
 
