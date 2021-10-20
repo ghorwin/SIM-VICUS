@@ -1289,6 +1289,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 												  QStringList &errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds,
 												  std::set<unsigned int> &idSet)
 {
+	FUNCID(ConstructionInstanceModelGenerator::generate);
 	QStringList warnings;
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
@@ -1353,7 +1354,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			}
 
 			if(area<minArea){
-				warnings << qApp->tr("Area of surface #%1, '%2' is too small. Surface is not exported.")
+				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideASurface->m_id)
 							.arg(compInstaVicus.m_sideASurface->m_displayName);
 				continue;
@@ -1392,7 +1393,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			area = compInstaVicus.m_sideBSurface->geometry().area();
 
 			if(area<minArea){
-				warnings << qApp->tr("Area of surface #%1, '%2' is too small. Surface is not exported.")
+				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
 							.arg(compInstaVicus.m_sideBSurface->m_id)
 							.arg(compInstaVicus.m_sideBSurface->m_displayName);
 				continue;
@@ -1477,7 +1478,9 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 	//only debug information
 	if(!warnings.empty()){
 		QString warn;
-		warn = "There are several warnings. Nur für Debug Zwecke derzeit.";
+		for(const QString &str : warnings)
+			IBK::IBK_Message(IBK::FormatString("%1").arg(str.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+
 	}
 
 }
