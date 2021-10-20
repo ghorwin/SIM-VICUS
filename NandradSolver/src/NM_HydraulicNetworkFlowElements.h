@@ -216,11 +216,58 @@ private:
 }; // HNFixedPressureLossCoeffElement
 
 
+
+
+
+class HNAbstractPowerLimitedPumpModel {
+public:
+	HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
+									const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow):
+		m_density(density),
+		m_efficiency(efficiency),
+		m_maxElectricalPower(maxElectricalPower),
+		m_maxPressureHeadAtZeroFlow(maxPressureHeadAtZeroFlow)
+	{}
+protected:
+	/*! fluid density in kg/m3 */
+	double							m_density = -999;
+	/*! efficiency of pump in - */
+	double							m_efficiency = -999;
+	/*! maximum electrical power at point of best operation in W */
+	double							m_maxElectricalPower = -999;
+	/*! maximum pressure head at point of minimal mass flow in Pa */
+	double							m_maxPressureHeadAtZeroFlow = -999;
+
+	/*! calculates actual maximum pressure head which linear decreases with mass flux */
+	double maximumPressureHead(const double &mdot) const {
+		if (m_maxPressureHeadAtZeroFlow <= 0) // in case class is not initialized or with 0
+			return std::numeric_limits<double>::max();
+		else {
+			// --> point of maximum volume flow (at minimum pressure head)
+			const double Vmax0 = 4 * m_efficiency * m_maxElectricalPower / m_maxPressureHeadAtZeroFlow;
+			// --> pressHeadMax = f (V_dot)
+			double maxPressureHead = m_maxPressureHeadAtZeroFlow * (1 - mdot / (Vmax0 * m_density));
+			// should never be below zero
+			if (maxPressureHead < 0)
+				return 0;
+			else
+				return maxPressureHead;
+		}
+	}
+
+}; // HNAbstractPowerLimitedPumpModel
+
+
+
+
+
 /*! Pump model with fixed/scheduled constant pressure head */
-class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement,
+							  public HNAbstractPowerLimitedPumpModel { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
+	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+						   const NANDRAD::HydraulicFluid & fluid);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -251,6 +298,9 @@ private:
 	/*! Value of pressure loss [Pa] */
 	double							m_pressureLoss = -999;
 }; // HNConstantPressureLossValve
+
+
+
 
 
 
@@ -296,8 +346,12 @@ private:
 }; // HNConstantMassFluxPump
 
 
+
+
+
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
-class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+class HNControlledPump: public HydraulicNetworkAbstractFlowElement,		// NO KEYWORDS
+						public HNAbstractPowerLimitedPumpModel{
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
@@ -359,20 +413,17 @@ private:
 	const double					*m_temperatureDifferenceSetpointRef = nullptr;
 	/*! the calculated temperature difference */
 	double							m_temperatureDifference = -999;
-	/*! fluid density in kg/m3 */
-	double							m_density = -999;
-	/*! efficiency of pump in - */
-	double							m_eta = -999;
-	/*! maximum electrical power (in optimal operation point)  in W */
-	double							m_maxElectricalPower = -999;
-	/*! maximum pressure head at point of minimal mass flow in Pa */
-	double							m_maxPressureHeadMinFlow = -999;
 
 }; // HNControlledPump
 
 
+
+
+
+
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
-class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement,
+								  public HNAbstractPowerLimitedPumpModel  { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
@@ -398,25 +449,19 @@ private:
 
 	double pressureHead(double mdot) const;
 
-	double							m_pressureHead = -999;
-
-	double							m_designPressureHead = -999;
-	double							m_minimumPressureHead = -999;
-	double							m_designMassFlux = -999;
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
-	/*! fluid density in kg/m3 */
-	double							m_density = -999;
-	/*! efficiency of pump in - */
-	double							m_eta = -999;
-	/*! maximum electrical power (in optimal operation point)  in W */
-	double							m_maxElectricalPower = -999;
-	/*! maximum pressure head at point of minimal mass flow in Pa */
-	double							m_maxPressureHeadMinFlow = -999;
-
-
-
+	/*! current pressure head of pump in [Pa] */
+	double							m_pressureHead = -999;
+	/*! pressure head at design point, needed for calculation of dp-v curve slope in [Pa] */
+	double							m_designPressureHead = -999;
+	/*! mass flux at design point, needed for calculation of dp-v curve slope in [kg/s] */
+	double							m_designMassFlux = -999;
+	/*! pressure head at zero flow in [Pa] */
+	double							m_minimumPressureHead = -999;
 }; // HNVariablePressureHeadPump
+
+
 
 } // namespace NANDRAD_MODEL
 

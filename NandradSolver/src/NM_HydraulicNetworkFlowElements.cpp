@@ -545,9 +545,45 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 
 
+
+
+// *** HNConstantPressureLossValve ***
+
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int, const NANDRAD::HydraulicNetworkComponent &component) {
+	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+}
+
+
+double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	if (mdot >= 0)
+		return p_inlet - p_outlet - m_pressureLoss;
+	else
+		return p_inlet - p_outlet + m_pressureLoss;
+}
+
+
+void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+
+
+
+
+
 // *** HNConstantPressurePump ***
 
-HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
+HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
+											   const NANDRAD::HydraulicFluid & fluid) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
 	m_id(id)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
@@ -556,7 +592,11 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 
 
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	return p_inlet - p_outlet + *m_pressureHeadRef;
+	double pressureHead = *m_pressureHeadRef;
+	double maxPressureHead = maximumPressureHead(mdot);
+	if (pressureHead > maxPressureHead)
+		pressureHead = maxPressureHead;
+	return p_inlet - p_outlet + pressureHead;
 }
 
 
@@ -590,29 +630,6 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 
 
 
-// *** HNConstantPressureLossValve ***
-
-HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int, const NANDRAD::HydraulicNetworkComponent &component) {
-	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
-}
-
-
-double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	if (mdot >= 0)
-		return p_inlet - p_outlet - m_pressureLoss;
-	else
-		return p_inlet - p_outlet + m_pressureLoss;
-}
-
-
-void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
-										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
-{
-	// partial derivatives of the system function to pressures are constants
-	df_dp_inlet = 1;
-	df_dp_outlet = -1;
-	df_dmdot = 0;
-}
 
 
 
@@ -674,21 +691,25 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 
 
 
+
+
+
+
 // *** HNControlledPump ***
 
 HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
 								   const NANDRAD::HydraulicNetworkControlElement *controlElement,
 								   const NANDRAD::HydraulicFluid & fluid) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
 	m_controlElement(controlElement),
 	m_id(id)
 {
 	// initialize setpoint references, in case of scheduled setpoints pointer will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
 	m_massFluxSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
-	m_eta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
-	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
-	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
-	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 }
 
 
@@ -884,17 +905,9 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 	}
 
 	// Clipping of pressure head
-	// in case m_maxPressureHeadMinFlow or m_maxElectricalPower <=0, we dont apply clipping
-	if (m_maxPressureHeadMinFlow > 0 && m_maxElectricalPower > 0) {
-		// calculation of actual maximum pressure head which depends on mass flux
-		// --> point of maximum volume flow (at minimum pressure head)
-		const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
-		// --> pressHeadMax = f (V_dot)
-		double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
-		// apply clipping
-		if (pressHeadControlled > pressHeadMax)
-			pressHeadControlled = pressHeadMax;
-	}
+	double pressHeadMax = maximumPressureHead(mdot);
+	if (pressHeadControlled > pressHeadMax)
+		pressHeadControlled = pressHeadMax;
 
 	return pressHeadControlled;
 }
@@ -924,21 +937,24 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 }
 
 
+
+
+
+
 // *** HNVariablePressureHeadPump ***
 
 HNVariablePressureHeadPump::HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
 													   const NANDRAD::HydraulicFluid & fluid) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
 	m_id(id)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
 	m_designPressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignPressureHead].value;
 	m_minimumPressureHead = m_designPressureHead * component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHeadReduction].value;
 	m_designMassFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignMassFlux].value;
-	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
-	m_eta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
-	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
-	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
-
 }
 
 
@@ -982,20 +998,15 @@ double HNVariablePressureHeadPump::pressureHead(double mdot) const
 	// linear dp-v curve
 	pressureHead = m_minimumPressureHead + slope * mdot;
 
-	// calculation of actual maximum pressure head which depends on mass flux
-	// --> point of maximum volume flow (at minimum pressure head)
-	const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
-	// --> pressHeadMax = f (V_dot)
-	double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
-	// prevent pressHeadMax from being below 0
-	if (pressHeadMax < 0)
-		pressHeadMax = 0;
 	// clipping
+	double pressHeadMax  = maximumPressureHead(mdot);
 	if (pressureHead > pressHeadMax)
 		pressureHead = pressHeadMax;
 
 	return  pressureHead;
 }
+
+
 
 
 
