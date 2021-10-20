@@ -109,7 +109,8 @@ private:
 	QSplitter					*m_splitter									= nullptr;
 
 
-	QToolBar					*m_toolBar									= nullptr;
+	QToolBar					*m_toolBarMeasurements						= nullptr;
+	QToolBar					*m_toolBarShowData							= nullptr;
 
 	QAction						*m_snapAction								= nullptr;
 	QAction						*m_xLockAction								= nullptr;

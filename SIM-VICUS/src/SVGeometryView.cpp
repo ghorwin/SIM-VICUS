@@ -72,18 +72,24 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	// *** create toolbar and place it below the scene
 
-	m_toolBar = new QToolBar(this);
-	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->setMaximumHeight(32);
-	m_toolBar->layout()->setMargin(0);
+	m_toolBarMeasurements = new QToolBar(this);
+	m_toolBarMeasurements->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_toolBarMeasurements->setMaximumHeight(32);
+	m_toolBarMeasurements->layout()->setMargin(0);
+
+	m_toolBarShowData = new QToolBar(this);
+	m_toolBarShowData->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_toolBarShowData->setMaximumHeight(32);
+	m_toolBarShowData->layout()->setMargin(0);
 
 //	m_dockWidget = new QWidget(this);
 //	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 //	m_dockWidget->setMaximumHeight(120);
 
 	QVBoxLayout * vbLay = new QVBoxLayout;
+	vbLay->addWidget(m_toolBarShowData);
 	vbLay->addWidget(m_sceneViewContainerWidget);
-	vbLay->addWidget(m_toolBar);
+	vbLay->addWidget(m_toolBarMeasurements);
 	vbLay->setMargin(0);
 	vbLay->setSpacing(0);
 
@@ -449,31 +455,31 @@ void SVGeometryView::setupToolBar() {
 	m_snapAction->setToolTip(tr("Toggles object snap on/off (F3)"));
 	m_snapAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
 
-	m_toolBar->addAction(m_snapAction);
-	m_toolBar->setIconSize(QSize(24,24) );
+	m_toolBarMeasurements->addAction(m_snapAction);
+	m_toolBarMeasurements->setIconSize(QSize(24,24) );
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
 	m_xLockAction = new QAction(tr("X"), this);
 	m_xLockAction->setCheckable(true);
-	m_toolBar->addAction(m_xLockAction);
+	m_toolBarMeasurements->addAction(m_xLockAction);
 	connect(m_xLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
 
 	m_yLockAction = new QAction(tr("Y"), this);
 	m_yLockAction->setCheckable(true);
-	m_toolBar->addAction(m_yLockAction);
+	m_toolBarMeasurements->addAction(m_yLockAction);
 	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionYLock_toggled);
 
 	m_zLockAction = new QAction(tr("Z"), this);
 	m_zLockAction->setCheckable(true);
-	m_toolBar->addAction(m_zLockAction);
+	m_toolBarMeasurements->addAction(m_zLockAction);
 	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionZLock_toggled);
 
-	m_toolBar->addSeparator();
+	m_toolBarMeasurements->addSeparator();
 
 	// the line edit for entering vertex coordinates
-	m_lineEditCoordinateInput = new QLineEdit(m_toolBar);
+	m_lineEditCoordinateInput = new QLineEdit(m_toolBarMeasurements);
 	m_lineEditCoordinateInput->setToolTip(tr("Without axis lock, enter coordinates in format <x> <y> <z>. With axis lock enter only the offset in the respective axis direction."));
-	m_actionCoordinateInput = m_toolBar->addWidget(m_lineEditCoordinateInput);
+	m_actionCoordinateInput = m_toolBarMeasurements->addWidget(m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
 	m_lineEditCoordinateInput->setMaximumWidth(400);
@@ -481,10 +487,10 @@ void SVGeometryView::setupToolBar() {
 	// stretcher
 	QWidget * spacerWidget = new QWidget;
 	spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->addWidget(spacerWidget);
+	m_toolBarMeasurements->addWidget(spacerWidget);
 
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
-	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
+	m_actionlocalCoordinateSystemCoordinates = m_toolBarMeasurements->addWidget(m_localCoordinateSystemView);
 }
 
