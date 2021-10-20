@@ -296,7 +296,7 @@ void SVDBComponentEditWidget::on_pushButtonColor_colorChanged() {
 void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-	SVProjectHandler::instance().setModified( SVProjectHandler::ComponentInstancesModified);
+	SVProjectHandler::instance().setModified(SVProjectHandler::ComponentInstancesModified);
 }
 
 
@@ -326,15 +326,51 @@ void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked(
 	updateInput((int)m_current->m_id);
 }
 
-
 void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked) {
+
 	m_ui->spinBoxActiveLayerIndex->setEnabled(checked);
 	if (checked) {
 		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value();
 		modelModify();
 	}
 	else {
+
+		bool askForDeletion = true;
+		// We have to make a special handling if the component is applied in component instances
+		// Then we also have handle the surface heating ID reset in the specific component instance
+		for (const VICUS::ComponentInstance &ci : SVProjectHandler::instance().project().m_componentInstances) {
+			VICUS::ComponentInstance & compInst = const_cast<VICUS::ComponentInstance &>(ci);
+			if (compInst.m_idComponent == m_current->m_id) {
+
+				// if we have assigned components in component instances
+				if (askForDeletion) {
+					m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
+					m_ui->spinBoxActiveLayerIndex->setEnabled(true);
+					m_ui->checkBoxActiveLayerEnabled->setChecked(true);
+
+					// delete dialog
+					askForDeletion = false;
+					QMessageBox dlg(QMessageBox::Question, tr("Delete surface heating"), tr("Do you want to delete surface heating in component instances?"), QMessageBox::Cancel, this);
+
+					QPushButton * btn = new QPushButton("Yes");
+					dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::YesRole));
+					dlg.setDefaultButton(btn);
+					if(dlg.exec() == QMessageBox::Cancel) {
+						// user aborts the deletion
+						m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+						break;
+					}
+					m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+					m_ui->checkBoxActiveLayerEnabled->setChecked(false);
+					m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+				}
+				// we reset the surface heating
+				compInst.m_idSurfaceHeating = VICUS::INVALID_ID; // reset ID since we do not have anymore a component with active layer
+			}
+		}
+
 		m_current->m_activeLayerIndex = VICUS::INVALID_ID;
+
 		modelModify();
 	}
 }
