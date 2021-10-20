@@ -171,8 +171,8 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayoutMaster->setMargin(0);
-	m_ui->verticalLayoutPage1->setMargin(0);
-	m_ui->verticalLayoutPage2->setMargin(0);
+//	m_ui->verticalLayoutPage1->setMargin(0);
+//	m_ui->verticalLayoutPage2->setMargin(0);
 
 	SVViewStateHandler::instance().m_propEditGeometryWidget = this;
 
@@ -218,7 +218,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->widgetXYZ->layout()->setMargin(0);
 	m_ui->widgetRota->layout()->setMargin(0);
 
-
+	setCurrentPage(O_AddGeometry);
 	// we set the local coordinate system object
 	m_cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 
@@ -233,9 +233,9 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 void SVPropEditGeometry::setCurrentPage(const SVPropEditGeometry::Operation & op) {
 	switch (op) {
 		case O_AddGeometry :
-			m_ui->pushButtonAdd->setChecked(true);
-			m_ui->pushButtonEdit->setChecked(false);
-			m_ui->stackedWidget->setCurrentIndex(0);
+				m_ui->pushButtonAdd->setChecked(true);
+				m_ui->pushButtonEdit->setChecked(false);
+				m_ui->stackedWidget->setCurrentIndex(0);
 		break;
 		case O_EditGeometry :
 			m_ui->pushButtonEdit->setChecked(true);
@@ -289,13 +289,15 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
-		setCurrentPage(O_AddGeometry);
-		m_ui->pushButtonEdit->setEnabled(false);
+		// setCurrentPage(O_AddGeometry);
+		// m_ui->pushButtonEdit->setEnabled(false);
 		// clear current selection transformation matrix
+		m_ui->widgetEdit->setEnabled(false);
 		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	}
 	else {
-		m_ui->pushButtonEdit->setEnabled(true);
+		m_ui->widgetEdit->setEnabled(true);
+		//m_ui->pushButtonEdit->setEnabled(true);
 		updateCoordinateSystemLook();
 	}
 }
@@ -898,7 +900,7 @@ void SVPropEditGeometry::updateUi() {
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
-
+	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[m_orientationMode]);
 	// position local coordinate system, but only if we are showing the edit page
 	m_cso->setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode]) );
 
@@ -922,6 +924,7 @@ void SVPropEditGeometry::updateOrientationMode() {
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
+	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[m_orientationMode]);
 	// we also update all the line edits and boxes
 	updateInputs();
 }
