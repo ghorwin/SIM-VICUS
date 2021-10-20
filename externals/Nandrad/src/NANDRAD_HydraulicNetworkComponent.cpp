@@ -118,7 +118,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ConstantPressureLossValve:
 				return {P_PressureLoss};
 			case MT_ControlledPump:
-			case MT_VariablePressureHeadPump:
+			case MT_VariablePressurePump:
 			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT:
 				return {};
@@ -133,10 +133,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_MassFlux, P_PumpEfficiency, P_Volume};
 			case MT_ControlledPump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
-			case MT_VariablePressureHeadPump:
+				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHeadAtZeroFlow};
+			case MT_VariablePressurePump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead,
+				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHeadAtZeroFlow,
 						P_DesignPressureHead, P_DesignMassFlux, P_PressureHeadReduction};
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
@@ -173,7 +173,7 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump :
 		case MT_ControlledPump:
-		case MT_VariablePressureHeadPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_DynamicPipe:
 		case MT_SimplePipe:
@@ -204,7 +204,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			break;
 		}
 		// value must be >= 0
-		case P_MaximumPressureHead:
+		case P_MaximumPressureHeadAtZeroFlow:
 		case P_PumpMaximumElectricalPower:
 		case P_MassFlux:
 		case P_PressureLoss:

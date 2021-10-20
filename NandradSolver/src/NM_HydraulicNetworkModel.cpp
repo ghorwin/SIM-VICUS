@@ -110,7 +110,8 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component,
+																				  m_hydraulicNetwork->m_fluid);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 				m_pumpElements.push_back(pumpElement);
@@ -140,7 +141,7 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
-			case NANDRAD::HydraulicNetworkComponent::MT_VariablePressureHeadPump:
+			case NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump:
 			{
 				HNVariablePressureHeadPump * pumpElement = new HNVariablePressureHeadPump(e.m_id, *e.m_component,
 																						  m_hydraulicNetwork->m_fluid);
