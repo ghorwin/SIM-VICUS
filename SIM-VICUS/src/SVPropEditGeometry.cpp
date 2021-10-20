@@ -891,12 +891,12 @@ void SVPropEditGeometry::updateUi() {
 
 
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	M_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
+	m_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 												  QtExt::QVector2IBKVector(m_cso->translation() ),
 												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-	M_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 
 	// position local coordinate system, but only if we are showing the edit page
@@ -915,12 +915,12 @@ void SVPropEditGeometry::updateOrientationMode() {
 
 	// we have to update our bounding box dimensions in our specific coordinate system
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	M_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
+	m_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 												  QtExt::QVector2IBKVector(m_cso->translation() ),
 												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-	M_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	// we also update all the line edits and boxes
 	updateInputs();
@@ -1115,10 +1115,18 @@ void SVPropEditGeometry::updateInputs() {
 					// cache current local coordinate systems position as fall-back values
 					m_originalValues = QtExt::QVector2IBKVector(m_localCoordinatePosition.translation());
 
-					IBKMK::Vector3D trans(QtExt::QVector2IBKVector(m_localCoordinatePosition.translation()));
-					m_ui->lineEditX->setValue(trans.m_x);
-					m_ui->lineEditY->setValue(trans.m_y);
-					m_ui->lineEditZ->setValue(trans.m_z);
+					QVector3D translation(m_localCoordinatePosition.translation());
+
+					if (m_orientationMode == OM_Local) {
+						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.y()*m_cso->localXAxis().y() + translation.z()*m_cso->localXAxis().z(),
+											translation.x()*m_cso->localYAxis().x() + translation.y()*m_cso->localYAxis().y() + translation.z()*m_cso->localYAxis().z(),
+											translation.x()*m_cso->localZAxis().x() + translation.y()*m_cso->localZAxis().y() + translation.z()*m_cso->localZAxis().z() );
+						translation = newTrans;
+					}
+
+					m_ui->lineEditX->setValue(translation.x());
+					m_ui->lineEditY->setValue(translation.y());
+					m_ui->lineEditZ->setValue(translation.z());
 				} break;
 
 				default:
@@ -1179,9 +1187,9 @@ void SVPropEditGeometry::updateInputs() {
 
 					m_originalValues = m_bbCenter[m_orientationMode];
 
-					m_ui->lineEditX->setValue(M_bbDim[m_orientationMode].m_x);
-					m_ui->lineEditY->setValue(M_bbDim[m_orientationMode].m_y);
-					m_ui->lineEditZ->setValue(M_bbDim[m_orientationMode].m_z);
+					m_ui->lineEditX->setValue(m_bbDim[m_orientationMode].m_x);
+					m_ui->lineEditY->setValue(m_bbDim[m_orientationMode].m_y);
+					m_ui->lineEditZ->setValue(m_bbDim[m_orientationMode].m_z);
 
 					break;
 				}
@@ -1379,6 +1387,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					QVector3D translation = targetPos - m_localCoordinatePosition.translation();
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
+
+					if (m_orientationMode == OM_Local) {
+						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.y()*m_cso->localYAxis().x() + translation.z()*m_cso->localZAxis().x(),
+											translation.x()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.z()*m_cso->localZAxis().y(),
+											translation.x()*m_cso->localXAxis().z() + translation.y()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
+						translation = newTrans;
+					}
+
 					trans.setTranslation(translation);
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
@@ -1393,9 +1409,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					Vic3D::Transform3D trans;
 
 					if (m_orientationMode == OM_Local) {
-						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.x()*m_cso->localYAxis().x() + translation.x()*m_cso->localZAxis().z(),
-											translation.y()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.y()*m_cso->localZAxis().z(),
-											translation.z()*m_cso->localXAxis().z() + translation.z()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
+						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.y()*m_cso->localYAxis().x() + translation.z()*m_cso->localZAxis().x(),
+											translation.x()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.z()*m_cso->localZAxis().y(),
+											translation.x()*m_cso->localXAxis().z() + translation.y()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
 						translation = newTrans;
 					}
 
@@ -1417,9 +1433,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// compute offset from current local coordinate system position
 					QVector3D scale;
 
-					scale.setX( M_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( M_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_x ) ) );
-					scale.setY( M_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( M_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_y ) ) );
-					scale.setZ( M_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( M_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : M_bbDim[m_orientationMode].m_z ) ) );
+					scale.setX( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_x ) ) );
+					scale.setY( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_y ) ) );
+					scale.setZ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_z ) ) );
 					// now compose a transform object and set it in the wireframe object
 					// first we scale our selected objects
 
@@ -1428,7 +1444,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					scaling.setScale(scale);
 
 
-					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+					// and then we also have to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
 					// so we know how big the absolute translation has to be
 					IBKMK::Vector3D trans;
@@ -1463,23 +1479,23 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 						scale.setY( (scale.y()-1)/2);
 						scale.setZ( (scale.z()-1)/2);
 
-						newScale.setX( ( M_bbDim[m_orientationMode].m_x
+						newScale.setX( ( m_bbDim[m_orientationMode].m_x
 									   + scale.x() * cso->localXAxis().x()
 									   + scale.y() * cso->localYAxis().x()
 									   + scale.z() * cso->localZAxis().x() ) /
-									   M_bbDim[m_orientationMode].m_x );
+									   m_bbDim[m_orientationMode].m_x );
 
-						newScale.setY( ( M_bbDim[m_orientationMode].m_y
+						newScale.setY( ( m_bbDim[m_orientationMode].m_y
 									   + scale.x() * cso->localXAxis().y()
 									   + scale.y() * cso->localYAxis().y()
 									   + scale.z() * cso->localZAxis().y() ) /
-										M_bbDim[m_orientationMode].m_y );
+										m_bbDim[m_orientationMode].m_y );
 
-						newScale.setZ( ( M_bbDim[m_orientationMode].m_z
+						newScale.setZ( ( m_bbDim[m_orientationMode].m_z
 									   + scale.x() * cso->localXAxis().z()
 									   + scale.y() * cso->localYAxis().z()
 									   + scale.z() * cso->localZAxis().z() ) /
-									   M_bbDim[m_orientationMode].m_z );
+									   m_bbDim[m_orientationMode].m_z );
 
 						scale = newScale;
 
