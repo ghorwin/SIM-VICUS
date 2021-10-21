@@ -309,7 +309,7 @@ namespace VICUS {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "VariablePressureHeadPump";
+				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
 				case 7 : return "HeatPumpIdealCarnotSourceSide";
 				case 8 : return "HeatPumpIdealCarnotSupplySide";
@@ -770,7 +770,7 @@ namespace VICUS {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "VariablePressureHeadPump";
+				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
 				case 7 : return "HeatPumpIdealCarnotSourceSide";
 				case 8 : return "HeatPumpIdealCarnotSupplySide";

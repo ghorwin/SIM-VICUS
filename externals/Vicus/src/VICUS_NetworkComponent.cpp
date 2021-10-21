@@ -151,7 +151,7 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
-		case MT_VariablePressureHeadPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -168,6 +168,33 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 	return {};
 }
 
+
+std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkComponent::ModelType modelType) {
+	// we use switch for maintanance reasons
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpRealSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
+		case MT_HorizontalGroundHeatExchanger:
+		case NUM_MT:
+			break;
+		case MT_ConstantPressurePump:
+		case MT_VariablePressurePump:
+			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
+	}
+	return {};
+}
+
+
 std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
 	// we use switch for maintanance reasons
 	switch (modelType) {
@@ -176,7 +203,7 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
-		case MT_VariablePressureHeadPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -250,7 +277,7 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
-		case MT_VariablePressureHeadPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:

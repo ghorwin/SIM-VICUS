@@ -59,7 +59,7 @@ public:
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
 		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump			'Pump with constant/externally defined mass flux'
 		MT_ControlledPump,					// Keyword: ControlledPump					'Pump with pressure head controlled based on flow controller'
-		MT_VariablePressureHeadPump,		// Keyword: VariablePressureHeadPump		'Pump with linear pressure head curve (dp-v controlled pump)'
+		MT_VariablePressurePump,			// Keyword: VariablePressurePump			'Pump with linear pressure head curve (dp-v controlled pump)'
 		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
 		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
 		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
@@ -128,6 +128,9 @@ public:
 
 	/*! returns additional required parameters, not included in NANDRAD::HydraulicNetworkComponent */
 	static std::vector<unsigned int> additionalRequiredParameter(const ModelType modelType);
+
+	/*! returns optional parameters for the given model type */
+	static std::vector<unsigned int> optionalParameter(const ModelType modelType);
 
 	/*! returns additional required parameters */
 	static std::vector<unsigned int> requiredIntParameter(const ModelType modelType);
