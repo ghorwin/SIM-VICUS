@@ -659,14 +659,14 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 								// rotate local coordinate system (translation isn't needed)
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
-
+								IBKMK::Vector3D center = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->translation() );
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(center) ) );
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
 								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
+								m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(center-newCenter) );
 							}
 						}
 
