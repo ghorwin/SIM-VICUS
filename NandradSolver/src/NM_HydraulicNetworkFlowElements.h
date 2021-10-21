@@ -240,7 +240,9 @@ protected:
 
 	/*! calculates actual maximum pressure head which linear decreases with mass flux */
 	double maximumPressureHead(const double &mdot) const {
-		if (m_maxPressureHeadAtZeroFlow <= 0) // in case class is not initialized or with 0
+		if (m_maxPressureHeadAtZeroFlow <= 0 ||
+			m_maxElectricalPower <=0 ||
+			m_efficiency <= 0) // in case class is not initialized or with 0
 			return std::numeric_limits<double>::max();
 		else {
 			// --> point of maximum volume flow (at minimum pressure head)
@@ -276,12 +278,14 @@ public:
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
 private:
-
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
 	/*! Value reference to pressure head [Pa] */
 	const double					*m_pressureHeadRef = nullptr;
 }; // HNConstantPressurePump
+
+
+
 
 
 /*! Valve model with fixed constant pressure head */
@@ -293,10 +297,14 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
-private:
+	void inputReferences(std::vector<InputReference> &) const override;
+	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
-	/*! Value of pressure loss [Pa] */
-	double							m_pressureLoss = -999;
+private:
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! Value reference to pressure head [Pa] */
+	const double					*m_pressureLossRef = nullptr;
 }; // HNConstantPressureLossValve
 
 

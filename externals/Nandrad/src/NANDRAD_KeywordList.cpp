@@ -197,7 +197,7 @@ namespace NANDRAD {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "VariablePressureHeadPump";
+				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
 				case 7 : return "HeatPumpIdealCarnotSourceSide";
 				case 8 : return "HeatPumpIdealCarnotSupplySide";
@@ -216,16 +216,16 @@ namespace NANDRAD {
 				case 3 : return "MassFlux";
 				case 4 : return "PumpEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
-				case 6 : return "Volume";
-				case 7 : return "PipeMaxDiscretizationWidth";
-				case 8 : return "CarnotEfficiency";
-				case 9 : return "MaximumHeatingPower";
-				case 10 : return "PressureLoss";
-				case 11 : return "MaximumPressureHead";
-				case 12 : return "PumpMaximumElectricalPower";
-				case 13 : return "DesignPressureHead";
-				case 14 : return "DesignMassFlux";
-				case 15 : return "PressureHeadReduction";
+				case 6 : return "MaximumPressureHead";
+				case 7 : return "PumpMaximumElectricalPower";
+				case 8 : return "DesignPressureHead";
+				case 9 : return "DesignMassFlux";
+				case 10 : return "PressureHeadReduction";
+				case 11 : return "Volume";
+				case 12 : return "PipeMaxDiscretizationWidth";
+				case 13 : return "CarnotEfficiency";
+				case 14 : return "MaximumHeatingPower";
+				case 15 : return "PressureLoss";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -825,7 +825,7 @@ namespace NANDRAD {
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "VariablePressureHeadPump";
+				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
 				case 7 : return "HeatPumpIdealCarnotSourceSide";
 				case 8 : return "HeatPumpIdealCarnotSupplySide";
@@ -844,16 +844,16 @@ namespace NANDRAD {
 				case 3 : return "MassFlux";
 				case 4 : return "PumpEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
-				case 6 : return "Volume";
-				case 7 : return "PipeMaxDiscretizationWidth";
-				case 8 : return "CarnotEfficiency";
-				case 9 : return "MaximumHeatingPower";
-				case 10 : return "PressureLoss";
-				case 11 : return "MaximumPressureHead";
-				case 12 : return "PumpMaximumElectricalPower";
-				case 13 : return "DesignPressureHead";
-				case 14 : return "DesignMassFlux";
-				case 15 : return "PressureHeadReduction";
+				case 6 : return "MaximumPressureHead";
+				case 7 : return "PumpMaximumElectricalPower";
+				case 8 : return "DesignPressureHead";
+				case 9 : return "DesignMassFlux";
+				case 10 : return "PressureHeadReduction";
+				case 11 : return "Volume";
+				case 12 : return "PipeMaxDiscretizationWidth";
+				case 13 : return "CarnotEfficiency";
+				case 14 : return "MaximumHeatingPower";
+				case 15 : return "PressureLoss";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -1469,20 +1469,20 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
-				case 2 : return "Pressure head for a pump";
+				case 2 : return "Pump predefined pressure head";
 				case 3 : return "Pump predefined mass flux";
 				case 4 : return "Pump efficiency";
 				case 5 : return "Fraction of pump heat loss due to inefficiency that heats up the fluid";
-				case 6 : return "Water or air volume of the component";
-				case 7 : return "Maximum width/length of discretized volumes in pipe";
-				case 8 : return "Carnot efficiency eta";
-				case 9 : return "Maximum heating power";
-				case 10 : return "Pressure loss for valve";
-				case 11 : return "Maximum pressure head at point of minimal mass flow of pump";
-				case 12 : return "Maximum electrical power at point of optimal operation of pump";
-				case 13 : return "Design pressure head of VariablePressureHeadPump";
-				case 14 : return "Design mass flux of VariablePressureHeadPump";
-				case 15 : return "Factor to reduced pressure head of VariablePressureHeadPump";
+				case 6 : return "Pump maximum pressure head at point of minimal mass flow of pump";
+				case 7 : return "Pump maximum electrical power at point of optimal operation";
+				case 8 : return "Design pressure head of VariablePressureHeadPump";
+				case 9 : return "Design mass flux of VariablePressureHeadPump";
+				case 10 : return "Factor to reduced pressure head of VariablePressureHeadPump";
+				case 11 : return "Water or air volume of the component";
+				case 12 : return "Maximum width/length of discretized volumes in pipe";
+				case 13 : return "Carnot efficiency eta";
+				case 14 : return "Maximum heating power";
+				case 15 : return "Pressure loss for valve";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -2101,16 +2101,16 @@ namespace NANDRAD {
 				case 3 : return "kg/s";
 				case 4 : return "---";
 				case 5 : return "---";
-				case 6 : return "m3";
-				case 7 : return "m";
-				case 8 : return "---";
-				case 9 : return "W";
-				case 10 : return "Pa";
-				case 11 : return "Pa";
-				case 12 : return "W";
-				case 13 : return "Pa";
-				case 14 : return "kg/s";
-				case 15 : return "---";
+				case 6 : return "Pa";
+				case 7 : return "W";
+				case 8 : return "Pa";
+				case 9 : return "kg/s";
+				case 10 : return "---";
+				case 11 : return "m3";
+				case 12 : return "m";
+				case 13 : return "---";
+				case 14 : return "W";
+				case 15 : return "Pa";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :

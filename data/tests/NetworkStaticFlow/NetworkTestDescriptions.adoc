@@ -81,6 +81,14 @@
 dp	144.39	Pa
 ```
 
+### HydraulicNetworkConstPressurePumpLimited
+
+- Pumpe mit konstanter Druckerhöhung, welche durch eine maximale Druckerhöhung bei 0 Volumenstrom und max. Leistung begrenzt ist (lineare Kurve der max Druckerhöhung).
+-durch eine andere Pumpe wird der Massenstrom erhöht, die ConstPressurePump schafft anfangs die vorgegebene Druckerhöhung, bei höherem Massenstrom sinkt dann die Druckerhöhung. 
+
+
+
+
 ## Thermo-Hydraulic Tests - Milestone 1
 
 

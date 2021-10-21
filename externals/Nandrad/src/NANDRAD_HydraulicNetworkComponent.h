@@ -63,7 +63,7 @@ public:
 		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
 		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
-		P_MaximumPressureHeadAtZeroFlow,		// Keyword: MaximumPressureHeadAtZeroFlow		[Pa]	'Pump maximum pressure head at point of minimal mass flow of pump'
+		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Pump maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Pump maximum electrical power at point of optimal operation'
 		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Pa]	'Design pressure head of VariablePressureHeadPump'
 		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux of VariablePressureHeadPump'

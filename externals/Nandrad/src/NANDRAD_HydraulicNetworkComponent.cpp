@@ -109,7 +109,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatPumpRealSourceSide:
 			case MT_HeatExchanger:
 			case MT_PressureLossElement:
-				case MT_ControlledValve:
+			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
@@ -133,10 +133,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_MassFlux, P_PumpEfficiency, P_Volume};
 			case MT_ControlledPump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHeadAtZeroFlow};
+				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
 			case MT_VariablePressurePump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHeadAtZeroFlow,
+				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead,
 						P_DesignPressureHead, P_DesignMassFlux, P_PressureHeadReduction};
 			case MT_HeatPumpIdealCarnotSupplySide:
 			case MT_HeatPumpIdealCarnotSourceSide:
@@ -204,7 +204,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			break;
 		}
 		// value must be >= 0
-		case P_MaximumPressureHeadAtZeroFlow:
+		case P_MaximumPressureHead:
 		case P_PumpMaximumElectricalPower:
 		case P_MassFlux:
 		case P_PressureLoss:

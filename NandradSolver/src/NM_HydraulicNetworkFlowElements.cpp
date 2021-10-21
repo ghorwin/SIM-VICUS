@@ -549,16 +549,18 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 // *** HNConstantPressureLossValve ***
 
-HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int, const NANDRAD::HydraulicNetworkComponent &component) {
-	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component):
+	m_id(id)
+{
+	m_pressureLossRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
 }
 
 
 double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	if (mdot >= 0)
-		return p_inlet - p_outlet - m_pressureLoss;
+		return p_inlet - p_outlet - *m_pressureLossRef;
 	else
-		return p_inlet - p_outlet + m_pressureLoss;
+		return p_inlet - p_outlet + *m_pressureLossRef;
 }
 
 
@@ -569,6 +571,24 @@ void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, 
 	df_dp_inlet = 1;
 	df_dp_outlet = -1;
 	df_dmdot = 0;
+}
+
+void HNConstantPressureLossValve::inputReferences(std::vector<InputReference> & inputRefs) const {
+	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
+	//       a warning is added about this in the model description.
+	InputReference inputRef;
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	inputRef.m_name = std::string("PressureLossSchedule");
+	inputRef.m_required = false;
+	inputRef.m_id = m_id;
+	inputRefs.push_back(inputRef);
+
+}
+
+void HNConstantPressureLossValve::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
+	if (*resultValueRefIt != nullptr)
+		m_pressureLossRef = *resultValueRefIt; // optional, may be nullptr
+	++resultValueRefIt;
 }
 
 
@@ -583,7 +603,7 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
-									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
 	m_id(id)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
@@ -703,7 +723,7 @@ HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetw
 	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
-									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
 	m_controlElement(controlElement),
 	m_id(id)
 {
@@ -948,7 +968,7 @@ HNVariablePressureHeadPump::HNVariablePressureHeadPump(unsigned int id, const NA
 	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
-									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHeadAtZeroFlow].value),
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
 	m_id(id)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
