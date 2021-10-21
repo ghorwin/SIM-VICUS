@@ -840,7 +840,7 @@ void SVPropEditGeometry::updateUi() {
 
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
-			m_ui->toolButtonNormal->setCheckable(true);
+			m_ui->toolButtonNormal->setEnabled(true);
 			m_rotationState = RS_Normal;
 			setToolButtonsRotationState();
 			setRotation(s->geometry().normal() );
@@ -863,8 +863,7 @@ void SVPropEditGeometry::updateUi() {
 				break;
 
 			}
-
-			m_ui->toolButtonNormal->setCheckable(false);
+			m_ui->toolButtonNormal->setEnabled(false);
 			setToolButtonsRotationState();
 		}
 
@@ -880,10 +879,12 @@ void SVPropEditGeometry::updateUi() {
 			if ( m_selSubSurfaces.size() == 1 ) {
 				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
 				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
+				m_ui->toolButtonNormal->setEnabled(true);
 				m_ui->toolButtonNormal->setChecked(true);
 				setRotation(s->geometry().normal() );
 			}
 			else {
+				m_ui->toolButtonNormal->setEnabled(false);
 				m_ui->toolButtonZ->setChecked(true);
 				setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 			}
@@ -1386,17 +1387,29 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				case MS_Absolute : {
 					// for this operation, we need all three coordinates
 					QVector3D targetPos((float)m_ui->lineEditX->value(), (float)m_ui->lineEditY->value(), (float)m_ui->lineEditZ->value());
-					// compute offset from current local coordinate system position
-					QVector3D translation = targetPos - m_localCoordinatePosition.translation();
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D trans;
-
+					// compute offset from current local coordinate system position
+					QVector3D translation;
 					if (m_orientationMode == OM_Local) {
-						QVector3D newTrans( translation.x()*m_cso->localXAxis().x() + translation.y()*m_cso->localYAxis().x() + translation.z()*m_cso->localZAxis().x(),
-											translation.x()*m_cso->localXAxis().y() + translation.y()*m_cso->localYAxis().y() + translation.z()*m_cso->localZAxis().y(),
-											translation.x()*m_cso->localXAxis().z() + translation.y()*m_cso->localYAxis().z() + translation.z()*m_cso->localZAxis().z() );
-						translation = newTrans;
+						QVector3D localTrans (m_cso->translation() );
+						QVector3D newTrans( localTrans.x()*m_cso->localXAxis().x() + localTrans.y()*m_cso->localXAxis().y() + localTrans.z()*m_cso->localXAxis().z(),
+											localTrans.x()*m_cso->localYAxis().x() + localTrans.y()*m_cso->localYAxis().y() + localTrans.z()*m_cso->localYAxis().z(),
+											localTrans.x()*m_cso->localZAxis().x() + localTrans.y()*m_cso->localZAxis().y() + localTrans.z()*m_cso->localZAxis().z() );
+
+
+						if (lineEdit == m_ui->lineEditX) {
+							translation = (targetPos.x() - newTrans.x()) * m_cso->localXAxis();
+						}
+						else if (lineEdit == m_ui->lineEditX) {
+							translation = (targetPos.y() - newTrans.y()) * m_cso->localYAxis();
+						}
+						else {
+							translation = (targetPos.z() - newTrans.z()) * m_cso->localZAxis();
+						}
 					}
+					else
+						translation = targetPos - m_localCoordinatePosition.translation();
 
 					trans.setTranslation(translation);
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = trans;
@@ -1476,32 +1489,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					QVector3D newScale;
 					if (m_orientationMode == OM_Local) {
-//						const QQuaternion &q = cso->transform().rotation();
-//						scale = q*scale;
-//						scale.setX( (scale.x()-1)/2 );
-//						scale.setY( (scale.y()-1)/2);
-//						scale.setZ( (scale.z()-1)/2);
-
-//						newScale.setX( ( m_bbDim[m_orientationMode].m_x
-//									   + scale.x() * cso->localXAxis().x()
-//									   + scale.y() * cso->localYAxis().x()
-//									   + scale.z() * cso->localZAxis().x() ) /
-//									   m_bbDim[m_orientationMode].m_x );
-
-//						newScale.setY( ( m_bbDim[m_orientationMode].m_y
-//									   + scale.x() * cso->localXAxis().y()
-//									   + scale.y() * cso->localYAxis().y()
-//									   + scale.z() * cso->localZAxis().y() ) /
-//										m_bbDim[m_orientationMode].m_y );
-
-//						newScale.setZ( ( m_bbDim[m_orientationMode].m_z
-//									   + scale.x() * cso->localXAxis().z()
-//									   + scale.y() * cso->localYAxis().z()
-//									   + scale.z() * cso->localZAxis().z() ) /
-//									   m_bbDim[m_orientationMode].m_z );
-
-//						scale = newScale;
-
 						// we know the local bounding box
 						// we can scale up the local bounding box by the factor
 						// finally we calc back our dimensions of the global bounding box
@@ -1587,24 +1574,51 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
 					double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
 
-					IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::sin( incliRad ),
-												std::cos( oriRad ) * std::sin( incliRad ),
-												std::cos( incliRad ) );
-
-					// we only want to rotate if the normal vectors are not the same
-					if ( checkVectors<4>( m_normal, newNormal ) )
-						return; // do nothing
-
-					// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-					// rotate to
-					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
 
 					Vic3D::Transform3D rota;
-					// we now also have to find the angle between both normals
 
-					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
+					if (m_orientationMode == OM_Global) {
+						switch (m_rotationState) {
+						case SVPropEditGeometry::RS_Normal: {
+							IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::sin( incliRad ),
+														std::cos( oriRad ) * std::sin( incliRad ),
+														std::cos( incliRad ) );
 
-					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
+							// we only want to rotate if the normal vectors are not the same
+							if ( checkVectors<4>( m_normal, newNormal ) )
+								return; // do nothing
+
+							// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+							// rotate to
+							IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
+
+							// we now also have to find the angle between both normals
+
+							double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
+
+							rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
+						}
+						break;
+						case SVPropEditGeometry::RS_XAxis:
+						break;
+						case SVPropEditGeometry::RS_YAxis:
+						break;
+						case SVPropEditGeometry::RS_ZAxis:
+						break;
+
+
+						}
+					}
+					else {
+
+
+						if ( m_ui->toolButtonX->isChecked() )
+							rota.setRotation((float)m_ui->lineEditX->value(), m_cso->localXAxis());
+						else if ( m_ui->toolButtonY->isChecked() )
+							rota.setRotation((float)m_ui->lineEditY->value(), m_cso->localYAxis());
+						else if ( m_ui->toolButtonZ->isChecked() )
+							rota.setRotation((float)m_ui->lineEditZ->value(), m_cso->localZAxis());
+					}
 
 					// we take the QQuarternion to rotate
 					QVector4D rotVec = rota.rotation().toVector4D();
@@ -2317,21 +2331,32 @@ void SVPropEditGeometry::on_toolButtonNormal_clicked() {
 	setToolButtonsRotationState();
 }
 
-void SVPropEditGeometry::on_toolButtonZ_clicked() {
-	m_rotationState = RS_ZAxis;
-	setToolButtonsRotationState();
 
-	setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-}
 
 void SVPropEditGeometry::on_toolButtonX_clicked() {
 	m_rotationState = RS_XAxis;
 	setToolButtonsRotationState();
-	setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
+	if (m_orientationMode == OM_Local)
+		setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
+	else
+		setRotation( IBKMK::Vector3D(1,0,0));
 }
 
 void SVPropEditGeometry::on_toolButtonY_clicked() {
 	m_rotationState = RS_YAxis;
 	setToolButtonsRotationState();
-	setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
+	if (m_orientationMode == OM_Local)
+		setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
+	else
+		setRotation( IBKMK::Vector3D(0,1,0));
+}
+
+void SVPropEditGeometry::on_toolButtonZ_clicked() {
+	m_rotationState = RS_ZAxis;
+	setToolButtonsRotationState();
+
+	if (m_orientationMode == OM_Local)
+		setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+	else
+		setRotation( IBKMK::Vector3D(0,0,1));
 }
