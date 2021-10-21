@@ -1478,29 +1478,77 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					if (m_orientationMode == OM_Local) {
 //						const QQuaternion &q = cso->transform().rotation();
 //						scale = q*scale;
-						scale.setX( (scale.x()-1)/2 );
-						scale.setY( (scale.y()-1)/2);
-						scale.setZ( (scale.z()-1)/2);
+//						scale.setX( (scale.x()-1)/2 );
+//						scale.setY( (scale.y()-1)/2);
+//						scale.setZ( (scale.z()-1)/2);
 
-						newScale.setX( ( m_bbDim[m_orientationMode].m_x
-									   + scale.x() * cso->localXAxis().x()
-									   + scale.y() * cso->localYAxis().x()
-									   + scale.z() * cso->localZAxis().x() ) /
-									   m_bbDim[m_orientationMode].m_x );
+//						newScale.setX( ( m_bbDim[m_orientationMode].m_x
+//									   + scale.x() * cso->localXAxis().x()
+//									   + scale.y() * cso->localYAxis().x()
+//									   + scale.z() * cso->localZAxis().x() ) /
+//									   m_bbDim[m_orientationMode].m_x );
 
-						newScale.setY( ( m_bbDim[m_orientationMode].m_y
-									   + scale.x() * cso->localXAxis().y()
-									   + scale.y() * cso->localYAxis().y()
-									   + scale.z() * cso->localZAxis().y() ) /
-										m_bbDim[m_orientationMode].m_y );
+//						newScale.setY( ( m_bbDim[m_orientationMode].m_y
+//									   + scale.x() * cso->localXAxis().y()
+//									   + scale.y() * cso->localYAxis().y()
+//									   + scale.z() * cso->localZAxis().y() ) /
+//										m_bbDim[m_orientationMode].m_y );
 
-						newScale.setZ( ( m_bbDim[m_orientationMode].m_z
-									   + scale.x() * cso->localXAxis().z()
-									   + scale.y() * cso->localYAxis().z()
-									   + scale.z() * cso->localZAxis().z() ) /
-									   m_bbDim[m_orientationMode].m_z );
+//						newScale.setZ( ( m_bbDim[m_orientationMode].m_z
+//									   + scale.x() * cso->localXAxis().z()
+//									   + scale.y() * cso->localYAxis().z()
+//									   + scale.z() * cso->localZAxis().z() ) /
+//									   m_bbDim[m_orientationMode].m_z );
 
-						scale = newScale;
+//						scale = newScale;
+
+						// we know the local bounding box
+						// we can scale up the local bounding box by the factor
+						// finally we calc back our dimensions of the global bounding box
+
+						IBKMK::Vector3D newBBDimLocal = m_bbDim[OM_Local];
+						IBKMK::Vector3D newBBDimGlobal = m_bbDim[OM_Global];
+
+						if (lineEdit == m_ui->lineEditX) { // we scale with the x axis
+							newBBDimLocal.m_x = scale.x() * m_bbDim[OM_Local].m_x;
+
+							double diffX = newBBDimLocal.m_x - m_bbDim[OM_Local].m_x;
+
+							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffX * m_cso->localXAxis().x();
+							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffX * m_cso->localXAxis().y();
+							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffX * m_cso->localXAxis().z();
+
+							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
+							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
+							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+						}
+						else if (lineEdit == m_ui->lineEditY) {  // we scale with the y axis
+							newBBDimLocal.m_y = scale.y() * m_bbDim[OM_Local].m_y;
+
+							double diffY = newBBDimLocal.m_y - m_bbDim[OM_Local].m_y;
+
+							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffY * m_cso->localYAxis().x();
+							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffY * m_cso->localYAxis().y();
+							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffY * m_cso->localYAxis().z();
+
+							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
+							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
+							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+						}
+						else { // we scale with the z axis
+							newBBDimLocal.m_z = scale.z() * m_bbDim[OM_Local].m_z;
+
+							double diffZ = newBBDimLocal.m_z - m_bbDim[OM_Local].m_z;
+
+							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffZ * m_cso->localZAxis().x();
+							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffZ * m_cso->localZAxis().y();
+							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffZ * m_cso->localZAxis().z();
+
+							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
+							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
+							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+						}
+
 
 					}
 
@@ -1560,12 +1608,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					// we take the QQuarternion to rotate
 					QVector4D rotVec = rota.rotation().toVector4D();
-					IBKMK::Vector3D newCenter = m_bbCenter[m_orientationMode];
+					IBKMK::Vector3D center = QtExt::QVector2IBKVector(m_cso->translation() );
+					IBKMK::Vector3D newCenter = center;
 					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
+
 					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_bbCenter[m_orientationMode] - newCenter) );
+					rota.setTranslation(QtExt::IBKVector2QVector(center - newCenter) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1575,18 +1625,29 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				case MS_Relative: {
 					// now compose a transform object and set it in the wireframe object
 					Vic3D::Transform3D rota;
-					if ( lineEdit == m_ui->lineEditX )
-						rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
-					else if ( lineEdit == m_ui->lineEditY )
-						rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
-					else if ( lineEdit == m_ui->lineEditZ )
-						rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
+					if (m_orientationMode == OM_Global) {
+						if ( lineEdit == m_ui->lineEditX )
+							rota.setRotation((float)m_ui->lineEditX->value(), 1, 0, 0);
+						else if ( lineEdit == m_ui->lineEditY )
+							rota.setRotation((float)m_ui->lineEditY->value(), 0, 1, 0);
+						else if ( lineEdit == m_ui->lineEditZ )
+							rota.setRotation((float)m_ui->lineEditZ->value(), 0, 0, 1);
+					}
+					else {
+						if ( lineEdit == m_ui->lineEditX )
+							rota.setRotation((float)m_ui->lineEditX->value(), m_cso->localXAxis());
+						else if ( lineEdit == m_ui->lineEditY )
+							rota.setRotation((float)m_ui->lineEditY->value(), m_cso->localYAxis());
+						else if ( lineEdit == m_ui->lineEditZ )
+							rota.setRotation((float)m_ui->lineEditZ->value(), m_cso->localZAxis());
+					}
 
-					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
+
+					// and then we also have to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just rotated by the specified rotation
 					// so we know how big the absolute translation has to be
 					QVector4D rotVec = rota.rotation().toVector4D();
-					IBKMK::Vector3D newCenter = m_bbCenter[m_orientationMode];
+					IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector(m_cso->translation() );
 					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
 					centerRota.rotateVector(newCenter);
 
