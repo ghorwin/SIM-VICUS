@@ -403,7 +403,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_Infiltration;
 	// open the infiltration DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(m_current->m_idReferences[m_current->m_idReferences[subType]]);
+	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID) {
 		m_ui->pushButtonAddInfiltration->setChecked(false);
 		return;
