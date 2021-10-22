@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
+    <width>460</width>
     <height>1634</height>
    </rect>
   </property>
@@ -435,21 +435,8 @@
              </item>
              <item>
               <widget class="QWidget" name="widgetXYZ" native="true">
-               <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,0">
-                <item row="3" column="0">
-                 <widget class="QLabel" name="labelZ">
-                  <property name="minimumSize">
-                   <size>
-                    <width>0</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="text">
-                   <string>ΔZ</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
                  <widget class="QLabel" name="labelX">
                   <property name="minimumSize">
                    <size>
@@ -462,7 +449,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1" colspan="2">
+                <item>
                  <widget class="QtExt::ValidatingLineEdit" name="lineEditX">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -481,30 +468,14 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1" colspan="2">
-                 <widget class="QtExt::ValidatingLineEdit" name="lineEditY">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>100</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="3">
+                <item>
                  <widget class="QLabel" name="labelXDeg">
                   <property name="text">
                    <string>°</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0">
+                <item>
                  <widget class="QLabel" name="labelY">
                   <property name="minimumSize">
                    <size>
@@ -517,21 +488,43 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="3">
+                <item>
+                 <widget class="QtExt::ValidatingLineEdit" name="lineEditY">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize">
+                   <size>
+                    <width>50</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QLabel" name="labelYDeg">
                   <property name="text">
                    <string>°</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="3">
-                 <widget class="QLabel" name="labelZDeg">
+                <item>
+                 <widget class="QLabel" name="labelZ">
+                  <property name="minimumSize">
+                   <size>
+                    <width>0</width>
+                    <height>0</height>
+                   </size>
+                  </property>
                   <property name="text">
-                   <string>°</string>
+                   <string>ΔZ</string>
                   </property>
                  </widget>
                 </item>
-                <item row="3" column="1" colspan="2">
+                <item>
                  <widget class="QtExt::ValidatingLineEdit" name="lineEditZ">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
@@ -541,9 +534,16 @@
                   </property>
                   <property name="minimumSize">
                    <size>
-                    <width>100</width>
+                    <width>50</width>
                     <height>0</height>
                    </size>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelZDeg">
+                  <property name="text">
+                   <string>°</string>
                   </property>
                  </widget>
                 </item>
@@ -743,7 +743,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>100</width>
+                   <width>50</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -752,10 +752,6 @@
                  </property>
                 </widget>
                </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_9">
                <item>
                 <widget class="QLabel" name="labelY_2">
                  <property name="minimumSize">
@@ -779,16 +775,12 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>100</width>
+                   <width>50</width>
                    <height>0</height>
                   </size>
                  </property>
                 </widget>
                </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
                 <widget class="QLabel" name="labelZ_2">
                  <property name="minimumSize">
@@ -812,7 +804,7 @@
                  </property>
                  <property name="minimumSize">
                   <size>
-                   <width>100</width>
+                   <width>50</width>
                    <height>0</height>
                   </size>
                  </property>
@@ -821,43 +813,69 @@
               </layout>
              </item>
              <item>
-              <layout class="QVBoxLayout" name="verticalLayout_5">
-               <item>
-                <widget class="QPushButton" name="pushButtonCopyBuilding">
-                 <property name="text">
-                  <string>Buildings</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonCopyBuildingLevels">
-                 <property name="text">
-                  <string>Building levels</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonCopyRooms">
-                 <property name="text">
-                  <string>Rooms</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonCopySurfaces">
-                 <property name="text">
-                  <string>Surfaces</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pushButtonCopySubSurfaces">
-                 <property name="text">
-                  <string>Sub Surfaces</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <widget class="QPushButton" name="pushButtonCopyBuilding">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Buildings</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonCopyBuildingLevels">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Building levels</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonCopyRooms">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Rooms</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonCopySurfaces">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Surfaces</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonCopySubSurfaces">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Sub Surfaces</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

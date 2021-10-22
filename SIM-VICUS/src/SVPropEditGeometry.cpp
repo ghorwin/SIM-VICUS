@@ -86,83 +86,6 @@ public:
 LineEditFormater::~LineEditFormater() {}
 
 
-IBKMK::Vector3D localBoundingBox(std::vector<const VICUS::Surface*> &surfaces,
-							std::vector<const VICUS::SubSurface*> &subsurfaces,
-							IBKMK::Vector3D &center,
-							const IBKMK::Vector3D &offset,
-							const IBKMK::Vector3D &xAxis,
-							const IBKMK::Vector3D &yAxis,
-							const IBKMK::Vector3D &zAxis )
-{
-
-	// store selected surfaces
-	if ( surfaces.empty() && subsurfaces.empty())
-		return IBKMK::Vector3D ( 0,0,0 );
-
-	double maxX = std::numeric_limits<double>::lowest();
-	double maxY = std::numeric_limits<double>::lowest();
-	double maxZ = std::numeric_limits<double>::lowest();
-	double minX = std::numeric_limits<double>::max();
-	double minY = std::numeric_limits<double>::max();
-	double minZ = std::numeric_limits<double>::max();
-	for (const VICUS::Surface *s : surfaces ) {
-		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
-
-			IBKMK::Vector3D vLocal, point;
-
-			IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
-			IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
-			IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
-
-			v = vLocal;
-
-			( v.m_x > maxX ) ? maxX = v.m_x : 0;
-			( v.m_y > maxY ) ? maxY = v.m_y : 0;
-			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
-
-			( v.m_x < minX ) ? minX = v.m_x : 0;
-			( v.m_y < minY ) ? minY = v.m_y : 0;
-			( v.m_z < minZ ) ? minZ = v.m_z : 0;
-		}
-	}
-	for (const VICUS::SubSurface *sub : subsurfaces ) {
-		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
-		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
-			if (&(s->subSurfaces()[i]) == sub) {
-				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {
-
-					IBKMK::Vector3D vLocal, point;
-
-					IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
-					IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
-					IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
-
-					v = vLocal;
-
-					( v.m_x > maxX ) ? maxX = v.m_x : 0;
-					( v.m_y > maxY ) ? maxY = v.m_y : 0;
-					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
-
-					( v.m_x < minX ) ? minX = v.m_x : 0;
-					( v.m_y < minY ) ? minY = v.m_y : 0;
-					( v.m_z < minZ ) ? minZ = v.m_z : 0;
-				}
-			}
-		}
-	}
-
-	double dX = maxX - minX;
-	double dY = maxY - minY;
-	double dZ = maxZ - minZ;
-
-	center.set( offset.m_x + (minX + 0.5*dX) * xAxis.m_x + (minY + 0.5*dY) * yAxis.m_x + (minZ + 0.5*dZ) * zAxis.m_x ,
-				offset.m_y + (minX + 0.5*dX) * xAxis.m_y + (minY + 0.5*dY) * yAxis.m_y + (minZ + 0.5*dZ) * zAxis.m_y ,
-				offset.m_z + (minX + 0.5*dX) * xAxis.m_z + (minY + 0.5*dY) * yAxis.m_z + (minZ + 0.5*dZ) * zAxis.m_z );
-
-	// set bounding box;
-	return IBKMK::Vector3D ( dX, dY, dZ );
-}
-
 // *** Widget implementation ***
 
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
@@ -894,7 +817,7 @@ void SVPropEditGeometry::updateUi() {
 
 
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	m_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
+	m_bbDim[OM_Local] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 												  QtExt::QVector2IBKVector(m_cso->translation() ),
 												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
 												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
@@ -918,11 +841,11 @@ void SVPropEditGeometry::updateOrientationMode() {
 
 	// we have to update our bounding box dimensions in our specific coordinate system
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	m_bbDim[OM_Local] = localBoundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
-												  QtExt::QVector2IBKVector(m_cso->translation() ),
-												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
-												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
-												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+	m_bbDim[OM_Local] = project().boundingBox( m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
+											   QtExt::QVector2IBKVector(m_cso->translation() ),
+											   QtExt::QVector2IBKVector(m_cso->localXAxis() ),
+											   QtExt::QVector2IBKVector(m_cso->localYAxis() ),
+											   QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[m_orientationMode]);
