@@ -2354,10 +2354,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, it->first);
 		Q_ASSERT(comp != nullptr);
-		if (comp->m_scheduleIds.empty() &&
-		// THIS IS JUST TEMPORARY !!!!
-				comp->m_modelType != VICUS::NetworkComponent::MT_ConstantMassFluxPump)
-			continue;
 
 		// create and add object list
 		NANDRAD::ObjectList objList;
