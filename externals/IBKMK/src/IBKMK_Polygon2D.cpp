@@ -125,10 +125,13 @@ double Polygon2D::area(int digits) const {
 		const IBKMK::Vector2D &p1 = m_vertexes[(i+1)%sizeV];
 		const IBKMK::Vector2D &p2 = m_vertexes[(i+2)%sizeV];
 		surfArea += p1.m_x * (p2.m_y - p0.m_y);
+
 	}
+
 	surfArea *= 0.5;
 	surfArea = std::round(surfArea*IBK::f_pow10(digits))/IBK::f_pow10(digits);
-	return surfArea;
+
+	return std::fabs(surfArea);
 }
 
 
