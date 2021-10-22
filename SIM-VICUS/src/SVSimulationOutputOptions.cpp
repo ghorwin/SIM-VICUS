@@ -29,6 +29,10 @@
 #include <VICUS_Outputs.h>
 #include <VICUS_KeywordList.h>
 
+#include <IBK_FileReader.h>
+
+#include "SVProjectHandler.h"
+
 #include "SVStyle.h"
 
 SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs) :
@@ -48,6 +52,7 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputGrids);
 	m_ui->tableWidgetOutputGrids->setSortingEnabled(false);
+	m_ui->radioButtonDefault->setChecked(true);
 }
 
 
@@ -118,6 +123,90 @@ void SVSimulationOutputOptions::updateUi() {
 
 }
 
+void SVSimulationOutputOptions::generateOutputTable() {
+	FUNCID(SVSimulationOutputOptions::generateOutputTable);
+	// parse the variable list file
+	// generate a data object with all output data
+	//
+	// fill the table in the outputs tab
+	// user can select needed outputs
+	// if simulation is run, all needed putputs are generated in NANDRAD file
+
+	QString nandradFilePath = SVProjectHandler::instance().nandradProjectFilePath();
+	QString fileName = SVProjectHandler::instance().projectFile();
+
+	int pos = fileName.lastIndexOf(".");
+	fileName = fileName.left(pos);
+
+	IBK::Path filePath(nandradFilePath.toStdString());
+	IBK::Path file = IBK::Path(fileName.toStdString() ) / "var" / "output_reference_list.txt" ;
+
+	qDebug() << file.c_str();
+
+	std::vector<std::string> outputContent;
+	try {
+		IBK::FileReader::readAll(file, outputContent, std::vector<std::string>());
+	}
+	catch (IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("Could not open file '%1' with output definitons.").arg(file.c_str()), FUNC_ID);
+	}
+
+	initOutputTable(outputContent.size()-1); // mind last column
+
+	// now we go through all read lines
+	std::vector<std::string> tokens;
+	for (unsigned int i=0; i<outputContent.size(); ++i) {
+		if ( i == 0 )
+			continue;
+
+		std::string &line = outputContent[i];
+		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
+
+		QTableWidgetItem *item;
+		for(unsigned int j=0; j<tokens.size(); ++j) {
+			item = new QTableWidgetItem();
+			QString trimmedString = QString::fromStdString(tokens[j]).trimmed();
+			item->setText(trimmedString);
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+			if (j == 0) {
+				m_ui->tableWidgetOutputList->setItem(i-1, OT_VariableName, item);
+			}
+			else if (j == 1)
+				m_ui->tableWidgetOutputList->setItem(i-1, OT_SourceObjectIds, item);
+			else if (j == 2)
+				m_ui->tableWidgetOutputList->setItem(i-1, OT_VectorIndexes, item);
+			else if (j == 3)
+				m_ui->tableWidgetOutputList->setItem(i-1, OT_Unit, item);
+			else if (j == 4)
+				m_ui->tableWidgetOutputList->setItem(i-1, OT_Description, item);
+		}
+	}
+}
+
+void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
+	m_ui->tableWidgetOutputList->setColumnCount(5);
+	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
+	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetOutputList->setColumnWidth(1, 100);
+	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+	m_ui->tableWidgetOutputList->setRowCount(rowCount);
+
+//	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
+	m_ui->tableWidgetOutputList->verticalHeader()->setVisible(false);
+	m_ui->tableWidgetOutputList->horizontalHeader()->setMinimumSectionSize(19);
+	m_ui->tableWidgetOutputList->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_ui->tableWidgetOutputList->setSelectionMode(QAbstractItemView::SingleSelection);
+	m_ui->tableWidgetOutputList->setAlternatingRowColors(true);
+	m_ui->tableWidgetOutputList->setSortingEnabled(true);
+//	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
+
+	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
+	m_ui->tableWidgetOutputList->horizontalHeader()->setStyleSheet(headerStyleSheet);
+}
+
 
 void SVSimulationOutputOptions::on_checkBoxDefaultZoneOutputs_toggled(bool checked) {
 	if (checked)
@@ -133,4 +222,18 @@ void SVSimulationOutputOptions::on_checkBoxDefaultNetworkOutputs_toggled(bool ch
 				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::F_CreateDefaultNetworkOutputs), checked);
 	else
 		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].clear();
+}
+
+void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggled) {
+
+	m_ui->radioButtonCustom->blockSignals(true);
+	m_ui->radioButtonCustom->setChecked(!defaultToggled);
+	m_ui->radioButtonCustom->blockSignals(false);
+
+//	m_ui->radioButtonDefault->setChecked(!defaultToggled);
+
+	m_ui->checkBoxDefaultZoneOutputs->setEnabled(defaultToggled);
+	m_ui->checkBoxDefaultNetworkOutputs->setEnabled(defaultToggled);
+
+	m_ui->tableWidgetOutputList->setEnabled(defaultToggled);
 }

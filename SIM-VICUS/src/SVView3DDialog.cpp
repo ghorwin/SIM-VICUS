@@ -339,7 +339,6 @@ void SVView3D::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 	// we take the IBK File Reader in order to read result files
 	try {
 		IBK::FileReader::readAll( fname, cont, std::vector<std::string>() );
-
 	}
 	catch (IBK::Exception &ex) {
 		throw IBK::Exception(IBK::FormatString("Could not read View3D Results."), FUNC_ID);

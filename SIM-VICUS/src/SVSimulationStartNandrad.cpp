@@ -490,14 +490,14 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 	return true;
 }
 
-
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
 }
 
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
-	startSimulation(true);
+	if (startSimulation(true) );
+		m_simulationOutputOptions->generateOutputTable();
 }
 
 

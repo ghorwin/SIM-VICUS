@@ -44,15 +44,35 @@ public:
 	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs);
 	~SVSimulationOutputOptions();
 
+	enum OutputType {
+		OT_VariableName,
+		OT_Unit,
+		OT_Description,
+		OT_SourceObjectIds,
+		OT_VectorIndexes,
+		NUM_OT
+	};
+
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/
 	void updateUi();
 
+	/*! Generates the table with all available output data to define output definitions in NANDRAD.
+		Therefore the "$project_folder/var/$project_name/output_reference_list.txt" is parsed
+		and all necesairry data is stored
+	*/
+	void generateOutputTable();
+
+	/*! Initialized Output Table with all necessairy headers */
+	void initOutputTable(unsigned int rowCount);
+
 private slots:
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
 
 	void on_checkBoxDefaultNetworkOutputs_toggled(bool checked);
+
+	void on_radioButtonDefault_toggled(bool defaultToggled);
 
 private:
 	Ui::SVSimulationOutputOptions		*m_ui;
