@@ -221,8 +221,6 @@ void SVDBNetworkComponentEditWidget::populateTableWidget(){
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetParameters->setItem(rowCount, 2, item);
 
-			// Mind: unit conversion needed if keyword-list unit does not match base SI unit
-			//       but add check if there is no value yet
 			if (m_current->m_para[para].name.empty())
 				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
 			else
