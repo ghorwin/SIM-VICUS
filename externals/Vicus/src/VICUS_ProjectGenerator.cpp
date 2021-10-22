@@ -1310,7 +1310,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		// set construction instance parameters, area, orientation etc.
 		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
 		const double REL_TOL_AREAS = 0.05;
-		double minArea = 0.2;//1e-1;
+		double minArea = 0.1; //1e-4;
 		double area = 0;
 
 		bool bothSidesHaveSurfaces = false;
