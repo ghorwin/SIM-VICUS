@@ -263,9 +263,11 @@ int InternalLoadsModel::update() {
 		// retrieve zone area
 		double area = m_zoneAreas[i];
 		// calculate load in  [W]
-		double equipmentLoad = area * (*m_valueRefs[i]);
-		double personLoad = area * (*m_valueRefs[nZones + i]);
-		double lightingLoad = area * (*m_valueRefs[2 * nZones + i]);
+		unsigned int numVVRHalf = NUM_VVR*0.5;
+		// ATTENTION adjust numVVR !!!!
+		double equipmentLoad = area * (*m_valueRefs[i * numVVRHalf]);
+		double personLoad = area * (*m_valueRefs[i * numVVRHalf + 1]);
+		double lightingLoad = area * (*m_valueRefs[i * numVVRHalf + 2]);
 
 		// distribute
 		convEquipLoadPtr[i]	= (1 - m_eqipmentRadiationFraction) * equipmentLoad;
