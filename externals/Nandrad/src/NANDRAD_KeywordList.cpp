@@ -2097,20 +2097,20 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "mm";
 				case 1 : return "---";
-				case 2 : return "Pa";
+				case 2 : return "Bar";
 				case 3 : return "kg/s";
 				case 4 : return "---";
 				case 5 : return "---";
-				case 6 : return "Pa";
+				case 6 : return "Bar";
 				case 7 : return "W";
-				case 8 : return "Pa";
+				case 8 : return "Bar";
 				case 9 : return "kg/s";
 				case 10 : return "---";
 				case 11 : return "m3";
 				case 12 : return "m";
 				case 13 : return "---";
 				case 14 : return "W";
-				case 15 : return "Pa";
+				case 15 : return "Bar";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
