@@ -1308,9 +1308,9 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		idSet.insert(constrInstNandrad.m_id);
 
 		// set construction instance parameters, area, orientation etc.
-		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
 		const double REL_TOL_AREAS = 0.05;
-		double minArea = 1e-4;
+		double minArea = 0.2;//1e-1;
 		double area = 0;
 
 		bool bothSidesHaveSurfaces = false;
@@ -1325,7 +1325,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 
-//#define ABS_TEST;
+#define ABS_TEST;
 #if defined (ABS_TEST)
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 #else
