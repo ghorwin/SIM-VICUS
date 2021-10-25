@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>380</height>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -126,7 +126,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
+    <widget class="QGroupBox" name="groupBoxMaximumOutput">
      <property name="title">
       <string>Maximum Controller Output </string>
      </property>

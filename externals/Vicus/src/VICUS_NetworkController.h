@@ -48,6 +48,8 @@ public:
 		CP_ThermostatValue,								// Keyword: ThermostatValue								'Control zone thermostat values'
 		/*! Try to achieve target mass flow in current element. */
 		CP_MassFlux,									// Keyword: MassFlux									'Control mass flux'
+		/*! Switch pump on or off depending on heat flux of following element */
+		CP_PumpOperation,								// Keyword: PumpOperation								'Control pump operation depending on following element'
 		NUM_CP
 	};
 
@@ -55,6 +57,7 @@ public:
 	enum ControllerType {
 		CT_PController,			// Keyword: PController				'PController'
 		CT_PIController,		// Keyword: PIController			'PIController'
+		CT_OnOffController,		// Keyword: OnOffController			'OnOffController'
 		NUM_CT
 	};
 
@@ -65,6 +68,7 @@ public:
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
+		P_HeatLossThreshold,				// Keyword: HeatLossThreshold				[W]		'Threshold value of heat loss'
 		NUM_P
 	};
 

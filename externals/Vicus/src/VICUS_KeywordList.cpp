@@ -360,12 +360,14 @@ namespace VICUS {
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
+				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -375,6 +377,7 @@ namespace VICUS {
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossThreshold";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -821,12 +824,14 @@ namespace VICUS {
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
+				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -836,6 +841,7 @@ namespace VICUS {
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossThreshold";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -1283,12 +1289,14 @@ namespace VICUS {
 				case 1 : return "Control temperature difference of the following element";
 				case 2 : return "Control zone thermostat values";
 				case 3 : return "Control mass flux";
+				case 4 : return "Control pump operation depending on following element";
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -1298,6 +1306,7 @@ namespace VICUS {
 				case 2 : return "Kd-parameter";
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
+				case 5 : return "Threshold value of heat loss";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -1744,12 +1753,14 @@ namespace VICUS {
 				case 1 : return "";
 				case 2 : return "";
 				case 3 : return "";
+				case 4 : return "";
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
+				case 2 : return "";
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -1759,6 +1770,7 @@ namespace VICUS {
 				case 2 : return "---";
 				case 3 : return "K";
 				case 4 : return "kg/s";
+				case 5 : return "W";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2205,12 +2217,14 @@ namespace VICUS {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -2220,6 +2234,7 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2666,12 +2681,14 @@ namespace VICUS {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::ControllerType
 			case 27 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::para_t
 			case 28 :
@@ -2681,6 +2698,7 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2927,11 +2945,11 @@ namespace VICUS {
 			// NetworkController::ModelType
 			case 25 : return 2;
 			// NetworkController::ControlledProperty
-			case 26 : return 4;
+			case 26 : return 5;
 			// NetworkController::ControllerType
-			case 27 : return 2;
+			case 27 : return 3;
 			// NetworkController::para_t
-			case 28 : return 5;
+			case 28 : return 6;
 			// NetworkController::References
 			case 29 : return 2;
 			// NetworkEdge::PipeModel
@@ -3047,11 +3065,11 @@ namespace VICUS {
 			// NetworkController::ModelType
 			case 25 : return 1;
 			// NetworkController::ControlledProperty
-			case 26 : return 3;
+			case 26 : return 4;
 			// NetworkController::ControllerType
-			case 27 : return 1;
+			case 27 : return 2;
 			// NetworkController::para_t
-			case 28 : return 4;
+			case 28 : return 5;
 			// NetworkController::References
 			case 29 : return 1;
 			// NetworkEdge::PipeModel

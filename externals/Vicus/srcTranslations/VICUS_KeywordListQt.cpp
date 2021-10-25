@@ -171,13 +171,16 @@ KeywordListQt::KeywordListQt() {
 	tr("Control temperature difference of the following element");
 	tr("Control zone thermostat values");
 	tr("Control mass flux");
+	tr("Control pump operation depending on following element");
 	tr("PController");
 	tr("PIController");
+	tr("OnOffController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
 	tr("Kd-parameter");
 	tr("Target temperature difference");
 	tr("Target mass flux");
+	tr("Threshold value of heat loss");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");

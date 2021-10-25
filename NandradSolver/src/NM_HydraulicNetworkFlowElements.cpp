@@ -241,6 +241,7 @@ void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*
 
 
 
+
 // *** HNPressureLossCoeffElement ***
 
 HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementId,
@@ -599,12 +600,14 @@ void HNConstantPressureLossValve::setInputValueRefs(std::vector<const double *>:
 // *** HNConstantPressurePump ***
 
 HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
-											   const NANDRAD::HydraulicFluid & fluid) :
+											   const NANDRAD::HydraulicFluid & fluid,
+											   const NANDRAD::HydraulicNetworkControlElement * ctr) :
 	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
 									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
-	m_id(id)
+	m_id(id),
+	m_controller(ctr)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
 	m_pressureHeadRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
@@ -613,6 +616,12 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	double pressureHead = *m_pressureHeadRef;
+	if (m_controller != nullptr) {
+		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation &&
+			*m_follwoingElementHeatLoss < m_controller->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossThreshold].value)
+			return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
+	}
+	// if no controller or invalid controlled property: normal pressure head
 	double maxPressureHead = maximumPressureHead(mdot);
 	if (pressureHead > maxPressureHead)
 		pressureHead = maxPressureHead;
@@ -631,21 +640,38 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 
 
 void HNConstantPressurePump::inputReferences(std::vector<InputReference> & inputRefs) const {
-	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
-	//       a warning is added about this in the model description.
-	InputReference inputRef;
-	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-	inputRef.m_name = std::string("PressureHeadSchedule");
-	inputRef.m_required = false;
-	inputRef.m_id = m_id;
-	inputRefs.push_back(inputRef);
+	if (m_controller != nullptr) {
+		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
+			InputReference inputRef2;
+			inputRef2.m_id = m_followingflowElementId;
+			inputRef2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef2.m_name.m_name = "FlowElementHeatLoss";
+			inputRef2.m_required = true;
+			inputRefs.push_back(inputRef2);
+		}
+	}
+//	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
+//	//       a warning is added about this in the model description.
+//	InputReference inputRef;
+//	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+//	inputRef.m_name = std::string("PressureHeadSchedule");
+//	inputRef.m_required = false;
+//	inputRef.m_id = m_id;
+//	inputRefs.push_back(inputRef);
 }
 
 
 void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
-	if (*resultValueRefIt != nullptr)
-		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
-	++resultValueRefIt;
+	if (m_controller != nullptr) {
+		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation){
+			m_follwoingElementHeatLoss = *resultValueRefIt;
+			++resultValueRefIt;
+		}
+	}
+//	if (*resultValueRefIt != nullptr){
+//		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
+//		++resultValueRefIt;
+//	}
 }
 
 
@@ -752,8 +778,6 @@ void HNControlledPump::modelQuantityValueRefs(std::vector<const double*> &valRef
 void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) const {
 	if (m_controlElement == nullptr)
 		return; 	// only handle input reference when there is a controller
-
-
 
 	switch (m_controlElement->m_controlledProperty) {
 

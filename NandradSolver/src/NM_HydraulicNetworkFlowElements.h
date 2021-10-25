@@ -269,7 +269,8 @@ class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement,
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
-						   const NANDRAD::HydraulicFluid & fluid);
+						   const NANDRAD::HydraulicFluid & fluid,
+						   const NANDRAD::HydraulicNetworkControlElement * ctr);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -277,11 +278,22 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
+	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+
 private:
 	/*! Element's ID, needed to formulate input references. */
 	unsigned int					m_id;
 	/*! Value reference to pressure head [Pa] */
 	const double					*m_pressureHeadRef = nullptr;
+
+
+
+	const NANDRAD::HydraulicNetworkControlElement		*m_controller = nullptr;
+
+
+
+	const double							*m_follwoingElementHeatLoss = nullptr;
+
 }; // HNConstantPressurePump
 
 

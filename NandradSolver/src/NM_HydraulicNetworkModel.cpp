@@ -111,7 +111,10 @@ void HydraulicNetworkModel::setup() {
 			{
 				// create pump model
 				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component,
-																				  m_hydraulicNetwork->m_fluid);
+																				  m_hydraulicNetwork->m_fluid,
+																				  e.m_controlElement);
+				// setup ID of following element, if such a controller is defined
+				setFollowingElementId(pumpElement, e);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 				m_pumpElements.push_back(pumpElement);
@@ -474,7 +477,8 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 		return;
 
 	// not the right controller property?
-	if (e.m_controlElement->m_controlledProperty != NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+	if (!(e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement ||
+		e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation))
 		return;
 
 	// make sure there is no other element with the same outlet id
@@ -504,6 +508,8 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 		dynamic_cast<HNPressureLossCoeffElement*>(element)->m_followingflowElementId = followingElementId;
 	else if (dynamic_cast<HNControlledPump*>(element) != nullptr)
 		dynamic_cast<HNControlledPump*>(element)->m_followingflowElementId = followingElementId;
+	else if (dynamic_cast<HNConstantPressurePump*>(element) != nullptr)
+		dynamic_cast<HNConstantPressurePump*>(element)->m_followingflowElementId = followingElementId;
 	else {
 		throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
 											   "However, flow elements with component '%2' cannot be used with such controllers.")

@@ -95,6 +95,10 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 		case VICUS::NetworkController::CP_TemperatureDifference:
 		case VICUS::NetworkController::CP_TemperatureDifferenceOfFollowingElement:{
 			m_ui->radioButtonFixedSetPoint->setText(tr("Set Point Temperature Difference [K]"));
+			m_ui->radioButtonSchedule->setEnabled(true);
+			m_ui->lineEditSchedule->setEnabled(true);
+			m_ui->toolButtonSchedule->setEnabled(true);
+			m_ui->groupBoxMaximumOutput->setEnabled(true);
 			m_ui->radioButtonSchedule->setText(tr("Schedule Temperature Difference [K]"));
 			if (m_current->m_modelType == VICUS::NetworkController::MT_Constant)
 				m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_TemperatureDifferenceSetpoint].value);
@@ -104,11 +108,25 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 		}
 		case VICUS::NetworkController::CP_MassFlux :{
 			m_ui->radioButtonFixedSetPoint->setText(tr("Set Point Mass Flux [kg/s]"));
+			m_ui->radioButtonSchedule->setEnabled(true);
+			m_ui->lineEditSchedule->setEnabled(true);
+			m_ui->toolButtonSchedule->setEnabled(true);
+			m_ui->groupBoxMaximumOutput->setEnabled(true);
 			m_ui->radioButtonSchedule->setText(tr("Schedule Mass Flux [kg/s]"));
 			if (m_current->m_modelType == VICUS::NetworkController::MT_Constant)
 				m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_MassFluxSetpoint].value);
 			else if (setPointSched != nullptr)
 				m_ui->lineEditSchedule->setText(QtExt::MultiLangString2QString(setPointSched->m_displayName));
+			break;
+		}
+		case VICUS::NetworkController::CP_PumpOperation :{
+			m_ui->radioButtonFixedSetPoint->setText(tr("Heat Flux Threshold of Following Element [W]"));
+			m_ui->radioButtonSchedule->setText("");
+			m_ui->radioButtonSchedule->setEnabled(false);
+			m_ui->lineEditSchedule->setEnabled(false);
+			m_ui->toolButtonSchedule->setEnabled(false);
+			m_ui->groupBoxMaximumOutput->setEnabled(false);
+			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_HeatLossThreshold].value);
 			break;
 		}
 		case VICUS::NetworkController::CP_ThermostatValue:
@@ -119,6 +137,8 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 	// controller type and parameters
 	int typeIdx = m_ui->comboBoxControllerType->findData(m_current->m_controllerType);
 	m_ui->comboBoxControllerType->setCurrentIndex(typeIdx);
+	m_ui->lineEditKp->setEnabled(m_current->m_controllerType == VICUS::NetworkController::CT_PController ||
+								 m_current->m_controllerType == VICUS::NetworkController::CT_PIController );
 	m_ui->lineEditKp->setValue(m_current->m_para[VICUS::NetworkController::P_Kp].value);
 	m_ui->lineEditKi->setEnabled(m_current->m_controllerType == VICUS::NetworkController::CT_PIController);
 	m_ui->lineEditKi->setValue(m_current->m_para[VICUS::NetworkController::P_Ki].value);
@@ -177,6 +197,12 @@ void SVDBNetworkControllerEditWidget::on_lineEditSetpoint_editingFinished()
 		case VICUS::NetworkController::CP_MassFlux:{
 			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
 											   VICUS::NetworkController::P_MassFluxSetpoint,
+											   m_ui->lineEditSetpoint->value());
+		} break;
+
+		case VICUS::NetworkController::CP_PumpOperation:{
+			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
+											   VICUS::NetworkController::P_HeatLossThreshold,
 											   m_ui->lineEditSetpoint->value());
 		} break;
 
