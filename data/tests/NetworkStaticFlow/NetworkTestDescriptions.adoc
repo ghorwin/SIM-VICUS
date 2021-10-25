@@ -74,6 +74,20 @@
 - In diesem Beispiel zirkuliert ein Teil des Fluids immer nur im oberen Kreis.
 
 
+### HydraulicNetworkPressureLossElement.nandrad
+
+- Pumpe mit konst. Massenstrom von 1 kg/s und 3 parallele Elemente mit zeta=10 und di=0.05 m. Ergebnis:
+```
+dp	144.39	Pa
+```
+
+### HydraulicNetworkConstPressurePumpLimited
+
+- Pumpe mit konstanter Druckerhöhung, welche durch eine maximale Druckerhöhung bei 0 Volumenstrom und max. Leistung begrenzt ist (lineare Kurve der max Druckerhöhung).
+-durch eine andere Pumpe wird der Massenstrom erhöht, die ConstPressurePump schafft anfangs die vorgegebene Druckerhöhung, bei höherem Massenstrom sinkt dann die Druckerhöhung. 
+
+
+
 
 ## Thermo-Hydraulic Tests - Milestone 1
 

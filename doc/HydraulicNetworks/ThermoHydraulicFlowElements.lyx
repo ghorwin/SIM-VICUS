@@ -1061,7 +1061,7 @@ Der optimale Betriebspunkt ist in der Regel bei 50 % des maximalen Volumenstroms
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P_{el,max}=\eta\:\Delta p_{opt}\dot{V}_{opt}
+P_{el,max}=\frac{1}{\eta}\:\Delta p_{opt}\dot{V}_{opt}
 \]
 
 \end_inset
@@ -1085,6 +1085,10 @@ Aus der maximalen Leistung im optimalen Betriebspunkt und dem maximalen
 \begin_layout Standard
 Damit kann die Grenze des Betriebsbereichs der drehzahlgeregelten Pumpe
  (schwarze Kurve) bestimmt werden
+\end_layout
+
+\begin_layout Standard
+Linearer Verlauf warum???
 \begin_inset Formula 
 \[
 \Delta p_{max}(\dot{V})=\Delta p_{max,0}-\frac{\Delta p_{max,0}}{\dot{V}_{max,0}}\dot{V}
@@ -2592,7 +2596,6 @@ with the parameters
 \end_inset
 
  polynom coefficients for condenser heat flux	
-
 \end_layout
 
 \begin_layout Itemize
