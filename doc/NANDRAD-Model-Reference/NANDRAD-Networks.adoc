@@ -294,18 +294,23 @@ Es werden die folgenden Parameter benötigt:
 
 ### Modelltyp: ConstantPressurePump
 
-Diese Komponente prägt eine Druckdifferenz unabhängig vom Massenstrom auf (entspricht einer idealisierten, druckgeregelten Pumpe). Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
+Diese Komponente prägt eine konstante Druckdifferenz unabhängig vom Massenstrom auf. Das Modell bildet somit eine geregelte Pumpe mit konstanter Druckerhöhung ab. Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `PressureHead` | Pa | Konstante Druckhöhe, welche die Pumpe erzeugt | beliebig | 
 | `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
-| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
 | `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximale Druckhöhe bei minimalem Massenstrom, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet | {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximale elektrische Leistung der Pumpe, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet| {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+
 |====================
 
 Der Parameter `PressureHead` legt eine konstante Druckhöhe fest. Es ist jedoch auch möglich, eine Zeitreihe für diesen Parameter im Zeitplanparameter `PressureHeadSchedule` anzugeben. Wird in solcher Zeitplan für das jeweilige Pumpen-Strömungselement gefunden, so wird dieser Anstelle des konstanten Parameters verwendet.
+
+Werden die optionalen Parameter `MaximumPressureHead` und `PumpMaximumElectricalPower` angegeben, so wird eine maximale Druckerhöhung in Abhängigkeit des Massenstroms berechnet (linear) und die tatsächliche Druckerhöhung dementsprechend begrenzt.
 
 [WARNING]
 ====
@@ -319,6 +324,29 @@ Da sich dies in den Simulationsergebnissen jedoch leicht erkennen lässt, sollte
 Die Modellabhängigkeit von der Zeitplanvariable `PressureHeadSchedule` kann genutzt werden, um die Druckhöhe als FMU-Eingangsgröße zu definieren.
 ====
 
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
+
+
+
+### Modelltyp: VariablePressurePump
+
+Das Modell bildet eine Pumpe mit linear ansteigender Druckerhöhung in Abhängigkeit des Massenstroms ab. Damit entspricht die Pumpenkennlinie einer sogenannten dp-v Regelung. Es werden die folgenden Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `DesignPressureHead` | Pa | Druckerhöhung am Auslegungspunkt, benötigt für die Berechnung der linearen Kennlinie | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `DesignMassFlux` | kg/s | Massenstrom am Auslegungspunkt, benötigt für die Berechnung der linearen Kennlinie | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `PressureHeadReduction` | - | Mit diesem Faktor wird die Druckerhöhung bei einem Massenstrom von 0 berechnet, womit die lineare Kennlinie bestimmt wird. Dazu wird die Druckerhöhung am Auslegungspunkt mit diesem Faktor multipliziert.  | 0...1,{nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximale Druckhöhe bei minimalem Massenstrom, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet | {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximale elektrische Leistung der Pumpe, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet| {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+
+|====================
+
+Werden die optionalen Parameter `MaximumPressureHead` und `PumpMaximumElectricalPower` angegeben, so wird eine maximale Druckerhöhung in Abhängigkeit des Massenstroms berechnet (linear) und die tatsächliche Druckerhöhung dementsprechend begrenzt.
 Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
 
 
@@ -391,6 +419,8 @@ Aus der maximalen Druckhöhe bei minimalem Durchfluss (`MaximumPressureHead`) un
 Das jeweilige Strömungselement (<<NetworkElements>>) referenziert im Attribut `controlElementId` einen Regler (siehe auch <<NetworkControlElements>>). Dieser bestimmt das Regelverhalten der Pumpe.
 
 
+
+
 [[HydraulicElement_ConstantPressureLossValve]]
 ### Modelltyp: ConstantPressureLossValve
 
@@ -405,6 +435,32 @@ Für das Model `ConstantPressureLossValve` werden diese Parameter benötigt:
 | `Volume` | m3 | Fluidvolumen des Ventils | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
+[TIP]
+====
+Es ist ebenfalls möglich den Druckverlust über einen Zeitplan festzulegen. Dazu kann die Zeitplanvariable `PressureLossSchedule` genutzt werden. In diesem Fall wird der festgelegte Parameter `PressureLoss` nicht berücksichtigt.
+====
+
+
+### Modelltyp: PressureLossElement
+
+Mit diesem Modell kann ein beliebiges Druckverlustelement (z.B. T-Stück, Ventil, ...) abgebildet werden, welches  durch einen zeta-Wert und den Innendurchmesser beschrieben werden kann. 
+
+Für das Model `PressureLossElement` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+
+|====================
+
+[TIP]
+====
+Es ist zusätzlich möglich auch Elemente zu beschreiben, welche sich in identischen parallelen Strängen befinden. Dazu wird in dem `HydraulicNetworkElement` (siehe <<NetworkElements>>), welches ein `PressureLossElement` referenziert, der Parameter `NumberParallelElements` angegeben. Siehe dazu auch <<parallel_pressureLossElements>>
+====
+
 
 [[HydraulicElement_ControlledValve]]
 ### Modelltyp: ControlledValve
@@ -417,7 +473,7 @@ Für das Model `ControlledValve` werden diese Parameter benötigt:
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert)| {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
@@ -432,7 +488,7 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
@@ -449,7 +505,7 @@ Weiterhin werden diese Parameter benötigt:
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 | `CarnotEfficiency` | --- | Carnot-Faktor zur Berechnung des COP | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 | `MaximumHeatingPower` | W | Maximale Heizleistung (= maximaler Wärmestrom des Kondensators) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
@@ -508,7 +564,7 @@ Weitere benötigte Parameter sind:
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert)| {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
@@ -641,7 +697,8 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 | `inletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `outletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `componentId` |  ID des referenzierten  `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
-| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_benötigt für Rohre_)
+| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional
+(_benötigt für Rohre_)
 |====================
 
 [IMPORTANT]
@@ -724,6 +781,28 @@ Durch Angabe des `IBK:IntPara` Tags mit dem Namen `NumberParallelPipes` kann man
 	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 	<!-- We have a pipe register here, consisting of 10 parallel pipes -->
 	<IBK:IntPara name="NumberParallelPipes">10</IBK:IntPara>
+</HydraulicNetworkElement>
+----
+====
+
+[NOTE]
+====
+Die Ausgabe Massestrom `FluidMassFlux` und Volumenstrom `FluidVolumeFlow` beziehen sich auf das gesamte Rohrbündel.
+====
+
+
+[[parallel_pressureLossElements]]
+#### Parallele Druckverlustelemente (Ventile, Einbauten)
+
+Durch Angabe des `IBK:IntPara` Tags mit dem Namen `NumberParallelElements` kann man ein Element mit Druckverlust definieren, welches identische in parallelen Strängen verbaut ist, ohne dazu jeden identischen Strang separat modellieren zu müssen.
+
+[[ex_parallel_valve]]
+.Definition eines parallelen Ventils
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="4" inletNodeId="5" outletNodeId="6" componentId="10020016" displayName="Ventil">
+    <IBK:IntPara name="NumberParallelElements">2</IBK:IntPara>
 </HydraulicNetworkElement>
 ----
 ====

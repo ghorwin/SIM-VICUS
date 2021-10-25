@@ -196,6 +196,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
+				case NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump :
 				{
 					// get value reference to constant pressure ref parameter for constant pressure pump
 					const double * pressureHeadRef =  &e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
@@ -214,6 +215,14 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						IBK_ASSERT(pump != nullptr);
 						pressureHeadRef = pump->pressureHeadRef();
 					}
+					else if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump) {
+						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
+						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
+						const HNVariablePressureHeadPump * pump = dynamic_cast<const HNVariablePressureHeadPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(pump != nullptr);
+						pressureHeadRef = pump->pressureHeadRef();
+					}
+					IBK_ASSERT(pressureHeadRef != nullptr);
 					// create pump model with heat loss
 					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
 									*e.m_component, pressureHeadRef);
@@ -272,7 +281,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve: {
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+				case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement: {
 					TNAdiabaticElement * element = new TNAdiabaticElement( m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // no heat loss

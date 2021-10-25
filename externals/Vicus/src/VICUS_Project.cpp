@@ -861,7 +861,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" ,
 											   "FlowElementHeatLoss", "PressureDifference",
 											   "TemperatureDifference", "ControllerResultValue",
-												"ElectricalPower"};
+												"MechanicalPower", "ElectricalPower"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;

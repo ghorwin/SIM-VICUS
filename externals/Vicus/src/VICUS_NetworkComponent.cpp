@@ -151,6 +151,7 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -158,6 +159,7 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT:
 			break;
 		case MT_HorizontalGroundHeatExchanger:
@@ -165,6 +167,33 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 	}
 	return {};
 }
+
+
+std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkComponent::ModelType modelType) {
+	// we use switch for maintanance reasons
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatExchanger:
+		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpRealSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
+		case MT_HorizontalGroundHeatExchanger:
+		case NUM_MT:
+			break;
+		case MT_ConstantPressurePump:
+		case MT_VariablePressurePump:
+			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
+	}
+	return {};
+}
+
 
 std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
 	// we use switch for maintanance reasons
@@ -174,6 +203,7 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -185,6 +215,8 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 			break;
 		case MT_HorizontalGroundHeatExchanger:
 			return {IP_NumberParallelPipes};
+		case MT_PressureLossElement:
+			return {IP_NumberParallelElements};
 	}
 	return {};
 }
@@ -207,8 +239,12 @@ void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, con
 		case P_CarnotEfficiency:
 		case P_PumpEfficiency:
 		case P_FractionOfMotorInefficienciesToFluidStream:
-		case P_PressureHead: {
-			Q_ASSERT(false); // it is not intendet to check these parameters here
+		case P_PressureHead:
+		case P_PressureHeadReduction:
+		case P_DesignPressureHead:
+		case P_DesignMassFlux:
+		{
+			Q_ASSERT(false); // it is not intended to check these parameters here
 		} break;
 		case P_LengthOfGroundHeatExchangerPipes:
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
@@ -223,7 +259,9 @@ void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsign
 	const char * enumName = "NetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	switch (numPara) {
-		case IP_NumberParallelPipes:{
+		case IP_NumberParallelPipes:
+		case IP_NumberParallelElements:
+		{
 			if (para.value < 1)
 				throw IBK::Exception(IBK::FormatString("% must be > 1").arg(name), FUNC_ID);
 		} break;
@@ -239,6 +277,7 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_HeatPumpIdealCarnotSourceSide:
 		case MT_HeatPumpIdealCarnotSupplySide:
@@ -246,14 +285,15 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT:
-			break;
+			return false;
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
 		case MT_HorizontalGroundHeatExchanger:
 			return true;
 	}
-	return false;
+	return false; // just for compiler
 }
 
 

@@ -132,9 +132,18 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		}
 			break;
 
+		case HydraulicNetworkComponent::MT_PressureLossElement : {
+			// check number of parallel elements, and if missing, default to 1
+			if (m_intPara[IP_NumberParallelElements].name.empty())
+				m_intPara[IP_NumberParallelElements].set("NumberParallelElements", 1);
+			if (m_intPara[IP_NumberParallelElements].value <= 0)
+				throw IBK::Exception("Parameter 'NumberParallelElements' must be > 0!", FUNC_ID);
+		}
+			break;
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_ControlledPump:
+		case HydraulicNetworkComponent::MT_VariablePressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_ControlledValve:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
