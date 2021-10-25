@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4790 $
  * $Date: 2016-06-29 14:47:05 -0700 (Wed, 29 Jun 2016) $
- * ----------------------------------------------------------------- 
- * Programmer(s): Radu Serban and Aaron Collier @ LLNL                               
+ * -----------------------------------------------------------------
+ * Programmer(s): Radu Serban and Aaron Collier @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -100,7 +100,7 @@ void N_VDiv(N_Vector x, N_Vector y, N_Vector z)
   return;
 }
 
-void N_VScale(realtype c, N_Vector x, N_Vector z) 
+void N_VScale(realtype c, N_Vector x, N_Vector z)
 {
   z->ops->nvscale(c, x, z);
   return;

@@ -27,6 +27,7 @@
 #define SVPropVertexListWidgetH
 
 #include <QWidget>
+#include <VICUS_PlaneGeometry.h>
 
 namespace Ui {
 	class SVPropVertexListWidget;
@@ -55,6 +56,9 @@ class SVPropVertexListWidget : public QWidget {
 public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
+
+	/*! Sets up the floor level buttons. Activate if the number of building(s) is greater than 0. */
+	void setupButtons();
 
 	/*! Sets up the widget to be used for creating geometry of a given type.
 		\param newGeometryType A type as declared in NewGeometryObject::NewGeometryMode
@@ -187,6 +191,11 @@ private:
 
 	/*! If true, user requested rotation of polygon. */
 	bool						m_polygonRotation = false;
+
+	/*! All points of the polyline are held here. When switching from Complex to other roof shapes,
+	 *   only the first three points are used.*/
+	std::vector<IBKMK::Vector3D>	m_roofPolygon;
+
 };
 
 

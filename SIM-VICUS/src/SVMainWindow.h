@@ -302,7 +302,13 @@ private slots:
 	void on_actionViewToggleParametrizationMode_triggered();
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
 	void on_actionViewShowGrid_toggled(bool visible);
+	void on_actionViewFindSelectedGeometry_triggered();
 	void on_actionViewResetView_triggered();
+	void on_actionViewFromNorth_triggered();
+	void on_actionViewFromEast_triggered();
+	void on_actionViewFromSouth_triggered();
+	void on_actionViewFromWest_triggered();
+	void on_actionViewFromAbove_triggered();
 
 
 	void on_actionSimulationNANDRAD_triggered();
@@ -316,6 +322,9 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
+	void on_actionHelpLinuxDesktopIntegration_triggered();
+
+
 
 
 

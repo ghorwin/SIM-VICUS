@@ -332,6 +332,8 @@ void PlaneGeometry::triangulate() {
 	// store vertexes for triangles
 	m_triangulationData.m_vertexes.swap(vertexes);
 	m_triangulationData.m_normal = m_polygon.normal(); // cache normal for easy access
+
+	Q_ASSERT(m_holes.size() == m_holeTriangulationData.size());
 }
 
 

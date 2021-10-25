@@ -340,7 +340,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QtExt::ValidatingLineEdit" name="lineEditX">
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditXValue">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -379,7 +379,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QtExt::ValidatingLineEdit" name="lineEditY">
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditYValue">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -415,7 +415,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QtExt::ValidatingLineEdit" name="lineEditZ">
+              <widget class="QtExt::ValidatingLineEdit" name="lineEditZValue">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -723,6 +723,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources>

@@ -26,17 +26,18 @@
 #ifndef SVNavigationTreeItemDelegateH
 #define SVNavigationTreeItemDelegateH
 
-#include <QItemDelegate>
+#include <QStyledItemDelegate>
 
 /*! The item delegate that displays the object state in the navigation tree widget. */
-class SVNavigationTreeItemDelegate : public QItemDelegate {
+class SVNavigationTreeItemDelegate : public QStyledItemDelegate {
 	Q_OBJECT
 public:
 	enum DataRoles {
 		NodeID = Qt::UserRole,
 		VisibleFlag = Qt::UserRole + 1,
 		SelectedFlag = Qt::UserRole + 2,
-		ItemType = Qt::UserRole + 3
+		ItemType = Qt::UserRole + 3,
+		InvalidGeometryFlag = Qt::UserRole + 4
 	};
 
 	SVNavigationTreeItemDelegate(QWidget * parent = nullptr);

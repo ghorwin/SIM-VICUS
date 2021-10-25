@@ -42,6 +42,20 @@ public:
 	*/
 	virtual void solve(double * rhs) override;
 
+	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores content at memory location pointed to by dataPtr and increases
+		pointer afterwards to point just behind the memory occupied by the copied data.
+		Default implementation does nothing.
+	*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores content from memory at location pointed to by dataPtr and increases
+		pointer afterwards to point just behind the memory occupied by the copied data.
+		Default implementation does nothing.
+	*/
+	virtual void deserialize(void* & dataPtr) override;
 private:
 
 	/*! Size of the equation system. */

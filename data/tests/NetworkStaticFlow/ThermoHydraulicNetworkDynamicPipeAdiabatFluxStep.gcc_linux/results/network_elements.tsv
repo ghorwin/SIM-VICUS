@@ -1,4 +1,4 @@
-Time [h]	pipe.OutletNodeTemperature [C]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	pipe.OutletNodePressure [Pa]	pump.OutletNodePressure [Pa]	hx.OutletNodePressure [Pa]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	hx.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	hx.FluidTemperature [C]	pump.FlowElementHeatLoss [W]	NetworkElement(id=301).FlowElementHeatLoss [W]
+Time [h]	pipe.OutletNodeTemperature [C]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	pipe.OutletNodePressure [Pa]	pump.OutletNodePressure [Pa]	hx.OutletNodePressure [Pa]	pipe.FluidMassFlux [kg/s]	pump.FluidMassFlux [kg/s]	hx.FluidMassFlux [kg/s]	pipe.FluidTemperature [C]	pump.FluidTemperature [C]	hx.FluidTemperature [C]	pump.FlowElementHeatLoss [W]	hx.FlowElementHeatLoss [W]
 0	20	20	20	0.0246981	4000	-5.42124e-08	0.114283	0.114283	0.114283	20	20	20	-0	-2000
 0.0166667	20	20.6342	22.0727	0.0246981	4000	-5.42124e-08	0.114283	0.114283	0.114283	20.033	20.6342	22.0727	-0	-2000
 0.0333333	20	21.6695	23.123	0.0246981	4000	-5.42124e-08	0.114283	0.114283	0.114283	20.1866	21.6695	23.123	-0	-2000

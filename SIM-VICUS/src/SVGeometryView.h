@@ -63,8 +63,21 @@ public:
 	*/
 	void refreshSceneView();
 
-	/*! Resets the camera position to be looking nicely onto the scene. */
-	void resetCamera();
+	/*! Resets the camera position to be looking nicely onto the scene.
+		\param positionID The ID identifies the position the camera should take.
+
+		0 - nice view
+		1 - from north
+		2 - from east
+		3 - from south
+		4 - from west
+		5 - from above
+		6 - close to selected object's center point
+
+		For variants 1..4 the camera is placed at 2x max bounding box dimension apart from the geometry center at top of the geometry
+		looking at the center.
+	*/
+	void resetCamera(int positionID);
 
 	/*! This function is called from the main application object, when it receives a keypress event.
 		It is the central handling function for all scene-related/view-state related global shortcuts

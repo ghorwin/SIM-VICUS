@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 	// since this string is used to identify the registry/config file location.
 	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
 
-	qApp->setWindowIcon(QIcon(":/logo/icons/64w/Icon64.png"));
+	qApp->setWindowIcon(QIcon(":/logo/icons/Icon_64.png"));
 	qApp->setApplicationName(ProgramVersionName);
 
 	// disable ? button in windows

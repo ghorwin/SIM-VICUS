@@ -1,4 +1,4 @@
-Time [h]	Room.AirTemperature [C]	Zone(id=2).AirTemperature [C]
+Time [h]	Room.AirTemperature [C]	Ideally heated Room.AirTemperature [C]
 0	20	15
 1	19.9491	15
 2	19.5896	15

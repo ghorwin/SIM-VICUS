@@ -35,6 +35,7 @@ class SVNavigationTreeWidget;
 class ModificationInfo;
 class QTreeWidgetItem;
 class SVSmartSelectDialog;
+class SVNavigationTreeItemDelegate;
 
 /*! The tree widget with all building/rooms/etc.. */
 class SVNavigationTreeWidget : public QWidget {
@@ -47,7 +48,10 @@ public:
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */
-	void onModified( int modificationType, ModificationInfo * data );
+	void onModified( int modificationType, ModificationInfo * data);
+
+	/*! Expand node if not yet done and scroll to view. */
+	void scrollToObject(unsigned int uniqueID);
 
 signals:
 	void removeSelected();
@@ -60,19 +64,15 @@ private slots:
 	void on_treeWidget_itemCollapsed(QTreeWidgetItem *item);
 
 	void on_actionRemoveSelected_triggered();
-
 	void on_actionShowSelected_triggered();
-
 	void on_actionHideSelected_triggered();
-
 	void on_actionSelect_all_triggered();
-
 	void on_actionDeselect_all_triggered();
-
 	void on_actionSmartSelect_triggered();
 
-
 	void on_treeWidget_itemChanged(QTreeWidgetItem *item, int column);
+
+	void on_actionInvertSelection_triggered();
 
 private:
 	/*! Recursively collapses all children. */
@@ -88,6 +88,9 @@ private:
 
 	/*! The smart selection dialog. */
 	SVSmartSelectDialog							*m_smartSelectDialog = nullptr;
+
+	/*! The item delegate that renders the tree items. */
+	SVNavigationTreeItemDelegate				*m_navigationTreeItemDelegate = nullptr;
 };
 
 #endif // SVNavigationTreeWidgetH

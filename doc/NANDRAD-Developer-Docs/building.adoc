@@ -138,3 +138,52 @@ Development is best done with Qt Creator (it is way more efficient to work with 
 
 If you start working with Qt Creator, please mind the configuration rules described in <<qt_creator>>.
 
+
+[[vc]]
+## Development with Visual Studio on Windows
+
+To avoid the overhead of maintaining yet another build system (so far we have qmake/Qt Creator and cmake), we do not have Visual Studio solutions or project files. However, with the help of cmake you can easily generate VC project files for analysis of the code in Visual Studio.
+
+Open a Visual Studio command line, ensure that `cmake` is in the path and then change into the `SIM-VICUS/build/cmake` directory. There, create a subdirectory, for example `vc`, change into this subdir, and run `cmake`.
+
+Here are the commands when starting from within `SIM-VICUS/build/cmake`:
+
+```batch
+:: run from SIM-VICUS\build\cmake
+
+:: load VC compiler path
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+:: set CMAKE search prefix to find Qt library
+set CMAKE_PREFIX_PATH=C:\Qt\5.15.2\msvc2019_64
+
+:: create a subdirectory 'vc' and change into it
+mkdir vc
+cd vc
+
+:: generate cmake build system files
+cmake -G "Visual Studio 16 2019" -A x64 ..
+
+```
+
+This generates build system files for Visual Studio 2019 64-bit.
+
+[TIP]
+====
+If you have a different version of Visual Studio installed, use the respective project file generator as described in https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2016%202019.html[cmake-vc-generators]
+====
+
+The command will generate a set of `*.vcproj` files and an `sln` file:
+
+.Minimal selection of Visual Studio components to be installed
+image::cmakevsgen.png[]
+
+You can open that and start developing in VC. Just mind that you may need to update your project files whenever new files have been added to the SIM-VICUS source code.
+
+[CAUTION]
+====
+Even if you've used Visual Studio in the past, we strongly advise against using it for SIM-VICUS development. The learning curve for Qt Creator is short and you will be rewarded with much better refactoring/code analysis features, plus much faster user interface (just try out the code completion!). 
+
+Though, Visual Studio has it's benefits when it comes to specific debugging tasks in the internals of the solver.
+====
+

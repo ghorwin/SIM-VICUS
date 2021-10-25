@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4378 $
  * $Date: 2015-02-19 10:55:14 -0800 (Thu, 19 Feb 2015) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh and
  *                Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -127,7 +127,7 @@ extern "C" {
  * storage during calculations.
  * -----------------------------------------------------------------
  */
-  
+
 typedef struct _SpgmrMemRec {
 
   int l_max;
@@ -240,12 +240,12 @@ SUNDIALS_EXPORT SpgmrMem SpgmrMalloc(int l_max, N_Vector vec_tmpl);
  * SpgmrMalloc must be made to obtain new memory for SpgmrSolve
  * to use.
  * -----------------------------------------------------------------
- */                                                                
-     
+ */
+
 SUNDIALS_EXPORT int SpgmrSolve(SpgmrMem mem, void *A_data, N_Vector x, N_Vector b,
-			       int pretype, int gstype, realtype delta, 
-			       int max_restarts, void *P_data, N_Vector s1, 
-			       N_Vector s2, ATimesFn atimes, PSolveFn psolve, 
+			       int pretype, int gstype, realtype delta,
+			       int max_restarts, void *P_data, N_Vector s1,
+			       N_Vector s2, ATimesFn atimes, PSolveFn psolve,
 			       realtype *res_norm, int *nli, int *nps);
 
 
@@ -253,7 +253,7 @@ SUNDIALS_EXPORT int SpgmrSolve(SpgmrMem mem, void *A_data, N_Vector x, N_Vector 
 
 #define SPGMR_SUCCESS            0  /* Converged                     */
 #define SPGMR_RES_REDUCED        1  /* Did not converge, but reduced
-                                       norm of residual              */
+				       norm of residual              */
 #define SPGMR_CONV_FAIL          2  /* Failed to converge            */
 #define SPGMR_QRFACT_FAIL        3  /* QRfact found singular matrix  */
 #define SPGMR_PSOLVE_FAIL_REC    4  /* psolve failed recoverably     */
@@ -263,7 +263,7 @@ SUNDIALS_EXPORT int SpgmrSolve(SpgmrMem mem, void *A_data, N_Vector x, N_Vector 
 #define SPGMR_MEM_NULL          -1  /* mem argument is NULL          */
 #define SPGMR_ATIMES_FAIL_UNREC -2  /* atimes returned failure flag  */
 #define SPGMR_PSOLVE_FAIL_UNREC -3  /* psolve failed unrecoverably   */
-#define SPGMR_GS_FAIL           -4  /* Gram-Schmidt routine faiuled  */        
+#define SPGMR_GS_FAIL           -4  /* Gram-Schmidt routine faiuled  */
 #define SPGMR_QRSOL_FAIL        -5  /* QRsol found singular R        */
 #define SPGMR_PSET_FAIL_UNREC   -6  /* pset failed unrecoverably     */
 
@@ -274,7 +274,7 @@ SUNDIALS_EXPORT int SpgmrSolve(SpgmrMem mem, void *A_data, N_Vector x, N_Vector 
  * SpgmrMalloc frees the memory allocated by SpgmrMalloc. It is
  * illegal to use the pointer mem after a call to SpgmrFree.
  * -----------------------------------------------------------------
- */                                                                
+ */
 
 SUNDIALS_EXPORT void SpgmrFree(SpgmrMem mem);
 

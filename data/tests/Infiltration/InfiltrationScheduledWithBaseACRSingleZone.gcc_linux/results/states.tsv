@@ -1,4 +1,4 @@
-Time [h]	Model(id=501).VentilationRate(id=1) [1/h]	Zone(id=1).AirTemperature [C]
+Time [h]	Model(id=501).VentilationRate(id=1) [1/h]	Office.AirTemperature [C]
 0	1.5	30
 0.166667	1.5	29.4023
 0.333333	1.5	28.8616

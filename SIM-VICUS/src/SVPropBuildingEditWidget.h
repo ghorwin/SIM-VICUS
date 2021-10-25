@@ -167,6 +167,8 @@ private slots:
 
 	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
 
+	void on_pushButtonAssignSelectedComponent_clicked();
+
 private:
 	/*! Returns a pointer to the currently selected component in the component table. */
 	const VICUS::Component * currentlySelectedComponent() const;
@@ -188,7 +190,7 @@ private:
 		Then, it creates new component instances for all selected surfaces.
 		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.
 	*/
-	void assignComponent(bool insideWall);
+	void assignComponent(bool insideWall, unsigned int idComponent);
 
 	/*! This function opens the sub-surface component DB dialog and lets the user select a sub-surface component.
 		Then, it creates new sub-surface component instances for all selected surfaces.

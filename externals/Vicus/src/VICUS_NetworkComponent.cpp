@@ -40,7 +40,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 	for (unsigned int i: paraVec){
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(m_para[i], i);
-		} catch (IBK::Exception) {
+		} catch (...) {
 			return false;
 		}
 	}
@@ -50,7 +50,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 	for (unsigned int i: paraVecAdd){
 		try {
 			checkAdditionalParameter(m_para[i], i);
-		} catch (IBK::Exception) {
+		} catch (...) {
 			return false;
 		}
 	}
@@ -60,7 +60,7 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 	for (unsigned int i: paraVecInt){
 		try {
 			checkIntParameter(m_intPara[i], i);
-		} catch (IBK::Exception) {
+		} catch (...) {
 			return false;
 		}
 	}

@@ -84,8 +84,6 @@ SOURCES += \
 	../../src/SOLFRA_LESBTridiag.cpp \
 	../../src/SOLFRA_LESBand.cpp \
 	../../src/SOLFRA_LESBiCGStab.cpp \
-	../../src/SOLFRA_LESBiCGStabP1.cpp \
-	../../src/SOLFRA_LESBiCGStabP2.cpp \
 	../../src/SOLFRA_LESDense.cpp \
 	../../src/SOLFRA_LESGMRES.cpp \
 	../../src/SOLFRA_LESInterfaceDirect.cpp \

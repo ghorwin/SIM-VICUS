@@ -39,6 +39,7 @@
 #endif
 
 #include <QtExt_Style.h>
+#include <QListView>
 
 #include "SVSettings.h"
 
@@ -138,7 +139,6 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 #else
 	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
-	f.setPointSize(pointSize);
 
 	// v->setFont(f);
 	// v->horizontalHeader()->setFont(f); // Note: on Linux/Mac this won't work until Qt 5.11.1 - this was a bug between Qt 4.8...5.11.1
@@ -148,6 +148,19 @@ void SVStyle::formatDatabaseTableView(QTableView * v) {
 	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-size:%1pt; font-weight:bold;}").arg(pointSize);
 	v->horizontalHeader()->setStyleSheet(headerStyleSheet);
 	QString viewStyleSheet = QString("QTableView {font-size:%1pt;}").arg(pointSize);
+	v->setStyleSheet(viewStyleSheet);
+#endif
+}
+
+
+void SVStyle::formatListView(QListView * v) {
+	v->setAlternatingRowColors(true);
+#ifdef Q_OS_WIN
+	// no need to adjust stylesheet on Windows
+#else
+	QFont f;
+	int pointSize = int(f.pointSizeF()*0.8);
+	QString viewStyleSheet = QString("QListView {font-size:%1pt;}").arg(pointSize);
 	v->setStyleSheet(viewStyleSheet);
 #endif
 }
@@ -163,7 +176,6 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 #if !defined(Q_OS_WIN)
 	QFont f;
 	int pointSize = int(f.pointSizeF()*0.8);
-	f.setPointSize(pointSize);
 
 	// Since we have an applition-wide style sheet, we must specify our customizations also via stylesheet.
 	// Since we only tweak font sizes, this works for both bright and dark style.

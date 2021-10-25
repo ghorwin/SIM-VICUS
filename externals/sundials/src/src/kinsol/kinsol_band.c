@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4924 $
  * $Date: 2016-09-19 14:36:05 -0700 (Mon, 19 Sep 2016) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -34,7 +34,7 @@
 #define ONE          RCONST(1.0)
 #define TWO          RCONST(2.0)
 
-/* 
+/*
  * =================================================================
  * PROTOTYPES FOR PRIVATE FUNCTIONS
  * =================================================================
@@ -90,7 +90,7 @@ static int kinBandFree(KINMem kin_mem);
 #define J_data         (kindls_mem->d_J_data)
 #define last_flag      (kindls_mem->d_last_flag)
 
-/* 
+/*
  * =================================================================
  * EXPORTED FUNCTIONS
  * =================================================================
@@ -108,18 +108,18 @@ static int kinBandFree(KINMem kin_mem);
  * respectively.  It allocates memory for a structure of type
  * KINDlsMemRec and sets the cv_lmem field in (*cvode_mem) to the
  * address of this structure.  It sets setupNonNull in (*cvode_mem) to be
- * TRUE, b_mu to be mupper, b_ml to be mlower, and the bjac field to be 
+ * TRUE, b_mu to be mupper, b_ml to be mlower, and the bjac field to be
  * kinDlsBandDQJac.
  * Finally, it allocates memory for M, savedJ, and pivot.
  *
  * NOTE: The band linear solver assumes a serial implementation
- *       of the NVECTOR package. Therefore, KINBand will first 
+ *       of the NVECTOR package. Therefore, KINBand will first
  *       test for compatible a compatible N_Vector internal
- *       representation by checking that the function 
+ *       representation by checking that the function
  *       N_VGetArrayPointer exists.
  * -----------------------------------------------------------------
  */
-                  
+
 int KINBand(void *kinmem, long int N, long int mupper, long int mlower)
 {
   KINMem kin_mem;
@@ -140,12 +140,12 @@ int KINBand(void *kinmem, long int N, long int mupper, long int mlower)
 
   if (lfree != NULL) lfree(kin_mem);
 
-  /* Set four main function fields in kin_mem */  
+  /* Set four main function fields in kin_mem */
   linit  = kinBandInit;
   lsetup = kinBandSetup;
   lsolve = kinBandsolve;
   lfree  = kinBandFree;
-  
+
   /* Get memory for KINDlsMemRec */
   kindls_mem = NULL;
   kindls_mem = (KINDlsMem) malloc(sizeof(struct KINDlsMemRec));
@@ -155,7 +155,7 @@ int KINBand(void *kinmem, long int N, long int mupper, long int mlower)
   }
 
   /* Set matrix type */
-  mtype = SUNDIALS_BAND;  
+  mtype = SUNDIALS_BAND;
 
   /* Set default Jacobian routine and Jacobian data */
   jacDQ  = TRUE;
@@ -166,7 +166,7 @@ int KINBand(void *kinmem, long int N, long int mupper, long int mlower)
   kinDlsInitializeCounters(kindls_mem);
 
   setupNonNull = TRUE;
-  
+
   /* Load problem dimension */
   n = N;
 
@@ -211,7 +211,7 @@ int KINBand(void *kinmem, long int N, long int mupper, long int mlower)
   return(KINDLS_SUCCESS);
 }
 
-/* 
+/*
  * =================================================================
  *  PRIVATE FUNCTIONS
  * =================================================================
@@ -244,8 +244,8 @@ static int kinBandInit(KINMem kin_mem)
   /* Stop Picard solve if user fails to provide Jacobian */
   if ( (strategy == KIN_PICARD) && jacDQ )
     {
-      KINProcessError(kin_mem, KIN_ILL_INPUT, "KINSOL", "kinBandInit", 
-		      MSG_NOL_FAIL);
+      KINProcessError(kin_mem, KIN_ILL_INPUT, "KINSOL", "kinBandInit",
+                      MSG_NOL_FAIL);
       return(KIN_ILL_INPUT);
     }
 
@@ -259,7 +259,7 @@ static int kinBandInit(KINMem kin_mem)
  * -----------------------------------------------------------------
  * This routine does the setup operations for the band linear solver.
  * It makes a decision whether or not to call the Jacobian evaluation
- * routine based on various state variables, and if not it uses the 
+ * routine based on various state variables, and if not it uses the
  * saved copy.  In any case, it constructs the Newton matrix J,
  * updates counters, and calls the band LU factorization routine.
  * -----------------------------------------------------------------
@@ -274,13 +274,13 @@ static int kinBandSetup(KINMem kin_mem)
   kindls_mem = (KINDlsMem) lmem;
 
   nje++;
-  SetToZero(J); 
+  SetToZero(J);
   retval = bjac(n, mu, ml, uu, fval, J, J_data, vtemp1, vtemp2);
   if (retval != 0) {
     last_flag = -1;
     return(-1);
   }
-  
+
   /* Do LU factorization of J */
   ier = BandGBTRF(J, lpivots);
 
@@ -312,7 +312,7 @@ static int kinBandsolve(KINMem kin_mem, N_Vector x, N_Vector b,
   /* Copy the right-hand side into x */
 
   N_VScale(ONE, b, x);
-  
+
   xd = N_VGetArrayPointer(x);
 
   /* Back-solve and get solution in x */

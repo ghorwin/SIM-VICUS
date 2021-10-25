@@ -1232,8 +1232,16 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 	// lookup boundary condition definition in embedded database
 	const VICUS::BoundaryCondition * bc = VICUS::element(m_project->m_embeddedDB.m_boundaryConditions, bcID);
 	if (bc == nullptr){
-		errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
-				.arg(ci.m_idComponent).arg(s->m_id));
+
+		if(s == nullptr)
+			s = !takeASide ? ci.m_sideASurface : ci.m_sideBSurface;
+
+		if(s== nullptr)
+			errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference.")
+				.arg(ci.m_idComponent));
+		else
+			errorStack.append(qApp->tr("Component #%1 has invalid boundary condition ID reference #%2.")
+							  .arg(ci.m_idComponent).arg(s->m_id));
 		return NANDRAD::Interface();
 	}
 	if (!bc->isValid())
@@ -1245,8 +1253,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		const VICUS::Object * obj = s->m_parent;
 		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(obj);
 		if (room == nullptr){
-			errorStack.append(qApp->tr("Component instance #%1 references surface %2, which is not associated to a zone.")
-					.arg(ci.m_id).arg(s->m_id));
+			errorStack.append(qApp->tr("Component instance #%1 references surface #%2 '%3', which is not associated to a zone.")
+					.arg(ci.m_id).arg(s->m_id).arg(s->m_displayName));
 			return NANDRAD::Interface();
 		}
 
@@ -1263,7 +1271,7 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 		return iface;
 	}
 	else {
-		// no surface? must be an interface to the outside
+		// no surface == true -> must be an interface to the outside
 
 		// generate a new interface to the zone, which always only includes heat conduction
 		NANDRAD::Interface iface;
@@ -1281,6 +1289,8 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 												  QStringList &errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds,
 												  std::set<unsigned int> &idSet)
 {
+	FUNCID(ConstructionInstanceModelGenerator::generate);
+	QStringList warnings;
 	// now process all components and generate construction instances
 	for (const VICUS::ComponentInstance & compInstaVicus : componentInstances) {
 		// Note: component ID may be invalid or component may have been deleted from DB already
@@ -1298,10 +1308,12 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		idSet.insert(constrInstNandrad.m_id);
 
 		// set construction instance parameters, area, orientation etc.
-		const double SAME_DISTANCE_PARAMETER_ABSTOL = 1e-4;
+		const double SAME_DISTANCE_PARAMETER_ABSTOL = 0.25;//1e-4;
+		const double REL_TOL_AREAS = 0.05;
+		double minArea = 0.1; //1e-4;
 		double area = 0;
 
-		bool bothSidesHasSurfaces = false;
+		bool bothSidesHaveSurfaces = false;
 		// we have either one or two surfaces associated
 		if (compInstaVicus.m_sideASurface != nullptr) {
 			// get area of surface A
@@ -1309,21 +1321,29 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			// do we have surfaces at both sides?
 			if (compInstaVicus.m_sideBSurface != nullptr) {
 				// have both
-				bothSidesHasSurfaces = true;
+				bothSidesHaveSurfaces = true;
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
+
+#define ABS_TEST;
+#if defined (ABS_TEST)
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
-					errorStack.append(qApp->tr("Component/construction #%1 references surfaces #%2 and #%3, with mismatching "
-						   "areas %3 and %4 m2.")
-								  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_idSideASurface).arg(compInstaVicus.m_idSideBSurface)
-								  .arg(area).arg(areaB));
+#else
+				// relative error check
+				// area is set as reference
+				if (std::fabs(areaB-area)/area > REL_TOL_AREAS) {
+#endif
+					errorStack.append(qApp->tr("Component/construction #%1 references surfaces #%2 '%6' and #%3 '%7', with mismatching "
+						   "areas %4 and %5 m2.")
+									  .arg(compInstaVicus.m_id).arg(compInstaVicus.m_idSideASurface)
+									  .arg(compInstaVicus.m_idSideBSurface)
+									  .arg(area).arg(areaB)
+									  .arg(compInstaVicus.m_sideASurface->m_displayName)
+									  .arg(compInstaVicus.m_sideBSurface->m_displayName));
 				}
 
-				// if we have both surfaces, then this is an internal construction and orientation/inclination are
-				// not important and we just don't set these
-
-				/// TODO Dirk : do we need to also store a displayname for each component instance/construction instance?
-				///             We could also name internal walls automatically using zone names, such as
+				/// TODO Dirk :	do we need to also store a displayname for each component instance/construction instance?
+				///				We could also name internal walls automatically using zone names, such as
 				///				"Wall between 'Bath' and 'Kitchen'".
 				constrInstNandrad.m_displayName = qApp->tr("Internal wall between surfaces '#%1' and '#%2'")
 						.arg(compInstaVicus.m_sideASurface->m_displayName).arg(compInstaVicus.m_sideBSurface->m_displayName).toStdString();
@@ -1341,12 +1361,19 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 				constrInstNandrad.m_displayName = compInstaVicus.m_sideASurface->m_displayName.toStdString();
 			}
+
+			if(area<minArea){
+				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
+							.arg(compInstaVicus.m_sideASurface->m_id)
+							.arg(compInstaVicus.m_sideASurface->m_displayName);
+				continue;
+			}
 			// set area parameter (computed from side A, but if side B is given as well, the area is the same
 			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
 			//for the first time we support only sub surfaces to outside air
-			if(!bothSidesHasSurfaces){
+			if(!bothSidesHaveSurfaces){
 				// sub surface
 				const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideASurface->subSurfaces();
 				if(subSurfs.size()>0){
@@ -1373,6 +1400,13 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 			// set area parameter
 			area = compInstaVicus.m_sideBSurface->geometry().area();
+
+			if(area<minArea){
+				warnings << qApp->tr("Area of surface '%2' (#%1) is too small. Surface is not exported.")
+							.arg(compInstaVicus.m_sideBSurface->m_id)
+							.arg(compInstaVicus.m_sideBSurface->m_displayName);
+				continue;
+			}
 			NANDRAD::KeywordList::setParameter(constrInstNandrad.m_para, "ConstructionInstance::para_t",
 											   NANDRAD::ConstructionInstance::P_Area, area);
 
@@ -1388,7 +1422,6 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		// now generate interfaces
 		constrInstNandrad.m_interfaceA = generateInterface(compInstaVicus, comp->m_idSideABoundaryCondition, 1, errorStack, true);
 		constrInstNandrad.m_interfaceB = generateInterface(compInstaVicus, comp->m_idSideBBoundaryCondition, 2, errorStack, false);
-
 
 		int activeLayerIdx = -1;
 		//create surface heating system data
@@ -1450,6 +1483,10 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		m_constructionInstances.push_back(constrInstNandrad);
 
 	}
+
+	for(const QString &str : warnings)
+		IBK::IBK_Message(IBK::FormatString("%1").arg(str.toStdString()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+
 
 }
 

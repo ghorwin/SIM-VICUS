@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).AirTemperature [C]
+Time [h]	Room.AirTemperature [C]
 0	5
 0.166667	5
 0.333333	5

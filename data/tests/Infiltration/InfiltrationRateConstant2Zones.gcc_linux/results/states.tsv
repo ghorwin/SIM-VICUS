@@ -1,4 +1,4 @@
-Time [h]	Office.AirTemperature [C]	Kitchen.AirTemperature [C]	Zone(id=3).AirTemperature [C]
+Time [h]	Office.AirTemperature [C]	Kitchen.AirTemperature [C]	Bathroom.AirTemperature [C]
 0	20	20	20
 1	20	11.4272	11.4272
 2	20	5.63581	5.63581

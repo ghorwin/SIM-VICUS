@@ -75,6 +75,9 @@ public:
 	const T * findEqual(const T & elem) const {
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); ++it) {
 			const T * elemPtr = &(it->second);
+			// Note: we compare relatively strict here, and so two DB definitions are considered
+			//       "different", even if only meta data like the displayname differs.
+			//       The user must cleanup/merge such DB elements afterwards with the "remove duplicates" feature.
 			if (elem.equal(elemPtr) == VICUS::AbstractDBElement::Equal)
 				return elemPtr;
 		}

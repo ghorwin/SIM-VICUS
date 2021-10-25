@@ -340,19 +340,21 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	// now write header
 	std::vector<std::string> headerLabels;
 
-	// add time column header
 	headerLabels.push_back( timeColumnLabel );
+	// add time column header
 	for (unsigned int i=0; i<m_numCols; ++i)
 		headerLabels.push_back(m_outputVarInfo[i].m_columnHeader);
 
 	// modify headers using variable substitution map
 	if (!varSubstitutionMap.empty()){
 		std::vector<std::string> tokens;
-		for (unsigned int i=0; i<m_numCols + 1; ++i){ // numColumns + 1 (for time column)
-			IBK::explode(headerLabels[i], tokens, ".", IBK::EF_NoFlags); // we need to split element name and quantity
+		for (unsigned int i=0; i<m_numCols; ++i) {
+			// Mind: headerLabels have size m_numCols + 1 because of the first time column
+			//       hence we add +1 in the index access to headerLabels[] below
+			IBK::explode(headerLabels[i+1], tokens, ".", IBK::EF_NoFlags); // we need to split element name and quantity
 			std::map<std::string, std::string>::const_iterator varSubst = varSubstitutionMap.find(tokens[0]);
 			if (varSubst != varSubstitutionMap.end() )
-				headerLabels[i] = varSubst->second + "." + tokens[1]; // and merge quantity with substituted element name
+				headerLabels[i+1] = varSubst->second + "." + tokens[1]; // and merge quantity with substituted element name
 		}
 	}
 

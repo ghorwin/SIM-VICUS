@@ -30,15 +30,15 @@ parser = optparse.OptionParser()
 (options, args) = parser.parse_args()
 
 if len(args) < 1:
-	print HELPTEXT
+	print(HELPTEXT)
 	exit(1)
 
 suffix = args[0]
-print "Updating reference results for suffix '{}'".format(suffix)
+print("Updating reference results for suffix '{}'".format(suffix))
 
 # process all subdirectories with given suffix
 rootDir = os.getcwd()
-print "Processing base directory '{}'\n".format(rootDir)
+print("Processing base directory '{}'\n".format(rootDir))
 
 # now process all test projects in this test case directory (here, caseDir == rootDir)
 processCaseDir(rootDir, rootDir, suffix, set())

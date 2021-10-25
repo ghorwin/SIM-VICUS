@@ -1,4 +1,4 @@
-Time [h]	Floor heating.FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	Supply temperature adapter.FluidTemperature [C]	Supply temperature adapter.OutletNodeTemperature [C]	NetworkElement(id=3).InletNodeTemperature [C]
+Time [h]	Floor heating.FluidMassFlux [kg/s]	Floor heating.FluidVelocity [m/s]	Pump.FluidTemperature [C]	Floor heating.FluidTemperature [C]	Supply temperature adapter.FluidTemperature [C]	Supply temperature adapter.OutletNodeTemperature [C]	Supply temperature adapter.InletNodeTemperature [C]
 0	0.0175651	0.114334	20	20	35	35	20
 0.0166667	0.0175651	0.114334	21.5033	20.0485	35	35	20.0485
 0.0333333	0.0175651	0.114334	22.8559	20.176	35	35	20.176

@@ -53,6 +53,7 @@
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoDeleteSelected.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVNavigationTreeWidget.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -133,19 +134,39 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			refreshColors();
 		break;
 
-		case SVProjectHandler::BuildingGeometryChanged :
+		case SVProjectHandler::BuildingGeometryChanged : {
 			updateBuilding = true;
 			updateSelection = true;
-			break;
+			// we might have just deleted all selected items, in this case switch back to
+
+			std::set<const VICUS::Object*> selectedObjects;
+
+			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+				if (selectedObjects.empty()) {
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+				}
+				else {
+					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+					// Do not modify property widget mode
+				}
+				SVViewStateHandler::instance().setViewState(vs);
+			}
+
+		} break;
 
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
-			break;
+			updateCamera = true;
+		break;
 
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
 			updateSelection = true;
-			break;
+		break;
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -157,12 +178,11 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			return;
 		}
 
-		case SVProjectHandler::SubSurfaceComponentInstancesModified : {
+		case SVProjectHandler::SubSurfaceComponentInstancesModified :
 			// changes in sub-surface assignments may change the transparency of constructions, hence
 			// requires a re-setup of building geometry
 			updateBuilding = true;
-			break;
-		}
+		break;
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
@@ -1356,6 +1376,11 @@ void Scene::generateTransparentBuildingGeometry() {
 		if (!ci.m_sideASurface->geometry().isValid() ||
 			!ci.m_sideBSurface->geometry().isValid())
 			continue;
+
+		// both polygons must be visible
+		if (!ci.m_sideASurface->m_visible || !ci.m_sideBSurface->m_visible)
+			continue;
+
 		// generate geometry for the "Links"
 
 		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
@@ -2127,18 +2152,16 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
-	if (m_gridVisible) {
-		for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-			int holeIndex;
-			if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
-				// got an intersection point, store it
-				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_GridPlane;
-				r.m_uniqueObjectID = i;
-				r.m_depth = t;
-				r.m_pickPoint = intersectionPoint;
-				pickObject.m_candidates.push_back(r);
-			}
+	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
+		int holeIndex;
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
+			// got an intersection point, store it
+			PickObject::PickResult r;
+			r.m_snapPointType = PickObject::RT_GridPlane;
+			r.m_uniqueObjectID = i;
+			r.m_depth = t;
+			r.m_pickPoint = intersectionPoint;
+			pickObject.m_candidates.push_back(r);
 		}
 	}
 
@@ -2710,6 +2733,11 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 															   selectChildren, // if true, select all children, otherwise only the object itself
 															   !obj->m_selected);
 		action->push();
+
+		// now the data model and the views have been updated, also now signal the navigation tree view to scroll
+		// to the first node
+		SVViewStateHandler::instance().m_navigationTreeWidget->scrollToObject(uniqueID);
+
 		return;
 	}
 }

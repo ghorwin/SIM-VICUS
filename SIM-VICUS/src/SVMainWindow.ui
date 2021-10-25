@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -76,6 +76,8 @@
     <addaction name="actionHelpBugReport"/>
     <addaction name="actionHelpVisitDiscussionForum"/>
     <addaction name="separator"/>
+    <addaction name="actionHelpLinuxDesktopIntegration"/>
+    <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
     <addaction name="actionHelpAboutQt"/>
    </widget>
@@ -84,7 +86,15 @@
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionViewFindSelectedGeometry"/>
+    <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
+    <addaction name="actionViewFromNorth"/>
+    <addaction name="actionViewFromEast"/>
+    <addaction name="actionViewFromSouth"/>
+    <addaction name="actionViewFromWest"/>
+    <addaction name="actionViewFromAbove"/>
+    <addaction name="separator"/>
     <addaction name="actionViewShowGrid"/>
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
@@ -306,7 +316,7 @@
     <string>Go to project directory...</string>
    </property>
    <property name="toolTip">
-    <string>Opens file manager with path to project file.</string>
+    <string>Opens file manager with path to project file</string>
    </property>
    <property name="shortcut">
     <string>F8</string>
@@ -353,7 +363,7 @@
     <string>External Post-Processing...</string>
    </property>
    <property name="toolTip">
-    <string>Launches the external Post-Processing.</string>
+    <string>Launches the external Post-Processing</string>
    </property>
   </action>
   <action name="actionToolsCCMeditor">
@@ -365,7 +375,7 @@
     <string>External Climate Editor...</string>
    </property>
    <property name="toolTip">
-    <string>Launches external climate editor (CCMEditor).</string>
+    <string>Launches external climate editor (CCMEditor)</string>
    </property>
   </action>
   <action name="actionViewToggleGeometryMode">
@@ -457,7 +467,7 @@
     <string>Building Energy Simulation (NANDRAD)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
+    <string>Opens the simulation start dialog</string>
    </property>
    <property name="shortcut">
     <string>F9</string>
@@ -468,7 +478,7 @@
     <string>Hydraulic network calculation...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
+    <string>Opens the simulation start dialog</string>
    </property>
   </action>
   <action name="actionHelpKeyboardAndMouseControls">
@@ -511,7 +521,7 @@
     <string>Feature request or bug report...</string>
    </property>
    <property name="toolTip">
-    <string>Post a feature request or submit a bug report.</string>
+    <string>Post a feature request or submit a bug report</string>
    </property>
   </action>
   <action name="actionHelpVisitDiscussionForum">
@@ -622,7 +632,7 @@
     <string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the FMU export dialog.</string>
+    <string>Opens the FMU export dialog</string>
    </property>
   </action>
   <action name="actionFileExportView3D">
@@ -681,7 +691,7 @@
     <string>Remove duplicates...</string>
    </property>
    <property name="toolTip">
-    <string>Removes duplicate elements from database.</string>
+    <string>Removes duplicate elements from database</string>
    </property>
   </action>
   <action name="actionViewShowGrid">
@@ -696,6 +706,80 @@
    </property>
    <property name="toolTip">
     <string>Shows grid at z coordinate 0</string>
+   </property>
+  </action>
+  <action name="actionHelpLinuxDesktopIntegration">
+   <property name="text">
+    <string>Desktop integration (Linux)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Desktop integration (Linux),  creates .desktop file and vicus-file association</string>
+   </property>
+  </action>
+  <action name="actionViewFromNorth">
+   <property name="text">
+    <string>View from north</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from north</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+8</string>
+   </property>
+  </action>
+  <action name="actionViewFromEast">
+   <property name="text">
+    <string>View from east</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from east</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+6</string>
+   </property>
+  </action>
+  <action name="actionViewFromSouth">
+   <property name="text">
+    <string>View from south</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from south</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionViewFromWest">
+   <property name="text">
+    <string>View from west</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from west</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="actionViewFromAbove">
+   <property name="text">
+    <string>View from above</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="actionViewFindSelectedGeometry">
+   <property name="text">
+    <string>Find selected geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to close to the currently selected geometry</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

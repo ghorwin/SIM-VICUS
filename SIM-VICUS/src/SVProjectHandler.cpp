@@ -213,7 +213,19 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	try {
 		bool have_modified_project = false;
 
-		have_modified_project = importEmbeddedDB();
+		std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
+		have_modified_project = importEmbeddedDB(zoneTemplatesIDMap);
+
+		//now replace all zoneTemplate ids in the rooms
+		for(VICUS::Building &b : m_project->m_buildings){
+			for(VICUS::BuildingLevel &bl : b.m_buildingLevels){
+				for(VICUS::Room &r : bl.m_rooms){
+					if(zoneTemplatesIDMap.find( r.m_idZoneTemplate) != zoneTemplatesIDMap.end()){
+						r.m_idZoneTemplate = zoneTemplatesIDMap[r.m_idZoneTemplate];
+					}
+				}
+			}
+		}
 
 		/// \todo Hauke, check uniqueness of IDs in networks
 
@@ -614,7 +626,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 }
 
 
-bool SVProjectHandler::importEmbeddedDB() {
+bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zoneTemplatesIDMap) {
 	bool idsModified = false;
 
 	// we sync the embedded database with the built-in DB
@@ -820,7 +832,6 @@ bool SVProjectHandler::importEmbeddedDB() {
 	}
 
 	// zone templates
-	std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
 	for (VICUS::ZoneTemplate & e : m_project->m_embeddedDB.m_zoneTemplates) {
 
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson], internalLoadIDMap);

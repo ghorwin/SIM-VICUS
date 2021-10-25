@@ -178,6 +178,28 @@ public:
 	/*! Returns path to View3D solver executable. */
 	static QString view3dExecutable();
 
+	/*! Sets up desktop integration for this software.
+		\param parent Parent widget (needed for modal dialogs)
+		\param iconLocation Path to "Icon_xxx.png" files; resolutions copied are 16,24,32,48,64,128,256,512; missing resolution files are ignored
+		\param appname Application name without version, like "MasterSim"
+		\param appIDName The unique application ID name, also used for mimetype. Should not have a version number. No whitespaces in string.
+
+		If appIDName is "mastersim", then mimetype "application-mastersim" will be registered and the files created will be:
+
+		- .local/share/applications/mastersim.desktop
+		- .local/share/mime/packages/mastersim.xml
+		- .local/share/icons/hicolor/<resxres>/apps/mastersim.png                    - desktop icons
+		- .local/share/icons/hicolor/<resxres>/mimetypes/application-mastersim.png   - file/mimetype icons
+	*/
+	static void linuxDesktopIntegration(QWidget * parent,
+			const QString & iconLocation,
+			const QString & appname,               // SIM-VICUS
+			const QString & appIDname,             // simvicus
+			const QString & desktopAppComment,     // Building Energy Performance and District Simulation
+			const QString & desktopAppExec,        // /path/to/bin/SIM-VICUS
+			const QString & fileExtension          // vicus   (for *.vicus)
+		);
+
 	// ****** member variables ************
 
 

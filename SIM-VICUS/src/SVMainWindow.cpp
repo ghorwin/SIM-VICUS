@@ -140,6 +140,10 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// give the splashscreen a few miliseconds to show on X11 before we start our
 	// potentially lengthy initialization
 	QTimer::singleShot(25, this, SLOT(setup()));
+
+#ifndef Q_OS_LINUX
+	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
+#endif
 }
 
 
@@ -1177,11 +1181,40 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 }
 
 
-void SVMainWindow::on_actionViewResetView_triggered() {
-	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera();
+void SVMainWindow::on_actionViewFindSelectedGeometry_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(6);
 }
 
+
+void SVMainWindow::on_actionViewResetView_triggered() {
+	// set scene view to recenter its camera
+	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
+}
+
+
+void SVMainWindow::on_actionViewFromNorth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+}
+
+
+void SVMainWindow::on_actionViewFromEast_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
+}
+
+
+void SVMainWindow::on_actionViewFromSouth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
+}
+
+
+void SVMainWindow::on_actionViewFromWest_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+}
+
+
+void SVMainWindow::on_actionViewFromAbove_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+}
 
 
 void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
@@ -1318,6 +1351,23 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
+void SVMainWindow::on_actionHelpLinuxDesktopIntegration_triggered() {
+#ifdef IBK_DEPLOYMENT
+	QString iconLocation = QtExt::Directories::resourcesRootDir();
+#else
+	QString iconLocation = QtExt::Directories::resourcesRootDir() + "/logo/icons";
+#endif
+
+	SVSettings::linuxDesktopIntegration(this,
+										iconLocation,
+										"SIM-VICUS",
+										"simvicus",
+										"Building Energy Performance and District Simulation",
+										SVSettings::instance().m_installDir + "/SIM-VICUS",
+										"vicus"
+										);
+}
+
 
 // *** other slots (not main menu slots) ***
 
@@ -1366,9 +1416,15 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionNetworkEdit->setEnabled(have_project);
 
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
+	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
 	m_ui->actionViewShowGrid->setEnabled(have_project);
+	m_ui->actionViewFromNorth->setEnabled(have_project);
+	m_ui->actionViewFromEast->setEnabled(have_project);
+	m_ui->actionViewFromSouth->setEnabled(have_project);
+	m_ui->actionViewFromWest->setEnabled(have_project);
+	m_ui->actionViewFromAbove->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
@@ -1895,8 +1951,6 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-
 
 
 

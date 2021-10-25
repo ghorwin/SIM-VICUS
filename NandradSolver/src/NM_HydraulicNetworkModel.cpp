@@ -426,8 +426,17 @@ void HydraulicNetworkModel::setInputValueRefs(const std::vector<QuantityDescript
 
 void HydraulicNetworkModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 	// insert dependencies of controller inputs to mass flux for each element
-	// in order to reduce complexity we only consider mass flux of the first element as
-	// representative for all others
+	// NOTE: different flow elements may use different controller inputs and related sensor data. However,
+	//       the mass fluxes are all interconnected in a network - if one flow element influences the mass flux,
+	//       all mass fluxes are influenced in turn. Thus, we can treat all mass fluxes as one - when looking
+	//       at calculation dependencies.
+	//
+	// In order to reduce complexity we only consider the mass flux of the first element as
+	// representative for all others. Hence, all flow elements will get this first mass flux as depend quantity.
+	// Any control input that might have influence on _any_ mass flux, is now taken as dependency for the _first_
+	// mass flux.
+	// This also means that all the other mass fluxes are meaningless when it comes to dependency formulation
+	// (this needs to be considered in ThermalNetworkBalanceModel).
 	for (unsigned int i = 0; i < m_p->m_flowElements.size(); ++i)
 		m_p->m_flowElements[i]->dependencies(&m_p->m_fluidMassFluxes[0], resultInputValueReferences);
 }

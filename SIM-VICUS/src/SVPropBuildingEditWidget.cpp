@@ -49,6 +49,7 @@
 #include "SVUndoModifyRoomZoneTemplateAssociation.h"
 #include "SVUndoTreeNodeState.h"
 #include "SVPropSurfaceHeatingDelegate.h"
+#include "SVZoneSelectionDialog.h"
 #include "SVUndoModifyComponentInstances.h"
 
 SVPropBuildingEditWidget::SVPropBuildingEditWidget(QWidget *parent) :
@@ -226,6 +227,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	if (r == -1 || m_componentSurfacesMap.empty()) {
 		m_ui->pushButtonEditComponents->setEnabled(false);
 		m_ui->pushButtonExchangeComponents->setEnabled(false);
+		m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
 		return;
 	}
@@ -233,6 +235,7 @@ void SVPropBuildingEditWidget::on_tableWidgetComponents_itemSelectionChanged() {
 	bool enabled = (currentlySelectedComponent() != nullptr);
 	m_ui->pushButtonEditComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeComponents->setEnabled(enabled);
+	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled && !m_selectedSurfaces.empty());
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(true);
@@ -304,12 +307,34 @@ void SVPropBuildingEditWidget::on_pushButtonSelectObjectsWithComponent_clicked()
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignComponent_clicked() {
-	assignComponent(false);
+
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
+								   "assigned to the selected surfaces."));
+
+	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+
+	if (selectedComponentId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	assignComponent(false, selectedComponentId);
 }
 
 
 void SVPropBuildingEditWidget::on_pushButtonAssignInsideComponent_clicked() {
-	assignComponent(true);
+
+	// ask user to select a new component
+	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+		tr("Assign component"), tr("You may now select a component from the database, which will then be "
+								   "assigned to the selected surfaces."));
+
+	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
+
+	if (selectedComponentId == VICUS::INVALID_ID)
+		return; // user aborted the dialog
+
+	assignComponent(true, selectedComponentId);
 }
 
 
@@ -328,6 +353,7 @@ void SVPropBuildingEditWidget::on_tableWidgetSubSurfaceComponents_itemSelectionC
 	bool enabled = (currentlySelectedSubSurfaceComponent() != nullptr);
 	m_ui->pushButtonEditSubSurfaceComponents->setEnabled(enabled);
 	m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(enabled);
+	m_ui->pushButtonAssignSelectedComponent->setEnabled(enabled);
 
 	// the select buttons are always active, even if no component is assigned, yet
 	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(true);
@@ -639,9 +665,11 @@ void SVPropBuildingEditWidget::updateUi() {
 		if (selSurfs.empty()) {
 			m_ui->labelSelectedComponents->setText("");
 			m_ui->groupBoxSelectedComponent->setEnabled(false);
+			m_ui->pushButtonAssignSelectedComponent->setEnabled(false);
 		}
 		else {
 			m_ui->groupBoxSelectedComponent->setEnabled(true);
+			m_ui->pushButtonAssignSelectedComponent->setEnabled(true);
 		}
 		m_ui->pushButtonAssignInsideComponent->setEnabled(selSurfs.size() == 2);
 
@@ -1264,15 +1292,18 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 	std::vector<VICUS::ComponentInstance> compInstances = project().m_componentInstances;
 
 	std::set<unsigned int> surfacesToDDeselect;
+
+	QStringList errorStack;
+
 	// loop over all components and look for a selected side - if there is more than one side of a component
 	// instance selected, show an error message
 	for (const VICUS::ComponentInstance * c : m_selectedComponentInstances) {
-		// both sides selected?
-		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected);
-		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected);
+		// both sides selected and VISIBLE?
+		bool sideASelected = (c->m_sideASurface != nullptr && c->m_sideASurface->m_selected && c->m_sideASurface->m_visible);
+		bool sideBSelected = (c->m_sideBSurface != nullptr && c->m_sideBSurface->m_selected && c->m_sideBSurface->m_visible);
 		if (sideASelected && sideBSelected) {
-			QMessageBox::critical(this, QString(), tr("You must not select both surfaces of the same component!"));
-			return;
+			errorStack << c->m_sideASurface->m_displayName + " <---> " + c->m_sideBSurface->m_displayName;
+			continue;
 		}
 		// now lookup copied componentInstance by ID and swap sides if:
 		// - the selected side is side B and should be switched to side A
@@ -1291,6 +1322,10 @@ void SVPropBuildingEditWidget::alignSelectedComponents(bool toSideA) {
 		}
 	}
 
+	if(!errorStack.empty()){
+		QMessageBox::critical(this, QString(), tr("You must not select both surfaces of the same component! Surface names:\n") + errorStack.join("\n"));
+		return;
+	}
 	// if there was no change, inform the user and abort
 	if (surfacesToDDeselect.empty()) {
 		QMessageBox::information(this, QString(), tr("All of the selected surfaces are already aligned as requested."));
@@ -1364,14 +1399,7 @@ void SVPropBuildingEditWidget::zoneTemplateSelectionChanged() {
 }
 
 
-void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
-	// ask user to select a new component
-	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the database, which will then be "
-								   "assigned to the selected surfaces."));
-	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(0);
-	if (selectedComponentId == VICUS::INVALID_ID)
-		return; // user aborted the dialog
+void SVPropBuildingEditWidget::assignComponent(bool insideWall, unsigned int selectedComponentId) {
 
 	Q_ASSERT(!m_selectedSurfaces.empty());
 
@@ -1418,6 +1446,14 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 					else
 						newCi.m_idSideASurface = (*m_selectedSurfaces.begin())->m_id;
 				}
+				// check that both surfaces do not belong to the same room
+				const VICUS::Surface * surfA = project().surfaceByID(newCi.m_idSideASurface);
+				const VICUS::Surface * surfB = project().surfaceByID(newCi.m_idSideBSurface);
+				Q_ASSERT(surfA != nullptr && surfB != nullptr);
+				if (surfA->m_parent == surfB->m_parent) {
+					QMessageBox::critical(this, QString(), tr("Both surfaces belong to the same room."));
+					return;
+				}
 				// remember modified component instance
 				compInstances.push_back(newCi);
 			}
@@ -1444,16 +1480,29 @@ void SVPropBuildingEditWidget::assignComponent(bool insideWall) {
 
 		// process all componentInstances and for all that reference any of the selected surfaces, replace component
 		for (VICUS::ComponentInstance & ci : compInstances) {
-			std::set<const VICUS::Surface*>::iterator it = m_selectedSurfaces.find(ci.m_sideASurface);
-			if (it != m_selectedSurfaces.end()) {
+			std::set<const VICUS::Surface*>::iterator itA = m_selectedSurfaces.find(ci.m_sideASurface);
+			std::set<const VICUS::Surface*>::iterator itB= m_selectedSurfaces.find(ci.m_sideBSurface);
+			if (itA != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				m_selectedSurfaces.erase(it);
+				m_selectedSurfaces.erase(itA);
+
+				// we also want to know if the selection contains
+				// our already assigned component. If this is the case
+				// we erase also side B surface
+				if (itB != m_selectedSurfaces.end())
+					m_selectedSurfaces.erase(itB);
+
 				continue;
 			}
-			it = m_selectedSurfaces.find(ci.m_sideBSurface);
-			if (it != m_selectedSurfaces.end()) {
+			if (itB != m_selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
-				m_selectedSurfaces.erase(it);
+				m_selectedSurfaces.erase(itB);
+
+				// we also want to know if the selection contains
+				// our already assigned component. If this is the case
+				// we erase also side B surface
+				if (itA != m_selectedSurfaces.end())
+					m_selectedSurfaces.erase(itA);
 			}
 		}
 
@@ -1946,66 +1995,43 @@ void SVPropBuildingEditWidget::on_pushButtonRemoveSelectedSurfaceHeating_clicked
 void SVPropBuildingEditWidget::on_pushButtonAssignSurfaceHeatingControlZone_clicked() {
 	// popup dialog with zone selection
 
-	QDialog dlg(this);
+	// create dialog - only locally, this ensures that in constructor the zone is is updated
+	SVZoneSelectionDialog dlg(this);
 
-	QVBoxLayout * vboxLayout = new QVBoxLayout(&dlg);
-	QComboBox * combo = new QComboBox(&dlg);
+	// start dialog
+	int res = dlg.exec();
+	if (res != QDialog::Accepted)
+		return; // user canceled the dialog
 
-	vboxLayout->addWidget(combo);
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
 
-	// finally a button bar with ok and cancel buttons
-	QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg);
-	vboxLayout->addWidget(buttonBox);
-	connect(buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject);
-	dlg.setLayout(vboxLayout);
-
-	// populate combo box:
-	// suggest all rooms (of all buildings and building levels)
-	// at the first litter
-	const std::vector<VICUS::Building> &buildings = project().m_buildings;
-
-	// loop over all buildings
-	for(const VICUS::Building &building : buildings) {
-		const std::vector<VICUS::BuildingLevel> &blevels = building.m_buildingLevels;
-		// loop over all building levels
-		for(const VICUS::BuildingLevel &blevel : blevels) {
-			const std::vector<VICUS::Room> rooms = blevel.m_rooms;
-			// loop over all rooms
-			for(const VICUS::Room &room : rooms) {
-				unsigned int roomID = room.m_id;
-				QString roomName = tr("%1.%2.%3").arg(building.m_displayName).arg(blevel.m_displayName).arg(room.m_displayName);
-				combo->addItem(roomName, roomID); // second argument is the Qt::UserRole value
-			}
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
 		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, skip
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+		if (comp == nullptr)
+			continue;
+		// check if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+		ci.m_idSurfaceHeatingControlZone = dlg.m_idZone;
 	}
+	// perform an undo action in order to redo/revert current operation
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+	undo->push();
+}
 
-	if (dlg.exec() == QDialog::Accepted) {
-		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-		// retrieve assigned roomID
-		unsigned int zoneId = combo->currentData(Qt::UserRole).toUInt();
-		// process all selected surface heatings as in on_pushButtonRemoveSelectedSurfaceHeating_clicked and compose
 
-		for (VICUS::ComponentInstance & ci : cis) {
-			// check if current ci is in list of selected component instances
-			std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-			for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-				if ((*ciIt)->m_id == ci.m_id)
-					break;
-			}
-			if (ciIt == m_selectedComponentInstances.end())
-				continue;
-			// if component instance does not have an active layer assigned, skip
-			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-			if (comp == nullptr)
-				continue;
-			// check if no active layer is present
-			if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-				continue;
-			ci.m_idSurfaceHeatingControlZone = zoneId;
-		}
-		// perform an undo action in order to redo/revert current operation
-		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
-		undo->push();
-	}
+void SVPropBuildingEditWidget::on_pushButtonAssignSelectedComponent_clicked() {
+	// we take the currently selected component
+	const VICUS::Component * comp = currentlySelectedComponent();
+	// assign it to our selected surfaces
+	assignComponent(false, comp->m_id);
 }

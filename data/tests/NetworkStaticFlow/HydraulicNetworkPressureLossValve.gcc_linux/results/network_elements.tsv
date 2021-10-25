@@ -1,3 +1,3 @@
-Time [h]	pump.OutletNodePressure [Pa]	pipe.OutletNodePressure [Pa]	valve.OutletNodePressure [Pa]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	NetworkElement(id=1003).FluidMassFlux [kg/s]
+Time [h]	pump.OutletNodePressure [Pa]	pipe.OutletNodePressure [Pa]	valve.OutletNodePressure [Pa]	pump.FluidMassFlux [kg/s]	pipe.FluidMassFlux [kg/s]	valve.FluidMassFlux [kg/s]
 0	5000	1000	-2.08972e-08	0.116791	0.116791	0.116791
 1	5000	1000	-2.08972e-08	0.116791	0.116791	0.116791

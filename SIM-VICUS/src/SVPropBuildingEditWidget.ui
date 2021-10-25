@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
+    <width>572</width>
     <height>730</height>
    </rect>
   </property>
@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>7</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="pageEmpty"/>
      <widget class="QWidget" name="pageComponents">
@@ -25,6 +25,16 @@
           <string>Building components used in current project</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
+            <property name="toolTip">
+             <string>Selects all objects/surfaces which are associated with the selected component.</string>
+            </property>
+            <property name="text">
+             <string>Select</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButtonEditComponents">
             <property name="text">
@@ -48,9 +58,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="4">
-           <widget class="QTableWidget" name="tableWidgetComponents"/>
-          </item>
           <item row="1" column="3">
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -64,15 +71,15 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="pushButtonSelectObjectsWithComponent">
-            <property name="toolTip">
-             <string>Selects all objects/surfaces which are associated with the selected component.</string>
-            </property>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="pushButtonAssignSelectedComponent">
             <property name="text">
-             <string>Select</string>
+             <string>Assign selected component</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="0" colspan="5">
+           <widget class="QTableWidget" name="tableWidgetComponents"/>
           </item>
          </layout>
         </widget>

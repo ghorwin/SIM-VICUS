@@ -1,4 +1,4 @@
-Time [h]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	pump.FluidMassFlux [kg/s]	hx.FluidMassFlux [kg/s]	pump.FlowElementHeatLoss [W]	NetworkElement(id=301).FlowElementHeatLoss [W]
+Time [h]	pump.OutletNodeTemperature [C]	hx.OutletNodeTemperature [C]	pump.FluidMassFlux [kg/s]	hx.FluidMassFlux [kg/s]	pump.FlowElementHeatLoss [W]	hx.FlowElementHeatLoss [W]
 0	20	20	0.325211	0.325211	-0	0
 0.0166667	20.0138	20.015	0.325211	0.325211	-0	-3.33333
 0.0333333	20.0497	20.0521	0.325211	0.325211	-0	-6.66667

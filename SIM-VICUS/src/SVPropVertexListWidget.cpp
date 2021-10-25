@@ -96,10 +96,46 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 }
 
 
+
 SVPropVertexListWidget::~SVPropVertexListWidget() {
 	delete m_ui;
 }
 
+void SVPropVertexListWidget::setupButtons(){
+	bool haveBuildings = !project().m_buildings.empty();
+	m_ui->toolButtonAddBuildingLevel->setEnabled(haveBuildings);
+	m_ui->toolButtonAddBuildingLevel2->setEnabled(haveBuildings);
+	m_ui->toolButtonAddBuildingLevel3->setEnabled(haveBuildings);
+
+	m_ui->toolButtonAddZone->setEnabled(false);
+
+	QComboBox * buildingCombo = nullptr;
+	QComboBox * buildingLevelCombo;
+	if (sender() == m_ui->toolButtonAddBuildingLevel) {
+		buildingCombo = m_ui->comboBoxBuilding;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel2) {
+		buildingCombo = m_ui->comboBoxBuilding2;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel2;
+	}
+	else if (sender() == m_ui->toolButtonAddBuildingLevel3) {
+		buildingCombo = m_ui->comboBoxBuilding3;
+		buildingLevelCombo = m_ui->comboBoxBuildingLevel3;
+	}
+	else {
+		return;
+	}
+
+	unsigned int buildingUniqueId = buildingCombo->currentData().toUInt();
+	unsigned int buildingLevelId = buildingLevelCombo->currentData().toUInt();
+	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueId));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelId));
+
+	// only enable button if building and building level exists
+	if(b != nullptr && bl != nullptr)
+		m_ui->toolButtonAddZone->setEnabled(true);
+}
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
 	// switch to vertex list widget
@@ -125,6 +161,8 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
 	m_geometryMode = newGeometryType;
+
+	setupButtons();
 }
 
 
@@ -313,12 +351,23 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
 
+			// get floor polyline from roof and save this for later
+			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+			if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
+				return;
+
+
+			if(po->planeGeometry().polygon().vertexes().empty())
+				return;
+
+			m_roofPolygon = po->planeGeometry().polygon().vertexes();
+
 			updateRoofGeometry();
 		}
 		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
-
+	setupButtons();
 }
 
 
@@ -371,6 +420,8 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	else {
 		Q_ASSERT(false);
 	}
+
+	setupButtons();
 }
 
 
@@ -393,6 +444,11 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 		Q_ASSERT(false);
 	}
 
+	// check if minimum one building exist
+	if(project().m_buildings.empty()){
+		QMessageBox::critical(this, QString(), tr("Please create at first a building!"));
+		return;
+	}
 	// get currently selected building
 	unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
@@ -414,6 +470,8 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 
 	// now also select the matching item
 	reselectById(buildingLevelCombo, (int)bl.uniqueID());
+
+	setupButtons();
 }
 
 
@@ -468,6 +526,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
+	setupButtons();
 }
 
 
@@ -974,6 +1033,7 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, con
 
 	}
 	combo->blockSignals(false);
+	setupButtons();
 }
 
 
@@ -1127,6 +1187,8 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
 		return;
 
+	// use saved polygon for further calculation
+
 	Vic3D::NewGeometryObject::RoofInputData roofData;
 
 	// get all data from UI
@@ -1140,7 +1202,7 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 
 	m_polygonRotation = false; // reset flag until next click
 
-	po->setRoofGeometry(roofData);
+	po->setRoofGeometry(roofData, m_roofPolygon, this);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();

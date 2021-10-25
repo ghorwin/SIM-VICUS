@@ -167,11 +167,14 @@ else
 	cp $BUILDDIR/NandradSolver/NandradSolver ../../bin/release/NandradSolver &&
 	cp $BUILDDIR/View3D/View3D ../../bin/release/View3D &&
 	cp $BUILDDIR/NandradSolverFMI/libNandradSolverFMI.so ../../bin/release/libNandradSolverFMI.so &&
-	cp $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ../../bin/release/NandradFMUGenerator &&
+	if [ -e $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ]
+	then
+		cp $BUILDDIR/NandradFMUGenerator/NandradFMUGenerator ../../bin/release/NandradFMUGenerator
+	fi &&
 	if [ -e $BUILDDIR/SIM-VICUS/SIM-VICUS ]
 	then
 		cp $BUILDDIR/SIM-VICUS/SIM-VICUS ../../bin/release/SIM-VICUS
-	fi
+	fi &&
 	
 	# tests only on Linux
 	if [[ $SKIP_TESTS = "false"  ]];

@@ -1,3 +1,3 @@
-Time [h]	NetworkElement(id=101).FluidMassFlux [kg/s]	NetworkElement(id=102).FluidMassFlux [kg/s]	Pump.FluidMassFlux [kg/s]	Heat Exchanger.FluidMassFlux [kg/s]	NetworkElement(id=101).OutletNodePressure [Pa]	NetworkElement(id=102).OutletNodePressure [Pa]	Pump.OutletNodePressure [Pa]	NetworkElement(id=301).OutletNodePressure [Pa]
+Time [h]	NetworkElement(id=101).FluidMassFlux [kg/s]	NetworkElement(id=102).FluidMassFlux [kg/s]	Pump.FluidMassFlux [kg/s]	Heat Exchanger.FluidMassFlux [kg/s]	NetworkElement(id=101).OutletNodePressure [Pa]	NetworkElement(id=102).OutletNodePressure [Pa]	Pump.OutletNodePressure [Pa]	Heat Exchanger.OutletNodePressure [Pa]
 0	0.0417625	0.0417625	0.0417625	0.0417625	508.245	-9.99791e-15	1000	491.755
 1	0.0417625	0.0417625	0.0417625	0.0417625	508.245	-9.99791e-15	1000	491.755

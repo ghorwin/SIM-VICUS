@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4922 $
  * $Date: 2016-09-19 14:35:32 -0700 (Mon, 19 Sep 2016) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Alan C. Hindmarsh and Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -62,7 +62,7 @@ typedef struct CVSpilsMemRec {
   long int s_nps;       /* nps = total number of psolve calls           */
   long int s_ncfl;      /* ncfl = total number of convergence failures  */
   long int s_njtimes;   /* njtimes = total number of calls to jtimes    */
-  long int s_nfes;      /* nfeSG = total number of calls to f for     
+  long int s_nfes;      /* nfeSG = total number of calls to f for
                            difference quotient Jacobian-vector products */
 
   N_Vector s_ytemp;     /* temp vector passed to jtimes and psolve      */

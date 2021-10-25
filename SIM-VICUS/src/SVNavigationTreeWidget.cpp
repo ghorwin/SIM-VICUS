@@ -53,9 +53,9 @@ SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	SVStyle::formatDatabaseTreeView(m_ui->treeWidget);
 
 	// register item delegate that paints the "visible" bulb
-	m_ui->treeWidget->setItemDelegate(new SVNavigationTreeItemDelegate(this));
+	m_navigationTreeItemDelegate = new SVNavigationTreeItemDelegate(m_ui->treeWidget); // Mind: treeView must be parent of delegate, see SVNavigationTreeItemDelegate::paint()
+	m_ui->treeWidget->setItemDelegate(m_navigationTreeItemDelegate);
 	m_ui->treeWidget->setUniformRowHeights(true);
-
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
 			this, &SVNavigationTreeWidget::onModified);
@@ -134,6 +134,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// insert root node
 	QTreeWidgetItem * root = new QTreeWidgetItem(QStringList() << "Site", QTreeWidgetItem::Type);
+	root->setFlags(Qt::ItemIsEnabled);
 //	root->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, true);
 //	root->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, true);
 	m_ui->treeWidget->addTopLevelItem(root);
@@ -143,7 +144,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Buildings
 	for (const VICUS::Building & b : prj.m_buildings) {
-		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << tr("Building: %1").arg(b.m_displayName), QTreeWidgetItem::Type);
+		QTreeWidgetItem * building = new QTreeWidgetItem(QStringList() << b.m_displayName, QTreeWidgetItem::Type);
 		m_treeItemMap[b.uniqueID()] = building;
 		building->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable);
 		building->setData(0, SVNavigationTreeItemDelegate::NodeID, b.uniqueID());
@@ -165,6 +166,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 				rooms->setData(0, SVNavigationTreeItemDelegate::NodeID, r.uniqueID());
 				rooms->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, r.m_visible);
 				rooms->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, r.m_selected);
+				rooms->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, false);
 				if (rooms->text(0).isEmpty())
 					rooms->setText(0, tr("unnamed"));
 				buildingLevel->addChild(rooms);
@@ -176,6 +178,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 					surface->setData(0, SVNavigationTreeItemDelegate::NodeID, s.uniqueID());
 					surface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, s.m_visible);
 					surface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, s.m_selected);
+					if (!s.geometry().isValid()) {
+						surface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+						surface->setData(0, Qt::ToolTipRole, tr("Invalid polygon/hole geometry"));
+					}
+
 					for (unsigned int holeIdx = 0; holeIdx < s.subSurfaces().size(); ++holeIdx) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[holeIdx];
 
@@ -193,6 +200,11 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 						subsurface->setData(0, SVNavigationTreeItemDelegate::NodeID, sub.uniqueID());
 						subsurface->setData(0, SVNavigationTreeItemDelegate::VisibleFlag, sub.m_visible);
 						subsurface->setData(0, SVNavigationTreeItemDelegate::SelectedFlag, sub.m_selected);
+						if (!sub.m_polygon2D.isValid()) {
+							subsurface->setData(0, SVNavigationTreeItemDelegate::InvalidGeometryFlag, true);
+							subsurface->setData(0, Qt::ToolTipRole, tr("Invalid sub-surface polygon"));
+						}
+
 					}
 				}
 			}
@@ -203,7 +215,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 
 	// Networks
 	for (const VICUS::Network & n : prj.m_geometricNetworks) {
-		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << tr("Network: %1").arg(n.m_displayName), QTreeWidgetItem::Type);
+		QTreeWidgetItem * networkItem = new QTreeWidgetItem(QStringList() << n.m_displayName, QTreeWidgetItem::Type);
 		m_treeItemMap[n.uniqueID()] = networkItem;
 		root->addChild(networkItem);
 		networkItem->setData(0, SVNavigationTreeItemDelegate::NodeID, n.uniqueID());
@@ -266,6 +278,16 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 	qDebug() << timer.elapsed() << "ms for navigation model reset.";
 
 	m_ui->treeWidget->expandAll();
+}
+
+
+void SVNavigationTreeWidget::scrollToObject(unsigned int uniqueID) {
+	auto objPtrIt = m_treeItemMap.find(uniqueID);
+	Q_ASSERT(objPtrIt != m_treeItemMap.end());
+	QTreeWidgetItem * item = objPtrIt->second;
+	m_ui->treeWidget->expandItem(item->parent());
+	m_ui->treeWidget->scrollToItem(item, QAbstractItemView::PositionAtCenter);
+	m_ui->treeWidget->setCurrentItem(item);
 }
 
 
@@ -337,5 +359,27 @@ void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, in
 	}
 	// create undo action for renaming of object
 	SVUndoModifyObjectName * undo = new SVUndoModifyObjectName(tr("Renamed object to '%1'").arg(newText), o, newText);
+	undo->push();
+}
+
+
+void SVNavigationTreeWidget::on_actionInvertSelection_triggered() {
+	// invert selection, i.e. select all surfaces currently not selected
+
+	// we process all objects in the project() and store unique IDs of all objects that are currently not
+	std::set<const VICUS::Object *> allObjects;
+	project().selectObjects(allObjects, VICUS::Project::SG_All, false, true);
+	std::set<unsigned int> selectedObjectIDs;
+	std::set<unsigned int> deselectedObjectIDs;
+	for (const VICUS::Object * o : allObjects) {
+		if (o->m_selected)
+			selectedObjectIDs.insert(o->uniqueID());
+		else
+			deselectedObjectIDs.insert(o->uniqueID());
+	}
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, deselectedObjectIDs, true);
+	undo->push();
+	undo = new SVUndoTreeNodeState(tr("De-selecting objects"), SVUndoTreeNodeState::SelectedState, selectedObjectIDs, false);
 	undo->push();
 }

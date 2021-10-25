@@ -9,7 +9,7 @@ bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 		// TODO Hauke:
 		// we should know the zone ids here for complete check!
 		checkParameters();
-	} catch (IBK::Exception) {
+	} catch (...) {
 		return false;
 	}
 
