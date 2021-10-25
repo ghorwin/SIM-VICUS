@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -354,6 +354,7 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 	}
 }
 
+
 void HNPressureLossCoeffElement::dependencies(const double * mdot,
 											  std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
@@ -375,6 +376,7 @@ void HNPressureLossCoeffElement::dependencies(const double * mdot,
 		break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
@@ -462,6 +464,7 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
 						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
 
+					case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // only supported in combination with controller 'PumpOperation'
 					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 				}
 
@@ -496,6 +499,7 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
 						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
 
+					case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // only supported in combination with controller 'PumpOperation'
 					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 				}
 
@@ -504,6 +508,7 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 		}
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 //	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
@@ -540,6 +545,7 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 		break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 }
@@ -574,6 +580,7 @@ void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, 
 	df_dmdot = 0;
 }
 
+
 void HNConstantPressureLossValve::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
 	//       a warning is added about this in the model description.
@@ -586,10 +593,49 @@ void HNConstantPressureLossValve::inputReferences(std::vector<InputReference> & 
 
 }
 
+
 void HNConstantPressureLossValve::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
 	if (*resultValueRefIt != nullptr)
 		m_pressureLossRef = *resultValueRefIt; // optional, may be nullptr
 	++resultValueRefIt;
+}
+
+
+
+
+
+
+// *** HNAbstractPowerLimitedPumpModel ***
+
+HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency, const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow):
+	m_density(density),
+	m_efficiency(efficiency),
+	m_maxElectricalPower(maxElectricalPower),
+	m_maxPressureHeadAtZeroFlow(maxPressureHeadAtZeroFlow)
+{
+	if(m_maxPressureHeadAtZeroFlow > 0.)
+		// --> point of maximum volume flow (at minimum pressure head)
+		m_maxVolumeFlowAtZeroPressureHead = 4 * m_efficiency * m_maxElectricalPower / m_maxPressureHeadAtZeroFlow;
+	else
+		// if maximum pressurte head at zero flow is 0, we set to zero (analogue to IBK:Parameter initialization)
+		m_maxVolumeFlowAtZeroPressureHead = 0.0;
+}
+
+
+double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot) const {
+	if (m_maxPressureHeadAtZeroFlow == 0. ||
+			m_maxElectricalPower == 0. )
+		return std::numeric_limits<double>::max();
+	else {
+		// --> pressHeadMax = f (V_dot)
+		double maxPressureHead = m_maxPressureHeadAtZeroFlow *
+				(1 - mdot / (m_maxVolumeFlowAtZeroPressureHead * m_density));
+		// should never be below zero
+		if (maxPressureHead < 0)
+			return 0;
+		else
+			return maxPressureHead;
+	}
 }
 
 
@@ -616,9 +662,12 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	double pressureHead = *m_pressureHeadRef;
+	// TODO Anne + Hauke: check treatment of pump off-mode
+	// TODO Hauke: add small test case as preparation
 	if (m_controller != nullptr) {
 		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation &&
-			*m_follwoingElementHeatLoss < m_controller->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossThreshold].value)
+			*m_followingElementHeatLossRef < m_controller->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossThreshold].value)
+			// inactive pump should cause a large pressure drop
 			return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
 	}
 	// if no controller or invalid controlled property: normal pressure head
@@ -640,38 +689,37 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 
 
 void HNConstantPressurePump::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference inputRef;
 	if (m_controller != nullptr) {
 		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
-			InputReference inputRef2;
-			inputRef2.m_id = m_followingflowElementId;
-			inputRef2.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-			inputRef2.m_name.m_name = "FlowElementHeatLoss";
-			inputRef2.m_required = true;
-			inputRefs.push_back(inputRef2);
+			inputRef.m_id = m_followingflowElementId;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name.m_name = "FlowElementHeatLoss";
+			inputRef.m_required = true;
+			inputRefs.push_back(inputRef);
 		}
 	}
-//	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
-//	//       a warning is added about this in the model description.
-//	InputReference inputRef;
-//	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-//	inputRef.m_name = std::string("PressureHeadSchedule");
-//	inputRef.m_required = false;
-//	inputRef.m_id = m_id;
-//	inputRefs.push_back(inputRef);
+	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
+	//       a warning is added about this in the model description.
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	inputRef.m_name = std::string("PressureHeadSchedule");
+	inputRef.m_required = false;
+	inputRef.m_id = m_id;
+	inputRefs.push_back(inputRef);
 }
 
 
 void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
 	if (m_controller != nullptr) {
 		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation){
-			m_follwoingElementHeatLoss = *resultValueRefIt;
+			m_followingElementHeatLossRef = *resultValueRefIt;
 			++resultValueRefIt;
 		}
 	}
-//	if (*resultValueRefIt != nullptr){
-//		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
-//		++resultValueRefIt;
-//	}
+	if (*resultValueRefIt != nullptr){
+		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
+	}
+	++resultValueRefIt;
 }
 
 
@@ -815,6 +863,7 @@ void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) 
 		// other combinations are not supported
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
 		break;
 	}
@@ -838,7 +887,11 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled)
 				m_massFluxSetpointRef = *(resultValueRefs++);
 		break;
-		default: ; // other control elements do not require inputs
+		// other combinations are not supported
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
 
@@ -857,6 +910,7 @@ void HNControlledPump::dependencies(const double * mdot, std::vector<std::pair<c
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
@@ -930,6 +984,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		// not possible combinations
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 
@@ -945,6 +1000,7 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
 			throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
 
+		case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // only allowed in combination with PumpOperation that is not supported
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
 	}
 
@@ -976,6 +1032,7 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 		// not possible combinations
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
@@ -1016,17 +1073,21 @@ void HNVariablePressureHeadPump::partials(double /*mdot*/, double /*p_inlet*/, d
 	df_dmdot = 0;
 }
 
+
 void HNVariablePressureHeadPump::modelQuantities(std::vector<QuantityDescription> &quantities) const {
 	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
 }
+
 
 void HNVariablePressureHeadPump::modelQuantityValueRefs(std::vector<const double *> &valRefs) const {
 	valRefs.push_back(&m_pressureHead);
 }
 
+
 void HNVariablePressureHeadPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
 	m_pressureHead = pressureHead(mdot);
 }
+
 
 double HNVariablePressureHeadPump::pressureHead(double mdot) const
 {
@@ -1036,6 +1097,7 @@ double HNVariablePressureHeadPump::pressureHead(double mdot) const
 	// for mass fluxes < 10% design mass flux, we keep a constant pressure head
 	double mdot_cut = 0.1 * m_designMassFlux;
 	double pressureHead;
+	// TODO Hauke (+ Anne): study, why exactly this works
 	if (mdot < mdot_cut)
 		return m_minimumPressureHead + slope * mdot_cut;
 
@@ -1049,10 +1111,6 @@ double HNVariablePressureHeadPump::pressureHead(double mdot) const
 
 	return  pressureHead;
 }
-
-
-
-
 
 
 } // namespace NANDRAD_MODEL

@@ -222,12 +222,8 @@ private:
 class HNAbstractPowerLimitedPumpModel {
 public:
 	HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
-									const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow):
-		m_density(density),
-		m_efficiency(efficiency),
-		m_maxElectricalPower(maxElectricalPower),
-		m_maxPressureHeadAtZeroFlow(maxPressureHeadAtZeroFlow)
-	{}
+									const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow);
+
 protected:
 	/*! fluid density in kg/m3 */
 	double							m_density = -999;
@@ -237,25 +233,11 @@ protected:
 	double							m_maxElectricalPower = -999;
 	/*! maximum pressure head at point of minimal mass flow in Pa */
 	double							m_maxPressureHeadAtZeroFlow = -999;
+	/*! maximum flow at zero pressure head (fitting parameter for pump characteristic curve) */
+	double							m_maxVolumeFlowAtZeroPressureHead = -999;
 
 	/*! calculates actual maximum pressure head which linear decreases with mass flux */
-	double maximumPressureHead(const double &mdot) const {
-		if (m_maxPressureHeadAtZeroFlow <= 0 ||
-			m_maxElectricalPower <=0 ||
-			m_efficiency <= 0) // in case class is not initialized or with 0
-			return std::numeric_limits<double>::max();
-		else {
-			// --> point of maximum volume flow (at minimum pressure head)
-			const double Vmax0 = 4 * m_efficiency * m_maxElectricalPower / m_maxPressureHeadAtZeroFlow;
-			// --> pressHeadMax = f (V_dot)
-			double maxPressureHead = m_maxPressureHeadAtZeroFlow * (1 - mdot / (Vmax0 * m_density));
-			// should never be below zero
-			if (maxPressureHead < 0)
-				return 0;
-			else
-				return maxPressureHead;
-		}
-	}
+	double maximumPressureHead(const double &mdot) const;
 
 }; // HNAbstractPowerLimitedPumpModel
 
@@ -287,12 +269,12 @@ private:
 	const double					*m_pressureHeadRef = nullptr;
 
 
+	// TODO Hauke: Documentation
 
 	const NANDRAD::HydraulicNetworkControlElement		*m_controller = nullptr;
 
 
-
-	const double							*m_follwoingElementHeatLoss = nullptr;
+	const double							*m_followingElementHeatLossRef = nullptr;
 
 }; // HNConstantPressurePump
 

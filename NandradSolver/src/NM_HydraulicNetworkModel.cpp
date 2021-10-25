@@ -481,15 +481,16 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 		e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation))
 		return;
 
-	// make sure there is no other element with the same outlet id
-	// (then our outlet temperature would not be equal to the next elements inlet temperature)
+	// make sure there is no parallel element to the current (next node is not a mixer! -
+	// in this case current outlet temperature would not be equal to the next elements inlet/mixer node temperature)
 	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
 		if (e.m_outletNodeId == otherElems.m_outletNodeId && e.m_id != otherElems.m_id )
 			throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
 												   "This element cannot be connected in parallel to any other element (share the same outletNodeId)")
 										 .arg(e.m_id), FUNC_ID);
 	}
-	// make sure there is only one following element (not another one in parallel)
+	// search for the following element id (inlet node of requested element is outlet node of the current)
+	// and (on the flight) make sure there is only one following element (no splitter!)
 	unsigned int followingElementId = 0;
 	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
 		if (e.m_outletNodeId == otherElems.m_inletNodeId) {
