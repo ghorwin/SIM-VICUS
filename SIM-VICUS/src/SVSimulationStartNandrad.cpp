@@ -466,7 +466,15 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 		//add default placeholder
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
+
 		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
+		// special handling since there is no object list data structure in
+		if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
+			 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
+			p.m_objectLists = m_simulationOutputOptions->objectLists();
+			p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
+		}
+
 	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message

@@ -92,6 +92,7 @@ SOURCES += \
 	../../src/SVPreferencesPageMisc.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
+	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
 	../../src/SVZoneSelectionDialog.cpp \
@@ -251,6 +252,7 @@ HEADERS  += \
 	../../src/SVPreferencesPageMisc.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
+	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVZoneSelectionDialog.h \

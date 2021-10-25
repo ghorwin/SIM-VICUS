@@ -27,6 +27,14 @@
 #define SVSimulationOutputOptionsH
 
 #include <QWidget>
+#include <QSortFilterProxyModel>
+
+#include <IBK_Unit.h>
+
+#include <NANDRAD_ObjectList.h>
+#include <NANDRAD_OutputDefinition.h>
+
+#include "SVSimulationOutputTableModel.h"
 
 namespace Ui {
 	class SVSimulationOutputOptions;
@@ -53,6 +61,8 @@ public:
 		NUM_OT
 	};
 
+
+
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/
@@ -60,12 +70,18 @@ public:
 
 	/*! Generates the table with all available output data to define output definitions in NANDRAD.
 		Therefore the "$project_folder/var/$project_name/output_reference_list.txt" is parsed
-		and all necesairry data is stored
+		and all necesairry data is stored.
 	*/
 	void generateOutputTable();
 
 	/*! Initialized Output Table with all necessairy headers */
 	void initOutputTable(unsigned int rowCount);
+
+	/*! Returns generated object lists. */
+	std::vector<NANDRAD::ObjectList> objectLists();
+
+	/*! Returns generated output definitions. */
+	std::vector<NANDRAD::OutputDefinition> outputDefinitions();
 
 private slots:
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
@@ -74,9 +90,28 @@ private slots:
 
 	void on_radioButtonDefault_toggled(bool defaultToggled);
 
+	void on_lineEdit_textEdited(const QString &filterKey);
+
+	void on_tableViewOutputList_doubleClicked(const QModelIndex &index);
+
 private:
-	Ui::SVSimulationOutputOptions		*m_ui;
-	VICUS::Outputs						*m_outputs;
+	Ui::SVSimulationOutputOptions					*m_ui;
+
+	/*! Pointer to VICUS Outputs */
+	VICUS::Outputs									*m_outputs;
+
+	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
+
+	std::map<std::string, NANDRAD::OutputDefinition>	m_outputDefinitionsNandrad;
+
+	/*! Vector with all parsed output definitions */
+	std::vector<OutputDefinition>					m_outputDefinitions;
+
+	/*! Table model instance for input vars. */
+	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;
+
+	/*! Filter model for output definition */
+	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
 };
 
 #endif // SVSimulationOutputOptionsH

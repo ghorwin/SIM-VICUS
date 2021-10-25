@@ -37,15 +37,15 @@
       <property name="title">
        <string>Output selection</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
         <widget class="QRadioButton" name="radioButtonDefault">
          <property name="text">
           <string>Default Outputs:</string>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="1" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QCheckBox" name="checkBoxDefaultZoneOutputs">
@@ -82,22 +82,36 @@
          </item>
         </layout>
        </item>
-       <item>
+       <item row="2" column="0">
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item>
+       <item row="3" column="0">
         <widget class="QRadioButton" name="radioButtonCustom">
          <property name="text">
           <string>Custom outputs:</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QTableWidget" name="tableWidgetOutputList"/>
+       <item row="4" column="0">
+        <widget class="QTableView" name="tableViewOutputList"/>
+       </item>
+       <item row="5" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Filter output:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEdit"/>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>

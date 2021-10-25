@@ -31,6 +31,11 @@
 
 #include <IBK_FileReader.h>
 
+#include <NANDRAD_KeywordList.h>
+
+#include <QModelIndex>
+#include <QAbstractTableModel>
+
 #include "SVProjectHandler.h"
 
 #include "SVStyle.h"
@@ -53,6 +58,18 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputGrids);
 	m_ui->tableWidgetOutputGrids->setSortingEnabled(false);
 	m_ui->radioButtonDefault->setChecked(true);
+
+	m_outputTableModel = new SVSimulationOutputTableModel(this);
+	m_outputTableModel->m_outputDefinitions = &m_outputDefinitions;
+
+	m_outputTableProxyModel = new QSortFilterProxyModel(this);
+	m_outputTableProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+
+	m_outputTableProxyModel->setSourceModel(m_outputTableModel);
+	m_ui->tableViewOutputList->setModel(m_outputTableProxyModel);
+
+	SVStyle::formatDatabaseTableView(m_ui->tableViewOutputList);
+
 }
 
 
@@ -151,7 +168,7 @@ void SVSimulationOutputOptions::generateOutputTable() {
 		throw IBK::Exception(IBK::FormatString("Could not open file '%1' with output definitons.").arg(file.c_str()), FUNC_ID);
 	}
 
-	initOutputTable(outputContent.size()-1); // mind last column
+	m_outputDefinitions.resize(outputContent.size()-1); // mind last column
 
 	// now we go through all read lines
 	std::vector<std::string> tokens;
@@ -170,41 +187,73 @@ void SVSimulationOutputOptions::generateOutputTable() {
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
 			if (j == 0) {
-				m_ui->tableWidgetOutputList->setItem(i-1, OT_VariableName, item);
+				m_outputDefinitions[i-1].m_name = trimmedString;
 			}
-			else if (j == 1)
-				m_ui->tableWidgetOutputList->setItem(i-1, OT_SourceObjectIds, item);
-			else if (j == 2)
-				m_ui->tableWidgetOutputList->setItem(i-1, OT_VectorIndexes, item);
 			else if (j == 3)
-				m_ui->tableWidgetOutputList->setItem(i-1, OT_Unit, item);
+				m_outputDefinitions[i-1].m_unit = IBK::Unit(trimmedString.toStdString());
 			else if (j == 4)
-				m_ui->tableWidgetOutputList->setItem(i-1, OT_Description, item);
+				m_outputDefinitions[i-1].m_description = trimmedString;
+			else if (j == 1) {
+				m_outputDefinitions[i-1].m_sourceObjectIds.clear();
+				std::vector<std::string> ids;
+				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
+				for (std::string id : ids) {
+					m_outputDefinitions[i-1].m_sourceObjectIds.push_back(QString::fromStdString(id).toUInt());
+				}
+			}
+			else if (j == 2) {
+				m_outputDefinitions[i-1].m_vectorIds.clear();
+				std::vector<std::string> ids;
+				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
+				for (std::string id : ids) {
+					m_outputDefinitions[i-1].m_vectorIds.push_back(QString::fromStdString(id).toUInt());
+				}
+			}
 		}
 	}
+	m_outputTableModel->reset();
+	m_ui->tableViewOutputList->resizeColumnsToContents();
 }
 
 void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
-	m_ui->tableWidgetOutputList->setColumnCount(5);
-	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
-	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetOutputList->setColumnWidth(1, 100);
-	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-	m_ui->tableWidgetOutputList->setRowCount(rowCount);
+//	m_ui->tableWidgetOutputList->setColumnCount(5);
+//	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
+//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+//	m_ui->tableWidgetOutputList->setColumnWidth(1, 100);
+//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
+//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
+//	m_ui->tableWidgetOutputList->setRowCount(rowCount);
 
-//	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
-	m_ui->tableWidgetOutputList->verticalHeader()->setVisible(false);
-	m_ui->tableWidgetOutputList->horizontalHeader()->setMinimumSectionSize(19);
-	m_ui->tableWidgetOutputList->setSelectionBehavior(QAbstractItemView::SelectRows);
-	m_ui->tableWidgetOutputList->setSelectionMode(QAbstractItemView::SingleSelection);
-	m_ui->tableWidgetOutputList->setAlternatingRowColors(true);
-	m_ui->tableWidgetOutputList->setSortingEnabled(true);
-//	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
+////	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
+//	m_ui->tableWidgetOutputList->verticalHeader()->setVisible(false);
+//	m_ui->tableWidgetOutputList->horizontalHeader()->setMinimumSectionSize(19);
+//	m_ui->tableWidgetOutputList->setSelectionBehavior(QAbstractItemView::SelectRows);
+//	m_ui->tableWidgetOutputList->setSelectionMode(QAbstractItemView::SingleSelection);
+//	m_ui->tableWidgetOutputList->setAlternatingRowColors(true);
+//	m_ui->tableWidgetOutputList->setSortingEnabled(true);
+////	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
 
-	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
-	m_ui->tableWidgetOutputList->horizontalHeader()->setStyleSheet(headerStyleSheet);
+//	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
+	//	m_ui->tableWidgetOutputList->horizontalHeader()->setStyleSheet(headerStyleSheet);
+}
+
+std::vector<NANDRAD::ObjectList> SVSimulationOutputOptions::objectLists() {
+	std::vector<NANDRAD::ObjectList> objectListsVector;
+	for (std::map<std::string, NANDRAD::ObjectList>::const_iterator it = m_objectListsNandrad.begin();
+			it != m_objectListsNandrad.end(); ++it	 )
+			objectListsVector.push_back(it->second);
+
+	return objectListsVector;
+}
+
+std::vector<NANDRAD::OutputDefinition> SVSimulationOutputOptions::outputDefinitions() {
+	std::vector<NANDRAD::OutputDefinition> outputDefinitionsVector;
+	for (std::map<std::string, NANDRAD::OutputDefinition>::const_iterator it = m_outputDefinitionsNandrad.begin();
+			it != m_outputDefinitionsNandrad.end(); ++it	 )
+			outputDefinitionsVector.push_back(it->second);
+
+	return outputDefinitionsVector;
 }
 
 
@@ -235,5 +284,193 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 	m_ui->checkBoxDefaultZoneOutputs->setEnabled(defaultToggled);
 	m_ui->checkBoxDefaultNetworkOutputs->setEnabled(defaultToggled);
 
-	m_ui->tableWidgetOutputList->setEnabled(defaultToggled);
+	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs] = IBK::Flag("CreateDefaultZoneOutputs",
+																			   m_ui->checkBoxDefaultZoneOutputs->isChecked() && defaultToggled );
+	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs] = IBK::Flag("CreateDefaultNetworkOutputs",
+																			   m_ui->checkBoxDefaultNetworkOutputs->isChecked() && defaultToggled );
+
+	m_ui->tableViewOutputList->setEnabled(!defaultToggled);
 }
+
+void SVSimulationOutputOptions::on_lineEdit_textEdited(const QString &filterKey) {
+	m_outputTableProxyModel->setFilterWildcard(filterKey);
+	m_outputTableProxyModel->setFilterKeyColumn(0);
+}
+
+void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
+	Q_ASSERT(index.row()<m_outputDefinitions.size());
+
+	bool outputDefinitionState = m_outputDefinitions[index.row()].m_isActive;
+
+	m_outputDefinitions[index.row()].m_isActive = !outputDefinitionState;
+	m_outputTableModel->updateOutputData(index.row());
+
+	// we also have to generate an output in the project
+	// we need an hourly output grid, look if we have already one defined (should be!)
+
+	std::vector<std::string> outputNameList;
+	IBK::explode(m_outputDefinitions[(int)index.row()].m_name.toStdString(), outputNameList, ".", IBK::EF_NoFlags);
+
+	Q_ASSERT(outputNameList.size() == 2); // Always *.* format
+
+	if (outputDefinitionState) {
+		// row has been deselected
+		// remove output definition
+		std::map<std::string, NANDRAD::OutputDefinition>::const_iterator it = m_outputDefinitionsNandrad.find(outputNameList[1]);
+		if (it != m_outputDefinitionsNandrad.end())
+			m_outputDefinitionsNandrad.erase(it);
+
+		return;
+	}
+
+
+	std::string refName;
+	// ==============================================
+	// GRID
+	// ==============================================
+	{
+		// generate output grid, if needed
+		int ogInd = -1;
+		for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
+			NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
+			if (og.m_intervals.size() == 1 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
+			{
+				ogInd = (int)i;
+				break;
+			}
+		}
+		// create one, if not yet existing
+		if (ogInd == -1) {
+			NANDRAD::OutputGrid og;
+			og.m_name = refName = tr("Hourly values").toStdString();
+			NANDRAD::Interval iv;
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
+			NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
+			og.m_intervals.push_back(iv);
+			m_outputs->m_grids.push_back(og);
+		}
+		else {
+			refName = m_outputs->m_grids[(unsigned int)ogInd].m_name;
+		}
+	}
+	// ==============================================
+	// OUTPUT DEFINITIONS & OBJECT LISTS
+	// ==============================================
+	// we already have a name for the output grid, start generating default outputs
+
+	if(outputNameList[0] == "Zone") {
+		std::string objectListAllZones = tr("All zones").toStdString();
+		if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = outputNameList[1];
+			od.m_objectListName = objectListAllZones;
+			m_outputDefinitionsNandrad[od.m_quantity] = od;
+		}
+
+		// we have to find the right object list with the correct information
+		if (m_objectListsNandrad.find(objectListAllZones) == m_objectListsNandrad.end()) {
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllZones;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+			m_objectListsNandrad[objectListAllZones] = ol;
+		}
+	}
+	else if (outputNameList[0] == "ConstructionInstance") {
+		std::string objectListAllCIs = tr("All ConstructionInstance").toStdString();
+
+		const std::vector<unsigned int> &vectorIds = m_outputDefinitions[index.row()].m_vectorIds;
+		if (vectorIds.empty()) {
+			if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+				NANDRAD::OutputDefinition od;
+				od.m_gridName = refName;
+				od.m_quantity = outputNameList[1];
+				od.m_objectListName = objectListAllCIs;
+				m_outputDefinitionsNandrad[od.m_quantity] = od;
+			}
+		}
+		else {
+			for (unsigned int i=0; i<vectorIds.size(); ++i) {
+				if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+					NANDRAD::OutputDefinition od;
+					od.m_gridName = refName;
+					od.m_quantity = outputNameList[1] + "[" + QString::number(vectorIds[i]).toStdString() + "]";
+					od.m_objectListName = objectListAllCIs;
+					m_outputDefinitionsNandrad[od.m_quantity] = od;
+				}
+			}
+		}
+
+		// we have to find the right object list with the correct information
+		if (m_objectListsNandrad.find(objectListAllCIs) == m_objectListsNandrad.end()) {
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllCIs;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			m_objectListsNandrad[objectListAllCIs] = ol;
+		}
+	}
+	else if (outputNameList[0] == "Location") {
+		std::string objectListLocation = tr("Location").toStdString();
+		if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = outputNameList[1];
+			od.m_objectListName = objectListLocation;
+			m_outputDefinitionsNandrad[od.m_quantity] = od;
+		}
+
+		// we have to find the right object list with the correct information
+		if (m_objectListsNandrad.find(objectListLocation) == m_objectListsNandrad.end()) {
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListLocation;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+			m_objectListsNandrad[objectListLocation] = ol;
+		}
+	}
+	else if (outputNameList[0] == "EmbeddedObject") {
+		std::string objectListAllEOs = tr("All embedded objects").toStdString();
+		if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = outputNameList[1];
+			od.m_objectListName = objectListAllEOs;
+			m_outputDefinitionsNandrad[od.m_quantity] = od;
+		}
+
+		// we have to find the right object list with the correct information
+		if (m_objectListsNandrad.find(objectListAllEOs) == m_objectListsNandrad.end()) {
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllEOs;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
+			m_objectListsNandrad[objectListAllEOs] = ol;
+		}
+	}
+	else if (outputNameList[0] == "Model") {
+		std::string objectListAllModels = tr("All models").toStdString();
+		if (m_outputDefinitionsNandrad.find(outputNameList[1]) == m_outputDefinitionsNandrad.end()) {
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = outputNameList[1];
+			od.m_objectListName = objectListAllModels;
+			m_outputDefinitionsNandrad[od.m_quantity] = od;
+		}
+
+		// we have to find the right object list with the correct information
+		if (m_objectListsNandrad.find(objectListAllModels) == m_objectListsNandrad.end()) {
+			NANDRAD::ObjectList ol;
+			ol.m_name = objectListAllModels;
+			ol.m_filterID.setEncodedString("*");
+			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
+			m_objectListsNandrad[objectListAllModels] = ol;
+		}
+	}
+
+}
+
