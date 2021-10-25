@@ -864,42 +864,6 @@ noprefix "false"
 \end_layout
 
 \begin_layout Subsubsection
-Pump flow equations
-\end_layout
-
-\begin_layout Standard
-The system function for pumps
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{equation}
-f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p
-\end{equation}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-uses a fixed, predefined pressure drop 
-\begin_inset Formula $\Delta p$
-\end_inset
-
- (can be negative).
- Different pump models are used to compute this pressure difference.
-\end_layout
-
-\begin_layout Subsubsection
-Constant pressure pump
-\end_layout
-
-\begin_layout Standard
-The pressure difference is a constant pump parameter.
-\end_layout
-
-\begin_layout Subsubsection
 Fixed pressure loss coefficient
 \begin_inset CommandInset label
 LatexCommand label
@@ -968,47 +932,78 @@ noprefix "false"
 \end_layout
 
 \begin_layout Subsubsection
-Controlled Pump
+Pump flow equations
 \end_layout
 
 \begin_layout Standard
-Dieses Model bildet eine regelbare Pumpe ab.
- Die Pumpe kann nach dem Massenstrom oder nach der Temperaturdifferenz des
- folgenden Strömungselements geregelt werden.
- Die maximale Leistung der Pumpe ist begrenzt und es wird ein vereinfachtes
- Modell für den Wirkungsgrad und die maximalen Druckdifferenz angenommen.
+The system function for pumps
 \end_layout
 
 \begin_layout Standard
-Die Parameter sind:
+\begin_inset Formula 
+\begin{equation}
+f\text{\left(\dot{m},p_{in},p_{out}\right)}=p_{in}-p_{out}-\Delta p
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+uses a fixed, predefined pressure drop 
+\begin_inset Formula $\Delta p$
+\end_inset
+
+ (can be negative).
+ Different pump models are used to compute this pressure difference.
+\end_layout
+
+\begin_layout Subsubsection
+Pumps with limited power
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "subsec:Pumps-power-limited"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Different pump models can be limited in their maximum power.
+ Therefore, the following parameters are required
 \end_layout
 
 \begin_layout Itemize
 \begin_inset Formula $P_{el,max}\;[W]$
 \end_inset
 
- maximale elektrische Leistung im optimalen Betriebspunkt
+ maximum electrical power in best operation point
 \end_layout
 
 \begin_layout Itemize
 \begin_inset Formula $p_{max,0\;}[Pa]$
 \end_inset
 
- maximale Druckdifferenz im Betriebspunkt des minimalem Volumenstroms
+ maximum pressure head at point of zero mass flow
 \end_layout
 
 \begin_layout Itemize
-\begin_inset Formula $\eta_{pump}\;[W]$
+\begin_inset Formula $\eta_{opt}\;[-]$
 \end_inset
 
- Wirkungsgrad im optimalen Betriebspunkt
+ efficiency at best operation point
 \end_layout
 
 \begin_layout Standard
-Eine tatsächliche Pumpe ist für einen optimalen Betriebspunkt ausgelegt.
- Außerhalb des optmialen Betriebspunkts ist die hydraulische Leistung und
- damit der Wirkungsgrad deutlich geringer.
- Die hydraulische Leistung einer Pumpe ist 
+The mechanical power of a hydraulic pump is 
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
 P_{mech}=\Delta p\dot{V}
@@ -1020,8 +1015,8 @@ P_{mech}=\Delta p\dot{V}
 \end_layout
 
 \begin_layout Standard
-Würde man von einer konstanten Leistung über den gesamten Volumenstrombereich
- ausgehen, ergäbe sich die blaue Kurve in Figure 
+A theoretical pump with constant power and without any losses would have
+ the characteristic curve shown in the blue curve of figure 
 \begin_inset CommandInset ref
 LatexCommand ref
 reference "fig:Maximum-pressure-head"
@@ -1032,36 +1027,32 @@ noprefix "false"
 \end_inset
 
 .
+ The characteristic curve of a real pump, however, is signifcantly smaller,
+ due to hydraulic and electrical losses.
+ The operation limits, e.g.
+ the maximum volume flow rate and pressure head can be determined based
+ on the given parameters.
  
 \end_layout
 
 \begin_layout Standard
-Der Betriebsbereich einer drehzahlgeregelten Pumpe ist aufgrund von hydraulische
-n Verlusten und der technischen Begrenzung des Drehzahlbereichs geringer
- (schwarze Kurve).
- Die Grenzen des Bereichs können mit den angegebenen Parametern bestimmt
- werden.
- 
-\end_layout
-
-\begin_layout Standard
-Der optimale Betriebspunkt ist in der Regel bei 50 % des maximalen Volumenstroms
-, also 
+The best operation point is commonly at 50 % of the maximum volume flow
+ rate, so that 
 \begin_inset Formula $\dot{V}_{opt}=\frac{\dot{V}_{max,0}}{2}$
 \end_inset
 
- und 
+ and 
 \begin_inset Formula $\Delta p_{opt}=\frac{\Delta p_{max,0}}{2}$
 \end_inset
 
 .
- Die elektrische Leistung im optimalen Betriebspunkt ist
+ Hence, the electrical power in the best operation point is
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P_{el,max}=\frac{1}{\eta}\:\Delta p_{opt}\dot{V}_{opt}
+P_{el,max}=\frac{\Delta p_{opt}\dot{V}_{opt}}{\eta_{opt}}
 \]
 
 \end_inset
@@ -1070,11 +1061,14 @@ P_{el,max}=\frac{1}{\eta}\:\Delta p_{opt}\dot{V}_{opt}
 \end_layout
 
 \begin_layout Standard
-Aus der maximalen Leistung im optimalen Betriebspunkt und dem maximalen
- Druckverlust lässt sich so der maximale Volumenstrom bestimmen
+Using the equations above we can determine the maximum mass flow rate at
+ zero pressure head
+\end_layout
+
+\begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{V}_{max,0}=\frac{4\eta P_{el,max}}{\Delta p_{max,0}}
+\dot{V}_{max,0}=\frac{4\;\eta_{opt}\;P_{el,max}}{\Delta p_{max,0}}
 \]
 
 \end_inset
@@ -1083,12 +1077,12 @@ Aus der maximalen Leistung im optimalen Betriebspunkt und dem maximalen
 \end_layout
 
 \begin_layout Standard
-Damit kann die Grenze des Betriebsbereichs der drehzahlgeregelten Pumpe
- (schwarze Kurve) bestimmt werden
+Assuming a linear relation of pressure head and volume flow rate, which
+ matches most commonly existing pumps sufficiently, we can describe the
+ maximum pressure head as a function of volume flow rate
 \end_layout
 
 \begin_layout Standard
-Linearer Verlauf warum???
 \begin_inset Formula 
 \[
 \Delta p_{max}(\dot{V})=\Delta p_{max,0}-\frac{\Delta p_{max,0}}{\dot{V}_{max,0}}\dot{V}
@@ -1100,68 +1094,29 @@ Linearer Verlauf warum???
 \end_layout
 
 \begin_layout Standard
-Der Wirkungsgrad ist 
-\begin_inset Formula 
-\[
-\eta=\frac{\Delta p_{max}\dot{V}}{P_{el,max}}
-\]
+This function is depicted by the black curve in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Maximum-pressure-head"
+plural "false"
+caps "false"
+noprefix "false"
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Paragraph*
-Regelung des Massenstroms
-\end_layout
-
-\begin_layout Standard
-Das Stellsignal 
-\begin_inset Formula $y$
-\end_inset
-
- eines P-Reglers mit Verstärkung 
-\begin_inset Formula $k_{p}$
-\end_inset
-
- ergibt sich aus der Differenze zwischen dem Massenstrom 
-\begin_inset Formula $\dot{m}$
-\end_inset
-
-und dem Sollwert des Massenstroms 
-\begin_inset Formula $\dot{m}_{soll}$
-\end_inset
-
-
-\begin_inset Formula 
-\[
-y=k_{p}(\dot{m}-\dot{m}_{soll})
-\]
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Daraus kann die Druckdifferenz der Pumpe berechnet werden
+.
+ Moreover, the efficiency as a function of volume flow rate can be described
+ as well
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\Delta p=\begin{cases}
-y & y\leq\Delta p_{max}\\
-\Delta p_{max} & y>\Delta p_{max}
-\end{cases}
+\eta(\dot{V})=\frac{\Delta p_{max}(\dot{V})}{P_{el,max}}\dot{V}
 \]
 
 \end_inset
 
-
-\end_layout
-
-\begin_layout Standard
 
 \end_layout
 
@@ -1173,8 +1128,8 @@ status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename imgs/ControlledPump.pdf
-	lyxscale 50
+	filename imgs/ControlledPump.png
+	lyxscale 30
 	scale 60
 
 \end_inset
@@ -1199,6 +1154,104 @@ Maximum pressure head and efficiency of controlled pump
 
 \end_inset
 
+
+\end_layout
+
+\begin_layout Subsubsection
+Constant pressure pump
+\end_layout
+
+\begin_layout Standard
+The pressure difference is a constant pump parameter.
+ 
+\end_layout
+
+\begin_layout Subsubsection
+Controlled Pump
+\end_layout
+
+\begin_layout Standard
+This model describes a pump whose pressure head is controlled according
+ to a given temperature difference or mass flow rate.
+ The maximum pressure head is always limited using the model described in
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Pumps-power-limited"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Newline newline
+\end_inset
+
+The controller result value of a P-Controller with gain 
+\begin_inset Formula $K_{p}$
+\end_inset
+
+ can be calculated based on the difference between current value and set
+ value.
+ For a mass flow rate controlled pump this would be
+\begin_inset Formula 
+\[
+y=k_{p}(\dot{m}-\dot{m}_{set})
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The pressure head is limited by the maximum pressure head, which is calculated
+ according to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Pumps-power-limited"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\Delta p=\begin{cases}
+y & y\leq\Delta p_{max}\\
+\Delta p_{max} & y>\Delta p_{max}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Apart from a more realistic behaviour, the pressure head limit described
+ in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "subsec:Pumps-power-limited"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ has the benefit of being dependent on volume flow rate.
+ This significant improves the convergence of the Newton algorithm, used
+ for solving the hydraulic equation system.
+\end_layout
+
+\begin_layout Standard
 
 \end_layout
 
