@@ -377,7 +377,7 @@ namespace VICUS {
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
-				case 5 : return "HeatLossThreshold";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -841,7 +841,7 @@ namespace VICUS {
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
-				case 5 : return "HeatLossThreshold";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -1306,7 +1306,7 @@ namespace VICUS {
 				case 2 : return "Kd-parameter";
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
-				case 5 : return "Threshold value of heat loss";
+				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
 			} break;
 			// NetworkController::References
 			case 29 :

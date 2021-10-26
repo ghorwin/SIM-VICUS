@@ -180,7 +180,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Kd-parameter");
 	tr("Target temperature difference");
 	tr("Target mass flux");
-	tr("Threshold value of heat loss");
+	tr("Threshold value for PumpOperation property when OnOffController is used");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");
