@@ -4,24 +4,20 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#416fce" Checked="0">ConstantMassFluxThermostatControlledPipeRegister</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">ConstantMassFluxThermostatControlledPipeRegister.gcc_linux</SubDir>
-			<SubDir Color="#ff007f" Checked="1">ControlledPumpMassFluxScheduled</SubDir>
+			<SubDir Color="#ff007f" Checked="0">ControlledPumpMassFluxScheduled</SubDir>
 			<SubDir Color="#7141d1" Checked="0">ControlledPumpMassFluxScheduled.gcc_linux</SubDir>
 			<SubDir Color="#ff007f" Checked="0">ControlledPumpPipeRegister</SubDir>
 			<SubDir Color="#7141d1" Checked="0">ControlledPumpPipeRegister.gcc_linux</SubDir>
+			<SubDir Color="#45ad45" Checked="0">ControlledPumpTemperatureDifferenceFollowingElement.gcc_linux</SubDir>
 			<SubDir Color="#416fce" Checked="0">ControlledValveConstantMassFlux</SubDir>
 			<SubDir Color="#ff5500" Checked="0">ControlledValveConstantMassFlux.gcc_linux</SubDir>
 			<SubDir Color="#ffaaff" Checked="0">ControlledValveTemperatureDifferenceFollowingElement</SubDir>
 			<SubDir Color="#55aaff" Checked="0">ControlledValveTemperatureDifferenceFollowingElement.gcc_linux</SubDir>
 			<SubDir Color="#ff007f" Checked="0">TemperatureDifferenceControlHeatLossSpline</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">TemperatureDifferenceControlHeatLossSpline.gcc_linux</SubDir>
-			<SubDir Color="#ffaaff" Checked="0">ThermostatControlledIdealFloorHeating</SubDir>
-			<SubDir Color="#c66300" Checked="0">ThermostatControlledIdealFloorHeating.gcc_linux</SubDir>
-			<SubDir Color="#ff5500" Checked="0">ThermostatControlledIdealPipeRegister</SubDir>
-			<SubDir Color="#aa55ff" Checked="0">ThermostatControlledIdealPipeRegister.gcc_linux</SubDir>
-			<SubDir Color="#aaaa00" Checked="0">ThermostatControlledPipeRegister</SubDir>
 			<SubDir Color="#ffffff" Checked="0">ThermostatControlledPipeRegister.gcc_linux</SubDir>
+			<SubDir Color="#aa55ff" Checked="1">VariablePressurePumpTemperatureDifferenceControl</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -199,13 +195,62 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>VariablePressurePumpTemperatureDifferenceControl/results/network_elements.tsv?11</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>VariablePressurePumpTemperatureDifferenceControl/results/network_elements.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">K</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">kg/s</IBK:Unit>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
