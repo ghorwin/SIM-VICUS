@@ -1012,6 +1012,18 @@ Der Regler `ThermostatValue` kann nur für das Modell `SimplePipe` verwendet wer
 
 Mit diesem Regler wird der Massenstrom des Strömungselements geregelt. Der Regler `MassFlux` kann nur für die Modelle `ControlledValve` und `ControlledPump` verwendet werden.
 
+
+### Regler: PumpOperation
+
+Mit dem Regler `PumpOperation` kann eine `ConstantPressurePump` an oder aus geschaltet werden. Dies geschieht mit einer Hysterese in Abhängigkeit des Wärmestroms des folgenden Strömungselements. Es muss daher der Parameter `HeatLossOfFollowingElementThreshold` gesetzt sein. Ist der Wärmestrom des folgenden Elements 10 % höher als `HeatLossOfFollowingElementThreshold`, wird die Pumpe angeschaltet. Ist der Wärmestrom 10 % kleiner als `HeatLossOfFollowingElementThreshold`, wird die Pumpe ausgeschaltet. Andernfalls wird der vorherige Zustand beibehalten.
+
+[TIP]
+====
+Dieser Regler wurde speziell implementiert um die dezentrale Umwälzpumpe in einer Wärmepumpe zu steuern.
+====
+
+
+
 ### Parameter für die Regler-Logik
 
 Reglersollwerte
@@ -1020,9 +1032,9 @@ Reglersollwerte
 |====================
 |Name | Einheit | Beschreibung |  Verwendung mit `ControlledProperty`
 
-| `TemperatureDifferenceSetpoint` | C | Sollwert der Temperaturdifferenz |  `TemperatureDifference`, `TemperatureDifferenceOfFollowingElement` 
-
+| `TemperatureDifferenceSetpoint` | C | Sollwert der Temperaturdifferenz |  `TemperatureDifference`, `TemperatureDifferenceOfFollowingElement`
 | `MassFluxSetpoint` | kg/s | Sollwert des Massenstroms |  `MassFlux` 
+| `HeatLossOfFollowingElementThreshold` | W | Grenzwert des Wärmestroms des folgenden Elements |  `PumpOperation` 
 |====================
 
 Reglerparameter
