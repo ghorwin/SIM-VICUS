@@ -426,8 +426,7 @@ private:
 
 
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
-class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement,
-								  public HNAbstractPowerLimitedPumpModel  { // NO KEYWORDS
+class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement, public HNAbstractPowerLimitedPumpModel  { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
