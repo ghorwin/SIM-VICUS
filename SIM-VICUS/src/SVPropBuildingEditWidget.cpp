@@ -506,6 +506,16 @@ const VICUS::ZoneTemplate * SVPropBuildingEditWidget::currentlySelectedZoneTempl
 	return cit->first;
 }
 
+const VICUS::BoundaryCondition * SVPropBuildingEditWidget::currentlySelectedBoundaryCondition() const {
+	// check if selected "boundary condition" is actually a missing boundary condition
+	int r = m_ui->tableWidgetBoundaryConditions->currentRow();
+	if (r == -1 || m_bcSurfacesMap.empty())
+		return nullptr;
+	std::map<const VICUS::BoundaryCondition*, std::vector<const VICUS::Surface *> >::const_iterator cit = m_bcSurfacesMap.begin();
+	std::advance(cit, r);
+	return cit->first;
+}
+
 
 void SVPropBuildingEditWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
@@ -2034,4 +2044,22 @@ void SVPropBuildingEditWidget::on_pushButtonAssignSelectedComponent_clicked() {
 	const VICUS::Component * comp = currentlySelectedComponent();
 	// assign it to our selected surfaces
 	assignComponent(false, comp->m_id);
+}
+
+void SVPropBuildingEditWidget::on_pushButtonSelectBoundaryConditions_clicked() {
+	const VICUS::BoundaryCondition * bc = currentlySelectedBoundaryCondition();
+	Q_ASSERT(m_bcSurfacesMap.find(bc) != m_bcSurfacesMap.end());
+	// compose set of objects to be selected
+	std::set<unsigned int> objs;
+	for (auto s : m_bcSurfacesMap[bc])
+		objs.insert(s->uniqueID());
+
+	QString undoText;
+	if (bc != nullptr)
+		undoText = tr("Select objects with boundary condition '%1'").arg(QtExt::MultiLangString2QString(bc->m_displayName));
+	else
+		undoText = tr("Select objects with invalid boundary condition.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
+	undo->push();
 }
