@@ -33,6 +33,7 @@
 
 #include <NANDRAD_KeywordList.h>
 
+
 #include <QModelIndex>
 #include <QAbstractTableModel>
 
@@ -69,6 +70,7 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableViewOutputList->setModel(m_outputTableProxyModel);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableViewOutputList);
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSourceObjectIds);
 
 }
 
@@ -149,23 +151,35 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	// user can select needed outputs
 	// if simulation is run, all needed putputs are generated in NANDRAD file
 
-	QString nandradFilePath = SVProjectHandler::instance().nandradProjectFilePath();
+	QString nandradFileString = SVProjectHandler::instance().nandradProjectFilePath();
 	QString fileName = SVProjectHandler::instance().projectFile();
 
 	int pos = fileName.lastIndexOf(".");
-	fileName = fileName.left(pos);
+	QString fileNameWithoutEnding = fileName.left(pos);
 
-	IBK::Path filePath(nandradFilePath.toStdString());
-	IBK::Path file = IBK::Path(fileName.toStdString() ) / "var" / "output_reference_list.txt" ;
+	IBK::Path nandradFilePath(nandradFileString.toStdString());
+	IBK::Path fileOutputVars = IBK::Path(fileNameWithoutEnding.toStdString() ) / "var" / "output_reference_list.txt" ;
 
-	qDebug() << file.c_str();
+	qDebug() << fileOutputVars.c_str();
 
 	std::vector<std::string> outputContent;
+
 	try {
-		IBK::FileReader::readAll(file, outputContent, std::vector<std::string>());
+		IBK::FileReader::readAll(fileOutputVars, outputContent, std::vector<std::string>());
 	}
 	catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Could not open file '%1' with output definitons.").arg(file.c_str()), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Could not open file '%1' with output definitons.").arg(fileOutputVars.c_str()), FUNC_ID);
+	}
+
+	try {
+		m_nandradProject.readXML(nandradFilePath);
+	} catch (IBK::Exception &ex) {
+		throw IBK::Exception(IBK::FormatString("Could not parse nandrad file '%1' to match output definitons.").arg(nandradFilePath.c_str()), FUNC_ID);
+	}
+
+	for (unsigned int i=0; i<outputContent.size(); ++i) {
+		if (outputContent[i] == "")
+			outputContent.erase(outputContent.begin() + i);
 	}
 
 	m_outputDefinitions.resize(outputContent.size()-1); // mind last column
@@ -180,13 +194,17 @@ void SVSimulationOutputOptions::generateOutputTable() {
 		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
 
 		QTableWidgetItem *item;
+		std::string objectType;
+
 		for(unsigned int j=0; j<tokens.size(); ++j) {
 			item = new QTableWidgetItem();
 			QString trimmedString = QString::fromStdString(tokens[j]).trimmed();
 			item->setText(trimmedString);
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
+
 			if (j == 0) {
+				objectType = IBK::explode(trimmedString.toStdString(), '.', 2)[0];
 				m_outputDefinitions[i-1].m_name = trimmedString;
 			}
 			else if (j == 3)
@@ -198,7 +216,116 @@ void SVSimulationOutputOptions::generateOutputTable() {
 				std::vector<std::string> ids;
 				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
 				for (std::string id : ids) {
-					m_outputDefinitions[i-1].m_sourceObjectIds.push_back(QString::fromStdString(id).toUInt());
+
+					// we get the nandrad id
+					unsigned int nandradId = QString::fromStdString(id).toUInt();
+					std::string name = "No object found";
+
+					if ( objectType == "ConstructionInstance" ) {
+						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
+							if (ci.m_id == nandradId) {
+								name = ci.m_displayName;
+								break;
+							}
+						}
+					}
+					else if ( objectType == "Zone" ) {
+						for ( const NANDRAD::Zone &z : m_nandradProject.m_zones ) {
+							if (z.m_id == nandradId) {
+								name = z.m_displayName;
+								break;
+							}
+						}
+					}
+					else if ( objectType == "Location" ) {
+						name = "Location";
+					}
+					else if ( objectType == "EmbeddedObject" ) {
+						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
+							for ( const NANDRAD::EmbeddedObject &eo : ci.m_embeddedObjects ) {
+								if (eo.m_id == nandradId) {
+									name = eo.m_displayName;
+									break;
+								}
+							}
+						}
+					}
+					else if ( objectType == "Model" ) {
+						bool foundObject = false;
+						for ( const NANDRAD::Thermostat &m : m_nandradProject.m_models.m_thermostats) {
+							if (m.m_id == nandradId) {
+								name = m.m_displayName;
+								foundObject = true;
+								break;
+							}
+						}
+						if (!foundObject)
+							for ( const NANDRAD::InternalLoadsModel &m : m_nandradProject.m_models.m_internalLoadsModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::ShadingControlModel &m : m_nandradProject.m_models.m_shadingControlModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::HeatLoadSummationModel &m : m_nandradProject.m_models.m_heatLoadSummationModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::IdealPipeRegisterModel &m : m_nandradProject.m_models.m_idealPipeRegisterModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::NaturalVentilationModel &m : m_nandradProject.m_models.m_naturalVentilationModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::IdealHeatingCoolingModel &m : m_nandradProject.m_models.m_idealHeatingCoolingModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::NetworkInterfaceAdapterModel &m : m_nandradProject.m_models.m_networkInterfaceAdapterModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+						if (!foundObject)
+							for ( const NANDRAD::IdealSurfaceHeatingCoolingModel &m : m_nandradProject.m_models.m_idealSurfaceHeatingCoolingModels) {
+								if (m.m_id == nandradId) {
+									name = m.m_displayName;
+									foundObject = true;
+									break;
+								}
+							}
+					}
+
+					m_outputDefinitions[i-1].m_sourceObjectIds.push_back(std::make_pair(nandradId,name) );
 				}
 			}
 			else if (j == 2) {
@@ -206,13 +333,13 @@ void SVSimulationOutputOptions::generateOutputTable() {
 				std::vector<std::string> ids;
 				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
 				for (std::string id : ids) {
-					m_outputDefinitions[i-1].m_vectorIds.push_back(QString::fromStdString(id).toUInt());
+					m_outputDefinitions[i-1].m_vectorIds.push_back(QString::fromStdString(id).toUInt() );
 				}
 			}
 		}
 	}
 	m_outputTableModel->reset();
-	m_ui->tableViewOutputList->resizeColumnsToContents();
+//	m_ui->tableViewOutputList->resizeColumnsToContents();
 }
 
 void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
@@ -298,18 +425,22 @@ void SVSimulationOutputOptions::on_lineEdit_textEdited(const QString &filterKey)
 }
 
 void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
-	Q_ASSERT(index.row()<m_outputDefinitions.size());
 
-	bool outputDefinitionState = m_outputDefinitions[index.row()].m_isActive;
+	QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(index);
 
-	m_outputDefinitions[index.row()].m_isActive = !outputDefinitionState;
-	m_outputTableModel->updateOutputData(index.row());
+	Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
+
+	bool outputDefinitionState = m_outputDefinitions[sourceIndex.row()].m_isActive;
+
+	m_outputDefinitions[sourceIndex.row()].m_isActive = !outputDefinitionState;
+	m_outputTableModel->updateOutputData(sourceIndex.row());
+	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
 	// we also have to generate an output in the project
 	// we need an hourly output grid, look if we have already one defined (should be!)
 
 	std::vector<std::string> outputNameList;
-	IBK::explode(m_outputDefinitions[(int)index.row()].m_name.toStdString(), outputNameList, ".", IBK::EF_NoFlags);
+	IBK::explode(m_outputDefinitions[(int)sourceIndex.row()].m_name.toStdString(), outputNameList, ".", IBK::EF_NoFlags);
 
 	Q_ASSERT(outputNameList.size() == 2); // Always *.* format
 
@@ -474,3 +605,31 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 }
 
+
+void SVSimulationOutputOptions::on_tableViewOutputList_clicked(const QModelIndex &index) {
+	// we update our table
+
+	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+
+	tw.setColumnCount(2);
+	tw.setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );
+
+	QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(index);
+
+	const OutputDefinition &od = m_outputDefinitions[sourceIndex.row()];
+
+	tw.setRowCount(od.m_sourceObjectIds.size());
+	QTableWidgetItem *itemID, *itemName;
+	for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
+		itemID = new QTableWidgetItem();
+		itemName = new QTableWidgetItem();
+
+		itemID->setText(QString::number(od.m_sourceObjectIds[i].first));
+		itemName->setText(QString::fromStdString(od.m_sourceObjectIds[i].second));
+
+		tw.setItem(i,0,itemID);
+		tw.setItem(i,1,itemName);
+	}
+
+	tw.setEnabled(od.m_isActive);
+}

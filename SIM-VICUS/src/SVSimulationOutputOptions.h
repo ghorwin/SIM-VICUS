@@ -33,6 +33,7 @@
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_OutputDefinition.h>
+#include <NANDRAD_Project.h>
 
 #include "SVSimulationOutputTableModel.h"
 
@@ -94,24 +95,35 @@ private slots:
 
 	void on_tableViewOutputList_doubleClicked(const QModelIndex &index);
 
+	void on_tableViewOutputList_clicked(const QModelIndex &index);
+
 private:
 	Ui::SVSimulationOutputOptions					*m_ui;
 
 	/*! Pointer to VICUS Outputs */
 	VICUS::Outputs									*m_outputs;
 
-	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
-
-	std::map<std::string, NANDRAD::OutputDefinition>	m_outputDefinitionsNandrad;
-
 	/*! Vector with all parsed output definitions */
 	std::vector<OutputDefinition>					m_outputDefinitions;
+
+	/*! NANDRAD file with all data */
+	NANDRAD::Project								m_nandradProject;
 
 	/*! Table model instance for input vars. */
 	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;
 
 	/*! Filter model for output definition */
 	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
+
+	// =======================================================================================
+	// ONLY NEEDED FOR NANDRAD IS APPLY WHEN DOUBLE CLICKED TO OUTPUT DEFINITION IN TABLE VIEW
+	// =======================================================================================
+
+	/*! Map that holds all the object lists that are needed for nandrad specific outputs */
+	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
+
+	/*! Map that holds all the output definitions that are needed for nandrad specific outputs*/
+	std::map<std::string, NANDRAD::OutputDefinition>	m_outputDefinitionsNandrad;
 };
 
 #endif // SVSimulationOutputOptionsH
