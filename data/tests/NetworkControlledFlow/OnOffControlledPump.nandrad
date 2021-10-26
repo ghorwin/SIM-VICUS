@@ -69,6 +69,12 @@
 				</ControlElements>
 
 				<Elements>
+				
+					<!-- 
+					The network looks like this
+					constant pump -> pipe 						  -> constant pump
+								  -> OnOff pump -> Heat exchanger ->
+					-->
 
 					<HydraulicNetworkElement id="1" inletNodeId="1" outletNodeId="2" componentId="1" displayName="constant pump"/>
 					
