@@ -68,7 +68,7 @@ public:
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
-		P_HeatLossThreshold,				// Keyword: HeatLossThreshold				[W]		'Threshold value of heat loss'
+		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
 		NUM_P
 	};
 
