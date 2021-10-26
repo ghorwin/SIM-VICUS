@@ -33,8 +33,8 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 						return QVariant();
 					QString idString;
 					for (unsigned int i=0; i<var.m_sourceObjectIds.size()-1; ++i)
-						idString += QString::number(var.m_sourceObjectIds[i]) + ",";
-					idString += QString::number(var.m_sourceObjectIds[var.m_sourceObjectIds.size()-1]);
+						idString += QString::number(var.m_sourceObjectIds[i].first) + ",";
+					idString += QString::number(var.m_sourceObjectIds[var.m_sourceObjectIds.size()-1].first);
 					return idString;
 				} break;
 				case 4 : { // vectorIds

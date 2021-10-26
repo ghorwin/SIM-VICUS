@@ -52,7 +52,7 @@ struct OutputDefinition {
 	/*! Vector of all Vector indexes/ids */
 	std::vector<unsigned int>	m_vectorIds;
 	/*! Vector of all Vector Source object id(s) */
-	std::vector<unsigned int>	m_sourceObjectIds;
+	std::vector<std::pair<unsigned int, std::string>>	m_sourceObjectIds;
 	/*! Pointer to output grid */
 
 
