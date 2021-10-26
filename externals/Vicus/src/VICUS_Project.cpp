@@ -666,56 +666,15 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 									 IBKMK::Vector3D &center)
 {
 
-	// store selected surfaces
-	if ( surfaces.empty() && subsurfaces.empty())
-		return IBKMK::Vector3D ( 0,0,0 );
-
-	double maxX = std::numeric_limits<double>::lowest();
-	double maxY = std::numeric_limits<double>::lowest();
-	double maxZ = std::numeric_limits<double>::lowest();
-	double minX = std::numeric_limits<double>::max();
-	double minY = std::numeric_limits<double>::max();
-	double minZ = std::numeric_limits<double>::max();
-	for (const VICUS::Surface *s : surfaces ) {
-		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
-			( v.m_x > maxX ) ? maxX = v.m_x : 0;
-			( v.m_y > maxY ) ? maxY = v.m_y : 0;
-			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
-
-			( v.m_x < minX ) ? minX = v.m_x : 0;
-			( v.m_y < minY ) ? minY = v.m_y : 0;
-			( v.m_z < minZ ) ? minZ = v.m_z : 0;
-		}
-	}
-	for (const VICUS::SubSurface *sub : subsurfaces ) {
-		const VICUS::Surface *s = dynamic_cast<const VICUS::Surface *>(sub->m_parent);
-		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
-			if (&(s->subSurfaces()[i]) == sub) {
-				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {
-					( v.m_x > maxX ) ? maxX = v.m_x : 0;
-					( v.m_y > maxY ) ? maxY = v.m_y : 0;
-					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
-
-					( v.m_x < minX ) ? minX = v.m_x : 0;
-					( v.m_y < minY ) ? minY = v.m_y : 0;
-					( v.m_z < minZ ) ? minZ = v.m_z : 0;
-				}
-			}
-		}
-	}
-
-	double dX = maxX - minX;
-	double dY = maxY - minY;
-	double dZ = maxZ - minZ;
-
-	center.set( minX + 0.5*dX, minY + 0.5*dY, minZ + 0.5*dZ);
-
-	// set bounding box;
-	return IBKMK::Vector3D ( dX, dY, dZ );
+	return Project::boundingBox(surfaces, subsurfaces, center,
+								IBKMK::Vector3D (0,0,0),
+								IBKMK::Vector3D (1,0,0),
+								IBKMK::Vector3D (0,1,0),
+								IBKMK::Vector3D (0,0,1));
 }
 
 
-IBKMK::Vector3D boundingBox(std::vector<const VICUS::Surface*> &surfaces,
+IBKMK::Vector3D Project::boundingBox(std::vector<const VICUS::Surface*> &surfaces,
 							std::vector<const VICUS::SubSurface*> &subsurfaces,
 							IBKMK::Vector3D &center,
 							const IBKMK::Vector3D &offset,
