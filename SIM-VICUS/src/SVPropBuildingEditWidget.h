@@ -135,6 +135,10 @@ private slots:
 	void on_comboBoxComponentSelection_currentIndexChanged(int);
 
 
+	// *** Boundary condition page ***
+
+	void on_pushButtonSelectBoundaryConditions_clicked();
+
 	// *** Zone template page ***
 
 	void on_pushButtonAssignZoneTemplate_clicked();
@@ -176,6 +180,8 @@ private:
 	const VICUS::SubSurfaceComponent * currentlySelectedSubSurfaceComponent() const;
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
 	const VICUS::ZoneTemplate * currentlySelectedZoneTemplate() const;
+	/*! Returns a pointer to the currently selected boundary condition in the boundary condition table. */
+	const VICUS::BoundaryCondition * currentlySelectedBoundaryCondition() const ;
 
 	/*! Updates widget to current project state. */
 	void updateUi();
