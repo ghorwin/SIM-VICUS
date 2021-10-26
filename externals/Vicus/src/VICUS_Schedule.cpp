@@ -443,7 +443,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 							//create a new daily cycle
 							if(!valuesAdded){
 								NANDRAD::DailyCycle newDcNandrad;
-								newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+								newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Constant;
 								newDcNandrad.m_timePoints = dc.m_timePoints;
 								newDcNandrad.m_values.m_values[varName] = dc.m_values;
 								schedNandrad.m_dailyCycles.push_back(newDcNandrad);
@@ -463,7 +463,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 
 						//create daily cyle
 						NANDRAD::DailyCycle newDcNandrad;
-						newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Linear;
+						newDcNandrad.m_interpolation = m_useLinearInterpolation ? NANDRAD::DailyCycle::IT_Linear : NANDRAD::DailyCycle::IT_Constant;
 						newDcNandrad.m_timePoints = dc.m_timePoints;
 						newDcNandrad.m_values.m_values[varName] = dc.m_values;
 						//add daily cycle to schedule
