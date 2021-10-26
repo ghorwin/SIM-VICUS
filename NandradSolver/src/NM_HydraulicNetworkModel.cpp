@@ -472,8 +472,18 @@ int HydraulicNetworkModel::update() {
 	return 0; // signal success
 }
 
+int HydraulicNetworkModel::setTime(double t) {
 
-void HydraulicNetworkModel::stepCompleted(double /*t*/) {
+	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
+		fe->setTime(t);
+	return 0;
+}
+
+
+void HydraulicNetworkModel::stepCompleted(double t) {
+
+	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
+		fe->stepCompleted(t);
 	m_p->storeSolution();
 }
 

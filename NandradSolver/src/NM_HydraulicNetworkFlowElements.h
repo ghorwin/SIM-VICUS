@@ -247,8 +247,7 @@ protected:
 
 
 /*! Pump model with fixed/scheduled constant pressure head */
-class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement,
-							  public HNAbstractPowerLimitedPumpModel { // NO KEYWORDS
+class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement, public HNAbstractPowerLimitedPumpModel { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
@@ -261,10 +260,11 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
-	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
-	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+	/*! We update our nonlinear heat flux dependent control signal here. Thus, we avoid CVODE's Newton method to iterate over
+		mass flux dependent heat fluxes. */
+	virtual void setTime(double t) override;
 
-	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+	unsigned int										m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 	/*! Element's ID, needed to formulate input references. */

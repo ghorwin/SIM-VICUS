@@ -720,10 +720,12 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 	++resultValueRefIt;
 }
 
-void HNConstantPressurePump::updateResults(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/) {
-	// This function implements the hysteresis behaviour of the OnOff-controlled pump:
-	// if heat loss of next element is below 0.9*threshold: we switch off, if it is above 1.1*threshold: we switch on, in any other case: we keep current state
-	// Note: if there is no controller or an invalid controlled property, the pump will never be turned off, we dont need to handle that case
+
+void HNConstantPressurePump::setTime(double /*t*/)
+{
+	//	// This function implements the hysteresis behaviour of the OnOff-controlled pump:
+	//	// if heat loss of next element is below 0.9*threshold: we switch off, if it is above 1.1*threshold: we switch on, in any other case: we keep current state
+	//	// Note: if there is no controller or an invalid controlled property, the pump will never be turned off, we dont need to handle that case
 	if (m_controller != nullptr) {
 		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
 			const double & heatLossThreshold =
