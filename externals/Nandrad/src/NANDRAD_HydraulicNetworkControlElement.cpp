@@ -61,7 +61,7 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			} break;
 
 			case CP_PumpOperation : {
-					m_para[P_HeatLossThreshold].checkedValue("HeatLossThreshold", "W", "W",
+					m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold", "W", "W",
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
@@ -87,7 +87,8 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			} break;
 
 			case CT_OnOffController: {
-				m_para[P_HeatLossThreshold].checkedValue("HeatLossThreshold", "W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold",
+																"W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
 			case NUM_CT:

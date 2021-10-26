@@ -219,6 +219,7 @@ private:
 
 
 
+
 class HNAbstractPowerLimitedPumpModel {
 public:
 	HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
@@ -260,21 +261,22 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 	/*! Element's ID, needed to formulate input references. */
-	unsigned int					m_id;
+	unsigned int										m_id;
 	/*! Value reference to pressure head [Pa] */
-	const double					*m_pressureHeadRef = nullptr;
-
-
-	// TODO Hauke: Documentation
-
-	const NANDRAD::HydraulicNetworkControlElement		*m_controller = nullptr;
-
-
-	const double							*m_followingElementHeatLossRef = nullptr;
+	const double										* m_pressureHeadRef = nullptr;
+	/*! Controller for pump (used for on/off controlling) */
+	const NANDRAD::HydraulicNetworkControlElement		* m_controller = nullptr;
+	/*! Reference to heat loss of following element (used for on/off controlling) */
+	const double										* m_followingElementHeatLossRef = nullptr;
+	/*! Determines wether pump is currently in operation (used for on/off controlling) */
+	bool												m_pumpIsOn = true;
 
 }; // HNConstantPressurePump
 

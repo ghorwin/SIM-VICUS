@@ -126,7 +126,7 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 			m_ui->lineEditSchedule->setEnabled(false);
 			m_ui->toolButtonSchedule->setEnabled(false);
 			m_ui->groupBoxMaximumOutput->setEnabled(false);
-			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_HeatLossThreshold].value);
+			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold].value);
 			break;
 		}
 		case VICUS::NetworkController::CP_ThermostatValue:
@@ -202,7 +202,7 @@ void SVDBNetworkControllerEditWidget::on_lineEditSetpoint_editingFinished()
 
 		case VICUS::NetworkController::CP_PumpOperation:{
 			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
-											   VICUS::NetworkController::P_HeatLossThreshold,
+											   VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold,
 											   m_ui->lineEditSetpoint->value());
 		} break;
 

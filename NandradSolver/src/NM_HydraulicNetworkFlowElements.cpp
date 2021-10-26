@@ -662,19 +662,17 @@ HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::H
 
 double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	double pressureHead = *m_pressureHeadRef;
-	// TODO Anne + Hauke: check treatment of pump off-mode
-	// TODO Hauke: add small test case as preparation
-	if (m_controller != nullptr) {
-		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation &&
-			*m_followingElementHeatLossRef < m_controller->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossThreshold].value)
-			// inactive pump should cause a large pressure drop
-			return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
+	// if pump is turned off, it should cause a large pressure drop
+	if (!m_pumpIsOn) {
+		return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
 	}
-	// if no controller or invalid controlled property: normal pressure head
-	double maxPressureHead = maximumPressureHead(mdot);
-	if (pressureHead > maxPressureHead)
-		pressureHead = maxPressureHead;
-	return p_inlet - p_outlet + pressureHead;
+	// if pump is on (or no controller is used): we apply the normal pressure head
+	else {
+		double maxPressureHead = maximumPressureHead(mdot);
+		if (pressureHead > maxPressureHead)
+			pressureHead = maxPressureHead;
+		return p_inlet - p_outlet + pressureHead;
+	}
 }
 
 
@@ -720,6 +718,22 @@ void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::cons
 		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
 	}
 	++resultValueRefIt;
+}
+
+void HNConstantPressurePump::updateResults(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/) {
+	// This function implements the hysteresis behaviour of the OnOff-controlled pump:
+	// if heat loss of next element is below 0.9*threshold: we switch off, if it is above 1.1*threshold: we switch on, in any other case: we keep current state
+	// Note: if there is no controller or an invalid controlled property, the pump will never be turned off, we dont need to handle that case
+	if (m_controller != nullptr) {
+		if (m_controller->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
+			const double & heatLossThreshold =
+					m_controller->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossOfFollowingElementThreshold].value;
+			if (*m_followingElementHeatLossRef < 0.9 * heatLossThreshold)
+				m_pumpIsOn = false;
+			else if (*m_followingElementHeatLossRef > 1.1 * heatLossThreshold)
+				m_pumpIsOn = true;
+		}
+	}
 }
 
 
