@@ -471,6 +471,7 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 		// special handling since there is no object list data structure in
 		if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
 			 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
+			m_simulationOutputOptions->generateOutputs(p.m_objectLists);
 			p.m_objectLists = m_simulationOutputOptions->objectLists();
 			p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
 		}
@@ -504,7 +505,7 @@ void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int i
 
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
-	if (startSimulation(true) );
+	if (startSimulation(true) )
 		m_simulationOutputOptions->generateOutputTable();
 }
 
