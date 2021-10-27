@@ -573,15 +573,44 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 	m_outputDefinitions[sourceIndex.row()].m_isActive = !outputDefinitionState;
 	m_outputTableModel->updateOutputData(sourceIndex.row());
+
+	if(!outputDefinitionState) {
+		QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+		QTableWidgetItem *itemID, *itemName;
+		for (unsigned int i=0; i<m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds.size(); ++i) {
+			SourceObject &so = m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i];
+
+			QTableWidgetItem *itemID, *itemName;
+			so.m_isActive = false;
+			itemID = new QTableWidgetItem();
+			itemName = new QTableWidgetItem();
+
+			itemID->setText(QString::number(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_id));
+			itemName->setText(QString::fromStdString(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_displayName));
+
+			tw.setItem(i,0,itemID);
+			tw.setItem(i,1,itemName);
+
+			QFont f(m_font);
+			f.setItalic(true);
+
+			itemID->setFont(f);
+			itemName->setFont(f);
+
+			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+
+			itemID->setData(Qt::UserRole, i);
+			itemName->setData(Qt::UserRole, i);
+		}
+	}
 	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
 	// we also have to generate an output in the project
 	// we need an hourly output grid, look if we have already one defined (should be!)
-
-	std::vector<std::string> outputNameList;
-	IBK::explode(m_outputDefinitions[(int)sourceIndex.row()].m_name.toStdString(), outputNameList, ".", IBK::EF_NoFlags);
-
 	m_outputTableModel->updateOutputData(sourceIndex.row());
+
+
 
 }
 
