@@ -126,6 +126,13 @@
               <item>
                <widget class="QTableWidget" name="tableWidgetSourceObjectIds"/>
               </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonAllSources">
+                <property name="text">
+                 <string>select all sources</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </widget>
