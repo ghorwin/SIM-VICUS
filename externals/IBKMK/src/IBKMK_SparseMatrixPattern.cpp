@@ -40,7 +40,7 @@
 
 #include <IBK_Exception.h>
 #include <IBK_FormatString.h>
-#include <IBK_messages.h>
+#include <IBK_assert.h>
 
 
 namespace IBKMK {
@@ -208,9 +208,17 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 	// generate index of first chunk in row i
 	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
 	unsigned int colIndex = 0;
-	for (uint64_t hash = chunksPerRow*i; hash<chunksPerRow*(i+1); ++hash) {
-		std::map<uint64_t, unsigned int>::const_iterator it = m_data.find(hash);
-		if (it == m_data.end()) {
+
+	// search for next available hash code in map
+	uint64_t startHash = chunksPerRow*i;
+	uint64_t endHash = chunksPerRow*(i+1);
+	std::map<uint64_t, unsigned int>::const_iterator it = m_data.lower_bound(startHash);
+	// no valid entry left
+	if(it == m_data.end())
+		return;
+
+	for ( uint64_t hash = startHash; hash<endHash; ++hash) {
+		if (hash != it->first) {
 			colIndex += 32; // skip all bits in this chunk
 			continue; // no bit set in this chunk
 		}
@@ -224,6 +232,11 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 			mask <<= 1;
 			++colIndex;
 		}
+		// search for next valid hash
+		++it;
+		// no entry left
+		if(it == m_data.end() || it->first >= endHash)
+			break;
 	}
 #endif // STANDARD_IMPLEMENTATION
 }
