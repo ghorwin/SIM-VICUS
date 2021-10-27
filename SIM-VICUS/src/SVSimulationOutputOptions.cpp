@@ -437,6 +437,8 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 		NANDRAD::ObjectList ol;
 		ol.m_name = od.m_type.toStdString() + "[";
 		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
+			if(!od.m_sourceObjectIds[i].m_isActive)
+				continue;
 			ol.m_name += QString::number(od.m_sourceObjectIds[i].m_id).toStdString();
 			if (i<od.m_sourceObjectIds.size()-1)
 				ol.m_name += ",";
