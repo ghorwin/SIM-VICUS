@@ -561,6 +561,7 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 }
 
 void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
+	m_ui->lineEditName->clear();
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(0);
 }
@@ -703,6 +704,7 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 }
 
 void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
+	m_ui->lineEditType->clear();
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
 }
