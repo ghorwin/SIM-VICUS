@@ -40,7 +40,6 @@
 
 #include <IBK_Exception.h>
 #include <IBK_FormatString.h>
-#include <IBK_assert.h>
 
 
 namespace IBKMK {
