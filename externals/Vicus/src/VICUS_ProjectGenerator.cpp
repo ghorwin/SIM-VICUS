@@ -1325,7 +1325,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
 				// check if both areas are approximately the same
 
-#define ABS_TEST;
+#define ABS_TEST
 #if defined (ABS_TEST)
 				if (std::fabs(area - areaB) > SAME_DISTANCE_PARAMETER_ABSTOL) {
 #else
