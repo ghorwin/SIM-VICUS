@@ -139,7 +139,14 @@
               <item>
                <widget class="QPushButton" name="pushButtonAllSources">
                 <property name="text">
-                 <string>select all sources</string>
+                 <string>select all</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButtonAllSourcesDeselected">
+                <property name="text">
+                 <string>deselect all</string>
                 </property>
                </widget>
               </item>
