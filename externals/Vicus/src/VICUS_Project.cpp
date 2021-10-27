@@ -805,6 +805,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			NANDRAD::OutputDefinition od;
 			od.m_gridName = refName;
 			od.m_quantity = "IdealHeatingLoad";
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
 			od.m_objectListName = objectListAllZones;
 			p.m_outputs.m_definitions.push_back(od);
 		}
@@ -813,6 +814,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			NANDRAD::OutputDefinition od;
 			od.m_gridName = refName;
 			od.m_quantity = "IdealCoolingLoad";
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
 			od.m_objectListName = objectListAllZones;
 			p.m_outputs.m_definitions.push_back(od);
 		}
@@ -849,6 +851,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			NANDRAD::OutputDefinition od;
 			od.m_gridName = refName;
 			od.m_quantity = "SWRadDirectNormal";
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
 			od.m_objectListName = olName;
 			p.m_outputs.m_definitions.push_back(od);
 		}
@@ -857,6 +860,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			NANDRAD::OutputDefinition od;
 			od.m_gridName = refName;
 			od.m_quantity = "SWRadDiffuseHorizontal";
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
 			od.m_objectListName = olName;
 			p.m_outputs.m_definitions.push_back(od);
 		}

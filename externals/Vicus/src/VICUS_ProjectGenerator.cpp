@@ -1080,12 +1080,12 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	VICUS::Schedule combinedSchedule;
 	if(ventiType != V_Infiltration){
 		const Schedule * ventSched = m_scheduleDB[ventilation->m_idSchedule];
-		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].value);
+		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].get_value("1/h"));
 		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
-			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].value;
+			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].get_value("1/h");
 			if(infiltration->m_airChangeType == Infiltration::AC_n50)
 				infVal *= infiltration->m_para[Infiltration::P_ShieldingCoefficient].value;
-			combinedSchedule.add(infVal);
+			combinedSchedule = combinedSchedule.add(infVal);
 		}
 		std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
 											NANDRAD::NaturalVentilationModel::P_VentilationRate) + "Schedule [1/h]";
