@@ -556,7 +556,7 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 	m_ui->tableViewOutputList->setEnabled(!defaultToggled);
 }
 
-void SVSimulationOutputOptions::on_lineEdit_textEdited(const QString &filterKey) {
+void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(0);
 }
@@ -586,6 +586,8 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
 
+	if(selected.empty())
+		return;
 
 	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
 	tw.clearContents();
@@ -593,6 +595,7 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 	QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(selected.indexes()[0]);
 
 	const OutputDefinition &od = m_outputDefinitions[sourceIndex.row()];
+	m_ui->labelSourceObjects->setText("Select " + od.m_type + "s");
 
 	tw.setRowCount(od.m_sourceObjectIds.size());
 	QTableWidgetItem *itemID, *itemName;
@@ -660,4 +663,9 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 	f.setBold(so.m_isActive);
 	itemID->setFont(f);
 	itemName->setFont(f);
+}
+
+void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
+	m_outputTableProxyModel->setFilterWildcard(filterKey);
+	m_outputTableProxyModel->setFilterKeyColumn(1);
 }

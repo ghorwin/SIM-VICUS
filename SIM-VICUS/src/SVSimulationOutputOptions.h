@@ -103,7 +103,7 @@ private slots:
 
 	void on_radioButtonDefault_toggled(bool defaultToggled);
 
-	void on_lineEdit_textEdited(const QString &filterKey);
+	void on_lineEditType_textEdited(const QString &filterKey);
 
 	void on_tableViewOutputList_doubleClicked(const QModelIndex &index);
 
@@ -112,6 +112,8 @@ private slots:
 	void on_pushButtonAllSources_clicked();
 
 	void on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item);
+
+	void on_lineEditName_textEdited(const QString &arg1);
 
 private:
 	Ui::SVSimulationOutputOptions					*m_ui;
