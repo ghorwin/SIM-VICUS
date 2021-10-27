@@ -395,6 +395,7 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 		if(!od.m_isActive)
 			continue;
 
+
 		std::string refName;
 
 		// ==============================================
@@ -574,36 +575,36 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 	m_outputDefinitions[sourceIndex.row()].m_isActive = !outputDefinitionState;
 	m_outputTableModel->updateOutputData(sourceIndex.row());
 
-	if(!outputDefinitionState) {
-		QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+
+	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+	QTableWidgetItem *itemID, *itemName;
+	for (unsigned int i=0; i<m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds.size(); ++i) {
+		SourceObject &so = m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i];
+
 		QTableWidgetItem *itemID, *itemName;
-		for (unsigned int i=0; i<m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds.size(); ++i) {
-			SourceObject &so = m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i];
+		so.m_isActive = !outputDefinitionState;
+		itemID = new QTableWidgetItem();
+		itemName = new QTableWidgetItem();
 
-			QTableWidgetItem *itemID, *itemName;
-			so.m_isActive = false;
-			itemID = new QTableWidgetItem();
-			itemName = new QTableWidgetItem();
+		itemID->setText(QString::number(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_id));
+		itemName->setText(QString::fromStdString(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_displayName));
 
-			itemID->setText(QString::number(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_id));
-			itemName->setText(QString::fromStdString(m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i].m_displayName));
+		tw.setItem(i,0,itemID);
+		tw.setItem(i,1,itemName);
 
-			tw.setItem(i,0,itemID);
-			tw.setItem(i,1,itemName);
+		QFont f(m_font);
+		f.setItalic(true);
 
-			QFont f(m_font);
-			f.setItalic(true);
+		itemID->setFont(f);
+		itemName->setFont(f);
 
-			itemID->setFont(f);
-			itemName->setFont(f);
+		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
 
-			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-
-			itemID->setData(Qt::UserRole, i);
-			itemName->setData(Qt::UserRole, i);
-		}
+		itemID->setData(Qt::UserRole, i);
+		itemName->setData(Qt::UserRole, i);
 	}
+
 	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
 	// we also have to generate an output in the project
@@ -699,4 +700,22 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
+}
+
+void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
+	OutputDefinition *od = const_cast<OutputDefinition*>(m_activeOutputDefinition);
+	for (unsigned int i=0; i<od->m_sourceObjectIds.size(); ++i) {
+
+		od->m_sourceObjectIds[i].m_isActive = false;
+
+		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
+		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
+
+		QFont f(m_font);
+		f.setItalic(!od->m_sourceObjectIds[i].m_isActive);
+		f.setBold(od->m_sourceObjectIds[i].m_isActive);
+		itemID->setFont(f);
+		itemName->setFont(f);
+
+	}
 }

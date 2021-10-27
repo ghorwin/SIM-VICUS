@@ -115,6 +115,8 @@ private slots:
 
 	void on_lineEditName_textEdited(const QString &arg1);
 
+	void on_pushButtonAllSourcesDeselected_clicked();
+
 private:
 	Ui::SVSimulationOutputOptions					*m_ui;
 
