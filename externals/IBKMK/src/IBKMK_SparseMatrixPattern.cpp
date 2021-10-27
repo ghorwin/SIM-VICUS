@@ -132,7 +132,7 @@ void SparseMatrixPattern::set(unsigned int i, unsigned int j) {
 			FUNC_ID);
 	}
 #ifdef STANDARD_IMPLEMENTATION
-	uint64_t hash = i*m_n + j;
+	unsigned int hash = i*m_n + j;
 	m_data.insert(hash);
 #else // STANDARD_IMPLEMENTATION
 	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
