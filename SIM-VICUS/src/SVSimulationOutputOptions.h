@@ -117,6 +117,8 @@ private slots:
 
 	void on_pushButtonAllSourcesDeselected_clicked();
 
+	void on_pushButton_clicked();
+
 private:
 	Ui::SVSimulationOutputOptions					*m_ui;
 

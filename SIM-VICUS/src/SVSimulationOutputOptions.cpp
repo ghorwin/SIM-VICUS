@@ -25,6 +25,7 @@
 
 #include "SVSimulationOutputOptions.h"
 #include "ui_SVSimulationOutputOptions.h"
+#include "SVSimulationStartNandrad.h"
 
 #include <VICUS_Outputs.h>
 #include <VICUS_KeywordList.h>
@@ -722,4 +723,11 @@ void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
 		itemName->setFont(f);
 
 	}
+}
+
+void SVSimulationOutputOptions::on_pushButton_clicked(){
+	if (dynamic_cast<SVSimulationStartNandrad*>(parent())->startSimulation(true) )
+		generateOutputTable();
+
+	return;
 }
