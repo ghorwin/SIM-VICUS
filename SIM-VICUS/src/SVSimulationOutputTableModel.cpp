@@ -12,7 +12,7 @@ int SVSimulationOutputTableModel::rowCount(const QModelIndex & /*parent*/) const
 
 
 int SVSimulationOutputTableModel::columnCount(const QModelIndex & /*parent*/) const {
-	return 5;
+	return 4;
 }
 
 QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role) const {
@@ -22,30 +22,14 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 	switch (role) {
 		case Qt::DisplayRole :
 			switch (index.column()) {
-				case 0 : // name
+				case 0 : // type
+					return var.m_type;
+				case 1 : // name
 					return var.m_name;
-				case 1 : // unit
+				case 2 : // unit
 					return QString::fromStdString(var.m_unit.name());
-				case 2 : // description
+				case 3 : // description
 					return var.m_description;
-				case 3 : { // source object ids
-					if(var.m_sourceObjectIds.empty())
-						return QVariant();
-					QString idString;
-					for (unsigned int i=0; i<var.m_sourceObjectIds.size()-1; ++i)
-						idString += QString::number(var.m_sourceObjectIds[i].first) + ",";
-					idString += QString::number(var.m_sourceObjectIds[var.m_sourceObjectIds.size()-1].first);
-					return idString;
-				} break;
-				case 4 : { // vectorIds
-					if(var.m_vectorIds.empty())
-						return QVariant();
-					QString idString;
-					for (unsigned int i=0; i<var.m_vectorIds.size()-1; ++i)
-						idString += QString::number(var.m_vectorIds[i]) + ",";
-					idString += QString::number(var.m_vectorIds[var.m_vectorIds.size()-1]);
-					return idString;
-				} break;
 			}
 		break;
 
@@ -66,7 +50,7 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 		case Qt::ForegroundRole :
 			// vars with INVALID valueRef -> grey italic
 			if (!var.m_isActive)
-				return QColor(Qt::gray);
+				// return QColor(Qt::gray);
 		break;
 	}
 	return QVariant();
@@ -75,11 +59,10 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 
 QVariant SVSimulationOutputTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	static QStringList headers = QStringList()
-		<< tr("Output Name")
+		<< tr("Type")
+		<< tr("Name")
 		<< tr("Unit")
-		<< tr("Description")
-		<< tr("Source object id(s)")
-		<< tr("Vector indexes/ids");
+		<< tr("Description");
 
 	if (orientation == Qt::Vertical)
 		return QVariant();
@@ -120,6 +103,6 @@ void SVSimulationOutputTableModel::reset() {
 void SVSimulationOutputTableModel::updateOutputData(unsigned int row) {
 	// get index range
 	QModelIndex left = index((int)row, 0);
-	QModelIndex right = index((int)row, 4);
+	QModelIndex right = index((int)row, 3);
 	emit dataChanged(left, right);
 }

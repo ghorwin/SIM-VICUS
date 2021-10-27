@@ -36,6 +36,25 @@
 
 #include <vector>
 
+struct SourceObject {
+
+	SourceObject(){}
+
+	SourceObject(unsigned int id, std::string displayName):
+		m_id(id),
+		m_displayName(displayName)
+	{}
+
+	/*! Indicates whether source object is set active */
+	bool						m_isActive = false;
+
+	/*! ID of Source Object */
+	unsigned int				m_id;
+	/*! Display Name of source object */
+	std::string					m_displayName;
+
+};
+
 struct OutputDefinition {
 
 	OutputDefinition(){}
@@ -43,7 +62,9 @@ struct OutputDefinition {
 	/*! Indicates whether output definition is set active */
 	bool						m_isActive = false;
 
-	/*! name of output */
+	/*! Type of output */
+	QString						m_type;
+	/*! Name of output */
 	QString						m_name;
 	/*! Unit of output definition */
 	IBK::Unit					m_unit;
@@ -52,7 +73,7 @@ struct OutputDefinition {
 	/*! Vector of all Vector indexes/ids */
 	std::vector<unsigned int>	m_vectorIds;
 	/*! Vector of all Vector Source object id(s) */
-	std::vector<std::pair<unsigned int, std::string>>	m_sourceObjectIds;
+	std::vector<SourceObject>	m_sourceObjectIds;
 	/*! Pointer to output grid */
 
 
