@@ -70,6 +70,7 @@ View3D               - View3D program from NIST
 NANDRAD uses a bunch of external/third-party libraries:
 
 * **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
+* **clipper** - implements robust clipping calculation for two-dimensional polygons
 * **DataIO** - utility lib for writing DataIO output containers (needed when profiles across wall constructions are written)
 * **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
 * **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching

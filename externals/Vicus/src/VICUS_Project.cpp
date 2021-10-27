@@ -437,8 +437,9 @@ void Project::updatePointers() {
 		if (ci.m_sideASurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideASurface->m_componentInstance != nullptr) {
-				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
-								 .arg(ci.m_idSideASurface), IBK::MSG_ERROR, FUNC_ID);
+				IBK::IBK_Message(IBK::FormatString("Surface id: %1 name: '%2' is referenced by multiple component instances!")
+								 .arg(ci.m_idSideASurface).arg(ci.m_sideASurface->m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+
 			}
 			else {
 				ci.m_sideASurface->m_componentInstance = &ci;
@@ -449,8 +450,8 @@ void Project::updatePointers() {
 		if (ci.m_sideBSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideBSurface->m_componentInstance != nullptr) {
-				IBK::IBK_Message(IBK::FormatString("Surface %1 is referenced by multiple component instances!")
-								 .arg(ci.m_idSideBSurface), IBK::MSG_ERROR, FUNC_ID);
+				IBK::IBK_Message(IBK::FormatString("Surface id: %1 name: '%2' is referenced by multiple component instances!")
+								 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSurface->m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 			}
 			else {
 				ci.m_sideBSurface->m_componentInstance = &ci;
@@ -472,8 +473,8 @@ void Project::updatePointers() {
 		if (ci.m_sideASubSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideASubSurface->m_subSurfaceComponentInstance != nullptr) {
-				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
-								 .arg(ci.m_idSideASurface), IBK::MSG_ERROR, FUNC_ID);
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface id: %1 name: '%2' is referenced by multiple component instances!")
+								 .arg(ci.m_idSideASurface).arg(ci.m_sideASubSurface->m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 			}
 			else {
 				ci.m_sideASubSurface->m_subSurfaceComponentInstance = &ci;
@@ -484,8 +485,8 @@ void Project::updatePointers() {
 		if (ci.m_sideBSubSurface != nullptr) {
 			// check that no two components reference the same surface
 			if (ci.m_sideBSubSurface->m_subSurfaceComponentInstance != nullptr) {
-				IBK::IBK_Message(IBK::FormatString("Sub-Surface %1 is referenced by multiple component instances!")
-								 .arg(ci.m_idSideBSurface), IBK::MSG_ERROR, FUNC_ID);
+				IBK::IBK_Message(IBK::FormatString("Sub-Surface id: %1 name: '%2' is referenced by multiple component instances!")
+								 .arg(ci.m_idSideBSurface).arg(ci.m_sideBSubSurface->m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 			}
 			else {
 				ci.m_sideBSubSurface->m_subSurfaceComponentInstance = &ci;
