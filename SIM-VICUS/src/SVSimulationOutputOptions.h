@@ -28,6 +28,8 @@
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
+#include <QTableWidgetItem>
+#include <QItemSelectionModel>
 
 #include <IBK_Unit.h>
 
@@ -78,6 +80,16 @@ public:
 	/*! Initialized Output Table with all necessairy headers */
 	void initOutputTable(unsigned int rowCount);
 
+	/*! Populates the */
+	void generateOutputs(const std::vector<NANDRAD::ObjectList> & objectList);
+
+	/*! Searches in m_objectListsNandrad for a corresponding object list
+		if an corresponding object list is found 'objectList'
+		is set to it
+		\returns true if found, else false
+	*/
+	bool findEqualObjectList(NANDRAD::ObjectList &objectList);
+
 	/*! Returns generated object lists. */
 	std::vector<NANDRAD::ObjectList> objectLists();
 
@@ -95,13 +107,20 @@ private slots:
 
 	void on_tableViewOutputList_doubleClicked(const QModelIndex &index);
 
-	void on_tableViewOutputList_clicked(const QModelIndex &index);
+	void on_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+	void on_pushButtonAllSources_clicked();
+
+	void on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item);
 
 private:
 	Ui::SVSimulationOutputOptions					*m_ui;
 
+	/*! QFont */
+	QFont											m_font;
+
 	/*! Pointer to VICUS Outputs */
-	VICUS::Outputs									*m_outputs;
+	VICUS::Outputs									*m_outputs = nullptr;
 
 	/*! Vector with all parsed output definitions */
 	std::vector<OutputDefinition>					m_outputDefinitions;
@@ -115,9 +134,12 @@ private:
 	/*! Filter model for output definition */
 	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
 
-	// =======================================================================================
-	// ONLY NEEDED FOR NANDRAD IS APPLY WHEN DOUBLE CLICKED TO OUTPUT DEFINITION IN TABLE VIEW
-	// =======================================================================================
+	/*! Pointer to active object in List */
+	const OutputDefinition							*m_activeOutputDefinition = nullptr;
+
+	// =========================================================================================
+	//  ONLY NEEDED FOR NANDRAD IS APPLY WHEN DOUBLE CLICKED TO OUTPUT DEFINITION IN TABLE VIEW
+	// =========================================================================================
 
 	/*! Map that holds all the object lists that are needed for nandrad specific outputs */
 	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
