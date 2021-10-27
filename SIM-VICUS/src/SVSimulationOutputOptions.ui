@@ -102,14 +102,24 @@
               <item row="0" column="0">
                <widget class="QLabel" name="label">
                 <property name="text">
-                 <string>Filter name:</string>
+                 <string>Filter type:</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit"/>
+               <widget class="QLineEdit" name="lineEditType"/>
               </item>
-              <item row="1" column="0" colspan="2">
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Filter name:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLineEdit" name="lineEditName"/>
+              </item>
+              <item row="1" column="0" colspan="4">
                <widget class="QTableView" name="tableViewOutputList"/>
               </item>
              </layout>
@@ -117,7 +127,7 @@
             <widget class="QWidget" name="">
              <layout class="QVBoxLayout" name="verticalLayout">
               <item>
-               <widget class="QLabel" name="label_2">
+               <widget class="QLabel" name="labelSourceObjects">
                 <property name="text">
                  <string>Source Object Ids</string>
                 </property>
