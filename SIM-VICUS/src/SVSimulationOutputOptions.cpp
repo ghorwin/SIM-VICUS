@@ -577,6 +577,7 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 
 	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+	tw.setSortingEnabled(false);
 	QTableWidgetItem *itemID, *itemName;
 	for (unsigned int i=0; i<m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds.size(); ++i) {
 		SourceObject &so = m_outputDefinitions[sourceIndex.row()].m_sourceObjectIds[i];
@@ -593,7 +594,9 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 		tw.setItem(i,1,itemName);
 
 		QFont f(m_font);
-		f.setItalic(true);
+		f.setItalic(!so.m_isActive);
+		f.setBold(m_outputDefinitions[sourceIndex.row()].m_isActive && so.m_isActive);
+
 
 		itemID->setFont(f);
 		itemName->setFont(f);
@@ -604,6 +607,7 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 		itemID->setData(Qt::UserRole, i);
 		itemName->setData(Qt::UserRole, i);
 	}
+	tw.setSortingEnabled(true);
 
 	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
