@@ -43,6 +43,8 @@
 #include <map>
 #include <vector>
 
+#include <cstdint>
+
 namespace IBKMK {
 
 /*! Encodes and decodes an 2D sparse matrix pattern
@@ -145,7 +147,7 @@ public:
 private:
 	unsigned int			m_n;
 #ifdef STANDARD_IMPLEMENTATION
-	std::set<unsigned int>	m_data;
+	std::set<unsigned int>				m_data;
 #else // STANDARD_IMPLEMENTATION
 	std::map<uint64_t, unsigned int>	m_data;
 #endif // STANDARD_IMPLEMENTATION

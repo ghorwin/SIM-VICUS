@@ -132,7 +132,7 @@ void SparseMatrixPattern::set(unsigned int i, unsigned int j) {
 			FUNC_ID);
 	}
 #ifdef STANDARD_IMPLEMENTATION
-	unsigned int hash = i*m_n + j;
+	uint64_t hash = i*m_n + j;
 	m_data.insert(hash);
 #else // STANDARD_IMPLEMENTATION
 	uint64_t chunksPerRow = m_n/32 + ((m_n % 32) != 0 ? 1 : 0);
@@ -191,6 +191,16 @@ void SparseMatrixPattern::indexesPerRow(unsigned int i, std::vector<unsigned int
 			FUNC_ID);
 	}
 #ifdef STANDARD_IMPLEMENTATION
+	columnIndexes.clear(); // should be a no-op if vector is empty
+
+	// generate index of first chunk in row i
+	unsigned int colIndex = 0;
+	for (unsigned int hash = m_n*i; hash<m_n*(i+1); ++hash, ++colIndex) {
+		std::set<unsigned int>::const_iterator it = m_data.find(hash);
+		if (it != m_data.end()) {
+			columnIndexes.push_back(colIndex);
+		}
+	}
 #else // STANDARD_IMPLEMENTATION
 
 	columnIndexes.clear(); // should be a no-op if vector is empty
