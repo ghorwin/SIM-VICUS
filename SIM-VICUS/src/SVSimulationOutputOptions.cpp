@@ -436,9 +436,11 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 
 		NANDRAD::ObjectList ol;
 		ol.m_name = od.m_type.toStdString() + "[";
-		for (unsigned int i=0; i<od.m_sourceObjectIds.size()-1; ++i)
-			ol.m_name += QString::number(od.m_sourceObjectIds[i].m_id).toStdString() + ",";
-		ol.m_name += QString::number(od.m_sourceObjectIds[od.m_sourceObjectIds.size()-1].m_id).toStdString();
+		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
+			ol.m_name += QString::number(od.m_sourceObjectIds[i].m_id).toStdString();
+			if (i<od.m_sourceObjectIds.size()-1)
+				ol.m_name += ",";
+		}
 		ol.m_name += "]";
 		if (od.m_type == "Location")
 			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
@@ -454,8 +456,11 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
 		else if (od.m_type == "Schedule")
 			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_SCHEDULE;
-		for (const SourceObject &so : od.m_sourceObjectIds)
+		for (const SourceObject &so : od.m_sourceObjectIds) {
+			if (!so.m_isActive)
+				continue;
 			ol.m_filterID.m_ids.insert(so.m_id);
+		}
 
 		// we have to look if we already have an object list with the same content
 		if (!findEqualObjectList(ol))
@@ -610,6 +615,9 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 
 		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
 		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+
+		itemID->setData(Qt::UserRole, i);
+		itemName->setData(Qt::UserRole, i);
 	}
 
 	tw.setEnabled(od.m_isActive);
@@ -622,7 +630,7 @@ void SVSimulationOutputOptions::on_pushButtonAllSources_clicked() {
 	OutputDefinition *od = const_cast<OutputDefinition*>(m_activeOutputDefinition);
 	for (unsigned int i=0; i<od->m_sourceObjectIds.size(); ++i) {
 
-		od->m_sourceObjectIds[i].m_isActive = !m_activeOutputDefinition->m_sourceObjectIds[i].m_isActive;
+		od->m_sourceObjectIds[i].m_isActive = true;
 
 		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
 		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
@@ -643,7 +651,7 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 	QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(row, 0);
 	QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(row, 1);
 
-	const SourceObject &so = m_activeOutputDefinition->m_sourceObjectIds[row];
+	const SourceObject &so = m_activeOutputDefinition->m_sourceObjectIds[itemID->data(Qt::UserRole).toUInt()];
 
 	const_cast<SourceObject &>(so).m_isActive = !so.m_isActive;
 
