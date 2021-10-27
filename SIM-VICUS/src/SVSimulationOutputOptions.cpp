@@ -724,10 +724,3 @@ void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
 
 	}
 }
-
-void SVSimulationOutputOptions::on_pushButton_clicked(){
-	if (dynamic_cast<SVSimulationStartNandrad*>(parent())->startSimulation(true) )
-		generateOutputTable();
-
-	return;
-}

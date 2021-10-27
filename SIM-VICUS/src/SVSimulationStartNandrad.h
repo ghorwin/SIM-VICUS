@@ -67,11 +67,6 @@ public:
 	/*! Returns a copy of the locally modified version of the project. */
 	const VICUS::Project & localProject() const { return m_localProject; }
 
-	/*! Starts the simulation, either in test-init mode or regular mode.
-		Returns false if some error occurred during creation of the NANDRAD project.
-	*/
-	bool startSimulation(bool testInit);
-
 private slots:
 	void on_pushButtonClose_clicked();
 
@@ -98,6 +93,11 @@ private:
 	void updateCmdLine();
 	void updateTimeFrameEdits();
 
+
+	/*! Starts the simulation, either in test-init mode or regular mode.
+		Returns false if some error occurred during creation of the NANDRAD project.
+	*/
+	bool startSimulation(bool testInit);
 
 	/*! Generates a NANDRAD project. */
 	bool generateNANDRAD(QString & resultPath);
