@@ -82,6 +82,7 @@ HEADERS += \
 	../../src/NANDRAD_SimulationParameter.h \
 	../../src/NANDRAD_SolarLoadsDistributionModel.h \
 	../../src/NANDRAD_SolverParameter.h \
+	../../src/NANDRAD_ThermalLoadSummationModel.h \
 	../../src/NANDRAD_Thermostat.h \
 	../../src/NANDRAD_Utilities.h \
 	../../src/NANDRAD_WindowDivider.h \
@@ -102,8 +103,6 @@ SOURCES += \
 	../../src/NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/NANDRAD_FMIDescription.cpp \
 	../../src/NANDRAD_FMIVariableDefinition.cpp \
-	../../src/NANDRAD_ThermalLoadSummationModel.cpp \
-	../../src/NANDRAD_ThermalLoadSummationModel.cpp \
 	../../src/NANDRAD_HVACControlModel.cpp \
 	../../src/NANDRAD_HydraulicFluid.cpp \
 	../../src/NANDRAD_HydraulicNetworkComponent.cpp \
@@ -142,6 +141,7 @@ SOURCES += \
 	../../src/NANDRAD_SimulationParameter.cpp \
 	../../src/NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/NANDRAD_SolverParameter.cpp \
+	../../src/NANDRAD_ThermalLoadSummationModel.cpp \
 	../../src/NANDRAD_Thermostat.cpp \
 	../../src/NANDRAD_Utilities.cpp \
 	../../src/NANDRAD_WindowGlazingSystem.cpp \
@@ -154,8 +154,6 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_EmbeddedObjectWindow.cpp \
 	../../src/ncg/ncg_NANDRAD_FMIDescription.cpp \
 	../../src/ncg/ncg_NANDRAD_FMIVariableDefinition.cpp \
-	../../src/ncg/ncg_NANDRAD_ThermalLoadSummationModel.cpp \
-	../../src/ncg/ncg_NANDRAD_ThermalLoadSummationModel.cpp \
 	../../src/ncg/ncg_NANDRAD_HVACControlModel.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
@@ -194,6 +192,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_SimulationParameter.cpp \
 	../../src/ncg/ncg_NANDRAD_SolarLoadsDistributionModel.cpp \
 	../../src/ncg/ncg_NANDRAD_SolverParameter.cpp \
+	../../src/ncg/ncg_NANDRAD_ThermalLoadSummationModel.cpp \
 	../../src/ncg/ncg_NANDRAD_Thermostat.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowDivider.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowFrame.cpp \
@@ -201,7 +200,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_WindowGlazingSystem.cpp \
 	../../src/ncg/ncg_NANDRAD_WindowShading.cpp \
 	../../src/ncg/ncg_NANDRAD_Zone.cpp \
-    ../../src/NANDRAD_Location.cpp
+	../../src/NANDRAD_Location.cpp
 
 
 
