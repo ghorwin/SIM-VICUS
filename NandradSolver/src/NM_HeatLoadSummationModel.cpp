@@ -114,7 +114,7 @@ void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel
 		break;
 		case NANDRAD::ModelInputReference::MRT_ZONE: {
 			// zhone only provides ideal load
-			if(m_zoneCoolingLoad == false)
+			if(m_zoneCoolingLoad == true)
 				quantity = "IdealCoolingLoad";
 			else
 				quantity = "IdealHeatingLoad";
