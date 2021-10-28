@@ -184,9 +184,8 @@ int ThermalLoadSummationModel::update() {
 	for (const double *ref : m_valueRefs) {
 		totalLoad += *ref;
 	}
-	// for network elements and ideal zone cooling invert flux direction
-	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT ||
-		m_zoneCoolingLoad)
+	// for network elements invert flux direction
+	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
 		totalLoad *= -1.0;
 
 	m_results[R_TotalHeatLoad] = totalLoad;
