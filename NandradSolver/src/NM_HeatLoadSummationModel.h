@@ -41,7 +41,7 @@ namespace NANDRAD_MODEL {
 	network elements. HResulting heat load is always interpreted positive in direction of balance space (constrcution, zone or
 	network). Only one type of reference object is allowed (coded by a single object list).
 */
-class HeatLoadSummationModel : public AbstractModel, public AbstractStateDependency {
+class ThermalLoadSummationModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
 	enum Results {
@@ -52,7 +52,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Constructor. */
-	HeatLoadSummationModel(unsigned int id, const std::string &displayName) :
+	ThermalLoadSummationModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}
@@ -129,7 +129,7 @@ private:
 	/*! If true, and if the object list defines 'Zone' as reference type, then the variable
 		'IdealHeatingLoad' is requested, otherwise 'IdealHeatingLoad' is used (the default).
 	*/
-	bool											m_useZoneCoolingLoad = false;
+	bool											m_zoneCoolingLoad = false;
 
 	/*! Vector with input references.
 		For each thermostat model found, this vector contains 2*number of zones input refs, for each zone

@@ -29,17 +29,11 @@
 
 namespace NANDRAD_MODEL {
 
-void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
-									 const std::vector<NANDRAD::ObjectList> & objLists)
-{
-	FUNCID(HeatLoadSummationModel::setup);
+void ThermalLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
+									 const std::vector<NANDRAD::ObjectList> & objLists) {
+	FUNCID(ThermalLoadSummationModel::setup);
 
-	// copy necessary properties
-	if(model.m_useZoneCoolingLoad == "true")
-		m_useZoneCoolingLoad = true;
-	else
-		m_useZoneCoolingLoad = false;
-
+	m_zoneCoolingLoad = model.m_zoneCoolingLoad;
 	// all models require an object list with indication of zones that this model applies to
 	if (model.m_objectList.empty())
 		throw IBK::Exception(IBK::FormatString("Missing 'ObjectList' parameter."), FUNC_ID);
@@ -52,17 +46,23 @@ void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model
 							 .arg(model.m_objectList), FUNC_ID);
 	m_objectList = &(*oblst_it);
 
+	// attribute 'useZoneCoolingLoad is only allowed for zone load summation
+	if(m_zoneCoolingLoad && m_objectList->m_referenceType != NANDRAD::ModelInputReference::MRT_ZONE) {
+		throw IBK::Exception(IBK::FormatString("Attribute 'useZoneCoolingLoad' can only be set for object list reference type 'Zone'.")
+							 , FUNC_ID);
+	}
+
 	// reserve storage memory for results
 	m_results.resize(NUM_R, 0);
 }
 
 
-const NANDRAD::ObjectList & HeatLoadSummationModel::objectList() const{
+const NANDRAD::ObjectList & ThermalLoadSummationModel::objectList() const{
 	return *m_objectList;
 }
 
 
-void HeatLoadSummationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+void ThermalLoadSummationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// during initialization of the object lists, only those zones were added, that are actually parameterized
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
@@ -88,7 +88,7 @@ void HeatLoadSummationModel::resultDescriptions(std::vector<QuantityDescription>
 }
 
 
-const double * HeatLoadSummationModel::resultValueRef(const InputReference & quantity) const {
+const double * ThermalLoadSummationModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	for (unsigned int varIndex = 0; varIndex<NUM_R; ++varIndex) {
@@ -100,7 +100,7 @@ const double * HeatLoadSummationModel::resultValueRef(const InputReference & qua
 }
 
 
-void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void ThermalLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
@@ -114,7 +114,7 @@ void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel
 		break;
 		case NANDRAD::ModelInputReference::MRT_ZONE: {
 			// zhone only provides ideal load
-			if(m_useZoneCoolingLoad == false)
+			if(m_zoneCoolingLoad == false)
 				quantity = "IdealCoolingLoad";
 			else
 				quantity = "IdealHeatingLoad";
@@ -143,12 +143,12 @@ void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel
 }
 
 
-void HeatLoadSummationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+void ThermalLoadSummationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	inputRefs = m_inputRefs;
 }
 
 
-void HeatLoadSummationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+void ThermalLoadSummationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												const std::vector<const double *> & resultValueRefs)
 {
 	if (m_objectList->m_filterID.m_ids.empty())
@@ -164,7 +164,7 @@ void HeatLoadSummationModel::setInputValueRefs(const std::vector<QuantityDescrip
 }
 
 
-void HeatLoadSummationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+void ThermalLoadSummationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
 	// our heating loads depend on heating control values, and cooling loads depend on cooling control values
 	for (const double *ref : m_valueRefs) {
@@ -174,7 +174,7 @@ void HeatLoadSummationModel::stateDependencies(std::vector<std::pair<const doubl
 }
 
 
-int HeatLoadSummationModel::update() {
+int ThermalLoadSummationModel::update() {
 	// nothiung to do
 	if(m_valueRefs.empty())
 		return 0;
