@@ -229,7 +229,7 @@ public:
 	/*! Sets the roof geometry.
 		Must only be called in NGM_Roof mode.
 	*/
-	void setRoofGeometry(const RoofInputData & roofGeo, const std::vector<IBKMK::Vector3D> &floorPolygon);
+	void setRoofGeometry(const RoofInputData & roofGeo, const std::vector<IBKMK::Vector3D> &floorPolygon, QWidget *parent);
 
 
 	/*! Renders opaque parts of geometry. */

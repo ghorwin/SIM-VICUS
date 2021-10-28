@@ -57,6 +57,9 @@ public:
 	explicit SVPropVertexListWidget(QWidget *parent = nullptr);
 	~SVPropVertexListWidget();
 
+	/*! Sets up the floor level buttons. Activate if the number of building(s) is greater than 0. */
+	void setupButtons();
+
 	/*! Sets up the widget to be used for creating geometry of a given type.
 		\param newGeometryType A type as declared in NewGeometryObject::NewGeometryMode
 	*/

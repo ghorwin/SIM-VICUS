@@ -171,20 +171,7 @@ private slots:
 	void on_pushButtonAddRoof_clicked();
 	void on_pushButtonAddWindow_clicked();
 
-	// all line edit specific functions
-
-	void on_lineEditX_editingFinished();
-	void on_lineEditY_editingFinished();
-	void on_lineEditZ_editingFinished();
-
-	void on_lineEditX_returnPressed();
-	void on_lineEditY_returnPressed();
-	void on_lineEditZ_returnPressed();
-
-	void on_lineEditX_textChanged(const QString &);
-	void on_lineEditY_textChanged(const QString &);
-	void on_lineEditZ_textChanged(const QString &);
-
+	// all line edit specific function
 
 	void on_lineEditOrientation_returnPressed();
 	void on_lineEditInclination_returnPressed();
@@ -221,6 +208,18 @@ private slots:
 
 	void on_pushButtonFlipNormals_clicked();
 
+
+	void on_lineEditXValue_editingFinished();
+
+	void on_lineEditYValue_editingFinished();
+
+	void on_lineEditZValue_editingFinished();
+
+	void on_lineEditXValue_textChanged(const QString &arg1);
+
+	void on_lineEditYValue_textChanged(const QString &arg1);
+
+	void on_lineEditZValue_textChanged(const QString &arg1);
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
