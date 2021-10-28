@@ -557,7 +557,7 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs] = IBK::Flag("CreateDefaultNetworkOutputs",
 																				  m_ui->checkBoxDefaultNetworkOutputs->isChecked() && defaultToggled );
 
-	m_ui->tableViewOutputList->setEnabled(!defaultToggled);
+	m_ui->widgetCustomOutputs->setEnabled(!defaultToggled);
 }
 
 void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
