@@ -176,7 +176,7 @@
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<HeatLoadSummationModel id="802" useZoneCoolingLoad="true">
+				<HeatLoadSummationModel id="802" zoneCoolingLoad="true">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ObjectList>Zones</ObjectList>
 				</HeatLoadSummationModel>
