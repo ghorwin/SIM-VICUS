@@ -124,15 +124,15 @@ void Models::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ThermalLoadSummationModels") {
+			else if (cName == "HeatLoadSummationModels") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "ThermalLoadSummationModel")
+					if (c2Name != "HeatLoadSummationModel")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					ThermalLoadSummationModel obj;
+					HeatLoadSummationModel obj;
 					obj.readXML(c2);
-					m_ThermalLoadSummationModels.push_back(obj);
+					m_heatLoadSummationModels.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -251,12 +251,12 @@ TiXmlElement * Models::writeXML(TiXmlElement * parent) const {
 	}
 
 
-	if (!m_ThermalLoadSummationModels.empty()) {
-		TiXmlElement * child = new TiXmlElement("ThermalLoadSummationModels");
+	if (!m_heatLoadSummationModels.empty()) {
+		TiXmlElement * child = new TiXmlElement("HeatLoadSummationModels");
 		e->LinkEndChild(child);
 
-		for (std::vector<ThermalLoadSummationModel>::const_iterator it = m_ThermalLoadSummationModels.begin();
-			it != m_ThermalLoadSummationModels.end(); ++it)
+		for (std::vector<HeatLoadSummationModel>::const_iterator it = m_heatLoadSummationModels.begin();
+			it != m_heatLoadSummationModels.end(); ++it)
 		{
 			it->writeXML(child);
 		}

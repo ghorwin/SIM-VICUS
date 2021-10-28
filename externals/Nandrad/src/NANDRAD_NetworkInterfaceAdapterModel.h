@@ -27,7 +27,7 @@
 namespace NANDRAD {
 
 /*! A model that computes return temperature based on given supply temperature and mass flow by removing energy from the fluid.
-	Energy loss is retrieved from ThermalLoadSummationModel.
+	Energy loss is retrieved from HeatLoadSummationModel.
 */
 class NetworkInterfaceAdapterModel {
 public:
@@ -45,7 +45,7 @@ public:
 	/*! The fluid properties. */
 	IBK::Parameter						m_fluidHeatCapacity;						// XML:E
 
-	/*! Reference to ThermalLoadSummationModel required as source for heat load. */
+	/*! Reference to HeatLoadSummationModel required as source for heat load. */
 	unsigned int						m_summationModelId = NANDRAD::INVALID_ID;	// XML:A:required
 };
 

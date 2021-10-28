@@ -63,7 +63,7 @@ const double * NetworkInterfaceAdapterModel::resultValueRef(const InputReference
 
 void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// we need to construct 3 input references
-	// - heat load from ThermalLoadSummationModel
+	// - heat load from HeatLoadSummationModel
 	// - mass flux from schedule
 	// - supply temperature from schedule
 

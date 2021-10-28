@@ -87,7 +87,7 @@
 #include "NM_HydraulicNetworkModel.h"
 #include "NM_ShadingControlModel.h"
 #include "NM_ThermostatModel.h"
-#include "NM_ThermalLoadSummationModel.h"
+#include "NM_HeatLoadSummationModel.h"
 #include "NM_IdealHeatingCoolingModel.h"
 #include "NM_IdealPipeRegisterModel.h"
 #include "NM_IdealSurfaceHeatingCoolingModel.h"
@@ -1406,12 +1406,12 @@ void NandradModel::initModels() {
 	}
 
 	// summation models
-	if (!m_project->m_models.m_ThermalLoadSummationModels.empty()) {
+	if (!m_project->m_models.m_heatLoadSummationModels.empty()) {
 		IBK::IBK_Message(IBK::FormatString("Initializing heat load summation models\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		IBK_MSG_INDENT;
 
-		for (NANDRAD::ThermalLoadSummationModel & m: m_project->m_models.m_ThermalLoadSummationModels) {
-			NANDRAD_MODEL::ThermalLoadSummationModel * mod = new NANDRAD_MODEL::ThermalLoadSummationModel(m.m_id, m.m_displayName);
+		for (NANDRAD::HeatLoadSummationModel & m: m_project->m_models.m_heatLoadSummationModels) {
+			NANDRAD_MODEL::HeatLoadSummationModel * mod = new NANDRAD_MODEL::HeatLoadSummationModel(m.m_id, m.m_displayName);
 			m_modelContainer.push_back(mod); // transfer ownership
 
 			try {

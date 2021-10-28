@@ -19,8 +19,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef NANDRAD_ThermalLoadSummationModelH
-#define NANDRAD_ThermalLoadSummationModelH
+#ifndef NANDRAD_HeatLoadSummationModelH
+#define NANDRAD_HeatLoadSummationModelH
 
 #include <IBK_Parameter.h>
 
@@ -55,7 +55,7 @@ namespace NANDRAD {
 
 	Note: with one model parametrization block you may not sum up *both* IdealHeatingLoad and IdealCoolingLoad.
 */
-class ThermalLoadSummationModel {
+class HeatLoadSummationModel {
 public:
 
 	NANDRAD_READWRITE
@@ -78,4 +78,4 @@ public:
 
 } // namespace NANDRAD
 
-#endif // NANDRAD_ThermalLoadSummationModelH
+#endif // NANDRAD_HeatLoadSummationModelH
