@@ -29,9 +29,9 @@
 
 namespace NANDRAD_MODEL {
 
-void ThermalLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
+void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
 									 const std::vector<NANDRAD::ObjectList> & objLists) {
-	FUNCID(ThermalLoadSummationModel::setup);
+	FUNCID(HeatLoadSummationModel::setup);
 
 	m_zoneCoolingLoad = model.m_zoneCoolingLoad;
 	// all models require an object list with indication of zones that this model applies to
@@ -57,12 +57,12 @@ void ThermalLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & mo
 }
 
 
-const NANDRAD::ObjectList & ThermalLoadSummationModel::objectList() const{
+const NANDRAD::ObjectList & HeatLoadSummationModel::objectList() const{
 	return *m_objectList;
 }
 
 
-void ThermalLoadSummationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
+void HeatLoadSummationModel::resultDescriptions(std::vector<QuantityDescription> & resDesc) const {
 	// during initialization of the object lists, only those zones were added, that are actually parameterized
 	// so we can rely on the existence of zones whose IDs are in our object list and we do not need to search
 	// through all the models
@@ -88,7 +88,7 @@ void ThermalLoadSummationModel::resultDescriptions(std::vector<QuantityDescripti
 }
 
 
-const double * ThermalLoadSummationModel::resultValueRef(const InputReference & quantity) const {
+const double * HeatLoadSummationModel::resultValueRef(const InputReference & quantity) const {
 	const QuantityName & quantityName = quantity.m_name;
 	// determine variable enum index
 	for (unsigned int varIndex = 0; varIndex<NUM_R; ++varIndex) {
@@ -100,7 +100,7 @@ const double * ThermalLoadSummationModel::resultValueRef(const InputReference & 
 }
 
 
-void ThermalLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
@@ -143,12 +143,12 @@ void ThermalLoadSummationModel::initInputReferences(const std::vector<AbstractMo
 }
 
 
-void ThermalLoadSummationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
+void HeatLoadSummationModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	inputRefs = m_inputRefs;
 }
 
 
-void ThermalLoadSummationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
+void HeatLoadSummationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												const std::vector<const double *> & resultValueRefs)
 {
 	if (m_objectList->m_filterID.m_ids.empty())
@@ -164,7 +164,7 @@ void ThermalLoadSummationModel::setInputValueRefs(const std::vector<QuantityDesc
 }
 
 
-void ThermalLoadSummationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
+void HeatLoadSummationModel::stateDependencies(std::vector<std::pair<const double *, const double *> > & resultInputValueReferences) const {
 
 	// our heating loads depend on heating control values, and cooling loads depend on cooling control values
 	for (const double *ref : m_valueRefs) {
@@ -174,7 +174,7 @@ void ThermalLoadSummationModel::stateDependencies(std::vector<std::pair<const do
 }
 
 
-int ThermalLoadSummationModel::update() {
+int HeatLoadSummationModel::update() {
 	// nothiung to do
 	if(m_valueRefs.empty())
 		return 0;
@@ -185,7 +185,8 @@ int ThermalLoadSummationModel::update() {
 		totalLoad += *ref;
 	}
 	// for network elements invert flux direction
-	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT)
+	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT ||
+		m_zoneCoolingLoad)
 		totalLoad *= -1.0;
 
 	m_results[R_TotalHeatLoad] = totalLoad;

@@ -41,7 +41,7 @@ namespace NANDRAD_MODEL {
 	network elements. HResulting heat load is always interpreted positive in direction of balance space (constrcution, zone or
 	network). Only one type of reference object is allowed (coded by a single object list).
 */
-class ThermalLoadSummationModel : public AbstractModel, public AbstractStateDependency {
+class HeatLoadSummationModel : public AbstractModel, public AbstractStateDependency {
 public:
 	/*! Computed results. */
 	enum Results {
@@ -52,7 +52,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS
 
 	/*! Constructor. */
-	ThermalLoadSummationModel(unsigned int id, const std::string &displayName) :
+	HeatLoadSummationModel(unsigned int id, const std::string &displayName) :
 		m_id(id), m_displayName(displayName)
 	{
 	}

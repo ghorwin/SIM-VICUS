@@ -174,17 +174,17 @@
 				</IdealSurfaceHeatingCoolingModel>
 			</IdealSurfaceHeatingCoolingModels>
 
-			<ThermalLoadSummationModels>
+			<HeatLoadSummationModels>
 				<!-- Model for summation of heat load 
 					 Requests 'ConstructionInstance(id...).ActiveLayerHeatLoad' as input ref from all
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<ThermalLoadSummationModel id="801">
+				<HeatLoadSummationModel id="801">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ObjectList>Floors</ObjectList>
-				</ThermalLoadSummationModel>
-			</ThermalLoadSummationModels>
+				</HeatLoadSummationModel>
+			</HeatLoadSummationModels>
 
 			<NetworkInterfaceAdapterModels>
 				<!-- Model for translating heat load into temperature spread inside a hydraulic networl-->

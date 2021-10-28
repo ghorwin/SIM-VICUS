@@ -187,20 +187,20 @@
 				</Thermostat>
 			</Thermostats>
 
-			<ThermalLoadSummationModels>
-				<ThermalLoadSummationModel id="801">
+			<HeatLoadSummationModels>
+				<HeatLoadSummationModel id="801">
 					<!-- Define object list with heaters, whose loads should be summed up -->
 					<ObjectList>IdealHeater</ObjectList>
-				</ThermalLoadSummationModel>
-				<ThermalLoadSummationModel id="802">
+				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="802">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ObjectList>Floors</ObjectList>
-				</ThermalLoadSummationModel>
-				<ThermalLoadSummationModel id="803">
+				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="803">
 					<!-- Define object list with pipes, whose loads should be summed up -->
 					<ObjectList>Surface Heating</ObjectList>
-				</ThermalLoadSummationModel>
-			</ThermalLoadSummationModels>
+				</HeatLoadSummationModel>
+			</HeatLoadSummationModels>
 
 		</Models>
 

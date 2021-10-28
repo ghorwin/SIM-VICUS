@@ -161,26 +161,26 @@
 			</IdealHeatingCoolingModels>
 
 
-			<ThermalLoadSummationModels>
+			<HeatLoadSummationModels>
 				<!-- Model for summation of heating load 
 					 Requests 'Zone(id...).IdealHeatingLoad' as input ref from all
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<ThermalLoadSummationModel id="801">
+				<HeatLoadSummationModel id="801">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ObjectList>Zones</ObjectList>
-				</ThermalLoadSummationModel>
+				</HeatLoadSummationModel>
 				<!-- Model for summation of cooling load 
 					 Requests 'Zone(id...).IdealCoolingLoad' as input ref from all
 					 constructions in ConstructionObjectList 'Floors'
 					 Provides 'Model(id=801).TotalHeatLoad'.
 				-->
-				<ThermalLoadSummationModel id="802" useZoneCoolingLoad="true">
+				<HeatLoadSummationModel id="802" useZoneCoolingLoad="true">
 					<!-- Define object list with constructions, whose loads should be summed up -->
 					<ObjectList>Zones</ObjectList>
-				</ThermalLoadSummationModel>
-			</ThermalLoadSummationModels>
+				</HeatLoadSummationModel>
+			</HeatLoadSummationModels>
 
 		</Models>
 

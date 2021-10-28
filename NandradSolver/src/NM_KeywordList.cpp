@@ -39,7 +39,7 @@ namespace NANDRAD_MODEL {
 		"ConstructionBalanceModel::VectorValuedResults",
 		"ConstructionStatesModel::VectorValuedResults",
 		"ConstructionStatesModel::Results",
-		"ThermalLoadSummationModel::Results",
+		"HeatLoadSummationModel::Results",
 		"IdealHeatingCoolingModel::VectorValuedResults",
 		"IdealPipeRegisterModel::VectorValuedResults",
 		"IdealSurfaceHeatingCoolingModel::VectorValuedResults",
@@ -98,7 +98,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "SolarRadiationFluxA";
 				case 3 : return "SolarRadiationFluxB";
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return "TotalHeatLoad";
@@ -302,7 +302,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "SolarRadiationFluxA";
 				case 3 : return "SolarRadiationFluxB";
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return "TotalHeatLoad";
@@ -507,7 +507,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "Solar radiation flux density into surface A";
 				case 3 : return "Solar radiation flux density into surface B";
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return "Sum of heat load";
@@ -711,7 +711,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "W/m2";
 				case 3 : return "W/m2";
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return "W";
@@ -915,7 +915,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -1119,7 +1119,7 @@ namespace NANDRAD_MODEL {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -1306,7 +1306,7 @@ namespace NANDRAD_MODEL {
 			case 2 : return 1;
 			// ConstructionStatesModel::Results
 			case 3 : return 4;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 : return 1;
 			// IdealHeatingCoolingModel::VectorValuedResults
 			case 5 : return 2;
@@ -1358,7 +1358,7 @@ namespace NANDRAD_MODEL {
 			case 2 : return 0;
 			// ConstructionStatesModel::Results
 			case 3 : return 3;
-			// ThermalLoadSummationModel::Results
+			// HeatLoadSummationModel::Results
 			case 4 : return 0;
 			// IdealHeatingCoolingModel::VectorValuedResults
 			case 5 : return 1;
