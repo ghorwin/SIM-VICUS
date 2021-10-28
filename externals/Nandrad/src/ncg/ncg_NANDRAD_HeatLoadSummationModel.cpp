@@ -32,8 +32,8 @@
 
 namespace NANDRAD {
 
-void HeatLoadSummationModel::readXML(const TiXmlElement * element) {
-	FUNCID(HeatLoadSummationModel::readXML);
+void ThermalLoadSummationModel::readXML(const TiXmlElement * element) {
+	FUNCID(ThermalLoadSummationModel::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -74,23 +74,23 @@ void HeatLoadSummationModel::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'HeatLoadSummationModel' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ThermalLoadSummationModel' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'HeatLoadSummationModel' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ThermalLoadSummationModel' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * HeatLoadSummationModel::writeXML(TiXmlElement * parent) const {
+TiXmlElement * ThermalLoadSummationModel::writeXML(TiXmlElement * parent) const {
 	if (m_id == NANDRAD::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("HeatLoadSummationModel");
+	TiXmlElement * e = new TiXmlElement("ThermalLoadSummationModel");
 	parent->LinkEndChild(e);
 
 	if (m_id != NANDRAD::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
-	if (m_zoneCoolingLoad != HeatLoadSummationModel().m_zoneCoolingLoad)
+	if (m_zoneCoolingLoad != ThermalLoadSummationModel().m_zoneCoolingLoad)
 		e->SetAttribute("zoneCoolingLoad", IBK::val2string<bool>(m_zoneCoolingLoad));
 	if (!m_objectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ObjectList", nullptr, std::string(), m_objectList);

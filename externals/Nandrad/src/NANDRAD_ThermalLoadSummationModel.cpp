@@ -19,14 +19,14 @@
 	GNU General Public License for more details.
 */
 
-#include "NANDRAD_HeatLoadSummationModel.h"
+#include "NANDRAD_ThermalLoadSummationModel.h"
 
 #include "NANDRAD_KeywordList.h"
 
 namespace NANDRAD {
 
-void HeatLoadSummationModel::checkParameters() {
-	FUNCID(HeatLoadSummationModel::checkParameters);
+void ThermalLoadSummationModel::checkParameters() {
+	FUNCID(ThermalLoadSummationModel::checkParameters);
 
 	// m_useZoneCoolingLoad only allows value 'true' or 'false'
 	// all models require an object list with indication of construction that this model applies to
