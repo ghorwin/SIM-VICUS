@@ -155,6 +155,7 @@ SOURCES += \
 	../../src/ncg/ncg_NANDRAD_FMIDescription.cpp \
 	../../src/ncg/ncg_NANDRAD_FMIVariableDefinition.cpp \
 	../../src/ncg/ncg_NANDRAD_ThermalLoadSummationModel.cpp \
+	../../src/ncg/ncg_NANDRAD_ThermalLoadSummationModel.cpp \
 	../../src/ncg/ncg_NANDRAD_HVACControlModel.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicFluid.cpp \
 	../../src/ncg/ncg_NANDRAD_HydraulicNetworkComponent.cpp \
