@@ -19,17 +19,17 @@
 	GNU General Public License for more details.
 */
 
-#include "NM_ThermalLoadSummationModel.h"
+#include "NM_HeatLoadSummationModel.h"
 
 #include <IBK_Exception.h>
 
-#include <NANDRAD_ThermalLoadSummationModel.h>
+#include <NANDRAD_HeatLoadSummationModel.h>
 
 #include "NM_KeywordList.h"
 
 namespace NANDRAD_MODEL {
 
-void ThermalLoadSummationModel::setup(const NANDRAD::ThermalLoadSummationModel & model,
+void ThermalLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
 									 const std::vector<NANDRAD::ObjectList> & objLists) {
 	FUNCID(ThermalLoadSummationModel::setup);
 

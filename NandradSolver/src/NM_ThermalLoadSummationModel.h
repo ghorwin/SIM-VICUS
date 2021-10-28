@@ -29,7 +29,7 @@
 #include <NANDRAD_ObjectList.h>
 
 namespace NANDRAD {
-	class ThermalLoadSummationModel;
+	class HeatLoadSummationModel;
 }
 
 namespace NANDRAD_MODEL {
@@ -62,7 +62,7 @@ public:
 		\param objLists The object list stored in the project file (persistent, remains unmodified so that persistent
 			pointers to object list elements can be stored).
 	*/
-	void setup(const NANDRAD::ThermalLoadSummationModel & model, const std::vector<NANDRAD::ObjectList> & objLists);
+	void setup(const NANDRAD::HeatLoadSummationModel & model, const std::vector<NANDRAD::ObjectList> & objLists);
 
 	/*! Returns object list of all referenced models. */
 	const NANDRAD::ObjectList &objectList() const;

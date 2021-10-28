@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <NANDRAD_ThermalLoadSummationModel.h>
+#include <NANDRAD_HeatLoadSummationModel.h>
 #include <NANDRAD_KeywordList.h>
 
 #include <IBK_messages.h>
