@@ -96,10 +96,15 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return Different;
 
 	//check parameters
-	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
+	for (unsigned int i=0; i<NetworkComponent::NUM_P; ++i){
 		if (m_para[i] != otherNetComp->m_para[i])
 			return Different;
 	}
+	for (unsigned int i=0; i<NetworkComponent::NUM_IP; ++i){
+		if (m_intPara[i] != otherNetComp->m_intPara[i])
+			return Different;
+	}
+
 	if (m_modelType != otherNetComp->m_modelType)
 		return Different;
 

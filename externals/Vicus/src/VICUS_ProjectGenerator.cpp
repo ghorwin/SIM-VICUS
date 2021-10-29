@@ -2596,7 +2596,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
 	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
 	std::vector<unsigned int> allSoilModelIds;
-	unsigned int soilModelId = 1;
 
 	for (const NetworkEdge &e: vicusNetwork.m_edges){
 		e.m_idSoil = VICUS::INVALID_ID;
@@ -2677,6 +2676,19 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
 	vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
+
+	// write NANDRAD ids for the path of each building
+	file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".paths";
+	f.open(file, std::ofstream::out | std::ofstream::trunc);
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (const NetworkEdge * edge: shortestPath){
+			f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+		}
+		f << std::endl;
+	}
+	f.close();
 
 
 	 // we are DONE !!!
