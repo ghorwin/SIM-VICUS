@@ -876,10 +876,11 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		objList.m_name = "the network objects";
 		p.m_objectLists.push_back(objList);
 
-		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" ,
+		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
 											   "FlowElementHeatLoss", "PressureDifference",
 											   "TemperatureDifference", "ControllerResultValue",
-												"MechanicalPower", "ElectricalPower"};
+												"MechanicalPower", "ElectricalPower",
+												"OutletNodePressure"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
