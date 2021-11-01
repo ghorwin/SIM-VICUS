@@ -326,6 +326,8 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 	VICUS::NetworkComponent::ModelType ct = VICUS::NetworkComponent::ModelType(
 													m_ui->comboBoxComponentType->currentData().toUInt());
 	if (ct != m_current->m_modelType) {
+		// if type has changed, we create a new component (all parameters are deleted)
+		m_current = new VICUS::NetworkComponent;
 		m_current->m_modelType = ct;
 		modelModify();
 		updateInput((int)m_current->m_id);
