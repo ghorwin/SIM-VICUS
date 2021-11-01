@@ -36,6 +36,10 @@
 
 #include <vector>
 
+namespace NANDRAD {
+	class OutputGrid;
+}
+
 struct SourceObject {
 
 	SourceObject(){}
@@ -75,7 +79,7 @@ struct OutputDefinition {
 	/*! Vector of all Vector Source object id(s) */
 	std::vector<SourceObject>	m_sourceObjectIds;
 	/*! Pointer to output grid */
-
+	NANDRAD::OutputGrid			*m_outputGrid = nullptr;
 
 };
 

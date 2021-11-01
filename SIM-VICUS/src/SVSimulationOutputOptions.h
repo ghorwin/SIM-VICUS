@@ -64,8 +64,6 @@ public:
 		NUM_OT
 	};
 
-
-
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/
@@ -80,7 +78,8 @@ public:
 	/*! Initialized Output Table with all necessairy headers */
 	void initOutputTable(unsigned int rowCount);
 
-	/*! Populates the */
+	/*! Populates m_objectListsNandrad and m_outputDefinitionsNandrad with all
+		defined output definitions and object lists. */
 	void generateOutputs(const std::vector<NANDRAD::ObjectList> & objectList);
 
 	/*! Searches in m_objectListsNandrad for a corresponding object list
@@ -117,7 +116,28 @@ private slots:
 
 	void on_pushButtonAllSourcesDeselected_clicked();
 
+	void on_comboBoxOutoutGrid_currentIndexChanged(int index);
+
+	void on_toolButtonAddOutput_clicked();
+
+	void on_toolButtonRemoveOutput_clicked();
+
 private:
+
+	/*! Finds the corresponding nandrad model by id and returns its name
+		\param model Nandrad Model
+		\param name Name of Nandrad Model, modified by function
+		\returns true if corresponding model was found
+	*/
+	template<typename T>
+	bool findNandradName(const std::vector<T> *model, const unsigned int idNandrad, std::string & name);
+
+	/*! Activates output definition and all source objects */
+	void updateOutputDefinitionState(unsigned int row, bool newState);
+
+
+	void updateOutputUi(unsigned int row);
+
 	Ui::SVSimulationOutputOptions					*m_ui;
 
 	/*! QFont */
@@ -141,9 +161,9 @@ private:
 	/*! Pointer to active object in List */
 	const OutputDefinition							*m_activeOutputDefinition = nullptr;
 
-	// =========================================================================================
-	//  ONLY NEEDED FOR NANDRAD IS APPLY WHEN DOUBLE CLICKED TO OUTPUT DEFINITION IN TABLE VIEW
-	// =========================================================================================
+	// ============================================================================================
+	//  ONLY NEEDED FOR NANDRAD; IS APPLIED WHEN OUTPUT DEFINITION IN TABLE VIEW IS DOUBLE CLICKED
+	// ============================================================================================
 
 	/*! Map that holds all the object lists that are needed for nandrad specific outputs */
 	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
