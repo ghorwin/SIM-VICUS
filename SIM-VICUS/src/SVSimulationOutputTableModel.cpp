@@ -1,5 +1,7 @@
 #include "SVSimulationOutputTableModel.h"
 
+#include<QIcon>
+
 SVSimulationOutputTableModel::SVSimulationOutputTableModel(QObject *parent) :
 	QAbstractTableModel(parent)
 {}
@@ -12,7 +14,7 @@ int SVSimulationOutputTableModel::rowCount(const QModelIndex & /*parent*/) const
 
 
 int SVSimulationOutputTableModel::columnCount(const QModelIndex & /*parent*/) const {
-	return 4;
+	return 5;
 }
 
 QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role) const {
@@ -20,20 +22,23 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 		return QVariant();
 	const OutputDefinition & var = (*m_outputDefinitions)[(size_t)index.row()];
 	switch (role) {
-		case Qt::DisplayRole :
+		case Qt::DisplayRole : {
 			switch (index.column()) {
-				case 0 : // type
+				case 1 : // type
 					return var.m_type;
-				case 1 : // name
+				case 2 : // name
 					return var.m_name;
-				case 2 : // unit
+				case 3 : // unit
 					return QString::fromStdString(var.m_unit.name());
-				case 3 : // description
-					return var.m_description;
+//				case 4 : // description
+//					return var.m_description;
+				case 4 : // source
+					return (var.m_sourceObjectIds.size() == 1) ?
+								QString::fromStdString(var.m_sourceObjectIds[0].m_displayName) : "*";
 			}
-		break;
+		} break;
 
-		case Qt::FontRole :
+		case Qt::FontRole : {
 			// vars with INVALID valueRef -> grey italic
 			//      with valid value -> black, bold
 			if (!var.m_isActive) {
@@ -46,12 +51,28 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 				f.setBold(true);
 				return f;
 			}
-
-		case Qt::ForegroundRole :
+		} break;
+		case Qt::ForegroundRole : {
 			// vars with INVALID valueRef -> grey italic
-			if (!var.m_isActive)
+			//	if (!var.m_isActive)
 				// return QColor(Qt::gray);
-		break;
+		} break;
+		case Qt::DecorationRole : {
+			switch (index.column()) {
+				case 0:
+					if (var.m_isActive)
+						return QIcon("://gfx/actions/16x16/ok.png");
+			}
+		} break;
+		case Qt::UserRole : {
+			switch (index.column()) {
+				case 0:
+					if (var.m_isActive)
+						return 1;
+					else
+						return 0;
+			}
+		} break;
 	}
 	return QVariant();
 }
@@ -59,16 +80,19 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 
 QVariant SVSimulationOutputTableModel::headerData(int section, Qt::Orientation orientation, int role) const {
 	static QStringList headers = QStringList()
+		<< ""
 		<< tr("Type")
 		<< tr("Name")
 		<< tr("Unit")
-		<< tr("Description");
+//		<< tr("Description")
+		<< tr("Source");
 
 	if (orientation == Qt::Vertical)
 		return QVariant();
 	switch (role) {
 		case Qt::DisplayRole :
 			return headers[section];
+
 	}
 	return QVariant();
 }
