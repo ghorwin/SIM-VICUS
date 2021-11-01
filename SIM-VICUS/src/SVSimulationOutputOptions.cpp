@@ -76,6 +76,9 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::MultiSelection);
 	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
+	m_ui->tableViewOutputList->sortByColumn(1, Qt::AscendingOrder);
+
+
 	m_ui->tableWidgetSourceObjectIds->setColumnCount(2);
 	m_ui->tableWidgetSourceObjectIds->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );
 	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
@@ -283,8 +286,9 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	//	m_ui->tableViewOutputList->resizeColumnsToContents();
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-	m_ui->tableViewOutputList->setColumnWidth(2, 50);
-	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	m_ui->tableViewOutputList->setColumnWidth(3, 50);
+	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
 }
 
 void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
@@ -704,41 +708,48 @@ void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
 	OutputDefinition &od = m_outputDefinitions[row];
 
 	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
-	tw.clear(); // we also clear all previous contents
-	tw.setRowCount(od.m_sourceObjectIds.size() );
-	m_ui->labelSourceObjects->setText("Select " + od.m_type + "s");
+	m_ui->textBrowserDescription->setText(od.m_description);
 
-	QTableWidgetItem *itemID, *itemName;
-	for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
-		SourceObject &so = od.m_sourceObjectIds[i];
+	if(od.m_sourceObjectIds.size() == 1) {
+		m_ui->widgetSource->setVisible(false);
+	}
+	else {
+		m_ui->widgetSource->setVisible(true);
+		tw.clearContents(); // we also clear all previous contents
+		tw.setRowCount(od.m_sourceObjectIds.size() );
+		m_ui->labelSourceObjects->setText("Select " + od.m_type + "s");
+		QTableWidgetItem *itemID, *itemName;
+		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
+			SourceObject &so = od.m_sourceObjectIds[i];
 
-		// we construct new items
-		itemID = new QTableWidgetItem();
-		itemName = new QTableWidgetItem();
+			// we construct new items
+			itemID = new QTableWidgetItem();
+			itemName = new QTableWidgetItem();
 
-		// we set the font
-		QFont f(m_font);
-		f.setItalic(!od.m_sourceObjectIds[i].m_isActive);
-		f.setBold(od.m_isActive && od.m_sourceObjectIds[i].m_isActive);
+			// we set the font
+			QFont f(m_font);
+			f.setItalic(!od.m_sourceObjectIds[i].m_isActive);
+			f.setBold(od.m_isActive && od.m_sourceObjectIds[i].m_isActive);
 
-		itemID->setFont(f);
-		itemName->setFont(f);
+			itemID->setFont(f);
+			itemName->setFont(f);
 
-		// we set the text
-		itemID->setText(QString::number(so.m_id));
-		itemName->setText(QString::fromStdString(so.m_displayName));
+			// we set the text
+			itemID->setText(QString::number(so.m_id));
+			itemName->setText(QString::fromStdString(so.m_displayName));
 
-		// we set the flags
-		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+			// we set the flags
+			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
 
-		// we set our user role with our index
-		itemID->setData(Qt::UserRole, i);
-		itemName->setData(Qt::UserRole, i);
+			// we set our user role with our index
+			itemID->setData(Qt::UserRole, i);
+			itemName->setData(Qt::UserRole, i);
 
-		// finally we set the items
-		tw.setItem(i,0,itemID);
-		tw.setItem(i,1,itemName);
+			// finally we set the items
+			tw.setItem(i,0,itemID);
+			tw.setItem(i,1,itemName);
+		}
 	}
 
 }
@@ -764,4 +775,14 @@ void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
 	}
 
 	updateOutputUi(cachedRow);
+}
+
+void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
+	m_outputTableProxyModel->setFilterRole(Qt::UserRole);
+	m_outputTableProxyModel->setFilterKeyColumn(0);
+	if(checked) {
+		m_outputTableProxyModel->setFilterWildcard("1");
+	}
+	else
+		m_outputTableProxyModel->setFilterWildcard("*");
 }

@@ -122,6 +122,8 @@ private slots:
 
 	void on_toolButtonRemoveOutput_clicked();
 
+	void on_checkBoxShowActive_toggled(bool checked);
+
 private:
 
 	/*! Finds the corresponding nandrad model by id and returns its name
