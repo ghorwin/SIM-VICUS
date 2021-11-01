@@ -251,7 +251,7 @@ void SVSimulationOutputOptions::generateOutputTable() {
 						findNandradName(&m_nandradProject.m_zones, nandradId, name);
 					}
 					else if ( object[0] == "Location" ) {
-						name = "Location";
+						name = "Climate Data";
 					}
 					else if ( object[0] == "EmbeddedObject" ) {
 						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
