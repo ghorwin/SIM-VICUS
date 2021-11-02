@@ -501,7 +501,7 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
 	m_ui->lineEditName->clear();
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
-	m_outputTableProxyModel->setFilterKeyColumn(0);
+	m_outputTableProxyModel->setFilterKeyColumn(1);
 }
 
 void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
@@ -622,7 +622,7 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
 	m_ui->lineEditType->clear();
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
-	m_outputTableProxyModel->setFilterKeyColumn(1);
+	m_outputTableProxyModel->setFilterKeyColumn(2);
 }
 
 void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
@@ -775,14 +775,14 @@ void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
 	}
 
 	updateOutputUi(cachedRow);
+	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 
 void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 	m_outputTableProxyModel->setFilterRole(Qt::UserRole);
 	m_outputTableProxyModel->setFilterKeyColumn(0);
-	if(checked) {
+	if(checked)
 		m_outputTableProxyModel->setFilterWildcard("1");
-	}
 	else
 		m_outputTableProxyModel->setFilterWildcard("*");
 }

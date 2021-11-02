@@ -75,7 +75,7 @@ public:
 	*/
 	void generateOutputTable();
 
-	/*! Initialized Output Table with all necessairy headers */
+	/*! Initializes Output Table with all necessairy headers */
 	void initOutputTable(unsigned int rowCount);
 
 	/*! Populates m_objectListsNandrad and m_outputDefinitionsNandrad with all
@@ -83,16 +83,15 @@ public:
 	void generateOutputs(const std::vector<NANDRAD::ObjectList> & objectList);
 
 	/*! Searches in m_objectListsNandrad for a corresponding object list
-		if an corresponding object list is found 'objectList'
-		is set to it
+		if an corresponding object list is found 'objectList' is set to it
 		\returns true if found, else false
 	*/
 	bool findEqualObjectList(NANDRAD::ObjectList &objectList);
 
-	/*! Returns generated object lists. */
+	/*! Returns generated object lists in std::vector. */
 	std::vector<NANDRAD::ObjectList> objectLists();
 
-	/*! Returns generated output definitions. */
+	/*! Returns generated output definitions in std::vector. */
 	std::vector<NANDRAD::OutputDefinition> outputDefinitions();
 
 private slots:
@@ -137,9 +136,10 @@ private:
 	/*! Activates output definition and all source objects */
 	void updateOutputDefinitionState(unsigned int row, bool newState);
 
-
+	/*! Update Output UI with Source Table. */
 	void updateOutputUi(unsigned int row);
 
+	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
 
 	/*! QFont */
