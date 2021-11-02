@@ -583,11 +583,11 @@
 					<IBK:IntPara name="NumberParallelPipes">8</IBK:IntPara>
 				</IdealPipeRegisterModel>
 			</IdealPipeRegisterModels>
-			<HeatLoadSummationModels>
-				<HeatLoadSummationModel id="7">
+			<ThermalLoadSummationModels>
+				<ThermalLoadSummationModel id="7">
 					<ObjectList>[FMI4BIM] Townhouse Constructions</ObjectList>
-				</HeatLoadSummationModel>
-			</HeatLoadSummationModels>
+				</ThermalLoadSummationModel>
+			</ThermalLoadSummationModels>
 			<NetworkInterfaceAdapterModels>
 				<NetworkInterfaceAdapterModel id="8" summationModelId="7">
 					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>

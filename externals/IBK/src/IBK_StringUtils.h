@@ -191,6 +191,9 @@ T string2val(const std::string& str) {
 template <>
 double string2val<double>(const std::string& str);
 
+template <>
+bool string2val<bool>(const std::string& str);
+
 /*! Attempts to extract a numerical value from a string.
 	Returns the def value in case of non valid string.
 	\code

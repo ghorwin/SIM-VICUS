@@ -30,10 +30,10 @@
 namespace NANDRAD_MODEL {
 
 void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model,
-									 const std::vector<NANDRAD::ObjectList> & objLists)
-{
+									 const std::vector<NANDRAD::ObjectList> & objLists) {
 	FUNCID(HeatLoadSummationModel::setup);
 
+	m_zoneCoolingLoad = model.m_zoneCoolingLoad;
 	// all models require an object list with indication of zones that this model applies to
 	if (model.m_objectList.empty())
 		throw IBK::Exception(IBK::FormatString("Missing 'ObjectList' parameter."), FUNC_ID);
@@ -45,6 +45,12 @@ void HeatLoadSummationModel::setup(const NANDRAD::HeatLoadSummationModel & model
 		throw IBK::Exception(IBK::FormatString("Invalid/undefined object list '%1'.")
 							 .arg(model.m_objectList), FUNC_ID);
 	m_objectList = &(*oblst_it);
+
+	// attribute 'useZoneCoolingLoad is only allowed for zone load summation
+	if(m_zoneCoolingLoad && m_objectList->m_referenceType != NANDRAD::ModelInputReference::MRT_ZONE) {
+		throw IBK::Exception(IBK::FormatString("Attribute 'useZoneCoolingLoad' can only be set for object list reference type 'Zone'.")
+							 , FUNC_ID);
+	}
 
 	// reserve storage memory for results
 	m_results.resize(NUM_R, 0);
@@ -94,7 +100,7 @@ const double * HeatLoadSummationModel::resultValueRef(const InputReference & qua
 }
 
 
-void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
@@ -105,6 +111,17 @@ void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel
 	switch(refType) {
 		case NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE:
 			quantity = "ActiveLayerThermalLoad";
+		break;
+		case NANDRAD::ModelInputReference::MRT_ZONE: {
+			// zhone only provides ideal load
+			if(m_zoneCoolingLoad == true)
+				quantity = "IdealCoolingLoad";
+			else
+				quantity = "IdealHeatingLoad";
+		}
+		break;
+		case NANDRAD::ModelInputReference::MRT_NETWORKELEMENT:
+			quantity = "FlowElementHeatLoss";
 		break;
 		default: break;
 	}
@@ -167,6 +184,11 @@ int HeatLoadSummationModel::update() {
 	for (const double *ref : m_valueRefs) {
 		totalLoad += *ref;
 	}
+	// for network elements and zone cooling invert flux direction
+	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT ||
+		m_zoneCoolingLoad)
+		totalLoad *= -1.0;
+
 	m_results[R_TotalHeatLoad] = totalLoad;
 
 	return 0; // signal success

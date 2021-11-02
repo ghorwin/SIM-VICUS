@@ -189,17 +189,18 @@
 
 			<HeatLoadSummationModels>
 				<HeatLoadSummationModel id="801">
-					<!-- Define object list with constructions, whose loads should be summed up -->
+					<!-- Define object list with heaters, whose loads should be summed up -->
 					<ObjectList>IdealHeater</ObjectList>
 				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="802">
+					<!-- Define object list with constructions, whose loads should be summed up -->
+					<ObjectList>Floors</ObjectList>
+				</HeatLoadSummationModel>
+				<HeatLoadSummationModel id="803">
+					<!-- Define object list with pipes, whose loads should be summed up -->
+					<ObjectList>Surface Heating</ObjectList>
+				</HeatLoadSummationModel>
 			</HeatLoadSummationModels>
-
-			<NetworkInterfaceAdapterModels>
-				<!-- Model for translating heat load into temperature spread inside a hydraulic networl-->
-				<NetworkInterfaceAdapterModel id="802" summationModelId="801">
-					<IBK:Parameter name="FluidHeatCapacity" unit="J/kgK">4180</IBK:Parameter>
-				</NetworkInterfaceAdapterModel>
-			</NetworkInterfaceAdapterModels>
 
 		</Models>
 
@@ -318,22 +319,6 @@
 					</Schedule>
 				</ScheduleGroup>
 
-				<!-- Adapter copies schedule values from pump and ideal heater -->
-				<ScheduleGroup objectList="Adapter Model">
-					<Schedule type="AllDays">
-						<DailyCycles>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>SupplyTemperatureSchedule [C]:40</Values>
-							</DailyCycle>
-							<DailyCycle interpolation="Constant">
-								<TimePoints>0</TimePoints>
-								<Values>MassFluxSchedule [kg/s]:0.05</Values>
-							</DailyCycle>
-						</DailyCycles>
-					</Schedule>
-				</ScheduleGroup>
-
 			</ScheduleGroups>
 		</Schedules>
 		
@@ -408,15 +393,17 @@
 
 				<OutputDefinition>
 					<Quantity>TotalHeatLoad</Quantity>
-					<ObjectListName>Summation Model</ObjectListName>
+					<ObjectListName>Summation Models</ObjectListName>
 					<GridName>hourly</GridName>
+					<TimeType>Integral</TimeType>
 				</OutputDefinition>
 
 				<OutputDefinition>
-					<Quantity>ReturnTemperature</Quantity>
-					<ObjectListName>Adapter Model</ObjectListName>
+					<Quantity>TotalHeatLoad</Quantity>
+					<ObjectListName>Summation Models</ObjectListName>
 					<GridName>hourly</GridName>
 				</OutputDefinition>
+
 			</Definitions>
 			<Grids>
 				<OutputGrid name="hourly">
@@ -453,12 +440,8 @@
 				<FilterID>*</FilterID>
 				<ReferenceType>ConstructionInstance</ReferenceType>
 			</ObjectList>
-			<ObjectList name="Summation Model">
-				<FilterID>801</FilterID>
-				<ReferenceType>Model</ReferenceType>
-			</ObjectList>
-			<ObjectList name="Adapter Model">
-				<FilterID>802</FilterID>
+			<ObjectList name="Summation Models">
+				<FilterID>801,802,803</FilterID>
 				<ReferenceType>Model</ReferenceType>
 			</ObjectList>
 		</ObjectLists>

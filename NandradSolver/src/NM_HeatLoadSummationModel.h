@@ -37,10 +37,9 @@ namespace NANDRAD_MODEL {
 /*! A model to sum
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
 
-	For each zone in the object list, the model requests HeatingControlValue and CoolingControlValue quantities, that
-	are provided by thermostat models. Also, it retrieves the zone's net floor area and computed together with
-	parameters from NANDRAD::HeatLoadSummationModel the maximum heating/cooling power. The actual heating/cooling power
-	is obtained by multiplication of the heating/cooling control value with this maximum power.
+	The model sums up either thermal load in constructions, heating/cooling load in zones or heat losses in
+	network elements. Resulting heat load is always interpreted positive in direction of balance space (construction, zone or
+	network). Only one type of reference object is allowed (coded by a single object list).
 */
 class HeatLoadSummationModel : public AbstractModel, public AbstractStateDependency {
 public:
@@ -126,6 +125,11 @@ private:
 
 	/*! Vector of results, computed/updated during the calculation. */
 	std::vector<double>								m_results;
+
+	/*! If true, and if the object list defines 'Zone' as reference type, then the variable
+		'IdealHeatingLoad' is requested, otherwise 'IdealHeatingLoad' is used (the default).
+	*/
+	bool											m_zoneCoolingLoad = false;
 
 	/*! Vector with input references.
 		For each thermostat model found, this vector contains 2*number of zones input refs, for each zone
