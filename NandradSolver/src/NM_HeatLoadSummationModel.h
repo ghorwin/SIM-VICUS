@@ -38,7 +38,7 @@ namespace NANDRAD_MODEL {
 	The model instance is identified by reference type MODEL and the id of the NANDRAD model parametrization block.
 
 	The model sums up either thermal load in constructions, heating/cooling load in zones or heat losses in
-	network elements. HResulting heat load is always interpreted positive in direction of balance space (constrcution, zone or
+	network elements. Resulting heat load is always interpreted positive in direction of balance space (construction, zone or
 	network). Only one type of reference object is allowed (coded by a single object list).
 */
 class HeatLoadSummationModel : public AbstractModel, public AbstractStateDependency {
