@@ -100,7 +100,7 @@ const double * HeatLoadSummationModel::resultValueRef(const InputReference & qua
 }
 
 
-void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & models) {
+void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do
 	std::vector<unsigned int> indexKeys(m_objectList->m_filterID.m_ids.begin(), m_objectList->m_filterID.m_ids.end());
@@ -184,7 +184,7 @@ int HeatLoadSummationModel::update() {
 	for (const double *ref : m_valueRefs) {
 		totalLoad += *ref;
 	}
-	// for network elements invert flux direction
+	// for network elements and zone cooling invert flux direction
 	if(m_objectList->m_referenceType == NANDRAD::ModelInputReference::MRT_NETWORKELEMENT ||
 		m_zoneCoolingLoad)
 		totalLoad *= -1.0;
