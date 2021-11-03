@@ -285,20 +285,15 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 		case Vic3D::NewGeometryObject::NGM_Rect:
 		case Vic3D::NewGeometryObject::NGM_Polygon:
 			m_ui->stackedWidget->setCurrentIndex(1);
-//			updateBuildingComboBox(m_ui->comboBoxBuilding);
-//			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
-//			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
-//			updateComponentComboBoxes(); // update all component combo boxes in surface page
+			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
 			m_ui->stackedWidget->setCurrentIndex(2);
-//			updateBuildingComboBox(m_ui->comboBoxBuilding2);
-//			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
 
-//			updateComponentComboBoxes(); // update all component combo boxes in zone page
+			updateComponentComboBoxes(); // update all component combo boxes in zone page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
 			// transfer zone height into line edit, if we have already a building level defined
 			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
@@ -308,8 +303,6 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 
 		case Vic3D::NewGeometryObject::NGM_Roof: {
 			m_ui->stackedWidget->setCurrentIndex(3);
-			updateBuildingComboBox(m_ui->comboBoxBuilding3);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 			updateComponentComboBoxes(); // update all component combo boxes in roof page
 			const VICUS::PlaneGeometry & pg = po->planeGeometry();
 			if (pg.polygon().type() != IBKMK::Polygon3D::T_Rectangle)
@@ -319,12 +312,9 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 
 			// get floor polyline from roof and save this for later
 			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-			if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
-				return;
 
-
-			if(po->planeGeometry().polygon().vertexes().empty())
-				return;
+			if (po->planeGeometry().polygon().vertexes().empty())
+				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
 
 			m_roofPolygon = po->planeGeometry().polygon().vertexes();
 
