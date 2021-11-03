@@ -93,6 +93,8 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+
+	updateButtonStates(); // see class comment
 }
 
 
@@ -101,41 +103,6 @@ SVPropVertexListWidget::~SVPropVertexListWidget() {
 	delete m_ui;
 }
 
-void SVPropVertexListWidget::setupButtons(){
-	bool haveBuildings = !project().m_buildings.empty();
-	m_ui->toolButtonAddBuildingLevel->setEnabled(haveBuildings);
-	m_ui->toolButtonAddBuildingLevel2->setEnabled(haveBuildings);
-	m_ui->toolButtonAddBuildingLevel3->setEnabled(haveBuildings);
-
-	m_ui->toolButtonAddZone->setEnabled(false);
-
-	QComboBox * buildingCombo = nullptr;
-	QComboBox * buildingLevelCombo;
-	if (sender() == m_ui->toolButtonAddBuildingLevel) {
-		buildingCombo = m_ui->comboBoxBuilding;
-		buildingLevelCombo = m_ui->comboBoxBuildingLevel;
-	}
-	else if (sender() == m_ui->toolButtonAddBuildingLevel2) {
-		buildingCombo = m_ui->comboBoxBuilding2;
-		buildingLevelCombo = m_ui->comboBoxBuildingLevel2;
-	}
-	else if (sender() == m_ui->toolButtonAddBuildingLevel3) {
-		buildingCombo = m_ui->comboBoxBuilding3;
-		buildingLevelCombo = m_ui->comboBoxBuildingLevel3;
-	}
-	else {
-		return;
-	}
-
-	unsigned int buildingUniqueId = buildingCombo->currentData().toUInt();
-	unsigned int buildingLevelId = buildingLevelCombo->currentData().toUInt();
-	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueId));
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelId));
-
-	// only enable button if building and building level exists
-	if(b != nullptr && bl != nullptr)
-		m_ui->toolButtonAddZone->setEnabled(true);
-}
 
 void SVPropVertexListWidget::setup(int newGeometryType) {
 	// switch to vertex list widget
@@ -161,8 +128,6 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
 	m_geometryMode = newGeometryType;
-
-	setupButtons();
 }
 
 
@@ -288,6 +253,7 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 			}
 		}
 	}
+	updateButtonStates();
 }
 
 
@@ -319,20 +285,20 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 		case Vic3D::NewGeometryObject::NGM_Rect:
 		case Vic3D::NewGeometryObject::NGM_Polygon:
 			m_ui->stackedWidget->setCurrentIndex(1);
-			updateBuildingComboBox(m_ui->comboBoxBuilding);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
-			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
-			updateComponentComboBoxes(); // update all component combo boxes in surface page
+//			updateBuildingComboBox(m_ui->comboBoxBuilding);
+//			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+//			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+//			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
 		break;
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
 			m_ui->stackedWidget->setCurrentIndex(2);
-			updateBuildingComboBox(m_ui->comboBoxBuilding2);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+//			updateBuildingComboBox(m_ui->comboBoxBuilding2);
+//			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
 
-			updateComponentComboBoxes(); // update all component combo boxes in zone page
+//			updateComponentComboBoxes(); // update all component combo boxes in zone page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
 			// transfer zone height into line edit, if we have already a building level defined
 			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
@@ -367,7 +333,6 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
-	setupButtons();
 }
 
 
@@ -408,7 +373,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	b.m_id = VICUS::uniqueId(project().m_buildings);
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	if (sender() == m_ui->toolButtonAddBuilding)
@@ -420,8 +385,6 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	else {
 		Q_ASSERT(false);
 	}
-
-	setupButtons();
 }
 
 
@@ -444,11 +407,6 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 		Q_ASSERT(false);
 	}
 
-	// check if minimum one building exist
-	if(project().m_buildings.empty()){
-		QMessageBox::critical(this, QString(), tr("Please create at first a building!"));
-		return;
-	}
 	// get currently selected building
 	unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
@@ -466,12 +424,10 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 	bl.m_id = VICUS::uniqueId(b->m_buildingLevels);
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	reselectById(buildingLevelCombo, (int)bl.uniqueID());
-
-	setupButtons();
 }
 
 
@@ -493,7 +449,7 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 	r.m_id = VICUS::uniqueId(bl->m_rooms);
 	r.m_displayName = text;
 	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding building zone '%1'").arg(r.m_displayName), buildingLevelUniqueID, r, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	reselectById(m_ui->comboBoxZone, (int)r.uniqueID());
@@ -501,13 +457,14 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 
 void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
-	updateSurfacePageState();
+	updateButtonStates();
 }
 
 
 void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
 	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
 	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+	updateButtonStates();
 }
 
 
@@ -526,7 +483,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
-	setupButtons();
+	updateButtonStates();
 }
 
 
@@ -608,6 +565,7 @@ void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
 
 void SVPropVertexListWidget::on_comboBoxBuilding2_currentIndexChanged(int /*index*/) {
 	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+	updateButtonStates();
 }
 
 
@@ -625,6 +583,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
+	updateButtonStates();
 }
 
 
@@ -763,6 +722,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel3_currentIndexChanged(int /
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditRoofHeight_editingFinishedSuccessfully();
 	}
+	updateButtonStates();
 }
 
 
@@ -1033,7 +993,6 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, con
 
 	}
 	combo->blockSignals(false);
-	setupButtons();
 }
 
 
@@ -1062,7 +1021,6 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 		}
 	}
 	combo->blockSignals(false);
-	updateSurfacePageState();
 }
 
 
@@ -1089,8 +1047,10 @@ bool SVPropVertexListWidget::createAnnonymousGeometry() const {
 }
 
 
-void SVPropVertexListWidget::updateSurfacePageState() {
-	// update states of "Create surface" page
+void SVPropVertexListWidget::updateButtonStates() {
+	// update states of Surface, Zone, Roof pages
+
+	// ** page surface **
 
 	// if checkbox is visible, we adjust the enabled state of other inputs
 	bool annonymousGeometry = createAnnonymousGeometry();
@@ -1131,7 +1091,32 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 		m_ui->comboBoxZone->setEnabled(m_ui->comboBoxZone->count() != 0);
 		m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 	}
+
+
+	// ** page zone **
+
+	// building controls
+	m_ui->comboBoxBuilding2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+	m_ui->toolButtonAddBuilding2->setEnabled(true);
+
+	// building level controls
+	m_ui->labelBuildingLevel_2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+	m_ui->comboBoxBuildingLevel2->setEnabled(m_ui->comboBoxBuildingLevel2->count() != 0);
+	m_ui->toolButtonAddBuildingLevel2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+
+
+	// ** page roof **
+
+	// building controls
+	m_ui->comboBoxBuilding3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
+	m_ui->toolButtonAddBuilding3->setEnabled(true);
+
+	// building level controls
+	m_ui->labelBuildingLevel_3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
+	m_ui->comboBoxBuildingLevel3->setEnabled(m_ui->comboBoxBuildingLevel3->count() != 0);
+	m_ui->toolButtonAddBuildingLevel3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
 }
+
 
 void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
 	// remember currently selected component IDs
