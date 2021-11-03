@@ -4,6 +4,7 @@
 
 #include <IBK_algorithm.h>
 #include <IBK_physics.h>
+#include <CCM_ClimateDataLoader.h>
 
 #include "VICUS_utilities.h"
 
@@ -217,6 +218,8 @@ public:
 	std::vector<std::string>								m_objListNamesLinearSplines;
 	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter>>	m_constructionIdToNandradSplines;
 
+	std::map< std::string, IBK::Path>						m_placeholders;
+
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
 	//std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
@@ -411,6 +414,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	//TODO Dirk add annual schedules to nandrad
 	IdealSurfaceHeatingCoolingModelGenerator idealSurfaceHeatCoolGenerator(this);
+	idealSurfaceHeatCoolGenerator.m_placeholders = p.m_placeholders;
 	idealSurfaceHeatCoolGenerator.generate(constrInstaModelGenerator.m_surfaceHeatingData, usedModelIds, errorStack);
 
 	// *** Models based on zone templates ***
@@ -1136,7 +1140,17 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 
 	double embArea = 0;
 	// get area of surface
-	double areaA = ci.m_sideASurface->geometry().area();
+
+	Q_ASSERT(ci.m_sideASurface != nullptr || ci.m_sideBSurface != nullptr);
+
+	VICUS::Surface *surf = nullptr;
+
+	if(ci.m_sideASurface == nullptr)
+		surf = ci.m_sideBSurface;
+	else
+		surf = ci.m_sideASurface;
+
+	double area = surf->geometry().area();
 
 	for(const SubSurface &ss : subSurfs){
 		NANDRAD::EmbeddedObject emb;
@@ -1146,9 +1160,9 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		NANDRAD::KeywordList::setParameter(emb.m_para, "EmbeddedObject::para_t",
 										   NANDRAD::EmbeddedObject::P_Area, ss.m_polygon2D.area());
 		embArea += ss.m_polygon2D.area();
-		if(embArea > areaA){
-			errorStack << qApp->tr("Area of sub surfaces is bigger than area of parent surface #%1, '%2'.").arg(ci.m_sideASurface->m_id)
-						  .arg(ci.m_sideASurface->m_displayName);
+		if(embArea > area){
+			errorStack << qApp->tr("Area of sub surfaces is bigger than area of parent surface #%1, '%2'.").arg(surf->m_id)
+						  .arg(surf->m_displayName);
 			continue;
 		}
 		emb.m_displayName = ss.m_displayName.toStdString();
@@ -1643,12 +1657,29 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 	// Create a outdoor air temperature data line for calculate the supply fluid temperature later
 	IBK::LinearSpline outdoorTemp;
+
+	CCM::ClimateDataLoader ccm;
+	IBK::Path climatePath = m_project->m_location.m_climateFilePath;
+	climatePath.removeRelativeParts();
+	climatePath = climatePath.withReplacedPlaceholders(m_placeholders);
+
+	try {
+		ccm.readClimateData(climatePath);
+
+	}  catch (...) {
+		errorStack << "The climate file is not valid. Heating and cooling curve cannot be calculated.";
+	}
+
 	//first vector -> timepoints; second temperature in C
-	std::vector<double> timepoints{0,100,200,300,400,500,600,700,800,900,1000,
-												  1100,1200,1300,1400,1500,1600,1700,1800,1900,2000,
-												  2900,8760};
-	std::vector<double> datapoints{-20,-15,-14,-10,-5,0,5,10,15,20,21,22,23,24,25,26,27,28,29,30,31,35,40};
-	outdoorTemp.setValues(timepoints, datapoints);
+	std::vector<double> timepoints = ccm.m_dataTimePoints;
+	if(timepoints.empty())
+		for(unsigned int i=0; i< 8760; ++i)
+			timepoints.push_back(i);
+	else
+		for (double &val : timepoints)
+			val /=3600;
+
+	outdoorTemp.setValues(timepoints, ccm.m_data[CCM::ClimateDataLoader::Temperature]);
 	outdoorTemp.m_extrapolationMethod = IBK::LinearSpline::EM_Constant;
 
 	std::vector<NANDRAD::IdealSurfaceHeatingCoolingModel>	idealSurfHeatCool;
@@ -1716,7 +1747,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 				double maxMassFlux = IBK::PI * insideDiameter * insideDiameter * 0.25 *
 						surfSys->m_para[VICUS::SurfaceHeating::P_MaxFluidVelocity].value *
-						fluid.m_para[VICUS::NetworkFluid::P_Density].value;
+						fluid.m_para[VICUS::NetworkFluid::P_Density].value * numberPipes;
 
 				double uValue = pipe->UValue();
 
