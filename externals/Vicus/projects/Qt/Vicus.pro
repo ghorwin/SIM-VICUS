@@ -19,12 +19,13 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM
 
 INCLUDEPATH = \
 	../../src \
 	../../../IBK/src \
 	../../../IBKMK/src \
+	../../../CCM/src \
 	../../../Nandrad/src \
 	../../../TiCPP/src
 
@@ -89,7 +90,7 @@ HEADERS += \
 	../../src/VICUS_ZoneIdealHeatingCooling.h \
 	../../src/VICUS_ZoneTemplate.h \
 	../../src/VICUS_utilities.h \
-    ../../src/VICUS_NetworkBuriedPipeProperties.h
+	../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
 	../../src/VICUS_ArgsParser.cpp \
@@ -181,5 +182,5 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneControlThermostat.cpp \
 	../../src/ncg/ncg_VICUS_ZoneIdealHeatingCooling.cpp \
 	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
-    ../../src/VICUS_NetworkBuriedPipeProperties.cpp \
-    ../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp
+	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
+	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp
