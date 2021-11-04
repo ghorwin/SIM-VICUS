@@ -93,7 +93,7 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
 	m_ui->comboBoxTimeType->addItem("Mean", NANDRAD::OutputDefinition::OTT_MEAN);
 	m_ui->comboBoxTimeType->addItem("Integral", NANDRAD::OutputDefinition::OTT_INTEGRAL);
-	m_ui->comboBoxTimeType->blockSignals(true);
+	m_ui->comboBoxTimeType->blockSignals(false);
 
 	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
 			this, &SVSimulationOutputOptions::on_selectionChanged);
@@ -120,12 +120,13 @@ void SVSimulationOutputOptions::updateUi() {
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
 
 	// we set the correct timetype
-	for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-		if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
-			m_ui->comboBoxTimeType->setCurrentIndex(i);
-			break;
+	if(m_activeOutputDefinition != nullptr)
+		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
+			if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
+				m_ui->comboBoxTimeType->setCurrentIndex(i);
+				break;
+			}
 		}
-	}
 
 	// we update the output grid
 	for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
