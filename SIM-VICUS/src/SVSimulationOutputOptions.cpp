@@ -89,6 +89,10 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
 	m_ui->tableWidgetSourceObjectIds->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
+	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
+	m_ui->comboBoxTimeType->addItem("Mean", NANDRAD::OutputDefinition::OTT_MEAN);
+	m_ui->comboBoxTimeType->addItem("Integral", NANDRAD::OutputDefinition::OTT_INTEGRAL);
+
 	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
 			this, &SVSimulationOutputOptions::on_selectionChanged);
 
@@ -112,6 +116,16 @@ void SVSimulationOutputOptions::updateUi() {
 	m_ui->tableWidgetOutputGrids->clearContents();
 	m_ui->comboBoxOutputGrid->clear();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
+
+	// we set the correct timetype
+	for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
+		if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
+			m_ui->comboBoxTimeType->setCurrentIndex(i);
+			break;
+		}
+	}
+
+	// we update the output grid
 	for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
 		const NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
 		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(og.m_name));
@@ -228,8 +242,12 @@ void SVSimulationOutputOptions::generateOutputTable() {
 
 			OutputDefinition &od = m_outputDefinitions[i-1];
 
+			// set pointer to output grid
 			if(m_outputs != nullptr)
 				od.m_outputGrid = &m_outputs->m_grids[0];
+
+			// set Output time type
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
 
 			if (j == ORT_VariableName) {
 				object = IBK::explode(trimmedString.toStdString(), '.', 2);
@@ -792,3 +810,8 @@ void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 	else
 		m_outputTableProxyModel->setFilterWildcard("*");
 }
+
+void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
+	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_timeType = (NANDRAD::OutputDefinition::timeType_t)index;
+}
+
