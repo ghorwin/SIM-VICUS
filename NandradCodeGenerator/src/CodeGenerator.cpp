@@ -336,9 +336,11 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					// for booleans, check if still default value, otherwise write it out
 					if (xmlInfo.typeStr == "bool") {
-						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	";
+						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	"
+								   "		e->SetAttribute(\""+attribName+"\", \"true\");\n";
 					}
-					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
+					else
+						attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					attribs +=
