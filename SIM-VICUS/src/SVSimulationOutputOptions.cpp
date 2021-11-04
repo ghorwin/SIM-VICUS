@@ -530,8 +530,9 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 
 void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
 	m_ui->lineEditName->clear();
-	m_outputTableProxyModel->setFilterWildcard(filterKey);
+	m_outputTableProxyModel->setFilterRegularExpression(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
+//	m_itemIsSet = false;
 }
 
 void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
@@ -680,6 +681,7 @@ void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filte
 	m_ui->lineEditType->clear();
 	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(2);
+	m_itemIsSet = false;
 }
 
 void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
@@ -842,6 +844,7 @@ void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 		m_outputTableProxyModel->setFilterWildcard("1");
 	else
 		m_outputTableProxyModel->setFilterWildcard("*");
+	m_itemIsSet = false;
 }
 
 void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
@@ -849,7 +852,8 @@ void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int inde
 	try {
 		IBK::UnitList::integralQuantity(m_activeOutputDefinition->m_unit, false, true);
 	}  catch (...) {
-		QMessageBox::critical(this, QString(), tr("No time integral of Unit '%1' is allowed. Use 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_unit.name())));
+		QMessageBox::critical(this, QString(), tr("No time type 'integral' for unit '%1' allowed.\nUse 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_unit.name())));
+		m_ui->comboBoxTimeType->setCurrentIndex(NANDRAD::OutputDefinition::OTT_NONE);
 		return;
 	}
 
