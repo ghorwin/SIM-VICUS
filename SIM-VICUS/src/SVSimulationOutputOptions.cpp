@@ -439,6 +439,7 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 		NANDRAD::OutputDefinition nod;
 		nod.m_gridName = refName;
 		nod.m_objectListName = ol.m_name;
+		nod.m_timeType = od.m_timeType;
 
 		// handling for all output that also reference vectors
 		if (!od.m_vectorIds.empty()) {
