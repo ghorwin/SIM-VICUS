@@ -32,6 +32,8 @@
 
 #include <algorithm>
 
+#include "NM_Controller.h"
+
 #define PI				3.141592653589793238
 
 
@@ -686,6 +688,14 @@ HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetw
 	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
 	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
 	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+
+	// TODO : Add controller object
+	// m_controller = new PController(); ...
+}
+
+
+HNControlledPump::~HNControlledPump() {
+	delete m_controller;
 }
 
 
