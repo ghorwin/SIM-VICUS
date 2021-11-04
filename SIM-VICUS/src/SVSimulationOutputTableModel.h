@@ -32,6 +32,8 @@
 #include <QFont>
 #include <QColor>
 
+#include <NANDRAD_OutputDefinition.h>
+
 #include <IBK_Unit.h>
 
 #include <vector>
@@ -67,19 +69,21 @@ struct OutputDefinition {
 	bool						m_isActive = false;
 
 	/*! Type of output */
-	QString						m_type;
+	QString									m_type;
 	/*! Name of output */
-	QString						m_name;
+	QString									m_name;
 	/*! Unit of output definition */
-	IBK::Unit					m_unit;
+	IBK::Unit								m_unit;
 	/*! Description of output definition */
-	QString						m_description;
+	QString									m_description;
+	/*! Time Type of output definition */
+	NANDRAD::OutputDefinition::timeType_t	m_timeType;
 	/*! Vector of all Vector indexes/ids */
-	std::vector<unsigned int>	m_vectorIds;
+	std::vector<unsigned int>				m_vectorIds;
 	/*! Vector of all Vector Source object id(s) */
-	std::vector<SourceObject>	m_sourceObjectIds;
+	std::vector<SourceObject>				m_sourceObjectIds;
 	/*! Pointer to output grid */
-	NANDRAD::OutputGrid			*m_outputGrid = nullptr;
+	NANDRAD::OutputGrid						*m_outputGrid = nullptr;
 
 };
 
@@ -94,7 +98,6 @@ public:
 
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 	Qt::ItemFlags flags(const QModelIndex & index) const override;
-	bool setData(const QModelIndex & index, const QVariant & value, int role) override;
 
 	/*! Resets the table model */
 	void reset();

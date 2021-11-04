@@ -103,19 +103,6 @@ Qt::ItemFlags SVSimulationOutputTableModel::flags(const QModelIndex & index) con
 }
 
 
-bool SVSimulationOutputTableModel::setData(const QModelIndex & index, const QVariant & value, int /*role*/) {
-	Q_ASSERT(index.isValid());
-	Q_ASSERT(index.column() == 4); // only on column 3 data can be set
-	// error handling
-	QString fmiVarName = value.toString().trimmed();
-	// variable name must not be empty or only consist of white spaces; this is silently handled as error (because obvious)
-	if (fmiVarName.isEmpty())
-		return false;
-
-	emit dataChanged(index, index);
-	return true;
-}
-
 void SVSimulationOutputTableModel::reset() {
 	beginResetModel();
 	endResetModel();
