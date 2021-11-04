@@ -89,9 +89,11 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
 	m_ui->tableWidgetSourceObjectIds->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 
+	m_ui->comboBoxTimeType->blockSignals(true);
 	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
 	m_ui->comboBoxTimeType->addItem("Mean", NANDRAD::OutputDefinition::OTT_MEAN);
 	m_ui->comboBoxTimeType->addItem("Integral", NANDRAD::OutputDefinition::OTT_INTEGRAL);
+	m_ui->comboBoxTimeType->blockSignals(true);
 
 	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
 			this, &SVSimulationOutputOptions::on_selectionChanged);
