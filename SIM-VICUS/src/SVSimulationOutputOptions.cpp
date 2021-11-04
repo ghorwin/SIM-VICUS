@@ -110,6 +110,7 @@ void SVSimulationOutputOptions::updateUi() {
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
 	m_ui->tableWidgetOutputGrids->clearContents();
+	m_ui->comboBoxOutputGrid->clear();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
 	for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
 		const NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
@@ -146,9 +147,9 @@ void SVSimulationOutputOptions::updateUi() {
 			item = new QTableWidgetItem(end);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
-			m_ui->comboBoxOutoutGrid->blockSignals(true);
-			m_ui->comboBoxOutoutGrid->addItem(QString::fromStdString(og.m_name), i);
-			m_ui->comboBoxOutoutGrid->blockSignals(false);
+			m_ui->comboBoxOutputGrid->blockSignals(true);
+			m_ui->comboBoxOutputGrid->addItem(QString::fromStdString(og.m_name), i);
+			m_ui->comboBoxOutputGrid->blockSignals(false);
 		}
 		catch (...) {
 			item = new QTableWidgetItem("---");
