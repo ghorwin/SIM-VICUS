@@ -64,6 +64,17 @@ public:
 		NUM_OT
 	};
 
+
+	//Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
+	//ConstructionInstance.ElementTemperature           	1                   	0                   	C         	Finite-volume mean element temperature
+	enum OutputReferenceListType {
+		ORT_VariableName,
+		ORT_SourceObjectIds,
+		ORT_VectorIndexes,
+		ORT_Unit,
+		ORT_Description
+	};
+
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/

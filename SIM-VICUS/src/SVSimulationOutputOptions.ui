@@ -209,7 +209,7 @@
                  <widget class="QComboBox" name="comboBoxTimeType"/>
                 </item>
                 <item row="0" column="2">
-                 <widget class="QComboBox" name="comboBoxOutoutGrid"/>
+                 <widget class="QComboBox" name="comboBoxOutputGrid"/>
                 </item>
                </layout>
               </item>

@@ -231,16 +231,16 @@ void SVSimulationOutputOptions::generateOutputTable() {
 			if(m_outputs != nullptr)
 				od.m_outputGrid = &m_outputs->m_grids[0];
 
-			if (j == 0) {
+			if (j == ORT_VariableName) {
 				object = IBK::explode(trimmedString.toStdString(), '.', 2);
 				od.m_type = QString::fromStdString(object[0]);
 				od.m_name = QString::fromStdString(object[1]);
 			}
-			else if (j == 3)
+			else if (j == ORT_Unit)
 				od.m_unit = IBK::Unit(trimmedString.toStdString());
-			else if (j == 4)
+			else if (j == ORT_Description)
 				od.m_description = trimmedString;
-			else if (j == 1) {
+			else if (j == ORT_SourceObjectIds) {
 				od.m_sourceObjectIds.clear();
 				std::vector<std::string> ids;
 				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
