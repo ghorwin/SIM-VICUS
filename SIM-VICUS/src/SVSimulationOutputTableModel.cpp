@@ -99,9 +99,6 @@ QVariant SVSimulationOutputTableModel::headerData(int section, Qt::Orientation o
 
 
 Qt::ItemFlags SVSimulationOutputTableModel::flags(const QModelIndex & index) const {
-	if (index.column() == 4)
-		// only allow name editing when variable is already configured
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return QAbstractTableModel::flags(index); // call base class implementation
 }
 
