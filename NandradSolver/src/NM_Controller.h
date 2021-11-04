@@ -23,7 +23,6 @@
 #define NM_ControllerH
 
 #include "NM_AbstractController.h"
-#include "NM_AbstractTransientController.h"
 #include "NM_AbstractTimeDependency.h"
 
 
@@ -93,16 +92,31 @@ public:
 	\code
 		controlValue = errorValue*kP + errorValueIntegral*kI;
 	\endcode
+
+	\warning This controller has a state m_errorValueIntegral. When
+		restoring the FMI state, this controller state must be restored as well.
 */
-class PIController: public AbstractTransientController { // NO KEYWORDS
+class PIController: public AbstractController { // NO KEYWORDS
 public:
 	/*! Calculates controller signal/control value. */
 	void update(double errorValue) override;
 
+	/*! This function is called after each integration step and integrates the errorValue. */
+	virtual void stepCompleted(double t) override;
+
 	/*! P-term factor.*/
 	double			m_kP = 1;
 	/*! I-term factor.*/
-	double			m_kI = 1;
+	double			m_kI = 0.001;
+
+	/*! Stores the error value integral.
+		This is updated in stepCompleted();
+	*/
+	double			m_errorValueIntegral = 0;
+	/*! Cached last error value, used in trapozoid rule when integrating error value. */
+	double			m_lastErrorValue = 0;
+	/*! Cached time of last stepCompleted call with m_lastErrorValue = e(m_tLastStep). */
+	double			m_tLastStep = 0;
 };
 
 } // namespace NANDRAD_MODEL

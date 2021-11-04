@@ -49,6 +49,7 @@ void DigitalHysteresisController::update(double errorValue) {
 		m_nextControlValue = 0.0;
 }
 
+
 void DigitalHysteresisController::stepCompleted(double /*t*/) {
 	m_controlValue = m_nextControlValue;
 }
@@ -68,6 +69,14 @@ void PIController::update(double errorValue) {
 	AbstractController::update(errorValue);
 	// calculate controller output
 	m_controlValue = m_kP * errorValue + m_kI * m_errorValueIntegral;
+}
+
+
+void PIController::stepCompleted(double t) {
+	double dt = t - m_tLastStep;
+	// trapozoid rule of integration
+	m_errorValueIntegral += dt*0.5*(m_lastErrorValue + m_errorValue);
+	m_tLastStep = t;
 }
 
 
