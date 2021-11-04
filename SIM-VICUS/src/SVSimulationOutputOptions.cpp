@@ -78,6 +78,11 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	m_ui->tableViewOutputList->sortByColumn(1, Qt::AscendingOrder);
 
+	m_ui->splitter->setStretchFactor(0,0);
+	m_ui->splitter->setStretchFactor(1,1);
+
+	m_ui->splitter_2->setStretchFactor(0,1);
+	m_ui->splitter_2->setStretchFactor(1,0);
 
 	m_ui->tableWidgetSourceObjectIds->setColumnCount(2);
 	m_ui->tableWidgetSourceObjectIds->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );

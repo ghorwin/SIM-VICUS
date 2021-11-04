@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
+    <width>1335</width>
     <height>1231</height>
    </rect>
   </property>
@@ -104,7 +104,7 @@
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
-            <widget class="QWidget" name="">
+            <widget class="QWidget" name="layoutWidget">
              <layout class="QVBoxLayout" name="verticalLayout_4">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -182,16 +182,30 @@
              </layout>
             </widget>
             <widget class="QWidget" name="">
-             <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,1">
+             <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,1">
               <item>
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Output Grid</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QComboBox" name="comboBoxOutoutGrid"/>
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Output Grid</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" colspan="2">
+                 <widget class="QLabel" name="label_5">
+                  <property name="text">
+                   <string>Output Time Type</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2">
+                 <widget class="QComboBox" name="comboBoxTimeType"/>
+                </item>
+                <item row="0" column="2">
+                 <widget class="QComboBox" name="comboBoxOutoutGrid"/>
+                </item>
+               </layout>
               </item>
               <item>
                <widget class="Line" name="line_2">
@@ -210,10 +224,16 @@
               <item>
                <widget class="QTextBrowser" name="textBrowserDescription">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>100</height>
+                 </size>
                 </property>
                 <property name="font">
                  <font>
@@ -237,7 +257,7 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout_5">
+                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0,0">
                  <property name="leftMargin">
                   <number>0</number>
                  </property>
