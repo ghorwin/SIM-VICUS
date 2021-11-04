@@ -787,7 +787,6 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	}
 
-
 	// default zone outputs
 	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled()){
 
@@ -854,6 +853,26 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			p.m_objectLists.push_back(ol);
 		}
+
+		// generate needed object lists and outputs for construction instances
+		{
+			// objlist
+			NANDRAD::ObjectList olCI;
+			olCI.m_name = "objListCI";
+			olCI.m_filterID.setEncodedString("*");
+			olCI.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+			p.m_objectLists.push_back(olCI);
+
+			// output
+			NANDRAD::OutputDefinition od;
+			od.m_gridName = refName;
+			od.m_quantity = "ActiveLayerThermalLoad";
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
+			od.m_objectListName = olCI.m_name;
+			p.m_outputs.m_definitions.push_back(od);
+		}
+
+
 
 		// object lists for location TODO check if exist !!!
 		// make standard output for temperature direct and diffuse radiation
