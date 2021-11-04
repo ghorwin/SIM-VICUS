@@ -64,9 +64,12 @@ public:
 		NUM_OT
 	};
 
-
-	//Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
-	//ConstructionInstance.ElementTemperature           	1                   	0                   	C         	Finite-volume mean element temperature
+	// EXAMPLE: ===============================================================================================================================================
+	//
+	//	(0)	Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
+	//	(1)	ConstructionInstance.ElementTemperature           	1                   	0                   	C         	Finite-volume mean element temperature
+	//
+	//=========================================================================================================================================================
 	enum OutputReferenceListType {
 		ORT_VariableName,
 		ORT_SourceObjectIds,
@@ -166,6 +169,11 @@ private:
 
 	/*! NANDRAD file with all data */
 	NANDRAD::Project								m_nandradProject;
+
+	/* Cached Selection model - needed to determine wether selection goes up or down
+	   and to set the correct active output definition */
+	QItemSelection									m_itemSelection;
+	bool											m_itemIsSet = false;
 
 	/*! Table model instance for input vars. */
 	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;

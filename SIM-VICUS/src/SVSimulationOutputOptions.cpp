@@ -592,23 +592,50 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
 
-	if(selected.empty())
+	if(selected.empty() && deselected.empty()) {
+		m_itemIsSet = false;
 		return;
+	}
+
+	const QItemSelection &selection = selected.empty() ? deselected : selected;
+	unsigned int shift = selected.empty() ? 1 : 0; // we need a shift if deselection happens; This also needs to be positive or negatibe
 
 	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
 	tw.clearContents();
 	tw.setSortingEnabled(false);
-	QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(selected.indexes()[0]);
 
-	const OutputDefinition &od = m_outputDefinitions[sourceIndex.row()];
+	// we find our last selected object
+	unsigned int row = 0;
+	if(m_itemIsSet) {
+		const QModelIndex &sourceIndexMax = m_outputTableProxyModel->mapToSource(selection.indexes()[selection.indexes().size()-1]);
+		const QModelIndex &cachedSourceIndexMax = m_outputTableProxyModel->mapToSource(m_itemSelection.indexes()[m_itemSelection.indexes().size()-1]);
+
+		int deltaMaxRow = sourceIndexMax.row() - cachedSourceIndexMax.row();
+
+		qDebug() << "Actual row: " + QString::number(sourceIndexMax.row()) + " | Cached Row: " + QString::number(cachedSourceIndexMax.row());
+
+		row = (deltaMaxRow == 0 ? selection.indexes()[0].row()-shift : sourceIndexMax.row()+shift); // for deselection we need a +/-1 shift; for selection no shift
+	}
+	else
+		row = m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row();
+
+	const OutputDefinition &od = m_outputDefinitions[row];
 	m_ui->labelSourceObjects->setText("Select " + od.m_type + "s");
 
-	updateOutputUi(sourceIndex.row());
+	m_activeOutputDefinition = &od;
+	m_ui->comboBoxTimeType->blockSignals(true);
+	m_ui->comboBoxTimeType->setCurrentIndex(od.m_timeType);
 
 	tw.setEnabled(od.m_isActive);
-	m_activeOutputDefinition = &od;
 	tw.setSortingEnabled(true);
 	tw.sortByColumn(1, Qt::AscendingOrder);
+
+	updateOutputUi(row);
+
+	m_ui->comboBoxTimeType->blockSignals(false);
+	// we cache our selection
+	m_itemSelection = selection;
+	m_itemIsSet = true;
 }
 
 void SVSimulationOutputOptions::on_pushButtonAllSources_clicked() {
