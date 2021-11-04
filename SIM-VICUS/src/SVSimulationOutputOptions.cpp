@@ -557,7 +557,7 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
-	m_ui->comboBoxOutoutGrid->setCurrentText(od.m_name);
+	m_ui->comboBoxOutputGrid->setCurrentText(od.m_name);
 
 	// we also have to generate an output in the project
 	// we need an hourly output grid, look if we have already one defined (should be!)
