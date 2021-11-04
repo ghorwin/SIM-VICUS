@@ -31,12 +31,14 @@
 #include <VICUS_KeywordList.h>
 
 #include <IBK_FileReader.h>
+#include <IBK_UnitList.h>
 
 #include <NANDRAD_KeywordList.h>
 
 
 #include <QModelIndex>
 #include <QAbstractTableModel>
+#include <QMessageBox>
 
 #include "SVProjectHandler.h"
 
@@ -614,7 +616,7 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 
 		qDebug() << "Actual row: " + QString::number(sourceIndexMax.row()) + " | Cached Row: " + QString::number(cachedSourceIndexMax.row());
 
-		row = (deltaMaxRow == 0 ? selection.indexes()[0].row()-shift : sourceIndexMax.row()+shift); // for deselection we need a +/-1 shift; for selection no shift
+		row = (deltaMaxRow == 0 ? m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row()-shift : sourceIndexMax.row()+shift); // for deselection we need a +/-1 shift; for selection no shift
 	}
 	else
 		row = m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row();
@@ -843,6 +845,14 @@ void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 }
 
 void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
+
+	try {
+		IBK::UnitList::integralQuantity(m_activeOutputDefinition->m_unit, false, true);
+	}  catch (...) {
+		QMessageBox::critical(this, QString(), tr("No time integral of Unit '%1' is allowed. Use 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_unit.name())));
+		return;
+	}
+
 	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_timeType = (NANDRAD::OutputDefinition::timeType_t)index;
 }
 
