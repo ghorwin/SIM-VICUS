@@ -864,6 +864,22 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 	}
 
 	// TODO : use controller object here
+
+	// Initialisierung: -> im Konstruktor
+	// m_controller = new PController() ->
+	// m_controller->m_kP = ...;
+
+	// Update of control value
+	// m_controller->update(e);   -> evaluates controller logic
+
+	// Compute physical response, here we use control value natively as pressure head
+	// pressHeadControlled = m_controller->m_controlValue;
+
+
+	// In stepCompleted():
+	// m_controller->stepCompleted(t);  -> updates integral value internally
+
+
 	double pressHeadControlled = 0;
 	switch (m_controlElement->m_controllerType) {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
