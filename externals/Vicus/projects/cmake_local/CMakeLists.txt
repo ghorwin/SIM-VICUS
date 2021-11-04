@@ -12,6 +12,7 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
 	${PROJECT_SOURCE_DIR}/../../../TiCPP/src
 	${PROJECT_SOURCE_DIR}/../../../Nandrad/src
+	${PROJECT_SOURCE_DIR}/../../../CCM/src
 	${Qt5Widgets_INCLUDE_DIRS}
 )
 
