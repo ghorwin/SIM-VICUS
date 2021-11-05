@@ -23,36 +23,15 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_OutputDefinitionH
-#define VICUS_OutputDefinitionH
-
-#include <NANDRAD_Outputs.h>
+#ifndef VICUS_OutputsH
+#define VICUS_OutputsH
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Constants.h"
+#include <NANDRAD_Outputs.h>
 
 namespace VICUS {
 
-	struct SourceObject {
-
-		SourceObject(){}
-
-		SourceObject(unsigned int id, std::string displayName):
-			m_id(id),
-			m_displayName(displayName)
-		{}
-
-		/*! Indicates whether source object is set active */
-		bool						m_isActive = false;
-
-		/*! ID of Source Object */
-		unsigned int				m_id;
-		/*! Display Name of source object */
-		std::string					m_displayName;
-
-	};
-
-/*! Defines an output definition.
+/*! Contains output definitions/specifications.
 	The VICUS output definition is very similar to the NANDRAD Outputs data structure, but
 	contains some more properties needed for the user interface.
 
@@ -66,65 +45,41 @@ namespace VICUS {
 
 	Also, default object lists are being created.
 */
-class OutputDefinition {
+class Outputs {
 	VICUS_READWRITE_PRIVATE
 public:
 
-	/*! Different options to handle time averaging/integration. */
-	enum timeType_t {
-		/*! Write outputs as calculated at output time points. */
-		OTT_NONE,		// Keyword: None			'Write values as calculated at output times.'
-		/*! Average value in last output interval. */
-		OTT_MEAN,		// Keyword: Mean			'Average values in time (mean value in output step).'
-		/*! Time integral of output value. */
-		OTT_INTEGRAL,	// Keyword: Integral		'Integrate values in time.'
-		NUM_OTT
+	/*! Flags. */
+	enum flag_t {
+		F_BinaryOutputs,				// Keyword: BinaryOutputs				'If true, output files are written in binary format (the default, if flag is missing).'
+		F_CreateDefaultZoneOutputs,		// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
+		F_CreateDefaultNetworkOutputs,	// Keyword: CreateDefaultNetworkOutputs	'If true, default output definitions for networks are created.'
+		NUM_F
 	};
-
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE_IFNOTEMPTY(OutputDefinition)
-	VICUS_COMP(OutputDefinition)
+	VICUS_READWRITE_IFNOTEMPTY(Outputs)
+	VICUS_COMP(Outputs)
 
+	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int									m_id = INVALID_ID;				// XML:A
+	/*! List with output (file) definitions. */
+	std::vector<NANDRAD::OutputDefinition>				m_definitions;				// XML:E
 
-	/*! Name of output */
-	std::string										m_name;							// XML:A
+	/*! List with output grids. */
+	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E
 
-	/*! Type of output */
-	std::string										m_type;							// XML:A
-
-	/*! Unit of output definition */
-	IBK::Unit										m_unit;							// XML:E
-
-	/*! Description of output definition */
-	std::string										m_description;
-
-	/*! Time Type of output definition */
-	timeType_t										m_timeType;						// XML:E
-
-	/*! Vector of all Vector indexes/ids */
-	std::vector<unsigned int>						m_vectorIds;					// XML:E
-
-	/*! Vector of all Vector Source object id(s) */
-	std::vector<unsigned int>						m_sourceObjectIds;				// XML:E
-
-	/*! Vector of all active Vector Source object id(s) */
-	std::vector<unsigned int>						m_activeSourceObjectIds;		// XML:E
-
-	/*! Map that holds all data to source objects
-		key is the id of the sourceObject;
+	/*! (optional) The time unit to be used in all output files.
+		If not set (undefined unit), the time unit is selected automatically
+		based on the simulation duration.
 	*/
-	std::map<unsigned int, SourceObject>			m_idToSourceObject;
+	IBK::Unit											m_timeUnit;					// XML:E
 
-	// ===================== ONLY NEEDED IN WIDGET ===================================
-
-	/*! Pointer to output grid */
-	NANDRAD::OutputGrid						*m_outputGrid = nullptr;
+	/*! (optional) If true, output files are written in binary format (the default, if flag is missing). */
+	IBK::Flag											m_flags[NUM_F];				// XML:E
 };
 
 } // namespace VICUS
 
-#endif // VICUS_OutputDefinitionH
+#endif // VICUS_OutputsH

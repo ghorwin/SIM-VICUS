@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.2">
+	<ProjectInfo>
+		<Created>Di Apr 13 17:44:07 2021</Created>
+		<LastEdited>Fr Jun 25 14:45:54 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="s">12740400</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">148.4583333</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>20.324 63.9051 7.4496</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.119254</Wp>
+				<X>0.0824831</X>
+				<Y>0.574602</Y>
+				<Z>0.805389</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="54" displayName="13791 - 01">
+								<IBK:Parameter name="Area" unit="m2">1</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">2.700000048</IBK:Parameter>
+								<Surfaces>
+									<Surface id="3" displayName="095">
+										<Polygon3D>20.01 47 0.499998, 20.01 49 0.499998, 20.01 49 2.5, 20.01 47 2.5</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="13" componentID="0" sideASurfaceID="0" />
+			<ComponentInstance id="14" componentID="0" sideASurfaceID="0" />
+			<ComponentInstance id="15" componentID="0" sideASurfaceID="0" />
+			<ComponentInstance id="16" componentID="0" sideASurfaceID="0" />
+			<ComponentInstance id="17" componentID="0" sideASurfaceID="0" />
+			<ComponentInstance id="1" componentID="1001" sideBSurfaceID="160" />
+			<ComponentInstance id="2" componentID="1001" sideBSurfaceID="4" />
+			<ComponentInstance id="18" componentID="1001" sideASurfaceID="60" />
+			<ComponentInstance id="19" componentID="1001" sideASurfaceID="1" />
+			<ComponentInstance id="20" componentID="1001" sideASurfaceID="2" />
+			<ComponentInstance id="21" componentID="1001" sideASurfaceID="3" />
+		</ComponentInstances>
+		<PlainGeometry>
+			<Surface id="2" displayName="New surface [2]">
+				<Polygon3D>20 46 3, 20 50 3, 21 50 3, 21 46 3</Polygon3D>
+			</Surface>
+			<Surface id="1" displayName="New surface">
+				<Polygon3D>20 46 3, 21 46 3, 21 46 0, 20 46 -3.8147e-06</Polygon3D>
+			</Surface>
+		</PlainGeometry>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer matId="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+					<Color>#cc0000</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+					<Color>#204a87</Color>
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1001</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>

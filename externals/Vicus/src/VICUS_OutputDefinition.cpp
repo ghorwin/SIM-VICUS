@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-
+	  
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -23,30 +23,23 @@
 	GNU General Public License for more details.
 */
 
-#include "VICUS_OutputDefinition.h"
+#include "VICUS_Outputs.h"
 
 namespace VICUS {
 
-bool OutputDefinition::operator!=(const OutputDefinition & other) const {
-
-	if (m_id != other.m_id)
+bool Outputs::operator!=(const Outputs & other) const {
+	for (int i=0; i<NUM_F; ++i)
+		if (m_flags[i] != other.m_flags[i])
+			return true;
+	if (m_timeUnit != other.m_timeUnit)
 		return true;
-	if (m_name != other.m_name)
+	if (m_definitions != other.m_definitions)
 		return true;
-	if (m_type != other.m_type)
-		return true;
-	if (m_unit != other.m_unit)
-		return true;
-	if (m_timeType != other.m_timeType)
-		return true;
-	if (m_sourceObjectIds != other.m_sourceObjectIds)
-		return true;
-	if (m_activeSourceObjectIds != other.m_activeSourceObjectIds)
+	if (m_grids != other.m_grids)
 		return true;
 
 	return false;
 }
-
 
 
 } // namespace VICUS

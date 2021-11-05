@@ -27,6 +27,9 @@
 #define VICUS_OutputsH
 
 #include "VICUS_CodeGenMacros.h"
+
+#include "VICUS_OutputDefinition.h"
+
 #include <NANDRAD_Outputs.h>
 
 #include <VICUS_OutputDefinition.h>
@@ -47,6 +50,9 @@ namespace VICUS {
 
 	Also, default object lists are being created.
 */
+
+
+
 class Outputs {
 	VICUS_READWRITE_PRIVATE
 public:
@@ -67,13 +73,10 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with output (file) definitions. */
-	std::vector<VICUS::OutputDefinition>				m_outputDefinitions;			// XML:E
+	std::vector<OutputDefinition>						m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E
-
-	/*! Hash code (MD5) of output variables file 'output_reference_list.txt' */
-	std::string											m_checkSum;					// XML:A
 
 	/*! (optional) The time unit to be used in all output files.
 		If not set (undefined unit), the time unit is selected automatically

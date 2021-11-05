@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.6">
+	<ProjectInfo>
+		<Created>Fr Sep 24 10:40:33 2021</Created>
+		<LastEdited>Fr Sep 24 10:40:33 2021</LastEdited>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter />
+		<SimulationParameter />
+		<Location>
+			<TimeZone>13</TimeZone>
+		</Location>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>1000</GridWidth>
+			<CameraTranslation>-27.0637 22.732 36.9772</CameraTranslation>
+			<RotationMatrix>
+				<Wp>-0.234258</Wp>
+				<X>-0.106389</X>
+				<Y>0.381735</Y>
+				<Z>0.887733</Z>
+			</RotationMatrix>
+			<FarDistance>400</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="8" displayName="Imported IDF Building Geometry">
+				<BuildingLevels>
+					<BuildingLevel id="9" displayName="Default building level">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="42" displayName="ATreppenhaus02">
+								<IBK:Parameter name="Area" unit="m2">18.3</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">71.35</IBK:Parameter>
+								<Surfaces>
+									<Surface id="1287" displayName="GroundFloor_36">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0.034375 -15.5003 0, 3.03443 -15.5003 0, 3.03443 -21.5988 0, 0.034375 -21.5988 0</Polygon3D>
+									</Surface>
+									<Surface id="1288" displayName="Wall_235">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0.034375 -15.5003 3.9, 3.03443 -15.5003 3.9, 3.03443 -15.5003 0, 0.034375 -15.5003 0</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="12568" displayName="Window_885">
+												<Polygon2D>0.146211 1.61, 1.15621 1.61, 1.15621 3.85, 0.146211 3.85</Polygon2D>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+									<Surface id="1289" displayName="Wall_5585">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0.034375 -21.5988 3.9, 0.034375 -15.5003 3.9, 0.034375 -15.5003 0, 0.034375 -21.5988 0</Polygon3D>
+									</Surface>
+									<Surface id="1290" displayName="Wall_5587">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03443 -21.5988 0, 3.03443 -21.5988 3.9, 0.034375 -21.5988 3.9, 0.034375 -21.5988 0</Polygon3D>
+									</Surface>
+									<Surface id="1291" displayName="Wall_5589">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03443 -15.5003 0, 3.03443 -15.5003 3.9, 3.03443 -19.9185 3.9, 3.03443 -19.9185 0</Polygon3D>
+									</Surface>
+									<Surface id="1292" displayName="Roof_898">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>3.03443 -15.5003 3.9, 0.034375 -15.5003 3.9, 0.034375 -21.5988 3.9, 3.03443 -21.5988 3.9</Polygon3D>
+									</Surface>
+									<Surface id="1293" displayName="Wall_16">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03443 -19.9185 3.9, 3.03443 -20.3808 3.9, 3.03443 -20.3808 0, 3.03443 -19.9185 0</Polygon3D>
+									</Surface>
+									<Surface id="1294" displayName="Wall_17">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03443 -20.3808 3.9, 3.03443 -21.5988 3.9, 3.03443 -21.5988 0, 3.03443 -20.3808 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="96" displayName="AOGTreppenhaus02">
+								<IBK:Parameter name="Area" unit="m2">18.3</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">48.12</IBK:Parameter>
+								<Surfaces>
+									<Surface id="2095" displayName="Wall_942">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0.034334 -15.5003 6.73, 3.03439 -15.5003 6.73, 3.03439 -15.5003 4.1, 0.034334 -15.5003 4.1</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="12595" displayName="Window_836">
+												<Polygon2D>0.950056 1.53, 2.05006 1.53, 2.05006 2.12999, 0.950056 2.12999</Polygon2D>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+									<Surface id="2096" displayName="GroundFloor_479">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0.034338 -15.5003 4.1, 3.03439 -15.5003 4.1, 3.03439 -21.5988 4.1, 0.034338 -21.5988 4.1</Polygon3D>
+									</Surface>
+									<Surface id="2097" displayName="Wall_5982">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03277 -21.5988 4.1, 3.03277 -21.5988 6.73, 0.034338 -21.5988 6.73, 0.034338 -21.5988 4.1</Polygon3D>
+									</Surface>
+									<Surface id="2098" displayName="Wall_6128">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>0.034338 -21.5988 4.1, 0.034338 -21.5988 6.73, 0.034338 -15.5003 6.73, 0.034338 -15.5003 4.1</Polygon3D>
+									</Surface>
+									<Surface id="2099" displayName="Wall_6164">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03439 -15.5003 4.35, 3.03439 -15.5003 6.73, 3.03439 -19.9185 6.73, 3.03439 -19.9185 4.35</Polygon3D>
+									</Surface>
+									<Surface id="2100" displayName="Wall_6165">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03439 -15.5003 4.1, 3.03439 -15.5003 4.15, 3.03439 -19.9185 4.15, 3.03439 -19.9185 4.1</Polygon3D>
+									</Surface>
+									<Surface id="2101" displayName="Roof_953">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>3.03439 -15.5003 6.73, 0.034338 -15.5003 6.73, 0.034338 -21.5988 6.73, 3.03439 -21.5988 6.73</Polygon3D>
+									</Surface>
+									<Surface id="2102" displayName="Wall_19">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03439 -20.3808 6.73, 3.03439 -20.3808 4.1, 3.03439 -19.9185 4.1, 3.03439 -19.9185 4.15, 3.03439 -15.5003 4.15, 3.03439 -15.5003 4.35, 3.03439 -19.9185 4.35, 3.03439 -19.9185 6.73</Polygon3D>
+									</Surface>
+									<Surface id="2103" displayName="Wall_20">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.03439 -20.3808 6.73, 3.03439 -21.5988 6.73, 3.03439 -21.5988 4.1, 3.03439 -20.3808 4.1</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="756" displayName="BEGMuellraum">
+								<IBK:Parameter name="Area" unit="m2">17.39</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">72.17</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11506" displayName="GroundFloor_120">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>3.47442 -15.5003 0, 6.83662 -15.5003 0, 6.83662 -22.0003 0, 5.61818 -22.0003 0, 5.61818 -19.9185 0, 3.47442 -19.9185 0</Polygon3D>
+									</Surface>
+									<Surface id="11507" displayName="Wall_807">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.47442 -15.5003 4.15, 6.83662 -15.5003 4.15, 6.83662 -15.5003 0, 3.47442 -15.5003 0</Polygon3D>
+										<SubSurfaces>
+											<SubSurface id="13007" displayName="Window_740">
+												<Polygon2D>1.21784 1.86, 2.72784 1.86, 2.72784 4.1, 1.21784 4.1</Polygon2D>
+											</SubSurface>
+										</SubSurfaces>
+									</Surface>
+									<Surface id="11508" displayName="Wall_5590">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.47442 -15.5003 4.1, 3.47442 -15.5003 3.9, 3.47442 -19.9185 3.9, 3.47442 -19.9185 4.1</Polygon3D>
+									</Surface>
+									<Surface id="11509" displayName="Wall_5591">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.47442 -19.9185 4.1, 3.47442 -19.9185 4.15, 3.47442 -15.5003 4.15, 3.47442 -15.5003 4.1</Polygon3D>
+									</Surface>
+									<Surface id="11510" displayName="Wall_5592">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.47442 -19.9185 0, 3.47442 -19.9185 3.9, 3.47442 -15.5003 3.9, 3.47442 -15.5003 0</Polygon3D>
+									</Surface>
+									<Surface id="11511" displayName="Roof_1842">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>5.61818 -21.9185 4.15, 5.61818 -22.0003 4.15, 6.83662 -22.0003 4.15, 6.83662 -21.9186 4.15</Polygon3D>
+									</Surface>
+									<Surface id="11512" displayName="Roof_1843">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>6.83662 -15.5003 4.15, 3.47442 -15.5003 4.15, 3.47442 -19.9185 4.15, 5.61818 -19.9185 4.15, 5.61818 -21.9185 4.15, 6.83662 -21.9186 4.15</Polygon3D>
+									</Surface>
+									<Surface id="11513" displayName="Wall_12898">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.61818 -21.7808 4.15, 5.61818 -20.3808 4.15, 5.61818 -20.3808 0, 5.61818 -21.7808 0</Polygon3D>
+									</Surface>
+									<Surface id="11514" displayName="Wall_12897">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.61818 -22.0003 0, 5.61818 -22.0003 4.15, 5.61818 -21.7808 4.15, 5.61818 -21.7808 0</Polygon3D>
+									</Surface>
+									<Surface id="11515" displayName="Wall_12896">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.61818 -20.3808 4.15, 5.61818 -19.9185 4.15, 5.61818 -19.9185 0, 5.61818 -20.3808 0</Polygon3D>
+									</Surface>
+									<Surface id="11516" displayName="Wall_12687">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.83662 -22.0003 4.15, 5.61818 -22.0003 4.15, 5.61818 -22.0003 0, 6.83662 -22.0003 0</Polygon3D>
+									</Surface>
+									<Surface id="11517" displayName="Wall_12542">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6.83662 -15.5003 4.15, 6.83662 -22.0003 4.15, 6.83662 -22.0003 0, 6.83662 -15.5003 0</Polygon3D>
+									</Surface>
+									<Surface id="11518" displayName="Wall_12923">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.26946 -19.9185 0, 5.26946 -19.9185 4.15, 3.91946 -19.9185 4.15, 3.91946 -19.9185 0</Polygon3D>
+									</Surface>
+									<Surface id="11519" displayName="Wall_12922">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.61818 -19.9185 4.15, 5.26946 -19.9185 4.15, 5.26946 -19.9185 0, 5.61818 -19.9185 0</Polygon3D>
+									</Surface>
+									<Surface id="11520" displayName="Wall_12921">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>3.91946 -19.9185 4.15, 3.47442 -19.9185 4.15, 3.47442 -19.9185 0, 3.91946 -19.9185 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="376" idComponent="50017" idSideASurface="1287" />
+			<ComponentInstance id="377" idComponent="50012" idSideASurface="1288" />
+			<ComponentInstance id="378" idComponent="50015" idSideASurface="1289" idSideBSurface="1351" />
+			<ComponentInstance id="379" idComponent="50015" idSideASurface="1290" idSideBSurface="1330" />
+			<ComponentInstance id="380" idComponent="50022" idSideASurface="1291" idSideBSurface="11510" />
+			<ComponentInstance id="381" idComponent="50013" idSideASurface="1292" idSideBSurface="2096" />
+			<ComponentInstance id="382" idComponent="50098" idSideASurface="1293" />
+			<ComponentInstance id="383" idComponent="50022" idSideASurface="1294" idSideBSurface="11504" />
+			<ComponentInstance id="773" idComponent="50015" idSideASurface="1847" idSideBSurface="2097" />
+			<ComponentInstance id="886" idComponent="50015" idSideASurface="2014" idSideBSurface="2098" />
+			<ComponentInstance id="928" idComponent="50012" idSideASurface="2095" />
+			<ComponentInstance id="929" idComponent="50022" idSideASurface="2099" idSideBSurface="11755" />
+			<ComponentInstance id="930" idComponent="50022" idSideASurface="11509" idSideBSurface="2100" />
+			<ComponentInstance id="931" idComponent="50013" idSideASurface="2101" idSideBSurface="2785" />
+			<ComponentInstance id="932" idComponent="50095" idSideASurface="2102" />
+			<ComponentInstance id="933" idComponent="50022" idSideASurface="11476" idSideBSurface="2103" />
+			<ComponentInstance id="6981" idComponent="50020" idSideASurface="11078" idSideBSurface="11517" />
+			<ComponentInstance id="7137" idComponent="50015" idSideASurface="11269" idSideBSurface="11516" />
+			<ComponentInstance id="7302" idComponent="50015" idSideASurface="11478" idSideBSurface="11513" />
+			<ComponentInstance id="7322" idComponent="50015" idSideASurface="11499" idSideBSurface="11518" />
+			<ComponentInstance id="7328" idComponent="50017" idSideASurface="11506" />
+			<ComponentInstance id="7329" idComponent="50012" idSideASurface="11507" />
+			<ComponentInstance id="7330" idComponent="50098" idSideASurface="11508" />
+			<ComponentInstance id="7331" idComponent="50096" idSideASurface="11511" />
+			<ComponentInstance id="7332" idComponent="50013" idSideASurface="11757" idSideBSurface="11512" />
+			<ComponentInstance id="7333" idComponent="50095" idSideASurface="11514" />
+			<ComponentInstance id="7334" idComponent="50095" idSideASurface="11515" />
+			<ComponentInstance id="7335" idComponent="50095" idSideASurface="11519" />
+			<ComponentInstance id="7336" idComponent="50098" idSideASurface="11520" />
+		</ComponentInstances>
+		<SubSurfaceComponentInstances>
+			<SubSurfaceComponentInstance id="14" idSubSurfaceComponent="160006" idSideASurface="12568" />
+			<SubSurfaceComponentInstance id="41" idSubSurfaceComponent="160006" idSideASurface="12595" />
+			<SubSurfaceComponentInstance id="453" idSubSurfaceComponent="160006" idSideASurface="13007" />
+		</SubSurfaceComponentInstances>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10009" displayName="de:[SimQuality] Stahlbeton|en:[SimQuality] reinforced concrete" color="#a29f2f">
+					<Notes>en:Contrete to be used in SimQuality test cases (TF12).|de:Beton zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.5</IBK:Parameter>
+				</Material>
+				<Material id="10014" displayName="Innenputz_DIN_EN_ISO_137912012-08_15mm_1" color="#62ff11">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6999999881</IBK:Parameter>
+				</Material>
+				<Material id="10025" displayName="Schaumpolystyroldaemmung_EPS_DGNB_160mm_1" color="#00ffd7">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1400</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.03500000015</IBK:Parameter>
+				</Material>
+				<Material id="10029" displayName="Schaumpolystyroldaemmung_EPS_DGNB_3_80mm_1" color="#bb6c00">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1400</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04500000179</IBK:Parameter>
+				</Material>
+				<Material id="10030" displayName="Zementestrich_80mm_1" color="#bfff00">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">850</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.399999976</IBK:Parameter>
+				</Material>
+				<Material id="10031" displayName="Putzmoertel_aus_Kalkzement_10mm_1" color="#35ff61">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">1800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">900</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1</IBK:Parameter>
+				</Material>
+				<Material id="10032" displayName="XPS_Daemmung_DIN_EN_13164_120mm_1" color="#b131ff">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">45</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.03599999845</IBK:Parameter>
+				</Material>
+				<Material id="10033" displayName="Beton_DIN_EN_206_250mm_1" color="#fe000b">
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2400</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.099999905</IBK:Parameter>
+				</Material>
+				<Material id="10034" displayName="Gipskartonplatte_nach_DIN18180_25mm_1" color="#e100ff">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">837.3599854</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.25</IBK:Parameter>
+				</Material>
+				<Material id="10035" displayName="Mineralwolle_WLG045_60mm_1" color="#f47900">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">830</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04500000179</IBK:Parameter>
+				</Material>
+				<Material id="10036" displayName="Mineralwolle_DGNB_30mm_1" color="#b5ff17">
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">120</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.03999999911</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="20001" displayName="AW11_Aussenwand_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10014">
+							<IBK:Parameter name="Thickness" unit="m">0.01499999966</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10025">
+							<IBK:Parameter name="Thickness" unit="m">0.1599999964</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10014">
+							<IBK:Parameter name="Thickness" unit="m">0.009999999776</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20002" displayName="DE01_Geschossdecke_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10029">
+							<IBK:Parameter name="Thickness" unit="m">0.07999999821</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10030">
+							<IBK:Parameter name="Thickness" unit="m">0.07999999821</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20003" displayName="IW11_Innenwand_Beton_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10031">
+							<IBK:Parameter name="Thickness" unit="m">0.009999999776</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.1999999881</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10031">
+							<IBK:Parameter name="Thickness" unit="m">0.009999999776</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20004" displayName="FB_01_Bodenplatte_gg_Erdreich_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10032">
+							<IBK:Parameter name="Thickness" unit="m">0.1199999973</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10033">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10029">
+							<IBK:Parameter name="Thickness" unit="m">0.07999999821</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10030">
+							<IBK:Parameter name="Thickness" unit="m">0.07999999821</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20006" displayName="IW12_Innenwand_GK-Trockenbau_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10034">
+							<IBK:Parameter name="Thickness" unit="m">0.02499999851</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10035">
+							<IBK:Parameter name="Thickness" unit="m">0.05999999866</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10034">
+							<IBK:Parameter name="Thickness" unit="m">0.02499999851</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20007" displayName="AW14_Wand_zu_Nachbargebaeude_DGNB">
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10036">
+							<IBK:Parameter name="Thickness" unit="m">0.02999999933</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10009">
+							<IBK:Parameter name="Thickness" unit="m">0.25</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10014">
+							<IBK:Parameter name="Thickness" unit="m">0.009999999776</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<Windows>
+				<Window id="30006" displayName="AF01-03_Fensterpaket_DGNB" color="#7fc500" idGlazingSystem="300008" methodFrame="None" methodDivider="None">
+					<DataSource>IDF Import</DataSource>
+				</Window>
+			</Windows>
+			<WindowGlazingSystems>
+				<WindowGlazingSystem id="300008" displayName="AF01-03_Fensterpaket_DGNB" color="#0050b6" modelType="Simple">
+					<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">0.9</IBK:Parameter>
+					<LinearSplineParameter name="SHGC">
+						<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="---">0.5 0.5 0.5 0.5 0.49 0.47 0.43 0.345 0.185 0 </Y>
+					</LinearSplineParameter>
+				</WindowGlazingSystem>
+			</WindowGlazingSystems>
+			<BoundaryConditions>
+				<BoundaryCondition id="40006" displayName="Inside surface" color="#00a3e0">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6.8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="40007" displayName="Ground surface" color="#0000bc">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Constant</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="40010" displayName="Outside surface" color="#ff7d21">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="50012" displayName="AW11_Aussenwand_DGNB-component" color="#4ed300">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20001</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40010</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50013" displayName="DE01_Geschossdecke_DGNB-component" color="#3fffb4">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20002</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40006</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50015" displayName="IW11_Innenwand_Beton_DGNB-component" color="#af00b4">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20003</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40006</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50017" displayName="FB_01_Bodenplatte_gg_Erdreich_DGNB-component" color="#90f900">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20004</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40007</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50020" displayName="IW12_Innenwand_GK-Trockenbau_DGNB-component" color="#9348ff">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20006</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40006</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50022" displayName="AW14_Wand_zu_Nachbargebaeude_DGNB-component" color="#dd2f00">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20007</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40006</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="50095" displayName="IW11_Innenwand_Beton_DGNB-component" color="#ffaf1d">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20003</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+				</Component>
+				<Component id="50096" displayName="DE01_Geschossdecke_DGNB-component" color="#6fff36">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20002</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+				</Component>
+				<Component id="50098" displayName="AW14_Wand_zu_Nachbargebaeude_DGNB-component" color="#46cdff">
+					<Type>Miscellaneous</Type>
+					<IdConstruction>20007</IdConstruction>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+				</Component>
+			</Components>
+			<SubSurfaceComponents>
+				<SubSurfaceComponent id="160006" displayName="AF01-03_Fensterpaket_DGNB-component" color="#00e619">
+					<Type>Window</Type>
+					<IdWindow>30006</IdWindow>
+					<IdSideABoundaryCondition>40006</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>40010</IdSideBBoundaryCondition>
+				</SubSurfaceComponent>
+			</SubSurfaceComponents>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>
