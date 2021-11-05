@@ -1426,9 +1426,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					}
 
-
-
-
 					Vic3D::Transform3D scaling;
 					scaling.setScale(scale);
 

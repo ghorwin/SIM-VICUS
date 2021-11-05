@@ -181,6 +181,9 @@ private:
 	/*! Map with all output definitions */
 	std::vector<OutputDefinition>					m_outputDefinitions;
 
+	/*! Checksum of output reference file */
+	QByteArray										m_checkSum;
+
 	/*! NANDRAD file with all data */
 	NANDRAD::Project								m_nandradProject;
 

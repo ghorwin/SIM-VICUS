@@ -130,7 +130,7 @@ void SVSimulationOutputOptions::updateUi() {
 	// we set the correct timetype
 	if(m_activeOutputDefinition != nullptr)
 		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-			if (m_activeOutputDefinition->m_outputdefinition.m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
+			if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
 				m_ui->comboBoxTimeType->setCurrentIndex(i);
 				break;
 			}
@@ -191,20 +191,20 @@ void SVSimulationOutputOptions::updateUi() {
 
 }
 
+
 // Returns empty QByteArray() on failure.
-std::string fileChecksum(const QString &fileName,
+QByteArray fileChecksum(const QString &fileName,
 						QCryptographicHash::Algorithm hashAlgorithm)
 {
 	QFile f(fileName);
 	if (f.open(QFile::ReadOnly)) {
 		QCryptographicHash hash(hashAlgorithm);
 		if (hash.addData(&f)) {
-			return QString(hash.result().toHex()).toStdString();
+			return hash.result();
 		}
 	}
-	return std::string();
+	return QByteArray();
 }
-
 
 void SVSimulationOutputOptions::generateOutputTable() {
 	FUNCID(SVSimulationOutputOptions::generateOutputTable);
@@ -227,7 +227,6 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	qDebug() << fileOutputVars.c_str();
 
 	std::vector<std::string> outputContent;
-	std::string checkSum =  fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
 
 	try {
 		IBK::FileReader::readAll(fileOutputVars, outputContent, std::vector<std::string>());
@@ -273,22 +272,22 @@ void SVSimulationOutputOptions::generateOutputTable() {
 
 			// set pointer to output grid
 			if(m_outputs != nullptr)
-				od.m_outputdefinition.m_outputGrid = &m_outputs->m_grids[0];
+				od.m_outputGrid = &m_outputs->m_grids[0];
 
 			// set Output time type
-			od.m_outputdefinition.m_timeType = VICUS::OutputDefinition::OTT_NONE;
+			od.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
 
 			if (j == ORT_VariableName) {
 				object = IBK::explode(trimmedString.toStdString(), '.', 2);
-				od.m_outputdefinition.m_type = object[0];
-				od.m_outputdefinition.m_name = object[1];
+				od.m_type = QString::fromStdString(object[0]);
+				od.m_name = QString::fromStdString(object[1]);
 			}
 			else if (j == ORT_Unit)
-				od.m_outputdefinition.m_unit = IBK::Unit(trimmedString.toStdString());
+				od.m_unit = IBK::Unit(trimmedString.toStdString());
 			else if (j == ORT_Description)
-				od.m_outputdefinition.m_description = trimmedString.toStdString();
+				od.m_description = trimmedString;
 			else if (j == ORT_SourceObjectIds) {
-				od.m_outputdefinition.m_sourceObjectIds.clear();
+				od.m_sourceObjectIds.clear();
 				std::vector<std::string> ids;
 				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
 				for (std::string id : ids) {
