@@ -74,6 +74,7 @@ public:
 
 	/*! Generates NANDRAD schedules from data stored in this object and inserts these into the given schedule group.
 		The variable to be inserted into the schedule group is given in parameter 'varName' (formatted including unit).
+		Only period schedule are valid.
 	*/
 	void insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const;
 
