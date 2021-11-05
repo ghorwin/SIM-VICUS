@@ -452,9 +452,14 @@ void SVPropEditGeometry::scale() {
 			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 
 			// we cache our poldon data
-			IBKMK::Vector3D offset3d = s->geometry().offset();
-			const IBKMK::Vector3D &localX = s->geometry().localX();
-			const IBKMK::Vector3D &localY = s->geometry().localY();
+			IBKMK::Vector3D offset3dOld = s->geometry().offset();
+			IBKMK::Vector3D offset3dNew = modS.geometry().offset();
+
+			const IBKMK::Vector3D &localXOld = s->geometry().localX();
+			const IBKMK::Vector3D &localYOld = s->geometry().localY();
+
+			const IBKMK::Vector3D &localXNew = modS.geometry().localX();
+			const IBKMK::Vector3D &localYNew = modS.geometry().localY();
 
 			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
 			// now we also have to scale the sub surfaces
@@ -462,11 +467,8 @@ void SVPropEditGeometry::scale() {
 
 				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
 
-				if (!s->subSurfaces()[i].m_selected || !s->subSurfaces()[i].m_visible)
-					continue;
-
 				newSubSurfs[i] = modS.subSurfaces()[i];
-				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
+				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(s->subSurfaces()[i]);
 				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
 
 				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
@@ -474,17 +476,18 @@ void SVPropEditGeometry::scale() {
 
 						// we now calculate the 3D points of the sub surface
 						// afterwards we scale up the surface
-						IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
+						IBKMK::Vector3D v3D = offset3dOld + localXOld * v2D.m_x + localYOld * v2D.m_y;
 
 						Vic3D::Transform3D t;
-						t.scale(QtExt::IBKVector2QVector(scale) );
-						t.translate(QtExt::IBKVector2QVector(trans) );
-						t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v3D) );
-						v3D = QtExt::QVector2IBKVector(t.translation() );
-
+						if (s->subSurfaces()[i].m_selected && s->subSurfaces()[i].m_visible) {
+							t.scale(QtExt::IBKVector2QVector(scale) );
+							t.translate(QtExt::IBKVector2QVector(trans) );
+							t.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v3D) );
+							v3D = QtExt::QVector2IBKVector(t.translation() );
+						}
 						// and we calculate back the projection on the plane
 						// we have to take the offset of our new scaled polygon
-						IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
+						IBKMK::planeCoordinates(offset3dNew, localXNew, localYNew, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
 
 				}
 
@@ -1399,9 +1402,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 							local = m_cso->localZAxis();
 						}
 
-						newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diff * local.x();
-						newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diff * local.y();
-						newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diff * local.z();
+						newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diff * std::fabs(local.x());
+						newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diff * std::fabs(local.y());
+						newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diff * std::fabs(local.z());
 
 						scale.setX(newBBDimGlobal.m_x / (std::fabs(m_bbDim[OM_Global].m_x) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_x));
 						scale.setY(newBBDimGlobal.m_y / (std::fabs(m_bbDim[OM_Global].m_y) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_y));
