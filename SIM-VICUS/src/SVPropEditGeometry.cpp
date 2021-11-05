@@ -1372,11 +1372,53 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// compute offset from current local coordinate system position
 					QVector3D scale;
 
-					scale.setX( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_x ) ) );
-					scale.setY( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_y ) ) );
-					scale.setZ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_z ) ) );
-					// now compose a transform object and set it in the wireframe object
-					// first we scale our selected objects
+					if (m_orientationMode == OM_Local) {
+						// we know the local bounding box
+						// we can scale up the local bounding box by the factor
+						// finally we calc back our dimensions of the global bounding box
+
+						IBKMK::Vector3D newBBDimLocal = m_bbDim[OM_Local];
+						IBKMK::Vector3D newBBDimGlobal = m_bbDim[OM_Global];
+
+						QVector3D local;
+						double diff;
+
+						if (lineEdit == m_ui->lineEditX) { // we scale with the x axis
+							newBBDimLocal.m_x = targetScale.m_x;
+							diff = newBBDimLocal.m_x - m_bbDim[OM_Local].m_x;
+							local = m_cso->localXAxis();
+						}
+						else if (lineEdit == m_ui->lineEditY) {  // we scale with the y axis
+							newBBDimLocal.m_y = targetScale.m_y;
+							diff = newBBDimLocal.m_y - m_bbDim[OM_Local].m_y;
+							local = m_cso->localYAxis();
+						}
+						else { // we scale with the z axis
+							newBBDimLocal.m_z = targetScale.m_z;
+							diff = newBBDimLocal.m_z - m_bbDim[OM_Local].m_z;
+							local = m_cso->localZAxis();
+						}
+
+						newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diff * local.x();
+						newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diff * local.y();
+						newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diff * local.z();
+
+						scale.setX(newBBDimGlobal.m_x / (std::fabs(m_bbDim[OM_Global].m_x) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_x));
+						scale.setY(newBBDimGlobal.m_y / (std::fabs(m_bbDim[OM_Global].m_y) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_y));
+						scale.setZ(newBBDimGlobal.m_z / (std::fabs(m_bbDim[OM_Global].m_z) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_z));
+					}
+					else {
+
+
+						scale.setX( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_x ) < 1E-4 ? 1.0 : targetScale.m_x / ( m_bbDim[m_orientationMode].m_x < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_x ) ) );
+						scale.setY( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_y ) < 1E-4 ? 1.0 : targetScale.m_y / ( m_bbDim[m_orientationMode].m_y < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_y ) ) );
+						scale.setZ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : ( std::fabs(targetScale.m_z ) < 1E-4 ? 1.0 : targetScale.m_z / ( m_bbDim[m_orientationMode].m_z < 1E-4 ? 1.0 : m_bbDim[m_orientationMode].m_z ) ) );
+						// now compose a transform object and set it in the wireframe object
+						// first we scale our selected objects
+
+					}
+
+
 
 
 					Vic3D::Transform3D scaling;
@@ -1390,9 +1432,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					const QVector3D &transObj = m_cso->transform().translation();
 
-					trans.m_x = transObj.x() < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.x() );
-					trans.m_y = transObj.y() < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.y() );
-					trans.m_z = transObj.z() < 1E-4 ? 0.0 : transObj.z() * ( 1 - scale.z() );
+					trans.m_x = std::fabs(transObj.x()) < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.x() );
+					trans.m_y = std::fabs(transObj.y()) < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.y() );
+					trans.m_z = std::fabs(transObj.z()) < 1E-4 ? 0.0 : transObj.z() * ( 1 - scale.z() );
 					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
 
 					// we give our transformation to the wire frame object
@@ -1419,45 +1461,35 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 						IBKMK::Vector3D newBBDimLocal = m_bbDim[OM_Local];
 						IBKMK::Vector3D newBBDimGlobal = m_bbDim[OM_Global];
 
+						QVector3D local;
+						double diff;
+
 						if (lineEdit == m_ui->lineEditX) { // we scale with the x axis
 							newBBDimLocal.m_x = scale.x() * m_bbDim[OM_Local].m_x;
-
-							double diffX = newBBDimLocal.m_x - m_bbDim[OM_Local].m_x;
-
-							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffX * m_cso->localXAxis().x();
-							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffX * m_cso->localXAxis().y();
-							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffX * m_cso->localXAxis().z();
-
-							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
-							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
-							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+							diff = newBBDimLocal.m_x - m_bbDim[OM_Local].m_x;
+							local = m_cso->localXAxis();
 						}
 						else if (lineEdit == m_ui->lineEditY) {  // we scale with the y axis
 							newBBDimLocal.m_y = scale.y() * m_bbDim[OM_Local].m_y;
-
-							double diffY = newBBDimLocal.m_y - m_bbDim[OM_Local].m_y;
-
-							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffY * m_cso->localYAxis().x();
-							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffY * m_cso->localYAxis().y();
-							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffY * m_cso->localYAxis().z();
-
-							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
-							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
-							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+							diff = newBBDimLocal.m_y - m_bbDim[OM_Local].m_y;
+							local = m_cso->localYAxis();
 						}
 						else { // we scale with the z axis
 							newBBDimLocal.m_z = scale.z() * m_bbDim[OM_Local].m_z;
-
-							double diffZ = newBBDimLocal.m_z - m_bbDim[OM_Local].m_z;
-
-							newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diffZ * m_cso->localZAxis().x();
-							newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diffZ * m_cso->localZAxis().y();
-							newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diffZ * m_cso->localZAxis().z();
-
-							scale.setX(newBBDimGlobal.m_x / m_bbDim[OM_Global].m_x);
-							scale.setY(newBBDimGlobal.m_y / m_bbDim[OM_Global].m_y);
-							scale.setZ(newBBDimGlobal.m_z / m_bbDim[OM_Global].m_z);
+							diff = newBBDimLocal.m_z - m_bbDim[OM_Local].m_z;
+							local = m_cso->localZAxis();
 						}
+
+						newBBDimGlobal.m_x = m_bbDim[OM_Global].m_x + diff * local.x();
+						newBBDimGlobal.m_y = m_bbDim[OM_Global].m_y + diff * local.y();
+						newBBDimGlobal.m_z = m_bbDim[OM_Global].m_z + diff * local.z();
+
+						scale.setX(newBBDimGlobal.m_x / (std::fabs(m_bbDim[OM_Global].m_x) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_x));
+						scale.setY(newBBDimGlobal.m_y / (std::fabs(m_bbDim[OM_Global].m_y) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_y));
+						scale.setZ(newBBDimGlobal.m_z / (std::fabs(m_bbDim[OM_Global].m_z) < 1e-4 ? 1e-4 : m_bbDim[OM_Global].m_z));
+					}
+					else {
+
 
 
 					}
@@ -1472,9 +1504,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					IBKMK::Vector3D trans;
 					const QVector3D &transObj = m_cso->transform().translation();
 
-					trans.m_x = transObj.x() < 1E-4 ? 0.0 : transObj.x() * ( 1 - scale.x() );
-					trans.m_y = transObj.y() < 1E-4 ? 0.0 : transObj.y() * ( 1 - scale.y() );
-					trans.m_z = transObj.z() < 1E-4 ? 0.0 : transObj.z() * ( 1 - scale.z() );
+					trans.m_x = std::fabs(transObj.x()) < 1E-4 ? 0.0 : transObj.x() * ( 1.0 - scale.x() );
+					trans.m_y = std::fabs(transObj.y()) < 1E-4 ? 0.0 : transObj.y() * ( 1.0 - scale.y() );
+					trans.m_z = std::fabs(transObj.z()) < 1E-4 ? 0.0 : transObj.z() * ( 1.0 - scale.z() );
 
 					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
 
