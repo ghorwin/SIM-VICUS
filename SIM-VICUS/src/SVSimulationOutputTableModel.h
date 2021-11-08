@@ -32,7 +32,7 @@
 #include <QFont>
 #include <QColor>
 
-#include <NANDRAD_OutputDefinition.h>
+#include <VICUS_OutputDefinition.h>
 
 #include <IBK_Unit.h>
 
@@ -42,48 +42,17 @@ namespace NANDRAD {
 	class OutputGrid;
 }
 
-struct SourceObject {
-
-	SourceObject(){}
-
-	SourceObject(unsigned int id, std::string displayName):
-		m_id(id),
-		m_displayName(displayName)
-	{}
-
-	/*! Indicates whether source object is set active */
-	bool						m_isActive = false;
-
-	/*! ID of Source Object */
-	unsigned int				m_id;
-	/*! Display Name of source object */
-	std::string					m_displayName;
-
-};
-
 struct OutputDefinition {
 
 	OutputDefinition(){}
 
-	/*! Indicates whether output definition is set active */
-	bool						m_isActive = false;
+	OutputDefinition(VICUS::OutputDefinition &od, bool isActive):
+		m_outputdefinition(od),
+		m_isActive(isActive)
+	{}
 
-	/*! Type of output */
-	QString									m_type;
-	/*! Name of output */
-	QString									m_name;
-	/*! Unit of output definition */
-	IBK::Unit								m_unit;
-	/*! Description of output definition */
-	QString									m_description;
-	/*! Time Type of output definition */
-	NANDRAD::OutputDefinition::timeType_t	m_timeType;
-	/*! Vector of all Vector indexes/ids */
-	std::vector<unsigned int>				m_vectorIds;
-	/*! Vector of all Vector Source object id(s) */
-	std::vector<SourceObject>				m_sourceObjectIds;
-	/*! Pointer to output grid */
-	NANDRAD::OutputGrid						*m_outputGrid = nullptr;
+	VICUS::OutputDefinition			m_outputdefinition;
+	bool							m_isActive = false;
 
 };
 
@@ -105,11 +74,11 @@ public:
 	/*! Updated the row with changed data */
 	void updateOutputData(unsigned int row);
 
-	std::vector<OutputDefinition>			*m_outputDefinitions;
+	std::vector<OutputDefinition>								*m_outputDefinitions = nullptr;
 
-	QFont									m_itemFont;
+	QFont														m_itemFont;
 
-	QString									m_fileHash;
+	QString														m_fileHash;
 };
 
 #endif // SVSIMULATIONOUTPUTTABLEMODEL_H

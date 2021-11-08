@@ -8,8 +8,10 @@ SVSimulationOutputTableModel::SVSimulationOutputTableModel(QObject *parent) :
 
 
 int SVSimulationOutputTableModel::rowCount(const QModelIndex & /*parent*/) const {
-	int size = (int)m_outputDefinitions->size();
-	return size;
+	if (m_outputDefinitions == nullptr)
+		return 0;
+
+	return (int)m_outputDefinitions->size();
 }
 
 
@@ -20,21 +22,21 @@ int SVSimulationOutputTableModel::columnCount(const QModelIndex & /*parent*/) co
 QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
-	const OutputDefinition & var = (*m_outputDefinitions)[(size_t)index.row()];
+	OutputDefinition & var = (*m_outputDefinitions)[(size_t)index.row()];
 	switch (role) {
 		case Qt::DisplayRole : {
 			switch (index.column()) {
 				case 1 : // type
-					return var.m_type;
+					return QString::fromStdString(var.m_outputdefinition.m_type);
 				case 2 : // name
-					return var.m_name;
+					return QString::fromStdString(var.m_outputdefinition.m_name);
 				case 3 : // unit
-					return QString::fromStdString(var.m_unit.name());
+					return QString::fromStdString(var.m_outputdefinition.m_unit.name());
 //				case 4 : // description
 //					return var.m_description;
 				case 4 : // source
-					return (var.m_sourceObjectIds.size() == 1) ?
-								QString::fromStdString(var.m_sourceObjectIds[0].m_displayName) : "*";
+					return (var.m_outputdefinition.m_sourceObjectIds.size() == 1) ?
+							QString::fromStdString(var.m_outputdefinition.m_idToSourceObject[var.m_outputdefinition.m_sourceObjectIds[0]].m_displayName) : "*";
 			}
 		} break;
 
