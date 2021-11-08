@@ -866,7 +866,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bo
 	}
 
 	// set new state for output definition with updated source ids
-	updateOutputDefinition(od, !newState);
+	updateOutputDefinition(od, newState);
 
 }
 
@@ -961,6 +961,8 @@ void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
 	QItemSelectionModel *selection = m_ui->tableViewOutputList->selectionModel();
 	unsigned int cachedRow;
 
+	m_itemIsSet = false;
+
 	for (const QModelIndex & proxyIndex: m_ui->tableViewOutputList->selectionModel()->selectedRows()) {
 		// configure new input var - requires valid selection
 		Q_ASSERT(proxyIndex.isValid());
@@ -978,17 +980,17 @@ void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
 	}
 
 	updateOutputUi(cachedRow);
-	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+//	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 
 void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 	m_outputTableProxyModel->setFilterRole(Qt::UserRole);
 	m_outputTableProxyModel->setFilterKeyColumn(0);
+	m_itemIsSet = false;
 	if(checked)
 		m_outputTableProxyModel->setFilterWildcard("1");
 	else
 		m_outputTableProxyModel->setFilterWildcard("*");
-	m_itemIsSet = false;
 }
 
 void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
@@ -1026,8 +1028,8 @@ void SVSimulationOutputOptions::on_toolButtonRemoveSource_clicked(){
 
 	}
 
-	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
 	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
+	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
 	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 
