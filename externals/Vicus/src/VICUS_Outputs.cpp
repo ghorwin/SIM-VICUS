@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -33,7 +33,7 @@ bool Outputs::operator!=(const Outputs & other) const {
 			return true;
 	if (m_timeUnit != other.m_timeUnit)
 		return true;
-	if (m_definitions != other.m_definitions)
+	if (m_outputDefinitions != other.m_outputDefinitions)
 		return true;
 	if (m_grids != other.m_grids)
 		return true;

@@ -36,20 +36,32 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 	FUNCID(Outputs::readXMLPrivate);
 
 	try {
+		// search for mandatory attributes
+		// reading attributes
+		const TiXmlAttribute * attrib = element->FirstAttribute();
+		while (attrib) {
+			const std::string & attribName = attrib->NameStr();
+			if (attribName == "checkSum")
+				m_checkSum = attrib->ValueStr();
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			attrib = attrib->Next();
+		}
 		// search for mandatory elements
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Definitions") {
+			if (cName == "OutputDefinitions") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
 					if (c2Name != "OutputDefinition")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NANDRAD::OutputDefinition obj;
+					VICUS::OutputDefinition obj;
 					obj.readXML(c2);
-					m_definitions.push_back(obj);
+					m_outputDefinitions.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -97,13 +109,15 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("Outputs");
 	parent->LinkEndChild(e);
 
+	if (!m_checkSum.empty())
+		e->SetAttribute("checkSum", m_checkSum);
 
-	if (!m_definitions.empty()) {
-		TiXmlElement * child = new TiXmlElement("Definitions");
+	if (!m_outputDefinitions.empty()) {
+		TiXmlElement * child = new TiXmlElement("OutputDefinitions");
 		e->LinkEndChild(child);
 
-		for (std::vector<NANDRAD::OutputDefinition>::const_iterator it = m_definitions.begin();
-			it != m_definitions.end(); ++it)
+		for (std::vector<VICUS::OutputDefinition>::const_iterator it = m_outputDefinitions.begin();
+			it != m_outputDefinitions.end(); ++it)
 		{
 			it->writeXML(child);
 		}
