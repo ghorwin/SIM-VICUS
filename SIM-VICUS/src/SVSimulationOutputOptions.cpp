@@ -584,9 +584,9 @@ void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggle
 
 void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
 	m_ui->lineEditName->clear();
-	m_outputTableProxyModel->setFilterRegularExpression(filterKey);
+	m_outputTableProxyModel->setFilterWildcard(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
-	//	m_itemIsSet = false;
+	// m_itemIsSet = false;
 }
 
 
@@ -930,7 +930,7 @@ void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, boo
 
 	od.m_isActive = active;
 
-	if(active)
+	if(active) {
 		for (std::vector<VICUS::OutputDefinition>::iterator it = m_outputs->m_outputDefinitions.begin();
 			 it != m_outputs->m_outputDefinitions.end(); ++it) {
 			VICUS::OutputDefinition &vod = *it;
@@ -940,6 +940,9 @@ void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, boo
 				break;
 			}
 		}
+		if(!inList)
+			m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
+	}
 	else {
 		for (unsigned int i =0; i<m_outputs->m_outputDefinitions.size(); ++i) {
 			VICUS::OutputDefinition &vod = m_outputs->m_outputDefinitions[i];
@@ -952,8 +955,7 @@ void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, boo
 		Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
 		m_outputTableModel->updateOutputData((unsigned int)sourceIndex.row());
 	}
-	if(!inList)
-		m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
+
 }
 
 void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
