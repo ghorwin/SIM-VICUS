@@ -37,6 +37,9 @@
 #include <NANDRAD_OutputDefinition.h>
 #include <NANDRAD_Project.h>
 
+#include <VICUS_OutputDefinition.h>
+#include <VICUS_Outputs.h>
+
 #include "SVSimulationOutputTableModel.h"
 
 namespace Ui {
@@ -46,6 +49,8 @@ namespace Ui {
 namespace VICUS {
 	class Outputs;
 }
+
+
 
 /*! Widget with settings related to location. */
 class SVSimulationOutputOptions : public QWidget {
@@ -155,16 +160,21 @@ private:
 	/*! Update Output UI with Source Table. */
 	void updateOutputUi(unsigned int row);
 
+	/*! Sets Activation state of 'm_outputDefinitions' and updated 'm_outputs' with 'm_outputDefinitions'
+		when it is activated
+	*/
+	void setActive(OutputDefinition &od, bool active = true);
+
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
 
 	/*! QFont */
 	QFont											m_font;
 
-	/*! Pointer to VICUS Outputs */
+	/*! Pointer to VICUS Outputs with active output definitions*/
 	VICUS::Outputs									*m_outputs = nullptr;
 
-	/*! Vector with all parsed output definitions */
+	/*! Map with all output definitions */
 	std::vector<OutputDefinition>					m_outputDefinitions;
 
 	/*! NANDRAD file with all data */
