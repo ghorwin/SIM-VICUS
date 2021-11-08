@@ -941,11 +941,10 @@ void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, boo
 			}
 		}
 	else {
-		for (std::vector<VICUS::OutputDefinition>::iterator it = m_outputs->m_outputDefinitions.begin();
-			 it != m_outputs->m_outputDefinitions.end(); ++it) {
-			VICUS::OutputDefinition &vod = *it;
+		for (unsigned int i =0; i<m_outputs->m_outputDefinitions.size(); ++i) {
+			VICUS::OutputDefinition &vod = m_outputs->m_outputDefinitions[i];
 			if(vod.m_id == od.m_outputdefinition.m_id) {
-				m_outputs->m_outputDefinitions.erase(it); // erase the definition
+				m_outputs->m_outputDefinitions.erase(m_outputs->m_outputDefinitions.begin()+i); // erase the definition
 				break;
 			}
 		}
