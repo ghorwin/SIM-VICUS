@@ -94,6 +94,8 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableWidgetSourceObjectIds->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );
 	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
 	m_ui->tableWidgetSourceObjectIds->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::MultiSelection);
+	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	m_ui->comboBoxTimeType->blockSignals(true);
 	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
@@ -197,7 +199,7 @@ std::string fileChecksum(const QString &fileName,
 	if (f.open(QFile::ReadOnly)) {
 		QCryptographicHash hash(hashAlgorithm);
 		if (hash.addData(&f)) {
-			return QTextCodec::codecForMib(1015)->toUnicode(hash.result() ).toStdString();
+			return QString(hash.result().toHex()).toStdString();
 		}
 	}
 	return std::string();
@@ -335,14 +337,26 @@ void SVSimulationOutputOptions::generateOutputTable() {
 		}
 	}
 
+	// we restore our outputs if checkSum is equal
 	if(m_outputs->m_checkSum.empty())
 		m_outputs->m_checkSum = fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
 	else {
 		if (m_outputs->m_checkSum == checkSum){
+			m_ui->radioButtonCustom->setChecked(true);
 			// regenerate outputs
 			for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-
+				for (unsigned int j=0; j<m_outputDefinitions.size(); ++j) {
+					if (m_outputs->m_outputDefinitions[i].m_id == m_outputDefinitions[j].m_outputdefinition.m_id) {
+						m_outputDefinitions[j].m_isActive = true;
+						for (unsigned int id : m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds) {
+							m_outputDefinitions[j].m_outputdefinition.m_idToSourceObject[id].m_isActive = true;
+						}
+						m_outputDefinitions[j].m_outputdefinition.m_activeSourceObjectIds = m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds;
+						break;
+					}
+				}
 			}
+			QMessageBox::information(this, QString(), tr("Regenerated custom outputs under 'outputs' tab."));
 		}
 		else
 			m_outputs->m_outputDefinitions.clear();
@@ -631,7 +645,9 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 		itemID->setData(Qt::UserRole, i);
 		itemName->setData(Qt::UserRole, i);
 	}
-	setActive(od, !outputDefinitionState);
+
+	// we update the output definition
+	updateOutputDefinition(od, !outputDefinitionState);
 
 	tw.setSortingEnabled(true);
 
@@ -716,6 +732,8 @@ void SVSimulationOutputOptions::on_pushButtonAllSources_clicked() {
 		itemID->setFont(f);
 		itemName->setFont(f);
 	}
+
+	updateOutputDefinition(od, true);
 }
 
 void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item) {
@@ -744,7 +762,7 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 		}
 	}
 
-	setActive(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
+	updateOutputDefinition(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
 
 	QFont f(m_font);
 	f.setItalic(!so.m_isActive);
@@ -775,6 +793,8 @@ void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
 		itemName->setFont(f);
 
 	}
+
+	updateOutputDefinition(od, false);
 }
 
 void SVSimulationOutputOptions::on_comboBoxOutoutGrid_currentIndexChanged(int index){
@@ -809,7 +829,7 @@ void SVSimulationOutputOptions::on_toolButtonAddOutput_clicked() {
 		QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
 
 		unsigned int row = (unsigned int)srcIndex.row();
-		Q_ASSERT(row < m_outputs->m_outputDefinitions.size());
+		Q_ASSERT(row < m_outputDefinitions.size());
 
 		// we set our
 		updateOutputDefinitionState(row, true);
@@ -821,7 +841,7 @@ void SVSimulationOutputOptions::on_toolButtonAddOutput_clicked() {
 }
 
 void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bool newState) {
-	Q_ASSERT(row<m_outputs->m_outputDefinitions.size());
+	Q_ASSERT(row<m_outputDefinitions.size());
 
 	OutputDefinition &od = m_outputDefinitions[row];
 
@@ -846,7 +866,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bo
 	}
 
 	// set new state for output definition with updated source ids
-	setActive(od, !newState);
+	updateOutputDefinition(od, !newState);
 
 }
 
@@ -861,9 +881,11 @@ void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
 
 	if(od.m_outputdefinition.m_sourceObjectIds.size() == 1) {
 		m_ui->widgetSource->setVisible(false);
+		m_ui->verticalSpacer->changeSize(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
 	}
 	else {
 		m_ui->widgetSource->setVisible(true);
+		m_ui->verticalSpacer->changeSize(0,0, QSizePolicy::Fixed, QSizePolicy::Fixed);
 		tw.clearContents(); // we also clear all previous contents
 		tw.setRowCount(od.m_outputdefinition.m_sourceObjectIds.size() );
 		m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
@@ -903,7 +925,7 @@ void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
 
 }
 
-void SVSimulationOutputOptions::setActive(OutputDefinition &od, bool active) {
+void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, bool active) {
 	bool inList = false;
 
 	od.m_isActive = active;
@@ -927,6 +949,9 @@ void SVSimulationOutputOptions::setActive(OutputDefinition &od, bool active) {
 				break;
 			}
 		}
+		QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(m_ui->tableViewOutputList->currentIndex());
+		Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
+		m_outputTableModel->updateOutputData((unsigned int)sourceIndex.row());
 	}
 	if(!inList)
 		m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
@@ -977,5 +1002,61 @@ void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int inde
 	}
 
 	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_timeType = (VICUS::OutputDefinition::timeType_t)index;
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonRemoveSource_clicked(){
+
+	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+
+	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
+		unsigned int row = (unsigned int)proxyIndex.row();
+
+		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
+		so.m_isActive = false;
+
+		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+			if(*it == so.m_id) {
+				// delete source object id
+				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
+				break;
+			}
+		}
+
+	}
+
+	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
+	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
+	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
+	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+
+	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
+		unsigned int row = (unsigned int)proxyIndex.row();
+
+		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
+		so.m_isActive = true;
+
+		bool inList = false;
+		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+			if(*it == so.m_id) {
+				// already in list of source object ids
+				inList = true;
+				break;
+			}
+		}
+
+		if (!inList)
+			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id);
+	}
+
+	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
+	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
+	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 

@@ -144,6 +144,10 @@ private slots:
 
 	void on_comboBoxTimeType_currentIndexChanged(int index);
 
+	void on_toolButtonRemoveSource_clicked();
+
+	void on_toolButtonAddSource_clicked();
+
 private:
 
 	/*! Finds the corresponding nandrad model by id and returns its name
@@ -163,7 +167,7 @@ private:
 	/*! Sets Activation state of 'm_outputDefinitions' and updated 'm_outputs' with 'm_outputDefinitions'
 		when it is activated
 	*/
-	void setActive(OutputDefinition &od, bool active = true);
+	void updateOutputDefinition(OutputDefinition &od, bool active = true);
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
