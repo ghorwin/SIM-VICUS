@@ -680,7 +680,7 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 
 	// we find our last selected object
 	unsigned int row = 0;
-	if(m_itemIsSet) {
+	if(m_itemIsSet && !m_itemSelection.indexes().isEmpty()) {
 		const QModelIndex &sourceIndexMax = m_outputTableProxyModel->mapToSource(selection.indexes()[selection.indexes().size()-1]);
 		const QModelIndex &cachedSourceIndexMax = m_outputTableProxyModel->mapToSource(m_itemSelection.indexes()[m_itemSelection.indexes().size()-1]);
 
@@ -838,6 +838,7 @@ void SVSimulationOutputOptions::on_toolButtonAddOutput_clicked() {
 	}
 
 	updateOutputUi(cachedRow);
+	m_ui->tableViewOutputList->setFocus();
 }
 
 void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bool newState) {
@@ -931,9 +932,7 @@ void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, boo
 	od.m_isActive = active;
 
 	if(active) {
-		for (std::vector<VICUS::OutputDefinition>::iterator it = m_outputs->m_outputDefinitions.begin();
-			 it != m_outputs->m_outputDefinitions.end(); ++it) {
-			VICUS::OutputDefinition &vod = *it;
+		for (VICUS::OutputDefinition &vod : m_outputs->m_outputDefinitions) {
 			if(vod.m_id == od.m_outputdefinition.m_id) {
 				vod = od.m_outputdefinition; // update the definition
 				inList = true;
