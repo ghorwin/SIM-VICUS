@@ -250,6 +250,20 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		referencedConstructions.insert(m_constructions[c->m_idConstruction]);
 		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]);
 		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]);
+
+		const VICUS::BoundaryCondition *bcA = m_boundaryConditions[c->m_idSideABoundaryCondition];
+		if(bcA != nullptr){
+			if(bcA->m_heatConduction.m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled){
+				referencedSchedule.insert(m_schedules[bcA->m_heatConduction.m_idSchedule]);
+			}
+		}
+
+		const VICUS::BoundaryCondition *bcB = m_boundaryConditions[c->m_idSideBBoundaryCondition];
+		if(bcB != nullptr){
+			if(bcB->m_heatConduction.m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled){
+				referencedSchedule.insert(m_schedules[bcB->m_heatConduction.m_idSchedule]);
+			}
+		}
 	}
 
 	// *** SubSurfaceComponentInstance, SubSurfaceComponent, Window and WindowGlazingSystems ***

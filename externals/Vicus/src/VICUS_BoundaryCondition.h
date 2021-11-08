@@ -61,6 +61,9 @@ public:
 	/*! Checks if all parameters are valid. */
 	bool isValid() const;
 
+	/*! Checks if this boundary has a heat conduction model to a constant or scheduled temperature zone.*/
+	bool hasSetpointTemperatureForZone() const;
+
 	/*! Generates a short html-description of the defined parameters. */
 	QString htmlDescription() const;
 

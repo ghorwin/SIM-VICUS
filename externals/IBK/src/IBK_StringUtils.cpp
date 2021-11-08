@@ -114,6 +114,16 @@ double string2val<double>(const std::string& str) {
 	return val;
 }
 
+template <>
+bool string2val<bool>(const std::string & str) {
+	// only allow 'true' and 'false'
+	if (str == "true" || str == "1")
+		return true;
+	else if (str == "false" || str == "0")
+		return false;
+	throw IBK::Exception(IBK::FormatString("Could not convert '%1' into bool.").arg(str), "[IBK::string2val<bool>]");
+}
+
 
 template <>
 double string2valDef<double>(const std::string& str, const double & def) {
@@ -1181,6 +1191,7 @@ std::string convertXml2Html(const std::string & xmlText) {
 
 	return newText;
 }
+
 
 
 //std::string latin9_to_utf8(const char *const string) {

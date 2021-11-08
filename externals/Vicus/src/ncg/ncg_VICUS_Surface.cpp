@@ -101,7 +101,7 @@ TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Surface().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+			e->SetAttribute("visible", "true");
 	if (m_displayColor.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "DisplayColor", nullptr, std::string(), m_displayColor.name().toStdString());
 

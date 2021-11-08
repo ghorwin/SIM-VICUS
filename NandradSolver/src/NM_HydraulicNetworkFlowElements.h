@@ -38,6 +38,8 @@ namespace NANDRAD {
 
 namespace NANDRAD_MODEL {
 
+class AbstractController;
+
 /*! Element that calculates the pressure loss of a straight pipe */
 class HNPipeElement : public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
 public:
@@ -362,6 +364,9 @@ public:
 					 const NANDRAD::HydraulicNetworkControlElement *controlElement,
 					 const NANDRAD::HydraulicFluid & fluid);
 
+	/*! Destructor, memory cleanup. */
+	~HNControlledPump() override;
+
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
@@ -404,6 +409,9 @@ private:
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
 									*m_controlElement = nullptr;
+
+	/*! Pointer to controller object used in this controlled pump. */
+	AbstractController				*m_controller = nullptr;
 
 	/*! Calculated pressure head. */
 	double							m_pressureHead = -999;

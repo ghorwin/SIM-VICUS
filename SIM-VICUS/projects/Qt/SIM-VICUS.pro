@@ -14,7 +14,7 @@ QT += xml opengl network printsupport widgets svg
 CONFIG += c++11
 
 unix {
-	QMAKE_CXXFLAGS += -std=c++11
+	QMAKE_CXXFLAGS += -std=c++11 -Wno-deprecated-copy
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \

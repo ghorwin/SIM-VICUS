@@ -44,6 +44,13 @@ bool BoundaryCondition::isValid() const {
 	return true;
 }
 
+bool BoundaryCondition::hasSetpointTemperatureForZone() const {
+	if(m_heatConduction.m_otherZoneType == InterfaceHeatConduction::OZ_Scheduled ||
+			m_heatConduction.m_otherZoneType == InterfaceHeatConduction::OZ_Constant)
+		return true;
+	return false;
+}
+
 
 QString BoundaryCondition::htmlDescription() const {
 	QString html = "<html><body>";

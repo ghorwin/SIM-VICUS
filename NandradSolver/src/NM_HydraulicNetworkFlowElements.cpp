@@ -32,6 +32,8 @@
 
 #include <algorithm>
 
+#include "NM_Controller.h"
+
 #define PI				3.141592653589793238
 
 
@@ -820,6 +822,15 @@ HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetw
 	// initialize setpoint references, in case of scheduled setpoints pointer will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
 	m_massFluxSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
+
+	// TODO : Add controller object
+	// m_controller = new PController(); ...
+}
+
+
+HNControlledPump::~HNControlledPump() {
+	delete m_controller;
+
 }
 
 
@@ -1005,6 +1016,22 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 	}
 
 	// TODO : use controller object here
+
+	// Initialisierung: -> im Konstruktor
+	// m_controller = new PController() ->
+	// m_controller->m_kP = ...;
+
+	// Update of control value
+	// m_controller->update(e);   -> evaluates controller logic
+
+	// Compute physical response, here we use control value natively as pressure head
+	// pressHeadControlled = m_controller->m_controlValue;
+
+
+	// In stepCompleted():
+	// m_controller->stepCompleted(t);  -> updates integral value internally
+
+
 	double pressHeadControlled = 0;
 	switch (m_controlElement->m_controllerType) {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {

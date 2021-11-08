@@ -686,9 +686,22 @@ bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zo
 		);
 	}
 
+	// TODO Dirk, mind renamed schedule IDs in all sub template models
+	//      also, mind renamed sub-template models in zone templates
+	// schedules
+	std::map<unsigned int, unsigned int> schedulesIDMap;
+	for (VICUS::Schedule & e : m_project->m_embeddedDB.m_schedules) {
+
+		importDBElement(e, db.m_schedules, schedulesIDMap,
+			"Schedule '%1' with #%2 imported -> new ID #%3.\n",
+			"Schedule '%1' with #%2 exists already -> ID #%3.\n"
+		);
+	}
+
 	// boundary conditions
 	std::map<unsigned int, unsigned int> boundaryConditionsIDMap;
 	for (VICUS::BoundaryCondition & e : m_project->m_embeddedDB.m_boundaryConditions) {
+		replaceID(e.m_heatConduction.m_idSchedule, schedulesIDMap);
 		importDBElement(e, db.m_boundaryConditions, boundaryConditionsIDMap,
 			"Boundary condition '%1' with #%2 imported -> new ID #%3.\n",
 			"Boundary condition '%1' with #%2 exists already -> ID #%3.\n"
@@ -743,20 +756,6 @@ bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zo
 						"Surface heating '%1' with #%2 exists already -> ID #%3.\n"
 		);
 	}
-
-
-	// schedules
-	std::map<unsigned int, unsigned int> schedulesIDMap;
-	for (VICUS::Schedule & e : m_project->m_embeddedDB.m_schedules) {
-
-		importDBElement(e, db.m_schedules, schedulesIDMap,
-			"Schedule '%1' with #%2 imported -> new ID #%3.\n",
-			"Schedule '%1' with #%2 exists already -> ID #%3.\n"
-		);
-	}
-
-	// TODO Dirk, mind renamed schedule IDs in all sub template models
-	//      also, mind renamed sub-template models in zone templates
 
 	// InternalLoad
 	std::map<unsigned int, unsigned int> internalLoadIDMap;
