@@ -384,7 +384,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	updateCmdLine();
 	QString resultPath;
-	if (!generateNANDRAD(resultPath))
+	if (!generateNANDRAD(resultPath, !testInit))
 		return false;
 	IBK::Path resultDir(resultPath.toStdString());
 
@@ -452,8 +452,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	return true;
 }
 
-
-bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
+bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool generateOutputs) {
 	// compose NANDRAD project file and start simulation
 
 	// generate NANDRAD project
@@ -469,12 +468,13 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 
 		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
 		// special handling since there is no object list data structure in
-		if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
-			 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
-			m_simulationOutputOptions->generateOutputs(p.m_objectLists);
-			p.m_objectLists = m_simulationOutputOptions->objectLists();
-			p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
-		}
+		if (generateOutputs)
+			if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
+				 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
+				m_simulationOutputOptions->generateOutputs(p.m_objectLists);
+				p.m_objectLists = m_simulationOutputOptions->objectLists();
+				p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
+			}
 
 	}
 	catch (IBK::Exception & ex) {

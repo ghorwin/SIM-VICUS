@@ -100,7 +100,7 @@ private:
 	bool startSimulation(bool testInit);
 
 	/*! Generates a NANDRAD project. */
-	bool generateNANDRAD(QString & resultPath);
+	bool generateNANDRAD(QString & resultPath, bool generateOutputs = false);
 
 	Ui::SVSimulationStartNandrad	*m_ui;
 
