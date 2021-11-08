@@ -805,7 +805,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
 
 	// transfer pre-defined output definitions
-	p.m_outputs.m_definitions = m_outputs.m_definitions; // currently, m_outputs.m_definitions are empty, since UI is not implemented
+//	p.m_outputs.m_definitions = m_outputs.m_definitions; // currently, m_outputs.m_definitions are empty, since UI is not implemented
 
 	// generate output grid, if needed
 	std::string refName;
