@@ -40,6 +40,7 @@
 #include <QModelIndex>
 #include <QAbstractTableModel>
 #include <QMessageBox>
+#include <QTextCodec>
 
 #include "SVProjectHandler.h"
 
@@ -188,6 +189,21 @@ void SVSimulationOutputOptions::updateUi() {
 
 }
 
+// Returns empty QByteArray() on failure.
+std::string fileChecksum(const QString &fileName,
+						QCryptographicHash::Algorithm hashAlgorithm)
+{
+	QFile f(fileName);
+	if (f.open(QFile::ReadOnly)) {
+		QCryptographicHash hash(hashAlgorithm);
+		if (hash.addData(&f)) {
+			return QTextCodec::codecForMib(1015)->toUnicode(hash.result() ).toStdString();
+		}
+	}
+	return std::string();
+}
+
+
 void SVSimulationOutputOptions::generateOutputTable() {
 	FUNCID(SVSimulationOutputOptions::generateOutputTable);
 	// parse the variable list file
@@ -209,6 +225,7 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	qDebug() << fileOutputVars.c_str();
 
 	std::vector<std::string> outputContent;
+	std::string checkSum =  fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
 
 	try {
 		IBK::FileReader::readAll(fileOutputVars, outputContent, std::vector<std::string>());
@@ -228,7 +245,7 @@ void SVSimulationOutputOptions::generateOutputTable() {
 			outputContent.erase(outputContent.begin() + i);
 	}
 
-	 m_outputDefinitions.resize(outputContent.size()-1); // mind last column
+	m_outputDefinitions.resize(outputContent.size()-1); // mind last column
 
 	// now we go through all read lines
 	std::vector<std::string> tokens;
@@ -317,6 +334,21 @@ void SVSimulationOutputOptions::generateOutputTable() {
 			}
 		}
 	}
+
+	if(m_outputs->m_checkSum.empty())
+		m_outputs->m_checkSum = fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
+	else {
+		if (m_outputs->m_checkSum == checkSum){
+			// regenerate outputs
+			for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
+
+			}
+		}
+		else
+			m_outputs->m_outputDefinitions.clear();
+	}
+
+
 	m_outputTableModel->reset();
 	//	m_ui->tableViewOutputList->resizeColumnsToContents();
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
@@ -336,14 +368,14 @@ void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
 	//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
 	//	m_ui->tableWidgetOutputList->setRowCount(rowCount);
 
-	////	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
+	//	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
 	//	m_ui->tableWidgetOutputList->verticalHeader()->setVisible(false);
 	//	m_ui->tableWidgetOutputList->horizontalHeader()->setMinimumSectionSize(19);
 	//	m_ui->tableWidgetOutputList->setSelectionBehavior(QAbstractItemView::SelectRows);
 	//	m_ui->tableWidgetOutputList->setSelectionMode(QAbstractItemView::SingleSelection);
 	//	m_ui->tableWidgetOutputList->setAlternatingRowColors(true);
 	//	m_ui->tableWidgetOutputList->setSortingEnabled(true);
-	////	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
+	//	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
 
 	//	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
 	//	m_ui->tableWidgetOutputList->horizontalHeader()->setStyleSheet(headerStyleSheet);
@@ -457,8 +489,8 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 		// handling for all output that also reference vectors
 		if (!od.m_vectorIds.empty()) {
 			for (unsigned int i=0; i<od.m_vectorIds.size(); ++i) {
-					nod.m_quantity = od.m_name + "[" + QString::number(od.m_vectorIds[i]).toStdString() + "]";
-					m_outputDefinitionsNandrad[nod.m_quantity] = nod;
+				nod.m_quantity = od.m_name + "[" + QString::number(od.m_vectorIds[i]).toStdString() + "]";
+				m_outputDefinitionsNandrad[nod.m_quantity] = nod;
 			}
 		}
 		else {
@@ -540,8 +572,9 @@ void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filter
 	m_ui->lineEditName->clear();
 	m_outputTableProxyModel->setFilterRegularExpression(filterKey);
 	m_outputTableProxyModel->setFilterKeyColumn(1);
-//	m_itemIsSet = false;
+	//	m_itemIsSet = false;
 }
+
 
 void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
 
@@ -711,6 +744,8 @@ void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(
 		}
 	}
 
+	setActive(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
+
 	QFont f(m_font);
 	f.setItalic(!so.m_isActive);
 	f.setBold(so.m_isActive);
@@ -796,7 +831,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bo
 		so.m_isActive = newState;
 
 		if(newState) { // source object has been set active
-				od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
+			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
 		}
 		else {
 			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
@@ -879,12 +914,13 @@ void SVSimulationOutputOptions::setActive(OutputDefinition &od, bool active) {
 			VICUS::OutputDefinition &vod = *it;
 			if(vod.m_id == od.m_outputdefinition.m_id) {
 				vod = od.m_outputdefinition; // update the definition
+				inList = true;
 				break;
 			}
 		}
 	else {
 		for (std::vector<VICUS::OutputDefinition>::iterator it = m_outputs->m_outputDefinitions.begin();
-		it != m_outputs->m_outputDefinitions.end(); ++it) {
+			 it != m_outputs->m_outputDefinitions.end(); ++it) {
 			VICUS::OutputDefinition &vod = *it;
 			if(vod.m_id == od.m_outputdefinition.m_id) {
 				m_outputs->m_outputDefinitions.erase(it); // erase the definition
