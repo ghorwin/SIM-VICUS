@@ -1343,9 +1343,12 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 			case VICUS::InterfaceHeatConduction::OZ_Standard:
 				iface.m_zoneId = 0; // outside zone
 			break;
-			case VICUS::InterfaceHeatConduction::OZ_Constant:{
+			case VICUS::InterfaceHeatConduction::OZ_Constant: {
 				// Create or find a ground zone that corresponds to the required temperature.
 				// only take first digit after comma into account
+
+				// TODO : Dirk, Problem: ConstTemperature is nicht gesetzt... müsste das nicht schon getestet sein?
+
 				int temperature = int(bc->m_heatConduction.m_para[InterfaceHeatConduction::P_ConstTemperature].get_value(IBK::Unit("C"))*10);
 
 				if(gze.m_tempToZoneId.find(temperature) != gze.m_tempToZoneId.end())
