@@ -65,7 +65,7 @@ inline IBK::Path QString2Path(const QString & str) {
 
 /*! Utility function for conversion of a QString to an IBK::Path. */
 inline QString Path2String(const IBK::Path & p) {
-	return QString::fromStdString(p.str());
+	return QString::fromUtf8(p.c_str());
 }
 
 } // QtExt
