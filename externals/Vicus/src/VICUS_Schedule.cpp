@@ -111,9 +111,9 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 
 
 			// load the data
-			IBK::Path filepath = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
-
 			NANDRAD::LinearSplineParameter spline;
+			IBK::Path filepath = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
+			spline = m_annualSchedule;
 			spline.readTsv(placeholder,1);
 
 			// check if we have data

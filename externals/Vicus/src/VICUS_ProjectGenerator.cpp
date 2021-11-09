@@ -421,7 +421,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 		return;
 	}
 	for (const Schedule & sched : m_embeddedDB.m_schedules) {
-		if (!sched.isValid())
+		if (!sched.isValid(true, p.m_placeholders))
 			errorStack.append(tr("Schedule #%1 '%2'.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
 	}
 	if (!errorStack.isEmpty())	return;
