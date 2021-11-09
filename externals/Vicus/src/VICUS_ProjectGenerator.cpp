@@ -1303,7 +1303,8 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 							  .arg(ci.m_idComponent).arg(s->m_id));
 		return NANDRAD::Interface();
 	}//	bc->m_heatConduction.m_modelType==VICUS::InterfaceHeatConduction::MT_Constant
-	if (!bc->isValid())
+
+	if (!bc->isValid(m_scheduleDB))
 		errorStack.append(qApp->tr("Boundary condition #%1 has invalid/incomplete parameters.").arg(bc->m_id));
 
 	// do we have a surface to a zone?
@@ -1337,8 +1338,6 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 //		NANDRAD::Zone					m_groundZ;
 //		std::vector<VICUS::Schedule>	m_schedules;
 //		std::set<QString>				m_objListNames;
-
-
 
 		// no surface == true -> must be an interface to the outside or ground/scheduled
 		NANDRAD::Interface iface;
@@ -1408,13 +1407,13 @@ NANDRAD::Interface ConstructionInstanceModelGenerator::generateInterface(const V
 					}
 				}
 				else
-					errorStack.append(qApp->tr("Invalid Schedule in boundary condition #%1 name '%2'.")
-									  .arg(bc->m_id).arg(QString::fromStdString(bc->m_displayName.string())));
+					errorStack.append(qApp->tr("Invalid Schedule in boundary condition #%1 '%2'.") //TODO: Dirk mind Language String
+									  .arg(bc->m_id).arg(QString::fromStdString(bc->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))));
 			}
 			break;
 			case VICUS::InterfaceHeatConduction::NUM_OZ:
-				errorStack.append(qApp->tr("Boundary condition #%1 name '%2' has no valid heat transfer model.")
-								  .arg(bc->m_id).arg(QString::fromStdString(bc->m_displayName.string())));
+				errorStack.append(qApp->tr("Boundary condition #%1 name '%2' has no valid heat transfer model.") //TODO: Dirk mind Language String
+								  .arg(bc->m_id).arg(QString::fromStdString(bc->m_displayName.string(IBK::MultiLanguageString::m_language, "en"))));
 			break;
 
 		}//== InterfaceHeatConduction::OZ_Constant
@@ -1567,7 +1566,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 
 		// now generate interfaces
 
-		if(!comp->isValid(m_materialsDB,m_constructionsDB, m_boundaryConditionsDB)){
+		if(!comp->isValid(m_materialsDB,m_constructionsDB, m_boundaryConditionsDB, m_scheduleDB)){
 			errorStack << qApp->tr("Component #%1 '%2' is not valid.").arg(comp->m_id).arg(QString::fromStdString(comp->m_displayName.string()));
 			continue;
 		}
