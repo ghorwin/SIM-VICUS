@@ -86,10 +86,10 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
 				// TODO : Dirk, add isValid() function to VICUS::BoundaryCondition
-//				if (it->second.isValid(m_db->m_materials, m_db->m_constructions, m_db->m_boundaryConditions))
+				if (it->second.isValid(m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
-//					else
-//					return QIcon("://gfx/actions/16x16/error.png");
+				else
+					return QIcon("://gfx/actions/16x16/error.png");
 			}
 		} break;
 
