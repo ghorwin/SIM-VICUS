@@ -43,6 +43,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_InterfaceHeatConduction.h"
+#include "VICUS_Schedule.h"
 
 
 namespace VICUS {
@@ -59,13 +60,13 @@ public:
 
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 	/*! Checks if this boundary has a heat conduction model to a constant or scheduled temperature zone.*/
 	bool hasSetpointTemperatureForZone() const;
 
 	/*! Generates a short html-description of the defined parameters. */
-	QString htmlDescription() const;
+	QString htmlDescription(const VICUS::Database<Schedule> & scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

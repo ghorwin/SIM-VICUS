@@ -27,14 +27,17 @@
 
 namespace VICUS {
 
-bool BoundaryCondition::isValid() const {
+bool BoundaryCondition::isValid(const Database<Schedule> & scheduleDB) const {
 	if (m_id == VICUS::INVALID_ID)
 		return false;
 
+	if(!m_heatConduction.isValid(scheduleDB))
+		return false;
+
 	try {
-		m_heatConduction.isValid();
 		m_longWaveEmission.checkParameters();
 		m_solarAbsorption.checkParameters();
+
 
 		// TODO : add vapor diffusion/air flow once needed
 	} catch (...) {
@@ -52,10 +55,10 @@ bool BoundaryCondition::hasSetpointTemperatureForZone() const {
 }
 
 
-QString BoundaryCondition::htmlDescription() const {
+QString BoundaryCondition::htmlDescription(const VICUS::Database<Schedule> & scheduleDB) const {
 	QString html = "<html><body>";
 
-	if (!isValid())
+	if (!isValid(scheduleDB))
 		html += tr("<p><span style=\" color:#a40000;\">Invalid parameter definition found.</span></p>");
 
 	html += tr("<p><b>Parameters:</b></p><ul>");
