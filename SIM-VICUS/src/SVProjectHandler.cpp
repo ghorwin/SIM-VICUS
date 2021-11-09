@@ -982,7 +982,7 @@ void SVProjectHandler::fixProject(bool & haveModifiedProject) {
 
 	const SVDatabase & db = SVSettings::instance().m_db;
 
-	// remove/fix invalid CI and SubSurfaceCI
+	// remove/fix invalid CI
 	std::vector<VICUS::ComponentInstance> fixedCI;
 	for (const VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
 		// surface IDs are the same on both sides?
@@ -1026,6 +1026,49 @@ void SVProjectHandler::fixProject(bool & haveModifiedProject) {
 		m_project->m_componentInstances.swap(fixedCI);
 	}
 
+
+	std::vector<VICUS::SubSurfaceComponentInstance> fixedSCI;
+	for (const VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances) {
+		// surface IDs are the same on both sides?
+		if (ci.m_idSideASurface == ci.m_idSideBSurface) {
+			IBK::IBK_Message(IBK::FormatString("Removing SubSurfaceComponentInstance #%1 because both assigned surfaces have the same ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		if (ci.m_sideASubSurface == nullptr && ci.m_idSideASurface != VICUS::INVALID_ID) {
+			IBK::IBK_Message(IBK::FormatString("Removing SubSurfaceComponentInstance #%1 because surface A is referenced with invalid ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		if (ci.m_sideBSubSurface == nullptr && ci.m_idSideBSurface != VICUS::INVALID_ID) {
+			IBK::IBK_Message(IBK::FormatString("Removing SubSurfaceComponentInstance #%1 because surface B is referenced with invalid ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		// component ID invalid?
+		if (ci.m_idSubSurfaceComponent != VICUS::INVALID_ID) {
+			if (db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent] == nullptr) { // no such component in DB
+				IBK::IBK_Message(IBK::FormatString("Removing SubSurfaceComponent reference from SubSurfaceComponentInstance #%1, because no such sub-surface component exists (anylonger)").arg(ci.m_id),
+								 IBK::MSG_WARNING, FUNC_ID);
+
+				VICUS::SubSurfaceComponentInstance modCI(ci);
+				modCI.m_idSubSurfaceComponent = VICUS::INVALID_ID;
+				fixedSCI.push_back(modCI);
+				continue;
+			}
+		}
+
+		// all ok, keep SCI
+		fixedSCI.push_back(ci);
+	}
+
+	if (fixedSCI.size() != m_project->m_subSurfaceComponentInstances.size()) {
+		haveModifiedProject = true;
+		m_project->m_subSurfaceComponentInstances.swap(fixedSCI);
+	}
 
 	/// \todo Hauke, check uniqueness of IDs in networks
 
