@@ -177,10 +177,6 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 				throw IBK::Exception(IBK::FormatString("Error reading project '%1'").arg(fileName.toUtf8().data()), FUNC_ID);
 			// project read successfully
 
-			// run sanity checks - basically check for invalid user-given parameters that might crash the UI
-#if 0
-			m_project->GUISanityChecks();
-#endif
 		}
 		catch (IBK::Exception & ex) {
 			ex.writeMsgStackToError();
@@ -207,31 +203,15 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 		}
 	} while(m_reload);
 
-
-	// first tell project and thus all connected views that the
-	// structure of the project has changed
 	try {
+		// once the project has been read, perform "post-read" actions
 		bool have_modified_project = false;
 
-		std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
-		have_modified_project = importEmbeddedDB(zoneTemplatesIDMap);
+		// import embedded DB into our user DB
+		have_modified_project = importEmbeddedDB(); // Note: project may be modified in case IDs were adjusted
 
-		//now replace all zoneTemplate ids in the rooms
-		for(VICUS::Building &b : m_project->m_buildings){
-			for(VICUS::BuildingLevel &bl : b.m_buildingLevels){
-				for(VICUS::Room &r : bl.m_rooms){
-					if(zoneTemplatesIDMap.find( r.m_idZoneTemplate) != zoneTemplatesIDMap.end()){
-						r.m_idZoneTemplate = zoneTemplatesIDMap[r.m_idZoneTemplate];
-					}
-				}
-			}
-		}
-
-		/// \todo Hauke, check uniqueness of IDs in networks
-
-		/// \todo Andreas: implement and project data checks with automatic fixes and
-		///		  set have_modified_project to true
-		///		  in such cases, so that the project starts up in "modified" state.
+		// fix problems in the project; will set have_modified_project to true if fixes were applied
+		fixProject(have_modified_project);
 
 		setModified(AllModified); // notify all views that the entire data has changed
 
@@ -594,6 +574,7 @@ void replaceID(unsigned int & id, const std::map<unsigned int, unsigned int> & i
 	}
 }
 
+
 template <typename T>
 void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsigned int> & idSubstitutionMap,
 					 const char * const importMsg, const char * const existingMsg)
@@ -626,7 +607,7 @@ void importDBElement(T & e, VICUS::Database<T> & db, std::map<unsigned int, unsi
 }
 
 
-bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zoneTemplatesIDMap) {
+bool SVProjectHandler::importEmbeddedDB() {
 	bool idsModified = false;
 
 	// we sync the embedded database with the built-in DB
@@ -831,6 +812,7 @@ bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zo
 	}
 
 	// zone templates
+	std::map<unsigned int, unsigned int> zoneTemplatesIDMap;
 	for (VICUS::ZoneTemplate & e : m_project->m_embeddedDB.m_zoneTemplates) {
 
 		replaceID(e.m_idReferences[VICUS::ZoneTemplate::ST_IntLoadPerson], internalLoadIDMap);
@@ -902,9 +884,11 @@ bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zo
 	}
 
 
+	// *** Database Update Complete - now modify project to use the potentially modified IDs ***
+
 	// now that all DB elements have been imported, we need to replace the referenced to those ID elements in the project
 
-	// *** ComponentInstance and SubSurfaceComponentInstance ***
+	// ** ComponentInstance and SubSurfaceComponentInstance **
 
 	for (VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
 		replaceID(ci.m_idComponent, componentIDMap);
@@ -913,8 +897,16 @@ bool SVProjectHandler::importEmbeddedDB(std::map<unsigned int, unsigned int> &zo
 	for (VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances)
 		replaceID(ci.m_idSubSurfaceComponent, subSurfaceComponentIDMap);
 
+	// ** ZoneTemplates **
 
-	// *** Network (Nodes, Edges, Pipes, Fluid) ***
+	for (VICUS::Building &b : m_project->m_buildings) {
+		for (VICUS::BuildingLevel &bl : b.m_buildingLevels) {
+			for (VICUS::Room &r : bl.m_rooms)
+				replaceID(r.m_idZoneTemplate, zoneTemplatesIDMap);
+		}
+	}
+
+	// ** Network (Nodes, Edges, Pipes, Fluid) **
 
 	for (VICUS::Network & n : m_project->m_geometricNetworks) {
 
@@ -982,5 +974,64 @@ void SVProjectHandler::updateSurfaceColors() {
 
 }
 
+
+void SVProjectHandler::fixProject(bool & haveModifiedProject) {
+	FUNCID(SVProjectHandler::fixProject);
+
+	// Note: the pointer interlinks have been updated in Project::readXML() already
+
+	const SVDatabase & db = SVSettings::instance().m_db;
+
+	// remove/fix invalid CI and SubSurfaceCI
+	std::vector<VICUS::ComponentInstance> fixedCI;
+	for (const VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
+		// surface IDs are the same on both sides?
+		if (ci.m_idSideASurface == ci.m_idSideBSurface) {
+			IBK::IBK_Message(IBK::FormatString("Removing ComponentInstance #%1 because both assigned surfaces have the same ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		if (ci.m_sideASurface == nullptr && ci.m_idSideASurface != VICUS::INVALID_ID) {
+			IBK::IBK_Message(IBK::FormatString("Removing ComponentInstance #%1 because surface A is referenced with invalid ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		if (ci.m_sideBSurface == nullptr && ci.m_idSideBSurface != VICUS::INVALID_ID) {
+			IBK::IBK_Message(IBK::FormatString("Removing ComponentInstance #%1 because surface B is referenced with invalid ID.").arg(ci.m_id),
+							 IBK::MSG_WARNING, FUNC_ID);
+			continue;
+		}
+
+		// component ID invalid?
+		if (ci.m_idComponent != VICUS::INVALID_ID) {
+			if (db.m_components[ci.m_idComponent] == nullptr) { // no such component in DB
+				IBK::IBK_Message(IBK::FormatString("Removing Component reference from ComponentInstance #%1, because no such component exists (anylonger)").arg(ci.m_id),
+								 IBK::MSG_WARNING, FUNC_ID);
+
+				VICUS::ComponentInstance modCI(ci);
+				modCI.m_idComponent = VICUS::INVALID_ID;
+				fixedCI.push_back(modCI);
+				continue;
+			}
+		}
+
+		// all ok, keep CI
+		fixedCI.push_back(ci);
+	}
+
+	if (fixedCI.size() != m_project->m_componentInstances.size()) {
+		haveModifiedProject = true;
+		m_project->m_componentInstances.swap(fixedCI);
+	}
+
+
+	/// \todo Hauke, check uniqueness of IDs in networks
+
+	/// \todo Andreas: implement and project data checks with automatic fixes and
+	///		  set haveModifiedProject to true
+	///		  in such cases, so that the project starts up in "modified" state.
+}
 
 

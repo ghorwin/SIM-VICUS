@@ -320,14 +320,19 @@ private:
 		For existing DB elements the IDs are compared and if different, the IDs in the project are
 		adjusted.
 		Afterwards, the embedded database is removed from the project data.
-		zoneTemplatesIDMap holds the replaced zone template ids (key imported id, value is new reference database id).
 		\return Returns true in the case of modified IDs. False, if the project's IDs are not modified.
 	*/
-	bool importEmbeddedDB(std::map<unsigned int, unsigned int> &zoneTemplatesIDMap);
+	bool importEmbeddedDB();
 
 	/*! Set new colors for each invalid color in the surface data. */
 	void updateSurfaceColors();
 
+	/*! This function is called once a project has been read and the internal databases have been updated.
+		Here, all clearly invalid data elements are removed so that the project retains a meaningful state.
+
+		The argument 'haveModifiedProject' is set to true, if any changes were made to the project.
+	*/
+	void fixProject(bool & haveModifiedProject);
 
 	// *** PRIVATE DATA MEMBERS ***
 
