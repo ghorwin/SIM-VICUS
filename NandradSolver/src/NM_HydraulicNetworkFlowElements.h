@@ -167,6 +167,8 @@ public:
 	flow element in order to control e.g. its temperature difference */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
+	void stepCompleted(double t) override;
+
 private:
 
 	/*! Computes the controlled zeta-value if a control-model is implemented.
@@ -212,6 +214,9 @@ private:
 
 	/*! Value reference to external quantity. */
 	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
+
+	/*! Pointer to controller object used in this element */
+	AbstractController				*m_controller = nullptr;
 
 	friend class ThermalNetworkStatesModel;
 
@@ -395,6 +400,9 @@ public:
 
 	/*! Return value reference of pressure head computed by flow element. */
 	const double * pressureHeadRef() const { return &m_pressureHead; }
+
+	/*! called after succesful CVODE step */
+	void stepCompleted(double t) override;
 
 	/*! Id number of flow element. */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;

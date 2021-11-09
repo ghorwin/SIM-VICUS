@@ -56,10 +56,14 @@ public:
 	/*! This function is called after each integration step (default implementation does nothing). */
 	virtual void stepCompleted(double t) { (void)t; }
 
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() {}
+
 	/*! Stores result of controller calculation, updated in each call to update(). */
 	double				m_controlValue = 888;
 	/*! Cache of error value updated in last call to update(). */
 	double				m_errorValue = 777;
+
 };
 
 } // namespace NANDRAD_MODEL

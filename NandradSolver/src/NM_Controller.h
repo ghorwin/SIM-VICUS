@@ -104,6 +104,9 @@ public:
 	/*! This function is called after each integration step and integrates the errorValue. */
 	virtual void stepCompleted(double t) override;
 
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() override;
+
 	/*! P-term factor.*/
 	double			m_kP = 1;
 	/*! I-term factor.*/

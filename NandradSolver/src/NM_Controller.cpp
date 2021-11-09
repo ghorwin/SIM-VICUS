@@ -80,4 +80,9 @@ void PIController::stepCompleted(double t) {
 }
 
 
+void PIController::resetErrorIntegral() {
+	m_errorValueIntegral = 0;
+}
+
+
 } // namespace NANDRAD_MODEL
