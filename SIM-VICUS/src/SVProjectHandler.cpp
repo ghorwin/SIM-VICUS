@@ -448,6 +448,12 @@ bool SVProjectHandler::read(const QString & fname) {
 		m_project->readXML(IBK::Path(fname.toStdString()) );
 		m_projectFile = fname;
 
+		// clear placeholders - this avoids confusion with outdates placeholders (ie when a different user has saved the
+		// project file)
+		// when resolving file paths with placeholders, one should always call
+		// SVProjectHandler::instance().replacePathPlaceholders(...)
+		m_project->m_placeholders.clear();
+
 		m_lastReadTime = QFileInfo(fname).lastModified();
 
 		// update the colors
