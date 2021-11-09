@@ -4,24 +4,15 @@
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#416fce" Checked="0">ConstantMassFluxThermostatControlledPipeRegister.gcc_linux</SubDir>
-			<SubDir Color="#ffaa00" Checked="0">ControlledPumpMassFluxScheduled</SubDir>
-			<SubDir Color="#ff007f" Checked="0">ControlledPumpMassFluxScheduled.gcc_linux</SubDir>
-			<SubDir Color="#7141d1" Checked="0">ControlledPumpPipeRegister</SubDir>
-			<SubDir Color="#ffee00" Checked="0">ControlledPumpPipeRegister.gcc_linux</SubDir>
-			<SubDir Color="#45ad45" Checked="0">ControlledPumpTemperatureDifferenceFollowingElement.gcc_linux</SubDir>
 			<SubDir Color="#416fce" Checked="0">ControlledValveConstantMassFlux</SubDir>
 			<SubDir Color="#ff5500" Checked="0">ControlledValveConstantMassFlux.gcc_linux</SubDir>
-			<SubDir Color="#ffaaff" Checked="0">ControlledValveTemperatureDifferenceFollowingElement</SubDir>
-			<SubDir Color="#550000" Checked="0">ControlledValveTemperatureDifferenceFollowingElement.gcc_linux</SubDir>
-			<SubDir Color="#ffaaff" Checked="1">ControlledValveTemperatureDifferenceFollowingElementPI</SubDir>
-			<SubDir Color="#c66300" Checked="0">OnOffControlledPump</SubDir>
-			<SubDir Color="#ff5500" Checked="0">OnOffControlledPump.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="1">ControlledValveTemperatureDifferenceFollowingElement</SubDir>
 			<SubDir Color="#ff007f" Checked="0">TemperatureDifferenceControlHeatLossSpline</SubDir>
 			<SubDir Color="#ffaa00" Checked="0">TemperatureDifferenceControlHeatLossSpline.gcc_linux</SubDir>
-			<SubDir Color="#ffffff" Checked="0">ThermostatControlledPipeRegister.gcc_linux</SubDir>
-			<SubDir Color="#416fce" Checked="0">VariablePressurePumpTemperatureDifferenceControl.gcc_linux</SubDir>
-			<SubDir Color="#ffaa00" Checked="0">climate</SubDir>
+			<SubDir Color="#ffee00" Checked="0">ThermostatControlFloorHeating</SubDir>
+			<SubDir Color="#ffffff" Checked="0">ThermostatControlFloorHeating.gcc_linux</SubDir>
+			<SubDir Color="#aa0000" Checked="0">ThermostatControlRegisterHeating</SubDir>
+			<SubDir Color="#416fce" Checked="0">ThermostatControlRegisterHeating.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -403,49 +394,13 @@
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
-		<Mapper name="$project: $basename">
-			<Extractors>
-				<Extractor>
-					<DataIOFileName>ControlledValveTemperatureDifferenceFollowingElementPI/results/network_elements.tsv?13</DataIOFileName>
-					<CutType>NoCut</CutType>
-					<DataFormat>DF_2D</DataFormat>
-					<DataType>T_REFERENCE</DataType>
-					<ColumnIndex>0</ColumnIndex>
-				</Extractor>
-			</Extractors>
-			<ChartModel chartType="2D">
-				<SeriesProperties>
-					<Series>
-						<TitleText>$quantity</TitleText>
-						<MarkerColor>#000000</MarkerColor>
-					</Series>
-				</SeriesProperties>
-				<AxisProperties>
-					<Axis index="0">
-						<TitleText>Zeit [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">h</IBK:Unit>
-					</Axis>
-					<Axis index="1">
-						<TitleText>$quantity [$unit]</TitleText>
-						<IBK:Unit name="AxisUnit">K</IBK:Unit>
-					</Axis>
-					<Axis index="2" enabled="0">
-						<TitleText>$quantity [$unit]</TitleText>
-					</Axis>
-				</AxisProperties>
-				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
-					<Legend />
-				</ChartProperties>
-			</ChartModel>
-		</Mapper>
 	</Mappers>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="5" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="2" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 
