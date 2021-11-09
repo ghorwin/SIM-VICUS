@@ -340,6 +340,99 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 	}
 }
 
+Schedule Schedule::createAnnualScheduleFromPeriodSchedule(std::string &name, const IBK::Unit & unit, unsigned int startDayOfYear) {
+	FUNCID(Schedule::createAnnualScheduleFromPeriodSchedule);
+	if(m_periods.empty())
+		return Schedule();
+
+	// save start day of year for shifting later
+	unsigned int startDayOfPeriod = startDayOfYear;
+	std::vector<double> values;
+	for(unsigned int i=0; i<365; ++i){
+		for(unsigned int iPeriod = 0; iPeriod < m_periods.size(); ++i){
+
+			ScheduleInterval &sv = m_periods[iPeriod];
+
+			// find next period start day
+			unsigned int lastPeriodDay = 364;
+			if(iPeriod+1 > m_periods.size())
+				lastPeriodDay = m_periods[iPeriod+1].m_intervalStartDay - 1;
+			// get the hole days of these period
+			unsigned int days = lastPeriodDay - sv.m_intervalStartDay + 1;
+
+			unsigned int dayCounter = 0;
+			//create a week value vector with 7*24 values or short if period is less than 7 days
+			std::vector<double> weekVals;
+			for(unsigned int iDay = 0; iDay<7; ++i){
+				if(iDay > days)
+					break;
+				// search for the days
+				for(unsigned int iDailyCylce = 0; iDailyCylce<sv.m_dailyCycles.size(); ++iDailyCylce){
+					DailyCycle &dc = sv.m_dailyCycles[iDailyCylce];
+					int dayType = NANDRAD::Schedule::NUM_ST;
+					switch (startDayOfPeriod) {
+						case 0:		dayType = NANDRAD::Schedule::ST_MONDAY;		break;
+						case 1:		dayType = NANDRAD::Schedule::ST_TUESDAY;	break;
+						case 2:		dayType = NANDRAD::Schedule::ST_WEDNESDAY;	break;
+						case 3:		dayType = NANDRAD::Schedule::ST_THURSDAY;	break;
+						case 4:		dayType = NANDRAD::Schedule::ST_FRIDAY;		break;
+						case 5:		dayType = NANDRAD::Schedule::ST_SATURDAY;	break;
+						case 6:		dayType = NANDRAD::Schedule::ST_SUNDAY;		break;
+					}
+
+					// if day type is not in this daily cycle check next one
+					if(!dc.containsDaytype(dayType))
+						continue;
+
+					// create 24 hours for time point vector
+					if(dc.m_values.empty())
+						throw IBK::Exception(IBK::FormatString("Schedule has no values."), FUNC_ID);
+					std::vector<double>	vals(24, dc.m_values[0]) ;
+
+					for(unsigned int j=1; j<dc.m_timePoints.size(); ++j){
+						for(unsigned int j2=0; j2<24; ++j2){
+							if(j2 < dc.m_timePoints[j])
+								continue;
+							vals[j2] = dc.m_values[j];
+						}
+					}
+
+					weekVals.insert(weekVals.end(), vals.begin(), vals.end());
+					++dayCounter;
+					break;
+				}
+
+				// add the values to annual sched
+				values.insert(values.end(), weekVals.begin(), weekVals.end());
+				while (dayCounter<days) {
+					unsigned int diff = days - dayCounter;
+					if(diff >= 7) {
+						values.insert(values.end(), weekVals.begin(), weekVals.end());
+						dayCounter +=7;
+					}
+					else
+						values.insert(values.end(), weekVals.begin(), weekVals.begin()+ 24 * diff);
+				}
+			}
+			// set up new start day
+			startDayOfPeriod += days;
+			startDayOfPeriod = startDayOfPeriod % 7;
+		}
+	}
+
+	std::vector<double> timepoints(8760);
+	for(unsigned int i=0; i<timepoints.size(); ++i)
+		timepoints[i] = i;
+
+	Schedule sched;
+	// TODO Dirk die Interpolationsmethode wird derzeit nur bei konstant richtig betrachtet sonst müsste man es oben noch umstellen
+	sched.m_useLinearInterpolation = false;
+	sched.m_annualSchedule = NANDRAD::LinearSplineParameter(name, NANDRAD::LinearSplineParameter::I_CONSTANT,timepoints, values,
+															IBK::Unit("h"),IBK::Unit("C"));
+	return sched;
+
+}
+
 
 AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *other) const {
 	const Schedule * otherSched = dynamic_cast<const Schedule*>(other);

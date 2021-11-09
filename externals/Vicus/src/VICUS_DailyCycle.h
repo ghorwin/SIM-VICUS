@@ -47,6 +47,9 @@ public:
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid() const;
 
+	/*! Check if a day type contains the m_dayTypes vector. */
+	bool containsDaytype(int dt);
+
 	/*! Multiplies current daily cycle with other daily cycle and generates a new daily cycle that contains
 		the union of all time points.
 		Only those day types will be in the generated DC that are present in both the current and other daily cycle.

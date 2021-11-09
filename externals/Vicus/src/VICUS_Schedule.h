@@ -69,6 +69,11 @@ public:
 	/*! Create a data and a timepoint vector for the hole schedule. Only period based schedules. */
 	void createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const;
 
+	/*! Creates an annual schedule from a period schedule.
+		\param name -> name of quantity
+	*/
+	Schedule createAnnualScheduleFromPeriodSchedule(std::string &name, const IBK::Unit &unit, unsigned int startDayOfYear = 0);
+
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
 
