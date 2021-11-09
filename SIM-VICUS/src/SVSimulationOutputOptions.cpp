@@ -883,9 +883,11 @@ void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
 	if(od.m_outputdefinition.m_sourceObjectIds.size() == 1) {
 		m_ui->widgetSource->setVisible(false);
 		m_ui->verticalSpacer->changeSize(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+		m_ui->textBrowserDescription->setMaximumHeight(100);
 	}
 	else {
 		m_ui->widgetSource->setVisible(true);
+		m_ui->textBrowserDescription->setMaximumHeight(1670000);
 		m_ui->verticalSpacer->changeSize(0,0, QSizePolicy::Fixed, QSizePolicy::Fixed);
 		tw.clearContents(); // we also clear all previous contents
 		tw.setRowCount(od.m_outputdefinition.m_sourceObjectIds.size() );

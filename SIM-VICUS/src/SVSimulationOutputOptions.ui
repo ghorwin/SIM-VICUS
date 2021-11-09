@@ -137,14 +137,14 @@
                </layout>
               </item>
               <item>
-               <widget class="QTableView" name="tableViewOutputList"/>
-              </item>
-              <item>
                <widget class="QCheckBox" name="checkBoxShowActive">
                 <property name="text">
                  <string>show only active outputs</string>
                 </property>
                </widget>
+              </item>
+              <item>
+               <widget class="QTableView" name="tableViewOutputList"/>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
