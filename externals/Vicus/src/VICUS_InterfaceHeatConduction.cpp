@@ -24,6 +24,7 @@
 */
 
 #include "VICUS_InterfaceHeatConduction.h"
+#include "VICUS_Project.h"
 
 #include "VICUS_KeywordList.h"
 
@@ -42,8 +43,19 @@ bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) 
 }
 
 
-bool InterfaceHeatConduction::isValid() const {
+bool InterfaceHeatConduction::isValid(const Database<Schedule> &scheduleDB) const {
 	// TODO : Implement isValid
+	if(m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled) {
+		if(m_idSchedule == INVALID_ID)
+			return false;
+
+		const Schedule * zoneSched = scheduleDB[m_idSchedule];
+		if (zoneSched == nullptr)
+			return false;
+		if (!zoneSched->isValid())
+			return false;
+	}
+
 	return true;
 }
 
