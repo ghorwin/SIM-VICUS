@@ -75,7 +75,7 @@ QVariant SVDBSubSurfaceComponentTableModel::data ( const QModelIndex & index, in
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid(m_db->m_windows, m_db->m_boundaryConditions))
+				if (it->second.isValid(m_db->m_windows, m_db->m_boundaryConditions, m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
