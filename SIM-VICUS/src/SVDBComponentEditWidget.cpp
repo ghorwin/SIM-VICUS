@@ -137,7 +137,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(bcA->m_displayName));
-		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription());
+		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription(m_db->m_schedules));
 
 		if (bcA->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
 			double hc = bcA->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
@@ -152,7 +152,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 	if (bcB != nullptr){
 		m_ui->lineEditBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(bcB->m_displayName));
-		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription());
+		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription(m_db->m_schedules));
 
 		if (bcB->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
 			double hc = bcB->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
