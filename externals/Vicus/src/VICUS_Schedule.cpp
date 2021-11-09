@@ -86,10 +86,11 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 }
 
 
-bool Schedule::isValid() const {
+bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::Path> &placeholder) const {
 
 	if (m_haveAnnualSchedule) {
-		if (!m_annualSchedule.m_tsvFile.isValid()) {
+		if (!m_annualSchedule.m_tsvFile.isValid()){
+
 			// check if we have data
 			if (m_annualSchedule.m_values.empty())
 				return false;
@@ -98,17 +99,39 @@ bool Schedule::isValid() const {
 			// check that we have x and y unit set correctly
 			if (m_annualSchedule.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
 				return false;
-			if (m_annualSchedule.m_yUnit.base_id() == 0)
-				return false;
+			// yUnit is not important -> Model defines unit later
 		}
-		else {
+		else if(checkAnnualScheds){
 			// Normally, we should check if the file exists, if number of columns match etc., but that is
 			// pretty time-consuming and isValid() is being called very often. So we check this
 			// during schedule export.
 
 			// Also, we have no way of resolving the absolute path from a relative path, since we don't
 			// have access to the project's file path.
+
+
+			// load the data
+			IBK::Path filepath = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
+
+			NANDRAD::LinearSplineParameter spline;
+			spline.readTsv(placeholder,1);
+
+			// check if we have data
+			if (spline.m_values.empty())
+				return false;
+			if (!spline.m_values.valid())
+				return false;
+			// check that we have x and y unit set correctly
+			if (spline.m_xUnit.base_id() != IBK_UNIT_ID_SECONDS)
+				return false;
+			// yUnit is not important -> Model defines unit later
+
+			// TODO Dirk->Andreas wie kann ich die const Funktion umgehen und doch was reinschreiben?
 		}
+
+
+
+
 
 		return true;
 	}
@@ -456,8 +479,7 @@ AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *oth
 	return Equal;
 }
 
-
-void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup) const {
+void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::vector<NANDRAD::Schedule> &scheduleGroup) const{
 	if (scheduleGroup.empty()){
 		// create for each period a new NANDRAD schedule
 		for (unsigned int i=0; i<m_periods.size(); ++i){
@@ -518,13 +540,13 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 						if(dt == schedNandrad.m_type &&
 								schedNandrad.m_startDayOfTheYear == period.m_intervalStartDay &&
 								((i+1<m_periods.size() && schedNandrad.m_endDayOfTheYear == m_periods[i+1].m_intervalStartDay-1) ||
-																		(schedNandrad.m_endDayOfTheYear == 364 && m_periods.size() == 1))){
+								 (schedNandrad.m_endDayOfTheYear == 364 && m_periods.size() == 1))){
 							//now check if we have daily cylces with equal properties to:
 							// * interpolation method
 							// * time points
 							for(NANDRAD::DailyCycle &dcNandrad : schedNandrad.m_dailyCycles){
 								if( ( (dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Constant && !m_useLinearInterpolation) ||
-										(dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Linear && m_useLinearInterpolation) ) &&
+									  (dcNandrad.m_interpolation == NANDRAD::DailyCycle::IT_Linear && m_useLinearInterpolation) ) &&
 										dcNandrad.m_timePoints == dc.m_timePoints){
 									// now we can add the data
 									dcNandrad.m_values.m_values[varName] = dc.m_values;
@@ -573,6 +595,28 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 			}
 		}
 	}
+}
+
+void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup,
+											  std::vector<NANDRAD::LinearSplineParameter> &splines) const {
+
+	if(m_haveAnnualSchedule){
+		std::string::size_type pos, pos2;
+		pos = varName.find_last_of("[");
+		pos2 = varName.find_last_of("]");
+		Q_ASSERT(pos != std::string::npos && pos2 != std::string::npos && pos < pos2);
+		std::string name = varName.substr(0, pos-1);
+		std::string unitName = varName.substr(pos+1, pos2-pos-1);
+		NANDRAD::LinearSplineParameter spline(name,
+											  m_useLinearInterpolation ? NANDRAD::LinearSplineParameter::I_LINEAR :
+																		 NANDRAD::LinearSplineParameter::I_CONSTANT,
+											  m_annualSchedule.m_values.x(),
+											  m_annualSchedule.m_values.y(),
+											  m_annualSchedule.m_xUnit, IBK::Unit(unitName));
+		splines.push_back(spline);
+	}
+	else
+		insertIntoNandradSchedulegroup(varName, scheduleGroup);
 }
 
 
