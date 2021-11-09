@@ -163,7 +163,8 @@ public:
 
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
-	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+	std::vector< std::vector<NANDRAD::Schedule> >				m_schedules;
+	std::vector< std::vector<NANDRAD::LinearSplineParameter>>	m_schedGroupSplines;
 };
 
 class IdealHeatingCoolingModelGenerator : public ModelGeneratorBase{
@@ -490,6 +491,9 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_objectLists.insert(p.m_objectLists.end(), thermostats.m_objLists.begin(), thermostats.m_objLists.end());
 	for (unsigned int i=0; i<thermostats.m_schedules.size(); ++i)
 		p.m_schedules.m_scheduleGroups[thermostats.m_objLists[i].m_name] = thermostats.m_schedules[i];
+	for(unsigned int i=0; i<thermostats.m_schedGroupSplines.size(); ++i)
+		p.m_schedules.m_annualSchedules[thermostats.m_objLists[i].m_name] = thermostats.m_schedGroupSplines[i];
+
 
 	// *** Ideal heating cooling ***
 	p.m_models.m_idealHeatingCoolingModels = idealHeatCool.m_idealHeatingCoolings;
@@ -833,6 +837,7 @@ void InternalLoadsModelGenerator::generate(const Room * r, std::vector<unsigned 
 			const Schedule * powerManagementSchedule = m_scheduleDB[intLoadEquipment->m_idPowerManagementSchedule];
 			// - multiply all three values for each sample in each schedule -> VICUS::Schedule with time series of time points and values for different day types
 			VICUS::Schedule combinedSchedule = powerManagementSchedule->multiply(powerPerArea);
+
 
 			// - convert and insert VICUS::Schedule to NANDRAD schedule group
 			combinedSchedule.insertIntoNandradSchedulegroup(equipmentSchedName, scheds);
@@ -1824,20 +1829,21 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	//
 	// 1. create basic schedule (name?)
 	std::vector<NANDRAD::Schedule> scheds;
+	std::vector<NANDRAD::LinearSplineParameter>	splines;
 	VICUS::Schedule s;
 
 	const Schedule * heatSched = m_scheduleDB[thermostat->m_idHeatingSetpointSchedule];
 	const Schedule * coolSched = m_scheduleDB[thermostat->m_idCoolingSetpointSchedule];
 
 	if(heatSched != nullptr)
-		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
+		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds, splines);
 	else{
 		s.createConstSchedule(-100);
 		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
 	}
 
 	if(coolSched != nullptr)
-		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
+		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds, splines);
 	else{
 		s.createConstSchedule(200);
 		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
@@ -1852,7 +1858,8 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	bool foundModel=false;
 	for (unsigned int i=0; i<m_thermostats.size(); ++i) {
 		if (m_thermostats[i].equal(thermo) &&
-			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
+				NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) &&
+				NANDRAD::Schedules::equalAnnualSchedules(m_schedGroupSplines[i], splines)) {
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
@@ -1871,7 +1878,10 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 
 		// add all definitions
 		m_thermostats.push_back(thermo);
-		m_schedules.push_back(scheds);
+		if(!scheds.empty())
+			m_schedules.push_back(scheds);
+		if(!splines.empty())
+			m_schedGroupSplines.push_back(splines);
 		m_objLists.push_back(ol);
 		m_objListNames.push_back(ol.m_name);
 
@@ -1892,7 +1902,8 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 		ccm.readClimateData(climatePath);
 
 	}  catch (...) {
-		errorStack << "The climate file is not valid. Heating and cooling curve cannot be calculated.";
+		errorStack << QString("The climate file is not valid. Heating and cooling curve cannot be calculated. Filepath '%1'")
+					  .arg(QString::fromUtf8(climatePath.c_str()));
 	}
 
 	//first vector -> timepoints; second temperature in C
