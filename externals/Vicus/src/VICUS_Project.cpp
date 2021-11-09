@@ -735,10 +735,6 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		throw IBK::Exception("Error during conversion.", FUNC_ID);
 	}
 
-	// directory placeholders
-	for (const auto & placeholder : m_placeholders)
-		p.m_placeholders[placeholder.first] = placeholder.second;
-
 	// *** building geometry data and databases ***
 
 	generateBuildingProjectDataNeu(p, errorStack);

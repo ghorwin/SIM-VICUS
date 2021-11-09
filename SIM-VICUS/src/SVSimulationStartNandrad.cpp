@@ -463,9 +463,12 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 
 	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
-		//add default placeholder
+		// set placeholders in NANDRAD Project (VICUS-Project does not have placeholders)
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
+		// "Project Directory" placeholder is needed to resolve paths to files referenced via relative paths
+		p.m_placeholders["Project Directory"] = IBK::Path(m_nandradProjectFilePath.toStdString()).parentPath().str();
+
 		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
 	}
 	catch (IBK::Exception & ex) {

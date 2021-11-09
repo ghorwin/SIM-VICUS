@@ -1650,6 +1650,8 @@ void SVMainWindow::onFixProjectAfterRead() {
 			// add default placeholders
 			p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 			p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
+			// "Project Directory" placeholder is needed to resolve paths to files referenced via relative paths
+			p.m_placeholders["Project Directory"] = IBK::Path(SVSettings::instance().m_nandradExportFileName.toStdString()).parentPath().str();
 			project().generateNandradProject(p, errorStack, SVSettings::instance().m_nandradExportFileName.toStdString());
 			// save project
 			IBK::Path targetNandradFile(SVSettings::instance().m_nandradExportFileName.toStdString());
