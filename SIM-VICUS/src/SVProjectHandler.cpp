@@ -328,8 +328,11 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 				tr("Error while saving project file, see error log file '%1' for details.").arg(QtExt::Directories::globalLogFile())
 				);
 
+		m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
 		return SaveFailed;
 	}
+
+	m_project->m_placeholders.clear(); // clear placeholders again - not really necessary, but helps preventing programming errors
 
 	// clear modified flag
 	m_modified = false;
@@ -339,6 +342,7 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 	// add project file name to recent file list
 	if (addToRecentFilesList)
 		addToRecentFiles(fname);
+
 
 	return SaveOK; // saving succeeded
 }
