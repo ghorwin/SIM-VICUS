@@ -89,8 +89,11 @@ public:
 							  ) const;
 
 
-	/*! Compares two schedule groups by schedule content, hereby ignoring the name of the schedule group. */
+	/*! Compares two schedule groups (period) by schedule content, hereby ignoring the name of the schedule group. */
 	static bool equalSchedules(const std::vector<Schedule> & first, const std::vector<Schedule> & second);
+
+	/*! Compares two schedule groups (annual) by schedule content, hereby ignoring the name of the schedule group. */
+	static bool equalAnnualSchedules(const std::vector<NANDRAD::LinearSplineParameter> & first, const std::vector<NANDRAD::LinearSplineParameter> & second);
 
 
 	// *** PUBLIC MEMBER VARIABLES ***

@@ -596,6 +596,23 @@ bool Schedules::equalSchedules(const std::vector<Schedule> & first, const std::v
 	return true;
 }
 
+bool Schedules::equalAnnualSchedules(const std::vector<LinearSplineParameter> &first, const std::vector<LinearSplineParameter> &second) {
+	if(first.size() !=  second.size())
+		return false;
+
+	for(const NANDRAD::LinearSplineParameter &splA : first){
+		int counter = 0;
+
+		for(const NANDRAD::LinearSplineParameter &splB : second){
+			if(splA == splB)
+				++counter;
+		}
+		if(counter != 1)
+			return false;
+	}
+	return true;
+}
+
 
 } // namespace NANDRAD
 
