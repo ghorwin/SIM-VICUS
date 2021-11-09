@@ -430,6 +430,9 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	std::vector<unsigned int> usedModelIds;
 	std::set<unsigned int> idSet;
 	std::vector<const VICUS::Room *> zones;
+
+	idSet.insert(2000000); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
+
 	generateNandradZones(zones, idSet, p, errorStack, vicusToNandradIds);
 
 	if (!errorStack.isEmpty())	return;

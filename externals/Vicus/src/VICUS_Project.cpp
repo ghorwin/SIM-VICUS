@@ -718,6 +718,17 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// location settings
 	p.m_location = m_location;
+
+	// create a standard sensor global horizontal radiation
+	{
+		// TODO Dirk das ist erstmal nur vorübergehend
+		// es muss dafür ein Dialog im SV... erstellt werden und später die Werte übergeben werden
+		NANDRAD::Sensor sensor;
+		sensor.createSensor(2000000, 0,0);
+
+		p.m_location.m_sensors.push_back(sensor);
+	}
+
 	// do we have a climate path?
 	if (!m_location.m_climateFilePath.isValid()) {
 		errorStack.push_back(tr("A climate data file is needed. Please select a climate data file!"));
