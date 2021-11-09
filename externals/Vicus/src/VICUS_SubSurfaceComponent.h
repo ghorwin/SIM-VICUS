@@ -60,7 +60,7 @@ public:
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
 	bool isValid(const VICUS::Database<VICUS::Window> & windows,
-				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
+				 const VICUS::Database<VICUS::BoundaryCondition> & bcs, const VICUS::Database<Schedule> & scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
