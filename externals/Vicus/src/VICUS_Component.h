@@ -70,9 +70,10 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
-	bool isValid(const VICUS::Database<VICUS::Material> & materials,
-				 const VICUS::Database<VICUS::Construction> & constructions,
-				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
+	bool isValid(const VICUS::Database<Material> & materials,
+				 const VICUS::Database<Construction> & constructions,
+				 const VICUS::Database<BoundaryCondition> & bcs,
+				 const VICUS::Database<Schedule> & scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
