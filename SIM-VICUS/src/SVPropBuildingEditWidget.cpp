@@ -1216,7 +1216,7 @@ void SVPropBuildingEditWidget::updateSurfaceHeatingPage() {
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled);
 		item->setData(Qt::UserRole, ci.m_id);
-		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions))
+		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions, db.m_schedules))
 			item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
 		else
 			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
