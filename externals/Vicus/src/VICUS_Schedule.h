@@ -92,7 +92,8 @@ public:
 		The variable to be inserted into the schedule group is given in parameter 'varName' (formatted including unit).
 	*/
 	void insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup,
-										std::vector<NANDRAD::LinearSplineParameter> &splines) const;
+										std::vector<NANDRAD::LinearSplineParameter> &splines,
+										const std::map<std::string, IBK::Path> &placeholders = std::map<std::string, IBK::Path>()) const;
 
 
 	/*! Converts vector of VICUS day types into a NANDRAD schedule day types
