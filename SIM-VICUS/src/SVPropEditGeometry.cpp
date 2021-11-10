@@ -797,9 +797,8 @@ void SVPropEditGeometry::updateUi() {
 				break;
 
 			}
-			setToolButtonsRotationState(false);
 			if(m_modificationType == ModificationType::MT_Rotate) {
-
+				setToolButtonsRotationState(false);
 			}
 		}
 
