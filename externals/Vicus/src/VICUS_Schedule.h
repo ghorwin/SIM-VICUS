@@ -52,8 +52,12 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced schedule is valid. */
-	bool isValid(bool checkAnnualScheds = false,
+	bool isValid(std::string &err,
+				 bool checkAnnualScheds = false,
 				 const std::map<std::string, IBK::Path> &placeholder = std::map<std::string, IBK::Path>()) const;
+
+	/*! Checks if all referenced schedule is valid. Only for period schedules. */
+	bool isValid() const;
 
 	/*! Multiply a schedule with another schedule. Returns the result schedule. */
 	Schedule multiply(const Schedule &other) const;

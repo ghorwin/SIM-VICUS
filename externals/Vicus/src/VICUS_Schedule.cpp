@@ -86,7 +86,7 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 }
 
 
-bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::Path> &placeholder) const {
+bool Schedule::isValid(std::string &err, bool checkAnnualScheds, const std::map<std::string, IBK::Path> &placeholder) const {
 
 	if (m_haveAnnualSchedule) {
 		if (!m_annualSchedule.m_tsvFile.isValid()){
@@ -111,8 +111,18 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 
 			// load the data in a temporary copy of the spline
 			NANDRAD::LinearSplineParameter spline(m_annualSchedule);
-			spline.m_tsvFile = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
-			spline.readTsv();
+			try {
+				spline.m_tsvFile = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
+			}  catch (...) {
+				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				return false;
+			}
+			try {
+				spline.readTsv();
+			}  catch (...) {
+				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				return false;
+			}
 
 			// check if we have data
 			if (spline.m_values.empty())
@@ -128,6 +138,11 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 
 		return true;
 	}
+	return isValid();
+}
+
+bool Schedule::isValid() const {
+
 
 	// *** daily cycle based schedule check ***
 
