@@ -102,7 +102,6 @@ SOURCES += \
 	../../src/actions/SVUndoAddSurface.cpp \
 	../../src/actions/SVUndoAddZone.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
-	../../src/actions/SVUndoCopySubSurfaces.cpp \
 	../../src/actions/SVUndoCopySurfaces.cpp \
 	../../src/actions/SVUndoCopyZones.cpp \
 	../../src/actions/SVUndoDeleteBuilding.cpp \
@@ -119,7 +118,6 @@ SOURCES += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.cpp \
-	../../src/actions/SVUndoModifySubSurfaceGeometry.cpp \
 	../../src/actions/SVUndoModifySurfaceGeometry.cpp \
 	../../src/actions/SVUndoTreeNodeState.cpp \
 	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
@@ -262,7 +260,6 @@ HEADERS  += \
 	../../src/actions/SVUndoAddSurface.h \
 	../../src/actions/SVUndoAddZone.h \
 	../../src/actions/SVUndoCommandBase.h \
-	../../src/actions/SVUndoCopySubSurfaces.h \
 	../../src/actions/SVUndoCopySurfaces.h \
 	../../src/actions/SVUndoCopyZones.h \
 	../../src/actions/SVUndoDeleteBuilding.h \
@@ -279,7 +276,6 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 	../../src/actions/SVUndoModifySiteData.h \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.h \
-	../../src/actions/SVUndoModifySubSurfaceGeometry.h \
 	../../src/actions/SVUndoModifySurfaceGeometry.h \
 	../../src/actions/SVUndoTreeNodeState.h \
 	../../src/core3D/Vic3DCamera.h \
