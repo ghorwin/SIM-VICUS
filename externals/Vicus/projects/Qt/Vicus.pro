@@ -62,6 +62,7 @@ HEADERS += \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
 	../../src/VICUS_Object.h \
+	../../src/VICUS_OutputDefinition.h \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_PlaneTriangulationData.h \
@@ -116,6 +117,7 @@ SOURCES += \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_Object.cpp \
+	../../src/VICUS_OutputDefinition.cpp \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Polygon2D.cpp \
@@ -160,6 +162,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
 	../../src/ncg/ncg_VICUS_Outputs.cpp \
+	../../src/ncg/ncg_VICUS_OutputDefinition.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \

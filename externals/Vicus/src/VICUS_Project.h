@@ -143,6 +143,13 @@ public:
 					   bool takeSelected,
 					   bool takeVisible) const;
 
+	/*! This function collects the pointers to all selected sub surfaces.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type SubSurface.
+		\returns Returns true if any sub surface is selected (same as subSurfaces.size() > 0).
+	*/
+	bool selectedSubSurfaces(std::vector<const SubSurface*> & subSurfaces, const VICUS::Project::SelectionGroups &sg) const;
+
 	/*! This function collects the pointers to all selected surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
 		only returns visible and selected objects of type Surface.
@@ -172,12 +179,22 @@ public:
 
 	// *** STATIC FUNCTIONS ***
 
-	/*! This function computes the bounding box of all selected surfaces and the center point.
+	/*! This function computes the global bounding box of all selected surfaces and the center point.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces,
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
+	/*! This function computes local the bounding box of all selected surfaces and the center point.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
+	*/
+	static IBKMK::Vector3D boundingBox(std::vector<const VICUS::Surface*> &surfaces,
+										std::vector<const VICUS::SubSurface*> &subsurfaces,
+										IBKMK::Vector3D &center,
+										const IBKMK::Vector3D &offset,
+										const IBKMK::Vector3D &xAxis,
+										const IBKMK::Vector3D &yAxis,
+										const IBKMK::Vector3D &zAxis );
 
 	/*! Attempts to create new surface-surface connections based on the current selection.
 		Newly created component instances are stored in vector newComponentInstances alongside

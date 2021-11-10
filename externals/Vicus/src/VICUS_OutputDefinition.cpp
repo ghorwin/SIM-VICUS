@@ -23,23 +23,30 @@
 	GNU General Public License for more details.
 */
 
-#include "VICUS_Outputs.h"
+#include "VICUS_OutputDefinition.h"
 
 namespace VICUS {
 
-bool Outputs::operator!=(const Outputs & other) const {
-	for (int i=0; i<NUM_F; ++i)
-		if (m_flags[i] != other.m_flags[i])
-			return true;
-	if (m_timeUnit != other.m_timeUnit)
+bool OutputDefinition::operator!=(const OutputDefinition & other) const {
+
+	if (m_id != other.m_id)
 		return true;
-	if (m_outputDefinitions != other.m_outputDefinitions)
+	if (m_name != other.m_name)
 		return true;
-	if (m_grids != other.m_grids)
+	if (m_type != other.m_type)
+		return true;
+	if (m_unit != other.m_unit)
+		return true;
+	if (m_timeType != other.m_timeType)
+		return true;
+	if (m_sourceObjectIds != other.m_sourceObjectIds)
+		return true;
+	if (m_activeSourceObjectIds != other.m_activeSourceObjectIds)
 		return true;
 
 	return false;
 }
+
 
 
 } // namespace VICUS

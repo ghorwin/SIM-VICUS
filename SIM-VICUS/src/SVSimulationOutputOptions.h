@@ -27,6 +27,20 @@
 #define SVSimulationOutputOptionsH
 
 #include <QWidget>
+#include <QSortFilterProxyModel>
+#include <QTableWidgetItem>
+#include <QItemSelectionModel>
+
+#include <IBK_Unit.h>
+
+#include <NANDRAD_ObjectList.h>
+#include <NANDRAD_OutputDefinition.h>
+#include <NANDRAD_Project.h>
+
+#include <VICUS_OutputDefinition.h>
+#include <VICUS_Outputs.h>
+
+#include "SVSimulationOutputTableModel.h"
 
 namespace Ui {
 	class SVSimulationOutputOptions;
@@ -36,6 +50,8 @@ namespace VICUS {
 	class Outputs;
 }
 
+
+
 /*! Widget with settings related to location. */
 class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
@@ -44,19 +60,153 @@ public:
 	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs);
 	~SVSimulationOutputOptions();
 
+	enum OutputType {
+		OT_VariableName,
+		OT_Unit,
+		OT_Description,
+		OT_SourceObjectIds,
+		OT_VectorIndexes,
+		NUM_OT
+	};
+
+	// EXAMPLE: ===============================================================================================================================================
+	//
+	//	(0)	Variable name                                     	Source object id(s) 	Vector indexes/ids  	Unit      	Description
+	//	(1)	ConstructionInstance.ElementTemperature           	1                   	0                   	C         	Finite-volume mean element temperature
+	//
+	//=========================================================================================================================================================
+	enum OutputReferenceListType {
+		ORT_VariableName,
+		ORT_SourceObjectIds,
+		ORT_VectorIndexes,
+		ORT_Unit,
+		ORT_Description
+	};
+
 	/*! Updates user interface with properties from the project data structure.
 		This function is called whenever the dialog is first shown.
 	*/
 	void updateUi();
+
+	/*! Generates the table with all available output data to define output definitions in NANDRAD.
+		Therefore the "$project_folder/var/$project_name/output_reference_list.txt" is parsed
+		and all necesairry data is stored.
+	*/
+	void generateOutputTable();
+
+	/*! Initializes Output Table with all necessairy headers */
+	void initOutputTable(unsigned int rowCount);
+
+	/*! Populates m_objectListsNandrad and m_outputDefinitionsNandrad with all
+		defined output definitions and object lists. */
+	void generateOutputs(const std::vector<NANDRAD::ObjectList> & objectList);
+
+	/*! Searches in m_objectListsNandrad for a corresponding object list
+		if an corresponding object list is found 'objectList' is set to it
+		\returns true if found, else false
+	*/
+	bool findEqualObjectList(NANDRAD::ObjectList &objectList);
+
+	/*! Returns generated object lists in std::vector. */
+	std::vector<NANDRAD::ObjectList> objectLists();
+
+	/*! Returns generated output definitions in std::vector. */
+	std::vector<NANDRAD::OutputDefinition> outputDefinitions();
 
 private slots:
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
 
 	void on_checkBoxDefaultNetworkOutputs_toggled(bool checked);
 
+	void on_radioButtonDefault_toggled(bool defaultToggled);
+
+	void on_lineEditType_textEdited(const QString &filterKey);
+
+	void on_tableViewOutputList_doubleClicked(const QModelIndex &index);
+
+	void on_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+	void on_pushButtonAllSources_clicked();
+
+	void on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item);
+
+	void on_lineEditName_textEdited(const QString &arg1);
+
+	void on_pushButtonAllSourcesDeselected_clicked();
+
+	void on_comboBoxOutoutGrid_currentIndexChanged(int index);
+
+	void on_toolButtonAddOutput_clicked();
+
+	void on_toolButtonRemoveOutput_clicked();
+
+	void on_checkBoxShowActive_toggled(bool checked);
+
+	void on_comboBoxTimeType_currentIndexChanged(int index);
+
+	void on_toolButtonRemoveSource_clicked();
+
+	void on_toolButtonAddSource_clicked();
+
 private:
-	Ui::SVSimulationOutputOptions		*m_ui;
-	VICUS::Outputs						*m_outputs;
+
+	/*! Finds the corresponding nandrad model by id and returns its name
+		\param model Nandrad Model
+		\param name Name of Nandrad Model, modified by function
+		\returns true if corresponding model was found
+	*/
+	template<typename T>
+	bool findNandradName(const std::vector<T> *model, const unsigned int idNandrad, std::string & name);
+
+	/*! Activates output definition and all source objects */
+	void updateOutputDefinitionState(unsigned int row, bool newState);
+
+	/*! Update Output UI with Source Table. */
+	void updateOutputUi(unsigned int row);
+
+	/*! Sets Activation state of 'm_outputDefinitions' and updated 'm_outputs' with 'm_outputDefinitions'
+		when it is activated
+	*/
+	void updateOutputDefinition(OutputDefinition &od, bool active = true);
+
+	/*! Pointer to Ui */
+	Ui::SVSimulationOutputOptions					*m_ui;
+
+	/*! QFont */
+	QFont											m_font;
+
+	/*! Pointer to VICUS Outputs with active output definitions*/
+	VICUS::Outputs									*m_outputs = nullptr;
+
+	/*! Map with all output definitions */
+	std::vector<OutputDefinition>					m_outputDefinitions;
+
+	/*! NANDRAD file with all data */
+	NANDRAD::Project								m_nandradProject;
+
+	/* Cached Selection model - needed to determine wether selection goes up or down
+	   and to set the correct active output definition */
+	QItemSelection									m_itemSelection;
+	bool											m_itemIsSet = false;
+
+	/*! Table model instance for input vars. */
+	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;
+
+	/*! Filter model for output definition */
+	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
+
+	/*! Pointer to active object in List */
+	const OutputDefinition							*m_activeOutputDefinition = nullptr;
+
+	// ============================================================================================
+	//  ONLY NEEDED FOR NANDRAD; IS APPLIED WHEN OUTPUT DEFINITION IN TABLE VIEW IS DOUBLE CLICKED
+	// ============================================================================================
+
+	/*! Map that holds all the object lists that are needed for nandrad specific outputs */
+	std::map<std::string, NANDRAD::ObjectList>			m_objectListsNandrad;
+
+	/*! Map that holds all the output definitions that are needed for nandrad specific outputs*/
+	std::map<std::string, NANDRAD::OutputDefinition>	m_outputDefinitionsNandrad;
 };
 
 #endif // SVSimulationOutputOptionsH

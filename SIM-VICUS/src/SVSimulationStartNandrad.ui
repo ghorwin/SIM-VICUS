@@ -452,6 +452,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ParameterEdit</class>
