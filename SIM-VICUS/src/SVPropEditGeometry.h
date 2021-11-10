@@ -145,7 +145,7 @@ public:
 	void setToolButtonAbsMode();
 
 	/*! Checks/unchecks the tool buttons for the specific absolute rotation mode */
-	void setToolButtonsRotationState();
+	void setToolButtonsRotationState(bool absOn);
 
 	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
 	void showDeg(const bool &show=true);
@@ -191,7 +191,17 @@ private slots:
 	void on_pushButtonAddRoof_clicked();
 	void on_pushButtonAddWindow_clicked();
 
-	// all line edit specific functions
+	void on_pushButtonCopyRooms_clicked();
+	void on_pushButtonCopySurfaces_clicked();
+	void on_pushButtonCopySubSurfaces_clicked();
+
+	void on_pushButtonAdd_clicked();
+	void on_pushButtonEdit_clicked();
+
+	void on_pushButtonThreePointRotation_clicked();
+	void on_pushButtonFlipNormals_clicked();
+
+	/*! all line edit specific functions */
 
 	void on_lineEditX_editingFinished();
 	void on_lineEditY_editingFinished();
@@ -204,7 +214,6 @@ private slots:
 	void on_lineEditX_textChanged(const QString &);
 	void on_lineEditY_textChanged(const QString &);
 	void on_lineEditZ_textChanged(const QString &);
-
 
 	void on_lineEditOrientation_returnPressed();
 	void on_lineEditInclination_returnPressed();
@@ -224,36 +233,12 @@ private slots:
 	void on_toolButtonTrans_clicked();
 	void on_toolButtonRotate_clicked();
 	void on_toolButtonScale_clicked();
+	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
+	void on_toolButtonAbs_clicked(bool);
+	void on_toolButtonRel_clicked(bool);
 
 	/*! Triggered when anything changes in one of the line edits X, Y or Z */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
-
-	void on_pushButtonCopyRooms_clicked();
-	void on_pushButtonCopySurfaces_clicked();
-
-	void on_pushButtonAdd_clicked();
-
-	void on_pushButtonEdit_clicked();
-
-	void on_pushButtonThreePointRotation_clicked();
-
-	void on_pushButtonFlipNormals_clicked();
-
-	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
-
-	void on_pushButtonCopySubSurfaces_clicked();
-
-	void on_toolButtonAbs_clicked(bool);
-
-	void on_toolButtonRel_clicked(bool);
-
-	void on_toolButtonNormal_clicked();
-
-	void on_toolButtonZ_clicked();
-
-	void on_toolButtonX_clicked();
-
-	void on_toolButtonY_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

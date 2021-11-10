@@ -174,6 +174,15 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 	// is being called from local coordinate system object, whenever this has changed location (regardless of
 	// its own visibility)
 	m_localCoordinatePosition =  t;
+
+	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
+	m_bbDim[OM_Local] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
+												  QtExt::QVector2IBKVector(m_cso->translation() ),
+												  QtExt::QVector2IBKVector(m_cso->localXAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localYAxis() ),
+												  QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
+	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
+
 	updateInputs();
 }
 
@@ -766,9 +775,8 @@ void SVPropEditGeometry::updateUi() {
 
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
-			m_ui->toolButtonNormal->setEnabled(true);
 			m_rotationState = RS_Normal;
-			setToolButtonsRotationState();
+			setToolButtonsRotationState(true);
 			setRotation(s->geometry().normal() );
 		}
 		else {
@@ -789,8 +797,10 @@ void SVPropEditGeometry::updateUi() {
 				break;
 
 			}
-			m_ui->toolButtonNormal->setEnabled(false);
-			setToolButtonsRotationState();
+			setToolButtonsRotationState(false);
+			if(m_modificationType == ModificationType::MT_Rotate) {
+
+			}
 		}
 
 		// enable "add subsurface" button
@@ -801,17 +811,16 @@ void SVPropEditGeometry::updateUi() {
 
 		// handling if only sub-surfaces are selected
 		if (!m_selSubSurfaces.empty()) {
-
 			if ( m_selSubSurfaces.size() == 1 ) {
 				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
 				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
-				m_ui->toolButtonNormal->setEnabled(true);
-				m_ui->toolButtonNormal->setChecked(true);
 				setRotation(s->geometry().normal() );
+				setToolButtonsRotationState(true);
 			}
 			else {
-				m_ui->toolButtonNormal->setEnabled(false);
-				m_ui->toolButtonZ->setChecked(true);
+				if(m_modificationType == ModificationType::MT_Rotate) {
+					setToolButtonsRotationState(false);
+				}
 				setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
 			}
 		}
@@ -1182,13 +1191,10 @@ void SVPropEditGeometry::setToolButtonAbsMode() {
 
 }
 
-void SVPropEditGeometry::setToolButtonsRotationState() {
-
-	m_ui->toolButtonNormal->setChecked(m_rotationState == RS_Normal);
-	m_ui->toolButtonX->setChecked(m_rotationState == RS_XAxis);
-	m_ui->toolButtonY->setChecked(m_rotationState == RS_YAxis);
-	m_ui->toolButtonZ->setChecked(m_rotationState == RS_ZAxis);
-
+void SVPropEditGeometry::setToolButtonsRotationState(bool absOn) {
+	m_ui->toolButtonAbs->setEnabled(!absOn);
+	m_ui->toolButtonAbs->setChecked(!absOn);
+	m_ui->toolButtonRel->setChecked(absOn);
 }
 
 
@@ -1570,12 +1576,12 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					else {
 
 
-						if ( m_ui->toolButtonX->isChecked() )
-							rota.setRotation((float)m_ui->lineEditX->value(), m_cso->localXAxis());
-						else if ( m_ui->toolButtonY->isChecked() )
-							rota.setRotation((float)m_ui->lineEditY->value(), m_cso->localYAxis());
-						else if ( m_ui->toolButtonZ->isChecked() )
-							rota.setRotation((float)m_ui->lineEditZ->value(), m_cso->localZAxis());
+//						if ( m_ui->toolButtonX->isChecked() )
+//							rota.setRotation((float)m_ui->lineEditX->value(), m_cso->localXAxis());
+//						else if ( m_ui->toolButtonY->isChecked() )
+//							rota.setRotation((float)m_ui->lineEditY->value(), m_cso->localYAxis());
+//						else if ( m_ui->toolButtonZ->isChecked() )
+//							rota.setRotation((float)m_ui->lineEditZ->value(), m_cso->localZAxis());
 					}
 
 					// we take the QQuarternion to rotate
@@ -2284,37 +2290,3 @@ void SVPropEditGeometry::on_toolButtonRel_clicked(bool /*checked*/) {
 	updateInputs();
 }
 
-void SVPropEditGeometry::on_toolButtonNormal_clicked() {
-	m_rotationState = RS_Normal;
-	setToolButtonsRotationState();
-}
-
-
-
-void SVPropEditGeometry::on_toolButtonX_clicked() {
-	m_rotationState = RS_XAxis;
-	setToolButtonsRotationState();
-	if (m_orientationMode == OM_Local)
-		setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(1,0,0));
-}
-
-void SVPropEditGeometry::on_toolButtonY_clicked() {
-	m_rotationState = RS_YAxis;
-	setToolButtonsRotationState();
-	if (m_orientationMode == OM_Local)
-		setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(0,1,0));
-}
-
-void SVPropEditGeometry::on_toolButtonZ_clicked() {
-	m_rotationState = RS_ZAxis;
-	setToolButtonsRotationState();
-
-	if (m_orientationMode == OM_Local)
-		setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(0,0,1));
-}
