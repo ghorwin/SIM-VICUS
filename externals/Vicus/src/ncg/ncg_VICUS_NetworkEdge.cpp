@@ -105,13 +105,13 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	if (m_pipeModel != NUM_PM)
 		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
-		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
+			e->SetAttribute("supply", "true");
 	if (m_idPipe != VICUS::INVALID_ID)
 		e->SetAttribute("idPipe", IBK::val2string<IDType>(m_idPipe));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkEdge().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+			e->SetAttribute("visible", "true");
 	if (m_idNode1 != VICUS::INVALID_ID)
 		e->SetAttribute("idNode1", IBK::val2string<unsigned int>(m_idNode1));
 	if (m_idNode2 != VICUS::INVALID_ID)

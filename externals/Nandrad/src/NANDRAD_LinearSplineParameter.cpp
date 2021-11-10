@@ -262,10 +262,11 @@ void LinearSplineParameter::readTsv() {
 		throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
 							 .arg(tsvFilePath.str()), FUNC_ID);
 	m_xUnit = IBK::Unit(reader.m_units[0]); // may throw
+	if (reader.m_units[colIndex].empty())
+		reader.m_units[colIndex] = "-"; // default to undefined unit if unit is missing - same behavior as in PostProc
 	m_yUnit = IBK::Unit(reader.m_units[colIndex]); // may throw
 	m_name = reader.m_captions[colIndex];
 	m_values.setValues(reader.colData(0), reader.colData(colIndex));
-
 }
 
 } // namespace NANDRAD

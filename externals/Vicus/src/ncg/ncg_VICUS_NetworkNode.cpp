@@ -134,7 +134,7 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkNode().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+			e->SetAttribute("visible", "true");
 	if (m_type != NUM_NT)
 		e->SetAttribute("type", KeywordList::Keyword("NetworkNode::NodeType",  m_type));
 	if (m_idSubNetwork != VICUS::INVALID_ID)
