@@ -36,6 +36,7 @@
 
 #define PI				3.141592653589793238
 
+const double MASS_FLUX_SCALE = 1000.;
 
 namespace NANDRAD_MODEL {
 
@@ -770,7 +771,7 @@ void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::cons
 
 
 double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
-	return (mdot - *m_massFluxRef);
+	return (mdot - *m_massFluxRef) * MASS_FLUX_SCALE;
 }
 
 
