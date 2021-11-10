@@ -109,7 +109,7 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 			// Also, we have no way of resolving the absolute path from a relative path, since we don't
 			// have access to the project's file path.
 
-
+			Schedule *sched = const_cast<Schedule*> (this);
 			// load the data
 			NANDRAD::LinearSplineParameter spline;
 			IBK::Path filepath = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
@@ -127,6 +127,7 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 			// yUnit is not important -> Model defines unit later
 
 			// TODO Dirk->Andreas wie kann ich die const Funktion umgehen und doch was reinschreiben?
+			sched->m_annualSchedule = spline;
 		}
 
 
