@@ -490,9 +490,11 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_models.m_thermostats = thermostats.m_thermostats;
 	p.m_objectLists.insert(p.m_objectLists.end(), thermostats.m_objLists.begin(), thermostats.m_objLists.end());
 	for (unsigned int i=0; i<thermostats.m_schedules.size(); ++i)
-		p.m_schedules.m_scheduleGroups[thermostats.m_objLists[i].m_name] = thermostats.m_schedules[i];
+		if(!thermostats.m_schedules[i].empty())
+			p.m_schedules.m_scheduleGroups[thermostats.m_objLists[i].m_name] = thermostats.m_schedules[i];
 	for(unsigned int i=0; i<thermostats.m_schedGroupSplines.size(); ++i)
-		p.m_schedules.m_annualSchedules[thermostats.m_objLists[i].m_name] = thermostats.m_schedGroupSplines[i];
+		if(!thermostats.m_schedGroupSplines[i].empty())
+			p.m_schedules.m_annualSchedules[thermostats.m_objLists[i].m_name] = thermostats.m_schedGroupSplines[i];
 
 
 	// *** Ideal heating cooling ***
@@ -526,11 +528,19 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 								   std::map<unsigned int, unsigned int> &vicusToNandradIds)const
 {
 	// collect a list of zone references for further processing
-
-	for (const VICUS::Building & b : m_buildings)
-		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
-			for (const VICUS::Room & r : bl.m_rooms)
+	// also create a new zone name 'buildingName'.'buildingLevelName'.'roomName'
+	std::map<unsigned int, std::string> roomIdsToRoomNames;
+	for (const VICUS::Building & b : m_buildings){
+		QString buildingName = b.m_displayName;
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels){
+			QString buildingLevelName = bl.m_displayName;
+			for (const VICUS::Room & r : bl.m_rooms){
 				zones.push_back(&r);
+				QString name = buildingName + "." + buildingLevelName + "." + r.m_displayName;
+				roomIdsToRoomNames[r.m_id] = name.toStdString();
+			}
+		}
+	}
 
 	// check for unqiue zone IDs
 	try {
@@ -546,7 +556,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 		NANDRAD::Zone z;
 		z.m_id = r->m_id;
 		vicusToNandradIds[r->m_id] = r->m_id;
-		z.m_displayName = r->m_displayName.toStdString();
+		z.m_displayName = roomIdsToRoomNames[r->m_id];
 
 		// Note: in the code below we expect the parameter's base units to be the same as the default unit for the
 		//       populated parameters
@@ -1878,10 +1888,8 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 
 		// add all definitions
 		m_thermostats.push_back(thermo);
-		if(!scheds.empty())
-			m_schedules.push_back(scheds);
-		if(!splines.empty())
-			m_schedGroupSplines.push_back(splines);
+		m_schedules.push_back(scheds);
+		m_schedGroupSplines.push_back(splines);
 		m_objLists.push_back(ol);
 		m_objListNames.push_back(ol.m_name);
 
