@@ -465,17 +465,11 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
 			e = *m_temperatureDifferenceSetpointRef - temperatureDifference;
 
-			// anti-windup of PI-controller: if the temperature difference of next element is very small, this means there is
-			// no heat loss. We dont want to sum up that error, since its not possible to control the temperature difference in that case.
-			if (temperatureDifference < 0.01 * *m_temperatureDifferenceSetpointRef)
-				m_controller->resetErrorIntegral();
-
 		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
 			// e is > 0 if our mass flux exceeds the limit -> then we have to increase the flow resistance
 			e = mdot - *m_massFluxSetpointRef;
-			// TODO anti-windup for PI controller?
 		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
@@ -519,7 +513,6 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
-
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:{
@@ -535,8 +528,26 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 
 void HNPressureLossCoeffElement::stepCompleted(double t) {
-	if (m_controller != nullptr)
+	if (m_controller != nullptr) {
+
 		m_controller->stepCompleted(t);
+
+		// anti-windup of PI-controller: if there is no heat loss, we dont want to sum up that error,
+		// since its not possible to control the temperature difference in that case.
+		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference){
+			if (*m_heatExchangeHeatLossRef < 1) // if below 1 W
+				m_controller->resetErrorIntegral();
+		}
+		// anti-windup of PI-controller: if the temperature difference of next element is very small, this means there is
+		// no heat loss. We dont want to sum up that error, since its not possible to control the temperature difference in that case.
+		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement) {
+			double temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
+			if (temperatureDifference < 0.01 * *m_temperatureDifferenceSetpointRef)
+				m_controller->resetErrorIntegral();
+		}
+
+		// TODO anti-windup for mass flux control ?
+	}
 }
 
 
