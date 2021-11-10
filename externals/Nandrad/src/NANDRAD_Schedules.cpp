@@ -44,6 +44,11 @@ void Schedules::initDefaults() {
 void Schedules::checkParameters(const std::map<std::string, IBK::Path> &placeholders) {
 	FUNCID(Schedules::checkParameters);
 
+	// check for parameter uniqueness
+	for (const std::pair<const std::string, std::vector<Schedule> > & svec : m_scheduleGroups) {
+	}
+
+
 	// process all annual splines
 	for (std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >::iterator it = m_annualSchedules.begin();
 		 it != m_annualSchedules.end(); ++it)
@@ -201,9 +206,9 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 				std::string objectListName = attrib->ValueStr();
 				// ensure that we do not have duplicate definitions
-				if (m_scheduleGroups.find(objectListName) != m_scheduleGroups.end())
+				if (m_annualSchedules.find(objectListName) != m_annualSchedules.end())
 					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
-						"ObjectList '"+objectListName+"' used for multiple ScheduleGroup elements."), FUNC_ID);
+						"ObjectList '"+objectListName+"' used for multiple AnnualSchedules elements."), FUNC_ID);
 
 				std::vector<NANDRAD::LinearSplineParameter> schedules;
 				// now read all the schedule subtags
