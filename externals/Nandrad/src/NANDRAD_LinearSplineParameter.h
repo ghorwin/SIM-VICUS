@@ -117,13 +117,6 @@ public:
 	*/
 	void readTsv();
 
-	/*! Reads externally referenced tsv-file.
-		m_tsvFile is expected to contain a valid path.
-		\param placeholder -> placeholder map
-		\param columnIdx -> Index of data column (0 is time column); all other columns are data columns
-	*/
-	void readTsv(const std::map<std::string, IBK::Path> &placeholders, unsigned int columnIdx = 1);
-
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Parameter name (in context of schedules used as scheduled quantity). */

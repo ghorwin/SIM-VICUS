@@ -221,9 +221,9 @@ void LinearSplineParameter::convert2BaseUnits() {
 bool LinearSplineParameter::operator!=(const LinearSplineParameter & other) const {
 	if (m_name != other.m_name) return true;
 	if (m_interpolationMethod != other.m_interpolationMethod) return true;
+	if (m_values != other.m_values) return true;
 	if (m_xUnit != other.m_xUnit) return true;
 	if (m_yUnit != other.m_yUnit) return true;
-	if (m_values != other.m_values) return true;
 	return false;
 }
 
@@ -253,8 +253,6 @@ void LinearSplineParameter::readTsv() {
 		throw IBK::Exception(IBK::FormatString("File '%1' does not exist.").arg(m_tsvFile.str()), FUNC_ID);
 	IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	IBK::CSVReader reader;
-
-	// only take unit for time column
 	reader.read(tsvFilePath, false, true);  // may throw exception
 	if (reader.m_nColumns <= colIndex)
 		throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns, but has only %3.")
@@ -264,37 +262,10 @@ void LinearSplineParameter::readTsv() {
 		throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
 							 .arg(tsvFilePath.str()), FUNC_ID);
 	m_xUnit = IBK::Unit(reader.m_units[0]); // may throw
-	// TODO Katja implement this in docu later
-	m_yUnit = IBK::Unit("-"); // ignore unit of values
+	m_yUnit = IBK::Unit(reader.m_units[colIndex]); // may throw
 	m_name = reader.m_captions[colIndex];
 	m_values.setValues(reader.colData(0), reader.colData(colIndex));
 
-}
-
-void LinearSplineParameter::readTsv(const std::map<std::string, IBK::Path> &placeholders, unsigned int columnIdx) {
-	FUNCID(LinearSplineParameter::readTsv);
-
-	IBK::Path filePath = m_tsvFile.withReplacedPlaceholders(placeholders);
-
-	if (!IBK::Path(filePath).exists())
-		throw IBK::Exception(IBK::FormatString("File '%1' does not exist.").arg(m_tsvFile.str()), FUNC_ID);
-	IBK::IBK_Message(IBK::FormatString("Reading: '%1'\n").arg(m_tsvFile.str()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
-	IBK::CSVReader reader;
-
-	// only take unit for time column
-	reader.read(filePath, false, true);  // may throw exception
-	if (reader.m_nColumns <= columnIdx)
-		throw IBK::Exception(IBK::FormatString("File '%1' must have exactly %2 columns, but has only %3.")
-							 .arg(filePath.str()).arg(columnIdx+1)
-							 .arg(reader.m_nColumns), FUNC_ID); // Mind: column count = 1 (time column) + columnIdx
-	if (reader.m_nRows < 2)
-		throw IBK::Exception(IBK::FormatString("File '%1' must have at least 2 rows.")
-							 .arg(filePath.str()), FUNC_ID);
-	m_xUnit = IBK::Unit(reader.m_units[0]); // may throw
-	// TODO Katja implement this in docu later
-	m_yUnit = IBK::Unit("-"); // ignore unit of values
-	m_name = reader.m_captions[columnIdx];
-	m_values.setValues(reader.colData(0), reader.colData(columnIdx));
 }
 
 } // namespace NANDRAD
