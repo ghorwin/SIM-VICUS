@@ -44,11 +44,6 @@ void Schedules::initDefaults() {
 void Schedules::checkParameters(const std::map<std::string, IBK::Path> &placeholders) {
 	FUNCID(Schedules::checkParameters);
 
-	// check for parameter uniqueness
-	for (const std::pair<const std::string, std::vector<Schedule> > & svec : m_scheduleGroups) {
-	}
-
-
 	// process all annual splines
 	for (std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >::iterator it = m_annualSchedules.begin();
 		 it != m_annualSchedules.end(); ++it)
