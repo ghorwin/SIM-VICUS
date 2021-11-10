@@ -45,7 +45,7 @@ do
 
     if [[ $var = "omp"  ]];
     then
-		CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_OPENMP:BOOL=ON"
+		CMAKE_OPTIONS="$CMAKE_OPTIONS -DUSE_OMP:BOOL=ON"
 		echo "Using Open MP compile flags"
     fi
 

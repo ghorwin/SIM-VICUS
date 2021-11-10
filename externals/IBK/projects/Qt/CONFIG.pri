@@ -39,7 +39,7 @@
 #
 # This option enables open mp support in compiler.
 #
-#OPTIONS += openmp
+OPTIONS += openmp
 
 #
 # This option enables vampire openmp support in compiler.
