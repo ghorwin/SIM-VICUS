@@ -776,7 +776,7 @@ void SVPropEditGeometry::updateUi() {
 		if ( m_selSurfaces.size() == 1 ) {
 			const VICUS::Surface *s = m_selSurfaces[0];
 			m_rotationState = RS_Normal;
-			setToolButtonsRotationState(true);
+			m_ui->toolButtonAbs->setEnabled(true);
 			setRotation(s->geometry().normal() );
 		}
 		else {
@@ -815,7 +815,7 @@ void SVPropEditGeometry::updateUi() {
 				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
 				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
 				setRotation(s->geometry().normal() );
-				setToolButtonsRotationState(true);
+				m_ui->toolButtonAbs->setEnabled(true);
 			}
 			else {
 				if(m_modificationType == ModificationType::MT_Rotate) {
@@ -1192,9 +1192,9 @@ void SVPropEditGeometry::setToolButtonAbsMode() {
 }
 
 void SVPropEditGeometry::setToolButtonsRotationState(bool absOn) {
-	m_ui->toolButtonAbs->setEnabled(!absOn);
-	m_ui->toolButtonAbs->setChecked(!absOn);
-	m_ui->toolButtonRel->setChecked(absOn);
+	m_ui->toolButtonAbs->setEnabled(absOn);
+	m_ui->toolButtonAbs->setChecked(absOn);
+	m_ui->toolButtonRel->setChecked(!absOn);
 }
 
 
