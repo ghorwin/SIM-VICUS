@@ -38,34 +38,46 @@ void OutputDefinition::readXMLPrivate(const TiXmlElement * element) {
 
 	try {
 		// search for mandatory attributes
+		if (!TiXmlAttribute::attributeByName(element, "quantity"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'quantity' attribute.") ), FUNC_ID);
+
+		if (!TiXmlAttribute::attributeByName(element, "sourceObjectType"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'sourceObjectType' attribute.") ), FUNC_ID);
+
 		// reading attributes
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "name")
-				m_name = attrib->ValueStr();
-			else if (attribName == "type")
-				m_type = attrib->ValueStr();
+			if (attribName == "quantity")
+				m_quantity = attrib->ValueStr();
+			else if (attribName == "sourceObjectType")
+				m_sourceObjectType = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
+		if (!element->FirstChildElement("std::vector<unsigned int>"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'std::vector<unsigned int>' element.") ), FUNC_ID);
+
+		if (!element->FirstChildElement("GridName"))
+			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+				IBK::FormatString("Missing required 'GridName' element.") ), FUNC_ID);
+
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Unit")
-				m_unit = NANDRAD::readUnitElement(c, cName);
+			if (cName == "SourceObjectIds")
+				NANDRAD::readVector(c, "SourceObjectIds", m_sourceObjectIds);
 			else if (cName == "VectorIds")
 				NANDRAD::readVector(c, "VectorIds", m_vectorIds);
-			else if (cName == "SourceObjectIds")
-				NANDRAD::readVector(c, "SourceObjectIds", m_sourceObjectIds);
-			else if (cName == "ActiveSourceObjectIds")
-				NANDRAD::readVector(c, "ActiveSourceObjectIds", m_activeSourceObjectIds);
+			else if (cName == "GridName")
+				m_gridName = c->GetText();
 			else if (cName == "TimeType") {
 				try {
 					m_timeType = (timeType_t)KeywordList::Enumeration("OutputDefinition::timeType_t", c->GetText());
@@ -93,20 +105,17 @@ TiXmlElement * OutputDefinition::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputDefinition");
 	parent->LinkEndChild(e);
 
-	if (m_id != VICUS::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_name.empty())
-		e->SetAttribute("name", m_name);
-	if (!m_type.empty())
-		e->SetAttribute("type", m_type);
-	if (m_unit.id() != 0)
-		TiXmlElement::appendSingleAttributeElement(e, "Unit", nullptr, std::string(), m_unit.name());
+	if (!m_quantity.empty())
+		e->SetAttribute("quantity", m_quantity);
+	if (!m_sourceObjectType.empty())
+		e->SetAttribute("sourceObjectType", m_sourceObjectType);
 
 	if (m_timeType != NUM_OTT)
 		TiXmlElement::appendSingleAttributeElement(e, "TimeType", nullptr, std::string(), KeywordList::Keyword("OutputDefinition::timeType_t",  m_timeType));
-	NANDRAD::writeVector(e, "VectorIds", m_vectorIds);
 	NANDRAD::writeVector(e, "SourceObjectIds", m_sourceObjectIds);
-	NANDRAD::writeVector(e, "ActiveSourceObjectIds", m_activeSourceObjectIds);
+	NANDRAD::writeVector(e, "VectorIds", m_vectorIds);
+	if (!m_gridName.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "GridName", nullptr, std::string(), m_gridName);
 	return e;
 }
 

@@ -469,14 +469,6 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool genera
 		p.m_placeholders["Project Directory"] = IBK::Path(m_nandradProjectFilePath.toStdString()).parentPath().str();
 
 		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
-		// special handling since there is no object list data structure in
-		if (generateOutputs)
-			if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
-				 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
-				m_simulationOutputOptions->generateOutputs(p.m_objectLists);
-				p.m_objectLists = m_simulationOutputOptions->objectLists();
-				p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
-			}
 
 	}
 	catch (IBK::Exception & ex) {
@@ -508,7 +500,7 @@ void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int i
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
 	if (startSimulation(true) )
-		m_simulationOutputOptions->generateOutputTable();
+		m_simulationOutputOptions->updateUi();
 }
 
 

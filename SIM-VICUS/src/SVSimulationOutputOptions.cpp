@@ -52,7 +52,7 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_outputs(&outputs)
 {
 	m_ui->setupUi(this);
-	m_ui->verticalLayoutOutputs->setMargin(0);
+//	m_ui->verticalLayoutOutputs->setMargin(0);
 
 	// m_outputDefinitions = &m_outputs->m_definitions;
 
@@ -65,8 +65,8 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputGrids);
 	m_ui->tableWidgetOutputGrids->setSortingEnabled(false);
+#if 0
 	m_ui->radioButtonDefault->setChecked(true);
-
 	m_outputTableModel = new SVSimulationOutputTableModel(this);
 	m_outputTableModel->m_outputDefinitions = &m_outputDefinitions;
 
@@ -75,7 +75,6 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	m_outputTableProxyModel->setSourceModel(m_outputTableModel);
 	m_ui->tableViewOutputList->setModel(m_outputTableProxyModel);
-
 	SVStyle::formatDatabaseTableView(m_ui->tableViewOutputList);
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSourceObjectIds);
 
@@ -105,8 +104,8 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
 			this, &SVSimulationOutputOptions::on_selectionChanged);
+#endif
 
-	m_font = QFont();
 }
 
 
@@ -116,6 +115,7 @@ SVSimulationOutputOptions::~SVSimulationOutputOptions() {
 
 
 void SVSimulationOutputOptions::updateUi() {
+#if 0
 
 	m_ui->checkBoxDefaultZoneOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled());
@@ -126,7 +126,6 @@ void SVSimulationOutputOptions::updateUi() {
 	m_ui->tableWidgetOutputGrids->clearContents();
 	m_ui->comboBoxOutputGrid->clear();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
-
 	// we set the correct timetype
 	if(m_activeOutputDefinition != nullptr)
 		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
@@ -370,8 +369,10 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 	m_ui->tableViewOutputList->setColumnWidth(3, 50);
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+#endif
 }
 
+#if 0
 void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
 	//	m_ui->tableWidgetOutputList->setColumnCount(5);
 	//	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
@@ -1064,3 +1065,4 @@ void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
 	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 
+#endif

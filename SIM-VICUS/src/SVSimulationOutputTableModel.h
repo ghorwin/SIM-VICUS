@@ -42,20 +42,7 @@ namespace NANDRAD {
 	class OutputGrid;
 }
 
-struct OutputDefinition {
-
-	OutputDefinition(){}
-
-	OutputDefinition(VICUS::OutputDefinition &od, bool isActive):
-		m_outputdefinition(od),
-		m_isActive(isActive)
-	{}
-
-	VICUS::OutputDefinition			m_outputdefinition;
-	bool							m_isActive = false;
-
-};
-
+/*! This table model shows the available outputs. */
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -74,11 +61,9 @@ public:
 	/*! Updated the row with changed data */
 	void updateOutputData(unsigned int row);
 
-	std::vector<OutputDefinition>								*m_outputDefinitions = nullptr;
+	std::vector<VICUS::OutputDefinition>						*m_outputDefinitions = nullptr;
 
 	QFont														m_itemFont;
-
-	QString														m_fileHash;
 };
 
 #endif // SVSIMULATIONOUTPUTTABLEMODEL_H

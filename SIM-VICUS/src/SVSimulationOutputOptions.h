@@ -61,27 +61,29 @@ namespace VICUS {
 
 	a) default output definitions - can be created for many objects independently of the actual project, hereby using
 	   generic object lists
-	b) custom output definitions where output options are somewhat derived from current project; for example, the IDs of
-	   all zones are offered when zone-related outputs are defined. A list of usual output quantities is hardcoded and
-	   offered to the user.
-	c) manual, advanced method: here the NANDRAD solver export needs to be done first, then the output_reference_list.txt
+	b) manual definition: here the NANDRAD solver export needs to be done first, then the output_reference_list.txt
 	   is parsed and all actually available outputs are offered to the user. This procedure, however, is highly error prone
 	   and can lead to a lot of problems:
 	   - NANDRAD export can fail -> available output list cannot be generated/updated (may be outdated!)
 	   - NANDRAD test init can fail
 
-	For option b) and c) one has to consider, that the VICUS project may have changed and previously configured outputs
+	For option b)  one has to consider, that the VICUS project may have changed and previously configured outputs
 	won't be available anylonger. Hence, there should be a table showing configured outputs additionally to available
 	outputs and highlight those that are no longer valid. This might include missing IDs (though NANDRAD only generates
 	a warning in these cases).
 
-	General workflow for mode c):
+	Option a and b can be used together (Option a is a check-box).
+
+	General workflow for manual configuration:
 
 	- open widget/dialog; clear table with available outputs, show only table with configured outputs
-	- user presses button "update available outputs" -> run NANDRAD export, NANDRAD test init -> report error if anything
+	- if "output_reference_list.txt" for current VICUS/NANDRAD Project exists, parse and read it
+	- if time-stamp of VICUS project is newer than output_reference_list.txt, highlight "update available outputs" button
+	- when user presses button "update available outputs" -> run NANDRAD export, NANDRAD test init -> report error if anything
 	  fails
-	- parse output reference list
-	- populate table with available outputs, update status of already configured outputs
+	- if successful, parse output reference list
+	- populate table with available outputs
+	- update status of already configured output definitions
 */
 class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
@@ -118,6 +120,7 @@ public:
 	*/
 	void updateUi();
 
+#if 0
 	/*! Generates the table with all available output data to define output definitions in NANDRAD.
 		Therefore the "$project_folder/var/$project_name/output_reference_list.txt" is parsed
 		and all necesairry data is stored.
@@ -142,8 +145,11 @@ public:
 
 	/*! Returns generated output definitions in std::vector. */
 	std::vector<NANDRAD::OutputDefinition> outputDefinitions();
+#endif
 
 private slots:
+
+#if 0
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
 
 	void on_checkBoxDefaultNetworkOutputs_toggled(bool checked);
@@ -177,9 +183,9 @@ private slots:
 	void on_toolButtonRemoveSource_clicked();
 
 	void on_toolButtonAddSource_clicked();
-
+#endif
 private:
-
+#if 0
 	/*! Finds the corresponding nandrad model by id and returns its name
 		\param model Nandrad Model
 		\param name Name of Nandrad Model, modified by function
@@ -198,22 +204,15 @@ private:
 		when it is activated
 	*/
 	void updateOutputDefinition(OutputDefinition &od, bool active = true);
+#endif
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
 
-	/*! QFont */
-	QFont											m_font;
-
-	/*! Pointer to VICUS Outputs with active output definitions*/
+	/*! Pointer to VICUS::Outputs object in current project. */
 	VICUS::Outputs									*m_outputs = nullptr;
 
-	/*! Map with all output definitions */
-	std::vector<OutputDefinition>					m_outputDefinitions;
-
-	/*! NANDRAD file with all data */
-	NANDRAD::Project								m_nandradProject;
-
+#if 0
 	/* Cached Selection model - needed to determine wether selection goes up or down
 	   and to set the correct active output definition */
 	QItemSelection									m_itemSelection;
@@ -237,6 +236,7 @@ private:
 
 	/*! Map that holds all the output definitions that are needed for nandrad specific outputs*/
 	std::map<std::string, NANDRAD::OutputDefinition>	m_outputDefinitionsNandrad;
+#endif
 };
 
 #endif // SVSimulationOutputOptionsH

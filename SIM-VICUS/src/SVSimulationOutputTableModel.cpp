@@ -22,6 +22,7 @@ int SVSimulationOutputTableModel::columnCount(const QModelIndex & /*parent*/) co
 QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role) const {
 	if (!index.isValid())
 		return QVariant();
+#if 0
 	OutputDefinition & var = (*m_outputDefinitions)[(size_t)index.row()];
 	switch (role) {
 		case Qt::DisplayRole : {
@@ -76,6 +77,7 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 			}
 		} break;
 	}
+#endif
 	return QVariant();
 }
 

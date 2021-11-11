@@ -6,24 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1335</width>
-    <height>1231</height>
+    <width>1051</width>
+    <height>747</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayoutOutputs">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QSplitter" name="splitter">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>1</number>
      </property>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
+     <widget class="QWidget" name="tabGrids">
+      <attribute name="title">
        <string>Output grids</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QTableWidget" name="tableWidgetOutputGrids">
          <attribute name="verticalHeaderVisible">
@@ -33,60 +33,24 @@
        </item>
       </layout>
      </widget>
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="title">
-       <string>Output selection</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0,0">
+     <widget class="QWidget" name="tabDefinitions">
+      <attribute name="title">
+       <string>Output Definitions</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QRadioButton" name="radioButtonDefault">
+        <widget class="QCheckBox" name="checkBoxDefaultBuildingOutputs">
          <property name="text">
-          <string>Default Outputs</string>
+          <string>Generate default building-related outputs</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QCheckBox" name="checkBoxDefaultZoneOutputs">
-           <property name="text">
-            <string>Create default zone outputs</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="checkBoxDefaultNetworkOutputs">
-           <property name="text">
-            <string>Create default network outputs</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <widget class="QCheckBox" name="checkBoxDefaultNetworkOutputs">
+         <property name="text">
+          <string>Generate default network-related outputs</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="Line" name="line">
@@ -96,257 +60,175 @@
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButtonCustom">
-         <property name="text">
-          <string>Custom Outputs</string>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="labelAvailableOutputs">
+           <property name="text">
+            <string>Available outputs:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton">
+           <property name="text">
+            <string>Update output list</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLabel" name="labelOutputUpdateNeeded">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="palette">
+            <palette>
+             <active>
+              <colorrole role="WindowText">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>239</red>
+                 <green>41</green>
+                 <blue>41</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </active>
+             <inactive>
+              <colorrole role="WindowText">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>239</red>
+                 <green>41</green>
+                 <blue>41</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </inactive>
+             <disabled>
+              <colorrole role="WindowText">
+               <brush brushstyle="SolidPattern">
+                <color alpha="255">
+                 <red>190</red>
+                 <green>190</green>
+                 <blue>190</blue>
+                </color>
+               </brush>
+              </colorrole>
+             </disabled>
+            </palette>
+           </property>
+           <property name="text">
+            <string>The output definition list is outdated, you should update the output list.</string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" colspan="3">
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0" rowspan="2">
+            <widget class="QTableView" name="tableViewAvailableOutputs"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QToolButton" name="toolButtonAddSource">
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="../resources/SIM-VICUS.qrc">
+               <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1" rowspan="2">
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>158</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="2" column="0">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Object type filter:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEditType"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Quantity filter:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEditName"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widgetCustomOutputs" native="true">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QSplitter" name="splitter_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <widget class="QWidget" name="layoutWidget">
-             <layout class="QVBoxLayout" name="verticalLayout_4">
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <item>
-                 <widget class="QLabel" name="label">
-                  <property name="text">
-                   <string>Filter type:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEditType"/>
-                </item>
-                <item>
-                 <widget class="QLabel" name="label_3">
-                  <property name="text">
-                   <string>Filter name:</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLineEdit" name="lineEditName"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="checkBoxShowActive">
-                <property name="text">
-                 <string>show only active outputs</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTableView" name="tableViewOutputList"/>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_2">
-                <item>
-                 <widget class="QToolButton" name="toolButtonAddOutput">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../resources/SIM-VICUS.qrc">
-                    <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="toolButtonRemoveOutput">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../resources/SIM-VICUS.qrc">
-                    <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_2">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-            <widget class="QWidget" name="layoutWidget">
-             <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,1">
-              <item>
-               <layout class="QGridLayout" name="gridLayout">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_2">
-                  <property name="text">
-                   <string>Output Grid</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0" colspan="2">
-                 <widget class="QLabel" name="label_5">
-                  <property name="text">
-                   <string>Output Time Type</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="2">
-                 <widget class="QComboBox" name="comboBoxTimeType"/>
-                </item>
-                <item row="0" column="2">
-                 <widget class="QComboBox" name="comboBoxOutputGrid"/>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <widget class="Line" name="line_2">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Description</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QTextBrowser" name="textBrowserDescription">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>100</height>
-                 </size>
-                </property>
-                <property name="font">
-                 <font>
-                  <italic>true</italic>
-                 </font>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="Line" name="line_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item>
-               <widget class="QWidget" name="widgetSource" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0,1,0">
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <widget class="QLabel" name="labelSourceObjects">
-                   <property name="text">
-                    <string>Source Object Ids</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QTableWidget" name="tableWidgetSourceObjectIds"/>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_4">
-                   <item>
-                    <widget class="QToolButton" name="toolButtonAddSource">
-                     <property name="text">
-                      <string>...</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../resources/SIM-VICUS.qrc">
-                       <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QToolButton" name="toolButtonRemoveSource">
-                     <property name="text">
-                      <string>...</string>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../resources/SIM-VICUS.qrc">
-                       <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_3">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-         </layout>
+        <widget class="QLabel" name="labelAvailableOutputs_2">
+         <property name="text">
+          <string>Configured outputs:</string>
+         </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_5">
+         <item row="0" column="0" rowspan="2">
+          <widget class="QTableView" name="tableViewAvailableOutputs_2"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QToolButton" name="toolButtonRemoveSource">
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/SIM-VICUS.qrc">
+             <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>118</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
