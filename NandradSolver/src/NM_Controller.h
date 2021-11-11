@@ -66,6 +66,15 @@ public:
 	/*! Stores state after a successful iteration step. */
 	void stepCompleted(double) override;
 
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
+
 	/*! Tolerance band: must be set from outside. */
 	double			m_hysteresisBand;
 	/*! Controller signal to be used for next step (updated in update()). */
@@ -103,6 +112,15 @@ public:
 
 	/*! This function is called after each integration step and integrates the errorValue. */
 	virtual void stepCompleted(double t) override;
+
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
 
 	/*! P-term factor.*/
 	double			m_kP = 1;

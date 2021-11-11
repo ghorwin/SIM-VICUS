@@ -55,6 +55,26 @@ void DigitalHysteresisController::stepCompleted(double /*t*/) {
 }
 
 
+std::size_t DigitalHysteresisController::serializationSize() const {
+	// controlValue
+	return sizeof(double);
+}
+
+
+void DigitalHysteresisController::serialize(void *& dataPtr) const {
+	// cache controlValue for hysteresis
+	*(double*)dataPtr = m_controlValue;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void DigitalHysteresisController::deserialize(void *& dataPtr) {
+	// update cached controlValue
+	m_controlValue = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
 // *** P-Controller ***
 
 void PController::update(double errorValue) {
@@ -77,6 +97,39 @@ void PIController::stepCompleted(double t) {
 	// trapozoid rule of integration
 	m_errorValueIntegral += dt*0.5*(m_lastErrorValue + m_errorValue);
 	m_tLastStep = t;
+	// store error value and time point
+	m_lastErrorValue = m_errorValue;
+}
+
+std::size_t PIController::serializationSize() const
+{
+	// lastTimeStep, lastErrorValue, errorValueIntegral
+	return 3 * sizeof (double);
+}
+
+
+void PIController::serialize(void *& dataPtr) const {
+	// cache last step and error value for integration
+	*(double*)dataPtr = m_tLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	*(double*)dataPtr = m_lastErrorValue;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// cache integral value
+	*(double*)dataPtr = m_errorValueIntegral;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void PIController::deserialize(void *& dataPtr) {
+	// update cached last step
+	m_tLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached last error value
+	m_lastErrorValue = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached error integral
+	m_errorValueIntegral = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
 }
 
 

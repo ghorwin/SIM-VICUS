@@ -22,6 +22,8 @@
 #ifndef NANDRAD_ConstantsH
 #define NANDRAD_ConstantsH
 
+#include <cstddef>
+
 namespace NANDRAD {
 
 /*! Version number of the data model and project file. */
@@ -31,6 +33,9 @@ extern const char * const LONG_VERSION;
 
 /*! defines an invalid id */
 extern unsigned int INVALID_ID;
+
+/*! Defines return value of non supported serialization functionality */
+extern std::size_t NON_SUPPORTED_FUNCTION;
 
 extern const char * XML_READ_ERROR;
 extern const char * XML_READ_UNKNOWN_ATTRIBUTE;

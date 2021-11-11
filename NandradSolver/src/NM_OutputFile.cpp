@@ -28,6 +28,7 @@
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
 #include <IBK_FileUtils.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -36,6 +37,54 @@ namespace NANDRAD_MODEL {
 
 OutputFile::~OutputFile() {
 	delete m_ofstream;
+}
+
+
+std::size_t OutputFile::serializationSize() const {
+	if (!m_haveIntegrals)
+		return 0; // nothing to serialize
+
+	// integral values
+	std::size_t size = m_integrals[0].size() * sizeof (double);
+	size += m_integrals[1].size() * sizeof (double);
+	// integral values at last output time point
+	size += m_integralsAtLastOutput.size() * sizeof (double);
+	// last time step and last output time point
+	size += 2 * sizeof (double);
+}
+
+
+void OutputFile::serialize(void *& dataPtr) const {
+	if (!m_haveIntegrals)
+		return; // nothing to do
+	// cache integrals
+	IBK::serialize_vector(dataPtr, m_integrals[0]);
+	IBK::serialize_vector(dataPtr, m_integrals[1]);
+	// cache integralsAtLastOutput
+	IBK::serialize_vector(dataPtr, m_integralsAtLastOutput);
+	// cache tLastStep for integration
+	*(double*)dataPtr = m_tLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// cache tLastOutput
+	*(double*)dataPtr = m_tLastOutput;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void OutputFile::deserialize(void *& dataPtr) {
+	if (!m_haveIntegrals)
+		return; // nothing to do
+	// update cached integrals
+	IBK::deserialize_vector(dataPtr, m_integrals[0]);
+	IBK::deserialize_vector(dataPtr, m_integrals[1]);
+	// update cached integralsAtLastOutput
+	IBK::deserialize_vector(dataPtr, m_integralsAtLastOutput);
+	// update cached tLastStep
+	m_tLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached tLastOutput
+	m_tLastOutput = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
 }
 
 

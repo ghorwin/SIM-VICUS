@@ -22,6 +22,7 @@
 #include "NM_IdealHeatingCoolingModel.h"
 
 #include <IBK_Exception.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_IdealHeatingCoolingModel.h>
 #include <NANDRAD_ObjectList.h>
@@ -157,6 +158,30 @@ const double * IdealHeatingCoolingModel::resultValueRef(const InputReference & q
 		// exception is thrown when index is not available - return nullptr
 		return nullptr;
 	}
+}
+
+
+std::size_t IdealHeatingCoolingModel::serializationSize() const {
+	// integral values + previous time step
+	return (1 + m_controllerIntegralValues.size()) * sizeof(double);
+}
+
+
+void IdealHeatingCoolingModel::serialize(void *& dataPtr) const {
+	// cache controllerIntegralValues
+	IBK::serialize_vector(dataPtr, m_controllerIntegralValues);
+	// cache tEndOfLastTimeStep for integration
+	*(double*)dataPtr = m_tEndOfLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void IdealHeatingCoolingModel::deserialize(void *& dataPtr) {
+	// update cached controllerIntegralValues
+	IBK::deserialize_vector(dataPtr, m_controllerIntegralValues);
+	// update cached tEndOfLastTimeStep
+	m_tEndOfLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
 }
 
 

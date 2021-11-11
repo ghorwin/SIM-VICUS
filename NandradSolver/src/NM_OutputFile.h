@@ -74,6 +74,15 @@ public:
 
 	virtual const char * ModelIDName() const override { return "OutputFile"; }
 
+	/*! Computes and returns serialization size in bytes. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	virtual void deserialize(void* & dataPtr) override;
+
 
 	// *** Re-implemented from AbstractTimeDependency
 
