@@ -946,17 +946,24 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 
 
 std::size_t HNControlledPump::serializationSize() const {
+	if (m_controller == nullptr )
+		return 0;
+
 	return m_controller->serializationSize();
 }
 
 
 void HNControlledPump::serialize(void *& dataPtr) const {
+	if (m_controller == nullptr )
+		return;
 	// serialize controller and shift data pointer
 	m_controller->serialize(dataPtr);
 }
 
 
 void HNControlledPump::deserialize(void *& dataPtr) {
+	if (m_controller == nullptr )
+		return;
 	// deserialize controller and shift data pointer
 	m_controller->deserialize(dataPtr);
 }
