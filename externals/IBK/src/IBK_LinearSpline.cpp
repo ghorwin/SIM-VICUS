@@ -134,8 +134,7 @@ void LinearSpline::setValues(const std::vector<double> & xvals, const std::vecto
 	std::string errstr;
 	m_valid = makeSpline(errstr);
 	if (!errstr.empty()) {
-		/// \todo Check this, shouldn't this "warning" be handled as exception instead?
-		IBK::IBK_Message(FormatString("Error while makeSpline in setValues. %1").arg(errstr), MSG_WARNING, FUNC_ID, 3);
+		throw IBK::Exception(FormatString("Error while setting values in spline. %1").arg(errstr), FUNC_ID);
 	}
 }
 

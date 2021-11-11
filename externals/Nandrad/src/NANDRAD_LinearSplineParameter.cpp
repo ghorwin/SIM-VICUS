@@ -97,7 +97,7 @@ void LinearSplineParameter::readXML(const TiXmlElement * element) {
 					throw IBK::Exception("Missing y value unit.", FUNC_ID);
 				m_xUnit = IBK::Unit(xunitstr); // may throw in case of invalid unit
 				m_yUnit = IBK::Unit(yunitstr);
-				m_values.setValues(x,y); // does not throw in case of invalid data!
+				m_values.setValues(x,y); // may throw in case of invalid data
 			}
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(

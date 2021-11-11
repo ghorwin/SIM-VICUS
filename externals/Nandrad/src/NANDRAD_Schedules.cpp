@@ -51,8 +51,6 @@ void Schedules::checkParameters(const std::map<std::string, IBK::Path> &placehol
 		for (NANDRAD::LinearSplineParameter & spl : it->second) {
 			try {
 				spl.m_tsvFile = spl.m_tsvFile.withReplacedPlaceholders(placeholders);
-				if (!spl.m_values.valid())
-					throw IBK::Exception("Invalid spline data. Set verbosity-level=3 for detailed information.", FUNC_ID);
 				// all checks will be skipped, if a file name was given: only reads the file and converts to base units.
 				// Since we skip the unit check, we need to pass dummy units here, that are, however, baseSI units ...
 				spl.checkAndInitialize("", IBK::Unit("s"), IBK::Unit("s"), IBK::Unit("s"), 0, false, 0, false, nullptr, true);
@@ -218,7 +216,8 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c3);	// also creates the spline and thus, does no monotonic x-value checking
+						spl.readXML(c3);	// also creates the spline and thus checks for valid spline
+											// Note: in case of tsv file those checks will be done later in Schedules::checkParameters()
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
