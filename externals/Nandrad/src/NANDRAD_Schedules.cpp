@@ -460,7 +460,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 										 "schedules of day type '%4' match this day.")
 										 .arg(parameterName).arg(dString.toDayMonthFormat())
 										 .arg(scheduleCandidates[schedDayType].size())
-										 .arg(NANDRAD::KeywordList::Keyword("Schedule::type_t", (int)schedDayType)), FUNC_ID);
+										 .arg(NANDRAD::KeywordList::Keyword("Schedule::ScheduledDayType", (int)schedDayType)), FUNC_ID);
 			}
 		}
 
