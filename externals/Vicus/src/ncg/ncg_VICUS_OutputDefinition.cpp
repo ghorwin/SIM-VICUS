@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void OutputDefinition::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(OutputDefinition::readXMLPrivate);
+void OutputDefinition::readXML(const TiXmlElement * element) {
+	FUNCID(OutputDefinition::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -101,7 +101,7 @@ void OutputDefinition::readXMLPrivate(const TiXmlElement * element) {
 	}
 }
 
-TiXmlElement * OutputDefinition::writeXMLPrivate(TiXmlElement * parent) const {
+TiXmlElement * OutputDefinition::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("OutputDefinition");
 	parent->LinkEndChild(e);
 

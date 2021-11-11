@@ -59,7 +59,6 @@ namespace VICUS {
 		  are duplicates, since these will be merged during the grouping process.
 */
 class OutputDefinition {
-	VICUS_READWRITE_PRIVATE
 public:
 
 	/*! Different options to handle time averaging/integration. */
