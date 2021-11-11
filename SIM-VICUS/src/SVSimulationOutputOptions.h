@@ -52,7 +52,37 @@ namespace VICUS {
 
 
 
-/*! Widget with settings related to location. */
+/*! Widget for specifying simulation outputs.
+	The widget is split into two tabs - one for configuration of output grids and one for output definitions.
+
+	Output grids are defined just as in DELPHIN in a table.
+
+	OutputDefinitions, however, could be configured in different ways:
+
+	a) default output definitions - can be created for many objects independently of the actual project, hereby using
+	   generic object lists
+	b) custom output definitions where output options are somewhat derived from current project; for example, the IDs of
+	   all zones are offered when zone-related outputs are defined. A list of usual output quantities is hardcoded and
+	   offered to the user.
+	c) manual, advanced method: here the NANDRAD solver export needs to be done first, then the output_reference_list.txt
+	   is parsed and all actually available outputs are offered to the user. This procedure, however, is highly error prone
+	   and can lead to a lot of problems:
+	   - NANDRAD export can fail -> available output list cannot be generated/updated (may be outdated!)
+	   - NANDRAD test init can fail
+
+	For option b) and c) one has to consider, that the VICUS project may have changed and previously configured outputs
+	won't be available anylonger. Hence, there should be a table showing configured outputs additionally to available
+	outputs and highlight those that are no longer valid. This might include missing IDs (though NANDRAD only generates
+	a warning in these cases).
+
+	General workflow for mode c):
+
+	- open widget/dialog; clear table with available outputs, show only table with configured outputs
+	- user presses button "update available outputs" -> run NANDRAD export, NANDRAD test init -> report error if anything
+	  fails
+	- parse output reference list
+	- populate table with available outputs, update status of already configured outputs
+*/
 class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
 
