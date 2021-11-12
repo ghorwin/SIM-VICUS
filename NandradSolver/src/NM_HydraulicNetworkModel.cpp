@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -906,8 +906,9 @@ void HydraulicNetworkModelImpl::storeSolution() {
 
 
 std::size_t HydraulicNetworkModelImpl::serializationSize() const {
-	// serialize stored start solution
-	return m_yLast.size() * sizeof (double);
+	// serialize stored start solution:
+	// vector size + values values
+	return sizeof(uint32_t) + m_yLast.size() * sizeof (double);
 }
 
 

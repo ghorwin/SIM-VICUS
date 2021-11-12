@@ -45,10 +45,11 @@ std::size_t OutputFile::serializationSize() const {
 		return 0; // nothing to serialize
 
 	// integral values
-	std::size_t size = m_integrals[0].size() * sizeof (double);
-	size += m_integrals[1].size() * sizeof (double);
+	// vector size + values values
+	std::size_t size = sizeof(uint32_t) + m_integrals[0].size() * sizeof (double);
+	size += sizeof(uint32_t) + m_integrals[1].size() * sizeof (double);
 	// integral values at last output time point
-	size += m_integralsAtLastOutput.size() * sizeof (double);
+	size += sizeof(uint32_t) + m_integralsAtLastOutput.size() * sizeof (double);
 	// last time step and last output time point
 	size += 2 * sizeof (double);
 }

@@ -162,8 +162,8 @@ const double * IdealHeatingCoolingModel::resultValueRef(const InputReference & q
 
 
 std::size_t IdealHeatingCoolingModel::serializationSize() const {
-	// integral values + previous time step
-	return (1 + m_controllerIntegralValues.size()) * sizeof(double);
+	// vector size + integral values + previous time step
+	return sizeof(uint32_t) + (1 + m_controllerIntegralValues.size()) * sizeof(double);
 }
 
 
