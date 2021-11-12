@@ -776,6 +776,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	if (SVProjectHandler::instance().isValid()) {
 		SVProjectHandler::instance().viewSettings().m_cameraTranslation = QtExt::QVector2IBKVector(m_camera.translation());
 		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
+		// when camera has been moved, also update the local coordinate system
+		m_coordinateSystemObject.updateCoordinateSystemSize();
 	}
 	updateWorld2ViewMatrix();
 	// end of camera movement
