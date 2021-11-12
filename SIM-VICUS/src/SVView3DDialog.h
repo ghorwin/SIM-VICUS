@@ -121,13 +121,13 @@ public:
 		{
 		}
 
-		const unsigned int							m_idVicusSurface = VICUS::INVALID_ID;	///> id of Vicus Surface
+		const unsigned int							m_idVicusSurface = VICUS::INVALID_ID;		///> id of Vicus Surface
 
 		std::map<const unsigned int, double>		m_vicSurfIdToViewFactor;					///> Map with pointer to Surface and viewfactor
 
-//		std::map<const VICUS::SubSurface*, double>	m_vicSubSurfToViewFactor;				///> Map with pointer to Surface and viewfactor
+//		std::map<const VICUS::SubSurface*, double>	m_vicSubSurfToViewFactor;					///> Map with pointer to Surface and viewfactor
 
-		bool										m_isSubSurface = false;			///> indicates wheather its a subsurface
+		bool										m_isSubSurface = false;						///> indicates wheather its a subsurface
 
 	};
 

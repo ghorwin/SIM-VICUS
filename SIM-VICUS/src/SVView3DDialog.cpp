@@ -241,13 +241,14 @@ void SVView3D::exportView3d() {
 		QString path = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(project) + "_view3D/" + roomName + ".v3s";
 		QString result = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(project) + "_view3D/" + roomName + "_results.txt";
 
-		std::ofstream out( path.toStdString() );
+		QFile file( path );
 
-		if( !out.is_open() )
-			throw IBK::Exception(IBK::FormatString(), FUNC_ID);
+		if( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
+			throw IBK::Exception(IBK::FormatString("Could not create view3D file at path '%1'").arg(path.toStdString()), FUNC_ID);
 
+		QTextStream out(&file);
 		// Title of View3D file
-		out << "T\tGenerated View3D-file by SIM-VICUS for room " << roomName.toStdString() << "\n";
+		out << "T\tGenerated View3D-file by SIM-VICUS for room " << roomName << "\n";
 		out << "!--------------------------------------\n";
 
 		/// (C c)The control line specifies white space separated parameters as name = value pairs.  Any of the followingparameters may be
@@ -281,27 +282,26 @@ void SVView3D::exportView3d() {
 			out << "V\t" + QString("%1\t%2\t%3\t%4\n").arg(v.m_id)
 				   .arg(v.m_vertex.m_x)
 				   .arg(v.m_vertex.m_y)
-				   .arg(v.m_vertex.m_z).toStdString();
+				   .arg(v.m_vertex.m_z);
 		}
 		out << "!--------------------------------------\n";
 
 		// all surfaces
 		out << "!\t#\tv1\tv2\tv3\tv4\tbase\tcmb\temit\tname\tsurface data\n";
 		for (const view3dSurface &s : surfaces) {
-			out << "S\t" << IBK::FormatString("%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\t").arg(s.m_id)
+			out << "S\t" << QString("%1\t%2\t%3\t%4\t%5\t%6\t%7\t%8\t").arg(s.m_id)
 				   .arg(s.m_v1)
 				   .arg(s.m_v2)
 				   .arg(s.m_v3)
 				   .arg(s.m_v4)
 				   .arg(0)
 				   .arg(s.m_combId)
-				   .arg(s.m_emittance) << s.m_name << "\n";
+				   .arg(s.m_emittance) << QString::fromStdString(s.m_name) << "\n";
 		}
 		out << "!--------------------------------------\n";
 		out << "End of data\n";
 
-		out.close();
-
+		file.close();
 
 		//SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_XTerm;
 		SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_None;
@@ -323,7 +323,7 @@ void SVView3D::exportView3d() {
 
 		// all ok, solver is running
 		// results are loaded into data model
-		readView3dResults(IBK::Path(result.toStdString() ), room );
+		//readView3dResults(IBK::Path(result.toStdString() ), room );
 	}
 
 
