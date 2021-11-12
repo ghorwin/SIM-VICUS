@@ -41,15 +41,15 @@
 
 #include <QString>
 #include <QTranslator>
+#include <QProcess>
 
 #include <fstream>
 
-SVView3D::SVView3D() {
-	m_solverExecutable = SVSettings::view3dExecutable();
-}
+void SVView3DDialog::exportView3d() {
+	FUNCID(SVView3DDialog::exportView3d);
 
-void SVView3D::exportView3d() {
-	FUNCID(SVView3D::exportView3d);
+	// TODO : Stephan, revise error handling concept any error occurring in this function should result
+	//        in a QMessageBox::critical(), no exceptions must leave this function.
 
 	// We take all our selected surfaces
 	project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_All);
@@ -86,11 +86,11 @@ void SVView3D::exportView3d() {
 
 		view3dRoom &v3dRoom = m_vicusRoomIdToView3dRoom[r->m_id];
 
-		extendedSurfaces extendedSurf ( surf->uniqueID() );
+		view3dExtendedSurfaces extendedSurf ( surf->uniqueID() );
 		v3dRoom.m_extendedSurfaces.push_back( extendedSurf );
 
 		for (const VICUS::SubSurface &subSurf : s.subSurfaces() ) {
-			extendedSurfaces extendedSubSurf ( subSurf.uniqueID(), true );
+			view3dExtendedSurfaces extendedSubSurf ( subSurf.uniqueID(), true );
 			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
 		}
 
@@ -208,13 +208,27 @@ void SVView3D::exportView3d() {
 	// we now initiate the FILE EXPORT
 	// ==================================
 
-	for ( std::map<unsigned int, view3dRoom>::iterator itRoom=m_vicusRoomIdToView3dRoom.begin();
-		  itRoom != m_vicusRoomIdToView3dRoom.end(); ++itRoom) {
+	// we store view3D files within our project's base directory
+	QString projectBasePath = QFileInfo(SVProjectHandler::instance().projectFile()).absoluteFilePath();
+	// remove extension
+	int pos = projectBasePath.lastIndexOf(".");
+	if (pos != -1)
+		projectBasePath = projectBasePath.left(pos);
+	QString view3dPath = projectBasePath + "/view3D/";
 
+	QDir dirView3d (view3dPath);
+
+	if( !dirView3d.exists() )
+		dirView3d.mkpath(view3dPath); // create base directory and view3D subdirectory as well
+
+	// we generate a view3D input file for each room, run the solver and parse the results
+	for ( std::map<unsigned int, view3dRoom>::iterator itRoom=m_vicusRoomIdToView3dRoom.begin();
+		  itRoom != m_vicusRoomIdToView3dRoom.end(); ++itRoom)
+	{
 		view3dRoom &room = itRoom->second;
 
-		for ( extendedSurfaces &extSurf : room.m_extendedSurfaces ) {
-			for ( extendedSurfaces &extSurf2 : room.m_extendedSurfaces ) {
+		for ( view3dExtendedSurfaces &extSurf : room.m_extendedSurfaces ) {
+			for ( view3dExtendedSurfaces &extSurf2 : room.m_extendedSurfaces ) {
 
 				//	if ( extSurf.m_vicusSurface->m_id == extSurf2.m_vicusSurface->m_id )
 				//		continue;
@@ -226,26 +240,25 @@ void SVView3D::exportView3d() {
 		const std::vector<view3dSurface> &surfaces = room.m_surfaces;
 		const std::vector<view3dVertex> &vertexes = room.m_vertexes;
 
-		QString project = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
-		QString view3dPath = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(project) + "_view3D/";
-
-		QDir dirView3d (view3dPath);
-
-		if( !dirView3d.exists() )
-			dirView3d.mkdir(view3dPath);
-
 		QString roomName = room.m_displayName;
+		// TODO : Stephan, display names may contain characters that are invalid for file names;
+		//        suggest to process all room names before hand and eleminate all characters that are not
+		//        in the whitelist (ie. [a-z], [A-Z], [0..9], "-_![()]|"
 
 		roomName.replace(" ", "");
 
-		QString path = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(project) + "_view3D/" + roomName + ".v3s";
-		QString result = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(project) + "_view3D/" + roomName + "_results.txt";
+		// generate a unique file name
+		roomName = QString("%1_[%2]").arg(roomName).arg(room.m_roomId);
+
+		QString path = view3dPath + roomName + ".v3s";
+		QString result = view3dPath + roomName + "_results.txt";
 
 		QFile file( path );
 
 		if( !file.open(QIODevice::WriteOnly | QIODevice::Text) )
 			throw IBK::Exception(IBK::FormatString("Could not create view3D file at path '%1'").arg(path.toStdString()), FUNC_ID);
 
+		// TODO Stephan, currently we write the file in the standard encoding of the platform...
 		QTextStream out(&file);
 		// Title of View3D file
 		out << "T\tGenerated View3D-file by SIM-VICUS for room " << roomName << "\n";
@@ -303,8 +316,7 @@ void SVView3D::exportView3d() {
 
 		file.close();
 
-		//SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_XTerm;
-		SVSettings::TerminalEmulators runOption = SVSettings::TerminalEmulators::TE_None;
+		// compose command line for View3D executable
 
 		/// Example for terminal:
 		/// ===================================================
@@ -312,27 +324,27 @@ void SVView3D::exportView3d() {
 		/// ===================================================
 
 		QStringList commandLineArgs;
-		commandLineArgs << path;
+		commandLineArgs << path << result;
 
-		// delete working directory if requested
-		// launch solver - run option is only needed for linux, and otherwise it will always be -1
-		bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, result, runOption);
-		if (!success) {
-			QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
+		// we run the process and wait for it to finish - this might take a second on larger projects and freeze the
+		// UI. If this becomes an issue, we need to write it multi-threaded.
+		IBK::IBK_Message(IBK::FormatString("Running View3D for room '%1' [#%2].\n").arg(room.m_displayName.toStdString()).arg(room.m_roomId),
+						 IBK::MSG_PROGRESS, FUNC_ID);
+		int returnCode = QProcess::execute(SVSettings::view3dExecutable(), commandLineArgs);
+
+		if (returnCode != 0) {
+			QMessageBox::critical(this, QString(), tr("Error running View3D program '%1'").arg(SVSettings::view3dExecutable()));
+			return; // abort export
 		}
 
-		// all ok, solver is running
-		// results are loaded into data model
 		//readView3dResults(IBK::Path(result.toStdString() ), room );
 	}
-
-
-
+	QMessageBox::information(this, QString(), tr("View factors have been calculated for all selected surfaces/rooms."));
 
 }
 
-void SVView3D::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
-	FUNCID(SVView3D::readView3dResults);
+void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
+	FUNCID(SVView3DDialog::readView3dResults);
 
 	std::vector<std::string> cont;
 
