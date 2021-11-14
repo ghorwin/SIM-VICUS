@@ -9,7 +9,7 @@ cmake_minimum_required( VERSION 2.8...3.10 )
 # enable @rpath on MacOS
 cmake_policy(SET CMP0042 NEW)
 
-if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.1.0") 
+if (${CMAKE_VERSION} VERSION_GREATER "3.11") 
   # use new OpenGL libs when having both new and legacy OpenGL libs on Linux
   cmake_policy(SET CMP0072 NEW) 
 endif()
