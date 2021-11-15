@@ -131,6 +131,11 @@ public:
 	*/
 	VICUS::SubSurface * subSurfaceByID(unsigned int surfID);
 
+	/*! Const-version of the function above. */
+	const VICUS::SubSurface * subSurfaceByID(unsigned int surfaceID) const {
+		return const_cast<Project*>(this)->subSurfaceByID(surfaceID);
+	}
+
 	/*! Selects objects and return set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
 		\param sg			Selection group, that the object belongs to.

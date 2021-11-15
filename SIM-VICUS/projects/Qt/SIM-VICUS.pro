@@ -90,6 +90,13 @@ SOURCES += \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
+	../../src/SVPropBuildingBoundaryConditionsWidget.cpp \
+	../../src/SVPropBuildingComponentOrientationWidget.cpp \
+	../../src/SVPropBuildingComponentsWidget.cpp \
+	../../src/SVPropBuildingSubComponentsWidget.cpp \
+	../../src/SVPropBuildingSurfaceConnectionWidget.cpp \
+	../../src/SVPropBuildingSurfaceHeatingWidget.cpp \
+	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
@@ -248,6 +255,13 @@ HEADERS  += \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVPreferencesPageMisc.h \
+	../../src/SVPropBuildingBoundaryConditionsWidget.h \
+	../../src/SVPropBuildingComponentOrientationWidget.h \
+	../../src/SVPropBuildingComponentsWidget.h \
+	../../src/SVPropBuildingSubComponentsWidget.h \
+	../../src/SVPropBuildingSurfaceConnectionWidget.h \
+	../../src/SVPropBuildingSurfaceHeatingWidget.h \
+	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableModel.h \
@@ -446,7 +460,14 @@ FORMS    += \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddWindowWidget.ui \
+	../../src/SVPropBuildingBoundaryConditionsWidget.ui \
+	../../src/SVPropBuildingComponentOrientationWidget.ui \
+	../../src/SVPropBuildingComponentsWidget.ui \
 	../../src/SVPropBuildingEditWidget.ui \
+	../../src/SVPropBuildingSubComponentsWidget.ui \
+	../../src/SVPropBuildingSurfaceConnectionWidget.ui \
+	../../src/SVPropBuildingSurfaceHeatingWidget.ui \
+	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
 	../../src/SVPropFloorManagerWidget.ui \
 	../../src/SVPropModeSelectionWidget.ui \

@@ -630,7 +630,7 @@ bool Project::selectedSubSurfaces(std::vector<const SubSurface *> & subSurfaces,
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICUS::Project::SelectionGroups &sg) const {
 	std::set<const Object*> objs;
-	selectObjects(objs, sg, true, true);
+	selectObjects(objs, sg, true, true); // get all selected and visible
 
 	// Note: sg = SG_Building will only select surfaces in the building hierarchy
 	//       sg = SG_All will also select anonymous surfaces
@@ -757,6 +757,7 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 							  std::vector<ComponentInstance> & newComponentInstances)
 {
 	// TODO : Dirk, implement algorithm
+	qDebug() << "Not implemented, yet";
 
 	return false;
 }
