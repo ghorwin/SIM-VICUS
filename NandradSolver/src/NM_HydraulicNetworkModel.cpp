@@ -353,9 +353,8 @@ void HydraulicNetworkModel::variableReferenceSubstitutionMap(std::map<std::strin
 
 
 std::size_t HydraulicNetworkModel::serializationSize() const {
-	std::size_t size = 0;
 	// serialize model impl data
-	size += m_p->serializationSize();
+	std::size_t size = m_p->serializationSize();
 	// sum up serialization size of all flow elements
 	for(const HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
 		size += fe->serializationSize();
@@ -906,15 +905,17 @@ void HydraulicNetworkModelImpl::storeSolution() {
 
 
 std::size_t HydraulicNetworkModelImpl::serializationSize() const {
-	// serialize stored start solution:
-	// vector size + values values
-	return sizeof(uint32_t) + m_yLast.size() * sizeof (double);
+	// serialize stored start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	return dataSize;
 }
 
 
 void HydraulicNetworkModelImpl::serialize(void *& dataPtr) const {
 	// cache start solution
-	IBK::serialize_vector(dataPtr, m_yLast);
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(dataPtr, m_yLast.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 	// note: at the moment jacobian is setup every solution step
 	// thus, there is no need for serialization of jacobian
 }
@@ -922,7 +923,9 @@ void HydraulicNetworkModelImpl::serialize(void *& dataPtr) const {
 
 void HydraulicNetworkModelImpl::deserialize(void *& dataPtr) {
 	// update start solution
-	IBK::deserialize_vector(dataPtr, m_yLast);
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(m_yLast.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 }
 
 

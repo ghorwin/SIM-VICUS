@@ -41,28 +41,34 @@ OutputFile::~OutputFile() {
 
 
 std::size_t OutputFile::serializationSize() const {
+	std::size_t size = 0;
 	if (!m_haveIntegrals)
-		return 0; // nothing to serialize
+		return size; // nothing to serialize
 
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
 	// integral values
-	// vector size + values values
-	std::size_t size = sizeof(uint32_t) + m_integrals[0].size() * sizeof (double);
-	size += sizeof(uint32_t) + m_integrals[1].size() * sizeof (double);
-	// integral values at last output time point
-	size += sizeof(uint32_t) + m_integralsAtLastOutput.size() * sizeof (double);
+	// + integral values at last output time point
+	size += 3 * dataSize;
 	// last time step and last output time point
 	size += 2 * sizeof (double);
+
+	return size;
 }
 
 
 void OutputFile::serialize(void *& dataPtr) const {
 	if (!m_haveIntegrals)
 		return; // nothing to do
+
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
 	// cache integrals
-	IBK::serialize_vector(dataPtr, m_integrals[0]);
-	IBK::serialize_vector(dataPtr, m_integrals[1]);
+	std::memcpy(dataPtr, m_integrals[0].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(dataPtr, m_integrals[1].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 	// cache integralsAtLastOutput
-	IBK::serialize_vector(dataPtr, m_integralsAtLastOutput);
+	std::memcpy(dataPtr, m_integralsAtLastOutput.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 	// cache tLastStep for integration
 	*(double*)dataPtr = m_tLastStep;
 	dataPtr = (char*)dataPtr + sizeof(double);
@@ -75,11 +81,16 @@ void OutputFile::serialize(void *& dataPtr) const {
 void OutputFile::deserialize(void *& dataPtr) {
 	if (!m_haveIntegrals)
 		return; // nothing to do
+
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
 	// update cached integrals
-	IBK::deserialize_vector(dataPtr, m_integrals[0]);
-	IBK::deserialize_vector(dataPtr, m_integrals[1]);
+	std::memcpy(m_integrals[0].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(m_integrals[1].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 	// update cached integralsAtLastOutput
-	IBK::deserialize_vector(dataPtr, m_integralsAtLastOutput);
+	std::memcpy(m_integralsAtLastOutput.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 	// update cached tLastStep
 	m_tLastStep = *(double*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(double);

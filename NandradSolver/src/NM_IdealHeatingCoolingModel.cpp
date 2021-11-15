@@ -163,13 +163,28 @@ const double * IdealHeatingCoolingModel::resultValueRef(const InputReference & q
 
 std::size_t IdealHeatingCoolingModel::serializationSize() const {
 	// vector size + integral values + previous time step
-	return sizeof(uint32_t) + (1 + m_controllerIntegralValues.size()) * sizeof(double);
+	std::size_t s = 0;
+
+	if(m_Ki != 0.0) {
+		s += m_controllerIntegralValues.size() * sizeof(double);
+	}
+
+	s += sizeof(double);
+
+	return s;
 }
 
 
 void IdealHeatingCoolingModel::serialize(void *& dataPtr) const {
-	// cache controllerIntegralValues
-	IBK::serialize_vector(dataPtr, m_controllerIntegralValues);
+	// cache controllerIntegralValues:
+	// only accept double values
+	if(m_Ki != 0.0) {
+		size_t dataSize = m_controllerIntegralValues.size()*sizeof(double);
+		if (dataSize != 0) {
+			std::memcpy(dataPtr, m_controllerIntegralValues.data(), dataSize);
+			dataPtr = (char*)dataPtr + dataSize;
+		}
+	}
 	// cache tEndOfLastTimeStep for integration
 	*(double*)dataPtr = m_tEndOfLastStep;
 	dataPtr = (char*)dataPtr + sizeof(double);
@@ -178,7 +193,15 @@ void IdealHeatingCoolingModel::serialize(void *& dataPtr) const {
 
 void IdealHeatingCoolingModel::deserialize(void *& dataPtr) {
 	// update cached controllerIntegralValues
-	IBK::deserialize_vector(dataPtr, m_controllerIntegralValues);
+	if(m_Ki != 0.0) {
+		// store actual vector data
+		// only store double values
+		size_t dataSize = m_controllerIntegralValues.size()*sizeof(unsigned int);
+		if (dataSize != 0) {
+			std::memcpy(m_controllerIntegralValues.data(), dataPtr, dataSize);
+			dataPtr = (char*)dataPtr + dataSize;
+		}
+	}
 	// update cached tEndOfLastTimeStep
 	m_tEndOfLastStep = *(double*)dataPtr;
 	dataPtr = (char*)dataPtr + sizeof(double);
