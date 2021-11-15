@@ -1386,7 +1386,9 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// schedules with tsv-files
 	for (std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >::iterator
 		 it = p.m_schedules.m_annualSchedules.begin();
-		 it != p.m_schedules.m_annualSchedules.end(); ++ it)
+		 it != p.m_schedules.m_annualSchedules.end(); ++ it) {
+		// TODO: skip FMI-substituted quantities
+
 		for (NANDRAD::LinearSplineParameter & spline : it->second) {
 			if (!spline.m_name.empty() && spline.m_tsvFile.isValid()) {
 				// Mind: tsv file path may be relative path to project directory or elsewhere
@@ -1397,6 +1399,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 				spline.m_tsvFile = IBK::Path("${Project Directory}/" + tsvFilePath.filename().str());
 			}
 		}
+	}
 
 	// network heatexchange spline data
 	for (NANDRAD::HydraulicNetwork & n : p.m_hydraulicNetworks)
