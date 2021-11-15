@@ -8,6 +8,7 @@
 #include "SVDatabase.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVUndoTreeNodeState.h"
 
 SVPropBuildingBoundaryConditionsWidget::SVPropBuildingBoundaryConditionsWidget(QWidget *parent) :
 	QWidget(parent),
@@ -98,6 +99,9 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 	m_ui->tableWidgetBoundaryConditions->selectRow(std::min(currentRow, m_ui->tableWidgetBoundaryConditions->rowCount()-1));
 
 	on_tableWidgetBoundaryConditions_itemSelectionChanged();
+
+	m_ui->pushButtonEditBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
+	m_ui->pushButtonSelectBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
 }
 
 
@@ -117,4 +121,28 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions
 
 void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_itemSelectionChanged() {
 	m_ui->pushButtonEditBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
+	m_ui->pushButtonSelectBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
+}
+
+
+void SVPropBuildingBoundaryConditionsWidget::on_pushButtonSelectBoundaryConditions_clicked() {
+	int r = m_ui->tableWidgetBoundaryConditions->currentRow();
+	Q_ASSERT(r != -1);
+	std::map<const VICUS::BoundaryCondition*, std::set<const VICUS::Surface *> >::const_iterator cit = m_bcSurfacesMap.begin();
+	std::advance(cit, r);
+	const VICUS::BoundaryCondition * bc = cit->first;
+	Q_ASSERT(m_bcSurfacesMap.find(bc) != m_bcSurfacesMap.end());
+
+	std::set<unsigned int> objs;
+	for (const VICUS::Surface * s : cit->second)
+		objs.insert(s->uniqueID());
+
+	QString undoText;
+	if (bc != nullptr)
+		undoText = tr("Select objects with boundary condition '%1'").arg(QtExt::MultiLangString2QString(bc->m_displayName));
+	else
+		undoText = tr("Select objects with invalid boundary condition");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
+	undo->push();
 }

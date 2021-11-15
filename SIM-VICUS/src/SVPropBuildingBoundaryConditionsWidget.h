@@ -36,6 +36,8 @@ private slots:
 	void on_pushButtonEditBoundaryConditions_clicked();
 	void on_tableWidgetBoundaryConditions_itemSelectionChanged();
 
+	void on_pushButtonSelectBoundaryConditions_clicked();
+
 private:
 	Ui::SVPropBuildingBoundaryConditionsWidget *m_ui;
 
