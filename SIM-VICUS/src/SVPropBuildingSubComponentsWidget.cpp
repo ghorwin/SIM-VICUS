@@ -66,6 +66,10 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 				visibleSideBSurf = ci.m_sideBSubSurface;
 		}
 
+		// ignore sub-component instances, where both surfaces are invisible
+		if (visibleSideASurf == nullptr && visibleSideBSurf == nullptr)
+			continue;
+
 		// remove from visibleSurfaces set since this surface was referenced in componentInstance
 		surfacesNotInComponentInterface.erase(visibleSideASurf);
 		surfacesNotInComponentInterface.erase(visibleSideBSurf);
