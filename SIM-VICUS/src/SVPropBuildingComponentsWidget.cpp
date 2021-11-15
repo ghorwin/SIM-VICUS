@@ -329,7 +329,7 @@ void SVPropBuildingComponentsWidget::on_pushButtonSelectObjectsWithComponent_cli
 
 	std::set<unsigned int> surfIds;
 	for (const VICUS::Surface * s : e.m_surfaces)
-		surfIds.insert(s->m_id);
+		surfIds.insert(s->uniqueID());
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds, true);
 	undo->push();
 }
