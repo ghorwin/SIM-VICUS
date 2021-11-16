@@ -1,0 +1,9 @@
+/IdealHeating/
+/IdealHeating2Iterations/
+/Network/
+/Network2Iterations/
+/NetworkControlledPump/
+/NetworkControlledPump2Iterations/
+/ShadingControl/
+/ShadingControl2Iterations/
+*.fmu
