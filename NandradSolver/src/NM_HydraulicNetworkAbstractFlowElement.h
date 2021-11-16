@@ -78,9 +78,6 @@ public:
 	virtual void dependencies(const double */*mdot*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const {}
 
-	/*! This function is called after each integration step (default implementation does nothing). */
-	virtual void stepCompleted(double t) { (void)t; }
-
 	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
 	virtual std::size_t serializationSize() const { return 0; }
 
