@@ -39,6 +39,10 @@ void DigitalDirectController::update(double errorValue) {
 
 // *** Digital hysteresis Controller ***
 
+DigitalHysteresisController::DigitalHysteresisController() {
+	m_controlValue = 0.0;
+}
+
 void DigitalHysteresisController::update(double errorValue) {
 	AbstractController::update(errorValue);
 

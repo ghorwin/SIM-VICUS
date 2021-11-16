@@ -60,6 +60,9 @@ public:
 */
 class DigitalHysteresisController: public AbstractController { // NO KEYWORDS
 public:
+	/*! Start with signal 0. */
+	DigitalHysteresisController();
+
 	/*! Calculates controller signal/control value. */
 	void update(double errorValue) override;
 
