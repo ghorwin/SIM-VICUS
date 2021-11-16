@@ -283,7 +283,7 @@ void Project::readXML(const IBK::Path & filename) {
 		updatePointers();
 
 		// set default colors for network objects
-		for (const VICUS::Network & net : m_geometricNetworks) {
+		for (VICUS::Network & net : m_geometricNetworks) {
 			// updateColor is a const-function, this is possible since
 			// the m_color property of edges and nodes is mutable
 			net.setDefaultColors();
@@ -991,8 +991,11 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		objList.m_name = "the network objects";
 		p.m_objectLists.push_back(objList);
 
-		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" , "InletNodeTemperature",
-											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference"};
+		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
+											   "FlowElementHeatLoss", "PressureDifference",
+											   "TemperatureDifference", "ControllerResultValue",
+												"MechanicalPower", "ElectricalPower",
+												"OutletNodePressure"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;

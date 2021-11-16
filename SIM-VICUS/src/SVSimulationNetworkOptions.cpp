@@ -112,6 +112,9 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].empty())
 		m_ui->lineEditPipeDepth->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].value);
 
+	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].empty())
+		m_ui->lineEditMaxTempChangeIndicator->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].value);
+
 }
 
 
@@ -152,16 +155,27 @@ void SVSimulationNetworkOptions::on_lineEditPipeSpacing_editingFinished()
 {
 	Q_ASSERT(m_current!=nullptr);
 	if (m_ui->lineEditPipeSpacing->isValid())
-		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::NetworkBuriedPipeProperties::P_PipeSpacing,
-											 m_ui->lineEditPipeSpacing->value());
+		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
+										 VICUS::NetworkBuriedPipeProperties::P_PipeSpacing,
+										 m_ui->lineEditPipeSpacing->value());
 }
 
 void SVSimulationNetworkOptions::on_lineEditPipeDepth_editingFinished()
 {
 	Q_ASSERT(m_current!=nullptr);
 	if (m_ui->lineEditPipeDepth->isValid())
-		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::NetworkBuriedPipeProperties::P_PipeDepth,
-											 m_ui->lineEditPipeDepth->value());
+		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
+										 VICUS::NetworkBuriedPipeProperties::P_PipeDepth,
+										 m_ui->lineEditPipeDepth->value());
 }
 
 
+
+void SVSimulationNetworkOptions::on_lineEditMaxTempChangeIndicator_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditMaxTempChangeIndicator->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
+										 VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator,
+										 m_ui->lineEditMaxTempChangeIndicator->value());
+}

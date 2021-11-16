@@ -48,20 +48,13 @@ public:
 			i.value = (int) NANDRAD::INVALID_ID;
 	}
 
-
-	/*! C'tor for a network element other than pipes. */
-	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId, unsigned int componentId):
-		m_id(id),
-		m_inletNodeId(inletNodeId),
-		m_outletNodeId(outletNodeId),
-		m_componentId(componentId),
-		m_pipePropertiesId(INVALID_ID)
-	{
-	}
-
-	/*! Specific constructor to create pipe elements. */
+	/*! C'tor for pipes. */
 	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
 							unsigned int componentId, unsigned int pipeID, double length);
+
+	/*! C'tor for a network element other than pipes. */
+	HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+							unsigned int componentId, unsigned int controlElementId);
 
 	/*! Parameters for the element . */
 	enum para_t {
@@ -72,6 +65,7 @@ public:
 	/*! Whole number parameters. */
 	enum intPara_t {
 		IP_NumberParallelPipes,			// Keyword: NumberParallelPipes					'Number of parallel pipes'
+		IP_NumberParallelElements,		// Keyword: NumberParallelElements				'Number of parallel elements'
 		NUM_IP
 	};
 

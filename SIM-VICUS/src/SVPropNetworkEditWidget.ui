@@ -108,6 +108,17 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="pushButtonDeleteNetwork">
+         <property name="text">
+          <string>delete network</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../resources/SIM-VICUS.qrc">
+           <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBoxEditNetwork">
          <property name="title">
           <string>Edit Network</string>
@@ -864,6 +875,8 @@
    <header location="global">QtExt_ValidatingLineEdit.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -142,7 +142,7 @@ public:
 	/*! The radius [m] used for the visualization of this edge in the 3D scene
 		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
 	*/
-	mutable double										m_visualizationRadius;
+	double												m_visualizationRadius;
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor										m_color;
 
@@ -157,6 +157,7 @@ public:
 		Is dimensionless, but for interpretation, unit [K/K] can be used
 	*/
 	double												m_tempChangeIndicator = -1;
+	double												m_cumulativeTempChangeIndicator = -1;
 
 	NetworkNode											* m_node1 = nullptr;
 	NetworkNode											* m_node2 = nullptr;
@@ -166,6 +167,8 @@ public:
 
 	unsigned int										m_idNandradSupplyPipe = INVALID_ID;
 	unsigned int										m_idNandradReturnPipe = INVALID_ID;
+
+	unsigned int										m_idSoil = INVALID_ID;
 
 
 private:

@@ -216,8 +216,8 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c3);	// also creates the spline and thus, does monotonic x-value checking, but not if
-											// data is in tsv-file
+						spl.readXML(c3);	// also creates the spline and thus checks for valid spline
+											// Note: in case of tsv file those checks will be done later in Schedules::checkParameters()
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())

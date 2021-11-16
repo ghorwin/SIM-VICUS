@@ -1533,9 +1533,8 @@ void Scene::generateNetworkGeometry() {
 		// update pointers of network elements, they are only runtime and not part of the project data
 		// so they can be modified with const_cast
 		const_cast<VICUS::Network &>(network).updateNodeEdgeConnectionPointers();
-		// the visualization radius is also only runtime.
-		// it is mutable so no const_cast needed
-		network.updateVisualizationRadius(db.m_pipes);
+		// the visualization radius is also only runtime
+		const_cast<VICUS::Network &>(network).updateVisualizationRadius(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
@@ -1626,9 +1625,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 	// initialize network colors, independent of current color mode
 	for (const VICUS::Network & net: p.m_geometricNetworks) {
-		// updateColor is a const-function, this is possible since
-		// the m_color property of edges and nodes is mutable
-		net.setDefaultColors();
+		// we only update runtime-only properties, hence we can use a const-cast here
+		const_cast<VICUS::Network&>(net).setDefaultColors();
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;

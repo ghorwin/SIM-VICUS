@@ -17,6 +17,17 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 	if (m_modelType == NUM_MT)
 		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
 
+	if (m_controlledProperty == CP_PumpOperation){
+		if (m_controllerType != CT_OnOffController)
+			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
+	}
+	else {
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController' or 'PIController'.")
+								 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlledProperty)),
+								 FUNC_ID);
+	}
+
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {
@@ -49,6 +60,11 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_PumpOperation : {
+					m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold", "W", "W",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
 			case NUM_CP:
 				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
 		}
@@ -68,6 +84,11 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			case CT_PIController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			} break;
+
+			case CT_OnOffController: {
+				m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold",
+																"W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
 			case NUM_CT:
@@ -95,12 +116,15 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_ControlledPump:
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
+			return {CP_PumpOperation};
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump :
+		case HydraulicNetworkComponent::MT_VariablePressurePump:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
 		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+		case HydraulicNetworkComponent::MT_PressureLossElement:
 		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
 	}
 	return {};

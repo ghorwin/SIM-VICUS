@@ -52,6 +52,7 @@ void SVDBSubNetworkEditWidget::updateInput(int id)
 		m_ui->lineEditSubNetworkName->setText(QString());
 		m_ui->lineEditComponent->clear();
 		m_ui->lineEditController->clear();
+		m_ui->lineEditController->setDisabled(true);
 		m_ui->tableWidgetElements->blockSignals(true);
 		m_ui->tableWidgetElements->clear();
 		m_ui->tableWidgetElements->blockSignals(false);
@@ -103,9 +104,9 @@ void SVDBSubNetworkEditWidget::updateTableWidget()
 	int row = 0;
 	m_ui->tableWidgetElements->blockSignals(true);
 	m_ui->tableWidgetElements->setRowCount(m_currentSubNet->m_elements.size());
-	for (const NANDRAD::HydraulicNetworkElement &el: m_currentSubNet->m_elements){
+	for (const VICUS::NetworkElement &el: m_currentSubNet->m_elements){
 		QTableWidgetItem * item = new QTableWidgetItem();
-		item->setText(QString::fromStdString(el.m_displayName));
+		item->setText(el.m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetElements->setItem(row, 0, item);
 		++row;
@@ -126,17 +127,23 @@ void SVDBSubNetworkEditWidget::updateElementProperties()
 	// get current row = idx of current element
 	m_currentElementIdx = m_ui->tableWidgetElements->currentRow();
 
+
+	// TODO Hauke: disable controller line edit if the according component can not use a controller
+
+	// rework entire widget ???
+
+
 	// if we have at least one element: update infos
 	if (m_currentElementIdx >= 0){
 
-		const NANDRAD::HydraulicNetworkElement &elem = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx];
+		const VICUS::NetworkElement &elem = m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx];
 
 		// checkBox
 		m_ui->checkBoxElementHasHeatExchange->setChecked(elem.m_id == m_currentSubNet->m_idHeatExchangeElement);
 
 		// line edits
 		m_ui->groupBoxEditElement->setEnabled(true);
-		m_ui->lineEditElementName->setText(QString::fromStdString(elem.m_displayName));
+		m_ui->lineEditElementName->setText(elem.m_displayName);
 		if (m_db->m_networkComponents[elem.m_componentId] != nullptr)
 			m_ui->lineEditComponent->setText(QtExt::MultiLangString2QString(
 												 m_db->m_networkComponents[elem.m_componentId]->m_displayName));
@@ -199,9 +206,9 @@ void SVDBSubNetworkEditWidget::on_toolButtonAdd_clicked()
 
 	if (m_currentSubNet->m_elements.size()>10)
 		return;
-	NANDRAD::HydraulicNetworkElement el;
+	VICUS::NetworkElement el;
 	el.m_id = VICUS::uniqueId(m_currentSubNet->m_elements);
-	el.m_displayName = IBK::FormatString("new element %1").arg(el.m_id).str();
+	el.m_displayName = QString("new element %1").arg(el.m_id);
 	m_currentSubNet->m_elements.push_back(el);
 	setInletOutletIds();
 	modelModify();
@@ -229,7 +236,7 @@ void SVDBSubNetworkEditWidget::on_lineEditElementName_editingFinished()
 {
 	if (m_currentElementIdx >= 0){
 		m_currentSubNet->m_elements[(unsigned int)m_currentElementIdx].m_displayName =
-																	m_ui->lineEditElementName->text().toStdString();
+																	m_ui->lineEditElementName->text();
 		modelModify();
 		updateTableWidget();
 	}
