@@ -125,6 +125,9 @@ public:
 	/*! Restores control value from memory.*/
 	void deserialize(void* & dataPtr) override;
 
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() override;
+	
 	/*! P-term factor.*/
 	double			m_kP = 1;
 	/*! I-term factor.*/

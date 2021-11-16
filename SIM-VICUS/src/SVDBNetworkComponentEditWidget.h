@@ -57,6 +57,7 @@ public:
 		DT_Integer,
 		DT_DoubleStd,
 		DT_DoubleAdditional,
+		DT_DoubleOptional,
 		NUM_DT
 	};
 

@@ -67,9 +67,9 @@ void SubNetwork::readXML(const TiXmlElement * element) {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "HydraulicNetworkElement")
+					if (c2Name != "NetworkElement")
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NANDRAD::HydraulicNetworkElement obj;
+					NetworkElement obj;
 					obj.readXML(c2);
 					m_elements.push_back(obj);
 					c2 = c2->NextSiblingElement();
@@ -107,7 +107,7 @@ TiXmlElement * SubNetwork::writeXML(TiXmlElement * parent) const {
 		TiXmlElement * child = new TiXmlElement("Elements");
 		e->LinkEndChild(child);
 
-		for (std::vector<NANDRAD::HydraulicNetworkElement>::const_iterator it = m_elements.begin();
+		for (std::vector<NetworkElement>::const_iterator it = m_elements.begin();
 			it != m_elements.end(); ++it)
 		{
 			it->writeXML(child);

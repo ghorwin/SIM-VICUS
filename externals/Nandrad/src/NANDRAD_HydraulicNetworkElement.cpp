@@ -41,6 +41,22 @@ HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int i
 	m_pipePropertiesId(pipeID)
 {
 	KeywordList::setParameter(m_para, "HydraulicNetworkElement::para_t", P_Length, length);
+	for(IBK::IntPara &i : m_intPara)
+		i.value = (int) NANDRAD::INVALID_ID;
+}
+
+
+HydraulicNetworkElement::HydraulicNetworkElement(unsigned int id, unsigned int inletNodeId, unsigned int outletNodeId,
+						unsigned int componentId, unsigned int controlElementId):
+	m_id(id),
+	m_inletNodeId(inletNodeId),
+	m_outletNodeId(outletNodeId),
+	m_componentId(componentId),
+	m_pipePropertiesId(INVALID_ID),
+	m_controlElementId(controlElementId)
+{
+	for(IBK::IntPara &i : m_intPara)
+		i.value = (int) NANDRAD::INVALID_ID;
 }
 
 
@@ -116,9 +132,18 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		}
 			break;
 
+		case HydraulicNetworkComponent::MT_PressureLossElement : {
+			// check number of parallel elements, and if missing, default to 1
+			if (m_intPara[IP_NumberParallelElements].name.empty())
+				m_intPara[IP_NumberParallelElements].set("NumberParallelElements", 1);
+			if (m_intPara[IP_NumberParallelElements].value <= 0)
+				throw IBK::Exception("Parameter 'NumberParallelElements' must be > 0!", FUNC_ID);
+		}
+			break;
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
 		case HydraulicNetworkComponent::MT_ControlledPump:
+		case HydraulicNetworkComponent::MT_VariablePressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_ControlledValve:
 		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:

@@ -387,7 +387,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		if (sub == nullptr) continue;
 
 		// components and controllers referenced from elements
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements) {
+		for (const VICUS::NetworkElement &el: sub->m_elements) {
 			referencedNetworkComponents.insert(m_networkComponents[el.m_componentId]);
 			referencedNetworkControllers.insert(m_networkControllers[el.m_controlElementId]);
 		}
@@ -400,6 +400,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// schedules
 		for (unsigned int i: comp->m_scheduleIds)
 			referencedSchedule.insert(m_schedules[i]);
+
+		// pipes
+		if (comp->m_pipePropertiesId != VICUS::INVALID_ID)
+			referencedNetworkPipes.insert(m_pipes[comp->m_pipePropertiesId]);
 	}
 
 
@@ -624,14 +628,18 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			// referenced from project
 			if (SVProjectHandler::instance().isValid()) {
 				for (const auto & p : project().m_geometricNetworks) {
-					VICUS::Network & c = const_cast<VICUS::Network &>(p); // const-cast is ok here
-					for (unsigned int & np : c.m_availablePipes)
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (unsigned int & np : net.m_availablePipes)
 						if (np == elementID)
 							np = replacementElementID;
-					for (VICUS::NetworkEdge & ne : c.m_edges)
+					for (VICUS::NetworkEdge & ne : net.m_edges)
 						if (ne.m_idPipe == elementID)
 							ne.m_idPipe = replacementElementID;
 				}
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_pipePropertiesId, m_networkComponents);
 			}
 			for (const auto & p : m_surfaceHeatings) {
 				VICUS::SurfaceHeating & c = const_cast<VICUS::SurfaceHeating &>(p.second); // const-cast is ok here
@@ -640,27 +648,54 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 			m_pipes.remove(elementID);
 			m_pipes.m_modified = true;
-			// TODO : Hauke, check if all references to pipes have been handled
 		} break;
 
 		case SVDatabase::DT_Fluids: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					replaceID(elementID, replacementElementID, net.m_idFluid, m_fluids);
+				}
+			}
+			m_fluids.remove(elementID);
+			m_fluids.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkComponents: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_componentId, m_subNetworks);
+			}
+			m_networkComponents.remove(elementID);
+			m_networkComponents.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkControllers: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_controlElementId, m_subNetworks);
+			}
+			m_networkControllers.remove(elementID);
+			m_networkControllers.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_SubNetworks: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (VICUS::NetworkNode & no: net.m_nodes){
+						if (no.m_idSubNetwork == elementID)
+							no.m_idSubNetwork = replacementElementID;
+					}
+				}
+			}
+			m_subNetworks.remove(elementID);
+			m_subNetworks.m_modified = true;
 		} break;
 
 
-		// TODO : Hauke, add schedule references in network stuff
 		case SVDatabase::DT_Schedules:
 			for (const auto & p : m_internalLoads) {
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
@@ -682,6 +717,11 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 				VICUS::ZoneControlNaturalVentilation & c = const_cast<VICUS::ZoneControlNaturalVentilation &>(p.second); // const-cast is ok here
 				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_ST; ++j)
 					replaceID(elementID, replacementElementID, c.m_idSchedules[j], m_zoneControlVentilationNatural);
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				for (unsigned int & id: c.m_scheduleIds)
+					replaceID(elementID, replacementElementID, id, m_networkComponents);
 			}
 
 			m_schedules.remove(elementID);

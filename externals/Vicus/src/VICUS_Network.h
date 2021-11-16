@@ -35,7 +35,6 @@
 #include <IBK_rectangle.h>
 
 #include <NANDRAD_HydraulicNetwork.h>
-#include <NANDRAD_HydraulicNetworkComponent.h>
 
 #include "VICUS_NetworkEdge.h"
 #include "VICUS_NetworkNode.h"
@@ -158,7 +157,7 @@ public:
 
 	/*! For each building node: Find shortest path to the closest source node and store the pointers to the edges
 	 * along that path. The result is a map with keys being the ids of the building nodes */
-	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap);
+	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) const;
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
@@ -166,14 +165,17 @@ public:
 	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
 
 	/*! Calculate the temperature change indicator for each edge. Therefore the massflow under nominal conditions for
-	 * each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
-	 * each edge.
-	 */
-	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB);
+		each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
+		each edge.
+	*/
+	void calcTemperatureChangeIndicator(const NetworkFluid &fluid, const Database<NetworkPipe> &pipeDB,
+										std::map<unsigned int, std::vector<NetworkEdge *> > &shortestPaths) const;
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
-	void writeNetworkCSV(const IBK::Path &file) const;
+	void writeNetworkEdgesCSV(const IBK::Path &file) const;
+
+	void writeNetworkNodesCSV(const IBK::Path &file) const;
 
 	void writePathCSV(const IBK::Path &file, const NetworkNode & nodeById, const std::vector<NetworkEdge *> &path) const;
 
@@ -182,7 +184,8 @@ public:
 	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
 	 * using dijkstra-algorithm, implemented according to Wikipedia and return path as vector of edges
 	 */
-	void dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode, std::vector<NetworkEdge*> &pathEndToStart);
+	void dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
+									  std::vector<NetworkEdge*> &pathEndToStart) const;
 
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();
@@ -210,13 +213,13 @@ public:
 	/*! returns the number of nodes with type NT_Building */
 	size_t numberOfBuildings() const;
 
-	/*! sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
-	 * and heat demands (nodes)
+	/*! Sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
+		and heat demands (nodes)
 	*/
-	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
+	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB);
 
 	/*! sets default colors */
-	void setDefaultColors() const;
+	void setDefaultColors();
 
 	/*! sets the network object as well as all edges and nodes visible */
 	void setVisible(bool visible);

@@ -14,7 +14,7 @@ bool SubNetwork::isValid(const Database<NetworkComponent> &compDB,
 	if (m_elements.empty())
 		return false;
 
-	for (const NANDRAD::HydraulicNetworkElement &e: m_elements) {
+	for (const NetworkElement &e: m_elements) {
 		// check if we have valid ids
 		if (e.m_id == INVALID_ID ||
 			e.m_componentId == INVALID_ID ||
@@ -64,13 +64,11 @@ AbstractDBElement::ComparisonResult SubNetwork::equal(const AbstractDBElement *o
 
 
 const NetworkComponent * SubNetwork::heatExchangeComponent(const Database<NetworkComponent> &compDB) const {
-	const NANDRAD::HydraulicNetworkElement *elem = VICUS::element(m_elements, m_idHeatExchangeElement);
+	const NetworkElement *elem = VICUS::element(m_elements, m_idHeatExchangeElement);
 	if (elem == nullptr)
 		return nullptr;
 
-	unsigned int compId = elem->m_componentId;
-
-	return compDB[compId];
+	return compDB[elem->m_componentId];
 }
 
 
