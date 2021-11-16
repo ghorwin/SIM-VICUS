@@ -9,3 +9,5 @@
 /ConstantMassFluxThermostatControlledPipeRegister/
 /ControlledPumpMassFluxScheduled/
 /ControlledPumpTemperatureDifferenceFollowingElement/
+/OnOffControlledPump/
+/VariablePressurePumpTemperatureDifferenceControl/

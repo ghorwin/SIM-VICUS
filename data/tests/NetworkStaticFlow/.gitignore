@@ -29,3 +29,5 @@
 /HydraulicNetworkPressureLossValve/
 /ThermoHydraulicNetworkPressureLossValve/
 /ThermoHydraulicNetworkPumpWithLossesScheduled/
+/HydraulicNetworkConstPressurePumpLimited/
+/HydraulicNetworkPressureLossElement/
