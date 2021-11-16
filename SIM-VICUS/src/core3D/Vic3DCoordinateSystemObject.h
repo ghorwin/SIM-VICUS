@@ -130,6 +130,12 @@ public:
 	*/
 	bool pick(const IBKMK::Vector3D & nearPoint, const IBKMK::Vector3D & direction, PickObject::PickResult & r) const;
 
+	/*! This function is called whenever the local coordinate system or the camera is moved and thus basically the
+		distance between viewer and coordinate system changes.
+		If the coordinate system gets too close, its size will be reduces.
+	*/
+	void updateCoordinateSystemSize();
+
 	/*! A bitmask that indicates the current transform modes for the coordinate system and ultimately
 		defines how the local coordinate system shall be drawn. See renderOpaque() for a description of the rules.
 	*/
@@ -182,6 +188,13 @@ private:
 		for a given axis.
 	*/
 	std::vector<GLint>			m_axisLinesVertexIndex;
+
+	/*! This factor determines the scaling of the coordinate system. At a scale of 1 the central sphere has a size of
+		about 2 m. When closer than 20 m to the viewer, the size will be reduced such, that the sphere remains at about 20 pix size.
+		Adjustment is made in updateCoordinateSystemSize().
+	*/
+	double						m_coordinateSystemSizeFactor = 1;
+
 };
 
 } // namespace Vic3D

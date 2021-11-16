@@ -33,6 +33,8 @@
 #include <IBK_assert.h>
 #include <IBK_Exception.h>
 
+#include <IBKMK_3DCalculations.h>
+
 #include <NANDRAD_Utilities.h>
 #include <NANDRAD_Project.h>
 
@@ -607,10 +609,28 @@ void Project::selectObjects(std::set<const Object*> &selectedObjs, SelectionGrou
 	}
 }
 
+bool Project::selectedSubSurfaces(std::vector<const SubSurface *> & subSurfaces, const Project::SelectionGroups & sg) const {
+	std::set<const Object*> objs;
+	selectObjects(objs, sg, true, true);
+
+	// Note: sg = SG_Building will only select surfaces in the building hierarchy
+	//       sg = SG_All will also select anonymous surfaces
+	//       sg = SG_Network does nothing (network doesn't have any surfaces)
+
+	subSurfaces.clear();
+	for (const Object * o : objs) {
+		const SubSurface * ss = dynamic_cast<const SubSurface *>(o);
+		if (ss != nullptr)
+			subSurfaces.push_back(ss);
+	}
+
+	return !subSurfaces.empty();
+}
+
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICUS::Project::SelectionGroups &sg) const {
 	std::set<const Object*> objs;
-	selectObjects(objs, sg, true, true);
+	selectObjects(objs, sg, true, true); // get all selected and visible
 
 	// Note: sg = SG_Building will only select surfaces in the building hierarchy
 	//       sg = SG_All will also select anonymous surfaces
@@ -647,6 +667,23 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 									 IBKMK::Vector3D &center)
 {
 
+	return Project::boundingBox(surfaces, subsurfaces, center,
+								IBKMK::Vector3D (0,0,0),
+								IBKMK::Vector3D (1,0,0),
+								IBKMK::Vector3D (0,1,0),
+								IBKMK::Vector3D (0,0,1));
+}
+
+
+IBKMK::Vector3D Project::boundingBox(std::vector<const VICUS::Surface*> &surfaces,
+							std::vector<const VICUS::SubSurface*> &subsurfaces,
+							IBKMK::Vector3D &center,
+							const IBKMK::Vector3D &offset,
+							const IBKMK::Vector3D &xAxis,
+							const IBKMK::Vector3D &yAxis,
+							const IBKMK::Vector3D &zAxis )
+{
+
 	// store selected surfaces
 	if ( surfaces.empty() && subsurfaces.empty())
 		return IBKMK::Vector3D ( 0,0,0 );
@@ -659,6 +696,15 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 	double minZ = std::numeric_limits<double>::max();
 	for (const VICUS::Surface *s : surfaces ) {
 		for ( IBKMK::Vector3D v : s->polygon3D().vertexes() ) {
+
+			IBKMK::Vector3D vLocal, point;
+
+			IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
+			IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
+			IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
+
+			v = vLocal;
+
 			( v.m_x > maxX ) ? maxX = v.m_x : 0;
 			( v.m_y > maxY ) ? maxY = v.m_y : 0;
 			( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
@@ -674,6 +720,15 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 		for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
 			if (&(s->subSurfaces()[i]) == sub) {
 				for ( IBKMK::Vector3D v : s->geometry().holeTriangulationData()[i].m_vertexes ) {
+
+					IBKMK::Vector3D vLocal, point;
+
+					IBKMK::lineToPointDistance(offset, xAxis, v, vLocal.m_x, point);
+					IBKMK::lineToPointDistance(offset, yAxis, v, vLocal.m_y, point);
+					IBKMK::lineToPointDistance(offset, zAxis, v, vLocal.m_z, point);
+
+					v = vLocal;
+
 					( v.m_x > maxX ) ? maxX = v.m_x : 0;
 					( v.m_y > maxY ) ? maxY = v.m_y : 0;
 					( v.m_z > maxZ ) ? maxZ = v.m_z : 0;
@@ -690,17 +745,19 @@ IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 	double dY = maxY - minY;
 	double dZ = maxZ - minZ;
 
-	center.set( minX + 0.5*dX, minY + 0.5*dY, minZ + 0.5*dZ);
+	center.set( offset.m_x + (minX + 0.5*dX) * xAxis.m_x + (minY + 0.5*dY) * yAxis.m_x + (minZ + 0.5*dZ) * zAxis.m_x ,
+				offset.m_y + (minX + 0.5*dX) * xAxis.m_y + (minY + 0.5*dY) * yAxis.m_y + (minZ + 0.5*dZ) * zAxis.m_y ,
+				offset.m_z + (minX + 0.5*dX) * xAxis.m_z + (minY + 0.5*dY) * yAxis.m_z + (minZ + 0.5*dZ) * zAxis.m_z );
 
 	// set bounding box;
 	return IBKMK::Vector3D ( dX, dY, dZ );
 }
 
-
 bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<const Surface *> & selectedSurfaces,
 							  std::vector<ComponentInstance> & newComponentInstances)
 {
 	// TODO : Dirk, implement algorithm
+	qDebug() << "Not implemented, yet";
 
 	return false;
 }
@@ -758,7 +815,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
 
 	// transfer pre-defined output definitions
-	p.m_outputs.m_definitions = m_outputs.m_definitions; // currently, m_outputs.m_definitions are empty, since UI is not implemented
+//	p.m_outputs.m_definitions = m_outputs.m_definitions; // currently, m_outputs.m_definitions are empty, since UI is not implemented
 
 	// generate output grid, if needed
 	std::string refName;

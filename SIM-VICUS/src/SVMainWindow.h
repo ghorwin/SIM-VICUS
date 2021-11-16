@@ -83,7 +83,7 @@ public:
 	explicit SVMainWindow(QWidget *parent = nullptr);
 
 	/*! Default destructor. */
-	~SVMainWindow();
+	~SVMainWindow() override;
 
 	/*! Public access function to save project file (called from simulation view).
 		\return Returns true if project was saved and project handler

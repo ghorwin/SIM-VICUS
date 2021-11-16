@@ -1006,7 +1006,7 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 
 
 void SVMainWindow::on_actionFileExportView3D_triggered() {
-	SVView3D v3d;
+	SVView3DDialog v3d;
 	v3d.exportView3d();
 }
 

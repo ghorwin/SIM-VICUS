@@ -165,6 +165,9 @@ public:
 	// name in m_objLists
 	std::vector< std::vector<NANDRAD::Schedule> >				m_schedules;
 	std::vector< std::vector<NANDRAD::LinearSplineParameter>>	m_schedGroupSplines;
+
+	std::map< std::string, IBK::Path>						m_placeholders;
+
 };
 
 class IdealHeatingCoolingModelGenerator : public ModelGeneratorBase{
@@ -421,7 +424,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 		return;
 	}
 	for (const Schedule & sched : m_embeddedDB.m_schedules) {
-		if (!sched.isValid(true, p.m_placeholders))
+		std::string err;
+		if (!sched.isValid(err, true, p.m_placeholders))
 			errorStack.append(tr("Schedule #%1 '%2'.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
 	}
 	if (!errorStack.isEmpty())	return;
@@ -464,6 +468,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	VentilationModelGenerator ventilation(this);
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
 	ThermostatModelGenerator thermostats(this);
+	thermostats.m_placeholders = p.m_placeholders;
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, usedModelIds, errorStack);
 		ventilation.generate(r, usedModelIds, errorStack);
@@ -1846,14 +1851,14 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	const Schedule * coolSched = m_scheduleDB[thermostat->m_idCoolingSetpointSchedule];
 
 	if(heatSched != nullptr)
-		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds, splines);
+		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds, splines, m_placeholders);
 	else{
 		s.createConstSchedule(-100);
 		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
 	}
 
 	if(coolSched != nullptr)
-		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds, splines);
+		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds, splines, m_placeholders);
 	else{
 		s.createConstSchedule(200);
 		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);

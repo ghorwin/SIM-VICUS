@@ -31,14 +31,18 @@
 
 #include <IBKMK_3DCalculations.h>
 
+#include <VICUS_ViewSettings.h>
+
 #include "Vic3DShaderProgram.h"
 #include "Vic3DVertex.h"
 #include "Vic3DGeometryHelpers.h"
+#include "Vic3DCamera.h"
 
 #include "SVViewStateHandler.h"
 #include "SVPropEditGeometry.h"
 #include "SVLocalCoordinateView.h"
 #include "SVViewStateHandler.h"
+#include "SVProjectHandler.h"
 
 namespace Vic3D {
 
@@ -157,225 +161,9 @@ void CoordinateSystemObject::create(ShaderProgram * shaderProgram) {
 	m_colorBufferObject.release();
 	m_indexBufferObject.release();
 
-
-	// *** generate geometry ***
-
-	// Buffer memory layout, both in vertex buffer and in index buffer
-
-	// m_objectIndexStart vector holds starting element indexes for individual objects to be rendered with drawElements()
-	// m_axisLinesVertexIndex vector holds starting vertex indexes for lines to be rendered with glDrawArrays()
-
-	// 0 - center sphere. opaque (for regular coordinate system, and for rotation/scaling)
-	// 1 - x-axis cylinder (for regular coordinate system)
-	//   - y-axis cylinder (for regular coordinate system)
-	//   - z-axis cylinder (for regular coordinate system)
-	// 2 - x axis sphere (opaque) (for regular coordinate system)
-	//   - y axis sphere (opaque) (for regular coordinate system)
-	//   - z axis sphere (opaque) (for regular coordinate system)
-	// 3 - center sphere. large (for translating)
-	// 4 - translation x axis cube (opaque)
-	// 5 - translation y axis cube (opaque)
-	// 6 - translation z axis cube (opaque)
-	// 7 - rotation x axis sphere (opaque)
-	// 8 - rotation y axis sphere (opaque)
-	// 9 - rotation z axis sphere (opaque)
-	// 10 - scale x axis cylinder (opaque)
-	// 11 - scale y axis cylinder  (opaque)
-	// 12 - scale z axis cylinder  (opaque)
-
-	// Afterwards only vertexes follow, without corresponding indexes:
-	//
-	// - 3 * 2  vertexes for the (infinite) axis lines
-	// - 3 * n  vertexes for rotation orbits
-
-	unsigned int currentVertexIndex = 0;
-	unsigned int currentElementIndex = 0;
-
-	m_objectStartIndexes.resize(NUM_ELEMENT_INDEX);
-	m_axisLinesVertexIndex.resize(NUM_VERTEX_INDEXES);
-
-	double sizeFactor = 1;
-
-
-	// add regular coordinate system
-
-	// TODO : Styling - coordinate system colors should by style-dependent
-
-	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_INDEX] = currentElementIndex;
-
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.15*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-
-	m_objectStartIndexes[ELEMENT_AXES_CYLINDER_INDEX] = currentElementIndex;
-
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::red), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(0,196,0), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(32,32,255), 0.02*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-
-	m_objectStartIndexes[ELEMENT_AXES_SPHERE_INDEX] = currentElementIndex;
-
-	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-
-	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX] = currentElementIndex;
-
-	QColor centerTransparentColor("gold");
-	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, TRANSLATION_CENTER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-
-	m_objectStartIndexes[ELEMENT_TRANSLATION_INDICATOR_INDEX] = currentElementIndex;
-
-#if 0
-	addCube(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCube(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-	addCube(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-#endif
-
-	// rotation indicators
-
-	// x-axis: draw 4 green bullets in yz plane
-
-	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
-	// x-axis sphere is for rotation around z
-	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-//	for (int i=0; i<8; ++i) {
-//		QVector3D pos(0,AXIS_LENGTH,0);
-//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(1,0,0), 22.5 + i*45);
-//		pos = rot.rotatedVector(pos);
-//		addSphere(QtExt::QVector2IBKVector(pos), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
-//				  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-//	}
-
-	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
-	// y-axis sphere is for rotation around x
-	addSphere(IBKMK::Vector3D(0, AXIS_LENGTH,0), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-//	for (int i=0; i<8; ++i) {
-//		QVector3D pos(AXIS_LENGTH,0,0);
-//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,1,0), 22.5 + i*45);
-//		pos = rot.rotatedVector(pos);
-//	}
-
-	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
-	// z-axis sphere is for rotation around y
-	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(Qt::green), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
-//	for (int i=0; i<8; ++i) {
-//		QVector3D pos(AXIS_LENGTH,0,0);
-//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,0,1), 22.5 + i*45);
-//		pos = rot.rotatedVector(pos);
-//	}
-
-	// scale indicators
-
-	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_X] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(AXIS_LENGTH,0,0), IBKMK::Vector3D(AXIS_LENGTH + 0.3,0,0), QColor(Qt::red), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
-
-	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Y] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(0,AXIS_LENGTH,0), IBKMK::Vector3D(0,AXIS_LENGTH + 0.3,0), QColor(0,196,0), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
-
-	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Z] = currentElementIndex;
-	addCylinder(IBKMK::Vector3D(0,0,AXIS_LENGTH), IBKMK::Vector3D(0,0,AXIS_LENGTH + 0.3), QColor(32,32,255), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
-			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
-
-	// the last index is just needed to know until which element index we need to draw
-	m_objectStartIndexes[ELEMENT_OPAQUE_END_INDEX] = currentElementIndex;
-
-	// add vertexes for x, y, and z axis lines
-	m_axisLinesVertexIndex[VERTEX_AXIS_LINES_START] = m_vertexBufferData.size();
-	m_vertexBufferData.push_back(Vertex(QVector3D(-100000,0,0),QVector3D(0,0,0)));
-	m_vertexBufferData.push_back(Vertex(QVector3D(+100000,0,0),QVector3D(0,0,0)));
-	m_vertexBufferData.push_back(Vertex(QVector3D(0,-100000,0),QVector3D(0,0,0)));
-	m_vertexBufferData.push_back(Vertex(QVector3D(0,+100000,0),QVector3D(0,0,0)));
-	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,-100000),QVector3D(0,0,0)));
-	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,+100000),QVector3D(0,0,0)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
-	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
-
-	// generate line segments for orbits
-
-	m_axisLinesVertexIndex[VERTEX_ORBIT_X_LINE_START] = m_vertexBufferData.size();
-
-	// create a circle with line segments
-	const double RADIUS = 2;
-#define PI_CONST 3.14159265
-	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
-		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
-		double z = std::sin(angle)*RADIUS;
-		double y = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(0,float(y),float(z)), QVector3D(0,float(y),float(z)) ) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
-	}
-
-	m_axisLinesVertexIndex[VERTEX_ORBIT_Y_LINE_START] = m_vertexBufferData.size();
-
-	// create a circle with line segments
-	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
-		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
-		double x = std::sin(angle)*RADIUS;
-		double z = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),0,float(z)), QVector3D(float(x),0,float(z))) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::green)));
-	}
-
-	m_axisLinesVertexIndex[VERTEX_ORBIT_Z_LINE_START] = m_vertexBufferData.size();
-
-	// create a circle with line segments
-	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
-		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
-		double x = std::sin(angle)*RADIUS;
-		double y = std::cos(angle)*RADIUS;
-		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),float(y),0), QVector3D(float(x),float(y),0)) );
-		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::blue)));
-	}
-
-
-	// transfer geometry to GPU
-
-	m_vertexBufferObject.bind();
-	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
-	m_vertexBufferObject.release();
-
-	m_colorBufferObject.bind();
-	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
-	m_colorBufferObject.release();
-
-	m_indexBufferObject.bind();
-	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
-	m_indexBufferObject.release();
-
-#if 0
-	// now create the coordinate lines
-	m_lineVbo.create();
-	m_lineVbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
-
-	m_lineVao.create();
-	m_lineVao.bind(); // now the VAO is active and remembers states modified in following calls
-
-	m_lineVbo.bind();
-
-	// coordinates
-	QOpenGLShaderProgram * shaderProg = shaderProgram->shaderProgram();
-	shaderProg->enableAttributeArray(VERTEX_ARRAY_INDEX);
-	shaderProg->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
-#endif
+	m_coordinateSystemSizeFactor = 0; // set scale to invalid size so that next call to updateCoordinateSystemSize() definitely
+	// updates the geometry buffers.
+	updateCoordinateSystemSize();
 }
 
 
@@ -569,6 +357,243 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 		default : return false; // in all other modes we have nothing to pick
 	}
 	return false;
+}
+
+
+void CoordinateSystemObject::updateCoordinateSystemSize() {
+	// compute scale factor
+	double lastScale = m_coordinateSystemSizeFactor;
+	m_coordinateSystemSizeFactor = 1;
+	if (SVProjectHandler::instance().isValid()) {
+		IBKMK::Vector3D cameraPos = SVProjectHandler::instance().viewSettings().m_cameraTranslation;
+		IBKMK::Vector3D distance = QtExt::QVector2IBKVector(m_transform.translation()) - cameraPos;
+		double dist = distance.magnitude();
+//		qDebug() << "Camera-LCS-Distance =" << dist;
+		if (dist < 20) {
+			m_coordinateSystemSizeFactor = dist/20;
+		}
+	}
+
+	if (lastScale == m_coordinateSystemSizeFactor)
+		return; // nothing to do
+
+	// *** generate geometry ***
+
+	// Buffer memory layout, both in vertex buffer and in index buffer
+
+	// m_objectIndexStart vector holds starting element indexes for individual objects to be rendered with drawElements()
+	// m_axisLinesVertexIndex vector holds starting vertex indexes for lines to be rendered with glDrawArrays()
+
+	// 0 - center sphere. opaque (for regular coordinate system, and for rotation/scaling)
+	// 1 - x-axis cylinder (for regular coordinate system)
+	//   - y-axis cylinder (for regular coordinate system)
+	//   - z-axis cylinder (for regular coordinate system)
+	// 2 - x axis sphere (opaque) (for regular coordinate system)
+	//   - y axis sphere (opaque) (for regular coordinate system)
+	//   - z axis sphere (opaque) (for regular coordinate system)
+	// 3 - center sphere. large (for translating)
+	// 4 - translation x axis cube (opaque)
+	// 5 - translation y axis cube (opaque)
+	// 6 - translation z axis cube (opaque)
+	// 7 - rotation x axis sphere (opaque)
+	// 8 - rotation y axis sphere (opaque)
+	// 9 - rotation z axis sphere (opaque)
+	// 10 - scale x axis cylinder (opaque)
+	// 11 - scale y axis cylinder  (opaque)
+	// 12 - scale z axis cylinder  (opaque)
+
+	// Afterwards only vertexes follow, without corresponding indexes:
+	//
+	// - 3 * 2  vertexes for the (infinite) axis lines
+	// - 3 * n  vertexes for rotation orbits
+
+	unsigned int currentVertexIndex = 0;
+	unsigned int currentElementIndex = 0;
+
+	m_objectStartIndexes.resize(NUM_ELEMENT_INDEX);
+	m_axisLinesVertexIndex.resize(NUM_VERTEX_INDEXES);
+
+
+
+	// add regular coordinate system
+
+	// TODO : Styling - coordinate system colors should by style-dependent
+
+	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_INDEX] = currentElementIndex;
+
+	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.15*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	m_objectStartIndexes[ELEMENT_AXES_CYLINDER_INDEX] = currentElementIndex;
+
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(Qt::red), 0.02*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(0,196,0), 0.02*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCylinder(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(32,32,255), 0.02*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	m_objectStartIndexes[ELEMENT_AXES_SPHERE_INDEX] = currentElementIndex;
+
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(255, 245, 152), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addSphere(IBKMK::Vector3D(0,AXIS_LENGTH,0), QColor(255, 245, 152), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(255, 245, 152), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_TRANSLATION_INDEX] = currentElementIndex;
+
+	QColor centerTransparentColor("gold");
+	addSphere(IBKMK::Vector3D(0,0,0), centerTransparentColor, TRANSLATION_CENTER_SPHERE_FACTOR*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+
+	m_objectStartIndexes[ELEMENT_TRANSLATION_INDICATOR_INDEX] = currentElementIndex;
+
+#if 0
+	addCube(IBKMK::Vector3D(2,0,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCube(IBKMK::Vector3D(0,2,0), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+	addCube(IBKMK::Vector3D(0,0,2), QColor(255, 245, 152), 0.1*sizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+#endif
+
+	// rotation indicators
+
+	// x-axis: draw 4 green bullets in yz plane
+
+	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_X] = currentElementIndex;
+	// x-axis sphere is for rotation around z
+	addSphere(IBKMK::Vector3D(AXIS_LENGTH,0,0), QColor(32,32,255), ROTATION_MARKER_SPHERE_FACTOR*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(0,AXIS_LENGTH,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(1,0,0), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//		addSphere(QtExt::QVector2IBKVector(pos), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+//				  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	}
+
+	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Y] = currentElementIndex;
+	// y-axis sphere is for rotation around x
+	addSphere(IBKMK::Vector3D(0, AXIS_LENGTH,0), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(AXIS_LENGTH,0,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,1,0), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//	}
+
+	m_objectStartIndexes[ELEMENT_ROTATION_INDICATOR_INDEX_Z] = currentElementIndex;
+	// z-axis sphere is for rotation around y
+	addSphere(IBKMK::Vector3D(0,0,AXIS_LENGTH), QColor(Qt::green), ROTATION_MARKER_SPHERE_FACTOR*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
+//	for (int i=0; i<8; ++i) {
+//		QVector3D pos(AXIS_LENGTH,0,0);
+//		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(0,0,1), 22.5 + i*45);
+//		pos = rot.rotatedVector(pos);
+//	}
+
+	// scale indicators
+
+	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_X] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(AXIS_LENGTH,0,0), IBKMK::Vector3D(AXIS_LENGTH + 0.3,0,0), QColor(Qt::red), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Y] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(0,AXIS_LENGTH,0), IBKMK::Vector3D(0,AXIS_LENGTH + 0.3,0), QColor(0,196,0), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+	m_objectStartIndexes[ELEMENT_SCALE_INDICATOR_INDEX_Z] = currentElementIndex;
+	addCylinder(IBKMK::Vector3D(0,0,AXIS_LENGTH), IBKMK::Vector3D(0,0,AXIS_LENGTH + 0.3), QColor(32,32,255), 0.1*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+			  m_vertexBufferData, m_colorBufferData, m_indexBufferData, true);
+
+	// the last index is just needed to know until which element index we need to draw
+	m_objectStartIndexes[ELEMENT_OPAQUE_END_INDEX] = currentElementIndex;
+
+	// add vertexes for x, y, and z axis lines
+	m_axisLinesVertexIndex[VERTEX_AXIS_LINES_START] = m_vertexBufferData.size();
+	m_vertexBufferData.push_back(Vertex(QVector3D(-100000,0,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(+100000,0,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,-100000,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,+100000,0),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,-100000),QVector3D(0,0,0)));
+	m_vertexBufferData.push_back(Vertex(QVector3D(0,0,+100000),QVector3D(0,0,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(0,196,0)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
+	m_colorBufferData.push_back(ColorRGBA(QColor(32,32,255)));
+
+	// generate line segments for orbits
+
+	m_axisLinesVertexIndex[VERTEX_ORBIT_X_LINE_START] = m_vertexBufferData.size();
+
+	// create a circle with line segments
+	const double RADIUS = 2;
+#define PI_CONST 3.14159265
+	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
+		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
+		double z = std::sin(angle)*RADIUS;
+		double y = std::cos(angle)*RADIUS;
+		m_vertexBufferData.push_back( Vertex(QVector3D(0,float(y),float(z)), QVector3D(0,float(y),float(z)) ) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::red)));
+	}
+
+	m_axisLinesVertexIndex[VERTEX_ORBIT_Y_LINE_START] = m_vertexBufferData.size();
+
+	// create a circle with line segments
+	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
+		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
+		double x = std::sin(angle)*RADIUS;
+		double z = std::cos(angle)*RADIUS;
+		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),0,float(z)), QVector3D(float(x),0,float(z))) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::green)));
+	}
+
+	m_axisLinesVertexIndex[VERTEX_ORBIT_Z_LINE_START] = m_vertexBufferData.size();
+
+	// create a circle with line segments
+	for (unsigned int i=0; i<=N_ORBIT_LINE_SEGMENTS; ++i) {
+		double angle = 2*PI_CONST*((i+1) % N_ORBIT_LINE_SEGMENTS)/N_ORBIT_LINE_SEGMENTS;
+		double x = std::sin(angle)*RADIUS;
+		double y = std::cos(angle)*RADIUS;
+		m_vertexBufferData.push_back( Vertex(QVector3D(float(x),float(y),0), QVector3D(float(x),float(y),0)) );
+		m_colorBufferData.push_back(ColorRGBA(QColor(Qt::blue)));
+	}
+
+
+	// transfer geometry to GPU
+
+	m_vertexBufferObject.bind();
+	m_vertexBufferObject.allocate(m_vertexBufferData.data(), m_vertexBufferData.size()*sizeof(Vertex));
+	m_vertexBufferObject.release();
+
+	m_colorBufferObject.bind();
+	m_colorBufferObject.allocate(m_colorBufferData.data(), m_colorBufferData.size()*sizeof(ColorRGBA) );
+	m_colorBufferObject.release();
+
+	m_indexBufferObject.bind();
+	m_indexBufferObject.allocate(m_indexBufferData.data(), m_indexBufferData.size()*sizeof(GLuint));
+	m_indexBufferObject.release();
+
+#if 0
+	// now create the coordinate lines
+	m_lineVbo.create();
+	m_lineVbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+
+	m_lineVao.create();
+	m_lineVao.bind(); // now the VAO is active and remembers states modified in following calls
+
+	m_lineVbo.bind();
+
+	// coordinates
+	QOpenGLShaderProgram * shaderProg = shaderProgram->shaderProgram();
+	shaderProg->enableAttributeArray(VERTEX_ARRAY_INDEX);
+	shaderProg->setAttributeBuffer(VERTEX_ARRAY_INDEX, GL_FLOAT, 0, 3 /* vec3 */, sizeof(Vertex));
+#endif
 }
 
 

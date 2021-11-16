@@ -142,7 +142,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 #endif
 	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
 		if (notify->m_aborted)
-			break; //stop loop
+			continue; //stop loop
 
 		// readability improvement
 		const IBKMK::Polygon3D & surf = m_surfaces[(unsigned int)surfCounter];

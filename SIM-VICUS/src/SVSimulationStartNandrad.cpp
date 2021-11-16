@@ -384,7 +384,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	updateCmdLine();
 	QString resultPath;
-	if (!generateNANDRAD(resultPath))
+	if (!generateNANDRAD(resultPath, !testInit))
 		return false;
 	IBK::Path resultDir(resultPath.toStdString());
 
@@ -452,8 +452,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	return true;
 }
 
-
-bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
+bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool generateOutputs) {
 	// compose NANDRAD project file and start simulation
 
 	// generate NANDRAD project
@@ -470,6 +469,15 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 		p.m_placeholders["Project Directory"] = IBK::Path(m_nandradProjectFilePath.toStdString()).parentPath().str();
 
 		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
+		// special handling since there is no object list data structure in
+		if (generateOutputs)
+			if( (!m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() &&
+				 !m_localProject.m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())) {
+				m_simulationOutputOptions->generateOutputs(p.m_objectLists);
+				p.m_objectLists = m_simulationOutputOptions->objectLists();
+				p.m_outputs.m_definitions = m_simulationOutputOptions->outputDefinitions();
+			}
+
 	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
@@ -493,14 +501,14 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 	return true;
 }
 
-
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
 }
 
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
-	startSimulation(true);
+	if (startSimulation(true) )
+		m_simulationOutputOptions->generateOutputTable();
 }
 
 
