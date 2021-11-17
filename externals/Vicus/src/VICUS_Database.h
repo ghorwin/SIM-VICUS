@@ -61,9 +61,16 @@ public:
 	{
 	}
 
-	/*! Returns database element by ID, or nullptr if no element exists with this ID. */
+	/*! Returns const database element by ID, or nullptr if no element exists with this ID. */
 	const T * operator[](unsigned int id) const {
 		typename std::map<unsigned int, T>::const_iterator it = m_data.find(id);
+		if (it == m_data.end())		return nullptr;
+		else						return &(it->second);
+	}
+
+	/*! Returns database element by ID, or nullptr if no element exists with this ID. */
+	T * operator[](unsigned int id) {
+		typename std::map<unsigned int, T>::iterator it = m_data.find(id);
 		if (it == m_data.end())		return nullptr;
 		else						return &(it->second);
 	}
@@ -164,6 +171,17 @@ public:
 		}
 	}
 
+	/*! Removes all user elements which are defined as local */
+	void removeLocalElements() {
+		// iterate over all elements - mind: no increment of the iterator needed here!
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
+			if (it->second.m_local && !it->second.m_builtIn)
+				it = m_data.erase(it); // remove it, and set it to next following element iterator
+			else
+				++it;
+		}
+	}
+
 	/*! Reads database from xml file.
 		Usage:
 		\code
@@ -212,6 +230,7 @@ public:
 				T obj;
 				obj.readXML(c2);
 				obj.m_builtIn = builtIn;
+				obj.m_local = false;  // objects we read from the DB are not local by definition
 
 				// check for existing DB element - must not exist, otherwise DB file is faulty
 				if (m_data.find(obj.m_id) != m_data.end()){

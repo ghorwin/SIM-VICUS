@@ -80,6 +80,12 @@ public:
 	/*! False-color for this DB element (optional, may not be necessary for all DB elements). */
 	QColor							m_color;
 
+
+	// *** Run time variables ***
+
+	/*! Determines wether this element is kept local in the current project or should be stored into the userDB */
+	bool							m_local = true;
+
 };
 
 } // namespace VICUS

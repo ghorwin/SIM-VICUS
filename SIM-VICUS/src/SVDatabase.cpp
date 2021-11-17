@@ -150,8 +150,15 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 }
 
 
-void SVDatabase::writeDatabases() const {
+void SVDatabase::writeDatabases() {
 	// we only write user databases
+
+	// First, remove all local elements. We don't store them to the user DB.
+	m_subNetworks.removeLocalElements();
+
+	// TODO: remaining dbs ...
+
+
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
@@ -200,6 +207,16 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 }
 
 
+/*! Local utility functionStores pointers to all DB Elements which are local in the container */
+template <typename T>
+void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & container) {
+	for (auto it=db.begin(); it!=db.end(); ++it){
+		if (it->second.m_local)
+			container.insert(&it->second);
+	}
+}
+
+
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// create sets for objects that are referenced from other objects
@@ -229,7 +246,13 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
 
 
-	// we first collect all objects that are not referenced themselves
+	// First, collect all local elements
+	collectLocalElements(m_subNetworks, referencedSubNetworks);
+
+	// TODO: remaining dbs ...
+
+
+	// Now, first collect all objects that are not referenced themselves
 	// then, we collect objects that are referenced from an already collected object
 	// this is continued until we have collected all objects that are used somewhere in the
 	// project
@@ -380,6 +403,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// sub networks
 		for (const VICUS::NetworkNode &node: net.m_nodes)
 			referencedSubNetworks.insert(m_subNetworks[node.m_idSubNetwork]);
+
 	}
 
 	// iterate through collected sub networks

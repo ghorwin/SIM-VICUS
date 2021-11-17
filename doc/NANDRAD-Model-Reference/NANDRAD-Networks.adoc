@@ -513,7 +513,7 @@ Weiterhin werden diese Parameter benötigt:
 
 
 [IMPORTANT]
-Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur 20°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
+Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
 
 [[ex_HeatPumpIdealCarnotSourceSide]]
 .Definition einer HeatPumpIdealCarnotSourceSide

@@ -35,9 +35,10 @@
 
 #include <VICUS_ZoneTemplate.h>
 
-SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole) :
 	QItemDelegate(parent),
-	m_builtInRole(builtInRole)
+	m_builtInRole(builtInRole),
+	m_localRole(localRole)
 {
 }
 
@@ -68,6 +69,7 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	// find out if our index is of a built-in element
 	bool builtin = index.data(m_builtInRole).toBool();
 	bool enabled = opt->widget->isEnabled();
+	bool local = index.data(m_localRole).toBool();
 	if (builtin && enabled) {
 		// draw background
 		QBrush b;
@@ -87,6 +89,24 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		QVariant subTemplateType = index.data(Role_SubTemplateType);
 		if (subTemplateType.isValid() && index.column() == 1) // note: column index is currently hard-coded
 			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
+		QItemDelegate::paint(painter, modifiedOption, index);
+	}
+
+	// TODO Andreas : check this ... (more or less copy & paste)
+
+	else if (local) {
+		QBrush b;
+		if (opt->features & QStyleOptionViewItem::Alternate)
+			b = QBrush("#cddafd");
+		else
+			b = QBrush("#dfe7fd");
+		painter->fillRect(option.rect, b);
+		// adjust text color for subsequent call to QItemDelegate::paint()
+		QPalette pal = opt->palette;
+		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+		QStyleOptionViewItem modifiedOption(option);
+		modifiedOption.palette = pal;
+
 		QItemDelegate::paint(painter, modifiedOption, index);
 	}
 	else {

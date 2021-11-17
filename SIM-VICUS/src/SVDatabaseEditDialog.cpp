@@ -163,7 +163,7 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local);
 	m_ui->tableView->setItemDelegate(dg);
 }
 
@@ -277,6 +277,8 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->toolButtonStoreInUserDB->setEnabled(false);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(false);
 		m_editWidgetContainerWidget->setEnabled(false);
 		m_editWidget->updateInput(-1); // nothing selected
 	}
@@ -286,6 +288,9 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
 		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
+		// only local elements can be stored to user DB
+		m_ui->toolButtonStoreInUserDB->setEnabled(sourceIndex.data(Role_Local).toBool());
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(!sourceIndex.data(Role_Local).toBool());
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
@@ -309,6 +314,24 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 		m_editWidget->updateInput(-1);
 	}
+}
+
+
+void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked()
+{
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, false);
+}
+
+
+void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked()
+{
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, true);
 }
 
 
@@ -582,3 +605,4 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+
