@@ -323,6 +323,7 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked()
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	m_dbModel->setItemLocal(sourceIndex, false);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
@@ -332,6 +333,7 @@ void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked()
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	m_dbModel->setItemLocal(sourceIndex, true);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
