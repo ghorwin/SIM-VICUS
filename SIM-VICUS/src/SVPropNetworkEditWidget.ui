@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="pageNetwork">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -104,18 +104,18 @@
             </property>
            </widget>
           </item>
+          <item row="5" column="1">
+           <widget class="QPushButton" name="pushButtonDeleteNetwork">
+            <property name="text">
+             <string>delete network</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
+            </property>
+           </widget>
+          </item>
          </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="pushButtonDeleteNetwork">
-         <property name="text">
-          <string>delete network</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../resources/SIM-VICUS.qrc">
-           <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-         </property>
         </widget>
        </item>
        <item>
@@ -177,7 +177,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBoxRemoveShortEdges">
          <property name="title">
           <string>remove short edges</string>
          </property>
@@ -832,7 +832,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBoxCurrentSubNetworks_2">
+        <widget class="QGroupBox" name="groupBoxCurrentHeatExchange">
          <property name="title">
           <string>Heat Exchange Types used in current project</string>
          </property>
