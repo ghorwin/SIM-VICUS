@@ -430,6 +430,9 @@ void SVProjectHandler::destroyProject() {
 	delete m_project;
 	m_project = nullptr;
 	m_projectFile.clear();
+
+	// delete local DB ELEMENTS
+//	SVSettings ....
 }
 
 

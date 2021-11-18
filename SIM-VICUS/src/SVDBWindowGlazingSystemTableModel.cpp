@@ -101,6 +101,9 @@ QVariant SVDBWindowGlazingSystemTableModel::data ( const QModelIndex & index, in
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -200,6 +203,17 @@ void SVDBWindowGlazingSystemTableModel::setColumnResizeModes(QTableView * tableV
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBWindowGlazingSystemTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBWindowGlazingSystemTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBWindowGlazingSystemTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBWindowGlazingSystemTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_windowGlazingSystems[id]->m_local = local;
+	m_db->m_windowGlazingSystems.m_modified = true;
+	setItemModified(id);
 }
 
 

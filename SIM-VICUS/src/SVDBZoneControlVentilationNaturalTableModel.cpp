@@ -103,6 +103,9 @@ QVariant SVDBZoneControlVentilationNaturalTableModel::data ( const QModelIndex &
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -194,6 +197,17 @@ void SVDBZoneControlVentilationNaturalTableModel::setColumnResizeModes(QTableVie
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlVentilationNaturalTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlVentilationNaturalTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlVentilationNaturalTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBZoneControlVentilationNaturalTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_zoneControlVentilationNatural[id]->m_local = local;
+	m_db->m_zoneControlVentilationNatural.m_modified = true;
+	setItemModified(id);
 }
 
 
