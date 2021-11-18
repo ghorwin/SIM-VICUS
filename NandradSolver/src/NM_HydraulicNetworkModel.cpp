@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -372,6 +372,37 @@ void HydraulicNetworkModel::variableReferenceSubstitutionMap(std::map<std::strin
 	for (unsigned int i = 0; i<m_elementIds.size(); ++i) {
 		if (m_elementDisplayNames[i].empty()) continue;
 		varSubstMap[ IBK::FormatString("NetworkElement(id=%1)").arg(m_elementIds[i]).str() ] = m_elementDisplayNames[i];
+	}
+}
+
+
+std::size_t HydraulicNetworkModel::serializationSize() const {
+	// serialize model impl data
+	std::size_t size = m_p->serializationSize();
+	// sum up serialization size of all flow elements
+	for(const HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		size += fe->serializationSize();
+	}
+	return size;
+}
+
+
+void HydraulicNetworkModel::serialize(void *& dataPtr) const {
+	// cache model impl data and shift data pointer
+	m_p->serialize(dataPtr);
+	// serialize all flow elements and shift data pointer
+	for(const HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		fe->serialize(dataPtr);
+	}
+}
+
+
+void HydraulicNetworkModel::deserialize(void *& dataPtr) {
+	// restore model impl data and shift data pointer
+	m_p->deserialize(dataPtr);
+	// restore all flow elements and shift data pointer
+	for(HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		fe->deserialize(dataPtr);
 	}
 }
 
@@ -908,6 +939,31 @@ int HydraulicNetworkModelImpl::solve() {
 
 void HydraulicNetworkModelImpl::storeSolution() {
 	std::memcpy(m_yLast.data(), m_y.data(), sizeof(double)*m_y.size());
+}
+
+
+std::size_t HydraulicNetworkModelImpl::serializationSize() const {
+	// serialize stored start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	return dataSize;
+}
+
+
+void HydraulicNetworkModelImpl::serialize(void *& dataPtr) const {
+	// cache start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(dataPtr, m_yLast.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// note: at the moment jacobian is setup every solution step
+	// thus, there is no need for serialization of jacobian
+}
+
+
+void HydraulicNetworkModelImpl::deserialize(void *& dataPtr) {
+	// update start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(m_yLast.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 }
 
 

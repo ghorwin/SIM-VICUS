@@ -22,6 +22,7 @@
 #include "NM_IdealHeatingCoolingModel.h"
 
 #include <IBK_Exception.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_IdealHeatingCoolingModel.h>
 #include <NANDRAD_ObjectList.h>
@@ -157,6 +158,53 @@ const double * IdealHeatingCoolingModel::resultValueRef(const InputReference & q
 		// exception is thrown when index is not available - return nullptr
 		return nullptr;
 	}
+}
+
+
+std::size_t IdealHeatingCoolingModel::serializationSize() const {
+	// vector size + integral values + previous time step
+	std::size_t s = 0;
+
+	if(m_Ki != 0.0) {
+		s += m_controllerIntegralValues.size() * sizeof(double);
+	}
+
+	s += sizeof(double);
+
+	return s;
+}
+
+
+void IdealHeatingCoolingModel::serialize(void *& dataPtr) const {
+	// cache controllerIntegralValues:
+	// only accept double values
+	if(m_Ki != 0.0) {
+		size_t dataSize = m_controllerIntegralValues.size()*sizeof(double);
+		if (dataSize != 0) {
+			std::memcpy(dataPtr, m_controllerIntegralValues.data(), dataSize);
+			dataPtr = (char*)dataPtr + dataSize;
+		}
+	}
+	// cache tEndOfLastTimeStep for integration
+	*(double*)dataPtr = m_tEndOfLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void IdealHeatingCoolingModel::deserialize(void *& dataPtr) {
+	// update cached controllerIntegralValues
+	if(m_Ki != 0.0) {
+		// store actual vector data
+		// only store double values
+		size_t dataSize = m_controllerIntegralValues.size()*sizeof(unsigned int);
+		if (dataSize != 0) {
+			std::memcpy(m_controllerIntegralValues.data(), dataPtr, dataSize);
+			dataPtr = (char*)dataPtr + dataSize;
+		}
+	}
+	// update cached tEndOfLastTimeStep
+	m_tEndOfLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
 }
 
 

@@ -79,6 +79,23 @@ const double *ShadingControlModel::resultValueRef(const InputReference & quantit
 }
 
 
+std::size_t ShadingControlModel::serializationSize() const {
+	return m_controller.serializationSize();
+}
+
+
+void ShadingControlModel::serialize(void *& dataPtr) const {
+	// serialize controller and shift data pointer
+	m_controller.serialize(dataPtr);
+}
+
+
+void ShadingControlModel::deserialize(void *& dataPtr) {
+	// deserialize controller and shift data pointer
+	m_controller.deserialize(dataPtr);
+}
+
+
 int ShadingControlModel::setTime(double /*t*/) {
 	// set current state value from sensor
 	double qSWRadDir, qSWRadDiff, incidenceAngle;

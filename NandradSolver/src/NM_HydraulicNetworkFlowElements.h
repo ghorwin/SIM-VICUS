@@ -401,6 +401,17 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
+	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores model content at memory location pointed to by dataPtr.
+	*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores model content from memory at location pointed to by dataPtr.
+	*/
+	virtual void deserialize(void* & dataPtr) override;
+
 	/*! Return value reference of pressure head computed by flow element. */
 	const double * pressureHeadRef() const { return &m_pressureHead; }
 

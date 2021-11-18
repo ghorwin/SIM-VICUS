@@ -78,6 +78,17 @@ public:
 	virtual void dependencies(const double */*mdot*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const {}
 
+	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	virtual std::size_t serializationSize() const { return 0; }
+
+	/*! Stores model content at memory location pointed to by dataPtr.
+	*/
+	virtual void serialize(void* & dataPtr) const { (void)dataPtr; }
+
+	/*! Restores model content from memory at location pointed to by dataPtr.
+	*/
+	virtual void deserialize(void* & dataPtr) { (void)dataPtr; }
+
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
 		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.
 		For MT_ThermalHydraulicNetwork this is a reference to the result "FluidTemperature" computed by

@@ -28,6 +28,7 @@
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
 #include <IBK_FileUtils.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -36,6 +37,66 @@ namespace NANDRAD_MODEL {
 
 OutputFile::~OutputFile() {
 	delete m_ofstream;
+}
+
+
+std::size_t OutputFile::serializationSize() const {
+	std::size_t size = 0;
+	if (!m_haveIntegrals)
+		return size; // nothing to serialize
+
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// integral values
+	// + integral values at last output time point
+	size += 3 * dataSize;
+	// last time step and last output time point
+	size += 2 * sizeof (double);
+
+	return size;
+}
+
+
+void OutputFile::serialize(void *& dataPtr) const {
+	if (!m_haveIntegrals)
+		return; // nothing to do
+
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// cache integrals
+	std::memcpy(dataPtr, m_integrals[0].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(dataPtr, m_integrals[1].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// cache integralsAtLastOutput
+	std::memcpy(dataPtr, m_integralsAtLastOutput.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// cache tLastStep for integration
+	*(double*)dataPtr = m_tLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// cache tLastOutput
+	*(double*)dataPtr = m_tLastOutput;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void OutputFile::deserialize(void *& dataPtr) {
+	if (!m_haveIntegrals)
+		return; // nothing to do
+
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// update cached integrals
+	std::memcpy(m_integrals[0].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(m_integrals[1].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// update cached integralsAtLastOutput
+	std::memcpy(m_integralsAtLastOutput.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// update cached tLastStep
+	m_tLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached tLastOutput
+	m_tLastOutput = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
 }
 
 

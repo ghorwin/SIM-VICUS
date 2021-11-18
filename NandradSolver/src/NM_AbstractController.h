@@ -22,6 +22,8 @@
 #ifndef NM_AbstractControllerH
 #define NM_AbstractControllerH
 
+#include <cstddef>
+
 namespace NANDRAD_MODEL {
 
 /*! Defines the interface for an abstract controller.
@@ -55,6 +57,17 @@ public:
 
 	/*! This function is called after each integration step (default implementation does nothing). */
 	virtual void stepCompleted(double t) { (void)t; }
+
+	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	virtual std::size_t serializationSize() const { return 0; }
+
+	/*! Stores model content at memory location pointed to by dataPtr.
+	*/
+	virtual void serialize(void* & dataPtr) const { (void)dataPtr; }
+
+	/*! Restores model content from memory at location pointed to by dataPtr.
+	*/
+	virtual void deserialize(void* & dataPtr) { (void)dataPtr; }
 
 	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
 	virtual void resetErrorIntegral() {}

@@ -89,7 +89,7 @@ def checkResults(dir1, dir2, evalTimes):
 		if not stats2.read(dir2 + "/log/summary.txt"):
 			return False
 
-		if not SolverStats.compareStats(stats1, stats2):
+		if not SolverStats.compareStats(stats1, stats2, []):
 			printError("Mismatching statistics.")
 			return False
 

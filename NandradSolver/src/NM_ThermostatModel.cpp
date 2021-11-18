@@ -183,6 +183,32 @@ const double * ThermostatModel::resultValueRef(const InputReference & quantity) 
 }
 
 
+std::size_t ThermostatModel::serializationSize() const {
+	std::size_t size = 0;
+	// sum up serialization size of all controllers
+	for(const AbstractController* controller: m_controllers) {
+		size += controller->serializationSize();
+	}
+	return size;
+}
+
+
+void ThermostatModel::serialize(void *& dataPtr) const {
+	// serialize all controllers and shift data pointer
+	for(const AbstractController* controller: m_controllers) {
+		controller->serialize(dataPtr);
+	}
+}
+
+
+void ThermostatModel::deserialize(void *& dataPtr) {
+	// deserialize all controllers and shift data pointer
+	for(AbstractController* controller: m_controllers) {
+		controller->deserialize(dataPtr);
+	}
+}
+
+
 void ThermostatModel::stepCompleted(double t) {
 	for (NANDRAD_MODEL::AbstractController* c : m_controllers)
 		c->stepCompleted(t);
