@@ -239,6 +239,9 @@ void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
 void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	// resize ID column
@@ -255,6 +258,9 @@ void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	sourceIndex = m_dbModel->copyItem(sourceIndex);
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }
@@ -317,8 +323,7 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 }
 
 
-void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked()
-{
+void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
@@ -327,8 +332,7 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked()
 }
 
 
-void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked()
-{
+void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked() {
 	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);

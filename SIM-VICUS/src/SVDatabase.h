@@ -106,6 +106,9 @@ public:
 	*/
 	void removeDBElement(DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID);
 
+	/*! Removes all local DB elements. */
+	void removeLocalElements();
+
 	/*! Convenience function, can be used to lookup a subtype template by argument.
 		ID of subtemplate is taken from idReferenceArray at index given by 'st'.
 		Returns nullptr if element doesn't exist.

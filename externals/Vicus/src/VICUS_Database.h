@@ -113,6 +113,8 @@ public:
 		\param newData New object to be added.
 		\param suggestedId ID of object to insert (possibly when adding this data object from a project file), or 0,
 			if object was newly created and needs a new ID anyway.
+
+		\note New items are never built-in and will be local DB elements, automatically.
 	*/
 	unsigned int add(T & newData, unsigned int suggestedId = 0) {
 		// check if suggestedId is already used

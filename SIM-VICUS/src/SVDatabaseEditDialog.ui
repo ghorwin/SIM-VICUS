@@ -58,7 +58,7 @@
       <item row="1" column="3">
        <widget class="QToolButton" name="toolButtonStoreInUserDB">
         <property name="toolTip">
-         <string>store element to user database</string>
+         <string>Stores local project DB element in user database.</string>
         </property>
         <property name="text">
          <string/>
@@ -114,7 +114,7 @@
       <item row="1" column="4">
        <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
         <property name="toolTip">
-         <string>remove element from user database</string>
+         <string>Moves DB element from user  database to local project.</string>
         </property>
         <property name="text">
          <string/>

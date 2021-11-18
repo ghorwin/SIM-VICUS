@@ -153,12 +153,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 void SVDatabase::writeDatabases() {
 	// we only write user databases
 
-	// First, remove all local elements. We don't store them to the user DB.
-	m_subNetworks.removeLocalElements();
-
-	// TODO: remaining dbs ...
-
-
+	// At this point the project is closed and we must not have any local DB elements anylonger.
+	// There is no easy way to test this.
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
@@ -838,6 +834,32 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
 	}
 
+}
+
+
+void SVDatabase::removeLocalElements() {
+	m_materials.removeLocalElements();
+	m_constructions.removeLocalElements();
+	m_windows.removeLocalElements();
+	m_windowGlazingSystems.removeLocalElements();
+	m_boundaryConditions.removeLocalElements();
+	m_components.removeLocalElements();
+	m_subSurfaceComponents.removeLocalElements();
+	m_surfaceHeatings.removeLocalElements();
+	m_pipes.removeLocalElements();
+	m_fluids.removeLocalElements();
+	m_networkComponents.removeLocalElements();
+	m_networkControllers.removeLocalElements();
+	m_subNetworks.removeLocalElements();
+	m_schedules.removeLocalElements();
+	m_internalLoads.removeLocalElements();
+	m_zoneControlThermostat.removeLocalElements();
+	m_zoneControlShading.removeLocalElements();
+	m_zoneControlVentilationNatural.removeLocalElements();
+	m_zoneIdealHeatingCooling.removeLocalElements();
+	m_ventilationNatural.removeLocalElements();
+	m_infiltration.removeLocalElements();
+	m_zoneTemplates.removeLocalElements();
 }
 
 
