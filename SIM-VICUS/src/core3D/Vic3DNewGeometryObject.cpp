@@ -412,8 +412,8 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 	// for all but complex shape
 	if (roofData.m_type != RoofInputData::Complex) {
 
-		/// TODO Dirk->Andreas wie binde ich das übersetzen ein?
-		//SVSettings::instance().showDoNotShowAgainMessage(this, "CreateNoComplexRoofType", tr("Roof creation.") tr("Square floor plans can be used for this type of roof."));
+		/// TODO Dirk->Andreas was ist der Parent in diesem Fall hier?
+		//SVSettings::instance().showDoNotShowAgainMessage(this, "CreateNoComplexRoofType", qApp->tr("Roof creation."), qApp->tr("Square floor plans can be used for this type of roof."));
 
 		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
 		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
