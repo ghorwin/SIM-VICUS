@@ -116,16 +116,17 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
 
-	double surfaceResistanceSideA = 0;
-	double surfaceResistanceSideB = 0;
+	// TODO Dirk, check on usage of surfaceResistanceSideA and B ... do we need this?
+	double surfaceResistanceSideA;
+	double surfaceResistanceSideB;
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(bcA->m_displayName));
 		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription(m_db->m_schedules));
 
-		if(bcA->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
-			double hc = bcA->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+		if(bcA->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
+			double hc = bcA->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideA = hc > 0 ? 1/hc : 0;
 		}
 	}
@@ -139,8 +140,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(bcB->m_displayName));
 		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription(m_db->m_schedules));
 
-		if(bcB->m_heatConduction.m_modelType == NANDRAD::InterfaceHeatConduction::MT_Constant){
-			double hc = bcB->m_heatConduction.m_para[NANDRAD::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
+		if(bcB->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
+			double hc = bcB->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
 			surfaceResistanceSideB = hc > 0 ? 1/hc : 0;
 		}
 	}
