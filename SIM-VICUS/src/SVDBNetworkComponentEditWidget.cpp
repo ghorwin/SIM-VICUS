@@ -35,6 +35,7 @@
 
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_KeywordListQt.h>
+#include <VICUS_utilities.h>
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -272,6 +273,7 @@ void SVDBNetworkComponentEditWidget::populateTableWidget(){
 
 
 	// populate table widget with optional parameters
+
 	QFont fnt;
 	fnt.setItalic(true);
 	for (unsigned int paraOpt: paraVecOpt) {
@@ -325,10 +327,39 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 
 	VICUS::NetworkComponent::ModelType ct = VICUS::NetworkComponent::ModelType(
 													m_ui->comboBoxComponentType->currentData().toUInt());
+
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
+			VICUS::NetworkComponent::nandradNetworkComponentModelType(m_current->m_modelType);
+	std::vector<unsigned int> paraVecStd = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
+	std::vector<unsigned int> paraVecAdd = m_current->additionalRequiredParameter(m_current->m_modelType);
+	std::vector<unsigned int> paraVecOpt = m_current->optionalParameter(m_current->m_modelType);
+	std::vector<unsigned int> paraVecInt = m_current->requiredIntParameter(m_current->m_modelType);
+
 	if (ct != m_current->m_modelType) {
-		// if type has changed, we create a new component (all parameters are deleted)
-		m_current = new VICUS::NetworkComponent;
+		// set new model type and name
+		QString name = QString("new %1").arg(VICUS::KeywordList::Keyword("NetworkComponent::ModelType", ct));
+		m_current->m_displayName = IBK::MultiLanguageString(name.toStdString());
 		m_current->m_modelType = ct;
+		// we keep parameters which are still valid
+		for (unsigned int i=0; i<VICUS::NetworkComponent::NUM_P; ++i){
+			if (std::find(paraVecStd.begin(), paraVecStd.end(), i) != paraVecStd.end() ||
+				std::find(paraVecAdd.begin(), paraVecAdd.end(), i) != paraVecAdd.end() ||
+				std::find(paraVecOpt.begin(), paraVecOpt.end(), i) != paraVecOpt.end())
+				continue;
+			m_current->m_para[i].clear();
+		}
+		for (unsigned int i=0; i<VICUS::NetworkComponent::NUM_IP; ++i){
+			if (std::find(paraVecInt.begin(), paraVecInt.end(), i) == paraVecInt.end())
+				m_current->m_intPara[i].clear();
+		}
+		// clear all other properties
+		m_current->m_notes.clear();
+		m_current->m_dataSource.clear();
+		m_current->m_scheduleIds.clear();
+		m_current->m_manufacturer.clear();
+		m_current->m_polynomCoefficients.m_values.clear();
+		m_current->m_pipePropertiesId = VICUS::INVALID_ID;
+
 		modelModify();
 		updateInput((int)m_current->m_id);
 	}
@@ -524,13 +555,6 @@ void SVDBNetworkComponentEditWidget::modelModify() {
 
 void SVDBNetworkComponentEditWidget::on_toolButtonPipeProperties_clicked()
 {
-
-
-	// seeems like the pipe is not added to the DB when it was selected here ....
-
-
-
-
 	Q_ASSERT(m_current != nullptr);
 
 	// open schedule edit dialog in selection mode

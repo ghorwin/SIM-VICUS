@@ -98,6 +98,9 @@ QVariant SVDBZoneControlShadingTableModel::data ( const QModelIndex & index, int
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -189,6 +192,17 @@ void SVDBZoneControlShadingTableModel::setColumnResizeModes(QTableView * tableVi
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlShadingTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlShadingTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlShadingTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBZoneControlShadingTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_zoneControlShading[id]->m_local = local;
+	m_db->m_zoneControlShading.m_modified = true;
+	setItemModified(id);
 }
 
 

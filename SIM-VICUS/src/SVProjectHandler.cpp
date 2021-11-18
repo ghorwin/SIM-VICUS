@@ -431,8 +431,8 @@ void SVProjectHandler::destroyProject() {
 	m_project = nullptr;
 	m_projectFile.clear();
 
-	// remove temporary local DB elements
-	SVSettings::instance().m_db.removeLocalElements();
+	// delete local DB ELEMENTS
+//	SVSettings ....
 }
 
 

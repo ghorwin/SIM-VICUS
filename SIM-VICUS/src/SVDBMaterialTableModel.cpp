@@ -216,6 +216,17 @@ void SVDBMaterialTableModel::setColumnResizeModes(QTableView * tableView) {
 }
 
 
+void SVDBMaterialTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_materials[id]->m_local = local;
+	m_db->m_materials.m_modified = true;
+	setItemModified(id);
+}
+
+
 void SVDBMaterialTableModel::setItemModified(unsigned int id) {
 	QModelIndex idx = indexById(id);
 	QModelIndex left = index(idx.row(), 0);

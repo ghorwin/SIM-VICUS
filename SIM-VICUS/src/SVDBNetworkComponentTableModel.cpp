@@ -98,6 +98,9 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -181,6 +184,17 @@ void SVDBNetworkComponentTableModel::setColumnResizeModes(QTableView * tableView
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBNetworkComponentTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_networkComponents[id]->m_local = local;
+	m_db->m_networkComponents.m_modified = true;
+	setItemModified(id);
 }
 
 

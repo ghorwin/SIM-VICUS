@@ -291,12 +291,16 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 	else {
 		m_editWidgetContainerWidget->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
+
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
-		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
-		// only local elements can be stored to user DB
-		m_ui->toolButtonStoreInUserDB->setEnabled(sourceIndex.data(Role_Local).toBool());
-		m_ui->toolButtonRemoveFromUserDB->setEnabled(!sourceIndex.data(Role_Local).toBool());
+		bool builtIn = sourceIndex.data(Role_BuiltIn).toBool();
+		m_ui->toolButtonRemove->setEnabled(!builtIn);
+
+		// only elements which are local and not built-in can be stored to user DB
+		bool local = sourceIndex.data(Role_Local).toBool();
+		m_ui->toolButtonStoreInUserDB->setEnabled(local && !builtIn);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(!local && !builtIn);
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());

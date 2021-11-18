@@ -51,6 +51,8 @@ namespace VICUS {
 class NetworkComponent : public AbstractDBElement {
 public:
 
+	NetworkComponent() = default;
+
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
 		// from NANDRAD::HydraulicNetworkComponent

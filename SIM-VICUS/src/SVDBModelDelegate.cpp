@@ -35,6 +35,12 @@
 
 #include <VICUS_ZoneTemplate.h>
 
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
+	QItemDelegate(parent),
+	m_builtInRole(builtInRole)
+{
+}
+
 SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole) :
 	QItemDelegate(parent),
 	m_builtInRole(builtInRole),
@@ -66,21 +72,10 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		painter->fillRect(option.rect, b);
 		return;
 	}
-	// we have three different background color modes: built-in, user-db and local
-	// if the widget is disabled, we use the default background (darkish gray)
-	// if the widget is enabled, we have special colors for builtin and for local.
+	// find out if our index is of a built-in element
 	bool builtin = index.data(m_builtInRole).toBool();
 	bool enabled = opt->widget->isEnabled();
 	bool local = index.data(m_localRole).toBool();
-
-	// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
-	// subtemplate type - this is independent of the DB type
-	QStyleOptionViewItem modifiedOption(option);
-	QVariant subTemplateType = index.data(Role_SubTemplateType);
-	if (subTemplateType.isValid() && index.column() == 1)
-		drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt()); // we modify the rect property here
-
-	// local and builtin are exclusive - we can only have either one
 	if (builtin && enabled) {
 		// draw background
 		QBrush b;
@@ -88,24 +83,43 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundDark);
 		else
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
-		painter->fillRect(modifiedOption.rect, b);
+		painter->fillRect(option.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
 		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+		QStyleOptionViewItem modifiedOption(option);
 		modifiedOption.palette = pal;
+
+		// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
+		// subtemplate type
+		QVariant subTemplateType = index.data(Role_SubTemplateType);
+		if (subTemplateType.isValid() && index.column() == 1) // note: column index is currently hard-coded
+			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
+		QItemDelegate::paint(painter, modifiedOption, index);
 	}
-	else if (local && enabled) {
+
+	// TODO Andreas : check this ... (more or less copy & paste)
+
+	else if (!local) {
 		QBrush b;
 		if (opt->features & QStyleOptionViewItem::Alternate)
-			b = QBrush("#c6f1ff");
+			b = QBrush("#cddafd");
 		else
-			b = QBrush("#9fe0f5");
-		painter->fillRect(modifiedOption.rect, b);
+			b = QBrush("#dfe7fd");
+		painter->fillRect(option.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
-		pal.setColor(QPalette::Text, "#00406b");
+		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+		QStyleOptionViewItem modifiedOption(option);
 		modifiedOption.palette = pal;
+
+		QItemDelegate::paint(painter, modifiedOption, index);
 	}
-	// either disable or user-DB
-	QItemDelegate::paint(painter, modifiedOption, index);
+	else {
+		QVariant subTemplateType = index.data(Role_SubTemplateType);
+		QStyleOptionViewItem modifiedOption(option);
+		if (subTemplateType.isValid() && index.column() == 1)
+			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
+		QItemDelegate::paint(painter, modifiedOption, index);
+	}
 }

@@ -242,10 +242,30 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
 
 
-	// First, collect all local elements
+	// First, collect all local elements (even they are not referenced).
+	// we do this to keep unreferenced local elements still in the project (otherwise they would disappear)
+	collectLocalElements(m_materials, referencedMaterials);
+	collectLocalElements(m_constructions, referencedConstructions);
+	collectLocalElements(m_windows, referencedWindows);
+	collectLocalElements(m_windowGlazingSystems, referencedGlazingSystems);
+	collectLocalElements(m_boundaryConditions, referencedBC);
+	collectLocalElements(m_components, referencedComponents);
+	collectLocalElements(m_subSurfaceComponents, referencedSubSurfaceComponents);
+	collectLocalElements(m_surfaceHeatings, referencedSurfaceHeatings);
+	collectLocalElements(m_pipes, referencedNetworkPipes);
+	collectLocalElements(m_fluids, referencedNetworkFluids);
+	collectLocalElements(m_networkComponents, referencedNetworkComponents);
+	collectLocalElements(m_networkControllers, referencedNetworkControllers);
 	collectLocalElements(m_subNetworks, referencedSubNetworks);
-
-	// TODO: remaining dbs ...
+	collectLocalElements(m_schedules, referencedSchedule);
+	collectLocalElements(m_internalLoads, referencedInternalLoads);
+	collectLocalElements(m_zoneControlThermostat, referencedThermostats);
+	collectLocalElements(m_zoneControlShading, referencedControlShading);
+	collectLocalElements(m_zoneControlVentilationNatural, referencedControlNaturalVentilation);
+	collectLocalElements(m_zoneIdealHeatingCooling, referencedIdealHeatingCooling);
+	collectLocalElements(m_ventilationNatural, referencedVentilation);
+	collectLocalElements(m_infiltration, referencedInfiltration);
+	collectLocalElements(m_zoneTemplates, referencedZoneTemplates);
 
 
 	// Now, first collect all objects that are not referenced themselves

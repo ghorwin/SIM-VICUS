@@ -104,6 +104,9 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -198,6 +201,16 @@ void SVDBBoundaryConditionTableModel::setColumnResizeModes(QTableView * tableVie
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBBoundaryConditionTableModel::setItemLocal(const QModelIndex &index, bool local) {
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_boundaryConditions[id]->m_local = local;
+	m_db->m_boundaryConditions.m_modified = true;
+	setItemModified(id);
 }
 
 

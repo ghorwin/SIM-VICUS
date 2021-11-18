@@ -68,7 +68,8 @@ public:
 	/*! Comparison of database element by content, without ID. */
 	virtual ComparisonResult equal(const AbstractDBElement * other) const = 0;
 
-	// *** Properties to be read/write in XML via code generator ***
+	/*! If true, this is a built-in DB element and cannot be modified/removed. */
+	bool							m_builtIn = false;
 
 	/*! Unique ID of this DB element. */
 	unsigned int					m_id = INVALID_ID;
@@ -82,10 +83,7 @@ public:
 
 	// *** Run time variables ***
 
-	/*! If true, this is a built-in DB element and cannot be modified/removed. */
-	bool							m_builtIn = false;
-
-	/*! Determines wether this element is kept local in the current project or should be stored into the userDB (false). */
+	/*! Determines wether this element is kept local in the current project or should be stored into the userDB */
 	bool							m_local = true;
 
 };
