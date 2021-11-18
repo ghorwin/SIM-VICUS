@@ -73,7 +73,9 @@ enum DataRoles {
 	Role_Color,
 	/*! Role to retrieve sub-template type, only used by SVDBZoneTemplateTreeModel all other
 		models return QVariant(). */
-	Role_SubTemplateType
+	Role_SubTemplateType,
+	/*! Role to identify local database components, which are not stored in user database. */
+	Role_Local
 };
 
 /*! Different edit/coloring modes. */

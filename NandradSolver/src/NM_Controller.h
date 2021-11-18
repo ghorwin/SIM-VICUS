@@ -60,11 +60,23 @@ public:
 */
 class DigitalHysteresisController: public AbstractController { // NO KEYWORDS
 public:
+	/*! Start with signal 0. */
+	DigitalHysteresisController();
+
 	/*! Calculates controller signal/control value. */
 	void update(double errorValue) override;
 
 	/*! Stores state after a successful iteration step. */
 	void stepCompleted(double) override;
+
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
 
 	/*! Tolerance band: must be set from outside. */
 	double			m_hysteresisBand;
@@ -104,6 +116,18 @@ public:
 	/*! This function is called after each integration step and integrates the errorValue. */
 	virtual void stepCompleted(double t) override;
 
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
+
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() override;
+	
 	/*! P-term factor.*/
 	double			m_kP = 1;
 	/*! I-term factor.*/

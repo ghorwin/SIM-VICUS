@@ -163,7 +163,7 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local);
 	m_ui->tableView->setItemDelegate(dg);
 }
 
@@ -239,6 +239,9 @@ void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
 void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	// resize ID column
@@ -255,6 +258,9 @@ void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	sourceIndex = m_dbModel->copyItem(sourceIndex);
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }
@@ -277,15 +283,24 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->toolButtonStoreInUserDB->setEnabled(false);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(false);
 		m_editWidgetContainerWidget->setEnabled(false);
 		m_editWidget->updateInput(-1); // nothing selected
 	}
 	else {
 		m_editWidgetContainerWidget->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
+
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
-		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
+		bool builtIn = sourceIndex.data(Role_BuiltIn).toBool();
+		m_ui->toolButtonRemove->setEnabled(!builtIn);
+
+		// only elements which are local and not built-in can be stored to user DB
+		bool local = sourceIndex.data(Role_Local).toBool();
+		m_ui->toolButtonStoreInUserDB->setEnabled(local && !builtIn);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(!local && !builtIn);
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
@@ -309,6 +324,24 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
 		m_editWidget->updateInput(-1);
 	}
+}
+
+
+void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, false);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
+}
+
+
+void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, true);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 }
 
 
@@ -582,3 +615,4 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	dlg->resize(1400,800);
 	return dlg;
 }
+

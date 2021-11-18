@@ -146,7 +146,7 @@ void SVDBInfiltrationEditWidget::on_lineEditName_editingFinished() {
 void SVDBInfiltrationEditWidget::on_comboBoxMethod_currentIndexChanged(int index) {
 	Q_ASSERT(m_current != nullptr);
 
-	if (static_cast<VICUS::SurfaceHeating::Type>(index) != m_current->m_airChangeType) {
+	if (static_cast<VICUS::Infiltration::AirChangeType>(index) != m_current->m_airChangeType) {
 		m_current->m_airChangeType = static_cast<VICUS::Infiltration::AirChangeType>(index);
 		modelModify();
 	}

@@ -283,7 +283,7 @@ void Project::readXML(const IBK::Path & filename) {
 		updatePointers();
 
 		// set default colors for network objects
-		for (const VICUS::Network & net : m_geometricNetworks) {
+		for (VICUS::Network & net : m_geometricNetworks) {
 			// updateColor is a const-function, this is possible since
 			// the m_color property of edges and nodes is mutable
 			net.setDefaultColors();
@@ -630,7 +630,7 @@ bool Project::selectedSubSurfaces(std::vector<const SubSurface *> & subSurfaces,
 
 bool Project::selectedSurfaces(std::vector<const Surface*> &surfaces, const VICUS::Project::SelectionGroups &sg) const {
 	std::set<const Object*> objs;
-	selectObjects(objs, sg, true, true);
+	selectObjects(objs, sg, true, true); // get all selected and visible
 
 	// Note: sg = SG_Building will only select surfaces in the building hierarchy
 	//       sg = SG_All will also select anonymous surfaces
@@ -757,6 +757,7 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 							  std::vector<ComponentInstance> & newComponentInstances)
 {
 	// TODO : Dirk, implement algorithm
+	qDebug() << "Not implemented, yet";
 
 	return false;
 }
@@ -990,8 +991,11 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		objList.m_name = "the network objects";
 		p.m_objectLists.push_back(objList);
 
-		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature" , "InletNodeTemperature",
-											   "FlowElementHeatLoss", "PressureDifference", "TemperatureDifference"};
+		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
+											   "FlowElementHeatLoss", "PressureDifference",
+											   "TemperatureDifference", "ControllerResultValue",
+												"MechanicalPower", "ElectricalPower",
+												"OutletNodePressure"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;

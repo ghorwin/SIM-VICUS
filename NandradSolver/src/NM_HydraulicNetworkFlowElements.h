@@ -133,7 +133,8 @@ public:
 	HNPressureLossCoeffElement(unsigned int flowElementId,
 							   const NANDRAD::HydraulicNetworkComponent & component,
 							   const NANDRAD::HydraulicFluid & fluid,
-							   const NANDRAD::HydraulicNetworkControlElement *controlElement);
+							   const NANDRAD::HydraulicNetworkControlElement *controlElement,
+							   unsigned int numberParallelElements);
 
 	/*! Publishes individual model quantities via descriptions. */
 	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
@@ -166,7 +167,10 @@ public:
 	flow element in order to control e.g. its temperature difference */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
+	void stepCompleted(double t) override;
+
 private:
+
 	/*! Computes the controlled zeta-value if a control-model is implemented.
 		Otherwise returns 0.
 	*/
@@ -192,6 +196,9 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
+	/*! number of parallel elements (mass flux will be divided by this number) */
+	unsigned int					m_numberParallelElements = 1;
+
 	/*! Reference to the controller parametrization object.*/
 	const NANDRAD::HydraulicNetworkControlElement
 									*m_controlElement = nullptr;
@@ -208,16 +215,54 @@ private:
 	/*! Value reference to external quantity. */
 	const double					*m_followingFlowElementFluidTemperatureRef = nullptr;
 
+	/*! Pointer to controller object used in this element */
+	AbstractController				*m_controller = nullptr;
+
 	friend class ThermalNetworkStatesModel;
 
 }; // HNFixedPressureLossCoeffElement
 
 
+
+
+
+/*! Implements core functionality for maximumPressureHead calculation based on various limiting properties.
+	Inherit this class in all pump models that require power limitation.
+*/
+class HNAbstractPowerLimitedPumpModel {
+public:
+	HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
+									const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow);
+
+protected:
+	/*! Fluid density in kg/m3 */
+	double							m_density = -999;
+	/*! Efficiency of pump in - */
+	double							m_efficiency = -999;
+	/*! Maximum electrical power at point of best operation in W */
+	double							m_maxElectricalPower = -999;
+	/*! Maximum pressure head at point of minimal mass flow in Pa */
+	double							m_maxPressureHeadAtZeroFlow = -999;
+	/*! Maximum flow at zero pressure head (fitting parameter for pump characteristic curve, calculated in constructor). */
+	double							m_maxVolumeFlowAtZeroPressureHead = -999;
+
+	/*! Calculates actual maximum pressure head [Pa] which linear decreases with mass flux */
+	double maximumPressureHead(const double &mdot) const;
+
+}; // HNAbstractPowerLimitedPumpModel
+
+
+
+
+
 /*! Pump model with fixed/scheduled constant pressure head */
-class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+class HNConstantPressurePump: public HydraulicNetworkAbstractFlowElement, // NO KEYWORDS
+							  public HNAbstractPowerLimitedPumpModel {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component);
+	HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+						   const NANDRAD::HydraulicFluid & fluid,
+						   const NANDRAD::HydraulicNetworkControlElement * ctr);
 
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
@@ -225,13 +270,28 @@ public:
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
-private:
+	/*! We update our nonlinear heat flux dependent control signal here. Thus, we avoid CVODE's Newton method to iterate over
+		mass flux dependent heat fluxes. */
+	virtual void setTime(double t) override;
 
+	unsigned int										m_followingflowElementId = NANDRAD::INVALID_ID;
+
+private:
 	/*! Element's ID, needed to formulate input references. */
-	unsigned int					m_id;
+	unsigned int										m_id;
 	/*! Value reference to pressure head [Pa] */
-	const double					*m_pressureHeadRef = nullptr;
+	const double										* m_pressureHeadRef = nullptr;
+	/*! Controller for pump (used for on/off controlling) */
+	const NANDRAD::HydraulicNetworkControlElement		* m_controller = nullptr;
+	/*! Reference to heat loss of following element (used for on/off controlling) */
+	const double										* m_followingElementHeatLossRef = nullptr;
+	/*! Determines wether pump is currently in operation (used for on/off controlling) */
+	bool												m_pumpIsOn = true;
+
 }; // HNConstantPressurePump
+
+
+
 
 
 /*! Valve model with fixed constant pressure head */
@@ -243,11 +303,18 @@ public:
 	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
 	void partials(double mdot, double p_inlet, double p_outlet,
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
-private:
+	void inputReferences(std::vector<InputReference> &) const override;
+	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
 
-	/*! Value of pressure loss [Pa] */
-	double							m_pressureLoss = -999;
+private:
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! Value reference to pressure head [Pa] */
+	const double					*m_pressureLossRef = nullptr;
 }; // HNConstantPressureLossValve
+
+
+
 
 
 
@@ -290,11 +357,15 @@ private:
 	/*! Value reference to target mass flux [kg/s] */
 	const double					*m_massFluxRef = nullptr;
 
-}; // HNControlledPump
+}; // HNConstantMassFluxPump
+
+
+
 
 
 /*! Pump model where pressure head is controlled based on mass flux requirements. */
-class HNControlledPump: public HydraulicNetworkAbstractFlowElement { // NO KEYWORDS
+class HNControlledPump: public HydraulicNetworkAbstractFlowElement,		// NO KEYWORDS
+						public HNAbstractPowerLimitedPumpModel {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
 	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
@@ -330,8 +401,20 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
+	/*! Computes and returns serialization size in bytes. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores model content at memory location pointed to by dataPtr. */
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores model content from memory at location pointed to by dataPtr. */
+	virtual void deserialize(void* & dataPtr) override;
+
 	/*! Return value reference of pressure head computed by flow element. */
 	const double * pressureHeadRef() const { return &m_pressureHead; }
+
+	/*! called after succesful CVODE step */
+	void stepCompleted(double t) override;
 
 	/*! Id number of flow element. */
 	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
@@ -362,20 +445,55 @@ private:
 	const double					*m_temperatureDifferenceSetpointRef = nullptr;
 	/*! the calculated temperature difference */
 	double							m_temperatureDifference = -999;
-	/*! fluid density in kg/m3 */
-	double							m_density = -999;
-	/*! efficiency of pump in - */
-	double							m_eta = -999;
-	/*! maximum electrical power (in optimal operation point)  in W */
-	double							m_maxElectricalPower = -999;
-	/*! maximum pressure head at point of minimal mass flow in Pa */
-	double							m_maxPressureHeadMinFlow = -999;
-
-
-
-
 
 }; // HNControlledPump
+
+
+
+
+
+
+/*! Pump model where pressure head is controlled based on mass flux requirements. */
+class HNVariablePressureHeadPump: public HydraulicNetworkAbstractFlowElement,  // NO KEYWORDS
+								  public HNAbstractPowerLimitedPumpModel  {
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
+								const NANDRAD::HydraulicFluid & fluid);
+
+	double systemFunction(double mdot, double p_inlet, double p_outlet) const override;
+	void partials(double mdot, double p_inlet, double p_outlet,
+				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
+
+	/*! Publishes individual model quantities via descriptions. */
+	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	virtual void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
+	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
+
+	/*! Return value reference of pressure head computed by flow element. */
+	const double * pressureHeadRef() const { return &m_pressureHead; }
+
+private:
+
+	double pressureHead(double mdot) const;
+
+	/*! Element's ID, needed to formulate input references. */
+	unsigned int					m_id;
+	/*! current pressure head of pump in [Pa] */
+	double							m_pressureHead = -999;
+	/*! pressure head at design point, needed for calculation of dp-v curve slope in [Pa] */
+	double							m_designPressureHead = -999;
+	/*! mass flux at design point, needed for calculation of dp-v curve slope in [kg/s] */
+	double							m_designMassFlux = -999;
+	/*! pressure head at zero flow in [Pa] */
+	double							m_minimumPressureHead = -999;
+}; // HNVariablePressureHeadPump
+
+
 
 } // namespace NANDRAD_MODEL
 

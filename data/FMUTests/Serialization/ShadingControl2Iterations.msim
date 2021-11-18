@@ -1,0 +1,25 @@
+# Created:	Do. Nov. 11 16:54:04 2021
+# LastModified:	Di. Nov. 16 11:14:41 2021
+
+tStart                   0 a
+tEnd                     255 h
+hMax                     30 min
+hMin                     10 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-05
+relTol                   1e-06
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         CHECK
+maxIterations            2
+writeInternalVariables   no
+
+simulator 0 0 solarintensity #008000 "solarintensity.tsv"
+simulator 1 0 ShadingControl #ff8c00 "ShadingControl.fmu"
+
+graph solarintensity.solarintensity ShadingControl.Model(701).SolarIntensityOnShadingSensor
+

@@ -44,7 +44,7 @@ public:
 	PrecondADISparse(unsigned int n, PreconditionerType precondType);
 
 	/*! Destructor, releases band matrix memory. */
-	~PrecondADISparse();
+	~PrecondADISparse() override;
 
 	/*! Returns type of precondition (where it should be applied in context of the iteration linear equation solver). */
 	virtual PreconditionerType preconditionerType() const override { return m_precondType; }

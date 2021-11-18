@@ -1,0 +1,25 @@
+# Created:	Do. Nov. 11 16:54:04 2021
+# LastModified:	Di. Nov. 16 13:29:30 2021
+
+tStart                   0 a
+tEnd                     255 h
+hMax                     30 min
+hMin                     10 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-05
+relTol                   1e-06
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         CHECK
+maxIterations            2
+writeInternalVariables   no
+
+simulator 0 0 massfluxes #008000 "massfluxes.tsv"
+simulator 1 0 NetworkControlledPump #ff8c00 "NetworkControlledPump.fmu"
+
+graph massfluxes.massflux NetworkControlledPump.Pump.MassFluxSetpointSchedule
+

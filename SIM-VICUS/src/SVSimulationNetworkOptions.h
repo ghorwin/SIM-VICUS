@@ -31,6 +31,8 @@ private slots:
 
 	void on_lineEditPipeDepth_editingFinished();
 
+	void on_lineEditMaxTempChangeIndicator_editingFinished();
+
 private:
 	Ui::SVSimulationNetworkOptions *m_ui;
 

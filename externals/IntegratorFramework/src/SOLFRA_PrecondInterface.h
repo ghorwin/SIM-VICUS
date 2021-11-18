@@ -141,8 +141,8 @@ public:
 
 	// Serialization/Deserialization
 
-	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
-	virtual std::size_t serializationSize() const { return NON_SUPPORTED_FUNCTION; }
+	/*! Computes and returns serialization size, by default returns SOLFRA_NOT_SUPPORTED_FUNCTION which means feature not supported. */
+	virtual std::size_t serializationSize() const { return SOLFRA_NOT_SUPPORTED_FUNCTION; }
 
 	/*! Stores content at memory location pointed to by dataPtr and increases
 		pointer afterwards to point just behind the memory occupied by the copied data.

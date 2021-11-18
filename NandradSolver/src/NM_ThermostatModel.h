@@ -99,6 +99,15 @@ public:
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
+	/*! Computes and returns serialization size in bytes. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	virtual void deserialize(void* & dataPtr) override;
+
 	// *** Re-implemented from AbstractTimeDependency
 
 	/*! Does nothing. */
@@ -106,7 +115,6 @@ public:
 
 	/*! Updates controller state. */
 	void stepCompleted(double t) override;
-
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -126,7 +134,7 @@ public:
 	virtual void stateDependencies(std::vector< std::pair<const double *, const double *> > & resultInputValueReferences) const override;
 
 	/*! Sums up all provided input quantities and computes divergence of balance equations. */
-	int update() override;
+	virtual int update() override;
 
 
 private:

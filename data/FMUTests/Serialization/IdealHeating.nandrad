@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="2.0">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../../tests/climate/DEU_Potsdam_60.c6b</ClimateFilePath>
+			<Sensors>
+				<Sensor id="50000">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+			</Sensors>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<ConstructionInstances>
+			<ConstructionInstance id="3001" displayName="Floor">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<InterfaceA id="1" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+			</ConstructionInstance>
+			<ConstructionInstance id="302" displayName="East">
+				<ConstructionTypeId>10001</ConstructionTypeId>
+				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
+				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
+				<InterfaceA id="2" zoneId="1">
+					<!--Interface to 'Room'-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</InterfaceA>
+				<InterfaceB id="3" zoneId="0">
+					<!--Interface to outside-->
+					<InterfaceHeatConduction modelType="Constant">
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">20</IBK:Parameter>
+					</InterfaceHeatConduction>
+					<InterfaceSolarAbsorption modelType="Constant">
+						<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+					</InterfaceSolarAbsorption>
+				</InterfaceB>
+				<EmbeddedObjects>
+					<EmbeddedObject id="1002" displayName="Simple window, no frame and divider">
+						<IBK:Parameter name="Area" unit="m2">5</IBK:Parameter>
+						<Window glazingSystemId="10000" />
+					</EmbeddedObject>
+				</EmbeddedObjects>
+			</ConstructionInstance>
+		</ConstructionInstances>
+		<ConstructionTypes>
+			<ConstructionType id="10001" displayName="Construction">
+				<MaterialLayers>
+					<MaterialLayer thickness="0.06" matId="1001" />
+					<MaterialLayer thickness="0.01" matId="1002" />
+					<MaterialLayer thickness="0.12" matId="1001" />
+				</MaterialLayers>
+			</ConstructionType>
+		</ConstructionTypes>
+		<Materials>
+			<Material id="1001" displayName="Beton/Estrich">
+				<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+			</Material>
+			<Material id="1002" displayName="Trittschalldämmung">
+				<IBK:Parameter name="Density" unit="kg/m3">35</IBK:Parameter>
+				<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+				<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+			</Material>
+		</Materials>
+		<WindowGlazingSystems>
+			<WindowGlazingSystem id="10000" displayName="Simple glazing system" modelType="Simple">
+				<IBK:Parameter name="ThermalTransmittance" unit="W/m2K">2</IBK:Parameter>
+				<LinearSplineParameter name="SHGC">
+					<X unit="Deg">0 10 20 30 40 50 60 70 80 90 </X>
+					<Y unit="---">0.6 0.6 0.6 0.6 0.588 0.564 0.516 0.414 0.222 0 </Y>
+				</LinearSplineParameter>
+			</WindowGlazingSystem>
+		</WindowGlazingSystems>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Zones">
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,8,20</TimePoints>
+								<Values>HeatingSetpointSchedule [C]:16,23,16;</Values>
+							</DailyCycle>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>CoolingSetpointSchedule [C]:40;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="501" displayName="Zone ventilation" modelType="Constant">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+			<Thermostats>
+				<Thermostat id="601" displayName="Air temperature thermostat" modelType="Scheduled">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="TemperatureTolerance" unit="K">0.2</IBK:Parameter>
+				</Thermostat>
+			</Thermostats>
+			<IdealHeatingCoolingModels>
+				<IdealHeatingCoolingModel id="801">
+					<ZoneObjectList>Zones</ZoneObjectList>
+					<IBK:Parameter name="MaxHeatingPowerPerArea" unit="W/m2">50</IBK:Parameter>
+					<IBK:Parameter name="MaxCoolingPowerPerArea" unit="W/m2">0</IBK:Parameter>
+					<IBK:Parameter name="Kp" unit="---">2</IBK:Parameter>
+					<IBK:Parameter name="Ki" unit="---">1e-05</IBK:Parameter>
+				</IdealHeatingCoolingModel>
+			</IdealHeatingCoolingModels>
+		</Models>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>VentilationHeatLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>IdealHeatingLoad</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>Zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		<FMIDescription>
+			<ModelName>IdealHeating</ModelName>
+			<InputVariables>
+				<FMIVariableDefinition fmiVarName="Room.HeatingSetpointSchedule" unit="K" fmiValueRef="43">
+					<FmiVarDescription>Schedule parameter: &apos;HeatingSetpointSchedule&apos;</FmiVarDescription>
+					<FmiStartValue>0</FmiStartValue>
+					<VarName>Zone.HeatingSetpointSchedule</VarName>
+					<ObjectId>1</ObjectId>
+				</FMIVariableDefinition>
+			</InputVariables>
+		</FMIDescription>
+	</Project>
+</NandradProject>

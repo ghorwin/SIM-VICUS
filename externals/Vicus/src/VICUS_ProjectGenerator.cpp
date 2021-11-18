@@ -165,6 +165,9 @@ public:
 	// name in m_objLists
 	std::vector< std::vector<NANDRAD::Schedule> >				m_schedules;
 	std::vector< std::vector<NANDRAD::LinearSplineParameter>>	m_schedGroupSplines;
+
+	std::map< std::string, IBK::Path>						m_placeholders;
+
 };
 
 class IdealHeatingCoolingModelGenerator : public ModelGeneratorBase{
@@ -421,7 +424,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 		return;
 	}
 	for (const Schedule & sched : m_embeddedDB.m_schedules) {
-		if (!sched.isValid(true, p.m_placeholders))
+		std::string err;
+		if (!sched.isValid(err, true, p.m_placeholders))
 			errorStack.append(tr("Schedule #%1 '%2'.").arg(sched.m_id).arg(MultiLangString2QString(sched.m_displayName)));
 	}
 	if (!errorStack.isEmpty())	return;
@@ -464,6 +468,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	VentilationModelGenerator ventilation(this);
 	IdealHeatingCoolingModelGenerator idealHeatCool(this);
 	ThermostatModelGenerator thermostats(this);
+	thermostats.m_placeholders = p.m_placeholders;
 	for (const VICUS::Room * r : zones) {
 		internalLoads.generate(r, usedModelIds, errorStack);
 		ventilation.generate(r, usedModelIds, errorStack);
@@ -1846,14 +1851,14 @@ void ThermostatModelGenerator::generate(const Room *r,std::vector<unsigned int> 
 	const Schedule * coolSched = m_scheduleDB[thermostat->m_idCoolingSetpointSchedule];
 
 	if(heatSched != nullptr)
-		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds, splines);
+		heatSched->insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds, splines, m_placeholders);
 	else{
 		s.createConstSchedule(-100);
 		s.insertIntoNandradSchedulegroup( "HeatingSetpointSchedule [C]" , scheds);
 	}
 
 	if(coolSched != nullptr)
-		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds, splines);
+		coolSched->insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds, splines, m_placeholders);
 	else{
 		s.createConstSchedule(200);
 		s.insertIntoNandradSchedulegroup( "CoolingSetpointSchedule [C]" , scheds);
@@ -2255,7 +2260,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	if (VICUS::element(m_geometricNetworks, networkId) == nullptr)
 		return;
 
-	const VICUS::Network & vicusNetwork = *VICUS::element(m_geometricNetworks, networkId);
+	// create temporary copy of network
+	VICUS::Network vicusNetwork = *VICUS::element(m_geometricNetworks, networkId);
+	// update internal pointer links
+	vicusNetwork.updateNodeEdgeConnectionPointers();
 
 	// buildings can only have one connected edge
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
@@ -2302,8 +2310,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	// *** Transfer FLUID from Vicus to Nandrad
 
 	const VICUS::NetworkFluid *fluid = VICUS::element(m_embeddedDB.m_fluids, vicusNetwork.m_idFluid);
-	if (fluid == nullptr)
+	if (fluid == nullptr){
 		errorStack.append(tr("Fluid not assigned or fluid with id #%1 does not exist in database!").arg(vicusNetwork.m_idFluid));
+		return;
+	}
 	else if (!fluid->isValid())
 		errorStack.append(tr("Fluid with id #%1 has invalid parameters!").arg(vicusNetwork.m_idFluid));
 	if (!errorStack.isEmpty())
@@ -2340,30 +2350,35 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		const VICUS::SubNetwork *sub = VICUS::element(m_embeddedDB.m_subNetworks, subId);
 
 		// some checks
-		if (sub == nullptr)
-			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 does not exist in database").arg(subId), FUNC_ID);
+		if (sub == nullptr){
+			errorStack.append(tr("Sub Network with id #%1 does not exist in database").arg(subId));
+			continue;
+		}
 		if (!sub->isValid(dbNetworkComps, dbNetworkCtrl, dbSchedules))
-			throw IBK::Exception(IBK::FormatString("Sub Network with id #%1 has invalid parameters").arg(subId), FUNC_ID);
+			errorStack.append(tr("Sub Network with id #%1 has invalid parameters").arg(subId));
 
 		// determine maximum number of elements of all sub networks
 		if (sub->m_elements.size() > maxNumberElements)
 			maxNumberElements = sub->m_elements.size();
 
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements){
+		for (const NetworkElement &el: sub->m_elements){
 			componentIds.insert(el.m_componentId);
 			if (el.m_controlElementId != NANDRAD::INVALID_ID)
 				controllerIds.insert(el.m_controlElementId);
 		}
 	}
+	if (!errorStack.empty())
+		return;
 
 	// --> transfer components
 	for (unsigned int compId: componentIds){
 		const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, compId);
-
-		if (comp == nullptr)
-			throw IBK::Exception(IBK::FormatString("Network Component with id #%1 does not exist in database").arg(compId), FUNC_ID);
+		if (comp == nullptr){
+			errorStack.append(tr("Network Component with id #%1 does not exist in database").arg(compId));
+			continue;
+		}
 		if (!comp->isValid(dbSchedules))
-			throw IBK::Exception(IBK::FormatString("Network Component with id #%1 has invalid parameters").arg(compId), FUNC_ID);
+			errorStack.append(tr("Network Component with id #%1 has invalid parameters").arg(compId));
 
 		NANDRAD::HydraulicNetworkComponent nandradComp;
 		nandradComp.m_id = comp->m_id;
@@ -2374,15 +2389,19 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		nandradNetwork.m_components.push_back(nandradComp);
 	}
+	if (!errorStack.empty())
+		return;
 
 	// --> transfer controllers
 	for (unsigned int ctrId: controllerIds){
 
 		const VICUS::NetworkController *ctr = VICUS::element(m_embeddedDB.m_networkControllers, ctrId);
-		if (ctr == nullptr)
-			throw IBK::Exception(IBK::FormatString("Network Controller with id #%1 does not exist in database").arg(ctrId), FUNC_ID);
+		if (ctr == nullptr){
+			errorStack.append(tr("Network Controller with id #%1 does not exist in database").arg(ctrId));
+			continue;
+		}
 		if (!ctr->isValid(dbSchedules))
-			throw IBK::Exception(IBK::FormatString("Network Controller with id #%1 has invalid parameters").arg(ctrId), FUNC_ID);
+			errorStack.append(tr("Network Controller with id #%1 has invalid parameters").arg(ctrId));
 
 		NANDRAD::HydraulicNetworkControlElement nandradCtr;
 		nandradCtr.m_id = ctr->m_id;
@@ -2397,6 +2416,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		nandradNetwork.m_controlElements.push_back(nandradCtr);
 	}
+	if (!errorStack.empty())
+		return;
 
 
 	// *** Transform PIPES from Vicus to NANDRAD
@@ -2405,26 +2426,31 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	std::set<unsigned int> pipeIds;
 	for (const VICUS::NetworkEdge &edge: vicusNetwork.m_edges){
 		if(edge.m_idPipe == VICUS::INVALID_ID)
-				throw IBK::Exception(IBK::FormatString("Edge '%1'->'%2' has no referenced pipe")
-									 .arg(edge.nodeId1()).arg(edge.nodeId2()), FUNC_ID);
+			errorStack.append(tr("Edge '%1'->'%2' has no referenced pipe").arg(edge.nodeId1()).arg(edge.nodeId2()));
 		pipeIds.insert(edge.m_idPipe);
 	}
 	for (unsigned int compId: componentIds){
 		const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, compId);
-		Q_ASSERT(comp != nullptr);
-		if (comp->m_pipePropertiesId != INVALID_ID) // Note: we have checked the existence of comp above already
+		Q_ASSERT(comp != nullptr); // Note: we have checked the existence of comp above already
+		// only few components have a pipeId, this is not mandatory
+		if (comp->m_pipePropertiesId != INVALID_ID)
 			pipeIds.insert(comp->m_pipePropertiesId);
 	}
-
+	if (!errorStack.empty())
+		return;
 
 	// --> transfer
 	for(unsigned int pipeId: pipeIds) {
 
 		const VICUS::NetworkPipe *pipe = VICUS::element(m_embeddedDB.m_pipes, pipeId);
-		if (pipe == nullptr)
-			throw IBK::Exception(IBK::FormatString("Pipe with id #%1 does not exist in database").arg(pipeId), FUNC_ID);
-		if (!pipe->isValid())
-			throw IBK::Exception(IBK::FormatString("Network Pipe with id #%1 has invalid parameters").arg(pipeId), FUNC_ID);
+		if (pipe == nullptr){
+			errorStack.append(tr("Pipe with id #%1 does not exist in database").arg(pipeId));
+			continue;
+		}
+		if (!pipe->isValid()){
+			errorStack.append(tr("Pipe with id #%1 has invalid parameters").arg(pipeId));
+			continue;
+		}
 
 		NANDRAD::HydraulicNetworkPipeProperties pipeProp;
 		pipeProp.m_id = pipe->m_id;
@@ -2443,6 +2469,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, pipe->UValue());
 		nandradNetwork.m_pipeProperties.push_back(pipeProp);
 	}
+	if (!errorStack.empty())
+		return;
 
 
 	// *** Transfer ELEMENTS from Vicus to Nandrad
@@ -2471,8 +2499,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		// check if there is a valid sub network
 		const VICUS::SubNetwork *sub = VICUS::element(m_embeddedDB.m_subNetworks, node.m_idSubNetwork);
-		if (sub == nullptr)
-			throw IBK::Exception(IBK::FormatString("Node with id #%1 has not a valid referenced sub network!").arg(node.m_id), FUNC_ID);
+		if (sub == nullptr){
+			errorStack.append(tr("Node with id #%1 has not a valid referenced sub network!").arg(node.m_id));
+			continue;
+		}
 
 
 		// Check if we have at least one element that has inletNodeId=INLET_ID (this is the sub network inlet)
@@ -2482,7 +2512,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		bool subInletFound = false;
 		bool subOutletFound = false;
 		std::map<unsigned int, unsigned int> subNetNodeIdMap;
-		for (const NANDRAD::HydraulicNetworkElement &elem: sub->m_elements){
+		for (const NetworkElement &elem: sub->m_elements){
 
 			if (elem.m_inletNodeId == VICUS::SubNetwork::INLET_ID){
 				subInletFound = true;
@@ -2515,11 +2545,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 
 		// now we can create the new nandrad elements and map the repsctive nodes
-		for (const NANDRAD::HydraulicNetworkElement &elem: sub->m_elements){
+		for (const NetworkElement &elem: sub->m_elements){
 
 			// 1. copy the element and create a unique element id for it
-			NANDRAD::HydraulicNetworkElement newElement = elem;
-			newElement.m_id = uniqueIdAdd(allElementIds);
+			unsigned int id = uniqueIdAdd(allElementIds);
+			NANDRAD::HydraulicNetworkElement newElement(id, elem.m_inletNodeId, elem.m_outletNodeId,
+														elem.m_componentId, elem.m_controlElementId);
 
 			// 2. set the new elements inlet and outlet id using the map that we created
 			newElement.m_inletNodeId = subNetNodeIdMap[elem.m_inletNodeId];
@@ -2528,8 +2559,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// 3. get component name in display name
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			newElement.m_displayName = IBK::FormatString("%1_%2#%3")
-					.arg(comp->m_displayName.string()).arg(node.m_displayName.toStdString()).arg(node.m_id).str();
+			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(elem.m_id);
+			newElement.m_displayName = IBK::replace_string(name.toStdString(), " ", "_");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
 			if (node.m_type == VICUS::NetworkNode::NT_Source)
@@ -2540,7 +2571,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			if (elem.m_id == sub->m_idHeatExchangeElement)
 				newElement.m_heatExchange = node.m_heatExchange;
 
-			// 6. SPECIAL CASE: Ground Heat Exchanger
+			// 6. SPECIAL CASEs:
+			// Ground Heat Exchanger
 			if (comp->m_modelType == VICUS::NetworkComponent::MT_HorizontalGroundHeatExchanger){
 				// --> retrieve parameters from the component
 				NANDRAD::KeywordList::setParameter(newElement.m_para, "HydraulicNetworkElement::para_t",
@@ -2575,6 +2607,11 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				p.m_fmiDescription.m_outputVariables.push_back(outputDefGHX);
 			}
 
+			// PressureLossElement
+			if (comp->m_modelType == VICUS::NetworkComponent::MT_PressureLossElement){
+				newElement.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements] =
+						comp->m_intPara[VICUS::NetworkComponent::IP_NumberParallelElements];
+			}
 
 			// 7. some components store a pipe properties id, so we transfer them to the element
 			if (VICUS::NetworkComponent::hasPipeProperties(comp->m_modelType))
@@ -2590,6 +2627,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 	}  // end of iteration over network nodes
 
+	if(!errorStack.empty())
+		return;
 
 
 	// *** Transfer SCHEDULES from Vicus to Nandrad
@@ -2597,11 +2636,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	for (auto it=componentElementMap.begin(); it!=componentElementMap.end(); ++it){
 
 		const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, it->first);
-
-		if (comp->m_scheduleIds.empty() &&
-		// THIS IS JUST TEMPORARY !!!!
-				comp->m_modelType != VICUS::NetworkComponent::MT_ConstantMassFluxPump)
-			continue;
+		Q_ASSERT(comp != nullptr);
 
 		// create and add object list
 		NANDRAD::ObjectList objList;
@@ -2619,36 +2654,37 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		// add schedules of component to nandrad
 		for (unsigned int i = 0; i<comp->m_scheduleIds.size(); ++i){
 			const VICUS::Schedule *sched = VICUS::element(m_embeddedDB.m_schedules, comp->m_scheduleIds[i]);
-			if (sched == nullptr)
-				throw IBK::Exception(IBK::FormatString("Schedule with id #%1, referenced in network component with id #%2"
-													   " does not exist").arg(comp->m_scheduleIds[i]).arg(comp->m_id), FUNC_ID);
-			if (!sched->isValid())
-				throw IBK::Exception(IBK::FormatString("Schedule with id #%1 has invalid parameters").arg(sched->m_id), FUNC_ID);
+			if (sched == nullptr){
+				errorStack.append(tr("Schedule with id #%1, referenced in network component with id #%2"
+									 " does not exist").arg(comp->m_scheduleIds[i]).arg(comp->m_id));
+				continue;
+			}
+			if (!sched->isValid()){
+				errorStack.append(tr("Schedule with id #%1 has invalid parameters").arg(sched->m_id));
+				continue;
+			}
 			addVicusScheduleToNandradProject(*sched, scheduleNames[i], p, objList.m_name);
 		}
 	}
+	if(!errorStack.empty())
+		return;
 
 
 	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
 
-	unsigned int idSoilModel = 0; // start value
-
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
-
 	// find source node and create set of edges, which are ordered according to their distance to the source node
 	std::set<const VICUS::NetworkNode *> dummyNodeSet;
-	std::vector<const VICUS::NetworkEdge *> orderedEdges;
+	std::vector<VICUS::NetworkEdge *> orderedEdges;
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
 		if (node.m_type == VICUS::NetworkNode::NT_Source){
-			node.setInletOutletNode(dummyNodeSet, orderedEdges);
+			node.setInletOutletNode(dummyNodeSet, reinterpret_cast< std::vector<const VICUS::NetworkEdge *> & >(orderedEdges));
 			break;
 		}
 	}
 
 	// now iterate over edges
 	std::vector<unsigned int> compIds(componentIds.begin(), componentIds.end());
-	for (const VICUS::NetworkEdge *edge: orderedEdges) {
+	for (VICUS::NetworkEdge *edge: orderedEdges) {
 
 		// check and transform pipe model type
 		NANDRAD::HydraulicNetworkComponent::ModelType pipeModelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;
@@ -2659,9 +2695,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			case VICUS::NetworkEdge::PM_DynamicPipe:{
 				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
 			} break;
-			case VICUS::NetworkEdge::NUM_PM:
-				throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no valid pipe model type")
-									 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+			case VICUS::NetworkEdge::NUM_PM:{
+				errorStack.append(tr("Edge %1->%2 has no valid pipe model type").arg(edge->m_node1->m_id).arg(edge->m_node2->m_id));
+				continue;
+			}
 		}
 
 		// check if a pipe component with this model type exists already
@@ -2696,9 +2733,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 		// check if there is a reference to a pipe from DB
 		const VICUS::NetworkPipe *pipe = VICUS::element(m_embeddedDB.m_pipes, edge->m_idPipe);
-		if (pipe == nullptr)
-			throw IBK::Exception(IBK::FormatString("Edge %1->%2 has no defined pipe from database")
-								 .arg(edge->m_node1->m_id).arg(edge->m_node2->m_id), FUNC_ID);
+		if (pipe == nullptr){
+			errorStack.append(tr("Edge %1->%2 has no defined pipe from database").arg(edge->m_node1->m_id).arg(edge->m_node2->m_id));
+			continue;
+		}
 
 		// create name
 		IBK::FormatString pipeName = IBK::FormatString("%1#%2_%3#%4")
@@ -2780,32 +2818,89 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			outputDefReturnPipe.m_fmiValueRef = ++fmiValueRef;
 			p.m_fmiDescription.m_outputVariables.push_back(outputDefReturnPipe);
 
+			edge->m_idNandradSupplyPipe = supplyPipe.m_id;
+			edge->m_idNandradReturnPipe = returnPipe.m_id;
 
-			// store Nandrad element id in edge so they can be used later on
-			const_cast<NetworkEdge*>(edge)->m_idNandradSupplyPipe = supplyPipe.m_id;
-			const_cast<NetworkEdge*>(edge)->m_idNandradReturnPipe = returnPipe.m_id;
-
-			// einfacher Ansatz: für jede Edge ein Delphin Modell
-
-			++idSoilModel;
-			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
-			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
-
+//			// einfacher Ansatz: für jede Edge ein Delphin Modell
+//			++idSoilModel;
+//			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
+//			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
 
 		}
-	}
+	}  // end of iteration over edges
+	if(!errorStack.empty())
+		return;
+
 
 	// besserer Ansatz: entlang der Pfade gehen und entsprechend des TempChangeIndicator die Delphin Modelle zuweisen...
 
-//	vicusNetwork.calcTemperatureChangeIndicator()
-//	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
-//	vicusNetwork.findShortestPathForBuildings(shortestPaths);
+	Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
+	dbPipes.setData(m_embeddedDB.m_pipes);
+	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	vicusNetwork.calcTemperatureChangeIndicator(*fluid, dbPipes, shortestPaths);
 
-//	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-//		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-//		for (NetworkEdge * edge: shortestPath)
-//			edge->m_supplyPipeId ...
-//	}
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
+	std::vector<unsigned int> allSoilModelIds;
+
+	// Mind: const-cast is ok here, since member vars are only needed below
+	for (NetworkEdge &e: vicusNetwork.m_edges) {
+		e.m_idSoil = VICUS::INVALID_ID;
+		e.m_cumulativeTempChangeIndicator = -1;
+	}
+
+	double cumTempChangeindicatorMax = 0;
+	double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
+
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+
+		double cumTempChangeindicator = 0;
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (NetworkEdge * edge: shortestPath){
+
+			// 1. calculate the cumulative temperature change indicator
+			cumTempChangeindicator += edge->m_tempChangeIndicator;
+
+			if (edge->m_cumulativeTempChangeIndicator < 0)
+				edge->m_cumulativeTempChangeIndicator = cumTempChangeindicator;
+
+			if (cumTempChangeindicator > cumTempChangeindicatorMax)
+				cumTempChangeindicatorMax = cumTempChangeindicator;
+			if (cumTempChangeindicator < cumTempChangeindicatorMin)
+				cumTempChangeindicatorMin = cumTempChangeindicator;
+		}
+	}
+
+	unsigned int Nranges = 10;
+	std::vector<double> ranges(Nranges);
+	for (unsigned int i=0; i<Nranges; ++i){
+		ranges[i] = cumTempChangeindicatorMin  +
+				(i+1) * (cumTempChangeindicatorMax - cumTempChangeindicatorMin) / Nranges;
+	}
+
+	for (NetworkEdge &edge: vicusNetwork.m_edges){
+
+		if (edge.m_idSoil != VICUS::INVALID_ID)
+			continue;
+
+		if (edge.m_cumulativeTempChangeIndicator <= ranges[0]){
+			edge.m_idSoil = 1;
+		}
+		else {
+			for (unsigned int i=1; i<Nranges; ++i){
+				if (edge.m_cumulativeTempChangeIndicator <= ranges[i]){
+					edge.m_idSoil = i+1;
+					break;
+				}
+			}
+		}
+
+		if (edge.m_idSoil != VICUS::INVALID_ID){
+			mapSoil2SupplyPipes[edge.m_idSoil].push_back(edge.m_idNandradSupplyPipe);
+			mapSoil2ReturnPipes[edge.m_idSoil].push_back(edge.m_idNandradReturnPipe);
+		}
+	}
+
 
 
 	// write mapping file
@@ -2821,6 +2916,23 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		f << "\t";
 		for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
 			f << returnId << ",";
+		f << std::endl;
+	}
+	f.close();
+
+
+	vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
+	vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
+
+	// write NANDRAD ids for the path of each building
+	file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".paths";
+	f.open(file, std::ofstream::out | std::ofstream::trunc);
+	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+		f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+		for (const NetworkEdge * edge: shortestPath){
+			f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+		}
 		f << std::endl;
 	}
 	f.close();

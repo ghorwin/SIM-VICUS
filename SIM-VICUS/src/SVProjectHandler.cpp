@@ -430,6 +430,9 @@ void SVProjectHandler::destroyProject() {
 	delete m_project;
 	m_project = nullptr;
 	m_projectFile.clear();
+
+	// remove temporary local DB elements
+	SVSettings::instance().m_db.removeLocalElements();
 }
 
 
@@ -880,10 +883,9 @@ bool SVProjectHandler::importEmbeddedDB() {
 
 		// replace IDs referenced from NANDRAD::HydraulicNetworkElement
 
-		for (NANDRAD::HydraulicNetworkElement & elem : e.m_elements) {
+		for (VICUS::NetworkElement & elem : e.m_elements) {
 			replaceID(elem.m_componentId, netComponentsIDMap);
 			replaceID(elem.m_controlElementId, netControllersIDMap);
-			replaceID(elem.m_pipePropertiesId, pipesIDMap);
 		}
 
 		importDBElement(e, db.m_subNetworks, subNetworksIDMap,

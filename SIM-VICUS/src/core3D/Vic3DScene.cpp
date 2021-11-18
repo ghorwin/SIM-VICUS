@@ -776,6 +776,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	if (SVProjectHandler::instance().isValid()) {
 		SVProjectHandler::instance().viewSettings().m_cameraTranslation = QtExt::QVector2IBKVector(m_camera.translation());
 		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
+		// when camera has been moved, also update the local coordinate system
+		m_coordinateSystemObject.updateCoordinateSystemSize();
 	}
 	updateWorld2ViewMatrix();
 	// end of camera movement
@@ -1531,9 +1533,8 @@ void Scene::generateNetworkGeometry() {
 		// update pointers of network elements, they are only runtime and not part of the project data
 		// so they can be modified with const_cast
 		const_cast<VICUS::Network &>(network).updateNodeEdgeConnectionPointers();
-		// the visualization radius is also only runtime.
-		// it is mutable so no const_cast needed
-		network.updateVisualizationRadius(db.m_pipes);
+		// the visualization radius is also only runtime
+		const_cast<VICUS::Network &>(network).updateVisualizationRadius(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
@@ -1624,9 +1625,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 	// initialize network colors, independent of current color mode
 	for (const VICUS::Network & net: p.m_geometricNetworks) {
-		// updateColor is a const-function, this is possible since
-		// the m_color property of edges and nodes is mutable
-		net.setDefaultColors();
+		// we only update runtime-only properties, hence we can use a const-cast here
+		const_cast<VICUS::Network&>(net).setDefaultColors();
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;
@@ -1655,7 +1655,27 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 		} break;
 
-		case SVViewState::OCM_Components:
+		case SVViewState::OCM_Components: {
+			// now color all surfaces that appear somewhere in a ComponentInstance
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				QColor col;
+				if (ci.m_idComponent == VICUS::INVALID_ID)
+					col = QColor(96,0,0);
+				else {
+					// lookup component definition
+					const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+					if (comp == nullptr)
+						col = QColor(148,64,64);
+					else
+						col = comp->m_color;
+				}
+				if (ci.m_sideASurface != nullptr)
+					ci.m_sideASurface->m_color = col;
+				if (ci.m_sideBSurface != nullptr)
+					ci.m_sideBSurface->m_color = col;
+			}
+		} break;
+
 		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
 		case SVViewState::OCM_SurfaceHeating:
@@ -1667,12 +1687,6 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				if (comp == nullptr)
 					continue; // no component definition - keep default (gray) color
 				switch (ocm) {
-					case SVViewState::OCM_Components:
-						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = comp->m_color;
-						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = comp->m_color;
-					break;
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
 						// or when component ID matches selected id
@@ -1721,7 +1735,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 					}
 					break;
 
-						// the color modes below are not handled here and are only added to get rid of compiler warnins
+					// the color modes below are not handled here and are only added to get rid of compiler warnins
+					case SVViewState::OCM_Components:
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_None:

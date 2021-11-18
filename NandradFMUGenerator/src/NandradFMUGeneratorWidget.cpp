@@ -18,6 +18,7 @@
 #include <IBK_messages.h>
 
 #include <NANDRAD_Constants.h>
+#include <NANDRAD_Schedules.h>
 
 #ifdef Q_OS_WIN
 #undef UNICODE
@@ -1383,6 +1384,28 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// copy used resources/tsv files
 
 	// schedules with tsv-files
+	for (std::map<std::string, std::vector<NANDRAD::LinearSplineParameter> >::iterator
+		 it = p.m_schedules.m_annualSchedules.begin();
+		 it != p.m_schedules.m_annualSchedules.end(); ++ it)
+	{
+		// TODO: skip FMI-substituted quantities
+
+		for (NANDRAD::LinearSplineParameter & spline : it->second) {
+			if (!spline.m_name.empty() && spline.m_tsvFile.isValid()) {
+				// Mind: tsv file path may be relative path to project directory or elsewhere
+				IBK::Path tsvFilePath = spline.m_tsvFile.withReplacedPlaceholders(p.m_placeholders);
+				// TODO Anne, check if targetPath exists already and issue a warning/error message or
+				//      append a new suffix to the tsv-filename to make it unique!
+				//      Can happen if two LinearSplines reference tsv files like:
+				//         /data/control/setpoints.tsv
+				//         /data/control_alternative/setpoints.tsv
+				IBK::Path targetPath = resourcePath / tsvFilePath.filename();
+				IBK::Path::copy(tsvFilePath, targetPath);
+				// change tsv file to point to relative path
+				spline.m_tsvFile = IBK::Path("${Project Directory}/" + tsvFilePath.filename().str());
+			}
+		}
+	}
 
 	// network heatexchange spline data
 	for (NANDRAD::HydraulicNetwork & n : p.m_hydraulicNetworks)

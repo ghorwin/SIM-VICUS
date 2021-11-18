@@ -108,11 +108,11 @@ public:
 	/*! used for dijkstra algorithm. Look at all neighbour nodes: if the m_distanceToStart of this node + the distance to the neighbour
 	 * is shorter than the current m_distanceToStart of the neighbour, update it. This makes sure the neighbour nodes have assigned
 	 * the currently smallest distance from start */
-	void updateNeighbourDistances();
+	void updateNeighbourDistances() const;
 
 	/*! used for dijkstra algorithm. appends the edge which leads to the predecessor node to path and calls itself for the predecessor node
 	 * until a node without predecessor is reached. this way the path from a building to the source can be created, if the predecessors have been set */
-	void pathToNull(std::vector<NetworkEdge * > & path);
+	void pathToNull(std::vector<NetworkEdge * > & path) const;
 
 	/*! looks at all adjacent nodes to find a node which has a heating demand >0 and returns it. */
 	double adjacentHeatingDemand(std::set<NetworkEdge*> visitedEdges);
@@ -140,7 +140,7 @@ public:
 	// *** RUNTIME VARIABLES ***
 
 	/*! Pointers to adjacent edges */
-	std::vector<NetworkEdge*>					m_edges;
+	std::vector<NetworkEdge*>			m_edges;
 
 	/*! The radius used for the visualization of this node in the 3D scene [m].
 		Updated whenever the scale factor Network::m_scaleNodes changes.
@@ -151,11 +151,11 @@ public:
 	mutable QColor								m_color;
 
 	/*! Used in dijkstra algorithm. */
-	double										m_distanceToStart = (std::numeric_limits<double>::max)();
-	NetworkNode *								m_predecessor = nullptr;
+	mutable double								m_distanceToStart = (std::numeric_limits<double>::max)();
+	mutable const NetworkNode *					m_predecessor = nullptr;
 
 	/*! Defines wether this node is a dead end. */
-	bool										m_isDeadEnd = false;
+	mutable bool								m_isDeadEnd = false;
 
 
 };

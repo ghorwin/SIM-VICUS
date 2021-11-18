@@ -98,6 +98,9 @@ QVariant SVDBZoneControlThermostatTableModel::data ( const QModelIndex & index, 
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -184,6 +187,17 @@ void SVDBZoneControlThermostatTableModel::setColumnResizeModes(QTableView * tabl
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneControlThermostatTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBZoneControlThermostatTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_zoneControlThermostat[id]->m_local = local;
+	m_db->m_zoneControlThermostat.m_modified = true;
+	setItemModified(id);
 }
 
 

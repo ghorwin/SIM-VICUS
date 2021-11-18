@@ -68,8 +68,7 @@ public:
 	/*! Comparison of database element by content, without ID. */
 	virtual ComparisonResult equal(const AbstractDBElement * other) const = 0;
 
-	/*! If true, this is a built-in DB element and cannot be modified/removed. */
-	bool							m_builtIn = false;
+	// *** Properties to be read/write in XML via code generator ***
 
 	/*! Unique ID of this DB element. */
 	unsigned int					m_id = INVALID_ID;
@@ -79,6 +78,15 @@ public:
 
 	/*! False-color for this DB element (optional, may not be necessary for all DB elements). */
 	QColor							m_color;
+
+
+	// *** Run time variables ***
+
+	/*! If true, this is a built-in DB element and cannot be modified/removed. */
+	bool							m_builtIn = false;
+
+	/*! Determines wether this element is kept local in the current project or should be stored into the userDB (false). */
+	bool							m_local = true;
 
 };
 

@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -110,7 +110,11 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 			{
 				// create pump model
-				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component);
+				HNConstantPressurePump * pumpElement = new HNConstantPressurePump(e.m_id, *e.m_component,
+																				  m_hydraulicNetwork->m_fluid,
+																				  e.m_controlElement);
+				// setup ID of following element, if such a controller is defined
+				setFollowingElementId(pumpElement, e);
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 				m_pumpElements.push_back(pumpElement);
@@ -140,16 +144,34 @@ void HydraulicNetworkModel::setup() {
 				m_pumpElements.push_back(pumpElement);
 			} break;
 
+			case NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump:
+			{
+				HNVariablePressureHeadPump * pumpElement = new HNVariablePressureHeadPump(e.m_id, *e.m_component,
+																						  m_hydraulicNetwork->m_fluid);
+				// add to flow elements
+				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
+				m_pumpElements.push_back(pumpElement);
+			} break;
+
+
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide :
 			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide :
 			case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
+			case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement:
 			{
 				// Note: HeatPumpIdealCarnotXXX does not use flow controller, but is still a regular pressure loss element
 
+				unsigned int numberParallelElements = 1;
+				if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement)
+					numberParallelElements = (unsigned int)e.m_intPara[NANDRAD::HydraulicNetworkElement::IP_NumberParallelElements].value;
+
 				// create pressure loss flow element - controller is set up later
-				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component,
+																									m_hydraulicNetwork->m_fluid,
+																									e.m_controlElement,
+																									numberParallelElements);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pressLossCoeffelement, e);
 				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
@@ -168,7 +190,9 @@ void HydraulicNetworkModel::setup() {
 			case NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler :
 			{
 				// create pressure loss flow element
-				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component, m_hydraulicNetwork->m_fluid, e.m_controlElement);
+				HNPressureLossCoeffElement * pressLossCoeffelement = new HNPressureLossCoeffElement(e.m_id, *e.m_component,
+																									m_hydraulicNetwork->m_fluid,
+																									e.m_controlElement, 1);
 				m_p->m_flowElements.push_back(pressLossCoeffelement); // transfer ownership
 			} break;
 
@@ -352,6 +376,37 @@ void HydraulicNetworkModel::variableReferenceSubstitutionMap(std::map<std::strin
 }
 
 
+std::size_t HydraulicNetworkModel::serializationSize() const {
+	// serialize model impl data
+	std::size_t size = m_p->serializationSize();
+	// sum up serialization size of all flow elements
+	for(const HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		size += fe->serializationSize();
+	}
+	return size;
+}
+
+
+void HydraulicNetworkModel::serialize(void *& dataPtr) const {
+	// cache model impl data and shift data pointer
+	m_p->serialize(dataPtr);
+	// serialize all flow elements and shift data pointer
+	for(const HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		fe->serialize(dataPtr);
+	}
+}
+
+
+void HydraulicNetworkModel::deserialize(void *& dataPtr) {
+	// restore model impl data and shift data pointer
+	m_p->deserialize(dataPtr);
+	// restore all flow elements and shift data pointer
+	for(HydraulicNetworkAbstractFlowElement* fe: m_p->m_flowElements) {
+		fe->deserialize(dataPtr);
+	}
+}
+
+
 void HydraulicNetworkModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	// no inputs for now
 }
@@ -448,8 +503,18 @@ int HydraulicNetworkModel::update() {
 	return 0; // signal success
 }
 
+int HydraulicNetworkModel::setTime(double t) {
 
-void HydraulicNetworkModel::stepCompleted(double /*t*/) {
+	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
+		fe->setTime(t);
+	return 0;
+}
+
+
+void HydraulicNetworkModel::stepCompleted(double t) {
+
+	for(HydraulicNetworkAbstractFlowElement* fe : m_p->m_flowElements)
+		fe->stepCompleted(t);
 	m_p->storeSolution();
 }
 
@@ -462,18 +527,20 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 		return;
 
 	// not the right controller property?
-	if (e.m_controlElement->m_controlledProperty != NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+	if (!(e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement ||
+		e.m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation))
 		return;
 
-	// make sure there is no other element with the same outlet id
-	// (then our outlet temperature would not be equal to the next elements inlet temperature)
+	// make sure there is no parallel element to the current (next node is not a mixer! -
+	// in this case current outlet temperature would not be equal to the next elements inlet/mixer node temperature)
 	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
 		if (e.m_outletNodeId == otherElems.m_outletNodeId && e.m_id != otherElems.m_id )
 			throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
 												   "This element cannot be connected in parallel to any other element (share the same outletNodeId)")
 										 .arg(e.m_id), FUNC_ID);
 	}
-	// make sure there is only one following element (not another one in parallel)
+	// search for the following element id (inlet node of requested element is outlet node of the current)
+	// and (on the flight) make sure there is only one following element (no splitter!)
 	unsigned int followingElementId = 0;
 	for (const NANDRAD::HydraulicNetworkElement & otherElems : m_hydraulicNetwork->m_elements) {
 		if (e.m_outletNodeId == otherElems.m_inletNodeId) {
@@ -492,6 +559,8 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 		dynamic_cast<HNPressureLossCoeffElement*>(element)->m_followingflowElementId = followingElementId;
 	else if (dynamic_cast<HNControlledPump*>(element) != nullptr)
 		dynamic_cast<HNControlledPump*>(element)->m_followingflowElementId = followingElementId;
+	else if (dynamic_cast<HNConstantPressurePump*>(element) != nullptr)
+		dynamic_cast<HNConstantPressurePump*>(element)->m_followingflowElementId = followingElementId;
 	else {
 		throw IBK::Exception(IBK::FormatString("The element with id #%1 has a controller that has controlledProperty 'TemperatureDifferenceOfFollowingElement'."
 											   "However, flow elements with component '%2' cannot be used with such controllers.")
@@ -870,6 +939,31 @@ int HydraulicNetworkModelImpl::solve() {
 
 void HydraulicNetworkModelImpl::storeSolution() {
 	std::memcpy(m_yLast.data(), m_y.data(), sizeof(double)*m_y.size());
+}
+
+
+std::size_t HydraulicNetworkModelImpl::serializationSize() const {
+	// serialize stored start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	return dataSize;
+}
+
+
+void HydraulicNetworkModelImpl::serialize(void *& dataPtr) const {
+	// cache start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(dataPtr, m_yLast.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// note: at the moment jacobian is setup every solution step
+	// thus, there is no need for serialization of jacobian
+}
+
+
+void HydraulicNetworkModelImpl::deserialize(void *& dataPtr) {
+	// update start solution
+	std::size_t dataSize = m_yLast.size() * sizeof (double);
+	std::memcpy(m_yLast.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 }
 
 

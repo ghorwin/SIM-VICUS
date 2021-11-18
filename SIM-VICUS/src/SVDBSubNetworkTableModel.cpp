@@ -77,6 +77,9 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -161,6 +164,16 @@ void SVDBSubNetworkTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColName, QHeaderView::Stretch);
+}
+
+void SVDBSubNetworkTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_subNetworks[id]->m_local = local;
+	m_db->m_subNetworks.m_modified = true;
+	setItemModified(id);
 }
 
 

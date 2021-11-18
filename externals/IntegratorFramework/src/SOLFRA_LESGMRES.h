@@ -18,7 +18,8 @@ class PrecondInterface;
 class ModelInterface;
 class IntegratorInterface;
 
-/*!  \todo Anne: fix memory leaks and update documentation
+/*! A custom LESGMRES implementation to be used with ImplicitEuler for testing purposes. If used in
+	conjunction with CVODE integrator, the GMRES implementation from Sundials is being used.
 */
 class LESGMRES : public LESInterfaceIterative {
 public:
@@ -51,7 +52,7 @@ public:
 	/*! Writes currently collected statistics. */
 	virtual void writeStatistics(double t) override;
 
-	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
+	/*! Computes and returns serialization size. */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

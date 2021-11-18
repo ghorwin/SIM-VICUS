@@ -52,8 +52,12 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced schedule is valid. */
-	bool isValid(bool checkAnnualScheds = false,
+	bool isValid(std::string &err,
+				 bool checkAnnualScheds = false,
 				 const std::map<std::string, IBK::Path> &placeholder = std::map<std::string, IBK::Path>()) const;
+
+	/*! Checks if all referenced schedule is valid. Only for period schedules. */
+	bool isValid() const;
 
 	/*! Multiply a schedule with another schedule. Returns the result schedule. */
 	Schedule multiply(const Schedule &other) const;
@@ -88,7 +92,8 @@ public:
 		The variable to be inserted into the schedule group is given in parameter 'varName' (formatted including unit).
 	*/
 	void insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup,
-										std::vector<NANDRAD::LinearSplineParameter> &splines) const;
+										std::vector<NANDRAD::LinearSplineParameter> &splines,
+										const std::map<std::string, IBK::Path> &placeholders = std::map<std::string, IBK::Path>()) const;
 
 
 	/*! Converts vector of VICUS day types into a NANDRAD schedule day types

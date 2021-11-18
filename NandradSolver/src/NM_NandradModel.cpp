@@ -601,19 +601,28 @@ bool NandradModel::hasErrorWeightsFunction() {
 
 
 std::size_t NandradModel::serializationSize() const {
-	// nothing to serialize
 	size_t s = 0;
+	// serialize all model states
+	// these iclude controller states and stored solution variables
+	// of steady-state sub-systems
+	for(const AbstractModel *model : m_modelContainer)
+		s += model->serializationSize();
+
 	return s;
 }
 
 
-void NandradModel::serialize(void* & /*dataPtr*/) const {
-	// nothing to serialize
+void NandradModel::serialize(void* & dataPtr) const {
+	// cache all model states
+	for(const AbstractModel *model : m_modelContainer)
+		model->serialize(dataPtr);
 }
 
 
-void NandradModel::deserialize(void* & /*dataPtr*/) {
-	// nothing to serialize
+void NandradModel::deserialize(void* & dataPtr) {
+	// restore all model states
+	for(AbstractModel *model : m_modelContainer)
+		model->deserialize(dataPtr);
 }
 
 

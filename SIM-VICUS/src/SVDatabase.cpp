@@ -150,8 +150,11 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 }
 
 
-void SVDatabase::writeDatabases() const {
+void SVDatabase::writeDatabases() {
 	// we only write user databases
+
+	// At this point the project is closed and we must not have any local DB elements anylonger.
+	// There is no easy way to test this.
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
@@ -200,6 +203,16 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 }
 
 
+/*! Local utility functionStores pointers to all DB Elements which are local in the container */
+template <typename T>
+void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & container) {
+	for (auto it=db.begin(); it!=db.end(); ++it){
+		if (it->second.m_local)
+			container.insert(&it->second);
+	}
+}
+
+
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// create sets for objects that are referenced from other objects
@@ -229,7 +242,33 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
 
 
-	// we first collect all objects that are not referenced themselves
+	// First, collect all local elements (even they are not referenced).
+	// we do this to keep unreferenced local elements still in the project (otherwise they would disappear)
+	collectLocalElements(m_materials, referencedMaterials);
+	collectLocalElements(m_constructions, referencedConstructions);
+	collectLocalElements(m_windows, referencedWindows);
+	collectLocalElements(m_windowGlazingSystems, referencedGlazingSystems);
+	collectLocalElements(m_boundaryConditions, referencedBC);
+	collectLocalElements(m_components, referencedComponents);
+	collectLocalElements(m_subSurfaceComponents, referencedSubSurfaceComponents);
+	collectLocalElements(m_surfaceHeatings, referencedSurfaceHeatings);
+	collectLocalElements(m_pipes, referencedNetworkPipes);
+	collectLocalElements(m_fluids, referencedNetworkFluids);
+	collectLocalElements(m_networkComponents, referencedNetworkComponents);
+	collectLocalElements(m_networkControllers, referencedNetworkControllers);
+	collectLocalElements(m_subNetworks, referencedSubNetworks);
+	collectLocalElements(m_schedules, referencedSchedule);
+	collectLocalElements(m_internalLoads, referencedInternalLoads);
+	collectLocalElements(m_zoneControlThermostat, referencedThermostats);
+	collectLocalElements(m_zoneControlShading, referencedControlShading);
+	collectLocalElements(m_zoneControlVentilationNatural, referencedControlNaturalVentilation);
+	collectLocalElements(m_zoneIdealHeatingCooling, referencedIdealHeatingCooling);
+	collectLocalElements(m_ventilationNatural, referencedVentilation);
+	collectLocalElements(m_infiltration, referencedInfiltration);
+	collectLocalElements(m_zoneTemplates, referencedZoneTemplates);
+
+
+	// Now, first collect all objects that are not referenced themselves
 	// then, we collect objects that are referenced from an already collected object
 	// this is continued until we have collected all objects that are used somewhere in the
 	// project
@@ -380,6 +419,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// sub networks
 		for (const VICUS::NetworkNode &node: net.m_nodes)
 			referencedSubNetworks.insert(m_subNetworks[node.m_idSubNetwork]);
+
 	}
 
 	// iterate through collected sub networks
@@ -387,7 +427,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		if (sub == nullptr) continue;
 
 		// components and controllers referenced from elements
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements) {
+		for (const VICUS::NetworkElement &el: sub->m_elements) {
 			referencedNetworkComponents.insert(m_networkComponents[el.m_componentId]);
 			referencedNetworkControllers.insert(m_networkControllers[el.m_controlElementId]);
 		}
@@ -400,6 +440,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 		// schedules
 		for (unsigned int i: comp->m_scheduleIds)
 			referencedSchedule.insert(m_schedules[i]);
+
+		// pipes
+		if (comp->m_pipePropertiesId != VICUS::INVALID_ID)
+			referencedNetworkPipes.insert(m_pipes[comp->m_pipePropertiesId]);
 	}
 
 
@@ -624,14 +668,18 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			// referenced from project
 			if (SVProjectHandler::instance().isValid()) {
 				for (const auto & p : project().m_geometricNetworks) {
-					VICUS::Network & c = const_cast<VICUS::Network &>(p); // const-cast is ok here
-					for (unsigned int & np : c.m_availablePipes)
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (unsigned int & np : net.m_availablePipes)
 						if (np == elementID)
 							np = replacementElementID;
-					for (VICUS::NetworkEdge & ne : c.m_edges)
+					for (VICUS::NetworkEdge & ne : net.m_edges)
 						if (ne.m_idPipe == elementID)
 							ne.m_idPipe = replacementElementID;
 				}
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_pipePropertiesId, m_networkComponents);
 			}
 			for (const auto & p : m_surfaceHeatings) {
 				VICUS::SurfaceHeating & c = const_cast<VICUS::SurfaceHeating &>(p.second); // const-cast is ok here
@@ -640,27 +688,54 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 			m_pipes.remove(elementID);
 			m_pipes.m_modified = true;
-			// TODO : Hauke, check if all references to pipes have been handled
 		} break;
 
 		case SVDatabase::DT_Fluids: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					replaceID(elementID, replacementElementID, net.m_idFluid, m_fluids);
+				}
+			}
+			m_fluids.remove(elementID);
+			m_fluids.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkComponents: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_componentId, m_subNetworks);
+			}
+			m_networkComponents.remove(elementID);
+			m_networkComponents.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkControllers: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_controlElementId, m_subNetworks);
+			}
+			m_networkControllers.remove(elementID);
+			m_networkControllers.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_SubNetworks: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (VICUS::NetworkNode & no: net.m_nodes){
+						if (no.m_idSubNetwork == elementID)
+							no.m_idSubNetwork = replacementElementID;
+					}
+				}
+			}
+			m_subNetworks.remove(elementID);
+			m_subNetworks.m_modified = true;
 		} break;
 
 
-		// TODO : Hauke, add schedule references in network stuff
 		case SVDatabase::DT_Schedules:
 			for (const auto & p : m_internalLoads) {
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
@@ -682,6 +757,11 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 				VICUS::ZoneControlNaturalVentilation & c = const_cast<VICUS::ZoneControlNaturalVentilation &>(p.second); // const-cast is ok here
 				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_ST; ++j)
 					replaceID(elementID, replacementElementID, c.m_idSchedules[j], m_zoneControlVentilationNatural);
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				for (unsigned int & id: c.m_scheduleIds)
+					replaceID(elementID, replacementElementID, id, m_networkComponents);
 			}
 
 			m_schedules.remove(elementID);
@@ -774,6 +854,32 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 		case SVDatabase::NUM_DT: ; // just to make compiler happy
 	}
 
+}
+
+
+void SVDatabase::removeLocalElements() {
+	m_materials.removeLocalElements();
+	m_constructions.removeLocalElements();
+	m_windows.removeLocalElements();
+	m_windowGlazingSystems.removeLocalElements();
+	m_boundaryConditions.removeLocalElements();
+	m_components.removeLocalElements();
+	m_subSurfaceComponents.removeLocalElements();
+	m_surfaceHeatings.removeLocalElements();
+	m_pipes.removeLocalElements();
+	m_fluids.removeLocalElements();
+	m_networkComponents.removeLocalElements();
+	m_networkControllers.removeLocalElements();
+	m_subNetworks.removeLocalElements();
+	m_schedules.removeLocalElements();
+	m_internalLoads.removeLocalElements();
+	m_zoneControlThermostat.removeLocalElements();
+	m_zoneControlShading.removeLocalElements();
+	m_zoneControlVentilationNatural.removeLocalElements();
+	m_zoneIdealHeatingCooling.removeLocalElements();
+	m_ventilationNatural.removeLocalElements();
+	m_infiltration.removeLocalElements();
+	m_zoneTemplates.removeLocalElements();
 }
 
 

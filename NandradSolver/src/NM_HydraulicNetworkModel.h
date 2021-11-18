@@ -104,6 +104,15 @@ public:
 	*/
 	void variableReferenceSubstitutionMap(std::map<std::string, std::string> & varSubstMap) override;
 
+	/*! Computes and returns serialization size in bytes. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	virtual void deserialize(void* & dataPtr) override;
+
 
 	// *** Re-implemented from AbstractStateDependency
 
@@ -126,10 +135,10 @@ public:
 
 	// *** Re-implemented from AbstractTimeDependency
 
-	/*! Dummy, does nothing */
-	int setTime(double t) override { (void)t; return 0; }
+	/*! Call all sub models to update current time point. */
+	int setTime(double t) override;
 
-	/*! Stores last solution from Newton solver as new initial solution for next call. */
+	/*! Request all submodells for storing old time point solutions and calculate hysteresis. */
 	void stepCompleted(double t) override;
 
 private:

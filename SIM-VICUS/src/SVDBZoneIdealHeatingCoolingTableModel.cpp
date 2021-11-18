@@ -98,6 +98,9 @@ QVariant SVDBZoneIdealHeatingCoolingTableModel::data ( const QModelIndex & index
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -184,6 +187,17 @@ void SVDBZoneIdealHeatingCoolingTableModel::setColumnResizeModes(QTableView * ta
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneIdealHeatingCoolingTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneIdealHeatingCoolingTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBZoneIdealHeatingCoolingTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBZoneIdealHeatingCoolingTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_zoneIdealHeatingCooling[id]->m_local = local;
+	m_db->m_zoneIdealHeatingCooling.m_modified = true;
+	setItemModified(id);
 }
 
 

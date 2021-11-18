@@ -51,6 +51,8 @@ public:
 	virtual QModelIndex copyItem(const QModelIndex & index) = 0;
 	/*! Removes an item, does nothing if index doesn exist. */
 	virtual void deleteItem(const QModelIndex & index) = 0;
+	/*! Sets property m_local of element, does nothing if index doesn exist. */
+	virtual void setItemLocal(const QModelIndex & index, bool local) {} // TODO: set this =0 and implement everywhere ...
 	/*! Sets the column-specific resize modes in the table view. */
 	virtual void setColumnResizeModes(QTableView * tableView) = 0;
 };

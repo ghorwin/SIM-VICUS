@@ -86,7 +86,7 @@ std::vector<NANDRAD::Schedule::ScheduledDayType> Schedule::mergeDayType(const st
 }
 
 
-bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::Path> &placeholder) const {
+bool Schedule::isValid(std::string &err, bool checkAnnualScheds, const std::map<std::string, IBK::Path> &placeholder) const {
 
 	if (m_haveAnnualSchedule) {
 		if (!m_annualSchedule.m_tsvFile.isValid()){
@@ -111,8 +111,18 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 
 			// load the data in a temporary copy of the spline
 			NANDRAD::LinearSplineParameter spline(m_annualSchedule);
-			spline.m_tsvFile = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
-			spline.readTsv();
+			try {
+				spline.m_tsvFile = m_annualSchedule.m_tsvFile.withReplacedPlaceholders(placeholder);
+			}  catch (...) {
+				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				return false;
+			}
+			try {
+				spline.readTsv();
+			}  catch (...) {
+				err = IBK::FormatString("The annual schedule '%1' could not be read in.").arg(m_annualSchedule.m_tsvFile).str();
+				return false;
+			}
 
 			// check if we have data
 			if (spline.m_values.empty())
@@ -128,6 +138,11 @@ bool Schedule::isValid(bool checkAnnualScheds, const std::map<std::string, IBK::
 
 		return true;
 	}
+	return isValid();
+}
+
+bool Schedule::isValid() const {
+
 
 	// *** daily cycle based schedule check ***
 
@@ -591,7 +606,8 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::v
 }
 
 void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup,
-											  std::vector<NANDRAD::LinearSplineParameter> &splines) const {
+											  std::vector<NANDRAD::LinearSplineParameter> &splines,
+											  const std::map<std::string, IBK::Path> &placeholders) const {
 
 	if(m_haveAnnualSchedule){
 		std::string::size_type pos, pos2;
@@ -600,12 +616,20 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::
 		Q_ASSERT(pos != std::string::npos && pos2 != std::string::npos && pos < pos2);
 		std::string name = varName.substr(0, pos-1);
 		std::string unitName = varName.substr(pos+1, pos2-pos-1);
-		NANDRAD::LinearSplineParameter spline(name,
-											  m_useLinearInterpolation ? NANDRAD::LinearSplineParameter::I_LINEAR :
-																		 NANDRAD::LinearSplineParameter::I_CONSTANT,
-											  m_annualSchedule.m_values.x(),
-											  m_annualSchedule.m_values.y(),
-											  m_annualSchedule.m_xUnit, IBK::Unit(unitName));
+
+		NANDRAD::LinearSplineParameter spline;
+		// read tsv file if path is not empty
+		if(m_annualSchedule.m_tsvFile.isValid()){
+			spline.m_tsvFile = m_annualSchedule.m_tsvFile;
+			spline.m_tsvFile = spline.m_tsvFile.withReplacedPlaceholders(placeholders);
+			spline.readTsv();
+			spline.m_tsvFile.clear();
+
+		}
+		spline.m_interpolationMethod = m_useLinearInterpolation ? NANDRAD::LinearSplineParameter::I_LINEAR :
+																  NANDRAD::LinearSplineParameter::I_CONSTANT;
+		spline.m_yUnit = IBK::Unit(unitName);
+		spline.m_name = name;
 		splines.push_back(spline);
 	}
 	else

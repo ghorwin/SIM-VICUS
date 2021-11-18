@@ -90,6 +90,10 @@ private slots:
 
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
+	void on_toolButtonRemoveFromUserDB_clicked();
+
+	void on_toolButtonStoreInUserDB_clicked();
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.

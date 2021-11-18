@@ -74,7 +74,7 @@ public:
 	void readDatabases(DatabaseTypes t = NUM_DT);
 
 	/*! Writes user-defined database. */
-	void writeDatabases() const;
+	void writeDatabases();
 
 
 	/*! Searches through project and all copies all references database elements into
@@ -105,6 +105,9 @@ public:
 		\param replacementElementID ID to be used instead of removed elementID in all references to the removed DB element.
 	*/
 	void removeDBElement(DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID);
+
+	/*! Removes all local DB elements. */
+	void removeLocalElements();
 
 	/*! Convenience function, can be used to lookup a subtype template by argument.
 		ID of subtemplate is taken from idReferenceArray at index given by 'st'.

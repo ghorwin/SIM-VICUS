@@ -30,7 +30,7 @@ public:
 	explicit PrecondILUT(PreconditionerType precondType = PrecondInterface::Right, unsigned int maxFillinLevel = 0 );
 
 	/*! Destructor, releases band matrix memory. */
-	~PrecondILUT();
+	~PrecondILUT() override;
 
 	/*! Returns type of precondition (where it should be applied in context of the iteration linear equation solver). */
 	virtual PreconditionerType preconditionerType() const override { return m_precondType; }
@@ -56,7 +56,7 @@ public:
 	*/
 	virtual unsigned int nRHSEvals() const override { return 0; }
 
-	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
+	/*! Computes and returns serialization size. */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

@@ -113,6 +113,9 @@ QVariant SVDBConstructionTableModel::data ( const QModelIndex & index, int role)
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+					return it->second.m_local;
 	}
 
 	return QVariant();
@@ -202,6 +205,17 @@ void SVDBConstructionTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColName, QHeaderView::Stretch);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColNumLayers, QHeaderView::ResizeToContents);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBConstructionTableModel::ColUValue, QHeaderView::ResizeToContents);
+}
+
+
+void SVDBConstructionTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_constructions[id]->m_local = local;
+	m_db->m_constructions.m_modified = true;
+	setItemModified(id);
 }
 
 

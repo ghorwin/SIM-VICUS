@@ -101,6 +101,9 @@ QVariant SVDBComponentTableModel::data ( const QModelIndex & index, int role) co
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
 	}
 
 	return QVariant();
@@ -185,6 +188,16 @@ void SVDBComponentTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBComponentTableModel::ColName, QHeaderView::Stretch);
+}
+
+void SVDBComponentTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_components[id]->m_local = local;
+	m_db->m_components.m_modified = true;
+	setItemModified(id);
 }
 
 
