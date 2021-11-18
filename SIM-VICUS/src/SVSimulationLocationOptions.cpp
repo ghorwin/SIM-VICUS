@@ -57,7 +57,7 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	// set proxy model into table
 	m_ui->tableViewClimateFiles->setModel(m_filterModel);
 
-	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local);
+	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn);
 	m_ui->tableViewClimateFiles->setItemDelegate(delegate);
 	SVStyle::formatDatabaseTableView(m_ui->tableViewClimateFiles);
 

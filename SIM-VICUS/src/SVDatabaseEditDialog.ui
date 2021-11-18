@@ -57,12 +57,15 @@
       </item>
       <item row="1" column="3">
        <widget class="QToolButton" name="toolButtonStoreInUserDB">
+        <property name="toolTip">
+         <string>store element to user database</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/right.png</normaloff>:/gfx/actions/24x24/right.png</iconset>
+          <normaloff>:/gfx/actions/24x24/toDB.png</normaloff>:/gfx/actions/24x24/toDB.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -110,12 +113,15 @@
       </item>
       <item row="1" column="4">
        <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
+        <property name="toolTip">
+         <string>remove element from user database</string>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/left.png</normaloff>:/gfx/actions/24x24/left.png</iconset>
+          <normaloff>:/gfx/actions/24x24/fromDB.png</normaloff>:/gfx/actions/24x24/fromDB.png</iconset>
         </property>
         <property name="iconSize">
          <size>

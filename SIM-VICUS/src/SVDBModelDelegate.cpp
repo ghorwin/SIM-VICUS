@@ -35,6 +35,12 @@
 
 #include <VICUS_ZoneTemplate.h>
 
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
+	QItemDelegate(parent),
+	m_builtInRole(builtInRole)
+{
+}
+
 SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole) :
 	QItemDelegate(parent),
 	m_builtInRole(builtInRole),
@@ -94,7 +100,7 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 
 	// TODO Andreas : check this ... (more or less copy & paste)
 
-	else if (local) {
+	else if (!local) {
 		QBrush b;
 		if (opt->features & QStyleOptionViewItem::Alternate)
 			b = QBrush("#cddafd");
