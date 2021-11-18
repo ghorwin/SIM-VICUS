@@ -65,6 +65,7 @@ public:
 	QModelIndex copyItem(const QModelIndex & index) override;
 	void deleteItem(const QModelIndex & index) override;
 	void setColumnResizeModes(QTableView * tableView) override;
+	void setItemLocal(const QModelIndex &index, bool local) override;
 
 	// ** other members **
 
@@ -78,6 +79,7 @@ private:
 
 	/*! Pointer to the entire database (not owned). */
 	SVDatabase	* m_db;
+
 };
 
 #endif // SVDBNetworkComponentTableModelH

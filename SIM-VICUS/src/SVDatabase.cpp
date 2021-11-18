@@ -155,6 +155,8 @@ void SVDatabase::writeDatabases() {
 
 	// First, remove all local elements. We don't store them to the user DB.
 	m_subNetworks.removeLocalElements();
+	m_networkComponents.removeLocalElements();
+	m_networkControllers.removeLocalElements();
 
 	// TODO: remaining dbs ...
 
@@ -248,6 +250,8 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
 	// First, collect all local elements
 	collectLocalElements(m_subNetworks, referencedSubNetworks);
+	collectLocalElements(m_networkComponents, referencedNetworkComponents);
+	collectLocalElements(m_networkControllers, referencedNetworkControllers);
 
 	// TODO: remaining dbs ...
 
