@@ -132,7 +132,11 @@ public:
 	*/
 	virtual void variableReferenceSubstitutionMap(std::map<std::string, std::string> & varSubstMap) { (void)varSubstMap; }
 
-	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	/*! Computes and returns serialization size in bytes, by default returns 0 (nothing to serialize).
+		\note In contrast to serialization functions in the integrator framework, all models in NANDRAD are *expected* to
+		support serialization. Hence, we do not distinguish between (have serialization functionality or not). Implementers
+		of NANDRAD models with internal states (i.e. models using controllers) *must* implement the serialization functions!
+	*/
 	virtual std::size_t serializationSize() const { return 0; }
 
 	/*! Stores model content at memory location pointed to by dataPtr and increases

@@ -1,8 +1,6 @@
 #ifndef SOLFRA_ConstantsH
 #define SOLFRA_ConstantsH
 
-#include <cstddef>
-
 namespace SOLFRA {
 
 extern const char * const VERSION;
@@ -11,8 +9,7 @@ extern const char * const LONG_VERSION;
 #define SUNDIALS_TIMER_WRITE_OUTPUTS 19
 #define SUNDIALS_TIMER_STEP_COMPLETED 20
 
-/*! Defines return value of non supported serialization functionality */
-extern std::size_t NON_SUPPORTED_FUNCTION;
+#define SOLFRA_NOT_SUPPORTED_FUNCTION (std::size_t)-1
 
 } // namespace SOLFRA
 

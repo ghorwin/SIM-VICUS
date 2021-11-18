@@ -22,7 +22,6 @@
 #include "NM_IdealHeatingCoolingModel.h"
 
 #include <IBK_Exception.h>
-#include <IBK_InputOutput.h>
 
 #include <NANDRAD_IdealHeatingCoolingModel.h>
 #include <NANDRAD_ObjectList.h>

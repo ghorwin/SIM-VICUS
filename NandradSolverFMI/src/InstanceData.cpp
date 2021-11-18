@@ -339,27 +339,27 @@ void InstanceData::computeFMUStateSize() {
 	// ask all components of the integration framework for size
 
 	size_t s = integrator->serializationSize();
-	if (s == SOLFRA::NON_SUPPORTED_FUNCTION)
+	if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 		throw IBK::Exception("Integrator does not support serialization.", FUNC_ID);
 	m_fmuStateSize += s;
 
 	if (lesSolver != nullptr) {
 		s = lesSolver->serializationSize();
-		if (s == SOLFRA::NON_SUPPORTED_FUNCTION)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("LES solver does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
 	if (precond != nullptr) {
 		s = precond->serializationSize();
-		if (s == SOLFRA::NON_SUPPORTED_FUNCTION)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("Preconditioner does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
 	if (jacobian != nullptr) {
 		s = jacobian->serializationSize();
-		if (s == SOLFRA::NON_SUPPORTED_FUNCTION)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("Jacobian matrix generator does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}

@@ -11,3 +11,5 @@
 /ControlledPumpTemperatureDifferenceFollowingElement/
 /OnOffControlledPump/
 /VariablePressurePumpTemperatureDifferenceControl/
+/ControlledValveTemperatureDifferenceFollowingElementPI/
+/ControlledPumpTemperatureDifferenceFollowingElementPI/

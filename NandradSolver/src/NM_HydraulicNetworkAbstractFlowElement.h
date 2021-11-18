@@ -78,15 +78,13 @@ public:
 	virtual void dependencies(const double */*mdot*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const {}
 
-	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	/*! Computes and returns serialization size in bytes, by default returns 0 (nothing to serialize). */
 	virtual std::size_t serializationSize() const { return 0; }
 
-	/*! Stores model content at memory location pointed to by dataPtr.
-	*/
+	/*! Stores model content at memory location pointed to by dataPtr. */
 	virtual void serialize(void* & dataPtr) const { (void)dataPtr; }
 
-	/*! Restores model content from memory at location pointed to by dataPtr.
-	*/
+	/*! Restores model content from memory at location pointed to by dataPtr. */
 	virtual void deserialize(void* & dataPtr) { (void)dataPtr; }
 
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.

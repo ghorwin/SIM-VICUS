@@ -77,15 +77,13 @@ public:
 	/*! Retrieves reference pointer to a value with given input reference name. */
 	virtual const double * resultValueRef(const InputReference & quantity) const override;
 
-	/*! Computes and returns serialization size in bytes, by default returns  returns an invalid value (-1). */
+	/*! Computes and returns serialization size in bytes. */
 	virtual std::size_t serializationSize() const override;
 
-	/*! Stores model content at memory location pointed to by dataPtr.
-	*/
+	/*! Stores model content at memory location pointed to by dataPtr. */
 	virtual void serialize(void* & dataPtr) const override;
 
-	/*! Restores model content from memory at location pointed to by dataPtr.
-	*/
+	/*! Restores model content from memory at location pointed to by dataPtr. */
 	virtual void deserialize(void* & dataPtr) override;
 
 	// *** Re-implemented from AbstractTimeDependency

@@ -146,8 +146,7 @@ void LESDense::solve(double * rhs) {
 }
 
 
-std::size_t LESDense::serializationSize() const
-{
+std::size_t LESDense::serializationSize() const {
 	// determine which integrator we are using
 	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
 		// we are using the CVSpgmr solver
@@ -155,13 +154,12 @@ std::size_t LESDense::serializationSize() const
 		return s;
 	}
 	else {
-		 return NON_SUPPORTED_FUNCTION; // serialization not supported
+		 return SOLFRA_NOT_SUPPORTED_FUNCTION; // serialization not supported
 	}
 }
 
 
-void LESDense::serialize(void *& dataPtr) const
-{
+void LESDense::serialize(void *& dataPtr) const {
 	// determine which integrator we are using
 	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
 		CVDlsSerialize(intCVODE->cvodeMem(), &dataPtr); // ignoring return value for now
@@ -169,8 +167,7 @@ void LESDense::serialize(void *& dataPtr) const
 }
 
 
-void LESDense::deserialize(void *& dataPtr)
-{
+void LESDense::deserialize(void *& dataPtr) {
 	// determine which integrator we are using
 	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
 		CVDlsDeserialize(intCVODE->cvodeMem(), &dataPtr); // ignoring return value for now

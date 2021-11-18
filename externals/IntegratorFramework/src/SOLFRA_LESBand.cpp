@@ -197,7 +197,7 @@ std::size_t LESBand::serializationSize() const {
 		return s;
 	}
 	else {
-		 return NON_SUPPORTED_FUNCTION; // serialization not supported
+		 return SOLFRA_NOT_SUPPORTED_FUNCTION; // serialization not supported
 	}
 }
 

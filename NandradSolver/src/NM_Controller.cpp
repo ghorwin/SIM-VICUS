@@ -105,8 +105,8 @@ void PIController::stepCompleted(double t) {
 	m_lastErrorValue = m_errorValue;
 }
 
-std::size_t PIController::serializationSize() const
-{
+
+std::size_t PIController::serializationSize() const {
 	// lastTimeStep, lastErrorValue, errorValueIntegral
 	return 3 * sizeof (double);
 }

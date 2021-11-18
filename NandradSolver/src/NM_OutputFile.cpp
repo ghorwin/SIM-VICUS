@@ -28,7 +28,6 @@
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
 #include <IBK_FileUtils.h>
-#include <IBK_InputOutput.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -60,6 +59,7 @@ void OutputFile::serialize(void *& dataPtr) const {
 	if (!m_haveIntegrals)
 		return; // nothing to do
 
+	// Note: the vectors m_integralsAtLastOutput, m_integrals[0] and m_integrals[1] have always the same size
 	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
 	// cache integrals
 	std::memcpy(dataPtr, m_integrals[0].data(), dataSize);
