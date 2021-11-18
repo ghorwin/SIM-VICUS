@@ -54,9 +54,11 @@ AbstractDBElement::ComparisonResult SubNetwork::equal(const AbstractDBElement *o
 			return Different;
 	}
 
+	if (m_displayName != other->m_displayName)
+		return Different;
+
 	//check meta data
-	if (m_displayName != otherSub->m_displayName ||
-		m_color != otherSub->m_color)
+	if (m_color != otherSub->m_color)
 		return OnlyMetaDataDiffers;
 
 	return Equal;

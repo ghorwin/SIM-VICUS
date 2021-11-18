@@ -79,5 +79,7 @@
         <file>gfx/splashscreen/SIMVICUS-Logo-Startscreen.png</file>
         <file>logo/icons/Icon_64.png</file>
         <file>gfx/actions/16x16/checkbox-inverted.png</file>
+        <file>gfx/actions/24x24/toDB.png</file>
+        <file>gfx/actions/24x24/fromDB.png</file>
     </qresource>
 </RCC>

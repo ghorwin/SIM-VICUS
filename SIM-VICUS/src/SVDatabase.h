@@ -74,7 +74,7 @@ public:
 	void readDatabases(DatabaseTypes t = NUM_DT);
 
 	/*! Writes user-defined database. */
-	void writeDatabases() const;
+	void writeDatabases();
 
 
 	/*! Searches through project and all copies all references database elements into
