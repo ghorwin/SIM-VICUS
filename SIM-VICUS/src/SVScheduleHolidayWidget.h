@@ -33,6 +33,10 @@ namespace Ui {
 }
 
 // TODO Dirk, wird das gebraucht oder kann das weg?
+/* Das wird gebraucht für die Ferientage.
+ * Diese müssen in einer Tabelle abgelegt werden. Anschließend werden diese beim NANDRAD Export
+ * mit in die Ferientagsdefinition mit aufgenommen.
+ */
 class SVScheduleHolidayWidget : public QWidget {
 	Q_OBJECT
 
