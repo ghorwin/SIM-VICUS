@@ -94,12 +94,12 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
 		modifiedOption.palette = pal;
 	}
-	else if (local && enabled) {
+	else if (!local && enabled) {
 		QBrush b;
 		if (opt->features & QStyleOptionViewItem::Alternate)
-			b = QBrush("#c6f1ff");
+			b = QBrush("#cddafd");
 		else
-			b = QBrush("#9fe0f5");
+			b = QBrush("#dfe7fd");
 		painter->fillRect(modifiedOption.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
