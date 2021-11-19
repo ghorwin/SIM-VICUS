@@ -360,7 +360,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	int currentRow = m_ui->tableWidgetPipes->currentRow();
 	m_ui->tableWidgetPipes->blockSignals(true);
 	m_ui->tableWidgetPipes->clearContents();
-	m_ui->tableWidgetPipes->setRowCount(pipeIds.size());
+	m_ui->tableWidgetPipes->setRowCount((int)pipeIds.size());
 	int row = 0;
 	for (unsigned int id: pipeIds){
 		 const VICUS::NetworkPipe *pipe = db.m_pipes[id];
@@ -400,7 +400,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	currentRow = m_ui->tableWidgetSubNetworks->currentRow();
 	m_ui->tableWidgetSubNetworks->blockSignals(true);
 	m_ui->tableWidgetSubNetworks->clearContents();
-	m_ui->tableWidgetSubNetworks->setRowCount(subNetworkIds.size());
+	m_ui->tableWidgetSubNetworks->setRowCount((int)subNetworkIds.size());
 	row = 0;
 	for (unsigned int id: subNetworkIds){
 		 const VICUS::SubNetwork *subNet = db.m_subNetworks[id];
@@ -448,7 +448,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	// update heat exchange table widget
 	m_ui->tableWidgetHeatExchange->blockSignals(true);
 	m_ui->tableWidgetHeatExchange->clearContents();
-	m_ui->tableWidgetHeatExchange->setRowCount(currentHxTypes.size());
+	m_ui->tableWidgetHeatExchange->setRowCount((int)currentHxTypes.size());
 	row = 0;
 	for (NANDRAD::HydraulicNetworkHeatExchange::ModelType type: currentHxTypes){
 		 QTableWidgetItem * item = new QTableWidgetItem();
@@ -721,13 +721,12 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 		else
 			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
 
-
 		// set data file
 		IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
+		tsvFile = SVProjectHandler::instance().replacePathPlaceholders(tsvFile);
 		if (tsvFile.isValid() && (modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline ||
 								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser)){
 			// get relative file path
-			IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
 			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",
 																	 NANDRAD::LinearSplineParameter::I_LINEAR,

@@ -253,11 +253,11 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
 			return QColor("#F3722C");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-			return QColor("#F8961E");
+			return QColor("#4cc9f0");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
 			return QColor("#F9C74F");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-			return QColor("#364959");
+			return QColor("#f72585");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
 			return QColor("#90BE6D");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
