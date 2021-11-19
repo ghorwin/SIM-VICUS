@@ -1,6 +1,8 @@
 This page contains development related documentation for the SIM-VICUS project.
 
-User docs are found on the webpage: https://sim-vicus.de
+User docs are found on the webpage: [https://sim-vicus.de](https://sim-vicus.de).
+
+Source code is hosted on GitHub: [https://github.com/ghorwin/SIM-VICUS](https://github.com/ghorwin/SIM-VICUS)
 
 ## Developer documentation
 
