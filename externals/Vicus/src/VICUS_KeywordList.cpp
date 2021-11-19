@@ -1277,7 +1277,7 @@ namespace VICUS {
 				case 7 : return "Pump maximum electrical power at point of optimal operation";
 				case 8 : return "Design pressure head of VariablePressureHeadPump";
 				case 9 : return "Design mass flux of VariablePressureHeadPump";
-				case 10 : return "Factor to reduced pressure head of VariablePressureHeadPump";
+				case 10 : return "Factor to reduce pressure head of VariablePressureHeadPump";
 				case 11 : return "Water or air volume of the component";
 				case 12 : return "Maximum width/length of discretized volumes in pipe";
 				case 13 : return "Carnot efficiency eta";

@@ -156,7 +156,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pump maximum electrical power at point of optimal operation");
 	tr("Design pressure head of VariablePressureHeadPump");
 	tr("Design mass flux of VariablePressureHeadPump");
-	tr("Factor to reduced pressure head of VariablePressureHeadPump");
+	tr("Factor to reduce pressure head of VariablePressureHeadPump");
 	tr("Water or air volume of the component");
 	tr("Maximum width/length of discretized volumes in pipe");
 	tr("Carnot efficiency eta");

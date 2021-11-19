@@ -88,7 +88,7 @@ public:
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Pump maximum electrical power at point of optimal operation'
 		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Bar]	'Design pressure head of VariablePressureHeadPump'
 		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux of VariablePressureHeadPump'
-		P_PressureHeadReductionFactor,			// Keyword: PressureHeadReductionFactor			[---]	'Factor to reduced pressure head of VariablePressureHeadPump'
+		P_PressureHeadReductionFactor,			// Keyword: PressureHeadReductionFactor			[---]	'Factor to reduce pressure head of VariablePressureHeadPump'
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width/length of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
