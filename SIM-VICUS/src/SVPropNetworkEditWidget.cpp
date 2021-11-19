@@ -414,12 +414,15 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 m_ui->tableWidgetSubNetworks->setItem(row, 0, item);
 
 		 item = new QTableWidgetItem();
-		 if (subNet == nullptr)
-			 item->setText(tr("<invalid sub network id>"));
-		 else
-			 item->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
 		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		 item->setData(Qt::UserRole, subNet->m_id);
+		 if (subNet == nullptr){
+			 item->setText(tr("<invalid sub network id>"));
+			 item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		 }
+		 else {
+			 item->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
+			 item->setData(Qt::UserRole, subNet->m_id);
+		 }
 		 m_ui->tableWidgetSubNetworks->setItem(row, 1, item);
 
 		 ++row;
