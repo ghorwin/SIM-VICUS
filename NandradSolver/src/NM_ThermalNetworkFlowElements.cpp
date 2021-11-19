@@ -778,45 +778,58 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			IBK_ASSERT(m_condenserMeanTemperatureRef != nullptr);
 			m_condenserMeanTemperature = *m_condenserMeanTemperatureRef;
 
-			// cut condenser heat flux
+			// check for valid pointer
 			IBK_ASSERT(m_heatExchangeCondensorHeatLossRef != nullptr);
 			m_condenserHeatFlux = *m_heatExchangeCondensorHeatLossRef;
-			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
-				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
 
-			// compute temperature level of evaporator side -> m_inflowTemperature and
-			// m_meanTemperature (fluid outlet temperature) are both known and given
-			m_evaporatorMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
-
-			// turn off heat pump if evaporator temperature is out of valid range
-
-			// First check that COP is always > 1:
-			// COP = carnotEfficiency * Tcond / (Tcond - Tevap) > 1
-			// --> TEvap > Tcond ( 1 - carnotEfficiency )
-			// for a very bad heat pump with carnot efficiency = 10%, we have a lower limit of approx. Tcond = 300; 300 * 0.9 = 270 K
-			// generally, we do not want to go below -20 C.
-			if (m_evaporatorMeanTemperature < 273.15 - 20 ||
-				(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
-			{
-				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -20 C, turning of "
-																	"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
-													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+			// Passive cooling mode:
+			// in case of a negative condenser heat flux, we interpet this as passive cooling e.g. the heat pump is off
+			// and just acts as a usual heat exchanger by adding the condenser heat flux directly to the fluid
+			if (m_condenserHeatFlux <= 0) {
+				m_heatLoss = m_condenserHeatFlux;
 			}
-			else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
-				IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
-												  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
-													IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-			}
-			else {
-				// always > 1
-				m_COP = m_carnotEfficiency * m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+			// Normal heat pump mode:  we expect positive mass flux
+			else if (m_massFlux > 0){
+				// cut condenser heat flux
+				if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
+					m_condenserHeatFlux = m_condenserMaximumHeatFlux;
+				// compute temperature level of evaporator side -> m_inflowTemperature and
+				// m_meanTemperature (fluid outlet temperature) are both known and given
+				m_evaporatorMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
 
-				m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
-				m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
-				m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
-				m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
-			}
+				// turn off heat pump if evaporator temperature is out of valid range
 
+				// First check that COP is always > 1:
+				// COP = carnotEfficiency * Tcond / (Tcond - Tevap) > 1
+				// --> TEvap > Tcond ( 1 - carnotEfficiency )
+				// for a very bad heat pump with carnot efficiency = 10%, we have a lower limit of approx. Tcond = 300; 300 * 0.9 = 270 K
+				// generally, we do not want to go below -30 C.
+				if (m_evaporatorMeanTemperature < 273.15 - 30)
+				{
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
+																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
+														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				}
+				else if (m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency))
+				{
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("COP is below 1, HeatPumpIdealCarnot, "
+																		"flow element with id '%1'\n").arg(m_flowElement->m_id),
+														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				}
+				else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
+													  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
+														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+				}
+				else {
+					// always > 1
+					m_COP = m_carnotEfficiency * m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
+					m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
+					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
+					m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
+				}
+			}
 		} break; // HP_SourceSide
 
 
@@ -845,10 +858,10 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 				m_condenserMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
 				// heat pump physics only work when condenser temperature is above evaporator temperature
 				// for examplanations of checks below, see above in HP_SourceSide
-				if (m_evaporatorMeanTemperature < 273.15 - 20 ||
+				if (m_evaporatorMeanTemperature < 273.15 - 30 ||
 					(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
 				{
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -20 C, turning of "
+					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
 																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
 														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 				}
@@ -884,7 +897,6 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 			ref.m_required = true;
 			ref.m_name.m_name = "HeatExchangeHeatLossCondenser";
 			inputRefs.push_back(ref);
-
 			ref.m_name.m_name = "CondenserMeanTemperatureSchedule";
 			inputRefs.push_back(ref);
 		} break;
