@@ -83,6 +83,9 @@ public:
 	QColor				m_alternativeReadOnlyEditFieldBackground; // TODO
 	QColor				m_errorEditFieldBackground; // TODO
 
+	QColor				m_userDBBackgroundBright;
+	QColor				m_userDBBackgroundDark;
+	QColor				m_notReferencedText;
 
 	QColor				m_logProgressText;
 	QColor				m_logErrorText;

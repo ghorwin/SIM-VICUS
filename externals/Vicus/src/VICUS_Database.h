@@ -95,6 +95,10 @@ public:
 	typename std::map<unsigned int, T>::const_iterator begin() const { return m_data.begin(); }
 	/*! Returns end for iterator-type read-only access to data store. */
 	typename std::map<unsigned int, T>::const_iterator end() const { return m_data.end(); }
+	/*! Returns begin for iterator-type access to data store. */
+	typename std::map<unsigned int, T>::iterator begin() { return m_data.begin(); }
+	/*! Returns end for iterator-type access to data store. */
+	typename std::map<unsigned int, T>::iterator end() { return m_data.end(); }
 	/*! Returns number of DB elements. */
 	size_t size() const { return m_data.size(); }
 	/*! Returns true if database is empty. */
@@ -178,6 +182,17 @@ public:
 		// iterate over all elements - mind: no increment of the iterator needed here!
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
 			if (it->second.m_local && !it->second.m_builtIn)
+				it = m_data.erase(it); // remove it, and set it to next following element iterator
+			else
+				++it;
+		}
+	}
+
+	/*! Removes all local, not-referenced elements */
+	void removeNotReferencedLocalElements() {
+		// iterate over all elements - mind: no increment of the iterator needed here!
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
+			if (!it.m_isReferenced && it->second.m_local && !it->second.m_builtIn)
 				it = m_data.erase(it); // remove it, and set it to next following element iterator
 			else
 				++it;

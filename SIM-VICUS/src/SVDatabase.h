@@ -84,6 +84,16 @@ public:
 	*/
 	void updateEmbeddedDatabase(VICUS::Project & p);
 
+	/*! Determines which elements are used in current project and stores this information in member "m_isReferenced" */
+	void updateReferencedElements(const VICUS::Project & p);
+
+	/*! Stores pointer of all "children" and "parents" for each DB element.
+		children are elements which are referenced by the given element
+		parents are elements which reference the given element
+	*/
+	void updateElementChildrenParents();
+
+
 	/*! Holds ids of possible duplicates and whether they are identical. */
 	struct DuplicateInfo {
 		unsigned int m_idFirst;
@@ -109,11 +119,18 @@ public:
 	/*! Removes all local DB elements. */
 	void removeLocalElements();
 
+	/*! Removes all local DB elements. */
+	void removeNotReferencedLocalElements(DatabaseTypes dbType, const VICUS::Project &p);
+
 	/*! Convenience function, can be used to lookup a subtype template by argument.
 		ID of subtemplate is taken from idReferenceArray at index given by 'st'.
 		Returns nullptr if element doesn't exist.
 	*/
 	const VICUS::AbstractDBElement * lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const;
+
+	void findLocalChildren(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & localChildren);
+
+	void findUserDBParents(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & userDbParents);
 
 	// Databases
 

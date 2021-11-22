@@ -40,6 +40,7 @@
 #include "SVDBModelDelegate.h"
 #include "SVMainWindow.h"
 #include "SVAbstractDatabaseEditWidget.h"
+#include "SVDBDialogAddDependentElements.h"
 
 // includes for all the dialogs
 
@@ -163,7 +164,7 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->tableView->setItemDelegate(dg);
 }
 
@@ -187,6 +188,11 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 
 	m_ui->tableView->resizeColumnsToContents();
 
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
+
 	exec();
 	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 }
@@ -204,17 +210,40 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 	m_ui->tableView->resizeColumnsToContents();
 
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
+
 	int res = exec();
 	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 	if (res == QDialog::Accepted) {
+
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 		Q_ASSERT(currentProxyIndex.isValid());
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
+		// if the selected element is local: find parent elements which are not local
+		if (sourceIndex.data(Role_Local).toBool()) {
+			std::set<VICUS::AbstractDBElement *> userDbParents;
+			unsigned int id = sourceIndex.data(Role_Id).toUInt();
+			SVSettings::instance().m_db.findUserDBParents(m_dbModel->databaseType(), id, userDbParents);
+
+			// ask user if the selected element should be added to user DB as well
+			if (!userDbParents.empty()){
+				int resMsg = QMessageBox::question(this, tr("Add Element to user database"),
+									  tr("The selected element is referenced by an user database element.\n"
+										 "Do you want to add the selected element to user database as well?"),
+										QMessageBox::Yes|QMessageBox::No);
+				if(resMsg == QMessageBox::Yes)
+					m_dbModel->setItemLocal(sourceIndex, false);
+			}
+		}
+
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
-	}
+		}
 
 	// nothing selected/dialog aborted
 	return VICUS::INVALID_ID;
@@ -314,8 +343,7 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes "
 												  "made in this dialog since the program was started. Continue?"),
-							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-	{
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 		// tell db to drop all user-defined items and re-read the DB
 		SVSettings::instance().m_db.m_materials.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType());
@@ -333,6 +361,22 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	m_dbModel->setItemLocal(sourceIndex, false);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
+
+	// find depending child elements
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	unsigned int id = sourceIndex.data(Role_Id).toUInt();
+	SVSettings::instance().m_db.findLocalChildren(m_dbModel->databaseType(), id, localChildren);
+
+	// ask user if child elements should be added to user DB as well
+	if (localChildren.size() > 0) {
+		SVDBDialogAddDependentElements *diag = new SVDBDialogAddDependentElements(this);
+		diag->setup(tr("There following elements are referenced by the selected element. "
+							  "Do you want to add them to the user database as well?"), localChildren);
+		if(diag->exec() == QMessageBox::AcceptRole) {
+			for (VICUS::AbstractDBElement *el: localChildren)
+				el->m_local = false;
+		}
+	}
 }
 
 

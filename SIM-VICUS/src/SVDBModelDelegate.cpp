@@ -35,10 +35,11 @@
 
 #include <VICUS_ZoneTemplate.h>
 
-SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole) :
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole, int referencedRole) :
 	QItemDelegate(parent),
 	m_builtInRole(builtInRole),
-	m_localRole(localRole)
+	m_localRole(localRole),
+	m_referencedRole(referencedRole)
 {
 }
 
@@ -72,6 +73,7 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	bool builtin = index.data(m_builtInRole).toBool();
 	bool enabled = opt->widget->isEnabled();
 	bool local = index.data(m_localRole).toBool();
+	bool referenced = index.data(m_referencedRole).toBool();
 
 	// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
 	// subtemplate type - this is independent of the DB type
@@ -79,6 +81,17 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	QVariant subTemplateType = index.data(Role_SubTemplateType);
 	if (subTemplateType.isValid() && index.column() == 1)
 		drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt()); // we modify the rect property here
+
+	// modify font style
+	QFont font = opt->font;
+	font.setItalic(!referenced);
+	modifiedOption.font = font;
+	QPalette pal = opt->palette;
+	if (referenced)
+		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+	else
+		pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
+	modifiedOption.palette = pal;
 
 	// local and builtin are exclusive - we can only have either one
 	if (builtin && enabled) {

@@ -270,6 +270,10 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_alternativeReadOnlyEditFieldBackground	= "#b5d8ff";
 		m_errorEditFieldBackground					= "#ff7777";
 
+		m_userDBBackgroundDark						= "#cddafd";
+		m_userDBBackgroundBright					= "#dfe7fd";
+		m_notReferencedText							= "#c0c0c0";
+
 		m_logProgressText							= "#202020";
 		m_logErrorText								= "#ab0000";
 		m_logWarningText							= "#b17d00";

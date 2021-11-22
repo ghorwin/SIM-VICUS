@@ -75,7 +75,9 @@ enum DataRoles {
 		models return QVariant(). */
 	Role_SubTemplateType,
 	/*! Role to identify local database components, which are not stored in user database. */
-	Role_Local
+	Role_Local,
+	/*! Role to identify referenced database components, which are currently used in the project. */
+	Role_Referenced
 };
 
 /*! Different edit/coloring modes. */

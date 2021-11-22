@@ -68,6 +68,37 @@ public:
 	/*! Comparison of database element by content, without ID. */
 	virtual ComparisonResult equal(const AbstractDBElement * other) const = 0;
 
+	/*! Collects all pointers to child elements */
+	void collectChildrens(std::set<const AbstractDBElement *> & allChildrenRefs) const{
+		for (VICUS::AbstractDBElement * child: m_childrenRefs){
+			if (child != nullptr){
+				allChildrenRefs.insert(child);
+				child->collectChildrens(allChildrenRefs);
+			}
+		}
+	}
+
+	/*! Collects all pointers to child elements which are local */
+	void collectLocalChildren(std::set<AbstractDBElement *> & localChildrenRefs) const{
+		for (VICUS::AbstractDBElement * child: m_childrenRefs){
+			if (child != nullptr && child->m_local){
+				localChildrenRefs.insert(child);
+				child->collectLocalChildren(localChildrenRefs);
+			}
+		}
+	}
+
+	/*! Collects all pointers to parent elements which are not local */
+	void collectUserDBParents(std::set<AbstractDBElement *> & localChildrenRefs) const{
+		for (VICUS::AbstractDBElement * parent: m_parentRefs){
+			if (parent != nullptr && !parent->m_local && !parent->m_builtIn){
+				localChildrenRefs.insert(parent);
+				parent->collectUserDBParents(localChildrenRefs);
+			}
+		}
+	}
+
+
 	// *** Properties to be read/write in XML via code generator ***
 
 	/*! Unique ID of this DB element. */
@@ -87,6 +118,15 @@ public:
 
 	/*! Determines wether this element is kept local in the current project or should be stored into the userDB (false). */
 	bool							m_local = true;
+
+	/*! Pointer to elements which reference this element */
+	std::set<AbstractDBElement*>	m_parentRefs;
+
+	/*! Pointer to elements which are referenced by this element */
+	std::set<AbstractDBElement*>	m_childrenRefs;
+
+	/*! If true, this element is referenced in the current project */
+	mutable bool					m_isReferenced = false;
 
 };
 

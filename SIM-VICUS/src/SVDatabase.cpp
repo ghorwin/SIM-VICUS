@@ -32,6 +32,8 @@
 
 #include <QtExt_Directories.h>
 
+#include  <QMessageBox>
+
 #include "SVProjectHandler.h"
 
 const unsigned int USER_ID_SPACE_START = 10000;
@@ -203,12 +205,23 @@ void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
 }
 
 
-/*! Local utility functionStores pointers to all DB Elements which are local in the container */
+/*! Local utility function. Stores pointers to all DB Elements which are local in the container */
 template <typename T>
 void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & container) {
 	for (auto it=db.begin(); it!=db.end(); ++it){
 		if (it->second.m_local)
 			container.insert(&it->second);
+	}
+}
+
+
+/*! Local utility function which clears parents and children references using const cast */
+template <typename T>
+void clearChildrenParents(const VICUS::Database<T> & db) {
+	for (auto it=db.begin(); it!=db.end(); ++it){
+		T & elem = const_cast<T &>(it->second);
+		elem.m_childrenRefs.clear();
+		elem.m_parentRefs.clear();
 	}
 }
 
@@ -474,6 +487,157 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
 }
+
+
+void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
+
+	updateElementChildrenParents();
+
+	// set all elements referenced-property to false
+	for (auto it=m_materials.begin(); it!=m_materials.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_constructions.begin(); it!=m_constructions.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_windows.begin(); it!=m_windows.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_windowGlazingSystems.begin(); it!=m_windowGlazingSystems.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_boundaryConditions.begin(); it!=m_boundaryConditions.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_components.begin(); it!=m_components.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_subSurfaceComponents.begin(); it!=m_subSurfaceComponents.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_surfaceHeatings.begin(); it!=m_surfaceHeatings.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_pipes.begin(); it!=m_pipes.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_fluids.begin(); it!=m_fluids.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_subNetworks.begin(); it!=m_subNetworks.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_networkComponents.begin(); it!=m_networkComponents.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_networkControllers.begin(); it!=m_networkControllers.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_schedules.begin(); it!=m_schedules.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_internalLoads.begin(); it!=m_internalLoads.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlThermostat.begin(); it!=m_zoneControlThermostat.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlShading.begin(); it!=m_zoneControlShading.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlVentilationNatural.begin(); it!=m_zoneControlVentilationNatural.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneIdealHeatingCooling.begin(); it!=m_zoneIdealHeatingCooling.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_ventilationNatural.begin(); it!=m_ventilationNatural.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_infiltration.begin(); it!=m_infiltration.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneTemplates.begin(); it!=m_zoneTemplates.end(); ++it)
+		it->second.m_isReferenced = false;
+
+
+	// Collect all directly referenced elements
+
+	// TODO Buildings ...
+
+	// Networks
+	std::set<const VICUS::AbstractDBElement *>	referencedElements;
+	for (const VICUS::Network &net: p.m_geometricNetworks){
+		// fluids
+		referencedElements.insert(m_fluids[net.m_idFluid]);
+		// pipes
+		for (const VICUS::NetworkEdge &edge: net.m_edges)
+			referencedElements.insert(m_pipes[edge.m_idPipe]);
+		// sub networks
+		for (const VICUS::NetworkNode &node: net.m_nodes)
+			referencedElements.insert(m_subNetworks[node.m_idSubNetwork]);
+	}
+
+	// collect all children elements of referenced elements
+	for (const VICUS::AbstractDBElement * el: referencedElements){
+		if (el != nullptr)
+			el->collectChildrens(referencedElements);
+	}
+
+	// remember all referenced elements
+	for (const VICUS::AbstractDBElement * el: referencedElements){
+		if (el != nullptr)
+			el->m_isReferenced = true;
+	}
+}
+
+
+void SVDatabase::updateElementChildrenParents() {
+
+	// clear all children, parent relations
+	clearChildrenParents(m_materials);
+	clearChildrenParents(m_constructions);
+	clearChildrenParents(m_windows);
+	clearChildrenParents(m_windowGlazingSystems);
+	clearChildrenParents(m_boundaryConditions);
+	clearChildrenParents(m_components);
+	clearChildrenParents(m_subSurfaceComponents);
+	clearChildrenParents(m_surfaceHeatings);
+	clearChildrenParents(m_pipes);
+	clearChildrenParents(m_fluids);
+	clearChildrenParents(m_networkComponents);
+	clearChildrenParents(m_networkControllers);
+	clearChildrenParents(m_subNetworks);
+	clearChildrenParents(m_schedules);
+	clearChildrenParents(m_internalLoads);
+	clearChildrenParents(m_zoneControlThermostat);
+	clearChildrenParents(m_zoneControlShading);
+	clearChildrenParents(m_zoneControlVentilationNatural);
+	clearChildrenParents(m_zoneIdealHeatingCooling);
+	clearChildrenParents(m_ventilationNatural);
+	clearChildrenParents(m_infiltration);
+	clearChildrenParents(m_zoneTemplates);
+
+	// Now set all children / parent relations
+
+	// TODO Buildings ...
+
+	// Network elements
+	for (auto it=m_subNetworks.begin(); it!=m_subNetworks.end(); ++it) {
+
+		VICUS::SubNetwork *sub = &it->second;
+
+		for (const VICUS::NetworkElement &elem: sub->m_elements){
+			// network controller
+			VICUS::NetworkController * ctr = m_networkControllers[elem.m_controlElementId];
+			if (ctr != nullptr){
+				sub->m_childrenRefs.insert(ctr);
+				ctr->m_parentRefs.insert(sub);
+			}
+			// network components
+			VICUS::NetworkComponent * comp = m_networkComponents[elem.m_componentId];
+			if (comp != nullptr){
+				sub->m_childrenRefs.insert(comp);
+				comp->m_parentRefs.insert(sub);
+				// schedules
+				for (unsigned int i: comp->m_scheduleIds){
+					VICUS::Schedule * sched = m_schedules[i];
+					if (sched != nullptr){
+						sched->m_parentRefs.insert(comp);
+						comp->m_childrenRefs.insert(sched);
+					}
+				}
+				// pipes
+				VICUS::NetworkPipe * pipe = m_pipes[comp->m_pipePropertiesId];
+				if (pipe != nullptr) {
+					pipe->m_parentRefs.insert(comp);
+					comp->m_childrenRefs.insert(pipe);
+				}
+			}
+		}
+	}
+}
+
+
 
 // local search function to identify duplicates in DBs
 template <typename T>
@@ -883,6 +1047,61 @@ void SVDatabase::removeLocalElements() {
 }
 
 
+void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbType, const VICUS::Project &p)
+{
+	updateReferencedElements(p);
+
+	switch (dbType) {
+		case DT_Materials:
+			m_materials.removeNotReferencedLocalElements(); break;
+		case DT_Constructions:
+			m_constructions.removeNotReferencedLocalElements(); break;
+		case DT_Windows:
+			m_windows.removeNotReferencedLocalElements(); break;
+		case DT_WindowGlazingSystems:
+			m_windowGlazingSystems.removeNotReferencedLocalElements(); break;
+		case DT_BoundaryConditions:
+			m_boundaryConditions.removeNotReferencedLocalElements(); break;
+		case DT_Components:
+			m_components.removeNotReferencedLocalElements(); break;
+		case DT_SubSurfaceComponents:
+			m_subSurfaceComponents.removeNotReferencedLocalElements(); break;
+		case DT_SurfaceHeating:
+			m_surfaceHeatings.removeNotReferencedLocalElements(); break;
+		case DT_Pipes:
+			m_pipes.removeNotReferencedLocalElements(); break;
+		case DT_Fluids:
+			m_fluids.removeNotReferencedLocalElements(); break;
+		case DT_SubNetworks:
+			m_subNetworks.removeNotReferencedLocalElements(); break;
+		case DT_NetworkControllers:
+			m_networkControllers.removeNotReferencedLocalElements();  break;
+		case DT_NetworkComponents:
+			m_networkComponents.removeNotReferencedLocalElements(); break;
+		case DT_Schedules:
+			m_schedules.removeNotReferencedLocalElements(); break;
+		case DT_InternalLoads:
+			m_internalLoads.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlThermostat:
+			m_zoneControlThermostat.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlShading:
+			m_zoneControlShading.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlNaturalVentilation:
+			m_zoneControlVentilationNatural.removeNotReferencedLocalElements(); break;
+		case DT_ZoneIdealHeatingCooling:
+			m_zoneIdealHeatingCooling.removeNotReferencedLocalElements(); break;
+		case DT_VentilationNatural:
+			m_ventilationNatural.removeNotReferencedLocalElements(); break;
+		case DT_Infiltration:
+			m_infiltration.removeNotReferencedLocalElements(); break;
+		case DT_ZoneTemplates:
+			m_zoneTemplates.removeNotReferencedLocalElements(); break;
+		case NUM_DT:
+			break;
+	}
+}
+
+
 const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const {
 	IBK_ASSERT(st < VICUS::ZoneTemplate::NUM_ST);
 	unsigned int id = idReferenceArray[st];
@@ -903,6 +1122,116 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 	}
 
 	return nullptr;
+}
+
+
+void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int index,
+								   std::set<VICUS::AbstractDBElement *> &localChildren) {
+	updateElementChildrenParents();
+
+	switch (dbType) {
+		case DT_Materials:
+			m_materials[index]->collectLocalChildren(localChildren); break;
+		case DT_Constructions:
+			m_constructions[index]->collectLocalChildren(localChildren); break;
+		case DT_Windows:
+			m_windows[index]->collectLocalChildren(localChildren); break;
+		case DT_WindowGlazingSystems:
+			m_windowGlazingSystems[index]->collectLocalChildren(localChildren); break;
+		case DT_BoundaryConditions:
+			m_boundaryConditions[index]->collectLocalChildren(localChildren); break;
+		case DT_Components:
+			m_components[index]->collectLocalChildren(localChildren); break;
+		case DT_SubSurfaceComponents:
+			m_subSurfaceComponents[index]->collectLocalChildren(localChildren); break;
+		case DT_SurfaceHeating:
+			m_surfaceHeatings[index]->collectLocalChildren(localChildren); break;
+		case DT_Pipes:
+			m_pipes[index]->collectLocalChildren(localChildren); break;
+		case DT_Fluids:
+			m_fluids[index]->collectLocalChildren(localChildren); break;
+		case DT_SubNetworks:
+			m_subNetworks[index]->collectLocalChildren(localChildren); break;
+		case DT_NetworkControllers:
+			m_networkControllers[index]->collectLocalChildren(localChildren);  break;
+		case DT_NetworkComponents:
+			m_networkComponents[index]->collectLocalChildren(localChildren); break;
+		case DT_Schedules:
+			m_schedules[index]->collectLocalChildren(localChildren); break;
+		case DT_InternalLoads:
+			m_internalLoads[index]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlThermostat:
+			m_zoneControlThermostat[index]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlShading:
+			m_zoneControlShading[index]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlNaturalVentilation:
+			m_zoneControlVentilationNatural[index]->collectLocalChildren(localChildren); break;
+		case DT_ZoneIdealHeatingCooling:
+			m_zoneIdealHeatingCooling[index]->collectLocalChildren(localChildren); break;
+		case DT_VentilationNatural:
+			m_ventilationNatural[index]->collectLocalChildren(localChildren); break;
+		case DT_Infiltration:
+			m_infiltration[index]->collectLocalChildren(localChildren); break;
+		case DT_ZoneTemplates:
+			m_zoneTemplates[index]->collectLocalChildren(localChildren); break;
+		case NUM_DT:
+			break;
+	}
+}
+
+
+void SVDatabase::findUserDBParents(SVDatabase::DatabaseTypes dbType, unsigned int index,
+								   std::set<VICUS::AbstractDBElement *> &userDbParents) {
+	updateElementChildrenParents();
+
+	switch (dbType) {
+		case DT_Materials:
+			m_materials[index]->collectUserDBParents(userDbParents); break;
+		case DT_Constructions:
+			m_constructions[index]->collectUserDBParents(userDbParents); break;
+		case DT_Windows:
+			m_windows[index]->collectUserDBParents(userDbParents); break;
+		case DT_WindowGlazingSystems:
+			m_windowGlazingSystems[index]->collectUserDBParents(userDbParents); break;
+		case DT_BoundaryConditions:
+			m_boundaryConditions[index]->collectUserDBParents(userDbParents); break;
+		case DT_Components:
+			m_components[index]->collectUserDBParents(userDbParents); break;
+		case DT_SubSurfaceComponents:
+			m_subSurfaceComponents[index]->collectUserDBParents(userDbParents); break;
+		case DT_SurfaceHeating:
+			m_surfaceHeatings[index]->collectUserDBParents(userDbParents); break;
+		case DT_Pipes:
+			m_pipes[index]->collectUserDBParents(userDbParents); break;
+		case DT_Fluids:
+			m_fluids[index]->collectUserDBParents(userDbParents); break;
+		case DT_SubNetworks:
+			m_subNetworks[index]->collectUserDBParents(userDbParents); break;
+		case DT_NetworkControllers:
+			m_networkControllers[index]->collectUserDBParents(userDbParents);  break;
+		case DT_NetworkComponents:
+			m_networkComponents[index]->collectUserDBParents(userDbParents); break;
+		case DT_Schedules:
+			m_schedules[index]->collectUserDBParents(userDbParents); break;
+		case DT_InternalLoads:
+			m_internalLoads[index]->collectUserDBParents(userDbParents); break;
+		case DT_ZoneControlThermostat:
+			m_zoneControlThermostat[index]->collectUserDBParents(userDbParents); break;
+		case DT_ZoneControlShading:
+			m_zoneControlShading[index]->collectUserDBParents(userDbParents); break;
+		case DT_ZoneControlNaturalVentilation:
+			m_zoneControlVentilationNatural[index]->collectUserDBParents(userDbParents); break;
+		case DT_ZoneIdealHeatingCooling:
+			m_zoneIdealHeatingCooling[index]->collectUserDBParents(userDbParents); break;
+		case DT_VentilationNatural:
+			m_ventilationNatural[index]->collectUserDBParents(userDbParents); break;
+		case DT_Infiltration:
+			m_infiltration[index]->collectUserDBParents(userDbParents); break;
+		case DT_ZoneTemplates:
+			m_zoneTemplates[index]->collectUserDBParents(userDbParents); break;
+		case NUM_DT:
+			break;
+	}
 }
 
 
