@@ -106,6 +106,9 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 
 		case Role_Local :
 			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();

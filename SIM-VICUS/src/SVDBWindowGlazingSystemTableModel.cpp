@@ -104,6 +104,9 @@ QVariant SVDBWindowGlazingSystemTableModel::data ( const QModelIndex & index, in
 
 		case Role_Local :
 			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();

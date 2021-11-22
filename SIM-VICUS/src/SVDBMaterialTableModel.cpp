@@ -114,6 +114,9 @@ QVariant SVDBMaterialTableModel::data ( const QModelIndex & index, int role) con
 
 		case Role_Local :
 			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
