@@ -81,5 +81,6 @@
         <file>gfx/actions/16x16/checkbox-inverted.png</file>
         <file>gfx/actions/24x24/toDB.png</file>
         <file>gfx/actions/24x24/fromDB.png</file>
+        <file>gfx/actions/24x24/broom.png</file>
     </qresource>
 </RCC>

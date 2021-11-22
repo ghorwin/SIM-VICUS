@@ -141,8 +141,23 @@
        <property name="text">
         <string>Reload user database</string>
        </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+       </property>
        <property name="autoDefault">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRemoveUnusedElements">
+       <property name="text">
+        <string>remove unused elements</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/broom.png</normaloff>:/gfx/actions/24x24/broom.png</iconset>
        </property>
       </widget>
      </item>

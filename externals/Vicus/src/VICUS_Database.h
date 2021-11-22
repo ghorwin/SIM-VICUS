@@ -192,7 +192,7 @@ public:
 	void removeNotReferencedLocalElements() {
 		// iterate over all elements - mind: no increment of the iterator needed here!
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
-			if (!it.m_isReferenced && it->second.m_local && !it->second.m_builtIn)
+			if (!it->second.m_isReferenced && it->second.m_local && !it->second.m_builtIn)
 				it = m_data.erase(it); // remove it, and set it to next following element iterator
 			else
 				++it;

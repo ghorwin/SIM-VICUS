@@ -180,6 +180,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(true);
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
@@ -203,6 +204,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
@@ -660,3 +662,17 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	return dlg;
 }
 
+
+void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked()
+{
+	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+		// tell db to drop all user-defined items and re-read the DB
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.removeNotReferencedLocalElements(m_dbModel->databaseType(), project());
+		// tell model to reset completely
+		m_dbModel->resetModel();
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+		m_editWidget->updateInput(-1);
+	}
+}

@@ -128,8 +128,10 @@ public:
 	*/
 	const VICUS::AbstractDBElement * lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const;
 
+	/*! For a given DB element, collects all children which are local */
 	void findLocalChildren(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & localChildren);
 
+	/*! For a given DB element, collects all parents which are not local */
 	void findUserDBParents(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & userDbParents);
 
 	// Databases
