@@ -37,6 +37,7 @@ QVariant SVDBNetworkControllerTableModel::data ( const QModelIndex & index, int 
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
 				case ColType				: return VICUS::KeywordList::Keyword("NetworkController::ControlledProperty",
 																				 it->second.m_controlledProperty);
+				case ColSource				: return it->second.sourceName();
 			}
 		} break;
 
@@ -94,6 +95,7 @@ QVariant SVDBNetworkControllerTableModel::headerData(int section, Qt::Orientatio
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
 				case ColType				: return tr("Property");
+				case ColSource				: return tr("Source");
 				default: ;
 			}
 		} break;
@@ -159,6 +161,7 @@ void SVDBNetworkControllerTableModel::setColumnResizeModes(QTableView * tableVie
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkControllerTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkControllerTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkControllerTableModel::ColName, QHeaderView::Stretch);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkControllerTableModel::ColSource, QHeaderView::Fixed);
 }
 
 

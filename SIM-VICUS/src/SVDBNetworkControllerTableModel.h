@@ -17,6 +17,7 @@ public:
 		ColCheck,
 		ColName,
 		ColType,
+		ColSource,
 		NumColumns
 	};
 

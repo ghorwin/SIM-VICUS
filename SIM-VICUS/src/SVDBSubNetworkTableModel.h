@@ -15,6 +15,7 @@ public:
 		ColColor,
 		ColCheck,
 		ColName,
+		ColSource,
 		NumColumns
 	};
 
