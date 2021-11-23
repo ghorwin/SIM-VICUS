@@ -52,10 +52,11 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_outputs(&outputs)
 {
 	m_ui->setupUi(this);
-//	m_ui->verticalLayoutOutputs->setMargin(0);
+	m_ui->verticalLayoutOutputs->setMargin(0);
 
-	// m_outputDefinitions = &m_outputs->m_definitions;
+//	m_outputDefinitions = &m_outputs->m_definitions;
 
+	// output grid table setup
 	m_ui->tableWidgetOutputGrids->setColumnCount(4);
 	m_ui->tableWidgetOutputGrids->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Intervals") << tr("Start") << tr("End") );
 	m_ui->tableWidgetOutputGrids->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -65,6 +66,15 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputGrids);
 	m_ui->tableWidgetOutputGrids->setSortingEnabled(false);
+
+	// output definition table setup
+	m_ui->tableWidgetOutputDefinitions->setColumnCount(6);
+	m_ui->tableWidgetOutputDefinitions->setHorizontalHeaderLabels( QStringList() << tr("Quantity") << tr("Object type") << tr("Object IDs") << tr("Vector IDs") << tr("Mean/Integral") << tr("Output grid")  );
+	m_ui->tableWidgetOutputDefinitions->horizontalHeader()->setStretchLastSection(true);
+
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputDefinitions);
+	m_ui->tableWidgetOutputDefinitions->setSortingEnabled(false);
+
 #if 0
 	m_ui->radioButtonDefault->setChecked(true);
 	m_outputTableModel = new SVSimulationOutputTableModel(this);
@@ -96,12 +106,6 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::MultiSelection);
 	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	m_ui->comboBoxTimeType->blockSignals(true);
-	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
-	m_ui->comboBoxTimeType->addItem("Mean", NANDRAD::OutputDefinition::OTT_MEAN);
-	m_ui->comboBoxTimeType->addItem("Integral", NANDRAD::OutputDefinition::OTT_INTEGRAL);
-	m_ui->comboBoxTimeType->blockSignals(false);
-
 	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
 			this, &SVSimulationOutputOptions::on_selectionChanged);
 #endif
@@ -115,25 +119,15 @@ SVSimulationOutputOptions::~SVSimulationOutputOptions() {
 
 
 void SVSimulationOutputOptions::updateUi() {
-#if 0
 
-	m_ui->checkBoxDefaultZoneOutputs->setChecked(
+	m_ui->checkBoxDefaultBuildingOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled());
 
 	m_ui->checkBoxDefaultNetworkOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
 	m_ui->tableWidgetOutputGrids->clearContents();
-	m_ui->comboBoxOutputGrid->clear();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
-	// we set the correct timetype
-	if(m_activeOutputDefinition != nullptr)
-		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-			if (m_activeOutputDefinition->m_outputdefinition.m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
-				m_ui->comboBoxTimeType->setCurrentIndex(i);
-				break;
-			}
-		}
 
 	// we update the output grid
 	for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
@@ -141,7 +135,6 @@ void SVSimulationOutputOptions::updateUi() {
 		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(og.m_name));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
-
 
 		// only populate start and end if intervals are all valid
 		try {
@@ -171,9 +164,6 @@ void SVSimulationOutputOptions::updateUi() {
 			item = new QTableWidgetItem(end);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
-			m_ui->comboBoxOutputGrid->blockSignals(true);
-			m_ui->comboBoxOutputGrid->addItem(QString::fromStdString(og.m_name), i);
-			m_ui->comboBoxOutputGrid->blockSignals(false);
 		}
 		catch (...) {
 			item = new QTableWidgetItem("---");
@@ -187,9 +177,19 @@ void SVSimulationOutputOptions::updateUi() {
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
 		}
 	}
-
+#if 0
+	// we set the correct timetype
+	if(m_activeOutputDefinition != nullptr)
+		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
+			if (m_activeOutputDefinition->m_outputdefinition.m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
+				m_ui->comboBoxTimeType->setCurrentIndex(i);
+				break;
+			}
+		}
+#endif
 }
 
+#if 0
 // Returns empty QByteArray() on failure.
 std::string fileChecksum(const QString &fileName,
 						QCryptographicHash::Algorithm hashAlgorithm)
@@ -369,10 +369,8 @@ void SVSimulationOutputOptions::generateOutputTable() {
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 	m_ui->tableViewOutputList->setColumnWidth(3, 50);
 	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-#endif
 }
 
-#if 0
 void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
 	//	m_ui->tableWidgetOutputList->setColumnCount(5);
 	//	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
