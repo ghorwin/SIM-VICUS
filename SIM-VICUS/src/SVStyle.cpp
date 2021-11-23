@@ -231,6 +231,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 	QFile fileWhite(":/qdarkstyle/whitestyle.qss");
 
 	if ( theme == SVSettings::TT_Dark && file.exists()) {
+
 		file.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(file.readAll());
 		qApp->setStyleSheet(m_styleSheet);
@@ -241,6 +242,11 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_readOnlyEditFieldBackground				= "#5f7da0";
 		m_alternativeReadOnlyEditFieldBackground	= "#7f94ab";
 		m_errorEditFieldBackground					= "#ab4e4e";
+
+		m_userDBBackgroundDark						= "#012a4a";
+		m_userDBBackgroundBright					= "#013a63";
+		m_userDBBackgroundText						= "#ffffff";
+		m_notReferencedText							= "#6c757d";
 
 		m_logProgressText							= "#c0c0c0";
 		m_logErrorText								= "#ff2222";
@@ -258,6 +264,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		QtExt::Style::AlternativeBackgroundText = "#ffedce";
 	}
 	else if ( theme == SVSettings::TT_White && fileWhite.exists()) {
+
 		fileWhite.open(QFile::ReadOnly);
 		m_styleSheet = QLatin1String(fileWhite.readAll());
 		qApp->setStyleSheet(m_styleSheet);
@@ -272,7 +279,8 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 
 		m_userDBBackgroundDark						= "#cddafd";
 		m_userDBBackgroundBright					= "#dfe7fd";
-		m_notReferencedText							= "#c0c0c0";
+		m_userDBBackgroundText						= "#000000";
+		m_notReferencedText							= "#6c757d";
 
 		m_logProgressText							= "#202020";
 		m_logErrorText								= "#ab0000";

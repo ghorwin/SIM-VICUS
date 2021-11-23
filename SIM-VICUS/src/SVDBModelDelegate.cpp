@@ -83,15 +83,18 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt()); // we modify the rect property here
 
 	// modify font style
-	QFont font = opt->font;
-	font.setItalic(!referenced);
-	modifiedOption.font = font;
 	QPalette pal = opt->palette;
-	if (referenced)
-		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
-	else
+	QFont font = opt->font;
+	if (referenced){
+		pal.setColor(QPalette::Text, SVStyle::instance().m_userDBBackgroundText);
+		font.setItalic(false);
+	}
+	else{
 		pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
+		font.setItalic(true);
+	}
 	modifiedOption.palette = pal;
+	modifiedOption.font = font;
 
 	// local and builtin are exclusive - we can only have either one
 	if (builtin && enabled) {
@@ -104,19 +107,25 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		painter->fillRect(modifiedOption.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
-		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+		if (referenced)
+			pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
+		else
+			pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
 		modifiedOption.palette = pal;
 	}
 	else if (!local && enabled) {
 		QBrush b;
 		if (opt->features & QStyleOptionViewItem::Alternate)
-			b = QBrush("#cddafd");
+			b = QBrush(SVStyle::instance().m_userDBBackgroundDark);
 		else
-			b = QBrush("#dfe7fd");
+			b = QBrush(SVStyle::instance().m_userDBBackgroundBright);
 		painter->fillRect(modifiedOption.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
-		pal.setColor(QPalette::Text, "#00406b");
+		if (referenced)
+			pal.setColor(QPalette::Text, SVStyle::instance().m_userDBBackgroundText);
+		else
+			pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
 		modifiedOption.palette = pal;
 	}
 	// either disable or user-DB
