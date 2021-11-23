@@ -209,23 +209,10 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			std::vector<VICUS::Polygon2D> windows;
 
 			if (inputData.m_byPercentage) {
-				// area of the surface
-				// TODO Dirk, kann sein dass das durch hPre * wPre ersetzt werden muss -> testen
-				double surfA = surfacePoly.area();
-				double surfWinA = surfA * frac;
 
 				if (hMax<hPre)	hPre = hMax;
 				if (wMax<wPre)	wPre = wMax;
 				if(hPreSill < minDistance)	hPreSill = minDistance;
-
-
-				double count2 = (wSurf - minDistance) / (wPre + minDistance);
-				unsigned int count = (unsigned int)std::floor(count2);
-
-				double surfWinA2 = count * hMax * wPre;														//calc with predefined width
-				double surfWinMaxA2 = count2 * hMax * wPre;
-				double surfWinA3 = hPre * (wSurf - minDistance * (count + 1));								//calc with predefined height
-				double surfWinA4 = (hMax - minDistance - hPreSill) * (wSurf - minDistance * (count +1));	//calc with predefined sill height
 
 				double height = hPre;
 				double width = wPre;
@@ -245,48 +232,149 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				if(inputData.m_priorities[2] == 1)	prio = SillHeight;
 				if(inputData.m_priorities[3] == 1)	prio = Distance;
 
+				//das sind die neuen programmierungen für die Fenstereinbindung
+				double widthSurface = 5;	// in m
+				double heightSurface = 3;	// in m
+				double heightSill = 0.8;	// in m
+				double heightWinPre = 2.5;	// in m
+				double widthWinPre = 1;		// in m
+				double wwr = 0.8;			// window wall ration
+				double areaSurface = 1212;	// in m2
+				// Werte übernehmen aus den Vorgaben von oben
+				{
+					heightSurface	= hSurf;
+					widthSurface	= wSurf;
+					wwr				= inputData.m_percentage/100;
+					heightWinPre	= inputData.m_height;
+					widthWinPre		= inputData.m_width;
+					heightSill		= inputData.m_windowSillHeight;
+					areaSurface		= surfacePoly.area();
+				}
+				double areaWindow = areaSurface * wwr;	// in m2
+
+				// input checks
+				if(widthSurface <= 0.02 || heightSurface <= 0.02 || heightSill < 0 ||
+						heightWinPre <= 0.01 || widthWinPre <= 0.01 || wwr <= 0 ){
+					// error
+					/// TODO Dirk Error Message
+					continue;
+				}
+
+				// some constant variables
+				double dMin = 0.01;			// minimum distance between one window edge and another window or surface edge
+				double heightWinMax1 = heightSurface - 2 * dMin;
+				double widthWinMax = widthSurface - 2 * dMin;
+
+				int count = std::max<int>(1, std::floor((widthSurface - dMin) / (widthWinPre + dMin)));
+				widthWinMax = (widthSurface - dMin *( count + 1 )) / count;
+
+				// result variables
+				double heightWin, widthWin;
+
+				// only for information
+				double wwrError = 0;
+
+				// checks
+				if( heightWinPre > heightWinMax1 )	heightWinPre = heightWinMax1;
+				if( widthWinPre > widthWinMax )		widthWinPre = widthWinMax;
+
 				switch(prio){
 					case Height:{
-						if (surfWinA3 >= surfWinA) {
-							//height = hPre;
-							//width = surfWinA / (count * height);
-							count = (unsigned int)std::floor(surfWinA / (height * wPre));
-							if (count == 0)
-								count = 1;
-							width = surfWinA / (count * height);
+
+						double areaSurfaceMax = (widthSurface - 2 * dMin) * heightWinMax1;
+
+						if(areaSurfaceMax > areaWindow){
+							heightWin = std::min(heightWinPre, heightWinMax1);
+							widthWin = areaWindow / ( heightWin * count);
 						}
-						else {
-							width = (wSurf - (count + 1) * minDistance) / count;
-							height = std::min(surfWinA / (width * count), hMax);
+						else{
+							widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+							heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
 						}
 					}
 					break;
 					case Width:{
-						if (surfWinA2>= surfWinA) {
-							//width = wPre;
-							height = surfWinA / (count * width);
-							count = (unsigned int)std::floor(surfWinA / (width * height));
-							if (count == 0)
-								count = 1;
-							height = std::min(surfWinA / (count * width), hMax);
+
+						double areaSurfaceWidth = widthWinPre * count * heightWinMax1;
+						if(areaSurfaceWidth >= areaWindow){
+							widthWin = widthWinPre;
+							heightWin = areaWindow / ( widthWin * count);
 						}
-						else {
-							height = hMax;
-							width = surfWinMaxA2 / (hMax * count);
+						else{
+							heightWin = heightWinMax1;
+							// if necessary adjust width
+							// we know we get a little error on the wwr
+							widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+							wwrError = 1 - heightWin * widthWin * count / areaWindow;
 						}
 					}
 					break;
 					case SillHeight:{
-						if (surfWinA4 >= surfWinA) {
-							height = hPre;
-							width = surfWinA / (count * height);
+						// Priority 1 sill height
+						if(inputData.m_priorities[2] < inputData.m_priorities[1] &&
+								inputData.m_priorities[2] < inputData.m_priorities[0]){
+							// Priority 2 window height
+							double heightWinMax2 = heightSurface - dMin - heightSill;
+							// This area is calculated from the width and height minus the sill height
+							double areaSurfaceSill = (widthSurface - 2 * dMin) * heightWinMax2;
+
+							// height is next prio
+							if(inputData.m_priorities[0] > inputData.m_priorities[1] ){
+								/// TODO Dirk das wäre die ganz normale Berechnung für die
+								/// Höhe als oberste Priorität
+								if(areaSurfaceSill > areaWindow){
+									heightWin = std::min(heightWinPre, heightWinMax2);
+									widthWin = areaWindow / ( heightWin * count);
+								}
+								else{
+									widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+									heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
+								}
+							}
+							// Priority 2 window width
+							else if(true){
+								// This is the maximum possible area that results when the windows are calculated
+								// with the maximum possible window height, taking into account the sill height.
+								double areaSurfaceWidth = widthWinPre * count * heightWinMax2;
+								if( areaSurfaceWidth >= areaWindow){
+									widthWin = widthWinPre;
+									heightWin = areaWindow / ( widthWin * count );
+								}
+								else{
+									if(areaSurfaceSill >= areaWindow){
+										heightWin = heightWinMax2;
+										// if necessary adjust width
+										// we know we get a little error on the wwr
+										widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+										wwrError = 1 - heightWin * widthWin * count / areaWindow;
+									}
+									else{
+										/// TODO Dirk das wäre die ganz normale Berechnung für die
+										/// Breite als oberste Priorität
+										areaSurfaceWidth = widthWinPre * count * heightWinMax1;
+										if(areaSurfaceWidth >= areaWindow){
+											widthWin = widthWinPre;
+											heightWin = areaWindow / ( widthWin * count);
+										}
+										else{
+											heightWin = heightWinMax1;
+											// if necessary adjust width
+											// we know we get a little error on the wwr
+											widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+											wwrError = 1 - heightWin * widthWin * count / areaWindow;
+										}
+									}
+								}
+							}
 						}
-						else {
-							width = (wSurf - (count + 1) * minDistance) / count;
-							height = std::min(surfWinA / (width * count), hMax);
-						}
+						height = heightWin;
+						width = widthWin;
 					}
 					break;
+					case Distance:{
+						/// TODO Dirk implement
+						continue;
+					}
 				}
 				//check sill height
 				if( hSurf - height -minDistance < hPreSill)
@@ -294,8 +382,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				else
 					sillHeight = hPreSill;
 
-				// TODO : Dirk, testen ob hier die +1 hin muss!!!
-				double dist = (wSurf - count * width) / (count /*+ 1*/);
+				double dist = (wSurf - count * width) / (count + 1);
 
 				// now create the windows
 				for (unsigned int i=0; i<count; ++i ){
