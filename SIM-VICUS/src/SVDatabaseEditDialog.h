@@ -102,6 +102,8 @@ private:
 	*/
 	void selectItemById(unsigned int id);
 
+
+
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);
 	static SVDatabaseEditDialog * createConstructionEditDialog(QWidget * parent);

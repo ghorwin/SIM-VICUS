@@ -12,7 +12,7 @@ SVDBDialogAddDependentElements::SVDBDialogAddDependentElements(QWidget *parent):
 	m_ui(new Ui::SVDBDialogAddDependentElements)
 {
 	m_ui->setupUi(this);
-	parent->setWindowTitle("Add depending elements to user database");
+	setWindowTitle(tr("Add to user database"));
 }
 
 
@@ -27,7 +27,7 @@ void SVDBDialogAddDependentElements::setup(const QString &infoText, const std::s
 	for (VICUS::AbstractDBElement *el: elements){
 		QListWidgetItem *item = new QListWidgetItem;
 		item->setText(QtExt::MultiLangString2QString(el->m_displayName));
+		item->setFlags(!Qt::ItemIsEnabled | !Qt::ItemIsSelectable);
 		m_ui->listWidget->addItem(item);
 	}
-
 }

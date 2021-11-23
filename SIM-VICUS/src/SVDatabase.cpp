@@ -219,7 +219,7 @@ void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & co
 template <typename T>
 void clearChildrenParents(const VICUS::Database<T> & db) {
 	for (auto it=db.begin(); it!=db.end(); ++it){
-		T & elem = const_cast<T &>(it->second);
+		VICUS::AbstractDBElement & elem = const_cast<T &>(it->second);
 		elem.m_childrenRefs.clear();
 		elem.m_parentRefs.clear();
 	}
@@ -560,7 +560,7 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 	// collect all children elements of referenced elements
 	for (const VICUS::AbstractDBElement * el: referencedElements){
 		if (el != nullptr)
-			el->collectChildrens(referencedElements);
+			el->collectChildren(referencedElements);
 	}
 
 	// remember all referenced elements
@@ -1127,7 +1127,10 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 
 void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int index,
 								   std::set<VICUS::AbstractDBElement *> &localChildren) {
+
 	updateElementChildrenParents();
+
+	Q_ASSERT(index!=VICUS::INVALID_ID);
 
 	switch (dbType) {
 		case DT_Materials:
@@ -1180,58 +1183,13 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int index,
 }
 
 
-void SVDatabase::findUserDBParents(SVDatabase::DatabaseTypes dbType, unsigned int index,
-								   std::set<VICUS::AbstractDBElement *> &userDbParents) {
-	updateElementChildrenParents();
+void SVDatabase::moveLocalChildrenToUserDB(SVDatabase::DatabaseTypes dbType, unsigned int index) {
 
-	switch (dbType) {
-		case DT_Materials:
-			m_materials[index]->collectUserDBParents(userDbParents); break;
-		case DT_Constructions:
-			m_constructions[index]->collectUserDBParents(userDbParents); break;
-		case DT_Windows:
-			m_windows[index]->collectUserDBParents(userDbParents); break;
-		case DT_WindowGlazingSystems:
-			m_windowGlazingSystems[index]->collectUserDBParents(userDbParents); break;
-		case DT_BoundaryConditions:
-			m_boundaryConditions[index]->collectUserDBParents(userDbParents); break;
-		case DT_Components:
-			m_components[index]->collectUserDBParents(userDbParents); break;
-		case DT_SubSurfaceComponents:
-			m_subSurfaceComponents[index]->collectUserDBParents(userDbParents); break;
-		case DT_SurfaceHeating:
-			m_surfaceHeatings[index]->collectUserDBParents(userDbParents); break;
-		case DT_Pipes:
-			m_pipes[index]->collectUserDBParents(userDbParents); break;
-		case DT_Fluids:
-			m_fluids[index]->collectUserDBParents(userDbParents); break;
-		case DT_SubNetworks:
-			m_subNetworks[index]->collectUserDBParents(userDbParents); break;
-		case DT_NetworkControllers:
-			m_networkControllers[index]->collectUserDBParents(userDbParents);  break;
-		case DT_NetworkComponents:
-			m_networkComponents[index]->collectUserDBParents(userDbParents); break;
-		case DT_Schedules:
-			m_schedules[index]->collectUserDBParents(userDbParents); break;
-		case DT_InternalLoads:
-			m_internalLoads[index]->collectUserDBParents(userDbParents); break;
-		case DT_ZoneControlThermostat:
-			m_zoneControlThermostat[index]->collectUserDBParents(userDbParents); break;
-		case DT_ZoneControlShading:
-			m_zoneControlShading[index]->collectUserDBParents(userDbParents); break;
-		case DT_ZoneControlNaturalVentilation:
-			m_zoneControlVentilationNatural[index]->collectUserDBParents(userDbParents); break;
-		case DT_ZoneIdealHeatingCooling:
-			m_zoneIdealHeatingCooling[index]->collectUserDBParents(userDbParents); break;
-		case DT_VentilationNatural:
-			m_ventilationNatural[index]->collectUserDBParents(userDbParents); break;
-		case DT_Infiltration:
-			m_infiltration[index]->collectUserDBParents(userDbParents); break;
-		case DT_ZoneTemplates:
-			m_zoneTemplates[index]->collectUserDBParents(userDbParents); break;
-		case NUM_DT:
-			break;
-	}
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	findLocalChildren(dbType, index, localChildren);
+	for (VICUS::AbstractDBElement * elem: localChildren)
+		elem->m_local = false;
 }
+
 
 

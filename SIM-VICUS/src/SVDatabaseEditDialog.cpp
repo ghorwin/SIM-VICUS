@@ -226,23 +226,6 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 		Q_ASSERT(currentProxyIndex.isValid());
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 
-		// if the selected element is local: find parent elements which are not local
-		if (sourceIndex.data(Role_Local).toBool()) {
-			std::set<VICUS::AbstractDBElement *> userDbParents;
-			unsigned int id = sourceIndex.data(Role_Id).toUInt();
-			SVSettings::instance().m_db.findUserDBParents(m_dbModel->databaseType(), id, userDbParents);
-
-			// ask user if the selected element should be added to user DB as well
-			if (!userDbParents.empty()){
-				int resMsg = QMessageBox::question(this, tr("Add Element to user database"),
-									  tr("The selected element is referenced by an user database element.\n"
-										 "Do you want to add the selected element to user database as well?"),
-										QMessageBox::Yes|QMessageBox::No);
-				if(resMsg == QMessageBox::Yes)
-					m_dbModel->setItemLocal(sourceIndex, false);
-			}
-		}
-
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
 		}
@@ -372,9 +355,9 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 	// ask user if child elements should be added to user DB as well
 	if (localChildren.size() > 0) {
 		SVDBDialogAddDependentElements *diag = new SVDBDialogAddDependentElements(this);
-		diag->setup(tr("There following elements are referenced by the selected element. "
-							  "Do you want to add them to the user database as well?"), localChildren);
-		if(diag->exec() == QMessageBox::AcceptRole) {
+		diag->setup(tr("Do you want to add the referenced elements to user database as well?"), localChildren);
+		int res = diag->exec();
+		if(res == QDialog::Accepted) {
 			for (VICUS::AbstractDBElement *el: localChildren)
 				el->m_local = false;
 		}
@@ -397,6 +380,21 @@ void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) 
 }
 
 
+void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked()
+{
+	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+		// tell db to drop all user-defined items and re-read the DB
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.removeNotReferencedLocalElements(m_dbModel->databaseType(), project());
+		// tell model to reset completely
+		m_dbModel->resetModel();
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+		m_editWidget->updateInput(-1);
+	}
+}
+
+
 void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 	// select item with given id
 	for (int i=0, count = m_dbModel->rowCount(); i<count; ++i) {
@@ -413,6 +411,8 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 		}
 	}
 }
+
+
 
 // *** Factory functions ***
 
@@ -660,19 +660,4 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSubNetworkEditDialog(QWidget *
 	);
 	dlg->resize(1400,800);
 	return dlg;
-}
-
-
-void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked()
-{
-	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
-							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
-		// tell db to drop all user-defined items and re-read the DB
-		if (SVProjectHandler::instance().isValid())
-			SVSettings::instance().m_db.removeNotReferencedLocalElements(m_dbModel->databaseType(), project());
-		// tell model to reset completely
-		m_dbModel->resetModel();
-		onCurrentIndexChanged(QModelIndex(), QModelIndex());
-		m_editWidget->updateInput(-1);
-	}
 }

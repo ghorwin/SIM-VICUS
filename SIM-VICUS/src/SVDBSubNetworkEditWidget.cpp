@@ -73,20 +73,21 @@ void SVDBSubNetworkEditWidget::updateInput(int id)
 
 	updateTableWidget();
 
-
-
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !m_currentSubNet->m_builtIn;
-//	m_ui->lineEditName->setReadOnly(!isEditable);
-//	m_ui->lineEditSetpoint->setReadOnly(!isEditable);
-//	m_ui->lineEditSchedule->setReadOnly(!isEditable);
-//	m_ui->lineEditKp->setReadOnly(!isEditable);
-//	m_ui->lineEditKi->setReadOnly(!isEditable);
-
+	m_ui->lineEditComponent->setReadOnly(!isEditable);
+	m_ui->lineEditController->setReadOnly(!isEditable);
+	m_ui->lineEditElementName->setReadOnly(!isEditable);
+	m_ui->lineEditSubNetworkName->setReadOnly(!isEditable);
+	m_ui->toolButtonAdd->setEnabled(isEditable);
+	m_ui->toolButtonRemove->setEnabled(isEditable);
+	m_ui->toolButtonEditComponent->setEnabled(isEditable);
+	m_ui->toolButtonEditController->setEnabled(isEditable);
 }
 
 void SVDBSubNetworkEditWidget::modelModify()
 {
+	m_db->moveLocalChildrenToUserDB(m_dbModel->databaseType(), m_currentSubNet->m_id);
 	m_db->m_subNetworks.m_modified = true;
 	m_dbModel->setItemModified(m_currentSubNet->m_id);
 }
