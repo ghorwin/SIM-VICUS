@@ -84,15 +84,26 @@ void SVPropBuildingBoundaryConditionsWidget::updateUi() {
 	{
 		QTableWidgetItem * item = new QTableWidgetItem();
 		// special handling for surfaces without bc assigned
-		Q_ASSERT(it->first != nullptr);
-		item->setBackground(it->first->m_color);
-		item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
-		m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
+		if (it->first == nullptr) {
+			item->setBackground(QColor(64,64,64)); // gray = invalid
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
 
-		item = new QTableWidgetItem();
-		item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+			item = new QTableWidgetItem();
+			item->setText(tr("Invalid/missing boundary condition"));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+		}
+		else {
+			item->setBackground(it->first->m_color);
+			item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 0, item);
+
+			item = new QTableWidgetItem();
+			item->setText(QtExt::MultiLangString2QString(it->first->m_displayName) );
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetBoundaryConditions->setItem(row, 1, item);
+		}
 	}
 	// reselect row
 	m_ui->tableWidgetBoundaryConditions->blockSignals(false);
@@ -120,8 +131,16 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions
 
 
 void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_itemSelectionChanged() {
-	m_ui->pushButtonEditBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
-	m_ui->pushButtonSelectBoundaryConditions->setEnabled(m_ui->tableWidgetBoundaryConditions->currentRow() != -1);
+	bool enabled = m_ui->tableWidgetBoundaryConditions->currentRow() != -1;
+	if (enabled) {
+		// if selected item is an invalid/missing BC, disable buttongs
+		std::map<const VICUS::BoundaryCondition*, std::set<const VICUS::Surface *> >::const_iterator it = m_bcSurfacesMap.begin();
+		std::advance(it, m_ui->tableWidgetBoundaryConditions->currentRow());
+		if (it->first == nullptr)
+			enabled = false;
+	}
+	m_ui->pushButtonEditBoundaryConditions->setEnabled(enabled);
+	m_ui->pushButtonSelectBoundaryConditions->setEnabled(enabled);
 }
 
 
