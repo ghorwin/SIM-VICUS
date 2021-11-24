@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>4</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="pageNetwork">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -110,7 +110,7 @@
              <string>delete network</string>
             </property>
             <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
+             <iconset>
               <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
             </property>
            </widget>
@@ -547,6 +547,35 @@
           <string>Pipes used in current project</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0" colspan="4">
+           <widget class="QTableWidget" name="tableWidgetPipes"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pushButtonExchangePipe">
+            <property name="text">
+             <string>Exchange...</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>280</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButtonEditPipe">
             <property name="text">
@@ -560,21 +589,18 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonSelectEdgesWithPipe">
+            <property name="text">
+             <string>Select</string>
             </property>
-            <property name="sizeHint" stdset="0">
+            <property name="iconSize">
              <size>
-              <width>280</width>
-              <height>20</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
-           </spacer>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetPipes"/>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -661,6 +687,22 @@
           <string>Sub networks used in current project</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0" colspan="4">
+           <widget class="QTableWidget" name="tableWidgetSubNetworks"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QPushButton" name="pushButtonExchangeSubNetwork">
+            <property name="text">
+             <string>Exchange...</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <widget class="QPushButton" name="pushButtonEditSubNetworks">
             <property name="text">
@@ -674,7 +716,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="1" column="3">
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -687,8 +729,18 @@
             </property>
            </spacer>
           </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QTableWidget" name="tableWidgetSubNetworks"/>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="pushButtonSelectNodesWithSubNetwork">
+            <property name="text">
+             <string>Select</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -864,19 +916,17 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QtExt::BrowseFilenameWidget</class>
    <extends>QWidget</extends>
    <header>QtExt_BrowseFilenameWidget.h</header>
    <container>1</container>
   </customwidget>
-  <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-  </customwidget>
  </customwidgets>
- <resources>
-  <include location="../resources/SIM-VICUS.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
