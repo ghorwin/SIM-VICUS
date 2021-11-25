@@ -2682,6 +2682,10 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 	}
 
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
+	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
+	unsigned int idSoilModel = 0;
+
 	// now iterate over edges
 	std::vector<unsigned int> compIds(componentIds.begin(), componentIds.end());
 	for (VICUS::NetworkEdge *edge: orderedEdges) {
@@ -2821,10 +2825,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			edge->m_idNandradSupplyPipe = supplyPipe.m_id;
 			edge->m_idNandradReturnPipe = returnPipe.m_id;
 
-//			// einfacher Ansatz: für jede Edge ein Delphin Modell
-//			++idSoilModel;
-//			mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
-//			mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
+			// assign one soil model for each single pipe
+			if (vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels == 0) {
+				++idSoilModel;
+				mapSoil2SupplyPipes[idSoilModel].push_back(supplyPipe.m_id);
+				mapSoil2ReturnPipes[idSoilModel].push_back(returnPipe.m_id);
+			}
 
 		}
 	}  // end of iteration over edges
@@ -2832,111 +2838,109 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		return;
 
 
-	// besserer Ansatz: entlang der Pfade gehen und entsprechend des TempChangeIndicator die Delphin Modelle zuweisen...
-
-	Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
-	dbPipes.setData(m_embeddedDB.m_pipes);
+	// Alternative to assigning one soil model to each single pipe:
+	// Assign a given number of soil models to pipes with similar cumulative temperature change indicator
 	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
-	vicusNetwork.calcTemperatureChangeIndicator(*fluid, dbPipes, shortestPaths);
+	if (vicusNetwork.m_hasHeatExchangeWithGround && vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels == 0) {
 
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
-	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
-	std::vector<unsigned int> allSoilModelIds;
+		// first calculate paths from source to each building and temperature change indicator for each pipe
+		Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
+		dbPipes.setData(m_embeddedDB.m_pipes);
+		vicusNetwork.calcTemperatureChangeIndicator(*fluid, dbPipes, shortestPaths);
 
-	// Mind: const-cast is ok here, since member vars are only needed below
-	for (NetworkEdge &e: vicusNetwork.m_edges) {
-		e.m_idSoil = VICUS::INVALID_ID;
-		e.m_cumulativeTempChangeIndicator = -1;
-	}
-
-	double cumTempChangeindicatorMax = 0;
-	double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
-
-	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-
-		double cumTempChangeindicator = 0;
-		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-		for (NetworkEdge * edge: shortestPath){
-
-			// 1. calculate the cumulative temperature change indicator
-			cumTempChangeindicator += edge->m_tempChangeIndicator;
-
-			if (edge->m_cumulativeTempChangeIndicator < 0)
-				edge->m_cumulativeTempChangeIndicator = cumTempChangeindicator;
-
-			if (cumTempChangeindicator > cumTempChangeindicatorMax)
-				cumTempChangeindicatorMax = cumTempChangeindicator;
-			if (cumTempChangeindicator < cumTempChangeindicatorMin)
-				cumTempChangeindicatorMin = cumTempChangeindicator;
+		// reset edges
+		// Mind: const-cast is ok here, since member vars are only needed below
+		for (NetworkEdge &e: vicusNetwork.m_edges) {
+			e.m_idSoil = VICUS::INVALID_ID;
+			e.m_cumulativeTempChangeIndicator = -1;
 		}
-	}
 
-	unsigned int Nranges = 10;
-	std::vector<double> ranges(Nranges);
-	for (unsigned int i=0; i<Nranges; ++i){
-		ranges[i] = cumTempChangeindicatorMin  +
-				(i+1) * (cumTempChangeindicatorMax - cumTempChangeindicatorMin) / Nranges;
-	}
 
-	for (NetworkEdge &edge: vicusNetwork.m_edges){
+		// iterate over paths and cumTempChangeindicator and min/max values
+		double cumTempChangeindicatorMax = 0;
+		double cumTempChangeindicatorMin = std::numeric_limits<double>::max();
+		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
 
-		if (edge.m_idSoil != VICUS::INVALID_ID)
-			continue;
+			double cumTempChangeindicator = 0;
+			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+			for (NetworkEdge * edge: shortestPath){
 
-		if (edge.m_cumulativeTempChangeIndicator <= ranges[0]){
-			edge.m_idSoil = 1;
-		}
-		else {
-			for (unsigned int i=1; i<Nranges; ++i){
-				if (edge.m_cumulativeTempChangeIndicator <= ranges[i]){
-					edge.m_idSoil = i+1;
-					break;
-				}
+				cumTempChangeindicator += edge->m_tempChangeIndicator;
+				if (edge->m_cumulativeTempChangeIndicator < 0)
+					edge->m_cumulativeTempChangeIndicator = cumTempChangeindicator;
+				if (cumTempChangeindicator > cumTempChangeindicatorMax)
+					cumTempChangeindicatorMax = cumTempChangeindicator;
+				if (cumTempChangeindicator < cumTempChangeindicatorMin)
+					cumTempChangeindicatorMin = cumTempChangeindicator;
 			}
 		}
 
-		if (edge.m_idSoil != VICUS::INVALID_ID){
-			mapSoil2SupplyPipes[edge.m_idSoil].push_back(edge.m_idNandradSupplyPipe);
-			mapSoil2ReturnPipes[edge.m_idSoil].push_back(edge.m_idNandradReturnPipe);
+		// ranges cumTempChangeindicator for each soil model
+		unsigned int numSoilModels = vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels;
+		std::vector<double> ranges(numSoilModels);
+		for (unsigned int i=0; i<numSoilModels; ++i){
+			ranges[i] = cumTempChangeindicatorMin  +
+					(i+1) * (cumTempChangeindicatorMax - cumTempChangeindicatorMin) / numSoilModels;
+		}
+
+		// assign soil models to edges
+		for (NetworkEdge &edge: vicusNetwork.m_edges){
+			if (edge.m_idSoil != VICUS::INVALID_ID)
+				continue;
+			if (edge.m_cumulativeTempChangeIndicator <= ranges[0]){
+				edge.m_idSoil = 1;
+			}
+			else {
+				for (unsigned int i=1; i<numSoilModels; ++i){
+					if (edge.m_cumulativeTempChangeIndicator <= ranges[i]){
+						edge.m_idSoil = i+1;
+						break;
+					}
+				}
+			}
+			// write map
+			if (edge.m_idSoil != VICUS::INVALID_ID){
+				mapSoil2SupplyPipes[edge.m_idSoil].push_back(edge.m_idNandradSupplyPipe);
+				mapSoil2ReturnPipes[edge.m_idSoil].push_back(edge.m_idNandradReturnPipe);
+			}
 		}
 	}
-
-
 
 	// write mapping file
-	std::ofstream f;
-	std::string file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".mapping";
-	f.open(file, std::ofstream::out | std::ofstream::trunc);
-	f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
-	for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
-		unsigned int soilId = it->first;
-		f << soilId << "\t";
-		for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
-			f << supplyId << ",";
-		f << "\t";
-		for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
-			f << returnId << ",";
-		f << std::endl;
-	}
-	f.close();
-
-
-	vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
-	vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
-
-	// write NANDRAD ids for the path of each building
-	file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".paths";
-	f.open(file, std::ofstream::out | std::ofstream::trunc);
-	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-		f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
-		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
-		for (const NetworkEdge * edge: shortestPath){
-			f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+	if (vicusNetwork.m_hasHeatExchangeWithGround) {
+		std::ofstream f;
+		std::string file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".mapping";
+		f.open(file, std::ofstream::out | std::ofstream::trunc);
+		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
+		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
+			unsigned int soilId = it->first;
+			f << soilId << "\t";
+			for (unsigned int supplyId: mapSoil2SupplyPipes.at(soilId))
+				f << supplyId << ",";
+			f << "\t";
+			for (unsigned int returnId: mapSoil2ReturnPipes.at(soilId))
+				f << returnId << ",";
+			f << std::endl;
 		}
-		f << std::endl;
-	}
-	f.close();
+		f.close();
 
+		vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
+		vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
+
+		// write NANDRAD ids for the path of each building
+		file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".paths";
+		f.open(file, std::ofstream::out | std::ofstream::trunc);
+		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
+			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
+			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
+			for (const NetworkEdge * edge: shortestPath){
+				f << edge->m_idNodeInlet << ',' << edge->m_idNodeOutlet << "\t";
+			}
+			f << std::endl;
+		}
+		f.close();
+
+	}
 
 	 // we are DONE !!!
 	 // finally add to nandrad project

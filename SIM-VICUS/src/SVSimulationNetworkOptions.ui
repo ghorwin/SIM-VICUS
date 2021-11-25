@@ -121,14 +121,26 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Max TempChangeIndicator [K/K]</string>
+         <string>Number of different soil models</string>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxTempChangeIndicator">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNumberOfSoilModels">
         <property name="text">
          <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>set =0 to use a different soil model for each single pipe</string>
         </property>
        </widget>
       </item>

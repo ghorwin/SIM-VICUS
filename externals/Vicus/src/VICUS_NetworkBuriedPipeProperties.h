@@ -4,6 +4,7 @@
 #include "VICUS_CodeGenMacros.h"
 
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 
 namespace VICUS {
@@ -26,16 +27,19 @@ public:
 	enum para_t {
 		P_PipeSpacing,				// Keyword: PipeSpacing		[m]		'Spacing between supply and return pipes'
 		P_PipeDepth,				// Keyword: PipeDepth		[m]		'Distance between soil surface and pipes'
-		P_MaxTempChangeIndicator,	// Keyword: MaxTempChangeIndicator		[---]		'MaxTempChangeIndicator'
 		NUM_P
 	};
 
 	NetworkBuriedPipeProperties();
 
+	/*! Soil type */
 	SoilType					m_soilType = NUM_ST;				// XML:E
 
+	/*! Parameters of pipes in the ground */
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
+	/*! Number of different soil models used for FMI coupling. If =0, one soil model is assigned to each single pipe */
+	unsigned int				m_numberOfSoilModels;				// XML:E
 };
 
 

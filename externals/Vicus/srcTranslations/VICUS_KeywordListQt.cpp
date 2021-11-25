@@ -130,7 +130,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Silt");
 	tr("Spacing between supply and return pipes");
 	tr("Distance between soil surface and pipes");
-	tr("MaxTempChangeIndicator");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");

@@ -11,7 +11,6 @@ NetworkBuriedPipeProperties::NetworkBuriedPipeProperties()
 	// set default values
 	KeywordList::setParameter(m_para, "NetworkBuriedPipeProperties::para_t", P_PipeDepth, 0.8);
 	KeywordList::setParameter(m_para, "NetworkBuriedPipeProperties::para_t", P_PipeSpacing, 0.5);
-	KeywordList::setParameter(m_para, "NetworkBuriedPipeProperties::para_t", P_MaxTempChangeIndicator, 0.1);
 }
 
 

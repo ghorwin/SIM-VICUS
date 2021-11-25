@@ -300,7 +300,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PipeSpacing";
 				case 1 : return "PipeDepth";
-				case 2 : return "MaxTempChangeIndicator";
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -771,7 +770,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PipeSpacing";
 				case 1 : return "PipeDepth";
-				case 2 : return "MaxTempChangeIndicator";
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -1243,7 +1241,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Spacing between supply and return pipes";
 				case 1 : return "Distance between soil surface and pipes";
-				case 2 : return "MaxTempChangeIndicator";
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -1714,7 +1711,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "m";
-				case 2 : return "---";
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -2185,7 +2181,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -2656,7 +2651,6 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::ModelType
 			case 22 :
@@ -2978,7 +2972,7 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::SoilType
 			case 20 : return 3;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 : return 3;
+			case 21 : return 2;
 			// NetworkComponent::ModelType
 			case 22 : return 15;
 			// NetworkComponent::para_t
@@ -3100,7 +3094,7 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::SoilType
 			case 20 : return 2;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 : return 2;
+			case 21 : return 1;
 			// NetworkComponent::ModelType
 			case 22 : return 14;
 			// NetworkComponent::para_t

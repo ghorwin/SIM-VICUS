@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="pageNetwork">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -110,7 +110,7 @@
              <string>delete network</string>
             </property>
             <property name="icon">
-             <iconset>
+             <iconset resource="../resources/SIM-VICUS.qrc">
               <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
             </property>
            </widget>
@@ -510,13 +510,6 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>Temperature Change Indicator</string>
-            </property>
-           </widget>
-          </item>
           <item row="4" column="1">
            <widget class="QLabel" name="labelTempChangeIndicator">
             <property name="text">
@@ -535,6 +528,13 @@
            <widget class="QLabel" name="labelPipeLength">
             <property name="text">
              <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_23">
+            <property name="text">
+             <string>Temperature Change Indicator</string>
             </property>
            </widget>
           </item>
@@ -927,6 +927,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
  <connections/>
 </ui>

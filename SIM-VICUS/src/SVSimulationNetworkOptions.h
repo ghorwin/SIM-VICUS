@@ -31,7 +31,7 @@ private slots:
 
 	void on_lineEditPipeDepth_editingFinished();
 
-	void on_lineEditMaxTempChangeIndicator_editingFinished();
+	void on_lineEditNumberOfSoilModels_editingFinished();
 
 private:
 	Ui::SVSimulationNetworkOptions *m_ui;

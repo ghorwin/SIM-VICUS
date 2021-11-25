@@ -115,7 +115,7 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("maximum heating demand at this node"), false, true);
 	m_ui->lineEditHXTransferCoefficient->setup(0, std::numeric_limits<double>::max(), tr("convective heat exchange coefficient, set =0 to neglect"), true, true);
 
-	// toggle buttons enable state
+	// disable buttons related to table widgets
 	on_tableWidgetPipes_itemSelectionChanged();
 	on_tableWidgetSubNetworks_itemSelectionChanged();
 }
