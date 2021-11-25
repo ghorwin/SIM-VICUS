@@ -39,7 +39,7 @@ public:
 	IBK::Parameter				m_para[NUM_P];						// XML:E
 
 	/*! Number of different soil models used for FMI coupling. If =0, one soil model is assigned to each single pipe */
-	unsigned int				m_numberOfSoilModels;				// XML:E
+	unsigned int				m_numberOfSoilModels = 10;				// XML:E
 };
 
 

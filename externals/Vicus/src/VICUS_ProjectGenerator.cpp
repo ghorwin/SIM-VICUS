@@ -2841,7 +2841,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	// Alternative to assigning one soil model to each single pipe:
 	// Assign a given number of soil models to pipes with similar cumulative temperature change indicator
 	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
-	if (vicusNetwork.m_hasHeatExchangeWithGround && vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels == 0) {
+	if (vicusNetwork.m_hasHeatExchangeWithGround && vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels != 0) {
+
+		if (vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels > vicusNetwork.m_edges.size())
+			throw IBK::Exception(IBK::FormatString("Number of soil models (=%1) can not be higher than number of "
+												   "edges in the network (=%2)")
+								 .arg(vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels).arg(vicusNetwork.m_edges.size()), FUNC_ID);
 
 		// first calculate paths from source to each building and temperature change indicator for each pipe
 		Database<NetworkPipe> dbPipes = Database<NetworkPipe>(1); // we dont care
@@ -2854,7 +2859,6 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			e.m_idSoil = VICUS::INVALID_ID;
 			e.m_cumulativeTempChangeIndicator = -1;
 		}
-
 
 		// iterate over paths and cumTempChangeindicator and min/max values
 		double cumTempChangeindicatorMax = 0;
