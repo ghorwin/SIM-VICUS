@@ -115,6 +115,9 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("maximum heating demand at this node"), false, true);
 	m_ui->lineEditHXTransferCoefficient->setup(0, std::numeric_limits<double>::max(), tr("convective heat exchange coefficient, set =0 to neglect"), true, true);
 
+	// toggle buttons enable state
+	on_tableWidgetPipes_itemSelectionChanged();
+	on_tableWidgetSubNetworks_itemSelectionChanged();
 }
 
 
@@ -1292,7 +1295,7 @@ void SVPropNetworkEditWidget::on_pushButtonSelectNodesWithSubNetwork_clicked()
 
 void SVPropNetworkEditWidget::on_tableWidgetSubNetworks_itemSelectionChanged()
 {
-	bool enabled =  m_ui->tableWidgetSubNetworks->currentRow() != -1;
+	bool enabled = m_ui->tableWidgetSubNetworks->currentRow() != -1;
 	m_ui->pushButtonEditSubNetworks->setEnabled(enabled);
 	m_ui->pushButtonSelectNodesWithSubNetwork->setEnabled(enabled);
 	m_ui->pushButtonExchangeSubNetwork->setEnabled(enabled);
