@@ -149,6 +149,9 @@ public:
 
 private slots:
 
+	/*! Triggered when user selects a different available output. */
+	void onAvailableOutputSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
 #if 0
 	void on_checkBoxDefaultZoneOutputs_toggled(bool checked);
 

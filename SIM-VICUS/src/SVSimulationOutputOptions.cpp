@@ -92,8 +92,12 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
 
-	m_ui->splitter->setStretchFactor(0,0);
-	m_ui->splitter->setStretchFactor(1,1);
+	// selection change signal
+	connect(m_ui->tableViewAvailableOutputs->selectionModel(), &QItemSelectionModel::selectionChanged,
+			this, &SVSimulationOutputOptions::onAvailableOutputSelectionChanged);
+
+	m_ui->splitter->setStretchFactor(0, 1);
+	m_ui->splitter->setStretchFactor(1, 2);
 }
 
 
@@ -228,6 +232,27 @@ void SVSimulationOutputOptions::updateUi() {
 	fileName += "/var/output_reference_list.txt";
 
 	m_outputTableModel->updateListFromFile(fileName);
+}
+
+
+void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSelection & selected, const QItemSelection & /*deselected*/) {
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->clear();
+	if (selected.isEmpty()) {
+		m_ui->toolButtonAddDefinition->setEnabled(false);
+		m_ui->listWidgetObjectIDs->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		return;
+	}
+	m_ui->listWidgetObjectIDs->setEnabled(true);
+
+	// populate list widget with object IDs
+	// populate list widget with vector IDs
+
+	// check if we have vector indexes
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
+
+	// trigger selection change of object/vector IDs list widgets to update plus buttons
 }
 
 
