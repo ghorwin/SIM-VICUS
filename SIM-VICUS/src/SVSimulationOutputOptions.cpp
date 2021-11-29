@@ -223,6 +223,7 @@ void SVSimulationOutputOptions::updateUi() {
 	// update enabled status
 	on_tableWidgetOutputDefinitions_itemSelectionChanged();
 
+	// *** available outputs ***
 
 	// now tell table model to update its output cache from the current output_reference_list.txt file
 	// even though it might be outdated
@@ -232,6 +233,8 @@ void SVSimulationOutputOptions::updateUi() {
 	fileName += "/var/output_reference_list.txt";
 
 	m_outputTableModel->updateListFromFile(fileName);
+
+	// update highlighting of existing output definitions
 }
 
 
@@ -1128,4 +1131,16 @@ void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged()
 void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionChanged() {
 	// enable/disable buttons based on selection
 	m_ui->toolButtonRemoveDefinition->setEnabled(m_ui->tableWidgetOutputDefinitions->currentRow() != -1);
+}
+
+
+void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
+	// now tell table model to update its output cache from the current output_reference_list.txt file
+	// even though it might be outdated
+
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+
+	m_outputTableModel->updateListFromFile(fileName);
 }

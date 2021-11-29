@@ -221,7 +221,7 @@
        <item row="0" column="0" colspan="4">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="pushButtonUpdateOutputList">
            <property name="text">
             <string>Update output list</string>
            </property>
