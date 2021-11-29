@@ -281,10 +281,10 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				switch(prio){
 					case Height:{
 
-						double areaSurfaceMax = (widthSurface - 2 * dMin) * heightWinMax1;
+						heightWin = std::min(heightWinPre, heightWinMax1);
+						double areaSurfaceMax = (widthSurface - 2 * dMin) * heightWin;
 
 						if(areaSurfaceMax > areaWindow){
-							heightWin = std::min(heightWinPre, heightWinMax1);
 							widthWin = areaWindow / ( heightWin * count);
 						}
 						else{
@@ -294,10 +294,9 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 					}
 					break;
 					case Width:{
-
+						widthWin = std::min(widthWinPre, widthWinMax);
 						double areaSurfaceWidth = widthWinPre * count * heightWinMax1;
 						if(areaSurfaceWidth >= areaWindow){
-							widthWin = widthWinPre;
 							heightWin = areaWindow / ( widthWin * count);
 						}
 						else{
@@ -322,8 +321,9 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 							if(inputData.m_priorities[0] > inputData.m_priorities[1] ){
 								/// TODO Dirk das wäre die ganz normale Berechnung für die
 								/// Höhe als oberste Priorität
+								heightWin = std::min(heightWinPre, heightWinMax2);
+								areaSurfaceSill = (widthSurface - 2 * dMin) * heightWin;
 								if(areaSurfaceSill > areaWindow){
-									heightWin = std::min(heightWinPre, heightWinMax2);
 									widthWin = areaWindow / ( heightWin * count);
 								}
 								else{
@@ -335,9 +335,9 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 							else if(true){
 								// This is the maximum possible area that results when the windows are calculated
 								// with the maximum possible window height, taking into account the sill height.
+								widthWin = std::min(widthWinPre, widthWinMax);
 								double areaSurfaceWidth = widthWinPre * count * heightWinMax2;
 								if( areaSurfaceWidth >= areaWindow){
-									widthWin = widthWinPre;
 									heightWin = areaWindow / ( widthWin * count );
 								}
 								else{
@@ -351,9 +351,9 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 									else{
 										/// TODO Dirk das wäre die ganz normale Berechnung für die
 										/// Breite als oberste Priorität
-										areaSurfaceWidth = widthWinPre * count * heightWinMax1;
+										widthWin = std::min(widthWinPre, widthWinMax);
+										areaSurfaceWidth = widthWin * count * heightWinMax1;
 										if(areaSurfaceWidth >= areaWindow){
-											widthWin = widthWinPre;
 											heightWin = areaWindow / ( widthWin * count);
 										}
 										else{
@@ -367,8 +367,6 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 								}
 							}
 						}
-						height = heightWin;
-						width = widthWin;
 					}
 					break;
 					case Distance:{
@@ -376,6 +374,8 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 						continue;
 					}
 				}
+				height = heightWin;
+				width = widthWin;
 				//check sill height
 				if( hSurf - height -minDistance < hPreSill)
 					sillHeight = hSurf - height - minDistance;
