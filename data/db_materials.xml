@@ -117,4 +117,45 @@
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
 	</Material>
+	
+	
+	
+	<Material id="10013" displayName="de:[TEASER] Fachwerk mit Strohlehmausfachung|en:[TEASER] half-timber with straw-loam-infill" color="#BF6E40">
+		<Notes/>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>TEASER</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">1150</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1060</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.56</IBK:Parameter>
+	</Material>	
+	<Material id="10014" displayName="de:[TEASER] Leichtbetonhohlblockstein|en:[TEASER] Light concrete hollow block" color="#BF6E40">
+		<Notes/>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>TEASER</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">1000</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.7</IBK:Parameter>
+	</Material>	
+	<Material id="10015" displayName="de:[TEASER] PSDämmung|en:[TEASER] PSInsulation" color="#BF6E40">
+		<Notes/>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>TEASER</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">30</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+	</Material>	
+	<Material id="10016" displayName="de:[TEASER] Mineralfaserdämmung|en:[TEASER] mineral fiber insulation" color="#BF6E40">
+		<Notes/>
+		<Manufacturer>generic</Manufacturer>
+		<DataSource>TEASER</DataSource>
+		<Category>Insulations</Category>
+		<IBK:Parameter name="Density" unit="kg/m3">700</IBK:Parameter>
+		<IBK:Parameter name="HeatCapacity" unit="J/kgK">1700</IBK:Parameter>
+		<IBK:Parameter name="Conductivity" unit="W/mK">0.17</IBK:Parameter>
+	</Material>
+	
+	
 </Materials>

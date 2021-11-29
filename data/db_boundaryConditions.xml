@@ -70,4 +70,50 @@
 			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
 		</InterfaceSolarAbsorption>
 	</BoundaryCondition>
+	
+	
+	<BoundaryCondition id="1015" displayName="DE: Randbedingung außen |EN: Outside boundary condition">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">17</IBK:Parameter>
+		</InterfaceHeatConduction>
+		<InterfaceSolarAbsorption modelType="Constant">
+			<IBK:Parameter name="AbsorptionCoefficient" unit="---">0.6</IBK:Parameter>
+		</InterfaceSolarAbsorption>
+		<InterfaceLongWaveEmission modelType="Constant">
+			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
+		</InterfaceLongWaveEmission>
+	</BoundaryCondition>
+	<BoundaryCondition id="1016" displayName="DE: Randbedingung innen (Wärmestrom horizontal) |EN: Inside boundary condition (horizontal heat flux)">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	<BoundaryCondition id="1017" displayName="DE: Randbedingung innen (Wärmestrom aufwärts) |EN: Inside boundary condition (upstream heat flux)">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	<BoundaryCondition id="1018" displayName="DE: Randbedingung innen (Wärmestrom abwärts) |EN: Inside boundary condition (downstream heat flux)">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Standard</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
+	
+	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
+		<InterfaceHeatConduction modelType="Constant">
+			<OtherZoneType>Constant</OtherZoneType>
+			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+			<IBK:Parameter name="ConstTemperature" unit="C">10</IBK:Parameter>
+		</InterfaceHeatConduction>
+	</BoundaryCondition>
 </BoundaryConditions>
