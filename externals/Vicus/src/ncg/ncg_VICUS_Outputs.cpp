@@ -61,7 +61,7 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 					VICUS::OutputDefinition obj;
 					obj.readXML(c2);
-					m_outputDefinitions.push_back(obj);
+					m_definitions.push_back(obj);
 					c2 = c2->NextSiblingElement();
 				}
 			}
@@ -112,12 +112,12 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 	if (!m_checkSum.empty())
 		e->SetAttribute("checkSum", m_checkSum);
 
-	if (!m_outputDefinitions.empty()) {
+	if (!m_definitions.empty()) {
 		TiXmlElement * child = new TiXmlElement("OutputDefinitions");
 		e->LinkEndChild(child);
 
-		for (std::vector<VICUS::OutputDefinition>::const_iterator it = m_outputDefinitions.begin();
-			it != m_outputDefinitions.end(); ++it)
+		for (std::vector<VICUS::OutputDefinition>::const_iterator it = m_definitions.begin();
+			it != m_definitions.end(); ++it)
 		{
 			it->writeXML(child);
 		}

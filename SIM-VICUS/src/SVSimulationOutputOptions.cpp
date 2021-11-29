@@ -30,9 +30,11 @@
 #include <VICUS_Outputs.h>
 #include <VICUS_OutputDefinition.h>
 #include <VICUS_KeywordList.h>
+#include <VICUS_KeywordListQt.h>
 
 #include <IBK_FileReader.h>
 #include <IBK_UnitList.h>
+#include <IBK_StringUtils.h>
 
 #include <NANDRAD_KeywordList.h>
 
@@ -54,8 +56,6 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->setupUi(this);
 	m_ui->verticalLayoutOutputs->setMargin(0);
 
-//	m_outputDefinitions = &m_outputs->m_definitions;
-
 	// output grid table setup
 	m_ui->tableWidgetOutputGrids->setColumnCount(4);
 	m_ui->tableWidgetOutputGrids->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Intervals") << tr("Start") << tr("End") );
@@ -69,47 +69,31 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	// output definition table setup
 	m_ui->tableWidgetOutputDefinitions->setColumnCount(6);
-	m_ui->tableWidgetOutputDefinitions->setHorizontalHeaderLabels( QStringList() << tr("Quantity") << tr("Object type") << tr("Object IDs") << tr("Vector IDs") << tr("Mean/Integral") << tr("Output grid")  );
+	m_ui->tableWidgetOutputDefinitions->setHorizontalHeaderLabels( QStringList() << tr("Quantity") << tr("Object type")
+				<< tr("Object IDs") << tr("Vector IDs") << tr("Mean/Integral") << tr("Output grid")  );
 	m_ui->tableWidgetOutputDefinitions->horizontalHeader()->setStretchLastSection(true);
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputDefinitions);
 	m_ui->tableWidgetOutputDefinitions->setSortingEnabled(false);
 
-#if 0
-	m_ui->radioButtonDefault->setChecked(true);
+	// create table model
 	m_outputTableModel = new SVSimulationOutputTableModel(this);
-	m_outputTableModel->m_outputDefinitions = &m_outputDefinitions;
 
+	// create table model
 	m_outputTableProxyModel = new QSortFilterProxyModel(this);
 	m_outputTableProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_outputTableProxyModel->setSourceModel(m_outputTableModel);
-	m_ui->tableViewOutputList->setModel(m_outputTableProxyModel);
-	SVStyle::formatDatabaseTableView(m_ui->tableViewOutputList);
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSourceObjectIds);
+	m_ui->tableViewAvailableOutputs->setModel(m_outputTableProxyModel);
+	SVStyle::formatDatabaseTableView(m_ui->tableViewAvailableOutputs);
 
-	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::MultiSelection);
-	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::MultiSelection);
+	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	m_ui->tableViewOutputList->sortByColumn(1, Qt::AscendingOrder);
+	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
 
 	m_ui->splitter->setStretchFactor(0,0);
 	m_ui->splitter->setStretchFactor(1,1);
-
-	m_ui->splitter_2->setStretchFactor(0,1);
-	m_ui->splitter_2->setStretchFactor(1,0);
-
-	m_ui->tableWidgetSourceObjectIds->setColumnCount(2);
-	m_ui->tableWidgetSourceObjectIds->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );
-	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
-	m_ui->tableWidgetSourceObjectIds->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::MultiSelection);
-	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
-			this, &SVSimulationOutputOptions::on_selectionChanged);
-#endif
-
 }
 
 
@@ -126,6 +110,11 @@ void SVSimulationOutputOptions::updateUi() {
 	m_ui->checkBoxDefaultNetworkOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
+
+	// *** output grids ***
+
+	// disable selection-model signals
+	m_ui->tableWidgetOutputGrids->selectionModel()->blockSignals(true);
 	m_ui->tableWidgetOutputGrids->clearContents();
 	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
 
@@ -136,8 +125,8 @@ void SVSimulationOutputOptions::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
 
-		// only populate start and end if intervals are all valid
 		try {
+			// only populate start and end if intervals are all valid
 			og.checkIntervalDefinition();
 
 			item = new QTableWidgetItem(QString("%1").arg(og.m_intervals.size()));
@@ -177,34 +166,72 @@ void SVSimulationOutputOptions::updateUi() {
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
 		}
 	}
-#if 0
-	// we set the correct timetype
-	if(m_activeOutputDefinition != nullptr)
-		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-			if (m_activeOutputDefinition->m_outputdefinition.m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
-				m_ui->comboBoxTimeType->setCurrentIndex(i);
-				break;
-			}
-		}
-#endif
-}
+	m_ui->tableWidgetOutputGrids->selectRow(0);
+	m_ui->tableWidgetOutputGrids->selectionModel()->blockSignals(false);
+	// update enabled status
+	on_tableWidgetOutputGrids_itemSelectionChanged();
 
-#if 0
-// Returns empty QByteArray() on failure.
-std::string fileChecksum(const QString &fileName,
-						QCryptographicHash::Algorithm hashAlgorithm)
-{
-	QFile f(fileName);
-	if (f.open(QFile::ReadOnly)) {
-		QCryptographicHash hash(hashAlgorithm);
-		if (hash.addData(&f)) {
-			return QString(hash.result().toHex()).toStdString();
-		}
+
+	// *** existing output definitions ***
+
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->clearContents();
+	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
+
+	// we update the output grid
+	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
+		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
+		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
+
+		// create list of comma-separated IDs
+		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
+
+		// create list of comma-separated IDs
+		ids = IBK::join_numbers(of.m_vectorIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
+
+		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
+		// we default to None
+		if (tt == VICUS::OutputDefinition::NUM_OTT)
+			tt = VICUS::OutputDefinition::OTT_NONE;
+		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
+		item = new QTableWidgetItem(ttypekw);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,4, item);
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetOutputGrids->setItem((int)i,5, item);
 	}
-	return std::string();
+	m_ui->tableWidgetOutputDefinitions->selectRow(0);
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
+	// update enabled status
+	on_tableWidgetOutputDefinitions_itemSelectionChanged();
+
+
+	// now tell table model to update its output cache from the current output_reference_list.txt file
+	// even though it might be outdated
+
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+
+	m_outputTableModel->updateListFromFile(fileName);
 }
 
 
+#if 0
 void SVSimulationOutputOptions::generateOutputTable() {
 	FUNCID(SVSimulationOutputOptions::generateOutputTable);
 	// parse the variable list file
@@ -1064,3 +1091,16 @@ void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
 }
 
 #endif
+
+
+void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged() {
+	// enable/disable buttons based on selection
+	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
+	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
+}
+
+
+void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionChanged() {
+	// enable/disable buttons based on selection
+	m_ui->toolButtonRemoveDefinition->setEnabled(m_ui->tableWidgetOutputDefinitions->currentRow() != -1);
+}

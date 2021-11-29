@@ -184,6 +184,10 @@ private slots:
 
 	void on_toolButtonAddSource_clicked();
 #endif
+	void on_tableWidgetOutputGrids_itemSelectionChanged();
+
+	void on_tableWidgetOutputDefinitions_itemSelectionChanged();
+
 private:
 #if 0
 	/*! Finds the corresponding nandrad model by id and returns its name
@@ -212,21 +216,13 @@ private:
 	/*! Pointer to VICUS::Outputs object in current project. */
 	VICUS::Outputs									*m_outputs = nullptr;
 
-#if 0
-	/* Cached Selection model - needed to determine wether selection goes up or down
-	   and to set the correct active output definition */
-	QItemSelection									m_itemSelection;
-	bool											m_itemIsSet = false;
-
-	/*! Table model instance for input vars. */
+	/*! Table model instance that provides list with available output variables. */
 	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;
 
 	/*! Filter model for output definition */
 	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
 
-	/*! Pointer to active object in List */
-	const OutputDefinition							*m_activeOutputDefinition = nullptr;
-
+#if 0
 	// ============================================================================================
 	//  ONLY NEEDED FOR NANDRAD; IS APPLIED WHEN OUTPUT DEFINITION IN TABLE VIEW IS DOUBLE CLICKED
 	// ============================================================================================

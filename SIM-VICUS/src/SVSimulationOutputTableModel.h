@@ -26,23 +26,12 @@
 #ifndef SVSimulationOutputTableModelH
 #define SVSimulationOutputTableModelH
 
-#include <QObject>
 #include <QAbstractTableModel>
-#include <QCryptographicHash>
-#include <QFont>
-#include <QColor>
 
-#include <VICUS_OutputDefinition.h>
-
-#include <IBK_Unit.h>
-
+#include <set>
 #include <vector>
 
-namespace NANDRAD {
-	class OutputGrid;
-}
-
-/*! This table model shows the available outputs. */
+/*! This table model shows the available outputs from output_reference_list.txt. */
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -50,20 +39,25 @@ public:
 
 	int rowCount(const QModelIndex & parent) const override;
 	int columnCount(const QModelIndex & parent) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 	QVariant data(const QModelIndex & index, int role) const override;
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-	Qt::ItemFlags flags(const QModelIndex & index) const override;
+	/*! Updates the internal data storage of the model. */
+	void updateListFromFile(const QString & outputRefListFilepath);
 
-	/*! Resets the table model */
-	void reset();
+private:
 
-	/*! Updated the row with changed data */
-	void updateOutputData(unsigned int row);
+	/*! Holds the data of a single line in the file 'output_reference_list.txt'. */
+	struct OutputVariable {
+		std::string m_objectTypeName;
+		std::string m_quantity;
+		std::string m_unit;
+		std::set<unsigned int> m_objectIds;
+		std::set<unsigned int> m_vectorIds;
+	};
 
-	std::vector<VICUS::OutputDefinition>						*m_outputDefinitions = nullptr;
-
-	QFont														m_itemFont;
+	/*! List of variables from output definitions file. */
+	std::vector<OutputVariable> m_variables;
 };
 
-#endif // SVSIMULATIONOUTPUTTABLEMODEL_H
+#endif // SVSimulationOutputTableModelH

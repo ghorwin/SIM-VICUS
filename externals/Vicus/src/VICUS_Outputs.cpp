@@ -33,7 +33,7 @@ bool Outputs::operator!=(const Outputs & other) const {
 			return true;
 	if (m_timeUnit != other.m_timeUnit)
 		return true;
-	if (m_outputDefinitions != other.m_outputDefinitions)
+	if (m_definitions != other.m_definitions)
 		return true;
 	if (m_grids != other.m_grids)
 		return true;

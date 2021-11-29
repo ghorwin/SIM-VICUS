@@ -2,14 +2,50 @@
 <VicusProject fileVersion="0.6">
 	<ProjectInfo>
 		<Created>Mo. Nov. 29 13:50:13 2021</Created>
-		<LastEdited>Mo. Nov. 29 13:50:13 2021</LastEdited>
+		<LastEdited>Mo. Nov. 29 13:53:19 2021</LastEdited>
 	</ProjectInfo>
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
+	</DirectoryPlaceholders>
 	<Project>
-		<SolverParameter />
-		<SimulationParameter />
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
 		<Location>
-			<TimeZone>13</TimeZone>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.07</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
@@ -65,7 +101,7 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" idComponent="50001" idSideASurface="244" />
+			<ComponentInstance id="2" idComponent="1012" idSideASurface="244" />
 			<ComponentInstance id="3" idComponent="1011" idSideASurface="245" />
 			<ComponentInstance id="4" idComponent="1001" idSideASurface="246" />
 			<ComponentInstance id="5" idComponent="1001" idSideASurface="247" />
@@ -91,6 +127,15 @@
 					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				</Material>
+				<Material id="10004" displayName="de:[SimQuality] Dämmung 2 |en:[SimQuality] Insulation 2" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF05).|de:Dämmstoff zur Verwendung in SimQuality (TF05).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.02</IBK:Parameter>
 				</Material>
 				<Material id="10007" displayName="de:[SimQuality] Gipsputz|en:[SimQuality] Gypsum plaster" color="#cbb4b4">
 					<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
@@ -128,23 +173,22 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
 				</Material>
-				<Material id="10013" displayName="Cast Concrete_.3" color="#41ff82">
-					<Category>Miscellaneous</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.13</IBK:Parameter>
-				</Material>
-				<Material id="10014" displayName="Floor/Roof Screed_.O6" color="#4959ff">
-					<Category>Miscellaneous</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">1200</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">840</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.41</IBK:Parameter>
-				</Material>
 			</Materials>
 			<Constructions>
 				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10004">
+							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
+						</MaterialLayer>
 						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
@@ -170,17 +214,6 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="20002" displayName="Zwischendecke 36cm">
-					<DataSource>IDF Import</DataSource>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10013">
-							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer idMaterial="10014">
-							<IBK:Parameter name="Thickness" unit="m">0.06</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
 			</Constructions>
 			<BoundaryConditions>
 				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
@@ -193,18 +226,6 @@
 					<InterfaceHeatConduction modelType="Constant">
 						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
-				<BoundaryCondition id="1010" displayName="DE: Innenoberfläche (nur Wärmeleitung, mit effektivem langwelligem Strahlungsaustausch) |EN: Inside surface (only heat conduction, with effective long wave radiation exchange)" color="#ff4000">
-					<InterfaceHeatConduction modelType="Constant">
-						<OtherZoneType>Standard</OtherZoneType>
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">6.8</IBK:Parameter>
-					</InterfaceHeatConduction>
-				</BoundaryCondition>
-				<BoundaryCondition id="1011" displayName="DE: Bodenkontakt (nur Wärmeleitung, Oberflächenkontakt) |EN: Ground surface (heat conduction only, surface contact)" color="#692990">
-					<InterfaceHeatConduction modelType="Constant">
-						<OtherZoneType>Constant</OtherZoneType>
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
@@ -221,11 +242,11 @@
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50001" displayName="Zwischendecke 36cm-component" color="#26ff1b">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>20002</IdConstruction>
-					<IdSideABoundaryCondition>1010</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1011</IdSideBBoundaryCondition>
+				<Component id="1012" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1006</IdConstruction>
+					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 		</EmbeddedDatabase>
