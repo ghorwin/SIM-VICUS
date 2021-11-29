@@ -272,26 +272,26 @@
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1057" displayName="Geschossdecke_1969_bis_1983_leichte_Bauart" color="#E01BD3">
+				<Component id="1047" displayName="Geschossdecke_1969_bis_1983_leichte_Bauart" color="#E01BD3">
 					<Type>Ceiling</Type>
 					<IdConstruction>20120</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
 				</Component>
 				
-				<Component id="50311" displayName="Geschossdecke_1969_bis_1978_schwere_Bauart" color="#A3149A">
+				<Component id="1048" displayName="Geschossdecke_1969_bis_1978_schwere_Bauart" color="#A3149A">
 					<Type>Ceiling</Type>
 					<IdConstruction>20126</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50299" displayName="Geschossdecke_1979_bis_1983_schwere_Bauart" color="#A3149A">
+				<Component id="1049" displayName="Geschossdecke_1979_bis_1983_schwere_Bauart" color="#A3149A">
 					<Type>Ceiling</Type>
 					<IdConstruction>20115</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50300" displayName="Geschossdecke_1984_bis_1994_schwere_Bauart" color="#A3149A">
+				<Component id="1050" displayName="Geschossdecke_1984_bis_1994_schwere_Bauart" color="#A3149A">
 					<Type>Ceiling</Type>
 					<IdConstruction>20109</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
@@ -302,37 +302,37 @@
 				
 				
 				
-				<Component id="50323" displayName="Schragdach_bis_1918_leichte_Bauart" color="#E0251B">
+				<Component id="1051" displayName="Schragdach_bis_1918_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20136</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50318" displayName="Schragdach_1919_bis_1968_leichte_Bauart" color="#E0251B">
+				<Component id="1052" displayName="Schragdach_1919_bis_1968_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20132</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50324" displayName="Schragdach_1969_bis_1978_leichte_Bauart" color="#E0251B">
+				<Component id="1053" displayName="Schragdach_1969_bis_1978_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20137</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50334" displayName="Schragdach_1979_bis_1983_leichte_Bauart" color="#E0251B">
+				<Component id="1054" displayName="Schragdach_1979_bis_1983_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20146</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50331" displayName="Schragdach_1984_bis_1994_leichte_Bauart" color="#E0251B">
+				<Component id="1055" displayName="Schragdach_1984_bis_1994_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20143</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50327" displayName="Schragdach_1995_bis_2015_leichte_Bauart" color="#E0251B">
+				<Component id="1056" displayName="Schragdach_1995_bis_2015_leichte_Bauart" color="#E0251B">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20140</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
@@ -340,31 +340,31 @@
 				</Component>
 				
 				
-				<Component id="50317" displayName="Schragdach_bis_1968_schwere_Bauart" color="#C71F17">
+				<Component id="1057" displayName="Schragdach_bis_1968_schwere_Bauart" color="#C71F17">
 					<Type>WarmRoof</Type>
 					<IdConstruction>20131</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50325" displayName="Schragdach_1969_bis_1978_schwere_Bauart" color="#C71F17">
+				<Component id="1058" displayName="Schragdach_1969_bis_1978_schwere_Bauart" color="#C71F17">
 					<Type>Miscellaneous</Type>
 					<IdConstruction>20138</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50330" displayName="Schragdach_1979_bis_1983_schwere_Bauart" color="#C71F17">
+				<Component id="1059" displayName="Schragdach_1979_bis_1983_schwere_Bauart" color="#C71F17">
 					<Type>Miscellaneous</Type>
 					<IdConstruction>20142</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50333" displayName="Schragdach_1984_bis_1994_schwere_Bauart" color="#C71F17">
+				<Component id="1060" displayName="Schragdach_1984_bis_1994_schwere_Bauart" color="#C71F17">
 					<Type>Miscellaneous</Type>
 					<IdConstruction>20145</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50329" displayName="Schragdach_1995_bis_2015_schwere_Bauart" color="#C71F17">
+				<Component id="1061" displayName="Schragdach_1995_bis_2015_schwere_Bauart" color="#C71F17">
 					<Type>Miscellaneous</Type>
 					<IdConstruction>20141</IdConstruction>
 					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
