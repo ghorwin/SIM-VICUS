@@ -2647,9 +2647,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		p.m_objectLists.push_back(objList);
 
 		// get a list with required schedule names, they correspond to the component schedule ids
-		std::vector<std::string> scheduleNames= NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(
+		std::vector<std::string> requiredScheduleNames= NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(
 					NetworkComponent::nandradNetworkComponentModelType(comp->m_modelType));
-		Q_ASSERT(scheduleNames.size() == comp->m_scheduleIds.size());
+
+		if (requiredScheduleNames.size() > 0 && requiredScheduleNames.size() != comp->m_scheduleIds.size()){
+			std::string names;
+			for (const std::string & name: requiredScheduleNames)
+				names += name + ", ";
+			errorStack.append(tr("Component with id #%1 requires schedules '%2' but only %1 is given")
+							  .arg(comp->m_id).arg(names.c_str()).arg(comp->m_scheduleIds.size()));
+		}
 
 		// add schedules of component to nandrad
 		for (unsigned int i = 0; i<comp->m_scheduleIds.size(); ++i){
@@ -2659,11 +2666,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 									 " does not exist").arg(comp->m_scheduleIds[i]).arg(comp->m_id));
 				continue;
 			}
-			if (!sched->isValid()){
+			std::string err;
+			if (!sched->isValid(err, true, p.m_placeholders)){
 				errorStack.append(tr("Schedule with id #%1 has invalid parameters").arg(sched->m_id));
 				continue;
 			}
-			addVicusScheduleToNandradProject(*sched, scheduleNames[i], p, objList.m_name);
+			if (sched->m_haveAnnualSchedule){
+				p.m_schedules.m_annualSchedules[objList.m_name].push_back(sched->m_annualSchedule);
+			}
+			else
+				addVicusScheduleToNandradProject(*sched, requiredScheduleNames[i], p, objList.m_name);
 		}
 	}
 	if(!errorStack.empty())

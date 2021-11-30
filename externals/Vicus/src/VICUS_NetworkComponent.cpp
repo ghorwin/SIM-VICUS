@@ -65,21 +65,21 @@ bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 		}
 	}
 
-	// check if given schedules really exist
+	// check if there is the correct number of schedules and given schedules really exist
 	std::vector<std::string> reqSchedules = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(nandradModelType);
-	std::vector<std::string> exSchedules;
+	if (reqSchedules.size() != m_scheduleIds.size())
+		return false;
 	for (unsigned int id: m_scheduleIds){
 		const Schedule *sched = scheduleDB[id];
 		if (sched == nullptr)
 			return false;
-		exSchedules.push_back(sched->m_displayName.string());
+		// TODO: implement sched.isValid() ?
+		// problem: does currently not work properly for annual schedules
 	}
 
 	// check if required schedules are given
-	for (const std::string &reqSchedule: reqSchedules){
-		if (std::find(exSchedules.begin(), exSchedules.end(), reqSchedule) == exSchedules.end())
-			return false;
-	}
+	if (reqSchedules.size() != m_scheduleIds.size())
+		return false;
 
 	// pipe properties
 	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID)
