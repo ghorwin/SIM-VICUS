@@ -45,13 +45,14 @@
 #include <QTextCodec>
 
 #include "SVProjectHandler.h"
-
 #include "SVStyle.h"
+#include "SVSimulationStartNandrad.h"
 
-SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs) :
+SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationOutputOptions),
-	m_outputs(&outputs)
+	m_outputs(&outputs),
+	m_simStartDialog(simStartDialog)
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayoutOutputs->setMargin(0);
@@ -176,53 +177,6 @@ void SVSimulationOutputOptions::updateUi() {
 	on_tableWidgetOutputGrids_itemSelectionChanged();
 
 
-	// *** existing output definitions ***
-
-	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
-	m_ui->tableWidgetOutputDefinitions->clearContents();
-	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
-
-	// we update the output grid
-	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
-		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
-		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
-
-		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
-
-		// create list of comma-separated IDs
-		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
-		item = new QTableWidgetItem(QString::fromStdString(ids));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
-
-		// create list of comma-separated IDs
-		ids = IBK::join_numbers(of.m_vectorIds, ',');
-		item = new QTableWidgetItem(QString::fromStdString(ids));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
-
-		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
-		// we default to None
-		if (tt == VICUS::OutputDefinition::NUM_OTT)
-			tt = VICUS::OutputDefinition::OTT_NONE;
-		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
-		item = new QTableWidgetItem(ttypekw);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,4, item);
-
-		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetOutputGrids->setItem((int)i,5, item);
-	}
-	m_ui->tableWidgetOutputDefinitions->selectRow(0);
-	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
-	// update enabled status
-	on_tableWidgetOutputDefinitions_itemSelectionChanged();
-
 	// *** available outputs ***
 
 	// now tell table model to update its output cache from the current output_reference_list.txt file
@@ -234,7 +188,23 @@ void SVSimulationOutputOptions::updateUi() {
 
 	m_outputTableModel->updateListFromFile(fileName);
 
-	// update highlighting of existing output definitions
+	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
+		QDateTime outRefFile = QFileInfo(fileName).lastModified();
+		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
+		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
+			m_ui->labelOutputUpdateNeeded->setVisible(true);
+		else
+			m_ui->labelOutputUpdateNeeded->setVisible(false);
+	}
+	else {
+		m_ui->labelOutputUpdateNeeded->setVisible(true);
+	}
+
+
+	// *** existing output definitions ***
+
+	updateOutputDefinitionTable();
+
 }
 
 
@@ -1123,7 +1093,8 @@ void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
 
 void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged() {
 	// enable/disable buttons based on selection
-	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
+	// Mind: you must not delete the default grid
+	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1 && m_ui->tableWidgetOutputGrids->rowCount() > 1);
 	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
 }
 
@@ -1135,6 +1106,11 @@ void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionCha
 
 
 void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
+	// run test-init and if successful, update output list
+	if (m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
+		return;
+	}
+
 	// now tell table model to update its output cache from the current output_reference_list.txt file
 	// even though it might be outdated
 
@@ -1143,4 +1119,92 @@ void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	fileName += "/var/output_reference_list.txt";
 
 	m_outputTableModel->updateListFromFile(fileName);
+
+	// finally update the table with available output definitions
+	updateOutputDefinitionTable();
+}
+
+
+void SVSimulationOutputOptions::updateOutputDefinitionTable() {
+
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->clearContents();
+	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
+
+	QFont f(m_ui->tableWidgetOutputDefinitions->font());
+	f.setStyle(QFont::StyleItalic);
+
+	QColor badColor = Qt::gray; // the default, when there is not output_reference_list
+	if (m_outputTableModel->rowCount(QModelIndex()) != 0)
+		badColor = Qt::darkRed;
+	// we update the output grid
+	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
+		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
+
+		// is this output being generated from the current project?
+		bool correct = m_outputTableModel->haveOutput(of);
+
+		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
+
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
+
+		// create list of comma-separated IDs
+		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
+
+		// create list of comma-separated IDs
+		ids = IBK::join_numbers(of.m_vectorIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
+
+		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
+		// we default to None
+		if (tt == VICUS::OutputDefinition::NUM_OTT)
+			tt = VICUS::OutputDefinition::OTT_NONE;
+		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
+		item = new QTableWidgetItem(ttypekw);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,4, item);
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputGrids->setItem((int)i,5, item);
+	}
+	m_ui->tableWidgetOutputDefinitions->selectRow(0);
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
+	// update enabled status
+	on_tableWidgetOutputDefinitions_itemSelectionChanged();
+
 }

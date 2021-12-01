@@ -31,6 +31,11 @@
 #include <set>
 #include <vector>
 
+namespace VICUS {
+	class OutputDefinition;
+}
+
+
 /*! This table model shows the available outputs from output_reference_list.txt. */
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT
@@ -44,6 +49,9 @@ public:
 
 	/*! Updates the internal data storage of the model. */
 	void updateListFromFile(const QString & outputRefListFilepath);
+
+	/*! Checks if the defined output is available. */
+	bool haveOutput(const VICUS::OutputDefinition& of) const;
 
 private:
 

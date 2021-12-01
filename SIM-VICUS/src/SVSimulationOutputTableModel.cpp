@@ -6,6 +6,7 @@
 #include <IBK_StringUtils.h>
 
 #include <NANDRAD_IDGroup.h>
+#include <VICUS_OutputDefinition.h>
 
 SVSimulationOutputTableModel::SVSimulationOutputTableModel(QObject *parent) :
 	QAbstractTableModel(parent)
@@ -151,5 +152,33 @@ void SVSimulationOutputTableModel::updateListFromFile(const QString & outputRefL
 		endResetModel();
 		throw IBK::Exception(ex, IBK::FormatString("Could not open file '%1' with output definitons.").arg(outputRefListFilepath.toStdString()), FUNC_ID);
 	}
+}
+
+
+bool SVSimulationOutputTableModel::haveOutput(const VICUS::OutputDefinition & of) const {
+	// compare with all existing output definitions
+	for (const OutputVariable & var : m_variables) {
+		// all source object IDs must be present
+		bool ok = true;
+		for (unsigned int i : of.m_sourceObjectIds) {
+			if (var.m_objectIds.find(i) == var.m_objectIds.end()) {
+				ok = false;
+				break;
+			}
+		}
+		if (!ok) continue;
+		for (unsigned int i : of.m_vectorIds) {
+			if (var.m_vectorIds.find(i) == var.m_vectorIds.end()) {
+				ok = false;
+				break;
+			}
+		}
+		if (!ok) continue;
+		if (var.m_quantity != of.m_quantity) continue;
+		if (var.m_objectTypeName != of.m_sourceObjectType) continue;
+		// ok, we found a match
+		return true;
+	}
+	return false;
 }
 

@@ -42,6 +42,8 @@
 
 #include "SVSimulationOutputTableModel.h"
 
+class SVSimulationStartNandrad;
+
 namespace Ui {
 	class SVSimulationOutputOptions;
 }
@@ -89,7 +91,7 @@ class SVSimulationOutputOptions : public QWidget {
 	Q_OBJECT
 
 public:
-	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs);
+	SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog);
 	~SVSimulationOutputOptions();
 
 	/*! Updates user interface with properties from the project data structure.
@@ -111,12 +113,17 @@ private slots:
 	void on_pushButtonUpdateOutputList_clicked();
 
 private:
+	/*! Updates the output definition table, using the model with available outputs. */
+	void updateOutputDefinitionTable();
 
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
 
 	/*! Pointer to VICUS::Outputs object in current project. */
 	VICUS::Outputs									*m_outputs = nullptr;
+
+	/*! Pointer to dialog with test-init button. */
+	SVSimulationStartNandrad						*m_simStartDialog = nullptr;
 
 	/*! Table model instance that provides list with available output variables. */
 	SVSimulationOutputTableModel					*m_outputTableModel = nullptr;

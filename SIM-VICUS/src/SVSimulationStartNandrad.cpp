@@ -106,7 +106,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		m_ui->tabClimate->setLayout(h);
 	}
 	{
-		m_simulationOutputOptions = new SVSimulationOutputOptions(this, m_localProject.m_outputs);
+		m_simulationOutputOptions = new SVSimulationOutputOptions(this, m_localProject.m_outputs, this);
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationOutputOptions);
 		m_ui->tabOutputs->setLayout(h);
@@ -381,7 +381,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
-bool SVSimulationStartNandrad::startSimulation(bool testInit) {
+bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceBackgroundProcess) {
 	updateCmdLine();
 	QString resultPath;
 	if (!generateNANDRAD(resultPath, !testInit))
@@ -442,6 +442,9 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 #else
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
 #endif
+	// if background process is forced, ignore terminal settings
+	if (forceBackgroundProcess)
+		runOption = SVSettings::TE_None;
 	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
@@ -451,6 +454,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 	// all ok, solver is running
 	return true;
 }
+
 
 bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool generateOutputs) {
 	// compose NANDRAD project file and start simulation
