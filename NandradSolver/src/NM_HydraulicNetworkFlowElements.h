@@ -169,6 +169,8 @@ public:
 
 	void stepCompleted(double t) override;
 
+	void setTime(double t) override;
+
 private:
 
 	/*! Computes the controlled zeta-value if a control-model is implemented.

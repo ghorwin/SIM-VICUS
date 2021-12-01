@@ -72,8 +72,10 @@ public:
 	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
 	virtual void resetErrorIntegral() {}
 
+	virtual void setTime(double t) { (void)t; }
+
 	/*! Stores result of controller calculation, updated in each call to update(). */
-	double				m_controlValue = 888;
+	double				m_controlValue = 0;
 	/*! Cache of error value updated in last call to update(). */
 	double				m_errorValue = 777;
 

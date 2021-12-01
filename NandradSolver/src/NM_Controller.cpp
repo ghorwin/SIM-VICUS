@@ -21,6 +21,7 @@
 
 #include "NM_Controller.h"
 
+#include <algorithm>
 
 namespace NANDRAD_MODEL {
 
@@ -79,12 +80,35 @@ void DigitalHysteresisController::deserialize(void *& dataPtr) {
 }
 
 
+
+
 // *** P-Controller ***
 
 void PController::update(double errorValue) {
 	AbstractController::update(errorValue);
 	m_controlValue = m_kP * errorValue;
 }
+
+
+
+// *** P-Controller with time delay ***
+
+void PControllerWithDelay::update(double errorValue) {
+	AbstractController::update(errorValue);
+	m_controlValueSet = m_kP * errorValue;
+	m_controlValue = m_controlValueLast + std::min(m_timeStep / m_tau, 0.9) * (m_controlValueSet - m_controlValueLast);
+	double percentage = m_controlValue / m_controlValueSet * 100;
+}
+
+void PControllerWithDelay::stepCompleted(double t) {
+	m_tLastStep = t;
+	m_controlValueLast = m_controlValue;
+}
+
+void PControllerWithDelay::setTime(double t) {
+	m_timeStep = t - m_tLastStep;
+}
+
 
 
 // *** PI-Controller ***
@@ -138,6 +162,68 @@ void PIController::deserialize(void *& dataPtr) {
 
 
 void PIController::resetErrorIntegral() {
+	m_errorValueIntegral = 0;
+}
+
+
+
+
+// *** PID-Controller ***
+
+void PIDController::update(double errorValue) {
+	AbstractController::update(errorValue);
+	// calculate controller output
+	m_controlValue = m_kP * errorValue + m_kI * m_errorValueIntegral + m_kD * (errorValue - m_lastErrorValue) / m_timeStep;
+}
+
+
+void PIDController::stepCompleted(double t) {
+	// trapozoid rule of integration
+	m_errorValueIntegral += m_timeStep*0.5*(m_lastErrorValue + m_errorValue);
+	m_tLastStep = t;
+	// store error value and time point
+	m_lastErrorValue = m_errorValue;
+}
+
+
+void PIDController::setTime(double t)
+{
+	m_timeStep = t - m_tLastStep;
+}
+
+
+std::size_t PIDController::serializationSize() const {
+	// lastTimeStep, lastErrorValue, errorValueIntegral
+	return 3 * sizeof (double);
+}
+
+
+void PIDController::serialize(void *& dataPtr) const {
+	// cache last step and error value for integration
+	*(double*)dataPtr = m_tLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	*(double*)dataPtr = m_lastErrorValue;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// cache integral value
+	*(double*)dataPtr = m_errorValueIntegral;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void PIDController::deserialize(void *& dataPtr) {
+	// update cached last step
+	m_tLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached last error value
+	m_lastErrorValue = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// update cached error integral
+	m_errorValueIntegral = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+}
+
+
+void PIDController::resetErrorIntegral() {
 	m_errorValueIntegral = 0;
 }
 

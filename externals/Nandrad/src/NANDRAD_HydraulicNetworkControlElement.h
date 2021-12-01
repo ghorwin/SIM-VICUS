@@ -55,9 +55,10 @@ public:
 
 	/*! Different model variants. */
 	enum ControllerType {
-		CT_PController,			// Keyword: PController				'PController'
-		CT_PIController,		// Keyword: PIController			'PIController'
-		CT_OnOffController,		// Keyword: OnOffController			'OnOffController'
+		CT_PController,				// Keyword: PController				'PController'
+		CT_PIController,			// Keyword: PIController			'PIController'
+		CT_PIDController,			// Keyword: PIDController			'PIDController'
+		CT_OnOffController,			// Keyword: OnOffController			'OnOffController'
 		NUM_CT
 	};
 
@@ -66,6 +67,7 @@ public:
 		P_Kp,								// Keyword: Kp								[---]	'Kp-parameter'
 		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
+		P_TimeConstant,						// Keyword: TimeConstant					[s]		'Time constant of P-Controller'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
 		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'

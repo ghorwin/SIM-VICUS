@@ -265,14 +265,29 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 	if (controlElement != nullptr){
 		switch (controlElement->m_controllerType) {
 			case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-				PController *cont = new PController();
-				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
-				m_controller = cont;
+				if (controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TimeConstant].value <= 0) {
+					PController *cont = new PController();
+					cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+					m_controller = cont;
+				}
+				else {
+					PControllerWithDelay *cont = new PControllerWithDelay();
+					cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+					cont->m_tau = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TimeConstant].value;
+					m_controller = cont;
+				}
 			} break;
 			case NANDRAD::HydraulicNetworkControlElement::CT_PIController: {
 				PIController *cont = new PIController();
 				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
 				cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+				m_controller = cont;
+			} break;
+			case NANDRAD::HydraulicNetworkControlElement::CT_PIDController: {
+				PIDController *cont = new PIDController();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+				cont->m_kD = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kd].value;
 				m_controller = cont;
 			} break;
 			case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // not a valid combination
@@ -553,6 +568,12 @@ void HNPressureLossCoeffElement::stepCompleted(double t) {
 	}
 }
 
+void HNPressureLossCoeffElement::setTime(double t)
+{
+	if (m_controller != nullptr)
+		m_controller->setTime(t);
+}
+
 
 
 
@@ -826,14 +847,29 @@ HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetw
 	// add controller object
 	switch (controlElement->m_controllerType) {
 		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-			PController *cont = new PController();
-			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
-			m_controller = cont;
+			if (controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TimeConstant].value <= 0) {
+				PController *cont = new PController();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				m_controller = cont;
+			}
+			else {
+				PControllerWithDelay *cont = new PControllerWithDelay();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				cont->m_tau = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TimeConstant].value;
+				m_controller = cont;
+			}
 		} break;
 		case NANDRAD::HydraulicNetworkControlElement::CT_PIController: {
 			PIController *cont = new PIController();
 			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
 			cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+			m_controller = cont;
+		} break;
+		case NANDRAD::HydraulicNetworkControlElement::CT_PIDController: {
+			PIDController *cont = new PIDController();
+			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+			cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+			cont->m_kD = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kd].value;
 			m_controller = cont;
 		} break;
 		case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // not a valid combination

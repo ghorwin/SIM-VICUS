@@ -82,10 +82,12 @@ KeywordListQt::KeywordListQt() {
 	tr("Control pump operation depending on following element");
 	tr("PController");
 	tr("PIController");
+	tr("PIDController");
 	tr("OnOffController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
 	tr("Kd-parameter");
+	tr("Time constant of P-Controller");
 	tr("Target temperature difference");
 	tr("Target mass flux");
 	tr("Threshold value for PumpOperation property when OnOffController is used");
