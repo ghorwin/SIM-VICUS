@@ -107,21 +107,29 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 	// that is not selected
 	m_compInstances.reserve(project().m_componentInstances.size());
 	for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+
+		VICUS::ComponentInstance modCi(ci);
 		const VICUS::Surface * sideASurf = ci.m_sideASurface;
 		const VICUS::Surface * sideBSurf = ci.m_sideBSurface;
 
 		// if side A references a surface marked for deletion, clear the ID
 		if (ci.m_sideASurface != nullptr &&
 				objectsToBeRemoved.find(ci.m_sideASurface) != objectsToBeRemoved.end())
+		{
 			sideASurf = nullptr;
+			modCi.m_idSideASurface = VICUS::INVALID_ID;
+		}
 		// same for side B
 		if (ci.m_sideBSurface != nullptr &&
 				objectsToBeRemoved.find(ci.m_sideBSurface) != objectsToBeRemoved.end())
+		{
 			sideBSurf = nullptr;
+			modCi.m_idSideBSurface = VICUS::INVALID_ID;
+		}
 
 		// only keep component instance around if at least one side-ID is valid
 		if (sideASurf != nullptr || sideBSurf != nullptr)
-			m_compInstances.push_back(ci);
+			m_compInstances.push_back(modCi);
 	}
 
 	// sub-surface component instances
@@ -130,18 +138,25 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 		const VICUS::SubSurface * sideASurf = ci.m_sideASubSurface;
 		const VICUS::SubSurface * sideBSurf = ci.m_sideBSubSurface;
 
+		VICUS::SubSurfaceComponentInstance modCi(ci);
 		// if side A references a surface marked for deletion, clear the ID
 		if (ci.m_sideASubSurface != nullptr &&
 				objectsToBeRemoved.find(ci.m_sideASubSurface) != objectsToBeRemoved.end())
+		{
 			sideASurf = nullptr;
+			modCi.m_idSideASurface = VICUS::INVALID_ID;
+		}
 		// same for side B
 		if (ci.m_sideBSubSurface != nullptr &&
 				objectsToBeRemoved.find(ci.m_sideBSubSurface) != objectsToBeRemoved.end())
+		{
 			sideBSurf = nullptr;
+			modCi.m_idSideBSurface = VICUS::INVALID_ID;
+		}
 
 		// only keep component instance around if at least one side-ID is valid
 		if (sideASurf != nullptr || sideBSurf != nullptr)
-			m_subCompInstances.push_back(ci);
+			m_subCompInstances.push_back(modCi);
 	}
 }
 
