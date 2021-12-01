@@ -186,6 +186,7 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 	for (const VICUS::SubSurface * s : m_selectedSurfaces) {
 		if (s->m_subSurfaceComponentInstance != nullptr) {
+			/// TODO Dirk->Andreas ich fall hier immer mit einem SEG rein da müssen wir mal gemeinsam schauen
 			const VICUS::SubSurfaceComponent * surfcomp = db.m_subSurfaceComponents[s->m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
 			selectedComponents.insert(surfcomp);
 		}
