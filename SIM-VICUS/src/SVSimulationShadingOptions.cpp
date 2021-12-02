@@ -37,6 +37,7 @@
 
 #include <IBK_physics.h>
 #include <IBK_Time.h>
+#include <IBKMK_Polygon2D.h>
 
 #include <VICUS_Surface.h>
 #include <VICUS_Project.h>
@@ -157,8 +158,10 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
 
 	// We take all our selected surfaces
-	if (m_useOnlySelectedSurfaces) {
+//	if (m_useOnlySelectedSurfaces) {
+	if (true) {
 		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
+		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
 		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
 	}
 	else {
@@ -171,8 +174,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		for (const VICUS::Object* o : sel) {
 			const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface*>(o);
 			if (surf != nullptr) {
-				if (surf->m_parent != nullptr)
+				if (surf->m_parent != nullptr) {
 					m_selSurfaces.push_back(surf);
+
+					if(!surf->subSurfaces().empty()) {
+						for (const VICUS::SubSurface &ss : surf->subSurfaces()){
+							m_selSubSurfaces.push_back(&ss);
+						}
+					}
+				}
 				else
 					m_selObstacles.push_back(surf);
 			}
@@ -219,8 +229,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
-										   14.27,
-										   50,
+										   loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
+										   loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
 										   simTimeStart,
 										   durationInSec,
 										   stepDuration,
@@ -251,6 +261,53 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( s->geometry().polygon().vertexes() );
+	}
+	for (const VICUS::Surface *s: m_selSurfaces) {
+
+		if ( s->m_componentInstance == nullptr )
+			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
+
+		// we want to take only surface connected to ambient, that means, the associated component instance
+		// must have one zone with ID 0 assigned
+		if (s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID &&
+			s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
+			continue; // skip inside constructions
+
+		// we compute shading factors for this surface
+		selSurf.push_back( s->geometry().polygon().vertexes() );
+		surfaceIDs.push_back(s->m_id);
+
+		// Mind: surface planes may also shade other surfaces
+		selObst.push_back( s->geometry().polygon().vertexes() );
+	}
+	for (const VICUS::SubSurface *ss: m_selSubSurfaces) {
+
+		if ( ss->m_subSurfaceComponentInstance == nullptr )
+			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
+
+		if ( ss->m_parent == nullptr ) // no parent; should not be possible but checked anyway
+			continue;
+
+		const IBKMK::Vector3D &offset3D = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().offset();
+
+		const IBKMK::Vector3D &localX = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().localX();
+		const IBKMK::Vector3D &localY = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().localY();
+
+
+		qDebug() << "======================================================";
+		qDebug() << QString::fromStdString(ss->m_displayName.toStdString());
+
+		// we need to calculate the 3D Points of the Sub Surface
+		std::vector<IBKMK::Vector3D> subSurf3D;
+		for (unsigned int i=0; i<ss->m_polygon2D.vertexes().size(); ++i) {
+			const IBKMK::Vector2D &vertex = ss->m_polygon2D.vertexes()[i];
+			subSurf3D.push_back(offset3D + localX*vertex.m_x + localY*vertex.m_y);
+			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+		}
+
+		// we compute shading factors for this surface
+		surfaceIDs.push_back(ss->m_id);
+		selSurf.push_back(subSurf3D);
 	}
 
 	m_shading->setGeometry(selSurf, selObst);
@@ -294,7 +351,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			m_shading->writeShadingFactorsToDataIO(exportFileD6B, surfaceIDs, true);
 		} break;
 	}
-
 }
 
 
@@ -321,9 +377,10 @@ void SVSimulationShadingOptions::updateFileName() {
 
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
 
-	QString hashCode = "0815";
+//	QString hashCode = "0815";
 
-	m_shadingFactorBaseName = projectName + "_shadingFactors_" + hashCode;
+//	m_shadingFactorBaseName = projectName + "_shadingFactors_" + hashCode;
+	m_shadingFactorBaseName = projectName + "_shadingFactors";
 
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	QString shadingFilePath = m_shadingFactorBaseName;

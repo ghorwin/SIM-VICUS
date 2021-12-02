@@ -112,18 +112,19 @@ private:
 	void setSimulationParameters(const DetailType &dt);
 
 
-	Ui::SVSimulationShadingOptions		*m_ui;								///< pointer to UI
+	Ui::SVSimulationShadingOptions			*m_ui;								///< pointer to UI
 
 	// Data storage locations, synchronized with user interface.
-	const NANDRAD::SimulationParameter	*m_simParams = nullptr;
-	const NANDRAD::Location				*m_location = nullptr;
+	const NANDRAD::SimulationParameter		*m_simParams = nullptr;
+	const NANDRAD::Location					*m_location = nullptr;
 
-	std::vector<const VICUS::Surface*>	m_selSurfaces;						///< vector with selected surfaces
-	std::vector<const VICUS::Surface*>	m_selObstacles;						///< vector with selected dump geometry (obstacles)
+	std::vector<const VICUS::Surface*>		m_selSurfaces;						///< vector with selected surfaces
+	std::vector<const VICUS::SubSurface*>	m_selSubSurfaces;						///< vector with selected surfaces
+	std::vector<const VICUS::Surface*>		m_selObstacles;						///< vector with selected dump geometry (obstacles)
 
-	QString								m_shadingFactorBaseName;			///< Holds the basename for the shading factor file.
+	QString									m_shadingFactorBaseName;			///< Holds the basename for the shading factor file.
 
-	SH::StructuralShading				*m_shading = nullptr;				///< Owned, managed as pointer-to-object to hide SH namespace
+	SH::StructuralShading					*m_shading = nullptr;				///< Owned, managed as pointer-to-object to hide SH namespace
 };
 
 #endif // SVShadingCalculationDialogH
