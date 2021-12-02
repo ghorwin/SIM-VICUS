@@ -412,7 +412,7 @@ int Loads::setTime(double t) {
 		double alpha = 0.0;
 		bool needInterpolation = true;
 		// special case handling
-		if (t_climate < m_externalShadingFactorTimePoints.front()) {
+		if (t_climate <= m_externalShadingFactorTimePoints.front()) {
 			if (m_cyclicShadingFactors) {
 				// interpolate between last time point (of last year) and first time point of this year
 				upperIndex = m_externalShadingFactorTimePoints.size()-1;
