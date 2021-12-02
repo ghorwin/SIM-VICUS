@@ -40,6 +40,13 @@ QVariant SVSimulationOutputTableModel::headerData(int section, Qt::Orientation o
 
 
 QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role) const {
+	static std::map<std::string, QString> ObjectNameMap;
+	if (ObjectNameMap.empty()) {
+		// TODO : add other object types
+		ObjectNameMap["Zone"] = tr("Zone");
+		ObjectNameMap["ConstructionInstance"] = tr("Construction");
+		ObjectNameMap["Model"] = tr("Model");
+	}
 	if (!index.isValid())
 		return QVariant();
 
@@ -48,13 +55,28 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 		case Qt::DisplayRole : {
 			switch (index.column()) {
 				case 0 : // type name
-					return QString::fromStdString(var.m_objectTypeName);
+				{
+					const auto it = ObjectNameMap.find(var.m_objectTypeName);
+					if (it != ObjectNameMap.end())
+						return QString("%1 [%2]").arg(it->second, QString::fromStdString(var.m_objectTypeName));
+					else
+						return QString::fromStdString(var.m_objectTypeName);
+				}
 				case 1 : // quantity
 					return QString::fromStdString(var.m_quantity);
 				case 2 : // unit
 					return QString::fromStdString(var.m_unit);
 			}
 		} break;
+
+		case Qt::UserRole:
+			return QVariant::fromValue(var.m_objectIds);
+
+		case Qt::UserRole + 1:
+			return QVariant::fromValue(var.m_vectorIds);
+
+		case Qt::UserRole + 2 :
+			return QString::fromStdString(var.m_objectTypeName);
 	}
 	return QVariant();
 }

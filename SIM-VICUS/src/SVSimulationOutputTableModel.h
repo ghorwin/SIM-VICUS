@@ -36,7 +36,15 @@ namespace VICUS {
 }
 
 
-/*! This table model shows the available outputs from output_reference_list.txt. */
+/*! This table model shows the available outputs from output_reference_list.txt.
+	Qt::DisplayRole returns the translated object name with keyword in parenthesis.
+
+	Custom data roles are:
+
+	- Qt::UserRole  returns a set of object IDs
+	- Qt::UserRole+1 returns the set of vector IDs
+	- Qt::UserRole+2 returns the object type string as keyword
+*/
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -67,5 +75,7 @@ private:
 	/*! List of variables from output definitions file. */
 	std::vector<OutputVariable> m_variables;
 };
+
+Q_DECLARE_METATYPE(std::set<unsigned int>)
 
 #endif // SVSimulationOutputTableModelH

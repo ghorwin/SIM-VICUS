@@ -312,7 +312,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetObjectIDs"/>
+          <widget class="QListWidget" name="listWidgetObjectIDs">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -326,12 +330,23 @@
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetVectorIndexes"/>
+          <widget class="QListWidget" name="listWidgetVectorIndexes">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::ExtendedSelection</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
        <item row="2" column="0">
-        <widget class="QTableView" name="tableViewAvailableOutputs"/>
+        <widget class="QTableView" name="tableViewAvailableOutputs">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+        </widget>
        </item>
        <item row="2" column="3">
         <layout class="QVBoxLayout" name="verticalLayout_3">

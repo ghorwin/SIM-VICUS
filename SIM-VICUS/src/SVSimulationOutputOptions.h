@@ -112,6 +112,8 @@ private slots:
 
 	void on_pushButtonUpdateOutputList_clicked();
 
+	void on_listWidgetObjectIDs_itemSelectionChanged();
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();

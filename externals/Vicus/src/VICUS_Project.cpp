@@ -523,6 +523,17 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 	return objPtrIt->second;
 }
 
+
+Room * Project::roomByID(unsigned int roomID) {
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				if (r.m_id == roomID)
+					return &r;
+	return nullptr;
+}
+
+
 Surface * Project::surfaceByID(unsigned int surfaceID) {
 	for (Building & b : m_buildings)
 		for (BuildingLevel & bl : b.m_buildingLevels)

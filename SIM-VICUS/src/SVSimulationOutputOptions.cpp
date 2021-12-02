@@ -88,13 +88,13 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	m_ui->tableViewAvailableOutputs->setModel(m_outputTableProxyModel);
 	SVStyle::formatDatabaseTableView(m_ui->tableViewAvailableOutputs);
 
-	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::MultiSelection);
-	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-
 	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
+
+	SVStyle::formatListView(m_ui->listWidgetObjectIDs);
+	SVStyle::formatListView(m_ui->listWidgetVectorIndexes);
 
 	// selection change signal
 	connect(m_ui->tableViewAvailableOutputs->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -182,6 +182,13 @@ void SVSimulationOutputOptions::updateUi() {
 
 	// *** available outputs ***
 
+	// set initial state for "no output ref list file available"
+	m_ui->listWidgetObjectIDs->setEnabled(false);
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->toolButtonAddDefinition->setEnabled(false);
+
 	// now tell table model to update its output cache from the current output_reference_list.txt file
 	// even though it might be outdated
 
@@ -211,13 +218,58 @@ void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSel
 	}
 	m_ui->listWidgetObjectIDs->setEnabled(true);
 
+	m_ui->listWidgetObjectIDs->blockSignals(true);
+
 	// populate list widget with object IDs
 	// populate list widget with vector IDs
+	m_ui->listWidgetObjectIDs->clear();
 
-	// check if we have vector indexes
-	m_ui->listWidgetVectorIndexes->setEnabled(false);
+	const QItemSelectionRange & first = selected.first();
+	Q_ASSERT(!first.indexes().isEmpty());
+	// get list of available object IDs
+	QModelIndex proxyIdx = first.indexes().first();
+	QModelIndex srcIdx = m_outputTableProxyModel->mapToSource(proxyIdx);
+	// retrieve list of available objects
+	std::set<unsigned int> ids = srcIdx.data(Qt::UserRole).value<std::set<unsigned int> >();
+	const QString & objectType = srcIdx.data(Qt::UserRole + 2).toString();
 
+	int objectTypeID = -1;
+	if (objectType == "Zone")
+		objectTypeID = 0;
+	else if (objectType == "ConstructionInstance")
+		objectTypeID = 1;
+
+	for (unsigned int i : ids) {
+		// lookup type-specific object and show respective display name
+		QString displayName;
+		switch (objectTypeID) {
+			case 0 : {
+				const VICUS::Room * ob = project().roomByID(i); // Mind: room ID, not unique ID
+				if (ob != nullptr)
+					displayName = ob->m_displayName;
+			} break;
+
+			case 1 : {
+				// lookup component name
+			} break;
+		}
+
+		QString label;
+		if (displayName.isEmpty())
+			label = QString("%1").arg(i);
+		else
+			label = QString("%1 '%2'").arg(i).arg(displayName);
+		QListWidgetItem * item = new QListWidgetItem(label);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->listWidgetObjectIDs->addItem(item);
+	}
+
+	// by default select all
+	m_ui->listWidgetObjectIDs->selectAll();
 	// trigger selection change of object/vector IDs list widgets to update plus buttons
+	// now populate the object IDs list
+	m_ui->listWidgetObjectIDs->blockSignals(false);
+	on_listWidgetObjectIDs_itemSelectionChanged();
 }
 
 
@@ -238,8 +290,15 @@ void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionCha
 void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	// run test-init and if successful, update output list
 	if (!m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
-		return;
+		return; // failure, no change in dialog's state
 	}
+
+	// set initial state for "no output ref list file available or list is empty"
+	m_ui->listWidgetObjectIDs->setEnabled(false);
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->toolButtonAddDefinition->setEnabled(false);
 
 	// now tell table model to update its output cache from the current output_reference_list.txt file
 	// even though it might be outdated
@@ -356,4 +415,12 @@ void SVSimulationOutputOptions::updateOutdatedLabel() {
 	else {
 		m_ui->labelOutputUpdateNeeded->setVisible(true);
 	}
+}
+
+
+void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
+	// user has selected one or more object indexes
+
+	// check if we have vector indexes
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
 }
