@@ -34,30 +34,25 @@
 */
 class NandradModelFMU : public NANDRAD_MODEL::NandradModel, public SOLFRA::FMUModelInterface {
 public:
-	// standard constructor
-	NandradModelFMU();
-	/*! Destructor. */
-	virtual ~NandradModelFMU() {}
-
 	// *** FMU Related Functions ***
 
 	/*! Sets a new input parameter of type double. */
-	virtual void setReal(int varID, double value);
+	virtual void setReal(int varID, double value) override;
 	/*! Sets a new input parameter of type int. */
-	virtual void setInteger(int varID, int value);
+	virtual void setInteger(int varID, int value) override;
 	/*! Sets a new input parameter of type string. */
-	virtual void setString(int varID, ConstString  value);
+	virtual void setString(int varID, ConstString  value) override;
 	/*! Sets a new input parameter of type bool. */
-	virtual void setBoolean(int varID, bool value);
+	virtual void setBoolean(int varID, bool value) override;
 
 	/*! Retrieves an output parameter of type double. */
-	virtual void getReal(int varID, double & value);
+	virtual void getReal(int varID, double & value) override;
 	/*! Retrieves an output parameter of type int. */
-	virtual void getInteger(int varID, int & value);
+	virtual void getInteger(int varID, int & value) override;
 	/*! Retrieves an output parameter of type string. */
-	virtual void getString(int varID, ConstString & value);
+	virtual void getString(int varID, ConstString & value) override;
 	/*! Retrieves an output parameter of type bool. */
-	virtual void getBoolean(int varID, bool & value);
+	virtual void getBoolean(int varID, bool & value) override;
 
 	/*! This function is called by the master/control system whenever a communication
 		interval is started or restarted.
@@ -66,31 +61,24 @@ public:
 		clear all outputs past the given tStart value.
 
 		For example, that store output data in memory this function should reset the index
-		for the current output. In subsequent calls to writeOutputs() the outputs will overwrite
-		existing outputs in memory.
+		for the current output. Subsequently new outputs may overwrite existing outputs in memory.
 
 		In solvers with temporary output files these files must be recreated/reset.
 	*/
-	virtual void startCommunicationInterval(double tStart);
+	virtual void startCommunicationInterval(double tStart, bool noSetFMUStatePriorToCurrentPoint) override;
 
 	/*! This function is called by the master/control system whenever a communication
 		interval has been completed.
 	*/
-	virtual void completeCommunicationInterval();
+	virtual void completeCommunicationInterval() override;
 
-	/*! Current output is written into temporary containers. */
-	void pushOutputOnBuffer(double t_out, const double * y_out);
 
-	/*! Writes the cached output container content and clears (cache) containers. */
-	void clearOutputBuffer();
+	// *** other functions ***
 
-	/*! Deletes all data cache containers backwards up to the reset time point t_reset is reached. */
-	void resetOutputBuffer(double t_reset);
-
-	/*! Flag indicating that the output buffer was cleared at last call,
-		thus, no reset inside buffer can be performed.
+	/*! Called right after init, adjusts constants in Output handler to avoid output flushing in
+		the middle of a communication interval.
 	*/
-//	bool				m_outputBufferCleared;
+	void disableDefaultOutputFlushing();
 
 }; // class NandradModelFMU
 

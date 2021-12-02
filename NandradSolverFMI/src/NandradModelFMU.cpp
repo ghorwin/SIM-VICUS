@@ -21,14 +21,9 @@
 
 #include "NandradModelFMU.h"
 #include "NM_FMIInputOutput.h"
+#include "NM_OutputHandler.h"
 
 #include <IBK_assert.h>
-
-
-NandradModelFMU::NandradModelFMU()/* :
-	m_outputBufferCleared(false)*/
-{
-}
 
 
 // *** FMU Related Functions ***
@@ -97,28 +92,37 @@ void NandradModelFMU::getBoolean(int varID, bool & /*value*/) {
 }
 
 
-void NandradModelFMU::startCommunicationInterval(double /*tStart*/) {
+void NandradModelFMU::startCommunicationInterval(double tStart, bool noSetFMUStatePriorToCurrentPoint) {
 //	FUNCID(NandradModelFMU::startCommunicationInterval);
+
+	// Note: if we use an iterating master algorithm, this function may be called several times for the same tStart value
+	//       and same model state.
+
+	// if we start the simulation from begin, we write initial outputs
+	// we pass t0 and y0 for the initial model evaluation within writeOutputs()
+	if (tStart == t0()) {
+		setTime(t0());
+		setY(y0());
+		ydot(nullptr);
+		writeOutputs( t0(), y0());
+	}
+
+	// if the last interval was completed and we will not jump back in time again, we can flush all already collected outputs
+	if (noSetFMUStatePriorToCurrentPoint)
+		m_outputHandler->flushCache();
 }
 
 
 void NandradModelFMU::completeCommunicationInterval() {
-//	FUNCID(NandradModelFMU::completeCommunicationInterval);
+	//	FUNCID(NandradModelFMU::completeCommunicationInterval);
 }
 
 
-void NandradModelFMU::pushOutputOnBuffer(double /*t_out*/, const double * /*y_out*/) {
-//	FUNCID(NandradModelFMU::pushOutputOnBuffer);
+void NandradModelFMU::disableDefaultOutputFlushing() {
+	// deactivate automatic output writing in FMI mode
+	m_outputHandler->m_outputCacheLimit = std::numeric_limits<unsigned int>::max();
+	m_outputHandler->m_realTimeOutputDelay = std::numeric_limits<double>::max();
 }
 
-
-void NandradModelFMU::clearOutputBuffer() {
-//	FUNCID(NandradModelFMU::clearOutputBuffer);
-}
-
-
-void NandradModelFMU::resetOutputBuffer(double /*t_reset*/) {
-//	FUNCID(NandradModelFMU::resetOutputBuffer);
-}
 
 

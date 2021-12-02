@@ -18,19 +18,13 @@ public:
 	InstanceData();
 
 	/*! Destructor, waits for spin-down of OpenMP threads. */
-	~InstanceData();
+	~InstanceData() override;
 
 	/*! Initializes InstanceData */
 	void init();
 
 	/*! Called from fmi2DoStep(). */
-	virtual void integrateTo(double tCommunicationIntervalEnd);
-
-	/*! Called from either doStep() or terminate() in CoSimulation mode whenever
-		a communication interval has been completed and all related buffers can be cleared/output files can be
-		written.
-	*/
-	virtual void clearBuffers();
+	virtual void integrateTo(double tCommunicationIntervalEnd) override;
 
 	// Functions for getting/setting the state
 
@@ -39,23 +33,23 @@ public:
 		\note The size includes the leading 8byte for the 64bit integer size
 		of the memory array (for testing purposes).
 	*/
-	virtual void computeFMUStateSize();
+	virtual void computeFMUStateSize() override;
 
 	/*! Copies the internal state of the FMU to the memory array pointed to by FMUstate.
 		Memory array always has size m_fmuStateSize.
 	*/
-	virtual void serializeFMUstate(void * FMUstate);
+	virtual void serializeFMUstate(void * FMUstate) override;
 
 	/*! Copies the content of the memory array pointed to by FMUstate to the internal state of the FMU.
 		Memory array always has size m_fmuStateSize.
 	*/
-	virtual void deserializeFMUstate(void * FMUstate);
+	virtual void deserializeFMUstate(void * FMUstate) override;
 
 
 	/*! Called from fmi2FreeInstance() in CoSimulation at the end of simulation.
-		Writes outputs.
+		Writes any cached outputs.
 	*/
-	virtual void finish();
+	virtual void finish() override;
 
 	/*! The actual model that contains all the physics. */
 	NandradModelFMU		m_model;

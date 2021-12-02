@@ -152,6 +152,11 @@ private:
 	/*! Returns number of bytes currently cached in this file object. */
 	unsigned int cacheSize() const;
 
+
+	/*! Called from output handler if a FMU communication interval is reset.
+	*/
+	void clearCache();
+
 	/*! Called from output handler once sufficient real time has elapsed or amount of data cache exceeds
 		defined limit.
 	*/

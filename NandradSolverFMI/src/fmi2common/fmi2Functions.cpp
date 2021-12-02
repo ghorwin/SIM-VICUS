@@ -213,7 +213,7 @@ fmi2Status fmi2ExitInitializationMode(void* c) {
 fmi2Status fmi2Terminate(void* c) {
 	InstanceData * modelInstance = static_cast<InstanceData*>(c);
 	FMI_ASSERT(modelInstance != NULL);
-	modelInstance->clearBuffers();
+	modelInstance->finish();
 	modelInstance->logger(fmi2OK, "progress", "fmi2Terminate: Terminate model.");
 	return fmi2OK;
 }
@@ -750,9 +750,9 @@ fmi2Status fmi2DoStep(void* c, double currentCommunicationPoint, double communic
 	FMI_ASSERT(modelInstance != NULL);
 	FMI_ASSERT(!modelInstance->m_modelExchange);
 
-	if (noSetFMUStatePriorToCurrentPoint == fmi2True) {
-		modelInstance->clearBuffers();
-	}
+	// signal model that we have started a new communication interval, and also pass information whether we still need to iterate over last
+	// interval or not
+	modelInstance->model()->startCommunicationInterval(currentCommunicationPoint, (noSetFMUStatePriorToCurrentPoint == fmi2True));
 	//modelInstance->logger(fmi2OK, "progress", IBK::FormatString("fmi2DoStep: %1 += %2").arg(currentCommunicationPoint).arg(communicationStepSize));
 
 	// if currentCommunicationPoint < current time of integrator, restore
@@ -765,6 +765,8 @@ fmi2Status fmi2DoStep(void* c, double currentCommunicationPoint, double communic
 			"Exception while integrating model: %1").arg(ex.what()));
 		return fmi2Error;
 	}
+	// tell model that we are finished with communication interval
+	modelInstance->model()->completeCommunicationInterval();
 	return fmi2OK;
 }
 

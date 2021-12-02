@@ -100,7 +100,7 @@ void InstanceData::init() {
 
 		// clear path from 'IBK/Nandrad'
 		IBK::Path resultsParentDir = outputDirectory;
-		if(resultsParentDir.filename() == "Nandrad") {
+		if (resultsParentDir.filename() == "Nandrad") {
 			try {
 				if(resultsParentDir.parentPath().filename() == "IBK") {
 					resultsParentDir = resultsParentDir.parentPath().parentPath();
@@ -113,7 +113,7 @@ void InstanceData::init() {
 		}
 
 		// check if base directory exists
-		if(!resultsParentDir.exists()) {
+		if (!resultsParentDir.exists()) {
 			throw IBK::Exception( IBK::FormatString("Invalid results parent directory '%1'.").arg(outputDirectory.str()),
 								  FUNC_ID);
 		}
@@ -148,6 +148,9 @@ void InstanceData::init() {
 		// *** initialize model ***
 		try {
 			m_model.init(args);
+
+			// since we are in FMI mode, disable output caching
+			m_model.disableDefaultOutputFlushing();
 
 			// set start time
 			if (m_tStart != 0.0) {
@@ -213,15 +216,10 @@ void InstanceData::init() {
 void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 	const char * const FUNC_ID = "[InstanceData::integrateTo]";
 
-//	// ask all components of the integration framework for size
-//	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-//	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-//	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-
 	try {
 		double tCommunicationIntervalStart = m_model.integratorInterface()->t();
-		// reset is not implemented, yet
-		if(tCommunicationIntervalStart > tCommunicationIntervalEnd) {
+		// TODO : check with standard, end time must always follow start time?
+		if (tCommunicationIntervalStart > tCommunicationIntervalEnd) {
 			throw IBK::Exception(IBK::FormatString("Error performing integration step: "
 				"reset from integrator time point %1 to the new communication interval end %2 is not "
 				" supported, yet!")
@@ -236,27 +234,12 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		SOLFRA::IntegratorErrorControlled* integratorErrorControlled =
 			dynamic_cast<SOLFRA::IntegratorErrorControlled*> (integrator);
 		// stop value is still only defined for error controled integrators
-		if(  integratorErrorControlled != nullptr)
+		if (integratorErrorControlled != nullptr)
 			integratorErrorControlled->m_stopTime = tCommunicationIntervalEnd;
 
 		/* 3.) integration loop until communication interval has been reached:*/
 		SOLFRA::OutputScheduler		*outputScheduler = m_model.outputScheduler();
 
-
-		// outputs are only written if we start the simulation from begin, therefore
-		// we pass t0 and y0 for the initial model evaluation within writeOutputs()
-		if (tCommunicationIntervalStart == m_model.t0()) {
-			m_model.setTime(m_model.t0());
-			m_model.setY(m_model.y0());
-			m_model.ydot(nullptr);
-			m_model.writeOutputs( m_model.t0(), m_model.y0());
-		}
-		else {
-			// reset outputs if necessary
-			m_model.resetOutputBuffer(tCommunicationIntervalStart);
-		}
-
-		m_model.startCommunicationInterval(tCommunicationIntervalStart);
 		// integration loop
 		double t = tCommunicationIntervalStart;
 		double tOutput = outputScheduler->nextOutputTime(t);
@@ -269,9 +252,10 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 				throw IBK::Exception("Integrator step failed!", FUNC_ID);
 			}
 
+			// reset linear setup to default value (see constant in CVODE; we have modified this
+			// value to 1 in case of KLU solver deserialization)
 			SOLFRA::IntegratorSundialsCVODE * cvodeIntegrator = dynamic_cast<SOLFRA::IntegratorSundialsCVODE *>(integrator);
 			if (cvodeIntegrator != nullptr)
-				// reset linear setup to default value
 				cvodeIntegrator->setLinearSetupFrequency(0);
 
 			// get new time point and time step size
@@ -292,7 +276,7 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 				m_model.setTime(tOutput);
 				m_model.setY(yOutput);
 				m_model.ydot(nullptr);
-				m_model.writeOutputs(tOutput, yOutput);
+				m_model.writeOutputs(tOutput, yOutput); // actually just caches outputs in memory
 
 				// retrieve new output time point
 				tOutputNext = outputScheduler->nextOutputTime(tOutput);
@@ -308,9 +292,6 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 			} // while (tOutput <= t) {
 
 		} // while (t < tCommunicationIntervalEnd)
-
-		// only for forward time steppping: otherwise in terminate
-		m_model.completeCommunicationInterval();
 	}
 	catch (IBK::Exception & ex) {
 		logger(fmi2Error, "error", IBK::FormatString("Exception caught: %1").arg(ex.what()));
@@ -320,7 +301,6 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		logger(fmi2Error, "error", IBK::FormatString("Exception caught: %1").arg(ex.what()));
 		throw IBK::Exception(ex, IBK::FormatString("Exception caught: %1").arg(ex.what()), FUNC_ID);
 	}
-
 }
 
 
@@ -416,9 +396,3 @@ void InstanceData::finish() {
 	m_model.writeFinalOutputs();
 }
 
-
-void InstanceData::clearBuffers() {
-	IBK_ASSERT(!m_modelExchange);
-	// write and clear output buffers
-	m_model.clearOutputBuffer();
-}

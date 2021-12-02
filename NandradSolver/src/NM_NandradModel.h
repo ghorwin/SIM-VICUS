@@ -218,6 +218,13 @@ public:
 	/*! Prints version strings of used libraries to the IBK message handler. */
 	static void printVersionStrings();
 
+protected:
+	// *** Outputs ***
+
+	/*! The central managing object for outputs. */
+	OutputHandler											*m_outputHandler = nullptr;
+
+
 private:
 
 	/*! Initializes/checks solver parameter.
@@ -506,11 +513,6 @@ private:
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
 
-
-	// *** Outputs ***
-
-	/*! The central managing object for outputs. */
-	OutputHandler											*m_outputHandler = nullptr;
 
 	// *** STATISTICS ***
 
