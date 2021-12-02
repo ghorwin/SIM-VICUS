@@ -4,6 +4,8 @@
 
 #include <IBK_algorithm.h>
 #include <IBK_physics.h>
+#include <IBK_CSVReader.h>
+
 #include <CCM_ClimateDataLoader.h>
 
 #include "VICUS_utilities.h"
@@ -377,6 +379,11 @@ public:
 	std::vector<NANDRAD::ObjectList>									m_objectLists;
 	std::set<QString>													m_objectListNames;
 
+	/*! Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
+		These ids are kept in the header of the shading file for later replacement of the ids.
+	*/
+	std::map<unsigned int, unsigned int>								m_surfaceIdsVicusToNandrad;
+
 private:
 
 	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
@@ -385,7 +392,8 @@ private:
 												  bool takeASide = true) const;
 
 	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
-					  const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet) const;
+					  const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet,
+						std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const;
 
 	// get free id for new nandrad construction types
 	unsigned int checkFreeId(unsigned int id){
@@ -405,8 +413,80 @@ private:
 
 };
 
+bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,std::string &filepath) const {
 
-void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack) const{
+	FUNCID(Project::modifyHeaderInShadingFile);
+	IBK::Path p(filepath);
+	IBK::Path fp(p.withoutExtension() + "_Shading.tsv");
+
+	if(!fp.exists()){
+		IBK::IBK_Message(IBK::FormatString("No shading file exported."), IBK::MSG_PROGRESS, FUNC_ID);
+		return false;
+	}
+	filepath = fp.c_str();
+	IBK::CSVReader csv;
+
+	csv.read(fp, false, true);
+
+	std::vector<std::string> notInterpretableCaptions;
+
+	//skip time column
+	for(unsigned int i=1; i<csv.m_captions.size(); ++i){
+		std::string &cap = csv.m_captions[i];
+		try {
+			if(surfaceIdsVicusToNandrad.find(IBK::string2val<unsigned int>(cap)) ==
+					surfaceIdsVicusToNandrad.end()){
+				notInterpretableCaptions.push_back(qApp->tr("Missing caption:").toStdString() + cap + " "
+												+ (qApp->tr("Column: ")).toStdString() + IBK::val2string(i));
+				continue;
+			}
+			cap = IBK::val2string(surfaceIdsVicusToNandrad [IBK::string2val<unsigned int>(cap)]);
+		}  catch (...) {
+			notInterpretableCaptions.push_back(cap + " " + (qApp->tr("Column: ")).toStdString() + IBK::val2string(i));
+		}
+	}
+
+	if(!notInterpretableCaptions.empty()){
+		// if we got errors we can not assign shading factors
+		IBK::IBK_Message(IBK::FormatString("There are serveral column headers that are not interpretable:"), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+		for(std::string &s : notInterpretableCaptions)
+			IBK::IBK_Message(IBK::FormatString("%1").arg(s), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+		surfaceIdsVicusToNandrad.clear();
+		return false;
+	}
+
+	std::string headerLine;
+	for(unsigned int i=0; i<csv.m_captions.size(); ++i){
+		if(i>0)
+			headerLine += "\t";
+		headerLine += csv.m_captions[i] + " [" + csv.m_units[i] + "]";
+	}
+	headerLine += "\n";
+
+	std::ofstream out;
+	out.open(fp.str());
+
+	if(!out.is_open())
+		IBK::IBK_Message(IBK::FormatString("Shading file '%1' is not accessable.").arg(fp.str()), IBK::MSG_ERROR, FUNC_ID);
+
+	out << headerLine;
+
+	for(unsigned int row=0; row<csv.m_nRows; ++row){
+		for(unsigned int col=0; col<csv.m_nColumns; ++col){
+			if(col != 0)
+				out << "\t";
+			out << csv.m_values[row][col];
+		}
+		out << "\n";
+	}
+
+	out.close();
+
+	return true;
+}
+
+void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -442,6 +522,9 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	if (!errorStack.isEmpty())	return;
 
+	// *** read Shading File ***
+
+
 	// *** Create Construction Instances, Constructions (opak & tranparent) and materials ***
 
 	ConstructionInstanceModelGenerator constrInstaModelGenerator(this);
@@ -452,7 +535,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	if (!errorStack.isEmpty())	return;
 
-
+	surfaceIdsVicusToNandrad.swap(constrInstaModelGenerator.m_surfaceIdsVicusToNandrad);
 
 	// *** Ideal Surface Heating Systems ***
 
@@ -1200,7 +1283,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 }
 
 void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs,
-								const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet) const{
+								const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst, std::set<unsigned int> &idSet,
+														   std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const{
 
 	double embArea = 0;
 	// get area of surface
@@ -1286,6 +1370,11 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 						  .arg(ss.m_id).arg(ss.m_displayName);
 			continue;
 		}
+
+		//add ids for shading file later
+		// Attention if we have coupled sub surfaces this is not valid
+		surfaceIdsVicusToNandrad[ss.m_id] = emb.m_id;
+
 		//add emb. obj. to nandrad project
 		cinst.m_embeddedObjects.push_back(emb);
 		//TODO Dirk Frame einbauen sobald verfügbar
@@ -1478,13 +1567,19 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		double minArea = 0.1; //1e-4;
 		double area = 0;
 
+		// save surface ids for shading factor file later
+		unsigned int surfaceAId = INVALID_ID;
+		unsigned int surfaceBId = INVALID_ID;
+
 		bool bothSidesHaveSurfaces = false;
 		// we have either one or two surfaces associated
 		if (compInstaVicus.m_sideASurface != nullptr) {
+			surfaceAId = compInstaVicus.m_sideASurface->m_id;
 			// get area of surface A
 			area = compInstaVicus.m_sideASurface->geometry().area();
 			// do we have surfaces at both sides?
 			if (compInstaVicus.m_sideBSurface != nullptr) {
+				surfaceBId = compInstaVicus.m_sideBSurface->m_id;
 				// have both
 				bothSidesHaveSurfaces = true;
 				double areaB = compInstaVicus.m_sideBSurface->geometry().area();
@@ -1543,7 +1638,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideASurface->subSurfaces();
 				if(subSurfs.size()>0){
 					//we have sub surfaces
-					exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet);
+					exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet, m_surfaceIdsVicusToNandrad);
 				}
 			}
 		}
@@ -1554,6 +1649,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 									  .arg(compInstaVicus.m_id));
 				continue;
 			}
+			surfaceBId = compInstaVicus.m_sideBSurface->m_id;
 
 			const VICUS::Surface * s = compInstaVicus.m_sideBSurface;
 
@@ -1580,7 +1676,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			const std::vector<SubSurface> & subSurfs = compInstaVicus.m_sideBSurface->subSurfaces();
 			if(subSurfs.size()>0){
 				//we have sub surfaces
-				exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet);
+				exportSubSurfaces(errorStack, subSurfs, compInstaVicus, constrInstNandrad, idSet, m_surfaceIdsVicusToNandrad);
 			}
 		}
 
@@ -1611,9 +1707,6 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 		tempToZoneId.swap(gze2.m_tempToZoneId);
 		schedIdToZoneId.swap(gze2.m_tempSchedIdToZoneId);
 
-		if(gze.m_groundZ.m_id != VICUS::INVALID_ID && gze2.m_groundZ.m_id != VICUS::INVALID_ID)
-			errorStack.append(qApp->tr("Construction instance with surface #%1 '%2'"));		/// TODO Dirk
-
 		// a new ground zones was created
 		// save all data
 		if(gze.m_groundZ.m_id != VICUS::INVALID_ID && gze2.m_groundZ.m_id != VICUS::INVALID_ID)
@@ -1638,6 +1731,17 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 				m_objectLists.push_back(gze.m_objList);
 			}
 		}
+		else{
+			// found a surface to outside air
+			// so we have to remember the id for the shading factor file
+			if( constrInstNandrad.m_interfaceA.m_id != NANDRAD::INVALID_ID &&
+					constrInstNandrad.m_interfaceB.m_id != NANDRAD::INVALID_ID &&
+					( constrInstNandrad.m_interfaceA.m_zoneId == 0 || constrInstNandrad.m_interfaceB.m_zoneId == 0 )){
+				unsigned int vicusId = surfaceAId != INVALID_ID ? surfaceAId : surfaceBId;
+				m_surfaceIdsVicusToNandrad[vicusId] = constrInstNandrad.m_id;
+			}
+		}
+
 
 		int activeLayerIdx = -1;
 		//create surface heating system data

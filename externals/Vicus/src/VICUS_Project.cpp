@@ -794,9 +794,18 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// *** building geometry data and databases ***
 
-	generateBuildingProjectDataNeu(p, errorStack);
+	// Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
+	// These ids are kept in the header of the shading file for later replacement of the ids.
+	std::map<unsigned int, unsigned int> surfaceIdsVicusToNandrad;
+
+	generateBuildingProjectDataNeu(p, errorStack, surfaceIdsVicusToNandrad);
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data conversion.", FUNC_ID);
+
+	// replace vicus ids in shading file with nandrad ids
+	std::string shadingFilePath = nandradProjectPath;
+	if(modifyHeaderInShadingFile(surfaceIdsVicusToNandrad, shadingFilePath))
+		p.m_location.m_shadingFactorFilePath = IBK::Path(shadingFilePath);
 
 	// *** generate network data ***
 

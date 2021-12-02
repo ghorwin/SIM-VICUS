@@ -270,7 +270,8 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack)const;
+	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
@@ -279,6 +280,11 @@ private:
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
+
+	/*! Replace VICUS id's to NANDRAD id's. */
+	bool modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+								   std::string &filepath) const;
+
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() function.
 		This map is updated in updatePointers().
