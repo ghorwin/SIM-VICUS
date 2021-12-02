@@ -218,11 +218,15 @@ public:
 	/*! Prints version strings of used libraries to the IBK message handler. */
 	static void printVersionStrings();
 
+
 protected:
 	// *** Outputs ***
 
 	/*! The central managing object for outputs. */
 	OutputHandler											*m_outputHandler = nullptr;
+
+	/*! FMI import/export model. */
+	FMIInputOutput											*m_fmiInputOutput = nullptr;
 
 
 private:
@@ -531,10 +535,6 @@ private:
 	double													m_elapsedSimTimeAtStart;
 
 	SOLFRA::SolverFeedback									m_feedback;
-
-protected:
-	/*! FMI import/export model. */
-	FMIInputOutput											*m_fmiInputOutput = nullptr;
 
 };
 
