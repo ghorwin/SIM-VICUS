@@ -207,6 +207,8 @@ void SVSimulationOutputOptions::updateUi() {
 }
 
 
+// *** slots ***
+
 void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSelection & selected, const QItemSelection & /*deselected*/) {
 	m_ui->listWidgetObjectIDs->clear();
 	m_ui->listWidgetVectorIndexes->clear();
@@ -261,11 +263,12 @@ void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSel
 			label = QString("%1 '%2'").arg(i).arg(displayName);
 		QListWidgetItem * item = new QListWidgetItem(label);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, i);
 		m_ui->listWidgetObjectIDs->addItem(item);
 	}
 
-	// by default select all
 	m_ui->listWidgetObjectIDs->selectAll();
+
 	// trigger selection change of object/vector IDs list widgets to update plus buttons
 	// now populate the object IDs list
 	m_ui->listWidgetObjectIDs->blockSignals(false);
@@ -315,6 +318,56 @@ void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	updateOutdatedLabel();
 }
 
+
+void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
+	// user has selected one or more object indexes
+
+	QList<QListWidgetItem*> sel = m_ui->listWidgetObjectIDs->selectedItems();
+
+	if (sel.count() > 1) {
+		// do not show any vector IDs, since we have multi-selection in objects
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->clear();
+		// also enable the button for configuring outputs
+		m_ui->toolButtonAddDefinition->setEnabled(true);
+		return;
+	}
+
+	// check if we have vector indexes
+	const QModelIndexList & modList = m_ui->tableViewAvailableOutputs->selectionModel()->selectedRows();
+	Q_ASSERT(!modList.isEmpty());
+	QModelIndex proxyIndex = modList.first();
+	QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
+
+	std::set<unsigned int> vectorIDs = srcIndex.data(Qt::UserRole + 1).value<std::set<unsigned int> >();
+
+	if (vectorIDs.empty()) {
+		// do not show any vector IDs, since we have multi-selection in objects
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->clear();
+		// also enable the button for configuring outputs
+		m_ui->toolButtonAddDefinition->setEnabled(true);
+		return;
+	}
+
+	// populate list widget
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->listWidgetVectorIndexes->blockSignals(true);
+	for (unsigned int i : vectorIDs) {
+		QListWidgetItem * item = new QListWidgetItem(QString("%1").arg(i));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->listWidgetVectorIndexes->addItem(item);
+	}
+
+	m_ui->listWidgetVectorIndexes->setEnabled(true);
+	m_ui->listWidgetVectorIndexes->blockSignals(false);
+
+	// now select the first element
+	m_ui->listWidgetVectorIndexes->item(0)->setSelected(true);
+}
+
+
+// *** private functions ***
 
 void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 
@@ -387,7 +440,12 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 
 		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
+		// check if referenced output grid name exists
+		if (std::find(project().m_outputs.m_grids.begin(), project().m_outputs.m_grids.end(), of.m_gridName) == project().m_outputs.m_grids.end()) {
+			item->setTextColor(Qt::darkRed);
+			item->setFont(f);
+		}
+		else if (!correct) {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
@@ -418,9 +476,3 @@ void SVSimulationOutputOptions::updateOutdatedLabel() {
 }
 
 
-void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
-	// user has selected one or more object indexes
-
-	// check if we have vector indexes
-	m_ui->listWidgetVectorIndexes->setEnabled(false);
-}
