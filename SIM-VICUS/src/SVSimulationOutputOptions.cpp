@@ -90,6 +90,9 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::MultiSelection);
 	m_ui->tableViewAvailableOutputs->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
 
 	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
 
@@ -188,18 +191,8 @@ void SVSimulationOutputOptions::updateUi() {
 
 	m_outputTableModel->updateListFromFile(fileName);
 
-	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
-		QDateTime outRefFile = QFileInfo(fileName).lastModified();
-		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
-		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
-			m_ui->labelOutputUpdateNeeded->setVisible(true);
-		else
-			m_ui->labelOutputUpdateNeeded->setVisible(false);
-	}
-	else {
-		m_ui->labelOutputUpdateNeeded->setVisible(true);
-	}
-
+	// show/hide the update info label
+	updateOutdatedLabel();
 
 	// *** existing output definitions ***
 
@@ -244,7 +237,7 @@ void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionCha
 
 void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 	// run test-init and if successful, update output list
-	if (m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
+	if (!m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
 		return;
 	}
 
@@ -259,6 +252,8 @@ void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
 
 	// finally update the table with available output definitions
 	updateOutputDefinitionTable();
+
+	updateOutdatedLabel();
 }
 
 
@@ -343,5 +338,22 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
 	// update enabled status
 	on_tableWidgetOutputDefinitions_itemSelectionChanged();
+}
 
+
+void SVSimulationOutputOptions::updateOutdatedLabel() {
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
+		QDateTime outRefFile = QFileInfo(fileName).lastModified();
+		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
+		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
+			m_ui->labelOutputUpdateNeeded->setVisible(true);
+		else
+			m_ui->labelOutputUpdateNeeded->setVisible(false);
+	}
+	else {
+		m_ui->labelOutputUpdateNeeded->setVisible(true);
+	}
 }

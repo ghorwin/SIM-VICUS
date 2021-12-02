@@ -116,6 +116,9 @@ private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();
 
+	/*! Updates the visibility of the "outdated output list" widget. */
+	void updateOutdatedLabel();
+
 	/*! Pointer to Ui */
 	Ui::SVSimulationOutputOptions					*m_ui;
 

@@ -28,7 +28,7 @@
 
 #include <QHBoxLayout>
 #include <QMessageBox>
-
+#include <QProcess>
 
 #include <VICUS_Project.h>
 #include <NANDRAD_Project.h>
@@ -381,7 +381,7 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
-bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceBackgroundProcess) {
+bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegroundProcess) {
 	updateCmdLine();
 	QString resultPath;
 	if (!generateNANDRAD(resultPath, !testInit))
@@ -442,10 +442,17 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceBackgrou
 #else
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
 #endif
-	// if background process is forced, ignore terminal settings
-	if (forceBackgroundProcess)
-		runOption = SVSettings::TE_None;
-	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
+	// if foreground process is forced, ignore terminal settings and launch test-init directly
+	bool success;
+	if (forceForegroundProcess) {
+		QProgressDialog dlg(tr("Running test-init on NANDRAD project"), tr("Cancel"), 0, 0, this);
+		dlg.show();
+
+		commandLineArgs << m_nandradProjectFilePath;
+		success = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
+	}
+	else
+		success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
 		return false;
