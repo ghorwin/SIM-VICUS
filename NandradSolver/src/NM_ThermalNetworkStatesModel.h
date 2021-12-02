@@ -100,6 +100,8 @@ public:
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const { return m_n; }
 
+	void calculateErrorWeight(std::vector<double> & weights);
+
 	// NOTE: this model does not publish state dependencies on purpose!
 	//
 	// The mean temperatures depend on the internal energies, but some elements like dynamic pipe

@@ -591,6 +591,20 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::calculateErrorWeights(co
 		weights[idx] *= m_weightsFactorZones;
 	}
 
+	// loop over all network models
+	for (unsigned int i=0; i<m_nNetworks; ++i) {
+		// start index for network's y vector
+		unsigned int idx = m_networkVariableOffset[i];
+
+		// retrieve error weight for all network variables
+		std::vector<double> errWeights;
+		m_networkStatesModelContainer[i]->calculateErrorWeight(errWeights);
+
+		// enlarge default factors for all network variables
+		for (unsigned int j=0; j<m_networkStatesModelContainer[i]->nPrimaryStateResults(); ++j)
+			weights[idx + j] *= errWeights[j];
+	}
+
 	return SOLFRA::ModelInterface::CalculationSuccess;
 }
 
