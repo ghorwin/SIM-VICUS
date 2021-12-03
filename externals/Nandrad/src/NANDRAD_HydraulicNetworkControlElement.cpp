@@ -74,10 +74,6 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 	}
 
 	try {
-
-		if (m_controllerType != CT_PController && !m_para[P_TimeConstant].empty())
-			throw IBK::Exception("Parameter 'TimeConstant' can only be used with 'PController'.", FUNC_ID);
-
 		// decide which parameters are needed
 		switch (m_controllerType) {
 
