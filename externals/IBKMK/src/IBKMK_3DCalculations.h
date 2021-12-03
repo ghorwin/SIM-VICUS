@@ -91,7 +91,7 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 		point in 'intersectionPoint' and the line factor 'dist'.
 */
 bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
-						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist);
+						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist, bool checkNormal = true);
 
 /*! Calculates intersection of a line with a plane.
 	Plane is given by offset 'a' and normal vector 'normal'.

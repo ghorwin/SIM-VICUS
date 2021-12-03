@@ -284,7 +284,7 @@ void eliminateCollinearPoints(std::vector<IBKMK::Vector3D> & polygon, double eps
 
 
 bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
-		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist)
+		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist, bool checkNormal)
 {
 	// plane is given by offset 'a' and normal vector 'normal'.
 	// line is given by point 'p' and its line vector 'd'
@@ -298,7 +298,7 @@ bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & n
 		return false;
 
 	// Condition 1: same direction of normal vectors?
-	if (angle >= 0)
+	if (checkNormal && angle >= 0)
 		return false; // no intersection possible
 
 	double t = (a - p).scalarProduct(normal) / d_dot_normal;
