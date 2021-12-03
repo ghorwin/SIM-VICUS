@@ -419,6 +419,9 @@ bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &su
 	IBK::Path p(filepath);
 	IBK::Path fp(p.withoutExtension() + "_Shading.tsv");
 
+	/// ToDo Stephan bitte erweitern das es fürs DataIO Format auch funktioniert
+	/// musst du nur prüfen ob eine DataIO Datei vorliegt und dann diese lesen und
+	/// modifiziert wieder rausschreiben.
 	if(!fp.exists()){
 		IBK::IBK_Message(IBK::FormatString("No shading file exported."), IBK::MSG_PROGRESS, FUNC_ID);
 		return false;
@@ -446,6 +449,7 @@ bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &su
 		}
 	}
 
+	// error check
 	if(!notInterpretableCaptions.empty()){
 		// if we got errors we can not assign shading factors
 		IBK::IBK_Message(IBK::FormatString("There are serveral column headers that are not interpretable:"), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -455,6 +459,7 @@ bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &su
 		return false;
 	}
 
+	// modify header
 	std::string headerLine;
 	for(unsigned int i=0; i<csv.m_captions.size(); ++i){
 		if(i>0)
@@ -463,6 +468,7 @@ bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &su
 	}
 	headerLine += "\n";
 
+	// write file
 	std::ofstream out;
 	out.open(fp.str());
 
