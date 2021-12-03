@@ -175,7 +175,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Control pump operation depending on following element");
 	tr("PController");
 	tr("PIController");
-	tr("PIDController");
 	tr("OnOffController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");

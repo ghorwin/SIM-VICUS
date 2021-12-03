@@ -373,8 +373,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "PIDController";
-				case 3 : return "OnOffController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -844,8 +843,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "PIDController";
-				case 3 : return "OnOffController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -1316,8 +1314,7 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "PIDController";
-				case 3 : return "OnOffController";
+				case 2 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -1788,7 +1785,6 @@ namespace VICUS {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
-				case 3 : return "";
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -2259,7 +2255,6 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -2730,7 +2725,6 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::para_t
 			case 29 :
@@ -2992,7 +2986,7 @@ namespace VICUS {
 			// NetworkController::ControlledProperty
 			case 27 : return 5;
 			// NetworkController::ControllerType
-			case 28 : return 4;
+			case 28 : return 3;
 			// NetworkController::para_t
 			case 29 : return 6;
 			// NetworkController::References
@@ -3114,7 +3108,7 @@ namespace VICUS {
 			// NetworkController::ControlledProperty
 			case 27 : return 4;
 			// NetworkController::ControllerType
-			case 28 : return 3;
+			case 28 : return 2;
 			// NetworkController::para_t
 			case 29 : return 5;
 			// NetworkController::References
