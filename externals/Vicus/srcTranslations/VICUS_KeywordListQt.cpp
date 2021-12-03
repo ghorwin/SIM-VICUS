@@ -114,6 +114,8 @@ KeywordListQt::KeywordListQt() {
 	tr("CladdingSystems");
 	tr("Foils");
 	tr("Miscellaneous");
+	tr("Pipe with a single fluid volume and with heat exchange");
+	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Only Hydraulic calculation with constant temperature");
 	tr("Thermo-hydraulic calculation");
 	tr("SinglePipe");
@@ -173,6 +175,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Control pump operation depending on following element");
 	tr("PController");
 	tr("PIController");
+	tr("PIDController");
 	tr("OnOffController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
@@ -182,8 +185,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Threshold value for PumpOperation property when OnOffController is used");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
-	tr("Pipe with a single fluid volume and with heat exchange");
-	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

@@ -60,6 +60,13 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Defines which model in Nandrad shall be used */
+	enum PipeModel {
+		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
+		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
+		NUM_PM
+	};
+
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
 		MT_HydraulicNetwork,				// Keyword: HydraulicNetwork				'Only Hydraulic calculation with constant temperature'
@@ -284,6 +291,10 @@ public:
 
 	/*! Describes all properties for a buried pipe in the ground */
 	NetworkBuriedPipeProperties				m_buriedPipeProperties;						// XML:E
+
+	/*! Defines which pipe model will be used for all edges, when transforming them to Nandrad */
+	PipeModel								m_pipeModel = PM_DynamicPipe;				// XML:E
+
 
 
 	// *** RUNTIME VARIABLES ***

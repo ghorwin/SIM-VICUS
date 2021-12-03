@@ -49,13 +49,6 @@ namespace VICUS {
 class NetworkEdge : public Object {
 public:
 
-	/*! Defines which model in Nandrad shall be used */
-	enum PipeModel {
-		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
-		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
-		NUM_PM
-	};
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	VICUS_READWRITE
@@ -112,14 +105,8 @@ public:
 	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
 	void changeNode2(NetworkNode *node);
 
-	/*! Returns the corresponding NetworkComponent model type based on the PipeModel. */
-	NetworkComponent::ModelType networkComponentModelType() const;
-
 
 	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Defines which pipe model will be instantiated in NANDRAD */
-	PipeModel											m_pipeModel = PM_DynamicPipe;	// XML:A
 
 	/*! If true, nodes of type Building can connect to this edge.
 		This is used for the automatic algorithm that connects buildings with the network */

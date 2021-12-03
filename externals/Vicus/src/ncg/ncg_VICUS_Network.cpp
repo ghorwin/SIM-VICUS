@@ -158,6 +158,15 @@ void Network::readXML(const TiXmlElement * element) {
 			}
 			else if (cName == "NetworkBuriedPipeProperties")
 				m_buriedPipeProperties.readXML(c);
+			else if (cName == "PipeModel") {
+				try {
+					m_pipeModel = (PipeModel)KeywordList::Enumeration("Network::PipeModel", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -244,6 +253,9 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
 
 	m_buriedPipeProperties.writeXML(e);
+
+	if (m_pipeModel != NUM_PM)
+		TiXmlElement::appendSingleAttributeElement(e, "PipeModel", nullptr, std::string(), KeywordList::Keyword("Network::PipeModel",  m_pipeModel));
 	return e;
 }
 

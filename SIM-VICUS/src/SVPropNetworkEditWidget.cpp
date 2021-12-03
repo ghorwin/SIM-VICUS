@@ -506,8 +506,14 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 		modelType = comp->m_modelType;
 	}
 	// if we have edge(s)
-	else if (!m_currentEdges.empty())
-		modelType =  m_currentEdges[0]->networkComponentModelType() ;
+	else if (!m_currentEdges.empty()){
+		if (m_currentConstNetwork->m_pipeModel == VICUS::Network::PM_SimplePipe)
+			modelType = VICUS::NetworkComponent::MT_SimplePipe;
+		else if (m_currentConstNetwork->m_pipeModel == VICUS::Network::PM_DynamicPipe)
+			modelType = VICUS::NetworkComponent::MT_DynamicPipe;
+		else
+			modelType = VICUS::NetworkComponent::NUM_MT;
+	}
 	else
 		return;
 

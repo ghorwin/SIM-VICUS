@@ -2694,58 +2694,40 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 	}
 
+	// add Component for network pipes
+	// there is only one component for all pipes
+	VICUS::NetworkComponent::ModelType pipeModelType;
+	if (vicusNetwork.m_pipeModel == VICUS::Network::PM_SimplePipe)
+		pipeModelType = VICUS::NetworkComponent::MT_SimplePipe;
+	else if (vicusNetwork.m_pipeModel == VICUS::Network::PM_DynamicPipe)
+		pipeModelType = VICUS::NetworkComponent::MT_DynamicPipe;
+	else
+		throw IBK::Exception(IBK::FormatString("No valid pipe model type chosen for network with id #%1")
+							 .arg(vicusNetwork.m_id), FUNC_ID);
+
+	std::vector<unsigned int> componentIdsVec(componentIds.begin(), componentIds.end());
+	NANDRAD::HydraulicNetworkComponent pipeComp;
+	pipeComp.m_id = uniqueIdAdd(componentIdsVec);
+	pipeComp.m_modelType = VICUS::NetworkComponent::nandradNetworkComponentModelType(pipeModelType);
+	if (pipeComp.m_modelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
+		if (vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
+			throw IBK::Exception(IBK::FormatString("Missing Parameter '%1' in network with id #%2")
+								.arg(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_MaxPipeDiscretization))
+								.arg(vicusNetwork.m_id), FUNC_ID);
+		NANDRAD::KeywordList::setParameter(pipeComp.m_para, "HydraulicNetworkComponent::para_t",
+											NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
+											vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].value);
+	}
+	nandradNetwork.m_components.push_back(pipeComp);
+
+
+	// now iterate over edges
+
 	std::map<unsigned int, std::vector<unsigned int> > mapSoil2SupplyPipes;
 	std::map<unsigned int, std::vector<unsigned int> > mapSoil2ReturnPipes;
 	unsigned int idSoilModel = 0;
 
-	// now iterate over edges
-	std::vector<unsigned int> compIds(componentIds.begin(), componentIds.end());
 	for (VICUS::NetworkEdge *edge: orderedEdges) {
-
-		// check and transform pipe model type
-		NANDRAD::HydraulicNetworkComponent::ModelType pipeModelType = NANDRAD::HydraulicNetworkComponent::NUM_MT;
-		switch (edge->m_pipeModel ) {
-			case VICUS::NetworkEdge::PM_SimplePipe:{
-				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_SimplePipe;
-			} break;
-			case VICUS::NetworkEdge::PM_DynamicPipe:{
-				pipeModelType = NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
-			} break;
-			case VICUS::NetworkEdge::NUM_PM:{
-				errorStack.append(tr("Edge %1->%2 has no valid pipe model type").arg(edge->m_node1->m_id).arg(edge->m_node2->m_id));
-				continue;
-			}
-		}
-
-		// check if a pipe component with this model type exists already
-		NANDRAD::HydraulicNetworkComponent pipeComp;
-		bool pipeComponentExists = false;
-		for (const NANDRAD::HydraulicNetworkComponent &comp: nandradNetwork.m_components){
-			if (comp.m_modelType == pipeModelType){
-				pipeComp = comp;
-				pipeComponentExists = true;
-				break;
-			}
-		}
-
-		// if there was none, add respective component for pipe
-		if (!pipeComponentExists){
-			NANDRAD::HydraulicNetworkComponent comp;
-			comp.m_id = uniqueIdAdd(compIds);
-			comp.m_modelType = pipeModelType;
-			if (pipeModelType == NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe){
-
-				if (vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
-					throw IBK::Exception(IBK::FormatString("Missing Parameter '%1' in network with id #%2")
-										.arg(VICUS::KeywordList::Keyword("Network::para_t", VICUS::Network::P_MaxPipeDiscretization))
-										.arg(vicusNetwork.m_id), FUNC_ID);
-				NANDRAD::KeywordList::setParameter(comp.m_para, "HydraulicNetworkComponent::para_t",
-													NANDRAD::HydraulicNetworkComponent::P_PipeMaxDiscretizationWidth,
-													vicusNetwork.m_para[VICUS::Network::P_MaxPipeDiscretization].value);
-			}
-			nandradNetwork.m_components.push_back(comp);
-			pipeComp = comp;
-		}
 
 		// check if there is a reference to a pipe from DB
 		const VICUS::NetworkPipe *pipe = VICUS::element(m_embeddedDB.m_pipes, edge->m_idPipe);
