@@ -139,6 +139,7 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	m_ui->tableWidgetSubSurfaceComponents->setRowCount(m_componentTable.size());
 	for (unsigned int row = 0; row < m_componentTable.size(); ++row) {
 		QTableWidgetItem * colorItem = new QTableWidgetItem();
+		QTableWidgetItem * typeItem = new QTableWidgetItem();
 		QTableWidgetItem * item = new QTableWidgetItem();
 		// special handling for components with "invalid" component id
 		const ComponentLegendEntry & le = m_componentTable[row];
@@ -157,13 +158,30 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 			case 2 :
 				colorItem->setBackground(le.m_component->m_color);
 				item->setText(QtExt::MultiLangString2QString(le.m_component->m_displayName));
+				// check sub-component type
+				switch (le.m_component->m_type) {
+					case VICUS::SubSurfaceComponent::CT_Window:
+						typeItem->setText(tr("Window"));
+					break;
+					case VICUS::SubSurfaceComponent::CT_Door:
+						typeItem->setText(tr("Door"));
+					break;
+					case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+						typeItem->setText(tr("Other"));
+					break;
+					case VICUS::SubSurfaceComponent::NUM_CT: ; // just to make compiler happy
+				}
+
 			break;
 		}
 		colorItem->setFlags(Qt::ItemIsEnabled); // cannot select color item!
 		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 0, colorItem);
 
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 1, item);
+		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 1, typeItem);
+
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 2, item);
 	}
 	// reselect row
 	m_ui->tableWidgetSubSurfaceComponents->blockSignals(false);
