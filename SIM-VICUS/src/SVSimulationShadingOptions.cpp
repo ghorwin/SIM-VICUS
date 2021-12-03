@@ -154,12 +154,12 @@ void SVSimulationShadingOptions::on_pushButtonCalculate_clicked(){
 void SVSimulationShadingOptions::calculateShadingFactors() {
 //	FUNCID(SVSimulationShadingOptions::calculateShadingFactors);
 
-	std::vector<std::vector<IBKMK::Vector3D> > selObst;
-	std::vector<std::vector<IBKMK::Vector3D> > selSurf;
+	std::vector<SH::StructuralShading::ShadingObject> selObst;
+	std::vector<SH::StructuralShading::ShadingObject> selSurf;
 
 	// We take all our selected surfaces
 //	if (m_useOnlySelectedSurfaces) {
-	if (true) {
+	if (/* DISABLES CODE */ (true)) {
 		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
 		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
 		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
@@ -240,7 +240,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// *** compose vectors with obstacles
 
 	for (const VICUS::Surface *s: m_selObstacles)
-		selObst.push_back( s->geometry().polygon().vertexes() );
+		selObst.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																true) );
 
 	// *** compose vector with selected surfaces
 	std::vector<unsigned int> surfaceIDs; // holds IDs of calculated surfaces
@@ -256,29 +258,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			continue; // skip inside constructions
 
 		// we compute shading factors for this surface
-		selSurf.push_back( s->geometry().polygon().vertexes() );
+		selSurf.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																s->m_parent == nullptr) );
 		surfaceIDs.push_back(s->m_id);
 
 		// Mind: surface planes may also shade other surfaces
-		selObst.push_back( s->geometry().polygon().vertexes() );
-	}
-	for (const VICUS::Surface *s: m_selSurfaces) {
-
-		if ( s->m_componentInstance == nullptr )
-			continue;  // skip invalid surfaces - surfaces without component are not computed in calculation and thus do not require shading factors
-
-		// we want to take only surface connected to ambient, that means, the associated component instance
-		// must have one zone with ID 0 assigned
-		if (s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID &&
-			s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
-			continue; // skip inside constructions
-
-		// we compute shading factors for this surface
-		selSurf.push_back( s->geometry().polygon().vertexes() );
-		surfaceIDs.push_back(s->m_id);
-
-		// Mind: surface planes may also shade other surfaces
-		selObst.push_back( s->geometry().polygon().vertexes() );
+		selObst.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																s->m_parent == nullptr) );
 	}
 	for (const VICUS::SubSurface *ss: m_selSubSurfaces) {
 
@@ -307,7 +295,9 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we compute shading factors for this surface
 		surfaceIDs.push_back(ss->m_id);
-		selSurf.push_back(subSurf3D);
+		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->uniqueID(),
+															   IBKMK::Polygon3D(subSurf3D),
+															   false) );
 	}
 
 	m_shading->setGeometry(selSurf, selObst);
