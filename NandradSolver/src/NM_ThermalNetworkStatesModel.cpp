@@ -503,9 +503,6 @@ int ThermalNetworkStatesModel::setTime(double t) {
 void ThermalNetworkStatesModel::calculateErrorWeight(std::vector<double> & weights) {
 	// by default weight enlargement factors are 1
 	weights = std::vector<double>(m_n, 1.0);
-
-	// lookup heat exchangers and enlarge factors for these
-	weights[2] = 1000;
 }
 
 
