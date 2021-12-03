@@ -43,8 +43,15 @@ namespace SH {
 
 /*! Returns Angle between vectors in DEG */
 static double angleVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {
+
 	double dot = v1.scalarProduct(v2);    // between [x1, y1, z1] and [x2, y2, z2]
-	double angle = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+	double angle2 = std::acos( dot/sqrt(v1.magnitude() * v2.magnitude() ) ) / IBK::DEG2RAD;
+	IBKMK::Vector3D cross = v1.crossProduct(v2); // Normal on both vectors
+	double det =  v1.m_x*v2.m_y*cross.m_z + v1.m_z*v2.m_x*cross.m_y + v1.m_y*v2.m_z*cross.m_x
+				- v1.m_z*v2.m_y*cross.m_x - v1.m_y*v2.m_x*cross.m_z - v1.m_x*v2.m_z*cross.m_y;
+	double angle = std::atan2(det,dot) / IBK::DEG2RAD;
+
+//	IBK::IBK_Message(IBK::FormatString("Old: %1\tNew: %1").arg(angle).arg(angle2), IBK::MSG_PROGRESS);
 
 	return angle;
 }
@@ -74,32 +81,32 @@ void StructuralShading::initializeShadingCalculation(int timeZone, double longit
 
 
 void StructuralShading::setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > &surfaces, const std::vector<std::vector<IBKMK::Vector3D> > &obstacles) {
-	m_surfaces.clear();
-	m_obstacles.clear();
+//	m_surfaces.clear();
+//	m_obstacles.clear();
 
-	for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
-		m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
-	}
-	for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
-		m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
-	}
-	// error checking is done in setGeometry()
-	setGeometry(m_surfaces, m_obstacles);
+//	for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
+//		m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
+//	}
+//	for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
+//		m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
+//	}
+//	// error checking is done in setGeometry()
+//	setGeometry(m_surfaces, m_obstacles);
 }
 
 
-void StructuralShading::setGeometry(const std::vector<IBKMK::Polygon3D> & surfaces, const std::vector<IBKMK::Polygon3D> & obstacles) {
+void StructuralShading::setGeometry(const std::vector<ShadingObject> & surfaces, const std::vector<ShadingObject> & obstacles) {
 	FUNCID(StructuralShading::setGeometry);
 	try {
 		m_surfaces = surfaces;
 		m_obstacles = obstacles;
 
-		for (IBKMK::Polygon3D & p : m_surfaces) {
-			if (!p.isValid())
+		for (ShadingObject &so : m_surfaces) {
+			if (!so.m_polygon.isValid())
 				throw IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
 		}
-		for (IBKMK::Polygon3D & p : m_obstacles) {
-			if (!p.isValid())
+		for (ShadingObject &so : m_obstacles) {
+			if (!so.m_polygon.isValid())
 				throw IBK::Exception(IBK::FormatString("Polygon is not valid."), FUNC_ID);
 		}
 
@@ -114,6 +121,7 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	FUNCID(StructuralShading::calculateShadingFactors);
 
 	// TODO Stephan, input data check
+	double threadCount = 1;
 
 	m_gridWidth = gridWidth;
 	if (gridWidth <= 0)
@@ -132,8 +140,10 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 #if defined(_OPENMP)
 #pragma omp parallel
 	{
-		if (omp_get_thread_num() == 0)
-			IBK::IBK_Message(IBK::FormatString("Num threads = %1").arg(omp_get_num_threads()));
+		if (omp_get_thread_num() == 0) {
+			threadCount = omp_get_num_threads();
+			IBK::IBK_Message(IBK::FormatString("Num threads = %1").arg(threadCount));
+		}
 	}
 #endif
 
@@ -145,16 +155,21 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			continue; //stop loop
 
 		// readability improvement
-		const IBKMK::Polygon3D & surf = m_surfaces[(unsigned int)surfCounter];
+		const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
 
 		// 1. split polygon 'surf' into sub-polygons based on grid information and compute center point of these sub-polygons
 
 		ShadedSurfaceObject surfaceObject;
-		surfaceObject.setPolygon(surf, m_gridWidth);
+		surfaceObject.setPolygon(so.m_id, so.m_polygon, m_gridWidth);
 
 		// 2. for each center point perform intersection tests again _all_ obstacle polygons
 
 		for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+
+			double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
+			// if sun does not shine uppon surface, no shading factor needed
+			if(angle >= 90)
+				continue;
 
 			double sf = surfaceObject.calcShadingFactor(m_sunConeNormals[i], m_obstacles);
 
@@ -163,11 +178,12 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 5. store in result vector
 			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
 
+
 			if ( i % 10 == 0 ) { // we do not want to send updates to progress bar all the time
 #if defined(_OPENMP)
 				if (omp_get_thread_num() == 0)
 #endif
-					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()));
+					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) * threadCount / (m_surfaces.size()*m_sunConeNormals.size()) );
 
 				if (notify->m_aborted)
 					break; // stop loop
