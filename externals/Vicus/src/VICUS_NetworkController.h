@@ -55,9 +55,10 @@ public:
 
 	/*! Different model variants. */
 	enum ControllerType {
-		CT_PController,			// Keyword: PController				'PController'
-		CT_PIController,		// Keyword: PIController			'PIController'
-		CT_OnOffController,		// Keyword: OnOffController			'OnOffController'
+		CT_PController,				// Keyword: PController				'PController'
+		CT_PIController,			// Keyword: PIController			'PIController'
+		CT_PIDController,			// Keyword: PIDController			'PIDController'
+		CT_OnOffController,			// Keyword: OnOffController			'OnOffController'
 		NUM_CT
 	};
 

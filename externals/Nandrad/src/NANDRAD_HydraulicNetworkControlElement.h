@@ -67,7 +67,6 @@ public:
 		P_Kp,								// Keyword: Kp								[---]	'Kp-parameter'
 		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
-		P_TimeConstant,						// Keyword: TimeConstant					[s]		'Time constant of P-Controller'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
 		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'

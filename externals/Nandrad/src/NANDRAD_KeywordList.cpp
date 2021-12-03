@@ -256,10 +256,9 @@ namespace NANDRAD {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
 				case 2 : return "Kd";
-				case 3 : return "TimeConstant";
-				case 4 : return "TemperatureDifferenceSetpoint";
-				case 5 : return "MassFluxSetpoint";
-				case 6 : return "HeatLossOfFollowingElementThreshold";
+				case 3 : return "TemperatureDifferenceSetpoint";
+				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -889,10 +888,9 @@ namespace NANDRAD {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
 				case 2 : return "Kd";
-				case 3 : return "TimeConstant";
-				case 4 : return "TemperatureDifferenceSetpoint";
-				case 5 : return "MassFluxSetpoint";
-				case 6 : return "HeatLossOfFollowingElementThreshold";
+				case 3 : return "TemperatureDifferenceSetpoint";
+				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -1523,10 +1521,9 @@ namespace NANDRAD {
 				case 0 : return "Kp-parameter";
 				case 1 : return "Ki-parameter";
 				case 2 : return "Kd-parameter";
-				case 3 : return "Time constant of P-Controller";
-				case 4 : return "Target temperature difference";
-				case 5 : return "Target mass flux";
-				case 6 : return "Threshold value for PumpOperation property when OnOffController is used";
+				case 3 : return "Target temperature difference";
+				case 4 : return "Target mass flux";
+				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -2156,10 +2153,9 @@ namespace NANDRAD {
 				case 0 : return "---";
 				case 1 : return "---";
 				case 2 : return "---";
-				case 3 : return "s";
-				case 4 : return "K";
-				case 5 : return "kg/s";
-				case 6 : return "W";
+				case 3 : return "K";
+				case 4 : return "kg/s";
+				case 5 : return "W";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -2792,7 +2788,6 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -3425,7 +3420,6 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -3963,7 +3957,7 @@ namespace NANDRAD {
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 : return 4;
 			// HydraulicNetworkControlElement::para_t
-			case 14 : return 7;
+			case 14 : return 6;
 			// HydraulicNetworkControlElement::References
 			case 15 : return 1;
 			// HydraulicNetworkElement::para_t
@@ -4139,7 +4133,7 @@ namespace NANDRAD {
 			// HydraulicNetworkControlElement::ControllerType
 			case 13 : return 3;
 			// HydraulicNetworkControlElement::para_t
-			case 14 : return 6;
+			case 14 : return 5;
 			// HydraulicNetworkControlElement::References
 			case 15 : return 0;
 			// HydraulicNetworkElement::para_t

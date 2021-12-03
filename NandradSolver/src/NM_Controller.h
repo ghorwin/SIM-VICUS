@@ -103,39 +103,6 @@ public:
 
 
 
-
-/*! Defines a proportional controller instance with time delay.
-	\code
-		controlValue = errorValue*kP;
-	\endcode
-*/
-class PControllerWithDelay: public AbstractController { // NO KEYWORDS
-public:
-	/*! Calculates controller signal/control value. */
-	void update(double errorValue) override;
-
-	/*! This function is called after each integration step and integrates the controller state. */
-	void stepCompleted(double t) override;
-
-	void setTime(double t) override;
-
-	/*! P-term factor (1 by default, just pass through of signal). */
-	double			m_kP = 1;
-	/*! Time constant of controller in [s] */
-	double			m_tau = 0;
-	/*! Time point at last call in [s] */
-	double			m_tLastStep = 0;
-	/*! Time step of current step in [s] */
-	double			m_timeStep = 0;
-	/*! Target control value */
-	double			m_controlValueSet = 0;
-	/*! Control value of last step */
-	double			m_controlValueLast = 0;
-};
-
-
-
-
 /*! Defines a PI controller instance.
 	\code
 		controlValue = errorValue*kP + errorValueIntegral*kI;

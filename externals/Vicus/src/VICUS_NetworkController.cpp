@@ -1,5 +1,7 @@
 #include "VICUS_NetworkController.h"
 
+#include "VICUS_KeywordList.h"
+
 namespace VICUS {
 
 
@@ -72,6 +74,17 @@ void NetworkController::checkParameters() const {
 	if (m_modelType == NUM_MT)
 		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
 
+	if (m_controlledProperty == CP_PumpOperation){
+		if (m_controllerType != CT_OnOffController)
+			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
+	}
+	else {
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController || m_controllerType == CT_PIDController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController', 'PIController' or 'PIDController'.")
+								 .arg(KeywordList::Keyword("NetworkController::ControlledProperty", m_controlledProperty)),
+								 FUNC_ID);
+	}
+
 	try {
 		// check individual configuations for different controller properties
 		switch (m_controlledProperty) {
@@ -85,6 +98,18 @@ void NetworkController::checkParameters() const {
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_ThermostatValue: {
+				if (m_idReferences[ID_ThermostatZone] == NANDRAD::INVALID_ID)
+					throw IBK::Exception("Missing 'ThermostatZoneId' for controlled property 'ThermostatValue'!", FUNC_ID);
+
+//				// check validity of thermostat zone
+//				std::vector<NANDRAD::Zone>::const_iterator zone_it = std::find(zones.begin(), zones.end(), m_idReferences[ID_ThermostatZone]);
+
+//				if (zone_it == zones.end())
+//					throw IBK::Exception(IBK::FormatString("Invalid/undefined zone with '%1' in ThermostatZoneId.")
+//										 .arg(m_idReferences[ID_ThermostatZone]), FUNC_ID);
+			} break;
+
 			case CP_MassFlux : {
 				// we need mass flux, but > 0 (cannot set mass flux to zero)
 				if (m_modelType == MT_Constant)
@@ -92,9 +117,13 @@ void NetworkController::checkParameters() const {
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_PumpOperation : {
+					m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold", "W", "W",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
 			case NUM_CP:
 				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
-			case CP_ThermostatValue: break; // nothing to do
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -102,6 +131,7 @@ void NetworkController::checkParameters() const {
 	}
 
 	try {
+
 		// decide which parameters are needed
 		switch (m_controllerType) {
 
@@ -112,6 +142,17 @@ void NetworkController::checkParameters() const {
 			case CT_PIController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+			} break;
+
+			case CT_PIDController: {
+				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Kd].checkedValue("Kd", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+			} break;
+
+			case CT_OnOffController: {
+				m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold",
+																"W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
 			case NUM_CT:

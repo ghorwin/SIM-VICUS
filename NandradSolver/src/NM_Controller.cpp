@@ -91,26 +91,6 @@ void PController::update(double errorValue) {
 
 
 
-// *** P-Controller with time delay ***
-
-void PControllerWithDelay::update(double errorValue) {
-	AbstractController::update(errorValue);
-	m_controlValueSet = m_kP * errorValue;
-	m_controlValue = m_controlValueLast + std::min(m_timeStep / m_tau, 0.9) * (m_controlValueSet - m_controlValueLast);
-	double percentage = m_controlValue / m_controlValueSet * 100;
-}
-
-void PControllerWithDelay::stepCompleted(double t) {
-	m_tLastStep = t;
-	m_controlValueLast = m_controlValue;
-}
-
-void PControllerWithDelay::setTime(double t) {
-	m_timeStep = t - m_tLastStep;
-}
-
-
-
 // *** PI-Controller ***
 
 void PIController::update(double errorValue) {
