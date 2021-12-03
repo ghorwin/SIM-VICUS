@@ -1,0 +1,23 @@
+# Created:	Fr. Dez. 3 16:12:25 2021
+# LastModified:	Fr. Dez. 3 16:19:46 2021
+
+tStart                   0 a
+tEnd                     60 d
+hMax                     30 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   1 h
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+simulator 0 0 IdealHeating #ffd700 "BuildingModel/IdealHeating.fmu"
+
+

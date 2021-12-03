@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.4">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="0">BuildingModel/IdealHeating</SubDir>
+			<SubDir Color="#c66300" Checked="0">BuildingModel/IdealHeating_heatingpower0</SubDir>
+			<SubDir Color="#ff007f" Checked="0">GaussSeidel</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">GaussSeidel/fmus/IdealHeating/resources</SubDir>
+			<SubDir Color="#7141d1" Checked="1">GaussSeidel/slaves/IdealHeating</SubDir>
+			<SubDir Color="#55aaff" Checked="0">HeatingModel/HeatingModel/build/bb-gcc/CMakeFiles/3.16.3/CompilerIdC</SubDir>
+			<SubDir Color="#005500" Checked="0">HeatingModel/HeatingModel/build/bb-gcc/CMakeFiles/3.16.3/CompilerIdCXX</SubDir>
+			<SubDir Color="#ffaa00" Checked="0">NoIteration</SubDir>
+			<SubDir Color="#550000" Checked="0">NoIteration/fmus/IdealHeating/resources</SubDir>
+			<SubDir Color="#c66300" Checked="0">NoIteration/slaves/IdealHeating</SubDir>
+			<SubDir Color="#005500" Checked="0">StandAlone</SubDir>
+			<SubDir Color="#55aaff" Checked="0">StandAlone/fmus/IdealHeating/resources</SubDir>
+			<SubDir Color="#550000" Checked="0">StandAlone/slaves/IdealHeating</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+			<ExpandedSubDir>NoIteration</ExpandedSubDir>
+			<ExpandedSubDir>NoIteration/slaves</ExpandedSubDir>
+			<ExpandedSubDir>StandAlone/slaves</ExpandedSubDir>
+			<ExpandedSubDir>BuildingModel</ExpandedSubDir>
+			<ExpandedSubDir>GaussSeidel</ExpandedSubDir>
+			<ExpandedSubDir>GaussSeidel/slaves</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>StandAlone/slaves/IdealHeating/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>BuildingModel/IdealHeating_heatingpower0/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenWidth>2</PenWidth>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+					</Axis>
+					<Axis index="1">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>NoIteration/slaves/IdealHeating/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>NoIteration/slaves/IdealHeating/results/fluxes.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>GaussSeidel/slaves/IdealHeating/results/states.tsv?1</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>GaussSeidel/slaves/IdealHeating/results/fluxes.tsv?1|2|3|4|5</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#ff420e</PenColor>
+						<MarkerColor>#ff420e</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#004586</PenColor>
+						<MarkerColor>#004586</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>$basename:$quantity</TitleText>
+						<PenColor>#aecf00</PenColor>
+						<MarkerColor>#aecf00</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>24.363636363636363</Maximum>
+						<Minimum>18.969696969696969</Minimum>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>22.199999999999999</Maximum>
+						<Minimum>20</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">W</IBK:Unit>
+						<Maximum>40.833333333333329</Maximum>
+						<Minimum>36.904761904761905</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="1" size1="1" size2="1" orientation="2" />
+		<FocusedWidget>0</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>
