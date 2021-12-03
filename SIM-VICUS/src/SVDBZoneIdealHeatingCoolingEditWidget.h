@@ -59,9 +59,6 @@ private slots:
 	void on_lineEditHeatingLimit_editingFinishedSuccessfully();
 	void on_lineEditCoolingLimit_editingFinishedSuccessfully();
 
-	void on_checkBoxHeatingLimit_toggled(bool checked);
-	void on_checkBoxCoolingLimit_toggled(bool checked);
-
 private:
 
 	/*! Set up the modified variable of the model to true. */

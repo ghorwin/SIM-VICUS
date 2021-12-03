@@ -2289,21 +2289,18 @@ void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsi
 	idealHeatCool.m_id = VICUS::uniqueIdWithPredef(usedModelIds,r->m_id);
 	idealHeatCool.m_displayName = "IdealHeatCool_" + zoneTemplate->m_displayName.string();
 
-	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea].empty())
-		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
-									NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea,
-									idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_HeatingLimit].value);
-	else
-		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
-									NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea, 0);
-	if(!idealHeatingCooling->m_para[NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea].empty())
-		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
-									   NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea,
-									   idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_CoolingLimit].value);
-	else
-		NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
-									NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea, 0);
+	// if parameter is not set in VICUS data model, we default to 0
+	double maxHeatingPowerPerArea = idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_HeatingLimit].empty() ?
+				0 : idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_HeatingLimit].value;
+	NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+								NANDRAD::IdealHeatingCoolingModel::P_MaxHeatingPowerPerArea,
+								maxHeatingPowerPerArea);
 
+	double maxCoolingPowerPerArea = idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_CoolingLimit].empty() ?
+				0 : idealHeatingCooling->m_para[ZoneIdealHeatingCooling::P_CoolingLimit].value;
+	NANDRAD::KeywordList::setParameter(idealHeatCool.m_para, "IdealHeatingCoolingModel::para_t",
+								NANDRAD::IdealHeatingCoolingModel::P_MaxCoolingPowerPerArea,
+								maxCoolingPowerPerArea);
 
 
 	// *** schedules ***

@@ -50,8 +50,8 @@ SVDBZoneIdealHeatingCoolingEditWidget::SVDBZoneIdealHeatingCoolingEditWidget(QWi
 
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
-	m_ui->lineEditHeatingLimit->setup(0, 1000, tr("Maximum heating capacity limit."), true, true);
-	m_ui->lineEditCoolingLimit->setup(0, 1000, tr("Maximum cooling capacity limit."), true, true);
+	m_ui->lineEditHeatingLimit->setup(0, 1000, tr("Maximum heating capacity limit, if zero, heating is off."), true, true);
+	m_ui->lineEditCoolingLimit->setup(0, 1000, tr("Maximum cooling capacity limit, if zero, cooling is off."), true, true);
 
 	// initial state is "nothing selected"
 	updateInput(-1);
@@ -77,12 +77,6 @@ void SVDBZoneIdealHeatingCoolingEditWidget::updateInput(int id) {
 		m_ui->lineEditName->setString(IBK::MultiLanguageString());
 		m_ui->lineEditHeatingLimit->setText("");
 		m_ui->lineEditCoolingLimit->setText("");
-		m_ui->checkBoxHeatingLimit->blockSignals(true);
-		m_ui->checkBoxHeatingLimit->setChecked(false);
-		m_ui->checkBoxHeatingLimit->blockSignals(false);
-		m_ui->checkBoxCoolingLimit->blockSignals(true);
-		m_ui->checkBoxCoolingLimit->setChecked(false);
-		m_ui->checkBoxCoolingLimit->blockSignals(false);
 		return;
 	}
 
@@ -96,20 +90,14 @@ void SVDBZoneIdealHeatingCoolingEditWidget::updateInput(int id) {
 	bool isHeatEmpty = m_current->m_para[VICUS::ZoneIdealHeatingCooling::P_HeatingLimit].empty();
 	bool isCoolEmpty = m_current->m_para[VICUS::ZoneIdealHeatingCooling::P_CoolingLimit].empty();
 
-	m_ui->checkBoxHeatingLimit->blockSignals(true);
-	m_ui->checkBoxHeatingLimit->setChecked(!isHeatEmpty);
-	m_ui->checkBoxHeatingLimit->blockSignals(false);
-
-	m_ui->checkBoxCoolingLimit->blockSignals(true);
-	m_ui->checkBoxCoolingLimit->setChecked(!isCoolEmpty);
-	m_ui->checkBoxCoolingLimit->blockSignals(false);
-	if(isHeatEmpty)
-		m_ui->lineEditHeatingLimit->setText("");
-	else
+	if (isHeatEmpty)
+		m_ui->lineEditHeatingLimit->setText("0");
+	else {
 		m_ui->lineEditHeatingLimit->setValue(m_current->m_para[VICUS::ZoneIdealHeatingCooling::P_HeatingLimit].value);
+	}
 
-	if(isCoolEmpty)
-		m_ui->lineEditCoolingLimit->setText("");
+	if (isCoolEmpty)
+		m_ui->lineEditCoolingLimit->setText("0");
 	else
 		m_ui->lineEditCoolingLimit->setValue(m_current->m_para[VICUS::ZoneIdealHeatingCooling::P_CoolingLimit].value);
 
@@ -117,10 +105,6 @@ void SVDBZoneIdealHeatingCoolingEditWidget::updateInput(int id) {
 	bool isbuiltIn = m_current->m_builtIn;
 	m_ui->lineEditName->setReadOnly(isbuiltIn);
 	m_ui->pushButtonColor->setReadOnly(isbuiltIn);
-
-
-	m_ui->lineEditHeatingLimit->setEnabled(!isbuiltIn && m_ui->checkBoxHeatingLimit->isChecked());
-	m_ui->lineEditCoolingLimit->setEnabled(!isbuiltIn && m_ui->checkBoxCoolingLimit->isChecked());
 }
 
 
@@ -132,6 +116,7 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditName_editingFinished() {
 	}
 	updateInput((int)m_current->m_id);
 }
+
 
 void SVDBZoneIdealHeatingCoolingEditWidget::on_lineEditHeatingLimit_editingFinishedSuccessfully() {
 	Q_ASSERT(m_current != nullptr);
@@ -177,34 +162,4 @@ void SVDBZoneIdealHeatingCoolingEditWidget::on_pushButtonColor_colorChanged() {
 	updateInput((int)m_current->m_id);
 }
 
-void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxHeatingLimit_toggled(bool checked) {
-	Q_ASSERT(m_current != nullptr);
 
-	VICUS::ZoneIdealHeatingCooling::para_t paraName= VICUS::ZoneIdealHeatingCooling::P_HeatingLimit;
-
-	if(checked){
-		VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName,
-										 0);
-		on_lineEditHeatingLimit_editingFinishedSuccessfully();
-	}
-	else
-		m_current->m_para[paraName].clear();
-	modelModify();
-	updateInput((int)m_current->m_id);
-}
-
-void SVDBZoneIdealHeatingCoolingEditWidget::on_checkBoxCoolingLimit_toggled(bool checked) {
-	Q_ASSERT(m_current != nullptr);
-
-	VICUS::ZoneIdealHeatingCooling::para_t paraName= VICUS::ZoneIdealHeatingCooling::P_CoolingLimit;
-
-	if(checked){
-		VICUS::KeywordList::setParameter(m_current->m_para, "ZoneIdealHeatingCooling::para_t", paraName,
-										 0);
-		on_lineEditCoolingLimit_editingFinishedSuccessfully();
-	}
-	else
-		m_current->m_para[paraName].clear();
-	modelModify();
-	updateInput((int)m_current->m_id);
-}
