@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include <VICUS_Constants.h>
+
 namespace Ui {
 	class SVPropBuildingComponentsWidget;
 }
@@ -69,13 +71,20 @@ private slots:
 	/*! Assigns a component to two simultaneously selected surfaces. */
 	void on_pushButtonAssignInsideComponent_clicked();
 
+	/*! Assigns component from table to selected surfaces. */
+	void on_pushButtonAssignComponentFromTable_clicked();
 
 private:
 	/*! This function opens the component DB dialog and lets the user select a component.
 		Then, it creates new component instances for all selected surfaces.
 		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.
+
+		\param fromSurfaceSelection If false, the surfaces matching the currently selected component in the component
+			table are modified, rather than the currently selected surfaces in the scene (used for Exchange Component).
+		\param componentID If INVALID_ID, the user is prompted to select the component to be assigned, otherwise
+			the function works silently and assigns the given component.
 	*/
-	void assignComponent(bool insideWall, bool fromSurfaceSelection);
+	void assignComponent(bool insideWall, bool fromSurfaceSelection, unsigned int componentID = VICUS::INVALID_ID);
 
 	/*! Based on the current selection in the table widget, the corresponding component is looked up and returned.
 		Only for valid component assignments.

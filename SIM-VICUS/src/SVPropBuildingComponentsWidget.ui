@@ -101,6 +101,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="pushButtonAssignComponentFromTable">
+          <property name="toolTip">
+           <string>Assign the component selected in the table above to all currently selected surfaces.</string>
+          </property>
+          <property name="text">
+           <string>Assign selected component</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QPushButton" name="pushButtonAssignInsideComponent">
           <property name="text">
            <string>Connect surfaces with component...</string>

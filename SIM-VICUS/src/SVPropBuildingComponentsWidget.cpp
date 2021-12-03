@@ -179,6 +179,7 @@ void SVPropBuildingComponentsWidget::updateUi() {
 	m_ui->tableWidgetComponents->blockSignals(false);
 	m_ui->tableWidgetComponents->selectRow(std::min(currentRow, m_ui->tableWidgetComponents->rowCount()-1));
 
+
 	// ** selected surfaces group box **
 
 	// process all selected surfaces and determine which component they have assigned
@@ -225,6 +226,7 @@ void SVPropBuildingComponentsWidget::on_tableWidgetComponents_itemSelectionChang
 	m_ui->pushButtonEditComponents->setEnabled(false);
 	m_ui->pushButtonExchangeComponents->setEnabled(false);
 	m_ui->pushButtonSelectObjectsWithComponent->setEnabled(false);
+	m_ui->pushButtonAssignComponentFromTable->setEnabled(false);
 
 	// check if the table is empty or there is no currently selected row
 	int r = m_ui->tableWidgetComponents->currentRow();
@@ -242,6 +244,8 @@ void SVPropBuildingComponentsWidget::on_tableWidgetComponents_itemSelectionChang
 	if (e.m_type == 2) {
 		// valid component, can be edited
 		m_ui->pushButtonEditComponents->setEnabled(true);
+		// the assign-from-table button is only available when there is at least one surface selected
+		m_ui->pushButtonAssignComponentFromTable->setEnabled(!m_selectedSurfaces.empty());
 	}
 
 }
@@ -361,14 +365,16 @@ const VICUS::Component * SVPropBuildingComponentsWidget::currentlySelectedCompon
 }
 
 
-void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromSurfaceSelection) {
-	// ask user to select a new component
-	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
-		tr("Assign component"), tr("You may now select a component from the database, which will then be "
-								   "assigned to the selected surfaces."));
-	unsigned int selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(VICUS::INVALID_ID);
-	if (selectedComponentId == VICUS::INVALID_ID)
-		return; // user aborted the dialog
+void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromSurfaceSelection, unsigned int selectedComponentId) {
+	// ask user to select a new component, unless given
+	if (selectedComponentId == VICUS::INVALID_ID) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+			tr("Assign component"), tr("You may now select a component from the database, which will then be "
+									   "assigned to the selected surfaces."));
+		selectedComponentId = SVMainWindow::instance().dbComponentEditDialog()->select(VICUS::INVALID_ID);
+		if (selectedComponentId == VICUS::INVALID_ID)
+			return; // user aborted the dialog
+	}
 
 	// we either use surfaces from component table with invalid components, or we use
 	// the selection, depending on argument 'fromSurfaceSelection'
@@ -495,4 +501,17 @@ void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromS
 	// create the undo action and modify project
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Components assigned"), compInstances);
 	undo->push();
+}
+
+
+void SVPropBuildingComponentsWidget::on_pushButtonAssignComponentFromTable_clicked() {
+	// find out which component is selected in table
+	int r = m_ui->tableWidgetComponents->currentRow();
+	Q_ASSERT(r != -1);
+	Q_ASSERT(r < (int)m_componentTable.size());
+	const ComponentLegendEntry & e = m_componentTable[(unsigned int)r];
+	Q_ASSERT(e.m_type == 2); // ensure we have a valid component
+	// get component ID
+	unsigned int componentID = e.m_component->m_id;
+	assignComponent(false, true, componentID);
 }
