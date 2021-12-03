@@ -8,8 +8,11 @@
 
 namespace SH {
 
-void ShadedSurfaceObject::setPolygon(const IBKMK::Polygon3D & surface, double gridWidth) {
+void ShadedSurfaceObject::setPolygon(unsigned int id, const IBKMK::Polygon3D & surface, double gridWidth) {
 	IBK_ASSERT(gridWidth > 0);
+
+	m_id = id;
+	m_normal = surface.normal();
 
 	//find min and max in x and y direction
 	m_minX = std::numeric_limits<double>::max();
@@ -46,7 +49,7 @@ void ShadedSurfaceObject::setPolygon(const IBKMK::Polygon3D & surface, double gr
 }
 
 
-double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, const std::vector<IBKMK::Polygon3D> & m_obstacles) const {
+double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, const std::vector<StructuralShading::ShadingObject> & obstacles) const {
 	unsigned int counterShadedPoints=0;
 
 	unsigned int sizeMiddlePoints = m_gridPoints.size();
@@ -54,24 +57,47 @@ double ShadedSurfaceObject::calcShadingFactor(const IBKMK::Vector3D &sunNormal, 
 	for (size_t i=0; i<sizeMiddlePoints; ++i) {
 
 		// process all obstacles
-		for (size_t j=0; j<m_obstacles.size(); ++j) {
+		for (size_t j=0; j<obstacles.size(); ++j) {
+
+			if (m_id == obstacles[j].m_id)
+				continue;
+
+			/*! Computes the distance between a line (defined through offset point a, and directional vector d) and a point p.
+				\return Returns the shortest distance between line and point. Factor lineFactor contains the scale factor for
+						the line equation and p2 contains the closest point on the line (p2 = a + lineFactor*d).
+			*/
+			bool inFront = false;
+			for(const IBKMK::Vector3D v : obstacles[j].m_polygon.vertexes()) {
+				double linefactor = 0;
+				IBKMK::Vector3D p;
+
+				double dist = IBKMK::lineToPointDistance(m_gridPoints[i], m_normal, v, linefactor, p);
+
+				if (linefactor>0) {
+					inFront	= true;
+					break;
+				}
+			}
+
+			if(!inFront)
+				continue;
 
 			// compute intersection point of sun beam onto obstacle's plane
-			const IBKMK::Vector3D & offset = m_obstacles[j].vertexes()[0];
+			const IBKMK::Vector3D & offset = obstacles[j].m_polygon.vertexes()[0];
 			IBKMK::Vector3D intersectionPoint;
 			double dist;
-			if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, m_obstacles[j].normal(), // plane
+			if (!IBKMK::linePlaneIntersectionWithNormalCheck(offset, obstacles[j].m_polygon.normal(), // plane
 											  m_gridPoints[i], sunNormal, // line
-											  intersectionPoint, dist))
+											  intersectionPoint, dist, !obstacles[j].m_isObstacle))
 				continue; // no intersection, next obstacle plane
 
 			// compute local coordinates of intersection point with obstacle
 			double x,y;
-			if (!IBKMK::planeCoordinates(offset, m_obstacles[j].localX(), m_obstacles[j].localY(), intersectionPoint, x, y))
+			if (!IBKMK::planeCoordinates(offset, obstacles[j].m_polygon.localX(), obstacles[j].m_polygon.localY(), intersectionPoint, x, y))
 				continue; // projection not possible - this shouldn't happen, really!
 
 			// now test if x,y coordinates are inside obstacle's polyline
-			if (IBKMK::pointInPolygon(m_obstacles[j].polyline().vertexes(), IBK::point2D<double>(x,y)) >= 0) {
+			if (IBKMK::pointInPolygon(obstacles[j].m_polygon.polyline().vertexes(), IBK::point2D<double>(x,y)) >= 0) {
 				++counterShadedPoints;
 				break; // we are shaded, stop searching
 			}
