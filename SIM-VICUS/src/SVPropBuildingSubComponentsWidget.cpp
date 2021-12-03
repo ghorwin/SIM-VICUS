@@ -42,6 +42,7 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	std::set<const VICUS::SubSurface * > surfacesNotInComponentInterface; // note: we use a set, because we want to quickly remove items later
 	std::set<const VICUS::SubSurface *> surfacesWithoutComponent;
 
+	m_selectedSurfaces.clear();
 	for (const VICUS::Object * o : objs) {
 		const VICUS::SubSurface * surf = dynamic_cast<const VICUS::SubSurface * >(o);
 		if (surf != nullptr) {
@@ -186,7 +187,6 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 	const SVDatabase & db = SVSettings::instance().m_db;
 	for (const VICUS::SubSurface * s : m_selectedSurfaces) {
 		if (s->m_subSurfaceComponentInstance != nullptr) {
-			/// TODO Dirk->Andreas ich fall hier immer mit einem SEG rein da müssen wir mal gemeinsam schauen
 			const VICUS::SubSurfaceComponent * surfcomp = db.m_subSurfaceComponents[s->m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
 			selectedComponents.insert(surfcomp);
 		}
