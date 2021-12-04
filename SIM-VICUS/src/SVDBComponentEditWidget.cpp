@@ -178,22 +178,25 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 		if (validUValue)
 			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(true);
 		m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
 		m_ui->checkBoxActiveLayerEnabled->setChecked(m_current->m_activeLayerIndex != VICUS::INVALID_ID);
 		m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(true);
 		m_ui->spinBoxActiveLayerIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
-		m_ui->spinBoxActiveLayerIndex->setMaximum((int)con->m_materialLayers.size());
+		m_ui->labelSurfaceHeatingIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
+		m_ui->spinBoxActiveLayerIndex->setMaximum((int)con->m_materialLayers.size()+1);
 		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
-			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex);
+			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex+1);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
 	}
 	else {
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
 		m_ui->checkBoxActiveLayerEnabled->setChecked(false);
 		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
-		m_ui->spinBoxActiveLayerIndex->setValue(0);
+		m_ui->labelSurfaceHeatingIndex->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setValue(1);
 		m_ui->lineEditUValue->setText("---");
 		m_ui->lineEditConstructionName->setText("");
 	}
@@ -213,6 +216,12 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
+	if (!isEditable) {
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+		m_ui->labelSurfaceHeatingIndex->setEnabled(false);
+	}
 
 	///TODO Dirk später durchführen wenn datenbanken da sind
 
@@ -329,8 +338,9 @@ void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked(
 void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked) {
 
 	m_ui->spinBoxActiveLayerIndex->setEnabled(checked);
+	m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
 	if (checked) {
-		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value();
+		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value()-1;
 		modelModify();
 	}
 	else {
@@ -346,6 +356,7 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 				if (askForDeletion) {
 					m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
 					m_ui->spinBoxActiveLayerIndex->setEnabled(true);
+					m_ui->labelSurfaceHeatingIndex->setEnabled(true);
 					m_ui->checkBoxActiveLayerEnabled->setChecked(true);
 
 					// delete dialog
@@ -361,6 +372,7 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 						break;
 					}
 					m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+					m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
 					m_ui->checkBoxActiveLayerEnabled->setChecked(false);
 					m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
 				}
