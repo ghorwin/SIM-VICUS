@@ -233,6 +233,7 @@ void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_itemS
 	m_ui->pushButtonEditSubSurfaceComponents->setEnabled(false);
 	m_ui->pushButtonExchangeSubSurfaceComponents->setEnabled(false);
 	m_ui->pushButtonSelectObjectsWithSubSurfaceComponent->setEnabled(false);
+	m_ui->pushButtonAssignComponentFromTable->setEnabled(false);
 
 	// check if the table is empty or there is no currently selected row
 	int r = m_ui->tableWidgetSubSurfaceComponents->currentRow();
@@ -250,6 +251,8 @@ void SVPropBuildingSubComponentsWidget::on_tableWidgetSubSurfaceComponents_itemS
 	if (e.m_type == 2) {
 		// valid component, can be edited
 		m_ui->pushButtonEditSubSurfaceComponents->setEnabled(true);
+		// the assign-from-table button is only available when there is at least one sub-surface selected
+		m_ui->pushButtonAssignComponentFromTable->setEnabled(!m_selectedSurfaces.empty());
 	}
 }
 
@@ -356,15 +359,31 @@ void SVPropBuildingSubComponentsWidget::on_pushButtonAssignInsideSubSurfaceCompo
 	assignSubSurfaceComponent(true, true);
 }
 
+void SVPropBuildingSubComponentsWidget::on_pushButtonAssignComponentFromTable_clicked() {
+	// find out which component is selected in table
+	int r = m_ui->tableWidgetSubSurfaceComponents->currentRow();
+	Q_ASSERT(r != -1);
+	Q_ASSERT(r < (int)m_componentTable.size());
+	const ComponentLegendEntry & e = m_componentTable[(unsigned int)r];
+	Q_ASSERT(e.m_type == 2); // ensure we have a valid component
+	// get component ID
+	unsigned int componentID = e.m_component->m_id;
+	assignSubSurfaceComponent(false, true, componentID);
 
-void SVPropBuildingSubComponentsWidget::assignSubSurfaceComponent(bool insideWall, bool fromSurfaceSelection) {
-	// ask user to select a new component
-	SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignSubComponent",
-		tr("Assign component"), tr("You may now select a sub-surface component from the database, which will then be "
-								   "assigned to the selected sub-surfaces."));
-	unsigned int selectedComponentId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(VICUS::INVALID_ID);
-	if (selectedComponentId == VICUS::INVALID_ID)
-		return; // user aborted the dialog
+}
+
+
+void SVPropBuildingSubComponentsWidget::assignSubSurfaceComponent(bool insideWall, bool fromSurfaceSelection,
+																  unsigned int selectedComponentId) {
+	// ask user to select a new component, unless given
+	if (selectedComponentId == VICUS::INVALID_ID) {
+		SVSettings::instance().showDoNotShowAgainMessage(this, "PropertyWidgetInfoAssignComponent",
+			tr("Assign component"), tr("You may now select a sub-surface component from the database, which will then be "
+									   "assigned to the selected sub-surfaces."));
+		selectedComponentId = SVMainWindow::instance().dbSubSurfaceComponentEditDialog()->select(VICUS::INVALID_ID);
+		if (selectedComponentId == VICUS::INVALID_ID)
+			return; // user aborted the dialog
+	}
 
 	// we either use surfaces from component table with invalid components, or we use
 	// the selection, depending on argument 'fromSurfaceSelection'

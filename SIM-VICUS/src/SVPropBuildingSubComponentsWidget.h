@@ -5,6 +5,8 @@
 
 #include <set>
 
+#include <VICUS_Constants.h>
+
 namespace Ui {
 	class SVPropBuildingSubComponentsWidget;
 }
@@ -36,12 +38,21 @@ private slots:
 	void on_pushButtonAssignSubSurfaceComponent_clicked();
 	void on_pushButtonAssignInsideSubSurfaceComponent_clicked();
 
+	/*! Assigns component from table to selected sub surfaces. */
+	void on_pushButtonAssignComponentFromTable_clicked();
+
+
 private:
 	/*! This function opens the sub-surface component DB dialog and lets the user select a sub-surface component.
 		Then, it creates new sub-surface component instances for all selected surfaces.
-		If insideWall is true, the two selected sub-surfaces are connected to each other with an inside-sub-surface-component.
+		If insideWall is true, the two selected surfaces are connected to each other with an inside-wall-component.
+
+		\param fromSurfaceSelection If false, the sub-surfaces matching the currently selected component in the component
+			table are modified, rather than the currently selected sub-surfaces in the scene (used for Exchange Component).
+		\param componentID If INVALID_ID, the user is prompted to select the component to be assigned, otherwise
+			the function works silently and assigns the given component.
 	*/
-	void assignSubSurfaceComponent(bool insideWall, bool fromSurfaceSelection);
+	void assignSubSurfaceComponent(bool insideWall, bool fromSurfaceSelection, unsigned int componentID = VICUS::INVALID_ID);
 
 	/*! Based on the current selection in the table widget, the corresponding component is looked up and returned.
 		Only for valid component assignments.
