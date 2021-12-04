@@ -994,8 +994,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
 											   "FlowElementHeatLoss", "PressureDifference",
 											   "TemperatureDifference", "ControllerResultValue",
-												"MechanicalPower", "ElectricalPower",
-												"OutletNodePressure"};
+												"ElectricalPower", "OutletNodePressure", "COP"};
 
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
@@ -1004,6 +1003,20 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			def.m_gridName = refName;
 			def.m_objectListName = objList.m_name;
 			p.m_outputs.m_definitions.push_back(def);
+		}
+
+		// output for network default summation models (mean + integral)
+		for (const NANDRAD::ObjectList &objList: p.m_objectLists){
+			if (objList.m_name == "Network Summation Models"){
+				NANDRAD::OutputDefinition def;
+				def.m_quantity = "TotalHeatLoad";
+				def.m_timeType = NANDRAD::OutputDefinition::OTT_MEAN;
+				def.m_gridName = refName;
+				def.m_objectListName = objList.m_name;
+				p.m_outputs.m_definitions.push_back(def);
+				def.m_timeType = NANDRAD::OutputDefinition::OTT_INTEGRAL;
+				p.m_outputs.m_definitions.push_back(def);
+			}
 		}
 	}
 

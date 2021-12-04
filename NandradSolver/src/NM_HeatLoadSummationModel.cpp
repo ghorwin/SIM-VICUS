@@ -100,6 +100,13 @@ const double * HeatLoadSummationModel::resultValueRef(const InputReference & qua
 }
 
 
+void HeatLoadSummationModel::variableReferenceSubstitutionMap(std::map<std::string, std::string> &varSubstMap) {
+	// add substitutions for all outputs generated from this class
+	if (!m_displayName.empty())
+		varSubstMap[ IBK::FormatString("Model(id=%1)").arg(m_id).str() ] = m_displayName;
+}
+
+
 void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do

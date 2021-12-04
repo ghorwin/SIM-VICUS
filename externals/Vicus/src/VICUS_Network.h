@@ -314,19 +314,6 @@ public:
 	/*! returns a specific color for each heat exchange type */
 	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
 
-
-	/*! Checks if an object is contained in the set */
-	template <typename T>
-	static bool contains(const std::set<T> & set, unsigned int element) {
-		return set.find(element) != set.end();
-	}
-
-	/*! Checks if an object is contained in the map */
-	template <typename T, typename d>
-	static bool contains(const std::map<T, d> & map, unsigned int element) {
-		return map.find(element) != map.end();
-	}
-
 private:
 
 	/*! add node to network based on coordinates and type and return the node id.
