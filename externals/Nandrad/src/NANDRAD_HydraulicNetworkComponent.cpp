@@ -189,8 +189,9 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 			return {"CondenserOutletSetpointSchedule [C]", "HeatPumpOnOffSignalSchedule [---]"};
 		case MT_IdealHeaterCooler:
 			return {"SupplyTemperatureSchedule [C]"};
-		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump :
+			 return {"MassFluxSchedule [kg/s]"};
+		case MT_ConstantPressurePump:
 		case MT_ControlledPump:
 		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
