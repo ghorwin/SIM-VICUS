@@ -181,6 +181,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Target temperature difference");
 	tr("Target mass flux");
 	tr("Threshold value for PumpOperation property when OnOffController is used");
+	tr("Integral part will be set to zero if controller error is above this value");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");

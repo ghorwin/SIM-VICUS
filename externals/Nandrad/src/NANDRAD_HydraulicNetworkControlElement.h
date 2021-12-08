@@ -19,6 +19,8 @@ namespace NANDRAD {
 class HydraulicNetworkControlElement {
 public:
 
+	HydraulicNetworkControlElement();
+
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 	NANDRAD_COMP(HydraulicNetworkControlElement)
@@ -70,6 +72,7 @@ public:
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
 		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
+		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
 		NUM_P
 	};
 

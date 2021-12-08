@@ -23,6 +23,7 @@
 #define NM_AbstractControllerH
 
 #include <cstddef>
+#include <limits>
 
 namespace NANDRAD_MODEL {
 
@@ -78,7 +79,10 @@ public:
 	double				m_controlValue = 0;
 	/*! Cache of error value updated in last call to update(). */
 	double				m_errorValue = 777;
-
+	/*! Control value will be clipped below this value */
+	double				m_controlValueMinimum = std::numeric_limits<double>::lowest();
+	/*! Control value will be clipped above this value */
+	double				m_controlValueMaximum = std::numeric_limits<double>::max();
 };
 
 } // namespace NANDRAD_MODEL

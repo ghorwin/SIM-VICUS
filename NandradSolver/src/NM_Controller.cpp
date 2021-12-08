@@ -87,6 +87,11 @@ void DigitalHysteresisController::deserialize(void *& dataPtr) {
 void PController::update(double errorValue) {
 	AbstractController::update(errorValue);
 	m_controlValue = m_kP * errorValue;
+	//clipping
+	if (m_controlValue < m_controlValueMinimum)
+		m_controlValue = m_controlValueMinimum;
+	else if (m_controlValue > m_controlValueMaximum)
+		m_controlValue = m_controlValueMaximum;
 }
 
 
@@ -97,13 +102,17 @@ void PIController::update(double errorValue) {
 	AbstractController::update(errorValue);
 	// calculate controller output
 	m_controlValue = m_kP * errorValue + m_kI * m_errorValueIntegral;
+	//clipping
+	if (m_controlValue < m_controlValueMinimum)
+		m_controlValue = m_controlValueMinimum;
+	else if (m_controlValue > m_controlValueMaximum)
+		m_controlValue = m_controlValueMaximum;
 }
 
 
 void PIController::stepCompleted(double t) {
 	double dt = t - m_tLastStep;
-	// trapozoid rule of integration
-	m_errorValueIntegral += dt*0.5*(m_lastErrorValue + m_errorValue);
+	m_errorValueIntegral += dt*0.5*(m_lastErrorValue + m_errorValue); // trapozoid rule of integration
 	m_tLastStep = t;
 	// store error value and time point
 	m_lastErrorValue = m_errorValue;
@@ -154,6 +163,11 @@ void PIDController::update(double errorValue) {
 	AbstractController::update(errorValue);
 	// calculate controller output
 	m_controlValue = m_kP * errorValue + m_kI * m_errorValueIntegral + m_kD * (errorValue - m_lastErrorValue) / m_timeStep;
+	//clipping
+	if (m_controlValue < m_controlValueMinimum)
+		m_controlValue = m_controlValueMinimum;
+	else if (m_controlValue > m_controlValueMaximum)
+		m_controlValue = m_controlValueMaximum;
 }
 
 

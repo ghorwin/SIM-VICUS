@@ -379,6 +379,7 @@ namespace VICUS {
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -850,6 +851,7 @@ namespace VICUS {
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -1322,6 +1324,7 @@ namespace VICUS {
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
 				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
+				case 6 : return "Integral part will be set to zero if controller error is above this value";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -1793,6 +1796,7 @@ namespace VICUS {
 				case 3 : return "K";
 				case 4 : return "kg/s";
 				case 5 : return "W";
+				case 6 : return "---";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2264,6 +2268,7 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2735,6 +2740,7 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::References
 			case 29 :
@@ -2992,7 +2998,7 @@ namespace VICUS {
 			// NetworkController::ControllerType
 			case 27 : return 4;
 			// NetworkController::para_t
-			case 28 : return 6;
+			case 28 : return 7;
 			// NetworkController::References
 			case 29 : return 2;
 			// NetworkEdge::PipeModel
@@ -3114,7 +3120,7 @@ namespace VICUS {
 			// NetworkController::ControllerType
 			case 27 : return 3;
 			// NetworkController::para_t
-			case 28 : return 5;
+			case 28 : return 6;
 			// NetworkController::References
 			case 29 : return 1;
 			// NetworkEdge::PipeModel

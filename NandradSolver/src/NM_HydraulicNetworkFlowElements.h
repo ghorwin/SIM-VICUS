@@ -198,12 +198,14 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
+	/*! the calculated controller zeta value for the valve */
+	double							m_controllerError = -999;
+
 	/*! number of parallel elements (mass flux will be divided by this number) */
 	unsigned int					m_numberParallelElements = 1;
 
 	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::HydraulicNetworkControlElement
-									*m_controlElement = nullptr;
+	const NANDRAD::HydraulicNetworkControlElement	*m_controlElement = nullptr;
 
 	/*! Value reference to external quantity. */
 	const double					*m_heatExchangeHeatLossRef = nullptr;
@@ -284,7 +286,7 @@ private:
 	/*! Value reference to pressure head [Pa] */
 	const double										* m_pressureHeadRef = nullptr;
 	/*! Controller for pump (used for on/off controlling) */
-	const NANDRAD::HydraulicNetworkControlElement		* m_controller = nullptr;
+	const NANDRAD::HydraulicNetworkControlElement		* m_controlElement = nullptr;
 	/*! Reference to heat loss of following element (used for on/off controlling) */
 	const double										* m_followingElementHeatLossRef = nullptr;
 	/*! Determines wether pump is currently in operation (used for on/off controlling) */
