@@ -67,13 +67,16 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		// check data table
 		if (m_modelType == MT_HeatPumpOnOffSourceSide) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'Pel' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'Pel' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
 		if (m_modelType == MT_HeatPumpVariableSourceSide) {
 			if (m_polynomCoefficients.m_values["COP"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'COP' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
 
 		// check optional parameters, if given

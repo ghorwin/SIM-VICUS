@@ -141,7 +141,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
-	tr("On-off-type heat pump based on polynoms, installed at source side");
+	tr("Heat pump with variable heating power based on polynom for COP, installed at source side");
+	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");

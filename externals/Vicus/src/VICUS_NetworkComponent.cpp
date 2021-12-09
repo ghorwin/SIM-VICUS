@@ -158,9 +158,10 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 		case MT_ControlledPump:
 		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
-		case MT_HeatPumpIdealCarnotSourceSide:
-		case MT_HeatPumpIdealCarnotSupplySide:
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
+		case MT_HeatPumpVariableSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
@@ -182,9 +183,10 @@ std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkCompo
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
 		case MT_HeatExchanger:
-		case MT_HeatPumpIdealCarnotSourceSide:
-		case MT_HeatPumpIdealCarnotSupplySide:
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
+		case MT_HeatPumpVariableSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
@@ -210,9 +212,10 @@ std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkCo
 		case MT_ControlledPump:
 		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
-		case MT_HeatPumpIdealCarnotSourceSide:
-		case MT_HeatPumpIdealCarnotSupplySide:
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
+		case MT_HeatPumpVariableSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
@@ -284,9 +287,10 @@ bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType model
 		case MT_ControlledPump:
 		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
-		case MT_HeatPumpIdealCarnotSourceSide:
-		case MT_HeatPumpIdealCarnotSupplySide:
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
+		case MT_HeatPumpVariableSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 		case MT_ControlledValve:
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:

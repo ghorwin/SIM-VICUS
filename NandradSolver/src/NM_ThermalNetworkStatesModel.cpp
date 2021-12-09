@@ -257,7 +257,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide :
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide : {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide : {
 					// create general model with given heat flux
 					TNHeatPumpVariable * element = new TNHeatPumpVariable(m_network->m_fluid, e);
 					// add to flow elements

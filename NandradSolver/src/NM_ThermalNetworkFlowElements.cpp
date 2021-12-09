@@ -738,11 +738,19 @@ TNHeatPumpVariable::TNHeatPumpVariable(const NANDRAD::HydraulicFluid & fluid,
 	m_flowElement(&e)
 {
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	m_carnotEfficiency = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
-	m_coeffsCOP = e.m_component->m_polynomCoefficients.m_values.at("COP");
 	m_condenserMaximumHeatFlux = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+	switch (e.m_component->m_modelType) {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
+			m_coeffsCOP = e.m_component->m_polynomCoefficients.m_values.at("COP");
+			break;
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+			m_carnotEfficiency = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
+			break;
+		default:;
+	}
 }
 
 
@@ -776,7 +784,8 @@ void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 
 	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide: {
 			// initialize all results with 0
 			m_evaporatorHeatFlux = 0;
 			m_condenserHeatFlux = 0;
@@ -874,7 +883,8 @@ void TNHeatPumpVariable::inputReferences(std::vector<InputReference> & inputRefs
 
 	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide: {
 			InputReference ref;
 			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -906,13 +916,14 @@ void TNHeatPumpVariable::setInputValueRefs(std::vector<const double *>::const_it
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	switch (m_flowElement->m_component->m_modelType) {
 		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide: {
 			m_heatExchangeCondensorHeatLossRef = *(resultValueRefs++); // HeatLossCondenser
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
-			break;
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+		} break;
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide: {
 			m_heatExchangeEvaporatorTemperatureRef = *(resultValueRefs++); // TemperatureEvaporator
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
-			break;
+		} break;
 		default : ;
 	}
 }
@@ -958,17 +969,20 @@ void TNHeatPumpVariable::calculateCOP() {
 	}
 	// now calculate COP depending on model and check if it is valid
 	else {
-		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide ||
-			m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide ) {
-			// constant carnot efficiency
-			m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
-		}
-		else if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide) {
-			// bi-quadratic polynom, expects temperatures in K
-			const double &Tc = m_condenserMeanTemperature;
-			const double &Te = m_evaporatorMeanTemperature;
-			m_COP = m_coeffsCOP[0] + m_coeffsCOP[1] * Te + m_coeffsCOP[2] * Tc + m_coeffsCOP[3] * Te * Tc +
-					m_coeffsCOP[4] * Te * Te + m_coeffsCOP[5] * Tc * Tc;
+		switch (m_flowElement->m_component->m_modelType) {
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide: {
+				// constant carnot efficiency
+				m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+			} break;
+			case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide: {
+				// bi-quadratic polynom, expects temperatures in K
+				const double &Tc = m_condenserMeanTemperature;
+				const double &Te = m_evaporatorMeanTemperature;
+				m_COP = m_coeffsCOP[0] + m_coeffsCOP[1] * Te + m_coeffsCOP[2] * Tc + m_coeffsCOP[3] * Te * Tc +
+						m_coeffsCOP[4] * Te * Te + m_coeffsCOP[5] * Tc * Tc;
+			} break;
+			default: ; // nothing else possible
 		}
 
 		// clipping in case of invalid COP

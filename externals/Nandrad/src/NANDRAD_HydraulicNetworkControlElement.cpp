@@ -9,14 +9,6 @@ namespace NANDRAD {
 void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & zones) const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
-	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
-
-	if (m_controlledProperty == NUM_CP)
-		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
-
-	if (m_modelType == NUM_MT)
-		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
-
 	if (m_controlledProperty == CP_PumpOperation){
 		if (m_controllerType != CT_OnOffController)
 			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
