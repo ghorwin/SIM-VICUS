@@ -223,6 +223,8 @@ void TNStaticPipeElement::setInflowTemperature(double Tinflow) {
 
 
 
+
+
 // *** DynamicPipeElement ***
 
 TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -453,6 +455,9 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 }
 
 
+
+
+
 // *** DynamicAdiabaticPipeElement ***
 
 TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
@@ -588,6 +593,8 @@ void TNDynamicAdiabaticPipeElement::dependencies(const double *ydot, const doubl
 
 
 
+
+
 // *** PumpWithPerformanceLoss ***
 
 TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFluid & fluid,
@@ -645,6 +652,8 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 
 
 
+
+
 // *** AdiabaticElement ***
 
 TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, double fluidVolume) {
@@ -654,6 +663,8 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 	// store fluid volume
 	m_fluidVolume = fluidVolume;
 }
+
+
 
 
 
@@ -717,21 +728,25 @@ void TNElementWithExternalHeatLoss::dependencies(const double * ydot, const doub
 }
 
 
+
+
+
 // *** TNHeatPumpIdealCarnot ***
 
-TNHeatPumpIdealCarnot::TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
+TNHeatPumpVariable::TNHeatPumpVariable(const NANDRAD::HydraulicFluid & fluid,
 											 const NANDRAD::HydraulicNetworkElement & e) :
 	m_flowElement(&e)
 {
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
 	m_carnotEfficiency = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_CarnotEfficiency].value;
+	m_coeffsCOP = e.m_component->m_polynomCoefficients.m_values.at("COP");
 	m_condenserMaximumHeatFlux = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumHeatingPower].value;
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 }
 
 
-void TNHeatPumpIdealCarnot::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+void TNHeatPumpVariable::modelQuantities(std::vector<QuantityDescription> & quantities) const{
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
 	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
@@ -743,7 +758,7 @@ void TNHeatPumpIdealCarnot::modelQuantities(std::vector<QuantityDescription> & q
 }
 
 
-void TNHeatPumpIdealCarnot::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+void TNHeatPumpVariable::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_COP);
 	valRefs.push_back(&m_electricalPower);
@@ -755,16 +770,13 @@ void TNHeatPumpIdealCarnot::modelQuantityValueRefs(std::vector<const double *> &
 }
 
 
-void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
-	FUNCID(TNHeatPumpIdealCarnot::setInflowTemperature);
+void TNHeatPumpVariable::setInflowTemperature(double Tinflow) {
 
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
-	const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
-
 	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide: {
 			// initialize all results with 0
 			m_evaporatorHeatFlux = 0;
 			m_condenserHeatFlux = 0;
@@ -783,11 +795,12 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			m_condenserHeatFlux = *m_heatExchangeCondensorHeatLossRef;
 
 			// Passive cooling mode:
-			// in case of a negative condenser heat flux, we interpet this as passive cooling e.g. the heat pump is off
+			// in case of a negative condenser heat flux, we interpet this as passive cooling, so the heat pump is off
 			// and just acts as a usual heat exchanger by adding the condenser heat flux directly to the fluid
 			if (m_condenserHeatFlux <= 0) {
 				m_heatLoss = m_condenserHeatFlux;
 			}
+
 			// Normal heat pump mode:  we expect positive mass flux
 			else if (m_massFlux > 0){
 				// cut condenser heat flux
@@ -797,33 +810,12 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 				// m_meanTemperature (fluid outlet temperature) are both known and given
 				m_evaporatorMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
 
-				// turn off heat pump if evaporator temperature is out of valid range
+				// Calculate COP depending on model and check if temperatures and COP are in a valid range
+				// if temperatures / COP is invalid m_COP will be =0
+				calculateCOP();
 
-				// First check that COP is always > 1:
-				// COP = carnotEfficiency * Tcond / (Tcond - Tevap) > 1
-				// --> TEvap > Tcond ( 1 - carnotEfficiency )
-				// for a very bad heat pump with carnot efficiency = 10%, we have a lower limit of approx. Tcond = 300; 300 * 0.9 = 270 K
-				// generally, we do not want to go below -30 C.
-				if (m_evaporatorMeanTemperature < 273.15 - 30)
-				{
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
-																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
-														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				}
-				else if (m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency))
-				{
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("COP is below 1, HeatPumpIdealCarnot, "
-																		"flow element with id '%1'\n").arg(m_flowElement->m_id),
-														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				}
-				else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
-													  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
-														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				}
-				else {
-					// always > 1
-					m_COP = m_carnotEfficiency * m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+				// only continue for valid COP's
+				if (m_COP > 1) {
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
 					m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
 					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux; // same as "m_condenserHeatFlux/m_COP", electrical power of heat pump
@@ -833,7 +825,7 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 		} break; // HP_SourceSide
 
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:{
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:{
 			// initialize all results with 0
 			m_evaporatorHeatFlux = 0;
 			m_COP = 0.0;
@@ -851,27 +843,19 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 			m_condenserHeatFlux = m_massFlux * m_fluidHeatCapacity * (outletSetpointTemperature - m_inflowTemperature);
 			if (m_condenserHeatFlux > m_condenserMaximumHeatFlux)
 				m_condenserHeatFlux = m_condenserMaximumHeatFlux;
+
 			// heat pump can only add heat; also, we expect positive mass flux
 			if (m_condenserHeatFlux < 0 || m_massFlux < 0)
 				m_condenserHeatFlux = 0;
 			else {
 				m_condenserMeanTemperature = (m_inflowTemperature + m_meanTemperature) / 2;
-				// heat pump physics only work when condenser temperature is above evaporator temperature
-				// for examplanations of checks below, see above in HP_SourceSide
-				if (m_evaporatorMeanTemperature < 273.15 - 30 ||
-					(m_evaporatorMeanTemperature < m_condenserMeanTemperature*(1-m_carnotEfficiency)) )
-				{
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
-																		"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
-														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				}
-				else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
-					IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
-													  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
-														IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-				}
-				else {
-					m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+
+				// Calculate COP, depending on model and check if temperatures and COP are in a valid range
+				// if temperatures / COP is invalid m_COP will be =0
+				calculateCOP();
+
+				// only continue for valid COP's
+				if (m_COP > 1) {
 					m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP; // heat taken from source
 					m_heatLoss = - m_condenserHeatFlux; // negative, because building "removes" this heat from the fluid and heat loss is defined as positive quantity
 					m_electricalPower  = m_condenserHeatFlux - m_evaporatorHeatFlux;
@@ -886,11 +870,11 @@ void TNHeatPumpIdealCarnot::setInflowTemperature(double Tinflow) {
 }
 
 
-void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputRefs) const {
+void TNHeatPumpVariable::inputReferences(std::vector<InputReference> & inputRefs) const {
 
 	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide: {
 			InputReference ref;
 			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -901,7 +885,7 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 			inputRefs.push_back(ref);
 		} break;
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide: {
 			InputReference ref;
 			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -917,15 +901,15 @@ void TNHeatPumpIdealCarnot::inputReferences(std::vector<InputReference> & inputR
 }
 
 
-void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+void TNHeatPumpVariable::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
 
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	switch (m_flowElement->m_component->m_modelType) {
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
 			m_heatExchangeCondensorHeatLossRef = *(resultValueRefs++); // HeatLossCondenser
 			m_condenserMeanTemperatureRef = *(resultValueRefs++); // CondenserMeanTemperatureSchedule
 			break;
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 			m_heatExchangeEvaporatorTemperatureRef = *(resultValueRefs++); // TemperatureEvaporator
 			m_condenserOutletSetpointRef = *(resultValueRefs++); // CondenserOutletSetpointSchedule
 			break;
@@ -934,12 +918,12 @@ void TNHeatPumpIdealCarnot::setInputValueRefs(std::vector<const double *>::const
 }
 
 
-void TNHeatPumpIdealCarnot::internalDerivatives(double *ydot) {
+void TNHeatPumpVariable::internalDerivatives(double *ydot) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }
 
 
-void TNHeatPumpIdealCarnot::dependencies(const double * ydot, const double * y, const double * mdot,
+void TNHeatPumpVariable::dependencies(const double * ydot, const double * y, const double * mdot,
 										 const double * TInflowLeft, const double * TInflowRight,
 										 std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
@@ -952,6 +936,53 @@ void TNHeatPumpIdealCarnot::dependencies(const double * ydot, const double * y, 
 	if (m_heatExchangeEvaporatorTemperatureRef != nullptr)
 		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatExchangeEvaporatorTemperatureRef));
 }
+
+
+void TNHeatPumpVariable::calculateCOP() {
+	FUNCID(TNHeatPumpVariable::calculateCOP);
+
+	const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
+	m_COP = 0.;
+
+	// generally, we do not want to go below -30 C.
+	if (m_evaporatorMeanTemperature < 273.15 - 30) {
+		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
+															"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
+											IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+	}
+	// there must also be a minimum temperature difference
+	else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
+		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
+										  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
+											IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+	}
+	// now calculate COP depending on model and check if it is valid
+	else {
+		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide ||
+			m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide ) {
+			// constant carnot efficiency
+			m_COP = m_carnotEfficiency *  m_condenserMeanTemperature / (m_condenserMeanTemperature - m_evaporatorMeanTemperature);
+		}
+		else if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide) {
+			// bi-quadratic polynom, expects temperatures in K
+			const double &Tc = m_condenserMeanTemperature;
+			const double &Te = m_evaporatorMeanTemperature;
+			m_COP = m_coeffsCOP[0] + m_coeffsCOP[1] * Te + m_coeffsCOP[2] * Tc + m_coeffsCOP[3] * Te * Tc +
+					m_coeffsCOP[4] * Te * Te + m_coeffsCOP[5] * Tc * Tc;
+		}
+
+		// clipping in case of invalid COP
+		if (m_COP <= 1) {
+			m_COP = 0;
+			IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("COP is <= 1 in HeatPumpVariable, "
+																"flow element with id '%1'\n").arg(m_flowElement->m_id),
+																IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+		}
+	}
+}
+
+
+
 
 
 
@@ -1001,9 +1032,11 @@ void TNIdealHeaterCooler::modelQuantityValueRefs(std::vector<const double *> & v
 
 
 
+
+
 // *** TNHeatPumpReal ***
 
-TNHeatPumpReal::TNHeatPumpReal(const NANDRAD::HydraulicFluid &fluid, const NANDRAD::HydraulicNetworkElement &e):
+TNHeatPumpOnOff::TNHeatPumpOnOff(const NANDRAD::HydraulicFluid &fluid, const NANDRAD::HydraulicNetworkElement &e):
 	m_flowElement(&e)
 {
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
@@ -1014,7 +1047,7 @@ TNHeatPumpReal::TNHeatPumpReal(const NANDRAD::HydraulicFluid &fluid, const NANDR
 }
 
 
-void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantities) const {
+void TNHeatPumpOnOff::modelQuantities(std::vector<QuantityDescription> & quantities) const {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
 	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
 	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
@@ -1026,7 +1059,7 @@ void TNHeatPumpReal::modelQuantities(std::vector<QuantityDescription> & quantiti
 }
 
 
-void TNHeatPumpReal::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+void TNHeatPumpOnOff::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
 	valRefs.push_back(&m_COP);
 	valRefs.push_back(&m_electricalPower);
@@ -1038,25 +1071,26 @@ void TNHeatPumpReal::modelQuantityValueRefs(std::vector<const double *> & valRef
 }
 
 
-void TNHeatPumpReal::setInflowTemperature(double Tinflow) {
+void TNHeatPumpOnOff::setInflowTemperature(double Tinflow) {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
 
 	IBK_ASSERT(m_condenserOutletSetpointRef != nullptr);
 	IBK_ASSERT(m_onOffSignalRef != nullptr);
 
 	// convenience
-	const double &Tc = *m_condenserOutletSetpointRef - 273.15;
-	const double &Te = Tinflow - 273.15;
+	const double &Tc = *m_condenserOutletSetpointRef;
+	const double &Te = Tinflow;
 
 	// heat pump is ON
 	if (*m_onOffSignalRef > 0.5){
 
-		// condensator heat flux polynom (the polynom result is in kW)
-		m_condenserHeatFlux = 1000.0 * (m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
-				m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc);
-		// electrical power polynom (the polynom result is in kW)
-		m_electricalPower = 1000.0 * (m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
-				m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc);
+		// The polynom result is in W and expects temperatures in K
+		// condensator heat flux polynom
+		m_condenserHeatFlux = m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
+				m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc;
+		// electrical power polynom
+		m_electricalPower = m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
+				m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc;
 
 		m_evaporatorHeatFlux = m_condenserHeatFlux - m_electricalPower;
 		m_COP = m_condenserHeatFlux / m_electricalPower;
@@ -1065,7 +1099,7 @@ void TNHeatPumpReal::setInflowTemperature(double Tinflow) {
 		m_evaporatorInletTemperature = m_inflowTemperature;
 
 		// heat loss depends on model type
-		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide){
+		if (m_flowElement->m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide){
 			m_heatLoss = m_evaporatorHeatFlux;
 		}
 		else {
@@ -1087,11 +1121,11 @@ void TNHeatPumpReal::setInflowTemperature(double Tinflow) {
 }
 
 
-void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) const {
+void TNHeatPumpOnOff::inputReferences(std::vector<InputReference> &inputRefs) const {
 
 	switch (m_flowElement->m_component->m_modelType) {
 
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide: {
 			InputReference ref;
 			ref.m_id = m_flowElement->m_id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
@@ -1112,11 +1146,11 @@ void TNHeatPumpReal::inputReferences(std::vector<InputReference> &inputRefs) con
 }
 
 
-void TNHeatPumpReal::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+void TNHeatPumpOnOff::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
 
 	// now store the pointer returned for our input ref request and advance the iterator by one
 	switch (m_flowElement->m_component->m_modelType) {
-		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:{
+		case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:{
 			m_condenserOutletSetpointRef = *(resultValueRefs++);
 			m_onOffSignalRef = *(resultValueRefs++);
 		} break;
@@ -1125,7 +1159,7 @@ void TNHeatPumpReal::setInputValueRefs(std::vector<const double *>::const_iterat
 }
 
 
-void TNHeatPumpReal::internalDerivatives(double *ydot) {
+void TNHeatPumpOnOff::internalDerivatives(double *ydot) {
 	// Bypass parent class's internalDerivatives() function
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);
 }

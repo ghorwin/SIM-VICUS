@@ -2996,8 +2996,9 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		const NANDRAD::HydraulicNetworkComponent *comp = VICUS::element(nandradNetwork.m_components, it->first);
 		// we are looking for typical models of heat sinks / sources
 		if (comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger ||
-			comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide ||
-			comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide ) {
+			comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide ||
+			comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide ||
+			comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide ) {
 			// create summation model
 			const NANDRAD::ObjectList &objList = objectListMap[comp->m_id];
 			NANDRAD::HeatLoadSummationModel sumModel;
