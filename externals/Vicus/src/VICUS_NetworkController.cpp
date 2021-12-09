@@ -5,6 +5,11 @@
 namespace VICUS {
 
 
+NetworkController::NetworkController(){
+	// set default value
+	m_para[P_RelControllerErrorForIntegratorReset] = IBK::Parameter("RelControllerErrorForIntegratorReset", 0.7, "---");
+}
+
 bool NetworkController::isValid(const Database<Schedule> &scheduleDB) const {
 	// call check function of NANDRAD::HydraulicNetworkControlElement
 	try {

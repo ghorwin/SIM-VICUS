@@ -26,6 +26,8 @@ namespace VICUS {
 class NetworkController: public AbstractDBElement {
 public:
 
+	NetworkController();
+
 	/*! Defines variability options for set point values. */
 	enum ModelType {
 		MT_Constant,					// Keyword: Constant				'Set points are given as constant parameters'
