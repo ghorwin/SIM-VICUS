@@ -493,15 +493,20 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 |====================
 
 
-[[HydraulicElement_HeatPumpIdealCarnotSourceSide]]
-### ModellTyp: HeatPumpIdealCarnotSourceSide
 
-Das Model `HeatPumpIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+
+[[HydraulicElement_HeatPumpVariableIdealCarnotSourceSide]]
+### ModellTyp: HeatPumpVariableIdealCarnotSourceSide
+
+Das Model `HeatPumpVariableIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur 
+(d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+
+Die Heizleistung wird durch den `HydraulicNetworkHeatExchange` mit dem modelType `HeatLossSplineCondenser` bestimmt.
 
 Weiterhin werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
-[[Parameter_HeatPumpIdealCarnotSourceSide]]
+[[Parameter_HeatPumpVariableIdealCarnotSourceSide]]
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
@@ -515,13 +520,13 @@ Weiterhin werden diese Parameter benötigt:
 [IMPORTANT]
 Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
 
-[[ex_HeatPumpIdealCarnotSourceSide]]
-.Definition einer HeatPumpIdealCarnotSourceSide
+[[ex_HeatPumpVariableIdealCarnotSourceSide]]
+.Definition einer HeatPumpVariableIdealCarnotSourceSide
 ====
 [source,xml]
 ----
 <Components>
-    <HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnotSourceSide">
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpVariableIdealCarnotSourceSide">
     	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
     	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
     	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
@@ -544,19 +549,76 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 
 
 
-### ModellTyp: HeatPumpIdealCarnotSupplySide
+### ModellTyp: HeatPumpVariableIdealCarnotSupplySide
 
-Das Model `HeatPumpIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
+Das Model `HeatPumpVariableIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
 
-Die benötigten Parameter sind identisch mit dem Modell <<HydraulicElement_HeatPumpIdealCarnotSourceSide>> und in <<Parameter_HeatPumpIdealCarnotSourceSide>> gegeben.
+Die benötigten Parameter sind identisch mit dem Modell <<HydraulicElement_HeatPumpVariableIdealCarnotSourceSide>> und in <<Parameter_HeatPumpVariableIdealCarnotSourceSide>> gegeben.
 
 
-[[HydraulicElement_HeatPumpRealSourceSide]]
-### Modelltyp: HeatPumpRealSourceSide
+
+
+[HydraulicElement_HeatPumpVariableSourceSide]]
+### ModellTyp: HeatPumpVariableSourceSide
+
+Das Model `HeatPumpVariableSourceSide` ist eine ideale Wärmepumpe mit variable Heizleistung, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+Im Gegensatz zum Modell `HeatPumpVariableIdealCarnotSourceSide`, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung des COP in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpVariableSourceSide>>). 
+
+
+Weiterhin werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+[[HeatPumpVariableSourceSide]]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumHeatingPower` | W | Maximale Heizleistung (= maximaler Wärmestrom des Kondensators) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+
+[IMPORTANT]
+Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
+
+[[ex_HeatPumpVariableSourceSide]]
+.Definition einer HeatPumpVariableSourceSide
+====
+[source,xml]
+----
+<Components>
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpVariableSourceSide">
+    	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+    	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+    	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+    	<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
+    	<PolynomCoefficients>
+			COP: -7.46562450e+01	5.87360996e-01	-1.38056160e-03	-4.45166703e-03	1.68697149e-03	1.77084233e-03
+		</PolynomCoefficients>
+    </HydraulicNetworkComponent>
+</Components>
+
+<Elements>
+    <HydraulicNetworkElement id="1" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
+    	<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+    		<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+    			<TSVFile>${Project Directory}/file/to/HeatFluxCondenser.csv</TSVFile>
+    		</LinearSplineParameter>
+    	</HydraulicNetworkHeatExchange>
+    </HydraulicNetworkElement>
+</Elements>
+----
+====
+
+
+
+
+[[HydraulicElement_HeatPumpOnOffSourceSide]]
+### Modelltyp: HeatPumpOnOffSourceSide
 
 Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. 
 
-Es werden je 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpRealSourceSide>>). Es wird ein `Schedule` für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug `HeatPumpOnOffSignalSchedule` und ein `Schedule` für die Kondensatoraustrittstemperatur mit der Beziechnung `CondenserOutletSetpointSchedule` benötigt.
+Es werden je 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpOnOffSourceSide>>). Es wird ein `Schedule` für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug `HeatPumpOnOffSignalSchedule` und ein `Schedule` für die Kondensatoraustrittstemperatur mit der Beziechnung `CondenserOutletSetpointSchedule` benötigt.
 
 Weitere benötigte Parameter sind:
 
@@ -569,19 +631,19 @@ Weitere benötigte Parameter sind:
 |====================
 
 
-[[ex_HeatPumpRealSourceSide]]
-.Definition einer HeatPumpRealSourceSide
+[[ex_HeatPumpOnOffSourceSide]]
+.Definition einer HeatPumpOnOffSourceSide
 ====
 [source,xml]
 ----
 <Components>
-    <HydraulicNetworkComponent id="2" modelType="HeatPumpRealSourceSide">
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpOnOffSourceSide">
     	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
     	<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
     	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
     	<PolynomCoefficients>
-    		QdotCondensator: 9.92879892e+00 2.88001670e-01 -6.14962264e-02 -1.64339623e-03 1.82864120e-03 1.89999998e-04;
-    		Pel: 9.67904904e-01 -1.15618685e-03 4.19591509e-03 9.77264129e-05 -2.20526428e-04 4.61199998e-04
+    		QdotCondensator: -2.39461360e+04 -2.62085728e+02  2.83610229e+02 -1.64340182e+00 1.82863445e+00  1.89987100e-01;
+			Pel: 2.53859559e+04  9.26237012e+01 -2.74451964e+02  9.77255316e-02 -2.20526410e-01  4.61200937e-01
     	</PolynomCoefficients>
     </HydraulicNetworkComponent>
 </Components>
@@ -606,6 +668,8 @@ Weitere benötigte Parameter sind:
 </Schedule>
 ----
 ====
+
+
 
 
 [[HydraulicElement_IdealHeaterCooler]]
