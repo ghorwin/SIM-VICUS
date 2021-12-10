@@ -731,10 +731,10 @@ void TNElementWithExternalHeatLoss::dependencies(const double * ydot, const doub
 
 
 
-// *** TNHeatPumpIdealCarnot ***
+// *** TNHeatPumpVariable ***
 
 TNHeatPumpVariable::TNHeatPumpVariable(const NANDRAD::HydraulicFluid & fluid,
-											 const NANDRAD::HydraulicNetworkElement & e) :
+									   const NANDRAD::HydraulicNetworkElement & e) :
 	m_flowElement(&e)
 {
 	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
