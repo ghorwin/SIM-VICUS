@@ -49,7 +49,7 @@ public:
 	~ConstructionView();
 
 	/*! Updates the locally cached data.*/
-	void setData(QPaintDevice* paintDevice, const QVector<ConstructionLayer>& layers, double resolution);
+	void setData(QPaintDevice* paintDevice, const QVector<ConstructionLayer>& layers, double resolution, int visibleItems);
 
 	/*! Clears content and scene.*/
 	void clear();
@@ -121,6 +121,11 @@ private:
 
 	/*! Currently selected layer. Is -1 if nothing is selected or no layer exist.*/
 	int				m_selectedLayer;
+
+	/*! Store the item visibilty for the graphics scene.
+		See QtExt::ConstructionGraphicsScene for more information.
+	*/
+	int				m_visibleItems;
 };
 
 } // namespace QtExt

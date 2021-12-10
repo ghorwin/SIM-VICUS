@@ -30,7 +30,7 @@
 #include <QDebug>
 #include <QTextDocument>
 
-#include <QtExt_TextFrame.h>
+#include "QtExt_TextFrame.h"
 
 namespace QtExt {
 
@@ -124,7 +124,10 @@ ConstructionGraphicsScene::ConstructionGraphicsScene(bool onScreen, QPaintDevice
 	m_res(1.0),
 	m_device(device),
 	m_internalPens(new InternalPens(this)),
-	m_internalStringItems(new InternalStringItems(this))
+	m_internalStringItems(new InternalStringItems(this)),
+	m_visibleDimensions(true),
+	m_visibleMaterialNames(true),
+	m_visibleBoundaryLabels(true)
 {
 	Q_ASSERT(m_device);
 
@@ -213,14 +216,27 @@ QString ConstructionGraphicsScene::dimLabel(double d) {
 
 void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double res,
 						 const QVector<ConstructionLayer>& layers,
-						 const QString & leftLabel, const QString & rightLabel)
+						 const QString & leftLabel, const QString & rightLabel,
+									  int visibleItems)
 {
+	int currentVisibilty = 0;
+	if(m_visibleDimensions)
+		currentVisibilty += VI_Dimensions;
+	if(m_visibleMaterialNames)
+		currentVisibilty += VI_MaterialNames;
+	if(m_visibleBoundaryLabels)
+		currentVisibilty += VI_BoundaryLabels;
+	m_visibleDimensions = visibleItems & VI_Dimensions;
+	m_visibleMaterialNames = visibleItems & VI_MaterialNames;
+	m_visibleBoundaryLabels = visibleItems & VI_BoundaryLabels;
+
 	Q_ASSERT(device);
 	m_device = device;
 	m_res = res;
 	// If no change no calculations needed
 	bool noCalculationNeeded = frame == m_frame;
 	noCalculationNeeded = noCalculationNeeded && layers == m_inputData;
+	noCalculationNeeded = noCalculationNeeded && visibleItems == currentVisibilty;
 
 	m_leftSideLabel = leftLabel;
 	m_rightSideLabel = rightLabel;
@@ -267,13 +283,15 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 
 	// update coordinates, normally only necessary when wall construction changes or view is resized
 	calculatePositions();
-	drawDimensions();
+	if(m_visibleDimensions)
+		drawDimensions();
 	drawWall();
 
 	// stop if only construction sketch is required
 	setSceneRect(m_frame);
 	emit changed(QList<QRectF>() << frame);
 }
+
 
 void ConstructionGraphicsScene::calculatePositions() {
 	if(m_inputData.empty())
@@ -523,23 +541,25 @@ void ConstructionGraphicsScene::drawWall() {
 		rectItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
 		rectItem->setData(0, i-1);
 
-		QGraphicsTextItem* materialName = addText(m_inputData[i-1].m_name, m_tickFont);
-		materialName->setZValue(2);
-		setAlignment(materialName->document(), Qt::AlignVCenter);
-		materialName->document()->setTextWidth(rectHeight);
-		double textWidth = materialName->document()->idealWidth();
+		if(m_visibleMaterialNames) {
+			QGraphicsTextItem* materialName = addText(m_inputData[i-1].m_name, m_tickFont);
+			materialName->setZValue(2);
+			setAlignment(materialName->document(), Qt::AlignVCenter);
+			materialName->document()->setTextWidth(rectHeight);
+			double textWidth = materialName->document()->idealWidth();
 
-		#if QT_VERSION >= 0x040600
+#if QT_VERSION >= 0x040600
 			materialName->setRotation(-90);
-		#else
+#else
 			materialName->rotate( -90 );
-		#endif
+#endif
 
-		int xpos = left + (width - materialName->boundingRect().height()) / 2.0;
-		int ypos = yb - (rectHeight - textWidth) / 2.0;
-		materialName->setPos(xpos, ypos);
+			int xpos = left + (width - materialName->boundingRect().height()) / 2.0;
+			int ypos = yb - (rectHeight - textWidth) / 2.0;
+			materialName->setPos(xpos, ypos);
 
-		materialName->setVisible(materialName->boundingRect().height() < width - 2);
+			materialName->setVisible(materialName->boundingRect().height() < width - 2);
+		}
 	}
 
 	// draw outside wall lines twice as thick
@@ -550,19 +570,20 @@ void ConstructionGraphicsScene::drawWall() {
 	addLine(xl, yb, xr, yb, m_internalPens->m_hborderPen);
 
 	// draw inside/outside text
-	QGraphicsTextItem* outsideLeft = addText(m_leftSideLabel, m_tickFont);
-	setAlignment(outsideLeft->document(), Qt::AlignVCenter);
-	outsideLeft->document()->setTextWidth(m_xpos.front());
-	double textWidth = outsideLeft->document()->idealWidth();
-	outsideLeft->setPos((m_xpos.front() - textWidth) / 2, yt - 2);
+	if(m_visibleBoundaryLabels) {
+		QGraphicsTextItem* outsideLeft = addText(m_leftSideLabel, m_tickFont);
+		setAlignment(outsideLeft->document(), Qt::AlignVCenter);
+		outsideLeft->document()->setTextWidth(m_xpos.front());
+		double textWidth = outsideLeft->document()->idealWidth();
+		outsideLeft->setPos((m_xpos.front() - textWidth) / 2, yt - 2);
 
-	QGraphicsTextItem* insideRight = addText(m_rightSideLabel, m_tickFont);
-	setAlignment(insideRight->document(), Qt::AlignVCenter);
-	int outerBond = m_frame.width() - m_xpos.back();
-	insideRight->document()->setTextWidth(outerBond);
-	textWidth = insideRight->document()->idealWidth();
-	insideRight->setPos(m_xpos.back() + (outerBond - textWidth) / 2, yt - 2);
-
+		QGraphicsTextItem* insideRight = addText(m_rightSideLabel, m_tickFont);
+		setAlignment(insideRight->document(), Qt::AlignVCenter);
+		int outerBond = m_frame.width() - m_xpos.back();
+		insideRight->document()->setTextWidth(outerBond);
+		textWidth = insideRight->document()->idealWidth();
+		insideRight->setPos(m_xpos.back() + (outerBond - textWidth) / 2, yt - 2);
+	}
 }
 
 

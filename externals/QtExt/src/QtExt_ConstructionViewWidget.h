@@ -25,6 +25,7 @@
 #include <QToolBar>
 
 #include <QtExt_ConstructionLayer.h>
+#include <QtExt_ConstructionGraphicsScene.h>
 
 namespace QtExt {
 
@@ -47,8 +48,8 @@ public:
 	*/
 	void setData(const QVector<ConstructionLayer>& layers, bool fixed,
 				 QString	leftSideLabel = tr("Outside"),
-				 QString	rightSideLabel = tr("Inside")
-				 );
+				 QString	rightSideLabel = tr("Inside"),
+				 int visibleItems = ConstructionGraphicsScene::VI_All );
 
 	/*! Set visibility of toolbar widget.*/
 	void setToolbarVisible(bool visible);

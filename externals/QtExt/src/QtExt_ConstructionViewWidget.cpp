@@ -49,13 +49,14 @@ ConstructionViewWidget::~ConstructionViewWidget() {
 
 void ConstructionViewWidget::setData(const QVector<ConstructionLayer>& layers, bool fixed,
 									 QString	leftSideLabel,
-									 QString	rightSideLabel)
+									 QString	rightSideLabel,
+									 int visibleItems)
 {
 	m_fixed = fixed;
 	enableToolBar(false);
 	ui->graphicsView->m_leftSideLabel = leftSideLabel;
 	ui->graphicsView->m_rightSideLabel = rightSideLabel;
-	ui->graphicsView->setData(this, layers, 1.0);
+	ui->graphicsView->setData(this, layers, 1.0, visibleItems);
 }
 
 void ConstructionViewWidget::setToolbarVisible(bool visible) {

@@ -25,7 +25,7 @@
 #include <QGraphicsScene>
 
 
-#include <QtExt_GraphicsRectItemWithHatch.h>
+#include "QtExt_GraphicsRectItemWithHatch.h"
 #include "QtExt_ConstructionLayer.h"
 
 namespace QtExt {
@@ -37,6 +37,13 @@ class ConstructionGraphicsScene : public QGraphicsScene
 {
 	Q_OBJECT
 public:
+	enum VisibleItems {
+		VI_Dimensions = 0x01,
+		VI_MaterialNames = 0x02,
+		VI_BoundaryLabels = 0x04,
+		VI_All = 0x07
+	};
+
 	/*! Default constructor.
 		\param fontFamily Font family used for all fonts.
 		\param onScreen Is true if painting is on screen.
@@ -53,9 +60,14 @@ public:
 		\param device Device which is responsible for rendering.
 		\param res  Resolution of paint device. For screen normally 1.0
 		\param layers Vector of layers for drawing (material and thickness).
+		\param leftLabel Text for the left boundary label
+		\param rightLabel Text for the right boundary label
+		\param visibleItems Integer value as combination of type VisibleItems.
 	*/
 	void setup(QRect frame, QPaintDevice *device, double res,
-			   const QVector<ConstructionLayer>& layers, const QString & leftLabel, const QString & rightLabel);
+			   const QVector<ConstructionLayer>& layers, const QString & leftLabel, const QString & rightLabel,
+			   int visibleItems = VI_All);
+
 
 signals:
 
@@ -147,6 +159,9 @@ private:
 
 	QString					m_leftSideLabel;
 	QString					m_rightSideLabel;
+	bool					m_visibleDimensions;
+	bool					m_visibleMaterialNames;
+	bool					m_visibleBoundaryLabels;
 };
 
 } // namespace QtExt
