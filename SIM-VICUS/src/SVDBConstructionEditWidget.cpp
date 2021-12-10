@@ -333,7 +333,8 @@ void SVDBConstructionEditWidget::updateConstructionView() {
 		layer.m_id = (int)matID;
 		layers.push_back(layer);
 	}
-	m_ui->widgetConstructionView->setData(layers, m_current->m_builtIn, tr("Side A"), tr("Side B"));
+	m_ui->widgetConstructionView->setData(layers, m_current->m_builtIn, tr("Side A"), tr("Side B"),
+										  0);
 }
 
 
