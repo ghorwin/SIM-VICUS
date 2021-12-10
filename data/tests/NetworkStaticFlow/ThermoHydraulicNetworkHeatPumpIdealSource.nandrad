@@ -55,7 +55,7 @@
 					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
 					</HydraulicNetworkComponent>
-					<HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnotSourceSide">
+					<HydraulicNetworkComponent id="2" modelType="HeatPumpVariableIdealCarnotSourceSide">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
