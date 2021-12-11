@@ -114,6 +114,16 @@ private slots:
 
 	void on_listWidgetObjectIDs_itemSelectionChanged();
 
+	void on_toolButtonAddDefinition_clicked();
+
+	void on_toolButtonRemoveDefinition_clicked();
+
+	void on_toolButtonAddGrid_clicked();
+
+	void on_toolButtonEditGrid_clicked();
+
+	void on_toolButtonRemoveGrid_clicked();
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();

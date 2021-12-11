@@ -43,7 +43,9 @@ namespace VICUS {
 
 	- Qt::UserRole  returns a set of object IDs
 	- Qt::UserRole+1 returns the set of vector IDs
-	- Qt::UserRole+2 returns the object type string as keyword
+	- Qt::UserRole+2 returns the object type string as keyword "Zone"
+	- Qt::UserRole+3 returns the quantity name as keyword "AirTemperature"
+	- Qt::UserRole+4 returns the unit
 */
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT

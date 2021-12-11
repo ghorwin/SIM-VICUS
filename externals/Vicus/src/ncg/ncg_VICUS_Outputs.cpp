@@ -53,7 +53,7 @@ void Outputs::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "OutputDefinitions") {
+			if (cName == "Definitions") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -113,7 +113,7 @@ TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("checkSum", m_checkSum);
 
 	if (!m_definitions.empty()) {
-		TiXmlElement * child = new TiXmlElement("OutputDefinitions");
+		TiXmlElement * child = new TiXmlElement("Definitions");
 		e->LinkEndChild(child);
 
 		for (std::vector<VICUS::OutputDefinition>::const_iterator it = m_definitions.begin();

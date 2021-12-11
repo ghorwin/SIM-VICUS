@@ -356,6 +356,7 @@ void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
 	m_ui->listWidgetVectorIndexes->blockSignals(true);
 	for (unsigned int i : vectorIDs) {
 		QListWidgetItem * item = new QListWidgetItem(QString("%1").arg(i));
+		item->setData(Qt::UserRole, i);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->listWidgetVectorIndexes->addItem(item);
 	}
@@ -395,7 +396,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,0, item);
 
 
 		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
@@ -404,7 +405,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,1, item);
 
 		// create list of comma-separated IDs
 		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
@@ -414,7 +415,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
 
 		// create list of comma-separated IDs
 		ids = IBK::join_numbers(of.m_vectorIds, ',');
@@ -424,7 +425,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
 
 		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
 		// we default to None
@@ -437,7 +438,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,4, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,4, item);
 
 		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -450,7 +451,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 			item->setTextColor(badColor);
 			item->setFont(f);
 		}
-		m_ui->tableWidgetOutputGrids->setItem((int)i,5, item);
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);
 	}
 	m_ui->tableWidgetOutputDefinitions->selectRow(0);
 	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
@@ -477,3 +478,63 @@ void SVSimulationOutputOptions::updateOutdatedLabel() {
 }
 
 
+
+void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
+	// create and append a new output definition with currently selected grid and default time type, which
+	// is based on the quantity type
+
+	VICUS::OutputDefinition def;
+
+	// get selected output definition from table
+	QModelIndex proxyIndex = m_ui->tableViewAvailableOutputs->currentIndex();
+
+	def.m_sourceObjectType = proxyIndex.data(Qt::UserRole + 2).toString().toStdString();
+	def.m_quantity = proxyIndex.data(Qt::UserRole + 3).toString().toStdString(); // we append the index later, if needed
+	int currentGrid = m_ui->tableWidgetOutputGrids->currentRow();
+	if (currentGrid != -1)
+		def.m_gridName = m_ui->tableWidgetOutputGrids->item(currentGrid, 0)->text().toStdString();
+	else
+		def.m_gridName = "Default"; // how do we handle missing default grids?
+	def.m_timeType = VICUS::OutputDefinition::OTT_NONE;
+	// quantities with flux units get time-average as default
+	QString unit = proxyIndex.data(Qt::UserRole+4).toString();
+	if (unit == "W" || unit == "W/m2")
+		def.m_timeType = VICUS::OutputDefinition::OTT_MEAN;
+
+	// get selected objects
+	for (const QListWidgetItem * i : m_ui->listWidgetObjectIDs->selectedItems())
+		def.m_sourceObjectIds.push_back(i->data(Qt::UserRole).toUInt());
+
+	// any vector IDs selected?
+	if (m_ui->listWidgetVectorIndexes->count() != 0) {
+		NANDRAD::IDGroup idGroup;
+
+		for (const QListWidgetItem * i : m_ui->listWidgetVectorIndexes->selectedItems())
+			idGroup.m_ids.insert(i->data(Qt::UserRole).toUInt());
+
+		def.m_quantity = def.m_quantity + "[" + idGroup.encodedString() + "]";
+	}
+
+	m_outputs->m_definitions.push_back(def);
+	updateUi();
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonRemoveDefinition_clicked() {
+
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonAddGrid_clicked() {
+
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
+
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonRemoveGrid_clicked() {
+
+}

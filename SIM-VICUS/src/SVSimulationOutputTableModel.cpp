@@ -79,7 +79,13 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 			return QVariant::fromValue(var.m_vectorIds);
 
 		case Qt::UserRole + 2 :
-			return QString::fromStdString(var.m_objectTypeName);
+			return QString::fromStdString(var.m_objectTypeName); // "Zone" or "ConstructionInstance"
+
+		case Qt::UserRole + 3 :
+			return QString::fromStdString(var.m_quantity); // "AirTemperature" or "ElementTemperature"
+
+		case Qt::UserRole + 4 :
+			return QString::fromStdString(var.m_unit);
 	}
 	return QVariant();
 }
@@ -125,7 +131,7 @@ void SVSimulationOutputTableModel::updateListFromFile(const QString & outputRefL
 				continue;
 
 			// split columns
-			IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
+			IBK::explode(line, tokens, "\t", IBK::EF_NoFlags | IBK::EF_TrimTokens | IBK::EF_KeepEmptyTokens);
 
 			OutputVariable var;
 			if (tokens.size() != 5)
