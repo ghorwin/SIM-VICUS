@@ -89,8 +89,9 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 	SVStyle::formatDatabaseTableView(m_ui->tableViewAvailableOutputs);
 
 	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
 	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
 
 	SVStyle::formatListView(m_ui->listWidgetObjectIDs);

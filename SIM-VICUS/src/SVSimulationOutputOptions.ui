@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1211</width>
-    <height>468</height>
+    <width>1216</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -217,8 +217,8 @@
       <property name="title">
        <string>Available outputs</string>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0,0,0">
-       <item row="0" column="0" colspan="4">
+      <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,0">
+       <item row="0" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QPushButton" name="pushButtonUpdateOutputList">
@@ -296,93 +296,71 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>NANDRAD-generated outputs from outputs_reference_list.txt</string>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1" rowspan="2">
-        <layout class="QVBoxLayout" name="verticalLayout">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Objects</string>
+            <string>NANDRAD-generated outputs from outputs_reference_list.txt</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetObjectIDs">
+          <widget class="QTableView" name="tableViewAvailableOutputs">
            <property name="selectionMode">
-            <enum>QAbstractItemView::ExtendedSelection</enum>
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="1" column="2" rowspan="2">
+       <item row="1" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Vector indexes</string>
-           </property>
+          <widget class="QWidget" name="widgetObjects" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Objects</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="listWidgetObjectIDs">
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
-          <widget class="QListWidget" name="listWidgetVectorIndexes">
-           <property name="selectionMode">
-            <enum>QAbstractItemView::ExtendedSelection</enum>
-           </property>
+          <widget class="QWidget" name="widgetVectorIDs" native="true">
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Vector indexes</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QListWidget" name="listWidgetVectorIndexes">
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="2" column="0">
-        <widget class="QTableView" name="tableViewAvailableOutputs">
-         <property name="selectionMode">
-          <enum>QAbstractItemView::SingleSelection</enum>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QToolButton" name="toolButtonAddDefinition">
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../resources/SIM-VICUS.qrc">
-             <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_3">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>131</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0" colspan="3">
+       <item row="2" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="label">
@@ -403,6 +381,23 @@
          </item>
          <item>
           <widget class="QLineEdit" name="lineEditQuantity"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonAddDefinition">
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources/SIM-VICUS.qrc">
+             <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

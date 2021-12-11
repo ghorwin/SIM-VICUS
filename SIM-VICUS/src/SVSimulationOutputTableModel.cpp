@@ -19,7 +19,7 @@ int SVSimulationOutputTableModel::rowCount(const QModelIndex & /*parent*/) const
 
 
 int SVSimulationOutputTableModel::columnCount(const QModelIndex & /*parent*/) const {
-	return 3;
+	return 4;
 }
 
 
@@ -27,9 +27,10 @@ QVariant SVSimulationOutputTableModel::headerData(int section, Qt::Orientation o
 	static QStringList headers = QStringList()
 		<< tr("Type")
 		<< tr("Name")
-		<< tr("Unit");
+		<< tr("Unit")
+		<< tr("Description");
 
-	if (orientation == Qt::Vertical || section < 0 || section > 2)
+	if (orientation == Qt::Vertical || section < 0 || section > 3)
 		return QVariant();
 	switch (role) {
 		case Qt::DisplayRole :
@@ -43,9 +44,9 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 	static std::map<std::string, QString> ObjectNameMap;
 	if (ObjectNameMap.empty()) {
 		// TODO : add other object types
-		ObjectNameMap["Zone"] = tr("Zone");
+//		ObjectNameMap["Zone"] = tr("Zone");
 		ObjectNameMap["ConstructionInstance"] = tr("Construction");
-		ObjectNameMap["Model"] = tr("Model");
+//		ObjectNameMap["Model"] = tr("Model");
 	}
 	if (!index.isValid())
 		return QVariant();
@@ -66,6 +67,8 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 					return QString::fromStdString(var.m_quantity);
 				case 2 : // unit
 					return QString::fromStdString(var.m_unit);
+				case 3 : // description
+					return QString::fromStdString(var.m_description); // TODO: think about internationalization
 			}
 		} break;
 
@@ -163,6 +166,7 @@ void SVSimulationOutputTableModel::updateListFromFile(const QString & outputRefL
 
 			// unit
 			var.m_unit = tokens[3];
+			var.m_description = tokens[4];
 
 			m_variables.push_back(var);
 		}

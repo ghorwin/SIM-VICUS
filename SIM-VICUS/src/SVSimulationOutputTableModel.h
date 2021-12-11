@@ -67,6 +67,7 @@ private:
 	struct OutputVariable {
 		std::string m_objectTypeName;
 		std::string m_quantity;
+		std::string m_description;
 		std::string m_unit;
 		std::set<unsigned int> m_objectIds;
 		std::set<unsigned int> m_vectorIds;
