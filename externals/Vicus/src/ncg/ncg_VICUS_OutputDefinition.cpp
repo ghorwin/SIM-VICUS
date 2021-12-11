@@ -60,9 +60,9 @@ void OutputDefinition::readXML(const TiXmlElement * element) {
 			attrib = attrib->Next();
 		}
 		// search for mandatory elements
-		if (!element->FirstChildElement("std::vector<unsigned int>"))
+		if (!element->FirstChildElement("SourceObjectIds"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'std::vector<unsigned int>' element.") ), FUNC_ID);
+				IBK::FormatString("Missing required 'SourceObjectIds' element.") ), FUNC_ID);
 
 		if (!element->FirstChildElement("GridName"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(

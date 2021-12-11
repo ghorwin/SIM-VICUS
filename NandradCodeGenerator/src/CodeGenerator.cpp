@@ -936,7 +936,8 @@ void CodeGenerator::generateReadWriteCode() {
 								"IBK::Unit",
 								"IBK::Time",
 								"IBK::Path",
-								"DataTable"
+								"DataTable",
+								"std::vector<unsigned int>"
 							};
 							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
 								// ok, not of the simple or special types
