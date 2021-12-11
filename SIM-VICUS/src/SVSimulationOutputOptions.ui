@@ -275,9 +275,6 @@
            <property name="text">
             <string>The output definition list is outdated, you should update the output list.</string>
            </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
           </widget>
          </item>
          <item>

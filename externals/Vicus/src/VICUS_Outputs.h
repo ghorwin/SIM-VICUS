@@ -71,7 +71,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with user-defined output definitions. */
-	std::vector<VICUS::OutputDefinition>				m_definitions;		// XML:E
+	std::vector<VICUS::OutputDefinition>				m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E

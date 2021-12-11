@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.6">
 	<ProjectInfo>
 		<Created>Mo. Nov. 29 13:50:13 2021</Created>
-		<LastEdited>Sa. Dez. 11 16:15:12 2021</LastEdited>
+		<LastEdited>Sa. Dez. 11 16:45:29 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -34,23 +34,13 @@
 			<ClimateFilePath>${Database}/DB_climate/Europe/Germany/TRY2011/DE-04-TRY-2010__Potsdam__Jahr_00000K0_00081m.c6b</ClimateFilePath>
 		</Location>
 		<Outputs>
-			<OutputDefinitions>
+			<Definitions>
 				<OutputDefinition quantity="CompleteThermalLoad" sourceObjectType="Zone">
 					<TimeType>Mean</TimeType>
 					<SourceObjectIds>243</SourceObjectIds>
 					<GridName>Hourly values</GridName>
 				</OutputDefinition>
-				<OutputDefinition quantity="DeclinationAngle" sourceObjectType="Location">
-					<TimeType>None</TimeType>
-					<SourceObjectIds>0</SourceObjectIds>
-					<GridName>Hourly values</GridName>
-				</OutputDefinition>
-				<OutputDefinition quantity="AirTemperature" sourceObjectType="Zone">
-					<TimeType>None</TimeType>
-					<SourceObjectIds>243</SourceObjectIds>
-					<GridName>Hourly values</GridName>
-				</OutputDefinition>
-			</OutputDefinitions>
+			</Definitions>
 			<Grids>
 				<OutputGrid name="Hourly values">
 					<Intervals>
