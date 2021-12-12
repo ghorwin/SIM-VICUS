@@ -124,6 +124,8 @@ private slots:
 
 	void on_toolButtonRemoveGrid_clicked();
 
+	void on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();

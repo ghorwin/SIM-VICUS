@@ -453,7 +453,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);
 	}
-	m_ui->tableWidgetOutputDefinitions->selectRow(0);
+//	m_ui->tableWidgetOutputDefinitions->selectRow(0);
 	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
 	// update enabled status
 	on_tableWidgetOutputDefinitions_itemSelectionChanged();
@@ -521,7 +521,14 @@ void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
 
 
 void SVSimulationOutputOptions::on_toolButtonRemoveDefinition_clicked() {
-
+	// get index of currently selected definition
+	int currentDef = m_ui->tableWidgetOutputDefinitions->currentRow();
+	Q_ASSERT(currentDef != -1);
+	m_outputs->m_definitions.erase(m_outputs->m_definitions.begin()+currentDef);
+	updateUi();
+	currentDef = std::min(currentDef, m_ui->tableWidgetOutputDefinitions->rowCount()-1);
+	if (currentDef != -1)
+		m_ui->tableWidgetOutputDefinitions->selectRow(currentDef);
 }
 
 
@@ -537,4 +544,10 @@ void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
 
 void SVSimulationOutputOptions::on_toolButtonRemoveGrid_clicked() {
 
+}
+
+
+void SVSimulationOutputOptions::on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index) {
+	// create output for currently selected row and all objects/vector indexes
+	on_toolButtonAddDefinition_clicked();
 }
