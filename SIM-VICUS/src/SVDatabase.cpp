@@ -1125,70 +1125,61 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 }
 
 
-void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int index,
+void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 								   std::set<VICUS::AbstractDBElement *> &localChildren) {
 
 	updateElementChildrenParents();
 
-	Q_ASSERT(index!=VICUS::INVALID_ID);
+	Q_ASSERT(id!=VICUS::INVALID_ID);
 
 	switch (dbType) {
 		case DT_Materials:
-			m_materials[index]->collectLocalChildren(localChildren); break;
+			m_materials[id]->collectLocalChildren(localChildren); break;
 		case DT_Constructions:
-			m_constructions[index]->collectLocalChildren(localChildren); break;
+			m_constructions[id]->collectLocalChildren(localChildren); break;
 		case DT_Windows:
-			m_windows[index]->collectLocalChildren(localChildren); break;
+			m_windows[id]->collectLocalChildren(localChildren); break;
 		case DT_WindowGlazingSystems:
-			m_windowGlazingSystems[index]->collectLocalChildren(localChildren); break;
+			m_windowGlazingSystems[id]->collectLocalChildren(localChildren); break;
 		case DT_BoundaryConditions:
-			m_boundaryConditions[index]->collectLocalChildren(localChildren); break;
+			m_boundaryConditions[id]->collectLocalChildren(localChildren); break;
 		case DT_Components:
-			m_components[index]->collectLocalChildren(localChildren); break;
+			m_components[id]->collectLocalChildren(localChildren); break;
 		case DT_SubSurfaceComponents:
-			m_subSurfaceComponents[index]->collectLocalChildren(localChildren); break;
+			m_subSurfaceComponents[id]->collectLocalChildren(localChildren); break;
 		case DT_SurfaceHeating:
-			m_surfaceHeatings[index]->collectLocalChildren(localChildren); break;
+			m_surfaceHeatings[id]->collectLocalChildren(localChildren); break;
 		case DT_Pipes:
-			m_pipes[index]->collectLocalChildren(localChildren); break;
+			m_pipes[id]->collectLocalChildren(localChildren); break;
 		case DT_Fluids:
-			m_fluids[index]->collectLocalChildren(localChildren); break;
+			m_fluids[id]->collectLocalChildren(localChildren); break;
 		case DT_SubNetworks:
-			m_subNetworks[index]->collectLocalChildren(localChildren); break;
+			m_subNetworks[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:
-			m_networkControllers[index]->collectLocalChildren(localChildren);  break;
+			m_networkControllers[id]->collectLocalChildren(localChildren);  break;
 		case DT_NetworkComponents:
-			m_networkComponents[index]->collectLocalChildren(localChildren); break;
+			m_networkComponents[id]->collectLocalChildren(localChildren); break;
 		case DT_Schedules:
-			m_schedules[index]->collectLocalChildren(localChildren); break;
+			m_schedules[id]->collectLocalChildren(localChildren); break;
 		case DT_InternalLoads:
-			m_internalLoads[index]->collectLocalChildren(localChildren); break;
+			m_internalLoads[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlThermostat:
-			m_zoneControlThermostat[index]->collectLocalChildren(localChildren); break;
+			m_zoneControlThermostat[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlShading:
-			m_zoneControlShading[index]->collectLocalChildren(localChildren); break;
+			m_zoneControlShading[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneControlNaturalVentilation:
-			m_zoneControlVentilationNatural[index]->collectLocalChildren(localChildren); break;
+			m_zoneControlVentilationNatural[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneIdealHeatingCooling:
-			m_zoneIdealHeatingCooling[index]->collectLocalChildren(localChildren); break;
+			m_zoneIdealHeatingCooling[id]->collectLocalChildren(localChildren); break;
 		case DT_VentilationNatural:
-			m_ventilationNatural[index]->collectLocalChildren(localChildren); break;
+			m_ventilationNatural[id]->collectLocalChildren(localChildren); break;
 		case DT_Infiltration:
-			m_infiltration[index]->collectLocalChildren(localChildren); break;
+			m_infiltration[id]->collectLocalChildren(localChildren); break;
 		case DT_ZoneTemplates:
-			m_zoneTemplates[index]->collectLocalChildren(localChildren); break;
+			m_zoneTemplates[id]->collectLocalChildren(localChildren); break;
 		case NUM_DT:
 			break;
 	}
-}
-
-
-void SVDatabase::moveLocalChildrenToUserDB(SVDatabase::DatabaseTypes dbType, unsigned int index) {
-
-	std::set<VICUS::AbstractDBElement *> localChildren;
-	findLocalChildren(dbType, index, localChildren);
-	for (VICUS::AbstractDBElement * elem: localChildren)
-		elem->m_local = false;
 }
 
 

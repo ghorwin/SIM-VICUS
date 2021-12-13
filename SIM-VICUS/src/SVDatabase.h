@@ -131,9 +131,6 @@ public:
 	/*! For a given DB element, collects all children which are local */
 	void findLocalChildren(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & localChildren);
 
-	/*! For a given DB element, sets all children to m_local = false */
-	void moveLocalChildrenToUserDB(DatabaseTypes dbType, unsigned int index);
-
 
 	// Databases
 

@@ -347,21 +347,9 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 	m_dbModel->setItemLocal(sourceIndex, false);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
-	// find depending child elements
-	std::set<VICUS::AbstractDBElement *> localChildren;
+	// move depending child elements to userDB as well
 	unsigned int id = sourceIndex.data(Role_Id).toUInt();
-	SVSettings::instance().m_db.findLocalChildren(m_dbModel->databaseType(), id, localChildren);
-
-	// ask user if child elements should be added to user DB as well
-	if (localChildren.size() > 0) {
-		SVDBDialogAddDependentElements *diag = new SVDBDialogAddDependentElements(this);
-		diag->setup(tr("Do you want to add the referenced elements to user database as well?"), localChildren);
-		int res = diag->exec();
-		if(res == QDialog::Accepted) {
-			for (VICUS::AbstractDBElement *el: localChildren)
-				el->m_local = false;
-		}
-	}
+	dialogMoveLocalChildrenToUserDB(this, m_dbModel->databaseType(), id);
 }
 
 
@@ -408,6 +396,23 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 				m_ui->tableView->blockSignals(false);
 			}
 			break;
+		}
+	}
+}
+
+
+void SVDatabaseEditDialog::dialogMoveLocalChildrenToUserDB(QWidget *parent, int dbType, unsigned int id) {
+	// find local children
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	SVSettings::instance().m_db.findLocalChildren(SVDatabase::DatabaseTypes(dbType), id, localChildren);
+	// ask user if child elements should be added to user DB as well
+	if (localChildren.size() > 0) {
+		SVDBDialogAddDependentElements *diag = new SVDBDialogAddDependentElements(parent);
+		diag->setup(tr("The selected user-database element references local elements"), localChildren);
+		int res = diag->exec();
+		if(res == QDialog::Accepted) {
+			for (VICUS::AbstractDBElement *el: localChildren)
+				el->m_local = false;
 		}
 	}
 }

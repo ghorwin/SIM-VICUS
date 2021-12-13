@@ -72,6 +72,12 @@ public:
 	unsigned int select(unsigned int initialId);
 
 
+	// ***Static function ***
+
+	/*! collects all referenced elements for the given DB element and asks user if they should be added to user DB as well */
+	static void dialogMoveLocalChildrenToUserDB(QWidget *parent, int dbType, unsigned int id);
+
+
 private slots:
 	void on_pushButtonSelect_clicked();
 	void on_pushButtonCancel_clicked();

@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="labelText">
+    <widget class="QLabel" name="labelTextCaption">
      <property name="text">
       <string>TextLabel</string>
      </property>
@@ -23,6 +23,13 @@
    </item>
    <item>
     <widget class="QListWidget" name="listWidget"/>
+   </item>
+   <item>
+    <widget class="QLabel" name="labelTextQuestion">
+     <property name="text">
+      <string>Do you want to add these elements to the user database as well?</string>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
