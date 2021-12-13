@@ -11,10 +11,10 @@ We have continuous integration scripts running (build-test of all C/C++ code) an
 
 | Test | Result|
 |-----|-----|
-| CI - Linux 64-bit (Ubuntu 18.04) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-Linux-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus/)    |
-| CI - Windows 64-bit (Win10, VC14) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR64-Win-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR64-Win-SimVicus/)   |
-| CI - MacOS 64-bit (10.11 "El Capitan") | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-IOS-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus/) |
-| Solver regression test (correctly simulating test suite) | [![Regression Test](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=Daily-Test-SimVicus_Nandrad2&style=plastic&subject=Testsuite)](https://baukli01.arch.tu-dresden.de/jenkins/job/Daily-Test-SimVicus_Nandrad2/)   |
+| CI - Linux 64-bit (Ubuntu 20.04.3 LTS; Qt 12.9) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-Linux-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus/)    |
+| CI - Windows 64-bit (Win10, VC 2019, Qt 5.15.2) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR64-Win-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR64-Win-SimVicus/)   |
+| CI - MacOS 64-bit (10.11 "El Capitan", Qt 5.11.3) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-IOS-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus/) |
+| Solver regression test (correctly simulating test suite) | [![Regression Test](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=Daily-Test-SimVicus_NandradSolver&style=plastic&subject=Testsuite)](https://baukli01.arch.tu-dresden.de/jenkins/job/Daily-Test-SimVicus_NandradSolver/)   |
 
 CI tests are located in directory `data/tests`. See [developer documentation](https://ghorwin.github.io/SIM-VICUS/Developer-Documentation/index.html) for information about the Python test suite scripts.
 
