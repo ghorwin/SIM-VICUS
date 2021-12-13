@@ -202,6 +202,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ConstructionViewWidget</class>

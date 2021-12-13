@@ -121,7 +121,7 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="3">
-        <widget class="QGraphicsView" name="graphicsViewConstruction"/>
+        <widget class="QtExt::ConstructionView" name="graphicsViewConstruction"/>
        </item>
        <item row="2" column="0" colspan="3">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -343,6 +343,11 @@
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ConstructionView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtExt_ConstructionView.h</header>
   </customwidget>
  </customwidgets>
  <resources>

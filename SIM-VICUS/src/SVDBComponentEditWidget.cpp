@@ -190,6 +190,31 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
 			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex+1);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
+
+		QVector<QtExt::ConstructionLayer> layers;
+		for (unsigned int i=0; i<con->m_materialLayers.size(); ++i) {
+			QtExt::ConstructionLayer layer;
+			unsigned int matID = con->m_materialLayers[i].m_idMaterial;
+			const VICUS::Material * mat = m_db->m_materials[matID];
+			if (mat != nullptr) {
+				layer.m_name = QString::fromStdString(mat->m_displayName("de", true));
+	//			layer.m_color = mat->m_color;
+			}
+			else {
+				layer.m_name = tr("<select material>");
+			}
+
+			layer.m_width = con->m_materialLayers[i].m_thickness.value;
+	//		if (!layer.m_color.isValid())
+				layer.m_color = QtExt::ConstructionView::ColorList[i % 12];
+			layer.m_id = (int)matID;
+			layers.push_back(layer);
+		}
+		m_ui->graphicsViewConstruction->m_leftSideLabel = tr("Sida A");
+		m_ui->graphicsViewConstruction->m_rightSideLabel = tr("Sida B");
+		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
+												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
+												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
 	}
 	else {
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
