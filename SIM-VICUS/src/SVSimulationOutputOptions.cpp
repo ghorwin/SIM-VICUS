@@ -47,6 +47,7 @@
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 #include "SVSimulationStartNandrad.h"
+#include "SVSimulationOutputTableDelegate.h"
 
 SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog) :
 	QWidget(parent),
@@ -76,6 +77,10 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputDefinitions);
 	m_ui->tableWidgetOutputDefinitions->setSortingEnabled(false);
+
+	SVSimulationOutputTableDelegate * delegate = new SVSimulationOutputTableDelegate;
+	delegate->m_outputs = m_outputs;
+	m_ui->tableWidgetOutputDefinitions->setItemDelegate(delegate);
 
 	// create table model
 	m_outputTableModel = new SVSimulationOutputTableModel(this);
@@ -369,116 +374,6 @@ void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
 }
 
 
-// *** private functions ***
-
-void SVSimulationOutputOptions::updateOutputDefinitionTable() {
-
-	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
-	m_ui->tableWidgetOutputDefinitions->clearContents();
-	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
-
-	QFont f(m_ui->tableWidgetOutputDefinitions->font());
-	f.setStyle(QFont::StyleItalic);
-
-	QColor badColor = Qt::gray; // the default, when there is not output_reference_list
-	if (m_outputTableModel->rowCount(QModelIndex()) != 0)
-		badColor = Qt::darkRed;
-	// we update the output grid
-	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
-		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
-
-		// is this output being generated from the current project?
-		bool correct = m_outputTableModel->haveOutput(of);
-
-		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,0, item);
-
-
-		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,1, item);
-
-		// create list of comma-separated IDs
-		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
-		item = new QTableWidgetItem(QString::fromStdString(ids));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
-
-		// create list of comma-separated IDs
-		ids = IBK::join_numbers(of.m_vectorIds, ',');
-		item = new QTableWidgetItem(QString::fromStdString(ids));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
-
-		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
-		// we default to None
-		if (tt == VICUS::OutputDefinition::NUM_OTT)
-			tt = VICUS::OutputDefinition::OTT_NONE;
-		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
-		item = new QTableWidgetItem(ttypekw);
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,4, item);
-
-		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		// check if referenced output grid name exists
-		if (std::find(project().m_outputs.m_grids.begin(), project().m_outputs.m_grids.end(), of.m_gridName) == project().m_outputs.m_grids.end()) {
-			item->setTextColor(Qt::darkRed);
-			item->setFont(f);
-		}
-		else if (!correct) {
-			item->setTextColor(badColor);
-			item->setFont(f);
-		}
-		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);
-	}
-//	m_ui->tableWidgetOutputDefinitions->selectRow(0);
-	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
-	// update enabled status
-	on_tableWidgetOutputDefinitions_itemSelectionChanged();
-}
-
-
-void SVSimulationOutputOptions::updateOutdatedLabel() {
-	QFileInfo finfo(SVProjectHandler::instance().projectFile());
-	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
-	fileName += "/var/output_reference_list.txt";
-	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
-		QDateTime outRefFile = QFileInfo(fileName).lastModified();
-		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
-		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
-			m_ui->labelOutputUpdateNeeded->setVisible(true);
-		else
-			m_ui->labelOutputUpdateNeeded->setVisible(false);
-	}
-	else {
-		m_ui->labelOutputUpdateNeeded->setVisible(true);
-	}
-}
-
-
-
 void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
 	// create and append a new output definition with currently selected grid and default time type, which
 	// is based on the quantity type
@@ -551,3 +446,142 @@ void SVSimulationOutputOptions::on_tableViewAvailableOutputs_doubleClicked(const
 	// create output for currently selected row and all objects/vector indexes
 	on_toolButtonAddDefinition_clicked();
 }
+
+
+void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemChanged(QTableWidgetItem *item) {
+	unsigned int defIdx = (unsigned int)item->row();
+	Q_ASSERT(m_outputs->m_definitions.size() > defIdx);
+	switch (item->column()) {
+		case 4 : {
+			VICUS::OutputDefinition::timeType_t t;
+			// determine index
+			try {
+				int i = VICUS::KeywordList::Enumeration("OutputDefinition::timeType_t", item->text().toStdString());
+				t = (VICUS::OutputDefinition::timeType_t)i;
+			} catch (...) {
+				qDebug() << "Invalid option for time type";
+				return; // something strange happened here?
+			}
+			m_outputs->m_definitions[defIdx].m_timeType = t;
+		} break;
+
+		case 5 :
+			m_outputs->m_definitions[defIdx].m_gridName = item->text().toStdString();
+	}
+}
+
+
+// *** private functions ***
+
+void SVSimulationOutputOptions::updateOutputDefinitionTable() {
+
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->clearContents();
+	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
+
+	QFont f(m_ui->tableWidgetOutputDefinitions->font());
+	f.setStyle(QFont::StyleItalic);
+
+	QColor badColor = Qt::gray; // the default, when there is not output_reference_list
+	if (m_outputTableModel->rowCount(QModelIndex()) != 0)
+		badColor = Qt::darkRed;
+	// we update the output grid
+	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
+		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
+
+		// is this output being generated from the current project?
+		bool correct = m_outputTableModel->haveOutput(of);
+
+		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,0, item);
+
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,1, item);
+
+		// create list of comma-separated IDs
+		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
+
+		// create list of comma-separated IDs
+		ids = IBK::join_numbers(of.m_vectorIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
+
+		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
+		// we default to None
+		if (tt == VICUS::OutputDefinition::NUM_OTT)
+			tt = VICUS::OutputDefinition::OTT_NONE;
+		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
+		item = new QTableWidgetItem(ttypekw);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,4, item);
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		// check if referenced output grid name exists
+		if (std::find(project().m_outputs.m_grids.begin(), project().m_outputs.m_grids.end(), of.m_gridName) == project().m_outputs.m_grids.end()) {
+			item->setTextColor(Qt::darkRed);
+			item->setFont(f);
+		}
+		else if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);
+	}
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
+	m_ui->tableWidgetOutputDefinitions->blockSignals(false);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(0);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(1);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(5);
+
+	// update enabled status
+	on_tableWidgetOutputDefinitions_itemSelectionChanged();
+}
+
+
+void SVSimulationOutputOptions::updateOutdatedLabel() {
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
+		QDateTime outRefFile = QFileInfo(fileName).lastModified();
+		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
+		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
+			m_ui->labelOutputUpdateNeeded->setVisible(true);
+		else
+			m_ui->labelOutputUpdateNeeded->setVisible(false);
+	}
+	else {
+		m_ui->labelOutputUpdateNeeded->setVisible(true);
+	}
+}
+
+

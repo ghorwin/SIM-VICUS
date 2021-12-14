@@ -126,6 +126,9 @@ private slots:
 
 	void on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index);
 
+	/*! Triggered, when user manually edited a cell. */
+	void on_tableWidgetOutputDefinitions_itemChanged(QTableWidgetItem *item);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();
