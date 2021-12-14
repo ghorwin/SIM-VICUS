@@ -52,7 +52,7 @@ namespace VICUS {
 	class Outputs;
 }
 
-
+class SVOutputGridEditDialog;
 
 /*! Widget for specifying simulation outputs.
 	The widget is split into two tabs - one for configuration of output grids and one for output definitions.
@@ -150,6 +150,9 @@ private:
 
 	/*! Filter model for output definition */
 	QSortFilterProxyModel							*m_outputTableProxyModel = nullptr;
+
+	/*! Edit dialog for output grids. */
+	SVOutputGridEditDialog							*m_outputGridEditDialog = nullptr;
 };
 
 #endif // SVSimulationOutputOptionsH

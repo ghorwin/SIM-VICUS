@@ -38,7 +38,6 @@
 
 #include <NANDRAD_KeywordList.h>
 
-
 #include <QModelIndex>
 #include <QAbstractTableModel>
 #include <QMessageBox>
@@ -48,6 +47,7 @@
 #include "SVStyle.h"
 #include "SVSimulationStartNandrad.h"
 #include "SVSimulationOutputTableDelegate.h"
+#include "SVOutputGridEditDialog.h"
 
 SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog) :
 	QWidget(parent),
@@ -428,6 +428,22 @@ void SVSimulationOutputOptions::on_toolButtonRemoveDefinition_clicked() {
 
 
 void SVSimulationOutputOptions::on_toolButtonAddGrid_clicked() {
+	// spawn edit dialog if it does not exist yet
+	if (m_outputGridEditDialog == nullptr)
+		m_outputGridEditDialog = new SVOutputGridEditDialog(this);
+	// create new condition
+	NANDRAD::OutputGrid def;
+	// compose unique identification name
+	def.m_name = tr("New output grid").toStdString();
+	def.m_name = IBK::pick_name(def.m_name, m_outputs->m_grids.begin(), m_outputs->m_grids.end());
+	// call edit dialog
+	bool success = m_outputGridEditDialog->edit(def, -1);
+	// if user confirmed dialog, create undo command
+	if (success) {
+		m_outputs->m_grids.push_back(def);
+		updateUi();
+		m_ui->tableWidgetOutputGrids->selectRow(m_ui->tableWidgetOutputGrids->rowCount()-1);
+	}
 
 }
 
@@ -438,7 +454,14 @@ void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
 
 
 void SVSimulationOutputOptions::on_toolButtonRemoveGrid_clicked() {
-
+	// get index of currently selected definition
+	int currentDef = m_ui->tableWidgetOutputGrids->currentRow();
+	Q_ASSERT(currentDef != -1);
+	m_outputs->m_grids.erase(m_outputs->m_grids.begin()+currentDef);
+	updateUi();
+	currentDef = std::min(currentDef, m_ui->tableWidgetOutputGrids->rowCount()-1);
+	if (currentDef != -1)
+		m_ui->tableWidgetOutputGrids->selectRow(currentDef);
 }
 
 
