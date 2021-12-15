@@ -486,12 +486,9 @@ namespace NANDRAD {
 			case 49 :
 			switch (t) {
 				case 0 : return "VentilationRate";
-				case 1 : return "MaximumRoomAirTemperatureACRLimit";
-				case 2 : return "MinimumRoomAirTemperatureACRLimit";
-				case 3 : return "MaximumEnviromentAirTemperatureACRLimit";
-				case 4 : return "MinimumEnviromentAirTemperatureACRLimit";
-				case 5 : return "DeltaTemperatureACRLimit";
-				case 6 : return "WindSpeedACRLimit";
+				case 1 : return "MaxAirTemperature";
+				case 2 : return "MinAirTemperature";
+				case 3 : return "MaxWindSpeed";
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -1117,12 +1114,9 @@ namespace NANDRAD {
 			case 49 :
 			switch (t) {
 				case 0 : return "VentilationRate";
-				case 1 : return "MaximumRoomAirTemperatureACRLimit";
-				case 2 : return "MinimumRoomAirTemperatureACRLimit";
-				case 3 : return "MaximumEnviromentAirTemperatureACRLimit";
-				case 4 : return "MinimumEnviromentAirTemperatureACRLimit";
-				case 5 : return "DeltaTemperatureACRLimit";
-				case 6 : return "WindSpeedACRLimit";
+				case 1 : return "MaxAirTemperature";
+				case 2 : return "MinAirTemperature";
+				case 3 : return "MaxWindSpeed";
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -1748,13 +1742,10 @@ namespace NANDRAD {
 			// NaturalVentilationModel::para_t
 			case 49 :
 			switch (t) {
-				case 0 : return "Ventilation rate";
-				case 1 : return "Condition for ventilation increase";
-				case 2 : return "Condition for ventilation increase";
-				case 3 : return "Condition for ventilation increase";
-				case 4 : return "Condition for ventilation increase";
-				case 5 : return "Condition for ventilation increase";
-				case 6 : return "Condition for ventilation increase";
+				case 0 : return "Ventilation rate for Constant model";
+				case 1 : return "Upper limit of comfort range";
+				case 2 : return "Lower limit of comfort range";
+				case 3 : return "Maximum wind speed to allow ventilation increase";
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -2382,10 +2373,7 @@ namespace NANDRAD {
 				case 0 : return "1/h";
 				case 1 : return "C";
 				case 2 : return "C";
-				case 3 : return "C";
-				case 4 : return "C";
-				case 5 : return "K";
-				case 6 : return "m/s";
+				case 3 : return "m/s";
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -3014,9 +3002,6 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -3645,9 +3630,6 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// OutputDefinition::timeType_t
 			case 50 :
@@ -4021,7 +4003,7 @@ namespace NANDRAD {
 			// NaturalVentilationModel::modelType_t
 			case 48 : return 3;
 			// NaturalVentilationModel::para_t
-			case 49 : return 7;
+			case 49 : return 4;
 			// OutputDefinition::timeType_t
 			case 50 : return 3;
 			// Schedule::ScheduledDayType
@@ -4197,7 +4179,7 @@ namespace NANDRAD {
 			// NaturalVentilationModel::modelType_t
 			case 48 : return 2;
 			// NaturalVentilationModel::para_t
-			case 49 : return 6;
+			case 49 : return 3;
 			// OutputDefinition::timeType_t
 			case 50 : return 2;
 			// Schedule::ScheduledDayType

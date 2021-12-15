@@ -29,7 +29,13 @@
 
 namespace NANDRAD {
 
-/*! Contains all data for natural ventilation models. */
+/*! Contains all data for natural ventilation models.
+	\note For variant `Scheduled` there must be a schedule with name 'VentilationRateSchedule' defined.
+
+	For variant `ScheduledWithBaseACR` there must be a schedule with name 'VentilationRateSchedule' defined, which marks
+	the base ventilation rate. Also, another schedule name 'VentilationRateIncreaseSchedule' must be defined, which
+	holds the _additional_ ventilation rate to be _added_ to the base ventilation rate, when conditions apply.
+*/
 class NaturalVentilationModel {
 public:
 	/*! Different model variants. */
@@ -38,20 +44,17 @@ public:
 		MT_Constant,					// Keyword: Constant				'Constant ventilation rate (also can used as infiltration)'
 		/*! Ventilation rate is provided as 'VentilationRateSchedule' schedule parameter. */
 		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
-		/*! Increased day time ventilation. */
+		/*! Increased ventilation when thermal conditions apply. */
 		MT_ScheduledWithBaseACR,		// Keyword: ScheduledWithBaseACR	'Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met. '
 		NUM_MT
 	};
 
 	/*! Model parameters. */
 	enum para_t {
-		P_VentilationRate,							// Keyword: VentilationRate							[1/h]		'Ventilation rate'
-		P_MaximumRoomAirTemperatureACRLimit,		// Keyword: MaximumRoomAirTemperatureACRLimit		[C]			'Condition for ventilation increase'
-		P_MinimumRoomAirTemperatureACRLimit,		// Keyword: MinimumRoomAirTemperatureACRLimit		[C]			'Condition for ventilation increase'
-		P_MaximumEnviromentAirTemperatureACRLimit,	// Keyword: MaximumEnviromentAirTemperatureACRLimit	[C]			'Condition for ventilation increase'
-		P_MinimumEnviromentAirTemperatureACRLimit,	// Keyword: MinimumEnviromentAirTemperatureACRLimit	[C]			'Condition for ventilation increase'
-		P_DeltaTemperatureACRLimit,					// Keyword: DeltaTemperatureACRLimit				[K]			'Condition for ventilation increase'
-		P_WindSpeedACRLimit,						// Keyword: WindSpeedACRLimit						[m/s]		'Condition for ventilation increase'
+		P_VentilationRate,				// Keyword: VentilationRate			[1/h]		'Ventilation rate for Constant model'
+		P_MaxAirTemperature,			// Keyword: MaxAirTemperature		[C]			'Upper limit of comfort range'
+		P_MinAirTemperature,			// Keyword: MinAirTemperature		[C]			'Lower limit of comfort range'
+		P_MaxWindSpeed,					// Keyword: MaxWindSpeed			[m/s]		'Maximum wind speed to allow ventilation increase'
 		NUM_P
 	};
 

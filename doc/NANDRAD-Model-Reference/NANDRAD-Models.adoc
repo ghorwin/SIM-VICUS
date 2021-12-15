@@ -63,19 +63,16 @@ Das Modell für natürliche Lüftung definiert den Luftaustausch mit der Außenl
 	<ZoneObjectList>Other zones</ZoneObjectList>
 </NaturalVentilationModel>
 
-<!-- Lüftungsmodell mit zeitabhängig geregelter, erhöhter Luftwechselrate und Grundluftwechsel -->
+<!-- Lüftungsmodell mit zeitabhängigem Grundluftwechsel und bedarfsweise erhöhter Luftwechselrate -->
 <NaturalVentilationModel id="503" displayName="Zone vent" modelType="ScheduledWithBaseACR">
 	<ZoneObjectList>Special zones</ZoneObjectList>
-	<IBK:Parameter name="VentilationRate" unit="1/h">0.5</IBK:Parameter>
-	<!-- Keine Begrenzung der erhöhten Lüftung bei hohen Raumtemperaturen  -->
-	<IBK:Parameter name="MaximumRoomAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
-	<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperature 23°C überschreitet -->
-	<IBK:Parameter name="MinimumRoomAirTemperatureACRLimit" unit="C">23</IBK:Parameter>
-	<!-- extreme Grenzwerte schalten Regelung aus -->
-	<IBK:Parameter name="MaximumEnviromentAirTemperatureACRLimit" unit="C">100</IBK:Parameter>
-	<IBK:Parameter name="MinimumEnviromentAirTemperatureACRLimit" unit="C">-100</IBK:Parameter>
-	<IBK:Parameter name="DeltaTemperatureACRLimit" unit="K">0</IBK:Parameter>
-	<IBK:Parameter name="WindSpeedACRLimit" unit="m/s">10</IBK:Parameter>
+	<!-- Komfortbereich wird durch min und max Temperaturen angegeben :
+	     Erhöhte Lüftungsrate verwenden, wenn Raumtemperatur 24°C überschreitet und es draußen kälter ist. -->
+	<IBK:Parameter name="MaxAirTemperature" unit="C">24</IBK:Parameter>
+	<!-- Erhöhung der Lüftungsrate verwenden, wenn Raumtemperatur 18°C unterschreitet und es draußen wärmer ist. -->
+	<IBK:Parameter name="MinAirTemperature" unit="C">18</IBK:Parameter>
+	<!-- Über 10 m/s wird die erhöhte Lüftung ausgeschaltet. -->
+	<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
 </NaturalVentilationModel>
 ----
 ====
@@ -100,9 +97,9 @@ Das `NaturalVentilationModel` unterstützt folgende XML-Attribute:
 a| Setzt den Typ des Lüftungsmodells 
 
 * `Constant` - Konstante Luftwechselrate
-* `Scheduled` - Luftwechselrate ändert sich nach einem definierten Zeitplan. Zusätzlich kann durch Steuerungsmodelle der Luftwechsel auf null gesetzt werden.
+* `Scheduled` - Luftwechselrate ändert sich nach einem definierten Zeitplan. Dieses Modell sollte verwendet werden, wenn ein spezielles Lüftungsmodell über die FMU-Schnittstelle dazugeschaltet wird.
 
-* `ScheduledWithBaseACR` - Es wird ein konstanter Luftwechsel und ein zeitabhängiger Luftwechsel - Scheduled with base air change rate -  integriert. Dabei kann der zeitabhängige Luftwechsel zusätzlich durch Steuerungsmodelle auf null gesetzt werden.
+* `ScheduledWithBaseACR` - Es werden ein Grundluftwechsel und eine _Erhöhung_ des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien.
 
 * (*)`Realistic`- Lüftungsrate ergibt sich aus physikalischen Bedingungen (Wind, Temperaturdifferenzen, Fensteröffnungszustand, ...)
 
@@ -116,13 +113,10 @@ Gleitkommazahlen-Parameter (siehe <<IBK_Parameter>> für eine Beschreibung des E
 [options="header",cols="20%,^ 15%,35%,^ 20%,^ 10%",width="100%"]
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
-| `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant` oder `ScheduledWithBaseACR`
-| `MaximumRoomAirTemperatureACRLimit` | C | obere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `MinimumRoomAirTemperatureACRLimit` | C | untere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `MaximumEnviromentAirTemperatureACRLimit` | C | obere Außenluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `MinimumEnviromentAirTemperatureACRLimit` | C | untere Außenluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `DeltaTemperatureACRLimit` | K | mind. erforderlicher Temperaturabstand | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `WindSpeedACRLimit` | m/s | maximale Windgeschwindigkeit für erhöhte Lüftung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant`
+| `MaxAirTemperature` | C | obere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MinAirTemperature` | C | untere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MaxWindSpeed` | m/s | maximale Windgeschwindigkeit für erhöhte Lüftung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
 |====================
 
 Beim Modelltyp `Constant` wird durchweg eine konstante Luftwechselrate (Parameter `VentilationRate`) verwendet.
@@ -168,7 +162,7 @@ Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `Vent
 ====
 
 
-Beim Modelltyp `ScheduledWithBaseACR` wird ein konstanter Grundluftwechsel (Parameter `VentilationRate`) verwendet und unter bestimmten Bedingungen wird ein zusätzlicher Luftwechsel entsprechend eines gegebenen Zeitplans in  `VentilationRateSchedule` verwendet.
+Beim Modelltyp `ScheduledWithBaseACR` wird ein Grundluftwechsel (Schedule `VentilationRateSchedule`) analog zum Modelltyp `Scheduled` verwendet. Unter bestimmten Bedingungen wird dieser Grundluftwechsel durch ein zusätzlichen Luftwechsel entsprechend eines gegebenen Zeitplans in  `VentilationRateIncreaseSchedule` *erhöht*.
 
 Die Luftwechselrate wird berechnet:
 
@@ -179,22 +173,40 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt
 
 [IMPORTANT]
 ====
-Bei Definition der `VentilationRateSchedule` für das `ScheduledWithBaseACR` beachten, dass dies die _zusätzliche_ Lüftungsrate zum Grundluftwechsel ist. Beim Modelltyp `Scheduled` hingegen wird der Wert im Zeitplan `VentilationRateSchedule` direkt verwendet.
+Bei Definition der `VentilationRateIncreaseSchedule` für das `ScheduledWithBaseACR` beachten, dass dies die _zusätzliche_ Lüftungsrate zum Grundluftwechsel ist.
 ====
 
+.Zeitplan für Modelltyp `ScheduledWithBaseACR`; Grundluftwechsel = 0.5 1/h, Luftwechsel bei Erhöhung = 2 1/h = (0.5 + 1.5) 1/h
+====
+[source,xml]
+----
+<ScheduleGroup objectList="All zones">
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<!-- Basis Luftwechselrate -->
+				<Values>
+				    VentilationRateSchedule [1/h]:0.5;
+					VentilationRateIncreaseSchedule [1/h]:1.5
+				</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
+----
+====
 ### Regelbedingungen
 
-Folgende Bedingungen müssen _alle_ erfüllt sein, damit der erhöhte Luftwechsel addiert wird.
+Die Komfortlüftung (Modelltyp `ScheduledWithBaseACR`) folgt einer einfachen Logik:
 
-- Raumluftzustand: `MinimumRoomAirTemperatureACRLimit` < Raumlufttemperatur < `MaximumRoomAirTemperatureACRLimit`
-- Außentemperatur: `MinimumEnviromentAirTemperatureACRLimit`< Außenlufttemperatur < `MaximumEnviromentAirTemperatureACRLimit`
-- Temperaturdifferenz: Raumlufttemperatur - Außenlufttemperatur < `DeltaTemperatureACRLimit`; dabei kann `DeltaTemperatureACRLimit` auch negativ sein. Darüber können auch Heizeffekte (Raum kalt, Außenluft warm) berücksichtigt werden. 
-- Windgeschwindigkeit: akt. Wingeschwindigkeit < `WindSpeedACRLimit`
+- der Grundluftwechsel reicht aus, solange die Raumlufttemperatur zwischen den gegebenen Parametern `MinAirTemperature` und `MaxAirTemperature` liegt
+- sobald der Komfortbereich verlassen wird, wird die zusätzliche Luftwechselrate angewendet, _ aber nur, falls eine Lüftung hilfreich ist_. D.h. durch die erhöhte Lüftung muss die Raumlufttemperatur in Richtung Komfortzone bewegt werden. 
 
+#### Beispiel Kühlung im Sommerfall
 
-Damit das Modell `ScheduledWithBaseACR` verwendbar ist, müssen sowohl der Parameter _VentilationRate_ als auch der Zeitplan _VentilationRateSchedule_ spezifiziert werden.
-
-Die Regelparameter müssen für das Modell `ScheduledWithBaseACR` stets komplett als konstante Parameter definiert werden. Sie können jedoch durch die zugehörigen Zeitplanparameter überschrieben werden. Die dazugehörigen zeitabhängigen Schedule-Parameter sind gleichartig benannt, jedoch jeweils mit dem Suffix `Schedule`.
+- `MaxAirTemperature = 26 C`
+- Falls die Raumlufttemperatur > 26 C wird, kann die erhöhte Lüftung benutzt werden, aber nur solange die Außenlufttemperatur kleiner als die aktuelle Raumlufttemperatur ist.
 
 ### Ausgabegrößen
 

@@ -176,13 +176,10 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant ventilation rate (also can used as infiltration)");
 	tr("Scheduled ventilation rate");
 	tr("Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.");
-	tr("Ventilation rate");
-	tr("Condition for ventilation increase");
-	tr("Condition for ventilation increase");
-	tr("Condition for ventilation increase");
-	tr("Condition for ventilation increase");
-	tr("Condition for ventilation increase");
-	tr("Condition for ventilation increase");
+	tr("Ventilation rate for Constant model");
+	tr("Upper limit of comfort range");
+	tr("Lower limit of comfort range");
+	tr("Maximum wind speed to allow ventilation increase");
 	tr("Write values as calculated at output times.");
 	tr("Average values in time (mean value in output step).");
 	tr("Integrate values in time.");

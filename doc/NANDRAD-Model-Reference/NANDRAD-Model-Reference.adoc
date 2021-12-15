@@ -1,7 +1,7 @@
 NANDRAD Modell-Referenz
 =======================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke
-v0.6 (03.09.2021)
+v0.6 (13.12.2021)
 // v0.6 date_on_line_above
 :Author Initials: AN
 :toc: left

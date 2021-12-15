@@ -1148,6 +1148,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 
 	//if we have a controlling than add control parameter
 	if(ctrlVentilation != nullptr){
+#if 0
 		//set all control values
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
@@ -1167,6 +1168,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
 										   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
 										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
+#endif
 	}
 
 	//now add other parameter
