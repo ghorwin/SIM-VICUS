@@ -95,6 +95,7 @@ HEADERS += \
 	../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
+	../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \

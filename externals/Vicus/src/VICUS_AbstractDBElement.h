@@ -69,44 +69,16 @@ public:
 	virtual ComparisonResult equal(const AbstractDBElement * other) const = 0;
 
 	/*! Collects all pointers to child elements */
-	void collectChildren(std::set<const AbstractDBElement *> & allChildrenRefs) const{
-		for (VICUS::AbstractDBElement * child: m_childrenRefs){
-			if (child != nullptr){
-				allChildrenRefs.insert(child);
-				child->collectChildren(allChildrenRefs);
-			}
-		}
-	}
+	void collectChildren(std::set<const AbstractDBElement *> & allChildrenRefs) const;
 
 	/*! Collects all pointers to child elements which are local */
-	void collectLocalChildren(std::set<AbstractDBElement *> & localChildrenRefs) const{
-		for (VICUS::AbstractDBElement * child: m_childrenRefs){
-			if (child != nullptr && child->m_local){
-				localChildrenRefs.insert(child);
-				child->collectLocalChildren(localChildrenRefs);
-			}
-		}
-	}
+	void collectLocalChildren(std::set<AbstractDBElement *> & localChildrenRefs) const;
 
 	/*! Collects all pointers to parent elements which are not local */
-	void collectUserDBParents(std::set<AbstractDBElement *> & userDBParents) const{
-		for (VICUS::AbstractDBElement * parent: m_parentRefs){
-			if (parent != nullptr && !parent->m_local){
-				userDBParents.insert(parent);
-				parent->collectUserDBParents(userDBParents);
-			}
-		}
-	}
+	void collectUserDBParents(std::set<AbstractDBElement *> & userDBParents) const;
 
-	/*! Source name for display purposes */
-	const QString sourceName() const{
-		if (m_builtIn)
-			return "BuiltIn DB";
-		else if (m_local)
-			return "Local";
-		else
-			return "User DB";
-	}
+	/*! Source name for display purposes. */
+	const QString sourceName() const;
 
 	// *** Properties to be read/write in XML via code generator ***
 
