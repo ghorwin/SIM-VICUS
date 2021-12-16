@@ -44,7 +44,7 @@ class QSortFilterProxyModel;
 
 #include <VICUS_Constants.h>
 
-/*! The edit dialog for materials types. */
+/*! The generic edit dialog. */
 class SVDatabaseEditDialog : public QDialog {
 	Q_OBJECT
 
@@ -70,12 +70,6 @@ public:
 				dialog was aborted, the function returns VICUS::INVALID_ID.
 	*/
 	unsigned int select(unsigned int initialId);
-
-
-	// ***Static function ***
-
-	/*! collects all referenced elements for the given DB element and asks user if they should be added to user DB as well */
-	static void dialogMoveLocalChildrenToUserDB(QWidget *parent, int dbType, unsigned int id);
 
 
 private slots:
@@ -107,7 +101,6 @@ private:
 		Signals are blocked in this function.
 	*/
 	void selectItemById(unsigned int id);
-
 
 
 	// Factory functions to create all the individual dialogs
