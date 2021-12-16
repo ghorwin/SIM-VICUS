@@ -49,7 +49,6 @@ void AbstractDBElement::collectLocalChildren(std::set<AbstractDBElement *> & loc
 }
 
 
-
 const QString AbstractDBElement::sourceName() const {
 	if (m_builtIn)
 		return qApp->translate("AbstractDBElement", "BuiltIn DB");

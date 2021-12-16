@@ -203,8 +203,6 @@ public:
 	void clearChildren() {
 		for (auto it=m_data.begin(); it!=m_data.end(); ++it)
 			it->second.m_childrenRefs.clear();
-//			VICUS::AbstractDBElement & elem = const_cast<T &>(it->second);
-//			elem.m_childrenRefs.clear();
 	}
 
 	/*! Reads database from xml file.

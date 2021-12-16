@@ -347,11 +347,11 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 	m_dbModel->setItemLocal(sourceIndex, false);
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
 
-	// move depending child elements to userDB as well
-	unsigned int id = sourceIndex.data(Role_Id).toUInt();
 	// find local children
+	unsigned int id = sourceIndex.data(Role_Id).toUInt();
 	std::set<VICUS::AbstractDBElement *> localChildren;
 	SVSettings::instance().m_db.findLocalChildren(m_dbModel->databaseType(), id, localChildren);
+
 	// ask user if child elements should be added to user DB as well
 	if (localChildren.size() > 0) {
 		SVDBDialogAddDependentElements diag(this);
