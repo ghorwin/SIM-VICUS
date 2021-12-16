@@ -85,6 +85,7 @@ SOURCES += \
 	../../src/QtExt_ConstructionLayer.cpp \
 	../../src/QtExt_ConstructionView.cpp \
 	../../src/QtExt_ConstructionViewWidget.cpp \
+	../../src/QtExt_Conversions.cpp \
 	../../src/QtExt_DateTimeInputDialog.cpp \
 	../../src/QtExt_Directories.cpp \
 	../../src/QtExt_FeatureWidget.cpp \
