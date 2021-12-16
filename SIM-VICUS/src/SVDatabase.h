@@ -84,14 +84,13 @@ public:
 	*/
 	void updateEmbeddedDatabase(VICUS::Project & p);
 
-	/*! Determines which elements are used in current project and stores this information in member "m_isReferenced" */
+	/*! Determines which elements are used in current project and stores this information in member "m_isReferenced". */
 	void updateReferencedElements(const VICUS::Project & p);
 
-	/*! Stores pointer of all "children" and "parents" for each DB element.
-		children are elements which are referenced by the given element
-		parents are elements which reference the given element
+	/*! Stores pointer of all "children" for each DB element.
+		Children are elements which are referenced by the given element (ie. materials are "children" of constructions).
 	*/
-	void updateElementChildrenParents();
+	void updateElementChildren();
 
 
 	/*! Holds ids of possible duplicates and whether they are identical. */
@@ -128,9 +127,8 @@ public:
 	*/
 	const VICUS::AbstractDBElement * lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const;
 
-	/*! For a given DB element, collects all children which are local */
+	/*! For a given DB element, collects all children (and potentially grand-children etc.) which are marked as local. */
 	void findLocalChildren(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & localChildren);
-
 
 	// Databases
 
@@ -203,6 +201,8 @@ public:
 	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
 };
+
+
 
 
 #endif // SVDatabaseH

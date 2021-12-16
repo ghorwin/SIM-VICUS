@@ -184,6 +184,7 @@ void SVDatabase::writeDatabases() {
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 }
 
+
 // Local sort operator, so sort AbstractDBElement vectors by m_id member
 struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::AbstractDBElement, bool> {
 	bool operator()(VICUS::AbstractDBElement & x, VICUS::AbstractDBElement & y) const {
@@ -193,14 +194,16 @@ struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::A
 };
 
 
-// Local utility function used to convert a set of items to a vector sorted by id
+// Local utility function used to transfer DB elements that are marked as "referenced" into a sequential vector
 template <typename T>
-void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
+void storeVector(std::vector<T> & vec, const VICUS::Database<T> & src) {
 	// clear target vector
 	vec.clear();
-	// store objects but skip nullptr
-	for (const T * c : container)
-		if (c != nullptr) vec.push_back(*c);
+	// store objects of correct type but skip nullptr
+	for (typename std::map<unsigned int, T>::const_iterator it = src.begin(); it != src.end(); ++it) {
+		if (it->second.m_isReferenced)
+			vec.push_back(it->second);
+	}
 	std::sort(vec.begin(), vec.end(), SortByID());
 }
 
@@ -215,72 +218,12 @@ void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & co
 }
 
 
-/*! Local utility function which clears parents and children references using const cast */
-template <typename T>
-void clearChildrenParents(const VICUS::Database<T> & db) {
-	for (auto it=db.begin(); it!=db.end(); ++it){
-		VICUS::AbstractDBElement & elem = const_cast<T &>(it->second);
-		elem.m_childrenRefs.clear();
-		elem.m_parentRefs.clear();
-	}
-}
 
 
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
-	// create sets for objects that are referenced from other objects
-	std::set<const VICUS::Material *>					referencedMaterials;
-	std::set<const VICUS::Construction *>				referencedConstructions;
-	std::set<const VICUS::Window *>						referencedWindows;
-	std::set<const VICUS::WindowGlazingSystem *>		referencedGlazingSystems;
-	std::set<const VICUS::BoundaryCondition *>			referencedBC;
-	std::set<const VICUS::Component *>					referencedComponents;
-	std::set<const VICUS::SubSurfaceComponent *>		referencedSubSurfaceComponents;
-	std::set<const VICUS::SurfaceHeating *>				referencedSurfaceHeatings;
-
-	std::set<const VICUS::NetworkPipe*>					referencedNetworkPipes;
-	std::set<const VICUS::NetworkFluid *>				referencedNetworkFluids;
-	std::set<const VICUS::NetworkComponent *>			referencedNetworkComponents;
-	std::set<const VICUS::NetworkController *>			referencedNetworkControllers;
-	std::set<const VICUS::SubNetwork *>					referencedSubNetworks;
-
-	std::set<const VICUS::Schedule *>					referencedSchedule;
-	std::set<const VICUS::InternalLoad *>				referencedInternalLoads;
-	std::set<const VICUS::ZoneControlThermostat *>		referencedThermostats;
-	std::set<const VICUS::ZoneControlShading *>			referencedControlShading;
-	std::set<const VICUS::VentilationNatural *>			referencedVentilation;
-	std::set<const VICUS::ZoneIdealHeatingCooling *> 	referencedIdealHeatingCooling;
-	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedControlNaturalVentilation;
-	std::set<const VICUS::Infiltration *>				referencedInfiltration;
-	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
-
-
-	// First, collect all local elements (even they are not referenced).
-	// we do this to keep unreferenced local elements still in the project (otherwise they would disappear)
-	collectLocalElements(m_materials, referencedMaterials);
-	collectLocalElements(m_constructions, referencedConstructions);
-	collectLocalElements(m_windows, referencedWindows);
-	collectLocalElements(m_windowGlazingSystems, referencedGlazingSystems);
-	collectLocalElements(m_boundaryConditions, referencedBC);
-	collectLocalElements(m_components, referencedComponents);
-	collectLocalElements(m_subSurfaceComponents, referencedSubSurfaceComponents);
-	collectLocalElements(m_surfaceHeatings, referencedSurfaceHeatings);
-	collectLocalElements(m_pipes, referencedNetworkPipes);
-	collectLocalElements(m_fluids, referencedNetworkFluids);
-	collectLocalElements(m_networkComponents, referencedNetworkComponents);
-	collectLocalElements(m_networkControllers, referencedNetworkControllers);
-	collectLocalElements(m_subNetworks, referencedSubNetworks);
-	collectLocalElements(m_schedules, referencedSchedule);
-	collectLocalElements(m_internalLoads, referencedInternalLoads);
-	collectLocalElements(m_zoneControlThermostat, referencedThermostats);
-	collectLocalElements(m_zoneControlShading, referencedControlShading);
-	collectLocalElements(m_zoneControlVentilationNatural, referencedControlNaturalVentilation);
-	collectLocalElements(m_zoneIdealHeatingCooling, referencedIdealHeatingCooling);
-	collectLocalElements(m_ventilationNatural, referencedVentilation);
-	collectLocalElements(m_infiltration, referencedInfiltration);
-	collectLocalElements(m_zoneTemplates, referencedZoneTemplates);
-
-
+	// TODO Hauke,
+#if 0
 	// Now, first collect all objects that are not referenced themselves
 	// then, we collect objects that are referenced from an already collected object
 	// this is continued until we have collected all objects that are used somewhere in the
@@ -348,20 +291,6 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);
 
 
-	// *** Materials ***
-	//
-	// referenced from constructions and window (frame+divider)
-
-	for (const VICUS::Construction * c : referencedConstructions) {
-		if (c == nullptr) continue;
-		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
-			referencedMaterials.insert(m_materials[ml.m_idMaterial]);
-	}
-	for (const VICUS::Window * c : referencedWindows) {
-		if (c == nullptr) continue;
-		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]);
-		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]);
-	}
 
 
 	// *** everything that is referenced from zone templates
@@ -460,8 +389,23 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	}
 
 
+#endif
+
+
+	// collect all database elements that are referenced from project or from other DB elements
+	updateReferencedElements(p); // now all reference elements have m_isReferenced = true
+	// ruft indirekt:
+	// - updateElementChildrenParents
+
+	// transfer now only those DB elements that are marked as referenced
+	storeVector(p.m_embeddedDB.m_materials, m_materials);
+	storeVector(p.m_embeddedDB.m_constructions, m_constructions);
+
+	// TODO Hauke transfer from below to new storeVector
+
 	// *** transfer collected objects to project's embedded database ***
 
+#if 0
 	storeVector(p.m_embeddedDB.m_materials, referencedMaterials);
 	storeVector(p.m_embeddedDB.m_constructions, referencedConstructions);
 	storeVector(p.m_embeddedDB.m_windows, referencedWindows);
@@ -486,12 +430,13 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
 	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
 	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
+#endif
 }
 
 
 void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 
-	updateElementChildrenParents();
+	updateElementChildren();
 
 	// set all elements referenced-property to false
 	for (auto it=m_materials.begin(); it!=m_materials.end(); ++it)
@@ -540,12 +485,12 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 		it->second.m_isReferenced = false;
 
 
-	// Collect all directly referenced elements
+	// Collect all directly referenced elements from project
 
 	// TODO Buildings ...
 
 	// Networks
-	std::set<const VICUS::AbstractDBElement *>	referencedElements;
+	std::set<const VICUS::AbstractDBElement*> referencedElements;
 	for (const VICUS::Network &net: p.m_geometricNetworks){
 		// fluids
 		referencedElements.insert(m_fluids[net.m_idFluid]);
@@ -571,37 +516,60 @@ void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
 }
 
 
-void SVDatabase::updateElementChildrenParents() {
+void SVDatabase::updateElementChildren() {
+
+	// In this function, only DB element interdependencies are searched for and
+	// marked in m_isReferenced members.
+	// However, top-level elements that are referenced from project objects are not yet
+	// marked. This is done in function updateReferencedElements() which internally calls this
+	// function first.
 
 	// clear all children, parent relations
-	clearChildrenParents(m_materials);
-	clearChildrenParents(m_constructions);
-	clearChildrenParents(m_windows);
-	clearChildrenParents(m_windowGlazingSystems);
-	clearChildrenParents(m_boundaryConditions);
-	clearChildrenParents(m_components);
-	clearChildrenParents(m_subSurfaceComponents);
-	clearChildrenParents(m_surfaceHeatings);
-	clearChildrenParents(m_pipes);
-	clearChildrenParents(m_fluids);
-	clearChildrenParents(m_networkComponents);
-	clearChildrenParents(m_networkControllers);
-	clearChildrenParents(m_subNetworks);
-	clearChildrenParents(m_schedules);
-	clearChildrenParents(m_internalLoads);
-	clearChildrenParents(m_zoneControlThermostat);
-	clearChildrenParents(m_zoneControlShading);
-	clearChildrenParents(m_zoneControlVentilationNatural);
-	clearChildrenParents(m_zoneIdealHeatingCooling);
-	clearChildrenParents(m_ventilationNatural);
-	clearChildrenParents(m_infiltration);
-	clearChildrenParents(m_zoneTemplates);
+	m_materials.clearChildren();
+	m_constructions.clearChildren();
+	m_windows.clearChildren();
+	m_windowGlazingSystems.clearChildren();
+	m_boundaryConditions.clearChildren();
+	m_components.clearChildren();
+	m_subSurfaceComponents.clearChildren();
+	m_surfaceHeatings.clearChildren();
+	m_pipes.clearChildren();
+	m_fluids.clearChildren();
+	m_networkComponents.clearChildren();
+	m_networkControllers.clearChildren();
+	m_subNetworks.clearChildren();
+	m_schedules.clearChildren();
+	m_internalLoads.clearChildren();
+	m_zoneControlThermostat.clearChildren();
+	m_zoneControlShading.clearChildren();
+	m_zoneControlVentilationNatural.clearChildren();
+	m_zoneIdealHeatingCooling.clearChildren();
+	m_ventilationNatural.clearChildren();
+	m_infiltration.clearChildren();
+	m_zoneTemplates.clearChildren();
 
-	// Now set all children / parent relations
+	// Now set all children relations
 
-	// TODO Buildings ...
+	// *** Materials ***
+	//
+	// referenced from constructions and window (frame+divider)
 
-	// Network elements
+	for (auto it = m_constructions.begin(); it != m_constructions.end(); ++it) {
+		VICUS::Construction * c = &it->second;
+		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
+			c->m_childrenRefs.insert(m_materials[ml.m_idMaterial]);
+	}
+
+	for (auto it = m_windows.begin(); it != m_windows.end(); ++it) {
+		VICUS::Window * c = &it->second;
+		c->m_childrenRefs.insert(m_materials[c->m_frame.m_idMaterial]);
+		c->m_childrenRefs.insert(m_materials[c->m_divider.m_idMaterial]);
+	}
+
+
+	// TODO Hauke, Buildings ...
+
+	// *** Network elements ***
 	for (auto it=m_subNetworks.begin(); it!=m_subNetworks.end(); ++it) {
 
 		VICUS::SubNetwork *sub = &it->second;
@@ -609,29 +577,25 @@ void SVDatabase::updateElementChildrenParents() {
 		for (const VICUS::NetworkElement &elem: sub->m_elements){
 			// network controller
 			VICUS::NetworkController * ctr = m_networkControllers[elem.m_controlElementId];
-			if (ctr != nullptr){
+			if (ctr != nullptr)
 				sub->m_childrenRefs.insert(ctr);
-				ctr->m_parentRefs.insert(sub);
-			}
+
 			// network components
 			VICUS::NetworkComponent * comp = m_networkComponents[elem.m_componentId];
-			if (comp != nullptr){
+			if (comp != nullptr) {
 				sub->m_childrenRefs.insert(comp);
-				comp->m_parentRefs.insert(sub);
+
 				// schedules
 				for (unsigned int i: comp->m_scheduleIds){
 					VICUS::Schedule * sched = m_schedules[i];
-					if (sched != nullptr){
-						sched->m_parentRefs.insert(comp);
+					if (sched != nullptr)
 						comp->m_childrenRefs.insert(sched);
-					}
 				}
+
 				// pipes
 				VICUS::NetworkPipe * pipe = m_pipes[comp->m_pipePropertiesId];
-				if (pipe != nullptr) {
-					pipe->m_parentRefs.insert(comp);
+				if (pipe != nullptr)
 					comp->m_childrenRefs.insert(pipe);
-				}
 			}
 		}
 	}
@@ -710,6 +674,7 @@ void replaceID(unsigned int oldID, unsigned int newId, unsigned int & idVar, T &
 		db.m_modified = true;
 	}
 }
+
 
 void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID) {
 	// depending on database type, we need to replace references to the element on other dbs as well
@@ -1047,8 +1012,7 @@ void SVDatabase::removeLocalElements() {
 }
 
 
-void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbType, const VICUS::Project &p)
-{
+void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbType, const VICUS::Project &p) {
 	updateReferencedElements(p);
 
 	switch (dbType) {
@@ -1126,9 +1090,10 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 
 
 void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
-								   std::set<VICUS::AbstractDBElement *> &localChildren) {
+								   std::set<VICUS::AbstractDBElement *> &localChildren)
+{
 
-	updateElementChildrenParents();
+	updateElementChildren();
 
 	Q_ASSERT(id!=VICUS::INVALID_ID);
 

@@ -85,16 +85,14 @@ void SVDBSubNetworkEditWidget::updateInput(int id)
 	m_ui->toolButtonEditController->setEnabled(isEditable);
 }
 
+
 void SVDBSubNetworkEditWidget::modelModify() {
-	if (!m_currentSubNet->m_local && !m_currentSubNet->m_builtIn)
-		SVDatabaseEditDialog::dialogMoveLocalChildrenToUserDB(this, m_dbModel->databaseType(), m_currentSubNet->m_id);
 	m_db->m_subNetworks.m_modified = true;
 	m_dbModel->setItemModified(m_currentSubNet->m_id);
 }
 
 
-void SVDBSubNetworkEditWidget::updateTableWidget()
-{
+void SVDBSubNetworkEditWidget::updateTableWidget() {
 	m_ui->tableWidgetElements->blockSignals(true);
 	m_ui->tableWidgetElements->clear();
 	m_ui->tableWidgetElements->blockSignals(false);

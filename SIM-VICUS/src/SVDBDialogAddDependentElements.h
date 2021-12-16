@@ -1,5 +1,5 @@
-#ifndef SVDBDIALOGADDDEPENDENTELEMENTSH
-#define SVDBDIALOGADDDEPENDENTELEMENTSH
+#ifndef SVDBDialogAddDependentElementsH
+#define SVDBDialogAddDependentElementsH
 
 #include <QDialog>
 #include <set>
@@ -10,21 +10,24 @@ namespace VICUS {
 
 
 namespace Ui {
-class SVDBDialogAddDependentElements;
+	class SVDBDialogAddDependentElements;
 }
 
-class SVDBDialogAddDependentElements : public QDialog
-{
+/*! Dialog shows list of referenced local elements and asks user to confirm importing these
+	elements into the user DB.
+*/
+class SVDBDialogAddDependentElements : public QDialog {
 	Q_OBJECT
 
 public:
 	explicit SVDBDialogAddDependentElements(QWidget *parent = nullptr);
 	~SVDBDialogAddDependentElements();
 
-	void setup(const QString & infoText, const std::set<VICUS::AbstractDBElement *> &elements);
+	/*! Populates list widget with names/types of reference elements. */
+	void setup(const std::set<VICUS::AbstractDBElement *> &elements);
 
 private:
 	Ui::SVDBDialogAddDependentElements *m_ui;
 };
 
-#endif // SVDBDIALOGADDDEPENDENTELEMENTS_H
+#endif // SVDBDialogAddDependentElementsH

@@ -349,7 +349,19 @@ void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
 
 	// move depending child elements to userDB as well
 	unsigned int id = sourceIndex.data(Role_Id).toUInt();
-	dialogMoveLocalChildrenToUserDB(this, m_dbModel->databaseType(), id);
+	// find local children
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	SVSettings::instance().m_db.findLocalChildren(m_dbModel->databaseType(), id, localChildren);
+	// ask user if child elements should be added to user DB as well
+	if (localChildren.size() > 0) {
+		SVDBDialogAddDependentElements diag(this);
+		diag.setup(localChildren);
+		int res = diag.exec();
+		if (res == QDialog::Accepted) {
+			for (VICUS::AbstractDBElement *el: localChildren)
+				el->m_local = false;
+		}
+	}
 }
 
 
@@ -368,8 +380,7 @@ void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) 
 }
 
 
-void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked()
-{
+void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
 	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
 		// tell db to drop all user-defined items and re-read the DB
@@ -401,21 +412,6 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 }
 
 
-void SVDatabaseEditDialog::dialogMoveLocalChildrenToUserDB(QWidget *parent, int dbType, unsigned int id) {
-	// find local children
-	std::set<VICUS::AbstractDBElement *> localChildren;
-	SVSettings::instance().m_db.findLocalChildren(SVDatabase::DatabaseTypes(dbType), id, localChildren);
-	// ask user if child elements should be added to user DB as well
-	if (localChildren.size() > 0) {
-		SVDBDialogAddDependentElements *diag = new SVDBDialogAddDependentElements(parent);
-		diag->setup(tr("The selected user-database element references local elements"), localChildren);
-		int res = diag->exec();
-		if(res == QDialog::Accepted) {
-			for (VICUS::AbstractDBElement *el: localChildren)
-				el->m_local = false;
-		}
-	}
-}
 
 
 

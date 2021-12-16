@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>191</height>
+    <width>548</width>
+    <height>240</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Add elements to user database</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QLabel" name="labelTextCaption">
      <property name="text">
-      <string>TextLabel</string>
+      <string>The following local elements are referenced from the DB element:</string>
      </property>
     </widget>
    </item>

@@ -2,28 +2,22 @@
 #include "ui_SVDBDialogAddDependentElements.h"
 
 #include <QtExt_Conversions.h>
-
 #include <VICUS_AbstractDBElement.h>
-
-#include <QMessageBox>
 
 SVDBDialogAddDependentElements::SVDBDialogAddDependentElements(QWidget *parent):
 	QDialog(parent),
 	m_ui(new Ui::SVDBDialogAddDependentElements)
 {
 	m_ui->setupUi(this);
-	setWindowTitle(tr("Add elements to user database"));
 }
 
 
-SVDBDialogAddDependentElements::~SVDBDialogAddDependentElements()
-{
+SVDBDialogAddDependentElements::~SVDBDialogAddDependentElements() {
 	delete m_ui;
 }
 
-void SVDBDialogAddDependentElements::setup(const QString &infoText, const std::set<VICUS::AbstractDBElement *> &elements)
-{
-	m_ui->labelTextCaption->setText(infoText);
+
+void SVDBDialogAddDependentElements::setup(const std::set<VICUS::AbstractDBElement *> &elements) {
 	for (VICUS::AbstractDBElement *el: elements){
 		QListWidgetItem *item = new QListWidgetItem;
 		item->setText(QtExt::MultiLangString2QString(el->m_displayName));
