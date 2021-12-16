@@ -49,15 +49,6 @@ void AbstractDBElement::collectLocalChildren(std::set<AbstractDBElement *> & loc
 }
 
 
-void AbstractDBElement::collectUserDBParents(std::set<AbstractDBElement *> & userDBParents) const {
-	for (VICUS::AbstractDBElement * parent: m_parentRefs){
-		if (parent != nullptr && !parent->m_local){
-			userDBParents.insert(parent);
-			parent->collectUserDBParents(userDBParents);
-		}
-	}
-}
-
 
 const QString AbstractDBElement::sourceName() const {
 	if (m_builtIn)

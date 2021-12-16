@@ -122,6 +122,7 @@ public:
 	 * for GUI and preprocessing */
 	void nandradNetworkComponentParameter(IBK::Parameter *para) const;
 
+
 	// *** Static Functions
 
 	/*! returns the NANDRAD::HydraulicNetworkComponent ModelType which may deviates from the VICUS one as we use the VICUS model

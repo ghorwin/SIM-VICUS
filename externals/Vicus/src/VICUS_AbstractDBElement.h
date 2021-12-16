@@ -74,9 +74,6 @@ public:
 	/*! Collects all pointers to child elements which are local */
 	void collectLocalChildren(std::set<AbstractDBElement *> & localChildrenRefs) const;
 
-	/*! Collects all pointers to parent elements which are not local */
-	void collectUserDBParents(std::set<AbstractDBElement *> & userDBParents) const;
-
 	/*! Source name for display purposes. */
 	const QString sourceName() const;
 
@@ -99,9 +96,6 @@ public:
 
 	/*! Determines wether this element is kept local in the current project or should be stored into the userDB (false). */
 	bool							m_local = true;
-
-	/*! Pointer to elements which reference this element */
-	std::set<AbstractDBElement*>	m_parentRefs;
 
 	/*! Pointer to elements which are referenced by this element */
 	std::set<AbstractDBElement*>	m_childrenRefs;
