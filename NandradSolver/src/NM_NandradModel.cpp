@@ -598,7 +598,7 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::calculateErrorWeights(co
 
 		// retrieve error weight for all network variables
 		std::vector<double> errWeights;
-		m_networkStatesModelContainer[i]->calculateErrorWeight(errWeights);
+		m_networkStatesModelContainer[i]->calculateErrorWeightFactors(errWeights);
 
 		// enlarge default factors for all network variables
 		for (unsigned int j=0; j<m_networkStatesModelContainer[i]->nPrimaryStateResults(); ++j)
