@@ -194,14 +194,14 @@ struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::A
 };
 
 
-// Local utility function used to transfer DB elements that are marked as "referenced" into a sequential vector
+// Local utility function used to transfer DB elements that are marked as "referenced" or "local" into a sequential vector
 template <typename T>
 void storeVector(std::vector<T> & vec, const VICUS::Database<T> & src) {
 	// clear target vector
 	vec.clear();
 	// store objects of correct type but skip nullptr
 	for (typename std::map<unsigned int, T>::const_iterator it = src.begin(); it != src.end(); ++it) {
-		if (it->second.m_isReferenced)
+		if (it->second.m_isReferenced || it->second.m_local)
 			vec.push_back(it->second);
 	}
 	std::sort(vec.begin(), vec.end(), SortByID());
@@ -225,9 +225,10 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	// collect all database elements that are referenced from project or from other DB elements
 	updateReferencedElements(p); // now all reference elements have m_isReferenced = true
 
-	// transfer now only those DB elements that are marked as referenced
-	storeVector(p.m_embeddedDB.m_materials, m_materials);
-	storeVector(p.m_embeddedDB.m_constructions, m_constructions);
+	// transfer now only those DB elements that are marked as referenced or marked as local
+	// i.e. we transfer all elements which are
+	// - currently used in the project or
+	// - which are currently not used but not stored in the user DB
 	storeVector(p.m_embeddedDB.m_materials, m_materials);
 	storeVector(p.m_embeddedDB.m_constructions, m_constructions);
 	storeVector(p.m_embeddedDB.m_windows, m_windows);
@@ -236,13 +237,11 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_components, m_components);
 	storeVector(p.m_embeddedDB.m_subSurfaceComponents, m_subSurfaceComponents);
 	storeVector(p.m_embeddedDB.m_surfaceHeatings, m_surfaceHeatings);
-
 	storeVector(p.m_embeddedDB.m_pipes, m_pipes);
 	storeVector(p.m_embeddedDB.m_fluids, m_fluids);
 	storeVector(p.m_embeddedDB.m_networkComponents, m_networkComponents);
 	storeVector(p.m_embeddedDB.m_networkControllers, m_networkControllers);
 	storeVector(p.m_embeddedDB.m_subNetworks, m_subNetworks);
-
 	storeVector(p.m_embeddedDB.m_schedules, m_schedules);
 	storeVector(p.m_embeddedDB.m_internalLoads, m_internalLoads);
 	storeVector(p.m_embeddedDB.m_zoneControlThermostats, m_zoneControlThermostat);
