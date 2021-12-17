@@ -85,14 +85,6 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	// modify font style
 	QPalette pal = opt->palette;
 	QFont font = opt->font;
-	if (referenced){
-		pal.setColor(QPalette::Text, SVStyle::instance().m_userDBBackgroundText);
-		font.setItalic(false);
-	}
-	else{
-		pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
-		font.setItalic(true);
-	}
 	modifiedOption.palette = pal;
 	modifiedOption.font = font;
 
@@ -107,10 +99,10 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		painter->fillRect(modifiedOption.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
-		if (referenced)
-			pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
-		else
-			pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
+		if (referenced) {
+			font.setBold(true);
+			modifiedOption.font = font;
+		}
 		modifiedOption.palette = pal;
 	}
 	else if (!local && enabled) {
@@ -122,10 +114,10 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		painter->fillRect(modifiedOption.rect, b);
 		// adjust text color for subsequent call to QItemDelegate::paint()
 		QPalette pal = opt->palette;
-		if (referenced)
-			pal.setColor(QPalette::Text, SVStyle::instance().m_userDBBackgroundText);
-		else
-			pal.setColor(QPalette::Text, SVStyle::instance().m_notReferencedText);
+		if (referenced) {
+			font.setBold(true);
+			modifiedOption.font = font;
+		}
 		modifiedOption.palette = pal;
 	}
 	// either disable or user-DB

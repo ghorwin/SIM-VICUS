@@ -85,8 +85,6 @@ public:
 
 	QColor				m_userDBBackgroundBright;
 	QColor				m_userDBBackgroundDark;
-	QColor				m_userDBBackgroundText;
-	QColor				m_notReferencedText;
 
 	QColor				m_logProgressText;
 	QColor				m_logErrorText;

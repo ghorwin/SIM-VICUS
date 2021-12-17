@@ -152,8 +152,11 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButtonRemoveUnusedElements">
+       <property name="toolTip">
+        <string>Removes project-local database elements that are currently nowhere referenced.</string>
+       </property>
        <property name="text">
-        <string>remove unused elements</string>
+        <string>Remove unused lokal elements</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/SIM-VICUS.qrc">
