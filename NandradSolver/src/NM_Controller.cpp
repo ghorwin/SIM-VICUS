@@ -172,16 +172,16 @@ void PIDController::update(double errorValue) {
 
 
 void PIDController::stepCompleted(double t) {
+	double dt = t - m_tLastStep;
 	// trapozoid rule of integration
-	m_errorValueIntegral += m_timeStep*0.5*(m_lastErrorValue + m_errorValue);
-	m_tLastStep = t;
+	m_errorValueIntegral += dt*0.5*(m_lastErrorValue + m_errorValue);
 	// store error value and time point
+	m_tLastStep = t;
 	m_lastErrorValue = m_errorValue;
 }
 
 
-void PIDController::setTime(double t)
-{
+void PIDController::setTime(double t) {
 	m_timeStep = t - m_tLastStep;
 }
 

@@ -565,8 +565,8 @@ void HNPressureLossCoeffElement::stepCompleted(double t) {
 	}
 }
 
-void HNPressureLossCoeffElement::setTime(double t)
-{
+
+void HNPressureLossCoeffElement::setTime(double t) {
 	if (m_controller != nullptr)
 		m_controller->setTime(t);
 }

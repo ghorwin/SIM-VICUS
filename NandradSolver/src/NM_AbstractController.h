@@ -56,6 +56,12 @@ public:
 	*/
 	virtual void update(double errorValue) { m_errorValue = errorValue; }
 
+	/*! This function is called at the begin of an integrator step and signals the end time point
+		of the current step.
+		Use this function to compute the integration step size in case you want to integrate manually.
+	*/
+	virtual void setTime(double t) { (void)t; }
+
 	/*! This function is called after each integration step (default implementation does nothing). */
 	virtual void stepCompleted(double t) { (void)t; }
 
@@ -73,10 +79,10 @@ public:
 	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
 	virtual void resetErrorIntegral() {}
 
-	virtual void setTime(double t) { (void)t; }
-
-	/*! Stores result of controller calculation, updated in each call to update(). */
-	double				m_controlValue = 0;
+	/*! Stores result of controller calculation, updated in each call to update().
+		\note Value is initialized with dummy value to check for correct initialization during model init.
+	*/
+	double				m_controlValue = 888;
 	/*! Cache of error value updated in last call to update(). */
 	double				m_errorValue = 777;
 	/*! Control value will be clipped below this value */

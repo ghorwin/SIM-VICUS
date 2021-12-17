@@ -163,13 +163,22 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
-	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
-	flow element in order to control e.g. its temperature difference */
-	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+	/*! This function is called at the begin of an integrator step and signals the end time point
+		of the current step.
+		The implementation simply forwards the call to the controller object, if used.
+	*/
+	void setTime(double t) override;
 
+	/*! Called at the end of a completed time step.
+		\param t Time point at end of step, can be used to compute the step length.
+	*/
 	void stepCompleted(double t) override;
 
-	void setTime(double t) override;
+
+	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
+		flow element in order to control e.g. its temperature difference.
+	*/
+	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 
