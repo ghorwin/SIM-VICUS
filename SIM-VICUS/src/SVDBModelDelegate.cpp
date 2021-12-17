@@ -85,6 +85,10 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	// modify font style
 	QPalette pal = opt->palette;
 	QFont font = opt->font;
+	if (referenced) {
+		font.setBold(true);
+		modifiedOption.font = font;
+	}
 	modifiedOption.palette = pal;
 	modifiedOption.font = font;
 
@@ -97,13 +101,6 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		else
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
 		painter->fillRect(modifiedOption.rect, b);
-		// adjust text color for subsequent call to QItemDelegate::paint()
-		QPalette pal = opt->palette;
-		if (referenced) {
-			font.setBold(true);
-			modifiedOption.font = font;
-		}
-		modifiedOption.palette = pal;
 	}
 	else if (!local && enabled) {
 		QBrush b;
@@ -112,13 +109,6 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		else
 			b = QBrush(SVStyle::instance().m_userDBBackgroundBright);
 		painter->fillRect(modifiedOption.rect, b);
-		// adjust text color for subsequent call to QItemDelegate::paint()
-		QPalette pal = opt->palette;
-		if (referenced) {
-			font.setBold(true);
-			modifiedOption.font = font;
-		}
-		modifiedOption.palette = pal;
 	}
 	// either disable or user-DB
 	QItemDelegate::paint(painter, modifiedOption, index);
