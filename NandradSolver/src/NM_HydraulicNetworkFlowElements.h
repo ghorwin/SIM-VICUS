@@ -136,6 +136,9 @@ public:
 							   const NANDRAD::HydraulicNetworkControlElement *controlElement,
 							   unsigned int numberParallelElements);
 
+	/*! D'tor, releases allocated controller objetcs. */
+	~HNPressureLossCoeffElement() override;
+
 	/*! Publishes individual model quantities via descriptions. */
 	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 

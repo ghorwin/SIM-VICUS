@@ -300,6 +300,11 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 }
 
 
+HNPressureLossCoeffElement::~HNPressureLossCoeffElement() {
+	delete m_controller;
+}
+
+
 void HNPressureLossCoeffElement::inputReferences(std::vector<InputReference> & inputRefs) const {
 	if (m_controlElement == nullptr)
 		return; 	// only handle input reference when there is a controller
