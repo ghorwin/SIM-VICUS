@@ -136,6 +136,9 @@ public:
 							   const NANDRAD::HydraulicNetworkControlElement *controlElement,
 							   unsigned int numberParallelElements);
 
+	/*! D'tor, releases allocated controller objetcs. */
+	~HNPressureLossCoeffElement() override;
+
 	/*! Publishes individual model quantities via descriptions. */
 	virtual void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
 
@@ -163,11 +166,22 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
-	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
-	flow element in order to control e.g. its temperature difference */
-	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+	/*! This function is called at the begin of an integrator step and signals the end time point
+		of the current step.
+		The implementation simply forwards the call to the controller object, if used.
+	*/
+	void setTime(double t) override;
 
+	/*! Called at the end of a completed time step.
+		\param t Time point at end of step, can be used to compute the step length.
+	*/
 	void stepCompleted(double t) override;
+
+
+	/*! Id number of following flow element. This is used to obtain the outlet temperature of the follwing
+		flow element in order to control e.g. its temperature difference.
+	*/
+	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 
@@ -196,12 +210,14 @@ private:
 	/*! the calculated controller zeta value for the valve */
 	double							m_zetaControlled = -999;
 
+	/*! the calculated controller zeta value for the valve */
+	double							m_controllerError = -999;
+
 	/*! number of parallel elements (mass flux will be divided by this number) */
 	unsigned int					m_numberParallelElements = 1;
 
 	/*! Reference to the controller parametrization object.*/
-	const NANDRAD::HydraulicNetworkControlElement
-									*m_controlElement = nullptr;
+	const NANDRAD::HydraulicNetworkControlElement	*m_controlElement = nullptr;
 
 	/*! Value reference to external quantity. */
 	const double					*m_heatExchangeHeatLossRef = nullptr;
@@ -282,7 +298,7 @@ private:
 	/*! Value reference to pressure head [Pa] */
 	const double										* m_pressureHeadRef = nullptr;
 	/*! Controller for pump (used for on/off controlling) */
-	const NANDRAD::HydraulicNetworkControlElement		* m_controller = nullptr;
+	const NANDRAD::HydraulicNetworkControlElement		* m_controlElement = nullptr;
 	/*! Reference to heat loss of following element (used for on/off controlling) */
 	const double										* m_followingElementHeatLossRef = nullptr;
 	/*! Determines wether pump is currently in operation (used for on/off controlling) */

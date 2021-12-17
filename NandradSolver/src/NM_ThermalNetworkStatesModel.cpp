@@ -500,6 +500,32 @@ int ThermalNetworkStatesModel::setTime(double t) {
 }
 
 
+void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> & weights) {
+	// by default weight enlargement factors are 1
+	weights = std::vector<double>(m_n, 1.0);
+
+	// add higher weight for all elements which are not pipes
+	IBK_ASSERT(m_network->m_elements.size() == m_p->m_flowElements.size());
+	unsigned int i=0;
+	for (unsigned int n=0; n<m_p->m_flowElements.size(); ++n) {
+		const ThermalNetworkAbstractFlowElement *flowElem = m_p->m_flowElements[n];
+		unsigned int nStates = flowElem->nInternalStates();
+		// skip elements without states
+		if (nStates == 0)
+			continue;
+		NANDRAD::HydraulicNetworkComponent::ModelType type = m_network->m_elements[n].m_component->m_modelType;
+		IBK_ASSERT(flowElem!=nullptr);
+		// for all elements that are not pipes (ie. heat exchangers/heat pumps etc.)
+		// increase the sensitivity for weights
+		if (type != NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe &&
+			type != NANDRAD::HydraulicNetworkComponent::MT_SimplePipe )
+			weights[i] = 1.;
+		// increment counter for number of unknowns
+		i += flowElem->nInternalStates();
+	}
+}
+
+
 void ThermalNetworkStatesModel::yInitial(double * y) {
 	// set internal states
 	unsigned int offset = 0;

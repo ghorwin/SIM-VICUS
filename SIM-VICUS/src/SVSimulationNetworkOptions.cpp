@@ -112,9 +112,7 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].empty())
 		m_ui->lineEditPipeDepth->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].value);
 
-	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].empty())
-		m_ui->lineEditMaxTempChangeIndicator->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator].value);
-
+	m_ui->lineEditNumberOfSoilModels->setValue(m_current->m_buriedPipeProperties.m_numberOfSoilModels);
 }
 
 
@@ -170,12 +168,9 @@ void SVSimulationNetworkOptions::on_lineEditPipeDepth_editingFinished()
 }
 
 
-
-void SVSimulationNetworkOptions::on_lineEditMaxTempChangeIndicator_editingFinished()
+void SVSimulationNetworkOptions::on_lineEditNumberOfSoilModels_editingFinished()
 {
 	Q_ASSERT(m_current!=nullptr);
-	if (m_ui->lineEditMaxTempChangeIndicator->isValid())
-		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
-										 VICUS::NetworkBuriedPipeProperties::P_MaxTempChangeIndicator,
-										 m_ui->lineEditMaxTempChangeIndicator->value());
+	if (m_ui->lineEditNumberOfSoilModels->isValid())
+		m_current->m_buriedPipeProperties.m_numberOfSoilModels = m_ui->lineEditNumberOfSoilModels->value();
 }

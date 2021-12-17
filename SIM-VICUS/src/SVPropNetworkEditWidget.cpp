@@ -53,6 +53,7 @@
 #include "SVDBNetworkFluidEditWidget.h"
 #include "SVStyle.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVUndoTreeNodeState.h"
 
 
 SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
@@ -105,8 +106,6 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 
 	// validating line edits
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
-
-
 	m_ui->lineEditThresholdSmallEdge->setup(0, std::numeric_limits<double>::max(), tr("Maximum Heating Demand"), false, true);
 	m_ui->lineEditNodeX->setup(0, std::numeric_limits<double>::max(), tr("x position of node"), true, true);
 	m_ui->lineEditNodeY->setup(0, std::numeric_limits<double>::max(), tr("y position of node"), true, true);
@@ -115,6 +114,10 @@ SVPropNetworkEditWidget::SVPropNetworkEditWidget(QWidget *parent) :
 	m_ui->lineEditThresholdSmallEdge->setup(0, std::numeric_limits<double>::max(), tr("edges smaller than this value will be cutted"), false, true);
 	m_ui->lineEditNodeMaxHeatingDemand->setup(0, std::numeric_limits<double>::max(), tr("maximum heating demand at this node"), false, true);
 	m_ui->lineEditHXTransferCoefficient->setup(0, std::numeric_limits<double>::max(), tr("convective heat exchange coefficient, set =0 to neglect"), true, true);
+
+	// disable buttons related to table widgets
+	on_tableWidgetPipes_itemSelectionChanged();
+	on_tableWidgetSubNetworks_itemSelectionChanged();
 }
 
 
@@ -360,7 +363,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	int currentRow = m_ui->tableWidgetPipes->currentRow();
 	m_ui->tableWidgetPipes->blockSignals(true);
 	m_ui->tableWidgetPipes->clearContents();
-	m_ui->tableWidgetPipes->setRowCount(pipeIds.size());
+	m_ui->tableWidgetPipes->setRowCount((int)pipeIds.size());
 	int row = 0;
 	for (unsigned int id: pipeIds){
 		 const VICUS::NetworkPipe *pipe = db.m_pipes[id];
@@ -371,6 +374,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 else
 			 item->setBackground(pipe->m_color);
 		 item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		 item->setData(Qt::UserRole, id);
 		 m_ui->tableWidgetPipes->setItem(row, 0, item);
 
 		 item = new QTableWidgetItem();
@@ -379,6 +383,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 else
 			 item->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
 		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		 item->setData(Qt::UserRole, id);
 		 m_ui->tableWidgetPipes->setItem(row, 1, item);
 
 		 ++row;
@@ -400,7 +405,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	currentRow = m_ui->tableWidgetSubNetworks->currentRow();
 	m_ui->tableWidgetSubNetworks->blockSignals(true);
 	m_ui->tableWidgetSubNetworks->clearContents();
-	m_ui->tableWidgetSubNetworks->setRowCount(subNetworkIds.size());
+	m_ui->tableWidgetSubNetworks->setRowCount((int)subNetworkIds.size());
 	row = 0;
 	for (unsigned int id: subNetworkIds){
 		 const VICUS::SubNetwork *subNet = db.m_subNetworks[id];
@@ -411,18 +416,16 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 		 else
 			 item->setBackground(subNet->m_color);
 		 item->setFlags(Qt::ItemIsEnabled); // cannot select color item!
+		 item->setData(Qt::UserRole, id);
 		 m_ui->tableWidgetSubNetworks->setItem(row, 0, item);
 
 		 item = new QTableWidgetItem();
 		 item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		 if (subNet == nullptr){
+		 if (subNet == nullptr)
 			 item->setText(tr("<invalid sub network id>"));
-			 item->setData(Qt::UserRole, VICUS::INVALID_ID);
-		 }
-		 else {
+		 else
 			 item->setText(QtExt::MultiLangString2QString(subNet->m_displayName));
-			 item->setData(Qt::UserRole, subNet->m_id);
-		 }
+		item->setData(Qt::UserRole, id);
 		 m_ui->tableWidgetSubNetworks->setItem(row, 1, item);
 
 		 ++row;
@@ -448,7 +451,7 @@ void SVPropNetworkEditWidget::updateNetworkProperties()
 	// update heat exchange table widget
 	m_ui->tableWidgetHeatExchange->blockSignals(true);
 	m_ui->tableWidgetHeatExchange->clearContents();
-	m_ui->tableWidgetHeatExchange->setRowCount(currentHxTypes.size());
+	m_ui->tableWidgetHeatExchange->setRowCount((int)currentHxTypes.size());
 	row = 0;
 	for (NANDRAD::HydraulicNetworkHeatExchange::ModelType type: currentHxTypes){
 		 QTableWidgetItem * item = new QTableWidgetItem();
@@ -721,13 +724,12 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 		else
 			hx.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].clear();
 
-
 		// set data file
 		IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
+		tsvFile = SVProjectHandler::instance().replacePathPlaceholders(tsvFile);
 		if (tsvFile.isValid() && (modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline ||
 								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser)){
 			// get relative file path
-			IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
 			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",
 																	 NANDRAD::LinearSplineParameter::I_LINEAR,
@@ -1101,8 +1103,9 @@ void SVPropNetworkEditWidget::on_pushButtonAssignPipe_clicked()
 void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
 {
 	unsigned int currentId = 0;
-	if (m_currentEdges.size() > 0)
-		currentId = m_currentEdges[0]->m_idPipe;
+	QTableWidgetItem *item = m_ui->tableWidgetPipes->currentItem();
+	if (item != nullptr)
+		currentId = item->data(Qt::UserRole).toUInt();
 	SVMainWindow::instance().dbPipeEditDialog()->edit(currentId);
 }
 
@@ -1110,7 +1113,7 @@ void SVPropNetworkEditWidget::on_pushButtonEditPipe_clicked()
 void SVPropNetworkEditWidget::on_pushButtonEditSubNetworks_clicked()
 {
 	unsigned int currentId = 0;
-	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->item(m_ui->tableWidgetSubNetworks->currentRow(), 1);
+	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->currentItem();
 	if (item != nullptr)
 		currentId = item->data(Qt::UserRole).toUInt();
 	SVMainWindow::instance().dbSubNetworkEditDialog()->edit(currentId);
@@ -1171,6 +1174,135 @@ void SVPropNetworkEditWidget::on_pushButtonRecalculateLength_clicked()
 	updateNetworkProperties();
 }
 
+
+void SVPropNetworkEditWidget::on_pushButtonSelectEdgesWithPipe_clicked() {
+
+	Q_ASSERT(m_currentConstNetwork != nullptr);
+	// get pipeId from current item
+	QTableWidgetItem *item = m_ui->tableWidgetPipes->currentItem();
+	if (item == nullptr)
+		return;
+	unsigned int pipeId = item->data(Qt::UserRole).toUInt();
+
+	// collect edges
+	std::set<unsigned int> edgeIds;
+	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges) {
+		if (e.m_idPipe == pipeId)
+			edgeIds.insert(e.uniqueID());
+	}
+
+	const VICUS::NetworkPipe * pipe = SVSettings::instance().m_db.m_pipes[pipeId];
+	QString undoText;
+	if (pipe != nullptr)
+		undoText = tr("Select edges with pipe '%1'.").arg(QtExt::MultiLangString2QString(pipe->m_displayName));
+	else
+		undoText = tr("Select edges with invalid/missing pipe.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, edgeIds, true);
+	undo->push();
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonExchangePipe_clicked() {
+
+	if (!setNetwork())
+		return;
+
+	// get pipeId from current item
+	QTableWidgetItem *item = m_ui->tableWidgetPipes->currentItem();
+	if (item == nullptr)
+		return;
+	unsigned int oldId = item->data(Qt::UserRole).toUInt();
+
+	// get new id
+	unsigned int newId = SVMainWindow::instance().dbPipeEditDialog()->select(oldId);
+	if (newId == oldId || newId==VICUS::INVALID_ID)
+		return;
+
+	// modify edges
+	for (VICUS::NetworkEdge &e: m_currentNetwork.m_edges) {
+		if (e.m_idPipe == oldId)
+			e.m_idPipe = newId;
+	}
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkEditWidget::on_tableWidgetPipes_itemSelectionChanged() {
+	bool enabled =  m_ui->tableWidgetPipes->currentRow() != -1;
+	m_ui->pushButtonEditPipe->setEnabled(enabled);
+	m_ui->pushButtonSelectEdgesWithPipe->setEnabled(enabled);
+	m_ui->pushButtonExchangePipe->setEnabled(enabled);
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonExchangeSubNetwork_clicked()
+{
+	if (!setNetwork())
+		return;
+
+	// get id from current item
+	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->currentItem();
+	if (item == nullptr)
+		return;
+	unsigned int oldId = item->data(Qt::UserRole).toUInt();
+
+	// get new id
+	unsigned int newId = SVMainWindow::instance().dbSubNetworkEditDialog()->select(oldId);
+	if (newId == oldId || newId==VICUS::INVALID_ID)
+		return;
+
+	// modify nodes
+	for (VICUS::NetworkNode &n: m_currentNetwork.m_nodes) {
+		if (n.m_idSubNetwork == oldId)
+			n.m_idSubNetwork = newId;
+	}
+	unsigned int networkIndex = std::distance(&project().m_geometricNetworks.front(), m_currentConstNetwork);
+	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
+	undo->push(); // modifies project and updates views
+}
+
+
+void SVPropNetworkEditWidget::on_pushButtonSelectNodesWithSubNetwork_clicked()
+{
+	Q_ASSERT(m_currentConstNetwork != nullptr);
+	// get pipeId from current item
+	QTableWidgetItem *item = m_ui->tableWidgetSubNetworks->currentItem();
+	if (item == nullptr)
+		return;
+	unsigned int id = item->data(Qt::UserRole).toUInt();
+
+	// collect sub networks
+	std::set<unsigned int> nodeIds;
+	for (const VICUS::NetworkNode &n: m_currentConstNetwork->m_nodes) {
+		if (n.m_idSubNetwork == id)
+			nodeIds.insert(n.uniqueID());
+	}
+
+	const VICUS::SubNetwork * sub = SVSettings::instance().m_db.m_subNetworks[id];
+	QString undoText;
+	if (sub != nullptr)
+		undoText = tr("Select nodes with sub network '%1'.").arg(QtExt::MultiLangString2QString(sub->m_displayName));
+	else
+		undoText = tr("Select nodes with invalid/missing sub network.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, nodeIds, true);
+	undo->push();
+}
+
+
+void SVPropNetworkEditWidget::on_tableWidgetSubNetworks_itemSelectionChanged()
+{
+	bool enabled = m_ui->tableWidgetSubNetworks->currentRow() != -1;
+	m_ui->pushButtonEditSubNetworks->setEnabled(enabled);
+	m_ui->pushButtonSelectNodesWithSubNetwork->setEnabled(enabled);
+	m_ui->pushButtonExchangeSubNetwork->setEnabled(enabled);
+}
+
+
+
 template <typename TEdgeProp, typename Tval>
 void SVPropNetworkEditWidget::modifyEdgeProperty(TEdgeProp property, const Tval & value)
 {
@@ -1203,6 +1335,4 @@ void SVPropNetworkEditWidget::modifyNodeProperty(TNodeProp property, const Tval 
 	SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_currentNetwork);
 	undo->push(); // modifies project and updates views
 }
-
-
 

@@ -130,7 +130,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Silt");
 	tr("Spacing between supply and return pipes");
 	tr("Distance between soil surface and pipes");
-	tr("MaxTempChangeIndicator");
 	tr("Pipe with a single fluid volume and with heat exchange");
 	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Pump with constant/externally defined pressure");
@@ -174,6 +173,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Control pump operation depending on following element");
 	tr("PController");
 	tr("PIController");
+	tr("PIDController");
 	tr("OnOffController");
 	tr("Kp-parameter");
 	tr("Ki-parameter");
@@ -181,6 +181,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Target temperature difference");
 	tr("Target mass flux");
 	tr("Threshold value for PumpOperation property when OnOffController is used");
+	tr("Integral part will be set to zero if controller error is above this value");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
 	tr("Pipe with a single fluid volume and with heat exchange");

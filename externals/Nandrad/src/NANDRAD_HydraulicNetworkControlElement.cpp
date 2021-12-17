@@ -6,6 +6,11 @@
 
 namespace NANDRAD {
 
+HydraulicNetworkControlElement::HydraulicNetworkControlElement() {
+	// set default value
+	m_para[P_RelControllerErrorForIntegratorReset] = IBK::Parameter("RelControllerErrorForIntegratorReset", 0.7, "---");
+}
+
 void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & zones) const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
@@ -22,8 +27,8 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
 	}
 	else {
-		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController))
-			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController' or 'PIController'.")
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController || m_controllerType == CT_PIDController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController', 'PIController' or 'PIDController'.")
 								 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlledProperty)),
 								 FUNC_ID);
 	}
@@ -84,6 +89,14 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			case CT_PIController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_RelControllerErrorForIntegratorReset].checkedValue("RelControllerErrorForIntegratorReset", "---", "---", 0, true, 1, true, nullptr);
+			} break;
+
+			case CT_PIDController: {
+				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Kd].checkedValue("Kd", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_RelControllerErrorForIntegratorReset].checkedValue("RelControllerErrorForIntegratorReset", "---", "---", 0, true, 1, true, nullptr);
 			} break;
 
 			case CT_OnOffController: {

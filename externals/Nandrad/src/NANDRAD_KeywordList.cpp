@@ -247,7 +247,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "OnOffController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -258,6 +259,7 @@ namespace NANDRAD {
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -875,7 +877,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "OnOffController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -886,6 +889,7 @@ namespace NANDRAD {
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -1504,7 +1508,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
-				case 2 : return "OnOffController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -1515,6 +1520,7 @@ namespace NANDRAD {
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
 				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
+				case 6 : return "Integral part will be set to zero if controller error is above this value";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -2133,6 +2139,7 @@ namespace NANDRAD {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
+				case 3 : return "";
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -2143,6 +2150,7 @@ namespace NANDRAD {
 				case 3 : return "K";
 				case 4 : return "kg/s";
 				case 5 : return "W";
+				case 6 : return "---";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -2761,6 +2769,7 @@ namespace NANDRAD {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -2771,6 +2780,7 @@ namespace NANDRAD {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -3389,6 +3399,7 @@ namespace NANDRAD {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::para_t
 			case 14 :
@@ -3399,6 +3410,7 @@ namespace NANDRAD {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::References
 			case 15 :
@@ -3931,9 +3943,9 @@ namespace NANDRAD {
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 12 : return 5;
 			// HydraulicNetworkControlElement::ControllerType
-			case 13 : return 3;
+			case 13 : return 4;
 			// HydraulicNetworkControlElement::para_t
-			case 14 : return 6;
+			case 14 : return 7;
 			// HydraulicNetworkControlElement::References
 			case 15 : return 1;
 			// HydraulicNetworkElement::para_t
@@ -4107,9 +4119,9 @@ namespace NANDRAD {
 			// HydraulicNetworkControlElement::ControlledProperty
 			case 12 : return 4;
 			// HydraulicNetworkControlElement::ControllerType
-			case 13 : return 2;
+			case 13 : return 3;
 			// HydraulicNetworkControlElement::para_t
-			case 14 : return 5;
+			case 14 : return 6;
 			// HydraulicNetworkControlElement::References
 			case 15 : return 0;
 			// HydraulicNetworkElement::para_t

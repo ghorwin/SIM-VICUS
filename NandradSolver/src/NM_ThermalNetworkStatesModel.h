@@ -100,6 +100,13 @@ public:
 	/*! Returns number of conserved variables (i.e. length of y vector passed to yInitial() and update() ). */
 	unsigned int nPrimaryStateResults() const { return m_n; }
 
+	/*! Compute error weight factors for each conserved variable in this network that are used to enlarge the
+		regular error weights.
+		\param weights Vector with size nPrimaryStateResults(), holds factors to be multiplied with default
+			weight factors.
+	*/
+	void calculateErrorWeightFactors(std::vector<double> & weights);
+
 	// NOTE: this model does not publish state dependencies on purpose!
 	//
 	// The mean temperatures depend on the internal energies, but some elements like dynamic pipe

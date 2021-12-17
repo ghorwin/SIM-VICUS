@@ -131,6 +131,18 @@ private slots:
 
 	void on_pushButtonDeleteNetwork_clicked();
 
+	void on_pushButtonExchangePipe_clicked();
+
+	void on_tableWidgetPipes_itemSelectionChanged();
+
+	void on_pushButtonSelectEdgesWithPipe_clicked();
+
+	void on_pushButtonExchangeSubNetwork_clicked();
+
+	void on_pushButtonSelectNodesWithSubNetwork_clicked();
+
+	void on_tableWidgetSubNetworks_itemSelectionChanged();
+
 private:
 
 	/*! Update information related to one or multiple nodes

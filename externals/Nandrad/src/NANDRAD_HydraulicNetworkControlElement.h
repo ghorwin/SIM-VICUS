@@ -19,6 +19,9 @@ namespace NANDRAD {
 class HydraulicNetworkControlElement {
 public:
 
+	/*! Default constructor, sets default parameter values. */
+	HydraulicNetworkControlElement();
+
 	NANDRAD_READWRITE
 	NANDRAD_COMPARE_WITH_ID
 	NANDRAD_COMP(HydraulicNetworkControlElement)
@@ -55,29 +58,35 @@ public:
 
 	/*! Different model variants. */
 	enum ControllerType {
-		CT_PController,			// Keyword: PController				'PController'
-		CT_PIController,		// Keyword: PIController			'PIController'
-		CT_OnOffController,		// Keyword: OnOffController			'OnOffController'
+		CT_PController,							// Keyword: PController				'PController'
+		CT_PIController,						// Keyword: PIController			'PIController'
+		CT_PIDController,						// Keyword: PIDController			'PIDController'
+		CT_OnOffController,						// Keyword: OnOffController			'OnOffController'
 		NUM_CT
 	};
 
 	/*! Model parameters. */
 	enum para_t {
-		P_Kp,								// Keyword: Kp								[---]	'Kp-parameter'
-		P_Ki,								// Keyword: Ki								[---]	'Ki-parameter'
-		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
-		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
-		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
+		P_Kp,									// Keyword: Kp										[---]	'Kp-parameter'
+		P_Ki,									// Keyword: Ki										[---]	'Ki-parameter'
+		P_Kd,									// Keyword: Kd										[---]	'Kd-parameter'
+		P_TemperatureDifferenceSetpoint,		// Keyword: TemperatureDifferenceSetpoint			[K]		'Target temperature difference'
+		P_MassFluxSetpoint,						// Keyword: MassFluxSetpoint						[kg/s]	'Target mass flux'
 		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
+		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
 		NUM_P
 	};
 
 	/*! Integer/whole number parameters. */
 	enum References {
 		/*! Id of zone whose thermostat is used for control: only for controlled property 'ThermostatValue'. */
-		ID_ThermostatZoneId,				// Keyword: ThermostatZoneId				[-]		'ID of zone containing thermostat'
+		ID_ThermostatZoneId,					// Keyword: ThermostatZoneId						[-]		'ID of zone containing thermostat'
 		NUM_ID
 	};
+
+	/*! Function that provides a list of possible controlled properties depending on the given model type. */
+	static std::vector<ControlledProperty> availableControlledProperties(const HydraulicNetworkComponent::ModelType modelType);
+
 
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 
@@ -98,8 +107,6 @@ public:
 
 	/*! Controller parameters. */
 	IBK::Parameter					m_para[NUM_P];									// XML:E
-
-	static std::vector<ControlledProperty> availableControlledProperties(const HydraulicNetworkComponent::ModelType modelType);
 };
 
 } // namespace NANDRAD
