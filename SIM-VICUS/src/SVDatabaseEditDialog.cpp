@@ -328,14 +328,39 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 	if (QMessageBox::question(this, QString(), tr("Reloading the user database from file will revert all changes "
 												  "made in this dialog since the program was started. Continue?"),
-							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+	{
 		// tell db to drop all user-defined items and re-read the DB
-		SVSettings::instance().m_db.m_materials.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType());
-		// update "isRferenced" property of all elements
-		if (SVProjectHandler::instance().isValid()){
-			SVSettings::instance().m_db.updateReferencedElements(project());
+		switch (m_dbModel->databaseType()) {
+			case SVDatabase::DT_Materials:				SVSettings::instance().m_db.m_materials.removeUserElements(); break;
+			case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
+			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
+			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
+			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
+			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
+			case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
+			case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
+			case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
+			case SVDatabase::DT_Fluids:					SVSettings::instance().m_db.m_fluids.removeUserElements(); break;
+			case SVDatabase::DT_NetworkComponents:		SVSettings::instance().m_db.m_networkComponents.removeUserElements(); break;
+			case SVDatabase::DT_NetworkControllers:		SVSettings::instance().m_db.m_networkControllers.removeUserElements(); break;
+			case SVDatabase::DT_SubNetworks:			SVSettings::instance().m_db.m_subNetworks.removeUserElements(); break;
+			case SVDatabase::DT_Schedules:				SVSettings::instance().m_db.m_schedules.removeUserElements(); break;
+			case SVDatabase::DT_InternalLoads:			SVSettings::instance().m_db.m_internalLoads.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlThermostat:	SVSettings::instance().m_db.m_zoneControlThermostat.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlShading:		SVSettings::instance().m_db.m_zoneControlShading.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlNaturalVentilation:			SVSettings::instance().m_db.m_zoneControlVentilationNatural.removeUserElements(); break;
+			case SVDatabase::DT_ZoneIdealHeatingCooling:	SVSettings::instance().m_db.m_zoneIdealHeatingCooling.removeUserElements(); break;
+			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
+			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
+			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
+			case SVDatabase::NUM_DT:; // just to make compiler happy
 		}
+
+		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType()); // by default the "m_isReferenced" property is off after reading the user DB
+		// update "isReferenced" property of all elements
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.updateReferencedElements(project());
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
