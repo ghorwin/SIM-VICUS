@@ -332,6 +332,10 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 		// tell db to drop all user-defined items and re-read the DB
 		SVSettings::instance().m_db.m_materials.removeUserElements();
 		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType());
+		// update "isRferenced" property of all elements
+		if (SVProjectHandler::instance().isValid()){
+			SVSettings::instance().m_db.updateReferencedElements(project());
+		}
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
