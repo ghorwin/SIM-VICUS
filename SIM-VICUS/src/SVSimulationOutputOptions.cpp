@@ -577,7 +577,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		// check if referenced output grid name exists
-		if (std::find(project().m_outputs.m_grids.begin(), project().m_outputs.m_grids.end(), of.m_gridName) == project().m_outputs.m_grids.end()) {
+		if (std::find(m_outputs->m_grids.begin(), m_outputs->m_grids.end(), of.m_gridName) == m_outputs->m_grids.end()) {
 			item->setTextColor(Qt::darkRed);
 			item->setFont(f);
 		}
