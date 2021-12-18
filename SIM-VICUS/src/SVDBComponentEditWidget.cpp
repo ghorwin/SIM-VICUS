@@ -224,6 +224,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		m_ui->spinBoxActiveLayerIndex->setValue(1);
 		m_ui->lineEditUValue->setText("---");
 		m_ui->lineEditConstructionName->setText("");
+		m_ui->graphicsViewConstruction->clear();
 	}
 
 	// for built-ins, disable editing/make read-only

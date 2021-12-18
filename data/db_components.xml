@@ -24,13 +24,13 @@
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#4e9a06">
+	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#00aa00">
 		<Type>OutsideWall</Type>
 		<IdConstruction>1003</IdConstruction>
 		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#cc0000">
+	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#a00000">
 		<Type>OutsideWall</Type>
 		<IdConstruction>1004</IdConstruction>
 		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
@@ -47,7 +47,7 @@
 		<IdConstruction>1005</IdConstruction>
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-		<ActiveLayerIndex>1</ActiveLayerIndex>
+		<ActiveLayerIndex>2</ActiveLayerIndex>
 	</Component>
 	<Component id="1009" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
 		<Type>OutsideWall</Type>
@@ -90,285 +90,256 @@
 		<IdSideABoundaryCondition>1005</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
-				
-				
-				
-	
-	
-				<Component id="1020" displayName="Bodenplatte_bis_1968_leichte_Bauart" color="#B05319">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20118</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1021" displayName="Bodenplatte_1969_bis_1983_leichte_Bauart" color="#B05319">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20121</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1022" displayName="Bodenplatte_1984_bis_2015_leichte_Bauart" color="#B05319">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20106</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1023" displayName="Bodenplatte_bis_1968_schwere_Bauart" color="#8F4314">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20124</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1024" displayName="Bodenplatte_1984_bis_1994_schwere_Bauart" color="#8F4314">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20110</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1025" displayName="Bodenplatte_1995_bis_2015_schwere_Bauart" color="#8F4314">
-					<Type>FloorToGround</Type>
-					<IdConstruction>20113</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
-				</Component>
-				
-				
-				
-				
-				
-				<Component id="1026" displayName="Innenwand_bis_1948_leichte_Bauart" color="#03A313">
-					<Type>InsideWall</Type>
-					<IdConstruction>20114</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1027" displayName="Innenwand_1949_bis_1968_leichte_Bauart" color="#03A313">
-					<Type>InsideWall</Type>
-					<IdConstruction>20144</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1028" displayName="Innenwand_1969_bis_1978_leichte_Bauart" color="#03A313">
-					<Type>InsideWall</Type>
-					<IdConstruction>20134</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1029" displayName="Innenwand_1979_bis_1983_leichte_Bauart" color="#03A313">
-					<Type>InsideWall</Type>
-					<IdConstruction>20130</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1030" displayName="Innenwand_1984_bis_2015_leichte_Bauart" color="#03A313">
-					<Type>InsideWall</Type>
-					<IdConstruction>20119</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1031" displayName="Innenwand_bis_1968_schwere_Bauart" color="#28572D">
-					<Type>InsideWall</Type>
-					<IdConstruction>20108</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1032" displayName="Innenwand_1969_bis_1978_schwere_Bauart" color="#28572D">
-					<Type>InsideWall</Type>
-					<IdConstruction>20135</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1033" displayName="Innenwand_1979_bis_2015_schwere_Bauart" color="#28572D">
-					<Type>InsideWall</Type>
-					<IdConstruction>20125</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				
-				
-				
-				
-				
-				
-				<Component id="1034" displayName="Aussenwand_bis_1948_leichte_Bauart" color="#DBD332">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20128</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>				
-				<Component id="1035" displayName="Aussenwand_1949_bis_1978_leichte_Bauart" color="#DBD332">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20112</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>				
-				<Component id="1036" displayName="Aussenwand_1979_bis_1983_leichte_Bauart" color="#DBD332">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20112</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1037" displayName="Aussenwand_1984_bis_1994_leichte_Bauart" color="#DBD332">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20123</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1038" displayName="Aussenwand_1995_bis_2015_leichte_Bauart" color="#DBD332">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20122</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1039" displayName="Aussenwand_bis_1948_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20133</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>				
-				<Component id="1040" displayName="Aussenwand_1949_bis_1968_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20111</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>				
-				<Component id="1041" displayName="Aussenwand_1969_bis_1978_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20111</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1042" displayName="Aussenwand_1979_bis_1983_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20117</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1043" displayName="Aussenwand_1984_bis_1994_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20116</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1044" displayName="Aussenwand_1995_bis_2015_schwere_Bauart" color="#A39D25">
-					<Type>OutsideWall</Type>
-					<IdConstruction>20127</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				
-				
-				
-				
-				<Component id="1045" displayName="Geschossdecke_bis_1948_leichte_Bauart" color="#E01BD3">
-					<Type>Ceiling</Type>
-					<IdConstruction>20139</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1046" displayName="Geschossdecke_1949_bis_1968_leichte_Bauart" color="#E01BD3">
-					<Type>Ceiling</Type>
-					<IdConstruction>20129</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1047" displayName="Geschossdecke_1969_bis_1983_leichte_Bauart" color="#E01BD3">
-					<Type>Ceiling</Type>
-					<IdConstruction>20120</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				
-				<Component id="1048" displayName="Geschossdecke_1969_bis_1978_schwere_Bauart" color="#A3149A">
-					<Type>Ceiling</Type>
-					<IdConstruction>20126</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1049" displayName="Geschossdecke_1979_bis_1983_schwere_Bauart" color="#A3149A">
-					<Type>Ceiling</Type>
-					<IdConstruction>20115</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1050" displayName="Geschossdecke_1984_bis_1994_schwere_Bauart" color="#A3149A">
-					<Type>Ceiling</Type>
-					<IdConstruction>20109</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
-				</Component>
-				
-				
-				
-				
-				
-				<Component id="1051" displayName="Schragdach_bis_1918_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20136</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1052" displayName="Schragdach_1919_bis_1968_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20132</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1053" displayName="Schragdach_1969_bis_1978_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20137</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1054" displayName="Schragdach_1979_bis_1983_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20146</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1055" displayName="Schragdach_1984_bis_1994_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20143</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1056" displayName="Schragdach_1995_bis_2015_leichte_Bauart" color="#E0251B">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20140</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				
-				
-				<Component id="1057" displayName="Schragdach_bis_1968_schwere_Bauart" color="#C71F17">
-					<Type>WarmRoof</Type>
-					<IdConstruction>20131</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1058" displayName="Schragdach_1969_bis_1978_schwere_Bauart" color="#C71F17">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>20138</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1059" displayName="Schragdach_1979_bis_1983_schwere_Bauart" color="#C71F17">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>20142</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1060" displayName="Schragdach_1984_bis_1994_schwere_Bauart" color="#C71F17">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>20145</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1061" displayName="Schragdach_1995_bis_2015_schwere_Bauart" color="#C71F17">
-					<Type>Miscellaneous</Type>
-					<IdConstruction>20141</IdConstruction>
-					<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
-				</Component>
-	
+	<Component id="1020" displayName="Bodenplatte_bis_1968_leichte_Bauart" color="#b05319">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20118</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1021" displayName="Bodenplatte_1969_bis_1983_leichte_Bauart" color="#b05319">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20121</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1022" displayName="Bodenplatte_1984_bis_2015_leichte_Bauart" color="#b05319">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20106</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1023" displayName="Bodenplatte_bis_1968_schwere_Bauart" color="#8f4314">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20124</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1024" displayName="Bodenplatte_1984_bis_1994_schwere_Bauart" color="#8f4314">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20110</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1025" displayName="Bodenplatte_1995_bis_2015_schwere_Bauart" color="#8f4314">
+		<Type>FloorToGround</Type>
+		<IdConstruction>20113</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1019</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1026" displayName="Innenwand_bis_1948_leichte_Bauart" color="#03a313">
+		<Type>InsideWall</Type>
+		<IdConstruction>20114</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1027" displayName="Innenwand_1949_bis_1968_leichte_Bauart" color="#03a313">
+		<Type>InsideWall</Type>
+		<IdConstruction>20144</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1028" displayName="Innenwand_1969_bis_1978_leichte_Bauart" color="#03a313">
+		<Type>InsideWall</Type>
+		<IdConstruction>20134</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1029" displayName="Innenwand_1979_bis_1983_leichte_Bauart" color="#03a313">
+		<Type>InsideWall</Type>
+		<IdConstruction>20130</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1030" displayName="Innenwand_1984_bis_2015_leichte_Bauart" color="#03a313">
+		<Type>InsideWall</Type>
+		<IdConstruction>20119</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1031" displayName="Innenwand_bis_1968_schwere_Bauart" color="#28572d">
+		<Type>InsideWall</Type>
+		<IdConstruction>20108</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1032" displayName="Innenwand_1969_bis_1978_schwere_Bauart" color="#28572d">
+		<Type>InsideWall</Type>
+		<IdConstruction>20135</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1033" displayName="Innenwand_1979_bis_2015_schwere_Bauart" color="#28572d">
+		<Type>InsideWall</Type>
+		<IdConstruction>20125</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1034" displayName="Aussenwand_bis_1948_leichte_Bauart" color="#dbd332">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20128</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1035" displayName="Aussenwand_1949_bis_1978_leichte_Bauart" color="#dbd332">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20112</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1036" displayName="Aussenwand_1979_bis_1983_leichte_Bauart" color="#dbd332">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20112</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1037" displayName="Aussenwand_1984_bis_1994_leichte_Bauart" color="#dbd332">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20123</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1038" displayName="Aussenwand_1995_bis_2015_leichte_Bauart" color="#dbd332">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20122</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1039" displayName="Aussenwand_bis_1948_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20133</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1040" displayName="Aussenwand_1949_bis_1968_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20111</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1041" displayName="Aussenwand_1969_bis_1978_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20111</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1042" displayName="Aussenwand_1979_bis_1983_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20117</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1043" displayName="Aussenwand_1984_bis_1994_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20116</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1044" displayName="Aussenwand_1995_bis_2015_schwere_Bauart" color="#a39d25">
+		<Type>OutsideWall</Type>
+		<IdConstruction>20127</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1045" displayName="Geschossdecke_bis_1948_leichte_Bauart" color="#e01bd3">
+		<Type>Ceiling</Type>
+		<IdConstruction>20139</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1046" displayName="Geschossdecke_1949_bis_1968_leichte_Bauart" color="#e01bd3">
+		<Type>Ceiling</Type>
+		<IdConstruction>20129</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1047" displayName="Geschossdecke_1969_bis_1983_leichte_Bauart" color="#e01bd3">
+		<Type>Ceiling</Type>
+		<IdConstruction>20120</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1048" displayName="Geschossdecke_1969_bis_1978_schwere_Bauart" color="#a3149a">
+		<Type>Ceiling</Type>
+		<IdConstruction>20126</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1049" displayName="Geschossdecke_1979_bis_1983_schwere_Bauart" color="#a3149a">
+		<Type>Ceiling</Type>
+		<IdConstruction>20115</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1050" displayName="Geschossdecke_1984_bis_1994_schwere_Bauart" color="#a3149a">
+		<Type>Ceiling</Type>
+		<IdConstruction>20109</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1016</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1051" displayName="Schragdach_bis_1918_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20136</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1052" displayName="Schragdach_1919_bis_1968_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20132</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1053" displayName="Schragdach_1969_bis_1978_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20137</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1054" displayName="Schragdach_1979_bis_1983_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20146</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1055" displayName="Schragdach_1984_bis_1994_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20143</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1056" displayName="Schragdach_1995_bis_2015_leichte_Bauart" color="#e0251b">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20140</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1057" displayName="Schragdach_bis_1968_schwere_Bauart" color="#c71f17">
+		<Type>WarmRoof</Type>
+		<IdConstruction>20131</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1058" displayName="Schragdach_1969_bis_1978_schwere_Bauart" color="#c71f17">
+		<Type>Miscellaneous</Type>
+		<IdConstruction>20138</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1059" displayName="Schragdach_1979_bis_1983_schwere_Bauart" color="#c71f17">
+		<Type>Miscellaneous</Type>
+		<IdConstruction>20142</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1060" displayName="Schragdach_1984_bis_1994_schwere_Bauart" color="#c71f17">
+		<Type>Miscellaneous</Type>
+		<IdConstruction>20145</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
+	<Component id="1061" displayName="Schragdach_1995_bis_2015_schwere_Bauart" color="#c71f17">
+		<Type>Miscellaneous</Type>
+		<IdConstruction>20141</IdConstruction>
+		<IdSideABoundaryCondition>1016</IdSideABoundaryCondition>
+		<IdSideBBoundaryCondition>1015</IdSideBBoundaryCondition>
+	</Component>
 </Components>
