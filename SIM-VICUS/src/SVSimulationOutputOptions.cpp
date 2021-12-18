@@ -32,6 +32,8 @@
 #include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
 
+#include <QtExt_Conversions.h>
+
 #include <IBK_FileReader.h>
 #include <IBK_UnitList.h>
 #include <IBK_StringUtils.h>
@@ -147,21 +149,20 @@ void SVSimulationOutputOptions::updateUi() {
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
 
-			QString start = QString("+ %L1 %2")
-					.arg(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start].value)
-					.arg(QString::fromStdString(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start].IO_unit.name()));
+			QString start = QtExt::parameter2String(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start]);
 
 			item = new QTableWidgetItem(start);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
 
 			QString end;
-			if (og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value == 0.0)
+			if (og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() ||
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value == 0.0)
+			{
 				end = tr("End of simulation");
+			}
 			else {
-				end = QString("+ %L1 %2")
-						.arg(og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value)
-						.arg(QString::fromStdString(og.m_intervals.back().m_para[NANDRAD::Interval::P_End].IO_unit.name()));
+				end = QtExt::parameter2String(og.m_intervals.back().m_para[NANDRAD::Interval::P_End]);
 			}
 
 			item = new QTableWidgetItem(end);
@@ -451,7 +452,7 @@ void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
 	if (m_outputGridEditDialog == nullptr)
 		m_outputGridEditDialog = new SVOutputGridEditDialog(this);
 	int defIdx = m_ui->tableWidgetOutputGrids->currentRow();
-	Q_ASSERT(defIdx > 0 && defIdx < (int)m_outputs->m_grids.size());
+	Q_ASSERT((unsigned int)defIdx < m_outputs->m_grids.size());
 	bool success = m_outputGridEditDialog->edit(m_outputs->m_grids[(unsigned int)defIdx], *m_outputs, defIdx);
 	if (success) {
 		updateUi();

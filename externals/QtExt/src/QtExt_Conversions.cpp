@@ -67,5 +67,16 @@ bool QString2Parameter(const QString & str, const std::string & keywordName, IBK
 
 }
 
+
+QString parameter2String(const IBK::Parameter & para) {
+	if (para.IO_unit.id() == 0)
+		return QString("%L1 -").arg(para.value);
+	else {
+		return QString("%L1 %2")
+			.arg(para.get_value())
+			.arg(QString::fromStdString(para.IO_unit.name()));
+	}
+}
+
 } // QtExt
 

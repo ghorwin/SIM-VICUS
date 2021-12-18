@@ -113,7 +113,7 @@ void SVOutputGridEditDialog::on_spinBoxIntervalCount_valueChanged(int newColumnC
 				ival.m_para[NANDRAD::Interval::P_StepSize].set(
 							NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_StepSize), 1, IBK::Unit("h"));
 			}
-			fillColumn(i, ival);
+			fillColumn((int)i, ival);
 		}
 	}
 	else {
@@ -153,19 +153,19 @@ void SVOutputGridEditDialog::fillColumn(int columnIdx, const NANDRAD::Interval &
 	QTableWidgetItem * item = new QTableWidgetItem;
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 	if (!ival.m_para[NANDRAD::Interval::P_Start].name.empty())
-		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_Start].toString()) );
+		item->setText( QtExt::parameter2String(ival.m_para[NANDRAD::Interval::P_Start]) );
 	m_ui->tableWidget->setItem(0, columnIdx, item);
 
 	item = new QTableWidgetItem;
 	// only show given end time points and time points that are not 0
-	if (!ival.m_para[NANDRAD::Interval::P_End].name.empty() && ival.m_para[NANDRAD::Interval::P_End].value != 0)
-		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_End].toString()) );
+	if (!ival.m_para[NANDRAD::Interval::P_End].name.empty() && ival.m_para[NANDRAD::Interval::P_End].value != 0.)
+		item->setText( QtExt::parameter2String(ival.m_para[NANDRAD::Interval::P_End]) );
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 	m_ui->tableWidget->setItem(1,columnIdx, item);
 
 	item = new QTableWidgetItem;
 	if (!ival.m_para[NANDRAD::Interval::P_StepSize].name.empty())
-		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_StepSize].toString()) );
+		item->setText( QtExt::parameter2String(ival.m_para[NANDRAD::Interval::P_StepSize]) );
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 	m_ui->tableWidget->setItem(2,columnIdx, item);
 }
@@ -190,114 +190,88 @@ bool SVOutputGridEditDialog::parseTable(std::vector<NANDRAD::Interval> & interva
 
 	intervals.clear();
 	bool success = true;
-#if 0
+
+	// start time and step size is mandatory
+	// end time points are optional, and are only checked if specified
+
 	for (int i=0; i<m_ui->spinBoxIntervalCount->value(); ++i) {
 		NANDRAD::Interval ival;
-		ival.m_para[NANDRAD::Interval::IP_START].clear();
-		// if in output grid mode, only take start parameter from first interval
-		if (i == 0 || m_isSchedule) {
-			if (!QString2Parameter(m_ui->tableWidget->item(0,i)->text(),
-								   NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_START),
-								   ival.m_para[NANDRAD::Interval::IP_START]))
-			{
-				if (showMessageOnError)
-					showError(0,i,tr("Invalid start time."));
-				return false;
-			}
-		}
-
-		// populate all other parameters
-
-		// duration
-		QString valStr = m_ui->tableWidget->item(1,i)->text().trimmed();
-
-		if (!valStr.isEmpty() && !QString2Parameter(valStr,
-							   NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_DURATION),
-							   ival.m_para[NANDRAD::Interval::IP_DURATION]))
-		{
+		// extract start parameter
+		QString valStr = m_ui->tableWidget->item(0,i)->text().trimmed();
+		if (valStr.isEmpty()) {
 			if (showMessageOnError)
-				showError(1,i,tr("Invalid duration."));
+				showError(0,i,tr("Missing interval start time."));
 			return false;
 		}
-
+		if (!QtExt::QString2Parameter(m_ui->tableWidget->item(0,i)->text(),
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_Start),
+			ival.m_para[NANDRAD::Interval::P_Start]))
+		{
+			if (showMessageOnError)
+				showError(0,i,tr("Invalid start time."));
+			return false;
+		}
 
 		// end time
+		valStr = m_ui->tableWidget->item(1,i)->text().trimmed();
+
+		if (!valStr.isEmpty() && !QtExt::QString2Parameter(valStr,
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_End),
+			ival.m_para[NANDRAD::Interval::P_End]))
+		{
+			if (showMessageOnError)
+				showError(1,i,tr("Invalid end time."));
+			return false;
+		}
+
+		// step size
 		valStr = m_ui->tableWidget->item(2,i)->text().trimmed();
 
-		if (!valStr.isEmpty() && !QString2Parameter(valStr,
-							   NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_END),
-							   ival.m_para[NANDRAD::Interval::IP_END]))
+		if (valStr.isEmpty()) {
+			if (showMessageOnError)
+				showError(2,i,tr("Missing step size."));
+			return false;
+		}
+		else if (!QtExt::QString2Parameter(valStr,
+			NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::P_StepSize),
+			ival.m_para[NANDRAD::Interval::P_StepSize]))
 		{
 			if (showMessageOnError)
-				showError(2,i,tr("Invalid end time."));
+				showError(2,i,tr("Invalid step size."));
 			return false;
 		}
 
-		// step size - only in output grid mode
-		if (!m_isSchedule) {
-
-			valStr = m_ui->tableWidget->item(3,i)->text().trimmed();
-
-			if (valStr.isEmpty()) {
-				if (showMessageOnError)
-					showError(3,i,tr("Missing step size."));
-				return false;
-			}
-			else if (!QString2Parameter(valStr,
-										NANDRAD::KeywordList::Keyword("Interval::para_t", NANDRAD::Interval::IP_STEPSIZE),
-										ival.m_para[NANDRAD::Interval::IP_STEPSIZE]))
-
-			{
-				if (showMessageOnError)
-					showError(3,i,tr("Invalid step size."));
-				return false;
-			}
-
-			if (ival.m_para[NANDRAD::Interval::IP_STEPSIZE].value <=0) {
-				if (showMessageOnError)
-					showError(3,i,tr("Invalid step size."));
-				return false;
-			}
-		}
-
-		// check for missing end time or duration, or duplicate definition
-		if (!ival.m_para[NANDRAD::Interval::IP_END].name.empty() &&
-			!ival.m_para[NANDRAD::Interval::IP_DURATION].name.empty()) {
+		if (ival.m_para[NANDRAD::Interval::P_StepSize].value <=0) {
 			if (showMessageOnError)
-				showError(1,i,tr("Redundant definition of end time and duration is not allowed."));
+				showError(2,i,tr("Invalid step size, must be > 0."));
 			return false;
 		}
 
-		if (ival.m_para[NANDRAD::Interval::IP_END].name.empty() &&
-			ival.m_para[NANDRAD::Interval::IP_DURATION].name.empty())
-		{
-			if (showMessageOnError)
-				showError(1,i,tr("Either duration or end time is required."));
-			return false;
-		}
-
-		// check against negative duration
-		if (!ival.m_para[NANDRAD::Interval::IP_DURATION].name.empty()) {
-			if (ival.m_para[NANDRAD::Interval::IP_DURATION].value < 0) {
+		// protect against negative interval lengths
+		if (!ival.m_para[NANDRAD::Interval::P_End].name.empty()) {
+			if (ival.m_para[NANDRAD::Interval::P_End].value < ival.m_para[NANDRAD::Interval::P_Start].value) {
 				if (showMessageOnError)
-					showError(1,i,tr("Negative duration is not allowed."));
-				return false;
-			}
-
-			// check against zero duration in earlier interval
-			if (ival.m_para[NANDRAD::Interval::IP_DURATION].value == 0 &&
-				i+1 != m_ui->spinBoxIntervalCount->value())
-			{
-				if (showMessageOnError)
-					showError(1,i,tr("A duration of zero is only allowed in the last interval."));
+					showError(1,i,tr("Invalid interval definition, start point must preceed end point."));
 				return false;
 			}
 		}
 
-		// interval ok, append to list of intervals
+		// append to list of intervals
 		intervals.push_back(ival);
 	}
-#endif
+
+	// finally check that end time points never exceed next interval's start time points
+	for (unsigned int i=1; i<intervals.size(); ++i) {
+		// do we have an end point in the previous interval?
+		if (!intervals[i-1].m_para[NANDRAD::Interval::P_End].name.empty()) {
+			if (intervals[i-1].m_para[NANDRAD::Interval::P_End].value > intervals[i].m_para[NANDRAD::Interval::P_Start].value) {
+				if (showMessageOnError)
+					showError(0,(int)i,tr("Invalid interval definition, start point not preceed last interval's end point."));
+				return false;
+			}
+		}
+	}
+
 	return success;
 }
 

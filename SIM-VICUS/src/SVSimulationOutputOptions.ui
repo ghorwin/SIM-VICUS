@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1216</width>
-    <height>581</height>
+    <height>604</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
