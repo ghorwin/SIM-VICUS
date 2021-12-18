@@ -47,11 +47,6 @@ private:
 	*/
 	void updateIntervalTable();
 
-	/*! Populates interval table with calculated content based on current input in interval table.
-		This involves parsing of interval table and populating the content until the first in parsing error occurs.
-	*/
-	void updateCalculatedIntervalTable();
-
 	/*! Helper function, fills in a single column in the interval edit table. */
 	void fillColumn(int columnIdx, const NANDRAD::Interval & ival);
 

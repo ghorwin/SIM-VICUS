@@ -284,9 +284,9 @@ void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSel
 
 void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged() {
 	// enable/disable buttons based on selection
-	// Mind: you must not delete the default grid
-	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1 && m_ui->tableWidgetOutputGrids->rowCount() > 1);
-	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() > 0);
+	// Mind: you must not delete the default first grid
+	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() > 0 && m_ui->tableWidgetOutputGrids->rowCount() > 1);
+	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
 }
 
 

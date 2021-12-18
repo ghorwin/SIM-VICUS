@@ -121,8 +121,6 @@ void SVOutputGridEditDialog::on_spinBoxIntervalCount_valueChanged(int newColumnC
 		m_ui->tableWidget->setColumnCount(newColumnCount);
 	}
 	m_ui->tableWidget->blockSignals(false);
-
-	updateCalculatedIntervalTable();
 }
 
 
@@ -132,7 +130,7 @@ void SVOutputGridEditDialog::updateIntervalTable() {
 
 
 	QStringList vHeaderLabels;
-	vHeaderLabels << tr("Start time") << tr("Duration") << tr("End time") << tr("Step size");
+	vHeaderLabels << tr("Start time") << tr("End time") << tr("Step size");
 	m_ui->tableWidget->blockSignals(true);
 	m_ui->tableWidget->clear();
 	m_ui->tableWidget->setRowCount(vHeaderLabels.count());
@@ -140,85 +138,10 @@ void SVOutputGridEditDialog::updateIntervalTable() {
 	m_ui->tableWidget->setVerticalHeaderLabels(vHeaderLabels);
 
 	std::vector<NANDRAD::Interval> * intervals = &m_grid->m_intervals;
-	for (unsigned int i=0; i<intervals->size(); ++i) {
-		fillColumn(i, (*intervals)[i]);
-	}
-
-	// now update the calculated table
-	updateCalculatedIntervalTable();
+	for (unsigned int i=0; i<intervals->size(); ++i)
+		fillColumn((int)i, (*intervals)[i]);
 
 	m_ui->tableWidget->blockSignals(false);
-}
-
-
-void SVOutputGridEditDialog::updateCalculatedIntervalTable() {
-
-	QStringList vHeaderLabels;
-	vHeaderLabels << tr("Start time") << tr("Duration") << tr("End time") << tr("Step size");
-	m_ui->tableWidgetCalculated->clear();
-	m_ui->tableWidgetCalculated->setRowCount(vHeaderLabels.count());
-	m_ui->tableWidgetCalculated->setColumnCount(m_ui->spinBoxIntervalCount->value());
-	m_ui->tableWidgetCalculated->setVerticalHeaderLabels(vHeaderLabels);
-
-	for (int i=0; i<m_ui->spinBoxIntervalCount->value(); ++i) {
-		QString label = tr("Interval #%1").arg(i+1);
-		m_ui->tableWidgetCalculated->setHorizontalHeaderItem(i, new QTableWidgetItem(label));
-	}
-
-	std::vector<NANDRAD::Interval> intervals;
-	parseTable(intervals, false); // parses table and populate grid data structure
-
-	// now fill in all table widget items
-	IBK::Parameter lastEndTime("last end time", 0, IBK::Unit("d"));
-	for (unsigned int i=0; i<intervals.size(); ++i) {
-		NANDRAD::Interval & ival = intervals[i];
-		// if value is given in interval, transfer it to user interface
-		QTableWidgetItem * item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled);
-		if (!ival.m_para[NANDRAD::Interval::P_Start].name.empty()) {
-			item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_Start].toString()) );
-			lastEndTime = ival.m_para[NANDRAD::Interval::P_Start];
-		}
-		else {
-			// no start value, use last end time, if it is set
-			item->setText( QString::fromStdString(lastEndTime.toString()) );
-			QFont f;
-			f.setItalic(true);
-			item->setFont(f);
-			item->setTextColor(Qt::gray);
-			ival.m_para[NANDRAD::Interval::P_Start] = lastEndTime;
-		}
-		m_ui->tableWidgetCalculated->setItem(0, i, item);
-
-		// now ival contains a valid start time entry
-
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled);
-		// calculate from end time
-		double duration = ival.m_para[NANDRAD::Interval::P_End].value - ival.m_para[NANDRAD::Interval::P_Start].value;
-		IBK::Parameter dur("Duration", duration);
-		dur.IO_unit = ival.m_para[NANDRAD::Interval::P_End].IO_unit;
-
-		item->setText( QString::fromStdString(dur.toString()) );
-		QFont f;
-		f.setItalic(true);
-		item->setFont(f);
-		item->setTextColor(Qt::gray);
-		m_ui->tableWidgetCalculated->setItem(1, i, item);
-
-		// end time
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled);
-		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_End].toString()) );
-		lastEndTime = ival.m_para[NANDRAD::Interval::P_End];
-		m_ui->tableWidgetCalculated->setItem(2, i, item);
-
-		// end time
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled);
-		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_StepSize].toString()) );
-		m_ui->tableWidgetCalculated->setItem(3, i, item);
-	}
 }
 
 
@@ -228,33 +151,23 @@ void SVOutputGridEditDialog::fillColumn(int columnIdx, const NANDRAD::Interval &
 
 	// start time
 	QTableWidgetItem * item = new QTableWidgetItem;
-	// in output grids, only the first column's start time can be edited
-	if (columnIdx != 0) {
-		item->setFlags(Qt::NoItemFlags);
-		item->setBackgroundColor(QPalette().color(QPalette::Shadow));
-	}
-	else {
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-		if (!ival.m_para[NANDRAD::Interval::P_Start].name.empty())
-			item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_Start].toString()) );
-	}
+	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
+	if (!ival.m_para[NANDRAD::Interval::P_Start].name.empty())
+		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_Start].toString()) );
 	m_ui->tableWidget->setItem(0, columnIdx, item);
 
 	item = new QTableWidgetItem;
-	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-	m_ui->tableWidget->setItem(1,columnIdx, item);
-
-	item = new QTableWidgetItem;
-	if (!ival.m_para[NANDRAD::Interval::P_End].name.empty())
+	// only show given end time points and time points that are not 0
+	if (!ival.m_para[NANDRAD::Interval::P_End].name.empty() && ival.m_para[NANDRAD::Interval::P_End].value != 0)
 		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_End].toString()) );
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-	m_ui->tableWidget->setItem(2,columnIdx, item);
+	m_ui->tableWidget->setItem(1,columnIdx, item);
 
 	item = new QTableWidgetItem;
 	if (!ival.m_para[NANDRAD::Interval::P_StepSize].name.empty())
 		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_StepSize].toString()) );
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
-	m_ui->tableWidget->setItem(3,columnIdx, item);
+	m_ui->tableWidget->setItem(2,columnIdx, item);
 }
 
 
@@ -397,23 +310,18 @@ void SVOutputGridEditDialog::showError(int row, int col, const QString & text) c
 
 
 void SVOutputGridEditDialog::on_tableWidget_cellChanged(int row, int column) {
-	// once a valid duration has been entered, clear the corresponding end time and vice versa
-	if (row == 1) {
-		IBK::Parameter p;
-		if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "dur", p)) {
-			m_ui->tableWidget->blockSignals(true);
-			m_ui->tableWidget->item(2, column)->setText("");
-			m_ui->tableWidget->blockSignals(false);
-		}
-	}
-	if (row == 2) {
-		IBK::Parameter p;
-		if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "et", p)) {
-			m_ui->tableWidget->blockSignals(true);
-			m_ui->tableWidget->item(1, column)->setText("");
-			m_ui->tableWidget->blockSignals(false);
-		}
-	}
-	// update calculated table
-	updateCalculatedIntervalTable();
+//	IBK::Parameter p;
+//	// if a valid start time has been entered and the previous interval's end edit is empty, update
+//	// the "autotext" properties
+//	if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "start", p) && row == 0) {
+//		if (column > 0 && m_ui->tableWidget->item(1,column-1)->text().isEmpty()) {
+//			QLineEdit * le = qobject_cast<QLineEdit *>(m_ui->tableWidget->cellWidget(2,column-1));
+//			if (le == nullptr) {
+//				le = new QLineEdit(m_ui->tableWidget);
+//				m_ui->tableWidget->setCellWidget(2,column-1,le);
+//			}
+//			le->setPlaceholderText(QString::fromStdString(p.toString()));
+//		}
+//	}
+
 }

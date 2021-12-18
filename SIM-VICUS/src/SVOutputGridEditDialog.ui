@@ -69,7 +69,7 @@
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Definition of intervals&lt;/p&gt;&lt;p&gt;Format: Enter time offsets or intervals as &amp;quot;&amp;lt;value&amp;gt; &amp;lt;unit&amp;gt;&amp;quot; strings.&lt;br/&gt;Note: A duration of 0 in the last interval will let this interval run forever.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>Format: Enter time offsets with respect to simulation start as &quot;&lt;value&gt; &lt;unit&gt;&quot; strings.</string>
         </property>
        </widget>
       </item>
@@ -83,12 +83,12 @@
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Computed intervals (computed time offsets are converted to the unit of the start time offset)</string>
+         <string>Missing end time points of intervals are set automatically based on next interval's start time or in case of the last interval as end point of simulation.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="QTableWidget" name="tableWidgetCalculated"/>
       </item>
      </layout>
     </widget>
