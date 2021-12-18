@@ -84,12 +84,6 @@
 			<IBK:Parameter name="Emissivity" unit="---">0.9</IBK:Parameter>
 		</InterfaceLongWaveEmission>
 	</BoundaryCondition>
-	<BoundaryCondition id="1016" displayName="DE: Randbedingung innen (Wärmestrom horizontal) |EN: Inside boundary condition (horizontal heat flux)">
-		<InterfaceHeatConduction modelType="Constant">
-			<OtherZoneType>Standard</OtherZoneType>
-			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
-		</InterfaceHeatConduction>
-	</BoundaryCondition>
 	<BoundaryCondition id="1017" displayName="DE: Randbedingung innen (Wärmestrom aufwärts) |EN: Inside boundary condition (upstream heat flux)">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Standard</OtherZoneType>
