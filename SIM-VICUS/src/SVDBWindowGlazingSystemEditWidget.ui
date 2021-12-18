@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>464</width>
+    <width>552</width>
     <height>406</height>
    </rect>
   </property>
@@ -28,7 +28,14 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+    <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
+     <property name="minimumSize">
+      <size>
+       <width>300</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
    </item>
    <item row="0" column="3">
     <widget class="QtExt::ColorButton" name="pushButtonColor">

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Windows>
-	<Window id="3001" displayName="DE: Standardfenster" idGlazingSystem="3001" color="#99ff9a" methodFrame="None" methodDivider="None">
-	</Window>
-	<Window id="3002" displayName="DE: WindowTF07.1" idGlazingSystem="3002" color="#BB40BF" methodFrame="None" methodDivider="None" />
-	<Window id="3003" displayName="DE: WindowTF07.2" idGlazingSystem="3003" color="#5aff82" methodFrame="None" methodDivider="None" />
-	<Window id="3004" displayName="DE: WindowTF07.3" idGlazingSystem="3004" color="#ff5aaa" methodFrame="None" methodDivider="None" />
+	<Window id="3001" displayName="DE: Standardfenster" idGlazingSystem="3001" color="#99ff9a" methodFrame="None" methodDivider="None" />
+	<Window id="3002" displayName="DE: [SimQuality] Fenster TF07.1|EN: [SimQuality] Window TF07.1" idGlazingSystem="3002" color="#BB40BF" methodFrame="None" methodDivider="None" />
+	<Window id="3003" displayName="DE: [SimQuality] Fenster TF07.2|EN: [SimQuality] Window TF07.2" idGlazingSystem="3003" color="#5aff82" methodFrame="None" methodDivider="None" />
+	<Window id="3004" displayName="DE: [SimQuality] Fenster TF07.3|EN: [SimQuality] Window TF07.3" idGlazingSystem="3004" color="#ff5aaa" methodFrame="None" methodDivider="None" />
 </Windows>

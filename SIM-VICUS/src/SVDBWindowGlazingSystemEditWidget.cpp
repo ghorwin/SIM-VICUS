@@ -130,14 +130,23 @@ SVDBWindowGlazingSystemEditWidget::SVDBWindowGlazingSystemEditWidget(QWidget *pa
 	// grid
 	QwtPlotGrid *grid = new QwtPlotGrid;
 	grid->enableXMin(true);
-	grid->setMajorPen(QPen(Qt::gray, 0, Qt::DotLine));
-	grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::DotLine));
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		grid->setMajorPen(QPen(Qt::lightGray, 0, Qt::DashLine));
+		grid->setMinorPen(QPen(Qt::gray, 0 , Qt::DotLine));
+	}
+	else {
+		grid->setMajorPen(QPen(Qt::gray, 0, Qt::DashLine));
+		grid->setMinorPen(QPen(Qt::lightGray, 0 , Qt::DotLine));
+	}
 	grid->attach(plt);
 
 	// set up shgc curve
 	m_shgcCurve = new QwtPlotCurve("bla");
 	m_shgcCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-	m_shgcCurve->setPen( Qt::black );
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		m_shgcCurve->setPen( QColor(255,135,0) );
+	else
+		m_shgcCurve->setPen( QColor(110,58,0) );
 	m_shgcCurve->setYAxis(QwtPlot::yLeft);
 //	m_shgcCurve->setZ(1);
 	m_shgcCurve->setVisible(true);
