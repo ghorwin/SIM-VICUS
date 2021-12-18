@@ -25,6 +25,7 @@ set( LIB_QRCS ${PROJECT_SOURCE_DIR}/../../resources/QtExt.qrc )
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
+	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5PrintSupport_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}
