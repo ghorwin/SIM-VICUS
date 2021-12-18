@@ -23,7 +23,7 @@ if [ ! -d "../../docs/$ADOC" ]; then
 	mkdir ../../docs/$ADOC
 fi &&
 mv $ADOC.html ../../docs/$ADOC/index.html &&
-mv $ADOC.pdf ../../docs &&
+#mv $ADOC.pdf ../../docs &&
 
 echo 'Copying images to ../../docs/'$ADOC'/images' &&
 cp -r ./images/*.png ../../docs/$ADOC/images &&

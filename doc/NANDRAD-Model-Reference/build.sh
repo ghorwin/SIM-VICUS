@@ -23,7 +23,7 @@ if [ ! -d "../../docs/$ADOC" ]; then
 	mkdir ../../docs/$ADOC
 fi &&
 mv $ADOC.html ../../docs/$ADOC/index.html &&
-mv $ADOC.pdf ../../docs &&
+#mv $ADOC.pdf ../../docs &&
 
 imgFiles=(./images/*.png) &&
 if [ ${#imgFiles[@]} -gt 0 ]; then
