@@ -6,6 +6,7 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <VICUS_Outputs.h>
+#include <QtExt_Conversions.h>
 
 SVOutputGridEditDialog::SVOutputGridEditDialog(QWidget *parent) :
 	QDialog(parent),
@@ -254,7 +255,6 @@ void SVOutputGridEditDialog::fillColumn(int columnIdx, const NANDRAD::Interval &
 		item->setText( QString::fromStdString(ival.m_para[NANDRAD::Interval::P_StepSize].toString()) );
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 	m_ui->tableWidget->setItem(3,columnIdx, item);
-	}
 }
 
 
@@ -400,7 +400,7 @@ void SVOutputGridEditDialog::on_tableWidget_cellChanged(int row, int column) {
 	// once a valid duration has been entered, clear the corresponding end time and vice versa
 	if (row == 1) {
 		IBK::Parameter p;
-		if (QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "dur", p)) {
+		if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "dur", p)) {
 			m_ui->tableWidget->blockSignals(true);
 			m_ui->tableWidget->item(2, column)->setText("");
 			m_ui->tableWidget->blockSignals(false);
@@ -408,7 +408,7 @@ void SVOutputGridEditDialog::on_tableWidget_cellChanged(int row, int column) {
 	}
 	if (row == 2) {
 		IBK::Parameter p;
-		if (QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "et", p)) {
+		if (QtExt::QString2Parameter(m_ui->tableWidget->item(row, column)->text(), "et", p)) {
 			m_ui->tableWidget->blockSignals(true);
 			m_ui->tableWidget->item(1, column)->setText("");
 			m_ui->tableWidget->blockSignals(false);

@@ -69,6 +69,9 @@ inline QString Path2String(const IBK::Path & p) {
 	return QString::fromUtf8(p.c_str());
 }
 
+/*! Combines QLocale().toDouble() and str.toDouble(). */
+double QString2Double(const QString & str, bool * ok = nullptr);
+
 /*! Converts a text "121 m" into a parameter. */
 bool QString2Parameter(const QString & str, const std::string & keywordName, IBK::Parameter & para);
 
