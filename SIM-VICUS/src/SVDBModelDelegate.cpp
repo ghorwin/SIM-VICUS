@@ -88,6 +88,14 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 	if (referenced) {
 		font.setBold(true);
 		modifiedOption.font = font;
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+			pal.setColor(QPalette::Text, Qt::white);
+	}
+	else {
+		// in dark theme, lower brightness of font a little, so that the bold referenced font is better visible
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+			pal.setColor(QPalette::Text, SVStyle::instance().m_regularDBEntryColorDark);
+		}
 	}
 	modifiedOption.palette = pal;
 	modifiedOption.font = font;

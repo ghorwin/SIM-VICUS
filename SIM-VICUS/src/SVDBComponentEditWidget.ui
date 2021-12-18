@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>517</width>
-    <height>820</height>
+    <height>646</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,7 +16,10 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <layout class="QVBoxLayout" name="masterLayout">
+  <layout class="QVBoxLayout" name="masterLayout" stretch="0,2,1,1">
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
