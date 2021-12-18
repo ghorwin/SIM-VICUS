@@ -523,6 +523,17 @@ const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 	return objPtrIt->second;
 }
 
+
+Room * Project::roomByID(unsigned int roomID) {
+	for (Building & b : m_buildings)
+		for (BuildingLevel & bl : b.m_buildingLevels)
+			for (Room & r : bl.m_rooms)
+				if (r.m_id == roomID)
+					return &r;
+	return nullptr;
+}
+
+
 Surface * Project::surfaceByID(unsigned int surfaceID) {
 	for (Building & b : m_buildings)
 		for (BuildingLevel & bl : b.m_buildingLevels)
@@ -823,29 +834,14 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	p.m_outputs.m_binaryFormat = m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
 	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
 
-	// transfer pre-defined output definitions
-//	p.m_outputs.m_definitions = m_outputs.m_definitions; // currently, m_outputs.m_definitions are empty, since UI is not implemented
-
 	// generate output grid, if needed
 	std::string refName;
 	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() ||
-		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled()) {
-
-		// we need an hourly output grid, look if we have already one defined (should be!)
-		int ogInd = -1;
-		for (unsigned int i=0; i<p.m_outputs.m_grids.size(); ++i) {
-			NANDRAD::OutputGrid & og = p.m_outputs.m_grids[i];
-			if (og.m_intervals.size() == 1 &&
-				og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
-				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
-				og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
-			{
-				ogInd = (int)i;
-				break;
-			}
-		}
-		// create one, if not yet existing
-		if (ogInd == -1) {
+		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())
+	{
+		// we need at least one hourly grid
+		if (p.m_outputs.m_grids.empty()) {
+			// create one, if not yet existing
 			NANDRAD::OutputGrid og;
 			og.m_name = refName = tr("Hourly values").toStdString();
 			NANDRAD::Interval iv;
@@ -854,10 +850,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			og.m_intervals.push_back(iv);
 			p.m_outputs.m_grids.push_back(og);
 		}
-		else {
-			refName = p.m_outputs.m_grids[(unsigned int)ogInd].m_name;
-		}
-
+		// remember reference name of first grid
+		refName = p.m_outputs.m_grids.front().m_name;
 	}
 
 	// default zone outputs
@@ -1016,7 +1010,32 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		}
 	}
 
+	// now add our custom definitions
+	unsigned int objectListCount = 1;
+	for (const VICUS::OutputDefinition & def : m_outputs.m_definitions) {
+		NANDRAD::OutputDefinition d;
+		d.m_gridName = def.m_gridName;
+		d.m_timeType = (NANDRAD::OutputDefinition::timeType_t)def.m_timeType;
+		d.m_quantity = def.m_sourceObjectType + "." + def.m_quantity;
+		if (!def.m_vectorIds.empty()) {
+			NANDRAD::IDGroup idGroup;
+			idGroup.m_ids = std::set<unsigned int>(def.m_vectorIds.begin(), def.m_vectorIds.end());
+			d.m_quantity += "[" + idGroup.encodedString() + "]";
+		}
+		p.m_outputs.m_definitions.push_back(d);
 
+		// now generate an object list for this output - don't mind if we get duplicate object lists
+		NANDRAD::ObjectList ol;
+		ol.m_name ="Outputs-" + IBK::val2string(objectListCount++);
+		ol.m_filterID.m_ids = std::set<unsigned int>(def.m_sourceObjectIds.begin(), def.m_sourceObjectIds.end());
+		try {
+			ol.m_referenceType = (NANDRAD::ModelInputReference::referenceType_t)NANDRAD::KeywordList::Enumeration("ModelInputReference::referenceType_t", def.m_sourceObjectType);
+		} catch (...) {
+			IBK::IBK_Message(IBK::FormatString("Invalid/unknown source object type '%1' in output definition.").arg(def.m_sourceObjectType),
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		p.m_objectLists.push_back(ol);
+	}
 }
 
 std::string createUniqueNandradObjListName(const std::map<std::string, std::vector<unsigned int>> &objListNames, const std::string &name){

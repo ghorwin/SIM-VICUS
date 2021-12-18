@@ -29,6 +29,7 @@
 #include <IBKMK_Vector3D.h>
 #include <IBK_MultiLanguageString.h>
 #include <IBK_Path.h>
+#include <IBK_Parameter.h>
 
 namespace QtExt {
 
@@ -67,6 +68,17 @@ inline IBK::Path QString2Path(const QString & str) {
 inline QString Path2String(const IBK::Path & p) {
 	return QString::fromUtf8(p.c_str());
 }
+
+/*! Combines QLocale().toDouble() and str.toDouble(). */
+double QString2Double(const QString & str, bool * ok = nullptr);
+
+/*! Converts a text "121 m" into a parameter. */
+bool QString2Parameter(const QString & str, const std::string & keywordName, IBK::Parameter & para);
+
+/*! Converts a parameter to "12,2 h" using the currently installed locale (as opposed to the para.toString() member function.
+	In case of missing/invalid unit, the result will be "<value> -".
+*/
+QString parameter2String(const IBK::Parameter & para);
 
 } // QtExt
 

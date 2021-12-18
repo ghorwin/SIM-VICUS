@@ -90,6 +90,7 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
+	../../src/SVOutputGridEditDialog.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
 	../../src/SVPropBuildingBoundaryConditionsWidget.cpp \
 	../../src/SVPropBuildingComponentOrientationWidget.cpp \
@@ -100,6 +101,7 @@ SOURCES += \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
+	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
@@ -256,6 +258,7 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
+	../../src/SVOutputGridEditDialog.h \
 	../../src/SVPreferencesPageMisc.h \
 	../../src/SVPropBuildingBoundaryConditionsWidget.h \
 	../../src/SVPropBuildingComponentOrientationWidget.h \
@@ -266,6 +269,7 @@ HEADERS  += \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
+	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
@@ -458,6 +462,7 @@ FORMS    += \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkImportDialog.ui \
+	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPreferencesDialog.ui \
 	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \

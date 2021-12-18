@@ -26,36 +26,27 @@
 #ifndef SVSimulationOutputTableModelH
 #define SVSimulationOutputTableModelH
 
-#include <QObject>
 #include <QAbstractTableModel>
-#include <QCryptographicHash>
-#include <QFont>
-#include <QColor>
 
-#include <VICUS_OutputDefinition.h>
-
-#include <IBK_Unit.h>
-
+#include <set>
 #include <vector>
 
-namespace NANDRAD {
-	class OutputGrid;
+namespace VICUS {
+	class OutputDefinition;
 }
 
-struct OutputDefinition {
 
-	OutputDefinition(){}
+/*! This table model shows the available outputs from output_reference_list.txt.
+	Qt::DisplayRole returns the translated object name with keyword in parenthesis.
 
-	OutputDefinition(VICUS::OutputDefinition &od, bool isActive):
-		m_outputdefinition(od),
-		m_isActive(isActive)
-	{}
+	Custom data roles are:
 
-	VICUS::OutputDefinition			m_outputdefinition;
-	bool							m_isActive = false;
-
-};
-
+	- Qt::UserRole  returns a set of object IDs
+	- Qt::UserRole+1 returns the set of vector IDs
+	- Qt::UserRole+2 returns the object type string as keyword "Zone"
+	- Qt::UserRole+3 returns the quantity name as keyword "AirTemperature"
+	- Qt::UserRole+4 returns the unit
+*/
 class SVSimulationOutputTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
@@ -63,22 +54,31 @@ public:
 
 	int rowCount(const QModelIndex & parent) const override;
 	int columnCount(const QModelIndex & parent) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 	QVariant data(const QModelIndex & index, int role) const override;
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-	Qt::ItemFlags flags(const QModelIndex & index) const override;
+	/*! Updates the internal data storage of the model. */
+	void updateListFromFile(const QString & outputRefListFilepath);
 
-	/*! Resets the table model */
-	void reset();
+	/*! Checks if the defined output is available. */
+	bool haveOutput(const VICUS::OutputDefinition& of) const;
 
-	/*! Updated the row with changed data */
-	void updateOutputData(unsigned int row);
+private:
 
-	std::vector<OutputDefinition>								*m_outputDefinitions = nullptr;
+	/*! Holds the data of a single line in the file 'output_reference_list.txt'. */
+	struct OutputVariable {
+		std::string m_objectTypeName;
+		std::string m_quantity;
+		std::string m_description;
+		std::string m_unit;
+		std::set<unsigned int> m_objectIds;
+		std::set<unsigned int> m_vectorIds;
+	};
 
-	QFont														m_itemFont;
-
-	QString														m_fileHash;
+	/*! List of variables from output definitions file. */
+	std::vector<OutputVariable> m_variables;
 };
 
-#endif // SVSIMULATIONOUTPUTTABLEMODEL_H
+Q_DECLARE_METATYPE(std::set<unsigned int>)
+
+#endif // SVSimulationOutputTableModelH

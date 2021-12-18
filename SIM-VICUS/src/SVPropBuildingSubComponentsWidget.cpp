@@ -290,7 +290,7 @@ void SVPropBuildingSubComponentsWidget::on_pushButtonExchangeSubSurfaceComponent
 	QString msg;
 	if (comp != nullptr) {
 		oldId = comp->m_id;
-		QString msg = tr("This will replace all associations with sub-surface component '%1 [%2]' with another sub-surface component.")
+		msg = tr("This will replace all associations with sub-surface component '%1 [%2]' with another sub-surface component.")
 				.arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(oldId);
 	}
 	else {

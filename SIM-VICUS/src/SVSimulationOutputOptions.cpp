@@ -30,12 +30,15 @@
 #include <VICUS_Outputs.h>
 #include <VICUS_OutputDefinition.h>
 #include <VICUS_KeywordList.h>
+#include <VICUS_KeywordListQt.h>
+
+#include <QtExt_Conversions.h>
 
 #include <IBK_FileReader.h>
 #include <IBK_UnitList.h>
+#include <IBK_StringUtils.h>
 
 #include <NANDRAD_KeywordList.h>
-
 
 #include <QModelIndex>
 #include <QAbstractTableModel>
@@ -43,19 +46,21 @@
 #include <QTextCodec>
 
 #include "SVProjectHandler.h"
-
 #include "SVStyle.h"
+#include "SVSimulationStartNandrad.h"
+#include "SVSimulationOutputTableDelegate.h"
+#include "SVOutputGridEditDialog.h"
 
-SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs) :
+SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Outputs & outputs, SVSimulationStartNandrad * simStartDialog) :
 	QWidget(parent),
 	m_ui(new Ui::SVSimulationOutputOptions),
-	m_outputs(&outputs)
+	m_outputs(&outputs),
+	m_simStartDialog(simStartDialog)
 {
 	m_ui->setupUi(this);
 	m_ui->verticalLayoutOutputs->setMargin(0);
 
-	// m_outputDefinitions = &m_outputs->m_definitions;
-
+	// output grid table setup
 	m_ui->tableWidgetOutputGrids->setColumnCount(4);
 	m_ui->tableWidgetOutputGrids->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Intervals") << tr("Start") << tr("End") );
 	m_ui->tableWidgetOutputGrids->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -65,48 +70,46 @@ SVSimulationOutputOptions::SVSimulationOutputOptions(QWidget *parent, VICUS::Out
 
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputGrids);
 	m_ui->tableWidgetOutputGrids->setSortingEnabled(false);
-	m_ui->radioButtonDefault->setChecked(true);
 
+	// output definition table setup
+	m_ui->tableWidgetOutputDefinitions->setColumnCount(6);
+	m_ui->tableWidgetOutputDefinitions->setHorizontalHeaderLabels( QStringList() << tr("Quantity") << tr("Object type")
+				<< tr("Object IDs") << tr("Vector IDs") << tr("Mean/Integral") << tr("Output grid")  );
+	m_ui->tableWidgetOutputDefinitions->horizontalHeader()->setStretchLastSection(true);
+
+	SVStyle::formatDatabaseTableView(m_ui->tableWidgetOutputDefinitions);
+	m_ui->tableWidgetOutputDefinitions->setSortingEnabled(false);
+
+	SVSimulationOutputTableDelegate * delegate = new SVSimulationOutputTableDelegate;
+	delegate->m_outputs = m_outputs;
+	m_ui->tableWidgetOutputDefinitions->setItemDelegate(delegate);
+
+	// create table model
 	m_outputTableModel = new SVSimulationOutputTableModel(this);
-	m_outputTableModel->m_outputDefinitions = &m_outputDefinitions;
 
+	// create table model
 	m_outputTableProxyModel = new QSortFilterProxyModel(this);
 	m_outputTableProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
 	m_outputTableProxyModel->setSourceModel(m_outputTableModel);
-	m_ui->tableViewOutputList->setModel(m_outputTableProxyModel);
+	m_ui->tableViewAvailableOutputs->setModel(m_outputTableProxyModel);
+	SVStyle::formatDatabaseTableView(m_ui->tableViewAvailableOutputs);
 
-	SVStyle::formatDatabaseTableView(m_ui->tableViewOutputList);
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSourceObjectIds);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+	m_ui->tableViewAvailableOutputs->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+	m_ui->tableViewAvailableOutputs->sortByColumn(1, Qt::AscendingOrder);
 
-	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::MultiSelection);
-	m_ui->tableViewOutputList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	SVStyle::formatListView(m_ui->listWidgetObjectIDs);
+	SVStyle::formatListView(m_ui->listWidgetVectorIndexes);
 
-	m_ui->tableViewOutputList->sortByColumn(1, Qt::AscendingOrder);
+	// selection change signal
+	connect(m_ui->tableViewAvailableOutputs->selectionModel(), &QItemSelectionModel::selectionChanged,
+			this, &SVSimulationOutputOptions::onAvailableOutputSelectionChanged);
 
-	m_ui->splitter->setStretchFactor(0,0);
-	m_ui->splitter->setStretchFactor(1,1);
-
-	m_ui->splitter_2->setStretchFactor(0,1);
-	m_ui->splitter_2->setStretchFactor(1,0);
-
-	m_ui->tableWidgetSourceObjectIds->setColumnCount(2);
-	m_ui->tableWidgetSourceObjectIds->setHorizontalHeaderLabels(QStringList() << tr("ID") << tr("Display Name") );
-	m_ui->tableWidgetSourceObjectIds->setColumnWidth(0, 50);
-	m_ui->tableWidgetSourceObjectIds->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::MultiSelection);
-	m_ui->tableWidgetSourceObjectIds->setSelectionMode(QAbstractItemView::ExtendedSelection);
-
-	m_ui->comboBoxTimeType->blockSignals(true);
-	m_ui->comboBoxTimeType->addItem("None", NANDRAD::OutputDefinition::OTT_NONE);
-	m_ui->comboBoxTimeType->addItem("Mean", NANDRAD::OutputDefinition::OTT_MEAN);
-	m_ui->comboBoxTimeType->addItem("Integral", NANDRAD::OutputDefinition::OTT_INTEGRAL);
-	m_ui->comboBoxTimeType->blockSignals(false);
-
-	connect(m_ui->tableViewOutputList->selectionModel(), &QItemSelectionModel::selectionChanged,
-			this, &SVSimulationOutputOptions::on_selectionChanged);
-
-	m_font = QFont();
+	m_ui->splitter->setStretchFactor(0, 1);
+	m_ui->splitter->setStretchFactor(1, 2);
 }
 
 
@@ -117,24 +120,19 @@ SVSimulationOutputOptions::~SVSimulationOutputOptions() {
 
 void SVSimulationOutputOptions::updateUi() {
 
-	m_ui->checkBoxDefaultZoneOutputs->setChecked(
+	m_ui->checkBoxDefaultBuildingOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled());
 
 	m_ui->checkBoxDefaultNetworkOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
-	m_ui->tableWidgetOutputGrids->clearContents();
-	m_ui->comboBoxOutputGrid->clear();
-	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
 
-	// we set the correct timetype
-	if(m_activeOutputDefinition != nullptr)
-		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-			if (m_activeOutputDefinition->m_outputdefinition.m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
-				m_ui->comboBoxTimeType->setCurrentIndex(i);
-				break;
-			}
-		}
+	// *** output grids ***
+
+	// disable selection-model signals
+	m_ui->tableWidgetOutputGrids->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetOutputGrids->clearContents();
+	m_ui->tableWidgetOutputGrids->setRowCount(m_outputs->m_grids.size());
 
 	// we update the output grid
 	for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
@@ -143,38 +141,33 @@ void SVSimulationOutputOptions::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetOutputGrids->setItem((int)i,0, item);
 
-
-		// only populate start and end if intervals are all valid
 		try {
+			// only populate start and end if intervals are all valid
 			og.checkIntervalDefinition();
 
 			item = new QTableWidgetItem(QString("%1").arg(og.m_intervals.size()));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,1, item);
 
-			QString start = QString("+ %L1 %2")
-					.arg(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start].value)
-					.arg(QString::fromStdString(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start].IO_unit.name()));
+			QString start = QtExt::parameter2String(og.m_intervals[0].m_para[NANDRAD::Interval::P_Start]);
 
 			item = new QTableWidgetItem(start);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,2, item);
 
 			QString end;
-			if (og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value == 0.0)
+			if (og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() ||
+				og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value == 0.0)
+			{
 				end = tr("End of simulation");
+			}
 			else {
-				end = QString("+ %L1 %2")
-						.arg(og.m_intervals.back().m_para[NANDRAD::Interval::P_End].value)
-						.arg(QString::fromStdString(og.m_intervals.back().m_para[NANDRAD::Interval::P_End].IO_unit.name()));
+				end = QtExt::parameter2String(og.m_intervals.back().m_para[NANDRAD::Interval::P_End]);
 			}
 
 			item = new QTableWidgetItem(end);
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
-			m_ui->comboBoxOutputGrid->blockSignals(true);
-			m_ui->comboBoxOutputGrid->addItem(QString::fromStdString(og.m_name), i);
-			m_ui->comboBoxOutputGrid->blockSignals(false);
 		}
 		catch (...) {
 			item = new QTableWidgetItem("---");
@@ -188,879 +181,438 @@ void SVSimulationOutputOptions::updateUi() {
 			m_ui->tableWidgetOutputGrids->setItem((int)i,3, item);
 		}
 	}
+	m_ui->tableWidgetOutputGrids->selectRow(0);
+	m_ui->tableWidgetOutputGrids->selectionModel()->blockSignals(false);
+	// update enabled status
+	on_tableWidgetOutputGrids_itemSelectionChanged();
 
+
+	// *** available outputs ***
+
+	// set initial state for "no output ref list file available"
+	m_ui->listWidgetObjectIDs->setEnabled(false);
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->toolButtonAddDefinition->setEnabled(false);
+
+	// now tell table model to update its output cache from the current output_reference_list.txt file
+	// even though it might be outdated
+
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+
+	m_outputTableModel->updateListFromFile(fileName);
+
+	// show/hide the update info label
+	updateOutdatedLabel();
+
+	// *** existing output definitions ***
+
+	updateOutputDefinitionTable();
 }
 
-// Returns empty QByteArray() on failure.
-std::string fileChecksum(const QString &fileName,
-						QCryptographicHash::Algorithm hashAlgorithm)
-{
-	QFile f(fileName);
-	if (f.open(QFile::ReadOnly)) {
-		QCryptographicHash hash(hashAlgorithm);
-		if (hash.addData(&f)) {
-			return QString(hash.result().toHex()).toStdString();
+
+// *** slots ***
+
+void SVSimulationOutputOptions::onAvailableOutputSelectionChanged(const QItemSelection & selected, const QItemSelection & /*deselected*/) {
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->clear();
+	if (selected.isEmpty()) {
+		m_ui->toolButtonAddDefinition->setEnabled(false);
+		m_ui->listWidgetObjectIDs->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		return;
+	}
+	m_ui->listWidgetObjectIDs->setEnabled(true);
+
+	m_ui->listWidgetObjectIDs->blockSignals(true);
+
+	// populate list widget with object IDs
+	// populate list widget with vector IDs
+	m_ui->listWidgetObjectIDs->clear();
+
+	const QItemSelectionRange & first = selected.first();
+	Q_ASSERT(!first.indexes().isEmpty());
+	// get list of available object IDs
+	QModelIndex proxyIdx = first.indexes().first();
+	QModelIndex srcIdx = m_outputTableProxyModel->mapToSource(proxyIdx);
+	// retrieve list of available objects
+	std::set<unsigned int> ids = srcIdx.data(Qt::UserRole).value<std::set<unsigned int> >();
+	const QString & objectType = srcIdx.data(Qt::UserRole + 2).toString();
+
+	int objectTypeID = -1;
+	if (objectType == "Zone")
+		objectTypeID = 0;
+	else if (objectType == "ConstructionInstance")
+		objectTypeID = 1;
+
+	for (unsigned int i : ids) {
+		// lookup type-specific object and show respective display name
+		QString displayName;
+		switch (objectTypeID) {
+			case 0 : {
+				const VICUS::Room * ob = project().roomByID(i); // Mind: room ID, not unique ID
+				if (ob != nullptr)
+					displayName = ob->m_displayName;
+			} break;
+
+			case 1 : {
+				// lookup component name
+			} break;
 		}
-	}
-	return std::string();
-}
 
-
-void SVSimulationOutputOptions::generateOutputTable() {
-	FUNCID(SVSimulationOutputOptions::generateOutputTable);
-	// parse the variable list file
-	// generate a data object with all output data
-	//
-	// fill the table in the outputs tab
-	// user can select needed outputs
-	// if simulation is run, all needed putputs are generated in NANDRAD file
-
-	QString nandradFileString = SVProjectHandler::instance().nandradProjectFilePath();
-	QString fileName = SVProjectHandler::instance().projectFile();
-
-	int pos = fileName.lastIndexOf(".");
-	QString fileNameWithoutEnding = fileName.left(pos);
-
-	IBK::Path nandradFilePath(nandradFileString.toStdString());
-	IBK::Path fileOutputVars = IBK::Path(fileNameWithoutEnding.toStdString() ) / "var" / "output_reference_list.txt" ;
-
-	qDebug() << fileOutputVars.c_str();
-
-	std::vector<std::string> outputContent;
-	std::string checkSum =  fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
-
-	try {
-		IBK::FileReader::readAll(fileOutputVars, outputContent, std::vector<std::string>());
-	}
-	catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Could not open file '%1' with output definitons.").arg(fileOutputVars.c_str()), FUNC_ID);
-	}
-
-	try {
-		m_nandradProject.readXML(nandradFilePath);
-	} catch (IBK::Exception &ex) {
-		throw IBK::Exception(IBK::FormatString("Could not parse nandrad file '%1' to match output definitons.").arg(nandradFilePath.c_str()), FUNC_ID);
-	}
-
-	for (unsigned int i=0; i<outputContent.size(); ++i) {
-		if (outputContent[i] == "")
-			outputContent.erase(outputContent.begin() + i);
-	}
-
-	m_outputDefinitions.resize(outputContent.size()-1); // mind last column
-
-	// now we go through all read lines
-	std::vector<std::string> tokens;
-	for (unsigned int i=0; i<outputContent.size(); ++i) {
-		if ( i == 0 )
-			continue;
-
-		std::string &line = outputContent[i];
-		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
-
-		QTableWidgetItem *item;
-		std::vector<std::string> object;
-
-		for(unsigned int j=0; j<tokens.size(); ++j) {
-			item = new QTableWidgetItem();
-			QString trimmedString = QString::fromStdString(tokens[j]).trimmed();
-			item->setText(trimmedString);
-			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-			OutputDefinition &od = m_outputDefinitions[i-1];
-
-			od.m_outputdefinition.m_id = i-1;
-
-			// set pointer to output grid
-			if(m_outputs != nullptr)
-				od.m_outputdefinition.m_outputGrid = &m_outputs->m_grids[0];
-
-			// set Output time type
-			od.m_outputdefinition.m_timeType = VICUS::OutputDefinition::OTT_NONE;
-
-			if (j == ORT_VariableName) {
-				object = IBK::explode(trimmedString.toStdString(), '.', 2);
-				od.m_outputdefinition.m_type = object[0];
-				od.m_outputdefinition.m_name = object[1];
-			}
-			else if (j == ORT_Unit)
-				od.m_outputdefinition.m_unit = IBK::Unit(trimmedString.toStdString());
-			else if (j == ORT_Description)
-				od.m_outputdefinition.m_description = trimmedString.toStdString();
-			else if (j == ORT_SourceObjectIds) {
-				od.m_outputdefinition.m_sourceObjectIds.clear();
-				std::vector<std::string> ids;
-				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
-				for (std::string id : ids) {
-
-					// we get the nandrad id
-					unsigned int nandradId = QString::fromStdString(id).toUInt();
-					std::string name = "No object found";
-
-					if ( object[0] == "ConstructionInstance" ) {
-						findNandradName(&m_nandradProject.m_constructionInstances, nandradId, name);
-					}
-					else if ( object[0] == "Zone" ) {
-						findNandradName(&m_nandradProject.m_zones, nandradId, name);
-					}
-					else if ( object[0] == "Location" ) {
-						name = "Climate Data";
-					}
-					else if ( object[0] == "EmbeddedObject" ) {
-						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
-							findNandradName(&ci.m_embeddedObjects, nandradId, name);
-						}
-					}
-					else if ( object[0] == "Model" ) {
-						if (findNandradName(&m_nandradProject.m_models.m_internalLoadsModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_shadingControlModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_heatLoadSummationModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealPipeRegisterModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_naturalVentilationModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealHeatingCoolingModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_networkInterfaceAdapterModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealSurfaceHeatingCoolingModels,nandradId, name));
-					}
-
-					od.m_outputdefinition.m_sourceObjectIds.push_back(nandradId);
-					od.m_outputdefinition.m_idToSourceObject[nandradId] = VICUS::SourceObject(nandradId,name);
-				}
-			}
-			else if (j == 2) {
-				od.m_outputdefinition.m_vectorIds.clear();
-				std::vector<std::string> ids;
-				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
-				for (std::string id : ids) {
-					od.m_outputdefinition.m_vectorIds.push_back(QString::fromStdString(id).toUInt() );
-				}
-			}
-		}
-	}
-
-	// we restore our outputs if checkSum is equal
-	if(m_outputs->m_checkSum.empty())
-		m_outputs->m_checkSum = fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
-	else {
-		if (m_outputs->m_checkSum == checkSum){
-			m_ui->radioButtonCustom->setChecked(true);
-			// regenerate outputs
-			for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-				for (unsigned int j=0; j<m_outputDefinitions.size(); ++j) {
-					if (m_outputs->m_outputDefinitions[i].m_id == m_outputDefinitions[j].m_outputdefinition.m_id) {
-						m_outputDefinitions[j].m_isActive = true;
-						for (unsigned int id : m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds) {
-							m_outputDefinitions[j].m_outputdefinition.m_idToSourceObject[id].m_isActive = true;
-						}
-						m_outputDefinitions[j].m_outputdefinition.m_activeSourceObjectIds = m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds;
-						break;
-					}
-				}
-			}
-			QMessageBox::information(this, QString(), tr("Regenerated custom outputs under 'outputs' tab."));
-		}
+		QString label;
+		if (displayName.isEmpty())
+			label = QString("%1").arg(i);
 		else
-			m_outputs->m_outputDefinitions.clear();
+			label = QString("%1 '%2'").arg(i).arg(displayName);
+		QListWidgetItem * item = new QListWidgetItem(label);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setData(Qt::UserRole, i);
+		m_ui->listWidgetObjectIDs->addItem(item);
 	}
 
+	m_ui->listWidgetObjectIDs->selectAll();
 
-	m_outputTableModel->reset();
-	//	m_ui->tableViewOutputList->resizeColumnsToContents();
-	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
-	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-	m_ui->tableViewOutputList->setColumnWidth(3, 50);
-	m_ui->tableViewOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-}
-
-void SVSimulationOutputOptions::initOutputTable(unsigned int rowCount) {
-	//	m_ui->tableWidgetOutputList->setColumnCount(5);
-	//	m_ui->tableWidgetOutputList->setHorizontalHeaderLabels( QStringList() << tr("Name") << tr("Unit") << tr("Description") << tr("Source object id(s)") << tr("Vector indexes/ids") );
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
-	//	m_ui->tableWidgetOutputList->setColumnWidth(1, 100);
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(3, QHeaderView::ResizeToContents);
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setSectionResizeMode(4, QHeaderView::ResizeToContents);
-	//	m_ui->tableWidgetOutputList->setRowCount(rowCount);
-
-	//	m_ui->tableWidgetOutputList->verticalHeader()->setDefaultSectionSize(19);
-	//	m_ui->tableWidgetOutputList->verticalHeader()->setVisible(false);
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setMinimumSectionSize(19);
-	//	m_ui->tableWidgetOutputList->setSelectionBehavior(QAbstractItemView::SelectRows);
-	//	m_ui->tableWidgetOutputList->setSelectionMode(QAbstractItemView::SingleSelection);
-	//	m_ui->tableWidgetOutputList->setAlternatingRowColors(true);
-	//	m_ui->tableWidgetOutputList->setSortingEnabled(true);
-	//	m_ui->tableWidgetOutputList->sortByColumn(0, Qt::AscendingOrder);
-
-	//	QString headerStyleSheet = QString("QHeaderView::section:horizontal {font-weight:bold;}");
-	//	m_ui->tableWidgetOutputList->horizontalHeader()->setStyleSheet(headerStyleSheet);
-}
-
-void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::ObjectList> &objectList) {
-	m_outputDefinitionsNandrad.clear();
-	m_objectListsNandrad.clear();
-
-	// we also want to use the already defined object lists and use them as well
-	for (const NANDRAD::ObjectList &ol : objectList)
-		m_objectListsNandrad[ol.m_name] = ol;
-
-	// we iterate over our defined outputs
-	for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-
-		const VICUS::OutputDefinition &od = m_outputs->m_outputDefinitions[i];
-
-		std::string refName;
-
-		// ==============================================
-		// GRID
-		// ==============================================
-		// till now we only support output grids with hourly values
-
-		{
-			// generate output grid, if needed
-			int ogInd = -1;
-			for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
-				NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
-				if (og.m_intervals.size() == 1 &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
-				{
-					ogInd = (int)i;
-					break;
-				}
-			}
-			// create one, if not yet existing
-			if (ogInd == -1) {
-				NANDRAD::OutputGrid og;
-				og.m_name = refName = tr("Hourly values").toStdString();
-				NANDRAD::Interval iv;
-				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
-				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
-				og.m_intervals.push_back(iv);
-				m_outputs->m_grids.push_back(og);
-			}
-			else {
-				refName = m_outputs->m_grids[(unsigned int)ogInd].m_name;
-			}
-		}
-
-		// ==============================================
-		// OBJECT LISTS
-		// ==============================================
-		// we generate the object list
-
-		NANDRAD::ObjectList ol;
-		ol.m_name = od.m_type + "[";
-		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
-			bool foundActiveId = false;
-			for (unsigned int j=0; j<od.m_activeSourceObjectIds.size(); j++) {
-				if(od.m_activeSourceObjectIds[j] == od.m_sourceObjectIds[i]) {// object is active
-					foundActiveId = true;
-					break;
-				}
-			}
-
-			if(!foundActiveId)
-				continue;
-			ol.m_name += QString::number(od.m_sourceObjectIds[i]).toStdString();
-			if (i<od.m_sourceObjectIds.size()-1)
-				ol.m_name += ",";
-
-			ol.m_filterID.m_ids.insert(od.m_sourceObjectIds[i]);
-		}
-		ol.m_name += "]";
-		if (od.m_type == "Location")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
-		else if (od.m_type == "Zone")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-		else if (od.m_type == "Model")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-		else if (od.m_type == "ConstructionInstance")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		else if (od.m_type == "NetworkElement")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-		else if (od.m_type == "EmbeddedObject")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
-		else if (od.m_type == "Schedule")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_SCHEDULE;
-
-
-		// we have to look if we already have an object list with the same content
-		// if we find one, we take its name and use it as reference to it
-		if (!findEqualObjectList(ol))
-			m_objectListsNandrad[ol.m_name] = ol;
-
-		// ==============================================
-		// OUTPUT DEFINITIONS & OBJECT LISTS
-		// ==============================================
-		// we already have a name for the output grid, start generating default outputs
-
-		NANDRAD::OutputDefinition nod;
-		nod.m_gridName = refName;
-		nod.m_objectListName = ol.m_name;
-		nod.m_timeType = (NANDRAD::OutputDefinition::timeType_t)od.m_timeType;
-
-		// handling for all output that also reference vectors
-		if (!od.m_vectorIds.empty()) {
-			for (unsigned int i=0; i<od.m_vectorIds.size(); ++i) {
-				nod.m_quantity = od.m_name + "[" + QString::number(od.m_vectorIds[i]).toStdString() + "]";
-				m_outputDefinitionsNandrad[nod.m_quantity] = nod;
-			}
-		}
-		else {
-			nod.m_quantity = od.m_name;
-			m_outputDefinitionsNandrad[nod.m_quantity] = nod;
-		}
-	}
-}
-
-bool SVSimulationOutputOptions::findEqualObjectList(NANDRAD::ObjectList & objectList) {
-	for ( std::map<std::string, NANDRAD::ObjectList>::const_iterator it = m_objectListsNandrad.begin();
-		  it != m_objectListsNandrad.end(); ++it) {
-		if (objectList.m_referenceType == it->second.m_referenceType) {
-			// we sort both vectors
-			if (it->second.m_filterID == objectList.m_filterID) {
-				objectList = it->second;
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-std::vector<NANDRAD::ObjectList> SVSimulationOutputOptions::objectLists() {
-	std::vector<NANDRAD::ObjectList> objectListsVector;
-	for (std::map<std::string, NANDRAD::ObjectList>::const_iterator it = m_objectListsNandrad.begin();
-		 it != m_objectListsNandrad.end(); ++it	 )
-		objectListsVector.push_back(it->second);
-
-	return objectListsVector;
-}
-
-std::vector<NANDRAD::OutputDefinition> SVSimulationOutputOptions::outputDefinitions() {
-	std::vector<NANDRAD::OutputDefinition> outputDefinitionsVector;
-	for (std::map<std::string, NANDRAD::OutputDefinition>::const_iterator it = m_outputDefinitionsNandrad.begin();
-		 it != m_outputDefinitionsNandrad.end(); ++it	 )
-		outputDefinitionsVector.push_back(it->second);
-
-	return outputDefinitionsVector;
+	// trigger selection change of object/vector IDs list widgets to update plus buttons
+	// now populate the object IDs list
+	m_ui->listWidgetObjectIDs->blockSignals(false);
+	on_listWidgetObjectIDs_itemSelectionChanged();
 }
 
 
-void SVSimulationOutputOptions::on_checkBoxDefaultZoneOutputs_toggled(bool checked) {
-	if (checked)
-		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs]
-				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::F_CreateDefaultZoneOutputs), checked);
-	else
-		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].clear();
-}
-
-void SVSimulationOutputOptions::on_checkBoxDefaultNetworkOutputs_toggled(bool checked){
-	if (checked)
-		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs]
-				.set(VICUS::KeywordList::Keyword("Outputs::flag_t", VICUS::Outputs::F_CreateDefaultNetworkOutputs), checked);
-	else
-		m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].clear();
-}
-
-void SVSimulationOutputOptions::on_radioButtonDefault_toggled(bool defaultToggled) {
-
-	m_ui->radioButtonCustom->blockSignals(true);
-	m_ui->radioButtonCustom->setChecked(!defaultToggled);
-	m_ui->radioButtonCustom->blockSignals(false);
-
-	//	m_ui->radioButtonDefault->setChecked(!defaultToggled);
-
-	m_ui->checkBoxDefaultZoneOutputs->setEnabled(defaultToggled);
-	m_ui->checkBoxDefaultNetworkOutputs->setEnabled(defaultToggled);
-
-	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs] = IBK::Flag("CreateDefaultZoneOutputs",
-																			   m_ui->checkBoxDefaultZoneOutputs->isChecked() && defaultToggled );
-	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs] = IBK::Flag("CreateDefaultNetworkOutputs",
-																				  m_ui->checkBoxDefaultNetworkOutputs->isChecked() && defaultToggled );
-
-	m_ui->widgetCustomOutputs->setEnabled(!defaultToggled);
-}
-
-void SVSimulationOutputOptions::on_lineEditType_textEdited(const QString &filterKey) {
-	m_ui->lineEditName->clear();
-	m_outputTableProxyModel->setFilterWildcard(filterKey);
-	m_outputTableProxyModel->setFilterKeyColumn(1);
-	// m_itemIsSet = false;
+void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged() {
+	// enable/disable buttons based on selection
+	// Mind: you must not delete the default first grid
+	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() > 0 && m_ui->tableWidgetOutputGrids->rowCount() > 1);
+	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
 }
 
 
-void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QModelIndex &index) {
-
-	QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(index);
-	OutputDefinition &od = m_outputDefinitions[sourceIndex.row()];
-
-	Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
-
-	bool outputDefinitionState = od.m_isActive;
-
-	m_outputTableModel->updateOutputData(sourceIndex.row());
-
-	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
-	tw.setSortingEnabled(false);
-	QTableWidgetItem *itemID, *itemName;
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-		VICUS::SourceObject &so =	od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
-		so.m_isActive = !outputDefinitionState;
-
-		if(!outputDefinitionState) { // source object has been set active
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-		}
-		else {
-			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-				if(*it == so.m_id) {
-					// delete source object id
-					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-					break;
-				}
-			}
-		}
-
-		itemID = new QTableWidgetItem();
-		itemName = new QTableWidgetItem();
-
-		itemID->setText(QString::number(so.m_id));
-		itemName->setText(QString::fromStdString(so.m_displayName));
-
-		tw.setItem(i,0,itemID);
-		tw.setItem(i,1,itemName);
-
-		QFont f(m_font);
-		f.setItalic(!so.m_isActive);
-		f.setBold(!outputDefinitionState && so.m_isActive);
+void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemSelectionChanged() {
+	// enable/disable buttons based on selection
+	m_ui->toolButtonRemoveDefinition->setEnabled(m_ui->tableWidgetOutputDefinitions->currentRow() != -1);
+}
 
 
-		itemID->setFont(f);
-		itemName->setFont(f);
-
-		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-
-		itemID->setData(Qt::UserRole, i);
-		itemName->setData(Qt::UserRole, i);
+void SVSimulationOutputOptions::on_pushButtonUpdateOutputList_clicked() {
+	// run test-init and if successful, update output list
+	if (!m_simStartDialog->startSimulation(true, true)) { // test-init and force background process
+		return; // failure, no change in dialog's state
 	}
 
-	// we update the output definition
-	updateOutputDefinition(od, !outputDefinitionState);
+	// set initial state for "no output ref list file available or list is empty"
+	m_ui->listWidgetObjectIDs->setEnabled(false);
+	m_ui->listWidgetObjectIDs->clear();
+	m_ui->listWidgetVectorIndexes->setEnabled(false);
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->toolButtonAddDefinition->setEnabled(false);
 
-	tw.setSortingEnabled(true);
+	// now tell table model to update its output cache from the current output_reference_list.txt file
+	// even though it might be outdated
 
-	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
 
-	m_ui->comboBoxOutputGrid->setCurrentText(QString::fromStdString(od.m_outputdefinition.m_name));
+	m_outputTableModel->updateListFromFile(fileName);
 
-	// we also have to generate an output in the project
-	// we need an hourly output grid, look if we have already one defined (should be!)
-	m_outputTableModel->updateOutputData(sourceIndex.row());
+	// finally update the table with available output definitions
+	updateOutputDefinitionTable();
 
-
-
+	updateOutdatedLabel();
 }
 
 
-void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected) {
+void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
+	// user has selected one or more object indexes
 
-	if(selected.empty() && deselected.empty()) {
-		m_itemIsSet = false;
+	QList<QListWidgetItem*> sel = m_ui->listWidgetObjectIDs->selectedItems();
+
+	if (sel.count() > 1) {
+		// do not show any vector IDs, since we have multi-selection in objects
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->clear();
+		// also enable the button for configuring outputs
+		m_ui->toolButtonAddDefinition->setEnabled(true);
 		return;
 	}
 
-	const QItemSelection &selection = selected.empty() ? deselected : selected;
-	unsigned int shift = selected.empty() ? 1 : 0; // we need a shift if deselection happens; This also needs to be positive or negatibe
-
-	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
-	tw.clearContents();
-	tw.setSortingEnabled(false);
-
-	// we find our last selected object
-	unsigned int row = 0;
-	if(m_itemIsSet && !m_itemSelection.indexes().isEmpty()) {
-		const QModelIndex &sourceIndexMax = m_outputTableProxyModel->mapToSource(selection.indexes()[selection.indexes().size()-1]);
-		const QModelIndex &cachedSourceIndexMax = m_outputTableProxyModel->mapToSource(m_itemSelection.indexes()[m_itemSelection.indexes().size()-1]);
-
-		int deltaMaxRow = sourceIndexMax.row() - cachedSourceIndexMax.row();
-
-		qDebug() << "Actual row: " + QString::number(sourceIndexMax.row()) + " | Cached Row: " + QString::number(cachedSourceIndexMax.row());
-
-		row = (deltaMaxRow == 0 ? m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row()-shift : sourceIndexMax.row()+shift); // for deselection we need a +/-1 shift; for selection no shift
-	}
-	else
-		row = m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row();
-
-	const OutputDefinition &od = m_outputDefinitions[row];
-	m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
-
-	m_activeOutputDefinition = &od;
-	m_ui->comboBoxTimeType->blockSignals(true);
-	m_ui->comboBoxTimeType->setCurrentIndex(od.m_outputdefinition.m_timeType);
-
-	tw.setEnabled(od.m_isActive);
-	tw.setSortingEnabled(true);
-	tw.sortByColumn(1, Qt::AscendingOrder);
-
-	updateOutputUi(row);
-
-	m_ui->comboBoxTimeType->blockSignals(false);
-	// we cache our selection
-	m_itemSelection = selection;
-	m_itemIsSet = true;
-}
-
-void SVSimulationOutputOptions::on_pushButtonAllSources_clicked() {
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-
-		std::vector<unsigned int> &os = const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_activeSourceObjectIds;
-
-		od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]].m_isActive = true;
-
-		if(std::find(os.begin(), os.end(), od.m_outputdefinition.m_sourceObjectIds[i]) != os.end())
-			os.push_back(od.m_outputdefinition.m_sourceObjectIds[i]); // object id not in vector
-
-		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
-		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
-
-		QFont f(m_font);
-		f.setItalic(false);
-		f.setBold(true);
-		itemID->setFont(f);
-		itemName->setFont(f);
-	}
-
-	updateOutputDefinition(od, true);
-}
-
-void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item) {
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	unsigned int row = item->row();
-
-	QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(row, 0);
-	QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(row, 1);
-
-	VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_activeOutputDefinition->m_outputdefinition.m_sourceObjectIds[itemID->data(Qt::UserRole).toUInt()]];
-
-	bool objectState = so.m_isActive;
-	const_cast<VICUS::SourceObject &>(so).m_isActive = !objectState;
-
-	if(!objectState) { // source object has been set active
-		od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-	}
-	else {
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// delete source object id
-				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-				break;
-			}
-		}
-	}
-
-	updateOutputDefinition(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
-
-	QFont f(m_font);
-	f.setItalic(!so.m_isActive);
-	f.setBold(so.m_isActive);
-	itemID->setFont(f);
-	itemName->setFont(f);
-}
-
-void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
-	m_ui->lineEditType->clear();
-	m_outputTableProxyModel->setFilterWildcard(filterKey);
-	m_outputTableProxyModel->setFilterKeyColumn(2);
-	m_itemIsSet = false;
-}
-
-void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	od.m_outputdefinition.m_activeSourceObjectIds.clear();
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-
-		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
-		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
-
-		QFont f(m_font);
-		f.setItalic(true);
-		f.setBold(false);
-		itemID->setFont(f);
-		itemName->setFont(f);
-
-	}
-
-	updateOutputDefinition(od, false);
-}
-
-void SVSimulationOutputOptions::on_comboBoxOutoutGrid_currentIndexChanged(int index){
-	Q_ASSERT(index < m_outputs->m_grids.size());
-
-	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_outputGrid = &m_outputs->m_grids[index];
-}
-
-template<typename T>
-bool SVSimulationOutputOptions::findNandradName(const std::vector<T> *models, const unsigned int idNandrad, std::string & name) {
-
-	if (models == nullptr)
-		return false;
-
-	for ( const T &m : *models) {
-		if (m.m_id == idNandrad) {
-			name = m.m_displayName;
-			return true;
-		}
-	}
-}
-
-void SVSimulationOutputOptions::on_toolButtonAddOutput_clicked() {
-	QItemSelectionModel *selection = m_ui->tableViewOutputList->selectionModel();
-	unsigned int cachedRow;
-
-	for (const QModelIndex & proxyIndex: m_ui->tableViewOutputList->selectionModel()->selectedRows()) {
-		// configure new input var - requires valid selection
-		Q_ASSERT(proxyIndex.isValid());
-
-		// map 2 source index
-		QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
-
-		unsigned int row = (unsigned int)srcIndex.row();
-		Q_ASSERT(row < m_outputDefinitions.size());
-
-		// we set our
-		updateOutputDefinitionState(row, true);
-
-		cachedRow = row;
-	}
-
-	updateOutputUi(cachedRow);
-	m_ui->tableViewOutputList->setFocus();
-}
-
-void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bool newState) {
-	Q_ASSERT(row<m_outputDefinitions.size());
-
-	OutputDefinition &od = m_outputDefinitions[row];
-
-	// and we also set the states to our source objects
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
-		so.m_isActive = newState;
-
-		if(newState) { // source object has been set active
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-		}
-		else {
-			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-				if(*it == so.m_id) {
-					// delete source object id
-					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-					break;
-				}
-			}
-		}
-	}
-
-	// set new state for output definition with updated source ids
-	updateOutputDefinition(od, newState);
-
-}
-
-void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
-
-	Q_ASSERT(row<m_outputDefinitions.size());
-
-	OutputDefinition &od = m_outputDefinitions[row];
-
-	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
-	m_ui->textBrowserDescription->setText(QString::fromStdString(od.m_outputdefinition.m_description));
-
-	if(od.m_outputdefinition.m_sourceObjectIds.size() == 1) {
-		m_ui->widgetSource->setVisible(false);
-		m_ui->verticalSpacer->changeSize(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
-		m_ui->textBrowserDescription->setMaximumHeight(100);
-	}
-	else {
-		m_ui->widgetSource->setVisible(true);
-		m_ui->textBrowserDescription->setMaximumHeight(1670000);
-		m_ui->verticalSpacer->changeSize(0,0, QSizePolicy::Fixed, QSizePolicy::Fixed);
-		tw.clearContents(); // we also clear all previous contents
-		tw.setRowCount(od.m_outputdefinition.m_sourceObjectIds.size() );
-		m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
-		QTableWidgetItem *itemID, *itemName;
-		for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-			VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
-
-			// we construct new items
-			itemID = new QTableWidgetItem();
-			itemName = new QTableWidgetItem();
-
-			// we set the font
-			QFont f(m_font);
-			f.setItalic(!so.m_isActive);
-			f.setBold(od.m_isActive && so.m_isActive);
-
-			itemID->setFont(f);
-			itemName->setFont(f);
-
-			// we set the text
-			itemID->setText(QString::number(so.m_id));
-			itemName->setText(QString::fromStdString(so.m_displayName));
-
-			// we set the flags
-			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-
-			// we set our user role with our index
-			itemID->setData(Qt::UserRole, i);
-			itemName->setData(Qt::UserRole, i);
-
-			// finally we set the items
-			tw.setItem(i,0,itemID);
-			tw.setItem(i,1,itemName);
-		}
-	}
-
-}
-
-void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, bool active) {
-	bool inList = false;
-
-	od.m_isActive = active;
-
-	if(active) {
-		for (VICUS::OutputDefinition &vod : m_outputs->m_outputDefinitions) {
-			if(vod.m_id == od.m_outputdefinition.m_id) {
-				vod = od.m_outputdefinition; // update the definition
-				inList = true;
-				break;
-			}
-		}
-		if(!inList)
-			m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
-	}
-	else {
-		for (unsigned int i =0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-			VICUS::OutputDefinition &vod = m_outputs->m_outputDefinitions[i];
-			if(vod.m_id == od.m_outputdefinition.m_id) {
-				m_outputs->m_outputDefinitions.erase(m_outputs->m_outputDefinitions.begin()+i); // erase the definition
-				break;
-			}
-		}
-		QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(m_ui->tableViewOutputList->currentIndex());
-		Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
-		m_outputTableModel->updateOutputData((unsigned int)sourceIndex.row());
-	}
-
-}
-
-void SVSimulationOutputOptions::on_toolButtonRemoveOutput_clicked() {
-	QItemSelectionModel *selection = m_ui->tableViewOutputList->selectionModel();
-	unsigned int cachedRow;
-
-	m_itemIsSet = false;
-
-	for (const QModelIndex & proxyIndex: m_ui->tableViewOutputList->selectionModel()->selectedRows()) {
-		// configure new input var - requires valid selection
-		Q_ASSERT(proxyIndex.isValid());
-
-		// map 2 source index
-		QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
-
-		unsigned int row = (unsigned int)srcIndex.row();
-		Q_ASSERT(row < m_outputDefinitions.size());
-
-		// we set our
-		updateOutputDefinitionState(row, false);
-
-		cachedRow = row;
-	}
-
-	updateOutputUi(cachedRow);
-//	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
-}
-
-void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
-	m_outputTableProxyModel->setFilterRole(Qt::UserRole);
-	m_outputTableProxyModel->setFilterKeyColumn(0);
-	m_itemIsSet = false;
-	if(checked)
-		m_outputTableProxyModel->setFilterWildcard("1");
-	else
-		m_outputTableProxyModel->setFilterWildcard("*");
-}
-
-void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
-
-	try {
-		IBK::UnitList::integralQuantity(m_activeOutputDefinition->m_outputdefinition.m_unit, false, true);
-	}  catch (...) {
-		QMessageBox::critical(this, QString(), tr("No time type 'integral' for unit '%1' allowed.\nUse 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_outputdefinition.m_unit.name())));
-		m_ui->comboBoxTimeType->setCurrentIndex(NANDRAD::OutputDefinition::OTT_NONE);
+	// check if we have vector indexes
+	const QModelIndexList & modList = m_ui->tableViewAvailableOutputs->selectionModel()->selectedRows();
+	Q_ASSERT(!modList.isEmpty());
+	QModelIndex proxyIndex = modList.first();
+	QModelIndex srcIndex = m_outputTableProxyModel->mapToSource(proxyIndex);
+
+	std::set<unsigned int> vectorIDs = srcIndex.data(Qt::UserRole + 1).value<std::set<unsigned int> >();
+
+	if (vectorIDs.empty()) {
+		// do not show any vector IDs, since we have multi-selection in objects
+		m_ui->listWidgetVectorIndexes->setEnabled(false);
+		m_ui->listWidgetVectorIndexes->clear();
+		// also enable the button for configuring outputs
+		m_ui->toolButtonAddDefinition->setEnabled(true);
 		return;
 	}
 
-	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_timeType = (VICUS::OutputDefinition::timeType_t)index;
-}
-
-
-void SVSimulationOutputOptions::on_toolButtonRemoveSource_clicked(){
-
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-
-	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
-		unsigned int row = (unsigned int)proxyIndex.row();
-
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
-		so.m_isActive = false;
-
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// delete source object id
-				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-				break;
-			}
-		}
-
+	// populate list widget
+	m_ui->listWidgetVectorIndexes->clear();
+	m_ui->listWidgetVectorIndexes->blockSignals(true);
+	for (unsigned int i : vectorIDs) {
+		QListWidgetItem * item = new QListWidgetItem(QString("%1").arg(i));
+		item->setData(Qt::UserRole, i);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->listWidgetVectorIndexes->addItem(item);
 	}
 
-	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
-	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
-	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+	m_ui->listWidgetVectorIndexes->setEnabled(true);
+	m_ui->listWidgetVectorIndexes->blockSignals(false);
+
+	// now select the first element
+	m_ui->listWidgetVectorIndexes->item(0)->setSelected(true);
 }
 
 
-void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
+	// create and append a new output definition with currently selected grid and default time type, which
+	// is based on the quantity type
 
-	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
-		unsigned int row = (unsigned int)proxyIndex.row();
+	VICUS::OutputDefinition def;
 
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
-		so.m_isActive = true;
+	// get selected output definition from table
+	QModelIndex proxyIndex = m_ui->tableViewAvailableOutputs->currentIndex();
 
-		bool inList = false;
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// already in list of source object ids
-				inList = true;
-				break;
-			}
-		}
+	def.m_sourceObjectType = proxyIndex.data(Qt::UserRole + 2).toString().toStdString();
+	def.m_quantity = proxyIndex.data(Qt::UserRole + 3).toString().toStdString(); // we append the index later, if needed
+	int currentGrid = m_ui->tableWidgetOutputGrids->currentRow();
+	if (currentGrid != -1)
+		def.m_gridName = m_ui->tableWidgetOutputGrids->item(currentGrid, 0)->text().toStdString();
+	else
+		def.m_gridName = "Default"; // how do we handle missing default grids?
+	def.m_timeType = VICUS::OutputDefinition::OTT_NONE;
+	// quantities with flux units get time-average as default
+	QString unit = proxyIndex.data(Qt::UserRole+4).toString();
+	if (unit == "W" || unit == "W/m2")
+		def.m_timeType = VICUS::OutputDefinition::OTT_MEAN;
 
-		if (!inList)
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id);
+	// get selected objects
+	for (const QListWidgetItem * i : m_ui->listWidgetObjectIDs->selectedItems())
+		def.m_sourceObjectIds.push_back(i->data(Qt::UserRole).toUInt());
+
+	// any vector IDs selected?
+	if (m_ui->listWidgetVectorIndexes->count() != 0) {
+		NANDRAD::IDGroup idGroup;
+
+		for (const QListWidgetItem * i : m_ui->listWidgetVectorIndexes->selectedItems())
+			idGroup.m_ids.insert(i->data(Qt::UserRole).toUInt());
+
+		def.m_quantity = def.m_quantity + "[" + idGroup.encodedString() + "]";
 	}
 
-	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
-	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
-	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+	m_outputs->m_definitions.push_back(def);
+	updateUi();
 }
+
+
+void SVSimulationOutputOptions::on_toolButtonRemoveDefinition_clicked() {
+	// get index of currently selected definition
+	int currentDef = m_ui->tableWidgetOutputDefinitions->currentRow();
+	Q_ASSERT(currentDef != -1);
+	m_outputs->m_definitions.erase(m_outputs->m_definitions.begin()+currentDef);
+	updateUi();
+	currentDef = std::min(currentDef, m_ui->tableWidgetOutputDefinitions->rowCount()-1);
+	if (currentDef != -1)
+		m_ui->tableWidgetOutputDefinitions->selectRow(currentDef);
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonAddGrid_clicked() {
+	// spawn edit dialog if it does not exist yet
+	if (m_outputGridEditDialog == nullptr)
+		m_outputGridEditDialog = new SVOutputGridEditDialog(this);
+	// create new condition
+	NANDRAD::OutputGrid def;
+	// compose unique identification name
+	def.m_name = tr("New output grid").toStdString();
+	def.m_name = IBK::pick_name(def.m_name, m_outputs->m_grids.begin(), m_outputs->m_grids.end());
+	// call edit dialog
+	bool success = m_outputGridEditDialog->edit(def, *m_outputs, -1);
+	// if user confirmed dialog, create undo command
+	if (success) {
+		m_outputs->m_grids.push_back(def);
+		updateUi();
+		m_ui->tableWidgetOutputGrids->selectRow(m_ui->tableWidgetOutputGrids->rowCount()-1);
+	}
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
+	if (m_outputGridEditDialog == nullptr)
+		m_outputGridEditDialog = new SVOutputGridEditDialog(this);
+	int defIdx = m_ui->tableWidgetOutputGrids->currentRow();
+	Q_ASSERT((unsigned int)defIdx < m_outputs->m_grids.size());
+	bool success = m_outputGridEditDialog->edit(m_outputs->m_grids[(unsigned int)defIdx], *m_outputs, defIdx);
+	if (success) {
+		updateUi();
+		m_ui->tableWidgetOutputGrids->selectRow(defIdx);
+	}
+}
+
+
+void SVSimulationOutputOptions::on_toolButtonRemoveGrid_clicked() {
+	// get index of currently selected definition
+	int currentDef = m_ui->tableWidgetOutputGrids->currentRow();
+	Q_ASSERT(currentDef != -1);
+	m_outputs->m_grids.erase(m_outputs->m_grids.begin()+currentDef);
+	updateUi();
+	currentDef = std::min(currentDef, m_ui->tableWidgetOutputGrids->rowCount()-1);
+	if (currentDef != -1)
+		m_ui->tableWidgetOutputGrids->selectRow(currentDef);
+}
+
+
+void SVSimulationOutputOptions::on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index) {
+	// create output for currently selected row and all objects/vector indexes
+	on_toolButtonAddDefinition_clicked();
+}
+
+
+void SVSimulationOutputOptions::on_tableWidgetOutputDefinitions_itemChanged(QTableWidgetItem *item) {
+	unsigned int defIdx = (unsigned int)item->row();
+	Q_ASSERT(m_outputs->m_definitions.size() > defIdx);
+	switch (item->column()) {
+		case 4 : {
+			VICUS::OutputDefinition::timeType_t t;
+			// determine index
+			try {
+				int i = VICUS::KeywordList::Enumeration("OutputDefinition::timeType_t", item->text().toStdString());
+				t = (VICUS::OutputDefinition::timeType_t)i;
+			} catch (...) {
+				qDebug() << "Invalid option for time type";
+				return; // something strange happened here?
+			}
+			m_outputs->m_definitions[defIdx].m_timeType = t;
+		} break;
+
+		case 5 :
+			m_outputs->m_definitions[defIdx].m_gridName = item->text().toStdString();
+	}
+}
+
+
+// *** private functions ***
+
+void SVSimulationOutputOptions::updateOutputDefinitionTable() {
+
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->blockSignals(true);
+	m_ui->tableWidgetOutputDefinitions->clearContents();
+	m_ui->tableWidgetOutputDefinitions->setRowCount(m_outputs->m_definitions.size());
+
+	QFont f(m_ui->tableWidgetOutputDefinitions->font());
+	f.setStyle(QFont::StyleItalic);
+
+	QColor badColor = Qt::gray; // the default, when there is not output_reference_list
+	if (m_outputTableModel->rowCount(QModelIndex()) != 0)
+		badColor = Qt::darkRed;
+	// we update the output grid
+	for (unsigned int i=0; i<m_outputs->m_definitions.size(); ++i) {
+		const VICUS::OutputDefinition & of = m_outputs->m_definitions[i];
+
+		// is this output being generated from the current project?
+		bool correct = m_outputTableModel->haveOutput(of);
+
+		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,0, item);
+
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,1, item);
+
+		// create list of comma-separated IDs
+		std::string ids = IBK::join_numbers(of.m_sourceObjectIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
+
+		// create list of comma-separated IDs
+		ids = IBK::join_numbers(of.m_vectorIds, ',');
+		item = new QTableWidgetItem(QString::fromStdString(ids));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
+
+		VICUS::OutputDefinition::timeType_t tt = of.m_timeType;
+		// we default to None
+		if (tt == VICUS::OutputDefinition::NUM_OTT)
+			tt = VICUS::OutputDefinition::OTT_NONE;
+		QString ttypekw = VICUS::KeywordListQt::Keyword("OutputDefinition::timeType_t", of.m_timeType);
+		item = new QTableWidgetItem(ttypekw);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,4, item);
+
+		item = new QTableWidgetItem(QString::fromStdString(of.m_gridName));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+		// check if referenced output grid name exists
+		if (std::find(m_outputs->m_grids.begin(), m_outputs->m_grids.end(), of.m_gridName) == m_outputs->m_grids.end()) {
+			item->setTextColor(Qt::darkRed);
+			item->setFont(f);
+		}
+		else if (!correct) {
+			item->setTextColor(badColor);
+			item->setFont(f);
+		}
+		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);
+	}
+	m_ui->tableWidgetOutputDefinitions->selectionModel()->blockSignals(false);
+	m_ui->tableWidgetOutputDefinitions->blockSignals(false);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(0);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(1);
+	m_ui->tableWidgetOutputDefinitions->resizeColumnToContents(5);
+
+	// update enabled status
+	on_tableWidgetOutputDefinitions_itemSelectionChanged();
+}
+
+
+void SVSimulationOutputOptions::updateOutdatedLabel() {
+	QFileInfo finfo(SVProjectHandler::instance().projectFile());
+	QString fileName = finfo.dir().absoluteFilePath(finfo.completeBaseName()); // path to vicus project without .vicus or .nandrad
+	fileName += "/var/output_reference_list.txt";
+	if (QFileInfo::exists(fileName) && QFileInfo::exists(SVProjectHandler::instance().projectFile()) ) {
+		QDateTime outRefFile = QFileInfo(fileName).lastModified();
+		QDateTime vicusFile = QFileInfo(SVProjectHandler::instance().projectFile()).lastModified();
+		if (outRefFile < vicusFile || SVProjectHandler::instance().isModified())
+			m_ui->labelOutputUpdateNeeded->setVisible(true);
+		else
+			m_ui->labelOutputUpdateNeeded->setVisible(false);
+	}
+	else {
+		m_ui->labelOutputUpdateNeeded->setVisible(true);
+	}
+}
+
 

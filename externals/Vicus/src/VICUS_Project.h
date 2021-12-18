@@ -115,8 +115,19 @@ public:
 	*/
 	const VICUS::Object * objectById(unsigned int uniqueID) const;
 
+	/*! Searches through all buildings and tries to find a room with given room ID (this
+		is not the uniqueID, but the persistant id from the data model).
+		\note This function is rather expensive, try to limit its use.
+	*/
+	VICUS::Room * roomByID(unsigned int roomID);
+
+	/*! Const-version of the function above. */
+	const VICUS::Room * roomByID(unsigned int roomID) const {
+		return const_cast<Project*>(this)->roomByID(roomID);
+	}
+
 	/*! Searches through all buildings and tries to find a surface with given surface ID (this
-		is not the uniqueID, but the persistant id from the data model.
+		is not the uniqueID, but the persistant id from the data model).
 		\note This function is rather expensive, try to limit its use.
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);

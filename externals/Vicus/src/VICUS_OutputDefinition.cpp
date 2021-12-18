@@ -29,19 +29,17 @@ namespace VICUS {
 
 bool OutputDefinition::operator!=(const OutputDefinition & other) const {
 
-	if (m_id != other.m_id)
+	if (m_quantity != other.m_quantity)
 		return true;
-	if (m_name != other.m_name)
-		return true;
-	if (m_type != other.m_type)
-		return true;
-	if (m_unit != other.m_unit)
+	if (m_sourceObjectType != other.m_sourceObjectType)
 		return true;
 	if (m_timeType != other.m_timeType)
 		return true;
 	if (m_sourceObjectIds != other.m_sourceObjectIds)
 		return true;
-	if (m_activeSourceObjectIds != other.m_activeSourceObjectIds)
+	if (m_vectorIds != other.m_vectorIds)
+		return true;
+	if (m_gridName != other.m_gridName)
 		return true;
 
 	return false;

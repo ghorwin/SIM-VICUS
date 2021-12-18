@@ -46,6 +46,10 @@ namespace VICUS {
 		- total heat conduction load in zone
 
 	Also, default object lists are being created.
+
+	Similarly, the flag "CreateDefaultNetworkOutputs" defines, whether default outputs for network objects are being created.
+
+	Additionally, custom output definitions can be specified.
 */
 class Outputs {
 	VICUS_READWRITE_PRIVATE
@@ -66,8 +70,8 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! List with output (file) definitions. */
-	std::vector<VICUS::OutputDefinition>				m_outputDefinitions;			// XML:E
+	/*! List with user-defined output definitions. */
+	std::vector<VICUS::OutputDefinition>				m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E

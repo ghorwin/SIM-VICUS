@@ -284,7 +284,7 @@ void SVPropBuildingComponentsWidget::on_pushButtonExchangeComponents_clicked() {
 	QString msg;
 	if (comp != nullptr) {
 		oldId = comp->m_id;
-		QString msg = tr("This will replace all associations with component '%1 [%2]' with another component.")
+		msg = tr("This will replace all associations with component '%1 [%2]' with another component.")
 				.arg(QtExt::MultiLangString2QString(comp->m_displayName)).arg(oldId);
 	}
 	else {

@@ -26,48 +26,39 @@
 #ifndef VICUS_OutputDefinitionH
 #define VICUS_OutputDefinitionH
 
-#include <NANDRAD_Outputs.h>
+#include <string>
+#include <vector>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 
 namespace VICUS {
 
-	struct SourceObject {
-
-		SourceObject(){}
-
-		SourceObject(unsigned int id, std::string displayName):
-			m_id(id),
-			m_displayName(displayName)
-		{}
-
-		/*! Indicates whether source object is set active */
-		bool						m_isActive = false;
-
-		/*! ID of Source Object */
-		unsigned int				m_id;
-		/*! Display Name of source object */
-		std::string					m_displayName;
-
-	};
-
 /*! Defines an output definition.
-	The VICUS output definition is very similar to the NANDRAD Outputs data structure, but
+	The VICUS output definition is very similar to the NANDRAD::OutputDefinition data structure, but
 	contains some more properties needed for the user interface.
 
-	If CreateDefaultZoneOutputs is true, default output definitions for zones are created.
-		These are:
-		- zone air temperatures for all zones
-		- wall surface temperatures for all constructions
-		- wall heat flux towards zones
-		- wall heat flux towards ambient
-		- total heat conduction load in zone
+	In NANDRAD, the output definition contains a variable name that encodes also the index in case
+	of vector-valued results. The source object is identified via flexibly defined object lists.
 
-	Also, default object lists are being created.
+	The object lists are not available in the VICUS user interface - currently, there is no support for
+	object lists defined by the user. Instead, object lists are created on-the-fly when needed.
+
+	Hence, we need to store information about the source object separetely, so that during the NANDRAD project
+	export we can create object lists for similarly referenced output source objects.
+
+	Example:
+	- we define a zonal output "AirTemperature"
+	- the user selects zones 1,5 and 10 as object sources
+
+	The data for output definitions matches that from the output_reference_list.txt generated during NANDRAD solver init.
+
+	Note: OutputDefinitions are globbed during NANDRAD project export into groups sorted by used grid, time type,
+		  source object type and quantity, since these define a unique NANDRAD::OutputDefinition.
+		  Within the VICUS project, such definitions should be stored uniquely, yet, it does not harm if there
+		  are duplicates, since these will be merged during the grouping process.
 */
 class OutputDefinition {
-	VICUS_READWRITE_PRIVATE
 public:
 
 	/*! Different options to handle time averaging/integration. */
@@ -84,45 +75,29 @@ public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
-	VICUS_READWRITE_IFNOTEMPTY(OutputDefinition)
+	VICUS_READWRITE
 	VICUS_COMP(OutputDefinition)
 
+	/*! Name of result variable, for example 'AirTemperature'.
+		In case of vector-valued quantities, the index is stored in [], for example
+		'ThermalLoad[2]'.
+	*/
+	std::string										m_quantity;						// XML:A:required
 
-	unsigned int									m_id = INVALID_ID;				// XML:A
+	/*! Time type of output definition. If missing, defaults to OTT_NONE. */
+	timeType_t										m_timeType = NUM_OTT;			// XML:E
 
-	/*! Name of output */
-	std::string										m_name;							// XML:A
+	/*! Type of the source object (this is already a NANDRAD reference type and does not match VICUS object types). */
+	std::string										m_sourceObjectType;				// XML:A:required
 
-	/*! Type of output */
-	std::string										m_type;							// XML:A
+	/*! Vector of all vector source object id(s). If this vector has more than one ID, the m_vectorIds vector must be empty. */
+	std::vector<unsigned int>						m_sourceObjectIds;				// XML:E:required
 
-	/*! Unit of output definition */
-	IBK::Unit										m_unit;							// XML:E
-
-	/*! Description of output definition */
-	std::string										m_description;
-
-	/*! Time Type of output definition */
-	timeType_t										m_timeType;						// XML:E
-
-	/*! Vector of all Vector indexes/ids */
+	/*! Vector of all indexes/ids of vector-valued quantities (if this is not empty, the source objects ID vector contains exactly one ID).  */
 	std::vector<unsigned int>						m_vectorIds;					// XML:E
 
-	/*! Vector of all Vector Source object id(s) */
-	std::vector<unsigned int>						m_sourceObjectIds;				// XML:E
-
-	/*! Vector of all active Vector Source object id(s) */
-	std::vector<unsigned int>						m_activeSourceObjectIds;		// XML:E
-
-	/*! Map that holds all data to source objects
-		key is the id of the sourceObject;
-	*/
-	std::map<unsigned int, SourceObject>			m_idToSourceObject;
-
-	// ===================== ONLY NEEDED IN WIDGET ===================================
-
-	/*! Pointer to output grid */
-	NANDRAD::OutputGrid						*m_outputGrid = nullptr;
+	/*! Rerefence name of output grid (corresponds to OutputGrid::m_name). */
+	std::string										m_gridName;						// XML:E:required
 };
 
 } // namespace VICUS
