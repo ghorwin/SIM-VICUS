@@ -27,12 +27,12 @@
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-			</MaterialLayer>	
+			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
 	<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 		<UsageType>OutsideWall</UsageType>
-		<MaterialLayers>	
+		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 			</MaterialLayer>
@@ -41,13 +41,11 @@
 			</MaterialLayer>
 			<MaterialLayer idMaterial="10001">
 				<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-			</MaterialLayer>	
+			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
+	<Construction id="1005" displayName="DE: [SimQuality] TF08 Betonschicht mit Flächenheizung |EN: [SimQuality] TF08 Concrete layer with surface heating">
 		<UsageType>OutsideWall</UsageType>
-		<InsulationKind>OutsideInsulation</InsulationKind>
-		<MaterialKind>NaturalStoneMasonry</MaterialKind>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10000">
 				<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
@@ -66,7 +64,7 @@
 			</MaterialLayer>
 		</MaterialLayers>
 	</Construction>
-	<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
+	<Construction id="1006" displayName="DE: [SimQuality] TF05 Gedämmte Betonwand |EN: [SimQuality] TF05 Insulated concrete wall">
 		<UsageType>OutsideWall</UsageType>
 		<MaterialLayers>
 			<MaterialLayer idMaterial="10004">
