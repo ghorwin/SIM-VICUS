@@ -286,7 +286,7 @@ void SVSimulationOutputOptions::on_tableWidgetOutputGrids_itemSelectionChanged()
 	// enable/disable buttons based on selection
 	// Mind: you must not delete the default grid
 	m_ui->toolButtonRemoveGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1 && m_ui->tableWidgetOutputGrids->rowCount() > 1);
-	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() != -1);
+	m_ui->toolButtonEditGrid->setEnabled(m_ui->tableWidgetOutputGrids->currentRow() > 0);
 }
 
 
@@ -437,19 +437,26 @@ void SVSimulationOutputOptions::on_toolButtonAddGrid_clicked() {
 	def.m_name = tr("New output grid").toStdString();
 	def.m_name = IBK::pick_name(def.m_name, m_outputs->m_grids.begin(), m_outputs->m_grids.end());
 	// call edit dialog
-	bool success = m_outputGridEditDialog->edit(def, -1);
+	bool success = m_outputGridEditDialog->edit(def, *m_outputs, -1);
 	// if user confirmed dialog, create undo command
 	if (success) {
 		m_outputs->m_grids.push_back(def);
 		updateUi();
 		m_ui->tableWidgetOutputGrids->selectRow(m_ui->tableWidgetOutputGrids->rowCount()-1);
 	}
-
 }
 
 
 void SVSimulationOutputOptions::on_toolButtonEditGrid_clicked() {
-
+	if (m_outputGridEditDialog == nullptr)
+		m_outputGridEditDialog = new SVOutputGridEditDialog(this);
+	int defIdx = m_ui->tableWidgetOutputGrids->currentRow();
+	Q_ASSERT(defIdx > 0 && defIdx < (int)m_outputs->m_grids.size());
+	bool success = m_outputGridEditDialog->edit(m_outputs->m_grids[(unsigned int)defIdx], *m_outputs, defIdx);
+	if (success) {
+		updateUi();
+		m_ui->tableWidgetOutputGrids->selectRow(defIdx);
+	}
 }
 
 
