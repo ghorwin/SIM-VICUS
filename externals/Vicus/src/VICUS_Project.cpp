@@ -245,6 +245,12 @@ void Project::parseHeader(const IBK::Path & filename) {
 			if (pos2 != std::string::npos)
 				m_projectInfo.m_lastEdited = line.substr(pos + 12, pos2 - pos - 12);
 		}
+		pos = line.find("<Comment>");
+		if (pos != std::string::npos) {
+			size_t pos2 = line.find("</Comment>");
+			if (pos2 != std::string::npos)
+				m_projectInfo.m_comment = line.substr(pos + 9, pos2 - pos - 9);
+		}
 	}
 }
 
