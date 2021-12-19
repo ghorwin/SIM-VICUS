@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>So. Dez. 19 10:38:30 2021</Created>
-		<LastEdited>So. Dez. 19 10:52:17 2021</LastEdited>
+		<LastEdited>So. Dez. 19 12:21:40 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -49,12 +49,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-15.6816 -19.5683 5.00961</CameraTranslation>
+			<CameraTranslation>-24.4425 -23.36 5.86129</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.723038</Wp>
-				<X>0.596235</X>
-				<Y>-0.221851</Y>
-				<Z>-0.269234</Z>
+				<Wp>0.706069</Wp>
+				<X>0.536062</X>
+				<Y>-0.279679</Y>
+				<Z>-0.368592</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -133,19 +133,19 @@
 		</Buildings>
 		<ComponentInstances>
 			<ComponentInstance id="2" idComponent="1012" idSideASurface="11" />
-			<ComponentInstance id="3" idComponent="1008" idSideASurface="12" idSideBSurface="18">
+			<ComponentInstance id="3" idComponent="1008" idSideASurface="18" idSideBSurface="12">
 				<IdSurfaceHeating>350001</IdSurfaceHeating>
 				<IdSurfaceHeatingControlZone>17</IdSurfaceHeatingControlZone>
 			</ComponentInstance>
-			<ComponentInstance id="4" idComponent="1001" idSideASurface="13" />
-			<ComponentInstance id="5" idComponent="1001" idSideASurface="14" />
-			<ComponentInstance id="6" idComponent="1001" idSideASurface="15" />
-			<ComponentInstance id="7" idComponent="1001" idSideASurface="16" />
+			<ComponentInstance id="4" idComponent="1004" idSideASurface="13" />
+			<ComponentInstance id="5" idComponent="1004" idSideASurface="14" />
+			<ComponentInstance id="6" idComponent="1004" idSideASurface="15" />
+			<ComponentInstance id="7" idComponent="1004" idSideASurface="16" />
 			<ComponentInstance id="9" idComponent="1011" idSideASurface="20" />
-			<ComponentInstance id="10" idComponent="1001" idSideASurface="22" />
-			<ComponentInstance id="11" idComponent="1001" idSideASurface="24" />
-			<ComponentInstance id="12" idComponent="1001" idSideASurface="26" />
-			<ComponentInstance id="13" idComponent="1001" idSideASurface="28" />
+			<ComponentInstance id="10" idComponent="1004" idSideASurface="22" />
+			<ComponentInstance id="11" idComponent="1004" idSideASurface="24" />
+			<ComponentInstance id="12" idComponent="1004" idSideASurface="26" />
+			<ComponentInstance id="13" idComponent="1004" idSideASurface="28" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
@@ -232,11 +232,17 @@
 				</Material>
 			</Materials>
 			<Constructions>
-				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
 						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
@@ -307,9 +313,9 @@
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1001</IdConstruction>
+					<IdConstruction>1004</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
