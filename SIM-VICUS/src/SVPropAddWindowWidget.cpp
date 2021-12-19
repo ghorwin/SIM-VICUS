@@ -272,11 +272,11 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 			subsurf.m_id = subsurf.uniqueID();
 			subsurf.m_polygon2D = p;
 			if (m_ui->radioButtonSubSurfaceTypeWindow->isChecked()) {
-				subsurf.m_displayName = tr("Window #").arg(subsurf.m_id);
+				subsurf.m_displayName = tr("Window #%1").arg(subsurf.m_id);
 				subsurf.m_color = QColor(96,96,255,64);
 			}
 			else {
-				subsurf.m_displayName = tr("Door #").arg(subsurf.m_id);
+				subsurf.m_displayName = tr("Door #%1").arg(subsurf.m_id);
 				subsurf.m_color = QColor(164,164,164,255);
 			}
 
