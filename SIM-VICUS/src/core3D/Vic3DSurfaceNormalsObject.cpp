@@ -96,9 +96,24 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
 		}
 		m_vertexCount += vertexes.size()*2;
+		// now also process all subsurfaces
+		if (!s->geometry().holeTriangulationData().empty() && s->geometry().holeTriangulationData().size() == s->subSurfaces().size()) {
+			for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
+				const VICUS::PlaneTriangulationData & holeTriangulation = s->geometry().holeTriangulationData()[i];
+				const std::vector<IBKMK::Vector3D> & vertexes = holeTriangulation.m_vertexes;
+				// take the normal vector and normalize
+				IBKMK::Vector3D n = s->geometry().normal();
+				n.normalize(); // now has length 1 (as in 1 m)
+				// process all vertexes
+				for (const IBKMK::Vector3D & v : vertexes) {
+					vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
+					vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
+				}
+				m_vertexCount += vertexes.size()*2;
+			}
+		}
 	}
 
-	// TODO Andreas, add normals of subsurfaces
 
 #if 0
 	vertexBufferData.clear();
