@@ -78,14 +78,29 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 	std::set<const VICUS::Object*> objs;
 	prj.selectObjects(objs, VICUS::Project::SG_Building, true, true);
 
+	std::set<const VICUS::SubSurface *> subSurfacesToShowNormalsFor;
+
 	// now process all surface objects
 	for (const VICUS::Object* o : objs) {
+		const VICUS::SubSurface * subSurf = dynamic_cast<const VICUS::SubSurface *>(o);
+		if (subSurf != nullptr) {
+			// remember subsurface to show
+			subSurfacesToShowNormalsFor.insert(subSurf);
+			continue;
+		}
+
+		// process all surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s == nullptr)
 			continue;
 		// skip all surfaces with invalid polygons
 		if (!s->geometry().isValid())
 			continue;
+		// remember to process subsurfaces later on
+		if (!s->geometry().holeTriangulationData().empty() && s->geometry().holeTriangulationData().size() == s->subSurfaces().size()) {
+			for (unsigned int i=0; i<s->subSurfaces().size(); ++i)
+				subSurfacesToShowNormalsFor.insert(&s->subSurfaces()[i]);
+		}
 		const std::vector<IBKMK::Vector3D> & vertexes = s->geometry().triangulationData().m_vertexes;
 		// take the normal vector and normalize
 		IBKMK::Vector3D n = s->geometry().normal();
@@ -96,34 +111,34 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
 		}
 		m_vertexCount += vertexes.size()*2;
-		// now also process all subsurfaces
+	}
+
+	// now process all sub-surfaces - these are either selected directly or selected indirectly as part of their parent
+	// surface
+	for (const VICUS::SubSurface * subSurf : subSurfacesToShowNormalsFor) {
+		// get parent surface
+		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface * >(subSurf->m_parent);
+		// only handle sub-surface if we have a valid polygon
 		if (!s->geometry().holeTriangulationData().empty() && s->geometry().holeTriangulationData().size() == s->subSurfaces().size()) {
-			for (unsigned int i=0; i<s->subSurfaces().size(); ++i) {
-				const VICUS::PlaneTriangulationData & holeTriangulation = s->geometry().holeTriangulationData()[i];
-				const std::vector<IBKMK::Vector3D> & vertexes = holeTriangulation.m_vertexes;
-				// take the normal vector and normalize
-				IBKMK::Vector3D n = s->geometry().normal();
-				n.normalize(); // now has length 1 (as in 1 m)
-				// process all vertexes
-				for (const IBKMK::Vector3D & v : vertexes) {
-					vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
-					vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
+			// which sub-surface index do we have?
+			for (unsigned int j=0; j<s->subSurfaces().size(); ++j) {
+				if (&(s->subSurfaces()[j]) == subSurf) {
+					const VICUS::PlaneTriangulationData & holeTriangulation = s->geometry().holeTriangulationData()[j];
+					const std::vector<IBKMK::Vector3D> & vertexes = holeTriangulation.m_vertexes;
+					// take the normal vector and normalize
+					IBKMK::Vector3D n = s->geometry().normal();
+					n.normalize(); // now has length 1 (as in 1 m)
+					// process all vertexes
+					for (const IBKMK::Vector3D & v : vertexes) {
+						vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
+						vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
+					}
+					m_vertexCount += vertexes.size()*2;
+					break;
 				}
-				m_vertexCount += vertexes.size()*2;
 			}
 		}
 	}
-
-
-#if 0
-	vertexBufferData.clear();
-	m_vertexCount = 0;
-
-	vertexBufferData.push_back(VertexC(QVector3D(0,0,0)));
-	vertexBufferData.push_back(VertexC(QVector3D(10,10,10)));
-	m_vertexCount = 2;
-
-#endif
 
 	m_vbo.bind();
 	m_vbo.allocate(vertexBufferData.data(), vertexBufferData.size()*sizeof(VertexC));
