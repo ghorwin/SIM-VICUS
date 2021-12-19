@@ -297,14 +297,24 @@ void SVPropBuildingComponentsWidget::on_pushButtonExchangeComponents_clicked() {
 	if (newId == VICUS::INVALID_ID)
 		return; // user has aborted the dialog
 
+	const VICUS::Component * newComp = SVSettings::instance().m_db.m_components[newId];
+	Q_ASSERT(newComp != nullptr);
+
 	// now process all component instances and modify the component
 	std::vector<VICUS::ComponentInstance> modCI = project().m_componentInstances;
 	for (VICUS::ComponentInstance & ci : modCI) {
 		// we identify the component instance to modify in two ways
 		if (e.m_type == 2) {
 			// for valid component instances, we use the old Id as identifier
-			if (ci.m_idComponent == oldId)
+			if (ci.m_idComponent == oldId) {
 				ci.m_idComponent = (unsigned int)newId;
+				// if new component instance does not have an active layer, also remove the surface heating and control zone
+				// properties
+				if (newComp->m_activeLayerIndex == VICUS::INVALID_ID) {
+					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
+				}
+			}
 		}
 		else {
 			// for invalid/missing component assignments
@@ -312,6 +322,12 @@ void SVPropBuildingComponentsWidget::on_pushButtonExchangeComponents_clicked() {
 				SVSettings::instance().m_db.m_components[ci.m_idComponent] == nullptr)
 			{
 				ci.m_idComponent = (unsigned int)newId;
+				// if new component instance does not have an active layer, also remove the surface heating and control zone
+				// properties
+				if (newComp->m_activeLayerIndex == VICUS::INVALID_ID) {
+					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
+				}
 			}
 		}
 	}
@@ -469,17 +485,33 @@ void SVPropBuildingComponentsWidget::assignComponent(bool insideWall, bool fromS
 		// now create a copy of the currently defined componentInstances
 		compInstances = project().m_componentInstances;
 
+		// lookup component based on selection
+		const VICUS::Component * newComp = SVSettings::instance().m_db.m_components[selectedComponentId];
+		Q_ASSERT(newComp != nullptr);
+
 		// process all componentInstances and for all that reference any of the selected surfaces, replace component
 		for (VICUS::ComponentInstance & ci : compInstances) {
 			std::set<const VICUS::Surface*>::iterator it = selectedSurfaces.find(ci.m_sideASurface);
 			if (it != selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
+				// if new component instance does not have an active layer, also remove the surface heating and control zone
+				// properties
+				if (newComp->m_activeLayerIndex == VICUS::INVALID_ID) {
+					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
+				}
 				selectedSurfaces.erase(it);
 				continue;
 			}
 			it = selectedSurfaces.find(ci.m_sideBSurface);
 			if (it != selectedSurfaces.end()) {
 				ci.m_idComponent = (unsigned int)selectedComponentId;
+				// if new component instance does not have an active layer, also remove the surface heating and control zone
+				// properties
+				if (newComp->m_activeLayerIndex == VICUS::INVALID_ID) {
+					ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
+					ci.m_idSurfaceHeating = VICUS::INVALID_ID;
+				}
 				selectedSurfaces.erase(it);
 			}
 		}
