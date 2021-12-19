@@ -58,3 +58,11 @@ void SVPreferencesPageMisc::on_checkBoxDontUseNativeDialogs_toggled(bool checked
 	QMessageBox::information(this, QString(), tr("Please restart application!"));
 }
 
+
+void SVPreferencesPageMisc::on_pushButtonResetDoNotShowAgainDialogs_clicked() {
+	SVSettings & s = SVSettings::instance();
+	for (QMap<QString, bool>::iterator it = s.m_doNotShowAgainDialogs.begin(); it != s.m_doNotShowAgainDialogs.end(); ++it) {
+		(*it) = false;
+	}
+	QMessageBox::information(this, QString(), tr("All confirmations have been disabled and information/confirmation dialogs will pop up again."));
+}
