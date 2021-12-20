@@ -486,6 +486,7 @@ void TNDynamicPipeElement::dependencies(const double *ydot, const double *y,
 
 
 void TNDynamicPipeElement::stepCompleted(double t) {
+#ifdef WRITE_TEMP_PROFILE
 	if (t - m_lastTimePoint < 60)
 		return;
 	m_lastTimePoint = t;
@@ -505,6 +506,7 @@ void TNDynamicPipeElement::stepCompleted(double t) {
 	*m_ofstream << std::endl;
 	m_ofstream->flush();
 	m_ofstream->close();
+#endif
 }
 
 

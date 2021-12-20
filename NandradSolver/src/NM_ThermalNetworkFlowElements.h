@@ -189,6 +189,7 @@ private:
 // **** Dynamic Pipe ***
 
 //#define DETAILLED_WALL_CAPACITY
+//#define WRITE_TEMP_PROFILE
 
 #ifdef DETAILLED_WALL_CAPACITY
 
