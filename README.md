@@ -54,6 +54,7 @@ data                 - all kinds of data files, including test suite
 doc                  - base directory for all documentation, see doc/README.md for details
 docs                 - generated AsciiDoctor-based documentation, displayed in github-pages
 externals            - libraries including third-party libs
+FMUs                 - base directory for source code of FMUs that extend NANDRAD solver functionality 
 lib_x64              - contains generated x64 libraries (nothing in here except .gitignore)
 NandradCodeGenerator - the NANDRAD code generator (keyword list and serialization support)
 NandradDevTests      - code snippeds used only during development/testing, not for production code, may not compile
@@ -67,7 +68,7 @@ View3D               - View3D program from NIST
 
 ### Libraries
 
-NANDRAD uses a bunch of external/third-party libraries:
+NANDRAD Solver and SIM-VICUS use a bunch of common libraries from IBK and external/third-party libraries:
 
 * **CCM** - _Climate Calculation Module_ (CCM), implements climate data loading and calculation of solar radiation loads
 * **clipper** - implements robust clipping calculation for two-dimensional polygons
@@ -77,17 +78,13 @@ NANDRAD uses a bunch of external/third-party libraries:
 * **IDFReader** - library for IDF file parsing and data import to VICUS
 * **IntegratorFramework** - library that includes several numerical interation libraries and provides a convenient framework to error-controlled time integration
 * **ITSOL2** - implements ILUT preconditioner (included in IntegratorFramework, this directory contains the original sources)
-* **Nandrad** - the data model library (project handling)
+* **Nandrad** - the NANDRAD data model library (holds the project data for the NANDRAD solver)
+* **QtExt** - Qt extension library from IBK, lots of utility functions and widgets to assist with UI development
+* **QuaZIP** - zip-support (needed for creating FMU archives)
+* **qwt** - plotting library/charts
 * **Shading** - implements shading factors calculation
 * **SuiteSparse** - implements sparse direct solver KLU
 * **sundials** - includes CVODE integrator, and GMRES and BiCGStab iterative les solvers
 * **TiCPP** - TinyXML parser library, used for reading/writing XML files
+* **Vicus** - SIM-VICUS data model library (holds the data model for the user interface)
 * **Zeppelin** - graphing library (see [Graf Zeppelin](https://de.wikipedia.org/wiki/Ferdinand_von_Zeppelin) :-), needed to determine evaluation order of the NANDRAD model objects
-
-Libraries related to UI development:
-
-* **QtExt** - Qt extension library, lots of utility functions and widgets to assist with UI development
-* **QuaZIP** - zip file support library
-* **qwt** - plotting library
-* **Vicus** - the data model for the user interface and overall geometry/BIM data
-
