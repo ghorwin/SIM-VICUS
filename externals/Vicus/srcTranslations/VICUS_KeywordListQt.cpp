@@ -195,6 +195,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe wall thickness");
 	tr("Pipe wall surface roughness");
 	tr("Thermal conductivity of pipe wall");
+	tr("Specific heat capaciy of pipe wall");
+	tr("Density of pipe wall");
 	tr("Thickness of insulation around pipe");
 	tr("Thermal conductivity of insulation");
 	tr("Write values as calculated at output times.");

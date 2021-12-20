@@ -413,8 +413,10 @@ namespace VICUS {
 				case 1 : return "ThicknessWall";
 				case 2 : return "RoughnessWall";
 				case 3 : return "ThermalConductivityWall";
-				case 4 : return "ThicknessInsulation";
-				case 5 : return "ThermalConductivityInsulation";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
+				case 6 : return "ThicknessInsulation";
+				case 7 : return "ThermalConductivityInsulation";
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -884,8 +886,10 @@ namespace VICUS {
 				case 1 : return "ThicknessWall";
 				case 2 : return "RoughnessWall";
 				case 3 : return "ThermalConductivityWall";
-				case 4 : return "ThicknessInsulation";
-				case 5 : return "ThermalConductivityInsulation";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
+				case 6 : return "ThicknessInsulation";
+				case 7 : return "ThermalConductivityInsulation";
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -1356,8 +1360,10 @@ namespace VICUS {
 				case 1 : return "Pipe wall thickness";
 				case 2 : return "Pipe wall surface roughness";
 				case 3 : return "Thermal conductivity of pipe wall";
-				case 4 : return "Thickness of insulation around pipe";
-				case 5 : return "Thermal conductivity of insulation";
+				case 4 : return "Specific heat capaciy of pipe wall";
+				case 5 : return "Density of pipe wall";
+				case 6 : return "Thickness of insulation around pipe";
+				case 7 : return "Thermal conductivity of insulation";
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -1827,8 +1833,10 @@ namespace VICUS {
 				case 1 : return "mm";
 				case 2 : return "mm";
 				case 3 : return "W/mK";
-				case 4 : return "mm";
-				case 5 : return "W/mK";
+				case 4 : return "J/kgK";
+				case 5 : return "kg/m3";
+				case 6 : return "mm";
+				case 7 : return "W/mK";
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -2300,6 +2308,8 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -2771,6 +2781,8 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// OutputDefinition::timeType_t
 			case 34 :
@@ -3002,7 +3014,7 @@ namespace VICUS {
 			// NetworkNode::NodeType
 			case 32 : return 3;
 			// NetworkPipe::para_t
-			case 33 : return 6;
+			case 33 : return 8;
 			// OutputDefinition::timeType_t
 			case 34 : return 3;
 			// Outputs::flag_t
@@ -3124,7 +3136,7 @@ namespace VICUS {
 			// NetworkNode::NodeType
 			case 32 : return 2;
 			// NetworkPipe::para_t
-			case 33 : return 5;
+			case 33 : return 7;
 			// OutputDefinition::timeType_t
 			case 34 : return 2;
 			// Outputs::flag_t

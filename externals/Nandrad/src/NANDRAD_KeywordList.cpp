@@ -314,6 +314,8 @@ namespace NANDRAD {
 				case 1 : return "PipeInnerDiameter";
 				case 2 : return "PipeOuterDiameter";
 				case 3 : return "UValuePipeWall";
+				case 4 : return "HeatCapacityPipeWall";
+				case 5 : return "DensityPipeWall";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -946,6 +948,8 @@ namespace NANDRAD {
 				case 1 : return "PipeInnerDiameter";
 				case 2 : return "PipeOuterDiameter";
 				case 3 : return "UValuePipeWall";
+				case 4 : return "HeatCapacityPipeWall";
+				case 5 : return "DensityPipeWall";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -1579,6 +1583,8 @@ namespace NANDRAD {
 				case 1 : return "Inner diameter of pipe";
 				case 2 : return "Outer diameter of pipe";
 				case 3 : return "Length-specific U-Value of pipe wall incl. insulation";
+				case 4 : return "Specific heat capaciy of pipe wall";
+				case 5 : return "Density of pipe wall";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -2211,6 +2217,8 @@ namespace NANDRAD {
 				case 1 : return "mm";
 				case 2 : return "mm";
 				case 3 : return "W/mK";
+				case 4 : return "J/kgK";
+				case 5 : return "kg/m3";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -2843,6 +2851,8 @@ namespace NANDRAD {
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -3475,6 +3485,8 @@ namespace NANDRAD {
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -3973,7 +3985,7 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::References
 			case 21 : return 2;
 			// HydraulicNetworkPipeProperties::para_t
-			case 22 : return 4;
+			case 22 : return 6;
 			// IdealHeatingCoolingModel::para_t
 			case 23 : return 4;
 			// IdealPipeRegisterModel::modelType_t
@@ -4149,7 +4161,7 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::References
 			case 21 : return 1;
 			// HydraulicNetworkPipeProperties::para_t
-			case 22 : return 3;
+			case 22 : return 5;
 			// IdealHeatingCoolingModel::para_t
 			case 23 : return 3;
 			// IdealPipeRegisterModel::modelType_t
