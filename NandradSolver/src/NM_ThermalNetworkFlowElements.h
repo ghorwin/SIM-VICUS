@@ -184,7 +184,13 @@ private:
 #endif // STATIC_PIPE_MODEL_ENABLED
 
 
+
+
 // **** Dynamic Pipe ***
+
+#define DETAILLED_WALL_CAPACITY
+
+#ifdef DETAILLED_WALL_CAPACITY
 
 /*! Instantiated for DynamicPipe elements with HeatExchangeType set. */
 class TNDynamicPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
@@ -208,7 +214,155 @@ public:
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override { return m_nVolumes;}
+	unsigned int nInternalStates() const override;
+
+	/*! Function for setting initial temperature
+	 * for each model.*/
+	void setInitialTemperature(double T0) override;
+
+	/*! Function for retrieving initial states.*/
+	void initialInternalStates(double *y0) override;
+
+	/*! Function for setting internal states.*/
+	void setInternalStates(const double *y) override;
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot) override;
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::outflowTemperature(). */
+	double outflowTemperature() const override;
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
+
+	/*! Function for registering dependencies between derivaites, internal states and modelinputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+
+	void stepCompleted(double t) override;
+
+private:
+
+	/*! Id number of flow element. */
+	unsigned int					m_flowElementId = NANDRAD::INVALID_ID;
+
+	/*! Value reference to external temperature. */
+	const double					*m_heatExchangeTemperatureRef = nullptr;
+
+	/*! Number of discretization volumes */
+	unsigned int					m_nVolumes;
+
+	/*! Volume of all pipe discretization element [m3] s*/
+	double							m_discVolumeFluid = -999;
+
+	double							m_discVolumeWall = -999;
+
+	/*! Lengths of of all pipe volumes [m] */
+	double							m_discLength = -999;
+
+	/*! Effective flow cross-section [m2].
+		\note This is the total cross section for fluid flow of all pipes (if m_nParallelPipes is larger than 1).
+	*/
+	double							m_fluidCrossSection = -999;
+
+	/*! Fluid temperatures for all discretization volumes [K] */
+	std::vector<double>				m_temperaturesFluid;
+
+	std::vector<double>				m_temperaturesWall;
+
+	/*! Fluid temperatures for all discretization volumes [W] */
+	std::vector<double>				m_heatLossesFluid;
+
+	std::vector<double>				m_heatLossesWall;
+
+	/*! Pipe length in [m] */
+	double							m_length = -999;
+
+	/*! Hydraulic (inner) diameter of pipe [m] */
+	double							m_innerDiameter = -999;
+
+	/*! Outer diameter of pipe [m] */
+	double							m_outerDiameter = -999;
+
+	/*! Number of parallel pipes (=1 per default).*/
+	unsigned int					m_nParallelPipes;
+
+	/*! Fluid conductivity [W/mK].
+		Cached value from fluid properties.
+	*/
+	double							m_fluidConductivity = -999;
+
+	/*! Fluid dynamic viscosity [m/s] (temperature dependent).*/
+	IBK::LinearSpline				m_fluidViscosity;
+
+	/*! Fluid volume flow [m3/s]. */
+	double							m_volumeFlow = -999;
+
+	/*! Equivalent u-value of the pipe wall and insulation per length of pipe in [W/mK] */
+	double							m_UValuePipeWall = -999;
+
+	/*! Heat transfer coefficient from outer pipe wall to environment in [W/m2K] */
+	double							m_outerHeatTransferCoefficient = -999;
+
+	/*! Fluid velocity [m/s]*/
+	double							m_velocity = -999;
+
+	/*! Fluid dynamic viscosity in [m2/s]*/
+	double							m_viscosity = -999;
+
+	/*! Reynolds number in [---]*/
+	double							m_reynolds = -999;
+
+	/*! Prandl number in [---]*/
+	double							m_prandtl = -999;
+
+	/*! Nusselt number in [---]*/
+	double							m_nusselt = -999;
+
+	/*! Total thermal transmittance multiplied with the surface area of a pipe segment in [W/K]. */
+	double							m_UAValueFluidPipe = -999;
+
+	double							m_UAValuePipeAmbient = -999;
+
+	double							m_densityWall = -999;
+	double							m_heatCapacityWall = -999;
+
+	double							m_lastTimePoint = 0;
+
+	std::ofstream					*m_ofstream = nullptr;
+
+	friend class ThermalNetworkBalanceModel;
+};
+
+
+#else
+
+
+
+/*! Instantiated for DynamicPipe elements with HeatExchangeType set. */
+class TNDynamicPipeElement : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+public:
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElement & elem,
+				  const NANDRAD::HydraulicNetworkComponent & comp,
+				  const NANDRAD::HydraulicNetworkPipeProperties & pipePara,
+				  const NANDRAD::HydraulicFluid & fluid);
+
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs. */
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function retrieving number of internal states.*/
+	unsigned int nInternalStates() const override;
 
 	/*! Function for setting initial temperature
 	 * for each model.*/
@@ -311,6 +465,8 @@ private:
 
 	friend class ThermalNetworkBalanceModel;
 };
+
+#endif  // DETAILLED_WALL_CAPACITY
 
 
 

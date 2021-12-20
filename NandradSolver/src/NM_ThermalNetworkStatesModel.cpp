@@ -501,6 +501,14 @@ int ThermalNetworkStatesModel::setTime(double t) {
 }
 
 
+void ThermalNetworkStatesModel::stepCompleted(double t)
+{
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		fe->stepCompleted(t);
+	}
+}
+
+
 void ThermalNetworkStatesModel::yInitial(double * y) {
 	// set internal states
 	unsigned int offset = 0;

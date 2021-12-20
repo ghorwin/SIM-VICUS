@@ -150,6 +150,8 @@ public:
 	*/
 	virtual void setInputValueRefs(std::vector<const double *>::const_iterator & /*resultValueRefs*/) {}
 
+	virtual void stepCompleted(double /*t*/) {}
+
 	// Common variables for flow elements
 
 	/*! Temperature of inflowing fluid in [K], regardless where it flows into element (depends on massFlux sign). */

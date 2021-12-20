@@ -94,6 +94,8 @@ public:
 	/*! Updates time-dependent spline data (temperatures/heat losses). */
 	virtual int setTime(double t) override;
 
+	virtual void stepCompleted(double t) override;
+
 
 	// *** Other public member functions
 
@@ -159,6 +161,7 @@ private:
 
 
 	friend class ThermalNetworkBalanceModel;
+
 };
 
 } // namespace NANDRAD_MODEL
