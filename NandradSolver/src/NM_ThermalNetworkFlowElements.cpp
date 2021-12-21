@@ -603,9 +603,6 @@ void TNDynamicPipeElement::setInputValueRefs(std::vector<const double *>::const_
 }
 
 
-unsigned int TNDynamicPipeElement::nInternalStates() const { return m_nVolumes;}
-
-
 void TNDynamicPipeElement::setInitialTemperature(double T0) {
 	// use standard implementation
 	ThermalNetworkAbstractFlowElementWithHeatLoss::setInitialTemperature(T0);
