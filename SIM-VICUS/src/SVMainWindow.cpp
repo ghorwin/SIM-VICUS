@@ -93,6 +93,7 @@
 
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
+#include "SVCoSimCO2VentilationDialog.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
@@ -1022,16 +1023,7 @@ void SVMainWindow::on_actionEditTextEditProject_triggered() {
 
 
 void SVMainWindow::on_actionEditPreferences_triggered() {
-	// spawn preferences dialog
-	if (m_preferencesDialog == nullptr) {
-		m_preferencesDialog = new SVPreferencesDialog(this);
-		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-				this, &SVMainWindow::onStyleChanged);
-		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
-	}
-
-	m_preferencesDialog->edit(0); // changes are stored automatically.
+	preferencesDialog()->edit(0); // changes are stored automatically.
 }
 
 
@@ -1130,7 +1122,9 @@ void SVMainWindow::on_actionSimulationExportFMI_triggered() {
 
 
 void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
-
+	if (m_coSimCO2VentilationDialog == nullptr)
+		m_coSimCO2VentilationDialog = new SVCoSimCO2VentilationDialog(this);
+	m_coSimCO2VentilationDialog->exec();
 }
 
 
@@ -1230,10 +1224,7 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
 																  "post processing in the preferences dialog!"));
 		// spawn preferences dialog
-		if (m_preferencesDialog == nullptr)
-			m_preferencesDialog = new SVPreferencesDialog(this);
-
-		m_preferencesDialog->edit(0);
+		preferencesDialog()->edit(0);
 		return;
 	}
 	// if we are using the new post-processing, generate a session file:
@@ -1294,10 +1285,7 @@ void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
 																  "climate editor in the preferences dialog!"));
 		// spawn preferences dialog
-		if (m_preferencesDialog == nullptr)
-			m_preferencesDialog = new SVPreferencesDialog(this);
-
-		m_preferencesDialog->edit(0);
+		preferencesDialog()->edit(0);
 		return;
 	}
 	bool res = QProcess::startDetached(ccmPath, QStringList(), QString());
@@ -1433,6 +1421,7 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
 	m_ui->actionSimulationExportFMI->setEnabled(have_project);
+	m_ui->actionSimulationCO2Balance->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)
@@ -1919,6 +1908,17 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 
 SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
 	return m_simulationStartNandrad;
+}
+
+SVPreferencesDialog * SVMainWindow::preferencesDialog() {
+	if (m_preferencesDialog == nullptr) {
+		m_preferencesDialog = new SVPreferencesDialog(this);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				this, &SVMainWindow::onStyleChanged);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
+	}
+	return m_preferencesDialog;
 }
 
 

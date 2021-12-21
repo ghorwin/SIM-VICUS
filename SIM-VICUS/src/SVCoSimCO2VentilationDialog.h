@@ -17,11 +17,25 @@ public:
 
 	int exec() override;
 
+private slots:
+	void on_pushButtonLaunchMasterSim_clicked();
+
+	void on_pushButtonGenerate_clicked();
+
 private:
 	/*! This function checks the VICUS project data for valid and sufficient parametrization regarding CO2 balances. */
 	bool checkProjectData() const;
 
 	Ui::SVCoSimCO2VentilationDialog *m_ui;
+
+	/*! Path to CO2-Balance FMU directory (wherein FMU files are collected) and where modelDescription.xml is being generated. */
+	QString							m_co2FMUBaseDir;
+	/*! Path to generated CO2-Balance FMU. */
+	QString							m_co2FMUFilePath;
+	/*! Path to generated NANDRAD FMU. */
+	QString							m_nandradFMUFilePath;
+	/*! Path to generated MSIM-Project file. */
+	QString							m_msimProjectFilePath;
 };
 
 #endif // SVCoSimCO2VentilationDialogH

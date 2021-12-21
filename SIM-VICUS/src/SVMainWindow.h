@@ -56,6 +56,7 @@ class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
+class SVCoSimCO2VentilationDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -170,6 +171,9 @@ public:
 
 	/*! Returns the pointer to the Start Simulation Nandrad Widget */
 	SVSimulationStartNandrad * simulationStartNandrad() const;
+
+	/*! Returns pointer to the applications preferences dialog. */
+	SVPreferencesDialog * preferencesDialog();
 
 public slots:
 
@@ -482,6 +486,8 @@ private:
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;
 
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
+
+	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
 
 	friend class SVThreadBase;
 

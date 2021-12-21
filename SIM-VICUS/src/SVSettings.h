@@ -227,6 +227,9 @@ public:
 	/*! Path to CCMEditor executable. */
 	QString						m_CCMEditorExecutable;
 
+	/*! Path to MasterSim. */
+	QString						m_masterSimExecutable;
+
 	/*! ThemeType of theme applied */
 	ThemeType					m_theme = TT_Dark;
 
