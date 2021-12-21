@@ -1,0 +1,1 @@
+This is generation code for CO2 comfort ventilation FMU. The model calculates ventilation rate dependending on temperature and CO2 content and integrates CO2 balance for a given set of zones.
