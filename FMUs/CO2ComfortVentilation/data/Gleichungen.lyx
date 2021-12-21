@@ -1,0 +1,286 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format pdf2
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 2.5cm
+\rightmargin 2.5cm
+\bottommargin 4cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Berechnung geregelter Lüftungsraten für die CO2-Bilanz
+\end_layout
+
+\begin_layout Standard
+Die 
+\begin_inset Formula $CO_{2}$
+\end_inset
+
+-Bilanz eines Raumes berücksichtigt sowohl Quellterme als den Austrag durch
+ Lüftung.
+ Zunächst sei leiglich Lüftung behandelt mit Luftwechselrate 
+\begin_inset Formula $n$
+\end_inset
+
+, Masse 
+\begin_inset Formula $m_{CO_{2}}$
+\end_inset
+
+ im Raum, Raumluftvolumen 
+\begin_inset Formula $V_{zone}$
+\end_inset
+
+ und 
+\begin_inset Formula $CO_{2}$
+\end_inset
+
+-Massendichte der Außenluft 
+\begin_inset Formula $\rho_{CO_{2},amb}$
+\end_inset
+
+ nach Gleichung 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:CO2Bilanz"
+
+\end_inset
+
+.
+ In der Bilanz können zusätzliche Quellterme 
+\begin_inset Formula $\dot{m}_{CO_{2}}$
+\end_inset
+
+ vorkommen.
+ 
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\partial m_{CO_{2}}\left(t\right)}{\partial t} & = & n\text{\left(\rho_{CO_{2},amb}V_{zone}-m_{CO_{2}}\left(t\right)\right)+\dot{m}_{CO_{2}}\left(t\right)}\label{eq:CO2Bilanz}
+\end{eqnarray}
+
+\end_inset
+
+Die homogene Lösung der Differentialgleichung ergibt die Differentialgleichung
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:HomogeneDGL"
+
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\partial m_{CO_{2},h}\left(t\right)}{\partial t} & = & -nm_{CO_{2},h}\left(t\right)\label{eq:HomogeneDGL}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+mit der Lösung 
+\begin_inset Formula $m_{CO_{2},h}$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray}
+m_{CO_{2},h}\left(t\right) & = & \exp\left[-n\left(t-t_{0}\right)\right]
+\end{eqnarray}
+
+\end_inset
+
+Die geschlossene Lösung ergibt sich durch den Ansatz 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:InhomogeneLösung"
+
+\end_inset
+
+ mit Startlösung 
+\begin_inset Formula $m_{CO_{2},0}$
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{equation}
+m_{CO_{2}}\left(t\right)=\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\left(t\right)\label{eq:InhomogeneLösung}
+\end{equation}
+
+\end_inset
+
+Konkret führt Einsetzen in die Bilanzgleichung auf eine Bestimmungsformel
+ für die Faltungsfunktion 
+\begin_inset Formula $G(t)$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right) & = & n\rho_{CO_{2},amb}V_{zone}+\dot{m}_{CO_{2}}\left(t\right)\label{eq:InhomogeneDGL}
+\end{eqnarray}
+
+\end_inset
+
+Dies führt das auf den Lösungsansatz 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Faltungsfunktion"
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{eqnarray}
+G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(\exp\left[n\left(t-t_{0}\right)\right]-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(t\right)\exp\left[n\left(s-t_{0}\right)\right]ds\label{eq:Faltungsfunktion}
+\end{eqnarray}
+
+\end_inset
+
+und der geschlossenen Lösung 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Lösung"
+
+\end_inset
+
+.
+ 
+\begin_inset Formula 
+\begin{eqnarray}
+m_{CO_{2}}\left(t\right) & = & m_{CO_{2},0}\exp\left[-n\left(t-t_{0}\right)\right]+\rho_{CO_{2},amb}V_{zone}\left(1-\exp\left[-n\left(t-t_{0}\right)\right]\right)\label{eq:Lösung}\\
+ &  & +\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(t\right)\exp\left[-n\left(t-s\right)\right]ds
+\end{eqnarray}
+
+\end_inset
+
+Es ist naheliegend, die Lösung des nächstfolgenden Zeitschrittes 
+\begin_inset Formula $t_{n+1}$
+\end_inset
+
+ durch die Integration vom vorangegangenen Zeitschritt 
+\begin_inset Formula $t_{0}=t_{n}$
+\end_inset
+
+ zu gewinnen.
+ Daraus ergibt sich 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Zeitintegration"
+
+\end_inset
+
+ 
+\begin_inset Formula 
+\begin{eqnarray}
+m_{CO_{2}}\left(t_{n+1}\right) & = & m_{CO_{2}}\left(t_{n}\right)\exp\left[-n\triangle t\right]+\rho_{CO_{2},amb}V_{zone}\left(1-\exp\left[-n\triangle t\right]\right)\label{eq:Zeitintegration}\\
+ &  & +\int_{t_{n}}^{t_{n+1}}\dot{m}_{CO_{2}}\left(t\right)\exp\left[-n\left(t_{n+1}-t\right)\right]dt
+\end{eqnarray}
+
+\end_inset
+
+Das Ersetzen der Quellterme 
+\begin_inset Formula $\dot{m}_{CO_{2}}\left(t\right)$
+\end_inset
+
+ durch numerische Integration führt auf 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:ZeitintegrationApprox"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{eqnarray}
+m_{CO_{2}}\left(t_{n+1}\right) & = & m_{CO_{2}}\left(t_{n}\right)\exp\left[-n\triangle t\right]+\rho_{CO_{2},amb}V_{zone}\left(1-\exp\left[-n\triangle t\right]\right)\nonumber \\
+ &  & +\frac{1}{2}\frac{\Delta t}{k}\sum_{i=0}^{k-1}\dot{m}_{CO_{2}}\left(t_{n}+\frac{i}{k}\triangle t\right)\exp\left[-n(1-\frac{i}{k})\triangle t\right]\nonumber \\
+ &  & +\frac{1}{2}\frac{\Delta t}{k}\sum_{i=0}^{k-1}\dot{m}_{CO_{2}}\left(t_{n}+\frac{i+1}{k}\triangle t\right)\exp\left[-n(1-\frac{i+1}{k})\triangle t\right]\label{eq:ZeitintegrationApprox}
+\end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
