@@ -363,7 +363,7 @@ public:
 	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
 
 	/*! Function retrieving number of internal states.*/
-	unsigned int nInternalStates() const override;
+	unsigned int nInternalStates() const override { return m_nVolumes;}
 
 	/*! Function for setting initial temperature
 	 * for each model.*/
