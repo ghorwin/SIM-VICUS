@@ -43,7 +43,9 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">30</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">35</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">12.47255355</IBK:Parameter>
+						<IBK:Parameter name="UValueWall" unit="W/mK">5</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>

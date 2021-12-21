@@ -42,7 +42,7 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.007</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/m2K">5</IBK:Parameter>						
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>

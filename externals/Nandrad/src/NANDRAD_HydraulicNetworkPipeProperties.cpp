@@ -52,11 +52,11 @@ void HydraulicNetworkPipeProperties::checkParameters(int networkModelType) const
 	HydraulicNetwork::ModelType modelType = (HydraulicNetwork::ModelType) networkModelType;
 
 	if (modelType == HydraulicNetwork::MT_ThermalHydraulicNetwork) {
-		m_para[P_UValuePipeWall].checkedValue("UValuePipeWall", "W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), true,
+		m_para[P_UValueWall].checkedValue("UValueWall", "W/mK", "W/mK", 0, false, std::numeric_limits<double>::max(), true,
 								"Pipe UValue must be > 0 W/mK.");
-		m_para[P_DensityPipeWall].checkedValue("DensityPipeWall", "kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), true,
+		m_para[P_DensityWall].checkedValue("DensityWall", "kg/m3", "kg/m3", 0, false, std::numeric_limits<double>::max(), true,
 								"Pipe wall density must be > 0 kg/m3.");
-		m_para[P_HeatCapacityPipeWall].checkedValue("HeatCapacityPipeWall", "J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), true,
+		m_para[P_HeatCapacityWall].checkedValue("HeatCapacityWall", "J/kgK", "J/kgK", 0, false, std::numeric_limits<double>::max(), true,
 								"Pipe wall heat capcity must be > 0 J/kgK.");
 	}
 }

@@ -313,9 +313,9 @@ namespace NANDRAD {
 				case 0 : return "PipeRoughness";
 				case 1 : return "PipeInnerDiameter";
 				case 2 : return "PipeOuterDiameter";
-				case 3 : return "UValuePipeWall";
-				case 4 : return "HeatCapacityPipeWall";
-				case 5 : return "DensityPipeWall";
+				case 3 : return "UValueWall";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :
@@ -947,9 +947,9 @@ namespace NANDRAD {
 				case 0 : return "PipeRoughness";
 				case 1 : return "PipeInnerDiameter";
 				case 2 : return "PipeOuterDiameter";
-				case 3 : return "UValuePipeWall";
-				case 4 : return "HeatCapacityPipeWall";
-				case 5 : return "DensityPipeWall";
+				case 3 : return "UValueWall";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
 			} break;
 			// IdealHeatingCoolingModel::para_t
 			case 23 :

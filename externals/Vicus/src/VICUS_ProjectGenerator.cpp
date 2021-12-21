@@ -2467,12 +2467,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 										   NANDRAD::HydraulicNetworkPipeProperties::P_PipeRoughness,
 										   pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].get_value("mm"));
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall, pipe->UValue());
+										   NANDRAD::HydraulicNetworkPipeProperties::P_UValueWall, pipe->UValue());
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_DensityPipeWall,
+										   NANDRAD::HydraulicNetworkPipeProperties::P_DensityWall,
 										   pipe->m_para[VICUS::NetworkPipe::P_DensityWall].value);
 		NANDRAD::KeywordList::setParameter(pipeProp.m_para, "HydraulicNetworkPipeProperties::para_t",
-										   NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityPipeWall,
+										   NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityWall,
 										   pipe->m_para[VICUS::NetworkPipe::P_HeatCapacityWall].value);
 		nandradNetwork.m_pipeProperties.push_back(pipeProp);
 	}

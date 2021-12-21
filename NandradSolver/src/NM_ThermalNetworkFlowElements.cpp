@@ -50,7 +50,7 @@ TNSimplePipeElement::TNSimplePipeElement(const NANDRAD::HydraulicNetworkElement 
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
-	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
+	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValueWall].value;
 	m_outerHeatTransferCoefficient =
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// copy number of pipes
@@ -238,7 +238,7 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
-	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
+	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValueWall].value;
 	m_outerHeatTransferCoefficient =
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// copy number of pipes
@@ -250,8 +250,8 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
 
 	// equivalent fluid volume of pipe wall
-	m_densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityPipeWall].value;
-	m_heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityPipeWall].value;
+	m_densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityWall].value;
+	m_heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityWall].value;
 
 	// calculate fluid volume inside the pipe
 	// Note: This is the volume of all parallel pipes. It also includes the equivalent volume of the pipe wall.
@@ -523,7 +523,7 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	m_length = elem.m_para[NANDRAD::HydraulicNetworkElement::P_Length].value;
 	m_innerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeInnerDiameter].value;
 	m_outerDiameter = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_PipeOuterDiameter].value;
-	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValuePipeWall].value;
+	m_UValuePipeWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_UValueWall].value;
 	m_outerHeatTransferCoefficient =
 			elem.m_heatExchange.m_para[NANDRAD::HydraulicNetworkHeatExchange::P_ExternalHeatTransferCoefficient].value;
 	// copy number of pipes
@@ -535,8 +535,8 @@ TNDynamicPipeElement::TNDynamicPipeElement(const NANDRAD::HydraulicNetworkElemen
 	m_fluidViscosity = fluid.m_kinematicViscosity.m_values;
 
 	// equivalent fluid volume of pipe wall
-	double densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityPipeWall].value;
-	double heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityPipeWall].value;
+	double densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityWall].value;
+	double heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityWall].value;
 	double volumeWall = PI/4. * m_length * (m_outerDiameter*m_outerDiameter - m_innerDiameter*m_innerDiameter);
 	double equivalentVolumeWall = densityWall * heatCapacityWall * volumeWall / (m_fluidDensity * m_fluidHeatCapacity) * m_nParallelPipes;
 	// calculate fluid volume inside the pipe
@@ -781,8 +781,8 @@ TNDynamicAdiabaticPipeElement::TNDynamicAdiabaticPipeElement(const NANDRAD::Hydr
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 
 	// equivalent fluid volume of pipe wall
-	double densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityPipeWall].value;
-	double heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityPipeWall].value;
+	double densityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_DensityWall].value;
+	double heatCapacityWall = pipePara.m_para[NANDRAD::HydraulicNetworkPipeProperties::P_HeatCapacityWall].value;
 	double volumeWall = PI/4. * length * (outerDiameter*outerDiameter - innerDiameter*innerDiameter);
 	double equivalentVolumeWall = densityWall * heatCapacityWall * volumeWall / (m_fluidDensity * m_fluidHeatCapacity);
 
