@@ -171,15 +171,11 @@ void SVNetworkDialogSelectPipes::updateNetworkTableWidget()
 
 		// pipe name
 		item = new QTableWidgetItem();
-		if (pipe == nullptr){
+		if (pipe == nullptr)
 			item->setText(tr("<invalid pipe id>"));
-			item->setData(Qt::UserRole, VICUS::INVALID_ID);
-		}
-		else{
+		else
 			item->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			item->setData(Qt::UserRole, pipe->m_id);
-		}
+		item->setData(Qt::UserRole, id);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetNetwork->setItem(row, 1, item);
 
