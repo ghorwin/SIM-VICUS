@@ -156,7 +156,7 @@
         <string>Removes project-local database elements that are currently nowhere referenced.</string>
        </property>
        <property name="text">
-        <string>Remove unused lokal elements</string>
+        <string>Remove unused local elements</string>
        </property>
        <property name="icon">
         <iconset resource="../resources/SIM-VICUS.qrc">

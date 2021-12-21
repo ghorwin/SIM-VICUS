@@ -152,12 +152,14 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 
 	// Mind: use the values in units as defined in the keyword list!
 
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside, 16);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall, 4);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside, 25);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall, 2.3);
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_RoughnessWall, 7e-3);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall, 0.8);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall, 0.4);
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessInsulation, 0);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation, 0.8);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation, 0.035);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_HeatCapacityWall, 1900);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DensityWall, 960);
 
 	pipe.m_categoryName.setEncodedString("PE");
 	pipe.m_displayName = pipe.nameFromData();
