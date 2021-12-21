@@ -468,13 +468,13 @@ protected:
 
 
 
-// **** TNHeatPumpIdealCarnot ***
+// **** TNHeatPumpVariable ***
 
-class TNHeatPumpIdealCarnot : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+class TNHeatPumpVariable : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpIdealCarnot(const NANDRAD::HydraulicFluid & fluid,
+	TNHeatPumpVariable(const NANDRAD::HydraulicFluid & fluid,
 						  const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Publishes individual model quantities via descriptions. */
@@ -505,6 +505,12 @@ public:
 					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
 
 private:
+
+	/*! Calculates COP depending on model (using CarnotEfficiency or polynom) and check if temperatures and COP are in a valid range.
+	 * If temperatures / COP are out of range: throw warning and set m_COP=0
+	 */
+	void calculateCOP();
+
 	/*! Cached parametrization for heat pump flow element. */
 	const NANDRAD::HydraulicNetworkElement	*m_flowElement = nullptr;
 
@@ -533,8 +539,11 @@ private:
 	/*! Actual heating power of heat pump (condenser) in [W] */
 	double									m_evaporatorHeatFlux = 999999;
 
-	/*! Carnot efficiency [0...1] */
+	/*! Carnot efficiency [0...1] used for model MT_HeatPumpVariableIdealCarnotSourceSide, *SupplySide */
 	double									m_carnotEfficiency = 999;
+
+	/*! Coefficients for COP calculation with polynom, used for model MT_HeatPumpVariableSourceSide */
+	std::vector<double>						m_coeffsCOP;
 
 	/*! Coefficient of performance for heat pump */
 	double									m_COP = 999;
@@ -544,19 +553,19 @@ private:
 
 	/*! Temperature difference across flow element [K]. */
 	double									m_temperatureDifference = 999;
-
 };
 
 
 
 
-// **** TNHeatPumpReal ***
 
-class TNHeatPumpReal : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+// **** TNHeatPumpOnOff ***
+
+class TNHeatPumpOnOff : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNHeatPumpReal(const NANDRAD::HydraulicFluid & fluid,
+	TNHeatPumpOnOff(const NANDRAD::HydraulicFluid & fluid,
 				   const NANDRAD::HydraulicNetworkElement & e);
 
 	/*! Publishes individual model quantities via descriptions. */

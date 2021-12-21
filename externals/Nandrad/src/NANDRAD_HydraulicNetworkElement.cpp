@@ -146,9 +146,10 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 		case HydraulicNetworkComponent::MT_VariablePressurePump:
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 		case HydraulicNetworkComponent::MT_ControlledValve:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
-		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
 			// nothing to check for

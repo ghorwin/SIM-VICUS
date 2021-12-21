@@ -552,7 +552,7 @@ void Network::removeShortEdges(const double &thresholdLength) {
 			// determine which of both nodeIds has already been processed (=exId)
 			// and which is of both is new (=newId)
 			unsigned int newId;
-			if (contains(processedIds, e->nodeId1()))
+			if (processedIds.find(e->nodeId1()) != processedIds.end())
 				newId = e->nodeId2();
 			else
 				newId = e->nodeId1();

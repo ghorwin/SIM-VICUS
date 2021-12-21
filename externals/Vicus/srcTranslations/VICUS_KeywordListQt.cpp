@@ -114,6 +114,8 @@ KeywordListQt::KeywordListQt() {
 	tr("CladdingSystems");
 	tr("Foils");
 	tr("Miscellaneous");
+	tr("Pipe with a single fluid volume and with heat exchange");
+	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Only Hydraulic calculation with constant temperature");
 	tr("Thermo-hydraulic calculation");
 	tr("SinglePipe");
@@ -139,7 +141,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Simple heat exchanger with given heat flux");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)");
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
-	tr("On-off-type heat pump based on polynoms, installed at source side");
+	tr("Heat pump with variable heating power based on polynom for COP, installed at source side");
+	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
@@ -184,8 +187,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Integral part will be set to zero if controller error is above this value");
 	tr("ID of zone containing thermostat");
 	tr("ID of schedule");
-	tr("Pipe with a single fluid volume and with heat exchange");
-	tr("Pipe with a discretized fluid volume and heat exchange");
 	tr("Dry density of the material.");
 	tr("Specific heat capacity of the material.");
 	tr("Thermal conductivity of the dry material.");

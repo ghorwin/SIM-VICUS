@@ -92,16 +92,4 @@ void NetworkEdge::changeNode2(NetworkNode *node)
 }
 
 
-NetworkComponent::ModelType NetworkEdge::networkComponentModelType() const {
-	switch (m_pipeModel) {
-		case PM_SimplePipe:
-			return NetworkComponent::MT_SimplePipe;
-		case PM_DynamicPipe:
-			return NetworkComponent::MT_DynamicPipe;
-		case NUM_PM: ;
-	}
-	return NetworkComponent::NUM_MT;
-}
-
-
 } // namspace VICUS

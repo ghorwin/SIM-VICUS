@@ -256,10 +256,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide : {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide : {
 					// create general model with given heat flux
-					TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid, e);
+					TNHeatPumpVariable * element = new TNHeatPumpVariable(m_network->m_fluid, e);
 					// add to flow elements
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -267,8 +268,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
-					TNHeatPumpReal * element = new TNHeatPumpReal(m_network->m_fluid, e);
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide: {
+					TNHeatPumpOnOff * element = new TNHeatPumpOnOff(m_network->m_fluid, e);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // no heat loss
 				} break;

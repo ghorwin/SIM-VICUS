@@ -224,6 +224,7 @@ bool LinearSplineParameter::operator!=(const LinearSplineParameter & other) cons
 	if (m_values != other.m_values) return true;
 	if (m_xUnit != other.m_xUnit) return true;
 	if (m_yUnit != other.m_yUnit) return true;
+	if (m_tsvFile != other.m_tsvFile) return true;
 	return false;
 }
 

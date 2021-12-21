@@ -758,9 +758,9 @@ void HNConstantPressurePump::setTime(double /*t*/) {
 		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
 			const double & heatLossThreshold =
 					m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossOfFollowingElementThreshold].value;
-			if (*m_followingElementHeatLossRef < 0.9 * heatLossThreshold)
+			if (std::abs(*m_followingElementHeatLossRef) < 0.9 * heatLossThreshold)
 				m_pumpIsOn = false;
-			else if (*m_followingElementHeatLossRef > 1.1 * heatLossThreshold)
+			else if (std::abs(*m_followingElementHeatLossRef) > 1.1 * heatLossThreshold)
 				m_pumpIsOn = true;
 		}
 	}

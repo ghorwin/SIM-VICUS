@@ -65,11 +65,18 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		}
 
 		// check data table
-		if (m_modelType == MT_HeatPumpRealSourceSide) {
+		if (m_modelType == MT_HeatPumpOnOffSourceSide) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'Pel' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'Pel' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+		}
+		if (m_modelType == MT_HeatPumpVariableSourceSide) {
+			if (m_polynomCoefficients.m_values["COP"].size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'COP' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
 
 		// check optional parameters, if given
@@ -126,9 +133,10 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ControlledPump:
 			case MT_VariablePressurePump:
 				return {};
-			case MT_HeatPumpIdealCarnotSupplySide:
-			case MT_HeatPumpIdealCarnotSourceSide:
-			case MT_HeatPumpRealSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+			case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
 			case MT_HeatExchanger:
 			case MT_PressureLossElement:
 			case MT_ControlledValve:
@@ -157,13 +165,14 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_ControlledPump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
-			case MT_HeatPumpIdealCarnotSupplySide:
-			case MT_HeatPumpIdealCarnotSourceSide:
+			case MT_HeatPumpVariableIdealCarnotSupplySide:
+			case MT_HeatPumpVariableIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
 			case MT_PressureLossElement:
 			case MT_ControlledValve:
-			case MT_HeatPumpRealSourceSide:
+			case MT_HeatPumpVariableSourceSide:
+			case MT_HeatPumpOnOffSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
@@ -181,11 +190,12 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 
 std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const HydraulicNetworkComponent::ModelType modelType) {
 	switch (modelType)	{
-		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableSourceSide:
 			return {"CondenserMeanTemperatureSchedule [C]"};
-		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
 			return {"CondenserOutletSetpointSchedule [C]"};
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 			return {"CondenserOutletSetpointSchedule [C]", "HeatPumpOnOffSignalSchedule [---]"};
 		case MT_IdealHeaterCooler:
 			return {"SupplyTemperatureSchedule [C]"};

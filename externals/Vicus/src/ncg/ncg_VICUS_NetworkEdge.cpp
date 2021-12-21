@@ -27,7 +27,6 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -50,15 +49,7 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "pipeModel")
-				try {
-					m_pipeModel = (PipeModel)KeywordList::Enumeration("NetworkEdge::PipeModel", attrib->ValueStr());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-				}
-			else if (attribName == "supply")
+			if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "idPipe")
 				m_idPipe = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
@@ -102,8 +93,6 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkEdge");
 	parent->LinkEndChild(e);
 
-	if (m_pipeModel != NUM_PM)
-		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
 			e->SetAttribute("supply", "true");
 	if (m_idPipe != VICUS::INVALID_ID)

@@ -71,13 +71,27 @@ AbstractDBElement::ComparisonResult NetworkController::equal(const VICUS::Abstra
 void NetworkController::checkParameters() const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
-	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
+	if (m_controlledProperty == CP_PumpOperation){
+		if (m_controllerType != CT_OnOffController)
+			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
+	}
+	else {
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController' or 'PIController'.")
+								 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlledProperty)),
+								 FUNC_ID);
+	}
 
-	if (m_controlledProperty == NUM_CP)
-		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
-
-	if (m_modelType == NUM_MT)
-		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
+	if (m_controlledProperty == CP_PumpOperation){
+		if (m_controllerType != CT_OnOffController)
+			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
+	}
+	else {
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController || m_controllerType == CT_PIDController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController', 'PIController' or 'PIDController'.")
+								 .arg(KeywordList::Keyword("NetworkController::ControlledProperty", m_controlledProperty)),
+								 FUNC_ID);
+	}
 
 	if (m_controlledProperty == CP_PumpOperation){
 		if (m_controllerType != CT_OnOffController)
@@ -162,7 +176,7 @@ void NetworkController::checkParameters() const {
 																"W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
-			case NUM_CT:
+				case NUM_CT:
 				throw IBK::Exception("Missing or invalid attribute 'controllerType'.", FUNC_ID);
 		}
 	}

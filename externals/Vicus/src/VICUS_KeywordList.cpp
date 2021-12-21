@@ -52,6 +52,7 @@ namespace VICUS {
 		"KeywordList::MyParameters",
 		"Material::para_t",
 		"Material::Category",
+		"Network::PipeModel",
 		"Network::ModelType",
 		"Network::NetworkType",
 		"Network::para_t",
@@ -65,7 +66,6 @@ namespace VICUS {
 		"NetworkController::ControllerType",
 		"NetworkController::para_t",
 		"NetworkController::References",
-		"NetworkEdge::PipeModel",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
 		"NetworkPipe::para_t",
@@ -265,20 +265,26 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "SimplePipe";
+				case 1 : return "DynamicPipe";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
@@ -289,20 +295,20 @@ namespace VICUS {
 				case 6 : return "MaxPipeDiscretization";
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "Sand";
 				case 1 : return "Loam";
 				case 2 : return "Silt";
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "PipeSpacing";
 				case 1 : return "PipeDepth";
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
@@ -311,17 +317,18 @@ namespace VICUS {
 				case 4 : return "ControlledPump";
 				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
-				case 7 : return "HeatPumpIdealCarnotSourceSide";
-				case 8 : return "HeatPumpIdealCarnotSupplySide";
-				case 9 : return "HeatPumpRealSourceSide";
-				case 10 : return "ControlledValve";
-				case 11 : return "IdealHeaterCooler";
-				case 12 : return "ConstantPressureLossValve";
-				case 13 : return "PressureLossElement";
-				case 14 : return "HorizontalGroundHeatExchanger";
+				case 7 : return "HeatPumpVariableIdealCarnotSourceSide";
+				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
+				case 9 : return "HeatPumpVariableSourceSide";
+				case 10 : return "HeatPumpOnOffSourceSide";
+				case 11 : return "ControlledValve";
+				case 12 : return "IdealHeaterCooler";
+				case 13 : return "ConstantPressureLossValve";
+				case 14 : return "PressureLossElement";
+				case 15 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
@@ -342,19 +349,19 @@ namespace VICUS {
 				case 16 : return "LengthOfGroundHeatExchangerPipes";
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
 				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 			} break;
 			// NetworkController::ControlledProperty
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
@@ -363,7 +370,7 @@ namespace VICUS {
 				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
@@ -371,7 +378,7 @@ namespace VICUS {
 				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
@@ -382,16 +389,10 @@ namespace VICUS {
 				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ThermostatZone";
 				case 1 : return "Schedule";
-			} break;
-			// NetworkEdge::PipeModel
-			case 30 :
-			switch (t) {
-				case 0 : return "SimplePipe";
-				case 1 : return "DynamicPipe";
 			} break;
 			// NetworkFluid::para_t
 			case 31 :
@@ -737,20 +738,26 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "SimplePipe";
+				case 1 : return "DynamicPipe";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
@@ -761,20 +768,20 @@ namespace VICUS {
 				case 6 : return "MaxPipeDiscretization";
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "Sand";
 				case 1 : return "Loam";
 				case 2 : return "Silt";
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "PipeSpacing";
 				case 1 : return "PipeDepth";
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
@@ -783,17 +790,18 @@ namespace VICUS {
 				case 4 : return "ControlledPump";
 				case 5 : return "VariablePressurePump";
 				case 6 : return "HeatExchanger";
-				case 7 : return "HeatPumpIdealCarnotSourceSide";
-				case 8 : return "HeatPumpIdealCarnotSupplySide";
-				case 9 : return "HeatPumpRealSourceSide";
-				case 10 : return "ControlledValve";
-				case 11 : return "IdealHeaterCooler";
-				case 12 : return "ConstantPressureLossValve";
-				case 13 : return "PressureLossElement";
-				case 14 : return "HorizontalGroundHeatExchanger";
+				case 7 : return "HeatPumpVariableIdealCarnotSourceSide";
+				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
+				case 9 : return "HeatPumpVariableSourceSide";
+				case 10 : return "HeatPumpOnOffSourceSide";
+				case 11 : return "ControlledValve";
+				case 12 : return "IdealHeaterCooler";
+				case 13 : return "ConstantPressureLossValve";
+				case 14 : return "PressureLossElement";
+				case 15 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
@@ -814,19 +822,19 @@ namespace VICUS {
 				case 16 : return "LengthOfGroundHeatExchangerPipes";
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "NumberParallelPipes";
 				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 			} break;
 			// NetworkController::ControlledProperty
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
@@ -835,7 +843,7 @@ namespace VICUS {
 				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
@@ -843,7 +851,7 @@ namespace VICUS {
 				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
@@ -854,16 +862,10 @@ namespace VICUS {
 				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ThermostatZone";
 				case 1 : return "Schedule";
-			} break;
-			// NetworkEdge::PipeModel
-			case 30 :
-			switch (t) {
-				case 0 : return "SimplePipe";
-				case 1 : return "DynamicPipe";
 			} break;
 			// NetworkFluid::para_t
 			case 31 :
@@ -1210,20 +1212,26 @@ namespace VICUS {
 				case 11 : if (no_description != nullptr) *no_description = true; return "Foils";
 				case 12 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "Pipe with a single fluid volume and with heat exchange";
+				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "Only Hydraulic calculation with constant temperature";
 				case 1 : return "Thermo-hydraulic calculation";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "SinglePipe";
 				case 1 : if (no_description != nullptr) *no_description = true; return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "Temperature for pipe dimensioning algorithm";
 				case 1 : return "Temperature difference for pipe dimensioning algorithm";
@@ -1234,20 +1242,20 @@ namespace VICUS {
 				case 6 : return "Maximum discretization step for dynamic pipe model";
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Sand";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Loam";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Silt";
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "Spacing between supply and return pipes";
 				case 1 : return "Distance between soil surface and pipes";
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
@@ -1258,15 +1266,16 @@ namespace VICUS {
 				case 6 : return "Simple heat exchanger with given heat flux";
 				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
 				case 8 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
-				case 9 : return "On-off-type heat pump based on polynoms, installed at source side";
-				case 10 : return "Valve with associated control model";
-				case 11 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
-				case 12 : return "Valve with constant pressure loss";
-				case 13 : return "Adiabatic element with pressure loss defined by zeta-value";
-				case 14 : return "Parallel dynamic pipes buried horizontally in the ground";
+				case 9 : return "Heat pump with variable heating power based on polynom for COP, installed at source side";
+				case 10 : return "On-off-type heat pump based on polynoms for heating power and el. power, installed at source side";
+				case 11 : return "Valve with associated control model";
+				case 12 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
+				case 13 : return "Valve with constant pressure loss";
+				case 14 : return "Adiabatic element with pressure loss defined by zeta-value";
+				case 15 : return "Parallel dynamic pipes buried horizontally in the ground";
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
@@ -1287,19 +1296,19 @@ namespace VICUS {
 				case 16 : return "Length of pipes in the ground heat exchanger";
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "Number of parallel pipes in ground heat exchanger";
 				case 1 : return "Number of parallel elements";
 			} break;
 			// NetworkController::ModelType
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Set points are given as constant parameters";
 				case 1 : return "Scheduled set point values";
 			} break;
 			// NetworkController::ControlledProperty
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "Control temperature difference of this element";
 				case 1 : return "Control temperature difference of the following element";
@@ -1308,7 +1317,7 @@ namespace VICUS {
 				case 4 : return "Control pump operation depending on following element";
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
@@ -1316,7 +1325,7 @@ namespace VICUS {
 				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp-parameter";
 				case 1 : return "Ki-parameter";
@@ -1327,16 +1336,10 @@ namespace VICUS {
 				case 6 : return "Integral part will be set to zero if controller error is above this value";
 			} break;
 			// NetworkController::References
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ID of zone containing thermostat";
 				case 1 : return "ID of schedule";
-			} break;
-			// NetworkEdge::PipeModel
-			case 30 :
-			switch (t) {
-				case 0 : return "Pipe with a single fluid volume and with heat exchange";
-				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 			} break;
 			// NetworkFluid::para_t
 			case 31 :
@@ -1682,20 +1685,26 @@ namespace VICUS {
 				case 11 : return "";
 				case 12 : return "";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// Network::para_t
+			case 20 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "K";
@@ -1706,20 +1715,20 @@ namespace VICUS {
 				case 6 : return "m";
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "m";
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1736,9 +1745,10 @@ namespace VICUS {
 				case 12 : return "";
 				case 13 : return "";
 				case 14 : return "";
+				case 15 : return "";
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "mm";
 				case 1 : return "---";
@@ -1759,19 +1769,19 @@ namespace VICUS {
 				case 16 : return "m";
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
+			case 25 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
 			} break;
 			// NetworkController::ModelType
-			case 25 :
+			case 26 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// NetworkController::ControlledProperty
-			case 26 :
+			case 27 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1780,7 +1790,7 @@ namespace VICUS {
 				case 4 : return "";
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1788,7 +1798,7 @@ namespace VICUS {
 				case 3 : return "";
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
@@ -1799,16 +1809,10 @@ namespace VICUS {
 				case 6 : return "---";
 			} break;
 			// NetworkController::References
-			case 29 :
+			case 30 :
 			switch (t) {
 				case 0 : return "-";
 				case 1 : return "-";
-			} break;
-			// NetworkEdge::PipeModel
-			case 30 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
 			} break;
 			// NetworkFluid::para_t
 			case 31 :
@@ -2154,20 +2158,26 @@ namespace VICUS {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// Network::para_t
+			case 20 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2178,20 +2188,20 @@ namespace VICUS {
 				case 6 : return "#FFFFFF";
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2208,9 +2218,10 @@ namespace VICUS {
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
+				case 15 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2231,19 +2242,19 @@ namespace VICUS {
 				case 16 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkController::ModelType
 			case 25 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// NetworkController::ControlledProperty
+			// NetworkController::ModelType
 			case 26 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// NetworkController::ControlledProperty
+			case 27 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2252,7 +2263,7 @@ namespace VICUS {
 				case 4 : return "#FFFFFF";
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2260,7 +2271,7 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2271,12 +2282,6 @@ namespace VICUS {
 				case 6 : return "#FFFFFF";
 			} break;
 			// NetworkController::References
-			case 29 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkEdge::PipeModel
 			case 30 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2626,20 +2631,26 @@ namespace VICUS {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Network::para_t
+			case 20 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2650,20 +2661,20 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 :
+			case 21 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 :
+			case 22 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::ModelType
-			case 22 :
+			case 23 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2680,9 +2691,10 @@ namespace VICUS {
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
+				case 15 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
-			case 23 :
+			case 24 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2703,19 +2715,19 @@ namespace VICUS {
 				case 16 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::intPara_t
-			case 24 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkController::ModelType
 			case 25 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkController::ControlledProperty
+			// NetworkController::ModelType
 			case 26 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::ControlledProperty
+			case 27 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2724,7 +2736,7 @@ namespace VICUS {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::ControllerType
-			case 27 :
+			case 28 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2732,7 +2744,7 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::para_t
-			case 28 :
+			case 29 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2743,12 +2755,6 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::References
-			case 29 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkEdge::PipeModel
 			case 30 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2975,33 +2981,33 @@ namespace VICUS {
 			case 15 : return 6;
 			// Material::Category
 			case 16 : return 13;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 : return 2;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 : return 2;
+			// Network::NetworkType
+			case 19 : return 2;
 			// Network::para_t
-			case 19 : return 7;
+			case 20 : return 7;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 : return 3;
+			case 21 : return 3;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 : return 2;
+			case 22 : return 2;
 			// NetworkComponent::ModelType
-			case 22 : return 15;
+			case 23 : return 16;
 			// NetworkComponent::para_t
-			case 23 : return 17;
+			case 24 : return 17;
 			// NetworkComponent::intPara_t
-			case 24 : return 2;
-			// NetworkController::ModelType
 			case 25 : return 2;
+			// NetworkController::ModelType
+			case 26 : return 2;
 			// NetworkController::ControlledProperty
-			case 26 : return 5;
+			case 27 : return 5;
 			// NetworkController::ControllerType
-			case 27 : return 4;
+			case 28 : return 4;
 			// NetworkController::para_t
-			case 28 : return 7;
+			case 29 : return 7;
 			// NetworkController::References
-			case 29 : return 2;
-			// NetworkEdge::PipeModel
 			case 30 : return 2;
 			// NetworkFluid::para_t
 			case 31 : return 3;
@@ -3097,33 +3103,33 @@ namespace VICUS {
 			case 15 : return 5;
 			// Material::Category
 			case 16 : return 12;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 : return 1;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 : return 1;
+			// Network::NetworkType
+			case 19 : return 1;
 			// Network::para_t
-			case 19 : return 6;
+			case 20 : return 6;
 			// NetworkBuriedPipeProperties::SoilType
-			case 20 : return 2;
+			case 21 : return 2;
 			// NetworkBuriedPipeProperties::para_t
-			case 21 : return 1;
+			case 22 : return 1;
 			// NetworkComponent::ModelType
-			case 22 : return 14;
+			case 23 : return 15;
 			// NetworkComponent::para_t
-			case 23 : return 16;
+			case 24 : return 16;
 			// NetworkComponent::intPara_t
-			case 24 : return 1;
-			// NetworkController::ModelType
 			case 25 : return 1;
+			// NetworkController::ModelType
+			case 26 : return 1;
 			// NetworkController::ControlledProperty
-			case 26 : return 4;
+			case 27 : return 4;
 			// NetworkController::ControllerType
-			case 27 : return 3;
+			case 28 : return 3;
 			// NetworkController::para_t
-			case 28 : return 6;
+			case 29 : return 6;
 			// NetworkController::References
-			case 29 : return 1;
-			// NetworkEdge::PipeModel
 			case 30 : return 1;
 			// NetworkFluid::para_t
 			case 31 : return 2;
