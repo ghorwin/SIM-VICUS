@@ -48,7 +48,9 @@
 						<IBK:Parameter name="PipeRoughness" unit="mm">0.7</IBK:Parameter>
 						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
-						<IBK:Parameter name="UValuePipeWall" unit="W/mK">5</IBK:Parameter>
+						<IBK:Parameter name="UValueWall" unit="W/mK">5</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
 					</HydraulicNetworkPipeProperties>
 				</PipeProperties>
 				<Components>
@@ -63,7 +65,7 @@
 						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					
-					<HydraulicNetworkComponent id="3" modelType="HeatPumpIdealCarnotSourceSide">
+					<HydraulicNetworkComponent id="3" modelType="HeatPumpVariableIdealCarnotSourceSide">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
 						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>

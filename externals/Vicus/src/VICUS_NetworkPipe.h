@@ -49,6 +49,8 @@ public:
 		P_ThicknessWall,					// Keyword: ThicknessWall						[mm]	'Pipe wall thickness'
 		P_RoughnessWall,					// Keyword: RoughnessWall						[mm]	'Pipe wall surface roughness'
 		P_ThermalConductivityWall,			// Keyword: ThermalConductivityWall				[W/mK]	'Thermal conductivity of pipe wall'
+		P_HeatCapacityWall,					// Keyword: HeatCapacityWall					[J/kgK]	'Specific heat capaciy of pipe wall'
+		P_DensityWall,						// Keyword: DensityWall							[kg/m3]	'Density of pipe wall'
 		P_ThicknessInsulation,				// Keyword: ThicknessInsulation					[mm]	'Thickness of insulation around pipe'
 		P_ThermalConductivityInsulation,	// Keyword: ThermalConductivityInsulation		[W/mK]	'Thermal conductivity of insulation'
 		NUM_P

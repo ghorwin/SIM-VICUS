@@ -501,11 +501,12 @@ int ThermalNetworkStatesModel::setTime(double t) {
 }
 
 
+
 void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> & weights) {
 	// by default weight enlargement factors are 1
 	weights = std::vector<double>(m_n, 1.0);
 
-	// add higher weight for all elements which are not pipes
+	// add higher weight for all elements which are not pipes (we currently don't do that, just use 1.)
 	IBK_ASSERT(m_network->m_elements.size() == m_p->m_flowElements.size());
 	unsigned int i=0;
 	for (unsigned int n=0; n<m_p->m_flowElements.size(); ++n) {
@@ -523,6 +524,13 @@ void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> 
 			weights[i] = 1.;
 		// increment counter for number of unknowns
 		i += flowElem->nInternalStates();
+	}
+}
+
+
+void ThermalNetworkStatesModel::stepCompleted(double t) {
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		fe->stepCompleted(t);
 	}
 }
 

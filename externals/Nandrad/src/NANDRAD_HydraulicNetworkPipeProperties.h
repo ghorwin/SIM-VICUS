@@ -38,7 +38,9 @@ public:
 		P_PipeRoughness,					// Keyword: PipeRoughness						[mm]		'Roughness of pipe material'
 		P_PipeInnerDiameter,				// Keyword: PipeInnerDiameter					[mm]		'Inner diameter of pipe'
 		P_PipeOuterDiameter,				// Keyword: PipeOuterDiameter					[mm]		'Outer diameter of pipe'
-		P_UValuePipeWall,					// Keyword: UValuePipeWall						[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
+		P_UValueWall,						// Keyword: UValueWall							[W/mK]		'Length-specific U-Value of pipe wall incl. insulation'
+		P_HeatCapacityWall,					// Keyword: HeatCapacityWall					[J/kgK]		'Specific heat capaciy of pipe wall'
+		P_DensityWall,						// Keyword: DensityWall							[kg/m3]		'Density of pipe wall'
 		NUM_P
 	};
 
