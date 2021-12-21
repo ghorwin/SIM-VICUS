@@ -84,6 +84,7 @@ PRE_TARGETDEPS += \
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+	../../src/SVCoSimCO2VentilationDialog.cpp \
 	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
@@ -252,6 +253,7 @@ SOURCES += \
 	../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+	../../src/SVCoSimCO2VentilationDialog.h \
 	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
@@ -424,6 +426,7 @@ HEADERS  += \
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
+	../../src/SVCoSimCO2VentilationDialog.ui \
 	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \

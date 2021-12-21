@@ -310,10 +310,9 @@ private slots:
 	void on_actionViewFromWest_triggered();
 	void on_actionViewFromAbove_triggered();
 
-
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationExportFMI_triggered();
-
+	void on_actionSimulationCO2Balance_triggered();
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
@@ -323,10 +322,6 @@ private slots:
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
-
-
-
-
 
 
 private:

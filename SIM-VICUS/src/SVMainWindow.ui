@@ -167,9 +167,17 @@
     <property name="title">
      <string>&amp;Simulation</string>
     </property>
+    <widget class="QMenu" name="menuCo_Simulation">
+     <property name="title">
+      <string>Co-Simulation</string>
+     </property>
+     <addaction name="actionSimulationCO2Balance"/>
+    </widget>
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
+    <addaction name="separator"/>
+    <addaction name="menuCo_Simulation"/>
    </widget>
    <widget class="QMenu" name="menu_Buildings">
     <property name="title">
@@ -780,6 +788,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionSimulationCO2Balance">
+   <property name="text">
+    <string>CO2 Balance and Ventilation Control...</string>
+   </property>
+   <property name="toolTip">
+    <string>Co-Simulation with CO2 balances and CO2-based ventilation control model.</string>
    </property>
   </action>
  </widget>

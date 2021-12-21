@@ -1129,6 +1129,10 @@ void SVMainWindow::on_actionSimulationExportFMI_triggered() {
 }
 
 
+void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
+
+}
+
 
 void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
@@ -1953,9 +1957,5 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-
-
-
 
 
