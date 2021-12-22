@@ -1,12 +1,12 @@
-#ifndef CommonPluginInterfaceH
-#define CommonPluginInterfaceH
+#ifndef SVCommonPluginInterfaceH
+#define SVCommonPluginInterfaceH
 
 class QWidget;
 
 /*! This class declares common plugin interface functions.
 	This header should be included by all plugin interface classes.
 */
-class CommonPluginInterface {
+class SVCommonPluginInterface {
 public:
 	/*! Return values for the showSettingsDialog() function. */
 	enum SettingsDialogUpdateNeeds {
@@ -23,7 +23,7 @@ public:
 	};
 
 	/*! Virtual D'tor. */
-	virtual ~CommonPluginInterface() {}
+	virtual ~SVCommonPluginInterface() {}
 
 	/*! If this function returns true, the plugin provides a
 		settings/configuration page.
@@ -41,4 +41,4 @@ public:
 };
 
 
-#endif // CommonPluginInterfaceH
+#endif // SVCommonPluginInterfaceH
