@@ -1,40 +1,32 @@
-#ifndef SVImportPluginInterfaceH
-#define SVImportPluginInterfaceH
+#ifndef SVDatabasePluginInterfaceH
+#define SVDatabasePluginInterfaceH
 
 #include <QString>
 
 #include "SVCommonPluginInterface.h"
 
 class QWidget;
+class SVDatabase;
 
-namespace VICUS {
-	class Project;
-}
-
-/*! Interface for a plugin that populates VICUS project data from some
-	external source, typically by reading some external BIM data format and
-	converting the data (interactively) to VICUS data.
-*/
-class SVImportPluginInterface : public SVCommonPluginInterface {
+/*! Interface for a plugin that provides VICUS database elements. */
+class SVDatabasePluginInterface : public SVCommonPluginInterface {
 public:
 
-	/*! Returns the already-translated menu caption to be inserted into the File->Import menu. */
-	virtual QString importMenuCaption() const = 0;
+	/*! This function needs to be implemented by the database plugin to populate the database with its own data.
+		The function will get two database arguments. The first is the current database in the application (that
+		may already been augmented by some other plugin). The second is the writable db object, which is always
+		a copy of the current DB, where the plugin can add data to.
 
-	/*! This is the central import function, that is executed when the user
-		selects the respective menu action.
-		\param parent Parent widget pointer, to be used as parent for modal dialogs.
-		\param p The VICUS project data to be populated.
+		\param currentDB Reference to the current database in SIM-VICUS
+		\param augmentedDB Database object to be modified by the plugin.
+		\return Returns true, if plugin successfully modified the database. If false is returned, some error occurred
+			and the user interface silently ignores the augmentedDB variable.
 
-		\return Returns true if the import was succcessful and SIM-VICUS shall use the populated VICUS-project
-			data (either as new project or merged into/added to the existing project). If false is returned,
-			the import is considered to be aborted by user or through some error.
-
-		\note A well-behaving plugin will clear any allocated resources when returning from this function.
-
-		\note Do not allow exceptions to leave this function, so wrap everything into a try-catch clause!
+		\note The SIM-VICUS user-interface will prevent the plugin from removing/altering already existing data. So, if the plugin
+			(by programming error or by design) removes existing data from the database, such changes will be silently
+			discarded.
 	*/
-	virtual bool import(QWidget * parent, VICUS::Project & p) = 0;
+	virtual bool retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) = 0;
 };
 
-#endif // SVImportPluginInterfaceH
+#endif // SVDatabasePluginInterfaceH

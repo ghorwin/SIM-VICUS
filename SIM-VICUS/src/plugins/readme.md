@@ -21,10 +21,10 @@ plugin-loader will reject not matching plugin versions.
 
 ## Available Interfaces
 
-- `ImportPluginInterface.h` - declares the plugin-interface for project 
+- `SVImportPluginInterface.h` - declares the plugin-interface for project 
   importers, i.e. plugins that populate the VICUS project structure
   
-- `DatabasePluginInterface.h` - declares the interface for a plugin that
+- `SVDatabasePluginInterface.h` - declares the interface for a plugin that
   provides database content, similar to the built-in database. When the 
   plugin is loaded, the provided data is simply added as built-in data
   to the database.

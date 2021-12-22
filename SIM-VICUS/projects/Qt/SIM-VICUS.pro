@@ -424,6 +424,7 @@ HEADERS  += \
 	../../src/SVViewStateHandler.h \
 	../../src/SVWelcomeScreen.h \
 	../../src/plugins/SVCommonPluginInterface.h \
+	../../src/plugins/SVDatabasePluginInterface.h \
 	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
