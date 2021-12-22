@@ -22,7 +22,7 @@
 }
 
 CONFIG			+= silent
-CONFIG			-= depend_includepath
+CONFIG 			+= c++11
 
 CONFIG(release, debug|release) {
 #	message( "Setting NDEBUG define" )
@@ -361,7 +361,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 # This section contains all application specific settings. It can be enabled
 # by setting 'app' the TEMPLATE environment variable.
 # It defines DESTDIR, OBJECTS_DIR
-# Reset locally in when required.
 equals(TEMPLATE,app) {
 
 	CONFIG(debug, debug|release) {
@@ -400,7 +399,7 @@ equals(TEMPLATE,app) {
 # This section contains all library specific settings. It can be enabled
 # by setting 'lib' the TEMPLATE environment variable.
 # It defines DESTDIR, OBJECTS_DIR, DLLDESTDIR and sets shared in CONFIG
-# variable to all libraries. Reset locally in when required.
+# variable to all libraries.
 equals(TEMPLATE,lib) {
 
 #	message(Setting up ordinary library support.)
@@ -412,8 +411,8 @@ equals(TEMPLATE,lib) {
 	MOC_DIR = moc
 	UI_DIR = ui
 
-# using of shared libs only for non MC compiler
-# MS compiler needs explicite export statements in case of shared libs
+	# using of shared libs only for non MC compiler
+	# MS compiler needs explicite export statements in case of shared libs
 	win32-msvc* {
 		CONFIG += static
 		DEFINES += NOMINMAX
@@ -426,7 +425,7 @@ equals(TEMPLATE,lib) {
 		CONFIG += shared
 	}
 
-# disable warning for unsafe functions if using MS compiler
+	# disable warning for unsafe functions if using MS compiler
 	win32-msvc* {
 		QMAKE_CXXFLAGS += /wd4996
 		QMAKE_CFLAGS += /wd4996
