@@ -6,7 +6,7 @@
 ###########################################################
 
 # load the central configuration file for all IBK dependent libraries
-!include( ../../externals/IBK/project/Qt/CONFIG.pri ) {
+!include( ../../externals/IBK/projects/Qt/CONFIG.pri ) {
 	message( "No custom build options specified" )
 }
 
@@ -65,7 +65,7 @@ equals(TEMPLATE,lib) {
 	CONFIG += warn_on
 	# plugins are shared libs
 	CONFIG += shared
-	
+
 	# we use c++11
 	CONFIG += c++11
 

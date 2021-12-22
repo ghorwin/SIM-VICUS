@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
+		../../plugins/DummyImportPlugin/project/Qt/DummyImportPlugin.pro \
 		SIM-VICUS \
 		QuaZIP \
 		qwt \

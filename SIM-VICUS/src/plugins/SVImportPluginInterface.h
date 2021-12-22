@@ -2,6 +2,7 @@
 #define SVImportPluginInterfaceH
 
 #include <QString>
+#include <QtPlugin>
 
 #include "SVCommonPluginInterface.h"
 
@@ -36,5 +37,10 @@ public:
 	*/
 	virtual bool import(QWidget * parent, VICUS::Project & p) = 0;
 };
+
+
+#define SVImportPluginInterface_iid "ibk.sim-vicus.Plugin.ImportInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVImportPluginInterface, SVImportPluginInterface_iid)
 
 #endif // SVImportPluginInterfaceH

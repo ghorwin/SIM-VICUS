@@ -2,6 +2,7 @@
 #define SVDatabasePluginInterfaceH
 
 #include <QString>
+#include <QtPlugin>
 
 #include "SVCommonPluginInterface.h"
 
@@ -28,5 +29,9 @@ public:
 	*/
 	virtual bool retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) = 0;
 };
+
+#define SVDatabasePluginInterface_iid "ibk.sim-vicus.Plugin.DatabaseInterface/1.0"
+
+Q_DECLARE_INTERFACE(SVDatabasePluginInterface, SVDatabasePluginInterface_iid)
 
 #endif // SVDatabasePluginInterfaceH

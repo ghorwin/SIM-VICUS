@@ -5,7 +5,7 @@ CONFIG       += plugin
 QT           += widgets
 
 # this pri must be sourced from all our applications
-include( ../../../../externals/IBK/projects/Qt/IBK.pri )
+include( ../../../Qt/plugin.pri )
 
 INCLUDEPATH  += \
 	../../../../SIM-VICUS/src \
@@ -14,5 +14,4 @@ INCLUDEPATH  += \
 HEADERS       = ../../src/DummyImportPlugin.h
 SOURCES       = ../../src/DummyImportPlugin.cpp
 
-TARGET        = $$qtLibraryTarget(SV_DummyImportPlugin)
-DESTDIR       = ../../plugins
+TARGET        = $$qtLibraryTarget(SVDummyImportPlugin)
