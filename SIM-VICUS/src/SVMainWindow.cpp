@@ -46,6 +46,7 @@
 #include <QInputDialog>
 #include <QSplitter>
 #include <QTextEdit>
+#include <QPluginLoader>
 
 #include <numeric>
 
@@ -98,10 +99,12 @@
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
 
-
 #include "SVUndoModifyProject.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoAddBuilding.h"
+
+#include "plugins/SVDatabasePluginInterface.h"
+#include "plugins/SVImportPluginInterface.h"
 
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
@@ -679,16 +682,16 @@ void SVMainWindow::setup() {
 	m_redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
-	QList<QAction*> acts = m_ui->menu_Edit->actions();
-	m_ui->menu_Edit->addAction(m_undoAction);
-	m_ui->menu_Edit->addAction(m_redoAction);
+	QList<QAction*> acts = m_ui->menuEdit->actions();
+	m_ui->menuEdit->addAction(m_undoAction);
+	m_ui->menuEdit->addAction(m_redoAction);
 	// now move all the actions to bottom
 	for (int i=0; i<acts.count(); ++i)
-		m_ui->menu_Edit->addAction(acts[i]);
+		m_ui->menuEdit->addAction(acts[i]);
 
 	m_ui->toolBar->addAction(m_undoAction);
 	m_ui->toolBar->addAction(m_redoAction);
-	m_ui->menu_View->addAction(m_ui->toolBar->toggleViewAction());
+	m_ui->menuView->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
 	setupDockWidgets();
@@ -751,6 +754,8 @@ void SVMainWindow::setup() {
 	show();
 #endif
 
+	// finally setup plugins
+	setupPlugins();
 }
 
 
@@ -781,6 +786,16 @@ void SVMainWindow::onDockWidgetToggled(bool visible) {
 	if (m_logDockWidget->toggleViewAction() == toggleAction) {
 		m_dockWidgetVisibility[m_logDockWidget] = visible;
 	}
+}
+
+
+void SVMainWindow::onImportPluginTriggered() {
+
+}
+
+void SVMainWindow::onConfigurePluginTriggered() {
+
+
 }
 
 
@@ -1703,12 +1718,95 @@ void SVMainWindow::setupDockWidgets() {
 	m_logDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures | titleBarOption);
 	m_logDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
 	QAction * toggleAction = m_logDockWidget->toggleViewAction();
-	m_ui->menu_View->addAction(toggleAction);
+	m_ui->menuView->addAction(toggleAction);
 	connect(toggleAction, &QAction::toggled, this, &SVMainWindow::onDockWidgetToggled);
 	m_logDockWidget->setWidget(m_logWidget);
 	addDockWidget(Qt::BottomDockWidgetArea,m_logDockWidget);
 
 //	tabifyDockWidget(m_outputListDockWidget, m_outputGridListDockWidget);
+}
+
+
+void SVMainWindow::setupPlugins() {
+	IBK::IBK_Message("Loading plugins...\n");
+	const auto staticInstances = QPluginLoader::staticInstances();
+	for (QObject *plugin : staticInstances) {
+		setupPluginMenuEntries(plugin);
+	}
+
+	QDir pluginsDir = QDir(QCoreApplication::applicationDirPath());
+	pluginsDir.cd("plugins");
+
+	const auto entryList = pluginsDir.entryList(QDir::Files);
+	for (const QString &fileName : entryList) {
+		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+		QObject *plugin = loader.instance();
+		if (plugin) {
+			IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
+			setupPluginMenuEntries(plugin);
+		}
+		else {
+			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1'").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
+		}
+	}
+}
+
+
+void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
+	FUNCID(SVMainWindow::setupPluginMenuEntries);
+	// depending on the implemented interface, do different stuff
+	SVImportPluginInterface* importPlugin = qobject_cast<SVImportPluginInterface*>(plugin);
+	if (importPlugin != nullptr) {
+		IBK::IBK_Message(IBK::FormatString("  Adding importer plugin '%1'\n").arg(importPlugin->title().toStdString()),
+						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+		// add a menu action into the import menu
+		QAction * a = new QAction(importPlugin->importMenuCaption(), this);
+		connect(a, &QAction::triggered,
+				this, &SVMainWindow::onImportPluginTriggered);
+		QVariant v;
+		v.setValue<SVCommonPluginInterface*>(importPlugin);
+		a->setData(v);
+		m_ui->menuImport->addAction(a); // transfers ownership
+		// if plugin publishes settings action, also add plugin configuration action
+		if (importPlugin->hasSettingsDialog()) {
+			QAction * a = new QAction(tr("Configure %1").arg(importPlugin->title()), this);
+			QVariant v;
+			v.setValue<SVCommonPluginInterface*>(importPlugin);
+			a->setData(v);
+			connect(a, &QAction::triggered,
+					this, &SVMainWindow::onConfigurePluginTriggered);
+			m_ui->menuPlugins->addAction(a); // transfers ownership
+		}
+	}
+
+	// database plugins
+	SVDatabasePluginInterface* dbPlugin = qobject_cast<SVDatabasePluginInterface*>(plugin);
+	if (dbPlugin != nullptr) {
+		// create copy of database
+		SVDatabase dbCopy(SVSettings::instance().m_db);
+		// update database entries
+		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
+			IBK::IBK_Message(IBK::FormatString("  Adding database plugin '%1'").arg(dbPlugin->title().toStdString()),
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			// merge both databases
+		}
+		else {
+			IBK::IBK_Message(IBK::FormatString("  Error importing database entries from plugin '%1'").arg(dbPlugin->title().toStdString()),
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		// settings?
+		if (dbPlugin->hasSettingsDialog()) {
+			QAction * a = new QAction(tr("Configure %1").arg(dbPlugin->title()), this);
+			QVariant v;
+			v.setValue<SVCommonPluginInterface*>(dbPlugin);
+			a->setData(v);
+			connect(a, &QAction::triggered,
+					this, &SVMainWindow::onConfigurePluginTriggered);
+			m_ui->menuPlugins->addAction(a); // transfers ownership
+		}
+	}
+
 }
 
 
@@ -1957,5 +2055,6 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
+
 
 

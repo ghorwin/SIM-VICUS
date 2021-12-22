@@ -23,7 +23,7 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -49,7 +49,7 @@
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
@@ -65,7 +65,7 @@
     <addaction name="actionEditPreferences"/>
     <addaction name="menuLanguage"/>
    </widget>
-   <widget class="QMenu" name="menu_Help">
+   <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -81,7 +81,7 @@
     <addaction name="actionHelpAbout"/>
     <addaction name="actionHelpAboutQt"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
@@ -99,7 +99,7 @@
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_Tools">
+   <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>&amp;Tools</string>
     </property>
@@ -125,14 +125,14 @@
      <addaction name="actionDBInternalLoadsLights"/>
      <addaction name="actionDBInternalLoadsOther"/>
     </widget>
-    <widget class="QMenu" name="menuVentilation_Infiltration">
+    <widget class="QMenu" name="menuVentilationInfiltration">
      <property name="title">
       <string>Ventilation/Infiltration</string>
      </property>
      <addaction name="actionDBInfiltration"/>
      <addaction name="actionDBVentilationNatural"/>
     </widget>
-    <widget class="QMenu" name="menuZone_Control">
+    <widget class="QMenu" name="menuZoneControl">
      <property name="title">
       <string>Zone controls</string>
      </property>
@@ -149,8 +149,8 @@
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
-    <addaction name="menuZone_Control"/>
-    <addaction name="menuVentilation_Infiltration"/>
+    <addaction name="menuZoneControl"/>
+    <addaction name="menuVentilationInfiltration"/>
     <addaction name="actionDBSurfaceHeatingSystems"/>
     <addaction name="actionDBZoneIdealHeatingCooling"/>
     <addaction name="actionDBZoneTemplates"/>
@@ -167,7 +167,7 @@
     <property name="title">
      <string>&amp;Simulation</string>
     </property>
-    <widget class="QMenu" name="menuCo_Simulation">
+    <widget class="QMenu" name="menuCoSimulation">
      <property name="title">
       <string>Co-Simulation</string>
      </property>
@@ -177,24 +177,30 @@
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
     <addaction name="separator"/>
-    <addaction name="menuCo_Simulation"/>
+    <addaction name="menuCoSimulation"/>
    </widget>
-   <widget class="QMenu" name="menu_Buildings">
+   <widget class="QMenu" name="menuBuildings">
     <property name="title">
      <string>&amp;Buildings</string>
     </property>
     <addaction name="actionBuildingFloorManager"/>
     <addaction name="actionBuildingSurfaceHeatings"/>
    </widget>
-   <addaction name="menu_File"/>
-   <addaction name="menu_Edit"/>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuDatabases"/>
-   <addaction name="menu_Buildings"/>
+   <addaction name="menuBuildings"/>
    <addaction name="menuNetworks"/>
-   <addaction name="menu_View"/>
+   <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
-   <addaction name="menu_Tools"/>
-   <addaction name="menu_Help"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuPlugins"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">

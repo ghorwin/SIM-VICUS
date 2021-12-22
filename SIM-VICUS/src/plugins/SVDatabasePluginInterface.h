@@ -1,9 +1,6 @@
 #ifndef SVDatabasePluginInterfaceH
 #define SVDatabasePluginInterfaceH
 
-#include <QString>
-#include <QtPlugin>
-
 #include "SVCommonPluginInterface.h"
 
 class QWidget;

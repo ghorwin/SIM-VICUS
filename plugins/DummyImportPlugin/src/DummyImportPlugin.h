@@ -16,7 +16,8 @@ public:
 
 	// SVCommonPluginInterface interface
 
-	bool haveSettingsDialog() const override { return true;}
+	QString title() const override { return "Import-Plugin-Dummy"; }
+	bool hasSettingsDialog() const override { return true;}
 	int showSettingsDialog(QWidget * parent) override;
 
 	// SVImportPluginInterface interface
@@ -24,6 +25,7 @@ public:
 	QString importMenuCaption() const override;
 	bool import(QWidget * parent, VICUS::Project & p) override;
 };
+
 
 #endif // DummyImportPluginH
 

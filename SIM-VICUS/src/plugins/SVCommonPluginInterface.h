@@ -1,6 +1,7 @@
 #ifndef SVCommonPluginInterfaceH
 #define SVCommonPluginInterfaceH
 
+#include <QtPlugin>
 class QWidget;
 
 /*! This class declares common plugin interface functions.
@@ -25,10 +26,15 @@ public:
 	/*! Virtual D'tor. */
 	virtual ~SVCommonPluginInterface() = default;
 
+	/*! Returns a title text for the plugin, used in the main menu for settings and
+		for info/error messages. Used like "Configure xxxx..." and "About xxxx...".
+	*/
+	virtual QString title() const = 0;
+
 	/*! If this function returns true, the plugin provides a
 		settings/configuration page.
 	*/
-	virtual bool haveSettingsDialog() const { return false; }
+	virtual bool hasSettingsDialog() const { return false; }
 
 	/*! If a settings dialog page is provided, this function is called when
 		the user clicks on the respective settings dialog menu entry.
@@ -40,5 +46,7 @@ public:
 	virtual int showSettingsDialog(QWidget * parent) { (void)parent; return NoUpdate; }
 };
 
+
+Q_DECLARE_METATYPE(SVCommonPluginInterface*)
 
 #endif // SVCommonPluginInterfaceH

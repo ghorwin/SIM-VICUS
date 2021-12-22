@@ -1,9 +1,6 @@
 #ifndef SVImportPluginInterfaceH
 #define SVImportPluginInterfaceH
 
-#include <QString>
-#include <QtPlugin>
-
 #include "SVCommonPluginInterface.h"
 
 class QWidget;

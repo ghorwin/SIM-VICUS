@@ -121,11 +121,12 @@ int main(int argc, char *argv[]) {
 	}
 	settings.m_versionIdentifier = VICUS::VERSION;
 
-
-
 	// adjust log file verbosity
 	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );
 	messageHandler.setLogfileVerbosityLevel( settings.m_userLogLevelLogfile );
+
+	// *** Read databases ***
+	settings.m_db.readDatabases();
 
 	// *** Style Init ***
 

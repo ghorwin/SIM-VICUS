@@ -192,9 +192,6 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_minorGridColor.name()
 //				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
-
-
-	m_db.readDatabases();
 }
 
 

@@ -241,6 +241,12 @@ private slots:
 
 	void onDockWidgetToggled(bool);
 
+	/*! Triggered, when an import plugin menu action was triggered. */
+	void onImportPluginTriggered();
+	/*! Triggered, when the menu action for configuring a plugin was triggered. */
+	void onConfigurePluginTriggered();
+
+
 	// all menu action slots below
 
 	void on_actionFileNew_triggered();
@@ -331,6 +337,14 @@ private slots:
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
+
+	/*! Loads plugins and incorporates these in the main menu.
+		In case of Database plugins, also populates the database with additional data sets.
+	*/
+	void setupPlugins();
+
+	/*! Populates the main menu entries for given plugins. */
+	void setupPluginMenuEntries(QObject * plugin);
 
 	/*! Updates the window title. */
 	void updateWindowTitle();
