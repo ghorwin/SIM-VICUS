@@ -779,10 +779,16 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 	return false;
 }
 
-
+#include <QDateTime>
 
 void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const {
 	FUNCID(Project::generateNandradProject);
+
+	QDate date;
+
+	// project information
+	p.m_projectInfo.m_comment.append("Project file: \n");
+	p.m_projectInfo.m_created = date.currentDate().toString().toStdString();
 
 	// simulation settings
 	p.m_simulationParameter = m_simulationParameter;
