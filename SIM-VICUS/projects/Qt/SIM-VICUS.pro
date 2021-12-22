@@ -422,7 +422,9 @@ HEADERS  += \
 	../../src/SVView3DDialog.h \
 	../../src/SVViewState.h \
 	../../src/SVViewStateHandler.h \
-	../../src/SVWelcomeScreen.h
+	../../src/SVWelcomeScreen.h \
+	../../src/plugins/SVCommonPluginInterface.h \
+	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
