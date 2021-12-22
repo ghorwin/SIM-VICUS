@@ -16,7 +16,7 @@ public:
 		a copy of the current DB, where the plugin can add data to.
 
 		\param currentDB Reference to the current database in SIM-VICUS
-		\param augmentedDB Database object to be modified by the plugin.
+		\param augmentedDB Database object to be modified by the plugin, initially a copy of currentDB.
 		\return Returns true, if plugin successfully modified the database. If false is returned, some error occurred
 			and the user interface silently ignores the augmentedDB variable.
 

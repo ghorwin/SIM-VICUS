@@ -304,7 +304,7 @@ private:
 	std::map<unsigned int, T>					m_data;
 
 	/*! Counter that holds the first user material ID. */
-	const unsigned int							USER_ID_SPACE_START;
+	unsigned int								USER_ID_SPACE_START;
 	/*! Counter that holds the next unused user material ID. */
 	unsigned int								m_userIdCounter;
 };

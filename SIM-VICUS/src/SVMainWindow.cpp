@@ -1846,9 +1846,15 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 		SVDatabase dbCopy(SVSettings::instance().m_db);
 		// update database entries
 		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
-			IBK::IBK_Message(IBK::FormatString("  Adding database plugin '%1'").arg(dbPlugin->title().toStdString()),
-							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
-			// merge both databases
+			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added").arg(dbPlugin->title().toStdString()),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+			// TODO : here we need to implement the check functionality for each database:
+			//        all original DB elements must also be included in the augmented DB
+
+			// For now, we just replace the entire DB - this is a bit dangerous, but since we do this only
+			// at the start of the application, where there is no project loaded, yet, the risk of data loss is small
+			SVSettings::instance().m_db = dbCopy;
 		}
 		else {
 			IBK::IBK_Message(IBK::FormatString("  Error importing database entries from plugin '%1'").arg(dbPlugin->title().toStdString()),
