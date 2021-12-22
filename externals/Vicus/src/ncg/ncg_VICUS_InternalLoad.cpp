@@ -72,6 +72,8 @@ void InternalLoad::readXML(const TiXmlElement * element) {
 				m_idActivitySchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdPowerManagementSchedule")
 				m_idPowerManagementSchedule = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "ActivateCO2Production")
+				m_activateCO2Production = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -152,6 +154,7 @@ TiXmlElement * InternalLoad::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdActivitySchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idActivitySchedule));
 	if (m_idPowerManagementSchedule != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdPowerManagementSchedule", nullptr, std::string(), IBK::val2string<unsigned int>(m_idPowerManagementSchedule));
+	TiXmlElement::appendSingleAttributeElement(e, "ActivateCO2Production", nullptr, std::string(), IBK::val2string<bool>(m_activateCO2Production));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

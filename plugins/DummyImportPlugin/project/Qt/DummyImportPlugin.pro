@@ -9,7 +9,12 @@ include( ../../../Qt/plugin.pri )
 
 INCLUDEPATH  += \
 	../../../../SIM-VICUS/src \
-	../../../../SIM-VICUS/src/plugins
+	../../../../SIM-VICUS/src/plugins \
+	../../../../externals/Vicus/src \
+	../../../../externals/IBK/src \
+	../../../../externals/IBKMK/src \
+	../../../../externals/TiCPP/src \
+	../../../../externals/Nandrad/src
 
 HEADERS       = ../../src/DummyImportPlugin.h
 SOURCES       = ../../src/DummyImportPlugin.cpp

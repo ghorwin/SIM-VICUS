@@ -102,6 +102,7 @@
 #include "SVUndoModifyProject.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoAddBuilding.h"
+#include "SVUndoAddProject.h"
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
@@ -790,12 +791,70 @@ void SVMainWindow::onDockWidgetToggled(bool visible) {
 
 
 void SVMainWindow::onImportPluginTriggered() {
+	QAction * a = qobject_cast<QAction *>(sender());
+	if (a == nullptr) {
+		IBK::IBK_Message("Invalid call to onImportPluginTriggered()", IBK::MSG_ERROR);
+		return;
+	}
+	// retrieve plugin
+	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
+	Q_ASSERT(plugin != nullptr);
+	SVImportPluginInterface * importPlugin = dynamic_cast<SVImportPluginInterface *>(plugin);
+	Q_ASSERT(importPlugin != nullptr);
 
+	VICUS::Project p;
+	bool success = importPlugin->import(this, p);
+	if (success) {
+		// if we have no project, yet, create a new project based on our imported data
+		if (!m_projectHandler.isValid()) {
+			// create new project
+			m_projectHandler.newProject(&p); // emits updateActions()
+		}
+		else {
+			// ask user about preference
+			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
+				"the current project with the imported project, or would you like to combine both projects into one?"),
+											tr("Replace"), tr("Combine"));
+			if (res == 0) {
+				setFocus();
+				// close project if we have one
+				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
+					return;
+				// create new project
+				m_projectHandler.newProject(&p); // emits updateActions()
+			}
+			else {
+				// The merging of project and referenced data is a bit complicated.
+				// First we must import the embedded database from the imported project
+				// Then, we can copy the buildings to our project.
+
+				SVProjectHandler::instance().importEmbeddedDB(p); // this might modify IDs of the imported project
+
+				// take all imported buildings from project and add as new building to existing data structure via undo-action
+				SVUndoAddProject * undo = new SVUndoAddProject(tr("Adding imported project data"), p);
+				undo->push();
+			}
+		}
+	}
 }
 
+
 void SVMainWindow::onConfigurePluginTriggered() {
-
-
+	QAction * a = qobject_cast<QAction *>(sender());
+	if (a == nullptr) {
+		IBK::IBK_Message("Invalid call to onConfigurePluginTriggered()", IBK::MSG_ERROR);
+		return;
+	}
+	// retrieve plugin
+	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
+	Q_ASSERT(plugin != nullptr);
+	int updateNeeds = plugin->showSettingsDialog(this);
+	if (updateNeeds & SVCommonPluginInterface::SceneUpdate) {
+		// TODO : redraw scene
+	}
+	else if (updateNeeds & SVCommonPluginInterface::DatabaseUpdate) {
+		// TODO : update property widgets
+	}
 }
 
 
@@ -1806,7 +1865,6 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 			m_ui->menuPlugins->addAction(a); // transfers ownership
 		}
 	}
-
 }
 
 

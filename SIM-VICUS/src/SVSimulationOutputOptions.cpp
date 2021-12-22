@@ -473,7 +473,7 @@ void SVSimulationOutputOptions::on_toolButtonRemoveGrid_clicked() {
 }
 
 
-void SVSimulationOutputOptions::on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index) {
+void SVSimulationOutputOptions::on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &/*index*/) {
 	// create output for currently selected row and all objects/vector indexes
 	on_toolButtonAddDefinition_clicked();
 }
