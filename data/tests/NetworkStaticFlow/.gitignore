@@ -31,3 +31,5 @@
 /ThermoHydraulicNetworkPumpWithLossesScheduled/
 /HydraulicNetworkConstPressurePumpLimited/
 /HydraulicNetworkPressureLossElement/
+/ThermoHydraulicNetworkHeatPumpOnOffSource/
+/ThermoHydraulicNetworkHeatPumpVariableSource/
