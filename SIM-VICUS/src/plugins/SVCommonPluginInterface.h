@@ -23,7 +23,7 @@ public:
 	};
 
 	/*! Virtual D'tor. */
-	virtual ~SVCommonPluginInterface() {}
+	virtual ~SVCommonPluginInterface() = default;
 
 	/*! If this function returns true, the plugin provides a
 		settings/configuration page.
