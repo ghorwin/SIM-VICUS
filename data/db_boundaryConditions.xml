@@ -90,20 +90,14 @@
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">10</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
-	<BoundaryCondition id="1018" displayName="DE: Randbedingung innen (Wärmestrom abwärts) |EN: Inside boundary condition (downstream heat flux)">
+	<BoundaryCondition id="1018" displayName="DE: Randbedingung innen (Wärmestrom abwärts, zum Erdreich) |EN: Inside boundary condition (downstream heat flux, to ground)">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Standard</OtherZoneType>
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
+
 	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
-		<InterfaceHeatConduction modelType="Constant">
-			<OtherZoneType>Standard</OtherZoneType>
-			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">5.88</IBK:Parameter>
-		</InterfaceHeatConduction>
-	</BoundaryCondition>
-	
-	<BoundaryCondition id="1020" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Constant</OtherZoneType>
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
