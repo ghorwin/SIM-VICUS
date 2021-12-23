@@ -373,9 +373,6 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	progressDialog.setValue(0);
 	progressDialog.show();
 
-//	QElapsedTimer progressTimer;
-//	progressTimer.start();
-
 	ShadingCalculationProgress progressNotifyer;
 	progressNotifyer.m_dlg = &progressDialog;
 
@@ -385,6 +382,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	m_shading->calculateShadingFactors(&progressNotifyer, gridSize);
 
 	if (progressNotifyer.m_aborted) {
+		QMessageBox::information(this, QString(), tr("Calculation of shading factors was aborted."));
 		return;
 	}
 
@@ -392,22 +390,24 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	QDir projectDir = QFileInfo(prj.projectFile()).dir();
 
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
+	IBK::Path exportFile;
 	switch ( outputType ) {
 		case TsvFile : {
-			IBK::Path exportFileTSV( (projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".tsv").toStdString() );
-			m_shading->writeShadingFactorsToTSV(exportFileTSV, surfaceIDs);
+			exportFile = IBK::Path( (projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".tsv").toStdString() );
+			m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs);
 		} break;
 		case D6oFile : {
 			QString pathD6O = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6o" ;
-			IBK::Path exportFileD6O(pathD6O.toStdString() );
-			m_shading->writeShadingFactorsToDataIO(exportFileD6O, surfaceIDs, false);
+			exportFile = IBK::Path( pathD6O.toStdString() );
+			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, false);
 		} break;
 		case D6bFile : {
 			QString pathD6B = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6b" ;
-			IBK::Path exportFileD6B(pathD6B.toStdString() );
-			m_shading->writeShadingFactorsToDataIO(exportFileD6B, surfaceIDs, true);
+			exportFile = IBK::Path( pathD6B.toStdString() );
+			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, true);
 		} break;
 	}
+	QMessageBox::information(this, QString(), tr("Calculated shading factors have been saved to '%1'.").arg(QString::fromStdString(exportFile.str())));
 }
 
 
