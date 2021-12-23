@@ -103,7 +103,7 @@
 		</InterfaceHeatConduction>
 	</BoundaryCondition>
 	
-	<BoundaryCondition id="1019" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
+	<BoundaryCondition id="1020" displayName="DE: Erdreich konst. 10 C |EN: Ground boundary condition const 10 C">
 		<InterfaceHeatConduction modelType="Constant">
 			<OtherZoneType>Constant</OtherZoneType>
 			<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
