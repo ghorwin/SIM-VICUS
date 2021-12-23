@@ -530,3 +530,15 @@ void SVSimulationStartNandrad::on_pushButtonExportFMU_clicked() {
 		return;
 	}
 }
+
+
+void SVSimulationStartNandrad::on_tabWidget_currentChanged(int) {
+	// tell all widgets to update their UI based on the current data
+	// this ensures that entered data is synced across all dialogs
+	m_simulationPerformanceOptions->updateUi();
+	m_simulationLocationOptions->updateUi();
+	m_simulationOutputOptions->updateUi();
+	m_simulationModelOptions->updateUi();
+	m_simulationShadingOptions->updateUi();
+	m_simulationNetworkOptions->updateUi();
+}

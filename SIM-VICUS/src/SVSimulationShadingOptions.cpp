@@ -37,17 +37,19 @@
 
 #include <IBK_physics.h>
 #include <IBK_Time.h>
+
 #include <IBKMK_Polygon2D.h>
 
 #include <VICUS_Surface.h>
 #include <VICUS_Project.h>
 
-#include <SVProjectHandler.h>
-#include <SVSimulationStartNandrad.h>
-#include <SVSettings.h>
-#include <SVMainWindow.h>
-
 #include <SH_StructuralShading.h>
+
+#include "SVProjectHandler.h"
+#include "SVSimulationStartNandrad.h"
+#include "SVSettings.h"
+#include "SVMainWindow.h"
+#include "SVStyle.h"
 
 class ShadingCalculationProgress : public SH::Notification {
 public:
@@ -76,6 +78,11 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 	m_ui->setupUi(this);
 	m_ui->verticalLayout->setMargin(0);
 
+	QPalette p;
+
+	p.setColor(QPalette::Text, SVStyle::instance().m_logErrorText);
+	m_ui->labelInputError->setPalette(p);
+
 	m_ui->lineEditSunCone->setup(0, 45, tr("Half-angle of sun cone must be > 0 Deg!"), false, true);
 	m_ui->lineEditGridSize->setup(0, 1000, tr("Grid size must be > 0 m!"), false, true);
 	m_ui->lineEditSteps->setup(1, 60, tr("Steps per hour must be between 1 and 60!"), true, true);
@@ -88,6 +95,8 @@ SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD:
 
 	// TODO : restore previously used setting
 	m_ui->comboBoxFileType->setCurrentIndex( 0 );
+
+
 }
 
 
@@ -99,6 +108,73 @@ SVSimulationShadingOptions::~SVSimulationShadingOptions() {
 
 void SVSimulationShadingOptions::updateUi() {
 	updateFileName();
+
+	// Here we check all parameters that are *not* edited in this dialog, and show
+	// a summary of these input parameters.
+	// If any of the input data is invalid, we disable the "calculate" button and show
+	// an error message.
+
+	// we are pessimistic at first
+	m_ui->labelInputError->setVisible(true);
+	m_ui->pushButtonCalculate->setEnabled(false);
+	m_ui->labelLatitude->setText("---");
+	m_ui->labelLongitude->setText("---");
+	m_ui->labelStartTime->setText("---");
+	m_ui->labelEndTime->setText("---");
+
+	// *** simulation time interval ***
+
+	const NANDRAD::SimulationParameter &simuPara = *m_simParams;
+	try {
+		simuPara.m_interval.checkParameters();
+	} catch (...) {
+		m_ui->labelInputError->setText( tr("Simulation time interval is not properly configured. Please set a valid simulation time interval and "
+												  "compute shading afterwards!") );
+		return;
+	}
+	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
+	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
+	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
+
+	m_startTime =  IBK::Time(startYear.value, startDay.value );
+	m_endTime = IBK::Time(startYear.value, endDay.value );
+	m_ui->labelStartTime->setText(QString::fromStdString(startDay.toString()));
+	m_ui->labelEndTime->setText(QString::fromStdString(endDay.toString()));
+
+	m_durationInSec = (unsigned int)m_startTime.secondsUntil(m_endTime);
+
+	// *** location ***
+
+	const NANDRAD::Location &loc = *m_location;
+	try {
+		loc.checkParameters();
+	} catch (...) {
+		m_ui->labelInputError->setText( tr("Location data is not correctly defined. Please open the location data dialog and specify "
+										   "a valid climate data file and/or building location.") );
+		return;
+	}
+	// we need longitude and latitude
+
+	// if either one is defined, so is the other one - we have checked this in loc.checkParameters() above, and also
+	// correct units and value ranges
+
+	// if both are not set, we need to load the cliate data file and get the location parameters from the file
+	if (loc.m_para[NANDRAD::Location::P_Longitude].name.empty()) {
+		if (!loc.m_climateFilePath.isValid()) {
+			m_ui->labelInputError->setText( tr("Climate data file must be specified so that location is known. "
+											   "Please open the location data dialog and specify "
+											   "a valid climate data file and/or building location.") );
+			return;
+		}
+	}
+	else {
+		m_longitudeInDeg = loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg");
+		m_latitudeInDeg = loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg");
+	}
+
+	// all checks ok, hide the error text and enable the button
+	m_ui->labelInputError->setVisible(false);
+	m_ui->pushButtonCalculate->setEnabled(false);
 }
 
 
@@ -158,13 +234,13 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	std::vector<SH::StructuralShading::ShadingObject> selSurf;
 
 	// We take all our selected surfaces
-//	if (m_useOnlySelectedSurfaces) {
-	if (/* DISABLES CODE */ (true)) {
-		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
-		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
-		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
-	}
-	else {
+////	if (m_useOnlySelectedSurfaces) {
+//	if (/* DISABLES CODE */ (true)) {
+//		project().selectedSurfaces(m_selSurfaces,VICUS::Project::SG_Building);
+//		project().selectedSubSurfaces(m_selSubSurfaces,VICUS::Project::SG_Building);
+//		project().selectedSurfaces(m_selObstacles,VICUS::Project::SG_Obstacle);
+//	}
+//	else {
 		std::set<const VICUS::Object*> sel;
 		// take all, regardless of visibility or selection state
 		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), false, false);
@@ -187,18 +263,17 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 					m_selObstacles.push_back(surf);
 			}
 		}
-	}
+//	}
 
 	const NANDRAD::Location &loc = *m_location;
-	const NANDRAD::SimulationParameter &simuPara = *m_simParams;
-
-	try {
-		simuPara.m_interval.checkParameters();
-	} catch (...) {
-		QMessageBox::critical(this, QString(), tr("Simulation time interval is not properly configured. Please set a valid simulation time interval and "
-												  "compute shading afterwards!"));
-		return;
+	// all checks have been made already in updateUi()
+	// if we have no location yet, read climate data file and extract location
+	if (loc.m_para[NANDRAD::Location::P_Longitude].name.empty()) {
+		// TODO :
 	}
+
+	// we need to handle the case that we have a climate data file path, but no longitude/latitude given
+
 
 	if ( !m_ui->lineEditGridSize->isValid() ) {
 		QMessageBox::critical(this, QString(), "Grid size must be > 0 m!");
@@ -215,26 +290,19 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		return;
 	}
 
-	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
-	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
-	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
-
-	IBK::Time simTimeStart (startYear.value, startDay.value );
-	IBK::Time simTimeEnd (startYear.value, endDay.value );
-
-	unsigned int durationInSec = (unsigned int)simTimeStart.secondsUntil(simTimeEnd);
 	double sunConeDeg = m_ui->lineEditSunCone->value();
 
 	double stepDuration = 3600/m_ui->lineEditSteps->value();
 
+	double duration = m_startTime.secondsUntil(m_endTime);
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
-										   loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
-										   loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
-										   simTimeStart,
-										   durationInSec,
-										   stepDuration,
-										   sunConeDeg );
+											loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
+											loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
+											m_startTime,
+											duration,
+											stepDuration,
+											sunConeDeg );
 
 
 	// *** compose vectors with obstacles

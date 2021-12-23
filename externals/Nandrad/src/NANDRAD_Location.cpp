@@ -27,9 +27,33 @@
 namespace NANDRAD {
 
 void Location::checkParameters() const {
+	FUNCID(Location::checkParameters);
+
 	// check albedo
 	m_para[NANDRAD::Location::P_Albedo].checkedValue("Albedo","---","---", 0, true, 1, true,
 													 "Location parameter 'Albedo' is expected between 0 and 1.");
+
+	// for now we require a climate data file
+	// if dummy values are needed, it is possible to create a simple dummy climate data file
+	// with constant values throughout the year
+	if (m_climateFilePath.str().empty())
+		throw IBK::Exception("Climate data file path required in location data.", FUNC_ID);
+
+	const IBK::Parameter & latitude = m_para[NANDRAD::Location::P_Latitude];
+	const IBK::Parameter & longitude = m_para[NANDRAD::Location::P_Longitude];
+	// ensure that either both latitude and longitude are given, or none
+	if (!((latitude.name.empty() && longitude.name.empty()) || (!latitude.name.empty() && !longitude.name.empty())))
+		throw IBK::Exception("If 'Latitude' or 'Longitude' are given in the location data, you need to specify always both.", FUNC_ID);
+
+	// if either is given, check for valid range
+	if (!latitude.name.empty()) {
+		latitude.checkedValue("Latitude", "Deg", "Deg", -90, true, 90, true,
+							  "Location parameter 'Latitude' is expected to be between -90 and 90 degrees.");
+	}
+	if (!longitude.name.empty()) {
+		longitude.checkedValue("Longitude", "Deg", "Deg", -180, true, 180, true,
+							  "Location parameter 'Longitude' is expected to be between -180 and 180 degrees.");
+	}
 }
 
 } // namespace NANDRAD

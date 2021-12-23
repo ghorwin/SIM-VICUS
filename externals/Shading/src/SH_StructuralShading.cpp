@@ -80,21 +80,6 @@ void StructuralShading::initializeShadingCalculation(int timeZone, double longit
 }
 
 
-void StructuralShading::setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > &surfaces, const std::vector<std::vector<IBKMK::Vector3D> > &obstacles) {
-//	m_surfaces.clear();
-//	m_obstacles.clear();
-
-//	for (const std::vector<IBKMK::Vector3D> &polyline : surfaces) {
-//		m_surfaces.push_back( IBKMK::Polygon3D(polyline) );
-//	}
-//	for (const std::vector<IBKMK::Vector3D> &polyline : obstacles) {
-//		m_obstacles.push_back( IBKMK::Polygon3D(polyline) );
-//	}
-//	// error checking is done in setGeometry()
-//	setGeometry(m_surfaces, m_obstacles);
-}
-
-
 void StructuralShading::setGeometry(const std::vector<ShadingObject> & surfaces, const std::vector<ShadingObject> & obstacles) {
 	FUNCID(StructuralShading::setGeometry);
 	try {

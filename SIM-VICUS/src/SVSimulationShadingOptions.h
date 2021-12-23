@@ -118,6 +118,17 @@ private:
 	const NANDRAD::SimulationParameter		*m_simParams = nullptr;
 	const NANDRAD::Location					*m_location = nullptr;
 
+	/*! Start time in seconds, updated in updateUi(). */
+	IBK::Time 								m_startTime;
+	/*! End time in seconds, updated in updateUi(). */
+	IBK::Time 								m_endTime;
+	/*! Duration in seconds, updated in updateUi(). */
+	double									m_durationInSec;
+	/*! Longitude in Deg, updated in updateUi(). */
+	double									m_longitudeInDeg;
+	/*! Latitude in Deg, updated in updateUi(). */
+	double									m_latitudeInDeg;
+
 	std::vector<const VICUS::Surface*>		m_selSurfaces;						///< vector with selected surfaces
 	std::vector<const VICUS::SubSurface*>	m_selSubSurfaces;						///< vector with selected surfaces
 	std::vector<const VICUS::Surface*>		m_selObstacles;						///< vector with selected dump geometry (obstacles)

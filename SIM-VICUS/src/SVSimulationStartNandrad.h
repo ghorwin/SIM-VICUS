@@ -93,6 +93,8 @@ private slots:
 
 	void on_pushButtonExportFMU_clicked();
 
+	void on_tabWidget_currentChanged(int index);
+
 private:
 	/*! Composes correct command line (stored in m_cmdArgs). */
 	void updateCmdLine();

@@ -90,7 +90,6 @@ public:
 	/*! Initializes all variables for shading calculation such as obstacles and sun positions
 		\param obstacles vector with all obstacle interfaces
 	*/
-	void setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > & surfaces, const std::vector<std::vector<IBKMK::Vector3D> > & obstacles);
 	void setGeometry(const std::vector<ShadingObject> &surfaces, const std::vector<ShadingObject> &obstacles);
 
 	/*! Calculates the shading factors for the given period
