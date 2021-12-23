@@ -1793,8 +1793,8 @@ void SVMainWindow::setupPlugins() {
 		setupPluginMenuEntries(plugin);
 	}
 
-	QDir pluginsDir = QDir(QCoreApplication::applicationDirPath());
-	pluginsDir.cd("plugins");
+	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
+	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
 
 	const auto entryList = pluginsDir.entryList(QDir::Files);
 	for (const QString &fileName : entryList) {
@@ -1805,7 +1805,8 @@ void SVMainWindow::setupPlugins() {
 			setupPluginMenuEntries(plugin);
 		}
 		else {
-			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1'").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
+			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()),
+							 IBK::MSG_ERROR);
 		}
 	}
 }
@@ -1846,7 +1847,7 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 		SVDatabase dbCopy(SVSettings::instance().m_db);
 		// update database entries
 		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
-			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added").arg(dbPlugin->title().toStdString()),
+			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\”").arg(dbPlugin->title().toStdString()),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 			// TODO : here we need to implement the check functionality for each database:
