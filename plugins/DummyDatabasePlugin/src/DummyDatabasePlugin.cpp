@@ -13,7 +13,7 @@ int DummyDatabasePlugin::showSettingsDialog(QWidget * parent) {
 }
 
 
-bool DummyDatabasePlugin::retrieve(const SVDatabase & currentDB, SVDatabase & augmentedDB) {
+bool DummyDatabasePlugin::retrieve(const SVDatabase & /*currentDB*/, SVDatabase & augmentedDB) {
 	// just add a dummy material, construction and component
 	VICUS::Material m;
 	m.m_displayName.setEncodedString("de:Dummy-Material|en:Dummy material");
@@ -25,8 +25,6 @@ bool DummyDatabasePlugin::retrieve(const SVDatabase & currentDB, SVDatabase & au
 
 	// generate some unique ID
 	m.m_id = 5500000; // our ID space
-	m.m_builtIn = true; // TODO : later we may need something to identify this material as "plugin-based" and
-						//        avoid storing it in projects
 
 	// check, that we don't conflict with existing materials
 	if (augmentedDB.m_materials[m.m_id] != nullptr) {
@@ -34,7 +32,10 @@ bool DummyDatabasePlugin::retrieve(const SVDatabase & currentDB, SVDatabase & au
 		return false;
 	}
 
-	augmentedDB.m_materials.add(m, m.m_id);
+	unsigned int matID = augmentedDB.m_materials.add(m, m.m_id);
+	augmentedDB.m_materials[matID]->m_builtIn = true;
+	// TODO : later we may need something to identify this material as "plugin-based" and
+	//        avoid storing it in projects
 	IBK::IBK_Message(IBK::FormatString("    %1 materials added\n").arg(1), IBK::MSG_PROGRESS);
 	return true;
 }
