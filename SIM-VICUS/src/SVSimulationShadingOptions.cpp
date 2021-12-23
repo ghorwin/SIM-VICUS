@@ -270,7 +270,17 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		}
 		else {
 			// load climate data file manually
-
+			CCM::ClimateDataLoader loader;
+			IBK::Path absPath = SVProjectHandler::instance().replacePathPlaceholders(loc.m_climateFilePath);
+			try {
+				loader.readClimateData(absPath, true);
+				m_latitudeInDeg = loader.m_latitudeInDegree;
+				m_longitudeInDeg = loader.m_longitudeInDegree;
+			}
+			catch (IBK::Exception&) {
+				QMessageBox::critical(this, QString(), tr("Error reading climate data file '%1'.").arg(QString::fromStdString(absPath.str())));
+				return;
+			}
 		}
 	}
 
