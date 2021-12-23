@@ -18,7 +18,7 @@
 			<Y unit="m2/s">6.43e-06 4.45e-06 3.17e-06 2.33e-06 1.76e-06 1.37e-06 1.1e-06</Y>
 		</LinearSplineParameter>
 	</NetworkFluid>
-	<NetworkFluid id="10010002" displayName="DE: Propylenglykol 30 %, 0°C |EN: propylene glycol 30 %, 0°C" color="#ffa52c">
+	<NetworkFluid id="10010003" displayName="DE: Propylenglykol 30 %, 0°C |EN: propylene glycol 30 %, 0°C" color="#ffa52c">
 		<IBK:Parameter name="Density" unit="kg/m3">1036</IBK:Parameter>
 		<IBK:Parameter name="HeatCapacity" unit="J/kgK">3790</IBK:Parameter>
 		<IBK:Parameter name="Conductivity" unit="W/mK">0.381</IBK:Parameter>
