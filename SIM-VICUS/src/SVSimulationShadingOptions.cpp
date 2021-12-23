@@ -359,15 +359,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		const IBKMK::Vector3D &localY = dynamic_cast<const VICUS::Surface*>(ss->m_parent)->geometry().localY();
 
 
-		qDebug() << "======================================================";
-		qDebug() << QString::fromStdString(ss->m_displayName.toStdString());
+//		qDebug() << "======================================================";
+//		qDebug() << QString::fromStdString(ss->m_displayName.toStdString());
 
 		// we need to calculate the 3D Points of the Sub Surface
 		std::vector<IBKMK::Vector3D> subSurf3D;
 		for (unsigned int i=0; i<ss->m_polygon2D.vertexes().size(); ++i) {
 			const IBKMK::Vector2D &vertex = ss->m_polygon2D.vertexes()[i];
 			subSurf3D.push_back(offset3D + localX*vertex.m_x + localY*vertex.m_y);
-			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
+//			qDebug() << i << "\t" << subSurf3D[i].m_x << "\t" << subSurf3D[i].m_y << "\t" << subSurf3D[i].m_z;
 		}
 
 		// we compute shading factors for this surface
@@ -381,7 +381,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	QProgressDialog progressDialog(tr("Calculate shading factors"), tr("Abort"), 0, 100, this);
 	progressDialog.setValue(0);
-	progressDialog.show();
+	progressDialog.setMinimumDuration(1000);
 
 	ShadingCalculationProgress progressNotifyer;
 	progressNotifyer.m_dlg = &progressDialog;
@@ -395,6 +395,8 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		QMessageBox::information(this, QString(), tr("Calculation of shading factors was aborted."));
 		return;
 	}
+
+	progressDialog.hide();
 
 	SVProjectHandler &prj = SVProjectHandler::instance();
 	QDir projectDir = QFileInfo(prj.projectFile()).dir();

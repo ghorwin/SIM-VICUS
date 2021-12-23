@@ -23,6 +23,7 @@
 #include <IBK_CSVReader.h>
 #include <IBK_UnitVector.h>
 #include <IBK_physics.h>
+#include <IBK_StopWatch.h>
 
 #include <IBKMK_Vector3D.h>
 
@@ -106,8 +107,6 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	FUNCID(StructuralShading::calculateShadingFactors);
 
 	// TODO Stephan, input data check
-	double threadCount = 1;
-
 	m_gridWidth = gridWidth;
 	if (gridWidth <= 0)
 		throw IBK::Exception("Invalid grid width, must be > 0 m.", FUNC_ID);
@@ -123,21 +122,29 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	}
 
 #if defined(_OPENMP)
+	int threadCount = 1;
+
 #pragma omp parallel
 	{
 		if (omp_get_thread_num() == 0) {
 			threadCount = omp_get_num_threads();
-			IBK::IBK_Message(IBK::FormatString("Num threads = %1").arg(threadCount));
+			IBK::IBK_Message(IBK::FormatString("Running shading calculation in parallel with %1 threads.\n").arg(threadCount));
 		}
 	}
 #endif
 
+	// the stop watch object and progress counter are used only in a critical section
+	IBK::StopWatch w;
+	w.start();
+	notify->notify(0);
+
+
 #if defined(_OPENMP)
-#pragma omp parallel for
+#pragma omp parallel for schedule(static,1)
 #endif
 	for (int surfCounter = 0; surfCounter < (int)m_surfaces.size(); ++surfCounter) {
 		if (notify->m_aborted)
-			continue; //stop loop
+			continue; // skip ahead to quickly stop loop
 
 		// readability improvement
 		const ShadingObject & so = m_surfaces[(unsigned int)surfCounter];
@@ -150,6 +157,8 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 		// 2. for each center point perform intersection tests again _all_ obstacle polygons
 
 		for (unsigned int i=0; i<m_sunConeNormals.size(); ++i) {
+			if (notify->m_aborted)
+				continue; // skip ahead to quickly stop loop
 
 			double angle = angleVectors(m_sunConeNormals[i], so.m_polygon.normal());
 			// if sun does not shine uppon surface, no shading factor needed
@@ -163,18 +172,24 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 5. store in result vector
 			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
 
-
-			if ( i % 10 == 0 ) { // we do not want to send updates to progress bar all the time
-#if defined(_OPENMP)
-				if (omp_get_thread_num() == 0)
-#endif
-					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) * threadCount / (m_surfaces.size()*m_sunConeNormals.size()) );
-
-				if (notify->m_aborted)
-					break; // stop loop
+			// master thread 0 updates the progress dialog; this should be good enough for longer runs
+	#if defined(_OPENMP)
+			if (omp_get_thread_num() == 0) {
+	#endif
+				// only notify every second or so
+				if (!notify->m_aborted && w.difference() > 500) {
+					std::cout  << "  " << w.difference() << std::endl;
+					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
+					w.start();
+				}
+	#if defined(_OPENMP)
 			}
+	#endif
+
 		}
+
 	} // omp for loop
+	notify->notify(1.0);
 
 }
 
