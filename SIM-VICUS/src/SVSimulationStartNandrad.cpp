@@ -131,7 +131,9 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	}
 
 	// start with initial page, always
+	m_ui->tabWidget->blockSignals(true);
 	m_ui->tabWidget->setCurrentIndex(0);
+	m_ui->tabWidget->blockSignals(false);
 }
 
 

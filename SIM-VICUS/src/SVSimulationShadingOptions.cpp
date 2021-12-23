@@ -50,6 +50,7 @@
 #include "SVSettings.h"
 #include "SVMainWindow.h"
 #include "SVStyle.h"
+#include "SVClimateDataTableModel.h"
 
 class ShadingCalculationProgress : public SH::Notification {
 public:
@@ -122,24 +123,27 @@ void SVSimulationShadingOptions::updateUi() {
 	m_ui->labelStartTime->setText("---");
 	m_ui->labelEndTime->setText("---");
 
+	QString errorColor = SVStyle::instance().m_logErrorText.name();
+
 	// *** simulation time interval ***
 
 	const NANDRAD::SimulationParameter &simuPara = *m_simParams;
 	try {
 		simuPara.m_interval.checkParameters();
 	} catch (...) {
-		m_ui->labelInputError->setText( tr("Simulation time interval is not properly configured. Please set a valid simulation time interval and "
-												  "compute shading afterwards!") );
+		m_ui->labelInputError->setText( tr("<span style=\"color:%1\">Simulation time interval is not properly configured. Please set a valid simulation time interval and "
+												  "compute shading afterwards!</span>").arg(errorColor) );
 		return;
 	}
 	IBK::IntPara startYear = simuPara.m_intPara[NANDRAD::SimulationParameter::IP_StartYear];
 	IBK::Parameter startDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_Start];
 	IBK::Parameter endDay = simuPara.m_interval.m_para[NANDRAD::Interval::P_End];
+	// startDay and endDay are valid, since they have been checked and fixed already in SVSimulationStartNandrad.cpp
 
 	m_startTime =  IBK::Time(startYear.value, startDay.value );
 	m_endTime = IBK::Time(startYear.value, endDay.value );
-	m_ui->labelStartTime->setText(QString::fromStdString(startDay.toString()));
-	m_ui->labelEndTime->setText(QString::fromStdString(endDay.toString()));
+	m_ui->labelStartTime->setText(QString::fromStdString(startDay.toString(IBK::Unit("d"))));
+	m_ui->labelEndTime->setText(QString::fromStdString(endDay.toString(IBK::Unit("d"))));
 
 	m_durationInSec = (unsigned int)m_startTime.secondsUntil(m_endTime);
 
@@ -147,34 +151,23 @@ void SVSimulationShadingOptions::updateUi() {
 
 	const NANDRAD::Location &loc = *m_location;
 	try {
+		// check for valid climate data file path and optionally given (alternative) latitute and longitude
 		loc.checkParameters();
 	} catch (...) {
-		m_ui->labelInputError->setText( tr("Location data is not correctly defined. Please open the location data dialog and specify "
-										   "a valid climate data file and/or building location.") );
+		m_ui->labelInputError->setText( tr("<span style=\"color:%1\">Location data is not correctly defined. Please open the location data dialog and specify "
+										   "a valid climate data file and/or building location.</span>").arg(errorColor) );
 		return;
 	}
 	// we need longitude and latitude
+	m_longitudeInDeg = loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg");
+	m_latitudeInDeg = loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg");
 
-	// if either one is defined, so is the other one - we have checked this in loc.checkParameters() above, and also
-	// correct units and value ranges
-
-	// if both are not set, we need to load the cliate data file and get the location parameters from the file
-	if (loc.m_para[NANDRAD::Location::P_Longitude].name.empty()) {
-		if (!loc.m_climateFilePath.isValid()) {
-			m_ui->labelInputError->setText( tr("Climate data file must be specified so that location is known. "
-											   "Please open the location data dialog and specify "
-											   "a valid climate data file and/or building location.") );
-			return;
-		}
-	}
-	else {
-		m_longitudeInDeg = loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg");
-		m_latitudeInDeg = loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg");
-	}
+	m_ui->labelLatitude->setText( QString("%L1").arg(m_latitudeInDeg, 0, 'f', 2));
+	m_ui->labelLongitude->setText( QString("%L1").arg(m_longitudeInDeg, 0, 'f', 2));
 
 	// all checks ok, hide the error text and enable the button
 	m_ui->labelInputError->setVisible(false);
-	m_ui->pushButtonCalculate->setEnabled(false);
+	m_ui->pushButtonCalculate->setEnabled(true);
 }
 
 
@@ -269,7 +262,16 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// all checks have been made already in updateUi()
 	// if we have no location yet, read climate data file and extract location
 	if (loc.m_para[NANDRAD::Location::P_Longitude].name.empty()) {
-		// TODO :
+		// Mind: loc.m_climateFilePath contains placeholders in case of database files.
+		const SVClimateFileInfo * dbFileInfo = SVSettings::instance().climateDataTableModel()->infoForFilename(QString::fromStdString(loc.m_climateFilePath.str()));
+		if (dbFileInfo != nullptr) {
+			m_latitudeInDeg = dbFileInfo->m_latitudeInDegree;
+			m_longitudeInDeg = dbFileInfo->m_longitudeInDegree;
+		}
+		else {
+			// load climate data file manually
+
+		}
 	}
 
 	// we need to handle the case that we have a climate data file path, but no longitude/latitude given
@@ -291,16 +293,13 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	}
 
 	double sunConeDeg = m_ui->lineEditSunCone->value();
-
 	double stepDuration = 3600/m_ui->lineEditSteps->value();
-
-	double duration = m_startTime.secondsUntil(m_endTime);
 
 	m_shading->initializeShadingCalculation(loc.m_timeZone,
 											loc.m_para[NANDRAD::Location::P_Longitude].get_value("Deg"),
 											loc.m_para[NANDRAD::Location::P_Latitude].get_value("Deg"),
 											m_startTime,
-											duration,
+											m_durationInSec,
 											stepDuration,
 											sunConeDeg );
 
