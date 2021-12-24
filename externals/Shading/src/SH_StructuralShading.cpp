@@ -128,15 +128,23 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 	{
 		if (omp_get_thread_num() == 0) {
 			threadCount = omp_get_num_threads();
+			// we should leave one CPU free for the GUI update
+			if (threadCount > 4) {
+				--threadCount;
+				omp_set_num_threads(threadCount);
+			}
 			IBK::IBK_Message(IBK::FormatString("Running shading calculation in parallel with %1 threads.\n").arg(threadCount));
 		}
 	}
 #endif
 
+	IBK::StopWatch totalTimer;
+	totalTimer.start();
 	// the stop watch object and progress counter are used only in a critical section
 	IBK::StopWatch w;
 	w.start();
 	notify->notify(0);
+	int surfacesCompleted = 0;
 
 
 #if defined(_OPENMP)
@@ -171,26 +179,31 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 			// 4. compute area-weighted sum of shading factors and devide by orginal polygon surface
 			// 5. store in result vector
 			m_shadingFactors[i][(unsigned int)surfCounter] = sf;
-
 			// master thread 0 updates the progress dialog; this should be good enough for longer runs
-	#if defined(_OPENMP)
-			if (omp_get_thread_num() == 0) {
-	#endif
+#if defined(_OPENMP)
+			if ( omp_get_thread_num() == 0) {
+#endif
+//				std::cout << surfacesCompleted << "  " << w.difference() << std::endl;
 				// only notify every second or so
-				if (!notify->m_aborted && w.difference() > 500) {
-					std::cout  << "  " << w.difference() << std::endl;
-					notify->notify(double(surfCounter*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
+				if (!notify->m_aborted && w.difference() > 1000) {
+					notify->notify(double(surfacesCompleted*m_sunConeNormals.size() + i) / (m_surfaces.size()*m_sunConeNormals.size()) );
 					w.start();
 				}
-	#if defined(_OPENMP)
+#if defined(_OPENMP)
 			}
-	#endif
-
+#endif
 		}
+
+
+		// increase number of completed surfaces (done by all threads)
+#if defined(_OPENMP)
+#pragma omp critical
+#endif
+		++surfacesCompleted;
 
 	} // omp for loop
 	notify->notify(1.0);
-
+	IBK::IBK_Message(IBK::FormatString("Finished after %1.\n").arg(totalTimer.diff_str()));
 }
 
 
