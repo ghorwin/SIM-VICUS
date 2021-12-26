@@ -553,6 +553,7 @@ void SVSettings::linuxDesktopIntegration(QWidget * parent,
 			"</mime-info>\n";
 	mimeFileContents = mimeFileContents.arg(appIDname, appname, fileExtension);
 	QString mimeDir = QDir::home().absoluteFilePath(".local/share/mime");
+	QDir::home().mkpath( mimeDir + "/packages");
 	QString mimeFile = mimeDir + QString("/packages/%1.xml").arg(appIDname);
 	QFile mimeF(mimeFile);
 	mimeF.open(QFile::WriteOnly);
