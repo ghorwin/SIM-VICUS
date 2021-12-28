@@ -205,9 +205,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 					tvec.m_data[i] = reader.colData(0)[i]; // first column - time point
 
 					m_externalShadingFactors[i].resize(reader.m_nColumns-1);
-					for (unsigned int j=1; j<reader.m_nColumns; ++j) {
-						m_externalShadingFactors[i][j-1] = reader.colData(j)[i];
-					}
+					for (unsigned int j=1; j<reader.m_nColumns; ++j)
+						m_externalShadingFactors[i][j-1] = reader.m_values[i][j];
 
 				}
 				tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
