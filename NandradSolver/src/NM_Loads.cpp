@@ -149,6 +149,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			IBK::Path fullShadingFilePath = location.m_shadingFactorFilePath.withReplacedPlaceholders(pathPlaceHolders);
 
 			// data is transfered into IBK::Matrix structure where it will be interpolated accordingly
+			IBK::IBK_Message(IBK::FormatString("Reading shading factor data file '%1'\n").arg(fullShadingFilePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 
 			// *** TSV Files ***
