@@ -544,23 +544,51 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 		out.close();
 	}
 	else {
+		// read original DataIO file
 		DATAIO::DataIO shadingFile;
+		try {
+			shadingFile.read(vicusShadingFilePath, false);
+			// force conversion from strings to doubles
+			for (unsigned int i=0; i<shadingFile.m_timepoints.size(); ++i)
+				shadingFile.data(i);
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			IBK::IBK_Message(IBK::FormatString("Error reading shading factors file '%1'.").arg(vicusShadingFilePath), IBK::MSG_ERROR);
+			return false;
+		}
+
+		// sanity checks? later
+
+		// we only need to process the m_nums line, substitute the IDs and also generate the quantities line
+		std::string newQuantities;
+		std::vector<unsigned int> newNums;
+		for (unsigned int i=0; i<shadingFile.m_nums.size(); ++i) {
+			unsigned int id = shadingFile.m_nums[i];
+			std::map<unsigned int, unsigned int>::const_iterator nandradSurfIt = surfaceIdsVicusToNandrad.find(id);
+			if (nandradSurfIt == surfaceIdsVicusToNandrad.end()) {
+				IBK::IBK_Message( IBK::FormatString("Invalid/unknown surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
+				return false;
+			}
+			// now substitute the ID and compose the quantity string
+			if (i != 0)
+				newQuantities += " | ";
+			newQuantities += IBK::val2string(nandradSurfIt->second);
+			newNums.push_back(nandradSurfIt->second);
+		}
+
 		shadingFile.m_type = DATAIO::DataIO::T_REFERENCE;
 		shadingFile.m_valueUnit = "---"; // unitless (convertible to 1, %)
 		shadingFile.m_projectFileName = projectFilePath.str();
 		shadingFile.m_quantityKeyword = "ShadingFactor";
 		shadingFile.m_spaceType = DATAIO::DataIO::ST_SINGLE;
 		shadingFile.m_timeType = DATAIO::DataIO::TT_NONE;
-		shadingFile.m_startYear = 2007; // TODO : shouldn't we insert the correct start year here?
-		shadingFile.m_filename = shadingFactorFilePath.str();
-		shadingFile.m_isBinary = false; // for now always binary - PostProc can handle that as well
-
-		IBK::IBK_Message(IBK::FormatString("DataIO format not yet support."), IBK::MSG_ERROR);
-		// now write DataIO file
-		// file name uses d6b extension
+//		shadingFile.m_startYear = 2007; // TODO : shouldn't we insert the correct start year here?
 		shadingFile.m_filename = shadingFactorFilePath;
+		shadingFile.m_nums = newNums;
+		shadingFile.m_quantity = newQuantities;
+
+		// now write DataIO file
 		shadingFile.write();
-		return false;
 	}
 	IBK::IBK_Message(IBK::FormatString("Created shading factors data file '%1' in NANDRAD format\n").arg(shadingFactorFilePath), IBK::MSG_PROGRESS, FUNC_ID);
 
