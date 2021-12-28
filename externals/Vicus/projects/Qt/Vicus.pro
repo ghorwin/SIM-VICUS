@@ -27,6 +27,7 @@ INCLUDEPATH = \
 	../../../IBKMK/src \
 	../../../CCM/src \
 	../../../Nandrad/src \
+	../../../DataIO/src \
 	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}

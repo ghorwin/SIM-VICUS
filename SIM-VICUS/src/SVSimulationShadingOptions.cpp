@@ -403,19 +403,26 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();
 	IBK::Path exportFile;
+	// remove any existing shading files with the same name
+	std::string exportFileBaseName = projectDir.absoluteFilePath(m_shadingFactorBaseName).toStdString();
+	if (IBK::Path(exportFileBaseName + ".tsv").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".tsv"));
+	if (IBK::Path(exportFileBaseName + ".d6o").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".d6o"));
+	if (IBK::Path(exportFileBaseName + ".d6b").exists())
+		IBK::Path::remove(IBK::Path(exportFileBaseName + ".d6b"));
+
 	switch ( outputType ) {
 		case TsvFile : {
-			exportFile = IBK::Path( (projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".tsv").toStdString() );
+			exportFile = IBK::Path( exportFileBaseName + ".tsv");
 			m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs);
 		} break;
 		case D6oFile : {
-			QString pathD6O = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6o" ;
-			exportFile = IBK::Path( pathD6O.toStdString() );
+			exportFile = IBK::Path( exportFileBaseName + ".d6o" );
 			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, false);
 		} break;
 		case D6bFile : {
-			QString pathD6B = projectDir.absoluteFilePath(m_shadingFactorBaseName) + ".d6b" ;
-			exportFile = IBK::Path( pathD6B.toStdString() );
+			exportFile = IBK::Path( exportFileBaseName + ".d6b" );
 			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, true);
 		} break;
 	}

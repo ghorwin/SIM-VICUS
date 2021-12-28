@@ -292,9 +292,14 @@ private:
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
 
-	/*! Replace VICUS id's to NANDRAD id's. */
-	bool modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-								   std::string &filepath) const;
+	/*! If available, reads a shading factor file and write the corresponding NANDRAD shading factors file using NANDRAD id's.
+		\param surfaceIdsVicusToNandrad Maps vicus IDs to NANDRAD ids, like nandradID = surfaceIdsVicusToNandrad[vicusID];
+		\param projectFilePath Full path to NANDRAD project file (used to generated path to shading factor file).
+		\param shadingFactorFilePath If function returns successfully, this path contains the full file path to the generated shading factors file.
+		\return Returns true on success, false on error. In case of error an appropriate error message has been written to log.
+	*/
+	bool generateShadingFactorsFile(const std::map<unsigned int, unsigned int> & surfaceIdsVicusToNandrad,
+									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
 
 	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() function.

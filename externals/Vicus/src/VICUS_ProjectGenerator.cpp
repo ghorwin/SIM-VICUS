@@ -5,6 +5,9 @@
 #include <IBK_algorithm.h>
 #include <IBK_physics.h>
 #include <IBK_CSVReader.h>
+#include <IBK_UnitVector.h>
+
+#include <DataIO>
 
 #include <CCM_ClimateDataLoader.h>
 
@@ -407,89 +410,163 @@ private:
 		}
 		return id;
 	}
-
-
-
-
 };
 
-bool Project::modifyHeaderInShadingFile(std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,std::string &filepath) const {
 
-	FUNCID(Project::modifyHeaderInShadingFile);
-	IBK::Path p(filepath);
-	IBK::Path fp(p.withoutExtension() + "_Shading.tsv");
+bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+										 const IBK::Path & projectFilePath, IBK::Path & shadingFactorFilePath) const
+{
+	FUNCID(Project::generateShadingFactorsFile);
+	IBK::Path basePath(projectFilePath.withoutExtension() + "_shadingFactors");
 
-	/// ToDo Stephan bitte erweitern das es fürs DataIO Format auch funktioniert
-	/// musst du nur prüfen ob eine DataIO Datei vorliegt und dann diese lesen und
-	/// modifiziert wieder rausschreiben.
-	if(!fp.exists()){
-		IBK::IBK_Message(IBK::FormatString("No shading file exported."), IBK::MSG_PROGRESS, FUNC_ID);
+	// search for available shading file, and if there are several matching shading files, issue an error
+	bool found = false;
+	IBK::Path vicusShadingFilePath;
+	for (const char * const ext : {"tsv", "d6o", "d6b"}) {
+		IBK::Path fullPath(basePath.str() + "." + ext);
+		if (fullPath.exists()) {
+			if (found) {
+				IBK::IBK_Message(IBK::FormatString("Found shading factor file '%1', "
+												   "but another matching file '%2' exists already!")
+								 .arg(fullPath).arg(vicusShadingFilePath), IBK::MSG_ERROR);
+				return false;
+			}
+			found = true;
+			vicusShadingFilePath = fullPath;
+		}
+	}
+
+	if (!found) {
+		IBK::IBK_Message(IBK::FormatString("No shading file exported, expected a file '%1'[.tsv, .d6o, .d6b].")
+						 .arg(vicusShadingFilePath), IBK::MSG_PROGRESS, FUNC_ID);
 		return false;
 	}
-	filepath = fp.c_str();
-	IBK::CSVReader csv;
+	std::string ext = vicusShadingFilePath.extension();
+	// compose path to NANDRAD shading factor file
+	shadingFactorFilePath = vicusShadingFilePath.withoutExtension() + "Nandrad." + ext;
 
-	csv.read(fp, false, true);
+	// we only need to convert the shading factors file, if the VICUS file has a newer time stamp
+	// Note: for additional security, we could store the original file's hash in the DataIO container and compare that as well
+	if (shadingFactorFilePath.exists() && vicusShadingFilePath.lastWriteTime() < shadingFactorFilePath.lastWriteTime()) {
+		IBK::IBK_Message(IBK::FormatString("NANDRAD shading factor file '%1' newer than original VICUS shading factor file '%2'. Shading file generation skipped.\n")
+						 .arg(shadingFactorFilePath).arg(vicusShadingFilePath), IBK::MSG_PROGRESS);
+		return true;
+	}
 
-	std::vector<std::string> notInterpretableCaptions;
+	// depending on the file extensions, we first parse the data into memory and then dump it back out into a suitable
+	// NANDRAD input file
 
-	//skip time column
-	for(unsigned int i=1; i<csv.m_captions.size(); ++i){
-		std::string &cap = csv.m_captions[i];
+	IBK::IBK_Message(IBK::FormatString("Reading shading factor file '%1'\n").arg(vicusShadingFilePath), IBK::MSG_PROGRESS);
+	if (ext == "tsv") {
+		IBK::CSVReader csv;
 		try {
-			if(surfaceIdsVicusToNandrad.find(IBK::string2val<unsigned int>(cap)) ==
-					surfaceIdsVicusToNandrad.end()){
-				notInterpretableCaptions.push_back(qApp->tr("Missing caption:").toStdString() + cap + " "
-												+ (qApp->tr("Column: ")).toStdString() + IBK::val2string(i));
+			csv.read(vicusShadingFilePath, false, true); // headerOnly=false, extractUnits=true
+			// general error handling
+			if (csv.m_nColumns == 0 || csv.m_nRows == 0)
+				throw IBK::Exception("Missing data in shading factor file.", FUNC_ID);
+			if (csv.m_captions[0] != "Time")
+				throw IBK::Exception("Invalid caption of time column.", FUNC_ID);
+			IBK::Unit u;
+			try {
+				u = IBK::Unit(csv.m_units[0]);
+			}
+			catch (...) { /* do nothing */ }
+			if (u.base_id() != IBK_UNIT_ID_SECONDS)
+				throw IBK::Exception("Invalid unit of time column, a valid time unit is required.", FUNC_ID);
+		} catch (IBK::Exception & ex) {
+			ex.writeMsgStackToError();
+			IBK::IBK_Message(IBK::FormatString("Error reading shading factors file '%1'.").arg(vicusShadingFilePath), IBK::MSG_ERROR);
+			return false;
+		}
+
+		// we now create mapping vector, that relates new column index to original column index in the csv file
+		// and also we populate the nums vector; this is needed because the original shading factors file
+		// contains additional columns like "Azimuth" and "Altitude", which we need to skip
+		std::vector<unsigned int> colIndices;
+
+		// process all columns, but skip the mandatory time column
+		bool haveError = false;
+		std::string headerLine = "Time [" + csv.m_units[0] + "]";
+		colIndices.push_back(0); // we always keep column 0 with the time
+		for (unsigned int i=1; i<csv.m_captions.size(); ++i) {
+			std::string &cap = csv.m_captions[i];
+			// skip Aziumuth and Altitude
+			if (cap == "Azimuth" || cap == "Altitude")
+				continue;
+			unsigned int id;
+			try {
+				id = IBK::string2val<unsigned int>(cap); // might throw
+			} catch (...) {
+				IBK::IBK_Message( IBK::FormatString("  Invalid surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
+				haveError = true;
 				continue;
 			}
-			cap = IBK::val2string(surfaceIdsVicusToNandrad [IBK::string2val<unsigned int>(cap)]);
-		}  catch (...) {
-			notInterpretableCaptions.push_back(cap + " " + (qApp->tr("Column: ")).toStdString() + IBK::val2string(i));
+			// lookup id in id-map
+			std::map<unsigned int, unsigned int>::const_iterator nandradSurfIt = surfaceIdsVicusToNandrad.find(id);
+			if (nandradSurfIt == surfaceIdsVicusToNandrad.end()) {
+				IBK::IBK_Message( IBK::FormatString("  Invalid/unknown surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
+				haveError = true;
+				continue;
+			}
+			colIndices.push_back(i);
+			// store NANDRAD ID in file header line
+			headerLine += "\t" + IBK::val2string(nandradSurfIt->second) + " [" + csv.m_units[i] + "]";
 		}
-	}
 
-	// error check
-	if(!notInterpretableCaptions.empty()){
-		// if we got errors we can not assign shading factors
-		IBK::IBK_Message(IBK::FormatString("There are serveral column headers that are not interpretable:"), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-		for(std::string &s : notInterpretableCaptions)
-			IBK::IBK_Message(IBK::FormatString("%1").arg(s), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-		surfaceIdsVicusToNandrad.clear();
+		// error check
+		if (haveError) {
+			// if we got errors we can not assign shading factors
+			IBK::IBK_Message(IBK::FormatString("There are invalid column headers!"), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+			return false;
+		}
+
+		// write file
+		std::ofstream out;
+		out.open(shadingFactorFilePath.str());
+
+		if (!out.is_open()) {
+			IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(shadingFactorFilePath), IBK::MSG_ERROR, FUNC_ID);
+			return false;
+		}
+
+		out << headerLine << '\n';
+
+		for (unsigned int row=0; row<csv.m_nRows; ++row) {
+			for (unsigned int col=0; col<colIndices.size(); ++col) {
+				if (col != 0)
+					out << "\t";
+				unsigned int originalColIndex = colIndices[col];
+				out << csv.m_values[row][originalColIndex];
+			}
+			out << "\n";
+		}
+
+		out.close();
+	}
+	else {
+		DATAIO::DataIO shadingFile;
+		shadingFile.m_type = DATAIO::DataIO::T_REFERENCE;
+		shadingFile.m_valueUnit = "---"; // unitless (convertible to 1, %)
+		shadingFile.m_projectFileName = projectFilePath.str();
+		shadingFile.m_quantityKeyword = "ShadingFactor";
+		shadingFile.m_spaceType = DATAIO::DataIO::ST_SINGLE;
+		shadingFile.m_timeType = DATAIO::DataIO::TT_NONE;
+		shadingFile.m_startYear = 2007; // TODO : shouldn't we insert the correct start year here?
+		shadingFile.m_filename = shadingFactorFilePath.str();
+		shadingFile.m_isBinary = false; // for now always binary - PostProc can handle that as well
+
+		IBK::IBK_Message(IBK::FormatString("DataIO format not yet support."), IBK::MSG_ERROR);
+		// now write DataIO file
+		// file name uses d6b extension
+		shadingFile.m_filename = shadingFactorFilePath;
+		shadingFile.write();
 		return false;
 	}
-
-	// modify header
-	std::string headerLine;
-	for(unsigned int i=0; i<csv.m_captions.size(); ++i){
-		if(i>0)
-			headerLine += "\t";
-		headerLine += csv.m_captions[i] + " [" + csv.m_units[i] + "]";
-	}
-	headerLine += "\n";
-
-	// write file
-	std::ofstream out;
-	out.open(fp.str());
-
-	if(!out.is_open())
-		IBK::IBK_Message(IBK::FormatString("Shading file '%1' is not accessable.").arg(fp.str()), IBK::MSG_ERROR, FUNC_ID);
-
-	out << headerLine;
-
-	for(unsigned int row=0; row<csv.m_nRows; ++row){
-		for(unsigned int col=0; col<csv.m_nColumns; ++col){
-			if(col != 0)
-				out << "\t";
-			out << csv.m_values[row][col];
-		}
-		out << "\n";
-	}
-
-	out.close();
+	IBK::IBK_Message(IBK::FormatString("Created shading factors data file '%1' in NANDRAD format\n").arg(shadingFactorFilePath), IBK::MSG_PROGRESS, FUNC_ID);
 
 	return true;
 }
+
 
 void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const{
