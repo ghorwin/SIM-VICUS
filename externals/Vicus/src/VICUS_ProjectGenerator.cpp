@@ -437,9 +437,9 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	}
 
 	if (!found) {
-		IBK::IBK_Message(IBK::FormatString("No shading file exported, expected a file '%1'[.tsv, .d6o, .d6b].")
-						 .arg(vicusShadingFilePath), IBK::MSG_PROGRESS, FUNC_ID);
-		return false;
+		IBK::IBK_Message(IBK::FormatString("No shading file exported, expected a file '%1'[.tsv, .d6o, .d6b]. Running simulation without shading factors.")
+						 .arg(basePath), IBK::MSG_PROGRESS, FUNC_ID);
+		return true;
 	}
 	std::string ext = vicusShadingFilePath.extension();
 	// compose path to NANDRAD shading factor file
