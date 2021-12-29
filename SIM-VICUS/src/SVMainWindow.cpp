@@ -1847,7 +1847,7 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 		SVDatabase dbCopy(SVSettings::instance().m_db);
 		// update database entries
 		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
-			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\”").arg(dbPlugin->title().toStdString()),
+			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\n").arg(dbPlugin->title().toStdString()),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 			// TODO : here we need to implement the check functionality for each database:
