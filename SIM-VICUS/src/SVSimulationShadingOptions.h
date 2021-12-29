@@ -51,7 +51,7 @@ namespace SH {
 	All these parameters are merged into a single hash code which is used as part of the resulting
 	shading file name.
 */
-class SVSimulationShadingOptions : public QDialog {
+class SVSimulationShadingOptions : public QWidget {
 	Q_OBJECT
 
 public:

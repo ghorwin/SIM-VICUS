@@ -70,7 +70,7 @@ void ShadingCalculationProgress::notify(double percentage) {
 
 
 SVSimulationShadingOptions::SVSimulationShadingOptions(QWidget *parent, NANDRAD::SimulationParameter & simParams, NANDRAD::Location & location) :
-	QDialog(parent),
+	QWidget(parent),
 	m_ui(new Ui::SVSimulationShadingOptions),
 	m_simParams(&simParams),
 	m_location(&location),
