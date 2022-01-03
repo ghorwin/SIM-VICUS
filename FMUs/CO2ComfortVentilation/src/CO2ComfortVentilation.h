@@ -90,7 +90,8 @@ private:
 
 	/*! Calculation function:*/
 	/*!	Digital/hysteresis controller for air change rate*/
-	void calculateAirChangeRate(double &airChangeRate, double airTemperature, double ambientTemperature, double CO2Concentration);
+	void calculateAirChangeRate(double &airChangeRate, double airTemperature, double ambientTemperature,
+								double maxCO2Concentration, double CO2Concentration);
 
 	/*! static constants */
 
@@ -118,14 +119,14 @@ private:
 	std::map<int, double>		m_zoneFloorAreas;
 	/*! Zone schedule name, sorted by zone ids*/
 	std::map<int, std::string>	m_zoneScheduleNames;
-	/*! Spline values sorted by schedule name*/
+	/*! CO2 source [kg/s] (sorted by schedule name)*/
 	std::map<std::string, LinearSpline>	m_CO2SourcePerZoneFloorAreasSplines;
+	/*! Maximum zone air CO2 concentration, before ventilation is activated [mol/mol] (sorted by schedule name)*/
+	std::map<std::string, LinearSpline>	m_maximumCO2ConcentrationSplines;
 	/*! Ambient CO2 concentration [mol/mol]*/
-	double						m_ambientCO2Concentration = -999;
+	LinearSpline				m_ambientCO2ConcentrationSpline;
 	/*! Start value for zone air CO2 concentration [mol/mol]*/
 	double						m_startCO2Concentration = -999;
-	/*! Maximum zone air CO2 concentration, before ventilation is activated [mol/mol]*/
-	double						m_maximumCO2Concentration = -999;
 	/*! Minimum zone air temperature, before heating ventilation is activated [K]*/
 	double						m_minimumAirTemperature = -999;
 	/*! Maximum zone air temperature, before cooling ventilation is activated [K]*/

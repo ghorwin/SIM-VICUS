@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
 		void * c = fmi2Instantiate("CO2Balance",
 			fmi2CoSimulation,
 			"{17d077d8-59b4-11ec-8093-3ce1a14c97e0}",
-			"d:/Programmierung/CO2BalanceFMU/data",
+			"d:/Programmierung/SIM-VICUS/FMUs/CO2ComfortVentilation/data",
 			(fmi2CallbackFunctions*)&cbf,
 			fmi2True,
 			fmi2True);
@@ -57,7 +57,7 @@ int main(int argc, char * argv[]) {
 		fmi2ValueReference svr[1];
 		svr[0] = 42;
 		const char * const svalues1[1] = {
-			"d:/Programmierung/CO2BalanceFMU/data"
+			"d:/Programmierung/SIM-VICUS/FMUs/CO2ComfortVentilation/data"
 		};
 		fmi2SetString(c, svr, 1, svalues1);
 

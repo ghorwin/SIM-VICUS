@@ -71,7 +71,8 @@ void CO2ComfortVentilation::init() {
 			read(filePath);
 
 			// create path name including schedules
-			Path tsvBasePath = m_resourceLocation / Path("CO2LoadPerAreaSchedule");
+			Path tsvCO2LoadBasePath = m_resourceLocation / Path("CO2LoadPerAreaSchedule");
+			Path tsvMaxCO2ConcentrationBasePath = m_resourceLocation / Path("MaximumCO2ConcentrationSchedule");
 
 			// select all schedule names
 			std::set<std::string> scheduleNames;
@@ -80,7 +81,9 @@ void CO2ComfortVentilation::init() {
 
 			// now create splines for all schedules
 			for (const std::string &scheduleName : scheduleNames) {
-				Path tsvPath = tsvBasePath + std::string("_") + scheduleName;
+
+				// read CO2 load schedule
+				Path tsvPath = tsvCO2LoadBasePath + std::string("_") + scheduleName;
 				tsvPath.addExtension("tsv");
 				try {
 					// read schedule splines
@@ -94,22 +97,61 @@ void CO2ComfortVentilation::init() {
 					throw std::runtime_error(std::string("Error reading schedule from file '")
 						+ tsvPath.str() + std::string("': ") + ex.what() + std::string("."));
 				}
+
+				// read maximum CO2 concentration
+				tsvPath = tsvMaxCO2ConcentrationBasePath + std::string("_") + scheduleName;
+				tsvPath.addExtension("tsv");
+				try {
+					// read schedule splines
+					LinearSpline spline;
+					spline.readTsv(tsvPath);
+
+					// store spline
+					m_maximumCO2ConcentrationSplines[scheduleName] = spline;
+				}
+				catch (std::runtime_error &ex) {
+					throw std::runtime_error(std::string("Error reading schedule from file '")
+						+ tsvPath.str() + std::string("': ") + ex.what() + std::string("."));
+				}
+			}
+
+			// read ambient CO2 concentration spline
+			Path tsvBasePathAmbientCO2 = m_resourceLocation / Path("AmbientCO2ConcentrationSchedule.tsv");
+			try {
+				// read schedule splines
+				LinearSpline spline;
+				spline.readTsv(tsvBasePathAmbientCO2);
+
+				// store spline
+				m_ambientCO2ConcentrationSpline = spline;
+			}
+			catch (std::runtime_error &ex) {
+				throw std::runtime_error(std::string("Error reading schedule from file '")
+					+ tsvBasePathAmbientCO2.str() + std::string("': ") + ex.what() + std::string("."));
 			}
 
 			// set start value
 			double startAirChangeRate = m_minimumAirChangeRate;
-			// check if we need any control
-			calculateAirChangeRate(startAirChangeRate, m_startAirTemperature, 0.0, m_startCO2Concentration);
-			// calculte mass
-			double startCO2Density = m_startCO2Concentration * molarMassCO2 * referencePressure/( RIdealGas * m_startAirTemperature);
 
 			// initialize result quantities, input output variables
-			for (const std::pair<unsigned int, double> &zoneVol : m_zoneVolumes) {
-				m_zoneAirChangeRates[zoneVol.first] = startAirChangeRate;
-				m_zoneCO2Masses[zoneVol.first] = startCO2Density * zoneVol.second;
-				m_realVar[FMI_OUTPUT_AirChangeRate + zoneVol.first] = startAirChangeRate;
-				m_realVar[FMI_OUTPUT_CO2Concentration + zoneVol.first] = m_startCO2Concentration;
-				m_realVar[FMI_INPUT_RoomAirTemperature + zoneVol.first] = m_startAirTemperature;
+			for (const std::pair<int, double> &zoneVol : m_zoneVolumes) {
+				// retrieve zone id
+				int zoneId = zoneVol.first;
+				// retrieve linear spline
+				std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
+					m_CO2SourcePerZoneFloorAreasSplines.find(m_zoneScheduleNames[zoneId]);
+				assert(maxCO2ConcentrationIt != m_CO2SourcePerZoneFloorAreasSplines.end());
+
+				double maxCO2Concentration = maxCO2ConcentrationIt->second.value(0.0);
+				calculateAirChangeRate(startAirChangeRate, m_startAirTemperature, 0.0, maxCO2Concentration, m_startCO2Concentration);
+				// calculte mass
+				double startCO2Density = m_startCO2Concentration * molarMassCO2 * referencePressure/( RIdealGas * m_startAirTemperature);
+
+				m_zoneAirChangeRates[zoneId] = startAirChangeRate;
+				m_zoneCO2Masses[zoneId] = startCO2Density * zoneVol.second;
+				m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = startAirChangeRate;
+				m_realVar[FMI_OUTPUT_CO2Concentration + zoneId] = m_startCO2Concentration;
+				m_realVar[FMI_INPUT_RoomAirTemperature + zoneId] = m_startAirTemperature;
 			}
 
 			// initialize integrator for co-simulation
@@ -150,7 +192,8 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 
 	// calculated quantities
 	// ambient CO2 density [kg/m3]
-	double ambientCO2Density = m_ambientCO2Concentration * molarMassCO2 * referencePressure / (RIdealGas * ambientTemperature);
+	double ambientCO2Density = m_ambientCO2ConcentrationSpline.value(m_lastTimePoint)
+							* molarMassCO2 * referencePressure / (RIdealGas * ambientTemperature);
 	// time step size
 	double deltaT = tCommunicationIntervalEnd - m_lastTimePoint;
 
@@ -184,9 +227,16 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		double CO2DensityLast = zoneCO2MassLast / zoneVolume;
 		// calcualtes quantties: CO2 setpoint density [kg/m3]
 		double zoneCO2ConcentrationLast = CO2DensityLast/ molarMassCO2 * RIdealGas * zoneAirTemperature /referencePressure;
+		// retrieve linear spline for maximum CO2 concentration
+		std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
+			m_CO2SourcePerZoneFloorAreasSplines.find(m_zoneScheduleNames[zoneId]);
+		assert(maxCO2ConcentrationIt != m_CO2SourcePerZoneFloorAreasSplines.end());
+		// calculate value at begin of communication interval
+		double maxCO2ConcentrationLast = maxCO2ConcentrationIt->second.value(m_lastTimePoint);
 		// calculate air exchange rate
 		double &zoneAirChangeRate = m_zoneAirChangeRates[zoneId];
-		calculateAirChangeRate(zoneAirChangeRate, zoneAirTemperature, ambientTemperature, zoneCO2ConcentrationLast);
+
+		calculateAirChangeRate(zoneAirChangeRate, zoneAirTemperature, ambientTemperature, maxCO2ConcentrationLast, zoneCO2ConcentrationLast);
 
 		// solve ODE
 		double expN = std::exp(-zoneAirChangeRate * deltaT);
@@ -709,9 +759,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 							attribute + std::string("'.")).c_str());
 					}
 
-					if (attribute == "maximumCO2Concentration")
-						m_maximumCO2Concentration = val;
-					else if (attribute == "minimumAirTemperature")
+					if (attribute == "minimumAirTemperature")
 						m_minimumAirTemperature = val;
 					else if (attribute == "maximumAirTemperature")
 						m_maximumAirTemperature = val;
@@ -723,8 +771,6 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 						m_startCO2Concentration = val;
 					else if (attribute == "startAirTemperature")
 						m_startAirTemperature = val;
-					else if (attribute == "ambientCO2Concentration")
-						m_ambientCO2Concentration = val;
 					else if (attribute == "CO2ToleranceBand")
 						m_CO2ToleranceBand = val;
 					else if (attribute == "temperatureToleranceBand")
@@ -791,9 +837,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				std::string("in attribute 'zoneVolumes'")).c_str());
 		}
 		// check obligatory parameters
-		if (m_maximumCO2Concentration == -999)
-			throw std::runtime_error("Missing attribute 'maximumCO2Concentration'.");
-		else if (m_minimumAirTemperature == -999)
+		if (m_minimumAirTemperature == -999)
 			throw std::runtime_error("Missing attribute 'minimumAirTemperature'.");
 		else if (m_maximumAirTemperature == -999)
 			throw std::runtime_error("Missing attribute 'maximumAirTemperature'.");
@@ -805,8 +849,6 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			throw std::runtime_error("Missing attribute 'startCO2Concentration'.");
 		else if (m_startAirTemperature == -999)
 			throw std::runtime_error("Missing attribute 'startAirTemperature'.");
-		else if (m_ambientCO2Concentration == -999)
-			throw std::runtime_error("Missing attribute 'ambientCO2Concentration'.");
 	}
 	catch (std::runtime_error & ex) {
 		throw std::runtime_error((std::string("Error reading file ") + fpath.str() + std::string(": ") + ex.what()).c_str());
@@ -815,9 +857,9 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 
 
 void CO2ComfortVentilation::calculateAirChangeRate(double &airChangeRate, double airTemperature, double ambientTemperature,
-	double CO2Concentration) {
+	double maxCO2Concentration, double CO2Concentration) {
 	// return maximum rate either if CO2 concentraton is exceeded...
-	if (CO2Concentration > m_maximumCO2Concentration + 0.5 * m_CO2ToleranceBand) {
+	if (CO2Concentration > maxCO2Concentration + 0.5 * m_CO2ToleranceBand) {
 		airChangeRate = m_maximumAirChangeRate;
 		return;
 	}
@@ -833,7 +875,7 @@ void CO2ComfortVentilation::calculateAirChangeRate(double &airChangeRate, double
 		return;
 	}
 	// return minimum rate either if CO2 is below tolerance band...
-	if (CO2Concentration <= m_maximumCO2Concentration - 0.5 * m_CO2ToleranceBand) {
+	if (CO2Concentration <= maxCO2Concentration - 0.5 * m_CO2ToleranceBand) {
 		// ... and temperature is below tolerance band (cooling case)
 		if (airTemperature <= m_maximumAirTemperature - 0.5 * m_temperatureToleranceBand && airTemperature > ambientTemperature) {
 			airChangeRate = m_minimumAirChangeRate;
