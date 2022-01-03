@@ -139,8 +139,8 @@ void CO2ComfortVentilation::init() {
 				int zoneId = zoneVol.first;
 				// retrieve linear spline
 				std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
-					m_CO2SourcePerZoneFloorAreasSplines.find(m_zoneScheduleNames[zoneId]);
-				assert(maxCO2ConcentrationIt != m_CO2SourcePerZoneFloorAreasSplines.end());
+					m_maximumCO2ConcentrationSplines.find(m_zoneScheduleNames[zoneId]);
+				assert(maxCO2ConcentrationIt != m_maximumCO2ConcentrationSplines.end());
 
 				double maxCO2Concentration = maxCO2ConcentrationIt->second.value(0.0);
 				calculateAirChangeRate(startAirChangeRate, m_startAirTemperature, 0.0, maxCO2Concentration, m_startCO2Concentration);
@@ -229,8 +229,8 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		double zoneCO2ConcentrationLast = CO2DensityLast/ molarMassCO2 * RIdealGas * zoneAirTemperature /referencePressure;
 		// retrieve linear spline for maximum CO2 concentration
 		std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
-			m_CO2SourcePerZoneFloorAreasSplines.find(m_zoneScheduleNames[zoneId]);
-		assert(maxCO2ConcentrationIt != m_CO2SourcePerZoneFloorAreasSplines.end());
+			m_maximumCO2ConcentrationSplines.find(m_zoneScheduleNames[zoneId]);
+		assert(maxCO2ConcentrationIt != m_maximumCO2ConcentrationSplines.end());
 		// calculate value at begin of communication interval
 		double maxCO2ConcentrationLast = maxCO2ConcentrationIt->second.value(m_lastTimePoint);
 		// calculate air exchange rate
