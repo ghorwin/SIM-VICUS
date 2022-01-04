@@ -380,8 +380,8 @@
 					<IdOccupancySchedule>60003</IdOccupancySchedule>
 					<IdActivitySchedule>60004</IdActivitySchedule>
 					<IBK:Parameter name="PersonCount" unit="-">11</IBK:Parameter>
-					<IBK:Parameter name="PersonPerArea" unit="m2">0.1</IBK:Parameter>
-					<IBK:Parameter name="AreaPerPerson" unit="m2">10</IBK:Parameter>
+					<IBK:Parameter name="PersonPerArea" unit="Person/m2">0.1</IBK:Parameter>
+					<IBK:Parameter name="AreaPerPerson" unit="m2/Person">10</IBK:Parameter>
 					<IBK:Parameter name="Power" unit="W">0.1</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">0.1</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">0.8</IBK:Parameter>
