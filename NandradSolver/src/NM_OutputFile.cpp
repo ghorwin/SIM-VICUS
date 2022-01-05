@@ -549,9 +549,15 @@ void OutputFile::flushCache() {
 			// dump vector in ascii mode
 			// first values
 			for (unsigned int i=0; i<vals.size(); ++i) {
-				if (i != 0)
-					*m_ofstream << "\t";
-				*m_ofstream << vals[i];
+				if (i != 0) {
+					*m_ofstream << "\t" << vals[i];
+				}
+				else {
+					// time value is written with increased precision to avoid
+					// accuracy problems in long simulations with short output intervals (> 10 years with 10 min steps)
+					std::streamsize prec = m_ofstream->precision();
+					*m_ofstream << std::setprecision(10) << vals[i] << std::setprecision(prec);
+				}
 			}
 			*m_ofstream << '\n';
 		}
