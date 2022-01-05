@@ -7,6 +7,13 @@ QT           += widgets
 # this pri must be sourced from all our applications
 include( ../../../Qt/plugin.pri )
 
+LIBS += \
+	-lVicus \
+	-lNandrad \
+	-lIBKMK \
+	-lIBK \
+	-lTiCPP
+
 INCLUDEPATH  += \
 	../../../../SIM-VICUS/src \
 	../../../../SIM-VICUS/src/plugins \
@@ -20,3 +27,4 @@ HEADERS       = ../../src/DummyDatabasePlugin.h
 SOURCES       = ../../src/DummyDatabasePlugin.cpp
 
 TARGET        = $$qtLibraryTarget(DummyDatabasePlugin)
+
