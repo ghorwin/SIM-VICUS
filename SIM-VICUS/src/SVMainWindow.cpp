@@ -1798,6 +1798,10 @@ void SVMainWindow::setupPlugins() {
 
 	const auto entryList = pluginsDir.entryList(QDir::Files);
 	for (const QString &fileName : entryList) {
+		QString ext = QFileInfo(fileName).suffix();
+		if (ext != "so" && ext != "dll" && ext != "dylib")
+			continue;
+		// skip files that do not have a valid file extensions
 		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
 		QObject *plugin = loader.instance();
 		if (plugin) {
