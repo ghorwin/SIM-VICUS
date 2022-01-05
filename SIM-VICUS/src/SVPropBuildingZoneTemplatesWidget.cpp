@@ -285,10 +285,11 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 	const VICUS::ZoneTemplate * zt = cit->first;
 	Q_ASSERT(m_zoneTemplateAssignments.find(zt) != m_zoneTemplateAssignments.end());
 
-	std::set<unsigned int> surfIds;
+	std::set<unsigned int> objIds;
 	for(const VICUS::Room *r : m_zoneTemplateAssignments[zt]){
-			for (const VICUS::Surface &s : r->m_surfaces)
-				surfIds.insert(s.uniqueID());
+		objIds.insert(r->uniqueID());
+		for (const VICUS::Surface &s : r->m_surfaces)
+			objIds.insert(s.uniqueID());
 	}
 
 	QString undoText;
@@ -297,7 +298,7 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 	else
 		undoText = tr("Select objects with invalid/missing zone template.");
 
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds, true);
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objIds, true);
 	undo->push();
 }
 
