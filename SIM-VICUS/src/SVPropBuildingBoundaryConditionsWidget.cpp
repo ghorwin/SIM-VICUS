@@ -133,7 +133,7 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonEditBoundaryConditions
 void SVPropBuildingBoundaryConditionsWidget::on_tableWidgetBoundaryConditions_itemSelectionChanged() {
 	bool enabled = m_ui->tableWidgetBoundaryConditions->currentRow() != -1;
 	if (enabled) {
-		// if selected item is an invalid/missing BC, disable buttongs
+		// if selected item is an invalid/missing BC, disable buttons
 		std::map<const VICUS::BoundaryCondition*, std::set<const VICUS::Surface *> >::const_iterator it = m_bcSurfacesMap.begin();
 		std::advance(it, m_ui->tableWidgetBoundaryConditions->currentRow());
 		if (it->first == nullptr)
