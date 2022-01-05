@@ -35,6 +35,10 @@ private slots:
 	void on_tableWidgetZoneTemplates_itemClicked(QTableWidgetItem *item);
 
 
+	/*! All rooms (including surfaces) that reference the currently selected zone template (in the table) will be selected. */
+	void on_pushButtonSelectObjectsWithZoneTemplate_clicked();
+
+
 private:
 	/*! Returns a pointer to the currently selected zone template in the zone template table. */
 	const VICUS::ZoneTemplate * currentlySelectedZoneTemplate() const;

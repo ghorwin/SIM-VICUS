@@ -201,6 +201,7 @@ void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_itemSelectio
 	bool enabled = (currentlySelectedZoneTemplate() != nullptr);
 	m_ui->pushButtonEditZoneTemplates->setEnabled(enabled);
 	m_ui->pushButtonExchangeZoneTemplates->setEnabled(enabled);
+	m_ui->pushButtonSelectObjectsWithZoneTemplate->setEnabled(enabled);
 }
 
 
@@ -273,6 +274,31 @@ void SVPropBuildingZoneTemplatesWidget::on_tableWidgetZoneTemplates_itemClicked(
 		zoneTemplateVisibilityChanged();
 	if (m_ui->checkBoxZoneTemplateShowOnlyActive->isChecked())
 		zoneTemplateSelectionChanged();
+}
+
+void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTemplate_clicked() {
+	int row = m_ui->tableWidgetZoneTemplates->currentRow();
+	Q_ASSERT(row != -1);
+
+	std::map<const VICUS::ZoneTemplate*, std::vector<const VICUS::Room *> >::const_iterator cit = m_zoneTemplateAssignments.begin();
+	std::advance(cit, row);
+	const VICUS::ZoneTemplate * zt = cit->first;
+	Q_ASSERT(m_zoneTemplateAssignments.find(zt) != m_zoneTemplateAssignments.end());
+
+	std::set<unsigned int> surfIds;
+	for(const VICUS::Room *r : m_zoneTemplateAssignments[zt]){
+			for (const VICUS::Surface &s : r->m_surfaces)
+				surfIds.insert(s.uniqueID());
+	}
+
+	QString undoText;
+	if (zt != nullptr)
+		undoText = tr("Select objects with zone template '%1'").arg(QtExt::MultiLangString2QString(zt->m_displayName));
+	else
+		undoText = tr("Select objects with invalid/missing zone template.");
+
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfIds, true);
+	undo->push();
 }
 
 
