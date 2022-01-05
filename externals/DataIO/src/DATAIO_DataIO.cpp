@@ -40,6 +40,7 @@
 #include <iterator>
 #include <sstream>
 #include <list>
+#include <algorithm>
 
 #include <IBK_FileUtils.h>
 #include <IBK_InputOutput.h>
@@ -338,6 +339,48 @@ const double * DataIO::data(unsigned int time_idx) const {
 	return &m_values[time_idx][0];
 }
 // ----------------------------------------------------------------------------
+
+
+bool DataIO::truncateData(double timePointInSeconds) {
+
+	// TODO : think about correct return values - in the first two cases, the DataIO does indeed
+	//        contain no data beyond the timePointInSeconds limit... so the function had returned successfully?
+
+	if (m_timepoints.empty())
+		return false; // nothing to truncate, already empty
+
+	std::vector<double>::iterator it = std::lower_bound(m_timepoints.begin(), m_timepoints.end(), timePointInSeconds);
+	if (it == m_timepoints.end())
+		return false; // nothing to truncate, already empty
+
+	if (it == m_timepoints.begin()) {
+		// Note: can't call clear() here, because that erases all meta data as well. Instead, we just need to wipe
+		//       out the data vector and time points vectors entirely.
+		m_timepoints.clear();
+		m_valueStrings.clear();
+		m_values.clear();
+		return true;
+	}
+
+	unsigned int idx = it - m_timepoints.begin();
+	IBK_ASSERT(idx < m_values.size());
+
+	// we could call deleteData() here, but directly truncating the data is easier
+
+	// truncate time points vector
+	m_timepoints.erase(it, m_timepoints.end());
+	// truncate values vector
+	m_values.erase(m_values.begin() + idx, m_values.end());
+
+	// for ASCII format we need to erase m_valueStrings as well
+	if (!m_valueStrings.empty()) {
+		// ASCII format sanity checks
+		IBK_ASSERT(idx < m_valueStrings.size());
+		m_valueStrings.erase(m_valueStrings.begin() + idx, m_valueStrings.end());
+	}
+
+	return true;
+}
 
 
 void DataIO::deleteData(unsigned int idxFrom, unsigned int idxTo) {

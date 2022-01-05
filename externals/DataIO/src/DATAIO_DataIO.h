@@ -183,6 +183,15 @@ public:
 	*/
 	const double * data(unsigned int time_idx) const;
 
+	/*! Deletes all timepoints after the given one.
+	   \param timePointInSeconds Last time point left in data set
+	   Does nothing if the given timpoint is the last one or behind.
+	   It clears the data set if the time point is before start.
+	   It fills the internal data vector by calling dataVector() function before truncation of internal vectors.
+	   \return true if the data were truncated otherwise false
+	*/
+	bool truncateData(double timePointInSeconds);
+
 	/*! Deletes data and times for a given time index range.
 		\param idxFrom		The index of the time point that the data should be deleted from. Must be less than m_timepoints.size().
 		\param idxTo		The index of the time point that the data should be deleted to (including this index). Must be less than m_timepoints.size().
