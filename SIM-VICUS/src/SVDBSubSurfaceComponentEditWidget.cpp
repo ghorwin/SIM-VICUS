@@ -202,7 +202,7 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectWindow_clicked() {
 	// get construction edit dialog from mainwindow
 	SVDatabaseEditDialog * editDialog = SVMainWindow::instance().dbWindowEditDialog();
 	unsigned int winId = editDialog->select(m_current->m_idWindow);
-	if (winId != m_current->m_idWindow) {
+	if (winId != VICUS::INVALID_ID && winId != m_current->m_idWindow) {
 		m_current->m_idWindow = winId;
 		modelModify();
 	}
