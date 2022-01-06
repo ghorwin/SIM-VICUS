@@ -45,9 +45,13 @@ image::vc2019_install_options.png[]
 
     choco install cmake
 
-3. Download and install Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the *5.15.2* variant.
+3. Download and install JOM (newer versions of the Qt maintenance tool do no longer install JOM together with QtCreator). Either download from https://cmake.org or use _chocolatey_ (https://chocolatey.org) and run
 
-4. Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly - though I wouldn't recommend it): https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019
+    choco install jom
+
+4. Download and install Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the *5.15.2* variant.
+
+5. Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly - though I wouldn't recommend it): https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019
 
 
 Also, install a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email (user settings).
