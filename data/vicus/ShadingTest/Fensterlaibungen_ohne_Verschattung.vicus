@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mi. Dez. 29 22:19:17 2021</Created>
-		<LastEdited>Mi. Dez. 29 22:42:45 2021</LastEdited>
+		<LastEdited>Mi. Dez. 29 22:43:09 2021</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -49,12 +49,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>13.5988 -0.913479 6.00766</CameraTranslation>
+			<CameraTranslation>13.5484 -0.950583 6.00766</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.86868</Wp>
-				<X>0.457827</X>
-				<Y>0.0881893</Y>
-				<Z>0.167332</Z>
+				<Wp>0.869402</Wp>
+				<X>0.458207</X>
+				<Y>0.0862331</Y>
+				<Z>0.16354</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -134,60 +134,6 @@
 			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="10004" idSideASurface="80" />
 			<SubSurfaceComponentInstance id="4" idSubSurfaceComponent="10004" idSideASurface="81" />
 		</SubSurfaceComponentInstances>
-		<PlainGeometry>
-			<Surface id="1" displayName="Surface">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>8.45 5 2.26, 9.65 5 2.26, 9.65 4.7 2.26, 8.45 4.7 2.26</Polygon3D>
-			</Surface>
-			<Surface id="98" displayName="Surface [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>8.45 5 2.26, 9.65 5 2.26, 9.65 4.7 2.26, 8.45 4.7 2.26</Polygon3D>
-			</Surface>
-			<Surface id="99" displayName="Surface [3]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>9.81667 5 2.26, 11.0167 5 2.26, 11.0167 4.7 2.26, 9.81667 4.7 2.26</Polygon3D>
-			</Surface>
-			<Surface id="100" displayName="Surface [2] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>11.1833 5 2.26, 12.3833 5 2.26, 12.3833 4.7 2.26, 11.1833 4.7 2.26</Polygon3D>
-			</Surface>
-			<Surface id="3" displayName="Surface">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>11.1833 4.7 2.26, 11.1833 5 2.26, 11.1833 5 1, 11.1833 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="120" displayName="Surface [4]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>12.3833 4.7 2.26, 12.3833 5 2.26, 12.3833 5 1, 12.3833 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="121" displayName="Surface [5]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>9.81667 4.7 2.26, 9.81667 5 2.26, 9.81667 5 1, 9.81667 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="122" displayName="Surface [4] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>11.0167 4.7 2.26, 11.0167 5 2.26, 11.0167 5 1, 11.0167 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="123" displayName="Surface [5] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>8.45 4.7 2.26, 8.45 5 2.26, 8.45 5 1, 8.45 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="124" displayName="Surface [4] [2] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>9.65 4.7 2.26, 9.65 5 2.26, 9.65 5 1, 9.65 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="152" displayName="Surface [6]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>8.45 5 1, 9.65 5 1, 9.65 4.7 1, 8.45 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="153" displayName="Surface [3] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>9.81667 5 1, 11.0167 5 1, 11.0167 4.7 1, 9.81667 4.7 1</Polygon3D>
-			</Surface>
-			<Surface id="154" displayName="Surface [2] [2] [2]">
-				<DisplayColor>#206000</DisplayColor>
-				<Polygon3D>11.1833 5 1, 12.3833 5 1, 12.3833 4.7 1, 11.1833 4.7 1</Polygon3D>
-			</Surface>
-		</PlainGeometry>
 		<EmbeddedDatabase>
 			<Materials>
 				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
