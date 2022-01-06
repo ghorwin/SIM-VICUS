@@ -28,6 +28,7 @@
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
 #include <IBK_FileUtils.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -372,7 +373,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	// if we have no outputs in this file, we do nothing
 	if (m_numCols == 0) {
 		IBK::IBK_Message(IBK::FormatString("%1 : No output variables available, skipped\n")
-						 .arg(m_filename,20,std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+						 .arg(m_filename,40,std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return;
 	}
 
@@ -389,7 +390,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 				throw IBK::Exception(IBK::FormatString("Error re-opening file %1 for writing.").arg(outFilePath), FUNC_ID);
 			}
 
-			IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,20,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,40,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			// all ok, bail out here
 			return;
 		}
@@ -410,7 +411,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	if (!m_ofstream)
 		throw IBK::Exception(IBK::FormatString("Error creating file %1.").arg(outFilePath), FUNC_ID);
 
-	IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,20,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,40,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// now write header
 	std::vector<std::string> headerLabels;
@@ -435,7 +436,15 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 
 	// now we have the header completed, and the first row's values and we write to file
 	if (binary) {
-		/// \todo implement binary format writing
+		// first compose header in stringstream
+		std::stringstream strm;
+		for (unsigned int i=0; i<headerLabels.size(); ++i) {
+			if (i != 0)
+				strm << "\t";
+			strm << headerLabels[i];
+		}
+		// now write header line as binary string
+		IBK::write_string_binary(*m_ofstream, strm.str());
 	}
 	else {
 		// header
@@ -543,7 +552,7 @@ void OutputFile::flushCache() {
 	// dump all rows of the cache into file
 	for (std::vector<double> & vals : m_cache) {
 		if (m_binary) {
-			/// \todo implement binary file writing
+			IBK::write_vector_binary(*m_ofstream, vals);
 		}
 		else {
 			// dump vector in ascii mode

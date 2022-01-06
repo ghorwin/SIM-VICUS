@@ -1388,7 +1388,7 @@ namespace VICUS {
 			// Room::para_t
 			case 36 :
 			switch (t) {
-				case 0 : return "Floor area of the zone";
+				case 0 : return "Floor usable area of the zone";
 				case 1 : return "Volume of the zone";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
