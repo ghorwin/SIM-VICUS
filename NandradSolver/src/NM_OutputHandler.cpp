@@ -417,7 +417,8 @@ void OutputHandler::writeOutputs(double t_out, double t_secondsOfYear, const std
 
 		for (OutputFile * of : m_outputFiles) {
 			try {
-				of->createFile(m_restart, m_binaryFiles, timeColumnHeader, m_outputPath, varSubstitutionMap);
+				/// \todo Add access to simulation start year
+				of->createFile(m_restart, m_binaryFiles, timeColumnHeader, m_outputPath, varSubstitutionMap, 2003);
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex, IBK::FormatString("Error creating output file '%1'.").arg(of->m_filename), FUNC_ID);
 			}

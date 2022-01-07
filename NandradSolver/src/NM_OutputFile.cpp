@@ -364,7 +364,7 @@ void OutputFile::createInputReferences() {
 
 
 void OutputFile::createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath,
-							const std::map<std::string, std::string> & varSubstitutionMap)
+							const std::map<std::string, std::string> & varSubstitutionMap, unsigned int startYear)
 {
 	FUNCID(OutputFile::createFile);
 
@@ -439,6 +439,9 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 		// write magic header
 		m_ofstream->write("BTAB", 4);
 		m_ofstream->write("RLZ!", 4);
+		// write start year of simulation
+		uint32_t startYearUInt = startYear;
+		IBK::write_uint32_binary(*m_ofstream, startYearUInt);
 
 		// first compose header in stringstream
 		std::stringstream strm;
