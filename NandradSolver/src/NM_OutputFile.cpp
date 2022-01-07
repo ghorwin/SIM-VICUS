@@ -436,6 +436,10 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 
 	// now we have the header completed, and the first row's values and we write to file
 	if (binary) {
+		// write magic header
+		m_ofstream->write("BTAB", 4);
+		m_ofstream->write("RLZ!", 4);
+
 		// first compose header in stringstream
 		std::stringstream strm;
 		for (unsigned int i=0; i<headerLabels.size(); ++i) {
