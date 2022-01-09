@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.6">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mo. Nov. 29 13:50:13 2021</Created>
-		<LastEdited>Sa. Dez. 11 16:45:29 2021</LastEdited>
+		<LastEdited>Fr. Jan. 7 21:06:35 2022</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -38,6 +38,11 @@
 				<OutputDefinition quantity="CompleteThermalLoad" sourceObjectType="Zone">
 					<TimeType>Mean</TimeType>
 					<SourceObjectIds>243</SourceObjectIds>
+					<GridName>Hourly values</GridName>
+				</OutputDefinition>
+				<OutputDefinition quantity="ElementTemperature[0]" sourceObjectType="ConstructionInstance">
+					<TimeType>None</TimeType>
+					<SourceObjectIds>2</SourceObjectIds>
 					<GridName>Hourly values</GridName>
 				</OutputDefinition>
 			</Definitions>
@@ -108,7 +113,7 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="2" idComponent="1012" idSideASurface="244" />
+			<ComponentInstance id="2" idComponent="50001" idSideASurface="244" />
 			<ComponentInstance id="3" idComponent="1011" idSideASurface="245" />
 			<ComponentInstance id="4" idComponent="1001" idSideASurface="246" />
 			<ComponentInstance id="5" idComponent="1001" idSideASurface="247" />
@@ -180,22 +185,19 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
 				</Material>
+				<Material id="5500000" displayName="de:Dummy-Material|en:Dummy material">
+					<DataSource>de:Dummy Database Plugin|en:Dummy Database Plugin</DataSource>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+					<IBK:Parameter name="Mu" unit="-">81</IBK:Parameter>
+				</Material>
 			</Materials>
 			<Constructions>
 				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1006" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10004">
-							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
-						</MaterialLayer>
 						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
@@ -218,6 +220,17 @@
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10012">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="20001" displayName="DE: [SimQuality] TF05 |EN: [SimQuality] TF05 ">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10004">
+							<IBK:Parameter name="Thickness" unit="m">0.3</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
@@ -249,9 +262,9 @@
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1012" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
+				<Component id="50001" displayName="DE: [SimQuality] Komponente für TF05 |EN: [SimQuality] component for TF05" color="#827e7e">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1006</IdConstruction>
+					<IdConstruction>20001</IdConstruction>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 				</Component>

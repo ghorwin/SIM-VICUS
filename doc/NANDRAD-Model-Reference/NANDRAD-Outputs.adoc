@@ -310,25 +310,12 @@ Es ist wichtig zu beachten, dass Durchschnittswerte immer Mittelwerte der Werte 
 [[binary_outputs]]
 ## Binäres Format
 
-Die binäre Variante von TSV-Dateien ist sehr ähnlich.
+Falls der Schalter `BinaryFormat` eingeschaltet ist, werden die Ergebnisse als `btf` Dateien (_binary table format_) geschrieben.
+Dieses Format wird nativ von _PostProc_ unterstützt und die Daten können genau wie `tsv`-Dateien eingelesen werden.
 
-----
-Kopfsatz: 
-- 64bit Ganzzahl = n (Anzahl der Spalten)
-- n mal binäre Zeichenketten
+Das binäre Dateiformat ist im PostProc-Handbuch beschrieben:
 
-Datenteil, jeder Datensatz:
-
-
-
-Erster Datensatz: unsigned int - n (Anzahl der Spalten)
-Nächste n Datensätze: Binärstrings, führende Größe (unsigned int) und Abschlusszeichen (Integritätsprüfung)
-
-Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n Doubles
-----
-
-
-TODO Andreas? Wenn das erste Mal Ausgabendateien > 100 Mb als ASCII-Dateien geschrieben werden, sollten wir das binäre Format einführen.
+https://bauklimatik-dresden.de/postproc/help/de/index.html#binaryFormat
 
 [[solver_log_files]]
 ## Solver-Logdateien

@@ -72,7 +72,7 @@ table {
 <h1>NANDRAD Modell-Referenz</h1>
 <div class="details">
 <span id="author" class="author">Andreas Nicolai &lt;andreas.nicolai@tu-dresden.de&gt;, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke</span><br>
-<span id="revnumber">version 0.6 (13.12.2021)</span>
+<span id="revnumber">version 0.7 (09.01.2022)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Inhaltsverzeichnis</div>
@@ -291,9 +291,10 @@ table {
 <li><a href="#_modelltyp_pressurelosselement">18.4.8. Modelltyp: PressureLossElement</a></li>
 <li><a href="#HydraulicElement_ControlledValve">18.4.9. Modelltyp: ControlledValve</a></li>
 <li><a href="#_modelltyp_heatexchanger">18.4.10. ModellTyp: HeatExchanger</a></li>
-<li><a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.11. ModellTyp: HeatPumpIdealCarnotSourceSide</a></li>
-<li><a href="#_modelltyp_heatpumpidealcarnotsupplyside">18.4.12. ModellTyp: HeatPumpIdealCarnotSupplySide</a></li>
-<li><a href="#HydraulicElement_HeatPumpRealSourceSide">18.4.13. Modelltyp: HeatPumpRealSourceSide</a></li>
+<li><a href="#HydraulicElement_HeatPumpVariableIdealCarnotSourceSide">18.4.11. ModellTyp: HeatPumpVariableIdealCarnotSourceSide</a></li>
+<li><a href="#_modelltyp_heatpumpvariableidealcarnotsupplyside">18.4.12. ModellTyp: HeatPumpVariableIdealCarnotSupplySide</a></li>
+<li><a href="#_modelltyp_heatpumpvariablesourceside">ModellTyp: HeatPumpVariableSourceSide</a></li>
+<li><a href="#HydraulicElement_HeatPumpOnOffSourceSide">18.4.13. Modelltyp: HeatPumpOnOffSourceSide</a></li>
 <li><a href="#HydraulicElement_IdealHeaterCooler">18.4.14. Modelltyp: IdealHeaterCooler</a></li>
 </ul>
 </li>
@@ -2092,7 +2093,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 <h2 id="_aktive_schichtenflächenheizungen">10. Aktive Schichten/Flächenheizungen</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Eine Konstruktion kann thermisch wechselwirken mit andern Modelle, bspw. als Fußbodenheizung. Dafür muss im verwendeten Konstruktionstyp eine aktive Schicht definiert sein (siehe <a href="#construction_active_layer">Section 6.2.1</a>).</p>
+<p>Eine Konstruktion kann thermisch wechselwirken mit andern Modelle, bspw. als Fußbodenheizung. Dafür muss im verwendeten Konstruktionstyp eine aktive Schicht definiert sein (siehe <a href="#construction_active_layer">Abschnitt 6.2.1</a>).</p>
 </div>
 </div>
 </div>
@@ -2147,7 +2148,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Nur das Verglasungssystem wird über die ID referenziert. Verglasungssysteme sind in der Datenbankliste der Verglasungssysteme definiert, siehe <a href="#glazing_systems">Section 6.3</a>.</p>
+<p>Nur das Verglasungssystem wird über die ID referenziert. Verglasungssysteme sind in der Datenbankliste der Verglasungssysteme definiert, siehe <a href="#glazing_systems">Abschnitt 6.3</a>.</p>
 </div>
 <div class="paragraph">
 <p>Das Fenster kann einen Rahmen und/oder Trennwände haben. Diese sind separate Entitäten, da das Material von Rahmen und Trennwänden (und damit die Wärmeleitfähigkeit zwischen diesen Materialien) unterschiedlich sein kann. Diese werden in den XML-tags <code>Frame</code> und <code>Divider</code> definiert:</p>
@@ -2219,7 +2220,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Die vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird als globale Eigenschaft im <code>Location</code>-tag definiert (siehe <a href="#precomputed_shading">Section 12.4</a>).</p>
+<p>Die vorberechnete Umgebungsverschattung bzw. Eigenverschattung wird als globale Eigenschaft im <code>Location</code>-tag definiert (siehe <a href="#precomputed_shading">Abschnitt 12.4</a>).</p>
 </div>
 </td>
 </tr>
@@ -2239,7 +2240,7 @@ Im Folgenden wird dies im Detail beschrieben.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Wie im Abschnitt <a href="#precomputed_shading">Section 12.4</a> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über die eindeutige ID Nummer der Konstruktionsinstanz bzw. des eingebetteten Objekts.</p>
+<p>Wie im Abschnitt <a href="#precomputed_shading">Abschnitt 12.4</a> beschrieben, erfolgt die Zuordnung zwischen bereitgestellten Datenspalten und Objekt-ID über die eindeutige ID Nummer der Konstruktionsinstanz bzw. des eingebetteten Objekts.</p>
 </div>
 </td>
 </tr>
@@ -2395,7 +2396,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="sect2">
 <h3 id="_übersicht">12.1. Übersicht</h3>
 <div class="paragraph">
-<p>Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen benötigt (definiert für Außenflächen, siehe <a href="#construction_instances">Section 8</a>).</p>
+<p>Klimalasten werden in NANDRAD über Klimadateien bereitgestellt. Für die Berechnung der Sonneneinstrahlung werden Informationen über den Gebäudestandort (in der Regel in der Klimadatei enthalten) sowie die Ausrichtung und Neigung der verschiedenen Konstruktionsflächen benötigt (definiert für Außenflächen, siehe <a href="#construction_instances">Abschnitt 8</a>).</p>
 </div>
 </div>
 <div class="sect2">
@@ -2421,10 +2422,10 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Die Außenklimabedingungen, einschließlich Standortinformationen werden aus einer Klimadatei bezogen, angegeben im Element <code>&lt;ClimateFilePath&gt;</code>. Dieser kann Platzhalter enthalten (siehe <a href="#path_placeholders">Section 4</a>).</p>
+<p>Die Außenklimabedingungen, einschließlich Standortinformationen werden aus einer Klimadatei bezogen, angegeben im Element <code>&lt;ClimateFilePath&gt;</code>. Dieser kann Platzhalter enthalten (siehe <a href="#path_placeholders">Abschnitt 4</a>).</p>
 </div>
 <div class="paragraph">
-<p>Zusätzliche Parameter (siehe <a href="#IBK_Parameter">Section 3.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
+<p>Zusätzliche Parameter (siehe <a href="#IBK_Parameter">Abschnitt 3.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2447,7 +2448,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Albedo</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wird für die Berechnung der diffusen Sonneneinstrahlung verwendet (siehe <a href="#loads_solar_radiation">Section 12.3</a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wird für die Berechnung der diffusen Sonneneinstrahlung verwendet (siehe <a href="#loads_solar_radiation">Abschnitt 12.3</a>)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">0&#8230;&#8203;1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>erforderlich</em></p></td>
 </tr>
@@ -2461,14 +2462,14 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Longitude</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn angegeben, wird der Ortsparameter <code>Longitude</code> der Klimadatendatei überschrieben (siehe <a href="#location_settings">Section 12.2.2</a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn angegeben, wird der Ortsparameter <code>Longitude</code> der Klimadatendatei überschrieben (siehe <a href="#location_settings">Abschnitt 12.2.2</a>).</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">-180&#8230;&#8203;180</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Latitude</code></p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">Deg</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn angegeben, wird der Ortsparameter <code>Latitude</code> der Klimadatendatei überschrieben (siehe <a href="#location_settings">Section 12.2.2</a>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn angegeben, wird der Ortsparameter <code>Latitude</code> der Klimadatendatei überschrieben (siehe <a href="#location_settings">Abschnitt 12.2.2</a>).</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">-90&#8230;&#8203;90</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
@@ -2478,7 +2479,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <p><em>(*) wird noch nicht verwendet.</em></p>
 </div>
 <div class="paragraph">
-<p>Flags und Optionen (siehe <a href="#IBK_Flag">Section 3.3</a> für eine Beschreibung des Elementtyps <code>IBK:Flag</code>):</p>
+<p>Flags und Optionen (siehe <a href="#IBK_Flag">Abschnitt 3.3</a> für eine Beschreibung des Elementtyps <code>IBK:Flag</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2504,7 +2505,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>ContinuousShadingFactorData</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn gesetzt werden Verschattungsdaten als kontinuierliche Zeitreihen behandelt (siehe <a href="#precomputed_shading">Section 12.4</a>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wenn gesetzt werden Verschattungsdaten als kontinuierliche Zeitreihen behandelt (siehe <a href="#precomputed_shading">Abschnitt 12.4</a>)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>optional</em></p></td>
 </tr>
@@ -2538,7 +2539,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Es ist möglich, für alle extern referenzierten Dateien eigene Platzhalter im Projekt zu definieren, siehe <a href="#path_placeholders">Section 4</a>.</p>
+<p>Es ist möglich, für alle extern referenzierten Dateien eigene Platzhalter im Projekt zu definieren, siehe <a href="#path_placeholders">Abschnitt 4</a>.</p>
 </div>
 </div>
 <div class="sect3">
@@ -2570,7 +2571,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 <div class="sect3">
 <h4 id="_zyklische_jährliche_und_kontinuierliche_mehrjährige_klimadaten">12.2.3. Zyklische (jährliche) und kontinuierliche (mehrjährige) Klimadaten</h4>
 <div class="paragraph">
-<p>Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Anderfalls werden die Klimadaten als kontinuierlich abgelegte Daten für Zeitwerte in einem beliebigen Zeitbereich betrachtet. Dabei können die Klimadaten auch mit variierenden Zeitabständen zwischen den Datenpunkten definiert sein. Solche Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe <a href="#simulation_interval">Section 16.1.1</a>).</p>
+<p>Die Klimadaten-Datei kann 8760 Stundenwerte für ein ganzes Jahr enthalten. Anderfalls werden die Klimadaten als kontinuierlich abgelegte Daten für Zeitwerte in einem beliebigen Zeitbereich betrachtet. Dabei können die Klimadaten auch mit variierenden Zeitabständen zwischen den Datenpunkten definiert sein. Solche Klimadateien können nicht für die jährliche/zyklische Berechnung verwendet werden, sondern benötigen ein bestimmtes (passendes) Simulationszeitintervall (siehe <a href="#simulation_interval">Abschnitt 16.1.1</a>).</p>
 </div>
 <div class="sect4">
 <h5 id="_zyklisches_jahresklima">Zyklisches Jahresklima</h5>
@@ -2745,7 +2746,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">Section 3.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
+<p>Parameter (siehe Abschnitt <a href="#IBK_Parameter">Abschnitt 3.1</a> für eine Beschreibung des Elementtyps <code>IBK:Parameter</code>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2797,7 +2798,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter <code>Orientation</code> und <code>Inclination</code> gegeben werden (siehe  <a href="#construction_instances">Section 8</a> für Details zu deren Definition).</p>
+<p>Einem Sensor muss eine eindeutige ID-Nummer und die obligatorischen Parameter <code>Orientation</code> und <code>Inclination</code> gegeben werden (siehe  <a href="#construction_instances">Abschnitt 8</a> für Details zu deren Definition).</p>
 </div>
 <div class="paragraph">
 <p>Für jeden Sensor werden 4 Ausgangsgrößen erzeugt:</p>
@@ -2819,7 +2820,7 @@ Fz = 0,5 = teilweise verschattet:     z = 1 - (1 - 80%) * Fz = 0,9</pre>
 </ul>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 27. Ausgabedefinition für Sensorwerte (siehe auch Beschreibung von Ergebnisdefinitionen in <a href="#outputs">Section 15</a>).</div>
+<div class="title">Beispiel 27. Ausgabedefinition für Sensorwerte (siehe auch Beschreibung von Ergebnisdefinitionen in <a href="#outputs">Abschnitt 15</a>).</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -2899,7 +2900,7 @@ Der Sonnenlichtfaktor, der in der Gleichung für die Belastung durch die Sonnene
 <h4 id="_dateiformat_für_vorberechnete_sonnenlichtfaktoren">12.4.1. Dateiformat für vorberechnete Sonnenlichtfaktoren</h4>
 <div class="paragraph">
 <p>Die Datei mit den vorberechneten Sonnenlichtfaktoren wird im XML-Element <code>Location</code> definiert, im Kind-Element
-<code>ShadingFactorFilePath</code>. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der einem Platzhalter folgt (bspw. <code>${Project Directory}</code>, siehe <a href="#path_placeholders">Section 4</a>).</p>
+<code>ShadingFactorFilePath</code>. Der hier angegebene Pfad kann ein absoluter Pfad oder ein relativer Pfad sein, der einem Platzhalter folgt (bspw. <code>${Project Directory}</code>, siehe <a href="#path_placeholders">Abschnitt 4</a>).</p>
 </div>
 <div class="paragraph">
 <p>Die Datei kann als <code>tsv</code> Datei oder DataIO-Datei (ASCII oder Binärformat, Endungen <code>d6o</code> und <code>d6b</code>) bereitgestellt werden.</p>
@@ -4551,26 +4552,14 @@ die geplanten Werte)</p>
 <div class="sect2">
 <h3 id="binary_outputs">15.4. Binäres Format</h3>
 <div class="paragraph">
-<p>Die binäre Variante von TSV-Dateien ist sehr ähnlich.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>Kopfsatz:
-- 64bit Ganzzahl = n (Anzahl der Spalten)
-- n mal binäre Zeichenketten
-
-Datenteil, jeder Datensatz:
-
-
-
-Erster Datensatz: unsigned int - n (Anzahl der Spalten)
-Nächste n Datensätze: Binärstrings, führende Größe (unsigned int) und Abschlusszeichen (Integritätsprüfung)
-
-Als Nächstes ?? Datensätze: unsigned int - n (zur Überprüfung) und danach n Doubles</pre>
-</div>
+<p>Falls der Schalter <code>BinaryFormat</code> eingeschaltet ist, werden die Ergebnisse als <code>btf</code> Dateien (<em>binary table format</em>) geschrieben.
+Dieses Format wird nativ von <em>PostProc</em> unterstützt und die Daten können genau wie <code>tsv</code>-Dateien eingelesen werden.</p>
 </div>
 <div class="paragraph">
-<p>TODO Andreas? Wenn das erste Mal Ausgabendateien &gt; 100 Mb als ASCII-Dateien geschrieben werden, sollten wir das binäre Format einführen.</p>
+<p>Das binäre Dateiformat ist im PostProc-Handbuch beschrieben:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://bauklimatik-dresden.de/postproc/help/de/index.html#binaryFormat" class="bare">https://bauklimatik-dresden.de/postproc/help/de/index.html#binaryFormat</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -7788,7 +7777,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 </div>
 </div>
 <div class="paragraph">
-<p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#NetworkElements">Section 18.5</a>) referenziert.</p>
+<p>Rohreigenschaften werden über das Attribut <code>pipePropertyId</code> eines Netzwerkelements (siehe <a href="#NetworkElements">Abschnitt 18.5</a>) referenziert.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Tabelle 41. Attribute</caption>
@@ -7870,7 +7859,7 @@ Wärmeabgabe im Fluid. Imstationären Fall entspricht die <code>TotalThermalLoad
 <p>Der Außendurchmesser muss größer als der Innendurchmesser sein.</p>
 </div>
 <div class="paragraph">
-<p>Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe u.A. Abschnitt <a href="#HydraulicElement_SimplePipe">Section 18.4.1</a>) beinflusst.</p>
+<p>Der längenbezogene äquivalente U-Wert der Rohrwand (einschließlich möglicher Dämmung) ist in der Berechnung so definiert, dass eine Multiplikation mit der Temperaturdifferenz zwischen Fluidtemperatur und Außentemperatur zum Wärmeström pro m Rohrlänge führt. D.h. bei der Berechnung dieses äquivalenten U-Werts müssen Zylinderkoordinaten berücksichtigt werden. Der tatsächlichen Wärmestrom von Fluid zu Umgebung wird noch durch Übergangskoeffizienten (siehe u.A. Abschnitt <a href="#HydraulicElement_SimplePipe">Abschnitt 18.4.1</a>) beinflusst.</p>
 </div>
 </div>
 <div class="sect2">
@@ -8254,7 +8243,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 <div class="sect3">
 <h4 id="_modelltyp_controlledpump">18.4.6. Modelltyp: ControlledPump</h4>
 <div class="paragraph">
-<p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <a href="#NetworkControlElements">Section 18.8</a>).</p>
+<p>Dieses Modell ist ähnlich der <code>ConstantPressurePump</code>, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <a href="#NetworkControlElements">Abschnitt 18.8</a>).</p>
 </div>
 <div class="exampleblock">
 <div class="title">Beispiel 65. Definition einer ControlledPump</div>
@@ -8339,7 +8328,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 <p>Aus der maximalen Druckhöhe bei minimalem Durchfluss (<code>MaximumPressureHead</code>) und der maximalen Leistung im optimalen Betriebspunkt (<code>PumpMaximumElectricalPower</code>) berechnet das Modell die tatsächliche maximale Druckhöhe in Abhängigkeit des aktuellen Massenstroms. Diese tatsächliche maximale Druckhöhe sinkt mit zunehmenden Massenstrom linear und ist somit in der Regel geringer als die maximale Druckhöhe bei minimalem Durchfluss (<code>MaximumPressureHead</code>).</p>
 </div>
 <div class="paragraph">
-<p>Das jeweilige Strömungselement (<a href="#NetworkElements">Section 18.5</a>) referenziert im Attribut <code>controlElementId</code> einen Regler (siehe auch <a href="#NetworkControlElements">Section 18.8</a>). Dieser bestimmt das Regelverhalten der Pumpe.</p>
+<p>Das jeweilige Strömungselement (<a href="#NetworkElements">Abschnitt 18.5</a>) referenziert im Attribut <code>controlElementId</code> einen Regler (siehe auch <a href="#NetworkControlElements">Abschnitt 18.8</a>). Dieser bestimmt das Regelverhalten der Pumpe.</p>
 </div>
 </div>
 <div class="sect3">
@@ -8456,7 +8445,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Es ist zusätzlich möglich auch Elemente zu beschreiben, welche sich in identischen parallelen Strängen befinden. Dazu wird in dem <code>HydraulicNetworkElement</code> (siehe <a href="#NetworkElements">Section 18.5</a>), welches ein <code>PressureLossElement</code> referenziert, der Parameter <code>NumberParallelElements</code> angegeben. Siehe dazu auch <a href="#parallel_pressureLossElements">Section 18.5.1.2</a></p>
+<p>Es ist zusätzlich möglich auch Elemente zu beschreiben, welche sich in identischen parallelen Strängen befinden. Dazu wird in dem <code>HydraulicNetworkElement</code> (siehe <a href="#NetworkElements">Abschnitt 18.5</a>), welches ein <code>PressureLossElement</code> referenziert, der Parameter <code>NumberParallelElements</code> angegeben. Siehe dazu auch <a href="#parallel_pressureLossElements">Abschnitt 18.5.1.2</a></p>
 </div>
 </td>
 </tr>
@@ -8513,7 +8502,7 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 </tbody>
 </table>
 <div class="paragraph">
-<p>Ein durchströmtes Element, welches eine Komponente von Modelltyp <code>ControlledValve</code> verwendet, referenziert in der Regel (aber nicht zwingend) ein Kontrollelement (siehe <a href="#NetworkControlElements">Section 18.8</a>). Diese Massenstromkontroller erhöhen den Basisdruckverlustbeiwert. Ohne ein Kontrollelement verhält sich das <code>ControlledValve</code> einfach wie eine normales, druckverlustbehaftetes Element im Strömungsnetzwerk.</p>
+<p>Ein durchströmtes Element, welches eine Komponente von Modelltyp <code>ControlledValve</code> verwendet, referenziert in der Regel (aber nicht zwingend) ein Kontrollelement (siehe <a href="#NetworkControlElements">Abschnitt 18.8</a>). Diese Massenstromkontroller erhöhen den Basisdruckverlustbeiwert. Ohne ein Kontrollelement verhält sich das <code>ControlledValve</code> einfach wie eine normales, druckverlustbehaftetes Element im Strömungsnetzwerk.</p>
 </div>
 </div>
 <div class="sect3">
@@ -8564,14 +8553,18 @@ Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definie
 </table>
 </div>
 <div class="sect3">
-<h4 id="HydraulicElement_HeatPumpIdealCarnotSourceSide">18.4.11. ModellTyp: HeatPumpIdealCarnotSourceSide</h4>
+<h4 id="HydraulicElement_HeatPumpVariableIdealCarnotSourceSide">18.4.11. ModellTyp: HeatPumpVariableIdealCarnotSourceSide</h4>
 <div class="paragraph">
-<p>Das Model <code>HeatPumpIdealCarnotSourceSide</code> ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Section 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.</p>
+<p>Das Model <code>HeatPumpVariableIdealCarnotSourceSide</code> ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Abschnitt 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur
+(d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.</p>
+</div>
+<div class="paragraph">
+<p>Die Heizleistung wird durch den <code>HydraulicNetworkHeatExchange</code> mit dem modelType <code>HeatLossSplineCondenser</code> bestimmt.</p>
 </div>
 <div class="paragraph">
 <p>Weiterhin werden diese Parameter benötigt:</p>
 </div>
-<table id="Parameter_HeatPumpIdealCarnotSourceSide" class="tableblock frame-all grid-all stretch">
+<table id="Parameter_HeatPumpVariableIdealCarnotSourceSide" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 22%;">
 <col style="width: 10%;">
@@ -8638,13 +8631,13 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tr>
 </table>
 </div>
-<div id="ex_HeatPumpIdealCarnotSourceSide" class="exampleblock">
-<div class="title">Beispiel 66. Definition einer HeatPumpIdealCarnotSourceSide</div>
+<div id="ex_HeatPumpVariableIdealCarnotSourceSide" class="exampleblock">
+<div class="title">Beispiel 66. Definition einer HeatPumpVariableIdealCarnotSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Components&gt;</span>
-    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpIdealCarnotSourceSide"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpVariableIdealCarnotSourceSide"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HydraulicDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureLossCoefficient"</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>0.001<span class="nt">&lt;/IBK:Parameter&gt;</span>
@@ -8668,21 +8661,121 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="sect3">
-<h4 id="_modelltyp_heatpumpidealcarnotsupplyside">18.4.12. ModellTyp: HeatPumpIdealCarnotSupplySide</h4>
+<h4 id="_modelltyp_heatpumpvariableidealcarnotsupplyside">18.4.12. ModellTyp: HeatPumpVariableIdealCarnotSupplySide</h4>
 <div class="paragraph">
-<p>Das Model <code>HeatPumpIdealCarnotSupplySide</code> ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Section 18.6</a>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung <code>CondenserOutletSetpointSchedule</code> angegeben werden.</p>
+<p>Das Model <code>HeatPumpVariableIdealCarnotSupplySide</code> ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Abschnitt 18.6</a>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung <code>CondenserOutletSetpointSchedule</code> angegeben werden.</p>
 </div>
 <div class="paragraph">
-<p>Die benötigten Parameter sind identisch mit dem Modell <a href="#HydraulicElement_HeatPumpIdealCarnotSourceSide">Section 18.4.11</a> und in <a href="#Parameter_HeatPumpIdealCarnotSourceSide">[Parameter_HeatPumpIdealCarnotSourceSide]</a> gegeben.</p>
+<p>Die benötigten Parameter sind identisch mit dem Modell <a href="#HydraulicElement_HeatPumpVariableIdealCarnotSourceSide">Abschnitt 18.4.11</a> und in <a href="#Parameter_HeatPumpVariableIdealCarnotSourceSide">[Parameter_HeatPumpVariableIdealCarnotSourceSide]</a> gegeben.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="HydraulicElement_HeatPumpRealSourceSide">18.4.13. Modelltyp: HeatPumpRealSourceSide</h4>
+<h4 id="_modelltyp_heatpumpvariablesourceside">ModellTyp: HeatPumpVariableSourceSide</h4>
+<div class="paragraph">
+<p>Das Model <code>HeatPumpVariableSourceSide</code> ist eine ideale Wärmepumpe mit variable Heizleistung, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<a href="#NetworkHeatExchange">Abschnitt 18.6</a>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung <code>CondenserMeanTemperatureSchedule</code> angegeben werden.
+Im Gegensatz zum Modell <code>HeatPumpVariableIdealCarnotSourceSide</code>, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung des COP in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpVariableSourceSide">Beispiel 67</a>).</p>
+</div>
+<div class="paragraph">
+<p>Weiterhin werden diese Parameter benötigt:</p>
+</div>
+<table id="HeatPumpVariableSourceSide" class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22%;">
+<col style="width: 10%;">
+<col style="width: 38%;">
+<col style="width: 12%;">
+<col style="width: 18%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-center valign-top">Einheit</th>
+<th class="tableblock halign-left valign-top">Beschreibung</th>
+<th class="tableblock halign-center valign-top">Wertebereich</th>
+<th class="tableblock halign-center valign-top">Verwendung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>HydraulicDiameter</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">mm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PressureLossCoefficient</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">---</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Effektiver Druckverlustbeiwert (zeta-Wert)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Volume</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">m3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fluidvolumen im Wärmetauscher</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>MaximumHeatingPower</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">W</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximale Heizleistung (= maximaler Wärmestrom des Kondensators)</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">&#160;&gt;&#160;0.0&#160;</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><em>benötigt für Modelltyp</em> <code>ThermalHydraulicNetwork</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
+</td>
+</tr>
+</table>
+</div>
+<div id="ex_HeatPumpVariableSourceSide" class="exampleblock">
+<div class="title">Beispiel 67. Definition einer HeatPumpVariableSourceSide</div>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Components&gt;</span>
+    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpVariableSourceSide"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HydraulicDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureLossCoefficient"</span> <span class="na">unit=</span><span class="s">"-"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>0.001<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"MaximumHeatingPower"</span> <span class="na">unit=</span><span class="s">"W"</span><span class="nt">&gt;</span>4000<span class="nt">&lt;/IBK:Parameter&gt;</span>
+      <span class="nt">&lt;PolynomCoefficients&gt;</span>
+      COP: -7.46562450e+01  5.87360996e-01  -1.38056160e-03 -4.45166703e-03 1.68697149e-03  1.77084233e-03
+    <span class="nt">&lt;/PolynomCoefficients&gt;</span>
+    <span class="nt">&lt;/HydraulicNetworkComponent&gt;</span>
+<span class="nt">&lt;/Components&gt;</span>
+
+<span class="nt">&lt;Elements&gt;</span>
+    <span class="nt">&lt;HydraulicNetworkElement</span> <span class="na">id=</span><span class="s">"1"</span> <span class="na">inletNodeId=</span><span class="s">"2"</span> <span class="na">outletNodeId=</span><span class="s">"0"</span> <span class="na">componentId=</span><span class="s">"2"</span> <span class="na">displayName=</span><span class="s">"heatpump"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;HydraulicNetworkHeatExchange</span> <span class="na">modelType=</span><span class="s">"HeatLossSplineCondenser"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;LinearSplineParameter</span> <span class="na">name=</span><span class="s">"HeatLoss"</span> <span class="na">interpolationMethod=</span><span class="s">"linear"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;TSVFile&gt;</span>${Project Directory}/file/to/HeatFluxCondenser.csv<span class="nt">&lt;/TSVFile&gt;</span>
+        <span class="nt">&lt;/LinearSplineParameter&gt;</span>
+      <span class="nt">&lt;/HydraulicNetworkHeatExchange&gt;</span>
+    <span class="nt">&lt;/HydraulicNetworkElement&gt;</span>
+<span class="nt">&lt;/Elements&gt;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="HydraulicElement_HeatPumpOnOffSourceSide">18.4.13. Modelltyp: HeatPumpOnOffSourceSide</h4>
 <div class="paragraph">
 <p>Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert.</p>
 </div>
 <div class="paragraph">
-<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpRealSourceSide">Beispiel 67</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
+<p>Es werden je 6 Polynomkoeffizienten (<code>PolynomCoefficients</code>) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines <code>DataTable</code> benötigt (siehe <a href="#ex_HeatPumpOnOffSourceSide">Beispiel 68</a>). Es wird ein <code>Schedule</code> für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug <code>HeatPumpOnOffSignalSchedule</code> und ein <code>Schedule</code> für die Kondensatoraustrittstemperatur mit der Beziechnung <code>CondenserOutletSetpointSchedule</code> benötigt.</p>
 </div>
 <div class="paragraph">
 <p>Weitere benötigte Parameter sind:</p>
@@ -8728,19 +8821,19 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tr>
 </tbody>
 </table>
-<div id="ex_HeatPumpRealSourceSide" class="exampleblock">
-<div class="title">Beispiel 67. Definition einer HeatPumpRealSourceSide</div>
+<div id="ex_HeatPumpOnOffSourceSide" class="exampleblock">
+<div class="title">Beispiel 68. Definition einer HeatPumpOnOffSourceSide</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="xml"><span class="nt">&lt;Components&gt;</span>
-    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpRealSourceSide"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;HydraulicNetworkComponent</span> <span class="na">id=</span><span class="s">"2"</span> <span class="na">modelType=</span><span class="s">"HeatPumpOnOffSourceSide"</span><span class="nt">&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"HydraulicDiameter"</span> <span class="na">unit=</span><span class="s">"mm"</span><span class="nt">&gt;</span>25.6<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"PressureLossCoefficient"</span> <span class="na">unit=</span><span class="s">"---"</span><span class="nt">&gt;</span>5<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;IBK:Parameter</span> <span class="na">name=</span><span class="s">"Volume"</span> <span class="na">unit=</span><span class="s">"m3"</span><span class="nt">&gt;</span>0.001<span class="nt">&lt;/IBK:Parameter&gt;</span>
       <span class="nt">&lt;PolynomCoefficients&gt;</span>
-        QdotCondensator: 9.92879892e+00 2.88001670e-01 -6.14962264e-02 -1.64339623e-03 1.82864120e-03 1.89999998e-04;
-        Pel: 9.67904904e-01 -1.15618685e-03 4.19591509e-03 9.77264129e-05 -2.20526428e-04 4.61199998e-04
+        QdotCondensator: -2.39461360e+04 -2.62085728e+02  2.83610229e+02 -1.64340182e+00 1.82863445e+00  1.89987100e-01;
+      Pel: 2.53859559e+04  9.26237012e+01 -2.74451964e+02  9.77255316e-02 -2.20526410e-01  4.61200937e-01
       <span class="nt">&lt;/PolynomCoefficients&gt;</span>
     <span class="nt">&lt;/HydraulicNetworkComponent&gt;</span>
 <span class="nt">&lt;/Components&gt;</span>
@@ -8774,7 +8867,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Dieses Modell ermöglicht das präzise Vorgeben einer Medientemperatur in einem Strömungselement und der Berechnung der für die Temperaturänderung benötigten Heiz-/Kühlenergie.</p>
 </div>
 <div id="ex_HydraulicElement_IdealHeaterCooler" class="exampleblock">
-<div class="title">Beispiel 68. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 69. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8819,7 +8912,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </div>
 </div>
 <div class="paragraph">
-<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 68</a>).</p>
+<p>Es sind keine weiteren Parameter notwendig. Es wird der Zeitplanparameter <code>SupplyTemperatureSchedule</code> erwartet (siehe <a href="#ex_HydraulicElement_IdealHeaterCooler">Beispiel 69</a>).</p>
 </div>
 </div>
 </div>
@@ -8832,7 +8925,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tags <code>Elements</code> mit dem XML-tag <code>HydraulicNetworkElement</code> definiert.</p>
 </div>
 <div id="xml_example_flow_element" class="exampleblock">
-<div class="title">Beispiel 69. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
+<div class="title">Beispiel 70. Definition der verknüpften Strömungselemente (Knotennummerierung erfolgt implizit)</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8931,10 +9024,10 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Die Strömungselemente sind miteinander durch Knoten verknüpft. In jedem Strömungselement fließt das Fluid (geplant) von dem Knoten mit der <code>inletNodeId</code> zu dem Knoten mit der <code>outletNodeId</code>. Während der Berechnung ist es jedoch möglich, dass sich der Massestrom umkehrt. Dies ändert aber nichts an der Topologiedefinition des Netzwerkes. Man könnte <code>inletNodeId</code> auch mit "Knoten 1 des Elements" und <code>outletNodeId</code> mit "Knoten 2 des Elements" bezeichnen.</p>
 </div>
 <div class="paragraph">
-<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 70</a>).</p>
+<p><a href="#fig_network_example1">Abbildung 11</a> zeigt ein einfaches Netzwerk bestehend aus 3 Elementen.  Ein solches Netzwerk würde wie folgt definiert werden (<a href="#ex_network_example1">Beispiel 71</a>).</p>
 </div>
 <div id="ex_network_example1" class="exampleblock">
-<div class="title">Beispiel 70. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
+<div class="title">Beispiel 71. XML-Definition eines einfachen Strömungsnetzwerks mit 3 Knoten und 3 Elementen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -8977,7 +9070,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Ist eine Komponente ein Rohr (z.B. <code>DynamicPipe</code>), <strong>müssen</strong> entsprechende Rohrparameter mit der <code>pipePropertiesId</code> referenziert werden.</p>
 </div>
 <div class="paragraph">
-<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 71</a>):</p>
+<p>Weiterhin <strong>muss</strong> für ein Rohrelement der Parameter <code>Length</code> definiert werden (siehe auch <a href="#ex_pipe_element">Beispiel 72</a>):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -9007,7 +9100,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tbody>
 </table>
 <div id="ex_pipe_element" class="exampleblock">
-<div class="title">Beispiel 71. Definition eines Rohrelements</div>
+<div class="title">Beispiel 72. Definition eines Rohrelements</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9024,7 +9117,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelPipes</code> kann man ein Rohrregister definieren und so z.B. eine Flächenheizung/Fußbodenheizung modellieren. Dabei strömt letztlich das Fluid parallel durch die angebene Anzahl gleichartiger Rohre.</p>
 </div>
 <div id="ex_pipe_register" class="exampleblock">
-<div class="title">Beispiel 72. Definition eines Rohrregisters</div>
+<div class="title">Beispiel 73. Definition eines Rohrregisters</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9058,7 +9151,7 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <p>Durch Angabe des <code>IBK:IntPara</code> Tags mit dem Namen <code>NumberParallelElements</code> kann man ein Element mit Druckverlust definieren, welches identische in parallelen Strängen verbaut ist, ohne dazu jeden identischen Strang separat modellieren zu müssen.</p>
 </div>
 <div id="ex_parallel_valve" class="exampleblock">
-<div class="title">Beispiel 73. Definition eines parallelen Ventils</div>
+<div class="title">Beispiel 74. Definition eines parallelen Ventils</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9089,10 +9182,10 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <div class="sect2">
 <h3 id="NetworkHeatExchange">18.6. Wärmeaustauschmodelle</h3>
 <div class="paragraph">
-<p>In thermische Netzwerken kann für ein Strömungselement (<a href="#NetworkElements">Section 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
+<p>In thermische Netzwerken kann für ein Strömungselement (<a href="#NetworkElements">Abschnitt 18.5</a>) ein Wärmeaustausch (mit der Umgebung, anderen Modellen, etc.) definiert werden. Dafür muss innerhalb der Definition des Strömungselements ein XML-Element <code>HydraulicNetworkHeatExchange</code> definiert werden.</p>
 </div>
 <div id="ex_heat_exchange_type" class="exampleblock">
-<div class="title">Beispiel 74. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
+<div class="title">Beispiel 75. Definition von Strömungselementen mit <code>HydraulicNetworkHeatExchange</code></div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9147,12 +9240,12 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustausch basierend auf Temperaturunterschied zwischen Medium und Umgebungstemperatur; Umgebungstemperatur ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Abschnitt 3.5</a>) mit Namen <code>Temperature</code> gegeben. Es muss zusätzlich der Parameter <code>ExternalHeatTransferCoefficient</code> gegeben sein.</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>TemperatureSplineEvaporator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustasch via Wärmepumpe, basierend auf gegebener Verdampfertemperatur. Verdampfertemperatur ist als  Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>Temperature</code> gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmeaustasch via Wärmepumpe, basierend auf gegebener Verdampfertemperatur. Verdampfertemperatur ist als  Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Abschnitt 3.5</a>) mit Namen <code>Temperature</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
 </tr>
 <tr>
@@ -9172,12 +9265,12 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSpline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) ist als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Abschnitt 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>SimplePipe</code>, <code>DynamicPipe</code>, <code>HeatExchanger</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>HeatLossSplineCondenser</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Section 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Wärmestrom (positiv aus dem Element) des Kondensators bei Verwendung eines Wärmepumpen-Modells als Zeitreihe in einem LinearSplineParameter (<a href="#LinearSplineParameter">Abschnitt 3.5</a>) mit Namen <code>HeatLoss</code> gegeben</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>HeatPumpIdealCarnot</code></p></td>
 </tr>
 </tbody>
@@ -9317,11 +9410,11 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 <div class="sect2">
 <h3 id="_regelung_von_strömungselementen">18.7. Regelung von Strömungselementen</h3>
 <div class="paragraph">
-<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 75</a> referenziert
+<p>Strömungselemente können ein geregeltes Ventil enthalten. Das Ventil wird z.B. so geregelt, dass eine vorgegebene Temperaturdifferenz oder ein vorgegebener Massenstrom erreicht wird. Im <a href="#ex_controlled_heat_exchanger">Beispiel 76</a> referenziert
 das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkControlElement</code> im Attribut <code>controlElementId</code>.</p>
 </div>
 <div id="ex_controlled_heat_exchanger" class="exampleblock">
-<div class="title">Beispiel 75. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
+<div class="title">Beispiel 76. Beispiel für ein Wärmeübertrager mit geregelter Temperaturdifferenz</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9350,7 +9443,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 </div>
 </div>
 <div class="paragraph">
-<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 75</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Section 18.8</a> beschrieben.</p>
+<p>Die konkrete Parametrierung des Kontrollers ist im referenzierten <code>HydraulicNetworkControlElement</code> enthalten. Die Massenstromregler arbeiten unterschiedlich und verlangen dabei wie im <a href="#ex_controlled_heat_exchanger">Beispiel 76</a> eine entsprechende Wärmeaustauschparametrierung (<code>HydraulicNetworkHeatExchange</code>). Details zu diesen Abhängigkeiten sind in Abschnitt <a href="#NetworkControlElements">Abschnitt 18.8</a> beschrieben.</p>
 </div>
 </div>
 <div class="sect2">
@@ -9359,7 +9452,7 @@ das <code>HydraulicNetworkElement</code> dafür ein <code>HydraulicNetworkContro
 <p>Alle Reglerkomponenten werden in einer Liste <code>ControlElements</code> abgelegt, welche sich innerhalb des <code>HydraulicNetwork</code> Elements befindet.</p>
 </div>
 <div id="ex_controlElement" class="exampleblock">
-<div class="title">Beispiel 76. Definitionsliste von Massenstrom-Reglermodellen</div>
+<div class="title">Beispiel 77. Definitionsliste von Massenstrom-Reglermodellen</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9527,10 +9620,10 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 <div class="sect2">
 <h3 id="_ausgaben_8">18.9. Ausgaben</h3>
 <div class="paragraph">
-<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 77</a>).</p>
+<p>Die Ergebnisgrößen eines thermo-hydraulischen Netzwerkmodells werden wie folgt definiert. Als Referenzierungstyp dient entweder <code>Network</code> für Ausgaben des Netzwerks insgesamt, oder <code>NetworkElement</code> für die Adressierung individueller Strömungselemente (siehe <a href="#ex_objectList_networks">Beispiel 78</a>).</p>
 </div>
 <div id="ex_objectList_networks" class="exampleblock">
-<div class="title">Beispiel 77. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
+<div class="title">Beispiel 78. Objektlist für die Referenzierung eines Netzwerks mit der ID 1 und ausgewählter Elemente des Netzwerks</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9564,7 +9657,7 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </ul>
 </div>
 <div class="paragraph">
-<p>angelegt. Wie bei regulären Ausgaben (siehe <a href="#output_filenames">Section 15.3.2</a>) wird der Suffix <code>_&lt;gridname&gt;</code> weggelassen, wenn es nur eine Ausgabedatei mit einem Ausgaberaster gibt.</p>
+<p>angelegt. Wie bei regulären Ausgaben (siehe <a href="#output_filenames">Abschnitt 15.3.2</a>) wird der Suffix <code>_&lt;gridname&gt;</code> weggelassen, wenn es nur eine Ausgabedatei mit einem Ausgaberaster gibt.</p>
 </div>
 <div class="paragraph">
 <p>Für die Analyse der Netzwerke und Übergabesysteme sind sowohl die Masseströme und Temperaturen im Inneren eines Verbindungselementes, aber auch an den Verbindungsstellen zwischen zwei Elementen von Interesse. Letzerer Fall ist beispielsweise typisch für gekoppelte Erzeuger- und Verbraucherkreisläufe, wobei eine Kontrolle der Zulauf- und Rücklauftemperatur möglich sein muss.</p>
@@ -9709,10 +9802,10 @@ Das Attribute <code>modelType</code> (Optionen <code>Constant</code> oder <code>
 </ul>
 </div>
 <div class="paragraph">
-<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 78</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
+<p>Diese Variablen sind vektor-wertige Größen und es muss die <em>Id</em> des jeweils angeforderten Vektorelements verwendet werden. <a href="#ex_network_outputs">Beispiel 79</a> zeigt die Definition einer ID-basierten Ausgabe für Massenströme des Netzwerks.</p>
 </div>
 <div id="ex_network_outputs" class="exampleblock">
-<div class="title">Beispiel 78. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
+<div class="title">Beispiel 79. Beispiel für Ausgabedefinitionen mit Network als Referenztyp</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -9743,7 +9836,7 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 <p>Die Spezifikation der FMU Schnittstelle der zu generierenden NANDRAD-FMU wird im XML-Element <code>FMIDescription</code> definiert.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Beispiel 79. Definition einer FMU-Schnittstelle</div>
+<div class="title">Beispiel 80. Definition einer FMU-Schnittstelle</div>
 <div class="content">
 <div class="listingblock">
 <div class="content">
@@ -10361,8 +10454,8 @@ Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool <code>NandradFMUGen
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.6 (13.12.2021)<br>
-Last updated 2021-12-13 11:49:55 +0100
+Version 0.7 (09.01.2022)<br>
+Last updated 2022-01-09 18:05:27 +0100
 </div>
 </div>
 <style>
@@ -10472,6 +10565,10 @@ pre.rouge .mo {
 pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
   color: #009999;
 }
+pre.rouge .sa {
+  color: #000000;
+  font-weight: bold;
+}
 pre.rouge .sb {
   color: #d14;
 }
@@ -10505,7 +10602,7 @@ pre.rouge .s1 {
 pre.rouge .ss {
   color: #990073;
 }
-pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+pre.rouge .s, pre.rouge .dl {
   color: #d14;
 }
 pre.rouge .na {
