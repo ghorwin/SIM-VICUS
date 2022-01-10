@@ -204,15 +204,42 @@ double f_powN(double base) {
 /*! Function for efficient calculation of x^4. */
 inline double f_pow4(double x) { double x2(x); x2*=x2; x2*=x2; return x2; }
 
-/*! Tests if a is equal to b including a certain range for potential rounding errors. */
+/*! A functor to compare two values using some fuzzy tolerance.
+	\code
+	// use it in STL algorithms
+
+	// erase all values that are similar up to a difference of 1e-8
+	data.erase( std::unique( data.begin(), data.end(), IBK::NearEqual<double>(1e-8) ), data.end() );
+	\endcode
+*/
+template <typename T>
+class NearEqual {
+public:
+	NearEqual(T tolerance) : m_tolerance(tolerance) {}
+	bool operator()(const T & a, const T & b) {
+		return (a + m_tolerance >= b  &&  a <= b + m_tolerance);
+	}
+
+	/*! The absolute comparison tolerance. */
+	const T	m_tolerance;
+};
+
+
+/*! Tests if a is equal to b including a certain range for potential rounding errors.
+	\deprecated Use NearEqual<> instead.
+*/
 inline bool near_equal(double a, double b) {
 	return (a + NEAR_ZERO >= b  &&  a <= b + NEAR_ZERO);
 }
 
-/*! Tests if a is equal to b including a certain range for potential rounding errors. */
+
+/*! Tests if a is equal to b including a certain range for potential rounding errors.
+	\deprecated Use NearEqual<> instead.
+*/
 inline bool near_equal(double a, double b, const double eps) {
 	return (a + eps >= b  &&  a <= b + eps);
 }
+
 
 /*! Tests if a is equal to b including a certain range for potential rounding errors. */
 inline bool near_zero(double a) {

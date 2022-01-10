@@ -1295,7 +1295,7 @@ bool Path::makePath( const IBK::Path & p ) {
 			if((mdret=mkdir(dir.c_str(),mode)) && errno!=EEXIST){
 				switch (mdret) {
 					case EACCES			: IBK_Message(FormatString("Cannot create directory %1, access denied!").arg(p), MSG_ERROR, FUNC_ID); break;
-					case EEXIST			: IBK_Message(FormatString("Cannot create directory %1, it alreay exists!").arg(p), MSG_ERROR, FUNC_ID); break;
+					case EEXIST			: IBK_Message(FormatString("Cannot create directory %1, it already exists!").arg(p), MSG_ERROR, FUNC_ID); break;
 					case ENOTDIR		: IBK_Message(FormatString("Cannot create directory %1, invalid path!").arg(p), MSG_ERROR, FUNC_ID); break;
 					case ENOENT			: IBK_Message(FormatString("Cannot create directory %1, some component of the path doesn't exist!").arg(p), MSG_ERROR, FUNC_ID); ;break;
 					case EFAULT			: IBK_Message("EFAULT", MSG_ERROR, FUNC_ID); break;

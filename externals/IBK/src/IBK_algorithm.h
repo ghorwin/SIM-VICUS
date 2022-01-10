@@ -407,6 +407,17 @@ void write_range_XML(const_it first, const_it last, XMLElementType * element) {
 }
 
 
+/*! Calls the member function writeXML(element) in all elements in the range [first,last].
+	Remember to include the declarations for iterator_traits<const_it>::value_type (or
+	in other words the declaration of the type first and last are pointing to) before
+	IBK_algorithm.h.
+*/
+template <class const_it, typename XMLElementType>
+void write_range_XML(const_it first, const_it last, XMLElementType * element, bool write_all) {
+	while (first!=last)
+		(first++)->writeXML(element, write_all);
+}
+
 
 /*! \brief Appends indexes like '[1]' with increasing numbers to the basename until no
 			matching names are no longer found in the given range.

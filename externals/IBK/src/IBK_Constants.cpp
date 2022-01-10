@@ -44,7 +44,7 @@ const unsigned int INVALID_ELEMENT = 0xFFFFFFFF;
 
 const int INVALID_YEAR = -1000000;
 
-const char * const VERSION = "4.3.0";
+const char * const VERSION = "5.0.0";
 
 
 const char * const  MONTH_NAMES[12]         = { "Jan", "Feb", "Mar", "Apr",

@@ -52,6 +52,7 @@
 #include "IBK_Constants.h"
 #include "IBK_UnitList.h"
 #include "IBK_Unit.h"
+#include "IBK_assert.h"
 
 namespace IBK {
 
@@ -207,7 +208,7 @@ void Time::decomposeTOY(unsigned int& day, unsigned int & hour, unsigned int & m
 
 
 double Time::secondsUntil(const Time& other) const {
-	return other.m_sec - m_sec + (other.m_year - m_year)*(double)SECONDS_PER_YEAR;
+	return other.m_sec - m_sec + (other.m_year - m_year)*double(SECONDS_PER_YEAR);
 }
 // ---------------------------------------------------------------------------
 
@@ -710,10 +711,27 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 	if(!formatInfo.valid())
 		return Time();
 
+	bool fillZero = false;
+	if(formatInfo.textLength() > formatted_time.size()) {
+		// handling format mismatch
+		if(formatInfo.isSingle()) {
+			if(formatInfo.m_year4Start > -1) {
+				return Time();
+			}
+			else {
+				fillZero = true;
+			}
+		}
+		else {
+			return Time();
+		}
+	}
+
+
 	Time result;
 
 	const char* str = formatted_time.c_str();
-	while(isspace(*str)) ++str;
+//	while(isspace(*str)) ++str;
 	const char* strStart = str;
 	if(formatInfo.m_year4Start > -1) {
 		str += formatInfo.m_year4Start;
@@ -728,20 +746,22 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 	str = strStart;
 	if(formatInfo.m_year2Start > -1) {
 		str += formatInfo.m_year2Start;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		result.m_year = 2000 + (ch1 - 48) * 10 + (ch2 - 48);
 	}
 	str = strStart;
 
 	if(formatInfo.m_monthStart > -1) {
 		str += formatInfo.m_monthStart;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		int month = (ch1 - 48) * 10 + (ch2 - 48);
 		if(month > 1) {
 			result.m_sec += SECONDS_UNTIL_MONTH[month-1];
@@ -753,10 +773,11 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 
 	if(formatInfo.m_dayStart > -1) {
 		str += formatInfo.m_dayStart;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		int day = (ch1 - 48) * 10 + (ch2 - 48) - 1;
 		result.m_sec += day * 86400;
 	}
@@ -764,10 +785,11 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 
 	if(formatInfo.m_hourStart > -1) {
 		str += formatInfo.m_hourStart;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		int hour = (ch1 - 48) * 10 + (ch2 - 48);
 		result.m_sec += hour * 3600;
 	}
@@ -775,10 +797,11 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 
 	if(formatInfo.m_minuteStart > -1) {
 		str += formatInfo.m_minuteStart;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		int minute = (ch1 - 48) * 10 + (ch2 - 48);
 		result.m_sec += minute * 60;
 	}
@@ -786,10 +809,11 @@ Time Time::fromString(const std::string & formatted_time, const TimeFormatInfo& 
 
 	if(formatInfo.m_secondStart > -1) {
 		str += formatInfo.m_secondStart;
-		char ch1 = *str;
-		char ch2 = *(str+1);
+		char ch1 = fillZero ? '0' : *(str);
+		char ch2 = fillZero ? *(str) : *(str+1);
 		if(!isdigit(ch1) || !isdigit(ch2))
 			return Time();
+
 		int seconds = (ch1 - 48) * 10 + (ch2 - 48);
 		result.m_sec += seconds;
 	}
@@ -963,5 +987,477 @@ Time Time::operator+(double s) const {
 
 
 */
+
+TimeFormat::TimeFormat(const std::string& format) :
+	m_formatString(format),
+	m_dayStartZero(false),
+	m_hourStartZero(true),
+	m_minuteStartZero(true),
+	m_secondStartZero(true),
+	m_valid(true)
+{
+	if(!m_formatString.empty()) {
+		const char* str = m_formatString.c_str();
+		bool has4DigitsYear = false;
+		bool has2DigitsYear = false;
+		bool has2DigitsMonth = false;
+		bool has2DigitsDay = false;
+		bool has3DigitsDay = false;
+		bool has2DigitsHour = false;
+		bool has2DigitsMinute = false;
+		bool has2DigitsSecond = false;
+		while(*str != '\0') {
+			if(*str == 'y') {
+				if(has4DigitsYear || has2DigitsYear) {
+					m_valid = false;
+					m_error = "More than one year string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 'y') ++i;
+				if(i == 4) {
+					m_formatVect.push_back({FE_4DigitsYear,std::string()});
+					has4DigitsYear = true;
+				}
+				else if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsYear,std::string()});
+					has2DigitsYear = true;
+				}
+				else {
+					m_valid = false;
+					m_error = "Year string has neither 2 nor 4 characters.";
+					break;
+				}
+			}
+			else if(*str == 'M') {
+				if(has2DigitsMonth) {
+					m_valid = false;
+					m_error = "More than one month string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 'M') ++i;
+				if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsMonth,std::string()});
+				}
+				else {
+					m_valid = false;
+					m_error = "Month string has not two characters.";
+					break;
+				}
+			}
+			else if(*str == 'd') {
+				if(has2DigitsDay || has3DigitsDay) {
+					m_valid = false;
+					m_error = "More than one day string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 'd') ++i;
+				if(i == 3) {
+					m_formatVect.push_back({FE_3DigitsDay,std::string()});
+				}
+				else if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsDay,std::string()});
+				}
+				else {
+					m_valid = false;
+					m_error = "Day string has neither 2 nor 3 characters.";
+					break;
+				}
+			}
+			else if(*str == 'h') {
+				if(has2DigitsHour) {
+					m_valid = false;
+					m_error = "More than one hour string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 'h') ++i;
+				if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsHour,std::string()});
+				}
+				else {
+					m_valid = false;
+					m_error = "Hour string has not two characters.";
+					break;
+				}
+			}
+			else if(*str == 'm') {
+				if(has2DigitsMinute) {
+					m_valid = false;
+					m_error = "More than one minute string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 'm') ++i;
+				if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsMinute,std::string()});
+				}
+				else {
+					m_valid = false;
+					m_error = "Minute string has not two characters.";
+					break;
+				}
+			}
+			else if(*str == 's') {
+				if(has2DigitsSecond) {
+					m_valid = false;
+					m_error = "More than one second string";
+					break;
+				}
+				int i=1;
+				while(*(++str) == 's') ++i;
+				if(i == 2) {
+					m_formatVect.push_back({FE_2DigitsSecond,std::string()});
+				}
+				else {
+					m_valid = false;
+					m_error = "Second string has not two characters.";
+					break;
+				}
+			}
+			else {
+				if(*str != '\0') {
+					std::string div;
+					while(*str != '\0' && *str != 'y' && *str != 'M' && *str != 'd' && *str != 'h' && *str != 'm' && *str != 's') {
+						div.push_back(*str);
+						++str;
+					}
+					if(!div.empty())
+						m_formatVect.push_back({FE_Divider,div});
+				}
+			}
+		}
+		if(m_formatVect.empty()) {
+			m_valid = false;
+		}
+		else if(m_formatVect.size() == 1 && m_formatVect.back().first == FE_Divider) {
+				m_valid = false;
+		}
+		else {
+			bool lastWasDivider = m_formatVect[0].first == FE_Divider;
+			for(size_t i=1; i<m_formatVect.size(); ++i) {
+				if(lastWasDivider && m_formatVect[i].first == FE_Divider) {
+					m_valid = false;
+					break;
+				}
+				if(!lastWasDivider && m_formatVect[i].first != FE_Divider) {
+					m_valid = false;
+					break;
+				}
+				lastWasDivider = m_formatVect[i].first == FE_Divider;
+			}
+		}
+		if(!m_valid)
+			m_formatVect.clear();
+
+		if(m_formatVect.size() == 2) {
+			if(m_formatVect.front().first == FE_Divider)
+				m_formatVect.erase(m_formatVect.begin());
+			else
+				m_formatVect.pop_back();
+		}
+	}
+	else {
+		m_error = "Format string is empty";
+		m_valid = false;
+	}
+}
+
+static double secondsTilMonth(int month, bool useLeapYear) {
+	if(month > 1) {
+		double sec = SECONDS_UNTIL_MONTH[month-1];
+		if(month > 2 && useLeapYear)
+			sec += 86400;
+		return sec;
+	}
+	else {
+		return 0;
+	}
+}
+
+static int valueFromSingleEntityString(const char* str, int length, TimeFormat::FormatEntity type, std::string& errstr) {
+	unsigned int numDigits = 0;
+	if(length <= 0) {
+		errstr = "Time string length wrong.";
+		return 0;
+	}
+	// check for length of string and number of digits in it
+	for(unsigned int i=0; i<(unsigned int)length; ++i) {
+		if(isdigit(str[i]))
+			++numDigits;
+		// a single entity should have no characters between digits
+		if(numDigits > 0 && !isdigit(str[i])) {
+			errstr = "digits are not continuously.";
+			return 0;
+		}
+		if(str[i] == '\0') {
+			errstr = "End of line inside time string";
+			return 0;
+		}
+	}
+
+	// no digits and more than 4 digits cannot be a valid entity
+	if(numDigits == 0 || numDigits > 4)
+		return 0;
+
+	if(type == TimeFormat::FE_4DigitsYear) {
+		if( length != 4 || numDigits != 4)
+			return 0;
+
+		int year = (str[0] - 48) * 1000 + (str[1] - 48) * 100 + (str[2] - 48) * 10 + (str[3] - 48);
+		return year;
+	}
+	else if(type == TimeFormat::FE_3DigitsDay) {
+		if( numDigits > 3)
+			return 0;
+
+		// skip leading characters
+		while(!isdigit(*str) && *str != '\0') ++str;
+
+		// 3 digit string
+		if(numDigits == 3) {
+			int val = (str[0] - 48) * 100 + (str[1] - 48) * 10 + str[2] - 48;
+			return val;
+		}
+		// two digit string
+		if(numDigits == 2) {
+			int val = (str[0] - 48) * 10 + str[1] - 48;
+			return val;
+		}
+		// one digit string
+		int val = *str - 48;
+		return val;
+	}
+	else {
+		// here only one or two digits are allowed
+		if(numDigits > 2)
+			return 0;
+
+		// skip leading characters
+		while(!isdigit(*str) && *str != '\0') ++str;
+
+		int val;
+		// two digit string
+		if(isdigit(str[1])) {
+			val = (str[0] - 48) * 10 + str[1] - 48;
+		}
+		// one digit string
+		else {
+			val = *str - 48;
+		}
+		return val;
+	}
+}
+
+double TimeFormat::valueToSeconds(int value, TimeFormat::FormatEntity type, bool useLeapYear) {
+	switch(type) {
+		case TimeFormat::FE_4DigitsYear:	return value  * 365.0 * 24.0 * 3600.0;
+		case TimeFormat::FE_2DigitsYear:	return (value + 2000)  * 365.0 * 24.0 * 3600.0;
+		case TimeFormat::FE_2DigitsMonth:	return secondsTilMonth(value, useLeapYear);
+		case TimeFormat::FE_3DigitsDay:
+		case TimeFormat::FE_2DigitsDay:		{
+			if(value == 0 && !m_dayStartZero)
+				m_dayStartZero = true;
+			if(!m_dayStartZero)
+				value--;
+			return value  * 24.0 * 3600.0;
+		}
+		case TimeFormat::FE_2DigitsHour:	{
+			if(!m_hourStartZero)
+				value--;
+			return value  * 3600.0;
+		}
+		case TimeFormat::FE_2DigitsMinute:	{
+			if(!m_minuteStartZero)
+				value--;
+			return value * 60.0;
+		}
+		case TimeFormat::FE_2DigitsSecond:	{
+			if(!m_secondStartZero)
+				value--;
+			return value;
+		}
+		default: return 0;
+	}
+}
+
+double TimeFormat::secondsFromSingleEntityString(const char* str, int length, TimeFormat::FormatEntity type, std::string& errstr, bool useLeapYear) {
+	int val = valueFromSingleEntityString(str, length, type, errstr);
+	return valueToSeconds(val, type, useLeapYear);
+}
+
+double TimeFormat::seconds(const std::string& timeString, std::string& errstr, bool useLeapYear) {
+	errstr.clear();
+	if(!valid()) {
+		errstr = "Time format string not valid";
+		return 0;
+	}
+
+	const char* str = timeString.c_str();
+	int length = (int)timeString.size();
+	while(isspace(*str++)) --length;
+	--str;
+
+	IBK_ASSERT(m_formatVect.size() != 2);	// checked in constructor
+
+	if(m_formatVect.size() == 1) {
+		double val = secondsFromSingleEntityString(str, length, m_formatVect.front().first, errstr, useLeapYear);
+		if(!errstr.empty())
+			return 0;
+
+		return val;
+	}
+	else {
+		size_t iStart = 0;
+		if(m_formatVect.front().first == FE_Divider) {
+			while(!isdigit(*str++));
+			++iStart;
+		}
+		const char* strStart = str;
+		double val = 0;
+		for(size_t i=iStart; i<m_formatVect.size(); i+=2) {
+			// first must be an entity
+			if( i < m_formatVect.size() - 1) {
+				const std::string& div = m_formatVect[i+1].second;
+				IBK_ASSERT(!div.empty());
+				while(*str != div[0] && *str != '\0') ++str;
+				if(*str == '\0') {
+					errstr = "Divider not found";
+					return 0;
+				}
+				val += secondsFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr, useLeapYear);
+				if(!errstr.empty())
+					return 0;
+
+				strStart = str + div.size();
+				str = strStart;
+			}
+			else {
+				while(*str != '\0') ++str;
+				val += secondsFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr, useLeapYear);
+				if(!errstr.empty())
+					return 0;
+			}
+		}
+		return val;
+	}
+}
+
+IBK::Time TimeFormat::time(const std::string& timeString, std::string& errstr, bool useLeapYear) {
+	errstr.clear();
+	if(!valid()) {
+		errstr = "Time format string not valid";
+		return IBK::Time();
+	}
+
+
+	const char* str = timeString.c_str();
+	int length = (int)timeString.size();
+	while(isspace(*str++)) --length;
+	--str;
+
+	IBK_ASSERT(m_formatVect.size() != 2);	// checked in constructor
+
+	if(m_formatVect.size() == 1) {
+		int val = valueFromSingleEntityString(str, length, m_formatVect.front().first, errstr);
+		IBK::Time res;
+		if(hasYear()) {
+			if(m_formatVect.front().first == FE_2DigitsYear)
+				val += 2000;
+			res.set(val,0);
+		}
+		else {
+			double sec = valueToSeconds(val, m_formatVect.front().first, useLeapYear);
+			res.set(INVALID_YEAR, sec);
+		}
+		return res;
+	}
+	else {
+		IBK::Time res;
+		size_t i = 0;
+		if(m_formatVect.front().first == FE_Divider) {
+			while(!isdigit(*str++));
+			++i;
+		}
+		const char* strStart = str;
+		double val = 0;
+		int year = INVALID_YEAR;
+		for(; i<m_formatVect.size(); i+=2) {
+			// first must be an entity
+			if( i < m_formatVect.size() - 1) {
+				const std::string& div = m_formatVect[i+1].second;
+				IBK_ASSERT(!div.empty());
+				while(*str != div[0] && *str != '\0') ++str;
+				if(*str == '\0') {
+					errstr = "Divider not found";
+					return res;
+				}
+				if(m_formatVect[i].first == FE_2DigitsYear || m_formatVect[i].first == FE_4DigitsYear) {
+					year = valueFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr);
+					if(!errstr.empty())
+						return IBK::Time();
+
+					if(m_formatVect[i].first == FE_2DigitsYear)
+						year += 2000;
+				}
+				else {
+					val += secondsFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr, useLeapYear);
+					if(!errstr.empty())
+						return IBK::Time();
+				}
+				strStart = str + div.size();
+				str = strStart;
+			}
+			else {
+				while(*str != '\0') ++str;
+				if(int(str-strStart) > length) {
+					errstr = "End of string not found";
+					return res;
+				}
+				if(m_formatVect[i].first == FE_2DigitsYear || m_formatVect[i].first == FE_4DigitsYear) {
+					year = valueFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr);
+					if(!errstr.empty())
+						return IBK::Time();
+					if(m_formatVect[i].first == FE_2DigitsYear)
+						year += 2000;
+				}
+				else {
+					val += secondsFromSingleEntityString(strStart, int(str-strStart), m_formatVect[i].first, errstr, useLeapYear);
+					if(!errstr.empty())
+						return IBK::Time();
+				}
+				res.set(year, val);
+				return res;
+			}
+		}
+	}
+	return IBK::Time();
+}
+
+bool TimeFormat::hasYear() const {
+	for(size_t i=0; i<m_formatVect.size(); ++i) {
+		if(m_formatVect[i].first == FE_2DigitsYear || m_formatVect[i].first == FE_4DigitsYear)
+			return true;
+	}
+	return false;
+}
+
+bool TimeFormat::hasMonth() const {
+	for(size_t i=0; i<m_formatVect.size(); ++i) {
+		if(m_formatVect[i].first == FE_2DigitsMonth)
+			return true;
+	}
+	return false;
+}
+
+bool TimeFormat::hasDay() const {
+	for(size_t i=0; i<m_formatVect.size(); ++i) {
+		if(m_formatVect[i].first == FE_2DigitsDay)
+			return true;
+	}
+	return false;
+}
 
 } // namespace IBK
