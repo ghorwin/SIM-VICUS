@@ -1042,7 +1042,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		NANDRAD::OutputDefinition d;
 		d.m_gridName = def.m_gridName;
 		d.m_timeType = (NANDRAD::OutputDefinition::timeType_t)def.m_timeType;
-		d.m_quantity = def.m_sourceObjectType + "." + def.m_quantity;
+		d.m_quantity = def.m_quantity;
 		if (!def.m_vectorIds.empty()) {
 			NANDRAD::IDGroup idGroup;
 			idGroup.m_ids = std::set<unsigned int>(def.m_vectorIds.begin(), def.m_vectorIds.end());

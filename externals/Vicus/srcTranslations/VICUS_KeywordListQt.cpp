@@ -208,7 +208,6 @@ KeywordListQt::KeywordListQt() {
 	tr("If true, default output definitions for zones are created.");
 	tr("If true, default output definitions for networks are created.");
 	tr("If true, default summation models and according output definitions for networks are created.");
-
 	tr("Floor usable area of the zone");
 	tr("Volume of the zone");
 	tr("A window");

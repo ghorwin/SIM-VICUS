@@ -133,6 +133,8 @@ private slots:
 
 	void on_checkBoxDefaultNetworkSummationModels_clicked(bool checked);
 
+	void on_checkBoxDefaultBuildingOutputs_clicked(bool checked);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();

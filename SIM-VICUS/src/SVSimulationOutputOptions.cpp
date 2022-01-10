@@ -627,3 +627,8 @@ void SVSimulationOutputOptions::on_checkBoxDefaultNetworkOutputs_clicked(bool ch
 void SVSimulationOutputOptions::on_checkBoxDefaultNetworkSummationModels_clicked(bool checked) {
 	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].set("CreateDefaultNetworkSummationModels", checked);
 }
+
+void SVSimulationOutputOptions::on_checkBoxDefaultBuildingOutputs_clicked(bool checked) {
+	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].set("CreateDefaultZoneOutputs", checked);
+}
+
