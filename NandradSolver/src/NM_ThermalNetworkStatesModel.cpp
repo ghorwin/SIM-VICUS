@@ -110,7 +110,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							double volume = PI/4. * d * d * l;
 
 							// create generic flow element with given heat flux
-							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(e.m_id, m_network->m_fluid, volume);
+							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(e.m_id, m_network->m_fluid, volume,
+																											*e.m_component);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
@@ -234,7 +235,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
-										e.m_id, m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+										e.m_id, m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+										*e.m_component);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership

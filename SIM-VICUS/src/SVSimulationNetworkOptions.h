@@ -33,6 +33,8 @@ private slots:
 
 	void on_lineEditNumberOfSoilModels_editingFinished();
 
+	void on_groupBoxHeatExchangeWithGround_clicked(bool checked);
+
 private:
 	Ui::SVSimulationNetworkOptions *m_ui;
 

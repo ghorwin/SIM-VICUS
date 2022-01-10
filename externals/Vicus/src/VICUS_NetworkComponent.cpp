@@ -133,9 +133,6 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 
 
 NANDRAD::HydraulicNetworkComponent::ModelType NetworkComponent::nandradNetworkComponentModelType(NetworkComponent::ModelType modelType) {
-	// special case handling
-	if (modelType == MT_HorizontalGroundHeatExchanger)
-		return NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe;
 	// default
 	Q_ASSERT((unsigned int)modelType <= (unsigned int)NANDRAD::HydraulicNetworkComponent::NUM_MT);
 	return NANDRAD::HydraulicNetworkComponent::ModelType(modelType);
@@ -143,33 +140,17 @@ NANDRAD::HydraulicNetworkComponent::ModelType NetworkComponent::nandradNetworkCo
 
 
 void NetworkComponent::nandradNetworkComponentParameter(IBK::Parameter *para) const {
-	for (unsigned int i=0; i<P_LengthOfGroundHeatExchangerPipes; ++i)
+	for (unsigned int i=0; i<P_PipeLength; ++i)
 		para[i] = m_para[i];
 }
 
 
 std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const NetworkComponent::ModelType modelType) {
-	// we use switch for maintanance reasons
 	switch (modelType) {
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
-		case MT_ConstantPressurePump:
-		case MT_ConstantMassFluxPump:
-		case MT_ControlledPump:
-		case MT_VariablePressurePump:
-		case MT_HeatExchanger:
-		case MT_HeatPumpVariableIdealCarnotSourceSide:
-		case MT_HeatPumpVariableIdealCarnotSupplySide:
-		case MT_HeatPumpVariableSourceSide:
-		case MT_HeatPumpOnOffSourceSide:
-		case MT_ControlledValve:
-		case MT_IdealHeaterCooler:
-		case MT_ConstantPressureLossValve:
-		case MT_PressureLossElement:
-		case NUM_MT:
-			break;
-		case MT_HorizontalGroundHeatExchanger:
-			return {P_LengthOfGroundHeatExchangerPipes};
+			return {P_PipeLength};
+		default: break;
 	}
 	return {};
 }
@@ -182,7 +163,6 @@ std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkCompo
 		case MT_DynamicPipe:
 		case MT_ConstantMassFluxPump:
 		case MT_ControlledPump:
-		case MT_HeatExchanger:
 		case MT_HeatPumpVariableIdealCarnotSourceSide:
 		case MT_HeatPumpVariableIdealCarnotSupplySide:
 		case MT_HeatPumpVariableSourceSide:
@@ -191,40 +171,26 @@ std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkCompo
 		case MT_IdealHeaterCooler:
 		case MT_ConstantPressureLossValve:
 		case MT_PressureLossElement:
-		case MT_HorizontalGroundHeatExchanger:
 		case NUM_MT:
 			break;
 		case MT_ConstantPressurePump:
 		case MT_VariablePressurePump:
 			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
+		case MT_HeatExchanger:
+			return {P_MinimumOutletTemperature};
 	}
 	return {};
 }
 
 
 std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
-	// we use switch for maintanance reasons
 	switch (modelType) {
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
-		case MT_ConstantPressurePump:
-		case MT_ConstantMassFluxPump:
-		case MT_ControlledPump:
-		case MT_VariablePressurePump:
-		case MT_HeatExchanger:
-		case MT_HeatPumpVariableIdealCarnotSourceSide:
-		case MT_HeatPumpVariableIdealCarnotSupplySide:
-		case MT_HeatPumpVariableSourceSide:
-		case MT_HeatPumpOnOffSourceSide:
-		case MT_ControlledValve:
-		case MT_IdealHeaterCooler:
-		case MT_ConstantPressureLossValve:
-		case NUM_MT:
-			break;
-		case MT_HorizontalGroundHeatExchanger:
 			return {IP_NumberParallelPipes};
 		case MT_PressureLossElement:
 			return {IP_NumberParallelElements};
+		default: break;
 	}
 	return {};
 }
@@ -233,31 +199,11 @@ void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, con
 	const char * enumName = "NetworkComponent::para_t";
 	const char * name = KeywordList::Keyword(enumName, (int)numPara);
 	const char * unit = KeywordList::Unit(enumName, (int)numPara);
-	// we use switch for maintanance reasons
 	switch ((para_t)numPara) {
-		case P_HydraulicDiameter:
-		case P_Volume:
-		case P_MaximumHeatingPower:
-		case P_MaximumPressureHead:
-		case P_PumpMaximumElectricalPower:
-		case P_PipeMaxDiscretizationWidth:
-		case P_MassFlux:
-		case P_PressureLoss:
-		case P_PressureLossCoefficient:
-		case P_CarnotEfficiency:
-		case P_PumpEfficiency:
-		case P_FractionOfMotorInefficienciesToFluidStream:
-		case P_PressureHead:
-		case P_PressureHeadReductionFactor:
-		case P_DesignPressureHead:
-		case P_DesignMassFlux:
-		{
-			Q_ASSERT(false); // it is not intended to check these parameters here
-		} break;
-		case P_LengthOfGroundHeatExchangerPipes:
+		case P_PipeLength:
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 		break;
-		case NUM_P: break;
+		default: break;
 	}
 }
 
@@ -279,28 +225,12 @@ void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsign
 }
 
 
-bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType modelType)
-{
+bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType modelType) {
 	switch (modelType) {
-		case MT_ConstantPressurePump:
-		case MT_ConstantMassFluxPump:
-		case MT_ControlledPump:
-		case MT_VariablePressurePump:
-		case MT_HeatExchanger:
-		case MT_HeatPumpVariableIdealCarnotSourceSide:
-		case MT_HeatPumpVariableIdealCarnotSupplySide:
-		case MT_HeatPumpVariableSourceSide:
-		case MT_HeatPumpOnOffSourceSide:
-		case MT_ControlledValve:
-		case MT_IdealHeaterCooler:
-		case MT_ConstantPressureLossValve:
-		case MT_PressureLossElement:
-		case NUM_MT:
-			return false;
 		case MT_SimplePipe:
 		case MT_DynamicPipe:
-		case MT_HorizontalGroundHeatExchanger:
 			return true;
+		default: break;
 	}
 	return false; // just for compiler
 }

@@ -976,10 +976,12 @@ TNAdiabaticElement::TNAdiabaticElement(const NANDRAD::HydraulicFluid & fluid, do
 
 // *** ElementWithExternalHeatLoss ***
 
-TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid, double fluidVolume)
+TNElementWithExternalHeatLoss::TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid,
+															 const double & fluidVolume, const NANDRAD::HydraulicNetworkComponent &comp)
 {
 	m_flowElementId = flowElementId;
 	m_fluidVolume = fluidVolume;
+	m_minimumOutletTemperature = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_MinimumOutletTemperature].value; // value is in K
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
@@ -1001,7 +1003,23 @@ void TNElementWithExternalHeatLoss::modelQuantityValueRefs(std::vector<const dou
 void TNElementWithExternalHeatLoss::internalDerivatives(double * ydot) {
 	// set heat loss
 	IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
+
 	m_heatLoss = *m_heatExchangeHeatLossRef;
+
+	// For cases where we extract heat, we may limit the heat extraction, so that the outlet temperature (steady state)
+	// does not drop below the given minimumOutletTemperature
+	if (m_heatLoss > 0) {
+		//In case inlet temperature is already below minimumOutletTemperature, we set heatLoss to 0.
+		if (m_inflowTemperature < m_minimumOutletTemperature)
+			m_heatLoss = 0.;
+		else {
+			// now calculate theoretical outlet temperature (for steady state) and limit heatLoss if necessary
+			double outletTemperatureSteadyState = m_inflowTemperature - *m_heatExchangeHeatLossRef / (m_massFlux * m_fluidHeatCapacity);
+			if (outletTemperatureSteadyState < m_minimumOutletTemperature)
+				m_heatLoss = (m_inflowTemperature - m_minimumOutletTemperature) * m_massFlux * m_fluidHeatCapacity;
+		}
+	}
+
 	m_temperatureDifference = m_heatLoss / (m_massFlux * m_fluidHeatCapacity);
 	// use basic routine
 	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot);

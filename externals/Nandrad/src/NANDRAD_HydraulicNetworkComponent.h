@@ -74,6 +74,7 @@ public:
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		P_PressureLoss,							// Keyword: PressureLoss						[Bar]	'Pressure loss for valve'
+		P_MinimumOutletTemperature,				// Keyword: MinimumOutletTemperature			[C]		'Minimum outlet temperature of heat exchanger, used for clipping of heat extraction'
 		NUM_P
 	};
 

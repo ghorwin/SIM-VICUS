@@ -74,6 +74,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
 	tr("Pressure loss for valve");
+	tr("Minimum outlet temperature of heat exchanger, used for clipping of heat extraction");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
@@ -96,11 +97,11 @@ KeywordListQt::KeywordListQt() {
 	tr("Pipe length");
 	tr("Number of parallel pipes");
 	tr("Number of parallel elements");
-	tr("Difference to constant temperature");
-	tr("Difference to time-dependent temperature from spline");
+	tr("Constant temperature");
+	tr("Time-dependent temperature from spline");
 	tr("Evaporator medium temperature for heat pump");
-	tr("Difference to zone air temperature");
-	tr("Difference to active construction layer (floor heating)");
+	tr("Zone air temperature");
+	tr("Active construction layer (floor heating)");
 	tr("Constant heat loss");
 	tr("Heat loss from spline");
 	tr("Heat loss of condenser in heat pump model");

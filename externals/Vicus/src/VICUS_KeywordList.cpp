@@ -325,7 +325,6 @@ namespace VICUS {
 				case 12 : return "IdealHeaterCooler";
 				case 13 : return "ConstantPressureLossValve";
 				case 14 : return "PressureLossElement";
-				case 15 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -346,7 +345,8 @@ namespace VICUS {
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
 				case 15 : return "PressureLoss";
-				case 16 : return "LengthOfGroundHeatExchangerPipes";
+				case 16 : return "MinimumOutletTemperature";
+				case 17 : return "PipeLength";
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -433,6 +433,7 @@ namespace VICUS {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
+				case 3 : return "CreateDefaultNetworkSummationModels";
 			} break;
 			// Room::para_t
 			case 36 :
@@ -800,7 +801,6 @@ namespace VICUS {
 				case 12 : return "IdealHeaterCooler";
 				case 13 : return "ConstantPressureLossValve";
 				case 14 : return "PressureLossElement";
-				case 15 : return "HorizontalGroundHeatExchanger";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -821,7 +821,8 @@ namespace VICUS {
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
 				case 15 : return "PressureLoss";
-				case 16 : return "LengthOfGroundHeatExchangerPipes";
+				case 16 : return "MinimumOutletTemperature";
+				case 17 : return "PipeLength";
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -908,6 +909,7 @@ namespace VICUS {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
+				case 3 : return "CreateDefaultNetworkSummationModels";
 			} break;
 			// Room::para_t
 			case 36 :
@@ -1276,7 +1278,6 @@ namespace VICUS {
 				case 12 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
 				case 13 : return "Valve with constant pressure loss";
 				case 14 : return "Adiabatic element with pressure loss defined by zeta-value";
-				case 15 : return "Parallel dynamic pipes buried horizontally in the ground";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -1297,7 +1298,8 @@ namespace VICUS {
 				case 13 : return "Carnot efficiency eta";
 				case 14 : return "Maximum heating power";
 				case 15 : return "Pressure loss for valve";
-				case 16 : return "Length of pipes in the ground heat exchanger";
+				case 16 : return "Minimum outlet temperature of heat exchanger, used for clipping of heat extraction";
+				case 17 : return "Length of pipe";
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -1384,6 +1386,7 @@ namespace VICUS {
 				case 0 : return "If true, output files are written in binary format (the default, if flag is missing).";
 				case 1 : return "If true, default output definitions for zones are created.";
 				case 2 : return "If true, default output definitions for networks are created.";
+				case 3 : return "If true, default summation models and according output definitions for networks are created.";
 			} break;
 			// Room::para_t
 			case 36 :
@@ -1751,7 +1754,6 @@ namespace VICUS {
 				case 12 : return "";
 				case 13 : return "";
 				case 14 : return "";
-				case 15 : return "";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -1772,7 +1774,8 @@ namespace VICUS {
 				case 13 : return "---";
 				case 14 : return "W";
 				case 15 : return "Bar";
-				case 16 : return "m";
+				case 16 : return "C";
+				case 17 : return "m";
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -1859,6 +1862,7 @@ namespace VICUS {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
+				case 3 : return "";
 			} break;
 			// Room::para_t
 			case 36 :
@@ -2226,7 +2230,6 @@ namespace VICUS {
 				case 12 : return "#FFFFFF";
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
-				case 15 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -2248,6 +2251,7 @@ namespace VICUS {
 				case 14 : return "#FFFFFF";
 				case 15 : return "#FFFFFF";
 				case 16 : return "#FFFFFF";
+				case 17 : return "#FFFFFF";
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -2334,6 +2338,7 @@ namespace VICUS {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// Room::para_t
 			case 36 :
@@ -2701,7 +2706,6 @@ namespace VICUS {
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
-				case 15 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::para_t
 			case 24 :
@@ -2723,6 +2727,7 @@ namespace VICUS {
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
 				case 15 : return std::numeric_limits<double>::quiet_NaN();
 				case 16 : return std::numeric_limits<double>::quiet_NaN();
+				case 17 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkComponent::intPara_t
 			case 25 :
@@ -2809,6 +2814,7 @@ namespace VICUS {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Room::para_t
 			case 36 :
@@ -3006,9 +3012,9 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 2;
 			// NetworkComponent::ModelType
-			case 23 : return 16;
+			case 23 : return 15;
 			// NetworkComponent::para_t
-			case 24 : return 17;
+			case 24 : return 18;
 			// NetworkComponent::intPara_t
 			case 25 : return 2;
 			// NetworkController::ModelType
@@ -3030,7 +3036,7 @@ namespace VICUS {
 			// OutputDefinition::timeType_t
 			case 34 : return 3;
 			// Outputs::flag_t
-			case 35 : return 3;
+			case 35 : return 4;
 			// Room::para_t
 			case 36 : return 2;
 			// SubSurfaceComponent::SubSurfaceComponentType
@@ -3128,9 +3134,9 @@ namespace VICUS {
 			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 1;
 			// NetworkComponent::ModelType
-			case 23 : return 15;
+			case 23 : return 14;
 			// NetworkComponent::para_t
-			case 24 : return 16;
+			case 24 : return 17;
 			// NetworkComponent::intPara_t
 			case 25 : return 1;
 			// NetworkController::ModelType
@@ -3152,7 +3158,7 @@ namespace VICUS {
 			// OutputDefinition::timeType_t
 			case 34 : return 2;
 			// Outputs::flag_t
-			case 35 : return 2;
+			case 35 : return 3;
 			// Room::para_t
 			case 36 : return 1;
 			// SubSurfaceComponent::SubSurfaceComponentType

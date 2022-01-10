@@ -227,6 +227,7 @@ namespace NANDRAD {
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
 				case 15 : return "PressureLoss";
+				case 16 : return "MinimumOutletTemperature";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -860,6 +861,7 @@ namespace NANDRAD {
 				case 13 : return "CarnotEfficiency";
 				case 14 : return "MaximumHeatingPower";
 				case 15 : return "PressureLoss";
+				case 16 : return "MinimumOutletTemperature";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -1494,6 +1496,7 @@ namespace NANDRAD {
 				case 13 : return "Carnot efficiency eta";
 				case 14 : return "Maximum heating power";
 				case 15 : return "Pressure loss for valve";
+				case 16 : return "Minimum outlet temperature of heat exchanger, used for clipping of heat extraction";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -1548,11 +1551,11 @@ namespace NANDRAD {
 			// HydraulicNetworkHeatExchange::ModelType
 			case 18 :
 			switch (t) {
-				case 0 : return "Difference to constant temperature";
-				case 1 : return "Difference to time-dependent temperature from spline";
+				case 0 : return "Constant temperature";
+				case 1 : return "Time-dependent temperature from spline";
 				case 2 : return "Evaporator medium temperature for heat pump";
-				case 3 : return "Difference to zone air temperature";
-				case 4 : return "Difference to active construction layer (floor heating)";
+				case 3 : return "Zone air temperature";
+				case 4 : return "Active construction layer (floor heating)";
 				case 5 : return "Constant heat loss";
 				case 6 : return "Heat loss from spline";
 				case 7 : return "Heat loss of condenser in heat pump model";
@@ -2127,6 +2130,7 @@ namespace NANDRAD {
 				case 13 : return "---";
 				case 14 : return "W";
 				case 15 : return "Bar";
+				case 16 : return "C";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -2760,6 +2764,7 @@ namespace NANDRAD {
 				case 13 : return "#FFFFFF";
 				case 14 : return "#FFFFFF";
 				case 15 : return "#FFFFFF";
+				case 16 : return "#FFFFFF";
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -3393,6 +3398,7 @@ namespace NANDRAD {
 				case 13 : return std::numeric_limits<double>::quiet_NaN();
 				case 14 : return std::numeric_limits<double>::quiet_NaN();
 				case 15 : return std::numeric_limits<double>::quiet_NaN();
+				case 16 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 :
@@ -3955,7 +3961,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 15;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 16;
+			case 10 : return 17;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 : return 2;
 			// HydraulicNetworkControlElement::ControlledProperty
@@ -4131,7 +4137,7 @@ namespace NANDRAD {
 			// HydraulicNetworkComponent::ModelType
 			case 9 : return 14;
 			// HydraulicNetworkComponent::para_t
-			case 10 : return 15;
+			case 10 : return 16;
 			// HydraulicNetworkControlElement::ModelType
 			case 11 : return 1;
 			// HydraulicNetworkControlElement::ControlledProperty

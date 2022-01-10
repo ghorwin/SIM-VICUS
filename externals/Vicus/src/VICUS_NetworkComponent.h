@@ -71,8 +71,6 @@ public:
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
 		MT_PressureLossElement,				// Keyword: PressureLossElement				'Adiabatic element with pressure loss defined by zeta-value'
-		// aditional model types
-		MT_HorizontalGroundHeatExchanger,	// Keyword: HorizontalGroundHeatExchanger	'Parallel dynamic pipes buried horizontally in the ground'
 		NUM_MT
 	};
 
@@ -95,8 +93,9 @@ public:
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		P_PressureLoss,							// Keyword: PressureLoss						[Bar]	'Pressure loss for valve'
+		P_MinimumOutletTemperature,				// Keyword: MinimumOutletTemperature			[C]		'Minimum outlet temperature of heat exchanger, used for clipping of heat extraction'
 		// additional parameters
-		P_LengthOfGroundHeatExchangerPipes,		// Keyword: LengthOfGroundHeatExchangerPipes	[m]		'Length of pipes in the ground heat exchanger'
+		P_PipeLength,							// Keyword: PipeLength							[m]		'Length of pipe'
 		NUM_P
 	};
 

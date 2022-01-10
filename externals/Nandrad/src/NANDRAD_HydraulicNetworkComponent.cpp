@@ -228,8 +228,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_MaximumHeatingPower:
 		case P_PipeMaxDiscretizationWidth:
 		case P_DesignMassFlux:
-		case P_DesignPressureHead:
-		{
+		case P_DesignPressureHead: {
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
@@ -251,7 +250,8 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 			break;
 		}
 			// value can be negative
-		case P_PressureHead: {
+		case P_PressureHead:
+		case P_MinimumOutletTemperature: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;

@@ -147,7 +147,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
 	tr("Adiabatic element with pressure loss defined by zeta-value");
-	tr("Parallel dynamic pipes buried horizontally in the ground");
 	tr("Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)");
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pump predefined pressure head");
@@ -164,7 +163,8 @@ KeywordListQt::KeywordListQt() {
 	tr("Carnot efficiency eta");
 	tr("Maximum heating power");
 	tr("Pressure loss for valve");
-	tr("Length of pipes in the ground heat exchanger");
+	tr("Minimum outlet temperature of heat exchanger, used for clipping of heat extraction");
+	tr("Length of pipe");
 	tr("Number of parallel pipes in ground heat exchanger");
 	tr("Number of parallel elements");
 	tr("Set points are given as constant parameters");
@@ -207,6 +207,8 @@ KeywordListQt::KeywordListQt() {
 	tr("If true, output files are written in binary format (the default, if flag is missing).");
 	tr("If true, default output definitions for zones are created.");
 	tr("If true, default output definitions for networks are created.");
+	tr("If true, default summation models and according output definitions for networks are created.");
+
 	tr("Floor usable area of the zone");
 	tr("Volume of the zone");
 	tr("A window");

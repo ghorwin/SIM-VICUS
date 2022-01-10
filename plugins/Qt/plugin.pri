@@ -84,8 +84,6 @@ equals(TEMPLATE,lib) {
 		DLLDESTDIR = ../../../../bin/release$${DIR_PREFIX}/plugins
 	}
 
-	QMAKE_CXXFLAGS += -std=c++11
-
 	# using of shared libs only for non MC compiler
 	# MS compiler needs explicite export statements in case of shared libs
 	win32-msvc* {

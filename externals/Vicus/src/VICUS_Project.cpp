@@ -1004,14 +1004,12 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 		NANDRAD::ObjectList objList;
 		objList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 		objList.m_filterID = ids;
-		objList.m_name = "the network objects";
+		objList.m_name = "all network objects";
 		p.m_objectLists.push_back(objList);
-
 		std::vector<std::string> quantities = {"FluidMassFlux", "OutletNodeTemperature",
 											   "FlowElementHeatLoss", "PressureDifference",
 											   "TemperatureDifference", "ControllerResultValue",
 												"ElectricalPower", "OutletNodePressure", "COP"};
-
 		for (const std::string &q: quantities){
 			NANDRAD::OutputDefinition def;
 			def.m_quantity = q;
@@ -1020,8 +1018,10 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			def.m_objectListName = objList.m_name;
 			p.m_outputs.m_definitions.push_back(def);
 		}
+	}
 
-		// output for network default summation models (mean + integral)
+	// outputs for network default summation models (mean + integral)
+	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled()) {
 		for (const NANDRAD::ObjectList &objList: p.m_objectLists){
 			if (objList.m_name == "Network Summation Models"){
 				NANDRAD::OutputDefinition def;
@@ -1048,7 +1048,6 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 			idGroup.m_ids = std::set<unsigned int>(def.m_vectorIds.begin(), def.m_vectorIds.end());
 			d.m_quantity += "[" + idGroup.encodedString() + "]";
 		}
-		p.m_outputs.m_definitions.push_back(d);
 
 		// now generate an object list for this output - don't mind if we get duplicate object lists
 		NANDRAD::ObjectList ol;
@@ -1061,6 +1060,9 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 		}
 		p.m_objectLists.push_back(ol);
+
+		d.m_objectListName = ol.m_name;
+		p.m_outputs.m_definitions.push_back(d);
 	}
 }
 

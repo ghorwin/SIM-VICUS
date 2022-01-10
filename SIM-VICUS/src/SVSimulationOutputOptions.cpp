@@ -126,6 +126,9 @@ void SVSimulationOutputOptions::updateUi() {
 	m_ui->checkBoxDefaultNetworkOutputs->setChecked(
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled());
 
+	m_ui->checkBoxDefaultNetworkSummationModels->setChecked(
+				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled());
+
 
 	// *** output grids ***
 
@@ -616,3 +619,11 @@ void SVSimulationOutputOptions::updateOutdatedLabel() {
 }
 
 
+
+void SVSimulationOutputOptions::on_checkBoxDefaultNetworkOutputs_clicked(bool checked) {
+	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].set("CreateDefaultNetworkOutputs", checked);
+}
+
+void SVSimulationOutputOptions::on_checkBoxDefaultNetworkSummationModels_clicked(bool checked) {
+	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].set("CreateDefaultNetworkSummationModels", checked);
+}

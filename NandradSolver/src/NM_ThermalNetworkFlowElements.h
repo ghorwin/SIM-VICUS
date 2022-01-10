@@ -588,7 +588,9 @@ public:
 class TNElementWithExternalHeatLoss : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid, double fluidVolume);
+	TNElementWithExternalHeatLoss(unsigned int flowElementId, const NANDRAD::HydraulicFluid & fluid,
+								  const double &fluidVolume,
+								  const NANDRAD::HydraulicNetworkComponent & comp);
 
 	/*! Publishes individual model quantities via descriptions. */
 	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
@@ -619,7 +621,11 @@ protected:
 	const double					*m_heatExchangeHeatLossRef = nullptr;
 
 	/*! Temperature difference across flow element [K]. */
-	double									m_temperatureDifference = 999;
+	double							m_temperatureDifference = 999;
+
+	/*! Minimum value of inlet temperature [K] for heat extraction. If the inlet temperature would drop below that,
+	 * the heat loss will be set to zero */
+	double							m_minimumOutletTemperature = 0;
 };
 
 

@@ -45,11 +45,11 @@ public:
 
 	/*! Defines the type of heat exchange */
 	enum ModelType {
-		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Difference to constant temperature'
-		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Difference to time-dependent temperature from spline'
+		T_TemperatureConstant,				// Keyword: TemperatureConstant			'Constant temperature'
+		T_TemperatureSpline,				// Keyword: TemperatureSpline			'Time-dependent temperature from spline'
 		T_TemperatureSplineEvaporator,		// Keyword: TemperatureSplineEvaporator	'Evaporator medium temperature for heat pump'
-		T_TemperatureZone,					// Keyword: TemperatureZone				'Difference to zone air temperature'
-		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer 'Difference to active construction layer (floor heating)'
+		T_TemperatureZone,					// Keyword: TemperatureZone				'Zone air temperature'
+		T_TemperatureConstructionLayer,		// Keyword: TemperatureConstructionLayer 'Active construction layer (floor heating)'
 		T_HeatLossConstant,					// Keyword: HeatLossConstant			'Constant heat loss'
 		T_HeatLossSpline,					// Keyword: HeatLossSpline				'Heat loss from spline'
 		/*! Heat loss from condenser is not the heat loss of the fluid, hence different parameter than T_HeatLossSpline. */

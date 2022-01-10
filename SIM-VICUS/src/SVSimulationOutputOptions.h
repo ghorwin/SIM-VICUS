@@ -129,6 +129,10 @@ private slots:
 	/*! Triggered, when user manually edited a cell. */
 	void on_tableWidgetOutputDefinitions_itemChanged(QTableWidgetItem *item);
 
+	void on_checkBoxDefaultNetworkOutputs_clicked(bool checked);
+
+	void on_checkBoxDefaultNetworkSummationModels_clicked(bool checked);
+
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
 	void updateOutputDefinitionTable();

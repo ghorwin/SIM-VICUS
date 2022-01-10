@@ -13,10 +13,6 @@ QT += widgets
 
 CONFIG += c++11
 
-unix {
-	QMAKE_CXXFLAGS += -std=c++11
-}
-
 LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lNandrad \
 	-lQtExt \
