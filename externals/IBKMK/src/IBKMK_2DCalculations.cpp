@@ -49,7 +49,9 @@ bool intersectsLine2D(const std::vector<Vector2D> & polygon,
 	for (unsigned int i=0; i<polySize; ++i){
 		IBK::Line otherLine(polygon[i], polygon[(i+1)%polySize]);
 
-		if (line.intersects(otherLine, intersectionPoint))
+		// TODO : enhance intersectsLine2D  function to return also two intersection points
+		IBK::point2D<double> intersectionPoint2;
+		if (line.intersects(otherLine, intersectionPoint, intersectionPoint2) > 0)
 			return true;
 	}
 	return false;

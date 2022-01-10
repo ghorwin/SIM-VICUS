@@ -192,7 +192,8 @@ bool Polygon2D::isSimplePolygon() const {
 				continue;
 			//int k = (i+j+2)%lines.size();
 			IBK::point2D<double> p;
-			if (lines[i].intersects(lines[j], p))
+			IBK::point2D<double> p2;
+			if (lines[i].intersects(lines[j], p, p2) > 0)
 				return false;
 		}
 	}
