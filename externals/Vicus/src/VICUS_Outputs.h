@@ -73,7 +73,7 @@ public:
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! List with output (file) definitions. */
-	std::vector<OutputDefinition>						m_definitions;				// XML:E
+	std::vector<NANDRAD::OutputDefinition>						m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E

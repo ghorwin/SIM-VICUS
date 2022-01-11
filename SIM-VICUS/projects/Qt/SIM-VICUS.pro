@@ -119,7 +119,6 @@ SOURCES += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.cpp \
-	../../src/actions/SVUndoModifySubSurfaceGeometry.cpp \
 	../../src/actions/SVUndoModifySurfaceGeometry.cpp \
 	../../src/actions/SVUndoTreeNodeState.cpp \
 	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
@@ -279,7 +278,6 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 	../../src/actions/SVUndoModifySiteData.h \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.h \
-	../../src/actions/SVUndoModifySubSurfaceGeometry.h \
 	../../src/actions/SVUndoModifySurfaceGeometry.h \
 	../../src/actions/SVUndoTreeNodeState.h \
 	../../src/core3D/Vic3DCamera.h \
