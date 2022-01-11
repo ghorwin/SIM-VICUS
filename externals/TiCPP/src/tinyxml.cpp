@@ -1093,13 +1093,15 @@ void TiXmlElement::readIBKParameterElement( const TiXmlElement * element, std::s
 	std::string valstr;
 	if (str)		valstr = str;
 	else			valstr.clear();
-	std::stringstream valstrm(valstr);
-	// NOTE: reading the parameter with stringstream is not very safe - values like "1,433" will be
-	//       read as 1 without raising an error. Hence, use the IBK::string2val<> function
-	if (!(valstrm >> value)) {
+	try {
+		// NOTE: reading the parameter with stringstream is not very safe - values like "1,433" will be
+		//       read as 1 without raising an error. Hence, we use the IBK::string2val<> function.
+		value = IBK::string2val<double>(valstr);
+	} catch (IBK::Exception & ex) {
 		std::stringstream strm;
 		strm << "Error in XML file, line " << element->Row() << ": ";
 		strm << "Cannot read value in IBK:Parameter element.";
+		strm << ex.what();
 		throw std::runtime_error(strm.str());
 	}
 }
