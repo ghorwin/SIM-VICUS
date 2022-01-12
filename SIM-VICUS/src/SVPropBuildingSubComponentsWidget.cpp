@@ -177,7 +177,7 @@ void SVPropBuildingSubComponentsWidget::updateUi() {
 		colorItem->setFlags(Qt::ItemIsEnabled); // cannot select color item!
 		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 0, colorItem);
 
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		typeItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetSubSurfaceComponents->setItem((int)row, 1, typeItem);
 
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
