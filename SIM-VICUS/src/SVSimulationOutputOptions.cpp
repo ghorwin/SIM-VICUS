@@ -130,10 +130,10 @@ void SVSimulationOutputOptions::updateUi() {
 	// we set the correct timetype
 	if(m_activeOutputDefinition != nullptr)
 		for(unsigned int i=0; i<m_ui->comboBoxTimeType->count(); ++i) {
-			if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
-				m_ui->comboBoxTimeType->setCurrentIndex(i);
-				break;
-			}
+//			if (m_activeOutputDefinition->m_timeType == m_ui->comboBoxTimeType->itemData(i, Qt::UserRole)) {
+//				m_ui->comboBoxTimeType->setCurrentIndex(i);
+//				break;
+//			}
 		}
 
 	// we update the output grid
@@ -250,116 +250,116 @@ void SVSimulationOutputOptions::generateOutputTable() {
 
 	// now we go through all read lines
 	std::vector<std::string> tokens;
-	for (unsigned int i=0; i<outputContent.size(); ++i) {
-		if ( i == 0 )
-			continue;
+//	for (unsigned int i=0; i<outputContent.size(); ++i) {
+//		if ( i == 0 )
+//			continue;
 
-		std::string &line = outputContent[i];
-		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
+//		std::string &line = outputContent[i];
+//		IBK::explode(line, tokens, "\t", IBK::EF_NoFlags);
 
-		QTableWidgetItem *item;
-		std::vector<std::string> object;
+//		QTableWidgetItem *item;
+//		std::vector<std::string> object;
 
-		for(unsigned int j=0; j<tokens.size(); ++j) {
-			item = new QTableWidgetItem();
-			QString trimmedString = QString::fromStdString(tokens[j]).trimmed();
-			item->setText(trimmedString);
-			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+//		for(unsigned int j=0; j<tokens.size(); ++j) {
+//			item = new QTableWidgetItem();
+//			QString trimmedString = QString::fromStdString(tokens[j]).trimmed();
+//			item->setText(trimmedString);
+//			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-			OutputDefinition &od = m_outputDefinitions[i-1];
+//			OutputDefinition &od = m_outputDefinitions[i-1];
 
-			od.m_outputdefinition.m_id = i-1;
+//			od.m_outputdefinition.m_id = i-1;
 
-			// set pointer to output grid
-			if(m_outputs != nullptr)
-				od.m_outputGrid = &m_outputs->m_grids[0];
+//			// set pointer to output grid
+//			if(m_outputs != nullptr)
+//				od.m_outputGrid = &m_outputs->m_grids[0];
 
-			// set Output time type
-			od.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
+//			// set Output time type
+//			od.m_timeType = NANDRAD::OutputDefinition::OTT_NONE;
 
-			if (j == ORT_VariableName) {
-				object = IBK::explode(trimmedString.toStdString(), '.', 2);
-				od.m_type = QString::fromStdString(object[0]);
-				od.m_name = QString::fromStdString(object[1]);
-			}
-			else if (j == ORT_Unit)
-				od.m_unit = IBK::Unit(trimmedString.toStdString());
-			else if (j == ORT_Description)
-				od.m_description = trimmedString;
-			else if (j == ORT_SourceObjectIds) {
-				od.m_sourceObjectIds.clear();
-				std::vector<std::string> ids;
-				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
-				for (std::string id : ids) {
+//			if (j == ORT_VariableName) {
+//				object = IBK::explode(trimmedString.toStdString(), '.', 2);
+//				od.m_type = QString::fromStdString(object[0]);
+//				od.m_name = QString::fromStdString(object[1]);
+//			}
+//			else if (j == ORT_Unit)
+//				od.m_unit = IBK::Unit(trimmedString.toStdString());
+//			else if (j == ORT_Description)
+//				od.m_description = trimmedString;
+//			else if (j == ORT_SourceObjectIds) {
+//				od.m_sourceObjectIds.clear();
+//				std::vector<std::string> ids;
+//				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
+//				for (std::string id : ids) {
 
-					// we get the nandrad id
-					unsigned int nandradId = QString::fromStdString(id).toUInt();
-					std::string name = "No object found";
+//					// we get the nandrad id
+//					unsigned int nandradId = QString::fromStdString(id).toUInt();
+//					std::string name = "No object found";
 
-					if ( object[0] == "ConstructionInstance" ) {
-						findNandradName(&m_nandradProject.m_constructionInstances, nandradId, name);
-					}
-					else if ( object[0] == "Zone" ) {
-						findNandradName(&m_nandradProject.m_zones, nandradId, name);
-					}
-					else if ( object[0] == "Location" ) {
-						name = "Climate Data";
-					}
-					else if ( object[0] == "EmbeddedObject" ) {
-						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
-							findNandradName(&ci.m_embeddedObjects, nandradId, name);
-						}
-					}
-					else if ( object[0] == "Model" ) {
-						if (findNandradName(&m_nandradProject.m_models.m_internalLoadsModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_shadingControlModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_heatLoadSummationModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealPipeRegisterModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_naturalVentilationModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealHeatingCoolingModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_networkInterfaceAdapterModels,nandradId, name));
-						else if (findNandradName(&m_nandradProject.m_models.m_idealSurfaceHeatingCoolingModels,nandradId, name));
-					}
+//					if ( object[0] == "ConstructionInstance" ) {
+//						findNandradName(&m_nandradProject.m_constructionInstances, nandradId, name);
+//					}
+//					else if ( object[0] == "Zone" ) {
+//						findNandradName(&m_nandradProject.m_zones, nandradId, name);
+//					}
+//					else if ( object[0] == "Location" ) {
+//						name = "Climate Data";
+//					}
+//					else if ( object[0] == "EmbeddedObject" ) {
+//						for ( const NANDRAD::ConstructionInstance &ci : m_nandradProject.m_constructionInstances ) {
+//							findNandradName(&ci.m_embeddedObjects, nandradId, name);
+//						}
+//					}
+//					else if ( object[0] == "Model" ) {
+//						if (findNandradName(&m_nandradProject.m_models.m_internalLoadsModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_shadingControlModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_heatLoadSummationModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_idealPipeRegisterModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_naturalVentilationModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_idealHeatingCoolingModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_networkInterfaceAdapterModels,nandradId, name));
+//						else if (findNandradName(&m_nandradProject.m_models.m_idealSurfaceHeatingCoolingModels,nandradId, name));
+//					}
 
-					od.m_outputdefinition.m_sourceObjectIds.push_back(nandradId);
-					od.m_outputdefinition.m_idToSourceObject[nandradId] = VICUS::SourceObject(nandradId,name);
-				}
-			}
-			else if (j == 2) {
-				od.m_outputdefinition.m_vectorIds.clear();
-				std::vector<std::string> ids;
-				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
-				for (std::string id : ids) {
-					od.m_outputdefinition.m_vectorIds.push_back(QString::fromStdString(id).toUInt() );
-				}
-			}
-		}
-	}
+//					od.m_outputdefinition.m_sourceObjectIds.push_back(nandradId);
+//					od.m_outputdefinition.m_idToSourceObject[nandradId] = VICUS::SourceObject(nandradId,name);
+//				}
+//			}
+//			else if (j == 2) {
+//				od.m_outputdefinition.m_vectorIds.clear();
+//				std::vector<std::string> ids;
+//				IBK::explode(trimmedString.toStdString(), ids, ",", IBK::EF_NoFlags);
+//				for (std::string id : ids) {
+//					od.m_outputdefinition.m_vectorIds.push_back(QString::fromStdString(id).toUInt() );
+//				}
+//			}
+//		}
+//	}
 
-	// we restore our outputs if checkSum is equal
-	if(m_outputs->m_checkSum.empty())
-		m_outputs->m_checkSum = fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
-	else {
-		if (m_outputs->m_checkSum == checkSum){
-			m_ui->radioButtonCustom->setChecked(true);
-			// regenerate outputs
-			for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-				for (unsigned int j=0; j<m_outputDefinitions.size(); ++j) {
-					if (m_outputs->m_outputDefinitions[i].m_id == m_outputDefinitions[j].m_outputdefinition.m_id) {
-						m_outputDefinitions[j].m_isActive = true;
-						for (unsigned int id : m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds) {
-							m_outputDefinitions[j].m_outputdefinition.m_idToSourceObject[id].m_isActive = true;
-						}
-						m_outputDefinitions[j].m_outputdefinition.m_activeSourceObjectIds = m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds;
-						break;
-					}
-				}
-			}
-			QMessageBox::information(this, QString(), tr("Regenerated custom outputs under 'outputs' tab."));
-		}
-		else
-			m_outputs->m_outputDefinitions.clear();
-	}
+//	// we restore our outputs if checkSum is equal
+//	if(m_outputs->m_checkSum.empty())
+//		m_outputs->m_checkSum = fileChecksum(QString::fromStdString(fileOutputVars.str()), QCryptographicHash::Md5);
+//	else {
+//		if (m_outputs->m_checkSum == checkSum){
+//			m_ui->radioButtonCustom->setChecked(true);
+//			// regenerate outputs
+//			for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
+//				for (unsigned int j=0; j<m_outputDefinitions.size(); ++j) {
+//					if (m_outputs->m_outputDefinitions[i].m_id == m_outputDefinitions[j].m_outputdefinition.m_id) {
+//						m_outputDefinitions[j].m_isActive = true;
+//						for (unsigned int id : m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds) {
+//							m_outputDefinitions[j].m_outputdefinition.m_idToSourceObject[id].m_isActive = true;
+//						}
+//						m_outputDefinitions[j].m_outputdefinition.m_activeSourceObjectIds = m_outputs->m_outputDefinitions[i].m_activeSourceObjectIds;
+//						break;
+//					}
+//				}
+//			}
+//			QMessageBox::information(this, QString(), tr("Regenerated custom outputs under 'outputs' tab."));
+//		}
+//		else
+//			m_outputs->m_outputDefinitions.clear();
+//	}
 
 
 	m_outputTableModel->reset();
@@ -403,114 +403,114 @@ void SVSimulationOutputOptions::generateOutputs(const std::vector<NANDRAD::Objec
 		m_objectListsNandrad[ol.m_name] = ol;
 
 	// we iterate over our defined outputs
-	for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
+//	for (unsigned int i=0; i<m_outputs->m_outputDefinitions.size(); ++i) {
 
-		const VICUS::OutputDefinition &od = m_outputs->m_outputDefinitions[i];
+//		const VICUS::OutputDefinition &od = m_outputs->m_outputDefinitions[i];
 
-		std::string refName;
+//		std::string refName;
 
-		// ==============================================
-		// GRID
-		// ==============================================
-		// till now we only support output grids with hourly values
+//		// ==============================================
+//		// GRID
+//		// ==============================================
+//		// till now we only support output grids with hourly values
 
-		{
-			// generate output grid, if needed
-			int ogInd = -1;
-			for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
-				NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
-				if (og.m_intervals.size() == 1 &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
-						og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
-				{
-					ogInd = (int)i;
-					break;
-				}
-			}
-			// create one, if not yet existing
-			if (ogInd == -1) {
-				NANDRAD::OutputGrid og;
-				og.m_name = refName = tr("Hourly values").toStdString();
-				NANDRAD::Interval iv;
-				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
-				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
-				og.m_intervals.push_back(iv);
-				m_outputs->m_grids.push_back(og);
-			}
-			else {
-				refName = m_outputs->m_grids[(unsigned int)ogInd].m_name;
-			}
-		}
+//		{
+//			// generate output grid, if needed
+//			int ogInd = -1;
+//			for (unsigned int i=0; i<m_outputs->m_grids.size(); ++i) {
+//				NANDRAD::OutputGrid & og = m_outputs->m_grids[i];
+//				if (og.m_intervals.size() == 1 &&
+//						og.m_intervals.back().m_para[NANDRAD::Interval::P_Start].value == 0.0 &&
+//						og.m_intervals.back().m_para[NANDRAD::Interval::P_End].name.empty() &&
+//						og.m_intervals.back().m_para[NANDRAD::Interval::P_StepSize].value == 3600.0)
+//				{
+//					ogInd = (int)i;
+//					break;
+//				}
+//			}
+//			// create one, if not yet existing
+//			if (ogInd == -1) {
+//				NANDRAD::OutputGrid og;
+//				og.m_name = refName = tr("Hourly values").toStdString();
+//				NANDRAD::Interval iv;
+//				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_Start, 0);
+//				NANDRAD::KeywordList::setParameter(iv.m_para, "Interval::para_t", NANDRAD::Interval::P_StepSize, 1);
+//				og.m_intervals.push_back(iv);
+//				m_outputs->m_grids.push_back(og);
+//			}
+//			else {
+//				refName = m_outputs->m_grids[(unsigned int)ogInd].m_name;
+//			}
+//		}
 
-		// ==============================================
-		// OBJECT LISTS
-		// ==============================================
-		// we generate the object list
+//		// ==============================================
+//		// OBJECT LISTS
+//		// ==============================================
+//		// we generate the object list
 
-		NANDRAD::ObjectList ol;
-		ol.m_name = od.m_type + "[";
-		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
-			bool foundActiveId = false;
-			for (unsigned int j=0; j<od.m_activeSourceObjectIds.size(); j++) {
-				if(od.m_activeSourceObjectIds[j] == od.m_sourceObjectIds[i]) {// object is active
-					foundActiveId = true;
-					break;
-				}
-			}
+//		NANDRAD::ObjectList ol;
+//		ol.m_name = od.m_type + "[";
+//		for (unsigned int i=0; i<od.m_sourceObjectIds.size(); ++i) {
+//			bool foundActiveId = false;
+//			for (unsigned int j=0; j<od.m_activeSourceObjectIds.size(); j++) {
+//				if(od.m_activeSourceObjectIds[j] == od.m_sourceObjectIds[i]) {// object is active
+//					foundActiveId = true;
+//					break;
+//				}
+//			}
 
-			if(!foundActiveId)
-				continue;
-			ol.m_name += QString::number(od.m_sourceObjectIds[i]).toStdString();
-			if (i<od.m_sourceObjectIds.size()-1)
-				ol.m_name += ",";
+//			if(!foundActiveId)
+//				continue;
+//			ol.m_name += QString::number(od.m_sourceObjectIds[i]).toStdString();
+//			if (i<od.m_sourceObjectIds.size()-1)
+//				ol.m_name += ",";
 
-			ol.m_filterID.m_ids.insert(od.m_sourceObjectIds[i]);
-		}
-		ol.m_name += "]";
-		if (od.m_type == "Location")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
-		else if (od.m_type == "Zone")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-		else if (od.m_type == "Model")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
-		else if (od.m_type == "ConstructionInstance")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
-		else if (od.m_type == "NetworkElement")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
-		else if (od.m_type == "EmbeddedObject")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
-		else if (od.m_type == "Schedule")
-			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_SCHEDULE;
+//			ol.m_filterID.m_ids.insert(od.m_sourceObjectIds[i]);
+//		}
+//		ol.m_name += "]";
+//		if (od.m_type == "Location")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_LOCATION;
+//		else if (od.m_type == "Zone")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
+//		else if (od.m_type == "Model")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_MODEL;
+//		else if (od.m_type == "ConstructionInstance")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_CONSTRUCTIONINSTANCE;
+//		else if (od.m_type == "NetworkElement")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+//		else if (od.m_type == "EmbeddedObject")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_EMBEDDED_OBJECT;
+//		else if (od.m_type == "Schedule")
+//			ol.m_referenceType = NANDRAD::ModelInputReference::MRT_SCHEDULE;
 
 
-		// we have to look if we already have an object list with the same content
-		// if we find one, we take its name and use it as reference to it
-		if (!findEqualObjectList(ol))
-			m_objectListsNandrad[ol.m_name] = ol;
+//		// we have to look if we already have an object list with the same content
+//		// if we find one, we take its name and use it as reference to it
+//		if (!findEqualObjectList(ol))
+//			m_objectListsNandrad[ol.m_name] = ol;
 
-		// ==============================================
-		// OUTPUT DEFINITIONS & OBJECT LISTS
-		// ==============================================
-		// we already have a name for the output grid, start generating default outputs
+//		// ==============================================
+//		// OUTPUT DEFINITIONS & OBJECT LISTS
+//		// ==============================================
+//		// we already have a name for the output grid, start generating default outputs
 
-		NANDRAD::OutputDefinition nod;
-		nod.m_gridName = refName;
-		nod.m_objectListName = ol.m_name;
-		nod.m_timeType = (NANDRAD::OutputDefinition::timeType_t)od.m_timeType;
+//		NANDRAD::OutputDefinition nod;
+//		nod.m_gridName = refName;
+//		nod.m_objectListName = ol.m_name;
+//		nod.m_timeType = (NANDRAD::OutputDefinition::timeType_t)od.m_timeType;
 
-		// handling for all output that also reference vectors
-		if (!od.m_vectorIds.empty()) {
-			for (unsigned int i=0; i<od.m_vectorIds.size(); ++i) {
-				nod.m_quantity = od.m_name + "[" + QString::number(od.m_vectorIds[i]).toStdString() + "]";
-				m_outputDefinitionsNandrad[nod.m_quantity] = nod;
-			}
-		}
-		else {
-			nod.m_quantity = od.m_name;
-			m_outputDefinitionsNandrad[nod.m_quantity] = nod;
-		}
-	}
+//		// handling for all output that also reference vectors
+//		if (!od.m_vectorIds.empty()) {
+//			for (unsigned int i=0; i<od.m_vectorIds.size(); ++i) {
+//				nod.m_quantity = od.m_name + "[" + QString::number(od.m_vectorIds[i]).toStdString() + "]";
+//				m_outputDefinitionsNandrad[nod.m_quantity] = nod;
+//			}
+//		}
+//		else {
+//			nod.m_quantity = od.m_name;
+//			m_outputDefinitionsNandrad[nod.m_quantity] = nod;
+//		}
+//	}
 }
 
 bool SVSimulationOutputOptions::findEqualObjectList(NANDRAD::ObjectList & objectList) {
@@ -603,47 +603,47 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
 	tw.setSortingEnabled(false);
 	QTableWidgetItem *itemID, *itemName;
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-		VICUS::SourceObject &so =	od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
-		so.m_isActive = !outputDefinitionState;
+//	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
+//		VICUS::SourceObject &so =	od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
+//		so.m_isActive = !outputDefinitionState;
 
-		if(!outputDefinitionState) { // source object has been set active
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-		}
-		else {
-			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-				if(*it == so.m_id) {
-					// delete source object id
-					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-					break;
-				}
-			}
-		}
+//		if(!outputDefinitionState) { // source object has been set active
+//			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
+//		}
+//		else {
+//			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+//				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+//				if(*it == so.m_id) {
+//					// delete source object id
+//					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
+//					break;
+//				}
+//			}
+//		}
 
-		itemID = new QTableWidgetItem();
-		itemName = new QTableWidgetItem();
+//		itemID = new QTableWidgetItem();
+//		itemName = new QTableWidgetItem();
 
-		itemID->setText(QString::number(so.m_id));
-		itemName->setText(QString::fromStdString(so.m_displayName));
+//		itemID->setText(QString::number(so.m_id));
+//		itemName->setText(QString::fromStdString(so.m_displayName));
 
-		tw.setItem(i,0,itemID);
-		tw.setItem(i,1,itemName);
+//		tw.setItem(i,0,itemID);
+//		tw.setItem(i,1,itemName);
 
-		QFont f(m_font);
-		f.setItalic(!so.m_isActive);
-		f.setBold(!outputDefinitionState && so.m_isActive);
+//		QFont f(m_font);
+//		f.setItalic(!so.m_isActive);
+//		f.setBold(!outputDefinitionState && so.m_isActive);
 
 
-		itemID->setFont(f);
-		itemName->setFont(f);
+//		itemID->setFont(f);
+//		itemName->setFont(f);
 
-		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+//		itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+//		itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
 
-		itemID->setData(Qt::UserRole, i);
-		itemName->setData(Qt::UserRole, i);
-	}
+//		itemID->setData(Qt::UserRole, i);
+//		itemName->setData(Qt::UserRole, i);
+//	}
 
 	// we update the output definition
 	updateOutputDefinition(od, !outputDefinitionState);
@@ -652,7 +652,7 @@ void SVSimulationOutputOptions::on_tableViewOutputList_doubleClicked(const QMode
 
 	m_ui->tableWidgetSourceObjectIds->setEnabled(!outputDefinitionState);
 
-	m_ui->comboBoxOutputGrid->setCurrentText(QString::fromStdString(od.m_outputdefinition.m_name));
+//	m_ui->comboBoxOutputGrid->setCurrentText(QString::fromStdString(od.m_outputdefinition.m_name));
 
 	// we also have to generate an output in the project
 	// we need an hourly output grid, look if we have already one defined (should be!)
@@ -693,7 +693,7 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 		row = m_outputTableProxyModel->mapToSource(selection.indexes()[0]).row();
 
 	const OutputDefinition &od = m_outputDefinitions[row];
-	m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
+//	m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
 
 	m_activeOutputDefinition = &od;
 	m_ui->comboBoxTimeType->blockSignals(true);
@@ -713,61 +713,61 @@ void SVSimulationOutputOptions::on_selectionChanged(const QItemSelection &select
 
 void SVSimulationOutputOptions::on_pushButtonAllSources_clicked() {
 	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
+//	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
 
-		std::vector<unsigned int> &os = const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_activeSourceObjectIds;
+//		std::vector<unsigned int> &os = const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_activeSourceObjectIds;
 
-		od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]].m_isActive = true;
+//		od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]].m_isActive = true;
 
-		if(std::find(os.begin(), os.end(), od.m_outputdefinition.m_sourceObjectIds[i]) != os.end())
-			os.push_back(od.m_outputdefinition.m_sourceObjectIds[i]); // object id not in vector
+//		if(std::find(os.begin(), os.end(), od.m_outputdefinition.m_sourceObjectIds[i]) != os.end())
+//			os.push_back(od.m_outputdefinition.m_sourceObjectIds[i]); // object id not in vector
 
-		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
-		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
+//		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
+//		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
 
-		QFont f(m_font);
-		f.setItalic(false);
-		f.setBold(true);
-		itemID->setFont(f);
-		itemName->setFont(f);
-	}
+//		QFont f(m_font);
+//		f.setItalic(false);
+//		f.setBold(true);
+//		itemID->setFont(f);
+//		itemName->setFont(f);
+//	}
 
 	updateOutputDefinition(od, true);
 }
 
 void SVSimulationOutputOptions::on_tableWidgetSourceObjectIds_itemDoubleClicked(QTableWidgetItem *item) {
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	unsigned int row = item->row();
+//	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+//	unsigned int row = item->row();
 
-	QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(row, 0);
-	QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(row, 1);
+//	QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(row, 0);
+//	QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(row, 1);
 
-	VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_activeOutputDefinition->m_outputdefinition.m_sourceObjectIds[itemID->data(Qt::UserRole).toUInt()]];
+//	VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_activeOutputDefinition->m_outputdefinition.m_sourceObjectIds[itemID->data(Qt::UserRole).toUInt()]];
 
-	bool objectState = so.m_isActive;
-	const_cast<VICUS::SourceObject &>(so).m_isActive = !objectState;
+//	bool objectState = so.m_isActive;
+//	const_cast<VICUS::SourceObject &>(so).m_isActive = !objectState;
 
-	if(!objectState) { // source object has been set active
-		od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-	}
-	else {
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// delete source object id
-				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-				break;
-			}
-		}
-	}
+//	if(!objectState) { // source object has been set active
+//		od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
+//	}
+//	else {
+//		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+//			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+//			if(*it == so.m_id) {
+//				// delete source object id
+//				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
+//				break;
+//			}
+//		}
+//	}
 
-	updateOutputDefinition(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
+//	updateOutputDefinition(od,od.m_isActive && !od.m_outputdefinition.m_sourceObjectIds.empty());
 
-	QFont f(m_font);
-	f.setItalic(!so.m_isActive);
-	f.setBold(so.m_isActive);
-	itemID->setFont(f);
-	itemName->setFont(f);
+//	QFont f(m_font);
+//	f.setItalic(!so.m_isActive);
+//	f.setBold(so.m_isActive);
+//	itemID->setFont(f);
+//	itemName->setFont(f);
 }
 
 void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filterKey) {
@@ -778,28 +778,28 @@ void SVSimulationOutputOptions::on_lineEditName_textEdited(const QString & filte
 }
 
 void SVSimulationOutputOptions::on_pushButtonAllSourcesDeselected_clicked(){
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
-	od.m_outputdefinition.m_activeSourceObjectIds.clear();
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
+//	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+//	od.m_outputdefinition.m_activeSourceObjectIds.clear();
+//	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
 
-		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
-		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
+//		QTableWidgetItem *itemID = m_ui->tableWidgetSourceObjectIds->item(i, 0);
+//		QTableWidgetItem *itemName = m_ui->tableWidgetSourceObjectIds->item(i, 1);
 
-		QFont f(m_font);
-		f.setItalic(true);
-		f.setBold(false);
-		itemID->setFont(f);
-		itemName->setFont(f);
+//		QFont f(m_font);
+//		f.setItalic(true);
+//		f.setBold(false);
+//		itemID->setFont(f);
+//		itemName->setFont(f);
 
-	}
+//	}
 
-	updateOutputDefinition(od, false);
+//	updateOutputDefinition(od, false);
 }
 
 void SVSimulationOutputOptions::on_comboBoxOutoutGrid_currentIndexChanged(int index){
 	Q_ASSERT(index < m_outputs->m_grids.size());
 
-	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_outputGrid = &m_outputs->m_grids[index];
+//	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_outputGrid = &m_outputs->m_grids[index];
 }
 
 template<typename T>
@@ -846,115 +846,115 @@ void SVSimulationOutputOptions::updateOutputDefinitionState(unsigned int row, bo
 	OutputDefinition &od = m_outputDefinitions[row];
 
 	// and we also set the states to our source objects
-	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
-		so.m_isActive = newState;
+//	for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
+//		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
+//		so.m_isActive = newState;
 
-		if(newState) { // source object has been set active
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
-		}
-		else {
-			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-				if(*it == so.m_id) {
-					// delete source object id
-					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-					break;
-				}
-			}
-		}
-	}
+//		if(newState) { // source object has been set active
+//			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id); // object id not in vector
+//		}
+//		else {
+//			for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+//				it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+//				if(*it == so.m_id) {
+//					// delete source object id
+//					od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
+//					break;
+//				}
+//			}
+//		}
+//	}
 
-	// set new state for output definition with updated source ids
-	updateOutputDefinition(od, newState);
+//	// set new state for output definition with updated source ids
+//	updateOutputDefinition(od, newState);
 
 }
 
 void SVSimulationOutputOptions::updateOutputUi(unsigned int row) {
 
-	Q_ASSERT(row<m_outputDefinitions.size());
+//	Q_ASSERT(row<m_outputDefinitions.size());
 
-	OutputDefinition &od = m_outputDefinitions[row];
+//	OutputDefinition &od = m_outputDefinitions[row];
 
-	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
-	m_ui->textBrowserDescription->setText(QString::fromStdString(od.m_outputdefinition.m_description));
+//	QTableWidget &tw = *m_ui->tableWidgetSourceObjectIds;
+//	m_ui->textBrowserDescription->setText(QString::fromStdString(od.m_outputdefinition.m_description));
 
-	if(od.m_outputdefinition.m_sourceObjectIds.size() == 1) {
-		m_ui->widgetSource->setVisible(false);
-		m_ui->verticalSpacer->changeSize(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
-		m_ui->textBrowserDescription->setMaximumHeight(100);
-	}
-	else {
-		m_ui->widgetSource->setVisible(true);
-		m_ui->textBrowserDescription->setMaximumHeight(1670000);
-		m_ui->verticalSpacer->changeSize(0,0, QSizePolicy::Fixed, QSizePolicy::Fixed);
-		tw.clearContents(); // we also clear all previous contents
-		tw.setRowCount(od.m_outputdefinition.m_sourceObjectIds.size() );
-		m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
-		QTableWidgetItem *itemID, *itemName;
-		for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
-			VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
+//	if(od.m_outputdefinition.m_sourceObjectIds.size() == 1) {
+//		m_ui->widgetSource->setVisible(false);
+//		m_ui->verticalSpacer->changeSize(1,1, QSizePolicy::Fixed, QSizePolicy::Expanding);
+//		m_ui->textBrowserDescription->setMaximumHeight(100);
+//	}
+//	else {
+//		m_ui->widgetSource->setVisible(true);
+//		m_ui->textBrowserDescription->setMaximumHeight(1670000);
+//		m_ui->verticalSpacer->changeSize(0,0, QSizePolicy::Fixed, QSizePolicy::Fixed);
+//		tw.clearContents(); // we also clear all previous contents
+//		tw.setRowCount(od.m_outputdefinition.m_sourceObjectIds.size() );
+//		m_ui->labelSourceObjects->setText("Select " + QString::fromStdString(od.m_outputdefinition.m_type) + "s");
+//		QTableWidgetItem *itemID, *itemName;
+//		for (unsigned int i=0; i<od.m_outputdefinition.m_sourceObjectIds.size(); ++i) {
+//			VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[od.m_outputdefinition.m_sourceObjectIds[i]];
 
-			// we construct new items
-			itemID = new QTableWidgetItem();
-			itemName = new QTableWidgetItem();
+//			// we construct new items
+//			itemID = new QTableWidgetItem();
+//			itemName = new QTableWidgetItem();
 
-			// we set the font
-			QFont f(m_font);
-			f.setItalic(!so.m_isActive);
-			f.setBold(od.m_isActive && so.m_isActive);
+//			// we set the font
+//			QFont f(m_font);
+//			f.setItalic(!so.m_isActive);
+//			f.setBold(od.m_isActive && so.m_isActive);
 
-			itemID->setFont(f);
-			itemName->setFont(f);
+//			itemID->setFont(f);
+//			itemName->setFont(f);
 
-			// we set the text
-			itemID->setText(QString::number(so.m_id));
-			itemName->setText(QString::fromStdString(so.m_displayName));
+//			// we set the text
+//			itemID->setText(QString::number(so.m_id));
+//			itemName->setText(QString::fromStdString(so.m_displayName));
 
-			// we set the flags
-			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
-			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+//			// we set the flags
+//			itemID->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
+//			itemName->setFlags(itemID->flags()& ~Qt::ItemIsEditable);
 
-			// we set our user role with our index
-			itemID->setData(Qt::UserRole, i);
-			itemName->setData(Qt::UserRole, i);
+//			// we set our user role with our index
+//			itemID->setData(Qt::UserRole, i);
+//			itemName->setData(Qt::UserRole, i);
 
-			// finally we set the items
-			tw.setItem(i,0,itemID);
-			tw.setItem(i,1,itemName);
-		}
-	}
+//			// finally we set the items
+//			tw.setItem(i,0,itemID);
+//			tw.setItem(i,1,itemName);
+//		}
+//	}
 
 }
 
 void SVSimulationOutputOptions::updateOutputDefinition(OutputDefinition &od, bool active) {
-	bool inList = false;
+//	bool inList = false;
 
-	od.m_isActive = active;
+//	od.m_isActive = active;
 
-	if(active) {
-		for (VICUS::OutputDefinition &vod : m_outputs->m_outputDefinitions) {
-			if(vod.m_id == od.m_outputdefinition.m_id) {
-				vod = od.m_outputdefinition; // update the definition
-				inList = true;
-				break;
-			}
-		}
-		if(!inList)
-			m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
-	}
-	else {
-		for (unsigned int i =0; i<m_outputs->m_outputDefinitions.size(); ++i) {
-			VICUS::OutputDefinition &vod = m_outputs->m_outputDefinitions[i];
-			if(vod.m_id == od.m_outputdefinition.m_id) {
-				m_outputs->m_outputDefinitions.erase(m_outputs->m_outputDefinitions.begin()+i); // erase the definition
-				break;
-			}
-		}
-		QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(m_ui->tableViewOutputList->currentIndex());
-		Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
-		m_outputTableModel->updateOutputData((unsigned int)sourceIndex.row());
-	}
+//	if(active) {
+//		for (VICUS::OutputDefinition &vod : m_outputs->m_outputDefinitions) {
+//			if(vod.m_id == od.m_outputdefinition.m_id) {
+//				vod = od.m_outputdefinition; // update the definition
+//				inList = true;
+//				break;
+//			}
+//		}
+//		if(!inList)
+//			m_outputs->m_outputDefinitions.push_back(od.m_outputdefinition); // update the definition
+//	}
+//	else {
+//		for (unsigned int i =0; i<m_outputs->m_outputDefinitions.size(); ++i) {
+//			VICUS::OutputDefinition &vod = m_outputs->m_outputDefinitions[i];
+//			if(vod.m_id == od.m_outputdefinition.m_id) {
+//				m_outputs->m_outputDefinitions.erase(m_outputs->m_outputDefinitions.begin()+i); // erase the definition
+//				break;
+//			}
+//		}
+//		QModelIndex sourceIndex = m_outputTableProxyModel->mapToSource(m_ui->tableViewOutputList->currentIndex());
+//		Q_ASSERT(sourceIndex.row()<m_outputDefinitions.size());
+//		m_outputTableModel->updateOutputData((unsigned int)sourceIndex.row());
+//	}
 
 }
 
@@ -996,70 +996,70 @@ void SVSimulationOutputOptions::on_checkBoxShowActive_toggled(bool checked){
 
 void SVSimulationOutputOptions::on_comboBoxTimeType_currentIndexChanged(int index){
 
-	try {
-		IBK::UnitList::integralQuantity(m_activeOutputDefinition->m_outputdefinition.m_unit, false, true);
-	}  catch (...) {
-		QMessageBox::critical(this, QString(), tr("No time type 'integral' for unit '%1' allowed.\nUse 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_outputdefinition.m_unit.name())));
-		m_ui->comboBoxTimeType->setCurrentIndex(NANDRAD::OutputDefinition::OTT_NONE);
-		return;
-	}
+//	try {
+//		IBK::UnitList::integralQuantity(m_activeOutputDefinition->m_outputdefinition.m_unit, false, true);
+//	}  catch (...) {
+//		QMessageBox::critical(this, QString(), tr("No time type 'integral' for unit '%1' allowed.\nUse 'none' or 'mean' as time type for output.").arg(QString::fromStdString(m_activeOutputDefinition->m_outputdefinition.m_unit.name())));
+//		m_ui->comboBoxTimeType->setCurrentIndex(NANDRAD::OutputDefinition::OTT_NONE);
+//		return;
+//	}
 
-	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_timeType = (VICUS::OutputDefinition::timeType_t)index;
+//	const_cast<OutputDefinition*>(m_activeOutputDefinition)->m_outputdefinition.m_timeType = (VICUS::OutputDefinition::timeType_t)index;
 }
 
 
 void SVSimulationOutputOptions::on_toolButtonRemoveSource_clicked(){
 
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+//	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
 
-	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
-		unsigned int row = (unsigned int)proxyIndex.row();
+//	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
+//		unsigned int row = (unsigned int)proxyIndex.row();
 
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
-		so.m_isActive = false;
+//		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
+//		so.m_isActive = false;
 
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// delete source object id
-				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
-				break;
-			}
-		}
+//		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+//			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+//			if(*it == so.m_id) {
+//				// delete source object id
+//				od.m_outputdefinition.m_activeSourceObjectIds.erase(it);
+//				break;
+//			}
+//		}
 
-	}
+//	}
 
-	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
-	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
-	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+//	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
+//	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
+//	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 
 
 void SVSimulationOutputOptions::on_toolButtonAddSource_clicked(){
-	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
+//	OutputDefinition &od = *const_cast<OutputDefinition*>(m_activeOutputDefinition);
 
-	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
-		unsigned int row = (unsigned int)proxyIndex.row();
+//	for (const QModelIndex & proxyIndex: m_ui->tableWidgetSourceObjectIds->selectionModel()->selectedRows()) {
+//		unsigned int row = (unsigned int)proxyIndex.row();
 
-		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
-		so.m_isActive = true;
+//		VICUS::SourceObject &so = od.m_outputdefinition.m_idToSourceObject[m_ui->tableWidgetSourceObjectIds->item(row, 0)->text().toUInt()];
+//		so.m_isActive = true;
 
-		bool inList = false;
-		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
-			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
-			if(*it == so.m_id) {
-				// already in list of source object ids
-				inList = true;
-				break;
-			}
-		}
+//		bool inList = false;
+//		for(std::vector<unsigned int>::iterator it = od.m_outputdefinition.m_activeSourceObjectIds.begin();
+//			it != od.m_outputdefinition.m_activeSourceObjectIds.end(); ++it ) {
+//			if(*it == so.m_id) {
+//				// already in list of source object ids
+//				inList = true;
+//				break;
+//			}
+//		}
 
-		if (!inList)
-			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id);
-	}
+//		if (!inList)
+//			od.m_outputdefinition.m_activeSourceObjectIds.push_back(so.m_id);
+//	}
 
-	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
-	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
-	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
+//	updateOutputUi(m_ui->tableViewOutputList->currentIndex().row());
+//	updateOutputDefinition(od, od.m_isActive && !od.m_outputdefinition.m_activeSourceObjectIds.empty());
+//	on_checkBoxShowActive_toggled(m_ui->checkBoxShowActive->isChecked());
 }
 

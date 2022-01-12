@@ -27,53 +27,57 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
 namespace VICUS {
 
-void OutputDefinition::readXMLPrivate(const TiXmlElement * element) {
-	FUNCID(OutputDefinition::readXMLPrivate);
+void Outputs::readXMLPrivate(const TiXmlElement * element) {
+	FUNCID(Outputs::readXMLPrivate);
 
 	try {
-		// search for mandatory attributes
-		// reading attributes
-		const TiXmlAttribute * attrib = element->FirstAttribute();
-		while (attrib) {
-			const std::string & attribName = attrib->NameStr();
-			if (attribName == "id")
-				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "name")
-				m_name = attrib->ValueStr();
-			else if (attribName == "type")
-				m_type = attrib->ValueStr();
-			else {
-				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-			}
-			attrib = attrib->Next();
-		}
 		// search for mandatory elements
 		// reading elements
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "Unit")
-				m_unit = NANDRAD::readUnitElement(c, cName);
-			else if (cName == "VectorIds")
-				NANDRAD::readVector(c, "VectorIds", m_vectorIds);
-			else if (cName == "SourceObjectIds")
-				NANDRAD::readVector(c, "SourceObjectIds", m_sourceObjectIds);
-			else if (cName == "ActiveSourceObjectIds")
-				NANDRAD::readVector(c, "ActiveSourceObjectIds", m_activeSourceObjectIds);
-			else if (cName == "TimeType") {
+			if (cName == "Definitions") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "OutputDefinition")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NANDRAD::OutputDefinition obj;
+					obj.readXML(c2);
+					m_definitions.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "Grids") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "OutputGrid")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					NANDRAD::OutputGrid obj;
+					obj.readXML(c2);
+					m_grids.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
+			else if (cName == "TimeUnit")
+				m_timeUnit = NANDRAD::readUnitElement(c, cName);
+			else if (cName == "IBK:Flag") {
+				IBK::Flag f;
+				NANDRAD::readFlagElement(c, f);
+				bool success = false;
 				try {
-					m_timeType = (timeType_t)KeywordList::Enumeration("OutputDefinition::timeType_t", c->GetText());
+					flag_t ftype = (flag_t)KeywordList::Enumeration("Outputs::flag_t", f.name());
+					m_flags[ftype] = f; success=true;
 				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
-				}
+				catch (...) { /* intentional fail */  }
+				if (!success)
+					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(f.name()).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
@@ -82,31 +86,49 @@ void OutputDefinition::readXMLPrivate(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'OutputDefinition' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'Outputs' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'OutputDefinition' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'Outputs' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * OutputDefinition::writeXMLPrivate(TiXmlElement * parent) const {
-	TiXmlElement * e = new TiXmlElement("OutputDefinition");
+TiXmlElement * Outputs::writeXMLPrivate(TiXmlElement * parent) const {
+	TiXmlElement * e = new TiXmlElement("Outputs");
 	parent->LinkEndChild(e);
 
-	if (m_id != VICUS::INVALID_ID)
-		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_name.empty())
-		e->SetAttribute("name", m_name);
-	if (!m_type.empty())
-		e->SetAttribute("type", m_type);
-	if (m_unit.id() != 0)
-		TiXmlElement::appendSingleAttributeElement(e, "Unit", nullptr, std::string(), m_unit.name());
 
-	if (m_timeType != NUM_OTT)
-		TiXmlElement::appendSingleAttributeElement(e, "TimeType", nullptr, std::string(), KeywordList::Keyword("OutputDefinition::timeType_t",  m_timeType));
-	NANDRAD::writeVector(e, "VectorIds", m_vectorIds);
-	NANDRAD::writeVector(e, "SourceObjectIds", m_sourceObjectIds);
-	NANDRAD::writeVector(e, "ActiveSourceObjectIds", m_activeSourceObjectIds);
+	if (!m_definitions.empty()) {
+		TiXmlElement * child = new TiXmlElement("Definitions");
+		e->LinkEndChild(child);
+
+		for (std::vector<NANDRAD::OutputDefinition>::const_iterator it = m_definitions.begin();
+			it != m_definitions.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_grids.empty()) {
+		TiXmlElement * child = new TiXmlElement("Grids");
+		e->LinkEndChild(child);
+
+		for (std::vector<NANDRAD::OutputGrid>::const_iterator it = m_grids.begin();
+			it != m_grids.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+	if (m_timeUnit.id() != 0)
+		TiXmlElement::appendSingleAttributeElement(e, "TimeUnit", nullptr, std::string(), m_timeUnit.name());
+
+	for (int i=0; i<NUM_F; ++i) {
+		if (!m_flags[i].name().empty()) {
+			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
+		}
+	}
 	return e;
 }
 

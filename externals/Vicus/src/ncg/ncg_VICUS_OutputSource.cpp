@@ -66,7 +66,7 @@ TiXmlElement * OutputSource::writeXMLPrivate(TiXmlElement * parent) const {
 	parent->LinkEndChild(e);
 
 	if (m_isActive != OutputSource().m_isActive)
-			e->SetAttribute("isActive", "true");
+		e->SetAttribute("isActive", IBK::val2string<bool>(m_isActive));
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.empty())

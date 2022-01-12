@@ -187,9 +187,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Thermal conductivity of pipe wall");
 	tr("Thickness of insulation around pipe");
 	tr("Thermal conductivity of insulation");
-	tr("Write values as calculated at output times.");
-	tr("Average values in time (mean value in output step).");
-	tr("Integrate values in time.");
+	tr("If true, output files are written in binary format (the default, if flag is missing).");
+	tr("If true, default output definitions for zones are created.");
+	tr("If true, default output definitions for networks are created.");
 	tr("If true, output files are written in binary format (the default, if flag is missing).");
 	tr("If true, default output definitions for zones are created.");
 	tr("If true, default output definitions for networks are created.");

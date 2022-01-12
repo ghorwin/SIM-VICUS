@@ -26,17 +26,17 @@ QVariant SVSimulationOutputTableModel::data(const QModelIndex & index, int role)
 	switch (role) {
 		case Qt::DisplayRole : {
 			switch (index.column()) {
-				case 1 : // type
-					return QString::fromStdString(var.m_outputdefinition.m_type);
-				case 2 : // name
-					return QString::fromStdString(var.m_outputdefinition.m_name);
-				case 3 : // unit
-					return QString::fromStdString(var.m_outputdefinition.m_unit.name());
-//				case 4 : // description
-//					return var.m_description;
-				case 4 : // source
-					return (var.m_outputdefinition.m_sourceObjectIds.size() == 1) ?
-							QString::fromStdString(var.m_outputdefinition.m_idToSourceObject[var.m_outputdefinition.m_sourceObjectIds[0]].m_displayName) : "*";
+//				case 1 : // type
+//					return QString::fromStdString(var.m_outputdefinition.m_type);
+//				case 2 : // name
+//					return QString::fromStdString(var.m_outputdefinition.m_name);
+//				case 3 : // unit
+//					return QString::fromStdString(var.m_outputdefinition.m_unit.name());
+////				case 4 : // description
+////					return var.m_description;
+//				case 4 : // source
+//					return (var.m_outputdefinition.m_sourceObjectIds.size() == 1) ?
+//							QString::fromStdString(var.m_outputdefinition.m_idToSourceObject[var.m_outputdefinition.m_sourceObjectIds[0]].m_displayName) : "*";
 			}
 		} break;
 

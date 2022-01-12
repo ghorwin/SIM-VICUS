@@ -46,13 +46,13 @@ struct OutputDefinition {
 
 	OutputDefinition(){}
 
-	OutputDefinition(VICUS::OutputDefinition &od, bool isActive):
+	OutputDefinition(NANDRAD::OutputDefinition &od, bool isActive):
 		m_outputdefinition(od),
 		m_isActive(isActive)
 	{}
 
-	VICUS::OutputDefinition			m_outputdefinition;
-	bool							m_isActive = false;
+	NANDRAD::OutputDefinition			m_outputdefinition;
+	bool								m_isActive = false;
 
 };
 

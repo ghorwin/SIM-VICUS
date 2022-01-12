@@ -1166,7 +1166,6 @@ void SVPropEditGeometry::setToolButtonAbsMode() {
 
 void SVPropEditGeometry::setToolButtonsRotationState(bool absOn) {
 	m_ui->toolButtonAbs->setEnabled(absOn);
-	m_ui->toolButtonAbs->setChecked(absOn);
 	m_ui->toolButtonRel->setChecked(!absOn);
 }
 
@@ -2150,13 +2149,13 @@ void SVPropEditGeometry::on_toolButtonRel_clicked(bool /*checked*/) {
 
 void SVPropEditGeometry::on_toolButtonNormal_clicked() {
 	m_rotationState = RS_Normal;
-	setToolButtonsRotationState();
+	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
 }
 
 
 void SVPropEditGeometry::on_toolButtonX_clicked() {
 	m_rotationState = RS_XAxis;
-	setToolButtonsRotationState();
+	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
 	if (m_orientationMode == OM_Local)
 		setRotation( QtExt::QVector2IBKVector(m_cso->localXAxis() ) );
 	else
@@ -2165,7 +2164,7 @@ void SVPropEditGeometry::on_toolButtonX_clicked() {
 
 void SVPropEditGeometry::on_toolButtonY_clicked() {
 	m_rotationState = RS_YAxis;
-	setToolButtonsRotationState();
+	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
 	if (m_orientationMode == OM_Local)
 		setRotation( QtExt::QVector2IBKVector(m_cso->localYAxis() ) );
 	else
@@ -2174,7 +2173,7 @@ void SVPropEditGeometry::on_toolButtonY_clicked() {
 
 void SVPropEditGeometry::on_toolButtonZ_clicked() {
 	m_rotationState = RS_ZAxis;
-	setToolButtonsRotationState();
+	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
 
 	if (m_orientationMode == OM_Local)
 		setRotation( QtExt::QVector2IBKVector(m_cso->localZAxis() ) );
@@ -2261,7 +2260,7 @@ void SVPropEditGeometry::on_pushButtonCenteHorizontal_clicked(){
 			newSubSurfs[i] = modS.subSurfaces()[i];
 
 			// we only modify our selected sub surface
-			std::vector<IBKMK::Vector2D> newSubSurfVertexes = subS.m_polygon2D.vertexes();
+			std::vector<IBKMK::Vector2D> newSubSurfVertexes (subS.m_polygon2D.vertexes().size());
 
 			for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
 					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
