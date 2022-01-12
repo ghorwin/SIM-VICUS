@@ -60,16 +60,6 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
-	//construction group box
-	m_ui->lineEditUValue->setReadOnly(true);
-	m_ui->lineEditConstructionName->setReadOnly(true);
-
-	//Daylight
-	m_ui->lineEditDaylightName->setReadOnly(true);
-	m_ui->pushButtonDaylightColor->setEnabled(false);
-	m_ui->lineEditRoughness->setReadOnly(true);
-	m_ui->lineEditSpecularity->setReadOnly(true);
-
 	updateInput(-1);
 }
 

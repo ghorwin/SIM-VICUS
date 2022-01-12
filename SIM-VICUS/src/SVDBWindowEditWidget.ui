@@ -30,7 +30,11 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName"/>
+      <widget class="QtExt::LanguageStringEditWidget1" name="lineEditName">
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
      </item>
      <item row="0" column="2">
       <widget class="QtExt::ColorButton" name="pushButtonColor">
@@ -102,7 +106,11 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditGlazingSystemName"/>
+       <widget class="QLineEdit" name="lineEditGlazingSystemName">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QTextBrowser" name="textBrowserGlazingSystem"/>
@@ -288,14 +296,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-   <slots>
-    <signal>editingFinishedSuccessfully()</signal>
-   </slots>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
@@ -305,6 +305,14 @@
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
  </customwidgets>
  <resources/>

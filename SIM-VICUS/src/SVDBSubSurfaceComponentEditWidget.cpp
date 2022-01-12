@@ -78,6 +78,10 @@ void SVDBSubSurfaceComponentEditWidget::setup(SVDatabase * db, SVAbstractDatabas
 void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_current = nullptr; // disable edit triggers
 
+	// initialize potentially empty line edits
+	m_ui->lineEditUValue->setText("---");
+	m_ui->lineEditSHGCValue->setText("---");
+
 	if (id == -1) {
 		// disable all controls
 		setEnabled(false);
@@ -109,6 +113,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_ui->comboBoxSubSurfaceType->setCurrentIndex(typeIdx);
 	m_ui->comboBoxSubSurfaceType->blockSignals(false);
 
+
 	m_ui->pushButtonColor->blockSignals(true);
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 	m_ui->pushButtonColor->blockSignals(false);
@@ -116,9 +121,8 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	m_ui->lineEditBoundaryConditionSideAName->setEnabled(true);
 	m_ui->lineEditBoundaryConditionSideBName->setEnabled(true);
 
-	// TODO Dirk, check on usage of surfaceResistanceSideA and B ... do we need this?
-	double surfaceResistanceSideA;
-	double surfaceResistanceSideB;
+	double surfaceResistanceSideA = 0;
+	double surfaceResistanceSideB = 0;
 
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
@@ -155,6 +159,32 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 	const VICUS::Window *win = m_db->m_windows[comp->m_idWindow];
 	if (win != nullptr) {
 		m_ui->lineEditWindowName->setText(QtExt::MultiLangString2QString(win->m_displayName));
+		double UValue;
+		// Take for uvalue calculation the surface resistance from the side A and B if this exist.
+		// If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
+		bool validUValue = false;
+		if (surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
+			validUValue = win->calculateUValue(UValue,
+											   m_db->m_materials,
+											   m_db->m_windowGlazingSystems,
+											   surfaceResistanceSideA, surfaceResistanceSideB);
+		else
+			validUValue = win->calculateUValue(UValue,
+											   m_db->m_materials,
+											   m_db->m_windowGlazingSystems,
+											   0.13, 0.04);
+
+		if (validUValue)
+			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+
+		// lookup referenced glazing system and show its SHGC value
+		if (win->m_idGlazingSystem != VICUS::INVALID_ID) {
+			VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[win->m_idGlazingSystem]);
+			if (glazSys != nullptr) {
+				m_ui->lineEditSHGCValue->setText(QString("%L1").arg(glazSys->SHGC(), 0, 'f', 4));
+			}
+		}
+
 	}
 	else {
 		m_ui->lineEditWindowName->setText("");
@@ -233,10 +263,10 @@ void SVDBSubSurfaceComponentEditWidget::on_toolButtonSelectBoundaryConditionSide
 	updateInput((int)m_current->m_id);
 }
 
+
 void SVDBSubSurfaceComponentEditWidget::modelModify() {
 	m_db->m_subSurfaceComponents.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
-
 }
 
 
