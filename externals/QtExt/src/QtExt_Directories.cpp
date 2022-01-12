@@ -35,52 +35,55 @@
 namespace QtExt {
 
 // You need to set values to these variables early on in your main.cpp
-QString Directories::appname; // for example "Therakles"
-QString Directories::devdir; // for example "TheraklesApp"
+QString Directories::appname;		// for example "Therakles"
+QString Directories::devdir;		// for example "TheraklesApp"
+QString Directories::packagename;	// for example "therakles" or "therakles-pro"
 
 /*! Utility function for conversion of a QString to a trimmed std::string in utf8 encoding. */
 inline std::string QString2trimmedUtf8(const QString & str) {
-	return str.trimmed().toUtf8().data();
+	return str.trimmed().toStdString();
 }
 
 
 QString Directories::resourcesRootDir() {
 	QString installPath = qApp->applicationDirPath();
 
-#ifdef IBK_DEPLOYMENT
+#if defined(IBK_DEPLOYMENT) || defined(IBK_BUILDING_DEBIAN_PACKAGE)
 	// deployment mode
 
 #if defined(Q_OS_WIN)
 	// in Deployment mode, resources are below install directory
 	return installPath + "/resources";
 #elif defined(Q_OS_MAC)
-	// in deployment mode, we have them in <appname>.app/Contents/resources
-	return installPath + "/../resources";
+	// in deployment mode, we have them in <appname>.app/Contents/Resources
+	// where install path is <appname>.app/MacOS
+	return installPath + "/../Resources";
 #elif defined(Q_OS_UNIX)
 
-	// in deployment mode, we have them, for example, in "/usr/share/<appname>" or "/usr/local/share/<appname>"
-	// when app is installed system-wide
+#ifdef IBK_BUILDING_DEBIAN_PACKAGE
 
-	// otherwise, for local install, we have them inside the app archive directory structure
+	// we install to /usr/bin/<appname>
+	// and the package data is in
+	//               /usr/share/<packagename>
+	return installPath + "/../share/" + packagename;
 
-	QString resRootPath;
-	if (installPath.indexOf("/usr/bin") == 0)
-		resRootPath = "/usr/share/" + appname;
-	else if (installPath.indexOf("/usr/local/bin") == 0)
-		resRootPath = "/usr/local/share/" + appname;
-	else
-		resRootPath = installPath + "/../resources";
-	return resRootPath;
-#endif
+#else // IBK_BUILDING_DEBIAN_PACKAGE
+
+	return installPath + "/../resources";
+
+#endif // IBK_BUILDING_DEBIAN_PACKAGE
+
+#endif // defined(Q_OS_UNIX)
 
 
 #else // IBK_DEPLOYMENT
 
 	// development (IDE) mode
 
-	// resources are expected in devname/resources directory
+	// resources are expected in devdir/resources directory
 #if defined(Q_OS_MAC)
-	return QFileInfo(installPath + "/../../../../../" + devdir + "/resources").absoluteFilePath();
+	// in development mode, we have the resources outside the bundle
+	return QFileInfo(installPath + "/../../../../" + devdir + "/resources").absoluteFilePath();
 #else
 	return QFileInfo(installPath + "/../../" + devdir + "/resources").absoluteFilePath();
 #endif
@@ -117,8 +120,24 @@ QString Directories::databasesDir() {
 }
 
 
-QString Directories::translationsDir() {
-	return resourcesRootDir() + "/translations";
+
+QString Directories::translationsFilePath(const QString & langID) {
+#ifdef IBK_BUILDING_DEBIAN_PACKAGE
+	QString installPath = qApp->applicationDirPath();
+	return installPath + QString("/../share/locale/%1/LC_MESSAGES/"+appname+".qm").arg(langID);
+#else // IBK_BUILDING_DEBIAN_PACKAGE
+	return resourcesRootDir() + QString("/translations/"+appname+"_%1.qm").arg(langID);
+#endif // IBK_BUILDING_DEBIAN_PACKAGE
+}
+
+
+QString Directories::qtTranslationsFilePath(const QString & langID) {
+#if defined(Q_OS_LINUX)
+	return QString("/usr/share/qt5/translations/qt_%1.qm").arg(langID);
+#else
+	// in all other cases the qt_xx.qm files are located in the resources path
+	return resourcesRootDir() + QString("/translations/qt_%1.qm").arg(langID);
+#endif
 }
 
 

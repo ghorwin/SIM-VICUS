@@ -24,15 +24,18 @@
 #include <QCoreApplication>
 #include <QLocale>
 #include <QDebug>
+#include <QFileInfo>
+#include <QDir>
 
 #include <IBK_messages.h>
 #include <IBK_FormatString.h>
+
+#include "QtExt_Directories.h"
 
 namespace QtExt {
 
 QString		LanguageHandler::m_organization;
 QString		LanguageHandler::m_program;
-QString		LanguageHandler::m_translationDir;
 QString		LanguageHandler::m_languageFilePrefix;
 
 LanguageHandler & LanguageHandler::instance() {
@@ -58,11 +61,10 @@ LanguageHandler::~LanguageHandler() {
 
 
 void LanguageHandler::setup(const QString & organization, const QString & program,
-							const QString & translationDir, const QString & languageFilePrefix)
+							const QString & languageFilePrefix)
 {
 	m_organization = organization;
 	m_program = program;
-	m_translationDir = translationDir;
 	m_languageFilePrefix = languageFilePrefix;
 }
 
@@ -120,32 +122,36 @@ void LanguageHandler::installTranslator(QString langId) {
 		return;
 	}
 
+	QString translationFilePath = QtExt::Directories::translationsFilePath(langId);
+	QString qtTranslationFilePath = QtExt::Directories::qtTranslationsFilePath(langId);
 
-	IBK::IBK_Message( IBK::FormatString("Translation file path = '%1'.\n").arg(m_translationDir.toUtf8().data()),
+	IBK::IBK_Message( IBK::FormatString("App translation file path = '%1'.\n").arg(translationFilePath.toStdString()),
+		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message( IBK::FormatString("Qt translation file path  = '%1'.\n").arg(qtTranslationFilePath.toStdString()),
 		IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	systemTranslator = new QTranslator;
 
-	// system translator first
-	QString defaultTranslationFile = "qt_" + langId;
-	if (systemTranslator->load(defaultTranslationFile, m_translationDir)) {
+	// system translator first, filename is for example "qt_de"
+	systemTranslator = new QTranslator;
+	QFileInfo finfoQt(qtTranslationFilePath);
+	if (finfoQt.exists() && systemTranslator->load(finfoQt.fileName(), finfoQt.dir().absolutePath())) {
 		qApp->installTranslator(systemTranslator);
-		IBK::IBK_Message( IBK::FormatString("Installing system translator using file: '%1'.\n").arg(defaultTranslationFile.toUtf8().data()),
+		IBK::IBK_Message( IBK::FormatString("Qt translation file loaded successfully\n"),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("Could not load system translator file: '%1'.\n").arg(defaultTranslationFile.toUtf8().data()),
+		IBK::IBK_Message( IBK::FormatString("Could not load system translator file: 'qt_%1'.\n").arg(langId.toStdString()),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		// no translator found, remove it again
 		delete systemTranslator;
-		systemTranslator = NULL;
+		systemTranslator = nullptr;
 	}
 
-
 	applicationTranslator = new QTranslator;
-	if (applicationTranslator->load(m_languageFilePrefix + "_" + langId, m_translationDir)) {
-		IBK::IBK_Message( IBK::FormatString("Installing application translator using file: '%1_%2'.\n")
-						  .arg(m_languageFilePrefix.toUtf8().data()).arg(langId.toUtf8().data()),
+	QFileInfo finfo(translationFilePath);
+	if (finfo.exists() && applicationTranslator->load(finfo.fileName(), finfo.dir().absolutePath())) {
+		IBK::IBK_Message( IBK::FormatString("Application translator loaded successfully\n"),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		qApp->installTranslator(applicationTranslator);
 		// remember translator in settings
@@ -153,12 +159,12 @@ void LanguageHandler::installTranslator(QString langId) {
 		config.setValue("LangID", langId);
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("Could not load application translator file: '%1_%2'.\n")
-						  .arg(m_languageFilePrefix.toUtf8().data()).arg(langId.toUtf8().data()),
+		IBK::IBK_Message( IBK::FormatString("Could not load application translator file: 'MasterSimulatorUI_%1'.\n").arg(langId.toStdString()),
 			IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		delete applicationTranslator;
-		applicationTranslator = NULL;
+		applicationTranslator = nullptr;
 	}
+
 
 	// now also set the corresponding locale settings (for number display etc.)
 	if (langId == "de") {

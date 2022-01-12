@@ -157,7 +157,6 @@ int main(int argc, char *argv[]) {
 	// *** Install translator ***
 	QtExt::LanguageHandler::instance().setup(SVSettings::instance().m_organization,
 											 SVSettings::instance().m_appName,
-											 QtExt::Directories::translationsDir(),
 											 "SIM-VICUS" );
 	if (argParser.hasOption("lang")) {
 		std::string dummy = argParser.option("lang");

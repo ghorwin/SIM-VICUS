@@ -41,7 +41,10 @@ public:
 		For example 'TheraklesApp' will be used to generate the translation dir: `resourcesRootDir() + "/../TheraklesApp/resources/translations"`
 	*/
 	static QString devdir;
-
+	/*! Name of the Linux/Unix package, determines install location of resources.
+		For example 'delphin6' will generate a resource: /usr/share/delphin6
+	*/
+	static QString packagename;
 
 
 	/*! Returns the platform-specific root directory of all read-only resource files. */
@@ -50,8 +53,11 @@ public:
 	/*! Returns the platform-specific directory of all read-only translation files. */
 	static QString databasesDir();
 
-	/*! Returns the platform-specific directory of all read-only translation files. */
-	static QString translationsDir();
+	/*! Returns the path to the application's translation file path. */
+	static QString translationsFilePath(const QString & langID);
+
+	/*! Returns the path to the Qt translation file path. */
+	static QString qtTranslationsFilePath(const QString & langID);
 
 	/*! Returns the platform-specific root directory of all user database files. */
 	static QString userDataDir();

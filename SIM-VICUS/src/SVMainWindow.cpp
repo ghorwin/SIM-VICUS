@@ -1944,7 +1944,7 @@ QString SVMainWindow::saveThumbNail() {
 
 void SVMainWindow::addLanguageAction(const QString &langId, const QString &actionCaption) {
 	FUNCID(SVMainWindow::addLanguageAction);
-	QString languageFilename = QString("%1/%2_%3.qm").arg(QtExt::Directories::translationsDir()).arg("SIM-VICUS").arg(langId);
+	QString languageFilename = QtExt::Directories::translationsFilePath(langId);
 	if (langId == "en" || QFile(languageFilename).exists()) {
 		QAction * a = new QAction(actionCaption, this);
 		a->setData(langId);

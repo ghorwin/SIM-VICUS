@@ -29,11 +29,14 @@ class QTranslator;
 namespace QtExt {
 
 /*! Central class that handles language switching.
+
+	Uses Qt::Directories to find translation files.
+
 	\code
 	// example usage
 
 	// first configure language handler with application settings
-	LanguageHandler::setup("IBK", "PostProc 2.0", "PostProc2", translationPath);
+	LanguageHandler::setup("IBK", "PostProc 2.0", "PostProc2");
 
 	// install german translation
 	LanguageHandler::instance()->installTranslator("de");
@@ -52,7 +55,7 @@ public:
 
 	/*! Initializes the language handler with application-specific constants. */
 	static void setup(const QString & organization, const QString & program,
-					  const QString & translationDir, const QString & languageFilePrefix);
+					  const QString & languageFilePrefix);
 
 	/*! Returns current language ID. */
 	static QString langId();
@@ -67,7 +70,6 @@ public:
 private:
 	static QString		m_organization;
 	static QString		m_program;
-	static QString		m_translationDir;
 	static QString		m_languageFilePrefix;
 
 	/*! The translater for the strings of the program itself. */
