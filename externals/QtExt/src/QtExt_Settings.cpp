@@ -84,7 +84,7 @@ void Settings::setDefaults() {
 	// OS x editor?
 #endif
 
-	m_dontUseNativeDialogs = false;
+	m_dontUseNativeDialogs = true;
 
 	m_flags[NoSplashScreen] = false;
 }
