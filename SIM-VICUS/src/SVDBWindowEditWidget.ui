@@ -45,12 +45,15 @@
      <item row="1" column="0">
       <widget class="QLabel" name="labelUValue">
        <property name="text">
-        <string>UValue:</string>
+        <string>U-value:</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
       <widget class="QLineEdit" name="lineEditUValue">
+       <property name="toolTip">
+        <string>U-value is being calculated using standard exchange coefficients.</string>
+       </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
@@ -288,6 +291,9 @@
    <class>QtExt::ValidatingLineEdit</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
   </customwidget>
   <customwidget>
    <class>QtExt::ColorButton</class>
