@@ -40,7 +40,6 @@
 #include "IBKMK_DenseMatrix.h"
 #include "IBKMKC_tridiag_matrix.h"
 
-#define USE_SUNDIALS_BTTRF
 #ifdef USE_SUNDIALS_BTTRF
 
 // Borland compiler don't know uint32_t

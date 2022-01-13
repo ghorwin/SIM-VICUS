@@ -20,9 +20,12 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
+LIBS += -lIBK
 
-LIBS += -lsundials \
-		-lIBK
+contains( OPTIONS, USE_SUNDIALS_TRIDIAG) {
+	DEFINES += USE_SUNDIALS_BTTRF
+	LIBS += -lsundials
+}
 
 
 INCLUDEPATH = \
@@ -54,7 +57,7 @@ SOURCES += \
 	../../src/IBKMK_SparseMatrixPattern.cpp \
 	../../src/IBKMK_Triangulation.cpp \
 	../../src/IBKMK_TridiagMatrix.cpp \
-    ../../src/IBKMK_Quaternion.cpp
+	../../src/IBKMK_Quaternion.cpp
 
 
 HEADERS += \
@@ -92,7 +95,7 @@ HEADERS += \
 	../../src/IBKMK_Vector2D.h \
 	../../src/CDT/CDT.h \
 	../../src/IBKMK_Vector3D.h \
-    ../../src/IBKMK_Quaternion.h
+	../../src/IBKMK_Quaternion.h
 
 DISTFILES += \
 	../../doc/IBKMK_mainpage \
