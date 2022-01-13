@@ -56,7 +56,6 @@ public:
 		CT_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
 		CT_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
 		CT_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
-		/// TODO Heiko ist der Kommentar hier richtig?
 		CT_ColdRoof,				// Keyword: ColdRoof				'Flat roof construction (to heated/insulated space)'
 		CT_WarmRoof,				// Keyword: WarmRoof				'Flat roof construction (to cold/ventilated space)'
 		CT_Miscellaneous,			// Keyword: Miscellaneous			'Some other component type'
