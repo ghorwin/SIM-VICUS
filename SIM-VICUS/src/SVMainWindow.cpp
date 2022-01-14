@@ -1794,6 +1794,9 @@ void SVMainWindow::setupPlugins() {
 	}
 
 	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
+#if defined(Q_OS_WIN32)
+	SetDllDirectoryW(pluginsDir.absolutePath().toStdWString().c_str());
+#endif
 	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
 
 	const auto entryList = pluginsDir.entryList(QDir::Files);
@@ -1804,11 +1807,12 @@ void SVMainWindow::setupPlugins() {
 		// skip files that do not have a valid file extensions
 		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
 		QObject *plugin = loader.instance();
-		if (plugin) {
+		if (plugin != nullptr) {
 			IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
 			setupPluginMenuEntries(plugin);
 		}
 		else {
+			QString errtxt = loader.errorString();
 			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()),
 							 IBK::MSG_ERROR);
 		}
@@ -1819,7 +1823,7 @@ void SVMainWindow::setupPlugins() {
 void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 	FUNCID(SVMainWindow::setupPluginMenuEntries);
 	// depending on the implemented interface, do different stuff
-	SVImportPluginInterface* importPlugin = qobject_cast<SVImportPluginInterface*>(plugin);
+	SVImportPluginInterface* importPlugin = dynamic_cast<SVImportPluginInterface*>(plugin);
 	if (importPlugin != nullptr) {
 		IBK::IBK_Message(IBK::FormatString("  Adding importer plugin '%1'\n").arg(importPlugin->title().toStdString()),
 						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -1845,7 +1849,7 @@ void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
 	}
 
 	// database plugins
-	SVDatabasePluginInterface* dbPlugin = qobject_cast<SVDatabasePluginInterface*>(plugin);
+	SVDatabasePluginInterface* dbPlugin = dynamic_cast<SVDatabasePluginInterface*>(plugin);
 	if (dbPlugin != nullptr) {
 		// create copy of database
 		SVDatabase dbCopy(SVSettings::instance().m_db);
