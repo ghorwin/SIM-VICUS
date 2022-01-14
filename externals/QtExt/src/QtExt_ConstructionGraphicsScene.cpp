@@ -336,6 +336,9 @@ void ConstructionGraphicsScene::calculatePositions() {
 		axis_right = static_cast<int>(5 * m_res);
 		air_layer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0 * m_res));
 	}
+	if(!m_visibleBoundaryLabels) {
+		air_layer = 0;
+	}
 
 	m_xiLeft = m_innerFrame.left() + axis_left;
 	m_xiRight = m_innerFrame.right() - axis_right;
