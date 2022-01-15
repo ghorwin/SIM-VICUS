@@ -926,8 +926,10 @@ int HydraulicNetworkModelImpl::solve() {
 	}
 
 
-	if (iterations > 0)
+	if (iterations > 0) {
+		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Hydraulic model Newton method converged after %1 iterations\n").arg(100-iterations), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 		return 0;
+	}
 	// we register a recoverable error if the system did not converge
 	// (and allow a retry with a new guess)
 	else {
