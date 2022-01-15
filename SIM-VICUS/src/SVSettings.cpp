@@ -346,30 +346,43 @@ bool SVSettings::startProcess(const QString & executable,
 
 #else // Q_OS_WIN
 
-	// append project file to arguments, no quotes needed, since Qt takes care of that
-	commandLineArgs << projectFile;
 	qint64 pid;
 	switch (terminalEmulator) {
 		case TE_XTerm : {
 			commandLineArgs = QStringList() << "-hold"
 											<< "-fa" << "'Monospace'"
 											<< "-fs" << "9"
-											<< "-geometry" << "120x40" << "-e" << executable << commandLineArgs;
+											<< "-geometry" << "120x40" << "-e"
+											<< executable
+											<< commandLineArgs
+											<< projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
 			QString terminalProgram = "xterm";
 			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 		} break;
 
 		case TE_GnomeTerminal : {
-			//  gnome-terminal -- /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/run_in_gnome_terminal.sh  /home/ghorwin/git/SIM-VICUS/bin/release/NandradSolver /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/Tutorial1.nandrad
-			QString executablePath = QFileInfo(executable).dir().absolutePath();
-			commandLineArgs = QStringList() << "--tab"  << "--" << executablePath + "/run_in_gnome_terminal.sh" << executable << commandLineArgs;
+			// create a bash script in a temporary location with the command line as content
+			QString projectPath = QFileInfo(projectFile).dir().absolutePath();
+			QString tmpPath = projectPath + "/" + QFileInfo(projectFile).baseName() + ".sh";
+			QFile bashFile(tmpPath);
+			bashFile.open(QFile::WriteOnly);
+			QTextStream strm(&bashFile);
+			strm << "#!/bin/bash\n\n";
+			strm << executable << " " << commandLineArgs.join(" ") << " \"" << projectFile << "\"" << "\n"; // mind the quotes around the project file here!
+			// add a line to halt script execution once done
+			strm << "exec bash\n";
+			// finally set executable permissions
+			bashFile.setPermissions(QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ExeGroup | QFile::ExeOther );
+			bashFile.close();
 
-//			commandLineArgs = QStringList() << "--tab"  << "--" << "/bin/bash" << executable << "\"" + commandLineArgs.join(" ") + "\"";
+			// Command line: "gnome-terminal -- /path/to/project/run/script.sh"
+			commandLineArgs = QStringList() << "--tab"  << "--" << tmpPath;
 			QString terminalProgram = "gnome-terminal";
 			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 		} break;
 
 		default:
+			commandLineArgs << projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
 			success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
 	}
 
