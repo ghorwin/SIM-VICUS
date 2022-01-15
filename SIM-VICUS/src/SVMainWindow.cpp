@@ -1813,7 +1813,8 @@ void SVMainWindow::setupPlugins() {
 		}
 		else {
 			QString errtxt = loader.errorString();
-			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()),
+			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1': %2\n")
+							 .arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()).arg(errtxt.toStdString()),
 							 IBK::MSG_ERROR);
 		}
 	}
