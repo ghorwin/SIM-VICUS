@@ -499,7 +499,7 @@ int StateModelGroup::update() {
 				return 1;
 			// signal success
 			return 0;
-		} break;
+		}
 
 		case ZEPPELIN::DependencyGroup::CYCLIC : {
 
@@ -557,11 +557,7 @@ int StateModelGroup::update() {
 				// signal success
 				return 0;
 			}
-
-		} break;
-		default :
-			return 0;
-		break;
+		}
 	}
 }
 
