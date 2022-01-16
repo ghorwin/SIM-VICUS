@@ -84,6 +84,11 @@
 #endif // IBK_DEBUG
 
 
+// IBK_BUILDING_DEBIAN_PACKAGE always also defines IBK_DEPLOYMENT
+#ifdef IBK_BUILDING_DEBIAN_PACKAGE
+	#define IBK_DEPLOYMENT
+#endif
+
 /*! \file IBK_BuildFlags.h
 	\brief Build-related defines and macros.
 */
