@@ -60,7 +60,6 @@
 
 #include <QtExt_AutoUpdater.h>
 #include <QtExt_Directories.h>
-#include <QtExt_configuration.h>
 
 #include <NANDRAD_Project.h>
 

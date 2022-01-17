@@ -3,19 +3,34 @@
 	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
 
 	Primary authors:
-	  Heiko Fechner
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Heiko Fechner    <heiko.fechner -[at]- tu-dresden.de>
+	  Andreas Nicolai
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	Dieses Programm ist Freie Software: Sie können es unter den Bedingungen
+	der GNU General Public License, wie von der Free Software Foundation,
+	Version 3 der Lizenz oder (nach Ihrer Wahl) jeder neueren
+	veröffentlichten Version, weiter verteilen und/oder modifizieren.
+
+	Dieses Programm wird in der Hoffnung bereitgestellt, dass es nützlich sein wird, jedoch
+	OHNE JEDE GEWÄHR,; sogar ohne die implizite
+	Gewähr der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
+	Siehe die GNU General Public License für weitere Einzelheiten.
+
+	Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
+	Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
 */
 
 #include "QtExt_LanguageStringEditWidget1.h"
@@ -34,7 +49,8 @@ LanguageStringEditWidget1::LanguageStringEditWidget1(QWidget *parent) :
 	ui(new Ui::LanguageStringEditWidget1),
 	m_currentLang("en"),
 	m_3rdLang("it"),
-	m_showLanguageSelection(false)
+	m_showLanguageSelection(false),
+	m_readOnly(false)
 {
 	ui->setupUi(this);
 
@@ -66,12 +82,12 @@ const IBK::MultiLanguageString& LanguageStringEditWidget1::string() const {
 }
 
 void LanguageStringEditWidget1::setReadOnly(bool readOnly) {
+	m_readOnly = readOnly;
 	ui->lineEdit->setReadOnly(readOnly);
-	ui->toolButton->setEnabled(!readOnly);
 }
 
 void LanguageStringEditWidget1::on_lineEdit_textChanged(const QString &arg1) {
-	m_string.setString(arg1.toUtf8().data(), m_currentLang);
+	m_string.setString(arg1.toStdString(), m_currentLang);
 	emit textChanged(m_string);
 }
 
@@ -80,6 +96,7 @@ void LanguageStringEditWidget1::on_toolButton_clicked() {
 	dlg.setWindowTitle(m_dialog3Caption);
 	dlg.set3rdLanguage(m_3rdLang);
 	dlg.set(m_string);
+	dlg.setReadOnly(m_readOnly);
 	if( dlg.exec() == QDialog::Accepted) {
 		setString(dlg.string());
 		emit editingFinished();
@@ -116,6 +133,10 @@ void LanguageStringEditDialog3::set3rdLanguage(const std::string& lang) {
 
 const IBK::MultiLanguageString& LanguageStringEditDialog3::string() const {
 	return m_widget->string();
+}
+
+void LanguageStringEditDialog3::setReadOnly(bool readOnly) {
+	m_widget->setReadOnly(readOnly);
 }
 
 } // namespace QtExt

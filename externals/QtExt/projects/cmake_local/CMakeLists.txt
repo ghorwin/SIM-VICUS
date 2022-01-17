@@ -2,14 +2,6 @@
 
 project( QtExt )
 
-# configuration file options
-option( QTEXT_DONT_USE_NATIVE_FILEDIALOG "Uses the custom file dialog provided by Qt, rather than the native OS specific dialog." ON )
-
-configure_file(
-	${PROJECT_SOURCE_DIR}/../../src/QtExt_configuration.h.in
-	${PROJECT_SOURCE_DIR}/../../src/QtExt_configuration.h
-)
-
 # collect a list of all source files
 file( GLOB LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
 

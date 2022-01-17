@@ -1,10 +1,11 @@
 <RCC>
-    <qresource prefix="/">
-        <file>gfx/constructionEditor/Construction_assign_material_32x32.png</file>
-        <file>gfx/constructionEditor/Construction_insert_layer_left_32x32.png</file>
-        <file>gfx/constructionEditor/Construction_insert_layer_right_32x32.png</file>
-        <file>gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</file>
-        <file>gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</file>
-        <file>gfx/constructionEditor/Construction_remove_layer_32x32.png</file>
-    </qresource>
+	<qresource prefix="/">
+		<file>gfx/constructionEditor/Construction_assign_material_32x32.png</file>
+		<file>gfx/constructionEditor/Construction_insert_layer_left_32x32.png</file>
+		<file>gfx/constructionEditor/Construction_insert_layer_right_32x32.png</file>
+		<file>gfx/constructionEditor/Construction_move_layer_to_left_32x32.png</file>
+		<file>gfx/constructionEditor/Construction_move_layer_to_right_32x32.png</file>
+		<file>gfx/constructionEditor/Construction_remove_layer_32x32.png</file>
+		<file>text/countries.txt</file>
+	</qresource>
 </RCC>

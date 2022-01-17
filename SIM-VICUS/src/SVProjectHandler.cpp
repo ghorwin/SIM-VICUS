@@ -44,7 +44,6 @@
 #include <IBK_assert.h>
 
 #include <QtExt_Directories.h>
-#include <QtExt_configuration.h>
 
 #include <VICUS_Project.h>
 

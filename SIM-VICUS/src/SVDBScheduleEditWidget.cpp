@@ -40,7 +40,6 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
-#include <QtExt_configuration.h>
 
 #include <qwt_plot_curve.h>
 
