@@ -807,6 +807,20 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
 
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
+
+		// follow line of sign and determine possible objects to hit
+		if (!pickObject.m_pickPerformed)
+			pick(pickObject);
+
+		// now we handle the snapping rules and also the locking
+		snapLocalCoordinateSystem(pickObject);
+
+		const QVector3D &point = m_coordinateSystemObject.translation();
+
+		m_newGeometryObject.updateLocalCoordinateSystemPosition(point);
+	}
+
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 		// follow line of sign and determine possible objects to hit
@@ -1083,7 +1097,8 @@ void Scene::render() {
 	bool drawLocalCoordinateSystem = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
 		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem );
+		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
+		vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
 
 	// do not draw LCS if we are in sub-surface mode
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
@@ -2702,7 +2717,27 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 
 		case SVViewState::OM_MeasureDistance : {
 			// new starting point for measurement selected
-			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+			if (m_measurementObject.m_startPoint == QVector3D() ) {
+				m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+				const QVector3D &sp = m_measurementObject.m_startPoint;
+
+				qDebug() << "Set start point for distance measurement: \t" << sp.x() << "\t" << sp.y() << "\t" << sp.z();
+			}
+			else {
+				m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+				QVector3D &sp = m_measurementObject.m_startPoint;
+				QVector3D &ep = m_measurementObject.m_endPoint;
+
+				QMessageBox::information(nullptr, tr("Distance Measurement"),
+									  tr("d = %1 m\n\nΔX = %2 m\nΔY = %3 m\nΔZ = %4 m")
+										 .arg(QString::number(m_measurementObject.distance(), 'f', 3 ) )
+										 .arg(QString::number(std::fabs(sp.x()-ep.x() ), 'f', 3 ) )
+										 .arg(QString::number(std::fabs(sp.y()-ep.y() ), 'f', 3 ) )
+										 .arg(QString::number(std::fabs(sp.z()-ep.z() ), 'f', 3 ) ) );
+
+				ep = QVector3D();
+				sp = QVector3D();
+			}
 			return;
 		}
 

@@ -1,4 +1,4 @@
-/*	SIM-VICUS - Building and District Energy Simulation Tool.
+﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -609,7 +609,7 @@ void SceneView::checkInput() {
 	// cause the scene to update at monitor refresh rate)
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem )
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance)
 	{
 		m_inputEventReceived = true;
 		renderLater();
