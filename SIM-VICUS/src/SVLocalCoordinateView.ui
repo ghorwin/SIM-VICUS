@@ -24,13 +24,6 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QToolButton" name="toolButton">
-     <property name="text">
-      <string>...</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QToolButton" name="toolButtonAlignCoordinateSystem">
      <property name="toolTip">
       <string>Toggles mode for aligning local coordinate system to surface orientation (F4)</string>
