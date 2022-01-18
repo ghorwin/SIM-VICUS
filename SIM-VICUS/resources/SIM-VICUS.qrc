@@ -82,5 +82,8 @@
         <file>gfx/actions/24x24/toDB.png</file>
         <file>gfx/actions/24x24/fromDB.png</file>
         <file>gfx/actions/24x24/broom.png</file>
+        <file>gfx/actions/Move-Coordinate-System.png</file>
+        <file>gfx/actions/Rotate-Coordinate-System.png</file>
+        <file>gfx/actions/Object-Snap.png</file>
     </qresource>
 </RCC>
