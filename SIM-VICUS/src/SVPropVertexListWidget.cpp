@@ -153,7 +153,7 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	QTableWidgetItem * item = new QTableWidgetItem(QString("%1").arg(row+1));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	m_ui->tableWidgetVertexes->setItem(row,0,item);
-	item = new QTableWidgetItem(QString("%L1,%L2,%L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
+	item = new QTableWidgetItem(QString("%L1 | %L2 | %L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	m_ui->tableWidgetVertexes->setItem(row,1,item);
 
