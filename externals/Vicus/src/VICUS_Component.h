@@ -56,7 +56,6 @@ public:
 		CT_Ceiling,					// Keyword: Ceiling					'Ceiling construction'
 		CT_SlopedRoof,				// Keyword: SlopedRoof				'Sloped roof construction'
 		CT_FlatRoof,				// Keyword: FlatRoof				'Flat roof construction'
-		/// TODO Heiko ist der Kommentar hier richtig?
 		CT_ColdRoof,				// Keyword: ColdRoof				'Flat roof construction (to heated/insulated space)'
 		CT_WarmRoof,				// Keyword: WarmRoof				'Flat roof construction (to cold/ventilated space)'
 		CT_Miscellaneous,			// Keyword: Miscellaneous			'Some other component type'
@@ -70,9 +69,10 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all referenced materials exist and if their parameters are valid. */
-	bool isValid(const VICUS::Database<VICUS::Material> & materials,
-				 const VICUS::Database<VICUS::Construction> & constructions,
-				 const VICUS::Database<VICUS::BoundaryCondition> & bcs) const;
+	bool isValid(const VICUS::Database<Material> & materials,
+				 const VICUS::Database<Construction> & constructions,
+				 const VICUS::Database<BoundaryCondition> & bcs,
+				 const VICUS::Database<Schedule> & scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

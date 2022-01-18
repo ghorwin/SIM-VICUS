@@ -29,7 +29,7 @@ public:
 	PrecondBand(unsigned int ml, unsigned int mu, PreconditionerType precondType = PrecondInterface::Right );
 
 	/*! Destructor. */
-	~PrecondBand();
+	~PrecondBand() override;
 
 	/*! Returns type of precondition (where it should be applied in context of the iteration linear equation solver). */
 	virtual PreconditionerType preconditionerType() const override { return m_precondType; }
@@ -56,7 +56,7 @@ public:
 	*/
 	virtual unsigned int nRHSEvals() const override { return 0; }
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size. */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

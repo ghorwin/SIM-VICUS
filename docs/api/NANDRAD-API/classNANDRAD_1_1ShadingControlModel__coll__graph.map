@@ -1,0 +1,18 @@
+<map id="NANDRAD::ShadingControlModel" name="NANDRAD::ShadingControlModel">
+<area shape="rect" id="node2" href="$classNANDRAD_1_1EmbeddedObject.html" title="An embedded object generally defines a wall opening (a window or a door). " alt="" coords="1329,117,1528,144"/>
+<area shape="rect" id="node3" href="$classNANDRAD_1_1EmbeddedObjectWindow.html" title="Class EmbeddedObjectWindow defines a window and holds parameters for solar radiation flux calculation..." alt="" coords="901,107,1147,133"/>
+<area shape="rect" id="node4" href="$classNANDRAD_1_1WindowFrame.html" title="WindowFrame defines the frame of a window. " alt="" coords="506,56,689,83"/>
+<area shape="rect" id="node5" href="$classNANDRAD_1_1WindowGlazingSystem.html" title="WindowGlazingSystem defines the glazing to be used in a window. " alt="" coords="480,107,715,133"/>
+<area shape="rect" id="node6" href="$classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,157,235,184"/>
+<area shape="rect" id="node7" href="$classNANDRAD_1_1WindowShading.html" title="WindowShading defines a dynamically adjustable shading. " alt="" coords="501,157,693,184"/>
+<area shape="rect" id="node17" href="$classNANDRAD_1_1InterfaceAirFlow.html" title="Contains parameters for convenctive air flow through construction. " alt="" coords="501,360,694,387"/>
+<area shape="rect" id="node8" href="$classNANDRAD_1_1WindowDivider.html" title="WindowDivider defines the divider of a window. " alt="" coords="504,5,691,32"/>
+<area shape="rect" id="node9" href="$classNANDRAD_1_1Sensor.html" title="A sensor yields a measured component for use by other models/for output purposes. ..." alt="" coords="1359,219,1498,245"/>
+<area shape="rect" id="node10" href="$classNANDRAD_1_1ConstructionInstance.html" title="Defines a wall/floor/ceiling construction instance. " alt="" coords="1317,168,1540,195"/>
+<area shape="rect" id="node11" href="$classNANDRAD_1_1ConstructionType.html" title="Defines a multi&#45;layered construction (without the boundary conditions). " alt="" coords="923,168,1125,195"/>
+<area shape="rect" id="node12" href="$classNANDRAD_1_1Interface.html" title="An Interface identifies a surface of a wall and stores all data that are needed for boundary conditio..." alt="" coords="949,284,1099,311"/>
+<area shape="rect" id="node13" href="$classNANDRAD_1_1InterfaceLongWaveEmission.html" title="Contains parameters for long wave radiation exchange (outside). " alt="" coords="492,411,703,453"/>
+<area shape="rect" id="node14" href="$classNANDRAD_1_1InterfaceHeatConduction.html" title="Contains parameters for convenctive heat exchange between walls and zones/ambient climate..." alt="" coords="476,208,719,235"/>
+<area shape="rect" id="node15" href="$classNANDRAD_1_1InterfaceVaporDiffusion.html" title="Contains parameters for vapor diffusion flux calculation. " alt="" coords="480,259,715,285"/>
+<area shape="rect" id="node16" href="$classNANDRAD_1_1InterfaceSolarAbsorption.html" title="Parametrization for solar absorption (short wave radiation boundary condition). " alt="" coords="477,309,718,336"/>
+</map>

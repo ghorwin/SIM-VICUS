@@ -40,6 +40,7 @@
 #include "SVDBModelDelegate.h"
 #include "SVMainWindow.h"
 #include "SVAbstractDatabaseEditWidget.h"
+#include "SVDBDialogAddDependentElements.h"
 
 // includes for all the dialogs
 
@@ -163,7 +164,7 @@ SVDatabaseEditDialog::SVDatabaseEditDialog(QWidget *parent, SVAbstractDatabaseTa
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->tableView->setItemDelegate(dg);
 }
 
@@ -179,6 +180,7 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(true);
 	m_ui->pushButtonSelect->setVisible(false);
 	m_ui->pushButtonCancel->setVisible(false);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
 	// ask database model to update its content
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
@@ -186,6 +188,11 @@ void SVDatabaseEditDialog::edit(unsigned int initialId) {
 	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex()); // select nothing
 
 	m_ui->tableView->resizeColumnsToContents();
+
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
 
 	exec();
 	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
@@ -197,6 +204,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 	m_ui->pushButtonClose->setVisible(false);
 	m_ui->pushButtonSelect->setVisible(true);
 	m_ui->pushButtonCancel->setVisible(true);
+	m_ui->pushButtonRemoveUnusedElements->setEnabled(SVProjectHandler::instance().isValid());
 
 	m_dbModel->resetModel(); // ensure we use up-to-date data (in case the database data has changed elsewhere)
 	selectItemById(initialId);
@@ -204,9 +212,15 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 	m_ui->tableView->resizeColumnsToContents();
 
+	// update "isRferenced" property of all elements
+	if (SVProjectHandler::instance().isValid()){
+		SVSettings::instance().m_db.updateReferencedElements(project());
+	}
+
 	int res = exec();
 	QTimer::singleShot(0, &SVViewStateHandler::instance(), &SVViewStateHandler::refreshColors);
 	if (res == QDialog::Accepted) {
+
 		// determine current item
 		QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
 		Q_ASSERT(currentProxyIndex.isValid());
@@ -214,7 +228,7 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
-	}
+		}
 
 	// nothing selected/dialog aborted
 	return VICUS::INVALID_ID;
@@ -239,6 +253,9 @@ void SVDatabaseEditDialog::on_pushButtonClose_clicked() {
 void SVDatabaseEditDialog::on_toolButtonAdd_clicked() {
 	// add new item
 	QModelIndex sourceIndex = m_dbModel->addNewItem();
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 	// resize ID column
@@ -255,6 +272,9 @@ void SVDatabaseEditDialog::on_toolButtonCopy_clicked() {
 	Q_ASSERT(currentProxyIndex.isValid());
 	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
 	sourceIndex = m_dbModel->copyItem(sourceIndex);
+	// if we have a project loaded, keep this item as "local", otherwise make it a user-db element directly
+	if (!SVProjectHandler::instance().isValid())
+		m_dbModel->setItemLocal(sourceIndex, false);
 	QModelIndex proxyIndex = m_proxyModel->mapFromSource(sourceIndex);
 	m_ui->tableView->selectionModel()->setCurrentIndex(proxyIndex, QItemSelectionModel::SelectCurrent);
 }
@@ -277,15 +297,24 @@ void SVDatabaseEditDialog::onCurrentIndexChanged(const QModelIndex &current, con
 		m_ui->pushButtonSelect->setEnabled(false);
 		m_ui->toolButtonRemove->setEnabled(false);
 		m_ui->toolButtonCopy->setEnabled(false);
+		m_ui->toolButtonStoreInUserDB->setEnabled(false);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(false);
 		m_editWidgetContainerWidget->setEnabled(false);
 		m_editWidget->updateInput(-1); // nothing selected
 	}
 	else {
 		m_editWidgetContainerWidget->setEnabled(true);
 		m_ui->pushButtonSelect->setEnabled(true);
+
 		// remove is not allowed for built-ins
 		QModelIndex sourceIndex = m_proxyModel->mapToSource(current);
-		m_ui->toolButtonRemove->setEnabled(!sourceIndex.data(Role_BuiltIn).toBool());
+		bool builtIn = sourceIndex.data(Role_BuiltIn).toBool();
+		m_ui->toolButtonRemove->setEnabled(!builtIn);
+
+		// only elements which are local and not built-in can be stored to user DB
+		bool local = sourceIndex.data(Role_Local).toBool();
+		m_ui->toolButtonStoreInUserDB->setEnabled(local && !builtIn);
+		m_ui->toolButtonRemoveFromUserDB->setEnabled(!local && !builtIn);
 
 		m_ui->toolButtonCopy->setEnabled(true);
 		m_ui->tableView->selectRow(current.row());
@@ -302,8 +331,36 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 	{
 		// tell db to drop all user-defined items and re-read the DB
-		SVSettings::instance().m_db.m_materials.removeUserElements();
-		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType());
+		switch (m_dbModel->databaseType()) {
+			case SVDatabase::DT_Materials:				SVSettings::instance().m_db.m_materials.removeUserElements(); break;
+			case SVDatabase::DT_Constructions:			SVSettings::instance().m_db.m_constructions.removeUserElements(); break;
+			case SVDatabase::DT_Windows:				SVSettings::instance().m_db.m_windows.removeUserElements(); break;
+			case SVDatabase::DT_WindowGlazingSystems:	SVSettings::instance().m_db.m_windowGlazingSystems.removeUserElements(); break;
+			case SVDatabase::DT_BoundaryConditions:		SVSettings::instance().m_db.m_boundaryConditions.removeUserElements(); break;
+			case SVDatabase::DT_Components:				SVSettings::instance().m_db.m_components.removeUserElements(); break;
+			case SVDatabase::DT_SubSurfaceComponents:	SVSettings::instance().m_db.m_subSurfaceComponents.removeUserElements(); break;
+			case SVDatabase::DT_SurfaceHeating:			SVSettings::instance().m_db.m_surfaceHeatings.removeUserElements(); break;
+			case SVDatabase::DT_Pipes:					SVSettings::instance().m_db.m_pipes.removeUserElements(); break;
+			case SVDatabase::DT_Fluids:					SVSettings::instance().m_db.m_fluids.removeUserElements(); break;
+			case SVDatabase::DT_NetworkComponents:		SVSettings::instance().m_db.m_networkComponents.removeUserElements(); break;
+			case SVDatabase::DT_NetworkControllers:		SVSettings::instance().m_db.m_networkControllers.removeUserElements(); break;
+			case SVDatabase::DT_SubNetworks:			SVSettings::instance().m_db.m_subNetworks.removeUserElements(); break;
+			case SVDatabase::DT_Schedules:				SVSettings::instance().m_db.m_schedules.removeUserElements(); break;
+			case SVDatabase::DT_InternalLoads:			SVSettings::instance().m_db.m_internalLoads.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlThermostat:	SVSettings::instance().m_db.m_zoneControlThermostat.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlShading:		SVSettings::instance().m_db.m_zoneControlShading.removeUserElements(); break;
+			case SVDatabase::DT_ZoneControlNaturalVentilation:			SVSettings::instance().m_db.m_zoneControlVentilationNatural.removeUserElements(); break;
+			case SVDatabase::DT_ZoneIdealHeatingCooling:	SVSettings::instance().m_db.m_zoneIdealHeatingCooling.removeUserElements(); break;
+			case SVDatabase::DT_VentilationNatural:		SVSettings::instance().m_db.m_ventilationNatural.removeUserElements(); break;
+			case SVDatabase::DT_Infiltration:			SVSettings::instance().m_db.m_infiltration.removeUserElements(); break;
+			case SVDatabase::DT_ZoneTemplates:			SVSettings::instance().m_db.m_zoneTemplates.removeUserElements(); break;
+			case SVDatabase::NUM_DT:; // just to make compiler happy
+		}
+
+		SVSettings::instance().m_db.readDatabases(m_dbModel->databaseType()); // by default the "m_isReferenced" property is off after reading the user DB
+		// update "isReferenced" property of all elements
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.updateReferencedElements(project());
 		// tell model to reset completely
 		m_dbModel->resetModel();
 		onCurrentIndexChanged(QModelIndex(), QModelIndex());
@@ -312,9 +369,57 @@ void SVDatabaseEditDialog::on_pushButtonReloadUserDB_clicked() {
 }
 
 
+void SVDatabaseEditDialog::on_toolButtonStoreInUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, false);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
+
+	// find local children
+	unsigned int id = sourceIndex.data(Role_Id).toUInt();
+	std::set<VICUS::AbstractDBElement *> localChildren;
+	SVSettings::instance().m_db.findLocalChildren(m_dbModel->databaseType(), id, localChildren);
+
+	// ask user if child elements should be added to user DB as well
+	if (localChildren.size() > 0) {
+		SVDBDialogAddDependentElements diag(this);
+		diag.setup(localChildren);
+		int res = diag.exec();
+		if (res == QDialog::Accepted) {
+			for (VICUS::AbstractDBElement *el: localChildren)
+				el->m_local = false;
+		}
+	}
+}
+
+
+void SVDatabaseEditDialog::on_toolButtonRemoveFromUserDB_clicked() {
+	QModelIndex currentProxyIndex = m_ui->tableView->currentIndex();
+	Q_ASSERT(currentProxyIndex.isValid());
+	QModelIndex sourceIndex = m_proxyModel->mapToSource(currentProxyIndex);
+	m_dbModel->setItemLocal(sourceIndex, true);
+	onCurrentIndexChanged(m_ui->tableView->currentIndex(), QModelIndex());
+}
+
+
 void SVDatabaseEditDialog::on_tableView_doubleClicked(const QModelIndex &index) {
 	if (m_ui->pushButtonSelect->isVisible() && index.isValid())
 		accept();
+}
+
+
+void SVDatabaseEditDialog::on_pushButtonRemoveUnusedElements_clicked() {
+	if (QMessageBox::question(this, QString(), tr("All elements that are currently not used in the project will be deleted. Continue?"),
+							  QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+		// tell db to drop all user-defined items and re-read the DB
+		if (SVProjectHandler::instance().isValid())
+			SVSettings::instance().m_db.removeNotReferencedLocalElements(m_dbModel->databaseType(), project());
+		// tell model to reset completely
+		m_dbModel->resetModel();
+		onCurrentIndexChanged(QModelIndex(), QModelIndex());
+		m_editWidget->updateInput(-1);
+	}
 }
 
 
@@ -334,6 +439,10 @@ void SVDatabaseEditDialog::selectItemById(unsigned int id) {
 		}
 	}
 }
+
+
+
+
 
 // *** Factory functions ***
 

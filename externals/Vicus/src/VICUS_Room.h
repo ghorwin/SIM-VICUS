@@ -46,9 +46,9 @@ public:
 		entered/adjusted by user.
 	*/
 	enum para_t {
-		/*! Dry density of the material. */
-		P_Area,					// Keyword: Area					[m2]	'Floor area of the zone'
-		/*! Dry density of the material. */
+		/*! Floor usable area of the zone, used for zone load definition. */
+		P_Area,					// Keyword: Area					[m2]	'Floor usable area of the zone'
+		/*! Geometrical violume of the zone, used for air exchange calulation + energy balance. */
 		P_Volume,				// Keyword: Volume					[m3]	'Volume of the zone'
 		NUM_P
 	};

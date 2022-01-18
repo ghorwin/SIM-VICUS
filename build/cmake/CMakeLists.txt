@@ -9,6 +9,11 @@ cmake_minimum_required( VERSION 2.8...3.10 )
 # enable @rpath on MacOS
 cmake_policy(SET CMP0042 NEW)
 
+if (${CMAKE_VERSION} VERSION_GREATER "3.11") 
+  # use new OpenGL libs when having both new and legacy OpenGL libs on Linux
+  cmake_policy(SET CMP0072 NEW) 
+endif()
+
 # -------------------------------------------------------------
 # MACRO definitions
 # -------------------------------------------------------------
@@ -96,7 +101,7 @@ else (DISABLE_QT)
 	
 	# we need OpenGL
 	find_package( OpenGL REQUIRED )
-	
+
 endif (DISABLE_QT)
 
 if( APPLE )
@@ -191,9 +196,9 @@ add_subdirectory( ../../View3D/projects/cmake_local View3D)
 
 add_subdirectory( ../../NandradSolver/projects/cmake_local NandradSolver)
 add_subdirectory( ../../NandradSolverFMI/projects/cmake_local NandradSolverFMI)
-add_subdirectory( ../../NandradFMUGenerator/projects/cmake_local NandradFMUGenerator)
 
 if (NOT DISABLE_QT)
 	add_subdirectory( ../../SIM-VICUS/projects/cmake_local SIM-VICUS)
+	add_subdirectory( ../../NandradFMUGenerator/projects/cmake_local NandradFMUGenerator)
 endif (NOT DISABLE_QT)
 

@@ -70,6 +70,9 @@ public:
 	/*! Called from fmi2DoStep(). */
 	virtual void integrateTo(double tCommunicationIntervalEnd);
 
+	/*! Provides access to internally stored model. */
+	SOLFRA::FMUModelInterface * model() { return m_model; }
+
 	/*! Send a logging message to FMU environment if logger is present.*/
 	void logger(fmi2Status, fmi2String, const IBK::FormatString &);
 	/*! Send a logging message to FMU environment if logger is present.*/
@@ -131,12 +134,6 @@ public:
 		Memory array always has size m_fmuStateSize.
 	*/
 	virtual void deserializeFMUstate(void * FMUstate) { (void)FMUstate; }
-
-	/*! Called from either doStep() or terminate() in CoSimulation mode whenever
-		a communication interval has been completed and all related buffers can be cleared/output files can be
-		written.
-	*/
-	virtual void clearBuffers() {}
 
 	/*! Called from fmi2FreeInstance() in CoSimulation at the end of simulation.
 		Write outputs here.

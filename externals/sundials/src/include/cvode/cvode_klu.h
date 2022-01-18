@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4558 $
  * $Date: 2015-10-05 09:04:16 -0700 (Mon, 05 Oct 2015) $
- * ----------------------------------------------------------------- 
+ * -----------------------------------------------------------------
  * Programmer(s): Carol S. Woodward @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -33,19 +33,19 @@ extern "C" {
  * -----------------------------------------------------------------
  * Function : CVKLU
  * -----------------------------------------------------------------
- * A call to the CVKLU function links the main integrator      
- * with the CVKLU linear solver module.                        
- *                                                                
- * cv_mem is the pointer to integrator memory returned by        
- *     CVCreate.             
+ * A call to the CVKLU function links the main integrator
+ * with the CVKLU linear solver module.
  *
- *                                                                
- * CVKLU returns:                                              
- *     CVSLU_SUCCESS   = 0  if successful                              
- *     CVSLU_LMEM_FAIL = -1 if there was a memory allocation failure   
- *     CVSLU_ILL_INPUT = -2 if NVECTOR found incompatible           
- *                                                                
- * NOTE: The KLU linear solver assumes a serial implementation  
+ * cv_mem is the pointer to integrator memory returned by
+ *     CVCreate.
+ *
+ *
+ * CVKLU returns:
+ *     CVSLU_SUCCESS   = 0  if successful
+ *     CVSLU_LMEM_FAIL = -1 if there was a memory allocation failure
+ *     CVSLU_ILL_INPUT = -2 if NVECTOR found incompatible
+ *
+ * NOTE: The KLU linear solver assumes a serial implementation
  *       of the NVECTOR package. Therefore, CVKLU will first
  *       test for a compatible N_Vector internal representation
  *       by checking that the functions N_VGetArrayPointer and
@@ -53,27 +53,27 @@ extern "C" {
  * -----------------------------------------------------------------
  */
 
-  SUNDIALS_EXPORT int CVKLU(void *cv_mem, int n, int nnz, int sparsetype); 
+  SUNDIALS_EXPORT int CVKLU(void *cv_mem, int n, int nnz, int sparsetype);
 
 /*
  * -----------------------------------------------------------------
  * CVKLUReInit
  * -----------------------------------------------------------------
- * This routine reinitializes memory and flags for a new factorization 
+ * This routine reinitializes memory and flags for a new factorization
  * (symbolic and numeric) to be conducted at the next solver setup
- * call.  This routine is useful in the cases where the number of nonzeroes 
+ * call.  This routine is useful in the cases where the number of nonzeroes
  * has changed or if the structure of the linear system has changed
  * which would require a new symbolic (and numeric factorization).
  *
  * The reinit_type argumenmt governs the level of reinitialization:
  *
- * reinit_type = 1: The Jacobian matrix will be destroyed and 
+ * reinit_type = 1: The Jacobian matrix will be destroyed and
  *                  a new one will be allocated based on the nnz
  *                  value passed to this call. New symbolic and
  *                  numeric factorizations will be completed at the next
  *                  solver setup.
  *
- * reinit_type = 2: Only symbolic and numeric factorizations will be 
+ * reinit_type = 2: Only symbolic and numeric factorizations will be
  *                  completed.  It is assumed that the Jacobian size
  *                  has not exceeded the size of nnz given in the prior
  *                  call to CVKLU.
@@ -86,10 +86,10 @@ extern "C" {
  * -----------------------------------------------------------------
  */
 
-  SUNDIALS_EXPORT int CVKLUReInit(void *cv_mem_v, int n, int nnz, 
-				  int reinit_type);
+  SUNDIALS_EXPORT int CVKLUReInit(void *cv_mem_v, int n, int nnz,
+                                  int reinit_type);
 
-/* 
+/*
  * -----------------------------------------------------------------
  * Optional Input Specification Functions
  * -----------------------------------------------------------------
@@ -100,10 +100,10 @@ extern "C" {
  * -----------------------------------------------------------------
  */
 
-  SUNDIALS_EXPORT int CVKLUSetOrdering(void *cv_mem, int ordering_choice); 
+  SUNDIALS_EXPORT int CVKLUSetOrdering(void *cv_mem, int ordering_choice);
 
 
-  
+
 #ifdef __cplusplus
 }
 #endif

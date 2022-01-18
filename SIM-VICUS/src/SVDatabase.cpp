@@ -32,6 +32,8 @@
 
 #include <QtExt_Directories.h>
 
+#include  <QMessageBox>
+
 #include "SVProjectHandler.h"
 
 const unsigned int USER_ID_SPACE_START = 10000;
@@ -150,8 +152,11 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 }
 
 
-void SVDatabase::writeDatabases() const {
+void SVDatabase::writeDatabases() {
 	// we only write user databases
+
+	// At this point the project is closed and we must not have any local DB elements anylonger.
+	// There is no easy way to test this.
 
 	IBK::Path userDbDir(QtExt::Directories::userDataDir().toStdString());
 
@@ -179,6 +184,7 @@ void SVDatabase::writeDatabases() const {
 	m_zoneTemplates.writeXML(		userDbDir / "db_zoneTemplates.xml", "ZoneTemplates");
 }
 
+
 // Local sort operator, so sort AbstractDBElement vectors by m_id member
 struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::AbstractDBElement, bool> {
 	bool operator()(VICUS::AbstractDBElement & x, VICUS::AbstractDBElement & y) const {
@@ -188,143 +194,286 @@ struct SortByID : public std::binary_function<VICUS::AbstractDBElement, VICUS::A
 };
 
 
-// Local utility function used to convert a set of items to a vector sorted by id
+// Local utility function used to transfer DB elements that are marked as "referenced" or "local" into a sequential vector
 template <typename T>
-void storeVector(std::vector<T> & vec, const std::set<const T*> & container) {
+void storeVector(std::vector<T> & vec, const VICUS::Database<T> & src) {
 	// clear target vector
 	vec.clear();
-	// store objects but skip nullptr
-	for (const T * c : container)
-		if (c != nullptr) vec.push_back(*c);
+	// store objects of correct type but skip nullptr
+	for (typename std::map<unsigned int, T>::const_iterator it = src.begin(); it != src.end(); ++it) {
+		if (it->second.m_isReferenced || it->second.m_local)
+			vec.push_back(it->second);
+	}
 	std::sort(vec.begin(), vec.end(), SortByID());
 }
 
 
+/*! Local utility function. Stores pointers to all DB Elements which are local in the container */
+template <typename T>
+void collectLocalElements(const VICUS::Database<T> & db, std::set<const T*> & container) {
+	for (auto it=db.begin(); it!=db.end(); ++it){
+		if (it->second.m_local)
+			container.insert(&it->second);
+	}
+}
+
+
+
+
 void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 
-	// create sets for objects that are referenced from other objects
-	std::set<const VICUS::Material *>					referencedMaterials;
-	std::set<const VICUS::Construction *>				referencedConstructions;
-	std::set<const VICUS::Window *>						referencedWindows;
-	std::set<const VICUS::WindowGlazingSystem *>		referencedGlazingSystems;
-	std::set<const VICUS::BoundaryCondition *>			referencedBC;
-	std::set<const VICUS::Component *>					referencedComponents;
-	std::set<const VICUS::SubSurfaceComponent *>		referencedSubSurfaceComponents;
-	std::set<const VICUS::SurfaceHeating *>				referencedSurfaceHeatings;
+	// collect all database elements that are referenced from project or from other DB elements
+	updateReferencedElements(p); // now all reference elements have m_isReferenced = true
 
-	std::set<const VICUS::NetworkPipe*>					referencedNetworkPipes;
-	std::set<const VICUS::NetworkFluid *>				referencedNetworkFluids;
-	std::set<const VICUS::NetworkComponent *>			referencedNetworkComponents;
-	std::set<const VICUS::NetworkController *>			referencedNetworkControllers;
-	std::set<const VICUS::SubNetwork *>					referencedSubNetworks;
-
-	std::set<const VICUS::Schedule *>					referencedSchedule;
-	std::set<const VICUS::InternalLoad *>				referencedInternalLoads;
-	std::set<const VICUS::ZoneControlThermostat *>		referencedThermostats;
-	std::set<const VICUS::ZoneControlShading *>			referencedControlShading;
-	std::set<const VICUS::VentilationNatural *>			referencedVentilation;
-	std::set<const VICUS::ZoneIdealHeatingCooling *> 	referencedIdealHeatingCooling;
-	std::set<const VICUS::ZoneControlNaturalVentilation *>	referencedControlNaturalVentilation;
-	std::set<const VICUS::Infiltration *>				referencedInfiltration;
-	std::set<const VICUS::ZoneTemplate *>				referencedZoneTemplates;
-
-
-	// we first collect all objects that are not referenced themselves
-	// then, we collect objects that are referenced from an already collected object
-	// this is continued until we have collected all objects that are used somewhere in the
-	// project
-
-	// Note: we lookup database elements by ID. If ID is INVALID_ID or if the database element
-	//       is missing, the lookup call returns a nullptr. This may hence appear also in
-	//       the referencedXXX vector. When later a referenced element is processed, we need
-	//       to check for nullptr before de-referencing it.
+	// transfer now only those DB elements that are marked as referenced or marked as local
+	// i.e. we transfer all elements which are
+	// - currently used in the project or
+	// - which are currently not used but not stored in the user DB
+	storeVector(p.m_embeddedDB.m_materials, m_materials);
+	storeVector(p.m_embeddedDB.m_constructions, m_constructions);
+	storeVector(p.m_embeddedDB.m_windows, m_windows);
+	storeVector(p.m_embeddedDB.m_windowGlazingSystems, m_windowGlazingSystems);
+	storeVector(p.m_embeddedDB.m_boundaryConditions, m_boundaryConditions);
+	storeVector(p.m_embeddedDB.m_components, m_components);
+	storeVector(p.m_embeddedDB.m_subSurfaceComponents, m_subSurfaceComponents);
+	storeVector(p.m_embeddedDB.m_surfaceHeatings, m_surfaceHeatings);
+	storeVector(p.m_embeddedDB.m_pipes, m_pipes);
+	storeVector(p.m_embeddedDB.m_fluids, m_fluids);
+	storeVector(p.m_embeddedDB.m_networkComponents, m_networkComponents);
+	storeVector(p.m_embeddedDB.m_networkControllers, m_networkControllers);
+	storeVector(p.m_embeddedDB.m_subNetworks, m_subNetworks);
+	storeVector(p.m_embeddedDB.m_schedules, m_schedules);
+	storeVector(p.m_embeddedDB.m_internalLoads, m_internalLoads);
+	storeVector(p.m_embeddedDB.m_zoneControlThermostats, m_zoneControlThermostat);
+	storeVector(p.m_embeddedDB.m_zoneControlShading, m_zoneControlShading);
+	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, m_zoneControlVentilationNatural);
+	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, m_zoneIdealHeatingCooling);
+	storeVector(p.m_embeddedDB.m_ventilationNatural, m_ventilationNatural);
+	storeVector(p.m_embeddedDB.m_infiltration, m_infiltration);
+	storeVector(p.m_embeddedDB.m_zoneTemplates, m_zoneTemplates);
+}
 
 
-	// *** ComponentInstance and Component ***
+void SVDatabase::updateReferencedElements(const VICUS::Project &p) {
+
+	// set all elements referenced-property to false
+	for (auto it=m_materials.begin(); it!=m_materials.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_constructions.begin(); it!=m_constructions.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_windows.begin(); it!=m_windows.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_windowGlazingSystems.begin(); it!=m_windowGlazingSystems.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_boundaryConditions.begin(); it!=m_boundaryConditions.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_components.begin(); it!=m_components.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_subSurfaceComponents.begin(); it!=m_subSurfaceComponents.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_surfaceHeatings.begin(); it!=m_surfaceHeatings.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_pipes.begin(); it!=m_pipes.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_fluids.begin(); it!=m_fluids.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_subNetworks.begin(); it!=m_subNetworks.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_networkComponents.begin(); it!=m_networkComponents.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_networkControllers.begin(); it!=m_networkControllers.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_schedules.begin(); it!=m_schedules.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_internalLoads.begin(); it!=m_internalLoads.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlThermostat.begin(); it!=m_zoneControlThermostat.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlShading.begin(); it!=m_zoneControlShading.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneControlVentilationNatural.begin(); it!=m_zoneControlVentilationNatural.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneIdealHeatingCooling.begin(); it!=m_zoneIdealHeatingCooling.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_ventilationNatural.begin(); it!=m_ventilationNatural.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_infiltration.begin(); it!=m_infiltration.end(); ++it)
+		it->second.m_isReferenced = false;
+	for (auto it=m_zoneTemplates.begin(); it!=m_zoneTemplates.end(); ++it)
+		it->second.m_isReferenced = false;
+
+
+	// Now collect all directly referenced elements from project
+
+	std::set<const VICUS::AbstractDBElement*> referencedElements;
+
+	// -> Buildings
+	// Components and surface heating
 	for (const VICUS::ComponentInstance & ci : p.m_componentInstances) {
-		const VICUS::Component * c = m_components[ci.m_idComponent];
-		referencedSurfaceHeatings.insert(m_surfaceHeatings[ci.m_idSurfaceHeating]);
-		if (c == nullptr) continue;
-
-		referencedComponents.insert(c);
-		referencedConstructions.insert(m_constructions[c->m_idConstruction]);
-		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]);
-		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]);
+		referencedElements.insert(m_components[ci.m_idComponent]);
+		referencedElements.insert(m_surfaceHeatings[ci.m_idSurfaceHeating]);
 	}
 
-	// *** SubSurfaceComponentInstance, SubSurfaceComponent, Window and WindowGlazingSystems ***
-	for (VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances) {
-		const VICUS::SubSurfaceComponent * c = m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
-		referencedSubSurfaceComponents.insert(c);
-		if (c == nullptr) continue;
+	// SubSurfaceComponent
+	for (const VICUS::SubSurfaceComponentInstance & ci : p.m_subSurfaceComponentInstances)
+		referencedElements.insert(m_subSurfaceComponents[ci.m_idSubSurfaceComponent]);
 
-		referencedBC.insert(m_boundaryConditions[c->m_idSideABoundaryCondition]);
-		referencedBC.insert(m_boundaryConditions[c->m_idSideBBoundaryCondition]);
-
-		// collect referenced windows
-		const VICUS::Window * w = m_windows[c->m_idWindow];
-		if (w == nullptr) continue;
-
-		referencedWindows.insert(w);
-		referencedGlazingSystems.insert(m_windowGlazingSystems[w->m_idGlazingSystem]);
-	}
-
-	// *** SurfaceHeating and Pipes ***
-	for (const VICUS::SurfaceHeating * sh : referencedSurfaceHeatings) {
-		if (sh == nullptr) continue;
-		referencedNetworkPipes.insert(m_pipes[sh->m_idPipe]);
-	}
-
-	// *** ZoneTemplate ***
+	// ZoneTemplate
 	for (const VICUS::Building & b : p.m_buildings)
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (const VICUS::Room &  r : bl.m_rooms)
-				referencedZoneTemplates.insert(m_zoneTemplates[r.m_idZoneTemplate]);
+				referencedElements.insert(m_zoneTemplates[r.m_idZoneTemplate]);
 
-
-	// *** Materials ***
-	//
-	// referenced from constructions and window (frame+divider)
-
-	for (const VICUS::Construction * c : referencedConstructions) {
-		if (c == nullptr) continue;
-		for (const VICUS::MaterialLayer & ml : c->m_materialLayers)
-			referencedMaterials.insert(m_materials[ml.m_idMaterial]);
-	}
-	for (const VICUS::Window * c : referencedWindows) {
-		if (c == nullptr) continue;
-		referencedMaterials.insert(m_materials[c->m_frame.m_idMaterial]);
-		referencedMaterials.insert(m_materials[c->m_divider.m_idMaterial]);
+	// -> Networks
+	for (const VICUS::Network &net: p.m_geometricNetworks){
+		// fluids
+		referencedElements.insert(m_fluids[net.m_idFluid]);
+		// pipes
+		for (const VICUS::NetworkEdge &edge: net.m_edges)
+			referencedElements.insert(m_pipes[edge.m_idPipe]);
+		// sub networks
+		for (const VICUS::NetworkNode &node: net.m_nodes)
+			referencedElements.insert(m_subNetworks[node.m_idSubNetwork]);
 	}
 
+	// Update all children
+	updateElementChildren();
 
-	// *** everything that is referenced from zone templates
+	// Now collect all children elements of referenced elements
+	for (const VICUS::AbstractDBElement * el: referencedElements){
+		if (el != nullptr)
+			el->collectChildren(referencedElements);
+	}
 
-	for (const VICUS::ZoneTemplate * zt : referencedZoneTemplates) {
-		if(zt == nullptr)
-			continue;
+	// And finally remember all referenced elements
+	for (const VICUS::AbstractDBElement * el: referencedElements){
+		if (el != nullptr)
+			el->m_isReferenced = true;
+	}
+}
+
+
+void SVDatabase::updateElementChildren() {
+
+	// In this function, only DB element interdependencies are searched for and
+	// marked in m_isReferenced members.
+	// However, top-level elements that are referenced from project objects are not yet
+	// marked. This is done in function updateReferencedElements() which internally calls this
+	// function first.
+
+	// clear all children, parent relations
+	m_materials.clearChildren();
+	m_constructions.clearChildren();
+	m_windows.clearChildren();
+	m_windowGlazingSystems.clearChildren();
+	m_boundaryConditions.clearChildren();
+	m_components.clearChildren();
+	m_subSurfaceComponents.clearChildren();
+	m_surfaceHeatings.clearChildren();
+	m_pipes.clearChildren();
+	m_fluids.clearChildren();
+	m_networkComponents.clearChildren();
+	m_networkControllers.clearChildren();
+	m_subNetworks.clearChildren();
+	m_schedules.clearChildren();
+	m_internalLoads.clearChildren();
+	m_zoneControlThermostat.clearChildren();
+	m_zoneControlShading.clearChildren();
+	m_zoneControlVentilationNatural.clearChildren();
+	m_zoneIdealHeatingCooling.clearChildren();
+	m_ventilationNatural.clearChildren();
+	m_infiltration.clearChildren();
+	m_zoneTemplates.clearChildren();
+
+
+	// Now set all children relations
+
+	// *** Buildings ***
+
+	// referenced from constructions
+	for (auto it = m_constructions.begin(); it != m_constructions.end(); ++it) {
+		VICUS::Construction &c = it->second;
+		for (const VICUS::MaterialLayer & ml : c.m_materialLayers)
+			c.m_childrenRefs.insert(m_materials[ml.m_idMaterial]);
+	}
+	// referenced from window (frame+divider)
+	for (auto it = m_windows.begin(); it != m_windows.end(); ++it) {
+		VICUS::Window &c = it->second;
+		c.m_childrenRefs.insert(m_materials[c.m_frame.m_idMaterial]);
+		c.m_childrenRefs.insert(m_materials[c.m_divider.m_idMaterial]);
+	}
+
+	// referenced from components
+	for (auto it = m_components.begin(); it != m_components.end(); ++it) {
+		VICUS::Component &c = it->second;
+
+		// constructions
+		c.m_childrenRefs.insert(m_constructions[c.m_idConstruction]);
+
+		// BCs
+		VICUS::BoundaryCondition *bcA = m_boundaryConditions[c.m_idSideABoundaryCondition];
+		if (bcA != nullptr) {
+			c.m_childrenRefs.insert(bcA);
+			// schedules
+			if(bcA->m_heatConduction.m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled)
+				bcA->m_childrenRefs.insert(m_schedules[bcA->m_heatConduction.m_idSchedule]);
+		}
+
+		VICUS::BoundaryCondition *bcB = m_boundaryConditions[c.m_idSideBBoundaryCondition];
+		c.m_childrenRefs.insert(bcB);
+		if (bcB != nullptr) {
+			// schedules
+			if(bcB->m_heatConduction.m_otherZoneType == VICUS::InterfaceHeatConduction::OZ_Scheduled)
+				bcB->m_childrenRefs.insert(m_schedules[bcB->m_heatConduction.m_idSchedule]);
+		}
+	}
+
+	// referenced from SubSurfaceComponentInstance
+	for (auto it = m_subSurfaceComponents.begin(); it != m_subSurfaceComponents.end(); ++it) {
+		VICUS::SubSurfaceComponent &c = it->second;
+
+		// BCs
+		c.m_childrenRefs.insert(m_boundaryConditions[c.m_idSideABoundaryCondition]);
+		c.m_childrenRefs.insert(m_boundaryConditions[c.m_idSideBBoundaryCondition]);
+
+		// windows
+		VICUS::Window * w = m_windows[c.m_idWindow];
+		if (w != nullptr) {
+			c.m_childrenRefs.insert(w);
+			w->m_childrenRefs.insert(m_windowGlazingSystems[w->m_idGlazingSystem]);
+		}
+	}
+
+	// referenced from SurfaceHeatings
+	for (auto it = m_surfaceHeatings.begin(); it != m_surfaceHeatings.end(); ++it) {
+		VICUS::SurfaceHeating &sh = it->second;
+		sh.m_childrenRefs.insert(m_pipes[sh.m_idPipe]);
+	}
+
+	// referenced from zone templates
+	for (auto it = m_zoneTemplates.begin(); it != m_zoneTemplates.end(); ++it) {
+		VICUS::ZoneTemplate &zt = it->second;
+
 		for (unsigned int i=0; i<VICUS::ZoneTemplate::NUM_ST; ++i) {
-			IDType idType = zt->m_idReferences[i];
-			const VICUS::InternalLoad *intLoad = m_internalLoads[idType];
-			const VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[idType];
-			const VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
-			const VICUS::Infiltration *inf = m_infiltration[idType];
-			const VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
+			IDType idType = zt.m_idReferences[i];
+			VICUS::InternalLoad *intLoad = m_internalLoads[idType];
+			VICUS::ZoneControlThermostat * thermo = m_zoneControlThermostat[idType];
+			VICUS::ZoneIdealHeatingCooling * idealHeatCool = m_zoneIdealHeatingCooling[idType];
+			VICUS::Infiltration *inf = m_infiltration[idType];
+			VICUS::VentilationNatural *ventiNat = m_ventilationNatural[idType];
 			if (intLoad	!= nullptr) {
-				referencedInternalLoads.insert(intLoad);
+				zt.m_childrenRefs.insert(intLoad);
 				VICUS::ZoneTemplate::SubTemplateType tempType = (VICUS::ZoneTemplate::SubTemplateType)i;
 				switch (tempType) {
 					case VICUS::ZoneTemplate::ST_IntLoadPerson:
-						referencedSchedule.insert(m_schedules[intLoad->m_idActivitySchedule]);
-						referencedSchedule.insert(m_schedules[intLoad->m_idOccupancySchedule]);
+						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idActivitySchedule]);
+						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idOccupancySchedule]);
 					break;
-
 					case VICUS::ZoneTemplate::ST_IntLoadEquipment:
 					case VICUS::ZoneTemplate::ST_IntLoadLighting:
 					case VICUS::ZoneTemplate::ST_IntLoadOther:
-						referencedSchedule.insert(m_schedules[intLoad->m_idPowerManagementSchedule]);
+						intLoad->m_childrenRefs.insert(m_schedules[intLoad->m_idPowerManagementSchedule]);
 					break;
-
 					case VICUS::ZoneTemplate::ST_ControlThermostat:
 					case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
 					case VICUS::ZoneTemplate::ST_Infiltration:
@@ -335,87 +484,58 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 				}
 			}
 			else if(thermo != nullptr) {
-				referencedThermostats.insert(thermo);
-
-				referencedSchedule.insert(m_schedules[thermo->m_idHeatingSetpointSchedule]);
-				referencedSchedule.insert(m_schedules[thermo->m_idCoolingSetpointSchedule]);
+				zt.m_childrenRefs.insert(thermo);
+				thermo->m_childrenRefs.insert(m_schedules[thermo->m_idHeatingSetpointSchedule]);
+				thermo->m_childrenRefs.insert(m_schedules[thermo->m_idCoolingSetpointSchedule]);
 			}
 			else if (inf != nullptr) {
-				referencedInfiltration.insert(inf);
+				zt.m_childrenRefs.insert(inf);
 			}
 			else if (ventiNat != nullptr) {
-				referencedVentilation.insert(ventiNat);
-				referencedSchedule.insert(m_schedules[ventiNat->m_idSchedule]);
+				zt.m_childrenRefs.insert(ventiNat);
+				ventiNat->m_childrenRefs.insert(m_schedules[ventiNat->m_idSchedule]);
 			}
 			else if(idealHeatCool != nullptr)
-				referencedIdealHeatingCooling.insert(idealHeatCool);
+				zt.m_childrenRefs.insert(idealHeatCool);
 		}
 	}
 
 
-	// iterate through networks
-	for (const VICUS::Network &net: p.m_geometricNetworks){
+	// *** Networks elements ***
 
-		// fluids
-		referencedNetworkFluids.insert(m_fluids[net.m_idFluid]);
+	// referenced from  sub networks
+	for (auto it=m_subNetworks.begin(); it!=m_subNetworks.end(); ++it) {
 
-		// pipes
-		for (const VICUS::NetworkEdge &edge: net.m_edges)
-			referencedNetworkPipes.insert(m_pipes[edge.m_idPipe]);
+		VICUS::SubNetwork &sub = it->second;
 
-		// sub networks
-		for (const VICUS::NetworkNode &node: net.m_nodes)
-			referencedSubNetworks.insert(m_subNetworks[node.m_idSubNetwork]);
-	}
+		for (const VICUS::NetworkElement &elem: sub.m_elements){
+			// network controller
+			VICUS::NetworkController * ctr = m_networkControllers[elem.m_controlElementId];
+			if (ctr != nullptr)
+				sub.m_childrenRefs.insert(ctr);
 
-	// iterate through collected sub networks
-	for (const VICUS::SubNetwork *sub: referencedSubNetworks) {
-		if (sub == nullptr) continue;
+			// network components
+			VICUS::NetworkComponent * comp = m_networkComponents[elem.m_componentId];
+			if (comp != nullptr) {
+				sub.m_childrenRefs.insert(comp);
 
-		// components and controllers referenced from elements
-		for (const NANDRAD::HydraulicNetworkElement &el: sub->m_elements) {
-			referencedNetworkComponents.insert(m_networkComponents[el.m_componentId]);
-			referencedNetworkControllers.insert(m_networkControllers[el.m_controlElementId]);
+				// schedules
+				for (unsigned int i: comp->m_scheduleIds){
+					VICUS::Schedule * sched = m_schedules[i];
+					if (sched != nullptr)
+						comp->m_childrenRefs.insert(sched);
+				}
+
+				// pipes
+				VICUS::NetworkPipe * pipe = m_pipes[comp->m_pipePropertiesId];
+				if (pipe != nullptr)
+					comp->m_childrenRefs.insert(pipe);
+			}
 		}
 	}
-
-	// iterate through components
-	for (const VICUS::NetworkComponent *comp: referencedNetworkComponents) {
-		if (comp == nullptr) continue;
-
-		// schedules
-		for (unsigned int i: comp->m_scheduleIds)
-			referencedSchedule.insert(m_schedules[i]);
-	}
-
-
-	// *** transfer collected objects to project's embedded database ***
-
-	storeVector(p.m_embeddedDB.m_materials, referencedMaterials);
-	storeVector(p.m_embeddedDB.m_constructions, referencedConstructions);
-	storeVector(p.m_embeddedDB.m_windows, referencedWindows);
-	storeVector(p.m_embeddedDB.m_windowGlazingSystems, referencedGlazingSystems);
-	storeVector(p.m_embeddedDB.m_boundaryConditions, referencedBC);
-	storeVector(p.m_embeddedDB.m_components, referencedComponents);
-	storeVector(p.m_embeddedDB.m_subSurfaceComponents, referencedSubSurfaceComponents);
-	storeVector(p.m_embeddedDB.m_surfaceHeatings, referencedSurfaceHeatings);
-
-	storeVector(p.m_embeddedDB.m_pipes, referencedNetworkPipes);
-	storeVector(p.m_embeddedDB.m_fluids, referencedNetworkFluids);
-	storeVector(p.m_embeddedDB.m_networkComponents, referencedNetworkComponents);
-	storeVector(p.m_embeddedDB.m_networkControllers, referencedNetworkControllers);
-	storeVector(p.m_embeddedDB.m_subNetworks, referencedSubNetworks);
-
-	storeVector(p.m_embeddedDB.m_schedules, referencedSchedule);
-	storeVector(p.m_embeddedDB.m_internalLoads, referencedInternalLoads);
-	storeVector(p.m_embeddedDB.m_zoneControlThermostats, referencedThermostats);
-	storeVector(p.m_embeddedDB.m_zoneControlShading, referencedControlShading);
-	storeVector(p.m_embeddedDB.m_zoneControlVentilationNatural, referencedControlNaturalVentilation);
-	storeVector(p.m_embeddedDB.m_zoneIdealHeatingCooling, referencedIdealHeatingCooling);
-	storeVector(p.m_embeddedDB.m_ventilationNatural, referencedVentilation);
-	storeVector(p.m_embeddedDB.m_infiltration, referencedInfiltration);
-	storeVector(p.m_embeddedDB.m_zoneTemplates, referencedZoneTemplates);
 }
+
+
 
 // local search function to identify duplicates in DBs
 template <typename T>
@@ -488,6 +608,7 @@ void replaceID(unsigned int oldID, unsigned int newId, unsigned int & idVar, T &
 		db.m_modified = true;
 	}
 }
+
 
 void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID) {
 	// depending on database type, we need to replace references to the element on other dbs as well
@@ -610,14 +731,18 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			// referenced from project
 			if (SVProjectHandler::instance().isValid()) {
 				for (const auto & p : project().m_geometricNetworks) {
-					VICUS::Network & c = const_cast<VICUS::Network &>(p); // const-cast is ok here
-					for (unsigned int & np : c.m_availablePipes)
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (unsigned int & np : net.m_availablePipes)
 						if (np == elementID)
 							np = replacementElementID;
-					for (VICUS::NetworkEdge & ne : c.m_edges)
+					for (VICUS::NetworkEdge & ne : net.m_edges)
 						if (ne.m_idPipe == elementID)
 							ne.m_idPipe = replacementElementID;
 				}
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_pipePropertiesId, m_networkComponents);
 			}
 			for (const auto & p : m_surfaceHeatings) {
 				VICUS::SurfaceHeating & c = const_cast<VICUS::SurfaceHeating &>(p.second); // const-cast is ok here
@@ -626,27 +751,54 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 
 			m_pipes.remove(elementID);
 			m_pipes.m_modified = true;
-			// TODO : Hauke, check if all references to pipes have been handled
 		} break;
 
 		case SVDatabase::DT_Fluids: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					replaceID(elementID, replacementElementID, net.m_idFluid, m_fluids);
+				}
+			}
+			m_fluids.remove(elementID);
+			m_fluids.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkComponents: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_componentId, m_subNetworks);
+			}
+			m_networkComponents.remove(elementID);
+			m_networkComponents.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_NetworkControllers: {
-			// TODO : Hauke
+			for (const auto & p : m_subNetworks) {
+				VICUS::SubNetwork & s = const_cast<VICUS::SubNetwork &>(p.second); // const-cast is ok here
+				for (VICUS::NetworkElement & el: s.m_elements)
+					replaceID(elementID, replacementElementID, el.m_controlElementId, m_subNetworks);
+			}
+			m_networkControllers.remove(elementID);
+			m_networkControllers.m_modified = true;
 		} break;
 
 		case SVDatabase::DT_SubNetworks: {
-			// TODO : Hauke
+			if (SVProjectHandler::instance().isValid()) {
+				for (const auto & p : project().m_geometricNetworks) {
+					VICUS::Network & net = const_cast<VICUS::Network &>(p); // const-cast is ok here
+					for (VICUS::NetworkNode & no: net.m_nodes){
+						if (no.m_idSubNetwork == elementID)
+							no.m_idSubNetwork = replacementElementID;
+					}
+				}
+			}
+			m_subNetworks.remove(elementID);
+			m_subNetworks.m_modified = true;
 		} break;
 
 
-		// TODO : Hauke, add schedule references in network stuff
 		case SVDatabase::DT_Schedules:
 			for (const auto & p : m_internalLoads) {
 				VICUS::InternalLoad & c = const_cast<VICUS::InternalLoad &>(p.second); // const-cast is ok here
@@ -668,6 +820,11 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 				VICUS::ZoneControlNaturalVentilation & c = const_cast<VICUS::ZoneControlNaturalVentilation &>(p.second); // const-cast is ok here
 				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_ST; ++j)
 					replaceID(elementID, replacementElementID, c.m_idSchedules[j], m_zoneControlVentilationNatural);
+			}
+			for (const auto & p : m_networkComponents) {
+				VICUS::NetworkComponent & c = const_cast<VICUS::NetworkComponent &>(p.second); // const-cast is ok here
+				for (unsigned int & id: c.m_scheduleIds)
+					replaceID(elementID, replacementElementID, id, m_networkComponents);
 			}
 
 			m_schedules.remove(elementID);
@@ -763,6 +920,86 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 }
 
 
+void SVDatabase::removeLocalElements() {
+	m_materials.removeLocalElements();
+	m_constructions.removeLocalElements();
+	m_windows.removeLocalElements();
+	m_windowGlazingSystems.removeLocalElements();
+	m_boundaryConditions.removeLocalElements();
+	m_components.removeLocalElements();
+	m_subSurfaceComponents.removeLocalElements();
+	m_surfaceHeatings.removeLocalElements();
+	m_pipes.removeLocalElements();
+	m_fluids.removeLocalElements();
+	m_networkComponents.removeLocalElements();
+	m_networkControllers.removeLocalElements();
+	m_subNetworks.removeLocalElements();
+	m_schedules.removeLocalElements();
+	m_internalLoads.removeLocalElements();
+	m_zoneControlThermostat.removeLocalElements();
+	m_zoneControlShading.removeLocalElements();
+	m_zoneControlVentilationNatural.removeLocalElements();
+	m_zoneIdealHeatingCooling.removeLocalElements();
+	m_ventilationNatural.removeLocalElements();
+	m_infiltration.removeLocalElements();
+	m_zoneTemplates.removeLocalElements();
+}
+
+
+void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbType, const VICUS::Project &p) {
+	updateReferencedElements(p);
+
+	switch (dbType) {
+		case DT_Materials:
+			m_materials.removeNotReferencedLocalElements(); break;
+		case DT_Constructions:
+			m_constructions.removeNotReferencedLocalElements(); break;
+		case DT_Windows:
+			m_windows.removeNotReferencedLocalElements(); break;
+		case DT_WindowGlazingSystems:
+			m_windowGlazingSystems.removeNotReferencedLocalElements(); break;
+		case DT_BoundaryConditions:
+			m_boundaryConditions.removeNotReferencedLocalElements(); break;
+		case DT_Components:
+			m_components.removeNotReferencedLocalElements(); break;
+		case DT_SubSurfaceComponents:
+			m_subSurfaceComponents.removeNotReferencedLocalElements(); break;
+		case DT_SurfaceHeating:
+			m_surfaceHeatings.removeNotReferencedLocalElements(); break;
+		case DT_Pipes:
+			m_pipes.removeNotReferencedLocalElements(); break;
+		case DT_Fluids:
+			m_fluids.removeNotReferencedLocalElements(); break;
+		case DT_SubNetworks:
+			m_subNetworks.removeNotReferencedLocalElements(); break;
+		case DT_NetworkControllers:
+			m_networkControllers.removeNotReferencedLocalElements();  break;
+		case DT_NetworkComponents:
+			m_networkComponents.removeNotReferencedLocalElements(); break;
+		case DT_Schedules:
+			m_schedules.removeNotReferencedLocalElements(); break;
+		case DT_InternalLoads:
+			m_internalLoads.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlThermostat:
+			m_zoneControlThermostat.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlShading:
+			m_zoneControlShading.removeNotReferencedLocalElements(); break;
+		case DT_ZoneControlNaturalVentilation:
+			m_zoneControlVentilationNatural.removeNotReferencedLocalElements(); break;
+		case DT_ZoneIdealHeatingCooling:
+			m_zoneIdealHeatingCooling.removeNotReferencedLocalElements(); break;
+		case DT_VentilationNatural:
+			m_ventilationNatural.removeNotReferencedLocalElements(); break;
+		case DT_Infiltration:
+			m_infiltration.removeNotReferencedLocalElements(); break;
+		case DT_ZoneTemplates:
+			m_zoneTemplates.removeNotReferencedLocalElements(); break;
+		case NUM_DT:
+			break;
+	}
+}
+
+
 const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const {
 	IBK_ASSERT(st < VICUS::ZoneTemplate::NUM_ST);
 	unsigned int id = idReferenceArray[st];
@@ -784,5 +1021,64 @@ const VICUS::AbstractDBElement * SVDatabase::lookupSubTemplate(VICUS::ZoneTempla
 
 	return nullptr;
 }
+
+
+void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
+								   std::set<VICUS::AbstractDBElement *> &localChildren) {
+
+	updateElementChildren();
+
+	Q_ASSERT(id!=VICUS::INVALID_ID);
+
+	switch (dbType) {
+		case DT_Materials:
+			m_materials[id]->collectLocalChildren(localChildren); break;
+		case DT_Constructions:
+			m_constructions[id]->collectLocalChildren(localChildren); break;
+		case DT_Windows:
+			m_windows[id]->collectLocalChildren(localChildren); break;
+		case DT_WindowGlazingSystems:
+			m_windowGlazingSystems[id]->collectLocalChildren(localChildren); break;
+		case DT_BoundaryConditions:
+			m_boundaryConditions[id]->collectLocalChildren(localChildren); break;
+		case DT_Components:
+			m_components[id]->collectLocalChildren(localChildren); break;
+		case DT_SubSurfaceComponents:
+			m_subSurfaceComponents[id]->collectLocalChildren(localChildren); break;
+		case DT_SurfaceHeating:
+			m_surfaceHeatings[id]->collectLocalChildren(localChildren); break;
+		case DT_Pipes:
+			m_pipes[id]->collectLocalChildren(localChildren); break;
+		case DT_Fluids:
+			m_fluids[id]->collectLocalChildren(localChildren); break;
+		case DT_SubNetworks:
+			m_subNetworks[id]->collectLocalChildren(localChildren); break;
+		case DT_NetworkControllers:
+			m_networkControllers[id]->collectLocalChildren(localChildren);  break;
+		case DT_NetworkComponents:
+			m_networkComponents[id]->collectLocalChildren(localChildren); break;
+		case DT_Schedules:
+			m_schedules[id]->collectLocalChildren(localChildren); break;
+		case DT_InternalLoads:
+			m_internalLoads[id]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlThermostat:
+			m_zoneControlThermostat[id]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlShading:
+			m_zoneControlShading[id]->collectLocalChildren(localChildren); break;
+		case DT_ZoneControlNaturalVentilation:
+			m_zoneControlVentilationNatural[id]->collectLocalChildren(localChildren); break;
+		case DT_ZoneIdealHeatingCooling:
+			m_zoneIdealHeatingCooling[id]->collectLocalChildren(localChildren); break;
+		case DT_VentilationNatural:
+			m_ventilationNatural[id]->collectLocalChildren(localChildren); break;
+		case DT_Infiltration:
+			m_infiltration[id]->collectLocalChildren(localChildren); break;
+		case DT_ZoneTemplates:
+			m_zoneTemplates[id]->collectLocalChildren(localChildren); break;
+		case NUM_DT:
+			break;
+	}
+}
+
 
 

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::SolverParameter Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::SolverParameter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -96,7 +97,6 @@ Public Types</h2></td></tr>
 <br />
 &#160;&#160;<b>P_KinsolRelTol</b>, 
 <b>P_KinsolAbsTol</b>, 
-<b>P_IntegralWeightsFactor</b>, 
 <b>NUM_P</b>
 <br />
  }<tr class="memdesc:a3e981b76f0723da7db98588d2d187570"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter.  <a href="classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570">More...</a><br /></td></tr>
@@ -151,12 +151,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:acbbe376446cfc3ee75fec68455aa3c51"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SolverParameter.html#acbbe376446cfc3ee75fec68455aa3c51">initDefaults</a> ()</td></tr>
 <tr class="memdesc:acbbe376446cfc3ee75fec68455aa3c51"><td class="mdescLeft">&#160;</td><td class="mdescRight">Init default values (called before readXML()).  <a href="#acbbe376446cfc3ee75fec68455aa3c51">More...</a><br /></td></tr>
 <tr class="separator:acbbe376446cfc3ee75fec68455aa3c51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ede9b298cd7b45c9b1bc26d8c7534bc"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SolverParameter.html#a3ede9b298cd7b45c9b1bc26d8c7534bc">checkParameters</a> () const</td></tr>
+<tr class="memdesc:a3ede9b298cd7b45c9b1bc26d8c7534bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges.  <a href="#a3ede9b298cd7b45c9b1bc26d8c7534bc">More...</a><br /></td></tr>
+<tr class="separator:a3ede9b298cd7b45c9b1bc26d8c7534bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a696efd98ba5d94b5d9617783bf6bf560"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SolverParameter.html#a696efd98ba5d94b5d9617783bf6bf560">m_para</a> [NUM_P]</td></tr>
-<tr class="memdesc:a696efd98ba5d94b5d9617783bf6bf560"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of parameters.  <a href="#a696efd98ba5d94b5d9617783bf6bf560">More...</a><br /></td></tr>
-<tr class="separator:a696efd98ba5d94b5d9617783bf6bf560"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41d22f4d41738703c6cd6acf52be83cc"><td class="memItemLeft" align="right" valign="top">IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SolverParameter.html#a41d22f4d41738703c6cd6acf52be83cc">m_para</a> [NUM_P]</td></tr>
+<tr class="memdesc:a41d22f4d41738703c6cd6acf52be83cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of parameters.  <a href="#a41d22f4d41738703c6cd6acf52be83cc">More...</a><br /></td></tr>
+<tr class="separator:a41d22f4d41738703c6cd6acf52be83cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a016b242fe2570df134a70e21a83d4b0e"><td class="memItemLeft" align="right" valign="top">IBK::IntPara&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SolverParameter.html#a016b242fe2570df134a70e21a83d4b0e">m_intPara</a> [NUM_IP]</td></tr>
 <tr class="memdesc:a016b242fe2570df134a70e21a83d4b0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of integer value parameters.  <a href="#a016b242fe2570df134a70e21a83d4b0e">More...</a><br /></td></tr>
 <tr class="separator:a016b242fe2570df134a70e21a83d4b0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,7 +225,7 @@ Public Attributes</h2></td></tr>
 
 <p>Integer parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00070">70</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00069">69</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
 
 </div>
 </div>
@@ -239,9 +242,8 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Flags. </p>
-<dl class="section note"><dt>Note</dt><dd>A flag that is not set is defined as off. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00083">83</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00080">80</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
 
 </div>
 </div>
@@ -259,7 +261,7 @@ Public Attributes</h2></td></tr>
 
 <p>Enumeration of available integrators. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00091">91</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +279,7 @@ Public Attributes</h2></td></tr>
 
 <p>Enumeration of available preconditioners, to be used with iterative LES solvers. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00110">110</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8h_source.html#l00107">107</a> of file <a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a>.</p>
 
 </div>
 </div>
@@ -300,19 +302,36 @@ Public Attributes</h2></td></tr>
 <p>Init default values (called before readXML()). </p>
 <dl class="section note"><dt>Note</dt><dd>These values will be overwritten in readXML() when the respective property is set in the project file. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SolverParameter_8cpp_source.html#l00035">35</a> of file <a class="el" href="NANDRAD__SolverParameter_8cpp_source.html">NANDRAD_SolverParameter.cpp</a>.</p>
-
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a696efd98ba5d94b5d9617783bf6bf560"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a696efd98ba5d94b5d9617783bf6bf560">&#9670;&nbsp;</a></span>m_para</h2>
+<a id="a3ede9b298cd7b45c9b1bc26d8c7534bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ede9b298cd7b45c9b1bc26d8c7534bc">&#9670;&nbsp;</a></span>checkParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE IBK::Parameter NANDRAD::SolverParameter::m_para[NUM_P]</td>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::SolverParameter::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a41d22f4d41738703c6cd6acf52be83cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41d22f4d41738703c6cd6acf52be83cc">&#9670;&nbsp;</a></span>m_para</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBK::Parameter NANDRAD::SolverParameter::m_para[NUM_P]</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -416,17 +435,16 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__SolverParameter_8h_source.html">NANDRAD_SolverParameter.h</a></li>
-<li><a class="el" href="NANDRAD__SolverParameter_8cpp_source.html">NANDRAD_SolverParameter.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1SolverParameter.html">SolverParameter</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1SolverParameter.html">SolverParameter</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

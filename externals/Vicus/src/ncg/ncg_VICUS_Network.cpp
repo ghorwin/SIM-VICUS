@@ -51,10 +51,12 @@ void Network::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "idFluid")
-				m_idFluid = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "idFluid")
+				m_idFluid = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "modelType")
 				try {
 					m_modelType = (ModelType)KeywordList::Enumeration("Network::ModelType", attrib->ValueStr());
@@ -63,8 +65,6 @@ void Network::readXML(const TiXmlElement * element) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
 				}
-			else if (attribName == "visible")
-				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -145,9 +145,22 @@ void Network::readXML(const TiXmlElement * element) {
 				m_scaleEdges = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "SelectedForSimulation")
 				m_selectedForSimulation = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "HasHeatExchangeWithGround")
+				m_hasHeatExchangeWithGround = NANDRAD::readPODElement<bool>(c, cName);
 			else if (cName == "Type") {
 				try {
 					m_type = (NetworkType)KeywordList::Enumeration("Network::NetworkType", c->GetText());
+				}
+				catch (IBK::Exception & ex) {
+					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
+						IBK::FormatString("Invalid or unknown keyword '"+std::string(c->GetText())+"'.") ), FUNC_ID);
+				}
+			}
+			else if (cName == "NetworkBuriedPipeProperties")
+				m_buriedPipeProperties.readXML(c);
+			else if (cName == "PipeModel") {
+				try {
+					m_pipeModel = (PipeModel)KeywordList::Enumeration("Network::PipeModel", c->GetText());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row()).arg(
@@ -175,14 +188,14 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (m_idFluid != VICUS::INVALID_ID)
-		e->SetAttribute("idFluid", IBK::val2string<unsigned int>(m_idFluid));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_visible != Network().m_visible)
+			e->SetAttribute("visible", "true");
+	if (m_idFluid != VICUS::INVALID_ID)
+		e->SetAttribute("idFluid", IBK::val2string<unsigned int>(m_idFluid));
 	if (m_modelType != NUM_MT)
 		e->SetAttribute("modelType", KeywordList::Keyword("Network::ModelType",  m_modelType));
-	if (m_visible != Network().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	if (!m_nodes.empty()) {
 		TiXmlElement * child = new TiXmlElement("Nodes");
@@ -237,6 +250,12 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleEdges", nullptr, std::string(), IBK::val2string<double>(m_scaleEdges));
 	if (m_selectedForSimulation != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "SelectedForSimulation", nullptr, std::string(), IBK::val2string<unsigned int>(m_selectedForSimulation));
+	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
+
+	m_buriedPipeProperties.writeXML(e);
+
+	if (m_pipeModel != NUM_PM)
+		TiXmlElement::appendSingleAttributeElement(e, "PipeModel", nullptr, std::string(), KeywordList::Keyword("Network::PipeModel",  m_pipeModel));
 	return e;
 }
 

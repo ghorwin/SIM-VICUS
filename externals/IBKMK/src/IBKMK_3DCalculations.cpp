@@ -217,61 +217,74 @@ void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal, const Ve
 }
 
 
-// Eleminate one coolinear point. If a point is erased return true.
-static bool eleminateColinearPtsHelper(std::vector<IBKMK::Vector3D> &polyline) {
-
-	if(polyline.size()<=2)
-		return false;
-
-	const double eps = 1e-4;
-	unsigned int polySize = (unsigned int)polyline.size();
-
-	for(unsigned int idx=0; idx<polySize; ++idx){
-		unsigned int idx0 = idx-1;
-		if(idx==0)
-			idx0 = polySize-1;
-
-		IBKMK::Vector3D a = polyline.at(idx0) - polyline.at(idx);
-		IBKMK::Vector3D b = polyline.at((idx+1) % polySize) - polyline.at(idx);
-		a.normalize();
-		b.normalize();
-
-		double cosAngle = a.scalarProduct(b);
-
-
-		// TODO : proper rounding error check!
-		if(cosAngle < -1+eps || cosAngle > 1-eps){
-			polyline.erase(polyline.begin()+idx);
-			return true;
-		}
-	}
-	return false;
-}
-
-
-void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon) {
-	if(polygon.size()<2)
+void eliminateCollinearPoints(std::vector<IBKMK::Vector3D> & polygon, double epsilon) {
+	if (polygon.size()<2)
 		return;
-	//check for duplicate points in polyline and remove duplicates
-	for (int i=(int)polygon.size()-1; i>=0; --i) {
-		if(polygon.size()<2)
-			return;
-		size_t j=(size_t)i-1;
-		if(i==0)
-			j=polygon.size()-1;
-		// TODO : proper rounding error check!
-		if((polygon[(size_t)i]-polygon[j]).magnitude()<0.001)
-			polygon.erase(polygon.begin()+i);
+
+	// check for duplicate points in polyline and remove duplicates
+
+	// the algorithm works as follows:
+	// - we start at current index 0
+	// - we compare the vertex at current index with that of the next vertex
+	//    - if both are close enough together, we elminate the current vertex and try again
+	//    - otherwise both vertexes are ok, and we advance the current index
+	// - algorithm is repeated until we have processed the last point of the polygon
+	// Note: when checking the last point of the polygon, we compare it with the first vertex (using modulo operation).
+	unsigned int i=0;
+	double eps2 = epsilon*epsilon;
+	while (polygon.size() > 1 && i < polygon.size()) {
+		// distance between current and next point
+		IBKMK::Vector3D diff = polygon[i] - polygon[(i+1) % polygon.size()]; // Note: when i = size-1, we take different between last and first element
+		if (diff.magnitudeSquared() < eps2)
+			polygon.erase(polygon.begin()+i); // remove point and try again
+		else
+			++i;
 	}
 
-	bool tryAgain =true;
-	while (tryAgain)
-		tryAgain = eleminateColinearPtsHelper(polygon);
+	// Now we have only different points. We process the polygon again and remove all vertexes between collinear edges.
+	// The algorithm uses the following logic:
+	//    - take 3 subsequent vertexes, compute lines from vertex 1-2 and 1-3
+	//    - compute projection of line 1 onto 2
+	//    - compute projected end point of line 1 in line 2
+	//    - if distance between projected point and original vertex 2 is < epsison, remove vertex 2
+
+	i=0;
+	while (polygon.size() > 1 && i < polygon.size()) {
+		// we check if we can remove the current vertex i
+		// take the last and next vertex
+		const IBKMK::Vector3D & last = polygon[(i + polygon.size() - 1) % polygon.size()];
+		const IBKMK::Vector3D & next = polygon[(i+1) % polygon.size()];
+		// compute vertex a and b and normalize
+		IBKMK::Vector3D a = next - last; // vector to project on
+		IBKMK::Vector3D b = polygon[i] - last; // vector that shall be projected
+		double anorm2 = a.magnitudeSquared();
+		if (anorm2 < eps2) {
+			// next and last vectors are nearly identical, hence we have a "spike" geometry and need to remove
+			// both the spike and one of the identical vertexes
+			polygon.erase(polygon.begin()+i); // remove point (might be the last)
+			if (i < polygon.size())
+				polygon.erase(polygon.begin()+i); // not the last point, remove next as well
+			else
+				polygon.erase(polygon.begin()+i-1); // remove previous point
+			continue;
+		}
+
+		// compute projection vector
+		IBKMK::Vector3D astar = a.scalarProduct(b)/anorm2 * a;
+		// get vertex along vector b
+		astar += last;
+		// compute difference
+		IBKMK::Vector3D diff = polygon[i] - astar;
+		if (diff.magnitudeSquared() < eps2)
+			polygon.erase(polygon.begin()+i); // remove point and try again
+		else
+			++i;
+	}
 }
 
 
 bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
-		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist)
+		const IBKMK::Vector3D & d, IBKMK::Vector3D & intersectionPoint, double & dist, bool checkNormal)
 {
 	// plane is given by offset 'a' and normal vector 'normal'.
 	// line is given by point 'p' and its line vector 'd'
@@ -285,7 +298,7 @@ bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & n
 		return false;
 
 	// Condition 1: same direction of normal vectors?
-	if (angle >= 0)
+	if (checkNormal && angle >= 0)
 		return false; // no intersection possible
 
 	double t = (a - p).scalarProduct(normal) / d_dot_normal;

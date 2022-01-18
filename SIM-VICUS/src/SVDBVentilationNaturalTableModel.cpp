@@ -98,6 +98,12 @@ QVariant SVDBVentilationNaturalTableModel::data ( const QModelIndex & index, int
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -182,6 +188,16 @@ void SVDBVentilationNaturalTableModel::setColumnResizeModes(QTableView * tableVi
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBVentilationNaturalTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBVentilationNaturalTableModel::setItemLocal(const QModelIndex &index, bool local) {
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_ventilationNatural[id]->m_local = local;
+	m_db->m_ventilationNatural.m_modified = true;
+	setItemModified(id);
 }
 
 

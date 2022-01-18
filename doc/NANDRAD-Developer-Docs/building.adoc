@@ -8,6 +8,11 @@ Building the code is fairly easy and only requires two steps:
 
 For actual development we recommend use of Qt Creator with the prepared <<qmake,qmake build system>>.
 
+[TIP]
+====
+If you are serious with own development of SIM-VICUS/NANDRAD I strongly suggest using Linux and Qt Creator - building the code on Linux is way faster than on Windows/Mac, and code insights and clang analysis in Qt Creator (including refactoring features) are much much better than in Visual Studio and/or XCode. But that's just my humble opinion after a "few" years of working with all of these :-)
+====
+
 ## Setting up the build environment
 
 Generally, you need a fairly up-to-date C/C++ compiler (that means: `c++11` features should be supported). Also, you need the Qt libraries. And you need cmake. That's it, nothing else!
@@ -18,25 +23,35 @@ There are build scripts for different VC and Qt versions. To keep things simple,
 
 [CAUTION]
 ====
-Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not distrupt other peoples work by requiring alternative installation directories/tool versions.
+Team development works best if all use the same compilers and library versions. If you change build scripts and commit them to the repository, always make sure that you do not disrupt other peoples work by requiring alternative installation directories/tool versions.
 ====
 
 Required versions:
 
-- Visual Studio 2019 Community Edition
+- Visual Studio 2019 (Community Edition suffices)
 - Qt 15.5.2 
 
 Installation steps:
 
-1. Download and install Visual Studio 2019 Community Online Installer from: https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16# - Once downloaded, install only basic development option.
+1. Download and install Visual Studio 2019 Community Online Installer from: https://visualstudio.microsoft.com/de/thank-you-downloading-visual-studio/?sku=Community&rel=16# - Once downloaded, you only need to install basic development options.
++
+.Minimal selection of Visual Studio components to be installed
+image::vc2019_install_options.png[]
++
+(Profiling tools are optional, profiling can be done very well with `valgrind` on Linux).
+
 
 2. Download and install cmake. Either download from https://cmake.org or use _chocolatey_ (https://chocolatey.org) and run
 
     choco install cmake
 
-3. Download and install Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the *5.15.2* variant.
+3. Download and install JOM (newer versions of the Qt maintenance tool do no longer install JOM together with QtCreator). Either download from https://cmake.org or use _chocolatey_ (https://chocolatey.org) and run
 
-4. Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly): https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019
+    choco install jom
+
+4. Download and install Qt Online Installer (https://www.qt.io/download-qt-installer) and in the installation program select the *5.15.2* variant.
+
+5. Download the VC Qt Tools addin (not really necessary for command line builds, but just in case you want to do development in VC directly - though I wouldn't recommend it): https://marketplace.visualstudio.com/items?itemName=TheQtCompany.QtVisualStudioTools2019
 
 
 Also, install a suitable git client (SmartGit is recommendet). Don't forget to specify your git user name and email (user settings).
@@ -52,7 +67,11 @@ Also, install git or a suitable git client (SmartGit is recommendet). Don't forg
     > git config --global user.name "Your name here"
     > git config --global user.email "your_email@example.com"
 
-Note: On Ubuntu 18.04 LTS the default Qt version is 5.9.5, so that is the oldest Qt version we are going to support.
+[NOTE]
+====
+On Ubuntu 18.04 LTS the default Qt version is 5.9.5, so that is the oldest Qt version we are going to support. Whenever deprecated features are used to maintain compatibility with Qt 5.9.5, and where newer Qt features are available in more recent versions of Qt, the use of `#if QT_VERSION >= 0x050a00` (and similar) is possible.
+====
+
 
 ### MacOS
 
@@ -67,7 +86,7 @@ _Homebrew_ can be used to install other programs (see https://brew.sh). Then
 
 ====
 
-On El Capitan (MacOSX 10.11) Qt 5.11.3 is the last version to work. So you need to manually download this version. First select the Qt online installer (https://www.qt.io/download-qt-installer)  and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific compilation problems.
+On El Capitan (MacOSX 10.11) Qt 5.11.3 is the *last version* to work. So you need to manually download this version. First select the Qt online installer (https://www.qt.io/download-qt-installer)  and select version 5.11.3. This ensures that all developers use the same Qt version and avoid Qt-specific compilation problems.
     
 Parallel gcc OpenMP code require a bit of extra work (to be documented later :-)
 
@@ -111,10 +130,64 @@ Once the build has completed, the executables are copied into the `bin/release` 
 
 On Windows, you may want to run `bin/release_x64/CreateDeploy_VC2019.bat` batch file to fetch all required DLLs (so that you can start the application by double-clicking the executables).
 
+[TIP]
+====
+In case of build problems, inspect the build scripts and the path variables therein. You may need to set some environment variables yourself before running the scripts.
+====
+
 [[qmake]]
 ## Development with Qt Creator
 
 Development is best done with Qt Creator (it is way more efficient to work with than Visual Studio or Emacs/VI). The source code is split into many different libraries and executables, so you best open the prepared session project file `build/Qt/SIM-VICUS.pro`.
 
 If you start working with Qt Creator, please mind the configuration rules described in <<qt_creator>>.
+
+
+[[vc]]
+## Development with Visual Studio on Windows
+
+To avoid the overhead of maintaining yet another build system (so far we have qmake/Qt Creator and cmake), we do not have Visual Studio solutions or project files. However, with the help of cmake you can easily generate VC project files for analysis of the code in Visual Studio.
+
+Open a Visual Studio command line, ensure that `cmake` is in the path and then change into the `SIM-VICUS/build/cmake` directory. There, create a subdirectory, for example `vc`, change into this subdir, and run `cmake`.
+
+Here are the commands when starting from within `SIM-VICUS/build/cmake`:
+
+```batch
+:: run from SIM-VICUS\build\cmake
+
+:: load VC compiler path
+"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+
+:: set CMAKE search prefix to find Qt library
+set CMAKE_PREFIX_PATH=C:\Qt\5.15.2\msvc2019_64
+
+:: create a subdirectory 'vc' and change into it
+mkdir vc
+cd vc
+
+:: generate cmake build system files
+cmake -G "Visual Studio 16 2019" -A x64 ..
+
+```
+
+This generates build system files for Visual Studio 2019 64-bit.
+
+[TIP]
+====
+If you have a different version of Visual Studio installed, use the respective project file generator as described in https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2016%202019.html[cmake-vc-generators]
+====
+
+The command will generate a set of `*.vcproj` files and an `sln` file:
+
+.Minimal selection of Visual Studio components to be installed
+image::cmakevsgen.png[]
+
+You can open that and start developing in VC. Just mind that you may need to update your project files whenever new files have been added to the SIM-VICUS source code.
+
+[CAUTION]
+====
+Even if you've used Visual Studio in the past, we strongly advise against using it for SIM-VICUS development. The learning curve for Qt Creator is short and you will be rewarded with much better refactoring/code analysis features, plus much faster user interface (just try out the code completion!). 
+
+Though, Visual Studio has it's benefits when it comes to specific debugging tasks in the internals of the solver.
+====
 

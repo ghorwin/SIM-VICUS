@@ -201,9 +201,9 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 				std::string objectListName = attrib->ValueStr();
 				// ensure that we do not have duplicate definitions
-				if (m_scheduleGroups.find(objectListName) != m_scheduleGroups.end())
+				if (m_annualSchedules.find(objectListName) != m_annualSchedules.end())
 					throw IBK::Exception(IBK::FormatString(XML_READ_ERROR).arg(c2->Row()).arg(
-						"ObjectList '"+objectListName+"' used for multiple ScheduleGroup elements."), FUNC_ID);
+						"ObjectList '"+objectListName+"' used for multiple AnnualSchedules elements."), FUNC_ID);
 
 				std::vector<NANDRAD::LinearSplineParameter> schedules;
 				// now read all the schedule subtags
@@ -216,8 +216,8 @@ void Schedules::readXML(const TiXmlElement * element) {
 
 					NANDRAD::LinearSplineParameter spl;
 					try {
-						spl.readXML(c3);	// also creates the spline and thus, does monotonic x-value checking, but not if
-											// data is in tsv-file
+						spl.readXML(c3);	// also creates the spline and thus checks for valid spline
+											// Note: in case of tsv file those checks will be done later in Schedules::checkParameters()
 					}
 					catch (IBK::Exception & ex) {
 						throw IBK::Exception(ex, IBK::FormatString(XML_READ_ERROR).arg(c2->Row())
@@ -460,7 +460,7 @@ void Schedules::generateLinearSpline(const std::string & objectListName, const s
 										 "schedules of day type '%4' match this day.")
 										 .arg(parameterName).arg(dString.toDayMonthFormat())
 										 .arg(scheduleCandidates[schedDayType].size())
-										 .arg(NANDRAD::KeywordList::Keyword("Schedule::type_t", (int)schedDayType)), FUNC_ID);
+										 .arg(NANDRAD::KeywordList::Keyword("Schedule::ScheduledDayType", (int)schedDayType)), FUNC_ID);
 			}
 		}
 
@@ -593,6 +593,23 @@ bool Schedules::equalSchedules(const std::vector<Schedule> & first, const std::v
 			return false;
 	}
 
+	return true;
+}
+
+bool Schedules::equalAnnualSchedules(const std::vector<LinearSplineParameter> &first, const std::vector<LinearSplineParameter> &second) {
+	if(first.size() !=  second.size())
+		return false;
+
+	for(const NANDRAD::LinearSplineParameter &splA : first){
+		int counter = 0;
+
+		for(const NANDRAD::LinearSplineParameter &splB : second){
+			if(splA == splB)
+				++counter;
+		}
+		if(counter != 1)
+			return false;
+	}
 	return true;
 }
 

@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).PersonHeatLoadPerAreaSchedule [J/m2s]	Zone(id=1).EquipmentHeatLoadPerAreaSchedule [J/m2s]
+Time [h]	Office.PersonHeatLoadPerAreaSchedule [J/m2s]	Office.EquipmentHeatLoadPerAreaSchedule [J/m2s]
 2880	0	134.247
 2881	1.04167	134.224
 2882	2.08333	134.201

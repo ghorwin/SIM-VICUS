@@ -23,9 +23,6 @@ int main(int argc, char *argv[]) {
 	setlocale(LC_NUMERIC,"C");
 #endif
 
-	qApp->setApplicationName("NANDRAD FMU Generator");
-	qApp->setWindowIcon(QIcon(":/NandradIcon_64.png"));
-
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
 	QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
@@ -60,17 +57,24 @@ int main(int argc, char *argv[]) {
 				projectFile = projectFile.substr(7);
 			w.m_nandradFilePath = IBK::Path(projectFile);
 		}
+
+		// check for: NandradFMUGenerator --generate=MyModel  /path/to/MyModelProject.nandrad
 		if (args.hasOption("generate")) {
 			if (!w.m_nandradFilePath.isValid()) {
-				throw IBK::Exception("Oroject file argument expected when using '--generate'.", FUNC_ID);
+				throw IBK::Exception("Project file argument expected when using '--generate'.", FUNC_ID);
 			}
-			w.m_silent = true; // set widget into silent mode
+			w.m_silent = true; // set widget into silent mode - this also indicates that we are in "scripted" mode
 			w.m_autoExportModelName = QString::fromStdString(args.option("generate"));
 		}
 
-		w.init();
+		// handle initial state (reading project given by command line etc.)
 		w.resize(1600,800);
 		w.show(); // show widget
+		w.init();
+
+		// in scripted mode, we are already done, no need to start an event loop
+		if (w.m_silent)
+			return EXIT_SUCCESS;
 
 		// start event loop
 		res = a.exec();

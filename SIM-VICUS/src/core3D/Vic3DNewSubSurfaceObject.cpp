@@ -131,189 +131,298 @@ void NewSubSurfaceObject::destroy() {
 }
 
 
-void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData) {
+void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel,
+											  const WindowComputationData & inputData)
+{
+	FUNCID(NewSubSurfaceObject::generateSubSurfaces);
 	// populate PlaneGeometry-objects
 
+	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
 	m_generatedSurfaces.clear();
 
-	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
-
-	for (const VICUS::Surface* s : sel) {
-		const VICUS::PlaneGeometry &surfacePoly = s->geometry();
-		m_generatedSurfaces.push_back(surfacePoly);
-
-		//get normal
-		IBKMK::Vector3D n = surfacePoly.normal();
-		double lowestZ = std::numeric_limits<unsigned int>::max();
-		if(n.m_z == 1 || n.m_z == -1){
-			//now we have a flat roof or floor
-			//so we need a ground line
-			//TODO Dirk
-		}
-		else{
-			//we take the ground line from the lowest z-value
-			//We assume that there is a baseline with the point that has the smallest z-value
-		}
-
-		//we assume that the local coordinate system is ok and we take the x-axis as baseline
-		const std::vector<IBKMK::Vector2D> & vertexes2D = surfacePoly.polygon().polyline().vertexes();
-
-		double xMin = std::numeric_limits<double>::max();
-		double yMin = xMin;
-		double xMax = std::numeric_limits<double>::min();
-		double yMax = xMax;
-
-		for(unsigned int i=0; i<vertexes2D.size(); ++i){
-			const IBKMK::Vector2D & pt = vertexes2D[i];
-			//find highest/lowest point (x- and y-values)
-			if(pt.m_x < xMin)	xMin = pt.m_x;
-			if(pt.m_y < yMin)	yMin = pt.m_y;
-			if(pt.m_x > xMax)	xMax = pt.m_x;
-			if(pt.m_y > yMax)	yMax = pt.m_y;
-		}
-		//now we have the bounding box
-		double hSurf = yMax - yMin;
-		double wSurf = xMax - xMin;
-		double minDistance = 0.01; //this is the minimum distance
-
-		if(hSurf <= minDistance * 2 || wSurf <= minDistance * 2){
-			// area too small kick out this surface
-			continue;
-		}
-
-		//window definitions
-		double hPre = inputData.m_height;
-		double wPre = inputData.m_width;
+	try {
+		// input data consistency checks
+		double frac		= inputData.m_percentage/100;
+		double hPre		= inputData.m_height;
+		double wPre		= inputData.m_width;
 		double hPreSill = inputData.m_windowSillHeight;
-		double distWin = inputData.m_distance;
-		double hMax = hSurf - 2 * minDistance;
-		double wMax = wSurf - 2 * minDistance;
-		double frac = inputData.m_percentage/100;
+		if (inputData.m_byPercentage)
+			if (frac > 1 || frac <=0 )
+				throw IBK::Exception("Percentage value is out of range!", FUNC_ID);
+		if (hPre < 0 || wPre < 0 || hPreSill < 0)
+			throw IBK::Exception("Negative values for parameters only allowed to be positive!", FUNC_ID);
 
-		//vector for window geometry
-		std::vector<VICUS::Polygon2D> windows;
-		if(inputData.m_byPercentage){
-			if(frac > 1 || frac <=0 ){
-				//throw IBK::Exception("Percentage value is out of range!");
+
+		for (const VICUS::Surface* s : sel) {
+			const VICUS::PlaneGeometry &surfacePoly = s->geometry();
+			m_generatedSurfaces.push_back(surfacePoly);
+
+			// get normal
+			IBKMK::Vector3D n = surfacePoly.normal();
+			double lowestZ = std::numeric_limits<unsigned int>::max();
+			if (n.m_z == 1 || n.m_z == -1){
+				//now we have a flat roof or floor
+				//so we need a ground line
+				//TODO Dirk
 			}
-			//area of the surface
-			double surfA = surfacePoly.area(); //kann sein dass das durch hPre * wPre ersetzt werden muss -> testen
-			double surfWinA = surfA * frac;
+			else{
+				//we take the ground line from the lowest z-value
+				//We assume that there is a baseline with the point that has the smallest z-value
+			}
 
-			if(hMax<hPre)	hPre = hMax;
-			if(wMax<wPre)	wPre = wMax;
-			if(hPreSill < minDistance)	hPreSill = minDistance;
+			// we assume that the local coordinate system is ok and we take the x-axis as baseline
+			const std::vector<IBKMK::Vector2D> & vertexes2D = surfacePoly.polygon().polyline().vertexes();
 
+			double xMin = std::numeric_limits<double>::max();
+			double yMin = xMin;
+			double xMax = std::numeric_limits<double>::min();
+			double yMax = xMax;
 
-			double count2 = (wSurf - minDistance) / (wPre + minDistance);
-			int count = (int)std::floor(count2);
+			for(unsigned int i=0; i<vertexes2D.size(); ++i){
+				const IBKMK::Vector2D & pt = vertexes2D[i];
+				//find highest/lowest point (x- and y-values)
+				if(pt.m_x < xMin)	xMin = pt.m_x;
+				if(pt.m_y < yMin)	yMin = pt.m_y;
+				if(pt.m_x > xMax)	xMax = pt.m_x;
+				if(pt.m_y > yMax)	yMax = pt.m_y;
+			}
+			//now we have the bounding box
+			double hSurf = yMax - yMin;
+			double wSurf = xMax - xMin;
+			double minDistance = 0.01; //this is the minimum distance
 
-			double surfWinA2 = count * hMax * wPre;														//calc with predefined width
-			double surfWinMaxA2 = count2 * hMax * wPre;
-			double surfWinA3 = hPre * (wSurf - minDistance * (count + 1));								//calc with predefined height
-			double surfWinA4 = (hMax - minDistance - hPreSill) * (wSurf - minDistance * (count +1));	//calc with predefined sill height
+			if(hSurf <= minDistance * 2 || wSurf <= minDistance * 2){
+				// area too small kick out this surface
+				continue;
+			}
 
-			double height = hPre;
-			double width = wPre;
-			double sillHeight = hPreSill;
+			// surface-specific parameters
+	//		double distWin = inputData.m_distance;
 
-			enum Priority{
-				Height,
-				Width,
-				SillHeight,
-				Distance
-			};
+			// Compute maximum window dimensions, currently assuming orthogonal
+			// surface boundary lines; i.e. if you have slanted rectangle, the
+			// maximum dimensions will be too large. But that is tested later.
+			double hMax = hSurf - 2 * minDistance;
+			double wMax = wSurf - 2 * minDistance;
 
-			Priority prio = Height;
+			// vector for each window to be created as polygon within the surface polygon
+			std::vector<VICUS::Polygon2D> windows;
 
-			if(inputData.m_priorities[0] == 1)	prio = Width;
-			if(inputData.m_priorities[1] == 1)	prio = Height;
-			if(inputData.m_priorities[2] == 1)	prio = SillHeight;
-			if(inputData.m_priorities[3] == 1)	prio = Distance;
+			if (inputData.m_byPercentage) {
 
-			switch(prio){
-				case Height:{
-					if (surfWinA3 >= surfWinA) {
-						//height = hPre;
-						//width = surfWinA / (count * height);
-						count = (int)std::floor(surfWinA / (height * wPre));
-						if (count == 0)
-							count = 1;
-						width = surfWinA / (count * height);
+				if (hMax<hPre)	hPre = hMax;
+				if (wMax<wPre)	wPre = wMax;
+				if(hPreSill < minDistance)	hPreSill = minDistance;
+
+				double height = hPre;
+				double width = wPre;
+				double sillHeight = hPreSill;
+
+				enum Priority{
+					Height,
+					Width,
+					SillHeight,
+					Distance
+				};
+
+				Priority prio = Height;
+
+				if(inputData.m_priorities[0] == 1)	prio = Width;
+				if(inputData.m_priorities[1] == 1)	prio = Height;
+				if(inputData.m_priorities[2] == 1)	prio = SillHeight;
+				if(inputData.m_priorities[3] == 1)	prio = Distance;
+
+				//das sind die neuen programmierungen für die Fenstereinbindung
+				double widthSurface = 5;	// in m
+				double heightSurface = 3;	// in m
+				double heightSill = 0.8;	// in m
+				double heightWinPre = 2.5;	// in m
+				double widthWinPre = 1;		// in m
+				double wwr = 0.8;			// window wall ration
+				double areaSurface = 1212;	// in m2
+				// Werte übernehmen aus den Vorgaben von oben
+				{
+					heightSurface	= hSurf;
+					widthSurface	= wSurf;
+					wwr				= inputData.m_percentage/100;
+					heightWinPre	= inputData.m_height;
+					widthWinPre		= inputData.m_width;
+					heightSill		= inputData.m_windowSillHeight;
+					areaSurface		= surfacePoly.area();
+				}
+				double areaWindow = areaSurface * wwr;	// in m2
+
+				// input checks
+				if(widthSurface <= 0.02 || heightSurface <= 0.02 || heightSill < 0 ||
+						heightWinPre <= 0.01 || widthWinPre <= 0.01 || wwr <= 0 ){
+					// error
+					/// TODO Dirk Error Message
+					continue;
+				}
+
+				// some constant variables
+				double dMin = 0.01;			// minimum distance between one window edge and another window or surface edge
+				double heightWinMax1 = heightSurface - 2 * dMin;
+				double widthWinMax = widthSurface - 2 * dMin;
+
+				int count = std::max<int>(1, std::floor((widthSurface - dMin) / (widthWinPre + dMin)));
+				widthWinMax = (widthSurface - dMin *( count + 1 )) / count;
+
+				// result variables
+				double heightWin, widthWin;
+
+				// only for information
+				double wwrError = 0;
+
+				// checks
+				if( heightWinPre > heightWinMax1 )	heightWinPre = heightWinMax1;
+				if( widthWinPre > widthWinMax )		widthWinPre = widthWinMax;
+
+				switch(prio){
+					case Height:{
+
+						heightWin = std::min(heightWinPre, heightWinMax1);
+						double areaSurfaceMax = (widthSurface - 2 * dMin) * heightWin;
+
+						if(areaSurfaceMax > areaWindow){
+							widthWin = areaWindow / ( heightWin * count);
+						}
+						else{
+							widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+							heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
+						}
 					}
-					else {
-						width = (wSurf - (count + 1) * minDistance) / count;
-						height = std::min(surfWinA / (width * count), hMax);
+					break;
+					case Width:{
+						widthWin = std::min(widthWinPre, widthWinMax);
+						double areaSurfaceWidth = widthWinPre * count * heightWinMax1;
+						if(areaSurfaceWidth >= areaWindow){
+							heightWin = areaWindow / ( widthWin * count);
+						}
+						else{
+							heightWin = heightWinMax1;
+							// if necessary adjust width
+							// we know we get a little error on the wwr
+							widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+							wwrError = 1 - heightWin * widthWin * count / areaWindow;
+						}
+					}
+					break;
+					case SillHeight:{
+						// Priority 1 sill height
+						if(inputData.m_priorities[2] < inputData.m_priorities[1] &&
+								inputData.m_priorities[2] < inputData.m_priorities[0]){
+							// Priority 2 window height
+							double heightWinMax2 = heightSurface - dMin - heightSill;
+							// This area is calculated from the width and height minus the sill height
+							double areaSurfaceSill = (widthSurface - 2 * dMin) * heightWinMax2;
+
+							// height is next prio
+							if(inputData.m_priorities[0] > inputData.m_priorities[1] ){
+								/// TODO Dirk das wäre die ganz normale Berechnung für die
+								/// Höhe als oberste Priorität
+								heightWin = std::min(heightWinPre, heightWinMax2);
+								areaSurfaceSill = (widthSurface - 2 * dMin) * heightWin;
+								if(areaSurfaceSill > areaWindow){
+									widthWin = areaWindow / ( heightWin * count);
+								}
+								else{
+									widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+									heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
+								}
+							}
+							// Priority 2 window width
+							else if(true){
+								// This is the maximum possible area that results when the windows are calculated
+								// with the maximum possible window height, taking into account the sill height.
+								widthWin = std::min(widthWinPre, widthWinMax);
+								double areaSurfaceWidth = widthWinPre * count * heightWinMax2;
+								if( areaSurfaceWidth >= areaWindow){
+									heightWin = areaWindow / ( widthWin * count );
+								}
+								else{
+									if(areaSurfaceSill >= areaWindow){
+										heightWin = heightWinMax2;
+										// if necessary adjust width
+										// we know we get a little error on the wwr
+										widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+										wwrError = 1 - heightWin * widthWin * count / areaWindow;
+									}
+									else{
+										/// TODO Dirk das wäre die ganz normale Berechnung für die
+										/// Breite als oberste Priorität
+										widthWin = std::min(widthWinPre, widthWinMax);
+										areaSurfaceWidth = widthWin * count * heightWinMax1;
+										if(areaSurfaceWidth >= areaWindow){
+											heightWin = areaWindow / ( widthWin * count);
+										}
+										else{
+											heightWin = heightWinMax1;
+											// if necessary adjust width
+											// we know we get a little error on the wwr
+											widthWin = std::min (widthWinMax, areaWindow / ( heightWin * count));
+											wwrError = 1 - heightWin * widthWin * count / areaWindow;
+										}
+									}
+								}
+							}
+						}
+					}
+					break;
+					case Distance:{
+						/// TODO Dirk implement
+						continue;
 					}
 				}
-				break;
-				case Width:{
-					if (surfWinA2>= surfWinA) {
-						//width = wPre;
-						height = surfWinA / (count * width);
-						count = (int)std::floor(surfWinA / (width * height));
-						if (count == 0)
-							count = 1;
-						height = std::min(surfWinA / (count * width), hMax);
-					}
-					else {
-						height = hMax;
-						width = surfWinMaxA2 / (hMax * count);
-					}
-				}
-				break;
-				case SillHeight:{
-					if (surfWinA4 >= surfWinA) {
-						height = hPre;
-						width = surfWinA / (count * height);
-					}
-					else {
-						width = (wSurf - (count + 1) * minDistance) / count;
-						height = std::min(surfWinA / (width * count), hMax);
-					}
-				}
-				break;
-			}
-			//check sill height
-			if( hSurf - height -minDistance < hPreSill)
-				sillHeight = hSurf - height - minDistance;
-			else
-				sillHeight = hPreSill;
+				height = heightWin;
+				width = widthWin;
+				//check sill height
+				if( hSurf - height -minDistance < hPreSill)
+					sillHeight = hSurf - height - minDistance;
+				else
+					sillHeight = hPreSill;
 
-			double dist = (wSurf - count * width) / (count /*+ 1*/);		//testen ob hier die +1 hin muss!!!
+				double dist = (wSurf - count * width) / (count + 1);
 
-			//now create the windows
-			for (unsigned int i=0; i<count; ++i){
-				VICUS::Polygon2D poly1;
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
-				windows.push_back(poly1);
+				// now create the windows
+				for (unsigned int i=0; i<count; ++i ){
+					VICUS::Polygon2D poly1;
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
+					windows.push_back(poly1);
+				}
 			}
+			else{
+				// now create the windows
+				double dist = inputData.m_baseLineOffset;
+				for (unsigned int i=0; i<inputData.m_maxHoleCount; ++i){
+					VICUS::Polygon2D poly1;
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
+					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
+					windows.push_back(poly1);
+				}
+
+			}
+
+			// add the windows to the surface as subsurfaces
+			// Mind: each of the generated window surfaces may result in an invalid subsurface, because it may lie
+			//       outside the outer surface's polygon
+			m_generatedSurfaces.back().setHoles(windows);
+
+			// Note: invalid hole polygons (i.e. overlapping, or outside surface polygon) will still be added
+			//       as hole polygons, yet their triangulation data -> holeTriangulationData()[holeIdx] will be empty.
+			//       This way the renderer can distinguish between valid hole geometries and invalid geometries.
+			//       Invalid geometries are drawn with red outline.
 		}
-		else{
-			//now create the windows
-			double dist = inputData.m_baseLineOffset;
-			for (unsigned int i=0; i<inputData.m_maxHoleCount; ++i){
-				VICUS::Polygon2D poly1;
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
-				poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
-				windows.push_back(poly1);
-			}
 
-		}
-		// add the windows to the surface
-		m_generatedSurfaces.back().setHoles(windows);
-
-		// Note: invalid hole polygons (i.e. overlapping, or outside surface polygon) will still be added
-		//       as hole polygons, yet their triangulation data -> holeTriangulationData()[holeIdx] will be empty.
-		//       This way the renderer can distinguish between valid hole geometries and invalid geometries.
-		//       Invalid geometries are drawn with red outline.
+	} catch (IBK::Exception & ex) {
+		ex.writeMsgStackToError();
+		m_generatedSurfaces.clear();
 	}
-
 	updateBuffers();
 }
 
@@ -349,6 +458,7 @@ void NewSubSurfaceObject::updateBuffers() {
 	m_transparentStartIndex = currentElementIndex;
 	// now we add vertexes of the polygon outline and the outlines of the holes
 	// first we store the opaque geometry
+	// TODO : Andreas
 	for (const VICUS::PlaneGeometry & geometry : m_generatedSurfaces) {
 
 	}

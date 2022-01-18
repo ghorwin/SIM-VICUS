@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::LinearSplineParameter Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::LinearSplineParameter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -61,7 +62,9 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1LinearSplineParameter.
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pri-methods">Private Member Functions</a> &#124;
 <a href="classNANDRAD_1_1LinearSplineParameter-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">NANDRAD::LinearSplineParameter Class Reference</div>  </div>
@@ -72,7 +75,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1LinearSplineParameter.
 <p>Note that the read and write functions perform unit conversions on the values, so that the linear spline actually holds values always in Base-SI units (according to the IBK Unit-Definition).</p>
 <p>So when reading a linear spline that defines temperatures in C, the actual spline will then contain the values in K. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00044">44</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00045">45</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -91,15 +94,39 @@ Public Types</h2></td></tr>
 </td></tr>
 <tr class="separator:adc0ad12d9d11b40c6e2674d255adfb07"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a93c3c26df524015fdff178feaddbf501"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a93c3c26df524015fdff178feaddbf501">LinearSplineParameter</a> ()</td></tr>
+<tr class="memdesc:a93c3c26df524015fdff178feaddbf501"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default Constructor.  <a href="#a93c3c26df524015fdff178feaddbf501">More...</a><br /></td></tr>
+<tr class="separator:a93c3c26df524015fdff178feaddbf501"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a783011f3be1675a86819bff0f477d2db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a783011f3be1675a86819bff0f477d2db">LinearSplineParameter</a> (const std::string &amp;name, const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a> intPol, const std::vector&lt; double &gt; &amp;xVals, const std::vector&lt; double &gt; yVals, const IBK::Unit &amp;xUnit, const IBK::Unit &amp;yUnit)</td></tr>
+<tr class="memdesc:a783011f3be1675a86819bff0f477d2db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor with values.  <a href="#a783011f3be1675a86819bff0f477d2db">More...</a><br /></td></tr>
+<tr class="separator:a783011f3be1675a86819bff0f477d2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0f3fdda6266c5b8298902e51505b3b7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#aa0f3fdda6266c5b8298902e51505b3b7">LinearSplineParameter</a> (const std::string &amp;name, const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a> intPol, const IBK::Path &amp;tsvFilePath)</td></tr>
+<tr class="memdesc:aa0f3fdda6266c5b8298902e51505b3b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor with data file .  <a href="#aa0f3fdda6266c5b8298902e51505b3b7">More...</a><br /></td></tr>
+<tr class="separator:aa0f3fdda6266c5b8298902e51505b3b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7743fa47edca35c2132732a6996c5ef7"><td class="memItemLeft" align="right" valign="top"><a id="a7743fa47edca35c2132732a6996c5ef7"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>readXML</b> (const TiXmlElement *element)</td></tr>
+<tr class="separator:a7743fa47edca35c2132732a6996c5ef7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0378369127f78c3c3889eb7f3922e10"><td class="memItemLeft" align="right" valign="top"><a id="ab0378369127f78c3c3889eb7f3922e10"></a>
+TiXmlElement *&#160;</td><td class="memItemRight" valign="bottom"><b>writeXML</b> (TiXmlElement *parent) const</td></tr>
+<tr class="separator:ab0378369127f78c3c3889eb7f3922e10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a831c57299325d6045ca0fa94928ceb54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54">checkAndInitialize</a> (const std::string &amp;expectedName, const IBK::Unit &amp;targetXUnit, const IBK::Unit &amp;targetYUnit, const IBK::Unit &amp;limitYUnit, double minYVal, bool isGreaterEqual, double maxYVal, bool isLessEqual, const char *const errmsg, bool skipUnitChecks=false)</td></tr>
+<tr class="memdesc:a831c57299325d6045ca0fa94928ceb54"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function to check for correct parametrization of linear spline parameters.  <a href="#a831c57299325d6045ca0fa94928ceb54">More...</a><br /></td></tr>
+<tr class="separator:a831c57299325d6045ca0fa94928ceb54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeb7bd7f71f2a1c4732bdde50feec8e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adeb7bd7f71f2a1c4732bdde50feec8e0">readTsv</a> ()</td></tr>
+<tr class="memdesc:adeb7bd7f71f2a1c4732bdde50feec8e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads externally referenced tsv-file.  <a href="#adeb7bd7f71f2a1c4732bdde50feec8e0">More...</a><br /></td></tr>
+<tr class="separator:adeb7bd7f71f2a1c4732bdde50feec8e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a66a1cbf150a264a934d5b265cec60a12"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a66a1cbf150a264a934d5b265cec60a12">m_name</a></td></tr>
-<tr class="memdesc:a66a1cbf150a264a934d5b265cec60a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter name (in context of schedules used as scheduled quantity).  <a href="#a66a1cbf150a264a934d5b265cec60a12">More...</a><br /></td></tr>
-<tr class="separator:a66a1cbf150a264a934d5b265cec60a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add90c4c28a6b46d43f2b05c2807fd650"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#add90c4c28a6b46d43f2b05c2807fd650">m_interpolationMethod</a> = I_LINEAR</td></tr>
+<tr class="memitem:a864a74b38f949c368325bfd1795dadce"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a864a74b38f949c368325bfd1795dadce">m_name</a></td></tr>
+<tr class="memdesc:a864a74b38f949c368325bfd1795dadce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter name (in context of schedules used as scheduled quantity).  <a href="#a864a74b38f949c368325bfd1795dadce">More...</a><br /></td></tr>
+<tr class="separator:a864a74b38f949c368325bfd1795dadce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add90c4c28a6b46d43f2b05c2807fd650"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#add90c4c28a6b46d43f2b05c2807fd650">m_interpolationMethod</a> = NUM_I</td></tr>
 <tr class="memdesc:add90c4c28a6b46d43f2b05c2807fd650"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interpolation method to be used when computing values of this spline.  <a href="#add90c4c28a6b46d43f2b05c2807fd650">More...</a><br /></td></tr>
 <tr class="separator:add90c4c28a6b46d43f2b05c2807fd650"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeb979738b4ab10c8c53f974ac96dc3e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adc0ad12d9d11b40c6e2674d255adfb07">wrapMethod_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#aeb979738b4ab10c8c53f974ac96dc3e4">m_wrapMethod</a> = C_CYCLIC</td></tr>
+<tr class="memitem:aeb979738b4ab10c8c53f974ac96dc3e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adc0ad12d9d11b40c6e2674d255adfb07">wrapMethod_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#aeb979738b4ab10c8c53f974ac96dc3e4">m_wrapMethod</a> = NUM_C</td></tr>
 <tr class="memdesc:aeb979738b4ab10c8c53f974ac96dc3e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether to wrap time around in multi-year simulations (cyclic use) or to assume continuous data.  <a href="#aeb979738b4ab10c8c53f974ac96dc3e4">More...</a><br /></td></tr>
 <tr class="separator:aeb979738b4ab10c8c53f974ac96dc3e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0042e08f748cc6ceaf818e74062abd9"><td class="memItemLeft" align="right" valign="top">IBK::LinearSpline&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#af0042e08f748cc6ceaf818e74062abd9">m_values</a></td></tr>
@@ -111,6 +138,15 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a22df9a13f60d07d1c2983e92d7a30df6"><td class="memItemLeft" align="right" valign="top">IBK::Unit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a22df9a13f60d07d1c2983e92d7a30df6">m_yUnit</a></td></tr>
 <tr class="memdesc:a22df9a13f60d07d1c2983e92d7a30df6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unit of the y-values.  <a href="#a22df9a13f60d07d1c2983e92d7a30df6">More...</a><br /></td></tr>
 <tr class="separator:a22df9a13f60d07d1c2983e92d7a30df6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab49a07fa916a27a25913af47b550ed82"><td class="memItemLeft" align="right" valign="top">IBK::Path&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#ab49a07fa916a27a25913af47b550ed82">m_tsvFile</a></td></tr>
+<tr class="memdesc:ab49a07fa916a27a25913af47b550ed82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to tsv-file, the file will be read during <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54" title="Function to check for correct parametrization of linear spline parameters. ">checkAndInitialize()</a> call.  <a href="#ab49a07fa916a27a25913af47b550ed82">More...</a><br /></td></tr>
+<tr class="separator:ab49a07fa916a27a25913af47b550ed82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
+Private Member Functions</h2></td></tr>
+<tr class="memitem:a3d3d90dbe89e6bdc9da502149fd028fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a3d3d90dbe89e6bdc9da502149fd028fa">convert2BaseUnits</a> ()</td></tr>
+<tr class="memdesc:a3d3d90dbe89e6bdc9da502149fd028fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective base SI units.  <a href="#a3d3d90dbe89e6bdc9da502149fd028fa">More...</a><br /></td></tr>
+<tr class="separator:a3d3d90dbe89e6bdc9da502149fd028fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a91613a2895c86c02f199e6d7c975ef88"></a>
@@ -127,7 +163,7 @@ Public Attributes</h2></td></tr>
 
 <p>Interpolation method to be used for this linear spline parameter. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00048">48</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00049">49</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -145,26 +181,296 @@ Public Attributes</h2></td></tr>
 
 <p>How to treat the values in multi-year simulations. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00055">55</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00056">56</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a66a1cbf150a264a934d5b265cec60a12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66a1cbf150a264a934d5b265cec60a12">&#9670;&nbsp;</a></span>m_name</h2>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a93c3c26df524015fdff178feaddbf501"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93c3c26df524015fdff178feaddbf501">&#9670;&nbsp;</a></span>LinearSplineParameter() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD::LinearSplineParameter::LinearSplineParameter </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Default Constructor. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00065">65</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+
+</div>
+</div>
+<a id="a783011f3be1675a86819bff0f477d2db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a783011f3be1675a86819bff0f477d2db">&#9670;&nbsp;</a></span>LinearSplineParameter() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD::LinearSplineParameter::LinearSplineParameter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a>&#160;</td>
+          <td class="paramname"><em>intPol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt; &amp;&#160;</td>
+          <td class="paramname"><em>xVals</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; double &gt;&#160;</td>
+          <td class="paramname"><em>yVals</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Unit &amp;&#160;</td>
+          <td class="paramname"><em>xUnit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Unit &amp;&#160;</td>
+          <td class="paramname"><em>yUnit</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor with values. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00068">68</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+
+</div>
+</div>
+<a id="aa0f3fdda6266c5b8298902e51505b3b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0f3fdda6266c5b8298902e51505b3b7">&#9670;&nbsp;</a></span>LinearSplineParameter() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD::LinearSplineParameter::LinearSplineParameter </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a>&#160;</td>
+          <td class="paramname"><em>intPol</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Path &amp;&#160;</td>
+          <td class="paramname"><em>tsvFilePath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Constructor with data file . </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00081">81</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a831c57299325d6045ca0fa94928ceb54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a831c57299325d6045ca0fa94928ceb54">&#9670;&nbsp;</a></span>checkAndInitialize()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE std::string NANDRAD::LinearSplineParameter::m_name</td>
+          <td class="memname">void NANDRAD::LinearSplineParameter::checkAndInitialize </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>expectedName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Unit &amp;&#160;</td>
+          <td class="paramname"><em>targetXUnit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Unit &amp;&#160;</td>
+          <td class="paramname"><em>targetYUnit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const IBK::Unit &amp;&#160;</td>
+          <td class="paramname"><em>limitYUnit</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>minYVal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isGreaterEqual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>maxYVal</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isLessEqual</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *const&#160;</td>
+          <td class="paramname"><em>errmsg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>skipUnitChecks</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Function to check for correct parametrization of linear spline parameters. </p>
+<p>This function checks if the spline is actually defined, i.e. m_name is not empty. Then it tests, wether there is a valid tsv-filepath given, reads the according file and sets m_values and the units Then it is checked if the x and y value units can be converted to targetX and targetY units. This can be skipped by setting skipUnitChecks to true, which may be useful if the target units are not yet known. These target units must be SI base units. It then converts the input data into the target (base SI) units, using the <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a3d3d90dbe89e6bdc9da502149fd028fa" title="Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective bas...">convert2BaseUnits()</a> function.</p>
+<p>Note: the m_xUnit and m_yUnit members are not modified here! Then, the spline is generated, hereby testing for monotonically increasing x-values. Finally, the y-value ranges are being checked.</p>
+<dl class="section note"><dt>Note</dt><dd>To ensure consistent object state, the x and y units are updated after the value conversion. Hence, if you need m_xUnit and m_yUnit to represent input/output units, do not call this function! </dd></dl>
+
+</div>
+</div>
+<a id="adeb7bd7f71f2a1c4732bdde50feec8e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adeb7bd7f71f2a1c4732bdde50feec8e0">&#9670;&nbsp;</a></span>readTsv()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NANDRAD::LinearSplineParameter::readTsv </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads externally referenced tsv-file. </p>
+<p>m_tsvFile is expected to contain a valid absolute path, optionally with trailing ?n column identifier. </p>
+
+</div>
+</div>
+<a id="a3d3d90dbe89e6bdc9da502149fd028fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d3d90dbe89e6bdc9da502149fd028fa">&#9670;&nbsp;</a></span>convert2BaseUnits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NANDRAD::LinearSplineParameter::convert2BaseUnits </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Converts x and y values from display/input/output units (m_xUnit and m_yUnit) to their respective base SI units. </p>
+<dl class="section warning"><dt>Warning</dt><dd>The m_xUnit and m_yUnit will not be changed and thus be inconsistent afterwards with the values in the m_values spline (similarly to IBK::Parameter). </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a864a74b38f949c368325bfd1795dadce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a864a74b38f949c368325bfd1795dadce">&#9670;&nbsp;</a></span>m_name</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string NANDRAD::LinearSplineParameter::m_name</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Parameter name (in context of schedules used as scheduled quantity). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00069">69</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00123">123</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -175,14 +481,14 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a> NANDRAD::LinearSplineParameter::m_interpolationMethod = I_LINEAR</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a91613a2895c86c02f199e6d7c975ef88">interpolationMethod_t</a> NANDRAD::LinearSplineParameter::m_interpolationMethod = NUM_I</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Interpolation method to be used when computing values of this spline. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00071">71</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00125">125</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -193,14 +499,14 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adc0ad12d9d11b40c6e2674d255adfb07">wrapMethod_t</a> NANDRAD::LinearSplineParameter::m_wrapMethod = C_CYCLIC</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#adc0ad12d9d11b40c6e2674d255adfb07">wrapMethod_t</a> NANDRAD::LinearSplineParameter::m_wrapMethod = NUM_C</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Whether to wrap time around in multi-year simulations (cyclic use) or to assume continuous data. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00073">73</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00127">127</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -217,9 +523,9 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Data vectors including linear spline functionality (i.e. </p>
-<p>interpolation at any given value). Values are stored in the respective Base-SI units of the input/output units m_xUnit and m_yUnit. For example, if m_yUnit is 'C' (degree C), then the spline holds values in 'K' (degree Kelvin). The functions readXML() and writeXML() perform the necessary conversions. </p>
+<p>interpolation at any given value). When this class is used as data container, the x and y values are stored in the units m_xUnit and m_yUnit. However, after the call to <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54" title="Function to check for correct parametrization of linear spline parameters. ">checkAndInitialize()</a>, the values are stored in the respective Base-SI units of the input/output units m_xUnit and m_yUnit. For example, if m_yUnit is 'C' (degree C), then the spline holds values in 'K' (degree Kelvin). </p><dl class="section warning"><dt>Warning</dt><dd>Do not call <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54" title="Function to check for correct parametrization of linear spline parameters. ">checkAndInitialize()</a> on original data containers - always create a copy first! </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00079">79</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00135">135</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -237,7 +543,7 @@ Public Attributes</h2></td></tr>
 
 <p>Unit of the x-values. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00081">81</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00137">137</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -255,7 +561,26 @@ Public Attributes</h2></td></tr>
 
 <p>Unit of the y-values. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00083">83</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00139">139</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
+
+</div>
+</div>
+<a id="ab49a07fa916a27a25913af47b550ed82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab49a07fa916a27a25913af47b550ed82">&#9670;&nbsp;</a></span>m_tsvFile</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBK::Path NANDRAD::LinearSplineParameter::m_tsvFile</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Path to tsv-file, the file will be read during <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html#a831c57299325d6045ca0fa94928ceb54" title="Function to check for correct parametrization of linear spline parameters. ">checkAndInitialize()</a> call. </p>
+<p>Path may have an appended column identifier, starting with 1 for the first data column after the time column. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html#l00143">143</a> of file <a class="el" href="NANDRAD__LinearSplineParameter_8h_source.html">NANDRAD_LinearSplineParameter.h</a>.</p>
 
 </div>
 </div>
@@ -267,8 +592,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">LinearSplineParameter</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">LinearSplineParameter</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

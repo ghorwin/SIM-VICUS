@@ -59,7 +59,7 @@ public:
 	/*! Returns read-only access to currently stored system jacobian. */
 	virtual const IBKMK::SparseMatrix * jacobian() const override { return this; }
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size. */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

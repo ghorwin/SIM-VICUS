@@ -309,7 +309,7 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 	// set CVODE data pointer to solver object
 	CVodeSetUserData(m_impl->m_mem, (void*)m_impl);
 	// set CVODE Max-order
-	CVodeSetMaxOrd(m_impl->m_mem, m_maxOrder);
+	CVodeSetMaxOrd(m_impl->m_mem, (int)m_maxOrder);
 	// set CVODE maximum steps before reaching tout
 	CVodeSetMaxNumSteps(m_impl->m_mem, m_maxSteps);
 	// set CVODE initial step size
@@ -395,10 +395,15 @@ void IntegratorSundialsCVODE::init(ModelInterface * model, double t0,
 }
 
 
+void IntegratorSundialsCVODE::setLinearSetupFrequency(int msbp) {
+	CVodeSetLSetupFrequency(m_impl->m_mem, msbp);
+}
+
+
 IntegratorInterface::StepResultType IntegratorSundialsCVODE::step() {
 
 	// if a stop time has been set, set it in CVode with CVodeSetStopTime()...
-	if (m_stopTime != 0)
+	if (m_stopTime != 0.0)
 		CVodeSetStopTime(m_impl->m_mem, m_stopTime);
 
 	// tell cvode to take a step
@@ -654,6 +659,7 @@ IntegratorSundialsCVODEImpl::IntegratorSundialsCVODEImpl() :
 	m_statNumErrFails(0)
 {
 }
+
 
 IntegratorSundialsCVODEImpl::~IntegratorSundialsCVODEImpl() {
 	if (m_mem!=nullptr)

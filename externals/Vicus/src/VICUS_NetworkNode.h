@@ -69,11 +69,12 @@ public:
 	}
 
 	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
-		m_id(id),
 		m_position(v),
 		m_type(type),
 		m_maxHeatingDemand("MaxHeatingDemand", heatDemand, "W")
-	{}
+	{
+		m_id = id;
+	}
 
 	/*! check connectivity of graph trhough recursive search */
 	void collectConnectedEdges(std::set<const NetworkNode*> & connectedNodes, std::set<const NetworkEdge*> & connectedEdge) const;
@@ -107,11 +108,11 @@ public:
 	/*! used for dijkstra algorithm. Look at all neighbour nodes: if the m_distanceToStart of this node + the distance to the neighbour
 	 * is shorter than the current m_distanceToStart of the neighbour, update it. This makes sure the neighbour nodes have assigned
 	 * the currently smallest distance from start */
-	void updateNeighbourDistances();
+	void updateNeighbourDistances() const;
 
 	/*! used for dijkstra algorithm. appends the edge which leads to the predecessor node to path and calls itself for the predecessor node
 	 * until a node without predecessor is reached. this way the path from a building to the source can be created, if the predecessors have been set */
-	void pathToNull(std::vector<NetworkEdge * > & path);
+	void pathToNull(std::vector<NetworkEdge * > & path) const;
 
 	/*! looks at all adjacent nodes to find a node which has a heating demand >0 and returns it. */
 	double adjacentHeatingDemand(std::set<NetworkEdge*> visitedEdges);
@@ -119,7 +120,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	unsigned int								m_id  = INVALID_ID;										// XML:A:required
+	//:inherited	unsigned int				m_id = INVALID_ID;										// XML:A:required
+	//:inherited	QString						m_displayName;											// XML:A
+	//:inherited	bool						m_visible = true;										// XML:A
 
 	IBKMK::Vector3D								m_position = IBKMK::Vector3D(-9.99,-9.99,-9.99);		// XML:E:required
 
@@ -131,17 +134,13 @@ public:
 	/*! Reference id to a VICUS::SubNetwork */
 	unsigned int								m_idSubNetwork = INVALID_ID;							// XML:A
 
-	//:inherited	QString						m_displayName;											// XML:A
-
 	NANDRAD::HydraulicNetworkHeatExchange		m_heatExchange;											// XML:E
 
-	/*! Whether the node is visible or not. */
-	//:inherited	bool						m_visible = true;										// XML:A
 
 	// *** RUNTIME VARIABLES ***
 
 	/*! Pointers to adjacent edges */
-	std::vector<NetworkEdge*>					m_edges;
+	std::vector<NetworkEdge*>			m_edges;
 
 	/*! The radius used for the visualization of this node in the 3D scene [m].
 		Updated whenever the scale factor Network::m_scaleNodes changes.
@@ -152,11 +151,11 @@ public:
 	mutable QColor								m_color;
 
 	/*! Used in dijkstra algorithm. */
-	double										m_distanceToStart = (std::numeric_limits<double>::max)();
-	NetworkNode *								m_predecessor = nullptr;
+	mutable double								m_distanceToStart = (std::numeric_limits<double>::max)();
+	mutable const NetworkNode *					m_predecessor = nullptr;
 
 	/*! Defines wether this node is a dead end. */
-	bool										m_isDeadEnd = false;
+	mutable bool								m_isDeadEnd = false;
 
 
 };

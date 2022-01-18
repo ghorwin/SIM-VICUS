@@ -24,6 +24,7 @@
 */
 
 #include "VICUS_InterfaceHeatConduction.h"
+#include "VICUS_Project.h"
 
 #include "VICUS_KeywordList.h"
 
@@ -42,8 +43,41 @@ bool InterfaceHeatConduction::operator!=(const InterfaceHeatConduction & other) 
 }
 
 
-bool InterfaceHeatConduction::isValid() const {
-	// TODO : Implement isValid
+bool InterfaceHeatConduction::isValid(const Database<Schedule> &scheduleDB) const {
+
+	try {
+		switch (m_otherZoneType) {
+			case VICUS::InterfaceHeatConduction::OZ_Standard:
+			break;
+			case VICUS::InterfaceHeatConduction::OZ_Constant:{
+				m_para[P_ConstTemperature].checkedValue("ConstTemperature", "C", "C",
+														-100, true,
+														100, true,
+														"Outside surface temperature must >=-100 and <=100.");
+
+			} break;
+			case VICUS::InterfaceHeatConduction::OZ_Scheduled:{
+				if(m_idSchedule == INVALID_ID)
+					return false;
+
+				const Schedule * zoneSched = scheduleDB[m_idSchedule];
+				if (zoneSched == nullptr)
+					return false;
+				if (!zoneSched->isValid())
+					return false;
+			} break;
+			case VICUS::InterfaceHeatConduction::NUM_OZ:
+				return false;
+		}
+
+		m_para[P_HeatTransferCoefficient].checkedValue("HeatTransferCoefficient", "W/m2K", "W/m2K",
+													   0, false,
+													   10000, false,
+													   "Heat transfer coefficient must be >0 and <10000.");
+
+	}  catch (...) {
+		return false;
+	}
 	return true;
 }
 

@@ -93,7 +93,10 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents5, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents7, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
+
+	updateButtonStates(); // see class comment
 }
+
 
 
 SVPropVertexListWidget::~SVPropVertexListWidget() {
@@ -150,7 +153,7 @@ void SVPropVertexListWidget::addVertex(const IBKMK::Vector3D & p) {
 	QTableWidgetItem * item = new QTableWidgetItem(QString("%1").arg(row+1));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	m_ui->tableWidgetVertexes->setItem(row,0,item);
-	item = new QTableWidgetItem(QString("%L1,%L2,%L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
+	item = new QTableWidgetItem(QString("%L1 | %L2 | %L3").arg(p.m_x).arg(p.m_y).arg(p.m_z));
 	item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	m_ui->tableWidgetVertexes->setItem(row,1,item);
 
@@ -217,10 +220,12 @@ bool SVPropVertexListWidget::completePolygonIfPossible() {
 
 void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+
+	// we always update our combo boxes whenever anything related to the building topology has changed
 	switch (mod) {
-		// We only need to handle changes of the building topology, in all other cases
-		// the "create new geometry" action is aborted and the widget will be hidden.
 		case SVProjectHandler::BuildingTopologyChanged:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::AllModified:
 			updateBuildingComboBox(m_ui->comboBoxBuilding);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
 			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
@@ -231,23 +236,27 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 			updateBuildingComboBox(m_ui->comboBoxBuilding3);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 		break;
+		default: ;// nothing to be done here
+	}
 
-		default: {
-			// clear the new geometry object
-			SVViewStateHandler::instance().m_newGeometryObject->clear();
-			// and reset view state, if we are still in vertex list mode
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-				// reset locks
-				vs.m_locks = SVViewState::NUM_L;
+	updateButtonStates();
+	// We only need to handle changes of the building topology, in all other cases
+	// the "create new geometry" action is aborted and the widget will be hidden.
+	if (mod != SVProjectHandler::BuildingTopologyChanged) {
+		// clear the new geometry object
+		SVViewStateHandler::instance().m_newGeometryObject->clear();
+		// and reset view state, if we are still in vertex list mode
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+			// reset locks
+			vs.m_locks = SVViewState::NUM_L;
 
-				// take xy plane out of snap option mask
-				vs.m_snapEnabled = true;
-				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
-			}
+			// take xy plane out of snap option mask
+			vs.m_snapEnabled = true;
+			// now tell all UI components to toggle their view state
+			SVViewStateHandler::instance().setViewState(vs);
 		}
 	}
 }
@@ -281,9 +290,6 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 		case Vic3D::NewGeometryObject::NGM_Rect:
 		case Vic3D::NewGeometryObject::NGM_Polygon:
 			m_ui->stackedWidget->setCurrentIndex(1);
-			updateBuildingComboBox(m_ui->comboBoxBuilding);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
-			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
@@ -291,8 +297,6 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
 			m_ui->stackedWidget->setCurrentIndex(2);
-			updateBuildingComboBox(m_ui->comboBoxBuilding2);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
 
 			updateComponentComboBoxes(); // update all component combo boxes in zone page
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
@@ -304,8 +308,6 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 
 		case Vic3D::NewGeometryObject::NGM_Roof: {
 			m_ui->stackedWidget->setCurrentIndex(3);
-			updateBuildingComboBox(m_ui->comboBoxBuilding3);
-			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 			updateComponentComboBoxes(); // update all component combo boxes in roof page
 			const VICUS::PlaneGeometry & pg = po->planeGeometry();
 			if (pg.polygon().type() != IBKMK::Polygon3D::T_Rectangle)
@@ -313,12 +315,19 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
 
+			// get floor polyline from roof and save this for later
+			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
+
+			if (po->planeGeometry().polygon().vertexes().empty())
+				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
+
+			m_roofPolygon = po->planeGeometry().polygon().vertexes();
+
 			updateRoofGeometry();
 		}
 		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
-
 }
 
 
@@ -359,7 +368,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	b.m_id = VICUS::uniqueId(project().m_buildings);
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	if (sender() == m_ui->toolButtonAddBuilding)
@@ -410,7 +419,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 	bl.m_id = VICUS::uniqueId(b->m_buildingLevels);
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	reselectById(buildingLevelCombo, (int)bl.uniqueID());
@@ -435,7 +444,7 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 	r.m_id = VICUS::uniqueId(bl->m_rooms);
 	r.m_displayName = text;
 	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding building zone '%1'").arg(r.m_displayName), buildingLevelUniqueID, r, true);
-	undo->push(); // this will update our combo boxes
+	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
 
 	// now also select the matching item
 	reselectById(m_ui->comboBoxZone, (int)r.uniqueID());
@@ -443,13 +452,14 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 
 void SVPropVertexListWidget::on_checkBoxAnnonymousGeometry_stateChanged(int /*arg1*/) {
-	updateSurfacePageState();
+	updateButtonStates();
 }
 
 
 void SVPropVertexListWidget::on_comboBoxBuilding_currentIndexChanged(int /*index*/) {
 	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
 	updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+	updateButtonStates();
 }
 
 
@@ -468,6 +478,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
+	updateButtonStates();
 }
 
 
@@ -492,7 +503,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
-		s.m_color = QColor("#206000");
+		s.m_displayColor = s.m_color = QColor("#206000");
 		s.m_id = VICUS::uniqueId(project().m_plainGeometry);
 		// modify project
 		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
@@ -510,6 +521,8 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		s.initializeColorBasedOnInclination(); // set color based on orientation
 		// the surface will get the unique ID as persistant ID
 		s.m_id = s.uniqueID();
+		s.initializeColorBasedOnInclination();
+		s.m_color = s.m_displayColor;
 		// also store component information
 		VICUS::ComponentInstance compInstance;
 		compInstance.m_id = VICUS::uniqueId(project().m_componentInstances);
@@ -547,6 +560,7 @@ void SVPropVertexListWidget::on_pushButtonPickZoneHeight_clicked() {
 
 void SVPropVertexListWidget::on_comboBoxBuilding2_currentIndexChanged(int /*index*/) {
 	updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+	updateButtonStates();
 }
 
 
@@ -564,6 +578,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 	}
+	updateButtonStates();
 }
 
 
@@ -702,6 +717,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel3_currentIndexChanged(int /
 		if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			on_lineEditRoofHeight_editingFinishedSuccessfully();
 	}
+	updateButtonStates();
 }
 
 
@@ -1000,7 +1016,6 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 		}
 	}
 	combo->blockSignals(false);
-	updateSurfacePageState();
 }
 
 
@@ -1027,8 +1042,10 @@ bool SVPropVertexListWidget::createAnnonymousGeometry() const {
 }
 
 
-void SVPropVertexListWidget::updateSurfacePageState() {
-	// update states of "Create surface" page
+void SVPropVertexListWidget::updateButtonStates() {
+	// update states of Surface, Zone, Roof pages
+
+	// ** page surface **
 
 	// if checkbox is visible, we adjust the enabled state of other inputs
 	bool annonymousGeometry = createAnnonymousGeometry();
@@ -1069,7 +1086,32 @@ void SVPropVertexListWidget::updateSurfacePageState() {
 		m_ui->comboBoxZone->setEnabled(m_ui->comboBoxZone->count() != 0);
 		m_ui->toolButtonAddZone->setEnabled(m_ui->comboBoxBuildingLevel->count() != 0);
 	}
+
+
+	// ** page zone **
+
+	// building controls
+	m_ui->comboBoxBuilding2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+	m_ui->toolButtonAddBuilding2->setEnabled(true);
+
+	// building level controls
+	m_ui->labelBuildingLevel_2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+	m_ui->comboBoxBuildingLevel2->setEnabled(m_ui->comboBoxBuildingLevel2->count() != 0);
+	m_ui->toolButtonAddBuildingLevel2->setEnabled(m_ui->comboBoxBuilding2->count() != 0);
+
+
+	// ** page roof **
+
+	// building controls
+	m_ui->comboBoxBuilding3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
+	m_ui->toolButtonAddBuilding3->setEnabled(true);
+
+	// building level controls
+	m_ui->labelBuildingLevel_3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
+	m_ui->comboBoxBuildingLevel3->setEnabled(m_ui->comboBoxBuildingLevel3->count() != 0);
+	m_ui->toolButtonAddBuildingLevel3->setEnabled(m_ui->comboBoxBuilding3->count() != 0);
 }
+
 
 void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type) {
 	// remember currently selected component IDs
@@ -1125,6 +1167,8 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 	if (po->newGeometryMode() != Vic3D::NewGeometryObject::NGM_Roof)
 		return;
 
+	// use saved polygon for further calculation
+
 	Vic3D::NewGeometryObject::RoofInputData roofData;
 
 	// get all data from UI
@@ -1138,7 +1182,7 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 
 	m_polygonRotation = false; // reset flag until next click
 
-	po->setRoofGeometry(roofData);
+	po->setRoofGeometry(roofData, m_roofPolygon, this);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();

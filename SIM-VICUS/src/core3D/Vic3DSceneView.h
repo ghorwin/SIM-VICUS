@@ -68,8 +68,10 @@ public:
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
 	void toggleMeasurementMode();
 
-	/*! Resets the camera position to be looking nicely onto the scene. */
-	void resetCamera();
+	/*! Resets the camera position to be looking nicely onto the scene.
+		See SVGeometryView::resetCamera().
+	*/
+	void resetCamera(int position);
 
 	/*! Used to toggle the main grid (the one, that always exists). */
 	void setMainGridVisible(bool visible);

@@ -24,13 +24,13 @@
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#4e9a06">
+	<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#00aa00">
 		<Type>OutsideWall</Type>
 		<IdConstruction>1003</IdConstruction>
 		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
 	</Component>
-	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#cc0000">
+	<Component id="1006" displayName="DE: [SimQuality] Komponente für TF04.3 Raum B |EN: [SimQuality] Component for TF04.3 Room B" color="#a00000">
 		<Type>OutsideWall</Type>
 		<IdConstruction>1004</IdConstruction>
 		<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
@@ -47,7 +47,7 @@
 		<IdConstruction>1005</IdConstruction>
 		<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 		<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-		<ActiveLayerIndex>1</ActiveLayerIndex>
+		<ActiveLayerIndex>2</ActiveLayerIndex>
 	</Component>
 	<Component id="1009" displayName="DE: [SimQuality] Komponente für TF12.1 |EN: &lt;new component type&gt;" color="#5aff82">
 		<Type>OutsideWall</Type>

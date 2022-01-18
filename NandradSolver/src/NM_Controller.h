@@ -23,7 +23,6 @@
 #define NM_ControllerH
 
 #include "NM_AbstractController.h"
-#include "NM_AbstractTransientController.h"
 #include "NM_AbstractTimeDependency.h"
 
 
@@ -61,17 +60,31 @@ public:
 */
 class DigitalHysteresisController: public AbstractController { // NO KEYWORDS
 public:
+	/*! Start with signal 0. */
+	DigitalHysteresisController();
+
 	/*! Calculates controller signal/control value. */
 	void update(double errorValue) override;
 
 	/*! Stores state after a successful iteration step. */
 	void stepCompleted(double) override;
 
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
+
 	/*! Tolerance band: must be set from outside. */
 	double			m_hysteresisBand;
 	/*! Controller signal to be used for next step (updated in update()). */
 	double			m_nextControlValue = 0.0;
 };
+
+
 
 
 /*! Defines a proportional controller instance.
@@ -89,20 +102,105 @@ public:
 };
 
 
+
 /*! Defines a PI controller instance.
 	\code
 		controlValue = errorValue*kP + errorValueIntegral*kI;
 	\endcode
+
+	\warning This controller has a state m_errorValueIntegral. When
+		restoring the FMI state, this controller state must be restored as well.
 */
-class PIController: public AbstractTransientController { // NO KEYWORDS
+class PIController: public AbstractController { // NO KEYWORDS
 public:
 	/*! Calculates controller signal/control value. */
 	void update(double errorValue) override;
 
+	/*! This function is called after each integration step and integrates the errorValue. */
+	virtual void stepCompleted(double t) override;
+
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
+
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() override;
+
 	/*! P-term factor.*/
 	double			m_kP = 1;
 	/*! I-term factor.*/
-	double			m_kI = 1;
+	double			m_kI = 0.001;
+
+	/*! Stores the error value integral.
+		This is updated in stepCompleted();
+	*/
+	double			m_errorValueIntegral = 0;
+	/*! Cached last error value, used in trapozoid rule when integrating error value. */
+	double			m_lastErrorValue = 0;
+	/*! Cached time of last stepCompleted call with m_lastErrorValue = e(m_tLastStep). */
+	double			m_tLastStep = 0;
+};
+
+
+
+/*! Defines a PID controller instance.
+	\code
+		controlValue = errorValue*kP + errorValueIntegral*kI;
+	\endcode
+
+	\warning This controller has a state m_errorValueIntegral. When
+		restoring the FMI state, this controller state must be restored as well.
+*/
+class PIDController: public AbstractController { // NO KEYWORDS
+public:
+	/*! Calculates controller signal/control value. */
+	void update(double errorValue) override;
+
+	/*! This function is called after each integration step and integrates the errorValue. */
+	virtual void stepCompleted(double t) override;
+
+	/*! This function is called at the begin of an integrator step and signals the end time point
+		of the current step.
+		In this function the integration step size is computed and stored in m_timeStep.
+	*/
+	virtual void setTime(double t) override;
+
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr) override;
+
+	/*! sets error integral value to 0 (anti-windup), should be implemented for PI controllers */
+	virtual void resetErrorIntegral() override;
+
+	/*! P-term factor.*/
+	double			m_kP = 1;
+	/*! I-term factor.*/
+	double			m_kI = 0.001;
+	/*! D-term factor.*/
+	double			m_kD = 0.001;
+
+	/*! Stores the error value integral.
+		This is updated in stepCompleted();
+	*/
+	double			m_errorValueIntegral = 0;
+	/*! Cached last error value, used in trapozoid rule when integrating error value. */
+	double			m_lastErrorValue = 0;
+	/*! Cached time of last stepCompleted call with m_lastErrorValue = e(m_tLastStep). */
+	double			m_tLastStep = 0;
+	/*! Current time step size in s, updated in setTime() and used in update() to compute the
+		derivative part of the PID controller.
+	*/
+	double			m_timeStep = 0;
 };
 
 } // namespace NANDRAD_MODEL

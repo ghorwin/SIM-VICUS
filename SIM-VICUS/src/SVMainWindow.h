@@ -56,6 +56,7 @@ class SVViewStateHandler;
 class SVSimulationStartNandrad;
 class SVSimulationStartNetworkSim;
 class SVSimulationShadingOptions;
+class SVCoSimCO2VentilationDialog;
 
 class SVDatabaseEditDialog;
 class SVDBZoneTemplateEditDialog;
@@ -83,7 +84,7 @@ public:
 	explicit SVMainWindow(QWidget *parent = nullptr);
 
 	/*! Default destructor. */
-	~SVMainWindow();
+	~SVMainWindow() override;
 
 	/*! Public access function to save project file (called from simulation view).
 		\return Returns true if project was saved and project handler
@@ -171,6 +172,9 @@ public:
 	/*! Returns the pointer to the Start Simulation Nandrad Widget */
 	SVSimulationStartNandrad * simulationStartNandrad() const;
 
+	/*! Returns pointer to the applications preferences dialog. */
+	SVPreferencesDialog * preferencesDialog();
+
 public slots:
 
 	void on_actionDBComponents_triggered();
@@ -237,6 +241,12 @@ private slots:
 
 	void onDockWidgetToggled(bool);
 
+	/*! Triggered, when an import plugin menu action was triggered. */
+	void onImportPluginTriggered();
+	/*! Triggered, when the menu action for configuring a plugin was triggered. */
+	void onConfigurePluginTriggered();
+
+
 	// all menu action slots below
 
 	void on_actionFileNew_triggered();
@@ -302,12 +312,17 @@ private slots:
 	void on_actionViewToggleParametrizationMode_triggered();
 	void on_actionViewShowSurfaceNormals_toggled(bool visible);
 	void on_actionViewShowGrid_toggled(bool visible);
+	void on_actionViewFindSelectedGeometry_triggered();
 	void on_actionViewResetView_triggered();
-
+	void on_actionViewFromNorth_triggered();
+	void on_actionViewFromEast_triggered();
+	void on_actionViewFromSouth_triggered();
+	void on_actionViewFromWest_triggered();
+	void on_actionViewFromAbove_triggered();
 
 	void on_actionSimulationNANDRAD_triggered();
 	void on_actionSimulationExportFMI_triggered();
-
+	void on_actionSimulationCO2Balance_triggered();
 
 	void on_actionHelpAboutQt_triggered();
 	void on_actionHelpAbout_triggered();
@@ -316,13 +331,20 @@ private slots:
 	void on_actionHelpCheckForUpdates_triggered();
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
-
-
+	void on_actionHelpLinuxDesktopIntegration_triggered();
 
 
 private:
 	/*! Sets up all dock widgets with definition lists. */
 	void setupDockWidgets();
+
+	/*! Loads plugins and incorporates these in the main menu.
+		In case of Database plugins, also populates the database with additional data sets.
+	*/
+	void setupPlugins();
+
+	/*! Populates the main menu entries for given plugins. */
+	void setupPluginMenuEntries(QObject * plugin);
 
 	/*! Updates the window title. */
 	void updateWindowTitle();
@@ -478,6 +500,8 @@ private:
 	SVDBZoneTemplateEditDialog			*m_dbZoneTemplateEditDialog						= nullptr;
 
 	SVDBDuplicatesDialog				*m_dbDuplicatesDialog							= nullptr;
+
+	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
 
 	friend class SVThreadBase;
 

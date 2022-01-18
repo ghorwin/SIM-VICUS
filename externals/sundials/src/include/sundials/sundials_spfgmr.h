@@ -26,12 +26,12 @@
    Abar = S1 A (P-inverse) (S2-inverse),
    bbar = S1 b , and   xbar = S2 P x .
 
- The scaling matrix must be chosen so that the vectors S1 b and 
- S2 P x have dimensionless components.  If preconditioning is not 
+ The scaling matrix must be chosen so that the vectors S1 b and
+ S2 P x have dimensionless components.  If preconditioning is not
  performed (P = I), then S2 must be a scaling for x, while S1 is a
  scaling for b.  Similarly, if preconditioning is performed, then S1
- must be a scaling for b, while S2 is a scaling for P x, and may 
- also be taken as a scaling for b. 
+ must be a scaling for b, while S2 is a scaling for P x, and may
+ also be taken as a scaling for b.
 
  The stopping test for the SPFGMR iterations is on the L2 norm of
  the scaled preconditioned residual:
@@ -82,8 +82,8 @@ extern "C" {
  parameter to SpfgmrMalloc. Each v_i is a vector of type
  N_Vector.
 
- Z is the array of preconditioned basis vectors z_1, ..., 
- z_(l_max+1), stored in Z[0], ..., Z[l_max], where l_max is the 
+ Z is the array of preconditioned basis vectors z_1, ...,
+ z_(l_max+1), stored in Z[0], ..., Z[l_max], where l_max is the
  second parameter to SpfgmrMalloc. Each z_i is a vector of type
  N_Vector.
 
@@ -164,9 +164,9 @@ SUNDIALS_EXPORT SpfgmrMem SpfgmrMalloc(int l_max, N_Vector vec_tmpl);
 
  pretype is the type of preconditioning to be used. Its
  legal possible values are enumerated in iterative.h. These
- values are PREC_NONE, PREC_LEFT, PREC_RIGHT and PREC_BOTH; 
- however since this solver can only precondition on the right, 
- then right-preconditioning will be done if any of the values 
+ values are PREC_NONE, PREC_LEFT, PREC_RIGHT and PREC_BOTH;
+ however since this solver can only precondition on the right,
+ then right-preconditioning will be done if any of the values
  PREC_LEFT, PREC_RIGHT or PREC_BOTH are provided..
 
  gstype is the type of Gram-Schmidt orthogonalization to be
@@ -180,16 +180,16 @@ SUNDIALS_EXPORT SpfgmrMem SpfgmrMalloc(int l_max, N_Vector vec_tmpl);
  max_restarts is the maximum number of times the algorithm is
  allowed to restart.
 
- maxit is the maximum number of iterations allowed within the 
- solve.  This value must be less than or equal to the "l_max" 
- value previously supplied to SpfgmrMalloc.  If maxit is too 
+ maxit is the maximum number of iterations allowed within the
+ solve.  This value must be less than or equal to the "l_max"
+ value previously supplied to SpfgmrMalloc.  If maxit is too
  large, l_max will be used instead.
 
  P_data is a pointer to preconditioner information. This
  pointer is passed to the user-supplied function psolve.
 
- s1 is an N_Vector of positive scale factors for b. (Not 
- tested for positivity.)  Pass NULL if no scaling on b is 
+ s1 is an N_Vector of positive scale factors for b. (Not
+ tested for positivity.)  Pass NULL if no scaling on b is
  required.
 
  s2 is an N_Vector of positive scale factors for P x, where
@@ -228,19 +228,19 @@ SUNDIALS_EXPORT SpfgmrMem SpfgmrMalloc(int l_max, N_Vector vec_tmpl);
  SpfgmrMalloc must be made to obtain new memory for SpfgmrSolve
  to use.
  ---------------------------------------------------------------*/
-     
-SUNDIALS_EXPORT int SpfgmrSolve(SpfgmrMem mem, void *A_data, N_Vector x, 
-				N_Vector b, int pretype, int gstype, 
-				realtype delta, int max_restarts, 
-				int maxit, void *P_data, N_Vector s1, 
-				N_Vector s2, ATimesFn atimes, PSolveFn psolve, 
+
+SUNDIALS_EXPORT int SpfgmrSolve(SpfgmrMem mem, void *A_data, N_Vector x,
+				N_Vector b, int pretype, int gstype,
+				realtype delta, int max_restarts,
+				int maxit, void *P_data, N_Vector s1,
+				N_Vector s2, ATimesFn atimes, PSolveFn psolve,
 				realtype *res_norm, int *nli, int *nps);
 
 
 /* Return values for SpfgmrSolve */
 #define SPFGMR_SUCCESS            0  /* Converged                     */
 #define SPFGMR_RES_REDUCED        1  /* Did not converge, but reduced
-                                        norm of residual              */
+					norm of residual              */
 #define SPFGMR_CONV_FAIL          2  /* Failed to converge            */
 #define SPFGMR_QRFACT_FAIL        3  /* QRfact found singular matrix  */
 #define SPFGMR_PSOLVE_FAIL_REC    4  /* psolve failed recoverably     */
@@ -250,7 +250,7 @@ SUNDIALS_EXPORT int SpfgmrSolve(SpfgmrMem mem, void *A_data, N_Vector x,
 #define SPFGMR_MEM_NULL          -1  /* mem argument is NULL          */
 #define SPFGMR_ATIMES_FAIL_UNREC -2  /* atimes returned failure flag  */
 #define SPFGMR_PSOLVE_FAIL_UNREC -3  /* psolve failed unrecoverably   */
-#define SPFGMR_GS_FAIL           -4  /* Gram-Schmidt routine faiuled  */        
+#define SPFGMR_GS_FAIL           -4  /* Gram-Schmidt routine faiuled  */
 #define SPFGMR_QRSOL_FAIL        -5  /* QRsol found singular R        */
 #define SPFGMR_PSET_FAIL_UNREC   -6  /* pset failed unrecoverably     */
 

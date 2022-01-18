@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<VicusProject fileVersion="0.7">
+	<ProjectInfo>
+		<Created>Mi. Juni 30 10:16:20 2021</Created>
+		<LastEdited>Sa. Dez. 18 17:12:42 2021</LastEdited>
+		<Comment>Das ist der Testfall TF03 der SimQuality-Testreihe, worin das korrekte zeitliche Verhalten von Konstruktionen bei reiner Wärmeleitung und -speicherung kontrolliert wird. 4 unterschiedliche Konstruktionen umgeben jeweils einen gleichartigen Raum. Je nach Schichtfolge und Materialeigenschaften wirkt sich ein Temperatursprung in der Klimadatei unterschiedlich schnell auf die Innenraumtemperaturen aus.</Comment>
+	</ProjectInfo>
+	<Project>
+		<SolverParameter>
+			<Integrator>CVODE</Integrator>
+			<LesSolver>KLU</LesSolver>
+			<Preconditioner>ILU</Preconditioner>
+		</SolverParameter>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
+			<Interval>
+				<IBK:Parameter name="Start" unit="s">0</IBK:Parameter>
+				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+				<IBK:Parameter name="RadiationLoadFractionZone" unit="%">50</IBK:Parameter>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">52.38</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<TimeZone>1</TimeZone>
+			<ClimateFilePath>/home/ghorwin/git/SIM-VICUS/data/validation/SimQuality/climate/SIMQ_TF03_Klima.epw</ClimateFilePath>
+		</Location>
+		<Outputs>
+			<Grids>
+				<OutputGrid name="Hourly values">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+							<IBK:Parameter name="StepSize" unit="min">20</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
+		</Outputs>
+		<ViewSettings>
+			<GridSpacing>10</GridSpacing>
+			<GridWidth>100</GridWidth>
+			<CameraTranslation>4.37809 -15.7748 7.42567</CameraTranslation>
+			<RotationMatrix>
+				<Wp>0.802685</Wp>
+				<X>0.578271</X>
+				<Y>-0.0852051</Y>
+				<Z>-0.118337</Z>
+			</RotationMatrix>
+			<FarDistance>10000</FarDistance>
+		</ViewSettings>
+		<Buildings>
+			<Building id="1" displayName="Building1">
+				<BuildingLevels>
+					<BuildingLevel id="1" displayName="Level1">
+						<Elevation>0</Elevation>
+						<Height>2.7</Height>
+						<Rooms>
+							<Room id="10" displayName="TF03.1">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="11" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>6 0 0, 4 0 0, 4 5 0, 6 5 0</Polygon3D>
+									</Surface>
+									<Surface id="12" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>6 5 3, 4 5 3, 4 0 3, 6 0 3</Polygon3D>
+									</Surface>
+									<Surface id="13" displayName="North">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>4 5 3, 6 5 3, 6 5 0, 4 5 0</Polygon3D>
+									</Surface>
+									<Surface id="14" displayName="West">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>4 0 3, 4 5 3, 4 5 0, 4 0 0</Polygon3D>
+									</Surface>
+									<Surface id="15" displayName="South">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6 0 3, 4 0 3, 4 0 0, 6 0 0</Polygon3D>
+									</Surface>
+									<Surface id="16" displayName="East">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>6 5 3, 6 0 3, 6 0 0, 6 5 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="17" displayName="TF03.2">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="18" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>7 0 0, 7 5 0, 9 5 0, 9 0 0</Polygon3D>
+									</Surface>
+									<Surface id="19" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>9 0 3, 9 5 3, 7 5 3, 7 0 3</Polygon3D>
+									</Surface>
+									<Surface id="20" displayName="East">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>9 5 3, 9 0 3, 9 0 0, 9 5 0</Polygon3D>
+									</Surface>
+									<Surface id="21" displayName="North">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>7 5 3, 9 5 3, 9 5 0, 7 5 0</Polygon3D>
+									</Surface>
+									<Surface id="22" displayName="West">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>7 0 3, 7 5 3, 7 5 0, 7 0 0</Polygon3D>
+									</Surface>
+									<Surface id="23" displayName="South">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>9 0 3, 7 0 3, 7 0 0, 9 0 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="24" displayName="TF03.3">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="25" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>10 0 0, 10 5 0, 12 5 0, 12 0 0</Polygon3D>
+									</Surface>
+									<Surface id="26" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>12 0 3, 12 5 3, 10 5 3, 10 0 3</Polygon3D>
+									</Surface>
+									<Surface id="27" displayName="East">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>12 5 3, 12 0 3, 12 0 0, 12 5 0</Polygon3D>
+									</Surface>
+									<Surface id="28" displayName="North">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>10 5 3, 12 5 3, 12 5 0, 10 5 0</Polygon3D>
+									</Surface>
+									<Surface id="29" displayName="West">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>10 0 3, 10 5 3, 10 5 0, 10 0 0</Polygon3D>
+									</Surface>
+									<Surface id="30" displayName="South">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>12 0 3, 10 0 3, 10 0 0, 12 0 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+							<Room id="31" displayName="TF03.4">
+								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+								<Surfaces>
+									<Surface id="32" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>13 0 0, 13 5 0, 15 5 0, 15 0 0</Polygon3D>
+									</Surface>
+									<Surface id="33" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>15 0 3, 15 5 3, 13 5 3, 13 0 3</Polygon3D>
+									</Surface>
+									<Surface id="34" displayName="East">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>15 5 3, 15 0 3, 15 0 0, 15 5 0</Polygon3D>
+									</Surface>
+									<Surface id="35" displayName="North">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>13 5 3, 15 5 3, 15 5 0, 13 5 0</Polygon3D>
+									</Surface>
+									<Surface id="36" displayName="West">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>13 0 3, 13 5 3, 13 5 0, 13 0 0</Polygon3D>
+									</Surface>
+									<Surface id="37" displayName="South">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>15 0 3, 13 0 3, 13 0 0, 15 0 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
+						</Rooms>
+					</BuildingLevel>
+				</BuildingLevels>
+			</Building>
+		</Buildings>
+		<ComponentInstances>
+			<ComponentInstance id="2" idComponent="1001" idSideASurface="11" />
+			<ComponentInstance id="3" idComponent="1001" idSideASurface="12" />
+			<ComponentInstance id="4" idComponent="1001" idSideASurface="13" />
+			<ComponentInstance id="5" idComponent="1001" idSideASurface="14" />
+			<ComponentInstance id="6" idComponent="1001" idSideASurface="15" />
+			<ComponentInstance id="7" idComponent="1001" idSideASurface="16" />
+			<ComponentInstance id="9" idComponent="1002" idSideASurface="18" />
+			<ComponentInstance id="10" idComponent="1002" idSideASurface="19" />
+			<ComponentInstance id="11" idComponent="1002" idSideASurface="20" />
+			<ComponentInstance id="12" idComponent="1002" idSideASurface="21" />
+			<ComponentInstance id="13" idComponent="1002" idSideASurface="22" />
+			<ComponentInstance id="14" idComponent="1002" idSideASurface="23" />
+			<ComponentInstance id="16" idComponent="1003" idSideASurface="25" />
+			<ComponentInstance id="17" idComponent="1003" idSideASurface="26" />
+			<ComponentInstance id="18" idComponent="1003" idSideASurface="27" />
+			<ComponentInstance id="19" idComponent="1003" idSideASurface="28" />
+			<ComponentInstance id="20" idComponent="1003" idSideASurface="29" />
+			<ComponentInstance id="21" idComponent="1003" idSideASurface="30" />
+			<ComponentInstance id="23" idComponent="1004" idSideASurface="32" />
+			<ComponentInstance id="24" idComponent="1004" idSideASurface="33" />
+			<ComponentInstance id="25" idComponent="1004" idSideASurface="34" />
+			<ComponentInstance id="26" idComponent="1004" idSideASurface="35" />
+			<ComponentInstance id="27" idComponent="1004" idSideASurface="36" />
+			<ComponentInstance id="28" idComponent="1004" idSideASurface="37" />
+		</ComponentInstances>
+		<EmbeddedDatabase>
+			<Materials>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+				</Material>
+				<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster" color="#bbbbcf">
+					<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Plaster</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">800</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
+				</Material>
+				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				</Material>
+			</Materials>
+			<Constructions>
+				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+			</Constructions>
+			<BoundaryConditions>
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
+					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+					</InterfaceHeatConduction>
+				</BoundaryCondition>
+			</BoundaryConditions>
+			<Components>
+				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1001</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1002</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1003</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1004</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+			</Components>
+		</EmbeddedDatabase>
+		<FMIDescription />
+	</Project>
+</VicusProject>

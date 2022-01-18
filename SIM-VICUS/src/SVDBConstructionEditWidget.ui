@@ -135,6 +135,9 @@
         </item>
         <item>
          <widget class="QLineEdit" name="lineEditUValue">
+          <property name="toolTip">
+           <string>The U-value is calculated using standard inside/outside heat transfer surface resistances of 0.13 and 0.04 W/m2K.</string>
+          </property>
           <property name="alignment">
            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
@@ -202,6 +205,7 @@
    <class>QtExt::LanguageStringEditWidget1</class>
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QtExt::ConstructionViewWidget</class>

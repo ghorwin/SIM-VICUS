@@ -1,7 +1,5 @@
 # CMakeLists.txt file for CCM library
 
-cmake_minimum_required( VERSION 2.8...3.10 )
-
 project(CCM)
 
 # collect a list of all source files of the IBK library

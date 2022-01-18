@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+	fmiVersion="2.0"
+	modelName="CO2ComfortVentilation"
+	guid="{17d077d8-59b4-11ec-8093-3ce1a14c97e0}"
+	version="1.0.0"
+	author="not specified"
+	copyright="not specified"
+	license="not specified"
+	description=""
+	generationTool="ghorwin/FMICodeGenerator@github - C++ Code using FMI support functions from IBK@TU Dresden"
+	generationDateAndTime="2021-12-10T01:24:17Z"
+	variableNamingConvention="structured"
+	numberOfEventIndicators="0">
+
+	<!-- The following properties are the defaults and can be omitted
+		needsExecutionTool="false"
+		canBeInstantiatedOnlyOncePerProcess="false"
+		providesDirectionalDerivative="false"
+
+		CoSim only:
+		canRunAsynchronuously = "false"
+
+	-->
+
+	<ModelExchange
+		modelIdentifier="CO2ComfortVentilation"
+		completedIntegratorStepNotNeeded="true"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
+	/>
+
+	<CoSimulation
+		modelIdentifier="CO2ComfortVentilation"
+		canHandleVariableCommunicationStepSize="true"
+		canInterpolateInputs="false"
+		maxOutputDerivativeOrder="0"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
+	/>
+
+	<LogCategories>
+		<Category name="logStatusWarning" />
+		<Category name="logStatusError" />
+		<Category name="logAll" />
+		<Category name="logFmi2Call" />
+	</LogCategories>
+
+	<DefaultExperiment startTime="0.0" stopTime="10.0" tolerance="1e-06"/>
+
+	<ModelVariables>
+
+		<!-- For input variables we need to give a 'start' attribute -->
+		<!-- For output variables with initial="exact" we need to give a 'start' attribute -->
+		
+
+		<!-- Index of variable = "1" -->
+		<ScalarVariable
+			name="ResultRootDir"
+            description="A writeable directory generated for each slave of this FMU to store slave-specific output/data files."
+			valueReference="42"
+			variability="fixed"
+			causality="parameter"
+			initial="exact">
+			<String start=""/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "2" -->
+		<ScalarVariable
+			name="AmbientTemperature"
+            description="AmbientTemperature"
+			valueReference="1"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="283.15" unit="K"/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "3" -->
+		<ScalarVariable
+			name="RoomAirTemperature_id_1"
+            description="RoomAirTemperature"
+			valueReference="1001"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="293.15" unit="K"/>
+		</ScalarVariable>		
+		
+
+		<!-- Index of variable = "4" -->
+		<ScalarVariable
+			name="RoomAirTemperature_id_3"
+            description="RoomAirTemperature"
+			valueReference="1003"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="293.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "5" -->
+		<ScalarVariable
+			name="RoomAirTemperature_id_7"
+            description="RoomAirTemperature"
+			valueReference="1007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="293.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "6" -->
+		<ScalarVariable
+			name="AirChangeRate_id_1"
+            description="AirChangeRate"
+			valueReference="2001"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="1/s"/>
+		</ScalarVariable>		
+		
+		<!-- Index of variable = "7" -->
+		<ScalarVariable
+			name="AirChangeRate_id_3"
+            description="AirChangeRate"
+			valueReference="2003"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "8" -->
+		<ScalarVariable
+			name="AirChangeRate_id_7"
+            description="AirChangeRate"
+			valueReference="2007"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "9" -->
+		<ScalarVariable
+			name="CO2Concentration_id_1"
+            description="CO2Concentration"
+			valueReference="3001"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="mol/mol"/>
+		</ScalarVariable>		
+		
+		<!-- Index of variable = "10" -->
+		<ScalarVariable
+			name="CO2Concentration_id_3"
+            description="CO2Concentration"
+			valueReference="3003"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="mol/mol"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "11" -->
+		<ScalarVariable
+			name="CO2Concentration_id_7"
+            description="CO2Concentration"
+			valueReference="3007"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="mol/mol"/>
+		</ScalarVariable>		
+
+	</ModelVariables>
+
+	<ModelStructure>
+		<Outputs>
+			<!-- dependencies must be defined for all output quantities. 'dependencyKind' is only needed
+				when some dependencies are constant factors or parameters.
+			-->
+			
+			<Unknown index="4" dependencies="2 3"/>
+		
+
+		</Outputs>
+	</ModelStructure>
+
+</fmiModelDescription>
+

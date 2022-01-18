@@ -14,11 +14,100 @@
    <item>
     <widget class="QGroupBox" name="groupBoxTableView">
      <layout class="QGridLayout" name="gridLayoutTableView">
+      <item row="1" column="1">
+       <widget class="QToolButton" name="toolButtonCopy">
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QToolButton" name="toolButtonStoreInUserDB">
+        <property name="toolTip">
+         <string>Stores local project DB element in user database.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/toDB.png</normaloff>:/gfx/actions/24x24/toDB.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="6">
+       <widget class="QTableView" name="tableView">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>1156</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
       <item row="1" column="0">
        <widget class="QToolButton" name="toolButtonAdd">
         <property name="icon">
          <iconset resource="../resources/SIM-VICUS.qrc">
           <normaloff>:/gfx/actions/24x24/plus.png</normaloff>:/gfx/actions/24x24/plus.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QToolButton" name="toolButtonRemoveFromUserDB">
+        <property name="toolTip">
+         <string>Moves DB element from user  database to local project.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../resources/SIM-VICUS.qrc">
+          <normaloff>:/gfx/actions/24x24/fromDB.png</normaloff>:/gfx/actions/24x24/fromDB.png</iconset>
         </property>
         <property name="iconSize">
          <size>
@@ -42,55 +131,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>1156</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="0" colspan="4">
-       <widget class="QTableView" name="tableView">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <attribute name="horizontalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QToolButton" name="toolButtonCopy">
-        <property name="icon">
-         <iconset resource="../resources/SIM-VICUS.qrc">
-          <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>24</width>
-          <height>24</height>
-         </size>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
    </item>
@@ -101,8 +141,26 @@
        <property name="text">
         <string>Reload user database</string>
        </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/reload.png</normaloff>:/gfx/actions/24x24/reload.png</iconset>
+       </property>
        <property name="autoDefault">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRemoveUnusedElements">
+       <property name="toolTip">
+        <string>Removes project-local database elements that are currently nowhere referenced.</string>
+       </property>
+       <property name="text">
+        <string>Remove unused local elements</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/SIM-VICUS.qrc">
+         <normaloff>:/gfx/actions/24x24/broom.png</normaloff>:/gfx/actions/24x24/broom.png</iconset>
        </property>
       </widget>
      </item>

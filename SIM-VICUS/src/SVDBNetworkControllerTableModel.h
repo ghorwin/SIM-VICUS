@@ -17,6 +17,7 @@ public:
 		ColCheck,
 		ColName,
 		ColType,
+		ColSource,
 		NumColumns
 	};
 
@@ -41,6 +42,7 @@ public:
 	QModelIndex copyItem(const QModelIndex & index) override;
 	void deleteItem(const QModelIndex & index) override;
 	void setColumnResizeModes(QTableView * tableView) override;
+	void setItemLocal(const QModelIndex &index, bool local) override;
 
 	// ** other members **
 

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Schedule Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Schedule Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -78,7 +79,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Schedule.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a54c828deac3468df2ec2546fcb0be5fc"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#a54c828deac3468df2ec2546fcb0be5fc">type_t</a> { <br />
+<tr class="memitem:ada63926ccfe8fbe2017c082e87bec21f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#ada63926ccfe8fbe2017c082e87bec21f">ScheduledDayType</a> { <br />
 &#160;&#160;<b>ST_ALLDAYS</b>, 
 <b>ST_WEEKDAY</b>, 
 <b>ST_WEEKEND</b>, 
@@ -94,27 +95,27 @@ Public Types</h2></td></tr>
 <b>ST_HOLIDAY</b>, 
 <b>NUM_ST</b>
 <br />
- }<tr class="memdesc:a54c828deac3468df2ec2546fcb0be5fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Different day types a schedule can be defined for.  <a href="classNANDRAD_1_1Schedule.html#a54c828deac3468df2ec2546fcb0be5fc">More...</a><br /></td></tr>
+ }<tr class="memdesc:ada63926ccfe8fbe2017c082e87bec21f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Different day types a schedule can be defined for.  <a href="classNANDRAD_1_1Schedule.html#ada63926ccfe8fbe2017c082e87bec21f">More...</a><br /></td></tr>
 </td></tr>
-<tr class="separator:a54c828deac3468df2ec2546fcb0be5fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:ada63926ccfe8fbe2017c082e87bec21f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aafdc1c40a276e3108cd5d4cac82320af"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#aafdc1c40a276e3108cd5d4cac82320af">prepareCalculation</a> ()</td></tr>
-<tr class="memdesc:aafdc1c40a276e3108cd5d4cac82320af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters.  <a href="#aafdc1c40a276e3108cd5d4cac82320af">More...</a><br /></td></tr>
-<tr class="separator:aafdc1c40a276e3108cd5d4cac82320af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a808903565926d779af06f77a847691df"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#a808903565926d779af06f77a847691df">prepareCalculation</a> ()</td></tr>
+<tr class="memdesc:a808903565926d779af06f77a847691df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters.  <a href="#a808903565926d779af06f77a847691df">More...</a><br /></td></tr>
+<tr class="separator:a808903565926d779af06f77a847691df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab75fb0ca015a348ee6db73bdc0f39e80"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#ab75fb0ca015a348ee6db73bdc0f39e80">containsDay</a> (unsigned int dayOfYear) const</td></tr>
 <tr class="memdesc:ab75fb0ca015a348ee6db73bdc0f39e80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, if given day is inside the start and end date of the schedule.  <a href="#ab75fb0ca015a348ee6db73bdc0f39e80">More...</a><br /></td></tr>
 <tr class="separator:ab75fb0ca015a348ee6db73bdc0f39e80"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe5bade6d53064166f7bb9ec2976f56c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#afe5bade6d53064166f7bb9ec2976f56c">isWholeYearSchedule</a> () const</td></tr>
-<tr class="memdesc:afe5bade6d53064166f7bb9ec2976f56c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if schedule is a whole year schedule.  <a href="#afe5bade6d53064166f7bb9ec2976f56c">More...</a><br /></td></tr>
+<tr class="memdesc:afe5bade6d53064166f7bb9ec2976f56c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if schedule is a whole year schedule (startDay = 0 and endDay = 364).  <a href="#afe5bade6d53064166f7bb9ec2976f56c">More...</a><br /></td></tr>
 <tr class="separator:afe5bade6d53064166f7bb9ec2976f56c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a348b2bfdfbd81986def92495a640599a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1Schedule.html#a54c828deac3468df2ec2546fcb0be5fc">type_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#a348b2bfdfbd81986def92495a640599a">m_type</a> = NUM_ST</td></tr>
-<tr class="memdesc:a348b2bfdfbd81986def92495a640599a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of day this schedule is defined for.  <a href="#a348b2bfdfbd81986def92495a640599a">More...</a><br /></td></tr>
-<tr class="separator:a348b2bfdfbd81986def92495a640599a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a30e3af2eefd87155b15d3c033183fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1Schedule.html#ada63926ccfe8fbe2017c082e87bec21f">ScheduledDayType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#a7a30e3af2eefd87155b15d3c033183fc">m_type</a> = NUM_ST</td></tr>
+<tr class="memdesc:a7a30e3af2eefd87155b15d3c033183fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of day this schedule is defined for.  <a href="#a7a30e3af2eefd87155b15d3c033183fc">More...</a><br /></td></tr>
+<tr class="separator:a7a30e3af2eefd87155b15d3c033183fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d65c5b056691418ca5c1f92014e9f7a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Schedule.html#a2d65c5b056691418ca5c1f92014e9f7a">m_startDayOfTheYear</a> = 0</td></tr>
 <tr class="memdesc:a2d65c5b056691418ca5c1f92014e9f7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start day of the year for the schedule, if not given, defaults to 0 = 1.1.  <a href="#a2d65c5b056691418ca5c1f92014e9f7a">More...</a><br /></td></tr>
 <tr class="separator:a2d65c5b056691418ca5c1f92014e9f7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,14 +130,14 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a46fc2989b17906dec94d2ed819dc281b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="a54c828deac3468df2ec2546fcb0be5fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a54c828deac3468df2ec2546fcb0be5fc">&#9670;&nbsp;</a></span>type_t</h2>
+<a id="ada63926ccfe8fbe2017c082e87bec21f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada63926ccfe8fbe2017c082e87bec21f">&#9670;&nbsp;</a></span>ScheduledDayType</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="classNANDRAD_1_1Schedule.html#a54c828deac3468df2ec2546fcb0be5fc">NANDRAD::Schedule::type_t</a></td>
+          <td class="memname">enum <a class="el" href="classNANDRAD_1_1Schedule.html#ada63926ccfe8fbe2017c082e87bec21f">NANDRAD::Schedule::ScheduledDayType</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -149,14 +150,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aafdc1c40a276e3108cd5d4cac82320af"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafdc1c40a276e3108cd5d4cac82320af">&#9670;&nbsp;</a></span>prepareCalculation()</h2>
+<a id="a808903565926d779af06f77a847691df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a808903565926d779af06f77a847691df">&#9670;&nbsp;</a></span>prepareCalculation()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void NANDRAD::Schedule::prepareCalculation </td>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::Schedule::prepareCalculation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -166,8 +167,6 @@ Public Attributes</h2></td></tr>
 
 <p>Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters. </p>
 <dl class="section warning"><dt>Warning</dt><dd>In this function persistent pointers to memory locations are stored. Hence, you must not modify the memory location of this object or any of the vectors afterwards! </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Schedule_8cpp_source.html#l00043">43</a> of file <a class="el" href="NANDRAD__Schedule_8cpp_source.html">NANDRAD_Schedule.cpp</a>.</p>
 
 </div>
 </div>
@@ -224,21 +223,21 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns true if schedule is a whole year schedule. </p>
+<p>Returns true if schedule is a whole year schedule (startDay = 0 and endDay = 364). </p>
 
 <p class="definition">Definition at line <a class="el" href="NANDRAD__Schedule_8h_source.html#l00082">82</a> of file <a class="el" href="NANDRAD__Schedule_8h_source.html">NANDRAD_Schedule.h</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a348b2bfdfbd81986def92495a640599a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a348b2bfdfbd81986def92495a640599a">&#9670;&nbsp;</a></span>m_type</h2>
+<a id="a7a30e3af2eefd87155b15d3c033183fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a30e3af2eefd87155b15d3c033183fc">&#9670;&nbsp;</a></span>m_type</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classNANDRAD_1_1Schedule.html#a54c828deac3468df2ec2546fcb0be5fc">type_t</a> NANDRAD::Schedule::m_type = NUM_ST</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1Schedule.html#ada63926ccfe8fbe2017c082e87bec21f">ScheduledDayType</a> NANDRAD::Schedule::m_type = NUM_ST</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -317,23 +316,22 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>All value names provided by all of the daily cycles. </p>
-<p>This map is composed during <a class="el" href="classNANDRAD_1_1Schedule.html#aafdc1c40a276e3108cd5d4cac82320af" title="Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters...">prepareCalculation()</a> and primarily used to quickly check if this schedule provides a required parameter at all. Also, it identifies the actual schedule that defines this parameter. </p><dl class="section note"><dt>Note</dt><dd>with this map we also ensure, that the user does not specify multiple daily cycles for the same parameter. </dd></dl>
+<p>This map is composed during <a class="el" href="classNANDRAD_1_1Schedule.html#a808903565926d779af06f77a847691df" title="Prepares calculation by initializing daily cycles and by collecting names of all scheduled parameters...">prepareCalculation()</a> and primarily used to quickly check if this schedule provides a required parameter at all. Also, it identifies the actual schedule that defines this parameter. </p><dl class="section note"><dt>Note</dt><dd>with this map we also ensure, that the user does not specify multiple daily cycles for the same parameter. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="NANDRAD__Schedule_8h_source.html#l00110">110</a> of file <a class="el" href="NANDRAD__Schedule_8h_source.html">NANDRAD_Schedule.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__Schedule_8h_source.html">NANDRAD_Schedule.h</a></li>
-<li><a class="el" href="NANDRAD__Schedule_8cpp_source.html">NANDRAD_Schedule.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Schedule.html">Schedule</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -115,7 +115,8 @@ TiXmlElement * FMIVariableDefinition::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("fmiVarName", m_fmiVarName);
 	if (!m_unit.empty())
 		e->SetAttribute("unit", m_unit);
-	e->SetAttribute("fmiValueRef", IBK::val2string<IDType>(m_fmiValueRef));
+	if (m_fmiValueRef != NANDRAD::INVALID_ID)
+		e->SetAttribute("fmiValueRef", IBK::val2string<IDType>(m_fmiValueRef));
 	if (!m_fmiVarDescription.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "FmiVarDescription", nullptr, std::string(), m_fmiVarDescription);
 	if (!m_fmiTypeName.empty())

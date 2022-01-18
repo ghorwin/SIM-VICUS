@@ -42,5 +42,12 @@ void Sensor::checkParameters() const {
 							   "Inclination must be between 0 and 360 Deg.");
 }
 
+void Sensor::createSensor(unsigned int id, double orientationDeg, double inclinationDeg){
+	m_id = id;
+	m_orientation = IBK::Parameter("Orientation", orientationDeg, IBK::Unit("Deg"));
+	m_inclination = IBK::Parameter("Inclination", inclinationDeg, IBK::Unit("Deg"));
+	checkParameters();
+}
+
 } // namespace NANDRAD
 

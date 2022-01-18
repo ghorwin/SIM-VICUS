@@ -64,6 +64,10 @@ private slots:
 	void on_pushButtonColor_colorChanged();
 	void on_lineEditCategory_editingFinished();
 
+	void on_lineEditWallHeatCapacity_editingFinished();
+
+	void on_lineEditWallDensity_editingFinished();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();

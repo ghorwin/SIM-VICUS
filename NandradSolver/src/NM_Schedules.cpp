@@ -170,7 +170,6 @@ void Schedules::setup(NANDRAD::Project &project) {
 		}
 	}
 
-
 	// setup annual splines
 	for (auto itAnnualSched = m_schedules->m_annualSchedules.begin(); itAnnualSched!=m_schedules->m_annualSchedules.end(); ++itAnnualSched){
 		// get object list name
@@ -205,7 +204,17 @@ void Schedules::setup(NANDRAD::Project &project) {
 													   "got unit with base SI unit '%3' (not convertible).")
 									 .arg(requestedUnit).arg(spl.m_name).arg(spl.m_yUnit), FUNC_ID);
 
-			m_variableNames.push_back(objectListName + "::" + spl.m_name);
+
+			std::string varName = objectListName + "::" + spl.m_name;
+			// do not allow duplicate annual schedules or mixed schedule group and annual schedule definitions
+			// of the same quantity
+			if(std::find(m_variableNames.begin(), m_variableNames.end(), varName) != m_variableNames.end())
+				throw IBK::Exception(IBK::FormatString(	"Multiple definition of Quantity '%1' for ObjectList '%2' inside annual schedules. "
+														"This is not allowed!")
+									 .arg(spl.m_name).arg(objectListName), FUNC_ID);
+
+
+			m_variableNames.push_back(varName);
 			m_variableUnits.push_back(spl.m_yUnit);
 			// now generate the linear splines
 			m_valueSpline.push_back(spl.m_values);

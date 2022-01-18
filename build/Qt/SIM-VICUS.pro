@@ -1,6 +1,8 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
+		DummyDatabasePlugin \
+		DummyImportPlugin \
 		SIM-VICUS \
 		QuaZIP \
 		qwt \
@@ -48,6 +50,9 @@ Vicus.file = ../../externals/Vicus/projects/Qt/Vicus.pro
 QtExt.file = ../../externals/QtExt/projects/Qt/QtExt.pro
 IDFReader.file = ../../externals/IDFReader/projects/Qt/IDFReader.pro
 NandradModel.file = ../../NandradSolver/projects/Qt/NandradModel.pro
+DummyDatabasePlugin.file = ../../plugins/DummyDatabasePlugin/projects/Qt/DummyDatabasePlugin.pro
+DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImportPlugin.pro
+
 
 # dependencies
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
@@ -69,4 +74,5 @@ Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
 Vicus.depends = IBK TiCPP Nandrad IBKMK
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
-
+DummyDatabasePlugin.depends = Vicus
+DummyImportPlugin.depends = Vicus

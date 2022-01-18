@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 	// since this string is used to identify the registry/config file location.
 	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
 
-	qApp->setWindowIcon(QIcon(":/logo/icons/64w/Icon64.png"));
+	qApp->setWindowIcon(QIcon(":/logo/icons/Icon_64.png"));
 	qApp->setApplicationName(ProgramVersionName);
 
 	// disable ? button in windows
@@ -121,11 +121,12 @@ int main(int argc, char *argv[]) {
 	}
 	settings.m_versionIdentifier = VICUS::VERSION;
 
-
-
 	// adjust log file verbosity
 	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );
 	messageHandler.setLogfileVerbosityLevel( settings.m_userLogLevelLogfile );
+
+	// *** Read databases ***
+	settings.m_db.readDatabases();
 
 	// *** Style Init ***
 
@@ -156,7 +157,6 @@ int main(int argc, char *argv[]) {
 	// *** Install translator ***
 	QtExt::LanguageHandler::instance().setup(SVSettings::instance().m_organization,
 											 SVSettings::instance().m_appName,
-											 QtExt::Directories::translationsDir(),
 											 "SIM-VICUS" );
 	if (argParser.hasOption("lang")) {
 		std::string dummy = argParser.option("lang");

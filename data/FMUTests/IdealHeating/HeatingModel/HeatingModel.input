@@ -1,0 +1,28 @@
+{
+    "modelName": "HeatingModel",
+    "description": "Einfaches Heizungsmodell mit P-Regler und quadratischem Fehlerterm.",
+    "variables": [
+        {
+            "name": "RoomTemperature",
+            "valueRef": -1,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "293.15",
+            "description": "",
+            "unit": "K"
+        },
+        {
+            "name": "HeatingPower",
+            "valueRef": -1,
+            "variability": "continuous",
+            "causality": "output",
+            "initial": "calculated",
+            "typeID": "Real",
+            "startValue": "",
+            "description": "",
+            "unit": "W"
+        }
+    ]
+}

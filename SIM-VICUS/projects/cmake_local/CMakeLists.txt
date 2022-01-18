@@ -2,6 +2,13 @@
 
 project( SIM-VICUS )
 
+if (COMMAND cmake_policy)
+  # set linker search policy new
+  cmake_policy(SET CMP0003 NEW)
+  # Policy CMP0020: Automatically link Qt executables to qtmain target on Windows.
+  cmake_policy(SET CMP0020 NEW)
+endif (COMMAND cmake_policy)
+
 # add include directories
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
@@ -95,6 +102,7 @@ if( WIN32 )
 	set(WIN_FRAMEWORKS iphlpapi gdiplus gdi32 user32 ole32)
 	
 	# enable console window (to see debug/profiler messages)
+	# Mind: when commenting out next line, you need to link against WinMain
 	#set_target_properties( ${PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:CONSOLE" )
 	
 endif( WIN32 ) 

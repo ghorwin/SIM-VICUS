@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidgetGroup">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="documentMode">
       <bool>true</bool>
@@ -30,7 +30,7 @@
        <string>Building objects</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayoutBuildings">
-       <item row="1" column="0">
+       <item row="2" column="0">
         <layout class="QVBoxLayout" name="verticalLayoutOptions">
          <item>
           <widget class="QPushButton" name="pushButtonDummy">
@@ -54,7 +54,7 @@
          </item>
         </layout>
        </item>
-       <item row="1" column="1">
+       <item row="2" column="1">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -67,10 +67,13 @@
          </property>
         </spacer>
        </item>
-       <item row="0" column="0" colspan="2">
+       <item row="1" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayoutBreadCrums">
          <item>
           <widget class="QPushButton" name="pushButtonReset">
+           <property name="toolTip">
+            <string>Resets all filters.</string>
+           </property>
            <property name="text">
             <string/>
            </property>
@@ -100,6 +103,13 @@
           </spacer>
          </item>
         </layout>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="labelFilterInfo">
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -154,7 +164,7 @@
            <item row="2" column="1">
             <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemandAbove"/>
            </item>
-           <item row="4" column="1">
+           <item row="6" column="1">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -167,15 +177,35 @@
              </property>
             </spacer>
            </item>
-           <item row="3" column="1">
+           <item row="5" column="1">
             <widget class="QtExt::ValidatingLineEdit" name="lineEditNodeId"/>
            </item>
-           <item row="3" column="0">
+           <item row="5" column="0">
             <widget class="QCheckBox" name="checkBoxNodeId">
              <property name="text">
               <string>ID=</string>
              </property>
             </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QCheckBox" name="checkBoxMaxHeatingDemandEqualTo">
+             <property name="text">
+              <string>Max heating demand [W] =</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxHeatingDemandEqualTo"/>
+           </item>
+           <item row="4" column="0">
+            <widget class="QCheckBox" name="checkBoxNodeDisplayName">
+             <property name="text">
+              <string>name =</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="1">
+            <widget class="QLineEdit" name="lineEditNodeDisplayName"/>
            </item>
           </layout>
          </widget>

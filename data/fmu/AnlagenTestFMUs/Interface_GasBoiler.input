@@ -1,0 +1,160 @@
+{
+    "modelName": "GasBoiler",
+    "description": "This is the standard interface for an FMI4Practice plant component.",
+    "variables": [
+        {
+            "name": "Building.fromBuilding.TOutdoor",
+            "valueRef": 1,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "293.15",
+            "description": "Ambient air temperature",
+            "unit": "K"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.OutdoorRelativeHumidity",
+            "valueRef": 2,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0.8",
+            "description": "Ambient air temperature",
+            "unit": "-"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.AirPressure",
+            "valueRef": 3,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "101300",
+            "description": "Ambient air pressuure.",
+            "unit": "Pa"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.ElevationAngle",
+            "valueRef": 4,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Sun's elevation angle.",
+            "unit": "Deg"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.AzimuthAngle",
+            "valueRef": 5,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Sun's azimuth angle.",
+            "unit": "Deg"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.WindDirection",
+            "valueRef": 6,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Wind direction.",
+            "unit": "Deg"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.WindVelocity",
+            "valueRef": 7,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Wind velocity.",
+            "unit": "m/s"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.DirectRadiationNormal",
+            "valueRef": 8,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Direct radiation from sun's normal direction.",
+            "unit": "W/m2"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.DiffuseRadiationHorizontal",
+            "valueRef": 9,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Diffuse radiation onto horizontal surface.",
+            "unit": "W/m2"
+        },
+        {
+            "name": "Building.fromBuildingWeatherData.LongWaveCounterRadiation",
+            "valueRef": 10,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Long wave counter (sky) radiation onto horizontal surface.",
+            "unit": "W/m2"
+        },
+        {
+            "name": "Building.fromBuilding.TReturn",
+            "valueRef": 11,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "293.15",
+            "description": "Return temperature from building.",
+            "unit": "K"
+        },
+        {
+            "name": "Building.fromBuilding.mdot",
+            "valueRef": 12,
+            "variability": "continuous",
+            "causality": "input",
+            "initial": "approx",
+            "typeID": "Real",
+            "startValue": "0",
+            "description": "Mass flux from building as result of provided pressure head.",
+            "unit": "kg/s"
+        },
+        {
+            "name": "Building.toBuilding.pSupply",
+            "valueRef": 13,
+            "variability": "continuous",
+            "causality": "output",
+            "initial": "calculated",
+            "typeID": "Real",
+            "startValue": "1000",
+            "description": "Target pressure head for controlled pump.",
+            "unit": "Pa"
+        },
+        {
+            "name": "Building.toBuilding.TSupply",
+            "valueRef": 14,
+            "variability": "continuous",
+            "causality": "output",
+            "initial": "calculated",
+            "typeID": "Real",
+            "startValue": "293.15",
+            "description": "Supply temperature of HVAC system provided to building.",
+            "unit": "K"
+        }
+    ]
+}

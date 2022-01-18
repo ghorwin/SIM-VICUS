@@ -15,7 +15,9 @@ var classNANDRAD_1_1Schedules =
       [ "NUM_F", "classNANDRAD_1_1Schedules.html#a03573329ea01e278e50f5d48564c0b52a2dbd442c7fbe8ecb700778c28f020600", null ]
     ] ],
     [ "initDefaults", "classNANDRAD_1_1Schedules.html#ad28ecfacbad2a73a822448cab5ee0743", null ],
+    [ "checkParameters", "classNANDRAD_1_1Schedules.html#a402da6624ddbd1b75141bcaa059cffef", null ],
     [ "generateLinearSpline", "classNANDRAD_1_1Schedules.html#a2c040a4f61b6cc74309c7fdc7e82d29a", null ],
+    [ "equalSchedules", "classNANDRAD_1_1Schedules.html#aa328941d21510abc38a57d4e5c0c0cf7", null ],
     [ "m_holidays", "classNANDRAD_1_1Schedules.html#ab1abac20c2c52e2e8f83c8c4fa68c1d3", null ],
     [ "m_weekEndDays", "classNANDRAD_1_1Schedules.html#aeb47bf64a2658bf5b83dbd15d83bbaa7", null ],
     [ "m_firstDayOfYear", "classNANDRAD_1_1Schedules.html#a6d3d2055e01f76f35dc18c96c606266d", null ],

@@ -11,6 +11,8 @@
 #include "EP_Zone.h"
 #include "EP_Version.h"
 #include "EP_ShadingBuildingDetailed.h"
+#include "EP_Frame.h"
+#include "EP_ShadingSystems.h"
 
 namespace EP {
 
@@ -80,6 +82,14 @@ public:
 
 	/*! Vector of all ShadingBuildingDetaile */
 	std::vector<EP::ShadingBuildingDetailed>		m_shadingBuildingDetailed;
+
+	/*! Vector of all ShadingBuildingDetaile */
+	std::vector<EP::Frame>							m_frames;
+
+	/*! Vector of all ShadingBuildingDetaile */
+	std::vector<EP::ShadingSystems>					m_shadingSystems;
+
+
 };
 
 

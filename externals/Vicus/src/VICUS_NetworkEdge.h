@@ -33,8 +33,6 @@
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_NetworkComponent.h"
 
-#include <vector>
-#include <set>
 
 namespace VICUS {
 
@@ -50,20 +48,6 @@ namespace VICUS {
 */
 class NetworkEdge : public Object {
 public:
-
-	/*! Defines which model in Nandrad shall be used */
-	enum PipeModel {
-		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
-		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
-		NUM_PM
-	};
-
-	/*! Parameters used to create soil model (FMU) for heat exchange with the ground */
-	enum para_t {
-		P_PipeSpacing,			// Keyword: PipeSpacing		[m]		'Distance between supply pipe and return pipe'
-		P_PipeDepth,			// Keyword: PipeDepth		[m]		'Distance between pipes and soil surface'
-		NUM_P
-	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -121,21 +105,15 @@ public:
 	// swaps current nodeId1 with given node id, sets pointer and calculates the new length of this edge
 	void changeNode2(NetworkNode *node);
 
-	/*! Returns the corresponding NetworkComponent model type based on the PipeModel. */
-	NetworkComponent::ModelType networkComponentModelType() const;
-
 
 	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Defines which pipe model will be instantiated in NANDRAD */
-	PipeModel											m_pipeModel = PM_DynamicPipe;	// XML:A
 
 	/*! If true, nodes of type Building can connect to this edge.
 		This is used for the automatic algorithm that connects buildings with the network */
 	bool												m_supply;						// XML:A
 
 	/*! ID of pipe in database */
-	unsigned int										m_idPipe = INVALID_ID;			// XML:A
+	IDType												m_idPipe = INVALID_ID;			// XML:A
 
 	//:inherited	QString								m_displayName;					// XML:A
 
@@ -145,22 +123,13 @@ public:
 	/*! Defines the heat exchange properties for this edge (ambient temperature, heat flux etc.) */
 	NANDRAD::HydraulicNetworkHeatExchange				m_heatExchange;					// XML:E
 
-	/*! Defines wether this edge has heat exchange with the ground.
-	 * We dont store this information in NANDRAD::HydraulicNetworkHeatExchange, because it is actually not used (yet)
-	 * within the Nandrad Solver. We only use this to create the according FMI inputs/outputs and the
-	 * coupling information for the soil FMUs */
-	bool												m_hasHeatExchangeWithGround = false; // XML:E
-
-
-	/*! Parameters used for coupling with ground heat exchange model */
-	para_t												m_para;
 
 	// *** RUNTIME VARIABLES ***
 
 	/*! The radius [m] used for the visualization of this edge in the 3D scene
 		Updated whenever the scale factor Network::m_scaleEdges changes, or the pipe ID.
 	*/
-	mutable double										m_visualizationRadius;
+	double												m_visualizationRadius;
 	/*! Color to be used for displaying (visible) nodes. */
 	mutable QColor										m_color;
 
@@ -175,6 +144,7 @@ public:
 		Is dimensionless, but for interpretation, unit [K/K] can be used
 	*/
 	double												m_tempChangeIndicator = -1;
+	double												m_cumulativeTempChangeIndicator = -1;
 
 	NetworkNode											* m_node1 = nullptr;
 	NetworkNode											* m_node2 = nullptr;
@@ -184,6 +154,8 @@ public:
 
 	unsigned int										m_idNandradSupplyPipe = INVALID_ID;
 	unsigned int										m_idNandradReturnPipe = INVALID_ID;
+
+	unsigned int										m_idSoil = INVALID_ID;
 
 
 private:

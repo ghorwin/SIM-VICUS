@@ -35,6 +35,7 @@
 
 #include <VICUS_NetworkComponent.h>
 #include <VICUS_KeywordListQt.h>
+#include <VICUS_utilities.h>
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -58,9 +59,8 @@ SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) 
 	// block signals to avoid getting "changed" calls
 	m_ui->comboBoxComponentType->blockSignals(true);
 	for (int i=0; i<VICUS::NetworkComponent::NUM_MT; ++i)
-		m_ui->comboBoxComponentType->addItem(QString("%1 (%2)")
-											 .arg(VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i))
-											 .arg(VICUS::KeywordListQt::Description("NetworkComponent::ModelType", i)),
+		m_ui->comboBoxComponentType->addItem(QString("%1")
+											 .arg(VICUS::KeywordListQt::Keyword("NetworkComponent::ModelType", i)),
 											 i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
@@ -130,9 +130,8 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->pushButtonColor->setColor(m_current->m_color);
 	m_ui->pushButtonColor->blockSignals(false);
 
-	// NOTE: we assume that ModelType enums are the same in both objects!
 	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
-			NANDRAD::HydraulicNetworkComponent::ModelType(m_current->m_modelType);
+			VICUS::NetworkComponent::nandradNetworkComponentModelType(m_current->m_modelType);
 
 	// enable schedules tool buttons (based on required schedules)
 	std::vector<std::string> reqScheduleNames = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(nandradModelType);
@@ -140,64 +139,176 @@ void SVDBNetworkComponentEditWidget::updateInput(int id) {
 	m_ui->toolButtonSchedule1->setEnabled(reqScheduleNames.size()==1 || reqScheduleNames.size()==2);
 	m_ui->toolButtonSchedule2->setEnabled(reqScheduleNames.size()==2);
 
-	// update Schedule names (based on existing schedules)
 
+	// update Schedule names (based on existing schedules)
 	if (m_current->m_scheduleIds.size()>0){
-		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[0]] != nullptr);
-		m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
+		if (m_db->m_schedules[m_current->m_scheduleIds[0]] == nullptr)
+			m_ui->lineEditSchedule1->setText(tr("Invalid Schedule"));
+		else
+			m_ui->lineEditSchedule1->setText(QtExt::MultiLangString2QString(
 											 m_db->m_schedules[m_current->m_scheduleIds[0]]->m_displayName));
 	}
 	if (m_current->m_scheduleIds.size()>1){
-		Q_ASSERT(m_db->m_schedules[m_current->m_scheduleIds[1]] != nullptr);
-		m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
+		if (m_db->m_schedules[m_current->m_scheduleIds[1]] == nullptr)
+			m_ui->lineEditSchedule2->setText(tr("Invalid Schedule"));
+		else
+			m_ui->lineEditSchedule2->setText(QtExt::MultiLangString2QString(
 											 m_db->m_schedules[m_current->m_scheduleIds[1]]->m_displayName));
 	}
 
-
-	// populate table widget with properties
-	m_ui->tableWidgetParameters->clearContents();
-
-	// only insert parameters that are actually needed for the current model type
-	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
-	m_ui->tableWidgetParameters->setRowCount(paraVec.size());
-
-	if (paraVec.empty())
-		m_ui->groupBoxModelParameters->setEnabled(false);
-	else
-		m_ui->groupBoxModelParameters->setEnabled(true);
-
-	m_ui->tableWidgetParameters->blockSignals(true);
-	for (unsigned int i=0; i<paraVec.size(); ++i) {
-		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", (int)paraVec[i]));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		m_ui->tableWidgetParameters->setItem((int)i, 0, item);
-		try {
-			IBK::Unit ioUnit(VICUS::KeywordListQt::Unit("NetworkComponent::para_t", (int)paraVec[i]));
-			item = new QTableWidgetItem(QString::fromStdString(ioUnit.name()));
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-			m_ui->tableWidgetParameters->setItem((int)i, 2, item);
-
-			// Mind: unit conversion needed if keyword-list unit does not match base SI unit
-			//       but add check if there is no value yet
-			if (m_current->m_para[paraVec[i]].name.empty())
-				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
-			else
-				item = new QTableWidgetItem(QString("%L1").arg(m_current->m_para[paraVec[i]].get_value(ioUnit)));
-			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-			m_ui->tableWidgetParameters->setItem((int)i, 1, item);
-		}
-		catch (IBK::Exception & ex) {
-			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
-		}
+	// update pipe properties
+	m_ui->lineEditPipeProperties->clear();
+	m_ui->groupBoxPipeProperties->setEnabled(false);
+	if (VICUS::NetworkComponent::hasPipeProperties(m_current->m_modelType)){
+		m_ui->groupBoxPipeProperties->setEnabled(true);
+		const VICUS::NetworkPipe *pipe = m_db->m_pipes[m_current->m_pipePropertiesId];
+		if(pipe != nullptr)
+			m_ui->lineEditPipeProperties->setText(QtExt::MultiLangString2QString(pipe->m_displayName));
 	}
-	m_ui->tableWidgetParameters->blockSignals(false);
-	m_ui->tableWidgetParameters->resizeColumnsToContents();
+
+	// populate table widget with parameters
+	populateTableWidget();
 
 	// for built-ins, disable editing/make read-only
 	bool isEditable = !comp->m_builtIn;
 	m_ui->lineEditName->setReadOnly(!isEditable);
 	m_ui->pushButtonColor->setReadOnly(!isEditable);
 
+}
+
+
+
+void SVDBNetworkComponentEditWidget::populateTableWidget(){
+	FUNCID(SVDBNetworkComponentEditWidget::populateTableWidget);
+
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
+			VICUS::NetworkComponent::nandradNetworkComponentModelType(m_current->m_modelType);
+
+	// populate table widget with properties
+	m_ui->tableWidgetParameters->clearContents();
+
+	// get required parameters of the current component
+	std::vector<unsigned int> paraVecStd = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
+	std::vector<unsigned int> paraVecAdd = m_current->additionalRequiredParameter(m_current->m_modelType);
+	std::vector<unsigned int> paraVec;
+	for (unsigned int i: paraVecStd)
+		paraVec.push_back(i);
+	for (unsigned int i: paraVecAdd)
+		paraVec.push_back(i);
+
+	// get integer parameters
+	std::vector<unsigned int> paraVecInt = m_current->requiredIntParameter(m_current->m_modelType);
+
+	// get optional parameters
+	std::vector<unsigned int> paraVecOpt = m_current->optionalParameter(m_current->m_modelType);
+
+	// populate table widget with parameters
+	m_ui->tableWidgetParameters->setRowCount(paraVec.size() + paraVecInt.size() + paraVecOpt.size());
+	if (paraVec.empty() && paraVecInt.empty() && paraVecOpt.empty())
+		m_ui->groupBoxModelParameters->setEnabled(false);
+	else
+		m_ui->groupBoxModelParameters->setEnabled(true);
+
+	m_ui->tableWidgetParameters->blockSignals(true);
+
+	int rowCount = 0;
+	for (unsigned int para: paraVec) {
+		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", (int)para));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetParameters->setItem(rowCount, 0, item);
+		try {
+			IBK::Unit ioUnit(VICUS::KeywordListQt::Unit("NetworkComponent::para_t", (int)para));
+			item = new QTableWidgetItem(QString::fromStdString(ioUnit.name()));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetParameters->setItem(rowCount, 2, item);
+
+			if (m_current->m_para[para].name.empty())
+				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
+			else
+				item = new QTableWidgetItem(QString("%L1").arg(m_current->m_para[para].get_value(ioUnit)));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+			if ((unsigned int)rowCount < paraVecStd.size())
+				item->setData(Qt::UserRole, DT_DoubleStd);
+			else
+				item->setData(Qt::UserRole, DT_DoubleAdditional);
+			item->setData(Qt::UserRole+1, para);
+			m_ui->tableWidgetParameters->setItem(rowCount, 1, item);
+
+			++rowCount;
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
+	}
+
+
+	// populate table widget with integer parameters
+
+	for (unsigned int paraInt: paraVecInt) {
+		// parameter name
+		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::intPara_t", (int)paraInt));
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetParameters->setItem(rowCount, 0, item);
+		try {
+			// parameter unit
+			item = new QTableWidgetItem("-");
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetParameters->setItem(rowCount, 2, item);
+			// parameter value
+			if (m_current->m_intPara[paraInt].name.empty())
+				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
+			else
+				item = new QTableWidgetItem(QString("%L1").arg(m_current->m_intPara[paraInt].value));
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+			item->setData(Qt::UserRole, DT_Integer);
+			item->setData(Qt::UserRole+1, paraInt);
+			m_ui->tableWidgetParameters->setItem(rowCount, 1, item);
+
+			++rowCount;
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
+	}
+
+
+	// populate table widget with optional parameters
+
+	QFont fnt;
+	fnt.setItalic(true);
+	for (unsigned int paraOpt: paraVecOpt) {
+		// parameter name
+		QTableWidgetItem * item = new QTableWidgetItem(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", (int)paraOpt));
+		item->setFont(fnt);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		m_ui->tableWidgetParameters->setItem(rowCount, 0, item);
+		try {
+			// parameter unit
+			IBK::Unit ioUnit(VICUS::KeywordListQt::Unit("NetworkComponent::para_t", (int)paraOpt));
+			item = new QTableWidgetItem(QString::fromStdString(ioUnit.name()));
+			item->setFont(fnt);
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+			m_ui->tableWidgetParameters->setItem(rowCount, 2, item);
+			// parameter value
+			if (m_current->m_para[paraOpt].name.empty())
+				item = new QTableWidgetItem(); // TODO : Hauke, set some meaningful initial value?
+			else
+				item = new QTableWidgetItem(QString("%L1").arg(m_current->m_para[paraOpt].get_value(ioUnit)));
+			item->setFont(fnt);
+			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+			item->setData(Qt::UserRole, DT_DoubleOptional);
+			item->setData(Qt::UserRole+1, paraOpt);
+			m_ui->tableWidgetParameters->setItem(rowCount, 1, item);
+
+			++rowCount;
+		}
+		catch (IBK::Exception & ex) {
+			IBK::IBK_Message(ex.what(), IBK::MSG_ERROR, FUNC_ID);
+		}
+	}
+
+	m_ui->tableWidgetParameters->blockSignals(false);
+	m_ui->tableWidgetParameters->resizeColumnsToContents();
 }
 
 
@@ -216,8 +327,39 @@ void SVDBNetworkComponentEditWidget::on_comboBoxComponentType_currentIndexChange
 
 	VICUS::NetworkComponent::ModelType ct = VICUS::NetworkComponent::ModelType(
 													m_ui->comboBoxComponentType->currentData().toUInt());
+
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType =
+			VICUS::NetworkComponent::nandradNetworkComponentModelType(m_current->m_modelType);
+	std::vector<unsigned int> paraVecStd = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
+	std::vector<unsigned int> paraVecAdd = m_current->additionalRequiredParameter(m_current->m_modelType);
+	std::vector<unsigned int> paraVecOpt = m_current->optionalParameter(m_current->m_modelType);
+	std::vector<unsigned int> paraVecInt = m_current->requiredIntParameter(m_current->m_modelType);
+
 	if (ct != m_current->m_modelType) {
+		// set new model type and name
+		QString name = QString("new %1").arg(VICUS::KeywordList::Keyword("NetworkComponent::ModelType", ct));
+		m_current->m_displayName = IBK::MultiLanguageString(name.toStdString());
 		m_current->m_modelType = ct;
+		// we keep parameters which are still valid
+		for (unsigned int i=0; i<VICUS::NetworkComponent::NUM_P; ++i){
+			if (std::find(paraVecStd.begin(), paraVecStd.end(), i) != paraVecStd.end() ||
+				std::find(paraVecAdd.begin(), paraVecAdd.end(), i) != paraVecAdd.end() ||
+				std::find(paraVecOpt.begin(), paraVecOpt.end(), i) != paraVecOpt.end())
+				continue;
+			m_current->m_para[i].clear();
+		}
+		for (unsigned int i=0; i<VICUS::NetworkComponent::NUM_IP; ++i){
+			if (std::find(paraVecInt.begin(), paraVecInt.end(), i) == paraVecInt.end())
+				m_current->m_intPara[i].clear();
+		}
+		// clear all other properties
+		m_current->m_notes.clear();
+		m_current->m_dataSource.clear();
+		m_current->m_scheduleIds.clear();
+		m_current->m_manufacturer.clear();
+		m_current->m_polynomCoefficients.m_values.clear();
+		m_current->m_pipePropertiesId = VICUS::INVALID_ID;
+
 		modelModify();
 		updateInput((int)m_current->m_id);
 	}
@@ -289,55 +431,147 @@ void SVDBNetworkComponentEditWidget::on_toolButtonSchedule2_clicked()
 
 void SVDBNetworkComponentEditWidget::on_tableWidgetParameters_cellChanged(int row, int column) {
 
+	Q_ASSERT(column==1); // only values can be edited
+
 	QString errMsg("");
 
-	// first check if it is a double
-	QString text = m_ui->tableWidgetParameters->item(row, column)->text();
+	// get pointer to item and its content
+	QTableWidgetItem * item = m_ui->tableWidgetParameters->item(row, 1);
+	QString text = item->text();
+
 	bool ok = false;
-	double val = QtExt::Locale().toDouble(text, &ok);
-	// but also allow fall-back on C-locale
-	if (!ok)
-		val = text.toDouble(&ok);
-	if (!ok)
-		errMsg = "Only numbers allowed!";
 
-	std::string parName = m_ui->tableWidgetParameters->item(row, 0)->text().toStdString();
-	NANDRAD::HydraulicNetworkComponent::para_t paraNum = NANDRAD::HydraulicNetworkComponent::para_t(
-												VICUS::KeywordListQt::Enumeration("NetworkComponent::para_t", parName));
+	// Double parameters
 
-	// now do parameter specific checks
-	if (ok){
-		IBK::Parameter parameter(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", paraNum), val,
-								 VICUS::KeywordListQt::Unit("NetworkComponent::para_t", paraNum));
-		try {
-			NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
-		} catch (IBK::Exception &ex) {
-			errMsg = ex.what();
-			ok = false;
+	if (item->data(Qt::UserRole) == DT_DoubleStd ||
+		item->data(Qt::UserRole) == DT_DoubleAdditional ||
+		item->data(Qt::UserRole) == DT_DoubleOptional ) {
+
+		VICUS::NetworkComponent::para_t paraNum = VICUS::NetworkComponent::para_t(
+												item->data(Qt::UserRole + 1).toUInt());
+		// empty parameters are allowed
+		if (text.isEmpty()){
+			m_current->m_para[paraNum] = IBK::Parameter();
+			modelModify();
+			return;
+		}
+
+		// check number
+		double val = QtExt::Locale().toDouble(text, &ok);
+		if (!ok)
+			val = text.toDouble(&ok);
+		if (!ok)
+			errMsg = "Only numbers allowed!";
+
+		// now do parameter specific checks
+		if (ok) {
+			IBK::Parameter parameter(VICUS::KeywordListQt::Keyword("NetworkComponent::para_t", paraNum), val,
+									 VICUS::KeywordListQt::Unit("NetworkComponent::para_t", paraNum));
+			try {
+				if (item->data(Qt::UserRole) == DT_DoubleStd ||
+					item->data(Qt::UserRole) == DT_DoubleOptional)
+					NANDRAD::HydraulicNetworkComponent::checkModelParameter(parameter, paraNum);
+				else
+					VICUS::NetworkComponent::checkAdditionalParameter(parameter, paraNum);
+			} catch (IBK::Exception &ex) {
+				errMsg = ex.what();
+				ok = false;
+			}
+			// finally set value
+			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkComponent::para_t", paraNum, val);
+			modelModify();
+		}
+		else {
+			m_ui->tableWidgetParameters->blockSignals(true);
+			if (m_current->m_para[paraNum].empty())
+				item->setText("");
+			else
+				item->setText(QString("%1").arg(m_current->m_para[paraNum].value));
+			m_ui->tableWidgetParameters->blockSignals(false);
+		}
+
+	}
+
+
+	// Integer parameters
+
+	else if (item->data(Qt::UserRole) == DT_Integer)  {
+
+		VICUS::NetworkComponent::intPara_t paraNum = VICUS::NetworkComponent::intPara_t(
+												item->data(Qt::UserRole + 1).toUInt());
+		// empty parameters are allowed
+		if (text.isEmpty()){
+			m_current->m_intPara[paraNum] = IBK::IntPara();
+			modelModify();
+			return;
+		}
+
+		// check if is integer and if it is double then cast it to integer
+		int val = QtExt::Locale().toInt(text, &ok);
+		if (!ok){
+			val = (int)QtExt::Locale().toDouble(text, &ok);
+		}
+		if (!ok)
+			errMsg = "Only numbers allowed!";
+
+		// now do parameter specific checks
+		std::string paraName = VICUS::KeywordListQt::Keyword("NetworkComponent::intPara_t", paraNum);
+		if (ok) {
+			IBK::IntPara parameter(paraName, val);
+			try {
+				VICUS::NetworkComponent::checkIntParameter(parameter, paraNum);
+			} catch (IBK::Exception &ex) {
+				errMsg = ex.what();
+				ok = false;
+			}
+			// finally set value
+			m_current->m_intPara[paraNum] = IBK::IntPara(paraName, val);
+			modelModify();
+		}
+		else {
+			m_ui->tableWidgetParameters->blockSignals(true);
+			if (m_current->m_para[paraNum].empty())
+				item->setText("");
+			else
+				item->setText(QString("%1").arg(m_current->m_intPara[paraNum].value));
+			m_ui->tableWidgetParameters->blockSignals(false);
 		}
 	}
 
-	// modify item and show message box
 	if (!ok){
-		m_ui->tableWidgetParameters->blockSignals(true);
-		if (m_current->m_para[paraNum].empty())
-			m_ui->tableWidgetParameters->item(row, column)->setText("");
-		else
-			m_ui->tableWidgetParameters->item(row, column)->setText(QString("%1")
-																	.arg(m_current->m_para[paraNum].value));
-		m_ui->tableWidgetParameters->blockSignals(false);
 		QMessageBox msgBox(QMessageBox::Critical, "Invalid Value", errMsg, QMessageBox::Ok, this);
 		msgBox.exec();
-		return;
 	}
-
-	// finally set value
-	VICUS::KeywordList::setParameter(m_current->m_para, "NetworkComponent::para_t", paraNum, val);
-	modelModify();
 }
+
+
 
 void SVDBNetworkComponentEditWidget::modelModify() {
 	m_db->m_networkComponents.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id);
+	populateTableWidget();
+}
 
+
+void SVDBNetworkComponentEditWidget::on_toolButtonPipeProperties_clicked()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	// open schedule edit dialog in selection mode
+	unsigned int id = 0;
+	if (m_current->m_pipePropertiesId != VICUS::INVALID_ID)
+		id = m_current->m_pipePropertiesId;
+
+	unsigned int newId = SVMainWindow::instance().dbPipeEditDialog()->select(id);
+
+	// if dialog was canceled do nothing
+	if (newId == VICUS::INVALID_ID)
+		return;
+
+	// else if we have a new id set it
+	if (id != newId) {
+		m_current->m_pipePropertiesId = newId;
+		modelModify();
+	}
+	updateInput((int)m_current->m_id);
 }

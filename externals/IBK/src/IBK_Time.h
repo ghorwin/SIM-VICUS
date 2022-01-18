@@ -41,6 +41,8 @@
 
 #include <string>
 #include <iosfwd>   // only include the iostream prototypes
+#include <algorithm>
+#include <vector>
 
 #include "IBK_Constants.h"
 
@@ -85,6 +87,36 @@ public:
 			int res = m_year4Start + m_year2Start + m_monthStart + m_dayStart;
 			res += m_hourStart + m_minuteStart + m_secondStart;
 			return res > -7;
+		}
+
+		bool isSingle() const {
+			if(!valid())
+				return false;
+
+			unsigned int paraCount = 0;
+			if(m_year4Start > -1) ++paraCount;
+			if(m_year2Start > -1) ++paraCount;
+			if(m_monthStart > -1) ++paraCount;
+			if(m_dayStart > -1) ++paraCount;
+			if(m_hourStart > -1) ++paraCount;
+			if(m_minuteStart > -1) ++paraCount;
+			if(m_secondStart > -1) ++paraCount;
+			return paraCount == 1;
+		}
+
+		unsigned int textLength() const {
+			if(!valid())
+				return 0;
+
+			int maxPos = std::max(m_monthStart, m_year2Start);
+			maxPos = std::max(maxPos, m_dayStart);
+			maxPos = std::max(maxPos, m_hourStart);
+			maxPos = std::max(maxPos, m_minuteStart);
+			maxPos = std::max(maxPos, m_secondStart);
+			if(maxPos > m_year4Start) {
+				return maxPos + 2;
+			}
+			return m_year4Start + 4;
 		}
 
 		int	m_year4Start;
@@ -296,11 +328,12 @@ public:
 	/*! Scan the given format and create a formatInfo set for using in fromString().
 		Format is a string which can contain the following specifier:
 		- yyyy	- Year given by 4 digits
-		- dd	- day as number given by 2 digits (start with 1)
+		- yy	- Year given by one or two digits
+		- dd	- day as number given by one or two digits (start with 1)
 		- MM	- Month given as number (01 is January, 02 february a.s.o.)
-		- hh	- hour with two digits (goes from 00 to 23 h)
-		- mm	- minute with two digits (goes from 00 to 59)
-		- ss	- second with two digits /goes from 00 to 59)
+		- hh	- hour with one or two digits (goes from 00 to 23 h)
+		- mm	- minute with one or two digits (goes from 00 to 59)
+		- ss	- second with one or two digits /goes from 00 to 59)
 		Format can be a string like this:
 		"yyyy dd.MM. hh:mm:ss"
 	*/
@@ -360,6 +393,120 @@ inline Time operator-(const Time& lhs, double secs) { return Time(lhs) -= secs; 
 
 /*! Subtracts one time representation from another, hereby using the second time representation as offset/time difference. */
 inline Time operator-(const Time& lhs, const Time& rhs) { return Time(lhs) -= rhs; }
+
+/*! Advanced time format class. Allows to create a IBK::Time object from a string by using a given format.
+	A format string consists on a vector of format entities and dividers in between.
+	This class will be initialised by a format string and can be used later on time strings.
+	The format string can contain time entities for year, month, day, hour, minute and second.
+	As default day and month values starts with 1 and hour, minute and second starts with 0.
+*/
+class TimeFormat {
+public:
+	enum FormatEntity {
+		FE_4DigitsYear,		///< format given by 'yyyy' for a complete year
+		FE_2DigitsYear,		///< format given by 'yy' for a year starting from 2000. Can have one or two digits.
+		FE_2DigitsMonth,	///< format given by 'MM' for a Month. Starting from 01 - January. Can have one or two digits.
+		FE_2DigitsDay,		///< format given by 'dd' for a day. Can start with 0 or 1. Can have one or two digits.
+		FE_3DigitsDay,		///< format given by 'ddd' for a day. Can start with 0 or 1. Can have one, two or 3 digits.
+		FE_2DigitsHour,		///< format given by 'hh' for a hour. Goes from 00 to 23 h or from 01 to 24 h. Can have one or two digits.
+		FE_2DigitsMinute,	///< format given by 'mm' for a minute. Goes from 00 to 59 min or 01 to 60 min. Can have one or two digits.
+		FE_2DigitsSecond,	///< format given by 'ss' for a second . Goes from 00 to 59 s or 01 to 60 s. Can have one or two digits.
+		FE_Divider			///< Divider between two time entities
+	};
+
+	/*! Helper typedef for simplifying code.*/
+	typedef std::pair<FormatEntity,std::string>	FormatPart;
+
+	/*! Constructor which initialises the internal format vector by using the given format string.
+		\param format Format string. Must be a combination of time entries and dividers.
+		Format can be a string like this:
+		"yyyy dd.MM. hh:mm:ss"
+	*/
+	explicit TimeFormat(const std::string& format = std::string());
+
+	/*! Return true if the given format vector is valid. There exist some restrictions.
+		\li a format part for a time entity (year, day a.s.o) can only exist once
+		\li if only one format part exist it must not be a divider
+		\li a format string should not start with a divider
+		\li Time entries and separators must alternate in the format text. Two dividers or two time entries in a row are not allowwd.
+		\li other than the described formats are not allowed
+		All of these restrictions will be tested in constructor.
+		If the format string is not valid the error text will contain more informations (\sa errorMsg).
+	*/
+	bool valid() const { return m_valid; };
+
+	/*! Returns an error message in case of non valid format string.*/
+	const std::string errorMsg() const { return m_error; }
+
+	/*! Converts the given time string into a time values in seconds by using current format string.
+		In case of an error it return 0 and the errstr is not empty.
+		\param timeString String which contains time values.
+		\param errstr Contains an error massage in case of a convert error otherwise its empty.
+		\param useLeapYear Set if the time string conversion assumes the given time uses leap year settings.
+		\return Time in seconds.
+		A year will be directly converted into seconds starting from year 0.
+		The current settings for startZero will be used. If a day value of 0 is found dayStartFromZero wil be set to true.
+	*/
+	double seconds(const std::string& timeString, std::string& errstr, bool useLeapYear = false);
+
+	/*! Converts the given time string into a IBK::Time class by using current format string.
+		In case of an error it return 0 and the errstr is not empty.
+		\param timeString String which contains time values.
+		\param errstr Contains an error massage in case of a convert error otherwise its empty.
+		\param useLeapYear Set if the time string conversion assumes the given time uses leap year settings.
+		\return Time as IBK::Time class with year and seconds.
+		Year is set if the format string contains a year entry. If not the year is set to an invalid value (\sa IBK::INVALID_YEAR())
+		The current settings for startZero will be used. If a day value of 0 is found dayStartFromZero wil be set to true.
+	*/
+	IBK::Time time(const std::string& timeString, std::string& errstr, bool useLeapYear = false);
+
+	/*! Return true if the format string contains a year entry (2 or 4 digits).*/
+	bool hasYear() const;
+
+	/*! Return true if the format string contains a month entry (2 digits).*/
+	bool hasMonth() const;
+
+	/*! Return true if the format string contains a day entry (2 or 3 digits).*/
+	bool hasDay() const;
+
+	/*! Set if the day value starts from 0 or 1. Default is false. */
+	void setDayStartFromZero(bool startFromZero) { m_dayStartZero = startFromZero; }
+
+	/*! Set if the hour value starts from 0 or 1. Default is true. */
+	void setHourStartFromZero(bool startFromZero) { m_hourStartZero = startFromZero; }
+
+	/*! Set if the minute value starts from 0 or 1. Default is true. */
+	void setMinuteStartFromZero(bool startFromZero) { m_minuteStartZero = startFromZero; }
+
+	/*! Set if the second value starts from 0 or 1. Default is true. */
+	void setSecondStartFromZero(bool startFromZero) { m_secondStartZero = startFromZero; }
+
+private:
+	/*! Convert the given value into time in seconds.
+		\param value Integer value which represent a time entity
+		\param type Time entity type
+		\param useLeapYear Set if the time string conversion assumes the given time uses leap year settings.
+	*/
+	double valueToSeconds(int value, TimeFormat::FormatEntity type, bool useLeapYear);
+
+	/*! Convert the string part starting at str with the given length into a time in seconds.
+		The time format type will be used. It return 0 in case of a error. In this case errstr contains additional informations.
+		\param str char pointer as start of the string
+		\param length number of chars to be evaluated
+		\param type Time entity type
+		\param useLeapYear Set if the time string conversion assumes the given time uses leap year settings.
+	*/
+	double secondsFromSingleEntityString(const char* str, int length, TimeFormat::FormatEntity type, std::string& errstr, bool useLeapYear);
+
+	std::string				m_formatString;		///< Original format string
+	bool					m_dayStartZero;		///< If true first day is 0 otherwise 1
+	bool					m_hourStartZero;	///< If true hours are going from 0 to 23 otherwise from 1 to 24
+	bool					m_minuteStartZero;	///< If true minutes are going from 0 to 59 otherwise from 1 to 60
+	bool					m_secondStartZero;	///< If true minutes are going from 0 to 59 otherwise from 1 to 60
+	std::vector<FormatPart>	m_formatVect;		///< vector of format entries
+	std::string				m_error;			///< Error message if format string was invalid
+	bool					m_valid;			///< Is true if format is valid and can be used for conversion
+};
 
 } // namespace IBK
 

@@ -101,6 +101,12 @@ QVariant SVDBPipeTableModel::data ( const QModelIndex & index, int role) const {
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -146,12 +152,14 @@ QModelIndex SVDBPipeTableModel::addNewItem() {
 
 	// Mind: use the values in units as defined in the keyword list!
 
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside, 16);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall, 4);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DiameterOutside, 25);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessWall, 2.3);
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_RoughnessWall, 7e-3);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall, 0.8);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityWall, 0.4);
 	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThicknessInsulation, 0);
-	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation, 0.8);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_ThermalConductivityInsulation, 0.035);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_HeatCapacityWall, 1900);
+	VICUS::KeywordList::setParameter(pipe.m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DensityWall, 960);
 
 	pipe.m_categoryName.setEncodedString("PE");
 	pipe.m_displayName = pipe.nameFromData();
@@ -196,6 +204,17 @@ void SVDBPipeTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::ColName, QHeaderView::Stretch);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBPipeTableModel::Category, QHeaderView::Fixed);
+}
+
+
+void SVDBPipeTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_pipes[id]->m_local = local;
+	m_db->m_pipes.m_modified = true;
+	setItemModified(id);
 }
 
 

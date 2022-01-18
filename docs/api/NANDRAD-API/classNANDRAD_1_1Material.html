@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Material Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Material Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -87,9 +88,12 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3f9c17aa3026d24ae9704571ae830b04"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Material.html#a3f9c17aa3026d24ae9704571ae830b04">behavesLike</a> (const <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &amp;other) const</td></tr>
-<tr class="memdesc:a3f9c17aa3026d24ae9704571ae830b04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, if all parameters are the same (id and displayname are ignored).  <a href="#a3f9c17aa3026d24ae9704571ae830b04">More...</a><br /></td></tr>
-<tr class="separator:a3f9c17aa3026d24ae9704571ae830b04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5f204d75eeb3356d0a2dae3b07aa3db"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Material.html#aa5f204d75eeb3356d0a2dae3b07aa3db">behavesLike</a> (const <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &amp;other) const</td></tr>
+<tr class="memdesc:aa5f204d75eeb3356d0a2dae3b07aa3db"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, if all parameters are the same (id and displayname are ignored).  <a href="#aa5f204d75eeb3356d0a2dae3b07aa3db">More...</a><br /></td></tr>
+<tr class="separator:aa5f204d75eeb3356d0a2dae3b07aa3db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab76f18d5e1094bddc70e029fd9405ce8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Material.html#ab76f18d5e1094bddc70e029fd9405ce8">checkParameters</a> () const</td></tr>
+<tr class="memdesc:ab76f18d5e1094bddc70e029fd9405ce8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters (value ranges).  <a href="#ab76f18d5e1094bddc70e029fd9405ce8">More...</a><br /></td></tr>
+<tr class="separator:ab76f18d5e1094bddc70e029fd9405ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -131,14 +135,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3f9c17aa3026d24ae9704571ae830b04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f9c17aa3026d24ae9704571ae830b04">&#9670;&nbsp;</a></span>behavesLike()</h2>
+<a id="aa5f204d75eeb3356d0a2dae3b07aa3db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5f204d75eeb3356d0a2dae3b07aa3db">&#9670;&nbsp;</a></span>behavesLike()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool NANDRAD::Material::behavesLike </td>
+          <td class="memname">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID bool NANDRAD::Material::behavesLike </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &amp;&#160;</td>
           <td class="paramname"><em>other</em></td><td>)</td>
@@ -149,7 +153,24 @@ Public Attributes</h2></td></tr>
 
 <p>Returns true, if all parameters are the same (id and displayname are ignored). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8cpp_source.html#l00039">39</a> of file <a class="el" href="NANDRAD__Material_8cpp_source.html">NANDRAD_Material.cpp</a>.</p>
+</div>
+</div>
+<a id="ab76f18d5e1094bddc70e029fd9405ce8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab76f18d5e1094bddc70e029fd9405ce8">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NANDRAD::Material::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for valid parameters (value ranges). </p>
 
 </div>
 </div>
@@ -168,7 +189,7 @@ Public Attributes</h2></td></tr>
 
 <p>Unique id number. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00058">58</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00061">61</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
 
 </div>
 </div>
@@ -186,7 +207,7 @@ Public Attributes</h2></td></tr>
 
 <p>Display name of material. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00063">63</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
 
 </div>
 </div>
@@ -204,21 +225,20 @@ Public Attributes</h2></td></tr>
 
 <p>List of parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00062">62</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Material_8h_source.html#l00065">65</a> of file <a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__Material_8h_source.html">NANDRAD_Material.h</a></li>
-<li><a class="el" href="NANDRAD__Material_8cpp_source.html">NANDRAD_Material.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Material.html">Material</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Material.html">Material</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

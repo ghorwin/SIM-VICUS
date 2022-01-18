@@ -56,6 +56,8 @@ SVDBPipeEditWidget::SVDBPipeEditWidget(QWidget *parent) :
 	m_ui->lineEditWallThickness->setup(0, std::numeric_limits<double>::max(), tr("Wall thickness"), false, true);
 	m_ui->lineEditInsulationLambda->setup(0, std::numeric_limits<double>::max(), tr("Thermal conductivity of the insulation material"), false, true);
 	m_ui->lineEditInsulationThickness->setup(0, std::numeric_limits<double>::max(), tr("Insulation thickness"), true, true);
+	m_ui->lineEditWallHeatCapacity->setup(0, std::numeric_limits<double>::max(), tr("Pipe wall heat capacity"), false, true);
+	m_ui->lineEditWallDensity->setup(0, std::numeric_limits<double>::max(), tr("Pipe wall density"), false, true);
 }
 
 
@@ -82,6 +84,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setEnabled(isEnabled);
 	m_ui->lineEditInsulationLambda->setEnabled(isEnabled);
 	m_ui->lineEditInsulationThickness->setEnabled(isEnabled);
+	m_ui->lineEditWallHeatCapacity->setEnabled(isEnabled);
+	m_ui->lineEditWallDensity->setEnabled(isEnabled);
 	m_ui->pushButtonColor->setEnabled(isEnabled);
 
 	if (!isEnabled) {
@@ -94,6 +98,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 		m_ui->lineEditWallRoughness->clear();
 		m_ui->lineEditInsulationLambda->clear();
 		m_ui->lineEditInsulationThickness->clear();
+		m_ui->lineEditWallHeatCapacity->clear();
+		m_ui->lineEditWallDensity->clear();
 		m_ui->lineEditUValue->clear();
 		m_ui->pushButtonColor->setColor(Qt::gray);
 
@@ -122,6 +128,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setValue(pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value * 1000);
 	m_ui->lineEditInsulationLambda->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThermalConductivityInsulation].value);
 	m_ui->lineEditInsulationThickness->setValue(pipe->m_para[VICUS::NetworkPipe::P_ThicknessInsulation].value * 1000);
+	m_ui->lineEditWallHeatCapacity->setValue(pipe->m_para[VICUS::NetworkPipe::P_HeatCapacityWall].value);
+	m_ui->lineEditWallDensity->setValue(pipe->m_para[VICUS::NetworkPipe::P_DensityWall].value);
 	if (pipe->isValid())
 		m_ui->lineEditUValue->setText(QString("%L1").arg(pipe->UValue(),0, 'f', 3));
 
@@ -142,6 +150,8 @@ void SVDBPipeEditWidget::updateInput(int id) {
 	m_ui->lineEditWallRoughness->setReadOnly(!isEditable);
 	m_ui->lineEditInsulationLambda->setReadOnly(!isEditable);
 	m_ui->lineEditInsulationThickness->setReadOnly(!isEditable);
+	m_ui->lineEditWallHeatCapacity->setReadOnly(!isEditable);
+	m_ui->lineEditWallDensity->setReadOnly(!isEditable);
 	m_ui->pushButtonColor->setReadOnly(!isEditable);
 }
 
@@ -213,6 +223,24 @@ void SVDBPipeEditWidget::on_lineEditInsulationLambda_editingFinishedSuccessfully
 }
 
 
+void SVDBPipeEditWidget::on_lineEditWallHeatCapacity_editingFinished() {
+	if (m_ui->lineEditWallHeatCapacity->isValid()) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_HeatCapacityWall,
+										 m_ui->lineEditWallHeatCapacity->value());
+		modelModify();
+	}
+}
+
+
+void SVDBPipeEditWidget::on_lineEditWallDensity_editingFinished() {
+	if (m_ui->lineEditWallDensity->isValid()) {
+		VICUS::KeywordList::setParameter(m_current->m_para, "NetworkPipe::para_t", VICUS::NetworkPipe::P_DensityWall,
+										 m_ui->lineEditWallDensity->value());
+		modelModify();
+	}
+}
+
+
 void SVDBPipeEditWidget::on_pushButtonColor_colorChanged() {
 	if (m_current->m_color != m_ui->pushButtonColor->color()) {
 		m_current->m_color = m_ui->pushButtonColor->color();
@@ -243,5 +271,3 @@ void SVDBPipeEditWidget::updateNameFromData() {
 		// Note: no need to call modelModify here, since it is called anyway from callers of this function
 	}
 }
-
-

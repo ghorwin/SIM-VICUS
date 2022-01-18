@@ -53,16 +53,7 @@ SVDBWindowEditWidget::SVDBWindowEditWidget(QWidget *parent) :
 
 	m_ui->pushButtonColor->setDontUseNativeDialog(SVSettings::instance().m_dontUseNativeDialogs);
 
-	//header elements
-	m_ui->lineEditUValue->setReadOnly(true);
-	m_ui->lineEditSHGC->setReadOnly(true);
-
-	//glazing system
-	m_ui->lineEditGlazingSystemName->setReadOnly(true);
-
-	//Frame + Divider
-	m_ui->lineEditFrameMaterialName->setReadOnly(true);
-	m_ui->lineEditDividerMaterialName->setReadOnly(true);
+	// Frame + Divider
 	m_ui->comboBoxFrameMethod->blockSignals(true);
 	m_ui->comboBoxDividerMethod->blockSignals(true);
 	for (int i=0; i<VICUS::Window::NUM_M; ++i) {
@@ -133,7 +124,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 
 	// *** glazing system ***
 
-	if (m_current->m_idGlazingSystem != VICUS::INVALID_ID){
+	if (m_current->m_idGlazingSystem != VICUS::INVALID_ID) {
 		VICUS::WindowGlazingSystem *glazSys = const_cast<VICUS::WindowGlazingSystem *>(m_db->m_windowGlazingSystems[m_current->m_idGlazingSystem]);
 		if (glazSys != nullptr){
 			m_ui->lineEditUValue->setText(QString("%L1").arg(glazSys->uValue(), 0, 'f', 4));
@@ -165,7 +156,6 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		break;
 		case VICUS::Window::NUM_M: {
 			m_current->m_methodFrame = VICUS::Window::M_None;
-			modelModify();
 			frameIdx = 0;
 		}
 		break;
@@ -213,7 +203,6 @@ void SVDBWindowEditWidget::updateInput(int id) {
 		break;
 		case VICUS::Window::NUM_M: {
 			m_current->m_methodDivider = VICUS::Window::M_None;
-			modelModify();
 			dividerIdx = 0;
 		}
 		break;

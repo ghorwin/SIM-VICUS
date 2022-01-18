@@ -58,6 +58,7 @@ void SVUndoAddSurface::undo() {
 		Q_ASSERT(!theProject().m_componentInstances.empty());
 		theProject().m_componentInstances.pop_back();
 	}
+	theProject().updatePointers();
 
 	// tell project that the geometry has changed (i.e. rebuild navigation tree and scene)
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);

@@ -30,7 +30,10 @@
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
 #include "VICUS_WindowFrame.h"
+#include "VICUS_WindowGlazingSystem.h"
 #include "VICUS_WindowDivider.h"
+#include "VICUS_Database.h"
+#include "VICUS_Material.h"
 
 #include <QString>
 #include <QColor>
@@ -67,6 +70,11 @@ public:
 	/*! Checks if references glazing system exist and if all parameters are valid. */
 	bool isValid() const;
 
+	/*! Computes the u-Value. */
+	bool calculateUValue(double & UValue,
+						 const VICUS::Database<Material> & materials,
+						 const VICUS::Database<WindowGlazingSystem> & glazingSystem,
+						 double ri, double re) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

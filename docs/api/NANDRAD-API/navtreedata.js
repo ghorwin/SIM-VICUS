@@ -1,7 +1,19 @@
 var NAVTREE =
 [
-  [ "NandradLibrary", "index.html", [
+  [ "NANDRAD Data Model Library", "index.html", [
+    [ "The NANDRAD Data Model Library", "index.html", [
+      [ "Overview", "index.html#intro_sec", null ],
+      [ "Serialization of project data (i.e. reading/writing of `nandrad` project files)", "index.html#serialization", null ]
+    ] ],
     [ "Todo List", "todo.html", null ],
+    [ "Namespaces", null, [
+      [ "Namespace List", "namespaces.html", "namespaces" ],
+      [ "Namespace Members", "namespacemembers.html", [
+        [ "All", "namespacemembers.html", null ],
+        [ "Functions", "namespacemembers_func.html", null ],
+        [ "Variables", "namespacemembers_vars.html", null ]
+      ] ]
+    ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
       [ "Class Index", "classes.html", null ],
@@ -9,7 +21,7 @@ var NAVTREE =
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", "functions_dup" ],
         [ "Functions", "functions_func.html", null ],
-        [ "Variables", "functions_vars.html", null ],
+        [ "Variables", "functions_vars.html", "functions_vars" ],
         [ "Typedefs", "functions_type.html", null ],
         [ "Enumerations", "functions_enum.html", null ],
         [ "Enumerator", "functions_eval.html", null ]
@@ -23,9 +35,11 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-".html",
-"classNANDRAD_1_1Location.html",
-"classNANDRAD_1_1SolverParameter.html#a3e981b76f0723da7db98588d2d187570a718aba71d90f40c851ae2a36b376b144"
+"NANDRAD__ArgsParser_8h_source.html",
+"classNANDRAD_1_1HydraulicNetworkComponent.html#ae59be7046ff2bda499811cf1db4eb89b",
+"classNANDRAD_1_1InternalLoadsModel.html#ae9be838fa667fc37e0c014ca74558821",
+"classNANDRAD_1_1ShadingControlModel.html#a5619ccb184da11918e3f64ea41c8896f",
+"functions_u.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

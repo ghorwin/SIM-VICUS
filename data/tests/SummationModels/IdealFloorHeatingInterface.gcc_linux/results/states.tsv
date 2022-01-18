@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).AirTemperature [C]	Zone(id=2).AirTemperature [C]	Model(id=1212).ReturnTemperature [C]
+Time [h]	Room 1.AirTemperature [C]	Room 2.AirTemperature [C]	Model(id=1212).ReturnTemperature [C]
 3840	22	22	30
 3841	21.9997	21.9996	29.9873
 3842	21.9935	21.9881	29.7576

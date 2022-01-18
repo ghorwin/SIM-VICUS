@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PostProc version="2.2.3">
+	<!--List of all directories-->
+	<Directories>
+		<Directory>
+			<Path>.</Path>
+			<SubDir Color="#416fce" Checked="0">SimQuality_TF03</SubDir>
+			<SubDir Color="#8ae234" Checked="0">reference</SubDir>
+			<SubDir Color="#ff007f" Checked="0">results</SubDir>
+			<ExpandedSubDir>.</ExpandedSubDir>
+		</Directory>
+	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--All mappers.-->
+	<Mappers>
+		<Mapper name="TF03.1">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Referenzwerte.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>20</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeZero>978328800000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>31</Maximum>
+						<Minimum>19</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>370.77641984184038</Maximum>
+						<Minimum>330.56254493170377</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF03.1</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<OffsetX>27</OffsetX>
+						<OffsetY>52</OffsetY>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF03.2">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Referenzwerte.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>20</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeZero>978332400000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>31</Maximum>
+						<Minimum>19</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<Maximum>338.65250729042299</Maximum>
+						<Minimum>335.962749984455</Minimum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF03.2</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<OffsetX>43</OffsetX>
+						<OffsetY>67</OffsetY>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF03.3">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Referenzwerte.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>20</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeZero>978332400000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>31</Maximum>
+						<Minimum>19</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF03.3</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>5</Alignment>
+						<OffsetX>27</OffsetX>
+						<OffsetY>62</OffsetY>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="TF03.4">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>reference/Referenzwerte.tsv?1|2|3|4</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>3</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>NANDRAD 2</TitleText>
+						<PenColor>#cc0000</PenColor>
+						<MarkerColor>#cc0000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$basename:$quantity</TitleText>
+						<MarkerStyle>0</MarkerStyle>
+						<PenStyle>0</PenStyle>
+						<MarkerColor>#000000</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Zeit [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">d</IBK:Unit>
+						<Maximum>20</Maximum>
+						<GridPenStyle>1</GridPenStyle>
+						<MinorGridVisible>0</MinorGridVisible>
+						<DateTimeZero>978332400000</DateTimeZero>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
+						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>31</Maximum>
+						<Minimum>19</Minimum>
+						<MinorGridVisible>0</MinorGridVisible>
+					</Axis>
+					<Axis index="2" enabled="0">
+						<TitleText>$quantity [$unit]</TitleText>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>TF03.4</TitleText>
+					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<AxisScalesInside>1</AxisScalesInside>
+					<Legend>
+						<Position>Inside</Position>
+						<Alignment>1</Alignment>
+						<MaxColumns>1</MaxColumns>
+						<Font>Roboto Condensed,9,-1,5,50,0,0,0,0,0</Font>
+					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+	</Mappers>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Split window state.-->
+	<Splitting>
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="484" size2="484" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="484" size2="484" orientation="2" />
+		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="480" size2="515" orientation="1" />
+		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="498" size2="497" orientation="1" />
+		<FocusedWidget>4</FocusedWidget>
+	</Splitting>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+</PostProc>

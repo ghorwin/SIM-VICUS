@@ -398,17 +398,19 @@ size_t CVDlsSerializationPrivate(int op, void *dls_mem, void ** storageDataPtr) 
 //  long int d_last_flag;   /* last error return flag                       */
 
   CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_n, memSize);
-  CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_ml, memSize);
-  CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_mu, memSize);
-  CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_smu, memSize);
+
+  // band solver specific quantities
+  if(cvdls_mem->d_type == SUNDIALS_BAND) {
+    CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_ml, memSize);
+    CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_mu, memSize);
+    CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_smu, memSize);
+  }
 
   CVODE_SERIALIZE_A(op, booleantype, *storageDataPtr, cvdls_mem->d_jacDQ, memSize);
 
   CVODE_SERIALIZE_DLSMAT(op, storageDataPtr, cvdls_mem->d_M, memSize);
   CVODE_SERIALIZE_DLSMAT(op, storageDataPtr, cvdls_mem->d_savedJ, memSize);
 
-  for (i = 0; i < cvdls_mem->d_n; ++i)
-    CVODE_SERIALIZE_A(op, int, *storageDataPtr, cvdls_mem->d_pivots[i], memSize);
   for (i = 0; i < cvdls_mem->d_n; ++i)
     CVODE_SERIALIZE_A(op, long int, *storageDataPtr, cvdls_mem->d_lpivots[i], memSize);
 

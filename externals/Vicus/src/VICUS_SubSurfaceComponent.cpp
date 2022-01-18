@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -28,7 +28,8 @@
 namespace VICUS {
 
 bool SubSurfaceComponent::isValid(const VICUS::Database<VICUS::Window> & windows,
-								  const VICUS::Database<VICUS::BoundaryCondition> & bcs) const
+								  const VICUS::Database<VICUS::BoundaryCondition> & bcs,
+								  const VICUS::Database<VICUS::Schedule> & scheduleDB) const
 {
 	try {
 
@@ -46,10 +47,10 @@ bool SubSurfaceComponent::isValid(const VICUS::Database<VICUS::Window> & windows
 		if (bcA == nullptr && bcB == nullptr)
 			return false;
 
-		if (bcA != nullptr && !bcA->isValid())
+		if (bcA != nullptr && !bcA->isValid(scheduleDB))
 			return false;
 
-		if (bcB != nullptr && !bcB->isValid())
+		if (bcB != nullptr && !bcB->isValid(scheduleDB))
 			return false;
 
 

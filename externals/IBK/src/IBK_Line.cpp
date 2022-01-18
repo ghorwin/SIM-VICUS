@@ -53,128 +53,189 @@ Line::Line(double x1, double y1, double x2, double y2) :
 {
 }
 
-bool Line::intersection(
+bool similar(double x1, double y1, double x2, double y2, const double eps = 1e-6) {
+	return (IBK::near_equal(x1, x2, eps) && IBK::near_equal(y1, y2, eps));
+}
+
+
+unsigned int Line::intersection(
 	double ax1, double ay1, double ax2, double ay2,
 	double bx1, double by1, double bx2, double by2,
-	IBK::point2D<double> & p)
+	IBK::point2D<double> & p1, IBK::point2D<double> & p2)
 {
+	// solution is based on vector-variant
+	//   Line 1: = p...p+r
+	//   Line 2: = q...q+s
+	//
+	// Equate both line equations: p + t.r = q + u.s    // t and u are scalars
+	//
+	// Solve for t:
+	//   (p + t.r) x s = (q + u.s) x s
+	//   t.r x s = (q-p) x s                            // mind: s x s = 0
+	//   t       = (q-p) x s / (r x s)
+	//
+	// Solve for u:
+	//   (p + t.r) x r = (q + u.s) x r
+	//   u             = (p-q) x r / (s x r)
+	//   u             = (q-p) x r / (r x s)            // mind: s x r = - r x s
 
-	// compute dx1 and dx2
-	double dx1 = ax1 - ax2;
-	double dx2 = bx1 - bx2;
-	double dy1 = ay1 - ay2;
-	double dy2 = by1 - by2;
-	double EPSILON = 1e-12;
+	// p = (ax1,ay1)
+	// r = (ax2-ax1, ay2-ay1)
+	// q = (bx1, by1)
+	// s = (bx2-bx1, by2-by1)
 
-	bool swapped = false;
-	// swap x and y if dx1 less than given tolerance, i.e. when first line is vertical
-	if (std::fabs(dx1) < EPSILON ) {
-		std::swap(ax1, ay1);
-		std::swap(ax2, ay2);
-		std::swap(bx1, by1);
-		std::swap(bx2, by2);
-		std::swap(dx1, dy1);
-		std::swap(dx2, dy2);
-		swapped = true;
-	}
-	// the first line is not vertical, at least not when the second line wasn't vertical as well :-)
+	double rx = ax2-ax1;
+	double ry = ay2-ay1;
+	double sx = bx2-bx1;
+	double sy = by2-by1;
 
-	// most-common cases first
+	// zero line length check
+	IBK_ASSERT(rx*rx + ry*ry > 0);
+	IBK_ASSERT(sx*sx + sy*sy > 0);
 
-	// test for special cases 1-3: both lines are parallel (horizontal/vertical) lines
-	if (std::fabs(dy1) < EPSILON && std::fabs(dy2) < EPSILON) {
-		// different y lines?
-		if (std::fabs(ay1 - by1) >= EPSILON) {
-			return false;
+	// cross-product
+	double rs = rx * sy - ry * sx;  // this is actually the z-component
+
+	double qminuspx = bx1-ax1;
+	double qminuspy = by1-ay1;
+
+	// (q - p) x r
+	double qminuspxr = qminuspx * ry - qminuspy* rx;
+
+	// handle all cases:
+	//
+	// 1 : r x s == 0 : qminuspxr == 0 lines are collinear
+
+#define EPS 1e-13
+
+	double absrs = std::fabs(rs);
+	double absqminuspxr = std::fabs(qminuspxr);
+	if (absrs < 1e-8 && absqminuspxr < 1e-8 ) { // near zero
+
+		// check where second line intersects first
+		// Equal start point q and end points (q+s) with equation of line 1 and solve for t:
+		//   t0 = (q − p) · r / (r · r)
+		//   t1 = (q + s − p) · r / (r · r) = t0 + s · r / (r · r)
+		//      = t0 + s · r / (r · r)
+
+		double rdotr = rx*rx + ry*ry; // cannot be zero, since zero lines have been checked already
+
+		double t0 = (qminuspx*rx + qminuspy*ry) / rdotr;
+		double t1 = t0 + (sx*rx + sy*ry) / rdotr;
+		if (t1 < t0)
+			std::swap(t0, t1);
+
+		// distinguish 6 cases
+
+		// case a: 1----2----2-----1
+		// case b: 1----2----1-----2
+		// case c: 1----1----2-----2
+		// case d: 2----1----1-----2
+		// case e: 2----1----2-----1
+		// case f: 2----2----1-----1
+
+		// Note: case c and d have no intersections
+		//       case b and case e can have the special case that the intersectionn point in the middle is the same
+
+		// case c: separate
+		if (t0 > 1 + EPS)
+			return 0;
+
+		// case c: connected
+		if (t0 > 1 - EPS) {
+			p1.m_x = bx1;
+			p1.m_y = by1;
+			return 1;
 		}
-		// ensure ax1 < ax2 and bx1 < bx2
-		if (ax1 > ax2)		std::swap(ax1, ax2);
-		if (bx1 > bx2)		std::swap(bx1, bx2);
-		// both lines on same line, check if they share same points
-		if (ax1 < bx1) {
-			if (bx1 + EPSILON > ax2 && bx2 + EPSILON > ax2)
-				return false; // Note: lines may share same end-point
-			else
-				return true; // lines overlap
+
+		// case f: separate
+		if (t1 < -EPS)
+			return 0;
+		// case f: connected
+		if (t1 < EPS) {
+			p1.m_x = bx2;
+			p1.m_y = by2;
+			return 1;
 		}
-		else {
-			if (ax1 + EPSILON > bx2 && ax2 + EPSILON > bx2)
-				return false; // Note: lines may share same end-point
-			else
-				return true; // lines overlap
+
+		// case a
+		if (t0 >= 0 && t1 <= 1) {
+			// line 2 is in the middle
+			p1.m_x = bx1;
+			p1.m_y = by1;
+			p2.m_x = bx2;
+			p2.m_y = by2;
+			return 2; // we have two segment points
 		}
+
+		// case b
+		if (t0 > 1 && t1 > 1) {
+			p1.m_x = ax1 + t0*rx;
+			p1.m_y = ay1 + t0*ry;
+			p2.m_x = bx1;
+			p2.m_y = by1;
+
+			if (p1.m_x == p2.m_x && p1.m_y == p2.m_y)
+				return 1;
+			return 2;
+		}
+
+		// case d:
+		if (t0 <= 0 && t1 >= 1) {
+			// line 1 is in the middle or is the same as line 2
+			p1.m_x = ax1;
+			p1.m_y = ay1;
+			p2.m_x = ax2;
+			p2.m_y = ay2;
+			return 2;
+		}
+
+		// case e:
+		if (t0 < 0 && t1 < 1) {
+			p1.m_x = ax1;
+			p1.m_y = ay1;
+			p2.m_x = ax1 + t1*rx;
+			p2.m_y = ay1 + t1*ry;
+			if (p1.m_x == p2.m_x && p1.m_y == p2.m_y)
+				return 1;
+			return 2;
+		}
+
 	}
 
-	// handle special cases where second line is vertical
-	// (if first line was vertical, we swapped!)
-	if (std::fabs(dx2) <= EPSILON) {
-		// check if we catch x-interval
-		if (std::min(bx1,bx2) + EPSILON > std::max(ax1,ax2) || std::max(bx1,bx2) - EPSILON < std::min(ax1,ax2) )
-			return false;
-		// compute intersection point directly by evaluating line equation
-		double m1 = dy1/dx1;
-		double y = ay2 + m1*(bx1-ax2);
-		// check if we catch y-interval
-		if (y > std::max(by1,by2) || y < std::min(by1,by2) )
-			return false;
+	// 2 : r x s == 0 : qminuspxr != 0 lines are parallel
 
-		if (swapped)	p.set(y, bx1);
-		else			p.set(bx1, y);
-		return true;
+	if (absrs < 1e-8 && absqminuspxr >= 1e-8 ) {
+		return 0;
 	}
 
-	// both lines have finite slope
-	// calculate slope and intersect with y-axis for both lines
-	double m1 = dy1/dx1;
-	double m2 = dy2/dx2;
+	// 3 : r x s != 0 lines intersect
 
-	// handle case where both lines are parallel (same slope)
-	if (std::fabs(m1 - m2) < EPSILON) {
-		// if both lines have same intersection with y axis, they may intersect
+	// both lines are not parallel, compute intersection point
+	// solve for intersection point
+	// (p + t r) × s = (q + u s) × s
+	//
+	// since s x s = 0:
+	//
+	// t (r × s) = (q − p) × s
+	//
+	// t = (q − p) × s / (r × s)
+	// and
+	// u = (q − p) × r / (r × s)
 
-		double b1 = ay1 - m1*ax1;
-		double b2 = by1 - m2*bx1;
-		if (std::fabs(b1 -b2) > EPSILON) {
-			// lines are parallel but distant
-			return false;
-		}
-		// determine scaling factors for line b in line a
-		// equation of line: y(x) = b1 + scale*m1*x
-		double scale_a1 = (ay1 - b1)/(ax1*m1);
-		double scale_a2 = (ay2 - b1)/(ax1*m1);
-		double scale_b1 = (by1 - b1)/(ax1*m1);
-		double scale_b2 = (by2 - b1)/(ax1*m1);
-		// both scale factors must be <= 1
-		if (scale_b1 - EPSILON < scale_a1 && scale_b2 - EPSILON < scale_a1) return false;
-		if (scale_b1 + EPSILON > scale_a2 && scale_b2 + EPSILON > scale_a2) return false;
-		// both lines overlap
-		return true;
+	double qminuspxs = qminuspx * sy - qminuspy* sx;
+	double t = qminuspxs / rs;
+	double u = qminuspxr / rs;
+	// check if u and t are with 0 and 1
+
+	if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+
+		p1.m_x = bx1 + u*sx;
+		p1.m_y = by1 + u*sy;
+		return 1;
 	}
 
-	// regular case, some arbitrary lines
-	// Now, lines are neither vertical (m1,m2,b1,b2 are all finite) nor have the same slope.
-	// So now there either is an actual intersection _point_ or not.
-	// Do a straight-forward intersection calculation.
-
-	double d=(ax2-ax1)*(by2-by1)-(ay2-ay1)*(bx2-bx1);
-
-	// test, if lines intersect, factor AB is 0..1
-	double AB=((ay1-by1)*(bx2-bx1)-(ax1-bx1)*(by2-by1))/d;
-
-	// allow equality to get crossing through points
-	if (AB>=0.0 - EPSILON && AB<=1.0 + EPSILON) {
-		double CD=((ay1-by1)*(ax2-ax1)-(ax1-bx1)*(ay2-ay1))/d;
-		if (CD>=0.0 - EPSILON && CD<=1.0 + EPSILON) {
-			p.m_x=ax1+AB*(ax2-ax1);
-			p.m_y=ay1+AB*(ay2-ay1);
-			if (swapped)
-				std::swap(p.m_x, p.m_y);
-			return true;
-		}
-		return false;
-	}
-	return false;
-
+	return 0; // lines do not intersect
 }
 
 } // namespace IBK

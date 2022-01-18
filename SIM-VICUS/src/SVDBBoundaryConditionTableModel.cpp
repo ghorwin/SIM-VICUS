@@ -85,11 +85,10 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				// TODO : Dirk, add isValid() function to VICUS::BoundaryCondition
-//				if (it->second.isValid(m_db->m_materials, m_db->m_constructions, m_db->m_boundaryConditions))
+				if (it->second.isValid(m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
-//					else
-//					return QIcon("://gfx/actions/16x16/error.png");
+				else
+					return QIcon("://gfx/actions/16x16/error.png");
 			}
 		} break;
 
@@ -104,6 +103,12 @@ QVariant SVDBBoundaryConditionTableModel::data ( const QModelIndex & index, int 
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -198,6 +203,16 @@ void SVDBBoundaryConditionTableModel::setColumnResizeModes(QTableView * tableVie
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBBoundaryConditionTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBBoundaryConditionTableModel::setItemLocal(const QModelIndex &index, bool local) {
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_boundaryConditions[id]->m_local = local;
+	m_db->m_boundaryConditions.m_modified = true;
+	setItemModified(id);
 }
 
 

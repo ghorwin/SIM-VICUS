@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).NetworkHeatLoad [W]
+Time [h]	dummy.VentilationHeatLoad [W]	dummy.NetworkHeatLoad [W]
 0	-505.096	2494.76
 1	-727.995	747.806
 2	-727.52	720.758

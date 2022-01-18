@@ -42,49 +42,35 @@ void NaturalVentilationModel::checkParameters() const {
 			// nothing to check
 		break;
 
-		case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR:{
-			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
-										 "1/h", "1/h", 0.0, true, 100, true,
-										 " 0 1/h <= Ventilation rate <= 100 1/h.");
-			enumVar = P_MaximumRoomAirTemperatureACRLimit;
+		case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR: {
+			enumVar = P_MaxAirTemperature;
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "C", "C", -100, true, 100, true,
-										 " -100 C <= Maximum room temperature <= 100 C.");
-			enumVar = P_MinimumRoomAirTemperatureACRLimit;
+										 " -100 C <= Maximum room air temperature <= 100 C.");
+			enumVar = P_MinAirTemperature;
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "C", "C", -100, true, 100, true,
-										 " -100 C <= Minimum room temperature <= 100 C.");
-			enumVar = P_MaximumEnviromentAirTemperatureACRLimit;
-			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
-										 "C", "C", -100, true, 100, true,
-										 " -100 C <= Maximum enviroment temperature <= 100 C.");
-			enumVar = P_MinimumEnviromentAirTemperatureACRLimit;
-			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
-										 "C", "C", -100, true, 100, true,
-										 " -100 C <= Minimum enviroment temperature <= 100 C.");
-			enumVar = P_DeltaTemperatureACRLimit;
-			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
-										 "K", "K", -100, true, 100, true,
-										 " -100 K <= Temperature differenz of room air temperature and enviroment temperature <= 100 K.");
-			enumVar = P_WindSpeedACRLimit;
+										 " -100 C <= Minimum room air temperature <= 100 C.");
+			enumVar = P_MaxWindSpeed;
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "m/s", "m/s", 0, true, 40, true,
 										 " 0 m/s <= Maximum wind speed <= 40 m/s.");
 		} break;
+
 		case NANDRAD::NaturalVentilationModel::NUM_MT: break;
 	}
-
 }
+
 
 bool NaturalVentilationModel::equal(const NaturalVentilationModel &other) const {
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_P; ++i){
+	for (unsigned int i=0; i<NUM_P; ++i){
 		if(m_para[i] != other.m_para[i])
 			return false;
 	}
 
-	if(m_modelType != other.m_modelType)
+	if (m_modelType != other.m_modelType)
 		return false;
 
 	return true;

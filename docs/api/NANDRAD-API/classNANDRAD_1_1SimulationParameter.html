@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::SimulationParameter Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::SimulationParameter Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -71,7 +72,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1SimulationParameter.ht
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation parameters define global model settings. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00036">36</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00039">39</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>&gt;</code></p>
 <div class="dynheader">
@@ -79,7 +80,8 @@ Collaboration diagram for NANDRAD::SimulationParameter:</div>
 <div class="dyncontent">
 <div class="center"><img src="classNANDRAD_1_1SimulationParameter__coll__graph.png" border="0" usemap="#NANDRAD_1_1SimulationParameter_coll__map" alt="Collaboration graph"/></div>
 <map name="NANDRAD_1_1SimulationParameter_coll__map" id="NANDRAD_1_1SimulationParameter_coll__map">
-<area shape="rect" id="node2" href="classNANDRAD_1_1Interval.html" title="The class Interval defines intervals of simulation time. " alt="" coords="44,5,185,32"/>
+<area shape="rect" id="node2" href="classNANDRAD_1_1SolarLoadsDistributionModel.html" title="This model stores global parameters related to solar loads distribution in zones. ..." alt="" coords="5,5,235,47"/>
+<area shape="rect" id="node3" href="classNANDRAD_1_1Interval.html" title="The class Interval defines intervals of simulation time. " alt="" coords="259,13,400,39"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -88,20 +90,12 @@ Public Types</h2></td></tr>
 <tr class="memitem:abeb53acc1301d4af9028454bf818c884"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884">para_t</a> { <br />
 &#160;&#160;<b>P_InitialTemperature</b>, 
 <b>P_InitialRelativeHumidity</b>, 
-<b>P_RadiationLoadFraction</b>, 
-<b>P_UserThermalRadiationFraction</b>, 
-<br />
-&#160;&#160;<b>P_EquipmentThermalLossFraction</b>, 
-<b>P_EquipmentThermalRadiationFraction</b>, 
-<b>P_LightingVisibleRadiationFraction</b>, 
-<b>P_LightingThermalRadiationFraction</b>, 
-<br />
-&#160;&#160;<b>P_DomesticWaterSensitiveHeatGainFraction</b>, 
+<b>P_DomesticWaterSensitiveHeatGainFraction</b>, 
 <b>P_AirExchangeRateN50</b>, 
-<b>P_ShieldingCoefficient</b>, 
-<b>P_HeatingDesignAmbientTemperature</b>, 
 <br />
-&#160;&#160;<b>NUM_P</b>
+&#160;&#160;<b>P_ShieldingCoefficient</b>, 
+<b>P_HeatingDesignAmbientTemperature</b>, 
+<b>NUM_P</b>
 <br />
  }<tr class="memdesc:abeb53acc1301d4af9028454bf818c884"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter values.  <a href="classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884">More...</a><br /></td></tr>
 </td></tr>
@@ -128,12 +122,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a297ad92c5d608ad0015d494f9d2eaf52"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#a297ad92c5d608ad0015d494f9d2eaf52">initDefaults</a> ()</td></tr>
 <tr class="memdesc:a297ad92c5d608ad0015d494f9d2eaf52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Init default values (called before readXML()).  <a href="#a297ad92c5d608ad0015d494f9d2eaf52">More...</a><br /></td></tr>
 <tr class="separator:a297ad92c5d608ad0015d494f9d2eaf52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e61489ebff0397a21b3f95a33f82680"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#a3e61489ebff0397a21b3f95a33f82680">checkParameters</a> () const</td></tr>
+<tr class="memdesc:a3e61489ebff0397a21b3f95a33f82680"><td class="mdescLeft">&#160;</td><td class="mdescRight">To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges.  <a href="#a3e61489ebff0397a21b3f95a33f82680">More...</a><br /></td></tr>
+<tr class="separator:a3e61489ebff0397a21b3f95a33f82680"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c6b8419fac8fdd4053fc7aeeac72613"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#a2c6b8419fac8fdd4053fc7aeeac72613">evaluateTimeSeries</a> (double t, const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a> &amp;spl) const</td></tr>
+<tr class="memdesc:a2c6b8419fac8fdd4053fc7aeeac72613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes the linear spline parameter and evalutes the data using potential time shift defined due to simulation start and also considers continuous/cyclic usage of the spline.  <a href="#a2c6b8419fac8fdd4053fc7aeeac72613">More...</a><br /></td></tr>
+<tr class="separator:a2c6b8419fac8fdd4053fc7aeeac72613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a4033967004429648db049df08c94a173"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#a4033967004429648db049df08c94a173">m_para</a> [NUM_P]</td></tr>
-<tr class="memdesc:a4033967004429648db049df08c94a173"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of parameters.  <a href="#a4033967004429648db049df08c94a173">More...</a><br /></td></tr>
-<tr class="separator:a4033967004429648db049df08c94a173"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa75975c79975d9052add564c55945f65"><td class="memItemLeft" align="right" valign="top">IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#aa75975c79975d9052add564c55945f65">m_para</a> [NUM_P]</td></tr>
+<tr class="memdesc:aa75975c79975d9052add564c55945f65"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of parameters.  <a href="#aa75975c79975d9052add564c55945f65">More...</a><br /></td></tr>
+<tr class="separator:aa75975c79975d9052add564c55945f65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f2a3ea5b5bff86d80d590c112c03515"><td class="memItemLeft" align="right" valign="top">IBK::IntPara&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#a5f2a3ea5b5bff86d80d590c112c03515">m_intPara</a> [NUM_IP]</td></tr>
 <tr class="memdesc:a5f2a3ea5b5bff86d80d590c112c03515"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integer parameters.  <a href="#a5f2a3ea5b5bff86d80d590c112c03515">More...</a><br /></td></tr>
 <tr class="separator:a5f2a3ea5b5bff86d80d590c112c03515"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -143,6 +143,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:aa110d5712ac18791a6c9bd0138928985"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1Interval.html">Interval</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1SimulationParameter.html#aa110d5712ac18791a6c9bd0138928985">m_interval</a></td></tr>
 <tr class="memdesc:aa110d5712ac18791a6c9bd0138928985"><td class="mdescLeft">&#160;</td><td class="mdescRight">The time interval of simulation beginning, offset and duration from January 1, 0:00 of the start year.  <a href="#aa110d5712ac18791a6c9bd0138928985">More...</a><br /></td></tr>
 <tr class="separator:aa110d5712ac18791a6c9bd0138928985"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d75b6f4c17335950725c08d7d371d64"><td class="memItemLeft" align="right" valign="top"><a id="a6d75b6f4c17335950725c08d7d371d64"></a>
+<a class="el" href="classNANDRAD_1_1SolarLoadsDistributionModel.html">SolarLoadsDistributionModel</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_solarLoadsDistributionModel</b></td></tr>
+<tr class="separator:a6d75b6f4c17335950725c08d7d371d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="abeb53acc1301d4af9028454bf818c884"></a>
@@ -159,7 +162,7 @@ Public Attributes</h2></td></tr>
 
 <p>Parameter values. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00040">40</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00043">43</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -177,7 +180,7 @@ Public Attributes</h2></td></tr>
 
 <p>Integer parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00057">57</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00054">54</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -195,7 +198,7 @@ Public Attributes</h2></td></tr>
 
 <p>Global model flags. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00063">63</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -218,26 +221,80 @@ Public Attributes</h2></td></tr>
 <p>Init default values (called before readXML()). </p>
 <dl class="section note"><dt>Note</dt><dd>These values will be overwritten in readXML() when the respective property is set in the project file. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8cpp_source.html#l00034">34</a> of file <a class="el" href="NANDRAD__SimulationParameter_8cpp_source.html">NANDRAD_SimulationParameter.cpp</a>.</p>
-
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a4033967004429648db049df08c94a173"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4033967004429648db049df08c94a173">&#9670;&nbsp;</a></span>m_para</h2>
+<a id="a3e61489ebff0397a21b3f95a33f82680"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e61489ebff0397a21b3f95a33f82680">&#9670;&nbsp;</a></span>checkParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE IBK::Parameter NANDRAD::SimulationParameter::m_para[NUM_P]</td>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::SimulationParameter::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>To be called after readXML() and mainly used to check whether user-provided parameters are in the valid ranges. </p>
+
+</div>
+</div>
+<a id="a2c6b8419fac8fdd4053fc7aeeac72613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c6b8419fac8fdd4053fc7aeeac72613">&#9670;&nbsp;</a></span>evaluateTimeSeries()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double NANDRAD::SimulationParameter::evaluateTimeSeries </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>t</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classNANDRAD_1_1LinearSplineParameter.html">NANDRAD::LinearSplineParameter</a> &amp;&#160;</td>
+          <td class="paramname"><em>spl</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Takes the linear spline parameter and evalutes the data using potential time shift defined due to simulation start and also considers continuous/cyclic usage of the spline. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">t</td><td>Time point in simulation time (i.e. simulation always starts with 0) </td></tr>
+    <tr><td class="paramname">spl</td><td>The spline data. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="aa75975c79975d9052add564c55945f65"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa75975c79975d9052add564c55945f65">&#9670;&nbsp;</a></span>m_para</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IBK::Parameter NANDRAD::SimulationParameter::m_para[NUM_P]</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>List of parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00092">92</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -255,7 +312,7 @@ Public Attributes</h2></td></tr>
 
 <p>Integer parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00094">94</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -273,7 +330,7 @@ Public Attributes</h2></td></tr>
 
 <p>List of flags. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00090">90</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00096">96</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
@@ -291,21 +348,20 @@ Public Attributes</h2></td></tr>
 
 <p>The time interval of simulation beginning, offset and duration from January 1, 0:00 of the start year. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00094">94</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__SimulationParameter_8h_source.html#l00100">100</a> of file <a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__SimulationParameter_8h_source.html">NANDRAD_SimulationParameter.h</a></li>
-<li><a class="el" href="NANDRAD__SimulationParameter_8cpp_source.html">NANDRAD_SimulationParameter.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1SimulationParameter.html">SimulationParameter</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1SimulationParameter.html">SimulationParameter</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

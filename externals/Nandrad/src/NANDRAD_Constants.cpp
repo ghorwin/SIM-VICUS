@@ -23,8 +23,8 @@
 
 namespace NANDRAD {
 
-const char * const VERSION = "1.999";
-const char * const LONG_VERSION = "1.999.0";
+const char * const VERSION = "2.0";
+const char * const LONG_VERSION = "2.0.0";
 
 unsigned int INVALID_ID = 0xFFFFFFFF;
 

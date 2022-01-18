@@ -3,12 +3,6 @@ var classNANDRAD_1_1SimulationParameter =
     [ "para_t", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884", [
       [ "P_InitialTemperature", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884a323f42ee1120c76870a4085bdd273fbd", null ],
       [ "P_InitialRelativeHumidity", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884ada166c363be136596b7b5c68c9affeb4", null ],
-      [ "P_RadiationLoadFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884ad90a187c9b718a8317a4d26a7c353be9", null ],
-      [ "P_UserThermalRadiationFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884a0af6d339ddf3224327ad0d5ea41db7b5", null ],
-      [ "P_EquipmentThermalLossFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884a4476c0f87ce78a0df0f34a9c3fd882a7", null ],
-      [ "P_EquipmentThermalRadiationFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884adef4b90a9f3b3c189369f1dc6a9942b1", null ],
-      [ "P_LightingVisibleRadiationFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884a391cbe41ff0a6945eedb448dc38bb90e", null ],
-      [ "P_LightingThermalRadiationFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884ab3b0a30923723a0b45a5ab9497debbd5", null ],
       [ "P_DomesticWaterSensitiveHeatGainFraction", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884ad098c334e1fa017937ae540c5455f5a5", null ],
       [ "P_AirExchangeRateN50", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884afa330482a8449807553a001d2eec271f", null ],
       [ "P_ShieldingCoefficient", "classNANDRAD_1_1SimulationParameter.html#abeb53acc1301d4af9028454bf818c884af9fa86fb13ea58d4e8c44355ef7e5f7a", null ],
@@ -27,8 +21,11 @@ var classNANDRAD_1_1SimulationParameter =
       [ "NUM_F", "classNANDRAD_1_1SimulationParameter.html#a60e28e0ef86d66d0129ec157917b3c5aa1c9fc5ec21aeb22a78c6d0273430f7db", null ]
     ] ],
     [ "initDefaults", "classNANDRAD_1_1SimulationParameter.html#a297ad92c5d608ad0015d494f9d2eaf52", null ],
-    [ "m_para", "classNANDRAD_1_1SimulationParameter.html#a4033967004429648db049df08c94a173", null ],
+    [ "checkParameters", "classNANDRAD_1_1SimulationParameter.html#a3e61489ebff0397a21b3f95a33f82680", null ],
+    [ "evaluateTimeSeries", "classNANDRAD_1_1SimulationParameter.html#a2c6b8419fac8fdd4053fc7aeeac72613", null ],
+    [ "m_para", "classNANDRAD_1_1SimulationParameter.html#aa75975c79975d9052add564c55945f65", null ],
     [ "m_intPara", "classNANDRAD_1_1SimulationParameter.html#a5f2a3ea5b5bff86d80d590c112c03515", null ],
     [ "m_flags", "classNANDRAD_1_1SimulationParameter.html#abe837377bb357efd08a089022491904e", null ],
-    [ "m_interval", "classNANDRAD_1_1SimulationParameter.html#aa110d5712ac18791a6c9bd0138928985", null ]
+    [ "m_interval", "classNANDRAD_1_1SimulationParameter.html#aa110d5712ac18791a6c9bd0138928985", null ],
+    [ "m_solarLoadsDistributionModel", "classNANDRAD_1_1SimulationParameter.html#a6d75b6f4c17335950725c08d7d371d64", null ]
 ];

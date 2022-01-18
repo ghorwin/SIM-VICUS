@@ -47,9 +47,6 @@ Exception::Exception()
 {
 }
 
-Exception::~Exception() throw() {
-}
-
 Exception::Exception(const std::string& what, const std::string& loc) {
 	msgs_.push_back( IBK::Exception::MsgInfo(what, loc) );
 }

@@ -13,7 +13,7 @@
 #include <limits>
 #include <map>
 
-#ifdef WIN32
+#ifdef _WIN32
 
 #undef UNICODE
 #include <direct.h>
@@ -22,7 +22,7 @@
 #include <Windows.h>
 #include <cstring>
 
-#else // WIN32
+#else // _WIN32
 
 #include <dirent.h>
 #include <sys/types.h>
@@ -31,7 +31,7 @@
 #include <errno.h>
 #include <string.h>
 
-#endif // WIN32
+#endif // _WIN32
 
 #include <IBK_messages.h>
 #include <IBK_assert.h>
@@ -330,15 +330,17 @@ void CodeGenerator::generateReadWriteCode() {
 					xmlInfo.typeStr == "bool")
 				{
 					// for unsigned int, check for invalid ID first, before writing the attribute - we do not want invalid IDs in the project file!
-					if (xmlInfo.typeStr == "unsigned int") {
+					if (xmlInfo.typeStr == "unsigned int" || xmlInfo.typeStr == "IDType") {
 						attribs += "	if (m_"+attribName+" != "+m_prefix+"::INVALID_ID)\n	";
 						includes.insert(m_prefix+"_Constants.h");
 					}
 					// for booleans, check if still default value, otherwise write it out
 					if (xmlInfo.typeStr == "bool") {
-						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	";
+						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	"
+								   "		e->SetAttribute(\""+attribName+"\", \"true\");\n";
 					}
-					attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
+					else
+						attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Path") {
 					attribs +=
@@ -934,7 +936,8 @@ void CodeGenerator::generateReadWriteCode() {
 								"IBK::Unit",
 								"IBK::Time",
 								"IBK::Path",
-								"DataTable"
+								"DataTable",
+								"std::vector<unsigned int>"
 							};
 							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
 								// ok, not of the simple or special types
@@ -1593,7 +1596,7 @@ void CodeGenerator::generateReadWriteCode() {
 // ********* Private Utility functions **************
 
 bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string> & files) {
-#ifdef WIN32
+#ifdef _WIN32
 	WIN32_FIND_DATA fd;
 	std::string tmpdir = dir + "/*";
 	HANDLE fh = FindFirstFile((LPCSTR)tmpdir.c_str(), &fd);
@@ -1623,7 +1626,7 @@ bool CodeGenerator::listHeaders(const std::string & dir, std::vector<std::string
 	else {
 		std::cerr << "Cannot open/read directory: '"<< dir<< "'" << std::endl;
 	}
-#endif // WIN32
+#endif // _WIN32
 	std::sort(files.begin(), files.end());
 	return true;
 }

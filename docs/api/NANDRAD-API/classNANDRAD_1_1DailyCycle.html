@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::DailyCycle Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::DailyCycle Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -79,7 +80,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1DailyCycle.html','');}
 </ul>
 <p>For example, a time point vector "0 6 18" defines three intervals: 0-6, 6-18, 18-24 and the data table must contain exactly 3 values.</p>
 <p>If m_interpolation == IT_LINEAR, then the following rules apply:</p><ul>
-<li>the time points in m_timePoints are points in time where associated values given</li>
+<li>the time points in m_timePoints are points in time where associated values are given</li>
 <li>the first time point must be always 0, the last one must be &lt; 24 h, because in cyclic usage, the time point at 24 h will be the same as for 0 h (and likewise the scheduled values)</li>
 <li>between time points the values are linearly interpolated </li>
 </ul>
@@ -104,8 +105,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a86b098e6bc1b76f6af77cbe48eb25a79"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79">interpolation_t</a> { <a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79ae9114c1f0ac7f08945785835dc941cea">IT_CONSTANT</a>, 
-<a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79ae125e47ff32e634aa031d6f49859cbae">IT_LINEAR</a>, 
+<tr class="memitem:a86b098e6bc1b76f6af77cbe48eb25a79"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79">interpolation_t</a> { <a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79a15daa202713e09796a9b93fad4358449">IT_Constant</a>, 
+<a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79a5cebcb810d623d2dae16f0796f54dc76">IT_Linear</a>, 
 <b>NUM_IT</b>
  }<tr class="memdesc:a86b098e6bc1b76f6af77cbe48eb25a79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Interpolation method for daily cycle data.  <a href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79">More...</a><br /></td></tr>
 </td></tr>
@@ -113,9 +114,9 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a27e1c0f8c880dd132849dc1c5e8ad74d"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DailyCycle.html#a27e1c0f8c880dd132849dc1c5e8ad74d">prepareCalculation</a> ()</td></tr>
-<tr class="memdesc:a27e1c0f8c880dd132849dc1c5e8ad74d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parametrization and generates m_valueNames, m_valueUnits and m_valueData.  <a href="#a27e1c0f8c880dd132849dc1c5e8ad74d">More...</a><br /></td></tr>
-<tr class="separator:a27e1c0f8c880dd132849dc1c5e8ad74d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3cb95eb841fc7b8565d91ae4f8f4114"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1DailyCycle.html#ab3cb95eb841fc7b8565d91ae4f8f4114">prepareCalculation</a> ()</td></tr>
+<tr class="memdesc:ab3cb95eb841fc7b8565d91ae4f8f4114"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parametrization and generates m_valueNames, m_valueUnits and m_valueData.  <a href="#ab3cb95eb841fc7b8565d91ae4f8f4114">More...</a><br /></td></tr>
+<tr class="separator:ab3cb95eb841fc7b8565d91ae4f8f4114"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -148,9 +149,9 @@ Public Attributes</h2></td></tr>
 <p>Interpolation method for daily cycle data. </p>
 <p>Note that for constant values some ramping may be used to smoothen out the steps. If not set, IT_LINEAR is used. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a86b098e6bc1b76f6af77cbe48eb25a79ae9114c1f0ac7f08945785835dc941cea"></a>IT_CONSTANT&#160;</td><td class="fielddoc"><p>Constant values in defined intervals. </p>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a86b098e6bc1b76f6af77cbe48eb25a79a15daa202713e09796a9b93fad4358449"></a>IT_Constant&#160;</td><td class="fielddoc"><p>Constant values in defined intervals. </p>
 </td></tr>
-<tr><td class="fieldname"><a id="a86b098e6bc1b76f6af77cbe48eb25a79ae125e47ff32e634aa031d6f49859cbae"></a>IT_LINEAR&#160;</td><td class="fielddoc"><p>Linear interpolation between values. </p>
+<tr><td class="fieldname"><a id="a86b098e6bc1b76f6af77cbe48eb25a79a5cebcb810d623d2dae16f0796f54dc76"></a>IT_Linear&#160;</td><td class="fielddoc"><p>Linear interpolation between values. </p>
 </td></tr>
 </table>
 
@@ -159,14 +160,14 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a27e1c0f8c880dd132849dc1c5e8ad74d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a27e1c0f8c880dd132849dc1c5e8ad74d">&#9670;&nbsp;</a></span>prepareCalculation()</h2>
+<a id="ab3cb95eb841fc7b8565d91ae4f8f4114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3cb95eb841fc7b8565d91ae4f8f4114">&#9670;&nbsp;</a></span>prepareCalculation()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void NANDRAD::DailyCycle::prepareCalculation </td>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::DailyCycle::prepareCalculation </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -175,8 +176,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Checks for valid parametrization and generates m_valueNames, m_valueUnits and m_valueData. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__DailyCycle_8cpp_source.html#l00030">30</a> of file <a class="el" href="NANDRAD__DailyCycle_8cpp_source.html">NANDRAD_DailyCycle.cpp</a>.</p>
 
 </div>
 </div>
@@ -254,17 +253,16 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__DailyCycle_8h_source.html">NANDRAD_DailyCycle.h</a></li>
-<li><a class="el" href="NANDRAD__DailyCycle_8cpp_source.html">NANDRAD_DailyCycle.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1DailyCycle.html">DailyCycle</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1DailyCycle.html">DailyCycle</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

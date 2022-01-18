@@ -66,12 +66,6 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// basic parameter checking
 		location.checkParameters();
 
-		// for now we require a climate data file
-		// if dummy values are needed, it is possible to create a simple dummy climate data file
-		// with constant values throughout the year
-		if (location.m_climateFilePath.str().empty())
-			throw IBK::Exception("Climate data location required (Location.ClimateReference).", FUNC_ID);
-
 		IBK::Path climateFile = IBK::Path(location.m_climateFilePath).withReplacedPlaceholders(pathPlaceHolders);
 
 		try {
@@ -106,11 +100,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// latitude
 		const IBK::Parameter &latitude = location.m_para[NANDRAD::Location::P_Latitude];
 		if (!latitude.name.empty()) {
+			// unit and range was checked already in checkParameters()
 			double latInDeg = latitude.get_value("Deg");
-			if (latInDeg < -90 || latInDeg > 90) {
-				throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-					"Location parameter 'Latitude' is expected to be between -90 and 90 degrees."), FUNC_ID);
-			}
 			IBK::IBK_Message(IBK::FormatString("Setting latitude to %1 deg\n").arg(latInDeg),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			m_solarRadiationModel.m_climateDataLoader.m_latitudeInDegree = latInDeg;
@@ -119,18 +110,12 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 		// longitude
 		const IBK::Parameter &longitude = location.m_para[NANDRAD::Location::P_Longitude];
 		if (!longitude.name.empty()) {
+			// unit and range was checked already in checkParameters()
 			double longInDeg = longitude.get_value("Deg");
-			if (longInDeg < -180 || longInDeg > 180) {
-				throw IBK::Exception(IBK::FormatString("Error initializing climate data: "
-					"Location parameter 'Longitude' is expected to be between -180 and 180 degrees."), FUNC_ID);
-			}
 			IBK::IBK_Message(IBK::FormatString("Setting latitude to %1 deg\n").arg(longInDeg),
 							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
 			m_solarRadiationModel.m_climateDataLoader.m_longitudeInDegree = longInDeg;
 		}
-		// ensure that either both latitude and longitude are given, or none
-		if (!((latitude.name.empty() && longitude.name.empty()) || (!latitude.name.empty() && !longitude.name.empty())))
-			throw IBK::Exception("If specifying 'Latitude' or 'Longitude', you need to specify always both.", FUNC_ID);
 
 		// albedo
 		m_solarRadiationModel.m_albedo = location.m_para[NANDRAD::Location::P_Albedo].value;
@@ -164,6 +149,7 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 			IBK::Path fullShadingFilePath = location.m_shadingFactorFilePath.withReplacedPlaceholders(pathPlaceHolders);
 
 			// data is transfered into IBK::Matrix structure where it will be interpolated accordingly
+			IBK::IBK_Message(IBK::FormatString("Reading shading factor data file '%1'\n").arg(fullShadingFilePath), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 
 			// *** TSV Files ***
@@ -219,9 +205,8 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 					tvec.m_data[i] = reader.colData(0)[i]; // first column - time point
 
 					m_externalShadingFactors[i].resize(reader.m_nColumns-1);
-					for (unsigned int j=1; j<reader.m_nColumns; ++j) {
-						m_externalShadingFactors[i][j-1] = reader.colData(j)[i];
-					}
+					for (unsigned int j=1; j<reader.m_nColumns; ++j)
+						m_externalShadingFactors[i][j-1] = reader.m_values[i][j];
 
 				}
 				tvec.convert(IBK::Unit(IBK_UNIT_ID_SECONDS));
@@ -412,7 +397,7 @@ int Loads::setTime(double t) {
 		double alpha = 0.0;
 		bool needInterpolation = true;
 		// special case handling
-		if (t_climate < m_externalShadingFactorTimePoints.front()) {
+		if (t_climate <= m_externalShadingFactorTimePoints.front()) {
 			if (m_cyclicShadingFactors) {
 				// interpolate between last time point (of last year) and first time point of this year
 				upperIndex = m_externalShadingFactorTimePoints.size()-1;

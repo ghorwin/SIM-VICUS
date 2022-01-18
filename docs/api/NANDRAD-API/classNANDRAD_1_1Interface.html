@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Interface Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Interface Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -83,7 +84,7 @@ Collaboration diagram for NANDRAD::Interface:</div>
 <area shape="rect" id="node2" href="classNANDRAD_1_1InterfaceLongWaveEmission.html" title="Contains parameters for long wave radiation exchange (outside). " alt="" coords="383,5,593,47"/>
 <area shape="rect" id="node3" href="classNANDRAD_1_1InterfaceHeatConduction.html" title="Contains parameters for convenctive heat exchange between walls and zones/ambient climate..." alt="" coords="367,71,609,98"/>
 <area shape="rect" id="node4" href="classNANDRAD_1_1InterfaceVaporDiffusion.html" title="Contains parameters for vapor diffusion flux calculation. " alt="" coords="371,122,605,149"/>
-<area shape="rect" id="node5" href="classNANDRAD_1_1InterfaceSolarAbsorption.html" title="Declaration for class InterfaceSolarAbsorption. " alt="" coords="367,173,609,199"/>
+<area shape="rect" id="node5" href="classNANDRAD_1_1InterfaceSolarAbsorption.html" title="Parametrization for solar absorption (short wave radiation boundary condition). " alt="" coords="367,173,609,199"/>
 <area shape="rect" id="node6" href="classNANDRAD_1_1InterfaceAirFlow.html" title="Contains parameters for convenctive air flow through construction. " alt="" coords="391,223,585,250"/>
 <area shape="rect" id="node7" href="classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,223,235,250"/>
 </map>
@@ -91,10 +92,19 @@ Collaboration diagram for NANDRAD::Interface:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad77004175bfa0f2e8bd4debd43dbefd5"><td class="memItemLeft" align="right" valign="top"><a id="ad77004175bfa0f2e8bd4debd43dbefd5"></a>
-NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#ad77004175bfa0f2e8bd4debd43dbefd5">behavesLike</a> (const <a class="el" href="classNANDRAD_1_1Interface.html">Interface</a> &amp;other) const</td></tr>
-<tr class="memdesc:ad77004175bfa0f2e8bd4debd43dbefd5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Special form of comparison operator, tests if parameters that have an impact on result calculation are the same (zone, location, physical parameters). <br /></td></tr>
-<tr class="separator:ad77004175bfa0f2e8bd4debd43dbefd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5fed9a35c78ce04086f0b682425bd496"><td class="memItemLeft" align="right" valign="top"><a id="a5fed9a35c78ce04086f0b682425bd496"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>readXML</b> (const TiXmlElement *element)</td></tr>
+<tr class="separator:a5fed9a35c78ce04086f0b682425bd496"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac507e53fdb977ce9661db1985b4b4b17"><td class="memItemLeft" align="right" valign="top"><a id="ac507e53fdb977ce9661db1985b4b4b17"></a>
+TiXmlElement *&#160;</td><td class="memItemRight" valign="bottom"><b>writeXML</b> (TiXmlElement *parent) const</td></tr>
+<tr class="separator:ac507e53fdb977ce9661db1985b4b4b17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33c28866b944408e86d316d7bfed512d"><td class="memItemLeft" align="right" valign="top">NANDRAD_COMPARE_WITH_ID void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#a33c28866b944408e86d316d7bfed512d">checkParameters</a> () const</td></tr>
+<tr class="memdesc:a33c28866b944408e86d316d7bfed512d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters.  <a href="#a33c28866b944408e86d316d7bfed512d">More...</a><br /></td></tr>
+<tr class="separator:a33c28866b944408e86d316d7bfed512d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3cdaf082235b0159a15c0c122c06126"><td class="memItemLeft" align="right" valign="top"><a id="ad3cdaf082235b0159a15c0c122c06126"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#ad3cdaf082235b0159a15c0c122c06126">behavesLike</a> (const <a class="el" href="classNANDRAD_1_1Interface.html">Interface</a> &amp;other) const</td></tr>
+<tr class="memdesc:ad3cdaf082235b0159a15c0c122c06126"><td class="mdescLeft">&#160;</td><td class="mdescRight">Special form of comparison operator, tests if parameters that have an impact on result calculation are the same (zone, location, physical parameters). <br /></td></tr>
+<tr class="separator:ad3cdaf082235b0159a15c0c122c06126"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada421f19ddc707854f3b124804ea68fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#ada421f19ddc707854f3b124804ea68fc">updateComment</a> (const std::vector&lt; <a class="el" href="classNANDRAD_1_1Zone.html">Zone</a> &gt; &amp;zones)</td></tr>
 <tr class="memdesc:ada421f19ddc707854f3b124804ea68fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the comment regarding the zone this interface is connected to.  <a href="#ada421f19ddc707854f3b124804ea68fc">More...</a><br /></td></tr>
 <tr class="separator:ada421f19ddc707854f3b124804ea68fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -104,7 +114,7 @@ NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID bool&#160;</td><td class="memItemRight
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:af005386c82256ea8856b7232e154a00a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#af005386c82256ea8856b7232e154a00a">m_id</a> = INVALID_ID</td></tr>
+<tr class="memitem:af005386c82256ea8856b7232e154a00a"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#af005386c82256ea8856b7232e154a00a">m_id</a> = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td></tr>
 <tr class="memdesc:af005386c82256ea8856b7232e154a00a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the referenced surface/interface.  <a href="#af005386c82256ea8856b7232e154a00a">More...</a><br /></td></tr>
 <tr class="separator:af005386c82256ea8856b7232e154a00a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a902db47790e3f99bc972f099c7447965"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Interface.html#a902db47790e3f99bc972f099c7447965">m_zoneId</a> = 0</td></tr>
@@ -130,6 +140,26 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ab09e964ef31506ec11677ba7bf9a7f05"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a33c28866b944408e86d316d7bfed512d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33c28866b944408e86d316d7bfed512d">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">NANDRAD_COMPARE_WITH_ID void NANDRAD::Interface::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for valid parameters. </p>
+<dl class="section note"><dt>Note</dt><dd>This function throws an exception if invalid parameters are defined or parameters are missing. </dd></dl>
+
+</div>
+</div>
 <a id="ada421f19ddc707854f3b124804ea68fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ada421f19ddc707854f3b124804ea68fc">&#9670;&nbsp;</a></span>updateComment()</h2>
 
@@ -147,8 +177,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Updates the comment regarding the zone this interface is connected to. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8cpp_source.html#l00030">30</a> of file <a class="el" href="NANDRAD__Interface_8cpp_source.html">NANDRAD_Interface.cpp</a>.</p>
 
 </div>
 </div>
@@ -170,8 +198,6 @@ Public Attributes</h2></td></tr>
 <p>Returns true, if any of the parameters blocks have boundary conditions defined. </p>
 <p>If the model ID m_id is INVALID_ID, the function returns false (the default). A boundary condition parameter block counts as defined, if the modelType is not NUM_MT. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8cpp_source.html#l00050">50</a> of file <a class="el" href="NANDRAD__Interface_8cpp_source.html">NANDRAD_Interface.cpp</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -182,14 +208,14 @@ Public Attributes</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int NANDRAD::Interface::m_id = INVALID_ID</td>
+          <td class="memname">unsigned int NANDRAD::Interface::m_id = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>ID of the referenced surface/interface. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00080">80</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +233,7 @@ Public Attributes</h2></td></tr>
 
 <p>The id number of the neighboring zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00082">82</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00090">90</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +251,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model for convective heat transfer. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00094">94</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -243,7 +269,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model for solar absorption. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00096">96</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -261,7 +287,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model for long wave emissivity. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00090">90</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00098">98</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -279,7 +305,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model for vapor diffusion (requires enabled moisture balance). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00092">92</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00100">100</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -297,7 +323,7 @@ Public Attributes</h2></td></tr>
 
 <p>Model for air flow calculation. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00094">94</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00102">102</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
@@ -316,21 +342,20 @@ Public Attributes</h2></td></tr>
 <p>Comment, indicating the zone this interface links to. </p>
 <dl class="section warning"><dt>Warning</dt><dd>This comment is set automatically when the project is written with <a class="el" href="classNANDRAD_1_1Project.html#a9d867b0cd49d5e938ade0c3043231c49" title="Writes the project file to an XML file. ">Project::writeXML()</a>. Any existing text will be overwritten. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00100">100</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Interface_8h_source.html#l00108">108</a> of file <a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__Interface_8h_source.html">NANDRAD_Interface.h</a></li>
-<li><a class="el" href="NANDRAD__Interface_8cpp_source.html">NANDRAD_Interface.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Interface.html">Interface</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Interface.html">Interface</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

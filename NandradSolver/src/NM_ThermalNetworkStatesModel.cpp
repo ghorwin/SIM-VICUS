@@ -110,7 +110,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 							double volume = PI/4. * d * d * l;
 
 							// create generic flow element with given heat flux
-							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(e.m_id, m_network->m_fluid, volume);
+							TNElementWithExternalHeatLoss * pipeElement = new TNElementWithExternalHeatLoss(e.m_id, m_network->m_fluid, volume,
+																											*e.m_component);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(pipeElement); // transfer ownership
@@ -196,24 +197,27 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressurePump :
 				case NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump :
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledPump :
+				case NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump :
 				{
 					// get value reference to constant pressure ref parameter for constant pressure pump
 					const double * pressureHeadRef =  &e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 					// set pointer to pressure head computed by controlled pump for controlled pump
 					if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ConstantMassFluxPump) {
-						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
-						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
 						const HNConstantMassFluxPump * pump = dynamic_cast<const HNConstantMassFluxPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
 						IBK_ASSERT(pump != nullptr);
 						pressureHeadRef = pump->pressureHeadRef();
 					}
 					else if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_ControlledPump) {
-						// TODO Anne: statt dem TNPumpWithPerformanceLoss-Objekt direkten Zeigerzugriff auf das Pumpenelement zu geben,
-						//            könnte man auch eine InputRef verwenden. Lohnt sich der Aufwand?
 						const HNControlledPump * pump = dynamic_cast<const HNControlledPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
 						IBK_ASSERT(pump != nullptr);
 						pressureHeadRef = pump->pressureHeadRef();
 					}
+					else if (e.m_component->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_VariablePressurePump) {
+						const HNVariablePressureHeadPump * pump = dynamic_cast<const HNVariablePressureHeadPump *>(hydrNetworkModel.m_p->m_flowElements[i]);
+						IBK_ASSERT(pump != nullptr);
+						pressureHeadRef = pump->pressureHeadRef();
+					}
+					IBK_ASSERT(pressureHeadRef != nullptr);
 					// create pump model with heat loss
 					TNPumpWithPerformanceLoss * element = new TNPumpWithPerformanceLoss(m_network->m_fluid,
 									*e.m_component, pressureHeadRef);
@@ -231,7 +235,8 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						{
 							// create generic flow element with given heat flux
 							TNElementWithExternalHeatLoss * element = new TNElementWithExternalHeatLoss(
-										e.m_id, m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
+										e.m_id, m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value,
+										*e.m_component);
 
 							// add to flow elements
 							m_p->m_flowElements.push_back(element); // transfer ownership
@@ -253,10 +258,11 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatExchanger
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide :
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide : {
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide :
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide : {
 					// create general model with given heat flux
-					TNHeatPumpIdealCarnot * element = new TNHeatPumpIdealCarnot(m_network->m_fluid, e);
+					TNHeatPumpVariable * element = new TNHeatPumpVariable(m_network->m_fluid, e);
 					// add to flow elements
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // copy of pointer
@@ -264,15 +270,16 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpIdealCarnot
 
 
-				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpRealSourceSide: {
-					TNHeatPumpReal * element = new TNHeatPumpReal(m_network->m_fluid, e);
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide: {
+					TNHeatPumpOnOff * element = new TNHeatPumpOnOff(m_network->m_fluid, e);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // no heat loss
 				} break;
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
-				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve: {
+				case NANDRAD::HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+				case NANDRAD::HydraulicNetworkComponent::MT_PressureLossElement: {
 					TNAdiabaticElement * element = new TNAdiabaticElement( m_network->m_fluid, e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value);
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(nullptr); // no heat loss
@@ -493,6 +500,40 @@ int ThermalNetworkStatesModel::setTime(double t) {
 		}
 	}
 	return 0;
+}
+
+
+
+void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> & weights) {
+	// by default weight enlargement factors are 1
+	weights = std::vector<double>(m_n, 1.0);
+
+	// add higher weight for all elements which are not pipes (we currently don't do that, just use 1.)
+	IBK_ASSERT(m_network->m_elements.size() == m_p->m_flowElements.size());
+	unsigned int i=0;
+	for (unsigned int n=0; n<m_p->m_flowElements.size(); ++n) {
+		const ThermalNetworkAbstractFlowElement *flowElem = m_p->m_flowElements[n];
+		unsigned int nStates = flowElem->nInternalStates();
+		// skip elements without states
+		if (nStates == 0)
+			continue;
+		NANDRAD::HydraulicNetworkComponent::ModelType type = m_network->m_elements[n].m_component->m_modelType;
+		IBK_ASSERT(flowElem!=nullptr);
+		// for all elements that are not pipes (ie. heat exchangers/heat pumps etc.)
+		// increase the sensitivity for weights
+		if (type != NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe &&
+			type != NANDRAD::HydraulicNetworkComponent::MT_SimplePipe )
+			weights[i] = 1.;
+		// increment counter for number of unknowns
+		i += flowElem->nInternalStates();
+	}
+}
+
+
+void ThermalNetworkStatesModel::stepCompleted(double t) {
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		fe->stepCompleted(t);
+	}
 }
 
 

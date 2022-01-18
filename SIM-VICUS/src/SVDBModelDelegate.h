@@ -35,7 +35,7 @@ class SVDBModelDelegate : public QItemDelegate {
 	Q_OBJECT
 public:
 	/*! Default constructor. */
-	SVDBModelDelegate(QObject * parent, int builtInRole);
+	SVDBModelDelegate(QObject * parent, int builtInRole, int localRole, int referencedRole);
 	/*! Default destructor. */
 	~SVDBModelDelegate();
 
@@ -43,6 +43,12 @@ public:
 
 	/*! Data role to check for boolean (true) if item is a "built-in". */
 	int m_builtInRole;
+
+	/*! Data role to check for boolean (true) if item is a "local". */
+	int m_localRole;
+
+	/*! Data role to check for boolean (true) if item is referenced in current project. */
+	int m_referencedRole;
 };
 
 #endif // SVDBModelDelegateH

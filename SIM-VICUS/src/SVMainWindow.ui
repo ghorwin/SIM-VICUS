@@ -20,10 +20,10 @@
      <x>0</x>
      <y>0</y>
      <width>1112</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
@@ -49,7 +49,7 @@
     <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
    </widget>
-   <widget class="QMenu" name="menu_Edit">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>&amp;Edit</string>
     </property>
@@ -65,7 +65,7 @@
     <addaction name="actionEditPreferences"/>
     <addaction name="menuLanguage"/>
    </widget>
-   <widget class="QMenu" name="menu_Help">
+   <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>&amp;Help</string>
     </property>
@@ -76,20 +76,30 @@
     <addaction name="actionHelpBugReport"/>
     <addaction name="actionHelpVisitDiscussionForum"/>
     <addaction name="separator"/>
+    <addaction name="actionHelpLinuxDesktopIntegration"/>
+    <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
     <addaction name="actionHelpAboutQt"/>
    </widget>
-   <widget class="QMenu" name="menu_View">
+   <widget class="QMenu" name="menuView">
     <property name="title">
      <string>&amp;View</string>
     </property>
     <addaction name="separator"/>
+    <addaction name="actionViewFindSelectedGeometry"/>
+    <addaction name="separator"/>
     <addaction name="actionViewResetView"/>
+    <addaction name="actionViewFromNorth"/>
+    <addaction name="actionViewFromEast"/>
+    <addaction name="actionViewFromSouth"/>
+    <addaction name="actionViewFromWest"/>
+    <addaction name="actionViewFromAbove"/>
+    <addaction name="separator"/>
     <addaction name="actionViewShowGrid"/>
     <addaction name="actionViewShowSurfaceNormals"/>
     <addaction name="separator"/>
    </widget>
-   <widget class="QMenu" name="menu_Tools">
+   <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>&amp;Tools</string>
     </property>
@@ -115,14 +125,14 @@
      <addaction name="actionDBInternalLoadsLights"/>
      <addaction name="actionDBInternalLoadsOther"/>
     </widget>
-    <widget class="QMenu" name="menuVentilation_Infiltration">
+    <widget class="QMenu" name="menuVentilationInfiltration">
      <property name="title">
       <string>Ventilation/Infiltration</string>
      </property>
      <addaction name="actionDBInfiltration"/>
      <addaction name="actionDBVentilationNatural"/>
     </widget>
-    <widget class="QMenu" name="menuZone_Control">
+    <widget class="QMenu" name="menuZoneControl">
      <property name="title">
       <string>Zone controls</string>
      </property>
@@ -139,8 +149,8 @@
     <addaction name="actionDBBoundaryConditions"/>
     <addaction name="actionDBSchedules"/>
     <addaction name="menuInternal_Loads"/>
-    <addaction name="menuZone_Control"/>
-    <addaction name="menuVentilation_Infiltration"/>
+    <addaction name="menuZoneControl"/>
+    <addaction name="menuVentilationInfiltration"/>
     <addaction name="actionDBSurfaceHeatingSystems"/>
     <addaction name="actionDBZoneIdealHeatingCooling"/>
     <addaction name="actionDBZoneTemplates"/>
@@ -157,26 +167,40 @@
     <property name="title">
      <string>&amp;Simulation</string>
     </property>
+    <widget class="QMenu" name="menuCoSimulation">
+     <property name="title">
+      <string>Co-Simulation</string>
+     </property>
+     <addaction name="actionSimulationCO2Balance"/>
+    </widget>
     <addaction name="actionSimulationNANDRAD"/>
     <addaction name="separator"/>
     <addaction name="actionSimulationExportFMI"/>
+    <addaction name="separator"/>
+    <addaction name="menuCoSimulation"/>
    </widget>
-   <widget class="QMenu" name="menu_Buildings">
+   <widget class="QMenu" name="menuBuildings">
     <property name="title">
      <string>&amp;Buildings</string>
     </property>
     <addaction name="actionBuildingFloorManager"/>
     <addaction name="actionBuildingSurfaceHeatings"/>
    </widget>
-   <addaction name="menu_File"/>
-   <addaction name="menu_Edit"/>
+   <widget class="QMenu" name="menuPlugins">
+    <property name="title">
+     <string>Plugins</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuDatabases"/>
-   <addaction name="menu_Buildings"/>
+   <addaction name="menuBuildings"/>
    <addaction name="menuNetworks"/>
-   <addaction name="menu_View"/>
+   <addaction name="menuView"/>
    <addaction name="menuSimulation"/>
-   <addaction name="menu_Tools"/>
-   <addaction name="menu_Help"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuPlugins"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -306,7 +330,7 @@
     <string>Go to project directory...</string>
    </property>
    <property name="toolTip">
-    <string>Opens file manager with path to project file.</string>
+    <string>Opens file manager with path to project file</string>
    </property>
    <property name="shortcut">
     <string>F8</string>
@@ -353,7 +377,7 @@
     <string>External Post-Processing...</string>
    </property>
    <property name="toolTip">
-    <string>Launches the external Post-Processing.</string>
+    <string>Launches the external Post-Processing</string>
    </property>
   </action>
   <action name="actionToolsCCMeditor">
@@ -365,7 +389,7 @@
     <string>External Climate Editor...</string>
    </property>
    <property name="toolTip">
-    <string>Launches external climate editor (CCMEditor).</string>
+    <string>Launches external climate editor (CCMEditor)</string>
    </property>
   </action>
   <action name="actionViewToggleGeometryMode">
@@ -457,7 +481,7 @@
     <string>Building Energy Simulation (NANDRAD)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
+    <string>Opens the simulation start dialog</string>
    </property>
    <property name="shortcut">
     <string>F9</string>
@@ -468,7 +492,7 @@
     <string>Hydraulic network calculation...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the simulation start dialog.</string>
+    <string>Opens the simulation start dialog</string>
    </property>
   </action>
   <action name="actionHelpKeyboardAndMouseControls">
@@ -511,7 +535,7 @@
     <string>Feature request or bug report...</string>
    </property>
    <property name="toolTip">
-    <string>Post a feature request or submit a bug report.</string>
+    <string>Post a feature request or submit a bug report</string>
    </property>
   </action>
   <action name="actionHelpVisitDiscussionForum">
@@ -622,7 +646,7 @@
     <string>Export Functional Mock-Up Unit (NANDRAD FMU)...</string>
    </property>
    <property name="toolTip">
-    <string>Opens the FMU export dialog.</string>
+    <string>Opens the FMU export dialog</string>
    </property>
   </action>
   <action name="actionFileExportView3D">
@@ -681,7 +705,7 @@
     <string>Remove duplicates...</string>
    </property>
    <property name="toolTip">
-    <string>Removes duplicate elements from database.</string>
+    <string>Removes duplicate elements from database</string>
    </property>
   </action>
   <action name="actionViewShowGrid">
@@ -696,6 +720,88 @@
    </property>
    <property name="toolTip">
     <string>Shows grid at z coordinate 0</string>
+   </property>
+  </action>
+  <action name="actionHelpLinuxDesktopIntegration">
+   <property name="text">
+    <string>Desktop integration (Linux)...</string>
+   </property>
+   <property name="toolTip">
+    <string>Desktop integration (Linux),  creates .desktop file and vicus-file association</string>
+   </property>
+  </action>
+  <action name="actionViewFromNorth">
+   <property name="text">
+    <string>View from north</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from north</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+8</string>
+   </property>
+  </action>
+  <action name="actionViewFromEast">
+   <property name="text">
+    <string>View from east</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from east</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+6</string>
+   </property>
+  </action>
+  <action name="actionViewFromSouth">
+   <property name="text">
+    <string>View from south</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from south</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionViewFromWest">
+   <property name="text">
+    <string>View from west</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from west</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+4</string>
+   </property>
+  </action>
+  <action name="actionViewFromAbove">
+   <property name="text">
+    <string>View from above</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to view geometry from above</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+5</string>
+   </property>
+  </action>
+  <action name="actionViewFindSelectedGeometry">
+   <property name="text">
+    <string>Find selected geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Positions camera to close to the currently selected geometry</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionSimulationCO2Balance">
+   <property name="text">
+    <string>CO2 Balance and Ventilation Control...</string>
+   </property>
+   <property name="toolTip">
+    <string>Co-Simulation with CO2 balances and CO2-based ventilation control model.</string>
    </property>
   </action>
  </widget>

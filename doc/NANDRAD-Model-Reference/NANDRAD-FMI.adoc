@@ -1,0 +1,50 @@
+:imagesdir: ./images
+
+[[FMU_export]]
+# Functional Mock-Up Interface 
+
+In diesem Abschnitt wird die Parametrisierung für den FMU-Export/Import beschrieben.
+Der eigentliche Export von NANDRAD-FMUs erfolgt mit dem Tool `NandradFMUGenerator`.
+
+Die Spezifikation der FMU Schnittstelle der zu generierenden NANDRAD-FMU wird im XML-Element `FMIDescription` definiert.
+
+.Definition einer FMU-Schnittstelle
+====
+[source,xml]
+----
+<FMIDescription>
+	<ModelName>IdealHeaterCoolerFixedMassFlow</ModelName>
+	<InputVariables>
+		<FMIVariableDefinition fmiVarName="NetworkElement(3).SupplyTemperatureSchedule" unit="K" fmiValueRef="43">
+			<FmiVarDescription>Schedule parameter:SupplyTemperatureSchedule</FmiVarDescription>
+			<FmiStartValue>0</FmiStartValue>
+			<VarName>NetworkElement.SupplyTemperatureSchedule</VarName>
+			<ObjectId>3</ObjectId>
+		</FMIVariableDefinition>
+	</InputVariables>
+	<OutputVariables>
+		<FMIVariableDefinition fmiVarName="Location(0).Temperature" unit="K" fmiValueRef="44">
+			<FmiVarDescription>Outside temperature.</FmiVarDescription>
+			<FmiStartValue>293.15</FmiStartValue>
+			<VarName>Location.Temperature</VarName>
+			<ObjectId>0</ObjectId>
+		</FMIVariableDefinition>
+		<FMIVariableDefinition fmiVarName="Zone(1).AirTemperature" unit="K" fmiValueRef="45">
+			<FmiVarDescription>Room air temperature.</FmiVarDescription>
+			<FmiStartValue>293.15</FmiStartValue>
+			<VarName>Zone.AirTemperature</VarName>
+			<ObjectId>1</ObjectId>
+		</FMIVariableDefinition>
+	</OutputVariables>
+</FMIDescription>
+----
+====
+
+Der FMU-Modellname wird im XML-Element `ModelName` angegeben. Es gelten die üblichen Einschränkungen für die Namensgebung (Name muss einen gültigen Dateinamen ergeben). Die resultierende FMU-Datei wird nach diesem Modellnamen benannt.
+
+Alle, von der NANDRAD-FMU importierten Variablen werden in der Liste `InputVariables` abgelegt. Die exportierten Variablen (Ausgabevariablen) werden in der Liste `OutputVariables` definiert.
+
+## FMI-Variablendefinition
+
+Das XML-Element `FMIVariableDefinition` enthält die Informationen, welche in der `modelDescription.xml` erscheinen (entsprechend FMI Standard) und zusätzlich die Zuordnung zu den zugehörigen NANDRAD-Variablen.
+

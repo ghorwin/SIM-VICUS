@@ -46,6 +46,7 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 			switch (index.column()) {
 				case ColId					: return it->first;
 				case ColName				: return QtExt::MultiLangString2QString(it->second.m_displayName);
+				case ColSource				: return it->second.sourceName();
 			}
 		} break;
 
@@ -77,6 +78,12 @@ QVariant SVDBSubNetworkTableModel::data ( const QModelIndex & index, int role) c
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -96,6 +103,7 @@ QVariant SVDBSubNetworkTableModel::headerData(int section, Qt::Orientation orien
 			switch ( section ) {
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
+				case ColSource				: return tr("Source");
 			}
 		} break;
 
@@ -161,6 +169,16 @@ void SVDBSubNetworkTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubNetworkTableModel::ColName, QHeaderView::Stretch);
+}
+
+void SVDBSubNetworkTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_subNetworks[id]->m_local = local;
+	m_db->m_subNetworks.m_modified = true;
+	setItemModified(id);
 }
 
 

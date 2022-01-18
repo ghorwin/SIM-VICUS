@@ -8,8 +8,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department 
- * of Energy by Lawrence Livermore National Laboratory in part under 
+ * This work was performed under the auspices of the U.S. Department
+ * of Energy by Lawrence Livermore National Laboratory in part under
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -43,13 +43,13 @@
 #define liw1 (kin_mem->kin_liw1)
 #define lrw1 (kin_mem->kin_lrw1)
 
-/* 
+/*
  * =================================================================
  * KINSOL optional input functions
  * =================================================================
  */
 
-/* 
+/*
  * -----------------------------------------------------------------
  * KINSetErrHandlerFn
  * -----------------------------------------------------------------
@@ -122,7 +122,7 @@ int KINSetPrintLevel(void *kinmem, int printfl)
   return(KIN_SUCCESS);
 }
 
-/* 
+/*
  * -----------------------------------------------------------------
  * KINSetInfoHandlerFn
  * -----------------------------------------------------------------
@@ -336,7 +336,7 @@ int KINSetMaxSetupCalls(void *kinmem, long int msbset)
     KINProcessError(NULL, KIN_ILL_INPUT, "KINSOL", "KINSetMaxSetupCalls", MSG_BAD_MSBSET);
     return(KIN_ILL_INPUT);
   }
-  
+
   if (msbset == 0)
     kin_mem->kin_msbset = MSBSET_DEFAULT;
   else
@@ -366,7 +366,7 @@ int KINSetMaxSubSetupCalls(void *kinmem, long int msbsetsub)
     KINProcessError(NULL, KIN_ILL_INPUT, "KINSOL", "KINSetMaxSubSetupCalls", MSG_BAD_MSBSETSUB);
     return(KIN_ILL_INPUT);
   }
-  
+
   if (msbsetsub == 0)
     kin_mem->kin_msbset_sub = MSBSET_SUB_DEFAULT;
   else
@@ -392,8 +392,8 @@ int KINSetEtaForm(void *kinmem, int etachoice)
 
   kin_mem = (KINMem) kinmem;
 
-  if ((etachoice != KIN_ETACONSTANT) && 
-      (etachoice != KIN_ETACHOICE1)  && 
+  if ((etachoice != KIN_ETACONSTANT) &&
+      (etachoice != KIN_ETACHOICE1)  &&
       (etachoice != KIN_ETACHOICE2)) {
     KINProcessError(NULL, KIN_ILL_INPUT, "KINSOL", "KINSetEtaForm", MSG_BAD_ETACHOICE);
     return(KIN_ILL_INPUT);
@@ -456,8 +456,8 @@ int KINSetEtaParams(void *kinmem, realtype egamma, realtype ealpha)
       KINProcessError(NULL, KIN_ILL_INPUT, "KINSOL", "KINSetEtaParams", MSG_BAD_ALPHA);
       return(KIN_ILL_INPUT);
     }
-  
-  if (ealpha == ZERO) 
+
+  if (ealpha == ZERO)
     kin_mem->kin_eta_alpha = TWO;
   else
     kin_mem->kin_eta_alpha = ealpha;
@@ -500,7 +500,7 @@ int KINSetResMonParams(void *kinmem, realtype omegamin, realtype omegamax)
     return(KIN_ILL_INPUT);
   }
 
-  if (omegamin == ZERO) 
+  if (omegamin == ZERO)
     kin_mem->kin_omega_min = OMEGA_MIN;
   else
     kin_mem->kin_omega_min = omegamin;
@@ -775,9 +775,9 @@ int KINSetConstraints(void *kinmem, N_Vector constraints)
   /* Check the constraints vector */
 
   temptest = N_VMaxNorm(constraints);
-  if (temptest > TWOPT5){ 
+  if (temptest > TWOPT5){
     KINProcessError(NULL, KIN_ILL_INPUT, "KINSOL", "KINSetConstraints", MSG_BAD_CONSTRAINTS);
-    return(KIN_ILL_INPUT); 
+    return(KIN_ILL_INPUT);
   }
 
   if (!kin_mem->kin_constraintsSet) {
@@ -821,7 +821,7 @@ int KINSetSysFunc(void *kinmem, KINSysFn func)
   return(KIN_SUCCESS);
 }
 
-/* 
+/*
  * =================================================================
  * Readability constants
  * =================================================================
@@ -829,14 +829,14 @@ int KINSetSysFunc(void *kinmem, KINSysFn func)
 
 #define nni (kin_mem->kin_nni)
 #define nfe (kin_mem->kin_nfe)
-#define nbcf (kin_mem->kin_nbcf)  
+#define nbcf (kin_mem->kin_nbcf)
 #define nbktrk (kin_mem->kin_nbktrk)
 #define stepl (kin_mem->kin_stepl)
 #define fnorm (kin_mem->kin_fnorm)
 #define liw (kin_mem->kin_liw)
 #define lrw (kin_mem->kin_lrw)
 
-/* 
+/*
  * =================================================================
  * KINSOL optional input functions
  * =================================================================

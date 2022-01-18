@@ -368,7 +368,7 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 	// move (relative) simulation time to absolute time (offset to midnight, January 1st of the start year)
 	double t_secondsOfYear = t_out + m_project->m_simulationParameter.m_interval.m_para[NANDRAD::Interval::P_Start].value;
 
-	m_outputHandler->writeOutputs(t_out, t_secondsOfYear);
+	m_outputHandler->writeOutputs(t_out, t_secondsOfYear, m_varSubstitutionMap);
 
 	// write feedback to user
 	IBK_ASSERT(m_t == t_out);
@@ -377,6 +377,9 @@ void NandradModel::writeOutputs(double t_out, const double * y_out) {
 
 
 void NandradModel::writeFinalOutputs() {
+	// guard against call if we haven't even initialized our model
+	if (m_outputHandler == nullptr)
+		return;
 	SUNDIALS_TIMED_FUNCTION( SUNDIALS_TIMER_WRITE_OUTPUTS,
 		m_outputHandler->flushCache();
 	);
@@ -588,6 +591,20 @@ SOLFRA::ModelInterface::CalculationResult NandradModel::calculateErrorWeights(co
 		weights[idx] *= m_weightsFactorZones;
 	}
 
+	// loop over all network models
+	for (unsigned int i=0; i<m_nNetworks; ++i) {
+		// start index for network's y vector
+		unsigned int idx = m_networkVariableOffset[i];
+
+		// retrieve error weight for all network variables
+		std::vector<double> errWeights;
+		m_networkStatesModelContainer[i]->calculateErrorWeightFactors(errWeights);
+
+		// enlarge default factors for all network variables
+		for (unsigned int j=0; j<m_networkStatesModelContainer[i]->nPrimaryStateResults(); ++j)
+			weights[idx + j] *= errWeights[j];
+	}
+
 	return SOLFRA::ModelInterface::CalculationSuccess;
 }
 
@@ -598,19 +615,28 @@ bool NandradModel::hasErrorWeightsFunction() {
 
 
 std::size_t NandradModel::serializationSize() const {
-	// nothing to serialize
 	size_t s = 0;
+	// serialize all model states
+	// these iclude controller states and stored solution variables
+	// of steady-state sub-systems
+	for(const AbstractModel *model : m_modelContainer)
+		s += model->serializationSize();
+
 	return s;
 }
 
 
-void NandradModel::serialize(void* & /*dataPtr*/) const {
-	// nothing to serialize
+void NandradModel::serialize(void* & dataPtr) const {
+	// cache all model states
+	for(const AbstractModel *model : m_modelContainer)
+		model->serialize(dataPtr);
 }
 
 
-void NandradModel::deserialize(void* & /*dataPtr*/) {
-	// nothing to serialize
+void NandradModel::deserialize(void* & dataPtr) {
+	// restore all model states
+	for(AbstractModel *model : m_modelContainer)
+		model->deserialize(dataPtr);
 }
 
 
@@ -2169,8 +2195,6 @@ void NandradModel::initOutputReferenceList() {
 	// name as it appears in the output file to the dispay name of the object that this variable
 	// originates from.
 
-	// storage member to collect variable reference substitution map - ref-prefix vs displayname, if given
-	std::map<std::string, std::string> varSubstMap;
 
 	IBK::IBK_Message( IBK::FormatString("Initializing Output Quantity List\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	{
@@ -2180,7 +2204,7 @@ void NandradModel::initOutputReferenceList() {
 		std::map<std::string, std::vector<QuantityDescription> > refDescs;
 		for (unsigned int i=0; i<m_modelContainer.size(); ++i) {
 			AbstractModel * currentModel = m_modelContainer[i];
-			currentModel->variableReferenceSubstitutionMap(varSubstMap); // for most model instances, this does nothing
+			currentModel->variableReferenceSubstitutionMap(m_varSubstitutionMap); // for most model instances, this does nothing
 
 			NANDRAD::ModelInputReference::referenceType_t refType = currentModel->referenceType();
 			// skip models that do not generate outputs
@@ -2310,7 +2334,13 @@ void NandradModel::initOutputReferenceList() {
 		if (zone.m_displayName.empty())
 			continue;
 		std::string zoneObjectRef = IBK::FormatString("Zone(id=%1)").arg(zone.m_id).str();
-		varSubstMap[zoneObjectRef] = zone.m_displayName;
+		m_varSubstitutionMap[zoneObjectRef] = zone.m_displayName;
+	}
+
+	// *** replace any "[" and "]" in the display names to avoid problems in post proc
+	for (std::map<std::string, std::string>::iterator it = m_varSubstitutionMap.begin(); it != m_varSubstitutionMap.end(); ++it ){
+		it->second = IBK::replace_string(it->second, "[", "(");
+		it->second = IBK::replace_string(it->second, "]", ")");
 	}
 
 	IBK::IBK_Message( IBK::FormatString("Writing Variable - Displayname Mapping Table\n"), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
@@ -2321,7 +2351,7 @@ void NandradModel::initOutputReferenceList() {
 	// create the mapping file
 	std::unique_ptr<std::ofstream> vapMapStream( IBK::create_ofstream(m_mappingFilePath) );
 	// now write a line with variable mappings for each of the variables in question
-	for (auto m : varSubstMap)
+	for (auto m : m_varSubstitutionMap)
 		*vapMapStream << m.first << '\t' << m.second << '\n';
 }
 

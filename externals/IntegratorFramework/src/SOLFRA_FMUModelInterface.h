@@ -67,12 +67,11 @@ public:
 		clear all outputs past the given tStart value.
 
 		For example, that store output data in memory this function should reset the index
-		for the current output. In subsequent calls to writeOutputs() the outputs will overwrite
-		existing outputs in memory.
+		for the current output. Subsequently new outputs may overwrite existing outputs in memory.
 
 		In solvers with temporary output files these files must be recreated/reset.
 	*/
-	virtual void startCommunicationInterval(double tStart) { (void)tStart; }
+	virtual void startCommunicationInterval(double tStart, bool noSetFMUStatePriorToCurrentPoint) { (void)tStart; (void)noSetFMUStatePriorToCurrentPoint; }
 
 	/*! This function is called by the master/control system whenever a communication
 		interval has been completed.
@@ -87,7 +86,7 @@ public:
 
 	/*! Can be re-implemented to do something in the model just after an integration step
 		has been completed.
-		\todo check if duplicate from ModelInterface::stepCompleted()
+		This function is only called in ModelExchange mode from InstanceDataCommon::completedIntegratorStep().
 	*/
 	virtual void completedIntegratorStep(double t, const double * y) { (void)t; (void)y; }
 };

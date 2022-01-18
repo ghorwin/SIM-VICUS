@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: Todo List</title>
+<title>NANDRAD Data Model Library: Todo List</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -66,19 +67,15 @@ $(document).ready(function(){initNavTree('todo.html','');});
 <div class="textblock"><dl class="reflist">
 <dt><a class="anchor" id="_todo000001"></a>Class <a class="el" href="classNANDRAD_1_1ModelInputReference.html">NANDRAD::ModelInputReference</a>  </dt>
 <dd>is the class scope still needed?  </dd>
-<dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="classNANDRAD_1_1Project.html#aaecdf86f439d3aa7db9354391fd7a1a4">NANDRAD::Project::readXML</a>  (const IBK::Path &amp;filename)</dt>
-<dd>check uniqueness of all IDs in all separate id spaces implement this via template algorithm, since all id-holding data types have a "find by ID" comparison operator and are stored in vectors  </dd>
-<dt><a class="anchor" id="_todo000003"></a>Member <a class="el" href="classNANDRAD_1_1Schedules.html#a2c040a4f61b6cc74309c7fdc7e82d29a">NANDRAD::Schedules::generateLinearSpline</a>  (const std::string &amp;objectListName, const std::string &amp;parameterName, IBK::LinearSpline &amp;spline, <a class="el" href="classNANDRAD_1_1DailyCycle.html#a86b098e6bc1b76f6af77cbe48eb25a79" title="Interpolation method for daily cycle data. ">DailyCycle::interpolation_t</a> &amp;interpolationType) const</dt>
-<dd>remove redundant values from spline, i.e when you have {0, 0; 5,0; 10,0} you can drop the middle point {0, 0; 10,0} without data loss  </dd>
-<dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0a24751b8c802ff949b301a325304f99f8">NANDRAD::Zone::ZT_Ground</a>  </dt>
-<dd>research different models for ground temperature calculation </dd>
+<dt><a class="anchor" id="_todo000002"></a>Class <a class="el" href="classNANDRAD_1_1WindowFrame.html">NANDRAD::WindowFrame</a>  </dt>
+<dd>Extend this class to hold alternative ways for defining a frame. </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

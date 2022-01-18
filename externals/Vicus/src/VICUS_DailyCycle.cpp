@@ -61,6 +61,13 @@ bool DailyCycle::isValid() const {
 	return true;
 }
 
+bool DailyCycle::containsDaytype(int dt) {
+	for(int dayType : m_dayTypes)
+		if(dt == dayType)
+			return true;
+	return false;
+}
+
 
 DailyCycle DailyCycle::multiply(const DailyCycle &other) const {
 	FUNCID(DailyCycle::multiply);

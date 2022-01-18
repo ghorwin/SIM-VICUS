@@ -1,0 +1,630 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{booktabs}
+\usepackage{dsfont}
+\usepackage[ruled,vlined]{algorithm2e}
+
+% captions
+\usepackage[font=small, labelfont=bf, format=hang]{caption}
+
+% colors
+\definecolor{linkblue}{rgb}{0,0,0.4}
+\definecolor{dark-gray}{gray}{0.45}
+
+\newcommand{\sgn}{\mathop{\mathrm{sgn}}}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing single
+\use_hyperref true
+\pdf_title "MasterSim-Algorithms"
+\pdf_author "Andreas Nicolai"
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder true
+\pdf_colorlinks true
+\pdf_backref false
+\pdf_pdfusetitle true
+\pdf_quoted_options "linkcolor=linkblue, citecolor=linkblue"
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip 6pt
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle headings
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Line Intersection Calculations with Fuzzy Coordinates
+\end_layout
+
+\begin_layout Author
+Andreas Nicolai
+\end_layout
+
+\begin_layout Section
+Mathematical Derivation
+\end_layout
+
+\begin_layout Standard
+Two lines are defined via endpoints 
+\begin_inset Formula $\boldsymbol{p}$
+\end_inset
+
+ and 
+\series bold
+
+\begin_inset Formula $\boldsymbol{p+r}$
+\end_inset
+
+
+\series default
+, and 
+\begin_inset Formula $\boldsymbol{q}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{q+s}$
+\end_inset
+
+ (Fig.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:Line-definitions"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\begin_inset Formula 
+\begin{align}
+\boldsymbol{x} & =\boldsymbol{p}+t\boldsymbol{r}\\
+\boldsymbol{x} & =\boldsymbol{q}+u\boldsymbol{s}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Graphics
+	filename line_intersection.pdf
+	scale 50
+	BoundingBox 2cm 22cm 13cm 27.5cm
+	clip
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\noindent
+\align center
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:Line-definitions"
+
+\end_inset
+
+Line definitions
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The intersection point is common to both equations:
+\begin_inset Formula 
+\[
+\boldsymbol{p}+t\boldsymbol{r}=\boldsymbol{q}+u\boldsymbol{s}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Taking cross-product with 
+\begin_inset Formula $\boldsymbol{s}$
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\left(\boldsymbol{p}+t\boldsymbol{r}\right)\times\boldsymbol{s}=\left(\boldsymbol{q}+u\boldsymbol{s}\right)\times\boldsymbol{s}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+we can solve for t (mind 
+\begin_inset Formula $\boldsymbol{s\times s}=0$
+\end_inset
+
+):
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+t\boldsymbol{r}\times\boldsymbol{s} & =\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{s}\nonumber \\
+t & =\frac{\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{s}}{\boldsymbol{r}\times\boldsymbol{s}}\label{eq:t}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+alternatively solve for 
+\begin_inset Formula $u$
+\end_inset
+
+ (mind 
+\begin_inset Formula $\boldsymbol{s\times r=-r\times s})$
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+\left(\boldsymbol{p}+t\boldsymbol{r}\right)\times\boldsymbol{r} & =\left(\boldsymbol{q}+u\boldsymbol{s}\right)\times\boldsymbol{r}\nonumber \\
+-u\boldsymbol{s}\times\boldsymbol{r} & =\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{r}\nonumber \\
+u & =\frac{\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{r}}{-\boldsymbol{s}\times\boldsymbol{r}}\nonumber \\
+u & =\frac{\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{r}}{\boldsymbol{r}\times\boldsymbol{s}}\label{eq:u}
+\end{align}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Handling special cases
+\end_layout
+
+\begin_layout Subsubsection
+Parallel lines
+\end_layout
+
+\begin_layout Standard
+Quotient 
+\begin_inset Formula $\text{\boldsymbol{r}\times\boldsymbol{s}}=0$
+\end_inset
+
+ means lines can be parallel or along the same line.
+ In the latter case, they may overlap or be separate (interpretation: area
+ spanned by vectors 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+ and 
+\begin_inset Formula $\boldsymbol{s}$
+\end_inset
+
+, computed via cross-product, is zero).
+\end_layout
+
+\begin_layout Standard
+If in addition to being parallel 
+\begin_inset Formula $\left(\boldsymbol{q}-\boldsymbol{p}\right)\times\boldsymbol{r}=0$
+\end_inset
+
+, this means that both lines are on the same line (interpretation: line
+ vector 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+ and vector 
+\begin_inset Formula $\boldsymbol{q}-\boldsymbol{p}$
+\end_inset
+
+ must be parallel, i.e.
+ area between both is zero).
+ Otherwise both lines are parallel and have no intersection.
+\end_layout
+
+\begin_layout Standard
+If lines are on same line, insert end points of line 2 into equation of
+ line 1 and compute factors 
+\begin_inset Formula $t_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{1}$
+\end_inset
+
+.
+\begin_inset Formula 
+\begin{align*}
+\boldsymbol{p}+t_{0}\boldsymbol{r} & =\boldsymbol{q}\\
+t_{0}\boldsymbol{r} & =\boldsymbol{q}-\boldsymbol{p}\\
+t_{0}\boldsymbol{r}\cdot\boldsymbol{r} & =\left(\boldsymbol{q}-\boldsymbol{p}\right)\cdot\boldsymbol{r}\\
+t_{0} & =\frac{\left(\boldsymbol{q}-\boldsymbol{p}\right)\cdot\boldsymbol{r}}{\boldsymbol{r}\cdot\boldsymbol{r}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+and same for 
+\begin_inset Formula $\boldsymbol{q+s}$
+\end_inset
+
+:
+\begin_inset Formula 
+\begin{align*}
+\boldsymbol{p}+t_{1}\boldsymbol{r} & =\boldsymbol{q+s}\\
+t_{1} & =\frac{\left(\boldsymbol{q+s}-\boldsymbol{p}\right)\cdot\boldsymbol{r}}{\boldsymbol{r}\cdot\boldsymbol{r}}\\
+t_{1} & =t_{0}+\frac{\boldsymbol{s}\cdot\boldsymbol{r}}{\boldsymbol{r}\cdot\boldsymbol{r}}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now all 6 configuration cases must be handled, whereby cases 
+\emph on
+c
+\emph default
+ and 
+\emph on
+f
+\emph default
+ can have either 1 or no intersection point.
+ The other 4 cases have infinite number of intersection points, however,
+ for practical purposes the two points limiting the common segment shall
+ be used as intersection points.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+case a: 1----2----2-----1
+\end_layout
+
+\begin_layout Plain Layout
+
+case b: 1----2----1-----2
+\end_layout
+
+\begin_layout Plain Layout
+
+case c: 1----1----2-----2
+\end_layout
+
+\begin_layout Plain Layout
+
+case d: 2----1----1-----2
+\end_layout
+
+\begin_layout Plain Layout
+
+case e: 2----1----2-----1
+\end_layout
+
+\begin_layout Plain Layout
+
+case f: 2----2----1-----1
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Intersecting lines
+\end_layout
+
+\begin_layout Standard
+If lines are not parallel, they have exactly one intersection point.
+ However, this point may be outside the limits of either line.
+ Hence, the line factors 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $u$
+\end_inset
+
+ need to be computed via eqns.
+\begin_inset space ~
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:t"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:u"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ Intersection occurs only if: 
+\begin_inset Formula $0\leq t\leq1$
+\end_inset
+
+ and 
+\begin_inset Formula $0\leq u\leq1$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Handling fuzzy coordinates
+\end_layout
+
+\begin_layout Standard
+With finite number precision and line vertexes transformed with limited
+ precision, rounding errors may occur.
+ For example, a line (0,0)...(10,0) may end up after rotation to be (0,0)...(0,10.00001
+4).
+ Computing the intersection with another line (0,5)...(0,15) will now no longer
+ yield an intersection point, whereas points (0,5) and (0,10.000014) or (0,10)
+ were expected.
+\end_layout
+
+\begin_layout Standard
+Hence, the algorithm presented above needs to be adjusted to handle these
+ situations.
+ Basically, when checking for collinearity of lines, an error threshold
+ must be introduced.
+ Similarly, when checking for limits of 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $u$
+\end_inset
+
+, a threshold must be used.
+ However, for a robust routine, this threshold should correlate to a rounding
+ margin in absolute coordinates (for example 
+\begin_inset Formula $10^{-4}$
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+Suppose you have a line with extends 0,0...100,0 and you want to tolerate an
+ epsilon of 
+\begin_inset Formula $\epsilon=10^{-4}$
+\end_inset
+
+, then all points 
+\begin_inset Formula $\left(-10^{-4},0\right)$
+\end_inset
+
+...
+\begin_inset Formula $\left(0,0\right)$
+\end_inset
+
+ shall also be valid as intersection points.
+ Also, on the other end of the line the points 
+\begin_inset Formula $\left(100,0\right)$
+\end_inset
+
+...
+\begin_inset Formula $\left(100+10^{-4},0\right)$
+\end_inset
+
+ shall also be acceptable.
+ For the check against line factor 
+\begin_inset Formula $t$
+\end_inset
+
+ this means that 
+\begin_inset Formula $t$
+\end_inset
+
+ must now be 
+\begin_inset Formula $-10^{-6}\leq t\leq1+10^{-6}$
+\end_inset
+
+.
+ A point with 
+\begin_inset Formula $t=1+10^{-6}$
+\end_inset
+
+ will have coordinates 
+\begin_inset Formula $\boldsymbol{p}+\left(1+10^{-6}\right)\boldsymbol{r}$
+\end_inset
+
+.
+ The distance to the end point of the line 
+\begin_inset Formula $\boldsymbol{p+r}$
+\end_inset
+
+ is:
+\begin_inset Formula 
+\begin{align*}
+\left|\boldsymbol{p}+\left(1+10^{-6}\right)\boldsymbol{r}-\left(\boldsymbol{p+r}\right)\right| & =10^{-6}\left|\boldsymbol{r}\right|\\
+ & =10^{-6}\sqrt{100*100}\\
+ & =10^{-4}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Hence, the general way of computing the allowed extension 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ of the line factor 
+\begin_inset Formula $t$
+\end_inset
+
+ for a given 
+\begin_inset Formula $\epsilon$
+\end_inset
+
+ is:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align*}
+\left|\boldsymbol{p}+\left(\boldsymbol{t}+\Delta t\right)\boldsymbol{r}-\left(\boldsymbol{p}+t\boldsymbol{r}\right)\right| & =\epsilon\\
+\Delta t\left|\boldsymbol{r}\right| & =\epsilon\\
+\Delta t & =\frac{\epsilon}{\left|\boldsymbol{r}\right|}
+\end{align*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+There seems to be no way around the annoying square root when computing
+ the vector norm of the line vectors 
+\begin_inset Formula $\boldsymbol{r}$
+\end_inset
+
+ and 
+\series bold
+
+\begin_inset Formula $\boldsymbol{s}$
+\end_inset
+
+.
+\end_layout
+
+\end_body
+\end_document

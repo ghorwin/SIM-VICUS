@@ -1,10 +1,12 @@
 <map id="NANDRAD::Project" name="NANDRAD::Project">
-<area shape="rect" id="node2" href="$classNANDRAD_1_1Outputs.html" title="Stores vectors with OutputGrid and OutputDefinition data. " alt="" coords="297,5,441,32"/>
-<area shape="rect" id="node3" href="$classNANDRAD_1_1Models.html" title="A container class for all models. " alt="" coords="299,56,439,83"/>
-<area shape="rect" id="node4" href="$classNANDRAD_1_1ProjectInfo.html" title="Contains meta&#45;information about the project. " alt="" coords="289,107,450,133"/>
-<area shape="rect" id="node5" href="$classNANDRAD_1_1SimulationParameter.html" title="Simulation parameters define global model settings. " alt="" coords="260,157,479,184"/>
-<area shape="rect" id="node6" href="$classNANDRAD_1_1Interval.html" title="The class Interval defines intervals of simulation time. " alt="" coords="5,157,147,184"/>
-<area shape="rect" id="node7" href="$classNANDRAD_1_1SolverParameter.html" title="Solver parameters define options/flags related to the numerical engine, and are typically independent..." alt="" coords="272,208,467,235"/>
-<area shape="rect" id="node8" href="$classNANDRAD_1_1Schedules.html" title="Schedules define purely time&#45;dependent properties. " alt="" coords="290,259,449,285"/>
-<area shape="rect" id="node9" href="$classNANDRAD_1_1Location.html" title="Class Location specifies climate and climatic loads of the whole building. " alt="" coords="296,309,443,336"/>
+<area shape="rect" id="node2" href="$classNANDRAD_1_1Outputs.html" title="Stores vectors with OutputGrid and OutputDefinition data. " alt="" coords="472,8,616,35"/>
+<area shape="rect" id="node3" href="$classNANDRAD_1_1Models.html" title="A container class for all models. " alt="" coords="474,59,614,85"/>
+<area shape="rect" id="node4" href="$classNANDRAD_1_1ProjectInfo.html" title="Contains meta&#45;information about the project. " alt="" coords="463,109,625,136"/>
+<area shape="rect" id="node5" href="$classNANDRAD_1_1SimulationParameter.html" title="Simulation parameters define global model settings. " alt="" coords="435,160,653,187"/>
+<area shape="rect" id="node6" href="$classNANDRAD_1_1SolarLoadsDistributionModel.html" title="This model stores global parameters related to solar loads distribution in zones. ..." alt="" coords="5,123,235,165"/>
+<area shape="rect" id="node7" href="$classNANDRAD_1_1Interval.html" title="The class Interval defines intervals of simulation time. " alt="" coords="49,189,191,216"/>
+<area shape="rect" id="node8" href="$classNANDRAD_1_1SolverParameter.html" title="Solver parameters define options/flags related to the numerical engine, and are typically independent..." alt="" coords="447,211,641,237"/>
+<area shape="rect" id="node9" href="$classNANDRAD_1_1Schedules.html" title="Schedules define purely time&#45;dependent properties. " alt="" coords="465,261,623,288"/>
+<area shape="rect" id="node10" href="$classNANDRAD_1_1FMIDescription.html" title="Contains all data to generate a modelDescription.xml and configure the NANDRAD FMI Slave..." alt="" coords="451,312,637,339"/>
+<area shape="rect" id="node11" href="$classNANDRAD_1_1Location.html" title="Class Location specifies climate and climatic loads of the whole building. " alt="" coords="471,363,617,389"/>
 </map>

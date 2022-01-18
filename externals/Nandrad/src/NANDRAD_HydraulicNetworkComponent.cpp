@@ -65,11 +65,18 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		}
 
 		// check data table
-		if (m_modelType == MT_HeatPumpRealSourceSide) {
+		if (m_modelType == MT_HeatPumpOnOffSourceSide) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
-				throw IBK::Exception("'HeatPumpRealSourceSide' requires polynom coefficient parameter 'Pel' with exactly 6 values.", FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'Pel' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+		}
+		if (m_modelType == MT_HeatPumpVariableSourceSide) {
+			if (m_polynomCoefficients.m_values["COP"].size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'COP' with exactly 6 values.")
+									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
 
 		// check optional parameters, if given
@@ -82,6 +89,25 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		if (m_modelType == MT_IdealHeaterCooler) {
 			m_para[P_HydraulicDiameter].value=1;
 			m_para[P_PressureLossCoefficient].value=0;
+		}
+		// for MT_ConstantPressurePump and MT_VariablePressurePump, we enforce existance of complete parameter set (pump efficiency,
+		// maximum pressure head and maximum electric power) once one of the parameters or maximum pressure head and maximum electric power
+		// is given
+		else if (m_modelType == MT_ConstantPressurePump || m_modelType == MT_VariablePressurePump) {
+			// general case
+			if(!m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].name.empty() &&
+					m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].empty())
+				throw IBK::Exception("Missing paramneter 'MaximumPressureHead'!", FUNC_ID);
+			if(!m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].name.empty() &&
+					m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].empty())
+				throw IBK::Exception("Missing paramneter 'PumpMaximumElectricalPower'!", FUNC_ID);
+
+			if(networkModelType == HydraulicNetwork::MT_HydraulicNetwork) {
+				// special case hydraulic network: pumpm efficiency is not requested per default
+				if(!m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].name.empty() &&
+						m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].empty())
+					throw IBK::Exception("Missing paramneter 'PumpEfficiency'!", FUNC_ID);
+			}
 		}
 	}
 	catch (IBK::Exception & ex) {
@@ -104,21 +130,23 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 				return {P_PressureHead};
 			case MT_ConstantMassFluxPump :
 				return {P_MassFlux};
-			case MT_HeatPumpIdealCarnotSupplySide:
-			case MT_HeatPumpIdealCarnotSourceSide:
-			case MT_HeatPumpRealSourceSide:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter};
+			case MT_ControlledPump:
+			case MT_VariablePressurePump:
+				return {};
+			case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+			case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
 			case MT_HeatExchanger:
+			case MT_PressureLossElement:
+			case MT_ControlledValve:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
-			case MT_ControlledValve:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter};
 			case MT_ConstantPressureLossValve:
 				return {P_PressureLoss};
-			case MT_ControlledPump:
 			case MT_IdealHeaterCooler: // no parameters needed
 			case NUM_MT:
 				return {};
@@ -129,24 +157,27 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 		switch (modelType) {
 			case MT_ConstantPressurePump:
 				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+			case MT_VariablePressurePump:
+				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+				return {P_PumpEfficiency, P_Volume, P_DesignPressureHead, P_DesignMassFlux, P_PressureHeadReductionFactor};
 			case MT_ConstantMassFluxPump :
 				return {P_MassFlux, P_PumpEfficiency, P_Volume};
 			case MT_ControlledPump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
-			case MT_HeatPumpIdealCarnotSupplySide:
-			case MT_HeatPumpIdealCarnotSourceSide:
+			case MT_HeatPumpVariableIdealCarnotSupplySide:
+			case MT_HeatPumpVariableIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
 			case MT_HeatExchanger:
+			case MT_PressureLossElement:
+			case MT_ControlledValve:
+			case MT_HeatPumpVariableSourceSide:
+			case MT_HeatPumpOnOffSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
 				return {};
-			case MT_ControlledValve:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
-			case MT_HeatPumpRealSourceSide:
-				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
 			case MT_ConstantPressureLossValve:
 				return {P_PressureLoss, P_Volume};
 			case MT_IdealHeaterCooler: // no parameters needed
@@ -159,22 +190,26 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 
 std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const HydraulicNetworkComponent::ModelType modelType) {
 	switch (modelType)	{
-		case MT_HeatPumpIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableSourceSide:
 			return {"CondenserMeanTemperatureSchedule [C]"};
-		case MT_HeatPumpIdealCarnotSupplySide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
 			return {"CondenserOutletSetpointSchedule [C]"};
-		case MT_HeatPumpRealSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
 			return {"CondenserOutletSetpointSchedule [C]", "HeatPumpOnOffSignalSchedule [---]"};
 		case MT_IdealHeaterCooler:
 			return {"SupplyTemperatureSchedule [C]"};
-		case MT_ConstantPressurePump:
 		case MT_ConstantMassFluxPump :
+			 return {"MassFluxSchedule [kg/s]"};
+		case MT_ConstantPressurePump:
 		case MT_ControlledPump:
+		case MT_VariablePressurePump:
 		case MT_HeatExchanger:
 		case MT_DynamicPipe:
 		case MT_SimplePipe:
 		case MT_ControlledValve:
 		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
 		case NUM_MT: ;
 	}
 	return {};
@@ -187,43 +222,42 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 	const char * unit = KeywordList::Unit(enumName, (int)numPara);
 
 	switch ((para_t)numPara) {
-		case NANDRAD::HydraulicNetworkComponent::P_MassFlux:
-			// TODO Hauke
-			break;
-		case NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead:
-			// TODO Hauke
-			break;
-		case NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower:
-			// TODO Hauke
-			break;
-			// value must be >0
+		// value must be >0
 		case P_HydraulicDiameter:
 		case P_Volume:
 		case P_MaximumHeatingPower:
-		case P_PipeMaxDiscretizationWidth: {
+		case P_PipeMaxDiscretizationWidth:
+		case P_DesignMassFlux:
+		case P_DesignPressureHead: {
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-			// value must be >= 0
+		// value must be >= 0
+		case P_MaximumPressureHead:
+		case P_PumpMaximumElectricalPower:
+		case P_MassFlux:
 		case P_PressureLoss:
 		case P_PressureLossCoefficient:{
 			para.checkedValue(name, unit, unit, 0, true, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-			// value must be >0 and <1
+		// value must be >0 and <=1
 		case P_CarnotEfficiency:
 		case P_PumpEfficiency:
+		case P_PressureHeadReductionFactor:
 		case P_FractionOfMotorInefficienciesToFluidStream: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);
 			break;
 		}
 			// value can be negative
-		case P_PressureHead: {
+		case P_PressureHead:
+		case P_MinimumOutletTemperature: {
 			para.checkedValue(name, unit, unit, std::numeric_limits<double>::lowest(), true,
 							  std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}
-		case NANDRAD::HydraulicNetworkComponent::NUM_P: ; // just to make compiler happy
+
+		case NUM_P: break;
 	}
 }
 

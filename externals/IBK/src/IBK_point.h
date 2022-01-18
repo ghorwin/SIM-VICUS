@@ -46,6 +46,8 @@
 #include <cmath>
 #include <iomanip>
 
+#include "IBK_math.h"
+
 namespace IBK {
 
 /*! The class point2D represents a 2D point consisting of an x and y coordinate.
@@ -62,9 +64,15 @@ public:
 	/*! Sets both coordinates. */
 	void set(T a, T b) { m_x=a; m_y=b; }
 
+	/*! Comparison function specialized for double-precision points. */
+	bool similar(const typename IBK::point2D<double> & other, const double eps = 1e-6) {
+		return (IBK::near_equal(other.m_x, m_x, eps) && IBK::near_equal(other.m_y, m_y, eps));
+	}
+
 	T m_x;   ///< The X-coordinate.
 	T m_y;   ///< The Y-coordinate.
 };
+
 
 /*! Returns 'true' if the points 'lhs' and 'rhs' have the same coordinates. */
 template <typename T>

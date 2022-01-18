@@ -69,6 +69,11 @@ public:
 	/*! Returns access to the raw climate data files used by the model. */
 	QList<SVClimateFileInfo> climateFiles() const {	return m_climateFiles; }
 
+	/*! Looks up the climate file path (potentially with 'Database' or 'User Database' placeholders and returns
+		the matching climate file info. If not found, a nullptr is returned.
+	*/
+	const SVClimateFileInfo * infoForFilename(const QString & climateFilePath) const;
+
 	/*! Parses the climate data base directories and refreshs the list of climate data files.
 		This also resets the model.
 	*/

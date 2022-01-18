@@ -6,9 +6,10 @@ namespace SOLFRA {
 extern const char * const VERSION;
 extern const char * const LONG_VERSION;
 
-
 #define SUNDIALS_TIMER_WRITE_OUTPUTS 19
 #define SUNDIALS_TIMER_STEP_COMPLETED 20
+
+#define SOLFRA_NOT_SUPPORTED_FUNCTION (std::size_t)-1
 
 } // namespace SOLFRA
 

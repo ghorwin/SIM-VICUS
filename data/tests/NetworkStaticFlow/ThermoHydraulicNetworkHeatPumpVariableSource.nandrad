@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="static network" modelType="ThermalHydraulicNetwork" referenceElementId="1001">
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
+				<HydraulicFluid displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<PipeProperties>
+					<HydraulicNetworkPipeProperties id="1">
+						<IBK:Parameter name="PipeRoughness" unit="m">0.007</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">32</IBK:Parameter>
+						<IBK:Parameter name="UValueWall" unit="W/mK">5</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
+						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="4" modelType="HeatPumpVariableSourceSide">
+						<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
+						<PolynomCoefficients>
+							COP: -7.46562450e+01	5.87360996e-01	-1.38056160e-03	-4.45166703e-03	1.68697149e-03	1.77084233e-03
+						</PolynomCoefficients>
+					</HydraulicNetworkComponent>
+				</Components>		
+				
+				<Elements>
+					<HydraulicNetworkElement id="1001" inletNodeId="0" outletNodeId="1" componentId="1" displayName="pump" />
+					<!-- Pipe heat medium up to 5 C -->
+					<HydraulicNetworkElement id="1002" inletNodeId="1" outletNodeId="2" componentId="3" pipePropertiesId="1" displayName="pipe">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+					<!-- First we hours we have heat pump operation with a (positive) given condenser heat flux. At t > 12 h we have passive cooling, 
+					so we add heat to the fluid, which means a negative heat loss. The heat pump must not operate then (COP=0), and the given heat flux is 
+					directly   added to the fluid. -->
+					<HydraulicNetworkElement id="1003" inletNodeId="2" outletNodeId="0" componentId="4" displayName="heatpump">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+								<X unit="h">0 2    10    11  12    16 17</X>
+								<Y unit="W">0 5000 5000  0  -1000 -1000 0</Y>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="heat pump">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<!-- Condenser Temperature is usually 35°C for space heating and two times per day 50°C for domestic hot water-->
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,6,8,18,20</TimePoints>
+								<Values>CondenserMeanTemperatureSchedule [C]:35,50,35,50,35;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<Definitions>
+			<OutputDefinition>
+				<Quantity>OutletNodeTemperature</Quantity>
+				<ObjectListName>Network Elements</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<ObjectListName>Network Elements</ObjectListName>
+					<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>FlowElementHeatLoss</Quantity>
+				<ObjectListName>Network Elements</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>COP</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>ElectricalPower</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>CondenserHeatFlux</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>EvaporatorMeanTemperature</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			<OutputDefinition>
+				<Quantity>CondenserMeanTemperature</Quantity>
+				<ObjectListName>heat pump</ObjectListName>
+				<GridName>hourly</GridName>
+			</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Network Elements">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="heat pump">
+				<FilterID>1003</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+		
+	</Project>
+</NandradProject>

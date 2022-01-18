@@ -41,7 +41,7 @@ void SVSimulationNetworkOptions::updateUi() {
 	m_ui->comboBoxNetwork->blockSignals(true);
 	m_ui->comboBoxNetwork->clear();
 	m_ui->comboBoxNetwork->addItem(tr("None"), VICUS::INVALID_ID);
-	for (VICUS::Network n : *m_networks)
+	for (const VICUS::Network &n : *m_networks)
 		m_ui->comboBoxNetwork->addItem(n.m_displayName, n.m_id);
 	m_current = nullptr;
 
@@ -95,19 +95,21 @@ void SVSimulationNetworkOptions::on_comboBoxNetwork_activated(int /*index*/) {
 	m_ui->comboBoxModelType->setCurrentIndex(m_ui->comboBoxModelType->findData(m_current->m_modelType));
 	m_ui->comboBoxModelType->blockSignals(false);
 
+	// update parameters
 	if (!m_current->m_para[VICUS::Network::P_ReferencePressure].empty())
 		m_ui->lineEditReferencePressure->setValue(m_current->m_para[VICUS::Network::P_ReferencePressure].value);
-	else
-		m_ui->lineEditReferencePressure->setValue(0);
 	if (!m_current->m_para[VICUS::Network::P_DefaultFluidTemperature].empty())
 		m_ui->lineEditDefaultFluidTemperature->setValue(m_current->m_para[VICUS::Network::P_DefaultFluidTemperature].get_value("C"));
-	else
-		m_ui->lineEditDefaultFluidTemperature->setValue(35);
-
 	if (!m_current->m_para[VICUS::Network::P_MaxPipeDiscretization].empty())
 		m_ui->lineEditMaxPipeDiscretization->setValue(m_current->m_para[VICUS::Network::P_MaxPipeDiscretization].value);
-	else
-		m_ui->lineEditMaxPipeDiscretization->setValue(10);
+
+	// update ground heat exchange options
+	m_ui->groupBoxHeatExchangeWithGround->setChecked(m_current->m_hasHeatExchangeWithGround);
+	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeSpacing].empty())
+		m_ui->lineEditPipeSpacing->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeSpacing].value);
+	if (!m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].empty())
+		m_ui->lineEditPipeDepth->setValue(m_current->m_buriedPipeProperties.m_para[VICUS::NetworkBuriedPipeProperties::P_PipeDepth].value);
+	m_ui->lineEditNumberOfSoilModels->setValue(m_current->m_buriedPipeProperties.m_numberOfSoilModels);
 }
 
 
@@ -142,3 +144,35 @@ void SVSimulationNetworkOptions::on_lineEditMaxPipeDiscretization_editingFinishe
 		VICUS::KeywordList::setParameter(m_current->m_para, "Network::para_t", VICUS::Network::P_MaxPipeDiscretization,
 											 m_ui->lineEditMaxPipeDiscretization->value());
 }
+
+
+void SVSimulationNetworkOptions::on_lineEditPipeSpacing_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditPipeSpacing->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
+										 VICUS::NetworkBuriedPipeProperties::P_PipeSpacing,
+										 m_ui->lineEditPipeSpacing->value());
+}
+
+void SVSimulationNetworkOptions::on_lineEditPipeDepth_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditPipeDepth->isValid())
+		VICUS::KeywordList::setParameter(m_current->m_buriedPipeProperties.m_para, "NetworkBuriedPipeProperties::para_t",
+										 VICUS::NetworkBuriedPipeProperties::P_PipeDepth,
+										 m_ui->lineEditPipeDepth->value());
+}
+
+
+void SVSimulationNetworkOptions::on_lineEditNumberOfSoilModels_editingFinished()
+{
+	Q_ASSERT(m_current!=nullptr);
+	if (m_ui->lineEditNumberOfSoilModels->isValid())
+		m_current->m_buriedPipeProperties.m_numberOfSoilModels = m_ui->lineEditNumberOfSoilModels->value();
+}
+
+void SVSimulationNetworkOptions::on_groupBoxHeatExchangeWithGround_clicked(bool checked) {
+	m_current->m_hasHeatExchangeWithGround = checked;
+}
+

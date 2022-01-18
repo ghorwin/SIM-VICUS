@@ -1,13 +1,15 @@
 var classNANDRAD_1_1KeywordList =
 [
-    [ "Keyword", "classNANDRAD_1_1KeywordList.html#a6210561cc8c3aef05a41bf107fd91785", null ],
-    [ "Description", "classNANDRAD_1_1KeywordList.html#aaf05a4427dcfbee34608cc46d40616b6", null ],
-    [ "Unit", "classNANDRAD_1_1KeywordList.html#a7aae4567f598dc3159ef32bad27bf234", null ],
-    [ "Color", "classNANDRAD_1_1KeywordList.html#a3f14a1c63b8e757447f7f1caf028fffc", null ],
-    [ "DefaultValue", "classNANDRAD_1_1KeywordList.html#a4d818e60e03999140dcb927f08c09113", null ],
-    [ "Enumeration", "classNANDRAD_1_1KeywordList.html#ac277ef6d70c1dcb8cbb733b2608119f7", null ],
-    [ "MaxIndex", "classNANDRAD_1_1KeywordList.html#a186bd7ec167ef00a7b20c357428a9fab", null ],
-    [ "Count", "classNANDRAD_1_1KeywordList.html#a3c0042f5baf5ab26d4415792856b1014", null ],
-    [ "KeywordExists", "classNANDRAD_1_1KeywordList.html#af7d34a82fe751095b2a287dc57a35ed9", null ],
-    [ "CategoryExists", "classNANDRAD_1_1KeywordList.html#af19edc277161ec2230e1e1ee95c93a82", null ]
+    [ "Keyword", "classNANDRAD_1_1KeywordList.html#a4b4cab91e7e09640377860498f0291ff", null ],
+    [ "Description", "classNANDRAD_1_1KeywordList.html#aa167106923268b71e7f01d38ec7ca38a", null ],
+    [ "Unit", "classNANDRAD_1_1KeywordList.html#a86396c90c553df6b4a857b88f2bec9d3", null ],
+    [ "Color", "classNANDRAD_1_1KeywordList.html#aee74cf0ad13ed0f9eec73427a8bb89c4", null ],
+    [ "DefaultValue", "classNANDRAD_1_1KeywordList.html#a6f84c90c0af9683d37d110133e9bf296", null ],
+    [ "Enumeration", "classNANDRAD_1_1KeywordList.html#a9414cf132597fa35fed31fadde7bc4a9", null ],
+    [ "MaxIndex", "classNANDRAD_1_1KeywordList.html#a338bc0e6945e74c9a6ddb3f5a193e442", null ],
+    [ "Count", "classNANDRAD_1_1KeywordList.html#ac12dca5d959a6377e2279cfd41fff5c8", null ],
+    [ "KeywordExists", "classNANDRAD_1_1KeywordList.html#aaea35f12cf9c4851d830684fa7c067cc", null ],
+    [ "CategoryExists", "classNANDRAD_1_1KeywordList.html#adf4ecd45ae5f9b550fba0cffe7770b05", null ],
+    [ "setParameter", "classNANDRAD_1_1KeywordList.html#a30a876398e0864de4a0a66618edf187a", null ],
+    [ "setIntPara", "classNANDRAD_1_1KeywordList.html#aa19e60096120c9d9ebd40cd01395e8c9", null ]
 ];

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.2">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Di Apr 13 17:44:07 2021</Created>
-		<LastEdited>Fr Jun 25 15:29:31 2021</LastEdited>
+		<LastEdited>Do. Dez. 23 19:59:05 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -63,21 +63,27 @@
 								<IBK:Parameter name="Volume" unit="m3">2.700000048</IBK:Parameter>
 								<Surfaces>
 									<Surface id="60" displayName="091">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>-52 -10 0, -50 -10 0, -50 -10 2, -52 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="1" displayName="093">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>-32 -10 0, -30 -10 0, -30 -10 2, -32 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="160" displayName="094">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>5 -5 0, 10 -5 0, 10 -5 5, 5 -5 5</Polygon3D>
 									</Surface>
 									<Surface id="2" displayName="092">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>-42 -10 0, -40 -10 0, -40 -10 2, -42 -10 2</Polygon3D>
 									</Surface>
 									<Surface id="4" displayName="096">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>20 5 0, 20 10 0, 20 10 5, 20 5 5</Polygon3D>
 									</Surface>
 									<Surface id="3" displayName="095">
+										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>20 47 0.499999, 20 49 0.499999, 20 49 2.5, 20 47 2.5</Polygon3D>
 									</Surface>
 								</Surfaces>
@@ -88,11 +94,6 @@
 			</Building>
 		</Buildings>
 		<ComponentInstances>
-			<ComponentInstance id="13" idComponent="0" idSideASurface="0" />
-			<ComponentInstance id="14" idComponent="0" idSideASurface="0" />
-			<ComponentInstance id="15" idComponent="0" idSideASurface="0" />
-			<ComponentInstance id="16" idComponent="0" idSideASurface="0" />
-			<ComponentInstance id="17" idComponent="0" idSideASurface="0" />
 			<ComponentInstance id="1" idComponent="1001" idSideBSurface="160" />
 			<ComponentInstance id="2" idComponent="1001" idSideBSurface="4" />
 			<ComponentInstance id="18" idComponent="1001" idSideASurface="60" />
@@ -138,7 +139,7 @@
 		<EmbeddedDatabase>
 			<Materials>
 				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
 					<Category>Cementitious</Category>
@@ -158,15 +159,15 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-					<Color>#204a87</Color>
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
 					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
 					<InterfaceHeatConduction modelType="Constant">
+						<OtherZoneType>Standard</OtherZoneType>
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>

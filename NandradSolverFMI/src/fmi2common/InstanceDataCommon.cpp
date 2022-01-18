@@ -65,7 +65,7 @@ void InstanceDataCommon::setupMessageHandler(const IBK::Path & logfile) {
 	unsigned int verbosityLevel = IBK::VL_STANDARD;
 	m_messageHandlerPtr = new IBK::MessageHandler;
 	m_messageHandlerPtr->setConsoleVerbosityLevel(0); // disable console output
-	m_messageHandlerPtr->setLogfileVerbosityLevel(verbosityLevel);
+	m_messageHandlerPtr->setLogfileVerbosityLevel((int)verbosityLevel);
 	m_messageHandlerPtr->m_contextIndentation = 48;
 	std::string errmsg;
 	if (!IBK::Path::makePath(logfile.parentPath()))
@@ -146,6 +146,7 @@ void InstanceDataCommon::completedIntegratorStep() {
 	// this function must only be called in ModelExchange mode!!!
 	IBK_ASSERT(m_modelExchange);
 	updateIfModified();
+	// signal model that a step was completed in ModelExchange model
 	m_model->completedIntegratorStep(m_tInput, &m_yInput[0]);
 }
 

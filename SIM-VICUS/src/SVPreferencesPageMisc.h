@@ -54,6 +54,8 @@ protected:
 private slots:
 	void on_checkBoxDontUseNativeDialogs_toggled(bool checked);
 
+	void on_pushButtonResetDoNotShowAgainDialogs_clicked();
+
 private:
 	Ui::SVPreferencesPageMisc *m_ui;
 };

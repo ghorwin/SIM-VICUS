@@ -27,6 +27,14 @@ private slots:
 	void on_lineEditReferencePressure_editingFinished();
 	void on_lineEditMaxPipeDiscretization_editingFinished();
 
+	void on_lineEditPipeSpacing_editingFinished();
+
+	void on_lineEditPipeDepth_editingFinished();
+
+	void on_lineEditNumberOfSoilModels_editingFinished();
+
+	void on_groupBoxHeatExchangeWithGround_clicked(bool checked);
+
 private:
 	Ui::SVSimulationNetworkOptions *m_ui;
 

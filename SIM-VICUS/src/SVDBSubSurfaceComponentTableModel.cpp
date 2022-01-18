@@ -75,7 +75,7 @@ QVariant SVDBSubSurfaceComponentTableModel::data ( const QModelIndex & index, in
 
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
-				if (it->second.isValid(m_db->m_windows, m_db->m_boundaryConditions))
+				if (it->second.isValid(m_db->m_windows, m_db->m_boundaryConditions, m_db->m_schedules))
 					return QIcon("://gfx/actions/16x16/ok.png");
 				else
 					return QIcon("://gfx/actions/16x16/error.png");
@@ -101,6 +101,12 @@ QVariant SVDBSubSurfaceComponentTableModel::data ( const QModelIndex & index, in
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -185,6 +191,17 @@ void SVDBSubSurfaceComponentTableModel::setColumnResizeModes(QTableView * tableV
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubSurfaceComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubSurfaceComponentTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBSubSurfaceComponentTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBSubSurfaceComponentTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_subSurfaceComponents[id]->m_local = local;
+	m_db->m_subSurfaceComponents.m_modified = true;
+	setItemModified(id);
 }
 
 

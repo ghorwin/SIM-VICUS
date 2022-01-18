@@ -25,6 +25,8 @@
 
 #include "VICUS_Surface.h"
 
+#include "IBKMK_3DCalculations.h"
+
 namespace VICUS {
 
 void Surface::initializeColorBasedOnInclination() {
@@ -64,6 +66,9 @@ void Surface::readXML(const TiXmlElement * element) {
 	for (const SubSurface & s : m_subSurfaces)
 		holes.push_back(s.m_polygon2D);
 	m_geometry.setGeometry( m_polygon3D, holes);
+
+	if ( !geometry().isValid() && polygon3D().vertexes().size() > 2 )
+		healGeometry(m_polygon3D.vertexes());
 }
 
 
@@ -88,6 +93,7 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 
 
 void Surface::flip() {
+
 	// TODO  : Dirk
 
 	// compute 3D vertex coordinates of all subsurfaces
@@ -95,6 +101,114 @@ void Surface::flip() {
 	// flip subsurface polygons (3D vertex variants)
 	// recompute 2D vertex coordinates for all subsurfaces
 
+	// we cache the sub surfaces
+	std::vector<std::vector<IBKMK::Vector3D>> copiedSubSurf3D;
+
+	const std::vector<IBKMK::Vector3D> &vertexes = m_geometry.polygon().vertexes();
+	std::vector<IBKMK::Vector3D> newVertexes;
+
+	// updated subsurfaces
+	std::vector<SubSurface> newSubSurfaces (m_subSurfaces.size() );
+
+	// cache 3D Points of SubSurfaces
+	for ( unsigned int i = 0; i<m_subSurfaces.size(); ++i) {
+		copiedSubSurf3D.push_back(std::vector<IBKMK::Vector3D>() );
+		const SubSurface &sub = m_subSurfaces[i];
+
+		for ( unsigned	int j = 0; j<sub.m_polygon2D.vertexes().size(); ++j ) {
+			const IBKMK::Vector2D &poly2D = sub.m_polygon2D.vertexes()[j];
+			IBKMK::Vector3D v = vertexes[0] + poly2D.m_x * geometry().localX() + poly2D.m_y * geometry().localY();
+			copiedSubSurf3D[i].push_back(v);
+		}
+	}
+
+	// we generate the new Polygon3D
+	for (unsigned int i=(unsigned int)vertexes.size(); i>0; --i)
+		newVertexes.push_back(vertexes[i-1]);
+
+	// construct the new Polygon3D
+	setPolygon3D(newVertexes);
+
+	std::vector<SubSurface> newSubSurf(m_subSurfaces.size());
+
+	// we update the subsurfaces
+	for ( unsigned int i=0; i<copiedSubSurf3D.size(); ++i ) {
+
+		Q_ASSERT(m_subSurfaces.size() == copiedSubSurf3D.size() );
+
+		// we construct a new Polygon2D to save calculated points
+		Polygon2D newPoly2D;
+
+		for ( unsigned int j=0; j<copiedSubSurf3D[i].size(); ++j ) {
+
+			Q_ASSERT(m_subSurfaces[i].m_polygon2D.vertexes().size() == copiedSubSurf3D[i].size() );
+
+			// we calculate our new points
+			IBKMK::Vector2D v;
+
+			if (!IBKMK::planeCoordinates(newVertexes[0], geometry().localX(), geometry().localY(), copiedSubSurf3D[i][j], v.m_x, v.m_y, 1e-4))
+				return;
+
+			newPoly2D.addVertex(v);
+
+		}
+
+		// new we finally updated the polygon2D in the subsurface
+		m_subSurfaces[i].m_polygon2D = newPoly2D;
+	}
+}
+
+void Surface::healGeometry(const std::vector<IBKMK::Vector3D> &poly3D) {
+	// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
+	std::vector<double> deviations (poly3D.size(), 0);
+	// create a vector to hold the projected points for each of the plane variants
+	std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
+
+	// we iterate through all points and construct planes
+	double smallestDeviation = std::numeric_limits<double>::max();
+	unsigned int index = (unsigned int)-1;
+	for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
+
+		const IBKMK::Vector3D & offset = poly3D[i];
+
+		const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
+		const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
+
+		// we find our plane
+		// we now iterate again through all point of the polygon and
+		for (unsigned int j = 0; j<count; ++j ) {
+
+			if ( i == j ) {
+				projectedPoints[i][j] = offset;
+				continue;
+			}
+
+			// we take the current point
+			const IBKMK::Vector3D & vertex = poly3D[j];
+
+			// we find our projected points onto the plane
+			double x, y;
+			IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
+
+			// now we construct our projected points and find the deviation between the original points
+			// and their projection
+			projectedPoints[i][j] = offset + a*x + b*y;
+
+			// add up the distance between original vertex and projected point
+			// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
+			//       the expensive square-root calculation
+			deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+		}
+
+		// determines smallest deviation
+		if (deviations[i] < smallestDeviation) {
+			index = i;
+			smallestDeviation = deviations[i];
+		}
+	}
+
+	// take the best vertex set and use it for the polygon
+	setPolygon3D(projectedPoints[index]);
 }
 
 

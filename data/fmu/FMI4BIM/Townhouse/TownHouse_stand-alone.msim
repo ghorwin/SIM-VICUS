@@ -1,0 +1,23 @@
+# Created:	Do. Sep. 9 10:13:22 2021
+# LastModified:	Do. Sep. 9 10:38:48 2021
+
+tStart                   0 a
+tEnd                     10 d
+hMax                     30 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   15 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-20
+relTol                   1e-20
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            3
+writeInternalVariables   no
+
+simulator 0 0 B1Townhouse2Reference02210728 #ffd700 "B1Townhouse2Reference02210728.fmu"
+
+

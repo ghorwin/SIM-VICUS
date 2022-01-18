@@ -64,6 +64,12 @@ public:
 	unsigned int						m_idSideBSurface = INVALID_ID;			// XML:A
 
 
+	/*! ID of shading system definition, to be used when shading system is active. */
+	unsigned int						m_idShadingSystem				= INVALID_ID;	// XML:E
+	/*! ID of shading control model. */
+	unsigned int						m_idShadingControlModel			= INVALID_ID;	// XML:E
+
+
 	// *** RUNTIME VARIABLES ***
 
 	// These pointers are updated in VICUS::Project::updatePointers() and can be used

@@ -14,7 +14,7 @@ QT += xml opengl network printsupport widgets svg
 CONFIG += c++11
 
 unix {
-	QMAKE_CXXFLAGS += -std=c++11
+	QMAKE_CXXFLAGS += -Wno-deprecated-copy
 }
 
 LIBS += -L../../../lib$${DIR_PREFIX} \
@@ -84,19 +84,33 @@ PRE_TARGETDEPS += \
 SOURCES += \
 	../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp \
 	../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp \
+	../../src/SVCoSimCO2VentilationDialog.cpp \
+	../../src/SVDBDialogAddDependentElements.cpp \
 	../../src/SVDBDuplicatesDialog.cpp \
 	../../src/SVDBNetworkControllerEditWidget.cpp \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
+	../../src/SVOutputGridEditDialog.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
+	../../src/SVPropBuildingBoundaryConditionsWidget.cpp \
+	../../src/SVPropBuildingComponentOrientationWidget.cpp \
+	../../src/SVPropBuildingComponentsWidget.cpp \
+	../../src/SVPropBuildingSubComponentsWidget.cpp \
+	../../src/SVPropBuildingSurfaceConnectionWidget.cpp \
+	../../src/SVPropBuildingSurfaceHeatingWidget.cpp \
+	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
+	../../src/SVSimulationOutputTableDelegate.cpp \
+	../../src/SVSimulationOutputTableModel.cpp \
 	../../src/SVSimulationShadingOptions.cpp \
 	../../src/SVTimeSeriesPreviewWidget.cpp \
+	../../src/SVZoneSelectionDialog.cpp \
 	../../src/actions/SVUndoAddBuilding.cpp \
 	../../src/actions/SVUndoAddBuildingLevel.cpp \
 	../../src/actions/SVUndoAddNetwork.cpp \
+	../../src/actions/SVUndoAddProject.cpp \
 	../../src/actions/SVUndoAddSurface.cpp \
 	../../src/actions/SVUndoAddZone.cpp \
 	../../src/actions/SVUndoCommandBase.cpp \
@@ -241,19 +255,33 @@ SOURCES += \
 	../../src/SVWelcomeScreen.cpp
 
 HEADERS  += \
+	../../src/SVCoSimCO2VentilationDialog.h \
+	../../src/SVDBDialogAddDependentElements.h \
 	../../src/SVDBDuplicatesDialog.h \
 	../../src/SVDBNetworkControllerEditWidget.h \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
+	../../src/SVOutputGridEditDialog.h \
 	../../src/SVPreferencesPageMisc.h \
+	../../src/SVPropBuildingBoundaryConditionsWidget.h \
+	../../src/SVPropBuildingComponentOrientationWidget.h \
+	../../src/SVPropBuildingComponentsWidget.h \
+	../../src/SVPropBuildingSubComponentsWidget.h \
+	../../src/SVPropBuildingSurfaceConnectionWidget.h \
+	../../src/SVPropBuildingSurfaceHeatingWidget.h \
+	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
+	../../src/SVSimulationOutputTableDelegate.h \
+	../../src/SVSimulationOutputTableModel.h \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
+	../../src/SVZoneSelectionDialog.h \
 	../../src/actions/SVUndoAddBuilding.h \
 	../../src/actions/SVUndoAddBuildingLevel.h \
 	../../src/actions/SVUndoAddNetwork.h \
+	../../src/actions/SVUndoAddProject.h \
 	../../src/actions/SVUndoAddSurface.h \
 	../../src/actions/SVUndoAddZone.h \
 	../../src/actions/SVUndoCommandBase.h \
@@ -398,10 +426,15 @@ HEADERS  += \
 	../../src/SVView3DDialog.h \
 	../../src/SVViewState.h \
 	../../src/SVViewStateHandler.h \
-	../../src/SVWelcomeScreen.h
+	../../src/SVWelcomeScreen.h \
+	../../src/plugins/SVCommonPluginInterface.h \
+	../../src/plugins/SVDatabasePluginInterface.h \
+	../../src/plugins/SVImportPluginInterface.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
+	../../src/SVCoSimCO2VentilationDialog.ui \
+	../../src/SVDBDialogAddDependentElements.ui \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
 	../../src/SVDBSubNetworkEditWidget.ui \
@@ -439,12 +472,20 @@ FORMS    += \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkImportDialog.ui \
+	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPreferencesDialog.ui \
 	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
 	../../src/SVPropAddWindowWidget.ui \
+	../../src/SVPropBuildingBoundaryConditionsWidget.ui \
+	../../src/SVPropBuildingComponentOrientationWidget.ui \
+	../../src/SVPropBuildingComponentsWidget.ui \
 	../../src/SVPropBuildingEditWidget.ui \
+	../../src/SVPropBuildingSubComponentsWidget.ui \
+	../../src/SVPropBuildingSurfaceConnectionWidget.ui \
+	../../src/SVPropBuildingSurfaceHeatingWidget.ui \
+	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
 	../../src/SVPropFloorManagerWidget.ui \
 	../../src/SVPropModeSelectionWidget.ui \
@@ -461,7 +502,8 @@ FORMS    += \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
-	../../src/SVWelcomeScreen.ui
+	../../src/SVWelcomeScreen.ui \
+	../../src/SVZoneSelectionDialog.ui
 
 TRANSLATIONS += ../../resources/translations/SIM-VICUS_de.ts
 CODECFORSRC = UTF-8

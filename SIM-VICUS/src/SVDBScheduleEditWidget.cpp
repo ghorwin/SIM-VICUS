@@ -40,7 +40,6 @@
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_DateTimeInputDialog.h>
 #include <QtExt_Conversions.h>
-#include <QtExt_configuration.h>
 
 #include <qwt_plot_curve.h>
 
@@ -528,7 +527,8 @@ void SVDBScheduleEditWidget::on_toolButtonCopyPeriod_clicked() {
 	// now create a new ScheduleInverval and insert into vector at appropriate position (sorted) and
 	schedInt.m_intervalStartDay = startDateInt;
 	// TODO : language handling
-	std::string newName = m_currentInterval->m_displayName.string() + tr("-copy").toStdString();
+	QString langID = QtExt::LanguageHandler::instance().langId();
+	std::string newName = m_currentInterval->m_displayName.string(langID.toStdString()) + tr("-copy").toStdString();
 	schedInt.m_displayName.setString(newName, "de");
 
 	// get resulting index of new ScheduleInverval in vector

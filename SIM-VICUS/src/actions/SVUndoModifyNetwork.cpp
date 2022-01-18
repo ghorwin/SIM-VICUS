@@ -42,6 +42,7 @@ void SVUndoModifyNetwork::undo() {
 	theProject().m_geometricNetworks[m_networkIndex].updateNodeEdgeConnectionPointers();
 	const SVDatabase & db = SVSettings::instance().m_db;
 	theProject().m_geometricNetworks[m_networkIndex].updateVisualizationRadius(db.m_pipes);
+	theProject().updatePointers();
 
 	// tell project that the network has changed
 	SVProjectHandler::instance().setModified( SVProjectHandler::NetworkModified);

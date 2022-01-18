@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=1).ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]	Model(id=701).MassFlux(id=3001) [kg/s]
+Time [h]	dummy.VentilationHeatLoad [W]	dummy.ConstructionHeatConductionLoad [W]	ConstructionInstance(id=3001).ActiveLayerThermalLoad [W]	Model(id=701).MassFlux(id=3001) [kg/s]
 0	-140.922	0	712.468	0.01
 0.5	-133.953	138.924	988.786	0.02
 1	-136.034	145.595	953.491	0.02

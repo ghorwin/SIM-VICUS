@@ -45,6 +45,7 @@ void SVUndoModifyBuilding::undo() {
 	else {
 		SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged);
 	}
+	theProject().updatePointers();
 }
 
 

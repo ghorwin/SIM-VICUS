@@ -44,7 +44,7 @@ class QSortFilterProxyModel;
 
 #include <VICUS_Constants.h>
 
-/*! The edit dialog for materials types. */
+/*! The generic edit dialog. */
 class SVDatabaseEditDialog : public QDialog {
 	Q_OBJECT
 
@@ -90,11 +90,18 @@ private slots:
 
 	void on_tableView_doubleClicked(const QModelIndex &index);
 
+	void on_toolButtonRemoveFromUserDB_clicked();
+
+	void on_toolButtonStoreInUserDB_clicked();
+
+	void on_pushButtonRemoveUnusedElements_clicked();
+
 private:
 	/*! If table contains an element with matching ID, this row is made current.
 		Signals are blocked in this function.
 	*/
 	void selectItemById(unsigned int id);
+
 
 	// Factory functions to create all the individual dialogs
 	static SVDatabaseEditDialog * createMaterialEditDialog(QWidget * parent);

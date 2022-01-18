@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Zone Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Zone Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -61,6 +62,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Zone.html','');});
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1Zone-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -78,10 +80,14 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Zone.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ae24a07fecddc52ad746ddd189345e7f0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0">type_t</a> { <b>ZT_Constant</b>, 
+<tr class="memitem:ae24a07fecddc52ad746ddd189345e7f0"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0">type_t</a> { <br />
+&#160;&#160;<a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0abbe0d54f986112a5fd0a1afee9315ffe">ZT_Constant</a>, 
+<b>ZT_Scheduled</b>, 
 <b>ZT_Active</b>, 
-<a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0a24751b8c802ff949b301a325304f99f8">ZT_Ground</a>, 
-<b>NUM_ZT</b>
+<b>ZT_Ground</b>, 
+<br />
+&#160;&#160;<b>NUM_ZT</b>
+<br />
  }<tr class="memdesc:ae24a07fecddc52ad746ddd189345e7f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of zone.  <a href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0">More...</a><br /></td></tr>
 </td></tr>
 <tr class="separator:ae24a07fecddc52ad746ddd189345e7f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,11 +108,17 @@ Public Types</h2></td></tr>
 <tr class="memdesc:aa4e3c369be886d18800e72828f7f113e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data type used in view factor definition.  <a href="#aa4e3c369be886d18800e72828f7f113e">More...</a><br /></td></tr>
 <tr class="separator:aa4e3c369be886d18800e72828f7f113e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a9584a3d91e0e7ba6a05c92885dfc2b66"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a9584a3d91e0e7ba6a05c92885dfc2b66">checkParameters</a> () const</td></tr>
+<tr class="memdesc:a9584a3d91e0e7ba6a05c92885dfc2b66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid and required parameters (value ranges).  <a href="#a9584a3d91e0e7ba6a05c92885dfc2b66">More...</a><br /></td></tr>
+<tr class="separator:a9584a3d91e0e7ba6a05c92885dfc2b66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a647e0341399e4079ac60fbccbbaaf86f"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a647e0341399e4079ac60fbccbbaaf86f">m_id</a> = INVALID_ID</td></tr>
-<tr class="memdesc:a647e0341399e4079ac60fbccbbaaf86f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique ID of the zone.  <a href="#a647e0341399e4079ac60fbccbbaaf86f">More...</a><br /></td></tr>
-<tr class="separator:a647e0341399e4079ac60fbccbbaaf86f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85008ded242aeb9c0e3f30bdc3bd61b2"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a85008ded242aeb9c0e3f30bdc3bd61b2">m_id</a> = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td></tr>
+<tr class="memdesc:a85008ded242aeb9c0e3f30bdc3bd61b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique ID of the zone.  <a href="#a85008ded242aeb9c0e3f30bdc3bd61b2">More...</a><br /></td></tr>
+<tr class="separator:a85008ded242aeb9c0e3f30bdc3bd61b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a63ef2b78cf0f9c8575014185e2c2e7fd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a63ef2b78cf0f9c8575014185e2c2e7fd">m_displayName</a></td></tr>
 <tr class="memdesc:a63ef2b78cf0f9c8575014185e2c2e7fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Descriptive name of zone.  <a href="#a63ef2b78cf0f9c8575014185e2c2e7fd">More...</a><br /></td></tr>
 <tr class="separator:a63ef2b78cf0f9c8575014185e2c2e7fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,9 +128,6 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:accd99034e176aa988269b0739d8a5d27"><td class="memItemLeft" align="right" valign="top">IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#accd99034e176aa988269b0739d8a5d27">m_para</a> [NUM_P]</td></tr>
 <tr class="memdesc:accd99034e176aa988269b0739d8a5d27"><td class="mdescLeft">&#160;</td><td class="mdescRight">Physical parameters describing the zone.  <a href="#accd99034e176aa988269b0739d8a5d27">More...</a><br /></td></tr>
 <tr class="separator:accd99034e176aa988269b0739d8a5d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bbf661ad3e95da862b8b54b47482f12"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a0bbf661ad3e95da862b8b54b47482f12">m_scheduleName</a></td></tr>
-<tr class="memdesc:a0bbf661ad3e95da862b8b54b47482f12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional schedule reference name for constant zones.  <a href="#a0bbf661ad3e95da862b8b54b47482f12">More...</a><br /></td></tr>
-<tr class="separator:a0bbf661ad3e95da862b8b54b47482f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3a04ae5fd899b09aaeb2f0b17856ef5d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; <a class="el" href="classNANDRAD_1_1Zone.html#aa4e3c369be886d18800e72828f7f113e">viewFactorPair</a>, double &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Zone.html#a3a04ae5fd899b09aaeb2f0b17856ef5d">m_viewFactors</a></td></tr>
 <tr class="memdesc:a3a04ae5fd899b09aaeb2f0b17856ef5d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Optional: view factors for all inside interfaces of the current zone.  <a href="#a3a04ae5fd899b09aaeb2f0b17856ef5d">More...</a><br /></td></tr>
 <tr class="separator:a3a04ae5fd899b09aaeb2f0b17856ef5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,7 +147,7 @@ Public Attributes</h2></td></tr>
 
 <p>Data type used in view factor definition. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00093">93</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00095">95</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -158,7 +167,8 @@ Public Attributes</h2></td></tr>
 <p>Type of zone. </p>
 <p>Defines whether zone is balanced and included in equation system. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae24a07fecddc52ad746ddd189345e7f0a24751b8c802ff949b301a325304f99f8"></a>ZT_Ground&#160;</td><td class="fielddoc"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>research different models for ground temperature calculation </dd></dl>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ae24a07fecddc52ad746ddd189345e7f0abbe0d54f986112a5fd0a1afee9315ffe"></a>ZT_Constant&#160;</td><td class="fielddoc"><p>Constant model requires P_Temperature parameter. </p>
+<p>Optionally, a schedule with name 'TemperatureSchedule' can be used to identify temperature of the zone (or soil, if this is a ground zone). </p>
 </td></tr>
 </table>
 
@@ -180,26 +190,46 @@ Public Attributes</h2></td></tr>
 
 <p>Parameters of a zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00057">57</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a647e0341399e4079ac60fbccbbaaf86f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a647e0341399e4079ac60fbccbbaaf86f">&#9670;&nbsp;</a></span>m_id</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9584a3d91e0e7ba6a05c92885dfc2b66"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9584a3d91e0e7ba6a05c92885dfc2b66">&#9670;&nbsp;</a></span>checkParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID unsigned int NANDRAD::Zone::m_id = INVALID_ID</td>
+          <td class="memname">NANDRAD_READWRITE NANDRAD_COMPARE_WITH_ID void NANDRAD::Zone::checkParameters </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for valid and required parameters (value ranges). </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a85008ded242aeb9c0e3f30bdc3bd61b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85008ded242aeb9c0e3f30bdc3bd61b2">&#9670;&nbsp;</a></span>m_id</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned int NANDRAD::Zone::m_id = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Unique ID of the zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00075">75</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00081">81</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -217,7 +247,7 @@ Public Attributes</h2></td></tr>
 
 <p>Descriptive name of zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00078">78</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00084">84</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -234,9 +264,9 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p><a class="el" href="classNANDRAD_1_1Zone.html" title="A zone defines a thermal zone/room with a single air temperature. ">Zone</a> type (Constant, Active). </p>
-<dl class="section see"><dt>See also</dt><dd>zoneType_t </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classNANDRAD_1_1Zone.html#ae24a07fecddc52ad746ddd189345e7f0" title="Type of zone. ">type_t</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00083">83</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00089">89</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -254,25 +284,7 @@ Public Attributes</h2></td></tr>
 
 <p>Physical parameters describing the zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
-
-</div>
-</div>
-<a id="a0bbf661ad3e95da862b8b54b47482f12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0bbf661ad3e95da862b8b54b47482f12">&#9670;&nbsp;</a></span>m_scheduleName</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string NANDRAD::Zone::m_scheduleName</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Optional schedule reference name for constant zones. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00089">89</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00092">92</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -290,7 +302,7 @@ Public Attributes</h2></td></tr>
 
 <p>Optional: view factors for all inside interfaces of the current zone. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00095">95</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Zone_8h_source.html#l00097">97</a> of file <a class="el" href="NANDRAD__Zone_8h_source.html">NANDRAD_Zone.h</a>.</p>
 
 </div>
 </div>
@@ -302,8 +314,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Zone.html">Zone</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Zone.html">Zone</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

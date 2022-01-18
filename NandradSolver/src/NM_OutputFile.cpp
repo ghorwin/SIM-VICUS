@@ -28,6 +28,7 @@
 #include <IBK_assert.h>
 #include <IBK_UnitList.h>
 #include <IBK_FileUtils.h>
+#include <IBK_InputOutput.h>
 
 #include <NANDRAD_ObjectList.h>
 #include <NANDRAD_KeywordList.h>
@@ -36,6 +37,81 @@ namespace NANDRAD_MODEL {
 
 OutputFile::~OutputFile() {
 	delete m_ofstream;
+}
+
+
+std::size_t OutputFile::serializationSize() const {
+	// last output time point
+	std::size_t size = sizeof (double);
+
+	if (!m_haveIntegrals)
+		return size; // nothing else to serialize
+
+	// last time step
+	size += sizeof (double);
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// integral values
+	// + integral values at last output time point
+	size += 3 * dataSize;
+
+	return size;
+}
+
+
+void OutputFile::serialize(void *& dataPtr) const {
+	// cache tLastOutput
+	*(double*)dataPtr = m_tLastOutput;
+	dataPtr = (char*)dataPtr + sizeof(double);
+
+	if (!m_haveIntegrals)
+		return; // nothing to do
+
+	// cache tLastStep for integration
+	*(double*)dataPtr = m_tLastStep;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	// Note: the vectors m_integralsAtLastOutput, m_integrals[0] and m_integrals[1] have always the same size
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// cache integrals
+	std::memcpy(dataPtr, m_integrals[0].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(dataPtr, m_integrals[1].data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// cache integralsAtLastOutput
+	std::memcpy(dataPtr, m_integralsAtLastOutput.data(), dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+}
+
+
+void OutputFile::deserialize(void *& dataPtr) {
+	// update cached tLastOutput
+	double tLastOutput = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+
+	// If output time point is reset, we also need to
+	// reset the chache state to the last accepted time point.
+	// The rule is, that all outputs are written and buffer is cleared,
+	// whenever a communication step is accepted (and the integration goes forward).
+	// Deserialization of the previos state therefore means cache clearing.
+	if (tLastOutput < m_tLastOutput)
+		clearCache();
+	// copy last step
+	m_tLastOutput = tLastOutput;
+
+	if (!m_haveIntegrals)
+		return; // nothing to else do
+
+	// update cached tLastStep
+	m_tLastStep = *(double*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(double);
+	std::size_t dataSize = m_integralsAtLastOutput.size() * sizeof(double);
+	// update cached integrals
+	std::memcpy(m_integrals[0].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	std::memcpy(m_integrals[1].data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
+	// update cached integralsAtLastOutput
+	std::memcpy(m_integralsAtLastOutput.data(), dataPtr, dataSize);
+	dataPtr = (char*)dataPtr + dataSize;
 }
 
 
@@ -287,7 +363,9 @@ void OutputFile::createInputReferences() {
 }
 
 
-void OutputFile::createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath) {
+void OutputFile::createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath,
+							const std::map<std::string, std::string> & varSubstitutionMap, unsigned int startYear)
+{
 	FUNCID(OutputFile::createFile);
 
 	m_binary = binary;
@@ -295,7 +373,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	// if we have no outputs in this file, we do nothing
 	if (m_numCols == 0) {
 		IBK::IBK_Message(IBK::FormatString("%1 : No output variables available, skipped\n")
-						 .arg(m_filename,20,std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+						 .arg(m_filename,40,std::ios_base::left), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		return;
 	}
 
@@ -312,7 +390,7 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 				throw IBK::Exception(IBK::FormatString("Error re-opening file %1 for writing.").arg(outFilePath), FUNC_ID);
 			}
 
-			IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,20,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+			IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,40,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			// all ok, bail out here
 			return;
 		}
@@ -333,19 +411,47 @@ void OutputFile::createFile(bool restart, bool binary, const std::string & timeC
 	if (!m_ofstream)
 		throw IBK::Exception(IBK::FormatString("Error creating file %1.").arg(outFilePath), FUNC_ID);
 
-	IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,20,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+	IBK::IBK_Message(IBK::FormatString("%1 : %2 values\n").arg(m_filename,40,std::ios_base::left).arg(m_numCols), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 
 	// now write header
 	std::vector<std::string> headerLabels;
 
-	// add time column header
 	headerLabels.push_back( timeColumnLabel );
+	// add time column header
 	for (unsigned int i=0; i<m_numCols; ++i)
 		headerLabels.push_back(m_outputVarInfo[i].m_columnHeader);
 
+	// modify headers using variable substitution map
+	if (!varSubstitutionMap.empty()){
+		std::vector<std::string> tokens;
+		for (unsigned int i=0; i<m_numCols; ++i) {
+			// Mind: headerLabels have size m_numCols + 1 because of the first time column
+			//       hence we add +1 in the index access to headerLabels[] below
+			IBK::explode(headerLabels[i+1], tokens, ".", IBK::EF_NoFlags); // we need to split element name and quantity
+			std::map<std::string, std::string>::const_iterator varSubst = varSubstitutionMap.find(tokens[0]);
+			if (varSubst != varSubstitutionMap.end() )
+				headerLabels[i+1] = varSubst->second + "." + tokens[1]; // and merge quantity with substituted element name
+		}
+	}
+
 	// now we have the header completed, and the first row's values and we write to file
 	if (binary) {
-		/// \todo implement binary format writing
+		// write magic header
+		m_ofstream->write("BTAB", 4);
+		m_ofstream->write("RLZ!", 4);
+		// write start year of simulation
+		uint32_t startYearUInt = startYear;
+		IBK::write_uint32_binary(*m_ofstream, startYearUInt);
+
+		// first compose header in stringstream
+		std::stringstream strm;
+		for (unsigned int i=0; i<headerLabels.size(); ++i) {
+			if (i != 0)
+				strm << "\t";
+			strm << headerLabels[i];
+		}
+		// now write header line as binary string
+		IBK::write_string_binary(*m_ofstream, strm.str());
 	}
 	else {
 		// header
@@ -435,23 +541,39 @@ unsigned int OutputFile::cacheSize() const {
 }
 
 
+void OutputFile::clearCache() {
+	// clear cache
+	m_cache.clear();
+}
+
+
 void OutputFile::flushCache() {
 	// no outputs - nothing to do
 	if (m_numCols == 0 || m_ofstream == nullptr)
 		return;
 
+	// avoid writing for empty cache
+	if (m_cache.empty())
+		return;
+
 	// dump all rows of the cache into file
 	for (std::vector<double> & vals : m_cache) {
 		if (m_binary) {
-			/// \todo implement binary file writing
+			IBK::write_vector_binary(*m_ofstream, vals);
 		}
 		else {
 			// dump vector in ascii mode
 			// first values
 			for (unsigned int i=0; i<vals.size(); ++i) {
-				if (i != 0)
-					*m_ofstream << "\t";
-				*m_ofstream << vals[i];
+				if (i != 0) {
+					*m_ofstream << "\t" << vals[i];
+				}
+				else {
+					// time value is written with increased precision to avoid
+					// accuracy problems in long simulations with short output intervals (> 10 years with 10 min steps)
+					std::streamsize prec = m_ofstream->precision();
+					*m_ofstream << std::setprecision(10) << vals[i] << std::setprecision(prec);
+				}
 			}
 			*m_ofstream << '\n';
 		}

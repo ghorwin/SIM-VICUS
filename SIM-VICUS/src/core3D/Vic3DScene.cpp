@@ -52,6 +52,7 @@
 #include "SVUndoTreeNodeState.h"
 #include "SVUndoDeleteSelected.h"
 #include "SVPropModeSelectionWidget.h"
+#include "SVNavigationTreeWidget.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -133,19 +134,39 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			refreshColors();
 		break;
 
-		case SVProjectHandler::BuildingGeometryChanged :
+		case SVProjectHandler::BuildingGeometryChanged : {
 			updateBuilding = true;
 			updateSelection = true;
-			break;
+			// we might have just deleted all selected items, in this case switch back to
+
+			std::set<const VICUS::Object*> selectedObjects;
+
+			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+			SVViewState vs = SVViewStateHandler::instance().viewState();
+			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+				if (selectedObjects.empty()) {
+					vs.m_sceneOperationMode = SVViewState::NUM_OM;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+				}
+				else {
+					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+					// Do not modify property widget mode
+				}
+				SVViewStateHandler::instance().setViewState(vs);
+			}
+
+		} break;
 
 		case SVProjectHandler::GridModified :
 			updateGrid = true;
-			break;
+			updateCamera = true;
+		break;
 
 		case SVProjectHandler::NetworkModified :
 			updateNetwork = true;
 			updateSelection = true;
-			break;
+		break;
 
 		case SVProjectHandler::ComponentInstancesModified : {
 			const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -157,70 +178,20 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			return;
 		}
 
-		case SVProjectHandler::SubSurfaceComponentInstancesModified : {
+		case SVProjectHandler::SubSurfaceComponentInstancesModified :
 			// changes in sub-surface assignments may change the transparency of constructions, hence
 			// requires a re-setup of building geometry
 			updateBuilding = true;
-			break;
-		}
+		break;
 
 		// *** selection and visibility properties changed ***
 		case SVProjectHandler::NodeStateModified : {
-			// we need to implement the following logic:
-			//
-			// a) object is visible, but not selected -> draw object with regular geometry shader
-			// b) object is visible and selected -> object is hidden from regular geometry shader but shown in wireframe object
-			// c) object is not visible and either selected/not selected -> object is hidden
-			//
-			// In the loop below we first update the colors painted with the opaque regular geometry shaders.
-			// All visible and not selected objects/surfaces (option a) will get painted with the
-			// current property color.
-			// In order to keep the memory transfor to the GPU small, we remember first and last vertex index to be changed
-			// and only copy the affected color buffer into GPU memory.
-#if 0
-			// we need to update the colors of some building elements
-			bool updateOpaqueGeometryNeeded = false;
-			unsigned int smallestVertexIndexOpaqueGeometry = m_opaqueGeometryObject.m_vertexBufferData.size();
-			unsigned int largestVertexIndexOpaqueGeometry = 0;
-			bool updateNetworkGeometryNeeded = false;
-			unsigned int smallestVertexIndexNetworks = m_networkGeometryObject.m_vertexBufferData.size();
-			unsigned int largestVertexIndexNetworks = 0;
+			// for now trigger update of building and network geometry objects
+			// TODO : for large objects this may not necessarily be fast, especially if only few
+			//        elements are selected, but at least this is very robust
+			updateBuilding = true;
+			updateNetwork = true;
 
-			// first decode the modification info object
-			// we determine which objects need to be recolored and memory range needs to be pushed to the GPU
-			const SVUndoTreeNodeState::ModifiedNodes * info = dynamic_cast<SVUndoTreeNodeState::ModifiedNodes *>(data);
-			Q_ASSERT(info != nullptr);
-
-			for (const std::pair<SVUndoTreeNodeState::ModifiedNodes::ObjectType, unsigned int> & modIDs : info->m_nodeIDs) {
-				switch (modIDs.first) {
-					case SVUndoTreeNodeState::ModifiedNodes::OT_OpaqueBuilding :
-						updateOpaqueGeometryNeeded = true;
-						smallestVertexIndexOpaqueGeometry = std::min(smallestVertexIndexOpaqueGeometry, modIDs.second);
-						largestVertexIndexOpaqueGeometry = std::max(smallestVertexIndexOpaqueGeometry, modIDs.second);
-					break;
-
-					case SVUndoTreeNodeState::ModifiedNodes::OT_NetworkElement :
-						updateNetworkGeometryNeeded = true;
-						smallestVertexIndexNetworks = std::min(smallestVertexIndexNetworks, modIDs.second);
-						largestVertexIndexNetworks = std::max(largestVertexIndexNetworks, modIDs.second);
-					break;
-
-					// TODO : Transparent windows
-				}
-			}
-#endif
-			// finally, transfer only the modified portion of the color buffer to GPU memory
-			refreshColors(); // For now, this updates everything - works in all cases but is slow in large models
-
-			// TODO : Andreas, performance upgrade: instead of using refreshColors() above that also
-			//        regenerates the entire geometry and pushes everything to the GPU buffer,
-			//        we can just modify the affected surfaces and push only the necessary changes to the GPU
-#if 0
-			if (updateOpaqueGeometryNeeded)
-				m_opaqueGeometryObject.updateColorBuffer(smallestVertexIndexOpaqueGeometry, largestVertexIndexOpaqueGeometry-smallestVertexIndexOpaqueGeometry);
-			if (updateNetworkGeometryNeeded)
-				m_networkGeometryObject.updateColorBuffer(smallestVertexIndexNetworks, largestVertexIndexNetworks-smallestVertexIndexNetworks);
-#endif
 			// Now check if our new selection set is different from the previous selection set.
 			std::set<const VICUS::Object*> selectedObjects;
 
@@ -787,16 +758,11 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (wheelDelta < -2)
 			wheelDelta = -2;
 #endif
-		double transSpeed = 5.;
+		double transSpeed = 0.05;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed *= 0.1;
 		if (!pickObject.m_candidates.empty()) {
-			// 2% of translation distance from camera to selected object
-			IBKMK::Vector3D moveDist = 0.05*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
-			double transDist = moveDist.magnitude();
-			if (transDist < transSpeed) {
-				moveDist *= transSpeed/(transDist+1e-8);
-			}
+			IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 			// move camera along line of sight towards selected object
 			m_camera.translate(QtExt::IBKVector2QVector(wheelDelta*moveDist));
 		}
@@ -811,6 +777,8 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	if (SVProjectHandler::instance().isValid()) {
 		SVProjectHandler::instance().viewSettings().m_cameraTranslation = QtExt::QVector2IBKVector(m_camera.translation());
 		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
+		// when camera has been moved, also update the local coordinate system
+		m_coordinateSystemObject.updateCoordinateSystemSize();
 	}
 	updateWorld2ViewMatrix();
 	// end of camera movement
@@ -1405,6 +1373,17 @@ void Scene::generateTransparentBuildingGeometry() {
 		connectedSurfaces.insert(ci.m_sideASurface);
 		connectedSurfaces.insert(ci.m_sideBSurface);
 
+		// both polygons must be valid to continue, otherwise we cannot draw a connection line
+		// invalid polygons should be highlighted somewhere else
+
+		if (!ci.m_sideASurface->geometry().isValid() ||
+			!ci.m_sideBSurface->geometry().isValid())
+			continue;
+
+		// both polygons must be visible
+		if (!ci.m_sideASurface->m_visible || !ci.m_sideBSurface->m_visible)
+			continue;
+
 		// generate geometry for the "Links"
 
 		// we need to generate the "centerpoint" of the polygon. Then we move along the local coordinate systems
@@ -1555,9 +1534,8 @@ void Scene::generateNetworkGeometry() {
 		// update pointers of network elements, they are only runtime and not part of the project data
 		// so they can be modified with const_cast
 		const_cast<VICUS::Network &>(network).updateNodeEdgeConnectionPointers();
-		// the visualization radius is also only runtime.
-		// it is mutable so no const_cast needed
-		network.updateVisualizationRadius(db.m_pipes);
+		// the visualization radius is also only runtime
+		const_cast<VICUS::Network &>(network).updateVisualizationRadius(db.m_pipes);
 
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			double radius = e.m_visualizationRadius;
@@ -1648,9 +1626,8 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 
 	// initialize network colors, independent of current color mode
 	for (const VICUS::Network & net: p.m_geometricNetworks) {
-		// updateColor is a const-function, this is possible since
-		// the m_color property of edges and nodes is mutable
-		net.setDefaultColors();
+		// we only update runtime-only properties, hence we can use a const-cast here
+		const_cast<VICUS::Network&>(net).setDefaultColors();
 	}
 
 	const SVDatabase & db = SVSettings::instance().m_db;
@@ -1679,7 +1656,27 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 			}
 		} break;
 
-		case SVViewState::OCM_Components:
+		case SVViewState::OCM_Components: {
+			// now color all surfaces that appear somewhere in a ComponentInstance
+			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+				QColor col;
+				if (ci.m_idComponent == VICUS::INVALID_ID)
+					col = QColor(96,0,0);
+				else {
+					// lookup component definition
+					const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+					if (comp == nullptr)
+						col = QColor(148,64,64);
+					else
+						col = comp->m_color;
+				}
+				if (ci.m_sideASurface != nullptr)
+					ci.m_sideASurface->m_color = col;
+				if (ci.m_sideBSurface != nullptr)
+					ci.m_sideBSurface->m_color = col;
+			}
+		} break;
+
 		case SVViewState::OCM_SubSurfaceComponents:
 		case SVViewState::OCM_ComponentOrientation:
 		case SVViewState::OCM_SurfaceHeating:
@@ -1691,12 +1688,6 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 				if (comp == nullptr)
 					continue; // no component definition - keep default (gray) color
 				switch (ocm) {
-					case SVViewState::OCM_Components:
-						if (ci.m_sideASurface != nullptr)
-							ci.m_sideASurface->m_color = comp->m_color;
-						if (ci.m_sideBSurface != nullptr)
-							ci.m_sideBSurface->m_color = comp->m_color;
-					break;
 					case SVViewState::OCM_ComponentOrientation:
 						// color surfaces when either filtering is off (id == 0)
 						// or when component ID matches selected id
@@ -1733,10 +1724,20 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 							if (ci.m_sideBSurface != nullptr)
 								ci.m_sideBSurface->m_color = surfHeat->m_color;
 						}
+						else {
+							if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
+								if (ci.m_sideASurface != nullptr)
+									ci.m_sideASurface->m_color = QColor("#758eb3");
+								if (ci.m_sideBSurface != nullptr)
+									ci.m_sideBSurface->m_color = QColor("#758eb3");
+							}
+
+						}
 					}
 					break;
 
-						// the color modes below are not handled here and are only added to get rid of compiler warnins
+					// the color modes below are not handled here and are only added to get rid of compiler warnins
+					case SVViewState::OCM_Components:
 					case SVViewState::OCM_ZoneTemplates:
 					case SVViewState::OCM_SubSurfaceComponents:
 					case SVViewState::OCM_None:
@@ -2188,18 +2189,16 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
-	if (m_gridVisible) {
-		for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-			int holeIndex;
-			if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
-				// got an intersection point, store it
-				PickObject::PickResult r;
-				r.m_snapPointType = PickObject::RT_GridPlane;
-				r.m_uniqueObjectID = i;
-				r.m_depth = t;
-				r.m_pickPoint = intersectionPoint;
-				pickObject.m_candidates.push_back(r);
-			}
+	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
+		int holeIndex;
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
+			// got an intersection point, store it
+			PickObject::PickResult r;
+			r.m_snapPointType = PickObject::RT_GridPlane;
+			r.m_uniqueObjectID = i;
+			r.m_depth = t;
+			r.m_pickPoint = intersectionPoint;
+			pickObject.m_candidates.push_back(r);
 		}
 	}
 
@@ -2757,6 +2756,7 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 		const VICUS::Object * obj = project().objectById(uniqueID);
 
 		// if using shift-click, we go up one level, select the parent and all its children
+		bool selectChildren = true;
 		if (keyboardHandler.keyDown(Qt::Key_Shift)) {
 			// check for valid parent - anonymous geometry does not have parents!
 			if (obj->m_parent != nullptr) {
@@ -2765,13 +2765,22 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 			}
 		}
 
+		else if (keyboardHandler.keyDown(Qt::Key_Alt)) {
+			selectChildren = false;
+		}
+
 		// create undo-action that toggles the selection
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
 															   SVUndoTreeNodeState::SelectedState,
 															   uniqueID,
-															   true, // always select all children
+															   selectChildren, // if true, select all children, otherwise only the object itself
 															   !obj->m_selected);
 		action->push();
+
+		// now the data model and the views have been updated, also now signal the navigation tree view to scroll
+		// to the first node
+		SVViewStateHandler::instance().m_navigationTreeWidget->scrollToObject(uniqueID);
+
 		return;
 	}
 }

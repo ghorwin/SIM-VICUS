@@ -28,6 +28,8 @@ Die NANDRAD-Projektspezifikation ist in einer XML-Datei mit der Erweiterung `nan
 	    <Schedules>...</Schedules>
 	    <Outputs>...</Outputs>
 	    <ObjectLists>...</ObjectLists>
+	    <!-- only needed for FMU export -->
+	    <FMIDescription> ... </FMIDescription>
 	</Project>
 </NandradProject>
 ----
@@ -55,6 +57,7 @@ Eine Projektdatei kann die folgenden untergeordneten tags enthalten (die Reihenf
 | `Schedules` | Definition von geplanten Parametern -> <<schedules>>
 | `Outputs` | Definition von Ausgaben -> <<outputs>>
 | `ObjectLists` | Definition von Objektlisten/Objektreferenzgruppe -> <<object_lists>>
+| `FMIDescription` | Definition der FMU Export-Schnittstelle -> <<FMU_export>>
 |====================
 
 [[uniqueness_requirements]]

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="IdealHeating">
+			<Position>0, 0</Position>
+			<Size>128, 192</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="HeatingLoad">
+					<Position>0, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+				<Socket name="RoomTemperature">
+					<Position>128, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+		<Block name="HeatingModel">
+			<Position>352, 0</Position>
+			<Size>128, 192</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="RoomTemperature">
+					<Position>0, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+				<Socket name="HeatingPower">
+					<Position>128, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+	</Blocks>
+	<!--Connectors-->
+	<Connectors>
+		<Connector name="auto-named">
+			<Source>IdealHeating.RoomTemperature</Source>
+			<Target>HeatingModel.RoomTemperature</Target>
+			<!--Connector segments (between start and end lines)-->
+			<Segments>
+				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>160</Offset>
+				</Segment>
+			</Segments>
+		</Connector>
+		<Connector name="auto-named">
+			<Source>HeatingModel.HeatingPower</Source>
+			<Target>IdealHeating.HeatingLoad</Target>
+			<!--Connector segments (between start and end lines)-->
+			<Segments>
+				<Segment>
+					<Orientation>Horizontal</Orientation>
+					<Offset>-544</Offset>
+				</Segment>
+			</Segments>
+		</Connector>
+	</Connectors>
+</BlockMod>

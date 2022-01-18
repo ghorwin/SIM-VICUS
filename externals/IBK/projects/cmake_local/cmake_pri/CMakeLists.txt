@@ -5,6 +5,8 @@ if (UNIX)
 	ADD_DEFINITIONS( -Wall )
 	# our code does not check for errno values, so we can skip this feature
 	ADD_DEFINITIONS( -fno-math-errno )
+	# create position independent code (needed for dynamic libs)
+	ADD_DEFINITIONS( -fPIC )
 endif (UNIX)
 
 

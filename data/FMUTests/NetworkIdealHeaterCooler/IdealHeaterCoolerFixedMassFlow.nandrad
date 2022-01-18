@@ -61,6 +61,8 @@
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
 						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">100</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">100</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe" />
 					<HydraulicNetworkComponent id="3" displayName="ideal heater cooler" modelType="IdealHeaterCooler" />

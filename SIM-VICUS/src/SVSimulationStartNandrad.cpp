@@ -28,7 +28,7 @@
 
 #include <QHBoxLayout>
 #include <QMessageBox>
-
+#include <QProcess>
 
 #include <VICUS_Project.h>
 #include <NANDRAD_Project.h>
@@ -77,7 +77,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 
 	// for now set the defaults states hard-coded, later this should be read from stored settings
 	m_ui->comboBoxVerboseLevel->setCurrentIndex(1);
-#ifdef WIN32
+#ifdef _WIN32
 	m_ui->checkBoxCloseConsoleWindow->setChecked(true);
 	m_ui->labelTerminalEmulator->setVisible(false);
 	m_ui->comboBoxTermEmulator->setVisible(false);
@@ -106,7 +106,7 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 		m_ui->tabClimate->setLayout(h);
 	}
 	{
-		m_simulationOutputOptions = new SVSimulationOutputOptions(this, m_localProject.m_outputs);
+		m_simulationOutputOptions = new SVSimulationOutputOptions(this, m_localProject.m_outputs, this);
 		QHBoxLayout * h = new QHBoxLayout;
 		h->addWidget(m_simulationOutputOptions);
 		m_ui->tabOutputs->setLayout(h);
@@ -131,7 +131,9 @@ SVSimulationStartNandrad::SVSimulationStartNandrad(QWidget *parent) :
 	}
 
 	// start with initial page, always
+	m_ui->tabWidget->blockSignals(true);
 	m_ui->tabWidget->setCurrentIndex(0);
+	m_ui->tabWidget->blockSignals(false);
 }
 
 
@@ -381,10 +383,10 @@ void SVSimulationStartNandrad::updateTimeFrameEdits() {
 }
 
 
-bool SVSimulationStartNandrad::startSimulation(bool testInit) {
+bool SVSimulationStartNandrad::startSimulation(bool testInit, bool forceForegroundProcess) {
 	updateCmdLine();
 	QString resultPath;
-	if (!generateNANDRAD(resultPath))
+	if (!generateNANDRAD(resultPath, !testInit))
 		return false;
 	IBK::Path resultDir(resultPath.toStdString());
 
@@ -442,7 +444,17 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 #else
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
 #endif
-	bool success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
+	// if foreground process is forced, ignore terminal settings and launch test-init directly
+	bool success;
+	if (forceForegroundProcess) {
+		QProgressDialog dlg(tr("Running test-init on NANDRAD project"), tr("Cancel"), 0, 0, this);
+		dlg.show();
+
+		commandLineArgs << m_nandradProjectFilePath;
+		success = (QProcess::execute(m_solverExecutable, commandLineArgs) == 0);
+	}
+	else
+		success = SVSettings::startProcess(m_solverExecutable, commandLineArgs, m_nandradProjectFilePath, runOption);
 	if (!success) {
 		QMessageBox::critical(this, QString(), tr("Could not run solver '%1'").arg(m_solverExecutable));
 		return false;
@@ -453,7 +465,7 @@ bool SVSimulationStartNandrad::startSimulation(bool testInit) {
 }
 
 
-bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
+bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool generateOutputs) {
 	// compose NANDRAD project file and start simulation
 
 	// generate NANDRAD project
@@ -463,10 +475,14 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 
 	SVSettings::instance().m_db.updateEmbeddedDatabase(m_localProject);
 	try {
-		//add default placeholder
+		// set placeholders in NANDRAD Project (VICUS-Project does not have placeholders)
 		p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 		p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-		m_localProject.generateNandradProject(p, errorStack);
+		// "Project Directory" placeholder is needed to resolve paths to files referenced via relative paths
+		p.m_placeholders["Project Directory"] = IBK::Path(m_nandradProjectFilePath.toStdString()).parentPath().str();
+
+		m_localProject.generateNandradProject(p, errorStack, m_nandradProjectFilePath.toStdString());
+
 	}
 	catch (IBK::Exception & ex) {
 		// just show a generic error message
@@ -490,14 +506,14 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath) {
 	return true;
 }
 
-
 void SVSimulationStartNandrad::on_comboBoxTermEmulator_currentIndexChanged(int index) {
 	SVSettings::instance().m_terminalEmulator = (SVSettings::TerminalEmulators)(index);
 }
 
 
 void SVSimulationStartNandrad::on_pushButtonTestInit_clicked() {
-	startSimulation(true);
+	if (startSimulation(true) )
+		m_simulationOutputOptions->updateUi();
 }
 
 
@@ -515,4 +531,16 @@ void SVSimulationStartNandrad::on_pushButtonExportFMU_clicked() {
 		QMessageBox::critical(this, QString(), tr("Could not run FMU Generator '%1'").arg(generatorExecutable));
 		return;
 	}
+}
+
+
+void SVSimulationStartNandrad::on_tabWidget_currentChanged(int) {
+	// tell all widgets to update their UI based on the current data
+	// this ensures that entered data is synced across all dialogs
+	m_simulationPerformanceOptions->updateUi();
+	m_simulationLocationOptions->updateUi();
+	m_simulationOutputOptions->updateUi();
+	m_simulationModelOptions->updateUi();
+	m_simulationShadingOptions->updateUi();
+	m_simulationNetworkOptions->updateUi();
 }

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo />
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">1</IBK:Parameter>
+			</Interval>
+			<SolarLoadsDistributionModel>
+				<DistributionType>AreaWeighted</DistributionType>
+			</SolarLoadsDistributionModel>
+		</SimulationParameter>
+		<SolverParameter />
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="Mini Netzwerk" modelType="HydraulicNetwork" referenceElementId="1">
+				<HydraulicFluid>
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 20 </X>
+						<Y unit="m2/s">1.793e-06 1.793e-06 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<IBK:Parameter name="DefaultFluidTemperature" unit="C">10</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<PipeProperties>
+					<HydraulicNetworkPipeProperties id="9">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.07</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">40</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">50</IBK:Parameter>
+						<IBK:Parameter name="UValuePipeWall" unit="W/mK">12.47255355</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+					<HydraulicNetworkComponent id="1" displayName="pump" modelType="ConstantPressurePump">
+						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">11000</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">20</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="2" displayName="Pump" modelType="ConstantMassFluxPump">
+						<IBK:Parameter name="MassFlux" unit="kg/s">0.02</IBK:Parameter>
+						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+					</HydraulicNetworkComponent>
+					<HydraulicNetworkComponent id="3" displayName="simple pipe" modelType="SimplePipe" />
+				</Components>
+
+				<ControlElements />
+
+				<Elements>
+
+					<HydraulicNetworkElement id="1" inletNodeId="100" outletNodeId="0" componentId="1" displayName="Pump"/>
+
+					<HydraulicNetworkElement id="2" inletNodeId="0" outletNodeId="101" componentId="2" displayName="massFluxPump">
+					</HydraulicNetworkElement>
+
+					<HydraulicNetworkElement id="3" inletNodeId="101" outletNodeId="100" componentId="3" pipePropertiesId="9" displayName="Pipe">
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>						
+					</HydraulicNetworkElement>
+
+				</Elements>
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		<Schedules>
+			<WeekEndDays>Sat,Sun</WeekEndDays>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="massFluxPump">
+					<Schedule type="AllDays">
+						<DailyCycles>
+							<DailyCycle interpolation="Linear">
+								<TimePoints>0 12 23</TimePoints>
+								<Values>
+									MassFluxSchedule [kg/s]: 0.1 0.1 3
+								</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>FluidMassFlux</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>PressureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>				
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+			<TimeUnit>h</TimeUnit>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All flow elements">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="massFluxPump">
+				<FilterID>2</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

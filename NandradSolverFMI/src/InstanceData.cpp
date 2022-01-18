@@ -25,6 +25,7 @@
 #include <SOLFRA_SolverControlFramework.h>
 #include <SOLFRA_IntegratorSundialsCVODE.h>
 #include <SOLFRA_LESDense.h>
+#include <SOLFRA_LESKLU.h>
 #include <SOLFRA_PrecondInterface.h>
 #include <SOLFRA_JacobianInterface.h>
 #include <SOLFRA_OutputScheduler.h>
@@ -99,7 +100,7 @@ void InstanceData::init() {
 
 		// clear path from 'IBK/Nandrad'
 		IBK::Path resultsParentDir = outputDirectory;
-		if(resultsParentDir.filename() == "Nandrad") {
+		if (resultsParentDir.filename() == "Nandrad") {
 			try {
 				if(resultsParentDir.parentPath().filename() == "IBK") {
 					resultsParentDir = resultsParentDir.parentPath().parentPath();
@@ -112,7 +113,7 @@ void InstanceData::init() {
 		}
 
 		// check if base directory exists
-		if(!resultsParentDir.exists()) {
+		if (!resultsParentDir.exists()) {
 			throw IBK::Exception( IBK::FormatString("Invalid results parent directory '%1'.").arg(outputDirectory.str()),
 								  FUNC_ID);
 		}
@@ -147,6 +148,9 @@ void InstanceData::init() {
 		// *** initialize model ***
 		try {
 			m_model.init(args);
+
+			// since we are in FMI mode, disable output caching
+			m_model.disableDefaultOutputFlushing();
 
 			// set start time
 			if (m_tStart != 0.0) {
@@ -212,15 +216,10 @@ void InstanceData::init() {
 void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 	const char * const FUNC_ID = "[InstanceData::integrateTo]";
 
-//	// ask all components of the integration framework for size
-//	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-//	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-//	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-
 	try {
 		double tCommunicationIntervalStart = m_model.integratorInterface()->t();
-		// reset is not implemented, yet
-		if(tCommunicationIntervalStart > tCommunicationIntervalEnd) {
+		// TODO : check with standard, end time must always follow start time?
+		if (tCommunicationIntervalStart > tCommunicationIntervalEnd) {
 			throw IBK::Exception(IBK::FormatString("Error performing integration step: "
 				"reset from integrator time point %1 to the new communication interval end %2 is not "
 				" supported, yet!")
@@ -235,27 +234,12 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		SOLFRA::IntegratorErrorControlled* integratorErrorControlled =
 			dynamic_cast<SOLFRA::IntegratorErrorControlled*> (integrator);
 		// stop value is still only defined for error controled integrators
-		if(  integratorErrorControlled != nullptr)
+		if (integratorErrorControlled != nullptr)
 			integratorErrorControlled->m_stopTime = tCommunicationIntervalEnd;
 
 		/* 3.) integration loop until communication interval has been reached:*/
 		SOLFRA::OutputScheduler		*outputScheduler = m_model.outputScheduler();
 
-
-		// outputs are only written if we start the simulation from begin, therefore
-		// we pass t0 and y0 for the initial model evaluation within writeOutputs()
-		if (tCommunicationIntervalStart == m_model.t0()) {
-			m_model.setTime(m_model.t0());
-			m_model.setY(m_model.y0());
-			m_model.ydot(nullptr);
-			m_model.writeOutputs( m_model.t0(), m_model.y0());
-		}
-		else {
-			// reset outputs if necessary
-			m_model.resetOutputBuffer(tCommunicationIntervalStart);
-		}
-
-		m_model.startCommunicationInterval(tCommunicationIntervalStart);
 		// integration loop
 		double t = tCommunicationIntervalStart;
 		double tOutput = outputScheduler->nextOutputTime(t);
@@ -263,10 +247,16 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		while (t < tCommunicationIntervalEnd) {
 
 			// (contains parallel code)
-			SOLFRA::IntegratorInterface::StepResultType res =integrator->step();
+			SOLFRA::IntegratorInterface::StepResultType res = integrator->step();
 			if (res != SOLFRA::IntegratorInterface::StepSuccess) {
 				throw IBK::Exception("Integrator step failed!", FUNC_ID);
 			}
+
+			// reset linear setup to default value (see constant in CVODE; we have modified this
+			// value to 1 in case of KLU solver deserialization)
+			SOLFRA::IntegratorSundialsCVODE * cvodeIntegrator = dynamic_cast<SOLFRA::IntegratorSundialsCVODE *>(integrator);
+			if (cvodeIntegrator != nullptr)
+				cvodeIntegrator->setLinearSetupFrequency(0);
 
 			// get new time point and time step size
 			t = integrator->t();
@@ -286,7 +276,7 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 				m_model.setTime(tOutput);
 				m_model.setY(yOutput);
 				m_model.ydot(nullptr);
-				m_model.writeOutputs(tOutput, yOutput);
+				m_model.writeOutputs(tOutput, yOutput); // actually just caches outputs in memory
 
 				// retrieve new output time point
 				tOutputNext = outputScheduler->nextOutputTime(tOutput);
@@ -302,9 +292,6 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 			} // while (tOutput <= t) {
 
 		} // while (t < tCommunicationIntervalEnd)
-
-		// only for forward time steppping: otherwise in terminate
-		m_model.completeCommunicationInterval();
 	}
 	catch (IBK::Exception & ex) {
 		logger(fmi2Error, "error", IBK::FormatString("Exception caught: %1").arg(ex.what()));
@@ -314,116 +301,98 @@ void InstanceData::integrateTo(double tCommunicationIntervalEnd) {
 		logger(fmi2Error, "error", IBK::FormatString("Exception caught: %1").arg(ex.what()));
 		throw IBK::Exception(ex, IBK::FormatString("Exception caught: %1").arg(ex.what()), FUNC_ID);
 	}
-
 }
 
 
 void InstanceData::computeFMUStateSize() {
-#if 0
 	const char * const FUNC_ID = "[InstanceData::computeFMUStateSize]";
 	IBK_ASSERT(!m_modelExchange);
 
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
 
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
-
+	IBK_ASSERT(sizeof(size_t) == 8);
 	m_fmuStateSize = 8; // 8 bytes for leading size header
 
+	// ask all components of the integration framework for size
+
 	size_t s = integrator->serializationSize();
-	if (s == 0)
+	if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 		throw IBK::Exception("Integrator does not support serialization.", FUNC_ID);
 	m_fmuStateSize += s;
 
-	if (lesSolver != NULL) {
+	if (lesSolver != nullptr) {
 		s = lesSolver->serializationSize();
-		if (s == 0)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("LES solver does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	if (precond != NULL) {
+	if (precond != nullptr) {
 		s = precond->serializationSize();
-		if (s == 0)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("Preconditioner does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	if (jacobian != NULL) {
+	if (jacobian != nullptr) {
 		s = jacobian->serializationSize();
-		if (s == 0)
+		if (s == SOLFRA_NOT_SUPPORTED_FUNCTION)
 			throw IBK::Exception("Jacobian matrix generator does not support serialization.", FUNC_ID);
 		m_fmuStateSize += s;
 	}
 
-	s = modelInterface->serializationSize();
+	s = m_model.serializationSize();
 	// we allow s == 0
 	m_fmuStateSize += s;
-#endif
 }
 
 
 void InstanceData::serializeFMUstate(void * FMUstate) {
 	IBK_ASSERT(!m_modelExchange);
-#if 0
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
 
-	void * dataStart = (char*)FMUstate + 8;
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
+
+	// let all components copy their data into our memory
+	void * dataStart = (char*)FMUstate + 8; // add space for the initial size_t that holds total sizes
 	integrator->serialize(dataStart);
-	if (lesSolver != NULL)
+	if (lesSolver != nullptr)
 		lesSolver->serialize(dataStart);
-	if (precond != NULL)
+	if (precond != nullptr)
 		precond->serialize(dataStart);
-	if (jacobian != NULL)
+	if (jacobian != nullptr)
 		jacobian->serialize(dataStart);
-	modelInterface->serialize(dataStart);
-#endif
+	m_model.serialize(dataStart);
 }
 
 
 void InstanceData::deserializeFMUstate(void * FMUstate) {
 	IBK_ASSERT(!m_modelExchange);
-#if 0
-	// ask all components of the integration framework for size
-	SOLFRA::ModelInterface * modelInterface = m_model.modelInterface();
-	// update self pointer - needed when multiple instances of the solver used concurrently in a model
-	NANDRAD_MODEL::NandradModel::m_self = dynamic_cast<NANDRAD_MODEL::NandradModel*>(modelInterface);
-	SOLFRA::IntegratorInterface *integrator = modelInterface->integratorInterface();
-	SOLFRA::LESInterface *lesSolver = modelInterface->lesInterface();
-	SOLFRA::PrecondInterface  *precond  = modelInterface->preconditionerInterface();
-	SOLFRA::JacobianInterface *jacobian = modelInterface->jacobianInterface();
 
-	void * dataStart = (char*)FMUstate + 8;
+	SOLFRA::IntegratorInterface *integrator = m_model.integratorInterface();
+	SOLFRA::LESInterface *lesSolver = m_model.lesInterface();
+	SOLFRA::PrecondInterface  *precond  = m_model.preconditionerInterface();
+	SOLFRA::JacobianInterface *jacobian = m_model.jacobianInterface();
+
+	// copy component memory back from state memory
+	void * dataStart = (char*)FMUstate + 8; // add space for the initial size_t that holds total sizes
 	integrator->deserialize(dataStart);
-	if (lesSolver != NULL)
+	if (lesSolver != nullptr)
 		lesSolver->deserialize(dataStart);
-	if (precond != NULL)
+	if (precond != nullptr)
 		precond->deserialize(dataStart);
-	if (jacobian != NULL)
+	if (jacobian != nullptr)
 		jacobian->deserialize(dataStart);
-	modelInterface->deserialize(dataStart);
-#endif
+	m_model.deserialize(dataStart);
 }
 
-void InstanceData::finish()
-{
+
+void InstanceData::finish() {
 	m_model.writeFinalOutputs();
 }
 
-
-void InstanceData::clearBuffers() {
-	IBK_ASSERT(!m_modelExchange);
-	// write and clear output buffers
-	m_model.clearOutputBuffer();
-}

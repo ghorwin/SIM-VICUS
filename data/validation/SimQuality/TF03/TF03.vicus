@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.2">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mi. Juni 30 10:16:20 2021</Created>
-		<LastEdited>Di. Aug. 3 20:30:23 2021</LastEdited>
+		<LastEdited>Sa. Dez. 18 17:05:08 2021</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -14,7 +14,7 @@
 			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
 			<IBK:IntPara name="StartYear">2019</IBK:IntPara>
 			<Interval>
-				<IBK:Parameter name="Start" unit="d">0</IBK:Parameter>
+				<IBK:Parameter name="Start" unit="s">0</IBK:Parameter>
 				<IBK:Parameter name="End" unit="a">1</IBK:Parameter>
 			</Interval>
 			<SolarLoadsDistributionModel>
@@ -27,7 +27,7 @@
 			<IBK:Parameter name="Longitude" unit="Deg">13.067</IBK:Parameter>
 			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
 			<TimeZone>1</TimeZone>
-			<ClimateFilePath>/home/uni/cloudSimquali/SimQuality/AP4/TF03-Waermeleitung/Aufgabenstellung/Wetterdaten/SIMQ_TF03_Klima.epw</ClimateFilePath>
+			<ClimateFilePath>${Project Directory}/../climate/SIMQ_TF03_Klima.epw</ClimateFilePath>
 		</Location>
 		<Outputs>
 			<Grids>
@@ -45,12 +45,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>13.5669 -13.853 19.1963</CameraTranslation>
+			<CameraTranslation>13.74 -24.6446 11.7888</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.90295</Wp>
-				<X>0.383957</X>
-				<Y>0.0757119</Y>
-				<Z>0.177465</Z>
+				<Wp>0.808769</Wp>
+				<X>0.561497</X>
+				<Y>0.0996934</Y>
+				<Z>0.14366</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -199,29 +199,29 @@
 			<ComponentInstance id="12" idComponent="1002" idSideASurface="21" />
 			<ComponentInstance id="13" idComponent="1002" idSideASurface="22" />
 			<ComponentInstance id="14" idComponent="1002" idSideASurface="23" />
-			<ComponentInstance id="16" idComponent="50005" idSideASurface="25" />
-			<ComponentInstance id="17" idComponent="50005" idSideASurface="26" />
-			<ComponentInstance id="18" idComponent="50005" idSideASurface="27" />
-			<ComponentInstance id="19" idComponent="50005" idSideASurface="28" />
-			<ComponentInstance id="20" idComponent="50005" idSideASurface="29" />
-			<ComponentInstance id="21" idComponent="50005" idSideASurface="30" />
-			<ComponentInstance id="23" idComponent="50004" idSideASurface="32" />
-			<ComponentInstance id="24" idComponent="50004" idSideASurface="33" />
-			<ComponentInstance id="25" idComponent="50004" idSideASurface="34" />
-			<ComponentInstance id="26" idComponent="50004" idSideASurface="35" />
-			<ComponentInstance id="27" idComponent="50004" idSideASurface="36" />
-			<ComponentInstance id="28" idComponent="50004" idSideASurface="37" />
+			<ComponentInstance id="16" idComponent="1003" idSideASurface="25" />
+			<ComponentInstance id="17" idComponent="1003" idSideASurface="26" />
+			<ComponentInstance id="18" idComponent="1003" idSideASurface="27" />
+			<ComponentInstance id="19" idComponent="1003" idSideASurface="28" />
+			<ComponentInstance id="20" idComponent="1003" idSideASurface="29" />
+			<ComponentInstance id="21" idComponent="1003" idSideASurface="30" />
+			<ComponentInstance id="23" idComponent="1004" idSideASurface="32" />
+			<ComponentInstance id="24" idComponent="1004" idSideASurface="33" />
+			<ComponentInstance id="25" idComponent="1004" idSideASurface="34" />
+			<ComponentInstance id="26" idComponent="1004" idSideASurface="35" />
+			<ComponentInstance id="27" idComponent="1004" idSideASurface="36" />
+			<ComponentInstance id="28" idComponent="1004" idSideASurface="37" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
-				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
-					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 				</Material>
 				<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster" color="#bbbbcf">
 					<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
@@ -232,14 +232,14 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 				</Material>
-				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
@@ -259,7 +259,7 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="20005" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Innendämmung) |EN: [SimQuality] TF03 Construction 4 (inside insulated wall)">
+				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
 						<MaterialLayer idMaterial="10001">
@@ -273,7 +273,7 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="20004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Außendämmung) |EN: [SimQuality] TF03 Construction 3 (outside insulated wall)">
+				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
 						<MaterialLayer idMaterial="10000">
@@ -289,39 +289,41 @@
 				</Construction>
 			</Constructions>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1002</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-				</Component>
 				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1001</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50005" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
+				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
 					<Type>OutsideWall</Type>
-					<IdConstruction>20004</IdConstruction>
+					<IdConstruction>1002</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="50004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
 					<Type>OutsideWall</Type>
-					<IdConstruction>20005</IdConstruction>
+					<IdConstruction>1003</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1004</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>

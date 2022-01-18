@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="B1Townhouse2Reference02210728">
+			<Position>0, 0</Position>
+			<Size>128, 192</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="WaterMassFlow">
+					<Position>128, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="FlowWaterTemperature">
+					<Position>128, 32</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="ReturnWaterTemperature">
+					<Position>128, 48</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="ConstructionInstance(54).ActiveLayerThermalLoad">
+					<Position>128, 64</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="ConstructionInstance(57).ActiveLayerThermalLoad">
+					<Position>128, 80</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="Zone(13).AirTemperature">
+					<Position>128, 96</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="Zone(14).AirTemperature">
+					<Position>128, 112</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+				<Socket name="Zone(15).AirTemperature">
+					<Position>128, 128</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>false</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+	</Blocks>
+</BlockMod>

@@ -6,16 +6,24 @@
 
 namespace NANDRAD {
 
+HydraulicNetworkControlElement::HydraulicNetworkControlElement() {
+	// set default value
+	m_para[P_RelControllerErrorForIntegratorReset] = IBK::Parameter("RelControllerErrorForIntegratorReset", 0.7, "---");
+}
+
 void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & zones) const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
-	// NOTE: the check below is unecessary - should be ensured already through the "xml:required" specification!
-
-	if (m_controlledProperty == NUM_CP)
-		throw IBK::Exception("Missing attribute 'controlledProperty'.", FUNC_ID);
-
-	if (m_modelType == NUM_MT)
-		throw IBK::Exception("Missing attribute 'modelType'.", FUNC_ID);
+	if (m_controlledProperty == CP_PumpOperation){
+		if (m_controllerType != CT_OnOffController)
+			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
+	}
+	else {
+		if (!(m_controllerType == CT_PController || m_controllerType == CT_PIController || m_controllerType == CT_PIDController))
+			throw IBK::Exception(IBK::FormatString("Controlled property '%1' can only be used with 'PController', 'PIController' or 'PIDController'.")
+								 .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlledProperty)),
+								 FUNC_ID);
+	}
 
 	try {
 		// check individual configuations for different controller properties
@@ -49,6 +57,11 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_PumpOperation : {
+					m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold", "W", "W",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
 			case NUM_CP:
 				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
 		}
@@ -68,6 +81,19 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 			case CT_PIController: {
 				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_RelControllerErrorForIntegratorReset].checkedValue("RelControllerErrorForIntegratorReset", "---", "---", 0, true, 1, true, nullptr);
+			} break;
+
+			case CT_PIDController: {
+				m_para[P_Kp].checkedValue("Kp", "---", "---", 0, false, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Ki].checkedValue("Ki", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_Kd].checkedValue("Kd", "---", "---", 0, true, std::numeric_limits<double>::max(), true, nullptr);
+				m_para[P_RelControllerErrorForIntegratorReset].checkedValue("RelControllerErrorForIntegratorReset", "---", "---", 0, true, 1, true, nullptr);
+			} break;
+
+			case CT_OnOffController: {
+				m_para[P_HeatLossOfFollowingElementThreshold].checkedValue("HeatLossOfFollowingElementThreshold",
+																"W", "W", 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			} break;
 
 			case NUM_CT:
@@ -95,12 +121,16 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_ControlledPump:
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
-		case HydraulicNetworkComponent::MT_ConstantPressureLossValve: // TODO Hauke, check!
+			return {CP_PumpOperation};
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump :
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
-		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
+		case HydraulicNetworkComponent::MT_VariablePressurePump:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
+		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+		case HydraulicNetworkComponent::MT_PressureLossElement:
 		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
 	}
 	return {};

@@ -1,0 +1,31 @@
+Um die Lokalzeitkorrektur zu testen, werden folgende Positionen angenommen:
+
+Gebäudestandort Rom, Italien: 
+  Breitengrad 41,89
+  Längengrad 12,48
+  UTC +1
+
+Messdaten aus Madrid, Spanien: 
+  Breitengrad 40,42
+  Längengrad -3,70
+  UTC +1
+
+
+Die Simulation läuft vom 1. April 2015 bis zum 31. August 2015, jeweils Mitternacht Lokalzeit (Sommerzeit berücksichtigt, UTC+2).
+
+Für die Berechnung des Startzeitpunkts in Sekunden des Jahres ist keine Korrektur notwendig, für die Berechnung des 
+Endzeitpunkts muss die Sommerzeit berücksichtigt werden. Für die eigentliche Simulation sind die Start- und Endzeiten
+in Winterzeit relevant.
+
+Die lokale Uhrzeit, welche durch den Solver vorgegeben wird, entspricht also der Zeit innerhalb der Zeitzone UTC+1.
+Die Messdaten werden mit der gleichen Zeit abgelegt (selbe Zeitzone), d.h. der Datenwert der Temperatur um 1 Uhr morgens
+am Gebäude entspricht auch der Gebäudeortszeit von 1 Uhr.
+
+Für die Sonnenstandsberechnung ist die Korrektur von Gebäudestandort zum Bezugslängengrad für die UTC+1 Zeitzone (=15°)
+notwendig.
+
+Beispiel: Madrid liegt 15+3.7 = 18.7 Grad westlich des Bezugslängengrads ( 18.7° / (15°/1h) = 1.25 h ). Die Sonne steht 
+also erst 13 Uhr und 15 Minuten (13.25 h) im Zenit.
+
+
+

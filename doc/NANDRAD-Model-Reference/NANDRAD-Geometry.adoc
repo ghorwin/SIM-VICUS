@@ -128,7 +128,7 @@ Die Konstruktionsinstanz hat das folgende _erforderliche_ Child-tags:
 | `ConstructionTypeId` | Referenz auf `ConstructionTypeId`
 | `IBK:Parameter` | Verschiedene `IBK:Parameter` für Konstruktionsinstanz
 | `InterfaceA` |Schnittstelle für Konstruktionsinstanz Seite A
-| `InterfaceB` |Interface für Konstruktionen
+| `InterfaceB` |Schnittstelle für Konstruktionsinstanz Seite B
 |====================
 
 

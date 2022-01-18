@@ -125,10 +125,13 @@ double Polygon2D::area(int digits) const {
 		const IBKMK::Vector2D &p1 = m_vertexes[(i+1)%sizeV];
 		const IBKMK::Vector2D &p2 = m_vertexes[(i+2)%sizeV];
 		surfArea += p1.m_x * (p2.m_y - p0.m_y);
+
 	}
+
 	surfArea *= 0.5;
 	surfArea = std::round(surfArea*IBK::f_pow10(digits))/IBK::f_pow10(digits);
-	return surfArea;
+
+	return std::fabs(surfArea);
 }
 
 
@@ -189,7 +192,8 @@ bool Polygon2D::isSimplePolygon() const {
 				continue;
 			//int k = (i+j+2)%lines.size();
 			IBK::point2D<double> p;
-			if (lines[i].intersects(lines[j], p))
+			IBK::point2D<double> p2;
+			if (lines[i].intersects(lines[j], p, p2) > 0)
 				return false;
 		}
 	}
@@ -198,7 +202,7 @@ bool Polygon2D::isSimplePolygon() const {
 }
 
 void Polygon2D::eleminateColinearPts() {
-	IBKMK::eleminateColinearPoints(m_vertexes);
+	IBKMK::eliminateCollinearPoints(m_vertexes);
 }
 
 

@@ -63,6 +63,21 @@ public:
 		double				m_altitude;							///< in rad
 	};
 
+	struct ShadingObject {
+
+		ShadingObject() {}
+
+		ShadingObject(unsigned int id, const IBKMK::Polygon3D &poly3D, bool isObstacle = false) :
+			m_id(id),
+			m_polygon(poly3D),
+			m_isObstacle(isObstacle)
+		{}
+
+		unsigned int		m_id;								///< id of shading object
+		IBKMK::Polygon3D	m_polygon;							///< polygon of shading object
+		bool				m_isObstacle;						///< indicates whether it is an obstacle
+	};
+
 	StructuralShading() : m_startTime(2007,0) {}
 
 	/*! Specifies location and pre-calculates sun positions and map for "similar sun positions".
@@ -75,8 +90,7 @@ public:
 	/*! Initializes all variables for shading calculation such as obstacles and sun positions
 		\param obstacles vector with all obstacle interfaces
 	*/
-	void setGeometry(const std::vector<std::vector<IBKMK::Vector3D> > & surfaces, const std::vector<std::vector<IBKMK::Vector3D> > & obstacles);
-	void setGeometry(const std::vector<IBKMK::Polygon3D> & surfaces, const std::vector<IBKMK::Polygon3D> & obstacles);
+	void setGeometry(const std::vector<ShadingObject> &surfaces, const std::vector<ShadingObject> &obstacles);
 
 	/*! Calculates the shading factors for the given period
 		\param duration Duration of period in seconds
@@ -128,9 +142,9 @@ private:
 	unsigned int										m_duration = 365*24*3600;				/// Duration in [s]
 	unsigned int										m_samplingPeriod = 3600;			/// Sampling peroid/step size in [s]
 
-	std::vector<IBKMK::Polygon3D>						m_obstacles;						///< Shading obstacles
+	std::vector<ShadingObject>							m_obstacles;						///< Shading obstacles
 
-	std::vector<IBKMK::Polygon3D>						m_surfaces;							///< Shading surface
+	std::vector<ShadingObject>							m_surfaces;							///< Shading surface
 
 	double												m_gridWidth;						///< Grid width in m used for shading calculation
 

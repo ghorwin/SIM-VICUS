@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).AirTemperature [C]	Zone(id=2).AirTemperature [C]
+Time [h]	dummy.AirTemperature [C]	dummy.AirTemperature [C]
 0	20	20
 1	13.3444	13.3228
 2	12.5378	12.5068

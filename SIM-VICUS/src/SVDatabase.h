@@ -74,7 +74,7 @@ public:
 	void readDatabases(DatabaseTypes t = NUM_DT);
 
 	/*! Writes user-defined database. */
-	void writeDatabases() const;
+	void writeDatabases();
 
 
 	/*! Searches through project and all copies all references database elements into
@@ -83,6 +83,15 @@ public:
 			uses those stored in this SVDatabase object!
 	*/
 	void updateEmbeddedDatabase(VICUS::Project & p);
+
+	/*! Determines which elements are used in current project and stores this information in member "m_isReferenced". */
+	void updateReferencedElements(const VICUS::Project & p);
+
+	/*! Stores pointer of all "children" for each DB element.
+		Children are elements which are referenced by the given element (ie. materials are "children" of constructions).
+	*/
+	void updateElementChildren();
+
 
 	/*! Holds ids of possible duplicates and whether they are identical. */
 	struct DuplicateInfo {
@@ -106,11 +115,20 @@ public:
 	*/
 	void removeDBElement(DatabaseTypes dbType, unsigned int elementID, unsigned int replacementElementID);
 
+	/*! Removes all local DB elements. */
+	void removeLocalElements();
+
+	/*! Removes all local DB elements. */
+	void removeNotReferencedLocalElements(DatabaseTypes dbType, const VICUS::Project &p);
+
 	/*! Convenience function, can be used to lookup a subtype template by argument.
 		ID of subtemplate is taken from idReferenceArray at index given by 'st'.
 		Returns nullptr if element doesn't exist.
 	*/
 	const VICUS::AbstractDBElement * lookupSubTemplate(VICUS::ZoneTemplate::SubTemplateType st, const IDType idReferenceArray[]) const;
+
+	/*! For a given DB element, collects all children (and potentially grand-children etc.) which are marked as local. */
+	void findLocalChildren(DatabaseTypes dbType, unsigned int index, std::set<VICUS::AbstractDBElement*> & localChildren);
 
 	// Databases
 
@@ -183,6 +201,8 @@ public:
 	/*! Map of all database Zone templates. */
 	VICUS::Database<VICUS::ZoneTemplate>				m_zoneTemplates;
 };
+
+
 
 
 #endif // SVDatabaseH

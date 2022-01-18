@@ -66,9 +66,15 @@ private slots:
 
 	void on_pushButtonImport_clicked();
 
+	void on_comboBoxEncoding_currentIndexChanged(int index);
+
 private:
+
 	/*! Transfers data from read project to VICUS::Project. */
 	void transferData(const EP::Project & prj);
+
+	/*! Displays material/construction/zone names with non-latin1 characters in selected encoding. */
+	void updateEncodingPreview();
 
 	ImportResults			m_returnCode;
 	EP::Project				*m_idfProject = nullptr; // owned by dialog;

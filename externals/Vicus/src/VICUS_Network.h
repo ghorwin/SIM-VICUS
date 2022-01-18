@@ -26,12 +26,6 @@
 #ifndef VICUS_NetworkH
 #define VICUS_NetworkH
 
-#include "VICUS_NetworkEdge.h"
-#include "VICUS_NetworkNode.h"
-#include "VICUS_CodeGenMacros.h"
-#include "VICUS_NetworkPipe.h"
-#include "VICUS_Database.h"
-
 #include <vector>
 #include <set>
 #include <string>
@@ -41,9 +35,14 @@
 #include <IBK_rectangle.h>
 
 #include <NANDRAD_HydraulicNetwork.h>
-#include <NANDRAD_HydraulicNetworkComponent.h>
 
+#include "VICUS_NetworkEdge.h"
+#include "VICUS_NetworkNode.h"
+#include "VICUS_CodeGenMacros.h"
+#include "VICUS_NetworkPipe.h"
+#include "VICUS_Database.h"
 #include "VICUS_Object.h"
+#include "VICUS_NetworkBuriedPipeProperties.h"
 
 namespace IBK {
 	class Path;
@@ -60,6 +59,13 @@ public:
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
+
+	/*! Defines which model in Nandrad shall be used */
+	enum PipeModel {
+		PM_SimplePipe,			// Keyword: SimplePipe			'Pipe with a single fluid volume and with heat exchange'
+		PM_DynamicPipe,			// Keyword: DynamicPipe			'Pipe with a discretized fluid volume and heat exchange'
+		NUM_PM
+	};
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
@@ -146,9 +152,9 @@ public:
 	/*! returns the first id in m_nodes, which is an unconnected building */
 	int nextUnconnectedBuilding() const;
 
-	/*! stores a copy of the current network without "dead end" nodes (and their connecting edges)
-	 * "dead end" nodes have only one connecting edge and are not buildings nor sources  */
-	void cleanDeadEnds(Network & cleanNetwork, const unsigned maxSteps=50);
+	/*! remove all nodes and their adjacent edges when the respective node is a "dead end",
+		meaning that none of the neighboring nodes is a building or source */
+	void cleanDeadEnds();
 
 	/*! stores a copy of the network without any redundant edges */
 	void cleanRedundantEdges(Network & cleanNetwork) const;
@@ -158,7 +164,7 @@ public:
 
 	/*! For each building node: Find shortest path to the closest source node and store the pointers to the edges
 	 * along that path. The result is a map with keys being the ids of the building nodes */
-	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap);
+	void findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) const;
 
 	/*! calculate pipe dimensions using a maximum pressure loss per length and fixed temperature difference
 	 * the mass flow rate of each pipe will be calculated based on the heatDemand of connected consumer loads (e.g. buildings)
@@ -166,14 +172,17 @@ public:
 	void sizePipeDimensions(const NetworkFluid *fluid, std::vector<const NetworkPipe *> & availablePipes);
 
 	/*! Calculate the temperature change indicator for each edge. Therefore the massflow under nominal conditions for
-	 * each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
-	 * each edge.
-	 */
-	void calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB);
+		each edge is calculated using the shortest Path algorithm. Valid pipeIds must be specified in advance for
+		each edge.
+	*/
+	void calcTemperatureChangeIndicator(const NetworkFluid &fluid, const Database<NetworkPipe> &pipeDB,
+										std::map<unsigned int, std::vector<NetworkEdge *> > &shortestPaths) const;
 
 	void findSourceNodes(std::vector<NetworkNode> &sources) const;
 
-	void writeNetworkCSV(const IBK::Path &file) const;
+	void writeNetworkEdgesCSV(const IBK::Path &file) const;
+
+	void writeNetworkNodesCSV(const IBK::Path &file) const;
 
 	void writePathCSV(const IBK::Path &file, const NetworkNode & nodeById, const std::vector<NetworkEdge *> &path) const;
 
@@ -182,7 +191,8 @@ public:
 	/*! find shortest Path from given startNode (e.g. a building) to Node with type source
 	 * using dijkstra-algorithm, implemented according to Wikipedia and return path as vector of edges
 	 */
-	void dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode, std::vector<NetworkEdge*> &pathEndToStart);
+	void dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
+									  std::vector<NetworkEdge*> &pathEndToStart) const;
 
 	/*! Recomputes the min/max coordinates of the network and updates m_extends. */
 	void updateExtends();
@@ -210,17 +220,13 @@ public:
 	/*! returns the number of nodes with type NT_Building */
 	size_t numberOfBuildings() const;
 
-	/*! sets default values for m_sizingPara. If m_sizingPara[0].empty(), call this function (e.g. to fill GUI)
-	 * before calling sizePipeDimensions() */
-	void setDefaultSizingParams();
-
-	/*! sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
-	 * and heat demands (nodes)
+	/*! Sets the visualization radius for edges and nodes based on the respective pipe diameters (edges)
+		and heat demands (nodes)
 	*/
-	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const;
+	void updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB);
 
 	/*! sets default colors */
-	void setDefaultColors() const;
+	void setDefaultColors();
 
 	/*! sets the network object as well as all edges and nodes visible */
 	void setVisible(bool visible);
@@ -240,16 +246,15 @@ public:
 	 */
 	unsigned int indexOfNode(unsigned int id) const;
 
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! unique ID of network */
-	unsigned int					m_id = INVALID_ID;							// XML:A:required
+	//:inherited	unsigned int			m_id = INVALID_ID		;					// XML:A:required
+	//:inherited	QString					m_displayName;								// XML:A
+	//:inherited	bool					m_visible = true;							// XML:A
 
-	/*! fluid id */
-	unsigned int					m_idFluid = INVALID_ID;						// XML:A
-
-	/*! Network name */
-	//:inherited	QString			m_displayName;								// XML:A
+	/*! Fluid id */
+	unsigned int							m_idFluid = INVALID_ID;						// XML:A
 
 	/*! Nodes id must not match index in vector. To obtain a node by id use nodeById() function
 	*/
@@ -281,12 +286,16 @@ public:
 	/*! Determines if this network is currently selected for simulation */
 	unsigned int							m_selectedForSimulation = false;			// XML:E
 
+	/*! Determines wether the entire network has heat exchange with the ground */
+	bool									m_hasHeatExchangeWithGround = false;		// XML:E
 
-	/*! Stores visibility information for this network.
-		Note: keep the next line - this will cause the code generator to create serialization code
-			  for the inherited m_visible variable.
-	*/
-	//:inherited	bool					m_visible = true;							// XML:A
+	/*! Describes all properties for a buried pipe in the ground */
+	NetworkBuriedPipeProperties				m_buriedPipeProperties;						// XML:E
+
+	/*! Defines which pipe model will be used for all edges, when transforming them to Nandrad */
+	PipeModel								m_pipeModel = PM_DynamicPipe;				// XML:E
+
+
 
 	// *** RUNTIME VARIABLES ***
 
@@ -304,19 +313,6 @@ public:
 
 	/*! returns a specific color for each heat exchange type */
 	static QColor colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::ModelType heatExchangeType);
-
-
-	/*! Checks if an object is contained in the set */
-	template <typename T>
-	static bool contains(const std::set<T> & set, unsigned int element) {
-		return set.find(element) != set.end();
-	}
-
-	/*! Checks if an object is contained in the map */
-	template <typename T, typename d>
-	static bool contains(const std::map<T, d> & map, unsigned int element) {
-		return map.find(element) != map.end();
-	}
 
 private:
 

@@ -31,6 +31,21 @@ public:
 	*/
 	virtual void updateSUNDIALSStatistics() override;
 
+	/*! Computes and returns serialization size. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores content at memory location pointed to by dataPtr and increases
+		pointer afterwards to point just behind the memory occupied by the copied data.
+		Default implementation does nothing.
+	*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores content from memory at location pointed to by dataPtr and increases
+		pointer afterwards to point just behind the memory occupied by the copied data.
+		Default implementation does nothing.
+	*/
+	virtual void deserialize(void* & dataPtr) override;
+
 private:
 	/*! Sparse matrix implementation (not owned by us). */
 	JacobianSparseCSR						*m_jacobian;

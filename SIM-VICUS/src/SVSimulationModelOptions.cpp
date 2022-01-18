@@ -62,8 +62,14 @@ SVSimulationModelOptions::~SVSimulationModelOptions() {
 
 
 void SVSimulationModelOptions::updateUi() {
+	double initialTemperature = 20;
+	if (!m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].name.empty() &&
+		m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].IO_unit.base_id() == IBK::Unit("K").base_id())
+	{
+		initialTemperature = m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C");
+	}
 
-	m_ui->lineEditInitialTemperature->setValue(m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C"));
+	m_ui->lineEditInitialTemperature->setValue(initialTemperature);
 	m_ui->checkBoxUsePerez->setChecked(m_location->m_flags[NANDRAD::Location::F_PerezDiffuseRadiationModel].isEnabled());
 	m_ui->comboBoxSolarDistributionModeltype->blockSignals(true);
 	m_ui->comboBoxSolarDistributionModeltype->setCurrentIndex(m_simParams->m_solarLoadsDistributionModel.m_distributionType);

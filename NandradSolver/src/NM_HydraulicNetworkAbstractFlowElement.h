@@ -66,11 +66,26 @@ public:
 	/*! Called at the end of a successful Newton iteration. Allows to calculate and store results for other model objects. */
 	virtual void updateResults(double mdot, double p_inlet, double p_outlet) { (void)mdot; (void)p_inlet; (void)p_outlet; }
 
+	/*! Called at the beginning of each CVODE time step. Store current time point for derivatives calculations here.*/
+	virtual void setTime(double t) { (void)t; }
+
+	/*! Called at the end of a successful CVODE time step. Implement hysteresis here.*/
+	virtual void stepCompleted(double t) { (void)t; }
+
 	/*! Optional function for registering dependencies between mass flux and externally referenced input values.
 		Default implementation does nothing. Re-implement for elements with mass-flow controllers.
 	*/
 	virtual void dependencies(const double */*mdot*/,
 							  std::vector<std::pair<const double *, const double *> > & ) const {}
+
+	/*! Computes and returns serialization size in bytes, by default returns 0 (nothing to serialize). */
+	virtual std::size_t serializationSize() const { return 0; }
+
+	/*! Stores model content at memory location pointed to by dataPtr. */
+	virtual void serialize(void* & dataPtr) const { (void)dataPtr; }
+
+	/*! Restores model content from memory at location pointed to by dataPtr. */
+	virtual void deserialize(void* & dataPtr) { (void)dataPtr; }
 
 	/*! Reference to memory slot containing the (average) fluid temperature in [K] of the flow element.
 		For MT_HydraulicNetwork this points to the Network parameter HydraulicNetwork::P_DefaultFluidTemperature.

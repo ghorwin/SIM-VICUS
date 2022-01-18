@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>530</width>
-    <height>820</height>
+    <width>517</width>
+    <height>646</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -16,7 +16,10 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <layout class="QVBoxLayout" name="masterLayout">
+  <layout class="QVBoxLayout" name="masterLayout" stretch="0,2,1,1">
+   <property name="bottomMargin">
+    <number>8</number>
+   </property>
    <item>
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
@@ -65,12 +68,15 @@
      <item row="2" column="0">
       <widget class="QLabel" name="labelUValue">
        <property name="text">
-        <string>UValue:</string>
+        <string>UValue (using assigned BC properties):</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
       <widget class="QLineEdit" name="lineEditUValue">
+       <property name="toolTip">
+        <string>U-value is being calculated using the heat conduction values from the assigned boundary conditions.</string>
+       </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
@@ -121,10 +127,10 @@
         </widget>
        </item>
        <item row="1" column="0" colspan="3">
-        <widget class="QGraphicsView" name="graphicsViewConstruction"/>
+        <widget class="QtExt::ConstructionView" name="graphicsViewConstruction"/>
        </item>
        <item row="2" column="0" colspan="3">
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QCheckBox" name="checkBoxActiveLayerEnabled">
            <property name="text">
@@ -133,16 +139,44 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBoxActiveLayerIndex"/>
-         </item>
-         <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>0</width>
+             <width>75</width>
+             <height>37</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="labelSurfaceHeatingIndex">
+           <property name="text">
+            <string>Index of heated construction layer (counting from side A):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxActiveLayerIndex">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>13</width>
              <height>20</height>
             </size>
            </property>
@@ -240,16 +274,6 @@
       <string>Boundary Condition Side A</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideAName">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QToolButton" name="toolButtonRemoveBoundaryConditionSideA">
         <property name="icon">
@@ -258,8 +282,22 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="1">
+       <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideAName">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0" colspan="3">
        <widget class="QTextBrowser" name="textBrowserBCSideA"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLineEdit" name="lineEditBoundaryConditionSideAName">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -271,7 +309,11 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName"/>
+       <widget class="QLineEdit" name="lineEditBoundaryConditionSideBName">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1">
        <widget class="QToolButton" name="toolButtonSelectBoundaryConditionSideBName">
@@ -298,14 +340,6 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QtExt::ValidatingLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">QtExt_ValidatingLineEdit.h</header>
-   <slots>
-    <signal>editingFinishedSuccessfully()</signal>
-   </slots>
-  </customwidget>
-  <customwidget>
    <class>QtExt::ColorButton</class>
    <extends>QPushButton</extends>
    <header location="global">QtExt_ColorButton.h</header>
@@ -315,6 +349,19 @@
    <extends>QLineEdit</extends>
    <header location="global">QtExt_LanguageStringEditWidget1.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">QtExt_ValidatingLineEdit.h</header>
+   <slots>
+    <signal>editingFinishedSuccessfully()</signal>
+   </slots>
+  </customwidget>
+  <customwidget>
+   <class>QtExt::ConstructionView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtExt_ConstructionView.h</header>
   </customwidget>
  </customwidgets>
  <resources>

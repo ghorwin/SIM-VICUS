@@ -128,13 +128,13 @@ void SVDBNetworkFluidEditWidget::updateInput(int id) {
 	for (unsigned int i=0; i<spline.size(); ++i) {
 
 		QTableWidgetItem * item = new QTableWidgetItem(QString("%L1").arg(spline.x()[i]));
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		if (!isEditable)
 			item->setFlags(item->flags() &  ~Qt::ItemIsEditable);
 		m_ui->tableWidgetViscosity->setItem((int)i, 0, item);
 
 		QTableWidgetItem * item2 = new QTableWidgetItem(QString("%L1").arg(spline.y()[i]));
-		item2->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		item2->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		if (!isEditable)
 			item2->setFlags(item2->flags() &  ~Qt::ItemIsEditable);
 		m_ui->tableWidgetViscosity->setItem((int)i, 1, item2);

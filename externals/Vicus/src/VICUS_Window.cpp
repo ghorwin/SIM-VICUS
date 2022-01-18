@@ -7,7 +7,7 @@
 	  Dirk Weiss  <dirk.weiss -[at]- tu-dresden.de>
 	  Stephan Hirth  <stephan.hirth -[at]- tu-dresden.de>
 	  Hauke Hirsch  <hauke.hirsch -[at]- tu-dresden.de>
-	  
+
 	  ... all the others from the SIM-VICUS team ... :-)
 
 	This library is part of SIM-VICUS (https://github.com/ghorwin/SIM-VICUS)
@@ -131,6 +131,15 @@ bool Window::isValid() const {
 
 
 
+	return true;
+}
+
+
+bool Window::calculateUValue(double & UValue, const VICUS::Database<Material> & materials,
+							 const VICUS::Database<WindowGlazingSystem> & glazingSystem,
+							 double ri, double re) const
+{
+	UValue = -1;
 	return true;
 }
 

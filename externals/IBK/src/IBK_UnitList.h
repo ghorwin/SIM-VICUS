@@ -41,7 +41,6 @@
 
 #include "IBK_ptr_list.h"
 
-
 #include <string>
 #include <vector>
 #include <iosfwd>

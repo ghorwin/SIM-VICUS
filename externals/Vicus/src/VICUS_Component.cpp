@@ -28,7 +28,7 @@
 namespace VICUS {
 
 bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS::Database<Construction> & constructions,
-						const VICUS::Database<BoundaryCondition> & bcs) const
+						const VICUS::Database<BoundaryCondition> & bcs, const VICUS::Database<Schedule> & scheduleDB) const
 {
 	try {
 
@@ -43,13 +43,21 @@ bool Component::isValid(const VICUS::Database<Material> & materials, const VICUS
 		const BoundaryCondition *bcA = bcs[m_idSideABoundaryCondition];
 		const BoundaryCondition *bcB = bcs[m_idSideBBoundaryCondition];
 
+		bool hasSetpointTemperature4OtherZone = false;
+
 		if (bcA == nullptr && bcB == nullptr)
 			return false;
 
-		if (bcA != nullptr && !bcA->isValid())
+		if (bcA != nullptr && !bcA->isValid(scheduleDB))
 			return false;
 
-		if (bcB != nullptr && !bcB->isValid())
+		if (bcB != nullptr && !bcB->isValid(scheduleDB))
+			return false;
+
+		if( ( bcA != nullptr && bcB == nullptr && bcA->hasSetpointTemperatureForZone() ) ||
+				( bcB != nullptr && bcA == nullptr && bcB->hasSetpointTemperatureForZone() ) ||
+				( bcA != nullptr && bcB != nullptr &&
+				bcA->hasSetpointTemperatureForZone() && bcB->hasSetpointTemperatureForZone() ) )
 			return false;
 
 		if (m_activeLayerIndex != VICUS::INVALID_ID) {

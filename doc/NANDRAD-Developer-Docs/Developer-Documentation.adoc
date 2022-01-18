@@ -1,8 +1,8 @@
-NANDRAD Developers Manual
-=========================
+SIM-VICUS and NANDRAD Developers Manual
+=======================================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>
-0.2.0 (31.07.2021)
-// 0.2.0 date_on_line_above
+0.5.0 (08.10.2021)
+// 0.5.0 date_on_line_above
 :Author Initials: AN
 :toc: left
 :toclevels: 3

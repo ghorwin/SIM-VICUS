@@ -35,9 +35,11 @@
 
 #include <VICUS_ZoneTemplate.h>
 
-SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole) :
+SVDBModelDelegate::SVDBModelDelegate(QObject * parent, int builtInRole, int localRole, int referencedRole) :
 	QItemDelegate(parent),
-	m_builtInRole(builtInRole)
+	m_builtInRole(builtInRole),
+	m_localRole(localRole),
+	m_referencedRole(referencedRole)
 {
 }
 
@@ -65,9 +67,40 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 		painter->fillRect(option.rect, b);
 		return;
 	}
-	// find out if our index is of a built-in element
+	// we have three different background color modes: built-in, user-db and local
+	// if the widget is disabled, we use the default background (darkish gray)
+	// if the widget is enabled, we have special colors for builtin and for local.
 	bool builtin = index.data(m_builtInRole).toBool();
 	bool enabled = opt->widget->isEnabled();
+	bool local = index.data(m_localRole).toBool();
+	bool referenced = index.data(m_referencedRole).toBool();
+
+	// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
+	// subtemplate type - this is independent of the DB type
+	QStyleOptionViewItem modifiedOption(option);
+	QVariant subTemplateType = index.data(Role_SubTemplateType);
+	if (subTemplateType.isValid() && index.column() == 1)
+		drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt()); // we modify the rect property here
+
+	// modify font style
+	QPalette pal = opt->palette;
+	QFont font = opt->font;
+	if (referenced) {
+		font.setBold(true);
+		modifiedOption.font = font;
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+			pal.setColor(QPalette::Text, Qt::white);
+	}
+	else {
+		// in dark theme, lower brightness of font a little, so that the bold referenced font is better visible
+		if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+			pal.setColor(QPalette::Text, SVStyle::instance().m_regularDBEntryColorDark);
+		}
+	}
+	modifiedOption.palette = pal;
+	modifiedOption.font = font;
+
+	// local and builtin are exclusive - we can only have either one
 	if (builtin && enabled) {
 		// draw background
 		QBrush b;
@@ -75,25 +108,16 @@ void SVDBModelDelegate::paint( QPainter * painter, const QStyleOptionViewItem & 
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundDark);
 		else
 			b = QBrush(SVStyle::instance().m_alternativeBackgroundBright);
-		painter->fillRect(option.rect, b);
-		// adjust text color for subsequent call to QItemDelegate::paint()
-		QPalette pal = opt->palette;
-		pal.setColor(QPalette::Text, SVStyle::instance().m_alternativeBackgroundText);
-		QStyleOptionViewItem modifiedOption(option);
-		modifiedOption.palette = pal;
-
-		// if we are in SubTemplateType-column and have a valid subtemplate, we draw a colored bar based on
-		// subtemplate type
-		QVariant subTemplateType = index.data(Role_SubTemplateType);
-		if (subTemplateType.isValid() && index.column() == 1) // note: column index is currently hard-coded
-			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
-		QItemDelegate::paint(painter, modifiedOption, index);
+		painter->fillRect(modifiedOption.rect, b);
 	}
-	else {
-		QVariant subTemplateType = index.data(Role_SubTemplateType);
-		QStyleOptionViewItem modifiedOption(option);
-		if (subTemplateType.isValid() && index.column() == 1)
-			drawSubTemplateBar(painter, modifiedOption, subTemplateType.toInt());
-		QItemDelegate::paint(painter, modifiedOption, index);
+	else if (!local && enabled) {
+		QBrush b;
+		if (opt->features & QStyleOptionViewItem::Alternate)
+			b = QBrush(SVStyle::instance().m_userDBBackgroundDark);
+		else
+			b = QBrush(SVStyle::instance().m_userDBBackgroundBright);
+		painter->fillRect(modifiedOption.rect, b);
 	}
+	// either disable or user-DB
+	QItemDelegate::paint(painter, modifiedOption, index);
 }

@@ -38,6 +38,8 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
+#include "VICUS_Schedule.h"
+#include "VICUS_Database.h"
 
 namespace VICUS {
 
@@ -76,7 +78,7 @@ public:
 	VICUS_COMP(InterfaceHeatConduction)
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -84,10 +86,10 @@ public:
 	/*! Model type. */
 	modelType_t							m_modelType = NUM_MT;					// XML:A:required
 
-	OtherZoneType	m_otherZoneType = OZ_Standard;								// XML:E
+	OtherZoneType						m_otherZoneType = OZ_Standard;			// XML:E
 
 	/*! Reference to a schedule for OZ_Scheduled. */
-	IDType			m_idSchedule = INVALID_ID;									// XML:E
+	IDType								m_idSchedule = INVALID_ID;				// XML:E
 
 	/*! List of constant parameters. */
 	IBK::Parameter						m_para[NUM_P];							// XML:E

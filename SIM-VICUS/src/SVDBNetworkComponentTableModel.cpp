@@ -67,6 +67,7 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 					// Note: description is too long here for "Type"
 				case ColType				: return VICUS::KeywordList::Keyword("NetworkComponent::ModelType",
 																				 it->second.m_modelType);
+				case ColSource				: return it->second.sourceName();
 			}
 		} break;
 
@@ -98,6 +99,12 @@ QVariant SVDBNetworkComponentTableModel::data ( const QModelIndex & index, int r
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -118,6 +125,7 @@ QVariant SVDBNetworkComponentTableModel::headerData(int section, Qt::Orientation
 				case ColId					: return tr("Id");
 				case ColName				: return tr("Name");
 				case ColType				: return tr("Type");
+				case ColSource				: return tr("Source");
 				default: ;
 			}
 		} break;
@@ -181,6 +189,18 @@ void SVDBNetworkComponentTableModel::setColumnResizeModes(QTableView * tableView
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColColor, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColName, QHeaderView::Stretch);
+	tableView->horizontalHeader()->setSectionResizeMode(SVDBNetworkComponentTableModel::ColSource, QHeaderView::Fixed);
+}
+
+
+void SVDBNetworkComponentTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_networkComponents[id]->m_local = local;
+	m_db->m_networkComponents.m_modified = true;
+	setItemModified(id);
 }
 
 

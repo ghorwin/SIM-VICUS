@@ -152,6 +152,13 @@ protected:
 	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the xy-plane of the polygon's local coordinate system). */
 	void update2DPolyline();
 
+	/*! Assuming a valid polyline, we re-compute the world coordinates from given offset and local coordinate system
+		stored in m_localX and m_localY.
+		\note Since we may call this function with m_vertexes as argument, we must ensure that the offset point
+			  remains unmodified - hence it is passed by value.
+	*/
+	void update3DVertexesFromPolyline(Vector3D offset);
+
 	// *** PRIVATE MEMBER VARIABLES ***
 
 	/*! Stores the vertexes in 3D of the polygon. */

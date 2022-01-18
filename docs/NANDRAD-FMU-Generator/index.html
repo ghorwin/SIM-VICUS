@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.0.10">
+<meta name="author" content="Andreas Nicolai">
+<title>NANDRAD FMU-Generator</title>
+<style>
+/* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed);
+@import url(../css/asciidoctor.css); /* Default asciidoc style framework - important */
+
+/* CUSTOMISATIONS */
+/* Change the values in root for quick customisation. If you want even more fine grain... venture further. */
+
+:root{
+--maincolor:#FFFFFF;
+--primarycolor:#a90e22;
+--secondarycolor:#9f1d0b;
+--tertiarycolor: #ededed;
+--sidebarbackground:#CCC;
+--linkcolor:#b71c1c;
+--linkcoloralternate:#f44336;
+--white:#FFFFFF;
+--black:#000000;
+}
+
+/* Text styles */
+body{font-family: "Roboto Condensed",sans-serif;}
+
+h1,h2{color:var(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;}
+h3,h4,h5,h6{color:var(--secondarycolor);font-family: "Roboto Condensed",sans-serif; }
+.title{color:(--primarycolor) !important;font-family:"Roboto Condensed",sans-serif;font-style: normal; font-weight: normal;}
+p{font-family: "Roboto Condensed",sans-serif ! important}
+#toc.toc2 a{font-family:"Roboto Condensed",sans-serif;}
+/*#toc.toc2 a:link{color:(--linkcolor) !important}
+a:visited {color: #ffdbad;}
+a.bare:visited {color: #204f83;}
+a:hover {color: #317ed4;}
+#toc.toc2 a:hover {color: #f1b464;}*/
+/* code{background-color: var(--secondarycolor) !important;color:var(--white)} */
+code,kbd,pre,samp{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;monospace;font-size:1em}
+
+/* Table styles */
+th{background-color: var(--tertiarycolor);color:var(--black) !important;}
+
+#toctitle{color:var(--primarycolor);font-family: "Roboto Condensed",sans-serif;font-size: 1.6875em;}
+#toc.toc2{background-color:#f4f8fd;}
+/*#toc.toc2{background-color:#2C001E;color:white;}
+#toc.toc2.a{color:white;}
+*/
+
+/* Responsiveness fixes */
+video {
+  max-width: 100%;
+}
+
+@media all and (max-width: 600px) {
+table {
+  width: 55vw!important;
+  font-size: 3vw;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>NANDRAD FMU-Generator</h1>
+<div class="details">
+<span id="author" class="author">Andreas Nicolai</span><br>
+<span id="email" class="email"><a href="mailto:andreas.nicolai@tu-dresden.de">andreas.nicolai@tu-dresden.de</a></span><br>
+<span id="revnumber">version 2.0 (22.09.2021)</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Inhaltsverzeichnis</div>
+<ul class="sectlevel1">
+<li><a href="#_überblick">1. Überblick</a>
+<ul class="sectlevel2">
+<li><a href="#_datenaustauschkonzept">1.1. Datenaustauschkonzept</a></li>
+</ul>
+</li>
+<li><a href="#_starten_des_tools">2. Starten des Tools</a>
+<ul class="sectlevel2">
+<li><a href="#_automatisierte_fmu_erstellung">2.1. Automatisierte FMU-Erstellung</a></li>
+</ul>
+</li>
+<li><a href="#_die_programmoberfläche">3. Die Programmoberfläche</a>
+<ul class="sectlevel2">
+<li><a href="#_konfiguration_von_fmu_eingangsvariablen">3.1. Konfiguration von FMU Eingangsvariablen</a></li>
+<li><a href="#_konfiguration_von_fmu_ausgangsvariablen">3.2. Konfiguration von FMU Ausgangsvariablen</a></li>
+<li><a href="#_umbenennung_von_fmi_variablennamen">3.3. Umbenennung von FMI Variablennamen</a></li>
+<li><a href="#_generierung_der_fmu_datei">3.4. Generierung der FMU-Datei</a></li>
+</ul>
+</li>
+<li><a href="#InDetail">4. Hinter den Kulissen</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_überblick">1. Überblick</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dieses Dokument enthält eine Beschreibung des <em>NANDRAD FMU-Generators</em>, einem kleinen Programm, welches recht komfortabel NANDRAD Simulationsmodelle in <em>Functional Mock-Up Units</em> (FMUs) verpackt und bei der Definition der Ein- und Ausgangsvariablen hilft.</p>
+</div>
+<div class="paragraph">
+<p>NANDRAD-Simulationsmodelle werden aus der Modellierungsumgebung <em>SIM-VICUS</em> automatisch generiert. <a href="#fig_workflow.svg">Abbildung 1</a> zeigt einen Überblick über den Datenfluss, beteiligte Programme und Dateien.</p>
+</div>
+<div id="fig_workflow.svg" class="imageblock">
+<div class="content">
+<img src="./images/workflow.svg" alt="workflow" width="1418">
+</div>
+<div class="title">Abbildung 1. Kollaborationsdiagramm / Überblick über die SIM-VICUS Tool-Kette</div>
+</div>
+<div class="paragraph">
+<p>Die Modellierung von Gebäuden und Quartieren erfolgt in der grafischen SIM-VICUS Modellierungsumgebung, welche die Modelle in <code>*.vicus</code>-Projektdateien speichert. Beim Starten einer Gebäude-/Quartierssimulation wird zunächst eine NANDRAD-Projektdatei erstellt (<code>*.nandrad</code>). Diese enthält eine auf den Rechenkern zugeschnittene und optimierte Parametrierung des Simulationsmodells.</p>
+</div>
+<div class="paragraph">
+<p>Dieses NANDRAD-Projekt wird nun bei typischen Simulationsrechnungen durch den <em>NANDRAD-Rechennkern</em> verarbeitet, d.h. die Simulation wird durchgeführt. Die Ergebnisgrößen (Zeitreihen) werden in <code>*.tsv</code>-Dateien abgelegt, welche dann komfortable in einer Post-Processing-Software (z.B. <a href="https://bauklimatik-dresden.de/postproc">PostProc 2</a>) analysiert werden können.</p>
+</div>
+<div class="paragraph">
+<p>Alternativ können NANDRAD-Projektdateien zusammen mit dem Rechenkern in <em>FMUs</em> verpackt werden. Dafür werden diese vom <em>NANDRAD FMU-Generator</em> eingelesen und nach Konfiguration aller Variablen in eine <code>*.fmu</code>-Datei überführt. Diese kann dann von einem Co-Simulations-Masterprogramm (z.B. <a href="https://bauklimatik-dresden.de/mastersim">MasterSim</a>) mit anderen FMUs verknüpft werden, welche die Funktionalität des NANDRAD-Modells entsprechend erweitern.</p>
+</div>
+<div class="sect2">
+<h3 id="_datenaustauschkonzept">1.1. Datenaustauschkonzept</h3>
+<div class="paragraph">
+<p>NANDRAD Modelle bestehen intern aus einer Reihe von Modellobjekten, die selbst untereinander mittels Ergebnisgrößen und Eingangsgrößen kommunizieren.  Jede dieser Ein- und Ausgangsgrößen kann nun über die FMU-Schnittstelle nach außen geführt werden. In der Programmoberfläche des <em>NANDRAD FMU-Generators</em> kann man die Variablen für die FMU-Schnittstelle auswählen und konfigurieren. Der <em>NANDRAD-Rechennkern</em> erkennt dann bei der Initialisierung, dass eine Ergebnisgröße eines Modellobjekts stattdessen von einer FMU-Eingangsvariable bereitgestellt wird. Beim Verknüpfen der Modellobjekte wird dann der Variablenbezug auf die FMI-Variable <em>umgebogen</em>. So kann man an beliebigen Stellen den Signalfluss aufbrechen und Kontroll-/Berechnungslogik durch externe Modelle integrieren.</p>
+</div>
+<div class="paragraph">
+<p>Die Listen aller verfügbaren/veröffentlichten Ein- und Ausgangsgrößen werden bei der Initialisierung der NANDRAD-Simulation erstellt, weswegen der Arbeitsablauf zur FMU-Erstellung mit dem Durchlaufen der Simulationsinitialisierung beginnt.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_starten_des_tools">2. Starten des Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Wird der <em>NANDRAD FMU-Generator</em> ohne Kommandozeilenoption gestartet, so öffnet er die zuletzt bearbeitete NANDRAD-Projektdatei erneut, sofern sie noch existiert. Alternativ wird der Nutzer aufgefordert, zunächst eine <code>*.nandrad</code>-Datei zu öffnen.</p>
+</div>
+<div class="paragraph">
+<p>Alternativ kann das Programm auch direkt mit einer Projektdatei geöffnet werden, über die Kommandozeile:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">/path/to/NandradFMUGenerator /path/to/Nandard/Project.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oder in der Dateiverwaltung durch Öffnen einer <code>*.nandrad</code>-Datei via "Öffnen mit&#8230;&#8203;" und Auswahl von <em>NANDRAD FMU-Generator</em>.</p>
+</div>
+<div class="sect2">
+<h3 id="_automatisierte_fmu_erstellung">2.1. Automatisierte FMU-Erstellung</h3>
+<div class="paragraph">
+<p>Ist eine NANDRAD-Projektdatei bereits ausreichend konfiguriert und enthält alle FMI-Variablendefinitionen, kann man die FMU auch komplett automatisch erstellen. Dabei wird folgende Kommandozeile verwendet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">/path/to/NandradFMUGenerator <span class="nt">--generate</span><span class="o">=</span>MyModelName /path/to/Nandard/Project.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Das Argument hinter <code>--generate</code> ist der FMU-Modellname, d.h. <code>MyModelName</code> muss ein Name sein, der den Anforderungen des FMI-Standards für Modellbezeichner entspricht (keine Leerzeichen/Sonderzeichen, darf nicht mit einer Zahl beginnen, etc.).</p>
+</div>
+<div class="paragraph">
+<p>Im geskripteten Ausführungsmodus wird keine Oberfläche angezeigt und es gibt keinerlei Nutzerinteraktion. Falls Fehler auftreten werden entsprechende Fehlermeldungen in der Kommandozeile ausgegeben und das Programm wird mit Rückgabewert 1 beendet. Bei erfolgreicher Ausführung wird das Programm mit Rückgabewert 0 beendet. Dies kann in Scripten zur Prüfung verwendet werden.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Bei der geskripteten/automatischen Ausführung wird die <code>fmu</code>-Datei immer im gleichen Verzeichnis wie die 'nandrad`-Datei ausgegeben. In diesem Verzeichnis muss <em>NANDRAD FMU-Generator</em> also Schreibrechte haben.</p>
+</div>
+<div class="paragraph">
+<p>Beispielsweise wird bei folgendem Aufruf des <code>NandradFMUGenerator</code>-Programms unter Windows die Datei <code>D:\Projekte\Hausmodell1.fmu</code> erstellt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">D:<span class="se">\S</span>IM-VICUS<span class="se">\N</span>andradFMUGenerator.exe <span class="nt">--generate</span><span class="o">=</span>Hausmodell1 D:<span class="se">\P</span>rojekte<span class="se">\H</span>aus.nandrad</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_die_programmoberfläche">3. Die Programmoberfläche</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Die Programmoberfläche ist in 3 Eingabeseiten gegliedert. Die erste Seite enthält allgemeine Einstellungen (<a href="#fig_general">Abbildung 2</a>).</p>
+</div>
+<div id="fig_general" class="imageblock">
+<div class="content">
+<img src="./images/general.png" alt="general" width="1418">
+</div>
+<div class="title">Abbildung 2. Generelle FMU Einstellungen/Pfade</div>
+</div>
+<div class="paragraph">
+<p>Die Bedienelemente sind:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Öffnet Datei-Dialog zur Auswahl einer <code>nandrad</code>-Datei. Nach Auswahl der Datei wird automatisch eine Testinitialisierung durchgeführt und so geprüft, ob die Projektdatei eine gültige und vollständige Parametrierung beinhaltet (siehe <a href="#InDetail">Abschnitt 4</a>).</p>
+</li>
+<li>
+<p>Eingabe für den FMU Modellnamen; dieser bestimmt auch den Namen der generierten <code>fmu</code>-Datei</p>
+</li>
+<li>
+<p>Auswahl des Zielverzeichnis; standardmäßig wird hier der Pfad der ursprünglichen <code>nandrad</code>-Datei eingetragen</p>
+</li>
+<li>
+<p>Hier wird der komplete Pfad zur generierten FMU angezeigt. Er ergibt sich aus dem Modellnamen und dem Zielpfad.</p>
+</li>
+<li>
+<p>Diese Schaltfläche speichert die aktuelle FMU-Konfiguration in der <code>nandrad</code>-Projektdatei. Somit können alle Einstellungen beim nächsten Start des Programms und beim erneuten Einladen der Projektdatei wiederhergestellt werden.</p>
+</li>
+<li>
+<p>Damit wird die zuletzt in der Projektdatei gespeicherte FMU-Konfiguration wiederhergestellt. Alle aktuellen Änderungen werden zurückgesetzt.</p>
+</li>
+<li>
+<p>Die Schaltfläche speichert zunächst alle Einstellungen in der <code>nandrad</code>-Projektdatei und erstellt dann die FMU.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Sind in der NANDRAD-Projektdatei bereits FMU-Variablendefinitionen enthalten, so kann der <em>NANDRAD FMU-Generator</em> diese erneut einlesen. Dies ermöglicht auch eine <em>vollständig automatisierte FMU-Erstellung</em>:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>VICUS-Modell in eine NANDRAD-Projektdatei überführen</p>
+</li>
+<li>
+<p>NANDRAD-Projektdatei (XML-Datei) mit FMI-Variablendefinitionen anreichern (siehe <a href="https://ghorwin.github.io/SIM-VICUS/NANDRAD-Model-Reference/index.html#FMU_export">FMU-Export-Spezifikation</a>)</p>
+</li>
+<li>
+<p><em>NANDRAD FMU-Generator</em> mit <code>--generate</code> Kommandozeilenargument aufrufen (siehe oben)</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Nachdem die grundlegenden FMU-Pfad- und Namenseinstellungen getroffen wurden, müssen noch die Ein- und Ausgabevariablen konfiguriert werden. Dies erfolgt in den anderen beiden Registerkarten.</p>
+</div>
+<div class="sect2">
+<h3 id="_konfiguration_von_fmu_eingangsvariablen">3.1. Konfiguration von FMU Eingangsvariablen</h3>
+<div id="fig_inputvars" class="imageblock">
+<div class="content">
+<img src="./images/inputvars.png" alt="inputvars" width="1418">
+</div>
+<div class="title">Abbildung 3. Definition und Konfiguration von FMI-Eingangsvariablen</div>
+</div>
+<div class="paragraph">
+<p><a href="#fig_inputvars">Abbildung 3</a> zeigt die Liste der NANDRAD-Modellvariablen, welche durch die FMU Schnittstelle in die Simulation importiert werden können. Diese Liste wird aus der Datei <code>input_reference_list.txt</code> erstellt. Analog wird die Liste der Ausgabevariablen in der letzten Registerkarte aus der Datei <code>output_reference_list.txt</code> befüllt.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Die Tabellenspalten können mit Klick auf die Kopfzeilen sortiert werden.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Die Tabelle zeigt in den ersten 4 Spalten die Eigenschaften der veröffentlichten NANDRAD Modellvariablen. Danach folgen Spalten mit FMI-Variablen-Definitionen. In <a href="#fig_inputvars">Abbildung 3</a> sind folgende Elemente beziffert:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Fett-gedruckt sind alle NANDRAD-Variablen, welche als FMU-Eingangsvariablen konfiguriert sind.</p>
+</li>
+<li>
+<p>Sobald eine oder mehrere Variablen ausgewählt sind, welche noch nicht konfiguriert wurden, ist der "Plus"-Knopf aktiv. Damit (oder per Doppelklick auf eine Zeile) werden die Variablen konfiguriert. Dies bedeutet, dass ihnen ein <strong>eindeutiger</strong> FMI-Variablenname und eine <strong>eindeutige</strong> <em>FMI value reference</em> zugewiesen wird.</p>
+</li>
+<li>
+<p>Analog können konfigurierte FMU-Variablen wieder entfernt werden. Die "Minus"-Schaltfläche ist aktiv, wenn mindestens eine bereits konfigurierte Variable ausgewählt ist.</p>
+</li>
+<li>
+<p>Bei größeren Modellen kann es sich lohnen, die Variablenliste zu filtern. Eingaben in diesem Feld werden dazu benutzt, nach NANDRAD Variablennamen zu filtern. Dabei kann der Platzhalter <code>*</code>  verwendet werden. Beispielsweise zeigt <code>Model*Temp</code> Variablen wie <code>Model(12).AirTemperature</code> oder <code>Model(112).FluidTemperature</code> an.</p>
+</li>
+<li>
+<p>Alternativ kann auch nach einem Text in der Beschreibung gefiltert werden.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Filtertexte sind immer unabhängig von der Groß-/Kleinschreibung.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_konfiguration_von_fmu_ausgangsvariablen">3.2. Konfiguration von FMU Ausgangsvariablen</h3>
+<div class="paragraph">
+<p>Ausgabevariablen werden ganz genauso wie Eingangsvariablen definiert. Es gibt aber unterschiedliche Regeln für das Umbenennen von FMI Variablennamen.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_umbenennung_von_fmi_variablennamen">3.3. Umbenennung von FMI Variablennamen</h3>
+<div class="paragraph">
+<p>Der <em>NANDRAD FMU-Generator</em> legt standardmäßig FMI Variablennamen ausgehend von NANDRAD Modellvariablen an. Manchmal möchte man für die FMU Schnittstelle aber eigene Variablennamen definieren, beispielsweise für die Ausgabe einer Raumlufttemperatur statt <code>Zone(2).AirTemperature</code> einfach nur <code>Temperature</code> verwenden.</p>
+</div>
+<div class="paragraph">
+<p>Einen Variablennamen kann man durch <strong>Doppelklick</strong> auf den FMI-Variablennamen (4. Spalte) ändern (<a href="#fig_rename">Abbildung 4</a>).</p>
+</div>
+<div id="fig_rename" class="imageblock">
+<div class="content">
+<img src="./images/rename.png" alt="rename" width="1067">
+</div>
+<div class="title">Abbildung 4. Umbenennen eines FMI Variablennamens</div>
+</div>
+<div class="paragraph">
+<p>Dabei gelten folgende Regeln:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ausgabevariablen müssen global eindeutig benannt sein.</p>
+</li>
+<li>
+<p>Eingangsvariablen können den gleichen Namen bekommen. Damit kann man eine FMU-Eingangsvariable definieren, deren Wert dann mehreren NANDRAD-Modellvariablen zugewiesen wird. Dafür muss die Variableneinheit identisch sein.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_generierung_der_fmu_datei">3.4. Generierung der FMU-Datei</h3>
+<div class="paragraph">
+<p>Der <em>NANDRAD FMU-Generator</em> übernimmt vollautomatisch alle Arbeitsschritte für die Zusammenstellung des FMU-Archivs (siehe <a href="#InDetail">Abschnitt 4</a> für Einzelheiten zu den internen Algorithmen).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="InDetail">4. Hinter den Kulissen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Der <em>NANDRAD FMU-Generator</em> verwendet intern den NANDRAD-Rechenkern, um die Listen der Variablen zu beziehen und mit eventuell vorkonfigurierten FMI-Variablen abzugleichen. Dabei werden folgende Schritte intern durchgeführt:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Beginnend von einer fertigen NANDRAD-Projektdatei wird eine Test-Initialisierung durchgeführt. Dies entspricht dem Ausführen des NANDRAD-Rechenkerns mit der Kommandozeilenoption <code>--test-init</code>.</p>
+<div class="listingblock">
+<div class="title">Durchführen der Test-Initialisierung in der Kommandozeile</div>
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="o">&gt;</span> NandradSolver <span class="nt">--test-init</span> /path/to/Nandrad/Project.nandrad</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dieser Schritt dient einem doppelten Zweck:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>einerseits wird geprüft, ob das Projekt korrekt parametriert wurde und die Projektdatei syntaktisch richtig ist (dies ist vor allem bei geskripteter Projektdatenanpassung wichtig),</p>
+</li>
+<li>
+<p>andererseits werden die Dateien <code>input_reference_list.txt</code> und <code>output_reference_list.txt</code> erstellt, welche die Gesamtheit aller Ein- und Ausgangsvariablen des NANDRAD-Modells enthalten.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Beim Start des <em>NANDRAD FMU-Generators</em> werden diese Dateien nun eingelesen und der Anwender kann die FMI-Schnittstellenvariablen auswählen.</p>
+</li>
+<li>
+<p>Der <em>NANDRAD FMU-Generator</em> erstellt die FMU, indem die Projektdatei und alle referenzierten Resourcen (Klimadatei, Zeitreihen-Dateien, etc.) in das FMU-Archiv kopiert werden. Außerdem werden in der modifizierten Projektdatei die konfigurierten FMI-Variablen abgelegt, sodass der NANDRAD-FMU-Rechenkern Kenntnis davon erhält.</p>
+</li>
+<li>
+<p>Die <code>modelDescription.xml</code> wird generiert und die FMU erstellt.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In Schritt (3) wird außerdem noch die originale NANDRAD-Projektdatei mit den bereits definierten FMI-Variablen ergänzt, sodass beim nächsten Start des <em>NANDRAD FMU-Generators</em> diese Informationen bereits vorliegen (man spart sich das erneute Definieren von bereits konfigurierten FMI-Variablen).</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 2.0 (22.09.2021)<br>
+Last updated 2021-09-22 15:45:59 +0200
+</div>
+</div>
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .sa, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
+</body>
+</html>

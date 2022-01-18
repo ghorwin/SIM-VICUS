@@ -19,13 +19,15 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP
+LIBS += -lNandrad -lIBK -lIBKMK -lTiCPP -lCCM
 
 INCLUDEPATH = \
 	../../src \
 	../../../IBK/src \
 	../../../IBKMK/src \
+	../../../CCM/src \
 	../../../Nandrad/src \
+	../../../DataIO/src \
 	../../../TiCPP/src
 
 DEPENDPATH = $${INCLUDEPATH}
@@ -56,11 +58,13 @@ HEADERS += \
 	../../src/VICUS_NetworkComponent.h \
 	../../src/VICUS_NetworkController.h \
 	../../src/VICUS_NetworkEdge.h \
+	../../src/VICUS_NetworkElement.h \
 	../../src/VICUS_NetworkFluid.h \
 	../../src/VICUS_NetworkLine.h \
 	../../src/VICUS_NetworkNode.h \
 	../../src/VICUS_NetworkPipe.h \
 	../../src/VICUS_Object.h \
+	../../src/VICUS_OutputDefinition.h \
 	../../src/VICUS_Outputs.h \
 	../../src/VICUS_PlaneGeometry.h \
 	../../src/VICUS_PlaneTriangulationData.h \
@@ -88,9 +92,11 @@ HEADERS += \
 	../../src/VICUS_ZoneControlThermostat.h \
 	../../src/VICUS_ZoneIdealHeatingCooling.h \
 	../../src/VICUS_ZoneTemplate.h \
-	../../src/VICUS_utilities.h
+	../../src/VICUS_utilities.h \
+	../../src/VICUS_NetworkBuriedPipeProperties.h
 
 SOURCES += \
+	../../src/VICUS_AbstractDBElement.cpp \
 	../../src/VICUS_ArgsParser.cpp \
 	../../src/VICUS_BoundaryCondition.cpp \
 	../../src/VICUS_Component.cpp \
@@ -109,11 +115,13 @@ SOURCES += \
 	../../src/VICUS_NetworkComponent.cpp \
 	../../src/VICUS_NetworkController.cpp \
 	../../src/VICUS_NetworkEdge.cpp \
+	../../src/VICUS_NetworkElement.cpp \
 	../../src/VICUS_NetworkFluid.cpp \
 	../../src/VICUS_NetworkLine.cpp \
 	../../src/VICUS_NetworkNode.cpp \
 	../../src/VICUS_NetworkPipe.cpp \
 	../../src/VICUS_Object.cpp \
+	../../src/VICUS_OutputDefinition.cpp \
 	../../src/VICUS_Outputs.cpp \
 	../../src/VICUS_PlaneGeometry.cpp \
 	../../src/VICUS_Polygon2D.cpp \
@@ -154,10 +162,12 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_NetworkComponent.cpp \
 	../../src/ncg/ncg_VICUS_NetworkController.cpp \
 	../../src/ncg/ncg_VICUS_NetworkEdge.cpp \
+	../../src/ncg/ncg_VICUS_NetworkElement.cpp \
 	../../src/ncg/ncg_VICUS_NetworkFluid.cpp \
 	../../src/ncg/ncg_VICUS_NetworkNode.cpp \
 	../../src/ncg/ncg_VICUS_NetworkPipe.cpp \
 	../../src/ncg/ncg_VICUS_Outputs.cpp \
+	../../src/ncg/ncg_VICUS_OutputDefinition.cpp \
 	../../src/ncg/ncg_VICUS_Room.cpp \
 	../../src/ncg/ncg_VICUS_Project.cpp \
 	../../src/ncg/ncg_VICUS_RotationMatrix.cpp \
@@ -179,4 +189,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_ZoneControlShading.cpp \
 	../../src/ncg/ncg_VICUS_ZoneControlThermostat.cpp \
 	../../src/ncg/ncg_VICUS_ZoneIdealHeatingCooling.cpp \
-	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp
+	../../src/ncg/ncg_VICUS_ZoneTemplate.cpp \
+	../../src/VICUS_NetworkBuriedPipeProperties.cpp \
+	../../src/ncg/ncg_VICUS_NetworkBuriedPipeProperties.cpp

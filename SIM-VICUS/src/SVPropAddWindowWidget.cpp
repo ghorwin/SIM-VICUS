@@ -271,7 +271,15 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 			VICUS::SubSurface subsurf;
 			subsurf.m_id = subsurf.uniqueID();
 			subsurf.m_polygon2D = p;
-			subsurf.m_displayName = tr("Window #").arg(subsurf.m_id);
+			if (m_ui->radioButtonSubSurfaceTypeWindow->isChecked()) {
+				subsurf.m_displayName = tr("Window #%1").arg(subsurf.m_id);
+				subsurf.m_color = QColor(96,96,255,64);
+			}
+			else {
+				subsurf.m_displayName = tr("Door #%1").arg(subsurf.m_id);
+				subsurf.m_color = QColor(164,164,164,255);
+			}
+
 			subs.push_back(subsurf);
 
 			// also create subsurface component instances
@@ -295,4 +303,8 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
 		modSurfaces, &subSurfaceComponentInstances);
 	undo->push();
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	SVViewStateHandler::instance().setViewState(vs);
 }

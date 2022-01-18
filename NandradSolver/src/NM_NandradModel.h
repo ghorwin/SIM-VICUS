@@ -189,7 +189,7 @@ public:
 	/*! Informs the integrator whether the model owns an error weighting function. */
 	virtual bool hasErrorWeightsFunction() override;
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size, by default returns  returns an invalid value (-1). */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases
@@ -217,6 +217,17 @@ public:
 
 	/*! Prints version strings of used libraries to the IBK message handler. */
 	static void printVersionStrings();
+
+
+protected:
+	// *** Outputs ***
+
+	/*! The central managing object for outputs. */
+	OutputHandler											*m_outputHandler = nullptr;
+
+	/*! FMI import/export model. */
+	FMIInputOutput											*m_fmiInputOutput = nullptr;
+
 
 private:
 
@@ -489,6 +500,9 @@ private:
 	*/
 	std::vector<unsigned int>								m_networkVariableOffset;
 
+	/*! Used to translates generic variable names ('NetwokElement(id=3)') to displayNames ('HeatExchanger_id3') */
+	std::map<std::string, std::string>						m_varSubstitutionMap;
+
 	// *** Models and sub-models ***
 
 	/*! Climatic loads calculation model (exists as single instance).
@@ -503,11 +517,6 @@ private:
 	/*! Single object/model providing schedules quantities. */
 	Schedules												*m_schedules = nullptr;
 
-
-	// *** Outputs ***
-
-	/*! The central managing object for outputs. */
-	OutputHandler											*m_outputHandler = nullptr;
 
 	// *** STATISTICS ***
 
@@ -526,10 +535,6 @@ private:
 	double													m_elapsedSimTimeAtStart;
 
 	SOLFRA::SolverFeedback									m_feedback;
-
-protected:
-	/*! FMI import/export model. */
-	FMIInputOutput											*m_fmiInputOutput = nullptr;
 
 };
 

@@ -150,5 +150,30 @@ void LESKLU::updateSUNDIALSStatistics() {
 	}
 }
 
+
+size_t LESKLU::serializationSize() const {
+	// we only need to serialize the actual data and statistics
+	return 2 * sizeof(unsigned int);
+}
+
+
+void LESKLU::serialize(void *& dataPtr) const {
+	*(unsigned int*)dataPtr = m_statNumJacEvals;
+	dataPtr = (char*)dataPtr + sizeof(unsigned int);
+	*(unsigned int*)dataPtr = m_statNumRhsEvals;
+	dataPtr = (char*)dataPtr + sizeof(unsigned int);
+}
+
+
+void LESKLU::deserialize(void *& dataPtr) {
+	m_statNumJacEvals = *(unsigned int*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(unsigned int);
+	m_statNumRhsEvals = *(unsigned int*)dataPtr;
+	dataPtr = (char*)dataPtr + sizeof(unsigned int);
+	IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator);
+	if (intCVODE != nullptr)
+		intCVODE->setLinearSetupFrequency(1);
+}
+
 } // namespace SOLFRA
 

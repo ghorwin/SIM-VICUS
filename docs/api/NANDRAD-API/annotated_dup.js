@@ -1,41 +1,4 @@
 var annotated_dup =
 [
-    [ "NANDRAD", null, [
-      [ "ArgsParser", "classNANDRAD_1_1ArgsParser.html", "classNANDRAD_1_1ArgsParser" ],
-      [ "ConstructionInstance", "classNANDRAD_1_1ConstructionInstance.html", "classNANDRAD_1_1ConstructionInstance" ],
-      [ "ConstructionType", "classNANDRAD_1_1ConstructionType.html", "classNANDRAD_1_1ConstructionType" ],
-      [ "DailyCycle", "classNANDRAD_1_1DailyCycle.html", "classNANDRAD_1_1DailyCycle" ],
-      [ "DataTable", "classNANDRAD_1_1DataTable.html", "classNANDRAD_1_1DataTable" ],
-      [ "EmbeddedObject", "classNANDRAD_1_1EmbeddedObject.html", "classNANDRAD_1_1EmbeddedObject" ],
-      [ "EmbeddedObjectWindow", "classNANDRAD_1_1EmbeddedObjectWindow.html", "classNANDRAD_1_1EmbeddedObjectWindow" ],
-      [ "IDGroup", "classNANDRAD_1_1IDGroup.html", "classNANDRAD_1_1IDGroup" ],
-      [ "Interface", "classNANDRAD_1_1Interface.html", "classNANDRAD_1_1Interface" ],
-      [ "InterfaceAirFlow", "classNANDRAD_1_1InterfaceAirFlow.html", "classNANDRAD_1_1InterfaceAirFlow" ],
-      [ "InterfaceHeatConduction", "classNANDRAD_1_1InterfaceHeatConduction.html", "classNANDRAD_1_1InterfaceHeatConduction" ],
-      [ "InterfaceLongWaveEmission", "classNANDRAD_1_1InterfaceLongWaveEmission.html", "classNANDRAD_1_1InterfaceLongWaveEmission" ],
-      [ "InterfaceSolarAbsorption", "classNANDRAD_1_1InterfaceSolarAbsorption.html", "classNANDRAD_1_1InterfaceSolarAbsorption" ],
-      [ "InterfaceVaporDiffusion", "classNANDRAD_1_1InterfaceVaporDiffusion.html", "classNANDRAD_1_1InterfaceVaporDiffusion" ],
-      [ "Interval", "classNANDRAD_1_1Interval.html", "classNANDRAD_1_1Interval" ],
-      [ "KeywordList", "classNANDRAD_1_1KeywordList.html", "classNANDRAD_1_1KeywordList" ],
-      [ "LinearSplineParameter", "classNANDRAD_1_1LinearSplineParameter.html", "classNANDRAD_1_1LinearSplineParameter" ],
-      [ "Location", "classNANDRAD_1_1Location.html", "classNANDRAD_1_1Location" ],
-      [ "Material", "classNANDRAD_1_1Material.html", "classNANDRAD_1_1Material" ],
-      [ "MaterialLayer", "classNANDRAD_1_1MaterialLayer.html", "classNANDRAD_1_1MaterialLayer" ],
-      [ "ModelInputReference", "classNANDRAD_1_1ModelInputReference.html", "classNANDRAD_1_1ModelInputReference" ],
-      [ "Models", "classNANDRAD_1_1Models.html", "classNANDRAD_1_1Models" ],
-      [ "NaturalVentilationModel", "classNANDRAD_1_1NaturalVentilationModel.html", "classNANDRAD_1_1NaturalVentilationModel" ],
-      [ "ObjectList", "classNANDRAD_1_1ObjectList.html", "classNANDRAD_1_1ObjectList" ],
-      [ "OutputDefinition", "classNANDRAD_1_1OutputDefinition.html", "classNANDRAD_1_1OutputDefinition" ],
-      [ "OutputGrid", "classNANDRAD_1_1OutputGrid.html", "classNANDRAD_1_1OutputGrid" ],
-      [ "Outputs", "classNANDRAD_1_1Outputs.html", "classNANDRAD_1_1Outputs" ],
-      [ "Project", "classNANDRAD_1_1Project.html", "classNANDRAD_1_1Project" ],
-      [ "ProjectInfo", "classNANDRAD_1_1ProjectInfo.html", "classNANDRAD_1_1ProjectInfo" ],
-      [ "Schedule", "classNANDRAD_1_1Schedule.html", "classNANDRAD_1_1Schedule" ],
-      [ "Schedules", "classNANDRAD_1_1Schedules.html", "classNANDRAD_1_1Schedules" ],
-      [ "Sensor", "classNANDRAD_1_1Sensor.html", "classNANDRAD_1_1Sensor" ],
-      [ "SerializationTest", "classNANDRAD_1_1SerializationTest.html", "classNANDRAD_1_1SerializationTest" ],
-      [ "SimulationParameter", "classNANDRAD_1_1SimulationParameter.html", "classNANDRAD_1_1SimulationParameter" ],
-      [ "SolverParameter", "classNANDRAD_1_1SolverParameter.html", "classNANDRAD_1_1SolverParameter" ],
-      [ "Zone", "classNANDRAD_1_1Zone.html", "classNANDRAD_1_1Zone" ]
-    ] ]
+    [ "NANDRAD", "namespaceNANDRAD.html", "namespaceNANDRAD" ]
 ];

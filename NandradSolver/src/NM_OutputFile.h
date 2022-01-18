@@ -74,6 +74,15 @@ public:
 
 	virtual const char * ModelIDName() const override { return "OutputFile"; }
 
+	/*! Computes and returns serialization size in bytes. */
+	virtual std::size_t serializationSize() const override;
+
+	/*! Stores control value at memory*/
+	virtual void serialize(void* & dataPtr) const override;
+
+	/*! Restores control value from memory.*/
+	virtual void deserialize(void* & dataPtr) override;
+
 
 	// *** Re-implemented from AbstractTimeDependency
 
@@ -126,8 +135,10 @@ private:
 		\param binary If true, files are written in binary mode
 		\param timeColumnLabel Label of the time column
 		\param outputPath Path to output directory.
+		\param varSubstitutionMap map containing substitutions for header labels
 	*/
-	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath);
+	void createFile(bool restart, bool binary, const std::string & timeColumnLabel, const IBK::Path * outputPath,
+					const std::map<std::string, std::string> & varSubstitutionMap, unsigned int startYear);
 
 	/*! Retrieves current output values and appends values to cache.
 		This function only caches current output values. The data is written to file in the next call to flushCache().
@@ -140,6 +151,11 @@ private:
 
 	/*! Returns number of bytes currently cached in this file object. */
 	unsigned int cacheSize() const;
+
+
+	/*! Called from output handler if a FMU communication interval is reset.
+	*/
+	void clearCache();
 
 	/*! Called from output handler once sufficient real time has elapsed or amount of data cache exceeds
 		defined limit.

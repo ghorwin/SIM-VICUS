@@ -100,6 +100,7 @@ void FMIDescription::checkParameters() {
 	}
 }
 
+
 bool FMIDescription::hasInputVariable(const FMIVariableDefinition & var) const {
 	for (const FMIVariableDefinition & v : m_inputVariables)
 		if (v.sameModelVarAs(var)) return true;

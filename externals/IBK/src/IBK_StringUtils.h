@@ -136,6 +136,14 @@ std::string val2string(const T val) {
 	return strm.str();
 }
 
+
+/*! Converts the boolean 'val' to a string. */
+template <>
+inline std::string val2string<bool>(const bool val) {
+	return (val ? "true" : "false");
+}
+
+
 /*! Converts the value 'val' to a string with given precision. */
 template <class T>
 std::string val2string(const T val, const int precision) {
@@ -190,6 +198,9 @@ T string2val(const std::string& str) {
 
 template <>
 double string2val<double>(const std::string& str);
+
+template <>
+bool string2val<bool>(const std::string& str);
 
 /*! Attempts to extract a numerical value from a string.
 	Returns the def value in case of non valid string.

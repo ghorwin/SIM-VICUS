@@ -47,7 +47,7 @@ public:
 	/*! Absolute tolerance to compute epsilon in difference-quotient approximation. */
 	double									m_absToleranceDQ;
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size. */
 	std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases

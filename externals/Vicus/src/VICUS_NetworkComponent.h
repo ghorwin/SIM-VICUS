@@ -28,6 +28,7 @@
 
 #include <IBK_MultiLanguageString.h>
 #include <IBK_Parameter.h>
+#include <IBK_IntPara.h>
 
 #include <QColor>
 
@@ -50,39 +51,59 @@ namespace VICUS {
 class NetworkComponent : public AbstractDBElement {
 public:
 
+	NetworkComponent() = default;
+
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
+		// from NANDRAD::HydraulicNetworkComponent
 		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
 		MT_ConstantMassFluxPump,			// Keyword: ConstantMassFluxPump			'Pump with constant/externally defined mass flux'
 		MT_ControlledPump,					// Keyword: ControlledPump					'Pump with pressure head controlled based on flow controller'
+		MT_VariablePressurePump,			// Keyword: VariablePressurePump			'Pump with linear pressure head curve (dp-v controlled pump)'
 		MT_HeatExchanger,					// Keyword: HeatExchanger					'Simple heat exchanger with given heat flux'
-		MT_HeatPumpIdealCarnotSourceSide,	// Keyword: HeatPumpIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
-		MT_HeatPumpIdealCarnotSupplySide,	// Keyword: HeatPumpIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
-		MT_HeatPumpRealSourceSide,			// Keyword: HeatPumpRealSourceSide			'On-off-type heat pump based on polynoms, installed at source side'
+		MT_HeatPumpVariableIdealCarnotSourceSide,	// Keyword: HeatPumpVariableIdealCarnotSourceSide	'Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)'
+		MT_HeatPumpVariableIdealCarnotSupplySide,	// Keyword: HeatPumpVariableIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
+		MT_HeatPumpVariableSourceSide,		// Keyword: HeatPumpVariableSourceSide		'Heat pump with variable heating power based on polynom for COP, installed at source side'
+		MT_HeatPumpOnOffSourceSide,			// Keyword: HeatPumpOnOffSourceSide			'On-off-type heat pump based on polynoms for heating power and el. power, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
+		MT_PressureLossElement,				// Keyword: PressureLossElement				'Adiabatic element with pressure loss defined by zeta-value'
 		NUM_MT
 	};
 
 	/*! Parameters for the component. */
 	enum para_t {
+		// from NANDRAD::HydraulicNetworkComponent
 		P_HydraulicDiameter,					// Keyword: HydraulicDiameter					[mm]	'Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)'
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
-		P_PressureHead,							// Keyword: PressureHead						[Pa]	'Pressure head for a pump'
+		P_PressureHead,							// Keyword: PressureHead						[Bar]	'Pump predefined pressure head'
 		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
 		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
 		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
+		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Bar]	'Pump maximum pressure head at point of minimal mass flow of pump'
+		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Pump maximum electrical power at point of optimal operation'
+		P_DesignPressureHead,					// Keyword: DesignPressureHead					[Bar]	'Design pressure head of VariablePressureHeadPump'
+		P_DesignMassFlux,						// Keyword: DesignMassFlux						[kg/s]	'Design mass flux of VariablePressureHeadPump'
+		P_PressureHeadReductionFactor,			// Keyword: PressureHeadReductionFactor			[---]	'Factor to reduce pressure head of VariablePressureHeadPump'
 		P_Volume,								// Keyword: Volume								[m3]	'Water or air volume of the component'
 		P_PipeMaxDiscretizationWidth,			// Keyword: PipeMaxDiscretizationWidth			[m]		'Maximum width/length of discretized volumes in pipe'
 		P_CarnotEfficiency,						// Keyword: CarnotEfficiency					[---]	'Carnot efficiency eta'
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
-		P_PressureLoss,							// Keyword: PressureLoss						[Pa]	'Pressure loss for Valve'
-		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Pa]	'Maximum pressure head at point of minimal mass flow of pump'
-		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Maximum electrical power at point of optimal operation of pump'
+		P_PressureLoss,							// Keyword: PressureLoss						[Bar]	'Pressure loss for valve'
+		P_MinimumOutletTemperature,				// Keyword: MinimumOutletTemperature			[C]		'Minimum outlet temperature of heat exchanger, used for clipping of heat extraction'
+		// additional parameters
+		P_PipeLength,							// Keyword: PipeLength							[m]		'Length of pipe'
 		NUM_P
+	};
+
+	/*! Whole number parameters. */
+	enum intPara_t {
+		IP_NumberParallelPipes,					// Keyword: NumberParallelPipes				[---]	'Number of parallel pipes in ground heat exchanger'
+		IP_NumberParallelElements,				// Keyword: NumberParallelElements			[---]	'Number of parallel elements'
+		NUM_IP
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
@@ -96,6 +117,34 @@ public:
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;
+
+	/*! returns the NANDRAD::HydraulicNetworkComponent parameters which may deviates from the VICUS one as we use the VICUS model
+	 * for GUI and preprocessing */
+	void nandradNetworkComponentParameter(IBK::Parameter *para) const;
+
+
+	// *** Static Functions
+
+	/*! returns the NANDRAD::HydraulicNetworkComponent ModelType which may deviates from the VICUS one as we use the VICUS model
+	 * for GUI and preprocessing */
+	static NANDRAD::HydraulicNetworkComponent::ModelType nandradNetworkComponentModelType(ModelType modelType);
+
+	/*! returns additional required parameters, not included in NANDRAD::HydraulicNetworkComponent */
+	static std::vector<unsigned int> additionalRequiredParameter(const ModelType modelType);
+
+	/*! returns optional parameters for the given model type */
+	static std::vector<unsigned int> optionalParameter(const ModelType modelType);
+
+	/*! returns additional required parameters */
+	static std::vector<unsigned int> requiredIntParameter(const ModelType modelType);
+
+	/*! checks additional required parameters, not included in NANDRAD::HydraulicNetworkComponent */
+	static void checkAdditionalParameter(const IBK::Parameter &para, const unsigned int numPara);
+
+	/*! checks required integer parameters */
+	static void checkIntParameter(const IBK::IntPara &para, const unsigned int numPara);
+
+	static bool hasPipeProperties(const ModelType modelType);
 
 	// *** PUBLIC MEMBER VARIABLES added for VICUS ***
 
@@ -114,6 +163,12 @@ public:
 
 	/*! Schedules for this component */
 	std::vector<unsigned int>			m_scheduleIds;									// XML:E
+
+	/*! Integer parameters. */
+	IBK::IntPara						m_intPara[NUM_IP];								// XML:E
+
+	/*! Reference id fo pipe properties for e.g. the GroundHeatExchanger model */
+	IDType								m_pipePropertiesId = INVALID_ID;				// XML:E
 
 
 	// *** PUBLIC MEMBER VARIABLES from NANDRAD::HydraulicNetworkComponent (without m_displayName) ***

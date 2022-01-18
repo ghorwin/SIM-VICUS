@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Same project as Integral/Mean output value test, but outputs are written into binary 'tsb' file</Comment>
+			<Created>2020-08-21</Created>
+			<LastEdited>2020-08-21</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Room" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">5</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<Integrator>ExplicitEuler</Integrator>
+			<IBK:Parameter name="InitialTimeStep" unit="s">600</IBK:Parameter>
+		</SolverParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<IBK:Flag name="PerezDiffuseRadiationModel">false</IBK:Flag>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
+			<Sensors>
+				<!-- Radiation sensors automatically provide sensor quantities like DirectSWRadOnPlane, DiffuseSWRadOnPlane, GlobalSWRadOnPlane and IncidenceAngle, which
+					can be queried as vector-valued results of the LOCATION object using the sensor ID as modelID-index. -->
+
+				<!-- Flat roof -->
+				<Sensor id="301">
+					<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
+					<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
+				</Sensor>
+
+
+			</Sensors>
+		</Location>
+		<Outputs>
+			<IBK:Flag name="BinaryFormat">true</IBK:Flag>
+			<TimeUnit>h</TimeUnit>
+			<Definitions>
+				<!-- minutely values - None -->
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutes</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>minutes</GridName>
+				</OutputDefinition>
+
+				<!-- hourly values - None -->
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<!-- hourly values - Mean -->
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Mean</TimeType>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Mean</TimeType>
+				</OutputDefinition>
+				
+				<!-- hourly values - Integral -->
+				<OutputDefinition>
+					<Quantity>DirectSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Integral</TimeType>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>DiffuseSWRadOnPlane[301]</Quantity>
+					<ObjectListName>Location</ObjectListName>
+					<GridName>hourly</GridName>
+					<TimeType>Integral</TimeType>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+				<OutputGrid name="minutes">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Location">
+				<FilterID>*</FilterID>
+				<ReferenceType>Location</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

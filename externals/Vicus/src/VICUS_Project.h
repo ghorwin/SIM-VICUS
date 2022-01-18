@@ -115,15 +115,37 @@ public:
 	*/
 	const VICUS::Object * objectById(unsigned int uniqueID) const;
 
+	/*! Searches through all buildings and tries to find a room with given room ID (this
+		is not the uniqueID, but the persistant id from the data model).
+		\note This function is rather expensive, try to limit its use.
+	*/
+	VICUS::Room * roomByID(unsigned int roomID);
+
+	/*! Const-version of the function above. */
+	const VICUS::Room * roomByID(unsigned int roomID) const {
+		return const_cast<Project*>(this)->roomByID(roomID);
+	}
+
 	/*! Searches through all buildings and tries to find a surface with given surface ID (this
-		is not the uniqueID, but the persistant id from the data model.
+		is not the uniqueID, but the persistant id from the data model).
+		\note This function is rather expensive, try to limit its use.
 	*/
 	VICUS::Surface * surfaceByID(unsigned int surfaceID);
+
+	/*! Const-version of the function above. */
+	const VICUS::Surface * surfaceByID(unsigned int surfaceID) const {
+		return const_cast<Project*>(this)->surfaceByID(surfaceID);
+	}
 
 	/*! Searches through all buildings and tries to find a subsurface with given subsurface ID (this
 		is not the uniqueID, but the persistant id from the data model).
 	*/
 	VICUS::SubSurface * subSurfaceByID(unsigned int surfID);
+
+	/*! Const-version of the function above. */
+	const VICUS::SubSurface * subSurfaceByID(unsigned int surfaceID) const {
+		return const_cast<Project*>(this)->subSurfaceByID(surfaceID);
+	}
 
 	/*! Selects objects and return set with pointers according to additional filters.
 		\param selectedObjs Here the pointers to selected objects are returned.
@@ -136,6 +158,13 @@ public:
 	void selectObjects(std::set<const Object *> &selectedObjs, SelectionGroups sg,
 					   bool takeSelected,
 					   bool takeVisible) const;
+
+	/*! This function collects the pointers to all selected sub surfaces.
+		This is a convenience function which essentially does the same as selectObjects, but
+		only returns visible and selected objects of type SubSurface.
+		\returns Returns true if any sub surface is selected (same as subSurfaces.size() > 0).
+	*/
+	bool selectedSubSurfaces(std::vector<const SubSurface*> & subSurfaces, const VICUS::Project::SelectionGroups &sg) const;
 
 	/*! This function collects the pointers to all selected surfaces.
 		This is a convenience function which essentially does the same as selectObjects, but
@@ -159,19 +188,29 @@ public:
 		This function throws an error message in case the conversion failed.
 		\param p The NANDRAD project to be populated.
 	*/
-	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack) const;
+	void generateNandradProject(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 //	void generateBuildingProjectData(NANDRAD::Project & p) const;
-	void generateNetworkProjectData(NANDRAD::Project & p) const;
+	void generateNetworkProjectData(NANDRAD::Project & p, QStringList & errorStack, const std::string & nandradProjectPath) const;
 
 
 	// *** STATIC FUNCTIONS ***
 
-	/*! This function computes the bounding box of all selected surfaces and the center point.
+	/*! This function computes the global bounding box of all selected surfaces and the center point.
 		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
 	*/
 	static IBKMK::Vector3D boundingBox(std::vector<const Surface*> &surfaces,
 									   std::vector<const SubSurface*> &subsurfaces,
 									   IBKMK::Vector3D &center);
+	/*! This function computes local the bounding box of all selected surfaces and the center point.
+		\returns Returns the dimensions of the bounding box and its center point in argument 'center'.
+	*/
+	static IBKMK::Vector3D boundingBox(std::vector<const VICUS::Surface*> &surfaces,
+										std::vector<const VICUS::SubSurface*> &subsurfaces,
+										IBKMK::Vector3D &center,
+										const IBKMK::Vector3D &offset,
+										const IBKMK::Vector3D &xAxis,
+										const IBKMK::Vector3D &yAxis,
+										const IBKMK::Vector3D &zAxis );
 
 	/*! Attempts to create new surface-surface connections based on the current selection.
 		Newly created component instances are stored in vector newComponentInstances alongside
@@ -242,91 +281,32 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack)const;
+	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad)const;
+
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
-							  NANDRAD::Project & p, QStringList & errorStack, std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
+							  NANDRAD::Project & p, QStringList & errorStack,
+							  std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
+
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
 									 NANDRAD::Project &p, const std::string &objListName)const;
 
-
-#if 0
-	// *** DIRK REMOVE BELOW ***
-
-
-
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+	/*! If available, reads a shading factor file and write the corresponding NANDRAD shading factors file using NANDRAD id's.
+		\param surfaceIdsVicusToNandrad Maps vicus IDs to NANDRAD ids, like nandradID = surfaceIdsVicusToNandrad[vicusID];
+		\param projectFilePath Full path to NANDRAD project file (used to generated path to shading factor file).
+		\param shadingFactorFilePath If function returns successfully, this path contains the full file path to the generated shading factors file.
+		\return Returns true on success, false on error. In case of error an appropriate error message has been written to log.
 	*/
-	struct IdMap {
-		std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
-		std::vector<unsigned int>						m_ids;				// this vector hold all ids (NANDRAD) in this space
-	};
+	bool generateShadingFactorsFile(const std::map<unsigned int, unsigned int> & surfaceIdsVicusToNandrad,
+									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
-	/*! Create an thermostat.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
+
+	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() function.
+		This map is updated in updatePointers().
 	*/
-	bool createThermostat(const VICUS::ZoneControlThermostat * thermo,
-						  const std::string &zoneTemplateDisplayName,
-						  NANDRAD::Project &p,
-						  std::vector<IdMap> &idMaps,
-						  const std::vector<unsigned int> &roomIds,
-						  std::string &thermoObjListName) const;
+	std::map<unsigned int, const VICUS::Object*>		m_objectPtr;
 
-
-	/*! Create ideal heating/cooling.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	bool createIdealHeatingCooling(const VICUS::ZoneIdealHeatingCooling * ideal,
-								   NANDRAD::Project &p,
-								   std::vector<IdMap> &idMaps,
-								   const std::string &objListNameThermostat) const;
-
-	/*! Return room name by id.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	std::string getRoomNameById(unsigned int id) const;
-
-	/*!
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	void exportSubSurfaces(QStringList & errorStack, const std::vector<VICUS::SubSurface> &subSurfs, std::vector<IdMap> &idMaps,
-						   const VICUS::ComponentInstance & ci, NANDRAD::ConstructionInstance &cinst) const;
-
-	/*! For mapping the SIM-VICUS ids to NANDRAD unique ids.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	enum IdSpaces {
-		Material,
-		Component,
-		ConstructionInstance,
-		Construction,
-		Window,
-		Interface,
-		Other,
-		Zone,
-		Profile,
-		NUM_IdSpaces
-	};
-
-	/*!
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	NANDRAD::Interface generateInterface(const VICUS::ComponentInstance & ci, unsigned int bcID,
-										 std::vector<IdMap> &maps,
-										 unsigned int & interfaceID, bool takeASide = true) const;
-
-	/*! Function to generate unique ID. First check predefined id. Add the Id to the container.
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	static unsigned int uniqueIdWithPredef2(IdSpaces idSpace, unsigned int id, std::vector<IdMap> &maps, bool makeNewId = false);
-
-	/*!
-		TODO Dirk, remove once ported to VICUS_ProjectGenerator
-	*/
-	std::map<unsigned int, unsigned int>			m_vicusToNandrad;	// mapping for VICUS to NANDRAD ids
-
-#endif
 };
 
 

@@ -1,0 +1,26 @@
+# Created:	Do. Dez. 2 17:23:58 2021
+# LastModified:	Fr. Dez. 3 16:40:15 2021
+
+tStart                   0 a
+tEnd                     60 d
+hMax                     30 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   12 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+simulator 0 0 IdealHeating #a0522d "BuildingModel/IdealHeating.fmu"
+simulator 1 0 HeatingModel #a0522d "HeatingModel/HeatingModel.fmu"
+
+graph IdealHeating.RoomTemperature HeatingModel.RoomTemperature
+graph HeatingModel.HeatingPower IdealHeating.HeatingLoad
+

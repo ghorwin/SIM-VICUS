@@ -168,6 +168,15 @@ QVariant SVClimateDataTableModel::headerData(int section, Qt::Orientation orient
 }
 
 
+const SVClimateFileInfo * SVClimateDataTableModel::infoForFilename(const QString & climateFilePath) const {
+	for (const SVClimateFileInfo & info : m_climateFiles) {
+		if (info.m_filename == climateFilePath)
+			return &info;
+	}
+	return nullptr;
+}
+
+
 void SVClimateDataTableModel::updateClimateFileList() {
 	beginResetModel();
 

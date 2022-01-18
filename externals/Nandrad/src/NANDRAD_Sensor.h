@@ -48,6 +48,14 @@ public:
 	/*! Checks for valid parameters (value ranges). */
 	void checkParameters() const;
 
+	/*! Quick create sensor helper function.
+		automatic calls checkParameters()
+		\param id -> sensor id
+		\param orientationDeg -> orientation in Deg, 0 - north, 90 - east, ...
+		\param inclinationDeg -> inclination in Deg, 0 - roof, 90 - wall, 180 - floor
+	*/
+	void createSensor(unsigned int id, double orientationDeg, double inclinationDeg);
+
 	// *** PUBLIC MEMBER VARIABLES ***
 
 	/*! Unique ID-number of the sensor.*/

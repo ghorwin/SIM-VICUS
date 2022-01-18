@@ -55,6 +55,10 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 			const std::string & attribName = attrib->NameStr();
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+			else if (attribName == "displayName")
+				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "type")
 				try {
 					m_type = (NodeType)KeywordList::Enumeration("NetworkNode::NodeType", attrib->ValueStr());
@@ -65,10 +69,6 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 				}
 			else if (attribName == "idSubNetwork")
 				m_idSubNetwork = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
-			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
-			else if (attribName == "visible")
-				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -131,14 +131,14 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.isEmpty())
+		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_visible != NetworkNode().m_visible)
+			e->SetAttribute("visible", "true");
 	if (m_type != NUM_NT)
 		e->SetAttribute("type", KeywordList::Keyword("NetworkNode::NodeType",  m_type));
 	if (m_idSubNetwork != VICUS::INVALID_ID)
 		e->SetAttribute("idSubNetwork", IBK::val2string<unsigned int>(m_idSubNetwork));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (m_visible != NetworkNode().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	{
 		std::vector<double> v = { m_position.m_x, m_position.m_y, m_position.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), IBK::vector2string<double>(v," "));

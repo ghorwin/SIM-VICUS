@@ -86,10 +86,10 @@ void IDGroup::setEncodedString(const std::string & encodedString) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error initializing IDGroup from String '%1'."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error initializing IDGroup from String '%1'.").arg(encodedString), FUNC_ID);		/// TODO Anne ich habe hier mal Änderungen durchgeführt bitte prüfen ob das richtig ist.
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError initializing IDGroup from String '%1'.").arg(ex2.what()).arg(encodedString)
+		throw IBK::Exception( IBK::FormatString("%1\nError initializing IDGroup from String '%2'.").arg(ex2.what()).arg(encodedString)
 							, FUNC_ID);
 	}
 }

@@ -327,7 +327,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddPersonLoad_clicked() {
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadPerson;
 
 	// open the Internal Loads DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsPersonEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddPersonLoad->setChecked(false);
 		return;
@@ -354,7 +354,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddElectricLoad_clicked() {
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadEquipment;
 
 	// open the Internal Loads DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsElectricEquipmentEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddElectricLoad->setChecked(false);
 		return;
@@ -379,7 +379,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddLightLoad_clicked() {
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IntLoadLighting;
 
 	// open the Internal Loads DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbInternalLoadsLightsEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbInternalLoadsLightsEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddLightLoad->setChecked(false);
 		return;
@@ -403,7 +403,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddInfiltration_clicked() {
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_Infiltration;
 	// open the infiltration DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbInfiltrationEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID) {
 		m_ui->pushButtonAddInfiltration->setChecked(false);
 		return;
@@ -427,7 +427,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddVentilationNatural_clicked(){
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_VentilationNatural;
 	// open the ventilation DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbVentilationNaturalEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddVentilationNatural->setChecked(false);
 		return;
@@ -451,7 +451,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddThermostat_clicked(){
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_ControlThermostat;
 	// open the thermostat DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbZoneControlThermostatEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbZoneControlThermostatEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddThermostat->setChecked(false);
 		return;
@@ -475,7 +475,7 @@ void SVDBZoneTemplateEditWidget::on_pushButtonAddIdealHeatingCooling_clicked(){
 	Q_ASSERT(m_current != nullptr);
 	VICUS::ZoneTemplate::SubTemplateType subType = VICUS::ZoneTemplate::ST_IdealHeatingCooling;
 	// open the ideal heating cooling DB dialog and let user select one
-	unsigned int id = SVMainWindow::instance().dbZoneIdealHeatingCoolingEditDialog()->select(VICUS::INVALID_ID);
+	unsigned int id = SVMainWindow::instance().dbZoneIdealHeatingCoolingEditDialog()->select(m_current->m_idReferences[subType]);
 	if (id == VICUS::INVALID_ID){
 		m_ui->pushButtonAddIdealHeatingCooling->setChecked(false);
 		return;

@@ -1,4 +1,13 @@
 extends: default
+base:
+  font-size: 10
+#  font-family: RobotoCondensed
+
+toc:
+  font-size: 9
+
+toc-h2:
+  font-style: bold
 
 #font:
 #  catalog:
@@ -8,18 +17,8 @@ extends: default
 #      bold: robotocondensed-bold.ttf
 #      bold_italic: robotocondensed-bold_italic.ttf
 
-base:
-  font-size: 9
-#  font-family: RobotoCondensed
-
 code:
   font-size: 8
-
-toc:
-  font-size: 10
-
-toc-h2:
-  font-style: bold
 
 heading:
   h1-font-size: $base-font-size * 2.2
@@ -38,13 +37,13 @@ page:
 
 image:
   align: center
-  
+
 footer:
   height: 0.75in
   line-height: 1
   recto:
     left:
-      content: '{title} {revnumber}, {revdate}_'
+      content: '_{document-title} {revnumber}_'
     right:
       content: '{section-or-chapter-title} | *{page-number}*'
   verso:

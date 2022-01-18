@@ -77,6 +77,15 @@ public:
 	/*! Copies current solution in m_y to m_yLast vector. */
 	void storeSolution();
 
+	/*! Computes and returns serialization size in bytes. */
+	std::size_t serializationSize() const;
+
+	/*! Stores control value at memory*/
+	void serialize(void* & dataPtr) const;
+
+	/*! Restores control value from memory.*/
+	void deserialize(void* & dataPtr);
+
 	/*! Container for flow element implementation objects.
 		Need to be populated before calling setup.
 	*/

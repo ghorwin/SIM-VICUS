@@ -61,9 +61,16 @@ public:
 	{
 	}
 
-	/*! Returns database element by ID, or nullptr if no element exists with this ID. */
+	/*! Returns const database element by ID, or nullptr if no element exists with this ID. */
 	const T * operator[](unsigned int id) const {
 		typename std::map<unsigned int, T>::const_iterator it = m_data.find(id);
+		if (it == m_data.end())		return nullptr;
+		else						return &(it->second);
+	}
+
+	/*! Returns database element by ID, or nullptr if no element exists with this ID. */
+	T * operator[](unsigned int id) {
+		typename std::map<unsigned int, T>::iterator it = m_data.find(id);
 		if (it == m_data.end())		return nullptr;
 		else						return &(it->second);
 	}
@@ -75,6 +82,9 @@ public:
 	const T * findEqual(const T & elem) const {
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); ++it) {
 			const T * elemPtr = &(it->second);
+			// Note: we compare relatively strict here, and so two DB definitions are considered
+			//       "different", even if only meta data like the displayname differs.
+			//       The user must cleanup/merge such DB elements afterwards with the "remove duplicates" feature.
 			if (elem.equal(elemPtr) == VICUS::AbstractDBElement::Equal)
 				return elemPtr;
 		}
@@ -85,6 +95,10 @@ public:
 	typename std::map<unsigned int, T>::const_iterator begin() const { return m_data.begin(); }
 	/*! Returns end for iterator-type read-only access to data store. */
 	typename std::map<unsigned int, T>::const_iterator end() const { return m_data.end(); }
+	/*! Returns begin for iterator-type access to data store. */
+	typename std::map<unsigned int, T>::iterator begin() { return m_data.begin(); }
+	/*! Returns end for iterator-type access to data store. */
+	typename std::map<unsigned int, T>::iterator end() { return m_data.end(); }
 	/*! Returns number of DB elements. */
 	size_t size() const { return m_data.size(); }
 	/*! Returns true if database is empty. */
@@ -103,6 +117,8 @@ public:
 		\param newData New object to be added.
 		\param suggestedId ID of object to insert (possibly when adding this data object from a project file), or 0,
 			if object was newly created and needs a new ID anyway.
+
+		\note New items are never built-in and will be local DB elements, automatically.
 	*/
 	unsigned int add(T & newData, unsigned int suggestedId = 0) {
 		// check if suggestedId is already used
@@ -131,6 +147,7 @@ public:
 		}
 		// set built-in flag to identify material as built-in or user-defined base on UI space
 		newData.m_builtIn = false;
+		newData.m_local = true;
 		m_data[newData.m_id] = newData;
 		// for now database is always modified when data is set, callers have to ensure that
 		// they don't re-set data with original data and id
@@ -154,11 +171,39 @@ public:
 	void removeUserElements() {
 		// iterate over all elements - mind: no increment of the iterator needed here!
 		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
-			if (it->second.m_builtIn)
+			if (it->second.m_builtIn || it->second.m_local)
 				++it;
 			else
 				it = m_data.erase(it); // remove it, and set it to next following element iterator
 		}
+	}
+
+	/*! Removes all user elements which are defined as local */
+	void removeLocalElements() {
+		// iterate over all elements - mind: no increment of the iterator needed here!
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
+			if (it->second.m_local && !it->second.m_builtIn)
+				it = m_data.erase(it); // remove it, and set it to next following element iterator
+			else
+				++it;
+		}
+	}
+
+	/*! Removes all local, not-referenced elements */
+	void removeNotReferencedLocalElements() {
+		// iterate over all elements - mind: no increment of the iterator needed here!
+		for (typename std::map<unsigned int, T>::const_iterator it = m_data.begin(); it != m_data.end(); /* no increment here */) {
+			if (!it->second.m_isReferenced && it->second.m_local && !it->second.m_builtIn)
+				it = m_data.erase(it); // remove it, and set it to next following element iterator
+			else
+				++it;
+		}
+	}
+
+	/*! Local utility function which clears parents and children references using const cast */
+	void clearChildren() {
+		for (auto it=m_data.begin(); it!=m_data.end(); ++it)
+			it->second.m_childrenRefs.clear();
 	}
 
 	/*! Reads database from xml file.
@@ -209,6 +254,7 @@ public:
 				T obj;
 				obj.readXML(c2);
 				obj.m_builtIn = builtIn;
+				obj.m_local = false;  // objects we read from the DB are not local by definition
 
 				// check for existing DB element - must not exist, otherwise DB file is faulty
 				if (m_data.find(obj.m_id) != m_data.end()){
@@ -259,7 +305,7 @@ private:
 	std::map<unsigned int, T>					m_data;
 
 	/*! Counter that holds the first user material ID. */
-	const unsigned int							USER_ID_SPACE_START;
+	unsigned int								USER_ID_SPACE_START;
 	/*! Counter that holds the next unused user material ID. */
 	unsigned int								m_userIdCounter;
 };

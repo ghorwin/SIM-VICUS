@@ -77,10 +77,9 @@ void Interval::checkParameters() const {
 	}
 
 	// check units for all provided parameters
-	unsigned int time_base_id = IBK::Unit("s").base_id();
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
-			if (m_para[i].IO_unit.base_id() != time_base_id)
+			if (m_para[i].IO_unit.base_id() != IBK_UNIT_ID_SECONDS)
 				throw IBK::Exception( IBK::FormatString( "Parameter '%1' has an invalid unit, should be a time unit.").arg(m_para[i].name), FUNC_ID);
 		}
 	}

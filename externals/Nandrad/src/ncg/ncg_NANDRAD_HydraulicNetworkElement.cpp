@@ -60,13 +60,13 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "inletNodeId")
-				m_inletNodeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_inletNodeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "outletNodeId")
-				m_outletNodeId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_outletNodeId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "componentId")
-				m_componentId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_componentId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "pipePropertiesId")
-				m_pipePropertiesId = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_pipePropertiesId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "controlElementId")
 				m_controlElementId = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
@@ -127,16 +127,18 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("HydraulicNetworkElement");
 	parent->LinkEndChild(e);
 
-	e->SetAttribute("id", IBK::val2string<IDType>(m_id));
+	if (m_id != NANDRAD::INVALID_ID)
+		e->SetAttribute("id", IBK::val2string<IDType>(m_id));
 	if (m_inletNodeId != NANDRAD::INVALID_ID)
-		e->SetAttribute("inletNodeId", IBK::val2string<unsigned int>(m_inletNodeId));
+		e->SetAttribute("inletNodeId", IBK::val2string<IDType>(m_inletNodeId));
 	if (m_outletNodeId != NANDRAD::INVALID_ID)
-		e->SetAttribute("outletNodeId", IBK::val2string<unsigned int>(m_outletNodeId));
+		e->SetAttribute("outletNodeId", IBK::val2string<IDType>(m_outletNodeId));
 	if (m_componentId != NANDRAD::INVALID_ID)
-		e->SetAttribute("componentId", IBK::val2string<unsigned int>(m_componentId));
+		e->SetAttribute("componentId", IBK::val2string<IDType>(m_componentId));
 	if (m_pipePropertiesId != NANDRAD::INVALID_ID)
-		e->SetAttribute("pipePropertiesId", IBK::val2string<unsigned int>(m_pipePropertiesId));
-	e->SetAttribute("controlElementId", IBK::val2string<IDType>(m_controlElementId));
+		e->SetAttribute("pipePropertiesId", IBK::val2string<IDType>(m_pipePropertiesId));
+	if (m_controlElementId != NANDRAD::INVALID_ID)
+		e->SetAttribute("controlElementId", IBK::val2string<IDType>(m_controlElementId));
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 

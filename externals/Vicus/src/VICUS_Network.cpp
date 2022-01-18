@@ -47,7 +47,18 @@ namespace VICUS {
 
 
 Network::Network() {
-	setDefaultSizingParams();
+
+	// set default parameters for pipe sizing
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureSetpoint, 278.15);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
+
+	// other default parameters
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPipeDiscretization, 5);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_DefaultFluidTemperature, 20);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_InitialFluidTemperature, 20);
+	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_ReferencePressure, 0);
+
 }
 
 
@@ -138,10 +149,10 @@ void Network::updateNodeEdgeConnectionPointers() {
 }
 
 
-void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) const{
+void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe> & pipeDB) {
 
 	// process all edges and update their display radius
-	for (const VICUS::NetworkEdge & e : m_edges) {
+	for (VICUS::NetworkEdge & e : m_edges) {
 		double radius = 0.5;
 		if (e.m_idPipe != VICUS::INVALID_ID){
 			const VICUS::NetworkPipe * pipe = pipeDB[e.m_idPipe];
@@ -174,9 +185,8 @@ void Network::updateVisualizationRadius(const VICUS::Database<VICUS::NetworkPipe
 }
 
 
-void Network::setDefaultColors() const
-{
-	for (const NetworkEdge & edge: m_edges)
+void Network::setDefaultColors() {
+	for (NetworkEdge & edge: m_edges)
 		edge.m_color = Qt::lightGray;
 	for (const NetworkNode & node: m_nodes) {
 		switch (node.m_type) {
@@ -195,8 +205,7 @@ void Network::setDefaultColors() const
 }
 
 
-void Network::setVisible(bool visible)
-{
+void Network::setVisible(bool visible) {
 	m_visible = visible;
 	for (NetworkEdge &edge: m_edges)
 		edge.m_visible = visible;
@@ -204,8 +213,8 @@ void Network::setVisible(bool visible)
 		node.m_visible = visible;
 }
 
-NetworkNode *Network::nodeById(unsigned int id)
-{
+
+NetworkNode *Network::nodeById(unsigned int id) {
 	for (NetworkNode &n: m_nodes){
 		if (n.m_id == id)
 			return &n;
@@ -214,8 +223,8 @@ NetworkNode *Network::nodeById(unsigned int id)
 	return nullptr;
 }
 
-const NetworkNode *Network::nodeById(unsigned int id) const
-{
+
+const NetworkNode *Network::nodeById(unsigned int id) const {
 	for (const NetworkNode &n: m_nodes){
 		if (n.m_id == id)
 			return &n;
@@ -224,8 +233,8 @@ const NetworkNode *Network::nodeById(unsigned int id) const
 	return nullptr;
 }
 
-unsigned int Network::indexOfNode(unsigned int id) const
-{
+
+unsigned int Network::indexOfNode(unsigned int id) const {
 	for (unsigned int i=0; i<m_nodes.size(); ++i){
 		if (m_nodes[i].m_id == id)
 			return i;
@@ -244,11 +253,11 @@ QColor Network::colorHeatExchangeType(NANDRAD::HydraulicNetworkHeatExchange::Mod
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
 			return QColor("#F3722C");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline:
-			return QColor("#F8961E");
+			return QColor("#4cc9f0");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
 			return QColor("#F9C74F");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
-			return QColor("#364959");
+			return QColor("#f72585");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
 			return QColor("#90BE6D");
 		case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
@@ -445,19 +454,21 @@ int Network::nextUnconnectedBuilding() const{
 }
 
 
-// TODO : no copy needed anymore with new data structure ?
-void Network::cleanDeadEnds(Network &cleanNetwork, const unsigned maxSteps){
+void Network::cleanDeadEnds(){
 
-	for (unsigned step=0; step<maxSteps; ++step){
-		for (const NetworkNode &n: m_nodes)
+	for (unsigned i=0; i<m_nodes.size(); ++i){
+		for (const NetworkNode &n: m_nodes){
+			// look if this is a dead end
 			nodeById(n.m_id)->updateIsDeadEnd();
-	}
-	for (const NetworkEdge &edge: m_edges){
-		if (edge.m_node1->m_isDeadEnd || edge.m_node2->m_isDeadEnd)
-			continue;
-		unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
-		unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-		cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
+			if (n.m_isDeadEnd){
+				// if so, remove all edges and the node itself
+				for (NetworkEdge *e: n.m_edges)
+					m_edges.erase(m_edges.begin() + indexOfEdge(e->nodeId1(), e->nodeId2()) );
+				m_nodes.erase(m_nodes.begin() + indexOfNode(n.m_id));
+				updateNodeEdgeConnectionPointers();
+				break;
+			}
+		}
 	}
 }
 
@@ -541,7 +552,7 @@ void Network::removeShortEdges(const double &thresholdLength) {
 			// determine which of both nodeIds has already been processed (=exId)
 			// and which is of both is new (=newId)
 			unsigned int newId;
-			if (contains(processedIds, e->nodeId1()))
+			if (processedIds.find(e->nodeId1()) != processedIds.end())
 				newId = e->nodeId2();
 			else
 				newId = e->nodeId1();
@@ -575,10 +586,8 @@ void Network::removeShortEdges(const double &thresholdLength) {
 }
 
 
-void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) {
+void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<NetworkEdge *> > &minPathMap) const{
 	FUNCID(Network::findShortestPathForBuildings);
-
-	updateNodeEdgeConnectionPointers();
 
 	// check for source
 	std::vector<NetworkNode> sources;
@@ -588,7 +597,7 @@ void Network::findShortestPathForBuildings(std::map<unsigned int, std::vector<Ne
 
 	// iterate over all buildings
 	minPathMap.clear();
-	for (NetworkNode &node: m_nodes) {
+	for (const NetworkNode &node: m_nodes) {
 
 		if (node.m_type != NetworkNode::NT_Building)
 			continue;
@@ -719,7 +728,8 @@ FUNCID(Network::sizePipeDimensions);
 }
 
 
-void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Database<NetworkPipe> &pipeDB) {
+void Network::calcTemperatureChangeIndicator(const NetworkFluid & fluid, const Database<NetworkPipe> &pipeDB,
+											 std::map<unsigned int, std::vector<NetworkEdge *> > &shortestPaths) const{
 	FUNCID(Network::calcTemperatureChangeIndicator);
 
 	// check for source
@@ -729,46 +739,42 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 		throw IBK::Exception("Network has no source node. Set one node to type source.", FUNC_ID);
 
 	// set all edges heating demand = 0
-	for (NetworkEdge &edge: m_edges)
-		edge.m_nominalHeatingDemand = 0;
-
-	// set all edges heating demand = 0
-	for (NetworkEdge &edge: m_edges)
-		edge.m_nominalHeatingDemand = 0;
+	for (const NetworkEdge &edge: m_edges)
+		const_cast<NetworkEdge&>(edge).m_nominalHeatingDemand = 0;
 
 	// find shortest path for each building node to closest source node
-	std::map<unsigned int, std::vector<NetworkEdge *> > shortestPaths;
+	shortestPaths.clear();
 	findShortestPathForBuildings(shortestPaths);
 
 	// now for each building node: go along shortest path and add the nodes heating demand to each edge along that path
 	for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
-		NetworkNode *building = nodeById(it->first);			// get pointer to building node
+		const NetworkNode *building = nodeById(it->first);			// get pointer to building node
 		std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
 		for (NetworkEdge * edge: shortestPath)
 			edge->m_nominalHeatingDemand += building->m_maxHeatingDemand.value;
 	}
 
 	// in case there is a pipe which is not part of any path (e.g. in circular grid): assign the adjacent heating demand
-	for (NetworkEdge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 		if (e.m_nominalHeatingDemand <= 0){
 			std::set<NetworkEdge *> edges1, edges2;
-			e.m_nominalHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
+			const_cast<NetworkEdge&>(e).m_nominalHeatingDemand = 0.5 * ( e.m_node1->adjacentHeatingDemand(edges1)
 										+ e.m_node2->adjacentHeatingDemand(edges2) );
 		}
 	}
 
 	// fluid properties
-	const double &rho = fluid->m_para[NetworkFluid::P_Density].value;
-	const double &kinvis = fluid->m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
-	const double &cp = fluid->m_para[NetworkFluid::P_HeatCapacity].value;
-	const double &lambda = fluid->m_para[NetworkFluid::P_Conductivity].value;
+	const double &rho = fluid.m_para[NetworkFluid::P_Density].value;
+	const double &kinvis = fluid.m_kinematicViscosity.m_values.value(m_para[P_TemperatureSetpoint].get_value("C"));
+	const double &cp = fluid.m_para[NetworkFluid::P_HeatCapacity].value;
+	const double &lambda = fluid.m_para[NetworkFluid::P_Conductivity].value;
 
 	// calculate temperature change indicator for each edge
-	for (NetworkEdge &e: m_edges){
+	for (const NetworkEdge &e: m_edges){
 
 		const NetworkPipe *pipe = pipeDB[e.m_idPipe];
 		Q_ASSERT(pipe != nullptr);
-		e.m_nominalMassFlow = e.m_nominalHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
+		const_cast<NetworkEdge&>(e).m_nominalMassFlow = e.m_nominalHeatingDemand / (m_para[P_TemperatureDifference].get_value("K") * cp);
 
 		double di = pipe->diameterInside();
 		double area = PI/4 * di * di;
@@ -784,24 +790,24 @@ void Network::calcTemperatureChangeIndicator(const NetworkFluid *fluid, const Da
 				);
 
 		// is dimensionless or [K/K] for interpretation
-		e.m_tempChangeIndicator = UAValue / (e.m_nominalMassFlow * cp);
+		const_cast<NetworkEdge&>(e).m_tempChangeIndicator = UAValue / (e.m_nominalMassFlow * cp);
 	}
 }
 
 
 void Network::findSourceNodes(std::vector<NetworkNode> &sources) const{
-	for (NetworkNode n: m_nodes){
+	for (const NetworkNode &n: m_nodes){
 		if (n.m_type==NetworkNode::NT_Source)
 			sources.push_back(n);
 	}
 }
 
 
-void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const NetworkNode &endNode,
-										   std::vector<NetworkEdge*> &pathEndToStart){
+void Network::dijkstraShortestPathToSource(const NetworkNode &startNode, const NetworkNode &endNode,
+										   std::vector<NetworkEdge*> &pathEndToStart) const{
 
 	// init: all nodes have infinte distance to start node and no predecessor
-	for (NetworkNode &n: m_nodes){
+	for (const NetworkNode &n: m_nodes){
 		n.m_distanceToStart = std::numeric_limits<double>::max();
 		n.m_predecessor = nullptr;
 	}
@@ -812,11 +818,11 @@ void Network::dijkstraShortestPathToSource(NetworkNode &startNode, const Network
 	while (visitedNodes.size() <= m_nodes.size()){
 		// find node with currently smallest distance to start, which has not yet been visited:
 		double minDistance = std::numeric_limits<double>::max();
-		NetworkNode *nMin = nullptr;
-		for (unsigned id = 0; id < m_nodes.size(); ++id){
-			if (visitedNodes.find(id) == visitedNodes.end() && nodeById(id)->m_distanceToStart < minDistance){
-				minDistance = nodeById(id)->m_distanceToStart;
-				nMin = nodeById(id);
+		const NetworkNode *nMin = nullptr;
+		for (const NetworkNode &n: m_nodes){
+			if (visitedNodes.find(n.m_id) == visitedNodes.end() && n.m_distanceToStart < minDistance){
+				minDistance = n.m_distanceToStart;
+				nMin = &n;
 			}
 		}
 		IBK_ASSERT(nMin != nullptr);
@@ -899,21 +905,26 @@ size_t Network::numberOfBuildings() const{
 	return count;
 }
 
-
-void Network::setDefaultSizingParams() {
-	m_para[Network::para_t::P_TemperatureSetpoint] = IBK::Parameter("TemperatureSetpoint", 5, IBK::Unit("C"));
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_TemperatureDifference, 5);
-	KeywordList::setParameter(m_para, "Network::para_t", Network::para_t::P_MaxPressureLoss, 150);
-}
-
-
-void Network::writeNetworkCSV(const IBK::Path &file) const{
+void Network::writeNetworkNodesCSV(const IBK::Path &file) const{
 	std::ofstream f;
 	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
-	for (const NetworkEdge &e: m_edges){
+	for (const NetworkNode &n: m_nodes){
+		f.precision(0);
+		f << std::fixed << n.m_id << "\t";
 		f.precision(10);
-		f << std::fixed << e.m_node1->m_position.m_x << "\t" << e.m_node1->m_position.m_y << "\t"
-		  << e.m_node2->m_position.m_x << "\t" << e.m_node2->m_position.m_y << "\t" << e.length() << std::endl;
+		f << std::fixed << n.m_position.m_x << "\t" << n.m_position.m_y << "\t" << std::endl;
+	}
+	f.close();
+}
+
+void Network::writeNetworkEdgesCSV(const IBK::Path &file) const{
+	std::ofstream f;
+	f.open(file.str(), std::ofstream::out | std::ofstream::trunc);
+	f.precision(0);
+	for (const NetworkEdge &e: m_edges){
+		f << std::fixed << e.m_idNodeInlet << "\t" <<e.m_idNodeOutlet << "\t" << e.m_idSoil;
+		f.precision(10);
+		f << "\t" << e.m_cumulativeTempChangeIndicator << "\t" << e.length() << std::endl;
 	}
 	f.close();
 }

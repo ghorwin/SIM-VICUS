@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="IdealHeating">
+			<Position>0, 0</Position>
+			<Size>128, 128</Size>
+			<!--Sockets-->
+			<Sockets>
+				<Socket name="Room.HeatingSetpointSchedule">
+					<Position>0, 16</Position>
+					<Orientation>Horizontal</Orientation>
+					<Inlet>true</Inlet>
+				</Socket>
+			</Sockets>
+		</Block>
+	</Blocks>
+</BlockMod>

@@ -26,10 +26,6 @@ include_directories(
 	${PROJECT_SOURCE_DIR}/../../../externals/SuiteSparse/src/include
 )
 
-if (OPENMP_FOUND)
-	set( SUNDIALS_OMP_LINK_LIBS sundials_nvecopenmp_static )
-endif (OPENMP_FOUND)
-
 # link against the dependent libraries
 set( LINK_LIBS
 	NandradModel
@@ -44,7 +40,6 @@ set( LINK_LIBS
 	sundials_cvode_static
 	sundials_kinsol_static
 	sundials_nvecserial_static
-	${SUNDIALS_OMP_LINK_LIBS}
 	SuiteSparse
 )
 

@@ -123,6 +123,11 @@ public:
 	/*! Only required for electric equipment, lights, other. */
 	unsigned int					m_idPowerManagementSchedule = INVALID_ID;	// XML:E
 
+	/*! Flag for activate the CO2 production of persons.
+		The emission rate is 3.82E-8 m3/Ws
+	*/
+	bool							m_activateCO2Production = false;			// XML:E
+
 	/*! List of parameters. */
 	IBK::Parameter					m_para[NUM_P];								// XML:E
 };

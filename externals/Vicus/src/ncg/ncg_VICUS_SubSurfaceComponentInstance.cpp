@@ -58,6 +58,20 @@ void SubSurfaceComponentInstance::readXML(const TiXmlElement * element) {
 			}
 			attrib = attrib->Next();
 		}
+		// search for mandatory elements
+		// reading elements
+		const TiXmlElement * c = element->FirstChildElement();
+		while (c) {
+			const std::string & cName = c->ValueStr();
+			if (cName == "IdShadingSystem")
+				m_idShadingSystem = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdShadingControlModel")
+				m_idShadingControlModel = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else {
+				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+			}
+			c = c->NextSiblingElement();
+		}
 	}
 	catch (IBK::Exception & ex) {
 		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SubSurfaceComponentInstance' element."), FUNC_ID);
@@ -80,6 +94,10 @@ TiXmlElement * SubSurfaceComponentInstance::writeXML(TiXmlElement * parent) cons
 		e->SetAttribute("idSideASurface", IBK::val2string<unsigned int>(m_idSideASurface));
 	if (m_idSideBSurface != VICUS::INVALID_ID)
 		e->SetAttribute("idSideBSurface", IBK::val2string<unsigned int>(m_idSideBSurface));
+	if (m_idShadingSystem != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdShadingSystem", nullptr, std::string(), IBK::val2string<unsigned int>(m_idShadingSystem));
+	if (m_idShadingControlModel != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdShadingControlModel", nullptr, std::string(), IBK::val2string<unsigned int>(m_idShadingControlModel));
 	return e;
 }
 

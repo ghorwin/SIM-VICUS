@@ -2,14 +2,6 @@
 
 project( QtExt )
 
-# configuration file options
-option( QTEXT_DONT_USE_NATIVE_FILEDIALOG "Uses the custom file dialog provided by Qt, rather than the native OS specific dialog." ON )
-
-configure_file(
-	${PROJECT_SOURCE_DIR}/../../src/QtExt_configuration.h.in
-	${PROJECT_SOURCE_DIR}/../../src/QtExt_configuration.h
-)
-
 # collect a list of all source files
 file( GLOB LIB_SRCS ${PROJECT_SOURCE_DIR}/../../src/*.cpp )
 
@@ -25,6 +17,7 @@ set( LIB_QRCS ${PROJECT_SOURCE_DIR}/../../resources/QtExt.qrc )
 include_directories(
 	${PROJECT_SOURCE_DIR}/../../src			# needed so that ui-generated header files find our own headers
 	${PROJECT_SOURCE_DIR}/../../../IBK/src
+	${PROJECT_SOURCE_DIR}/../../../IBKMK/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5PrintSupport_INCLUDE_DIRS}
 	${Qt5Network_INCLUDE_DIRS}

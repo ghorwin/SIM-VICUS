@@ -14,11 +14,21 @@
 			<SubDir Color="#550000" Checked="0">InfiltrationScheduledSingleZone</SubDir>
 			<SubDir Color="#ffaaff" Checked="0">InfiltrationScheduledSingleZone.VC14_win64</SubDir>
 			<SubDir Color="#c66300" Checked="0">InfiltrationScheduledSingleZone.gcc_linux</SubDir>
+			<SubDir Color="#ffaaff" Checked="0">InfiltrationScheduledWithBaseACR2ZonesRealClimate</SubDir>
 			<SubDir Color="#ffaaff" Checked="0">InfiltrationScheduledWithBaseACRSingleZone</SubDir>
 			<SubDir Color="#ff5500" Checked="0">InfiltrationScheduledWithBaseACRSingleZone.gcc_linux</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+	<!--Quantity translation map.-->
+	<QuantityTranslations>
+		<Entry org="Zone(id=1)">Office</Entry>
+		<Entry org="Zone(id=2)">Kitchen</Entry>
+		<Entry org="Zone(id=3)">Bathroom</Entry>
+	</QuantityTranslations>
 
 	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
@@ -374,7 +384,7 @@
 						<TitleSpacing>30</TitleSpacing>
 					</Axis>
 					<Axis index="1" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Raumlufttemperatur [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">C</IBK:Unit>
@@ -384,7 +394,7 @@
 						<TitleSpacing>30</TitleSpacing>
 					</Axis>
 					<Axis index="2" enabled="0" autoscale="0">
-						<TitleText>$quantity [$unit]</TitleText>
+						<TitleText>Lüftungsrate [$unit]</TitleText>
 						<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
 						<LabelFont>Roboto Condensed,9,-1,5,50,0,0,0,0,0</LabelFont>
 						<IBK:Unit name="AxisUnit">1/h</IBK:Unit>
@@ -392,15 +402,93 @@
 					</Axis>
 				</AxisProperties>
 				<ChartProperties>
-					<TitleText>$project: $basename</TitleText>
+					<TitleText>Komforttemperaturbereich: 18..24 °C</TitleText>
 					<TitleFont>Roboto Condensed,10,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
-						<Alignment>1</Alignment>
 						<MaxColumns>1</MaxColumns>
 						<Font>Roboto Condensed,8,-1,5,50,0,0,0,0,0</Font>
 					</Legend>
+				</ChartProperties>
+			</ChartModel>
+		</Mapper>
+		<Mapper name="$project: $basename">
+			<Extractors>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACR2ZonesRealClimate/results/states.tsv?4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACR2ZonesRealClimate/results/states.tsv?4|5|6</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>2</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACR2ZonesRealClimate/results/states.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>1</ColumnIndex>
+				</Extractor>
+				<Extractor>
+					<DataIOFileName>InfiltrationScheduledWithBaseACR2ZonesRealClimate/results/states.tsv?1|2|3</DataIOFileName>
+					<CutType>NoCut</CutType>
+					<DataFormat>DF_2D</DataFormat>
+					<DataType>T_REFERENCE</DataType>
+					<ColumnIndex>0</ColumnIndex>
+				</Extractor>
+			</Extractors>
+			<ChartModel chartType="2D">
+				<SeriesProperties>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#a40000</PenColor>
+						<MarkerColor>#a40000</MarkerColor>
+					</Series>
+					<Series>
+						<TitleText>$quantity</TitleText>
+						<PenColor>#ef2929</PenColor>
+						<MarkerColor>#ef2929</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>Bathroom</TitleText>
+						<PenColor>#4e9a06</PenColor>
+						<MarkerColor>#4e9a06</MarkerColor>
+					</Series>
+					<Series leftAxis="0">
+						<TitleText>Office</TitleText>
+						<PenColor>#add53b</PenColor>
+						<MarkerColor>#add53b</MarkerColor>
+					</Series>
+				</SeriesProperties>
+				<AxisProperties>
+					<Axis index="0" autoscale="0">
+						<TitleText>Time [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">h</IBK:Unit>
+						<Maximum>5524.1231209735142</Maximum>
+						<Minimum>5355.7623478883324</Minimum>
+					</Axis>
+					<Axis index="1" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">C</IBK:Unit>
+						<Maximum>34.174999999999997</Maximum>
+						<Minimum>-10.299999999999997</Minimum>
+					</Axis>
+					<Axis index="2" enabled="0" autoscale="0">
+						<TitleText>$quantity [$unit]</TitleText>
+						<IBK:Unit name="AxisUnit">1/h</IBK:Unit>
+						<Maximum>4</Maximum>
+					</Axis>
+				</AxisProperties>
+				<ChartProperties>
+					<TitleText>$project: $basename</TitleText>
+					<Legend />
 				</ChartProperties>
 			</ChartModel>
 		</Mapper>
@@ -410,7 +498,7 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="3" size1="1" size2="1" orientation="2" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="4" size1="1" size2="1" orientation="2" />
 		<FocusedWidget>0</FocusedWidget>
 	</Splitting>
 

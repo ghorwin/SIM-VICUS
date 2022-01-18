@@ -40,6 +40,7 @@
 #include "SVDatabase.h"
 #include "SVSettings.h"
 
+
 SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVSmartSelectDialog)
@@ -48,6 +49,7 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 
 	m_ui->verticalLayoutNetwork->setContentsMargins(0,6,0,0);
 	m_ui->gridLayoutBuildings->setContentsMargins(0,6,0,0);
+	m_ui->labelFilterInfo->setText("");
 
 	QPushButton * btn = new QPushButton(tr("Select"));
 	m_ui->buttonBox->addButton(btn, QDialogButtonBox::NoRole);
@@ -77,11 +79,10 @@ SVSmartSelectDialog::SVSmartSelectDialog(QWidget *parent) :
 	m_ui->checkBoxMaxHeatingDemandAbove->setChecked(false);
 	m_ui->checkBoxLengthBelow->setChecked(false);
 	m_ui->checkBoxLengthAbove->setChecked(false);
+	m_ui->checkBoxNodeId->setChecked(false);
+	m_ui->checkBoxNodeDisplayName->setChecked(false);
+	m_ui->checkBoxMaxHeatingDemandEqualTo->setChecked(false);
 
-	m_ui->lineEditMaxHeatingDemandAbove->setEnabled(false);
-	m_ui->lineEditMaxHeatingDemandBelow->setEnabled(false);
-	m_ui->lineEditLengthAbove->setEnabled(false);
-	m_ui->lineEditLengthBelow->setEnabled(false);
 
 	// populate static options
 	m_options.m_options.resize(3);
@@ -303,9 +304,19 @@ void SVSmartSelectDialog::onSelectClicked() {
 			if (m_ui->checkBoxMaxHeatingDemandAbove->isChecked() && m_ui->lineEditMaxHeatingDemandAbove->isValid())
 				maxHeatingDemandAboveFilter = m_ui->lineEditMaxHeatingDemandAbove->value();
 
+			// heating demand equal to value
+			double equalToHeatingDemandFilter = -1;
+			if (m_ui->checkBoxMaxHeatingDemandEqualTo->isChecked() && m_ui->lineEditMaxHeatingDemandEqualTo->isValid())
+				equalToHeatingDemandFilter = m_ui->lineEditMaxHeatingDemandEqualTo->value();
+
 			unsigned int idFilter = VICUS::INVALID_ID;
 			if (m_ui->checkBoxNodeId->isChecked() && m_ui->lineEditNodeId->isValid())
 				idFilter = (unsigned int)m_ui->lineEditNodeId->value();
+
+			QString nameFilter = "";
+			if (m_ui->checkBoxNodeDisplayName->isChecked())
+				nameFilter = m_ui->lineEditNodeDisplayName->text();
+
 
 			// now process all network objects and store IDs of selected nodes
 			std::set<unsigned int> nodeIDs;
@@ -319,6 +330,11 @@ void SVSmartSelectDialog::onSelectClicked() {
 				for (const VICUS::NetworkNode & n : nw.m_nodes) {
 				// apply filter rules
 
+					// name filter
+					if (!nameFilter.isEmpty() && n.m_displayName != nameFilter)
+						continue;
+
+					// id filter
 					if (idFilter != VICUS::INVALID_ID && n.m_id != idFilter)
 						continue;
 
@@ -326,10 +342,13 @@ void SVSmartSelectDialog::onSelectClicked() {
 					if (nodeTypeFilter != VICUS::NetworkNode::NUM_NT && n.m_type != nodeTypeFilter)
 						continue;
 
+					// heating demand filter
 					if (n.m_maxHeatingDemand.value > maxHeatingDemandBelowFilter)
 						continue;
-
 					if (n.m_maxHeatingDemand.value < maxHeatingDemandAboveFilter)
+						continue;
+					if ( equalToHeatingDemandFilter > 0 &&
+						 abs(n.m_maxHeatingDemand.value - equalToHeatingDemandFilter) > 0.1)
 						continue;
 
 					// all filters match, store unique ID of this node
@@ -413,6 +432,18 @@ void SVSmartSelectDialog::on_checkBoxLengthAbove_stateChanged(int arg1) {
 	m_ui->lineEditLengthAbove->setEnabled(arg1);
 }
 
+void SVSmartSelectDialog::on_checkBoxMaxHeatingDemandEqualTo_stateChanged(int arg1)
+{
+	bool checked = arg1;
+	m_ui->checkBoxMaxHeatingDemandAbove->setEnabled(!checked);
+	m_ui->checkBoxMaxHeatingDemandBelow->setEnabled(!checked);
+	m_ui->lineEditMaxHeatingDemandEqualTo->setEnabled(checked);
+}
+
+void SVSmartSelectDialog::on_checkBoxNodeDisplayName_stateChanged(int arg1)
+{
+	m_ui->lineEditNodeDisplayName->setEnabled(arg1);
+}
 
 void SVSmartSelectDialog::on_pushButtonReset_clicked() {
 	// reset current hierarchy level to 0
@@ -497,3 +528,6 @@ void SVSmartSelectDialog::updateButtonGrid() {
 	}
 
 }
+
+
+

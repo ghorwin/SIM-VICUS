@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QtExt::CoordinateIndexEdit</class>
+ <widget class="QWidget" name="QtExt::CoordinateIndexEdit">
+  <property name="geometry">
+   <rect>
+	<x>0</x>
+	<y>0</y>
+	<width>331</width>
+	<height>22</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+	<horstretch>0</horstretch>
+	<verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+   <property name="leftMargin">
+	<number>0</number>
+   </property>
+   <property name="topMargin">
+	<number>0</number>
+   </property>
+   <property name="rightMargin">
+	<number>0</number>
+   </property>
+   <property name="bottomMargin">
+	<number>0</number>
+   </property>
+   <item>
+	<widget class="QSpinBox" name="spinBox">
+	 <property name="minimumSize">
+	  <size>
+	   <width>0</width>
+	   <height>22</height>
+	  </size>
+	 </property>
+	 <property name="maximumSize">
+	  <size>
+	   <width>16777215</width>
+	   <height>22</height>
+	  </size>
+	 </property>
+	</widget>
+   </item>
+   <item>
+	<widget class="QtExt::ValidatingLineEdit" name="lineEdit"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QtExt::ValidatingLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>QtExt_ValidatingLineEdit.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

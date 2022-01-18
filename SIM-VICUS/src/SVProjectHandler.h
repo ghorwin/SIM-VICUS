@@ -239,6 +239,17 @@ public:
 	*/
 	VICUS::ViewSettings & viewSettings();
 
+	/*! Compares embedded database in project with built-in and user database in SIM-VICUS and imports
+		all not-yet-existing DB elements.
+		For existing DB elements the IDs are compared and if different, the IDs in the project are
+		adjusted.
+		Afterwards, the embedded database is removed from the project data.
+		\param pro The project to import; it will be modified in the process.
+		\return Returns true in the case of modified IDs. False, if the project's IDs are not modified.
+	*/
+	bool importEmbeddedDB(VICUS::Project & pro);
+
+
 signals:
 	/*! Emitted when the project has been modified.
 
@@ -315,18 +326,15 @@ private:
 	*/
 	void addToRecentFiles(const QString& fname);
 
-	/*! Compares embedded database in project with built-in and user database in SIM-VICUS and imports
-		all not-yet-existing DB elements.
-		For existing DB elements the IDs are compared and if different, the IDs in the project are
-		adjusted.
-		Afterwards, the embedded database is removed from the project data.
-		\return Returns true in the case of modified IDs. False, if the project's IDs are not modified.
-	*/
-	bool importEmbeddedDB();
-
 	/*! Set new colors for each invalid color in the surface data. */
 	void updateSurfaceColors();
 
+	/*! This function is called once a project has been read and the internal databases have been updated.
+		Here, all clearly invalid data elements are removed so that the project retains a meaningful state.
+
+		The argument 'haveModifiedProject' is set to true, if any changes were made to the project.
+	*/
+	void fixProject(bool & haveModifiedProject);
 
 	// *** PRIVATE DATA MEMBERS ***
 

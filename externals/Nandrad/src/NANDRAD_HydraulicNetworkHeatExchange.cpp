@@ -48,7 +48,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 												   "Temperature must be >= -200 C.");
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -68,7 +68,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -98,7 +98,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 				// check for external heat transfer coefficient
 				m_para[P_ExternalHeatTransferCoefficient].checkedValue("ExternalHeatTransferCoefficient",
-																	   "W/m2K", "W/m2K", 0, false,
+																	   "W/m2K", "W/m2K", 0, true,
 																	   std::numeric_limits<double>::max(),
 																	   true, nullptr);
 			} break;
@@ -145,7 +145,7 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 
 	} catch (IBK::Exception & ex) {
 		throw IBK::Exception(ex, IBK::FormatString("Missing/invalid parameters for heat exchange model '%1'.")
-			 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)),
+			 .arg(KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_modelType)),
 			 FUNC_ID);
 	}
 }
@@ -185,19 +185,22 @@ std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHe
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_HeatLossConstant, T_HeatLossSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_DynamicPipe:
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
 			return {T_HeatLossSplineCondenser};  // must not be adiabatic
-		case HydraulicNetworkComponent::MT_HeatPumpIdealCarnotSupplySide:
+		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 			return {T_TemperatureSplineEvaporator};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
 			return {T_HeatLossConstant, T_HeatLossSpline}; // must not be adiabatic
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump:
+		case HydraulicNetworkComponent::MT_VariablePressurePump:
 		case HydraulicNetworkComponent::MT_ControlledPump:
 		case HydraulicNetworkComponent::MT_ControlledValve:
-		case HydraulicNetworkComponent::MT_HeatPumpRealSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
+		case HydraulicNetworkComponent::MT_PressureLossElement:
 			return {NUM_T};
 		case HydraulicNetworkComponent::NUM_MT: ; // just to make compiler happy
 	}

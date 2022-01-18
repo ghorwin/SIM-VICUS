@@ -126,7 +126,7 @@ public:
 		\return		FormatString including the substitution argument.
 	*/
 	FormatString & arg(unsigned int i, int fieldWidth=0);
-#if !defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN64) || defined(__x86_64__)
 	/*! Inserts 'i' at the next location of '%' in the current format string.
 		Spezialization for size_t.
 	*/

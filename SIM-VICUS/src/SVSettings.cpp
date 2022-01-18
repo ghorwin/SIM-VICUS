@@ -31,6 +31,9 @@
 #include <QDebug>
 #include <QProcess>
 #include <QFontInfo>
+#include <QFileInfo>
+#include <QMessageBox>
+#include <QDir>
 
 #ifdef Q_OS_WIN
 #undef UNICODE
@@ -189,9 +192,6 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_minorGridColor.name()
 //				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
-
-
-	m_db.readDatabases();
 }
 
 
@@ -346,30 +346,43 @@ bool SVSettings::startProcess(const QString & executable,
 
 #else // Q_OS_WIN
 
-	// append project file to arguments, no quotes needed, since Qt takes care of that
-	commandLineArgs << projectFile;
 	qint64 pid;
 	switch (terminalEmulator) {
 		case TE_XTerm : {
 			commandLineArgs = QStringList() << "-hold"
 											<< "-fa" << "'Monospace'"
 											<< "-fs" << "9"
-											<< "-geometry" << "120x40" << "-e" << executable << commandLineArgs;
+											<< "-geometry" << "120x40" << "-e"
+											<< executable
+											<< commandLineArgs
+											<< projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
 			QString terminalProgram = "xterm";
 			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 		} break;
 
 		case TE_GnomeTerminal : {
-			//  gnome-terminal -- /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/run_in_gnome_terminal.sh  /home/ghorwin/git/SIM-VICUS/bin/release/NandradSolver /home/ghorwin/git/SIM-VICUS/data/vicus/Tutorial/Tutorial1.nandrad
-			QString executablePath = QFileInfo(executable).dir().absolutePath();
-			commandLineArgs = QStringList() << "--tab"  << "--" << executablePath + "/run_in_gnome_terminal.sh" << executable << commandLineArgs;
+			// create a bash script in a temporary location with the command line as content
+			QString projectPath = QFileInfo(projectFile).dir().absolutePath();
+			QString tmpPath = projectPath + "/" + QFileInfo(projectFile).baseName() + ".sh";
+			QFile bashFile(tmpPath);
+			bashFile.open(QFile::WriteOnly);
+			QTextStream strm(&bashFile);
+			strm << "#!/bin/bash\n\n";
+			strm << executable << " " << commandLineArgs.join(" ") << " \"" << projectFile << "\"" << "\n"; // mind the quotes around the project file here!
+			// add a line to halt script execution once done
+			strm << "exec bash\n";
+			// finally set executable permissions
+			bashFile.setPermissions(QFile::ReadUser | QFile::WriteUser | QFile::ExeUser | QFile::ExeGroup | QFile::ExeOther );
+			bashFile.close();
 
-//			commandLineArgs = QStringList() << "--tab"  << "--" << "/bin/bash" << executable << "\"" + commandLineArgs.join(" ") + "\"";
+			// Command line: "gnome-terminal -- /path/to/project/run/script.sh"
+			commandLineArgs = QStringList() << "--tab"  << "--" << tmpPath;
 			QString terminalProgram = "gnome-terminal";
 			success = QProcess::startDetached(terminalProgram, commandLineArgs, QString(), &pid);
 		} break;
 
 		default:
+			commandLineArgs << projectFile; // append project file to arguments, no quotes needed, since Qt takes care of that
 			success = QProcess::startDetached(executable, commandLineArgs, QString(), &pid);
 	}
 
@@ -383,25 +396,25 @@ bool SVSettings::startProcess(const QString & executable,
 
 QString SVSettings::nandradSolverExecutable() {
 	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradSolver").filePath();
-#ifdef WIN32
+#ifdef _WIN32
 	solverExecutable += ".exe";
-#endif // WIN32
+#endif // _WIN32
 	return solverExecutable;
 }
 
 QString SVSettings::nandradFMUGeneratorExecutable() {
 	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/NandradFMUGenerator").filePath();
-#ifdef WIN32
+#ifdef _WIN32
 	solverExecutable += ".exe";
-#endif // WIN32
+#endif // _WIN32
 	return solverExecutable;
 }
 
 QString SVSettings::view3dExecutable() {
 	QString solverExecutable = QFileInfo(SVSettings::instance().m_installDir + "/View3D").filePath();
-#ifdef WIN32
+#ifdef _WIN32
 	solverExecutable += ".exe";
-#endif // WIN32
+#endif // _WIN32
 	return solverExecutable;
 }
 
@@ -462,4 +475,111 @@ void SVSettings::ThemeSettings::setDefaults(SVSettings::ThemeType theme) {
 		break;
 		case NUM_TT: ; // just to make compiler happy
 	}
+}
+
+
+void SVSettings::linuxDesktopIntegration(QWidget * parent,
+							 const QString & iconLocation,
+							 const QString & appname,               // SIM-VICUS
+							 const QString & appIDname,             // simvicus
+							 const QString & desktopAppComment,     // Building Energy Performance and District Simulation
+							 const QString & desktopAppExec,        // /path/to/bin/SIM-VICUS
+							 const QString & fileExtension          // vicus   (for *.vicus)
+							 )
+{
+	// compose path to desktop-file, if existing, prompt user to "update" system integration, otherwise prompt to
+	// "setup" integration
+
+	// mimetype:     application/simvicus
+	// icon-name:    simvicus         (prefix must match mimetype)
+	// desktop-file: simvicus.desktop
+
+	QString desktopFile = QDir::home().absoluteFilePath(QString(".local/share/applications/%1.desktop").arg(appIDname));
+	if (QFileInfo::exists(desktopFile)) {
+		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should the existing desktop integration and %2-file type association be updated?").arg(fileExtension),
+										QMessageBox::Yes | QMessageBox::No);
+		if (res == QMessageBox::No)
+			return;
+	}
+	else {
+		int res = QMessageBox::question(parent, tr("Update Desktop Integration"), tr("Should %1 set up the desktop integration and associate %2-file types with %1?").arg(appname).arg(fileExtension),
+										QMessageBox::Yes | QMessageBox::No);
+		if (res == QMessageBox::No)
+			return;
+	}
+
+
+	// copy icon files, unless existing already
+	QStringList iconSizes;
+	iconSizes << "16" << "32" << "48" << "64" << "128" << "256" << "512";
+	QString iconRootDir = QDir::home().absoluteFilePath(".local/share/icons/hicolor");
+	foreach (QString s, iconSizes) {
+		// path to source icon file
+		QString iconFile = iconLocation + "/Icon_" + s + ".png";
+		if (!QFile::exists(iconFile)) {
+			qDebug() << QString("Missing icon file '%1'").arg(iconFile);
+			continue;
+		}
+
+		// compose resolution-specific target path
+		QString targetPath = QDir::home().absoluteFilePath(iconRootDir + "/%1x%1").arg(s);
+
+		// copy desktop icon file, for example, 48x48 icon goes to 'hicolor/48x48/apps'
+		QDir::home().mkpath( targetPath + "/apps"); // create path if not yet existing
+		QString desktopIconTargetFile = targetPath + QString("/apps/%1.png").arg(appIDname);
+		QFile::copy(iconFile, desktopIconTargetFile);
+
+		// copy mimetype icon file, for example, 48x48 icon goes to 'hicolor/48x48/mimetypes' and is named 'application-<appIDname>'
+		QDir::home().mkpath( targetPath + "/mimetypes"); // create path if not yet existing
+		QString mimetypeIconTargetPath = targetPath + QString("/mimetypes/application-%1.png").arg(appIDname);
+		QFile::copy(iconFile, mimetypeIconTargetPath);
+	}
+
+	// generate .desktop file, if it does not exist yet
+	QString desktopFileContents =
+			"[Desktop Entry]\n"
+			"Name=%1\n"
+			"Comment=%2\n"
+			"Exec=%3\n"
+			"Icon=%4\n"
+			"Terminal=false\n"
+			"Type=Application\n"
+			"Categories=Science\n"
+			"StartupNotify=true\n"
+			"MimeType=application/%4\n";
+	desktopFileContents = desktopFileContents.arg(appname, desktopAppComment, desktopAppExec, appIDname);
+	QFile deskFile(desktopFile);
+	deskFile.open(QFile::WriteOnly);
+	QTextStream strm(&deskFile);
+	strm << desktopFileContents;
+	deskFile.setPermissions((QFile::Permission)0x7755);
+	deskFile.close();
+
+	// also create Mime file for file type associations for 'application/appIDname'
+	QString mimeFileContents =
+			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+			"<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>\n"
+			"	<mime-type type=\"application/%1\">\n"
+			"		<comment>%2 project file</comment>\n"
+			"		<glob pattern=\"*.%3\"/>\n"
+			"	</mime-type>\n"
+			"</mime-info>\n";
+	mimeFileContents = mimeFileContents.arg(appIDname, appname, fileExtension);
+	QString mimeDir = QDir::home().absoluteFilePath(".local/share/mime");
+	QDir::home().mkpath( mimeDir + "/packages");
+	QString mimeFile = mimeDir + QString("/packages/%1.xml").arg(appIDname);
+	QFile mimeF(mimeFile);
+	mimeF.open(QFile::WriteOnly);
+	QTextStream strm2(&mimeF);
+	strm2 << mimeFileContents;
+	mimeF.close();
+
+	// mime-type database update is still needed; if that doesn't work, we can't help it
+	QProcess::execute("update-mime-database", QStringList() << mimeDir);
+
+	QProcess::execute("update-icon-caches", QStringList() << iconRootDir);
+
+	// Note: one still needs to logout/logon to make the icon association effective
+
+	QMessageBox::information(parent, tr("Update Desktop Integration"), tr("Created application shortcut and registered file association. Changes will take effect after next login."));
 }

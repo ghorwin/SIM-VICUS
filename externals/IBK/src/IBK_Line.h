@@ -49,14 +49,17 @@ namespace IBK {
 class Line {
 	/*! Tests whether the lines specified by their point coordinates intersect. */
 public:
+
 	/*! Returns true if both lines intersect each other.
 		This function computes the intersection point of the lines give by the first 8 parameters,
-		and stores this pointer in argument p if successful.
+		and stores this point in argument p1 if successful (returns 1 in this case).
+		If the lines are collinear and have a common segment, the segment is marked by p1 and p2 and
+		the function returns 2.
 	*/
-	static bool intersection(
+	static unsigned int intersection(
 		double line1_x1, double line1_y1, double line1_x2, double line1_y2,
 		double line2_x1, double line2_y1, double line2_x2, double line2_y2,
-		IBK::point2D<double> & p);
+		IBK::point2D<double> & p1, IBK::point2D<double> & p2);
 
 	/*! Default constructor. */
 	Line() {}
@@ -69,10 +72,10 @@ public:
 	bool isValid() const { return m_p1 != m_p2; }
 
 	/*! Convenience function around intersection(). */
-	bool intersects(const Line & other, IBK::point2D<double> & p) {
+	unsigned int intersects(const Line & other, IBK::point2D<double> & p1, IBK::point2D<double> & p2) {
 		return intersection(m_p1.m_x, m_p1.m_y, m_p2.m_x, m_p2.m_y,
 							other.m_p1.m_x, other.m_p1.m_y, other.m_p2.m_x, other.m_p2.m_y,
-							p);
+							p1, p2);
 	}
 
 	/*! First point of line. */

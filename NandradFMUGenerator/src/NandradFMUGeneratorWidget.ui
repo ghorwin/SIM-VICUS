@@ -6,18 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>828</width>
-    <height>489</height>
+    <width>1132</width>
+    <height>708</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>NANDRAD FMU Generator</string>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabGeneral">
       <attribute name="title">
@@ -88,7 +85,7 @@
        <item row="5" column="1" colspan="2">
         <widget class="QLineEdit" name="lineEditFMUPath">
          <property name="readOnly">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -111,50 +108,89 @@
       <attribute name="title">
        <string>Input variables</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="1" column="2">
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>775</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0">
-        <widget class="QToolButton" name="toolButtonAddInputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTableView" name="tableViewInputVars">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QTableWidget" name="tableWidgetInputVars"/>
-       </item>
-       <item row="1" column="1">
-        <widget class="QToolButton" name="toolButtonRemoveInputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QToolButton" name="toolButtonAddInputVariable">
+           <property name="icon">
+            <iconset resource="../resources/NandradFMUGenerator.qrc">
+             <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonRemoveInputVariable">
+           <property name="icon">
+            <iconset resource="../resources/NandradFMUGenerator.qrc">
+             <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>Variable name filter:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditInputVarNameFilter">
+           <property name="placeholderText">
+            <string>Variable name or parts of it (with/without wildcards)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Description filter:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditInputVarDescFilter">
+           <property name="placeholderText">
+            <string>Description  text or parts of it (with/without wildcards)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -162,53 +198,98 @@
       <attribute name="title">
        <string>Output variables</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="1" column="1">
-        <widget class="QToolButton" name="toolButtonRemoveOutputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QTableView" name="tableViewOutputVars"/>
        </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QTableWidget" name="tableWidgetOutputVars"/>
-       </item>
-       <item row="1" column="0">
-        <widget class="QToolButton" name="toolButtonAddOutputVariable">
-         <property name="icon">
-          <iconset resource="../resources/NandradFMUGenerator.qrc">
-           <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>775</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QToolButton" name="toolButtonAddOutputVariable">
+           <property name="icon">
+            <iconset resource="../resources/NandradFMUGenerator.qrc">
+             <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="toolButtonRemoveOutputVariable">
+           <property name="icon">
+            <iconset resource="../resources/NandradFMUGenerator.qrc">
+             <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Fixed</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>Variable name filter:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditOutputVarNameFilter">
+           <property name="placeholderText">
+            <string>Variable name or parts of it (with/without wildcards)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Description filter:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="lineEditOutputVarDescFilter">
+           <property name="placeholderText">
+            <string>Description  text or parts of it (with/without wildcards)</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="checkBoxUseDisplayNames">
+     <property name="text">
+      <string>Use display name for FMI Variables</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>
@@ -217,6 +298,13 @@
       <widget class="QPushButton" name="pushButtonSaveNandradProject">
        <property name="text">
         <string>Save FMU specification in NANDRAD project file</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonRefresh">
+       <property name="text">
+        <string>Reload project and update variable lists</string>
        </property>
       </widget>
      </item>

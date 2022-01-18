@@ -24,6 +24,7 @@
 */
 
 #include "VICUS_NetworkComponent.h"
+#include "VICUS_KeywordList.h"
 
 #include <NANDRAD_HydraulicNetworkComponent.h>
 
@@ -32,32 +33,57 @@ namespace VICUS {
 
 bool NetworkComponent::isValid(const Database<Schedule> &scheduleDB) const {
 
-	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = NANDRAD::HydraulicNetworkComponent::ModelType (m_modelType);
+	NANDRAD::HydraulicNetworkComponent::ModelType nandradModelType = nandradNetworkComponentModelType(m_modelType);
 
+	// check standard parameter
 	std::vector<unsigned int> paraVec = NANDRAD::HydraulicNetworkComponent::requiredParameter(nandradModelType, 1);
 	for (unsigned int i: paraVec){
 		try {
 			NANDRAD::HydraulicNetworkComponent::checkModelParameter(m_para[i], i);
-		} catch (IBK::Exception) {
+		} catch (...) {
 			return false;
 		}
 	}
 
-	// check if given schedules really exist
+	// check additional parameter
+	std::vector<unsigned int> paraVecAdd = additionalRequiredParameter(m_modelType);
+	for (unsigned int i: paraVecAdd){
+		try {
+			checkAdditionalParameter(m_para[i], i);
+		} catch (...) {
+			return false;
+		}
+	}
+
+	// check integer parameter
+	std::vector<unsigned int> paraVecInt = requiredIntParameter(m_modelType);
+	for (unsigned int i: paraVecInt){
+		try {
+			checkIntParameter(m_intPara[i], i);
+		} catch (...) {
+			return false;
+		}
+	}
+
+	// check if there is the correct number of schedules and given schedules really exist
 	std::vector<std::string> reqSchedules = NANDRAD::HydraulicNetworkComponent::requiredScheduleNames(nandradModelType);
-	std::vector<std::string> exSchedules;
+	if (reqSchedules.size() != m_scheduleIds.size())
+		return false;
 	for (unsigned int id: m_scheduleIds){
 		const Schedule *sched = scheduleDB[id];
 		if (sched == nullptr)
 			return false;
-		exSchedules.push_back(sched->m_displayName.string());
+		// TODO: implement sched.isValid() ?
+		// problem: does currently not work properly for annual schedules
 	}
 
 	// check if required schedules are given
-	for (const std::string &reqSchedule: reqSchedules){
-		if (std::find(exSchedules.begin(), exSchedules.end(), reqSchedule) == exSchedules.end())
-			return false;
-	}
+	if (reqSchedules.size() != m_scheduleIds.size())
+		return false;
+
+	// pipe properties
+	if (hasPipeProperties(m_modelType) && m_pipePropertiesId == INVALID_ID)
+		return false;
 
 	return true;
 }
@@ -69,21 +95,30 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 	if (otherNetComp == nullptr)
 		return Different;
 
-	// check id
-	if (m_id != otherNetComp->m_id)
-		return Different;
-
 	//check parameters
-	for (unsigned int i=0; i<NANDRAD::HydraulicNetworkComponent::NUM_P; ++i){
+	for (unsigned int i=0; i<NetworkComponent::NUM_P; ++i){
 		if (m_para[i] != otherNetComp->m_para[i])
 			return Different;
 	}
+	for (unsigned int i=0; i<NetworkComponent::NUM_IP; ++i){
+		if (m_intPara[i] != otherNetComp->m_intPara[i])
+			return Different;
+	}
+
 	if (m_modelType != otherNetComp->m_modelType)
 		return Different;
 
 	// check data table
 	if (m_polynomCoefficients != otherNetComp->m_polynomCoefficients)
 		return Different;
+
+	// check schedule ids
+	if (m_scheduleIds.size() != otherNetComp->m_scheduleIds.size())
+		return Different;
+	for (unsigned int i=0; i<m_scheduleIds.size(); ++i){
+		if (m_scheduleIds[i] != otherNetComp->m_scheduleIds[i])
+			return Different;
+	}
 
 	//check meta data
 	if (m_displayName != otherNetComp->m_displayName ||
@@ -94,6 +129,110 @@ AbstractDBElement::ComparisonResult NetworkComponent::equal(const AbstractDBElem
 		return OnlyMetaDataDiffers;
 
 	return Equal;
+}
+
+
+NANDRAD::HydraulicNetworkComponent::ModelType NetworkComponent::nandradNetworkComponentModelType(NetworkComponent::ModelType modelType) {
+	// default
+	Q_ASSERT((unsigned int)modelType <= (unsigned int)NANDRAD::HydraulicNetworkComponent::NUM_MT);
+	return NANDRAD::HydraulicNetworkComponent::ModelType(modelType);
+}
+
+
+void NetworkComponent::nandradNetworkComponentParameter(IBK::Parameter *para) const {
+	for (unsigned int i=0; i<P_PipeLength; ++i)
+		para[i] = m_para[i];
+}
+
+
+std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const NetworkComponent::ModelType modelType) {
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+			return {P_PipeLength};
+		default: break;
+	}
+	return {};
+}
+
+
+std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkComponent::ModelType modelType) {
+	// we use switch for maintanance reasons
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+		case MT_ConstantMassFluxPump:
+		case MT_ControlledPump:
+		case MT_HeatPumpVariableIdealCarnotSourceSide:
+		case MT_HeatPumpVariableIdealCarnotSupplySide:
+		case MT_HeatPumpVariableSourceSide:
+		case MT_HeatPumpOnOffSourceSide:
+		case MT_ControlledValve:
+		case MT_IdealHeaterCooler:
+		case MT_ConstantPressureLossValve:
+		case MT_PressureLossElement:
+		case NUM_MT:
+			break;
+		case MT_ConstantPressurePump:
+		case MT_VariablePressurePump:
+			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
+		case MT_HeatExchanger:
+			return {P_MinimumOutletTemperature};
+	}
+	return {};
+}
+
+
+std::vector<unsigned int> NetworkComponent::requiredIntParameter(const NetworkComponent::ModelType modelType) {
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+			return {IP_NumberParallelPipes};
+		case MT_PressureLossElement:
+			return {IP_NumberParallelElements};
+		default: break;
+	}
+	return {};
+}
+
+void NetworkComponent::checkAdditionalParameter(const IBK::Parameter & para, const unsigned int numPara) {
+	const char * enumName = "NetworkComponent::para_t";
+	const char * name = KeywordList::Keyword(enumName, (int)numPara);
+	const char * unit = KeywordList::Unit(enumName, (int)numPara);
+	switch ((para_t)numPara) {
+		case P_PipeLength:
+			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
+		break;
+		default: break;
+	}
+}
+
+
+void NetworkComponent::checkIntParameter(const IBK::IntPara & para, const unsigned int numPara) {
+	FUNCID(NetworkComponent::checkIntParameter);
+	const char * enumName = "NetworkComponent::para_t";
+	const char * name = KeywordList::Keyword(enumName, (int)numPara);
+	switch (numPara) {
+		case IP_NumberParallelPipes:
+		case IP_NumberParallelElements:
+		{
+			if (para.value < 1)
+				throw IBK::Exception(IBK::FormatString("% must be > 1").arg(name), FUNC_ID);
+		} break;
+		case NUM_IP: break;
+	}
+
+}
+
+
+bool NetworkComponent::hasPipeProperties(const NetworkComponent::ModelType modelType) {
+	switch (modelType) {
+		case MT_SimplePipe:
+		case MT_DynamicPipe:
+			return true;
+		default: break;
+	}
+	return false; // just for compiler
 }
 
 

@@ -101,8 +101,9 @@ public:
 
 		\param t_out Output time point (in seconds, simulation time).
 		\param t_secondsOfYear Output time point as offset to Midnight January 1st in the start year.
+		\param varSubstitutionMap map containing substitutions for header labels in files
 	*/
-	void writeOutputs(double t_out, double t_secondsOfYear);
+	void writeOutputs(double t_out, double t_secondsOfYear, const std::map<std::string, std::string> & varSubstitutionMap);
 
 	/*! When called, asks all output files to flush their cached data to file. */
 	void flushCache();

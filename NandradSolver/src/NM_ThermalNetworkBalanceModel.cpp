@@ -407,17 +407,34 @@ void ThermalNetworkBalanceModel::stateDependencies(std::vector<std::pair<const d
 
 		// try to retrieve individual dependencies of ydot and y
 		std::vector<std::pair<const double *, const double *> > deps;
+
+		// IMPORTANT: see documentation in HydraulicNetworkModel::stateDependencies().
+
+		// We collect mass flux and temperature dependencies.
+		// But, we only consider mass flux of the first element as representative for all others; all dependencies
+		// of any mass flux are already mapped to the first mass flux (i.e. when mass fluxes of element 5, 20 and 2000
+		// depend on respective controllers - instead the mass flux of the first element depends on said controllers)
+		// Effectively, mass flux [0] represents the entire network's mass fluxes with respect to dependencies.
+		// Hence, in the function calls below, we pass only the pointer to this mass flux so that the flow
+		// elements can formulate their dependencies on behalf of this mass flux.
+
+		const double * massFluxOfFirstElement = m_statesModel->m_p->m_fluidMassFluxes;
+
 		// special handling for elements without states
 		if (fe->nInternalStates() == 0) {
+			// mass flux and temperature dependencies: only consider mass flux of the first element as
+			// representative for all others
 			fe->dependencies(nullptr, nullptr,
-							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 massFluxOfFirstElement,
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
 							 deps);
 		}
 		else {
+			// mass flux and temperature dependencies: only consider mass flux of the first element as
+			// representative for all others
 			fe->dependencies(&m_ydot[offset], &m_statesModel->m_y[offset],
-							 m_statesModel->m_p->m_fluidMassFluxes + i,
+							 massFluxOfFirstElement,
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexInlet],
 							 &m_statesModel->m_p->m_nodalTemperatures[elem.m_nodeIndexOutlet],
 							 deps);

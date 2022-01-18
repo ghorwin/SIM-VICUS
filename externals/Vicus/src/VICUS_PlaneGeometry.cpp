@@ -96,67 +96,6 @@ void PlaneGeometry::removeVertex(unsigned int idx) {
 	triangulate(); // if we have a triangle/rectangle, this is detected here
 }
 
-// TODO : Dirk, move the 2 functions below to IBKMK_2DCalculations and port them to
-//        use Vector2D or point2D
-
-/*!
-	Copyright 2000 softSurfer, 2012 Dan Sunday
-	This code may be freely used and modified for any purpose
-	providing that this copyright notice is included with it.
-	SoftSurfer makes no warranty for this code, and cannot be held
-	liable for any real or imagined damage resulting from its use.
-	Users of this code must verify correctness for their application.
-
-	 isLeft(): tests if a point is Left|On|Right of an infinite line.
-		Input:  three points P0, P1, and P2
-		Return: >0 for P2 left of the line through P0 and P1
-				=0 for P2  on the line
-				<0 for P2  right of the line
-		See: Algorithm 1 "Area of Triangles and Polygons"
-	*/
-
-
-inline int isLeft( QPoint P0, QPoint P1, QPoint P2 )
-{
-	return ( (P1.x() - P0.x()) * (P2.y() - P0.y())
-			- (P2.x() -  P0.x()) * (P1.y() - P0.y()) );
-}
-
-/*!
-	URL: http://geomalgorithms.com/a03-_inclusion.html
-
-	Copyright 2000 softSurfer, 2012 Dan Sunday
-	This code may be freely used and modified for any purpose
-	providing that this copyright notice is included with it.
-	SoftSurfer makes no warranty for this code, and cannot be held
-	liable for any real or imagined damage resulting from its use.
-	Users of this code must verify correctness for their application.
-
-	wn_PnPoly(): winding number test for a point in a polygon
-	  Input:   P = a point,
-			   V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
-	  Return:  wn = the winding number (=0 only when P is outside)
-	*/
-int wn_PnPoly( QPoint P, QPoint *V, int n )
-{
-	int wn = 0;											// the  winding number counter
-
-	// loop through all edges of the polygon
-	for (int i=0; i<n; i++) {							// edge from V[i] to  V[i+1]
-		if (V[i].y() <= P.y()) {						// start y <= P.y
-			if (V[i+1].y()  > P.y())					// an upward crossing
-				 if (isLeft( V[i], V[i+1], P) > 0)		// P left of  edge
-					 ++wn;								// have  a valid up intersect
-		}
-		else {											// start y > P.y (no test needed)
-			if (V[i+1].y()  <= P.y())					// a downward crossing
-				 if (isLeft( V[i], V[i+1], P) < 0)		// P right of  edge
-					 --wn;								// have  a valid down intersect
-		}
-	}
-	return wn;
-}
-
 
 void PlaneGeometry::triangulate() {
 	m_triangulationData.clear();
@@ -224,8 +163,8 @@ void PlaneGeometry::triangulate() {
 
 		bool valid = true;
 		unsigned int pointCountHole = subSurfacePoly.size();
-		for(unsigned int j=0; j<pointCountHole; ++j) {
-			if (IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) == -1){
+		for (unsigned int j=0; j<pointCountHole; ++j) {
+			if (IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) == -1) {
 				valid = false;
 				break;
 			}
@@ -237,17 +176,20 @@ void PlaneGeometry::triangulate() {
 		}
 
 		// Second check: test intersections of all sub-surface polygon edges with edges of outer polygon
-		for(unsigned int j=0; j<pointCountHole; ++j){
+		for (unsigned int j=0; j<pointCountHole; ++j){
 			const IBKMK::Vector2D &point1 = subSurfacePoly[j];
 			const IBKMK::Vector2D &point2 = subSurfacePoly[(j+1) % pointCountHole];
 			IBKMK::Vector2D intersectP;
 			if (IBKMK::intersectsLine2D(parentPoly, point1, point2, intersectP)) {
 				// if intersection point is close to first or second point of line, polygon is ok
-				if (! (IBK::nearly_equal<3>(intersectP.distanceTo(point1),0) ||
-					   IBK::nearly_equal<3>(intersectP.distanceTo(point2),0)    )  )
+				const double EPS = 1e-4;
+				if (!  (intersectP.distanceTo(point1) < EPS ||  intersectP.distanceTo(point2) < EPS)    )
 				{
-					valid = false;
-					break;
+					// polygon is also ok, if intersection point is "on" the outer polygon
+					if (IBKMK::pointInPolygon(parentPoly, subSurfacePoly[j]) != 0) {
+						valid = false;
+						break;
+					}
 				}
 			}
 
@@ -285,22 +227,26 @@ void PlaneGeometry::triangulate() {
 
 	// loop all holes/windows
 	for (unsigned int holeIdx = 0; holeIdx < polygonStatus.size(); ++holeIdx) {
-		// skip all entirely invalid polygons
+		// skip all invalid polygons; polygons partially or fully outside the outer polygon
+		// are still being triangulated (and show), but they points are not used for the triangulation
+		// of the outer polygon with holes
 		if (polygonStatus[holeIdx] == 0)
 			continue;
 
-		const Polygon2D & p2 = m_holes[holeIdx];
+		const Polygon2D & p2 = m_holes[holeIdx]; // polygon of currently processed hole
 
 		std::vector<unsigned int> vertexIndexes; // mapping table, relates hole index to global index in 'points' vector
-		// process all vertexes
+		// process all vertexes and compose vector with 2D and 3D coordinates of the hole polygon
+		std::vector<IBKMK::Vector2D> matchedHolePoints;
+		std::vector<IBKMK::Vector3D> matchedHolePoints3D;
 		const std::vector<IBKMK::Vector2D> & holePoints = p2.vertexes();
 		for (const IBKMK::Vector2D & v : holePoints) {
 			// for each vertex in window do:
 			//  - check if vertex is already in vertex list, then re-use same vertex index,
 			//    otherwise add vertex and get new index
 			unsigned int j=0;
-			for (;j<points.size();++j)
-				if (points[j] == v) // TODO : here we might rather use some fuzzy comparison to avoid very tiny triangles
+			for (; j<points.size(); ++j)
+				if (points[j].similar(v, 1e-6))
 					break;
 			// store index (either of existing vertex or next vertex to be added)
 			vertexIndexes.push_back(j);
@@ -310,86 +256,84 @@ void PlaneGeometry::triangulate() {
 				IBKMK::Vector3D v3 = offset() + localX()*v.m_x + localY()*v.m_y;
 				vertexes.push_back(v3);
 			}
+			matchedHolePoints.push_back(points[j]);
+			matchedHolePoints3D.push_back(vertexes[j]);
 		}
 
-		// now the 'points' vector holds vertexes of the outer polygon and the holes
+		// now the 'points' vector holds vertexes of the outer polygon and all the holes
 
+//		IBK::IBK_Message("Edges\n", IBK::MSG_PROGRESS, "");
 		// add edges
 		std::vector<std::pair<unsigned int, unsigned int> > holeOnlyEdges;
 		for (unsigned int i=0, vertexCount = p2.vertexes().size(); i<vertexCount; ++i) {
 			unsigned int i1 = vertexIndexes[i];
 			unsigned int i2 = vertexIndexes[(i+1) % vertexCount];
 			// add edge to global edge list (for outer polygon), but only, if polygon is entirely valid
-			if (polygonStatus[holeIdx] == 2)
+			if (polygonStatus[holeIdx] == 2) {
 				edges.push_back(std::make_pair(i1, i2));
-			// add edge to vector with only hole edges
-			holeOnlyEdges.push_back(std::make_pair(i1, i2));
-		}
+	//			IBK::IBK_Message(IBK::FormatString("   edges[%1]    = (%2, %3)\n").arg(i).arg(i1).arg(i2), IBK::MSG_PROGRESS, "");
+			}
 
-		// create inverse vertex lookup map
-		std::vector<unsigned int> inverseVertexIndexes(points.size(), (unsigned int)-1);
-		for (unsigned int i=0; i<vertexIndexes.size();++i)
-			inverseVertexIndexes[vertexIndexes[i]] = i;
+			// add edge to vector with only hole edges (numbered from 0...vertexCount-1)
+			holeOnlyEdges.push_back(std::make_pair(i, (i+1) % vertexCount));
+		}
 
 		// Example: outer polygon is defined through vertexes 0...3
 		//          hole is defined through vertexes 4...7
 		//          'points' holds vertexes 0...7
-		//          'edges' holds all edges and uses all vertexes
-		//          'holeOnlyEdges' holds only edges of hole: 4-5, 5-6, 6-7, 7-4
+		//          'edges' holds all edges (of outer polygon and inner polyons) and uses all vertexes
+		//          'holeOnlyEdges' holds only edges of hole: 0-1, 1-2, 2-3, 3-0
 		//          'vertexIndexes' maps hole-vertex-index to global index:
 		//            vertexIndexes[0] = 4
 		//            vertexIndexes[1] = 5
 		//            vertexIndexes[2] = 6
 		//            vertexIndexes[3] = 7
-		//          'inverseVertexIndexes' maps global point index to hole-vertex-index:
-		//            inverseVertexIndexes[0] = -1 (unused)
-		//            inverseVertexIndexes[1] = -1
-		//            inverseVertexIndexes[2] = -1
-		//            inverseVertexIndexes[3] = -1
-		//            inverseVertexIndexes[4] = 0
-		//            inverseVertexIndexes[5] = 1
-		//            inverseVertexIndexes[6] = 2
-		//            inverseVertexIndexes[7] = 3
 
-		// now do the triangulation of the window alone
+		// now do the triangulation of hole alone
 		IBKMK::Triangulation triangu;
 
-		// IBK::point2D<double> is a IBKMK::Vector2D
-		// Note: we give the global points vector
-		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), holeOnlyEdges);
+		// Note: we give the global points vector and all edgs of all holes
+		//       IBK::point2D<double> is a IBKMK::Vector2D
+		triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(matchedHolePoints), holeOnlyEdges);
+
 		// and copy the triangle data and remap the points
-		std::vector<IBKMK::Vector3D> holeVertexes3D(holePoints.size());
 		for (auto tri : triangu.m_triangles) {
-			// TODO Dirk: only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
-			IBKMK::Triangulation::triangle_t remappedTriangle;
-			// remap the vertexes
-			remappedTriangle.i1 = inverseVertexIndexes[tri.i1]; // index of local hole vertex
-			holeVertexes3D[remappedTriangle.i1] = vertexes[tri.i1];
-
-			remappedTriangle.i2 = inverseVertexIndexes[tri.i2]; // index of local hole vertex
-			holeVertexes3D[remappedTriangle.i2] = vertexes[tri.i2];
-
-			remappedTriangle.i3 = inverseVertexIndexes[tri.i3]; // index of local hole vertex
-			holeVertexes3D[remappedTriangle.i3] = vertexes[tri.i3];
-
-			m_holeTriangulationData[holeIdx].m_triangles.push_back(remappedTriangle);
+			if (tri.isDegenerated()) // protect against -1 vertex indexes
+				continue;
+			m_holeTriangulationData[holeIdx].m_triangles.push_back(tri);
 		}
-		m_holeTriangulationData[holeIdx].m_vertexes.swap(holeVertexes3D);
+		m_holeTriangulationData[holeIdx].m_vertexes.swap(matchedHolePoints3D);
 		m_holeTriangulationData[holeIdx].m_normal = m_polygon.normal(); // cache normal for easy access
 	}
+
+	// now generate the triangulation data for the entire surface, without subsurface polygons
+
+#if 0
+	for (auto p : points)
+		IBK::IBK_Message(IBK::FormatString("	points.push_back( IBK::point2D<double>(%1,%2));\n")
+						 .arg(p.m_x).arg(p.m_y), IBK::MSG_PROGRESS, "");
+	for (auto e : edges)
+		IBK::IBK_Message(IBK::FormatString("	edges.push_back(std::make_pair(%1, %2));\n").arg(e.first).arg(e.second), IBK::MSG_PROGRESS, "");
+#endif
 
 	IBKMK::Triangulation triangu;
 	// Note: IBK::point2D<double> is a IBKMK::Vector2D
 	triangu.setPoints(reinterpret_cast< const std::vector<IBK::point2D<double> > & >(points), edges);
 
+//	IBK::IBK_Message("Triangulation\n", IBK::MSG_PROGRESS, "");
 	for (auto tri : triangu.m_triangles) {
-		// TODO Dirk: only add triangles if not degenerated (i.e. area = 0) (may happen in case of windows aligned to outer bounds)
-		m_triangulationData.m_triangles.push_back(IBKMK::Triangulation::triangle_t(tri.i1, tri.i2, tri.i3));
+		// skip degenerated triangles
+		if (tri.isDegenerated())
+			continue;
+		m_triangulationData.m_triangles.push_back(tri);
+//		IBK::IBK_Message(IBK::FormatString("%1, %2, %3\n").arg(tri.i1).arg(tri.i2).arg(tri.i3), IBK::MSG_PROGRESS, "");
 	}
 
 	// store vertexes for triangles
 	m_triangulationData.m_vertexes.swap(vertexes);
 	m_triangulationData.m_normal = m_polygon.normal(); // cache normal for easy access
+
+	Q_ASSERT(m_holes.size() == m_holeTriangulationData.size());
 }
 
 

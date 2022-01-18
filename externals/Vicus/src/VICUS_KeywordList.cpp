@@ -34,7 +34,7 @@ namespace VICUS {
 	const char * const INVALID_KEYWORD_INDEX_STRING = "KEYWORD_ERROR_STRING: Invalid type index";
 
 	/*! Holds a list of all enum types/categories. */
-	const char * const ENUM_TYPES[54] = {
+	const char * const ENUM_TYPES[57] = {
 		"Component::ComponentType",
 		"Construction::UsageType",
 		"Construction::InsulationKind",
@@ -52,21 +52,24 @@ namespace VICUS {
 		"KeywordList::MyParameters",
 		"Material::para_t",
 		"Material::Category",
+		"Network::PipeModel",
 		"Network::ModelType",
 		"Network::NetworkType",
 		"Network::para_t",
+		"NetworkBuriedPipeProperties::SoilType",
+		"NetworkBuriedPipeProperties::para_t",
 		"NetworkComponent::ModelType",
 		"NetworkComponent::para_t",
+		"NetworkComponent::intPara_t",
 		"NetworkController::ModelType",
 		"NetworkController::ControlledProperty",
 		"NetworkController::ControllerType",
 		"NetworkController::para_t",
 		"NetworkController::References",
-		"NetworkEdge::PipeModel",
-		"NetworkEdge::para_t",
 		"NetworkFluid::para_t",
 		"NetworkNode::NodeType",
 		"NetworkPipe::para_t",
+		"OutputDefinition::timeType_t",
 		"Outputs::flag_t",
 		"Room::para_t",
 		"SubSurfaceComponent::SubSurfaceComponentType",
@@ -93,7 +96,7 @@ namespace VICUS {
 
 	/*! Converts a category string to respective enumeration value. */
 	int enum2index(const std::string & enumtype) {
-		for (int i=0; i<54; ++i) {
+		for (int i=0; i<57; ++i) {
 			if (enumtype == ENUM_TYPES[i]) return i;
 		}
 		//std::cerr << "Unknown enumeration type '" << enumtype<< "'." << std::endl;
@@ -262,20 +265,26 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "SimplePipe";
+				case 1 : return "DynamicPipe";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
@@ -285,24 +294,40 @@ namespace VICUS {
 				case 5 : return "InitialFluidTemperature";
 				case 6 : return "MaxPipeDiscretization";
 			} break;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 :
+			switch (t) {
+				case 0 : return "Sand";
+				case 1 : return "Loam";
+				case 2 : return "Silt";
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return "PipeSpacing";
+				case 1 : return "PipeDepth";
+			} break;
 			// NetworkComponent::ModelType
-			case 20 :
+			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "HeatExchanger";
-				case 6 : return "HeatPumpIdealCarnotSourceSide";
-				case 7 : return "HeatPumpIdealCarnotSupplySide";
-				case 8 : return "HeatPumpRealSourceSide";
-				case 9 : return "ControlledValve";
-				case 10 : return "IdealHeaterCooler";
-				case 11 : return "ConstantPressureLossValve";
+				case 5 : return "VariablePressurePump";
+				case 6 : return "HeatExchanger";
+				case 7 : return "HeatPumpVariableIdealCarnotSourceSide";
+				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
+				case 9 : return "HeatPumpVariableSourceSide";
+				case 10 : return "HeatPumpOnOffSourceSide";
+				case 11 : return "ControlledValve";
+				case 12 : return "IdealHeaterCooler";
+				case 13 : return "ConstantPressureLossValve";
+				case 14 : return "PressureLossElement";
 			} break;
 			// NetworkComponent::para_t
-			case 21 :
+			case 24 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
@@ -310,107 +335,121 @@ namespace VICUS {
 				case 3 : return "MassFlux";
 				case 4 : return "PumpEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
-				case 6 : return "Volume";
-				case 7 : return "PipeMaxDiscretizationWidth";
-				case 8 : return "CarnotEfficiency";
-				case 9 : return "MaximumHeatingPower";
-				case 10 : return "PressureLoss";
-				case 11 : return "MaximumPressureHead";
-				case 12 : return "PumpMaximumElectricalPower";
+				case 6 : return "MaximumPressureHead";
+				case 7 : return "PumpMaximumElectricalPower";
+				case 8 : return "DesignPressureHead";
+				case 9 : return "DesignMassFlux";
+				case 10 : return "PressureHeadReductionFactor";
+				case 11 : return "Volume";
+				case 12 : return "PipeMaxDiscretizationWidth";
+				case 13 : return "CarnotEfficiency";
+				case 14 : return "MaximumHeatingPower";
+				case 15 : return "PressureLoss";
+				case 16 : return "MinimumOutletTemperature";
+				case 17 : return "PipeLength";
+			} break;
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
-			case 22 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 			} break;
 			// NetworkController::ControlledProperty
-			case 23 :
+			case 27 :
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
+				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
-			case 24 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 25 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
-			case 26 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ThermostatZone";
 				case 1 : return "Schedule";
 			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return "SimplePipe";
-				case 1 : return "DynamicPipe";
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return "PipeSpacing";
-				case 1 : return "PipeDepth";
-			} break;
 			// NetworkFluid::para_t
-			case 29 :
+			case 31 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// NetworkNode::NodeType
-			case 30 :
+			case 32 :
 			switch (t) {
 				case 0 : return "Building";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
 			// NetworkPipe::para_t
-			case 31 :
+			case 33 :
 			switch (t) {
 				case 0 : return "DiameterOutside";
 				case 1 : return "ThicknessWall";
 				case 2 : return "RoughnessWall";
 				case 3 : return "ThermalConductivityWall";
-				case 4 : return "ThicknessInsulation";
-				case 5 : return "ThermalConductivityInsulation";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
+				case 6 : return "ThicknessInsulation";
+				case 7 : return "ThermalConductivityInsulation";
+			} break;
+			// OutputDefinition::timeType_t
+			case 34 :
+			switch (t) {
+				case 0 : return "None";
+				case 1 : return "Mean";
+				case 2 : return "Integral";
 			} break;
 			// Outputs::flag_t
-			case 32 :
+			case 35 :
 			switch (t) {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
+				case 3 : return "CreateDefaultNetworkSummationModels";
 			} break;
 			// Room::para_t
-			case 33 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
-			case 34 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Window";
 				case 1 : return "Door";
 				case 2 : return "Miscellaneous";
 			} break;
 			// SurfaceHeating::para_t
-			case 35 :
+			case 38 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
@@ -419,30 +458,30 @@ namespace VICUS {
 				case 4 : return "TemperatureDifferenceSupplyReturn";
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Ideal";
 				case 1 : return "IdealPipeRegister";
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return "AirChangeRate";
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return "None";
 				case 1 : return "Fraction";
 				case 2 : return "ConstantWidth";
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return "FrameWidth";
 				case 1 : return "FrameFraction";
@@ -450,32 +489,32 @@ namespace VICUS {
 				case 3 : return "DividerFraction";
 			} break;
 			// WindowDivider::para_t
-			case 41 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Thickness";
 			} break;
 			// WindowFrame::para_t
-			case 42 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Thickness";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 43 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Simple";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 44 :
+			case 47 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 45 :
+			case 48 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 :
+			case 49 :
 			switch (t) {
 				case 0 : return "TemperatureAirMax";
 				case 1 : return "TemperatureAirMin";
@@ -485,7 +524,7 @@ namespace VICUS {
 				case 5 : return "WindSpeedMax";
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return "GlobalHorizontal";
 				case 1 : return "GlobalNorth";
@@ -495,37 +534,37 @@ namespace VICUS {
 				case 5 : return "DeadBand";
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
+			case 51 :
 			switch (t) {
 				case 0 : return "GlobalHorizontalSensor";
 				case 1 : return "GlobalHorizontalAndVerticalSensors";
 			} break;
 			// ZoneControlThermostat::para_t
-			case 49 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Tolerance";
 				case 1 : return "DeadBand";
 			} break;
 			// ZoneControlThermostat::ControlValue
-			case 50 :
+			case 53 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "OperativeTemperature";
 			} break;
 			// ZoneControlThermostat::ControllerType
-			case 51 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Analog";
 				case 1 : return "Digital";
 			} break;
 			// ZoneIdealHeatingCooling::para_t
-			case 52 :
+			case 55 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 53 :
+			case 56 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -702,20 +741,26 @@ namespace VICUS {
 				case 11 : return "Foils";
 				case 12 : return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "SimplePipe";
+				case 1 : return "DynamicPipe";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "HydraulicNetwork";
 				case 1 : return "ThermalHydraulicNetwork";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : return "SinglePipe";
 				case 1 : return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "TemperatureSetpoint";
 				case 1 : return "TemperatureDifference";
@@ -725,24 +770,40 @@ namespace VICUS {
 				case 5 : return "InitialFluidTemperature";
 				case 6 : return "MaxPipeDiscretization";
 			} break;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 :
+			switch (t) {
+				case 0 : return "Sand";
+				case 1 : return "Loam";
+				case 2 : return "Silt";
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return "PipeSpacing";
+				case 1 : return "PipeDepth";
+			} break;
 			// NetworkComponent::ModelType
-			case 20 :
+			case 23 :
 			switch (t) {
 				case 0 : return "SimplePipe";
 				case 1 : return "DynamicPipe";
 				case 2 : return "ConstantPressurePump";
 				case 3 : return "ConstantMassFluxPump";
 				case 4 : return "ControlledPump";
-				case 5 : return "HeatExchanger";
-				case 6 : return "HeatPumpIdealCarnotSourceSide";
-				case 7 : return "HeatPumpIdealCarnotSupplySide";
-				case 8 : return "HeatPumpRealSourceSide";
-				case 9 : return "ControlledValve";
-				case 10 : return "IdealHeaterCooler";
-				case 11 : return "ConstantPressureLossValve";
+				case 5 : return "VariablePressurePump";
+				case 6 : return "HeatExchanger";
+				case 7 : return "HeatPumpVariableIdealCarnotSourceSide";
+				case 8 : return "HeatPumpVariableIdealCarnotSupplySide";
+				case 9 : return "HeatPumpVariableSourceSide";
+				case 10 : return "HeatPumpOnOffSourceSide";
+				case 11 : return "ControlledValve";
+				case 12 : return "IdealHeaterCooler";
+				case 13 : return "ConstantPressureLossValve";
+				case 14 : return "PressureLossElement";
 			} break;
 			// NetworkComponent::para_t
-			case 21 :
+			case 24 :
 			switch (t) {
 				case 0 : return "HydraulicDiameter";
 				case 1 : return "PressureLossCoefficient";
@@ -750,107 +811,121 @@ namespace VICUS {
 				case 3 : return "MassFlux";
 				case 4 : return "PumpEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
-				case 6 : return "Volume";
-				case 7 : return "PipeMaxDiscretizationWidth";
-				case 8 : return "CarnotEfficiency";
-				case 9 : return "MaximumHeatingPower";
-				case 10 : return "PressureLoss";
-				case 11 : return "MaximumPressureHead";
-				case 12 : return "PumpMaximumElectricalPower";
+				case 6 : return "MaximumPressureHead";
+				case 7 : return "PumpMaximumElectricalPower";
+				case 8 : return "DesignPressureHead";
+				case 9 : return "DesignMassFlux";
+				case 10 : return "PressureHeadReductionFactor";
+				case 11 : return "Volume";
+				case 12 : return "PipeMaxDiscretizationWidth";
+				case 13 : return "CarnotEfficiency";
+				case 14 : return "MaximumHeatingPower";
+				case 15 : return "PressureLoss";
+				case 16 : return "MinimumOutletTemperature";
+				case 17 : return "PipeLength";
+			} break;
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return "NumberParallelPipes";
+				case 1 : return "NumberParallelElements";
 			} break;
 			// NetworkController::ModelType
-			case 22 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 			} break;
 			// NetworkController::ControlledProperty
-			case 23 :
+			case 27 :
 			switch (t) {
 				case 0 : return "TemperatureDifference";
 				case 1 : return "TemperatureDifferenceOfFollowingElement";
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
+				case 4 : return "PumpOperation";
 			} break;
 			// NetworkController::ControllerType
-			case 24 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 25 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp";
 				case 1 : return "Ki";
 				case 2 : return "Kd";
 				case 3 : return "TemperatureDifferenceSetpoint";
 				case 4 : return "MassFluxSetpoint";
+				case 5 : return "HeatLossOfFollowingElementThreshold";
+				case 6 : return "RelControllerErrorForIntegratorReset";
 			} break;
 			// NetworkController::References
-			case 26 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ThermostatZone";
 				case 1 : return "Schedule";
 			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return "SimplePipe";
-				case 1 : return "DynamicPipe";
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return "PipeSpacing";
-				case 1 : return "PipeDepth";
-			} break;
 			// NetworkFluid::para_t
-			case 29 :
+			case 31 :
 			switch (t) {
 				case 0 : return "Density";
 				case 1 : return "HeatCapacity";
 				case 2 : return "Conductivity";
 			} break;
 			// NetworkNode::NodeType
-			case 30 :
+			case 32 :
 			switch (t) {
 				case 0 : return "Building";
 				case 1 : return "Mixer";
 				case 2 : return "Source";
 			} break;
 			// NetworkPipe::para_t
-			case 31 :
+			case 33 :
 			switch (t) {
 				case 0 : return "DiameterOutside";
 				case 1 : return "ThicknessWall";
 				case 2 : return "RoughnessWall";
 				case 3 : return "ThermalConductivityWall";
-				case 4 : return "ThicknessInsulation";
-				case 5 : return "ThermalConductivityInsulation";
+				case 4 : return "HeatCapacityWall";
+				case 5 : return "DensityWall";
+				case 6 : return "ThicknessInsulation";
+				case 7 : return "ThermalConductivityInsulation";
+			} break;
+			// OutputDefinition::timeType_t
+			case 34 :
+			switch (t) {
+				case 0 : return "None";
+				case 1 : return "Mean";
+				case 2 : return "Integral";
 			} break;
 			// Outputs::flag_t
-			case 32 :
+			case 35 :
 			switch (t) {
 				case 0 : return "BinaryOutputs";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
+				case 3 : return "CreateDefaultNetworkSummationModels";
 			} break;
 			// Room::para_t
-			case 33 :
+			case 36 :
 			switch (t) {
 				case 0 : return "Area";
 				case 1 : return "Volume";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
-			case 34 :
+			case 37 :
 			switch (t) {
 				case 0 : return "Window";
 				case 1 : return "Door";
 				case 2 : return "Miscellaneous";
 			} break;
 			// SurfaceHeating::para_t
-			case 35 :
+			case 38 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
@@ -859,30 +934,30 @@ namespace VICUS {
 				case 4 : return "TemperatureDifferenceSupplyReturn";
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Ideal";
 				case 1 : return "IdealPipeRegister";
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return "AirChangeRate";
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return "GridVisible";
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return "None";
 				case 1 : return "Fraction";
 				case 2 : return "ConstantWidth";
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return "FrameWidth";
 				case 1 : return "FrameFraction";
@@ -890,32 +965,32 @@ namespace VICUS {
 				case 3 : return "DividerFraction";
 			} break;
 			// WindowDivider::para_t
-			case 41 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Thickness";
 			} break;
 			// WindowFrame::para_t
-			case 42 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Thickness";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 43 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Simple";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 44 :
+			case 47 :
 			switch (t) {
 				case 0 : return "ThermalTransmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 45 :
+			case 48 :
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 :
+			case 49 :
 			switch (t) {
 				case 0 : return "TemperatureAirMax";
 				case 1 : return "TemperatureAirMin";
@@ -925,7 +1000,7 @@ namespace VICUS {
 				case 5 : return "WindSpeedMax";
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return "GlobalHorizontal";
 				case 1 : return "GlobalNorth";
@@ -935,37 +1010,37 @@ namespace VICUS {
 				case 5 : return "DeadBand";
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
+			case 51 :
 			switch (t) {
 				case 0 : return "GlobalHorizontalSensor";
 				case 1 : return "GlobalHorizontalAndVerticalSensors";
 			} break;
 			// ZoneControlThermostat::para_t
-			case 49 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Tolerance";
 				case 1 : return "DeadBand";
 			} break;
 			// ZoneControlThermostat::ControlValue
-			case 50 :
+			case 53 :
 			switch (t) {
 				case 0 : return "AirTemperature";
 				case 1 : return "OperativeTemperature";
 			} break;
 			// ZoneControlThermostat::ControllerType
-			case 51 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Analog";
 				case 1 : return "Digital";
 			} break;
 			// ZoneIdealHeatingCooling::para_t
-			case 52 :
+			case 55 :
 			switch (t) {
 				case 0 : return "HeatingLimit";
 				case 1 : return "CoolingLimit";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 53 :
+			case 56 :
 			switch (t) {
 				case 0 : return "IntLoadPerson";
 				case 1 : return "IntLoadEquipment";
@@ -1143,20 +1218,26 @@ namespace VICUS {
 				case 11 : if (no_description != nullptr) *no_description = true; return "Foils";
 				case 12 : if (no_description != nullptr) *no_description = true; return "Miscellaneous";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
+			switch (t) {
+				case 0 : return "Pipe with a single fluid volume and with heat exchange";
+				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
+			} break;
+			// Network::ModelType
+			case 18 :
 			switch (t) {
 				case 0 : return "Only Hydraulic calculation with constant temperature";
 				case 1 : return "Thermo-hydraulic calculation";
 			} break;
 			// Network::NetworkType
-			case 18 :
+			case 19 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "SinglePipe";
 				case 1 : if (no_description != nullptr) *no_description = true; return "DoublePipe";
 			} break;
 			// Network::para_t
-			case 19 :
+			case 20 :
 			switch (t) {
 				case 0 : return "Temperature for pipe dimensioning algorithm";
 				case 1 : return "Temperature difference for pipe dimensioning algorithm";
@@ -1166,132 +1247,162 @@ namespace VICUS {
 				case 5 : return "Initial Fluid temperature for thermo-hydraulic calculation";
 				case 6 : return "Maximum discretization step for dynamic pipe model";
 			} break;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 :
+			switch (t) {
+				case 0 : if (no_description != nullptr) *no_description = true; return "Sand";
+				case 1 : if (no_description != nullptr) *no_description = true; return "Loam";
+				case 2 : if (no_description != nullptr) *no_description = true; return "Silt";
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return "Spacing between supply and return pipes";
+				case 1 : return "Distance between soil surface and pipes";
+			} break;
 			// NetworkComponent::ModelType
-			case 20 :
+			case 23 :
 			switch (t) {
 				case 0 : return "Pipe with a single fluid volume and with heat exchange";
 				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
 				case 2 : return "Pump with constant/externally defined pressure";
 				case 3 : return "Pump with constant/externally defined mass flux";
 				case 4 : return "Pump with pressure head controlled based on flow controller";
-				case 5 : return "Simple heat exchanger with given heat flux";
-				case 6 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
-				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
-				case 8 : return "On-off-type heat pump based on polynoms, installed at source side";
-				case 9 : return "Valve with associated control model";
-				case 10 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
-				case 11 : return "Valve with constant pressure loss";
+				case 5 : return "Pump with linear pressure head curve (dp-v controlled pump)";
+				case 6 : return "Simple heat exchanger with given heat flux";
+				case 7 : return "Heat pump with variable heating power based on carnot efficiency, installed at source side (collector cycle)";
+				case 8 : return "Heat pump with variable heating power based on carnot efficiency, installed at supply side";
+				case 9 : return "Heat pump with variable heating power based on polynom for COP, installed at source side";
+				case 10 : return "On-off-type heat pump based on polynoms for heating power and el. power, installed at source side";
+				case 11 : return "Valve with associated control model";
+				case 12 : return "Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain";
+				case 13 : return "Valve with constant pressure loss";
+				case 14 : return "Adiabatic element with pressure loss defined by zeta-value";
 			} break;
 			// NetworkComponent::para_t
-			case 21 :
+			case 24 :
 			switch (t) {
 				case 0 : return "Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)";
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
-				case 2 : return "Pressure head for a pump";
+				case 2 : return "Pump predefined pressure head";
 				case 3 : return "Pump predefined mass flux";
 				case 4 : return "Pump efficiency";
 				case 5 : return "Fraction of pump heat loss due to inefficiency that heats up the fluid";
-				case 6 : return "Water or air volume of the component";
-				case 7 : return "Maximum width/length of discretized volumes in pipe";
-				case 8 : return "Carnot efficiency eta";
-				case 9 : return "Maximum heating power";
-				case 10 : return "Pressure loss for Valve";
-				case 11 : return "Maximum pressure head at point of minimal mass flow of pump";
-				case 12 : return "Maximum electrical power at point of optimal operation of pump";
+				case 6 : return "Pump maximum pressure head at point of minimal mass flow of pump";
+				case 7 : return "Pump maximum electrical power at point of optimal operation";
+				case 8 : return "Design pressure head of VariablePressureHeadPump";
+				case 9 : return "Design mass flux of VariablePressureHeadPump";
+				case 10 : return "Factor to reduce pressure head of VariablePressureHeadPump";
+				case 11 : return "Water or air volume of the component";
+				case 12 : return "Maximum width/length of discretized volumes in pipe";
+				case 13 : return "Carnot efficiency eta";
+				case 14 : return "Maximum heating power";
+				case 15 : return "Pressure loss for valve";
+				case 16 : return "Minimum outlet temperature of heat exchanger, used for clipping of heat extraction";
+				case 17 : return "Length of pipe";
+			} break;
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return "Number of parallel pipes in ground heat exchanger";
+				case 1 : return "Number of parallel elements";
 			} break;
 			// NetworkController::ModelType
-			case 22 :
+			case 26 :
 			switch (t) {
 				case 0 : return "Set points are given as constant parameters";
 				case 1 : return "Scheduled set point values";
 			} break;
 			// NetworkController::ControlledProperty
-			case 23 :
+			case 27 :
 			switch (t) {
 				case 0 : return "Control temperature difference of this element";
 				case 1 : return "Control temperature difference of the following element";
 				case 2 : return "Control zone thermostat values";
 				case 3 : return "Control mass flux";
+				case 4 : return "Control pump operation depending on following element";
 			} break;
 			// NetworkController::ControllerType
-			case 24 :
+			case 28 :
 			switch (t) {
 				case 0 : return "PController";
 				case 1 : return "PIController";
+				case 2 : return "PIDController";
+				case 3 : return "OnOffController";
 			} break;
 			// NetworkController::para_t
-			case 25 :
+			case 29 :
 			switch (t) {
 				case 0 : return "Kp-parameter";
 				case 1 : return "Ki-parameter";
 				case 2 : return "Kd-parameter";
 				case 3 : return "Target temperature difference";
 				case 4 : return "Target mass flux";
+				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
+				case 6 : return "Integral part will be set to zero if controller error is above this value";
 			} break;
 			// NetworkController::References
-			case 26 :
+			case 30 :
 			switch (t) {
 				case 0 : return "ID of zone containing thermostat";
 				case 1 : return "ID of schedule";
 			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return "Pipe with a single fluid volume and with heat exchange";
-				case 1 : return "Pipe with a discretized fluid volume and heat exchange";
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return "Distance between supply pipe and return pipe";
-				case 1 : return "Distance between pipes and soil surface";
-			} break;
 			// NetworkFluid::para_t
-			case 29 :
+			case 31 :
 			switch (t) {
 				case 0 : return "Dry density of the material.";
 				case 1 : return "Specific heat capacity of the material.";
 				case 2 : return "Thermal conductivity of the dry material.";
 			} break;
 			// NetworkNode::NodeType
-			case 30 :
+			case 32 :
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "Building";
 				case 1 : if (no_description != nullptr) *no_description = true; return "Mixer";
 				case 2 : if (no_description != nullptr) *no_description = true; return "Source";
 			} break;
 			// NetworkPipe::para_t
-			case 31 :
+			case 33 :
 			switch (t) {
 				case 0 : return "Outer diameter (not including optional insulation)";
 				case 1 : return "Pipe wall thickness";
 				case 2 : return "Pipe wall surface roughness";
 				case 3 : return "Thermal conductivity of pipe wall";
-				case 4 : return "Thickness of insulation around pipe";
-				case 5 : return "Thermal conductivity of insulation";
+				case 4 : return "Specific heat capaciy of pipe wall";
+				case 5 : return "Density of pipe wall";
+				case 6 : return "Thickness of insulation around pipe";
+				case 7 : return "Thermal conductivity of insulation";
+			} break;
+			// OutputDefinition::timeType_t
+			case 34 :
+			switch (t) {
+				case 0 : return "Write values as calculated at output times.";
+				case 1 : return "Average values in time (mean value in output step).";
+				case 2 : return "Integrate values in time.";
 			} break;
 			// Outputs::flag_t
-			case 32 :
+			case 35 :
 			switch (t) {
 				case 0 : return "If true, output files are written in binary format (the default, if flag is missing).";
 				case 1 : return "If true, default output definitions for zones are created.";
 				case 2 : return "If true, default output definitions for networks are created.";
+				case 3 : return "If true, default summation models and according output definitions for networks are created.";
 			} break;
 			// Room::para_t
-			case 33 :
+			case 36 :
 			switch (t) {
-				case 0 : return "Floor area of the zone";
+				case 0 : return "Floor usable area of the zone";
 				case 1 : return "Volume of the zone";
 			} break;
 			// SubSurfaceComponent::SubSurfaceComponentType
-			case 34 :
+			case 37 :
 			switch (t) {
 				case 0 : return "A window";
 				case 1 : return "A door";
 				case 2 : return "Some other component type";
 			} break;
 			// SurfaceHeating::para_t
-			case 35 :
+			case 38 :
 			switch (t) {
 				case 0 : return "Heating limit";
 				case 1 : return "Cooling limit";
@@ -1300,30 +1411,30 @@ namespace VICUS {
 				case 4 : return "Temperature difference between supply and return fluid temperature";
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return "Ideal surface conditioning";
 				case 1 : return "Water-based surface conditioning";
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return "Air change rate";
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return "Grid is visible";
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return "None";
 				case 1 : return "Fraction of area";
 				case 2 : return "Constant width";
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return "Frame width of the window";
 				case 1 : return "Frame area fraction of the window";
@@ -1331,32 +1442,32 @@ namespace VICUS {
 				case 3 : return "Divider area fraction of the window";
 			} break;
 			// WindowDivider::para_t
-			case 41 :
+			case 44 :
 			switch (t) {
 				case 0 : return "Divider material thickness.";
 			} break;
 			// WindowFrame::para_t
-			case 42 :
+			case 45 :
 			switch (t) {
 				case 0 : return "Frame material thickness.";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 43 :
+			case 46 :
 			switch (t) {
 				case 0 : return "Standard globbed-layers model";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 44 :
+			case 47 :
 			switch (t) {
 				case 0 : return "Thermal transmittance";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 45 :
+			case 48 :
 			switch (t) {
 				case 0 : return "Incidence-angle dependent short wave transmittance across glazing system";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 :
+			case 49 :
 			switch (t) {
 				case 0 : return "Upper limit for room air temperature.";
 				case 1 : return "Lower limit for room air temperature.";
@@ -1366,7 +1477,7 @@ namespace VICUS {
 				case 5 : return "Limit for wind speed .";
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return "Global horizontal (upper) sensor setpoint value.";
 				case 1 : return "Global north (upper) sensor setpoint value.";
@@ -1376,37 +1487,37 @@ namespace VICUS {
 				case 5 : return "Dead band value for all sensors.";
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
+			case 51 :
 			switch (t) {
 				case 0 : return "One global horizontal sensor.";
 				case 1 : return "One global horizontal and for each direction (N, E, S, W) a vertical sensor.";
 			} break;
 			// ZoneControlThermostat::para_t
-			case 49 :
+			case 52 :
 			switch (t) {
 				case 0 : return "Thermostat tolerance heating and cooling mode";
 				case 1 : return "Thermostat dead band (for digital controllers)";
 			} break;
 			// ZoneControlThermostat::ControlValue
-			case 50 :
+			case 53 :
 			switch (t) {
 				case 0 : return "Air temperature";
 				case 1 : return "Operative temperature";
 			} break;
 			// ZoneControlThermostat::ControllerType
-			case 51 :
+			case 54 :
 			switch (t) {
 				case 0 : return "Analog";
 				case 1 : return "Digital";
 			} break;
 			// ZoneIdealHeatingCooling::para_t
-			case 52 :
+			case 55 :
 			switch (t) {
 				case 0 : return "Heating limit";
 				case 1 : return "Cooling limit (positive)";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 53 :
+			case 56 :
 			switch (t) {
 				case 0 : return "Person loads";
 				case 1 : return "Equipment loads";
@@ -1583,20 +1694,26 @@ namespace VICUS {
 				case 11 : return "";
 				case 12 : return "";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+			} break;
+			// Network::para_t
+			case 20 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "K";
@@ -1606,8 +1723,21 @@ namespace VICUS {
 				case 5 : return "C";
 				case 6 : return "m";
 			} break;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return "m";
+				case 1 : return "m";
+			} break;
 			// NetworkComponent::ModelType
-			case 20 :
+			case 23 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -1621,117 +1751,134 @@ namespace VICUS {
 				case 9 : return "";
 				case 10 : return "";
 				case 11 : return "";
+				case 12 : return "";
+				case 13 : return "";
+				case 14 : return "";
 			} break;
 			// NetworkComponent::para_t
-			case 21 :
+			case 24 :
 			switch (t) {
 				case 0 : return "mm";
 				case 1 : return "---";
-				case 2 : return "Pa";
+				case 2 : return "Bar";
 				case 3 : return "kg/s";
 				case 4 : return "---";
 				case 5 : return "---";
-				case 6 : return "m3";
-				case 7 : return "m";
-				case 8 : return "---";
-				case 9 : return "W";
-				case 10 : return "Pa";
-				case 11 : return "Pa";
-				case 12 : return "W";
+				case 6 : return "Bar";
+				case 7 : return "W";
+				case 8 : return "Bar";
+				case 9 : return "kg/s";
+				case 10 : return "---";
+				case 11 : return "m3";
+				case 12 : return "m";
+				case 13 : return "---";
+				case 14 : return "W";
+				case 15 : return "Bar";
+				case 16 : return "C";
+				case 17 : return "m";
+			} break;
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return "---";
+				case 1 : return "---";
 			} break;
 			// NetworkController::ModelType
-			case 22 :
+			case 26 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// NetworkController::ControlledProperty
-			case 23 :
+			case 27 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+				case 4 : return "";
+			} break;
+			// NetworkController::ControllerType
+			case 28 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 				case 3 : return "";
 			} break;
-			// NetworkController::ControllerType
-			case 24 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-			} break;
 			// NetworkController::para_t
-			case 25 :
+			case 29 :
 			switch (t) {
 				case 0 : return "---";
 				case 1 : return "---";
 				case 2 : return "---";
 				case 3 : return "K";
 				case 4 : return "kg/s";
+				case 5 : return "W";
+				case 6 : return "---";
 			} break;
 			// NetworkController::References
-			case 26 :
+			case 30 :
 			switch (t) {
 				case 0 : return "-";
 				case 1 : return "-";
 			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return "m";
-				case 1 : return "m";
-			} break;
 			// NetworkFluid::para_t
-			case 29 :
+			case 31 :
 			switch (t) {
 				case 0 : return "kg/m3";
 				case 1 : return "J/kgK";
 				case 2 : return "W/mK";
 			} break;
 			// NetworkNode::NodeType
-			case 30 :
-			switch (t) {
-				case 0 : return "";
-				case 1 : return "";
-				case 2 : return "";
-			} break;
-			// NetworkPipe::para_t
-			case 31 :
-			switch (t) {
-				case 0 : return "mm";
-				case 1 : return "mm";
-				case 2 : return "mm";
-				case 3 : return "W/mK";
-				case 4 : return "mm";
-				case 5 : return "W/mK";
-			} break;
-			// Outputs::flag_t
 			case 32 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// Room::para_t
+			// NetworkPipe::para_t
 			case 33 :
 			switch (t) {
-				case 0 : return "m2";
-				case 1 : return "m3";
+				case 0 : return "mm";
+				case 1 : return "mm";
+				case 2 : return "mm";
+				case 3 : return "W/mK";
+				case 4 : return "J/kgK";
+				case 5 : return "kg/m3";
+				case 6 : return "mm";
+				case 7 : return "W/mK";
 			} break;
-			// SubSurfaceComponent::SubSurfaceComponentType
+			// OutputDefinition::timeType_t
 			case 34 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// SurfaceHeating::para_t
+			// Outputs::flag_t
 			case 35 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+				case 3 : return "";
+			} break;
+			// Room::para_t
+			case 36 :
+			switch (t) {
+				case 0 : return "m2";
+				case 1 : return "m3";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 37 :
+			switch (t) {
+				case 0 : return "";
+				case 1 : return "";
+				case 2 : return "";
+			} break;
+			// SurfaceHeating::para_t
+			case 38 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
@@ -1740,30 +1887,30 @@ namespace VICUS {
 				case 4 : return "K";
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return "1/h";
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return "m";
 				case 1 : return "---";
@@ -1771,32 +1918,32 @@ namespace VICUS {
 				case 3 : return "---";
 			} break;
 			// WindowDivider::para_t
-			case 41 :
+			case 44 :
 			switch (t) {
 				case 0 : return "m";
 			} break;
 			// WindowFrame::para_t
-			case 42 :
+			case 45 :
 			switch (t) {
 				case 0 : return "m";
 			} break;
 			// WindowGlazingSystem::modelType_t
-			case 43 :
+			case 46 :
 			switch (t) {
 				case 0 : return "";
 			} break;
 			// WindowGlazingSystem::para_t
-			case 44 :
+			case 47 :
 			switch (t) {
 				case 0 : return "W/m2K";
 			} break;
 			// WindowGlazingSystem::splinePara_t
-			case 45 :
+			case 48 :
 			switch (t) {
 				case 0 : return "---";
 			} break;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 :
+			case 49 :
 			switch (t) {
 				case 0 : return "C";
 				case 1 : return "C";
@@ -1806,7 +1953,7 @@ namespace VICUS {
 				case 5 : return "m/s";
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
@@ -1816,37 +1963,37 @@ namespace VICUS {
 				case 5 : return "W/m2";
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
+			case 51 :
 			switch (t) {
 				case 0 : return "-";
 				case 1 : return "-";
 			} break;
 			// ZoneControlThermostat::para_t
-			case 49 :
+			case 52 :
 			switch (t) {
 				case 0 : return "K";
 				case 1 : return "K";
 			} break;
 			// ZoneControlThermostat::ControlValue
-			case 50 :
+			case 53 :
 			switch (t) {
 				case 0 : return "-";
 				case 1 : return "-";
 			} break;
 			// ZoneControlThermostat::ControllerType
-			case 51 :
+			case 54 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 			} break;
 			// ZoneIdealHeatingCooling::para_t
-			case 52 :
+			case 55 :
 			switch (t) {
 				case 0 : return "W/m2";
 				case 1 : return "W/m2";
 			} break;
 			// ZoneTemplate::SubTemplateType
-			case 53 :
+			case 56 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
@@ -2023,30 +2170,25 @@ namespace VICUS {
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
-			// NetworkComponent::ModelType
+			// Network::para_t
 			case 20 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2056,14 +2198,22 @@ namespace VICUS {
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
-				case 7 : return "#FFFFFF";
-				case 8 : return "#FFFFFF";
-				case 9 : return "#FFFFFF";
-				case 10 : return "#FFFFFF";
-				case 11 : return "#FFFFFF";
 			} break;
-			// NetworkComponent::para_t
+			// NetworkBuriedPipeProperties::SoilType
 			case 21 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// NetworkComponent::ModelType
+			case 23 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2078,70 +2228,11 @@ namespace VICUS {
 				case 10 : return "#FFFFFF";
 				case 11 : return "#FFFFFF";
 				case 12 : return "#FFFFFF";
+				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
 			} break;
-			// NetworkController::ModelType
-			case 22 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkController::ControlledProperty
-			case 23 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-			} break;
-			// NetworkController::ControllerType
+			// NetworkComponent::para_t
 			case 24 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkController::para_t
-			case 25 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-			} break;
-			// NetworkController::References
-			case 26 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// NetworkFluid::para_t
-			case 29 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
-			// NetworkNode::NodeType
-			case 30 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-				case 2 : return "#FFFFFF";
-			} break;
-			// NetworkPipe::para_t
-			case 31 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2149,29 +2240,121 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
+				case 8 : return "#FFFFFF";
+				case 9 : return "#FFFFFF";
+				case 10 : return "#FFFFFF";
+				case 11 : return "#FFFFFF";
+				case 12 : return "#FFFFFF";
+				case 13 : return "#FFFFFF";
+				case 14 : return "#FFFFFF";
+				case 15 : return "#FFFFFF";
+				case 16 : return "#FFFFFF";
+				case 17 : return "#FFFFFF";
 			} break;
-			// Outputs::flag_t
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// NetworkController::ModelType
+			case 26 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// NetworkController::ControlledProperty
+			case 27 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+			} break;
+			// NetworkController::ControllerType
+			case 28 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// NetworkController::para_t
+			case 29 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+			} break;
+			// NetworkController::References
+			case 30 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// NetworkFluid::para_t
+			case 31 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// NetworkNode::NodeType
 			case 32 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// Room::para_t
+			// NetworkPipe::para_t
 			case 33 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
+				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
-			// SubSurfaceComponent::SubSurfaceComponentType
+			// OutputDefinition::timeType_t
 			case 34 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// SurfaceHeating::para_t
+			// Outputs::flag_t
 			case 35 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
+			} break;
+			// Room::para_t
+			case 36 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 37 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+				case 2 : return "#FFFFFF";
+			} break;
+			// SurfaceHeating::para_t
+			case 38 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2180,30 +2363,30 @@ namespace VICUS {
 				case 4 : return "#FFFFFF";
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2211,32 +2394,32 @@ namespace VICUS {
 				case 3 : return "#FFFFFF";
 			} break;
 			// WindowDivider::para_t
-			case 41 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowFrame::para_t
-			case 42 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowGlazingSystem::modelType_t
-			case 43 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-			} break;
-			// WindowGlazingSystem::para_t
 			case 44 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// WindowGlazingSystem::splinePara_t
+			// WindowFrame::para_t
 			case 45 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// WindowGlazingSystem::modelType_t
 			case 46 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::para_t
+			case 47 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 48 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+			} break;
+			// ZoneControlNaturalVentilation::ScheduleType
+			case 49 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2246,7 +2429,7 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
@@ -2256,37 +2439,37 @@ namespace VICUS {
 				case 5 : return "#FFFFFF";
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// ZoneControlThermostat::para_t
-			case 49 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// ZoneControlThermostat::ControlValue
-			case 50 :
-			switch (t) {
-				case 0 : return "#FFFFFF";
-				case 1 : return "#FFFFFF";
-			} break;
-			// ZoneControlThermostat::ControllerType
 			case 51 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::para_t
 			case 52 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneControlThermostat::ControlValue
 			case 53 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ZoneControlThermostat::ControllerType
+			case 54 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 55 :
+			switch (t) {
+				case 0 : return "#FFFFFF";
+				case 1 : return "#FFFFFF";
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 56 :
 			switch (t) {
 				case 0 : return "#FFBB55";
 				case 1 : return "#AA2222";
@@ -2463,30 +2646,25 @@ namespace VICUS {
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Network::para_t
+			// Network::NetworkType
 			case 19 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkComponent::ModelType
+			// Network::para_t
 			case 20 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -2496,14 +2674,22 @@ namespace VICUS {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
-				case 7 : return std::numeric_limits<double>::quiet_NaN();
-				case 8 : return std::numeric_limits<double>::quiet_NaN();
-				case 9 : return std::numeric_limits<double>::quiet_NaN();
-				case 10 : return std::numeric_limits<double>::quiet_NaN();
-				case 11 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkComponent::para_t
+			// NetworkBuriedPipeProperties::SoilType
 			case 21 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkBuriedPipeProperties::para_t
+			case 22 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkComponent::ModelType
+			case 23 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2518,70 +2704,11 @@ namespace VICUS {
 				case 10 : return std::numeric_limits<double>::quiet_NaN();
 				case 11 : return std::numeric_limits<double>::quiet_NaN();
 				case 12 : return std::numeric_limits<double>::quiet_NaN();
+				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// NetworkController::ModelType
-			case 22 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkController::ControlledProperty
-			case 23 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkController::ControllerType
+			// NetworkComponent::para_t
 			case 24 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkController::para_t
-			case 25 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkController::References
-			case 26 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkEdge::PipeModel
-			case 27 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkEdge::para_t
-			case 28 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkFluid::para_t
-			case 29 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkNode::NodeType
-			case 30 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-				case 2 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// NetworkPipe::para_t
-			case 31 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2589,29 +2716,121 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
+				case 8 : return std::numeric_limits<double>::quiet_NaN();
+				case 9 : return std::numeric_limits<double>::quiet_NaN();
+				case 10 : return std::numeric_limits<double>::quiet_NaN();
+				case 11 : return std::numeric_limits<double>::quiet_NaN();
+				case 12 : return std::numeric_limits<double>::quiet_NaN();
+				case 13 : return std::numeric_limits<double>::quiet_NaN();
+				case 14 : return std::numeric_limits<double>::quiet_NaN();
+				case 15 : return std::numeric_limits<double>::quiet_NaN();
+				case 16 : return std::numeric_limits<double>::quiet_NaN();
+				case 17 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Outputs::flag_t
+			// NetworkComponent::intPara_t
+			case 25 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::ModelType
+			case 26 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::ControlledProperty
+			case 27 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::ControllerType
+			case 28 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::para_t
+			case 29 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkController::References
+			case 30 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkFluid::para_t
+			case 31 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// NetworkNode::NodeType
 			case 32 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// Room::para_t
+			// NetworkPipe::para_t
 			case 33 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
+				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SubSurfaceComponent::SubSurfaceComponentType
+			// OutputDefinition::timeType_t
 			case 34 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// SurfaceHeating::para_t
+			// Outputs::flag_t
 			case 35 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// Room::para_t
+			case 36 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 37 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+				case 2 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// SurfaceHeating::para_t
+			case 38 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2620,30 +2839,30 @@ namespace VICUS {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// SurfaceHeating::Type
-			case 36 :
+			case 39 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// VentilationNatural::para_t
-			case 37 :
+			case 40 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ViewSettings::Flags
-			case 38 :
+			case 41 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Window::Method
-			case 39 :
+			case 42 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// Window::para_t
-			case 40 :
+			case 43 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2651,32 +2870,32 @@ namespace VICUS {
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// WindowDivider::para_t
-			case 41 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowFrame::para_t
-			case 42 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingSystem::modelType_t
-			case 43 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// WindowGlazingSystem::para_t
 			case 44 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// WindowGlazingSystem::splinePara_t
+			// WindowFrame::para_t
 			case 45 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// WindowGlazingSystem::modelType_t
 			case 46 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::para_t
+			case 47 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// WindowGlazingSystem::splinePara_t
+			case 48 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneControlNaturalVentilation::ScheduleType
+			case 49 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2686,7 +2905,7 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ZoneControlShading::para_t
-			case 47 :
+			case 50 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2696,37 +2915,37 @@ namespace VICUS {
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ZoneControlShading::Category
-			case 48 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// ZoneControlThermostat::para_t
-			case 49 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// ZoneControlThermostat::ControlValue
-			case 50 :
-			switch (t) {
-				case 0 : return std::numeric_limits<double>::quiet_NaN();
-				case 1 : return std::numeric_limits<double>::quiet_NaN();
-			} break;
-			// ZoneControlThermostat::ControllerType
 			case 51 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::para_t
 			case 52 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneTemplate::SubTemplateType
+			// ZoneControlThermostat::ControlValue
 			case 53 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneControlThermostat::ControllerType
+			case 54 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneIdealHeatingCooling::para_t
+			case 55 :
+			switch (t) {
+				case 0 : return std::numeric_limits<double>::quiet_NaN();
+				case 1 : return std::numeric_limits<double>::quiet_NaN();
+			} break;
+			// ZoneTemplate::SubTemplateType
+			case 56 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
@@ -2780,80 +2999,86 @@ namespace VICUS {
 			case 15 : return 6;
 			// Material::Category
 			case 16 : return 13;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 : return 2;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 : return 2;
+			// Network::NetworkType
+			case 19 : return 2;
 			// Network::para_t
-			case 19 : return 7;
-			// NetworkComponent::ModelType
-			case 20 : return 12;
-			// NetworkComponent::para_t
-			case 21 : return 13;
-			// NetworkController::ModelType
+			case 20 : return 7;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 : return 3;
+			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 2;
-			// NetworkController::ControlledProperty
-			case 23 : return 4;
-			// NetworkController::ControllerType
-			case 24 : return 2;
-			// NetworkController::para_t
-			case 25 : return 5;
-			// NetworkController::References
+			// NetworkComponent::ModelType
+			case 23 : return 15;
+			// NetworkComponent::para_t
+			case 24 : return 18;
+			// NetworkComponent::intPara_t
+			case 25 : return 2;
+			// NetworkController::ModelType
 			case 26 : return 2;
-			// NetworkEdge::PipeModel
-			case 27 : return 2;
-			// NetworkEdge::para_t
-			case 28 : return 2;
+			// NetworkController::ControlledProperty
+			case 27 : return 5;
+			// NetworkController::ControllerType
+			case 28 : return 4;
+			// NetworkController::para_t
+			case 29 : return 7;
+			// NetworkController::References
+			case 30 : return 2;
 			// NetworkFluid::para_t
-			case 29 : return 3;
+			case 31 : return 3;
 			// NetworkNode::NodeType
-			case 30 : return 3;
-			// NetworkPipe::para_t
-			case 31 : return 6;
-			// Outputs::flag_t
 			case 32 : return 3;
-			// Room::para_t
-			case 33 : return 2;
-			// SubSurfaceComponent::SubSurfaceComponentType
+			// NetworkPipe::para_t
+			case 33 : return 8;
+			// OutputDefinition::timeType_t
 			case 34 : return 3;
-			// SurfaceHeating::para_t
-			case 35 : return 5;
-			// SurfaceHeating::Type
+			// Outputs::flag_t
+			case 35 : return 4;
+			// Room::para_t
 			case 36 : return 2;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 37 : return 3;
+			// SurfaceHeating::para_t
+			case 38 : return 5;
+			// SurfaceHeating::Type
+			case 39 : return 2;
 			// VentilationNatural::para_t
-			case 37 : return 1;
+			case 40 : return 1;
 			// ViewSettings::Flags
-			case 38 : return 1;
-			// Window::Method
-			case 39 : return 3;
-			// Window::para_t
-			case 40 : return 4;
-			// WindowDivider::para_t
 			case 41 : return 1;
-			// WindowFrame::para_t
-			case 42 : return 1;
-			// WindowGlazingSystem::modelType_t
-			case 43 : return 1;
-			// WindowGlazingSystem::para_t
+			// Window::Method
+			case 42 : return 3;
+			// Window::para_t
+			case 43 : return 4;
+			// WindowDivider::para_t
 			case 44 : return 1;
-			// WindowGlazingSystem::splinePara_t
+			// WindowFrame::para_t
 			case 45 : return 1;
+			// WindowGlazingSystem::modelType_t
+			case 46 : return 1;
+			// WindowGlazingSystem::para_t
+			case 47 : return 1;
+			// WindowGlazingSystem::splinePara_t
+			case 48 : return 1;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 : return 6;
+			case 49 : return 6;
 			// ZoneControlShading::para_t
-			case 47 : return 6;
+			case 50 : return 6;
 			// ZoneControlShading::Category
-			case 48 : return 2;
-			// ZoneControlThermostat::para_t
-			case 49 : return 2;
-			// ZoneControlThermostat::ControlValue
-			case 50 : return 2;
-			// ZoneControlThermostat::ControllerType
 			case 51 : return 2;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::para_t
 			case 52 : return 2;
+			// ZoneControlThermostat::ControlValue
+			case 53 : return 2;
+			// ZoneControlThermostat::ControllerType
+			case 54 : return 2;
+			// ZoneIdealHeatingCooling::para_t
+			case 55 : return 2;
 			// ZoneTemplate::SubTemplateType
-			case 53 : return 9;
+			case 56 : return 9;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::Count]");
@@ -2896,80 +3121,86 @@ namespace VICUS {
 			case 15 : return 5;
 			// Material::Category
 			case 16 : return 12;
-			// Network::ModelType
+			// Network::PipeModel
 			case 17 : return 1;
-			// Network::NetworkType
+			// Network::ModelType
 			case 18 : return 1;
+			// Network::NetworkType
+			case 19 : return 1;
 			// Network::para_t
-			case 19 : return 6;
-			// NetworkComponent::ModelType
-			case 20 : return 11;
-			// NetworkComponent::para_t
-			case 21 : return 12;
-			// NetworkController::ModelType
+			case 20 : return 6;
+			// NetworkBuriedPipeProperties::SoilType
+			case 21 : return 2;
+			// NetworkBuriedPipeProperties::para_t
 			case 22 : return 1;
-			// NetworkController::ControlledProperty
-			case 23 : return 3;
-			// NetworkController::ControllerType
-			case 24 : return 1;
-			// NetworkController::para_t
-			case 25 : return 4;
-			// NetworkController::References
+			// NetworkComponent::ModelType
+			case 23 : return 14;
+			// NetworkComponent::para_t
+			case 24 : return 17;
+			// NetworkComponent::intPara_t
+			case 25 : return 1;
+			// NetworkController::ModelType
 			case 26 : return 1;
-			// NetworkEdge::PipeModel
-			case 27 : return 1;
-			// NetworkEdge::para_t
-			case 28 : return 1;
+			// NetworkController::ControlledProperty
+			case 27 : return 4;
+			// NetworkController::ControllerType
+			case 28 : return 3;
+			// NetworkController::para_t
+			case 29 : return 6;
+			// NetworkController::References
+			case 30 : return 1;
 			// NetworkFluid::para_t
-			case 29 : return 2;
+			case 31 : return 2;
 			// NetworkNode::NodeType
-			case 30 : return 2;
-			// NetworkPipe::para_t
-			case 31 : return 5;
-			// Outputs::flag_t
 			case 32 : return 2;
-			// Room::para_t
-			case 33 : return 1;
-			// SubSurfaceComponent::SubSurfaceComponentType
+			// NetworkPipe::para_t
+			case 33 : return 7;
+			// OutputDefinition::timeType_t
 			case 34 : return 2;
-			// SurfaceHeating::para_t
-			case 35 : return 4;
-			// SurfaceHeating::Type
+			// Outputs::flag_t
+			case 35 : return 3;
+			// Room::para_t
 			case 36 : return 1;
+			// SubSurfaceComponent::SubSurfaceComponentType
+			case 37 : return 2;
+			// SurfaceHeating::para_t
+			case 38 : return 4;
+			// SurfaceHeating::Type
+			case 39 : return 1;
 			// VentilationNatural::para_t
-			case 37 : return 0;
+			case 40 : return 0;
 			// ViewSettings::Flags
-			case 38 : return 0;
-			// Window::Method
-			case 39 : return 2;
-			// Window::para_t
-			case 40 : return 3;
-			// WindowDivider::para_t
 			case 41 : return 0;
-			// WindowFrame::para_t
-			case 42 : return 0;
-			// WindowGlazingSystem::modelType_t
-			case 43 : return 0;
-			// WindowGlazingSystem::para_t
+			// Window::Method
+			case 42 : return 2;
+			// Window::para_t
+			case 43 : return 3;
+			// WindowDivider::para_t
 			case 44 : return 0;
-			// WindowGlazingSystem::splinePara_t
+			// WindowFrame::para_t
 			case 45 : return 0;
+			// WindowGlazingSystem::modelType_t
+			case 46 : return 0;
+			// WindowGlazingSystem::para_t
+			case 47 : return 0;
+			// WindowGlazingSystem::splinePara_t
+			case 48 : return 0;
 			// ZoneControlNaturalVentilation::ScheduleType
-			case 46 : return 5;
+			case 49 : return 5;
 			// ZoneControlShading::para_t
-			case 47 : return 5;
+			case 50 : return 5;
 			// ZoneControlShading::Category
-			case 48 : return 1;
-			// ZoneControlThermostat::para_t
-			case 49 : return 1;
-			// ZoneControlThermostat::ControlValue
-			case 50 : return 1;
-			// ZoneControlThermostat::ControllerType
 			case 51 : return 1;
-			// ZoneIdealHeatingCooling::para_t
+			// ZoneControlThermostat::para_t
 			case 52 : return 1;
+			// ZoneControlThermostat::ControlValue
+			case 53 : return 1;
+			// ZoneControlThermostat::ControllerType
+			case 54 : return 1;
+			// ZoneIdealHeatingCooling::para_t
+			case 55 : return 1;
 			// ZoneTemplate::SubTemplateType
-			case 53 : return 9;
+			case 56 : return 9;
 		} // switch
 		throw IBK::Exception(IBK::FormatString("Invalid enumeration type '%1'.")
 			.arg(enumtype), "[KeywordList::MaxIndex]");

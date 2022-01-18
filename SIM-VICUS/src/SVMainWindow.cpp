@@ -46,6 +46,7 @@
 #include <QInputDialog>
 #include <QSplitter>
 #include <QTextEdit>
+#include <QPluginLoader>
 
 #include <numeric>
 
@@ -59,7 +60,6 @@
 
 #include <QtExt_AutoUpdater.h>
 #include <QtExt_Directories.h>
-#include <QtExt_configuration.h>
 
 #include <NANDRAD_Project.h>
 
@@ -93,14 +93,18 @@
 
 #include "SVSimulationStartNandrad.h"
 #include "SVDBInternalLoadsTableModel.h"
+#include "SVCoSimCO2VentilationDialog.h"
 
 #include "SVGeometryView.h"
 #include "Vic3DSceneView.h"
 
-
 #include "SVUndoModifyProject.h"
 #include "SVUndoAddNetwork.h"
 #include "SVUndoAddBuilding.h"
+#include "SVUndoAddProject.h"
+
+#include "plugins/SVDatabasePluginInterface.h"
+#include "plugins/SVImportPluginInterface.h"
 
 
 static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePath);
@@ -140,6 +144,10 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// give the splashscreen a few miliseconds to show on X11 before we start our
 	// potentially lengthy initialization
 	QTimer::singleShot(25, this, SLOT(setup()));
+
+#ifndef Q_OS_LINUX
+	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
+#endif
 }
 
 
@@ -674,16 +682,16 @@ void SVMainWindow::setup() {
 	m_redoAction->setIcon(QIcon(":/gfx/actions/24x24/redo.png"));
 
 	// this is a bit messy, but there seems to be no other way, unless we create the whole menu ourselves
-	QList<QAction*> acts = m_ui->menu_Edit->actions();
-	m_ui->menu_Edit->addAction(m_undoAction);
-	m_ui->menu_Edit->addAction(m_redoAction);
+	QList<QAction*> acts = m_ui->menuEdit->actions();
+	m_ui->menuEdit->addAction(m_undoAction);
+	m_ui->menuEdit->addAction(m_redoAction);
 	// now move all the actions to bottom
 	for (int i=0; i<acts.count(); ++i)
-		m_ui->menu_Edit->addAction(acts[i]);
+		m_ui->menuEdit->addAction(acts[i]);
 
 	m_ui->toolBar->addAction(m_undoAction);
 	m_ui->toolBar->addAction(m_redoAction);
-	m_ui->menu_View->addAction(m_ui->toolBar->toggleViewAction());
+	m_ui->menuView->addAction(m_ui->toolBar->toggleViewAction());
 
 	// *** Create definition lists dock widgets
 	setupDockWidgets();
@@ -746,6 +754,8 @@ void SVMainWindow::setup() {
 	show();
 #endif
 
+	// finally setup plugins
+	setupPlugins();
 }
 
 
@@ -775,6 +785,74 @@ void SVMainWindow::onDockWidgetToggled(bool visible) {
 	QAction * toggleAction = qobject_cast<QAction*>(sender());
 	if (m_logDockWidget->toggleViewAction() == toggleAction) {
 		m_dockWidgetVisibility[m_logDockWidget] = visible;
+	}
+}
+
+
+void SVMainWindow::onImportPluginTriggered() {
+	QAction * a = qobject_cast<QAction *>(sender());
+	if (a == nullptr) {
+		IBK::IBK_Message("Invalid call to onImportPluginTriggered()", IBK::MSG_ERROR);
+		return;
+	}
+	// retrieve plugin
+	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
+	Q_ASSERT(plugin != nullptr);
+	SVImportPluginInterface * importPlugin = dynamic_cast<SVImportPluginInterface *>(plugin);
+	Q_ASSERT(importPlugin != nullptr);
+
+	VICUS::Project p;
+	bool success = importPlugin->import(this, p);
+	if (success) {
+		// if we have no project, yet, create a new project based on our imported data
+		if (!m_projectHandler.isValid()) {
+			// create new project
+			m_projectHandler.newProject(&p); // emits updateActions()
+		}
+		else {
+			// ask user about preference
+			int res = QMessageBox::question(this, tr("Replace or merge projects"), tr("Would you like to replace "
+				"the current project with the imported project, or would you like to combine both projects into one?"),
+											tr("Replace"), tr("Combine"));
+			if (res == 0) {
+				setFocus();
+				// close project if we have one
+				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
+					return;
+				// create new project
+				m_projectHandler.newProject(&p); // emits updateActions()
+			}
+			else {
+				// The merging of project and referenced data is a bit complicated.
+				// First we must import the embedded database from the imported project
+				// Then, we can copy the buildings to our project.
+
+				SVProjectHandler::instance().importEmbeddedDB(p); // this might modify IDs of the imported project
+
+				// take all imported buildings from project and add as new building to existing data structure via undo-action
+				SVUndoAddProject * undo = new SVUndoAddProject(tr("Adding imported project data"), p);
+				undo->push();
+			}
+		}
+	}
+}
+
+
+void SVMainWindow::onConfigurePluginTriggered() {
+	QAction * a = qobject_cast<QAction *>(sender());
+	if (a == nullptr) {
+		IBK::IBK_Message("Invalid call to onConfigurePluginTriggered()", IBK::MSG_ERROR);
+		return;
+	}
+	// retrieve plugin
+	SVCommonPluginInterface * plugin = a->data().value<SVCommonPluginInterface *>();
+	Q_ASSERT(plugin != nullptr);
+	int updateNeeds = plugin->showSettingsDialog(this);
+	if (updateNeeds & SVCommonPluginInterface::SceneUpdate) {
+		// TODO : redraw scene
+	}
+	else if (updateNeeds & SVCommonPluginInterface::DatabaseUpdate) {
+		// TODO : update property widgets
 	}
 }
 
@@ -853,6 +931,9 @@ void SVMainWindow::on_actionFileSaveAs_triggered() {
 	setFocus();
 	m_projectHandler.saveWithNewFilename(this); // emits updateActions() if project was successfully saved
 	saveThumbNail();
+	// clear shift-keyboard state, since user has likely released shift key when using the open file dialog
+	QKeyEvent * e = new QKeyEvent (QEvent::KeyRelease,Qt::Key_S,Qt::ShiftModifier,"s");
+	qApp->postEvent((QObject*)m_geometryView->sceneView(),(QEvent *)e);
 }
 
 
@@ -999,7 +1080,7 @@ void SVMainWindow::on_actionFileExportProjectPackage_triggered() {
 
 
 void SVMainWindow::on_actionFileExportView3D_triggered() {
-	SVView3D v3d;
+	SVView3DDialog v3d;
 	v3d.exportView3d();
 }
 
@@ -1015,16 +1096,7 @@ void SVMainWindow::on_actionEditTextEditProject_triggered() {
 
 
 void SVMainWindow::on_actionEditPreferences_triggered() {
-	// spawn preferences dialog
-	if (m_preferencesDialog == nullptr) {
-		m_preferencesDialog = new SVPreferencesDialog(this);
-		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-				this, &SVMainWindow::onStyleChanged);
-		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
-				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
-	}
-
-	m_preferencesDialog->edit(0); // changes are stored automatically.
+	preferencesDialog()->edit(0); // changes are stored automatically.
 }
 
 
@@ -1122,6 +1194,12 @@ void SVMainWindow::on_actionSimulationExportFMI_triggered() {
 }
 
 
+void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
+	if (m_coSimCO2VentilationDialog == nullptr)
+		m_coSimCO2VentilationDialog = new SVCoSimCO2VentilationDialog(this);
+	m_coSimCO2VentilationDialog->exec();
+}
+
 
 void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
@@ -1174,11 +1252,40 @@ void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 }
 
 
-void SVMainWindow::on_actionViewResetView_triggered() {
-	// set scene view to recenter its camera
-	SVViewStateHandler::instance().m_geometryView->resetCamera();
+void SVMainWindow::on_actionViewFindSelectedGeometry_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(6);
 }
 
+
+void SVMainWindow::on_actionViewResetView_triggered() {
+	// set scene view to recenter its camera
+	SVViewStateHandler::instance().m_geometryView->resetCamera(0);
+}
+
+
+void SVMainWindow::on_actionViewFromNorth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(1);
+}
+
+
+void SVMainWindow::on_actionViewFromEast_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(2);
+}
+
+
+void SVMainWindow::on_actionViewFromSouth_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(3);
+}
+
+
+void SVMainWindow::on_actionViewFromWest_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(4);
+}
+
+
+void SVMainWindow::on_actionViewFromAbove_triggered() {
+	SVViewStateHandler::instance().m_geometryView->resetCamera(5);
+}
 
 
 void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
@@ -1190,10 +1297,7 @@ void SVMainWindow::on_actionToolsExternalPostProcessing_triggered() {
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
 																  "post processing in the preferences dialog!"));
 		// spawn preferences dialog
-		if (m_preferencesDialog == nullptr)
-			m_preferencesDialog = new SVPreferencesDialog(this);
-
-		m_preferencesDialog->edit(0);
+		preferencesDialog()->edit(0);
 		return;
 	}
 	// if we are using the new post-processing, generate a session file:
@@ -1254,10 +1358,7 @@ void SVMainWindow::on_actionToolsCCMeditor_triggered() {
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to the external "
 																  "climate editor in the preferences dialog!"));
 		// spawn preferences dialog
-		if (m_preferencesDialog == nullptr)
-			m_preferencesDialog = new SVPreferencesDialog(this);
-
-		m_preferencesDialog->edit(0);
+		preferencesDialog()->edit(0);
 		return;
 	}
 	bool res = QProcess::startDetached(ccmPath, QStringList(), QString());
@@ -1315,6 +1416,23 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 }
 
 
+void SVMainWindow::on_actionHelpLinuxDesktopIntegration_triggered() {
+#ifdef IBK_DEPLOYMENT
+	QString iconLocation = QtExt::Directories::resourcesRootDir();
+#else
+	QString iconLocation = QtExt::Directories::resourcesRootDir() + "/logo/icons";
+#endif
+
+	SVSettings::linuxDesktopIntegration(this,
+										iconLocation,
+										"SIM-VICUS",
+										"simvicus",
+										"Building Energy Performance and District Simulation",
+										SVSettings::instance().m_installDir + "/SIM-VICUS",
+										"vicus"
+										);
+}
+
 
 // *** other slots (not main menu slots) ***
 
@@ -1363,13 +1481,20 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionNetworkEdit->setEnabled(have_project);
 
 	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
+	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
 	m_ui->actionViewShowGrid->setEnabled(have_project);
+	m_ui->actionViewFromNorth->setEnabled(have_project);
+	m_ui->actionViewFromEast->setEnabled(have_project);
+	m_ui->actionViewFromSouth->setEnabled(have_project);
+	m_ui->actionViewFromWest->setEnabled(have_project);
+	m_ui->actionViewFromAbove->setEnabled(have_project);
 
 	m_ui->actionSimulationNANDRAD->setEnabled(have_project);
 	m_ui->actionSimulationHydraulicNetwork->setEnabled(have_project);
 	m_ui->actionSimulationExportFMI->setEnabled(have_project);
+	m_ui->actionSimulationCO2Balance->setEnabled(have_project);
 
 	// no project, no undo actions -> clearing undostack also disables undo actions
 	if (!have_project)
@@ -1591,7 +1716,9 @@ void SVMainWindow::onFixProjectAfterRead() {
 			// add default placeholders
 			p.m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::databasesDir()).toStdString());
 			p.m_placeholders[VICUS::USER_DATABASE_PLACEHOLDER_NAME] = IBK::Path((QtExt::Directories::userDataDir()).toStdString());
-			project().generateNandradProject(p, errorStack);
+			// "Project Directory" placeholder is needed to resolve paths to files referenced via relative paths
+			p.m_placeholders["Project Directory"] = IBK::Path(SVSettings::instance().m_nandradExportFileName.toStdString()).parentPath().str();
+			project().generateNandradProject(p, errorStack, SVSettings::instance().m_nandradExportFileName.toStdString());
 			// save project
 			IBK::Path targetNandradFile(SVSettings::instance().m_nandradExportFileName.toStdString());
 			p.writeXML(targetNandradFile);
@@ -1599,6 +1726,8 @@ void SVMainWindow::onFixProjectAfterRead() {
 			IBK::IBK_Message( IBK::FormatString("NANDRAD project file '%1' generated.\n").arg(targetNandradFile.absolutePath()), IBK::MSG_PROGRESS, FUNC_ID);
 		}
 		catch (IBK::Exception & ex) {
+			for (const QString & s : errorStack)
+				IBK::IBK_Message(s.toStdString(), IBK::MSG_ERROR, FUNC_ID);
 			// just show a generic error message
 			ex.writeMsgStackToError();
 			IBK::IBK_Message("An error occurred during NANDRAD project generation.", IBK::MSG_ERROR, FUNC_ID);
@@ -1647,12 +1776,110 @@ void SVMainWindow::setupDockWidgets() {
 	m_logDockWidget->setFeatures(QDockWidget::AllDockWidgetFeatures | titleBarOption);
 	m_logDockWidget->setAllowedAreas(Qt::BottomDockWidgetArea);
 	QAction * toggleAction = m_logDockWidget->toggleViewAction();
-	m_ui->menu_View->addAction(toggleAction);
+	m_ui->menuView->addAction(toggleAction);
 	connect(toggleAction, &QAction::toggled, this, &SVMainWindow::onDockWidgetToggled);
 	m_logDockWidget->setWidget(m_logWidget);
 	addDockWidget(Qt::BottomDockWidgetArea,m_logDockWidget);
 
 //	tabifyDockWidget(m_outputListDockWidget, m_outputGridListDockWidget);
+}
+
+
+void SVMainWindow::setupPlugins() {
+	IBK::IBK_Message("Loading plugins...\n");
+	const auto staticInstances = QPluginLoader::staticInstances();
+	for (QObject *plugin : staticInstances) {
+		setupPluginMenuEntries(plugin);
+	}
+
+	QDir pluginsDir(SVSettings::instance().m_installDir + "/plugins");
+#if defined(Q_OS_WIN32)
+	SetDllDirectoryW(pluginsDir.absolutePath().toStdWString().c_str());
+#endif
+	IBK::IBK_Message(IBK::FormatString("Loading plugins in directory '%1'\n").arg(pluginsDir.absolutePath().toStdString()) );
+
+	const auto entryList = pluginsDir.entryList(QDir::Files);
+	for (const QString &fileName : entryList) {
+		QString ext = QFileInfo(fileName).suffix();
+		if (ext != "so" && ext != "dll" && ext != "dylib")
+			continue;
+		// skip files that do not have a valid file extensions
+		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+		QObject *plugin = loader.instance();
+		if (plugin != nullptr) {
+			IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
+			setupPluginMenuEntries(plugin);
+		}
+		else {
+			QString errtxt = loader.errorString();
+			IBK::IBK_Message(IBK::FormatString("  Error loading plugin library '%1': %2\n")
+							 .arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()).arg(errtxt.toStdString()),
+							 IBK::MSG_ERROR);
+		}
+	}
+}
+
+
+void SVMainWindow::setupPluginMenuEntries(QObject * plugin) {
+	FUNCID(SVMainWindow::setupPluginMenuEntries);
+	// depending on the implemented interface, do different stuff
+	SVImportPluginInterface* importPlugin = dynamic_cast<SVImportPluginInterface*>(plugin);
+	if (importPlugin != nullptr) {
+		IBK::IBK_Message(IBK::FormatString("  Adding importer plugin '%1'\n").arg(importPlugin->title().toStdString()),
+						 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+		// add a menu action into the import menu
+		QAction * a = new QAction(importPlugin->importMenuCaption(), this);
+		connect(a, &QAction::triggered,
+				this, &SVMainWindow::onImportPluginTriggered);
+		QVariant v;
+		v.setValue<SVCommonPluginInterface*>(importPlugin);
+		a->setData(v);
+		m_ui->menuImport->addAction(a); // transfers ownership
+		// if plugin publishes settings action, also add plugin configuration action
+		if (importPlugin->hasSettingsDialog()) {
+			QAction * a = new QAction(tr("Configure %1").arg(importPlugin->title()), this);
+			QVariant v;
+			v.setValue<SVCommonPluginInterface*>(importPlugin);
+			a->setData(v);
+			connect(a, &QAction::triggered,
+					this, &SVMainWindow::onConfigurePluginTriggered);
+			m_ui->menuPlugins->addAction(a); // transfers ownership
+		}
+	}
+
+	// database plugins
+	SVDatabasePluginInterface* dbPlugin = dynamic_cast<SVDatabasePluginInterface*>(plugin);
+	if (dbPlugin != nullptr) {
+		// create copy of database
+		SVDatabase dbCopy(SVSettings::instance().m_db);
+		// update database entries
+		if (dbPlugin->retrieve(SVSettings::instance().m_db, dbCopy)) {
+			IBK::IBK_Message(IBK::FormatString("  Database plugin '%1' added\n").arg(dbPlugin->title().toStdString()),
+							 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
+
+			// TODO : here we need to implement the check functionality for each database:
+			//        all original DB elements must also be included in the augmented DB
+
+			// For now, we just replace the entire DB - this is a bit dangerous, but since we do this only
+			// at the start of the application, where there is no project loaded, yet, the risk of data loss is small
+			SVSettings::instance().m_db = dbCopy;
+		}
+		else {
+			IBK::IBK_Message(IBK::FormatString("  Error importing database entries from plugin '%1'").arg(dbPlugin->title().toStdString()),
+							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
+		}
+		// settings?
+		if (dbPlugin->hasSettingsDialog()) {
+			QAction * a = new QAction(tr("Configure %1").arg(dbPlugin->title()), this);
+			QVariant v;
+			v.setValue<SVCommonPluginInterface*>(dbPlugin);
+			a->setData(v);
+			connect(a, &QAction::triggered,
+					this, &SVMainWindow::onConfigurePluginTriggered);
+			m_ui->menuPlugins->addAction(a); // transfers ownership
+		}
+	}
 }
 
 
@@ -1721,7 +1948,7 @@ QString SVMainWindow::saveThumbNail() {
 
 void SVMainWindow::addLanguageAction(const QString &langId, const QString &actionCaption) {
 	FUNCID(SVMainWindow::addLanguageAction);
-	QString languageFilename = QString("%1/%2_%3.qm").arg(QtExt::Directories::translationsDir()).arg("SIM-VICUS").arg(langId);
+	QString languageFilename = QtExt::Directories::translationsFilePath(langId);
 	if (langId == "en" || QFile(languageFilename).exists()) {
 		QAction * a = new QAction(actionCaption, this);
 		a->setData(langId);
@@ -1854,6 +2081,17 @@ SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
 	return m_simulationStartNandrad;
 }
 
+SVPreferencesDialog * SVMainWindow::preferencesDialog() {
+	if (m_preferencesDialog == nullptr) {
+		m_preferencesDialog = new SVPreferencesDialog(this);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				this, &SVMainWindow::onStyleChanged);
+		connect(m_preferencesDialog->pageStyle(), &SVPreferencesPageStyle::styleChanged,
+				m_geometryView->sceneView(), &Vic3D::SceneView::onStyleChanged);
+	}
+	return m_preferencesDialog;
+}
+
 
 
 //https://qt.gitorious.org/qt-creator/qt-creator/source/1a37da73abb60ad06b7e33983ca51b266be5910e:src/app/main.cpp#L13-189
@@ -1890,11 +2128,6 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
-
-
-
-
 
 
 

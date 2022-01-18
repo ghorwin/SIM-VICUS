@@ -91,7 +91,7 @@ bool lineShereIntersection(const Vector3D & a, const Vector3D & d, const Vector3
 		point in 'intersectionPoint' and the line factor 'dist'.
 */
 bool linePlaneIntersectionWithNormalCheck(const Vector3D & a, const Vector3D & normal, const Vector3D & p,
-						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist);
+						   const IBKMK::Vector3D & lineVector, IBKMK::Vector3D & intersectionPoint, double & dist, bool checkNormal = true);
 
 /*! Calculates intersection of a line with a plane.
 	Plane is given by offset 'a' and normal vector 'normal'.
@@ -109,7 +109,7 @@ void pointProjectedOnPlane(const Vector3D & a, const Vector3D & normal,
 						  const Vector3D & p, Vector3D & projectedP);
 
 /*! Eleminates colinear points in a polygon. */
-void eleminateColinearPoints(std::vector<IBKMK::Vector3D> & polygon);
+void eliminateCollinearPoints(std::vector<IBKMK::Vector3D> & polygon, double epsilon = 1e-5);
 
 /*! Returns the inner Angle between two Vectors of a Polygon in Degree (0..360). */
 inline double angleBetweenVectorsDeg ( const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2) {

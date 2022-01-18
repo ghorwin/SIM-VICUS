@@ -3,19 +3,34 @@
 	Copyright (c) 2014-today, Institut für Bauklimatik, TU Dresden, Germany
 
 	Primary authors:
-	  Heiko Fechner
-	  Andreas Nicolai  <andreas.nicolai -[at]- tu-dresden.de>
+	  Heiko Fechner    <heiko.fechner -[at]- tu-dresden.de>
+	  Andreas Nicolai
 
-	This library is free software; you can redistribute it and/or
-	modify it under the terms of the GNU Lesser General Public
-	License as published by the Free Software Foundation; either
-	version 3 of the License, or (at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-	This library is distributed in the hope that it will be useful,
+	This program is distributed in the hope that it will be useful,
 	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-	Lesser General Public License for more details.
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+	Dieses Programm ist Freie Software: Sie können es unter den Bedingungen
+	der GNU General Public License, wie von der Free Software Foundation,
+	Version 3 der Lizenz oder (nach Ihrer Wahl) jeder neueren
+	veröffentlichten Version, weiter verteilen und/oder modifizieren.
+
+	Dieses Programm wird in der Hoffnung bereitgestellt, dass es nützlich sein wird, jedoch
+	OHNE JEDE GEWÄHR,; sogar ohne die implizite
+	Gewähr der MARKTFÄHIGKEIT oder EIGNUNG FÜR EINEN BESTIMMTEN ZWECK.
+	Siehe die GNU General Public License für weitere Einzelheiten.
+
+	Sie sollten eine Kopie der GNU General Public License zusammen mit diesem
+	Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
 */
 
 #include "QtExt_ConstructionGraphicsScene.h"
@@ -30,7 +45,7 @@
 #include <QDebug>
 #include <QTextDocument>
 
-#include <QtExt_TextFrame.h>
+#include "QtExt_TextFrame.h"
 
 namespace QtExt {
 
@@ -124,7 +139,10 @@ ConstructionGraphicsScene::ConstructionGraphicsScene(bool onScreen, QPaintDevice
 	m_res(1.0),
 	m_device(device),
 	m_internalPens(new InternalPens(this)),
-	m_internalStringItems(new InternalStringItems(this))
+	m_internalStringItems(new InternalStringItems(this)),
+	m_visibleDimensions(true),
+	m_visibleMaterialNames(true),
+	m_visibleBoundaryLabels(true)
 {
 	Q_ASSERT(m_device);
 
@@ -213,14 +231,27 @@ QString ConstructionGraphicsScene::dimLabel(double d) {
 
 void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double res,
 						 const QVector<ConstructionLayer>& layers,
-						 const QString & leftLabel, const QString & rightLabel)
+						 const QString & leftLabel, const QString & rightLabel,
+									  int visibleItems)
 {
+	int currentVisibilty = 0;
+	if(m_visibleDimensions)
+		currentVisibilty += VI_Dimensions;
+	if(m_visibleMaterialNames)
+		currentVisibilty += VI_MaterialNames;
+	if(m_visibleBoundaryLabels)
+		currentVisibilty += VI_BoundaryLabels;
+	m_visibleDimensions = visibleItems & VI_Dimensions;
+	m_visibleMaterialNames = visibleItems & VI_MaterialNames;
+	m_visibleBoundaryLabels = visibleItems & VI_BoundaryLabels;
+
 	Q_ASSERT(device);
 	m_device = device;
 	m_res = res;
 	// If no change no calculations needed
 	bool noCalculationNeeded = frame == m_frame;
 	noCalculationNeeded = noCalculationNeeded && layers == m_inputData;
+	noCalculationNeeded = noCalculationNeeded && visibleItems == currentVisibilty;
 
 	m_leftSideLabel = leftLabel;
 	m_rightSideLabel = rightLabel;
@@ -267,13 +298,15 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 
 	// update coordinates, normally only necessary when wall construction changes or view is resized
 	calculatePositions();
-	drawDimensions();
+	if(m_visibleDimensions)
+		drawDimensions();
 	drawWall();
 
 	// stop if only construction sketch is required
 	setSceneRect(m_frame);
 	emit changed(QList<QRectF>() << frame);
 }
+
 
 void ConstructionGraphicsScene::calculatePositions() {
 	if(m_inputData.empty())
@@ -317,6 +350,9 @@ void ConstructionGraphicsScene::calculatePositions() {
 		axis_left = static_cast<int>(5 * m_res);
 		axis_right = static_cast<int>(5 * m_res);
 		air_layer = static_cast<int>(std::max(m_innerFrame.width()*0.03, 10.0 * m_res));
+	}
+	if(!m_visibleBoundaryLabels) {
+		air_layer = 0;
 	}
 
 	m_xiLeft = m_innerFrame.left() + axis_left;
@@ -523,23 +559,25 @@ void ConstructionGraphicsScene::drawWall() {
 		rectItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
 		rectItem->setData(0, i-1);
 
-		QGraphicsTextItem* materialName = addText(m_inputData[i-1].m_name, m_tickFont);
-		materialName->setZValue(2);
-		setAlignment(materialName->document(), Qt::AlignVCenter);
-		materialName->document()->setTextWidth(rectHeight);
-		double textWidth = materialName->document()->idealWidth();
+		if(m_visibleMaterialNames) {
+			QGraphicsTextItem* materialName = addText(m_inputData[i-1].m_name, m_tickFont);
+			materialName->setZValue(2);
+			setAlignment(materialName->document(), Qt::AlignVCenter);
+			materialName->document()->setTextWidth(rectHeight);
+			double textWidth = materialName->document()->idealWidth();
 
-		#if QT_VERSION >= 0x040600
+#if QT_VERSION >= 0x040600
 			materialName->setRotation(-90);
-		#else
+#else
 			materialName->rotate( -90 );
-		#endif
+#endif
 
-		int xpos = left + (width - materialName->boundingRect().height()) / 2.0;
-		int ypos = yb - (rectHeight - textWidth) / 2.0;
-		materialName->setPos(xpos, ypos);
+			int xpos = left + (width - materialName->boundingRect().height()) / 2.0;
+			int ypos = yb - (rectHeight - textWidth) / 2.0;
+			materialName->setPos(xpos, ypos);
 
-		materialName->setVisible(materialName->boundingRect().height() < width - 2);
+			materialName->setVisible(materialName->boundingRect().height() < width - 2);
+		}
 	}
 
 	// draw outside wall lines twice as thick
@@ -550,19 +588,20 @@ void ConstructionGraphicsScene::drawWall() {
 	addLine(xl, yb, xr, yb, m_internalPens->m_hborderPen);
 
 	// draw inside/outside text
-	QGraphicsTextItem* outsideLeft = addText(m_leftSideLabel, m_tickFont);
-	setAlignment(outsideLeft->document(), Qt::AlignVCenter);
-	outsideLeft->document()->setTextWidth(m_xpos.front());
-	double textWidth = outsideLeft->document()->idealWidth();
-	outsideLeft->setPos((m_xpos.front() - textWidth) / 2, yt - 2);
+	if(m_visibleBoundaryLabels) {
+		QGraphicsTextItem* outsideLeft = addText(m_leftSideLabel, m_tickFont);
+		setAlignment(outsideLeft->document(), Qt::AlignVCenter);
+		outsideLeft->document()->setTextWidth(m_xpos.front());
+		double textWidth = outsideLeft->document()->idealWidth();
+		outsideLeft->setPos((m_xpos.front() - textWidth) / 2, yt - 2);
 
-	QGraphicsTextItem* insideRight = addText(m_rightSideLabel, m_tickFont);
-	setAlignment(insideRight->document(), Qt::AlignVCenter);
-	int outerBond = m_frame.width() - m_xpos.back();
-	insideRight->document()->setTextWidth(outerBond);
-	textWidth = insideRight->document()->idealWidth();
-	insideRight->setPos(m_xpos.back() + (outerBond - textWidth) / 2, yt - 2);
-
+		QGraphicsTextItem* insideRight = addText(m_rightSideLabel, m_tickFont);
+		setAlignment(insideRight->document(), Qt::AlignVCenter);
+		int outerBond = m_frame.width() - m_xpos.back();
+		insideRight->document()->setTextWidth(outerBond);
+		textWidth = insideRight->document()->idealWidth();
+		insideRight->setPos(m_xpos.back() + (outerBond - textWidth) / 2, yt - 2);
+	}
 }
 
 

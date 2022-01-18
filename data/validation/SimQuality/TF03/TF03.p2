@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<PostProc version="2.2.3">
+<PostProc version="2.2.4">
 	<!--List of all directories-->
 	<Directories>
 		<Directory>
 			<Path>.</Path>
-			<SubDir Color="#416fce" Checked="0">SimQuality_TF03</SubDir>
+			<SubDir Color="#416fce" Checked="1">TF03</SubDir>
 			<SubDir Color="#8ae234" Checked="0">reference</SubDir>
-			<SubDir Color="#ff007f" Checked="0">results</SubDir>
 			<ExpandedSubDir>.</ExpandedSubDir>
 		</Directory>
 	</Directories>
@@ -18,7 +17,7 @@
 		<Mapper name="TF03.1">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<DataIOFileName>TF03/results/states.tsv?1|2|3|4</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -74,7 +73,7 @@
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>TF03.1</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<TitleFont>Roboto Condensed,14,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
@@ -90,7 +89,7 @@
 		<Mapper name="TF03.2">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<DataIOFileName>TF03/results/states.tsv?1|2|3|4</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -146,7 +145,7 @@
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>TF03.2</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<TitleFont>Roboto Condensed,14,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
@@ -162,7 +161,7 @@
 		<Mapper name="TF03.3">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<DataIOFileName>TF03/results/states.tsv?1|2|3|4</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -216,7 +215,7 @@
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>TF03.3</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<TitleFont>Roboto Condensed,14,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
@@ -232,7 +231,7 @@
 		<Mapper name="TF03.4">
 			<Extractors>
 				<Extractor>
-					<DataIOFileName>SimQuality_TF03/results/states.tsv?1|2|3|4</DataIOFileName>
+					<DataIOFileName>TF03/results/states.tsv?1|2|3|4</DataIOFileName>
 					<CutType>NoCut</CutType>
 					<DataFormat>DF_2D</DataFormat>
 					<DataType>T_REFERENCE</DataType>
@@ -286,7 +285,7 @@
 				</AxisProperties>
 				<ChartProperties>
 					<TitleText>TF03.4</TitleText>
-					<TitleFont>Roboto Condensed,9,-1,5,75,0,0,0,0,0</TitleFont>
+					<TitleFont>Roboto Condensed,14,-1,5,75,0,0,0,0,0</TitleFont>
 					<AxisScalesInside>1</AxisScalesInside>
 					<Legend>
 						<Position>Inside</Position>
@@ -303,10 +302,10 @@
 
 	<!--Split window state.-->
 	<Splitting>
-		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="484" size2="484" orientation="2" />
-		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="484" size2="484" orientation="2" />
-		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="480" size2="515" orientation="1" />
-		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="498" size2="497" orientation="1" />
+		<Widget id="1" parent="0" viewTable="0" mapperIndex="0" size1="668" size2="667" orientation="2" />
+		<Widget id="2" parent="1" viewTable="0" mapperIndex="2" size1="668" size2="667" orientation="2" />
+		<Widget id="3" parent="1" viewTable="0" mapperIndex="1" size1="833" size2="893" orientation="1" />
+		<Widget id="4" parent="2" viewTable="0" mapperIndex="3" size1="864" size2="862" orientation="1" />
 		<FocusedWidget>4</FocusedWidget>
 	</Splitting>
 

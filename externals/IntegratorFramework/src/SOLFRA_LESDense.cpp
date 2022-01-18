@@ -14,7 +14,7 @@
 #include <IBK_InputOutput.h>
 
 #include <cvode/cvode_dense.h>
-#include <ida/ida_dense.h>
+#include <cvode/cvode_serialization.h>
 
 
 namespace SOLFRA {
@@ -143,6 +143,35 @@ void LESDense::solve(double * rhs) {
 
 	// backsolve with given lu factorisation
 	m_jacobian->backsolve(rhs);
+}
+
+
+std::size_t LESDense::serializationSize() const {
+	// determine which integrator we are using
+	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
+		// we are using the CVSpgmr solver
+		std::size_t s = CVDlsSerializationSize(intCVODE->cvodeMem());
+		return s;
+	}
+	else {
+		 return SOLFRA_NOT_SUPPORTED_FUNCTION; // serialization not supported
+	}
+}
+
+
+void LESDense::serialize(void *& dataPtr) const {
+	// determine which integrator we are using
+	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
+		CVDlsSerialize(intCVODE->cvodeMem(), &dataPtr); // ignoring return value for now
+	}
+}
+
+
+void LESDense::deserialize(void *& dataPtr) {
+	// determine which integrator we are using
+	if (IntegratorSundialsCVODE* intCVODE = dynamic_cast<IntegratorSundialsCVODE*>(m_integrator)) {
+		CVDlsDeserialize(intCVODE->cvodeMem(), &dataPtr); // ignoring return value for now
+	}
 }
 
 

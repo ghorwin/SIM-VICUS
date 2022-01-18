@@ -53,6 +53,14 @@ class SVDBNetworkComponentEditWidget : public SVAbstractDatabaseEditWidget {
 
 public:
 
+	enum DataType {
+		DT_Integer,
+		DT_DoubleStd,
+		DT_DoubleAdditional,
+		DT_DoubleOptional,
+		NUM_DT
+	};
+
 	explicit SVDBNetworkComponentEditWidget(QWidget *parent = nullptr);
 	~SVDBNetworkComponentEditWidget() override;
 
@@ -74,9 +82,13 @@ private slots:
 
 	void on_toolButtonSchedule2_clicked();
 
+	void on_toolButtonPipeProperties_clicked();
+
 private:
 	/*! Set up the modified variable of the model to true. */
 	void modelModify();
+
+	void populateTableWidget();
 
 	Ui::SVDBNetworkComponentEditWidget *m_ui;
 

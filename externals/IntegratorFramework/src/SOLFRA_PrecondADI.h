@@ -47,7 +47,7 @@ public:
 			PreconditionerType precondType);
 
 	/*! Destructor, releases band matrix memory. */
-	~PrecondADI();
+	~PrecondADI() override;
 
 	/*! Returns type of precondition (where it should be applied in context of the iteration linear equation solver). */
 	virtual PreconditionerType preconditionerType() const override { return m_precondType; }

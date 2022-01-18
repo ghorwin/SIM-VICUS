@@ -35,4 +35,19 @@ to develop equally free software/tools that make use of NANDRAD
 technology. Or, even better, interested partys shall join the 
 development of SIM-VICUS rather than create their own frontend.
 
-Dresden, 01 March 2020, the SIM-VICUS developers.
+                      FMU License and Usage
+                      
+NANDRSAD FMUs, ie. FMUs that include the _NandradSolverFMI_ dynamic 
+library are considered as stand-alone-programs under the GPL. You may 
+use these freely in conjunction with third-party programs, even
+commercial tools, and distribute them together with third-party programs
+(hereby adding the SIM-VICUS/NANDRAD license document). Since FMUs are
+intendent to be used in conjunction with a variety of different FMUs
+(and thus potentially different licensing options), we place no
+restriction on usage and deployment of _NandradSolverFMI_-based FMUs. 
+Changes to the internal functionality of the _NandradSolverFMI_ dynamic
+library, however, are governed by the GPL just as the rest of SIM-VICUS
+and NANRAD.
+
+
+Dresden, December 28th 2021, the SIM-VICUS developers.

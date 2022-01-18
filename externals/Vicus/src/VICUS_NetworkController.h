@@ -26,6 +26,8 @@ namespace VICUS {
 class NetworkController: public AbstractDBElement {
 public:
 
+	NetworkController();
+
 	/*! Defines variability options for set point values. */
 	enum ModelType {
 		MT_Constant,					// Keyword: Constant				'Set points are given as constant parameters'
@@ -48,13 +50,17 @@ public:
 		CP_ThermostatValue,								// Keyword: ThermostatValue								'Control zone thermostat values'
 		/*! Try to achieve target mass flow in current element. */
 		CP_MassFlux,									// Keyword: MassFlux									'Control mass flux'
+		/*! Switch pump on or off depending on heat flux of following element */
+		CP_PumpOperation,								// Keyword: PumpOperation								'Control pump operation depending on following element'
 		NUM_CP
 	};
 
 	/*! Different model variants. */
 	enum ControllerType {
-		CT_PController,			// Keyword: PController				'PController'
-		CT_PIController,		// Keyword: PIController			'PIController'
+		CT_PController,				// Keyword: PController				'PController'
+		CT_PIController,			// Keyword: PIController			'PIController'
+		CT_PIDController,			// Keyword: PIDController			'PIDController'
+		CT_OnOffController,			// Keyword: OnOffController			'OnOffController'
 		NUM_CT
 	};
 
@@ -65,6 +71,8 @@ public:
 		P_Kd,								// Keyword: Kd								[---]	'Kd-parameter'
 		P_TemperatureDifferenceSetpoint,	// Keyword: TemperatureDifferenceSetpoint	[K]		'Target temperature difference'
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
+		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
+		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
 		NUM_P
 	};
 

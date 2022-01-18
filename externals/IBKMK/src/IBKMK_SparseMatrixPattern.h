@@ -43,6 +43,8 @@
 #include <map>
 #include <vector>
 
+#include <cstdint>
+
 namespace IBKMK {
 
 /*! Encodes and decodes an 2D sparse matrix pattern
@@ -109,10 +111,10 @@ public:
 	\param endIndex end index of matrix part whose transitive closure should be calculated.
 	*/
 	static void calculateTransitiveClosure(
-		SparseMatrixPattern &pattern, 
-		SparseMatrixPattern &transposePattern, 
+		SparseMatrixPattern &pattern,
+		SparseMatrixPattern &transposePattern,
 		unsigned int n,
-		unsigned int startIndex, 
+		unsigned int startIndex,
 		unsigned int endIndex);
 
 	/*! Default constructor, registers size of index space.
@@ -145,9 +147,9 @@ public:
 private:
 	unsigned int			m_n;
 #ifdef STANDARD_IMPLEMENTATION
-	std::set<unsigned int>	m_data;
+	std::set<unsigned int>				m_data;
 #else // STANDARD_IMPLEMENTATION
-	std::map<unsigned int, unsigned int>	m_data;
+	std::map<uint64_t, unsigned int>	m_data;
 #endif // STANDARD_IMPLEMENTATION
 };
 

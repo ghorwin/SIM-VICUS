@@ -40,6 +40,7 @@
 #include "SVSettings.h"
 #include "Vic3DConstants.h"
 #include "SVViewStateHandler.h"
+#include "QtExt_Conversions.h"
 
 namespace Vic3D {
 
@@ -56,6 +57,7 @@ SceneView::SceneView() :
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_R);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_F);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Shift);
+	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Alt);
 	m_keyboardMouseHandler.addRecognizedKey(Qt::Key_Control);
 
 	// *** create scene (no OpenGL calls are being issued below, just the data structures are created.
@@ -213,12 +215,74 @@ void SceneView::toggleMeasurementMode() {
 }
 
 
-void SceneView::resetCamera() {
-	// reset camera positino
-	SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
-	SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
+void SceneView::resetCamera(int position) {
+	// reset camera position
+	switch (position) {
+		case 0 :
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 60);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60);
+			break;
+
+		case 1 : // from north
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, -100, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,-1,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 2 : // from east
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(-100, 0, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(-1,0,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 3 : // from south
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, +100, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,1,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 4 : // from west
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(100, 0, 10);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(1,0,-0.1f), QVector3D(0,0,1));
+			break;
+
+		case 5 : // from above
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = IBKMK::Vector3D(0, 0, 100);
+			SVProjectHandler::instance().viewSettings().m_cameraRotation = QQuaternion::fromDirection(QVector3D(0,0,1), QVector3D(0,1,0));
+			break;
+
+		case 6 : {
+			std::vector<const VICUS::Surface*> surfaces;
+			std::vector<const VICUS::SubSurface*> subsurfaces;
+			std::set<const VICUS::Object *> selectedObjects;
+			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+			if (selectedObjects.empty())
+				return; // nothing selected/visible, do nothing
+			for (const VICUS::Object * o : selectedObjects) {
+				const VICUS::Surface* s = dynamic_cast<const VICUS::Surface*>(o);
+				if (s != nullptr)
+					surfaces.push_back(s);
+				else {
+					const VICUS::SubSurface* sub = dynamic_cast<const VICUS::SubSurface*>(o);
+					if (sub != nullptr)
+						subsurfaces.push_back(sub);
+				}
+			}
+
+			IBKMK::Vector3D center;
+			// compute bounding box of visible geometry
+			project().boundingBox(surfaces, subsurfaces, center);
+			// move camera to position and a little bit back
+			Camera c;
+			c.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
+			QVector3D offset = -2*c.forward();
+			center.m_x += (double)offset.x();
+			center.m_y += (double)offset.y();
+			center.m_z += (double)offset.z();
+			SVProjectHandler::instance().viewSettings().m_cameraTranslation = center;
+
+		} break;
+
+	}
 	// trick scene into updating
-	onModified(SVProjectHandler::AllModified, nullptr);
+	onModified(SVProjectHandler::GridModified, nullptr);
 }
 
 
@@ -387,12 +451,9 @@ void SceneView::paintGL() {
 		return;
 
 	// process input, i.e. check if any keys have been pressed
-	bool needRepaint = true;
-	if (m_inputEventReceived) {
-		// if paintGl was called because of an input event,
-		// only repaint if needed
-		needRepaint = processInput();
-	}
+	if (m_inputEventReceived)
+		processInput();
+
 
 #ifdef SHOW_TIMINGS
 	m_gpuTimers.reset();

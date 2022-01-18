@@ -1,4 +1,4 @@
-/*	NANDRAD Solver Framework and Model Implementation.
+﻿/*	NANDRAD Solver Framework and Model Implementation.
 
 	Copyright (c) 2012-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -32,8 +32,11 @@
 
 #include <algorithm>
 
+#include "NM_Controller.h"
+
 #define PI				3.141592653589793238
 
+const double MASS_FLUX_SCALE = 1000.;
 
 namespace NANDRAD_MODEL {
 
@@ -241,13 +244,16 @@ void HNPipeElement::updateResults(double /*mdot*/, double /*p_inlet*/, double /*
 
 
 
+
 // *** HNPressureLossCoeffElement ***
 
 HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementId,
 														const NANDRAD::HydraulicNetworkComponent &component,
 														const NANDRAD::HydraulicFluid &fluid,
-														const NANDRAD::HydraulicNetworkControlElement *controlElement):
+														const NANDRAD::HydraulicNetworkControlElement *controlElement,
+														unsigned int numberParallelElements):
 	m_id(flowElementId),
+	m_numberParallelElements(numberParallelElements),
 	m_controlElement(controlElement)
 {
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -255,9 +261,47 @@ HNPressureLossCoeffElement::HNPressureLossCoeffElement(unsigned int flowElementI
 	m_zeta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLossCoefficient].value;
 	m_diameter = component.m_para[NANDRAD::HydraulicNetworkComponent::P_HydraulicDiameter].value;
 
+	// add controller object
+	if (controlElement != nullptr){
+		switch (controlElement->m_controllerType) {
+			case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
+				PController *cont = new PController();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				m_controller = cont;
+			} break;
+			case NANDRAD::HydraulicNetworkControlElement::CT_PIController: {
+				PIController *cont = new PIController();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+				m_controller = cont;
+			} break;
+			case NANDRAD::HydraulicNetworkControlElement::CT_PIDController: {
+				PIDController *cont = new PIDController();
+				cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+				cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+				cont->m_kD = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kd].value;
+				m_controller = cont;
+			} break;
+			case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // not a valid combination
+			case NANDRAD::HydraulicNetworkControlElement::NUM_CT:
+				break;
+		}
+		IBK_ASSERT(m_controller != nullptr);
+		// we never want zeta values below zero
+		m_controller->m_controlValueMinimum = 0;
+		// set maximum zeta value
+		if (m_controlElement->m_maximumControllerResultValue > 0)
+			m_controller->m_controlValueMaximum = m_controlElement->m_maximumControllerResultValue;
+	}
+
 	// initialize set point pointers, in case of scheduled parameters the pointers will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
 	m_massFluxSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
+}
+
+
+HNPressureLossCoeffElement::~HNPressureLossCoeffElement() {
+	delete m_controller;
 }
 
 
@@ -351,6 +395,7 @@ void HNPressureLossCoeffElement::setInputValueRefs(std::vector<const double*>::c
 	}
 }
 
+
 void HNPressureLossCoeffElement::dependencies(const double * mdot,
 											  std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
 {
@@ -372,6 +417,7 @@ void HNPressureLossCoeffElement::dependencies(const double * mdot,
 		break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
@@ -382,6 +428,7 @@ void HNPressureLossCoeffElement::modelQuantities(std::vector<QuantityDescription
 		return;
 	// calculate zetaControlled value for valve
 	quantities.push_back(QuantityDescription("ControllerResultValue","---", "The calculated controller zeta value for the valve", false));
+	quantities.push_back(QuantityDescription("ControllerErrorValue","---", "The calculated controller zeta value for the valve", false));
 }
 
 
@@ -390,6 +437,7 @@ void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double
 		return;
 	// calculate zetaControlled value for valve
 	valRefs.push_back(&m_zetaControlled);
+	valRefs.push_back(&m_controllerError);
 }
 
 
@@ -397,7 +445,7 @@ void HNPressureLossCoeffElement::modelQuantityValueRefs(std::vector<const double
 double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, double p_outlet) const {
 	// for negative mass flow: dp is negative
 	double area = PI / 4 * m_diameter * m_diameter;
-	double velocity = mdot / (m_fluidDensity * area); // signed!
+	double velocity = mdot / (m_fluidDensity * area * m_numberParallelElements); // signed!
 	double zeta = m_zeta;
 	if (m_controlElement != nullptr)
 		zeta += zetaControlled(mdot); // no clipping necessary here, function zetaControlled() takes care of that!
@@ -408,7 +456,9 @@ double HNPressureLossCoeffElement::systemFunction(double mdot, double p_inlet, d
 
 
 double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
-	FUNCID(TNElementWithExternalHeatLoss::zetaControlled);
+
+	double e = 0;		// controller error
+	double temperatureDifference = 0;
 
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
@@ -416,7 +466,6 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
 
-			double temperatureDifference;
 			// -> CP_TemperatureDifference
 			if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference) {
 				IBK_ASSERT(m_heatExchangeHeatLossRef != nullptr);
@@ -431,80 +480,27 @@ double HNPressureLossCoeffElement::zetaControlled(double mdot) const {
 				IBK_ASSERT(m_followingFlowElementFluidTemperatureRef != nullptr);
 				temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
 			}
-
 			// if temperature difference is larger than the set point (negative e), we want maximum mass flux -> zeta = 0
 			// if temperature difference is smaller than the set point (positive e), we decrease mass flow by increasing zeta
-			const double e = *m_temperatureDifferenceSetpointRef - temperatureDifference;
+			e = *m_temperatureDifferenceSetpointRef - temperatureDifference;
 
-			// TODO : use controller object here
-			double zetaControlled = 0.0;
-			if (e <= 0) {
-				zetaControlled = 0;
-			}
-			else {
-				switch (m_controlElement->m_controllerType) {
-					case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-						// relate controller error e to zeta
-						const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-						const double zetaMax = m_controlElement->m_maximumControllerResultValue;
-						// apply clipping
-						if (zetaMax > 0 && y > zetaMax)
-							zetaControlled = zetaMax; // Note: this is problematic inside a Newton method without relaxation!
-						else {
-							zetaControlled = y;
-						}
-					} break;
-
-					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
-						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
-
-					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
-				}
-
-			}
-			return zetaControlled;
-		}
-
+		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
 			// e is > 0 if our mass flux exceeds the limit -> then we have to increase the flow resistance
-			const double e = mdot - *m_massFluxSetpointRef;
-
-			// TODO : use controller object here
-			double zetaControlled = 0.0;
-			if (e <= 0) {
-				zetaControlled = 0;
-			}
-			else {
-				switch (m_controlElement->m_controllerType) {
-					case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-						// relate controller error e to zeta
-						const double y = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
-						const double zetaMax = m_controlElement->m_maximumControllerResultValue;
-						// apply clipping
-						if (zetaMax > 0 && y > zetaMax)
-							zetaControlled = zetaMax; // Note: this is problematic inside a Newton method without relaxation!
-						else {
-							zetaControlled = y;
-						}
-					} break;
-
-					case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
-						throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
-
-					case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
-				}
-
-			}
-			return zetaControlled;
-		}
+			e = mdot - *m_massFluxSetpointRef;
+		} break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
-		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP:  // nothing todo - we return 0
+			return 0;
 	}
-//	IBK::IBK_Message(IBK::FormatString("zeta = %1, m_heatLoss = %4 W, dT = %2 K, mdot = %3 kg/s, heatExchangeValueRef = %5 W\n")
-//					 .arg(m_zetaControlled).arg(m_temperatureDifference).arg(mdot).arg(m_heatLoss).arg(*m_heatExchangeValueRef));
-	return 0.0;
+
+	// update controller value and obtain result
+	m_controller->update(e);
+
+	return m_controller->m_controlValue;
 }
 
 
@@ -528,32 +524,181 @@ void HNPressureLossCoeffElement::updateResults(double mdot, double /*p_inlet*/, 
 
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
-
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
-		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
+		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:{
 			m_zetaControlled = zetaControlled(mdot);
+			m_controllerError = m_controller->m_errorValue;
+		}
 		break;
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue: // not a possible combination
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation: // not a possible combination
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ; // nothing todo - we return 0
 	}
 }
 
 
+void HNPressureLossCoeffElement::stepCompleted(double t) {
+	if (m_controller == nullptr)
+		return;
+
+	// TODO Hauke, in paper analysieren
+
+	m_controller->stepCompleted(t);
+
+	// Anti-windup of PI-controller: For high controller errors (e.g. >70 % of set point), i.e. when the current value is
+	// very far from the setpoint, we don't use the integral part. This avoids an increase (windup) of the integral during times when
+	// there is no heat flux and the temperature difference setpoint can not be reached.
+	const double &relControllerErrorIntegratorReset = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_RelControllerErrorForIntegratorReset].value;
+	if (relControllerErrorIntegratorReset > 0) {
+		switch (m_controlElement->m_controlledProperty ) {
+			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+			case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement: {
+				if (m_controller->m_errorValue > relControllerErrorIntegratorReset * *m_temperatureDifferenceSetpointRef)  {
+					m_controller->resetErrorIntegral();
+				}
+			} break;
+			case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux:
+				// TODO anti-windup for mass flux control ?
+				break;
+			case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+			case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
+			case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
+				break; // just for compiler
+		}
+	}
+}
+
+
+void HNPressureLossCoeffElement::setTime(double t) {
+	if (m_controller != nullptr)
+		m_controller->setTime(t);
+}
+
+
+
+
+
+// *** HNConstantPressureLossValve ***
+
+HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component):
+	m_id(id)
+{
+	m_pressureLossRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+}
+
+
+double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	if (mdot >= 0)
+		return p_inlet - p_outlet - *m_pressureLossRef;
+	else
+		return p_inlet - p_outlet + *m_pressureLossRef;
+}
+
+
+void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+
+void HNConstantPressureLossValve::inputReferences(std::vector<InputReference> & inputRefs) const {
+	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
+	//       a warning is added about this in the model description.
+	InputReference inputRef;
+	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	inputRef.m_name = std::string("PressureLossSchedule");
+	inputRef.m_required = false;
+	inputRef.m_id = m_id;
+	inputRefs.push_back(inputRef);
+
+}
+
+
+void HNConstantPressureLossValve::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
+	if (*resultValueRefIt != nullptr)
+		m_pressureLossRef = *resultValueRefIt; // optional, may be nullptr
+	++resultValueRefIt;
+}
+
+
+
+
+
+
+// *** HNAbstractPowerLimitedPumpModel ***
+
+HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
+																 const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow) :
+	m_density(density),
+	m_efficiency(efficiency),
+	m_maxElectricalPower(maxElectricalPower),
+	m_maxPressureHeadAtZeroFlow(maxPressureHeadAtZeroFlow)
+{
+	if(m_maxPressureHeadAtZeroFlow > 0.)
+		// --> point of maximum volume flow (at minimum pressure head)
+		m_maxVolumeFlowAtZeroPressureHead = 4 * m_efficiency * m_maxElectricalPower / m_maxPressureHeadAtZeroFlow;
+	else
+		// if maximum pressurte head at zero flow is 0, we set to zero (analogue to IBK:Parameter initialization)
+		m_maxVolumeFlowAtZeroPressureHead = 0.0;
+}
+
+
+double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot) const {
+	if (m_maxPressureHeadAtZeroFlow == 0. ||
+			m_maxElectricalPower == 0. )
+		return std::numeric_limits<double>::max();
+	else {
+		// --> pressHeadMax = f (V_dot)
+		double maxPressureHead = m_maxPressureHeadAtZeroFlow *
+				(1 - mdot / (m_maxVolumeFlowAtZeroPressureHead * m_density));
+		// should never be below zero
+		if (maxPressureHead < 0)
+			return 0;
+		else
+			return maxPressureHead;
+	}
+}
+
+
+
+
 
 // *** HNConstantPressurePump ***
 
-HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component) :
-	m_id(id)
+HNConstantPressurePump::HNConstantPressurePump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
+											   const NANDRAD::HydraulicFluid & fluid,
+											   const NANDRAD::HydraulicNetworkControlElement * ctr) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
+	m_id(id),
+	m_controlElement(ctr)
 {
 	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
 	m_pressureHeadRef = &component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHead].value;
 }
 
 
-double HNConstantPressurePump::systemFunction(double /*mdot*/, double p_inlet, double p_outlet) const {
-	return p_inlet - p_outlet + *m_pressureHeadRef;
+double HNConstantPressurePump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	double pressureHead = *m_pressureHeadRef;
+	// if pump is turned off, it should cause a large pressure drop
+	if (!m_pumpIsOn) {
+		return p_inlet - p_outlet - (mdot * std::abs(mdot) * 1e10);
+	}
+	// if pump is on (or no controller is used): we apply the normal pressure head
+	else {
+		double maxPressureHead = maximumPressureHead(mdot);
+		if (pressureHead > maxPressureHead)
+			pressureHead = maxPressureHead;
+		return p_inlet - p_outlet + pressureHead;
+	}
 }
 
 
@@ -568,9 +713,18 @@ void HNConstantPressurePump::partials(double /*mdot*/, double /*p_inlet*/, doubl
 
 
 void HNConstantPressurePump::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference inputRef;
+	if (m_controlElement != nullptr) {
+		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
+			inputRef.m_id = m_followingflowElementId;
+			inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+			inputRef.m_name.m_name = "FlowElementHeatLoss";
+			inputRef.m_required = true;
+			inputRefs.push_back(inputRef);
+		}
+	}
 	// Note: this is an automatic override and could lead to problems. However, it is explicitely documented and
 	//       a warning is added about this in the model description.
-	InputReference inputRef;
 	inputRef.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	inputRef.m_name = std::string("PressureHeadSchedule");
 	inputRef.m_required = false;
@@ -580,36 +734,38 @@ void HNConstantPressurePump::inputReferences(std::vector<InputReference> & input
 
 
 void HNConstantPressurePump::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefIt) {
-	if (*resultValueRefIt != nullptr)
+	if (m_controlElement != nullptr) {
+		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation){
+			m_followingElementHeatLossRef = *resultValueRefIt;
+			++resultValueRefIt;
+		}
+	}
+	if (*resultValueRefIt != nullptr){
 		m_pressureHeadRef = *resultValueRefIt; // optional, may be nullptr
+	}
 	++resultValueRefIt;
 }
 
 
-
-// *** HNConstantPressureLossValve ***
-
-HNConstantPressureLossValve::HNConstantPressureLossValve(unsigned int, const NANDRAD::HydraulicNetworkComponent &component) {
-	m_pressureLoss = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureLoss].value;
+void HNConstantPressurePump::setTime(double /*t*/) {
+	// This function implements the hysteresis behaviour of the OnOff-controlled pump:
+	// if heat loss of next element is below 0.9*threshold: we switch off, if it is above 1.1*threshold: we switch on, in any other case: we keep current state
+	// Note: if there is no controller or an invalid controlled property, the pump will never be turned off, we don't need to handle that case.
+	//
+	// Note: we update the controller operation state in setTime(), as opposed to stepCompleted(), because the input signal in m_followingElementHeatLossRef is
+	//       mostly a purely time-dependent spline value.
+	if (m_controlElement != nullptr) {
+		if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation) {
+			const double & heatLossThreshold =
+					m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_HeatLossOfFollowingElementThreshold].value;
+			if (std::abs(*m_followingElementHeatLossRef) < 0.9 * heatLossThreshold)
+				m_pumpIsOn = false;
+			else if (std::abs(*m_followingElementHeatLossRef) > 1.1 * heatLossThreshold)
+				m_pumpIsOn = true;
+		}
+	}
 }
 
-
-double HNConstantPressureLossValve::systemFunction(double mdot, double p_inlet, double p_outlet) const {
-	if (mdot >= 0)
-		return p_inlet - p_outlet - m_pressureLoss;
-	else
-		return p_inlet - p_outlet + m_pressureLoss;
-}
-
-
-void HNConstantPressureLossValve::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
-										   double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
-{
-	// partial derivatives of the system function to pressures are constants
-	df_dp_inlet = 1;
-	df_dp_outlet = -1;
-	df_dmdot = 0;
-}
 
 
 
@@ -652,7 +808,9 @@ void HNConstantMassFluxPump::setInputValueRefs(std::vector<const double *>::cons
 
 
 double HNConstantMassFluxPump::systemFunction(double mdot, double /*p_inlet*/, double /*p_outlet*/) const {
-	return (mdot - *m_massFluxRef);
+	// systemFunction() is expected to return a value in the magnitude of typical pressure differences in network
+	// Hence, we scale the mass flux up to have an equally scaled response value.
+	return (mdot - *m_massFluxRef) * MASS_FLUX_SCALE;
 }
 
 
@@ -671,27 +829,59 @@ void HNConstantMassFluxPump::updateResults(double /*mdot*/, double p_inlet, doub
 
 
 
+
 // *** HNControlledPump ***
 
 HNControlledPump::HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
 								   const NANDRAD::HydraulicNetworkControlElement *controlElement,
 								   const NANDRAD::HydraulicFluid & fluid) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
 	m_controlElement(controlElement),
 	m_id(id)
 {
 	// initialize setpoint references, in case of scheduled setpoints pointer will be updated in setInputValueRefs()
 	m_temperatureDifferenceSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_TemperatureDifferenceSetpoint].value;
 	m_massFluxSetpointRef = &m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_MassFluxSetpoint].value;
-	m_eta = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
-	m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
-	m_maxPressureHeadMinFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
-	m_density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+
+	// add controller object
+	switch (controlElement->m_controllerType) {
+		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
+			PController *cont = new PController();
+			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+			m_controller = cont;
+		} break;
+		case NANDRAD::HydraulicNetworkControlElement::CT_PIController: {
+			PIController *cont = new PIController();
+			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+			cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+			m_controller = cont;
+		} break;
+		case NANDRAD::HydraulicNetworkControlElement::CT_PIDController: {
+			PIDController *cont = new PIDController();
+			cont->m_kP = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value;
+			cont->m_kI = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Ki].value;
+			cont->m_kD = controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kd].value;
+			m_controller = cont;
+		} break;
+		case NANDRAD::HydraulicNetworkControlElement::CT_OnOffController: // not a valid combination
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CT:
+			break;
+	}
+	IBK_ASSERT(m_controller != nullptr);
+}
+
+
+HNControlledPump::~HNControlledPump() {
+	delete m_controller;
+
 }
 
 
 void HNControlledPump::modelQuantities(std::vector<QuantityDescription> &quantities) const {
-	if (m_controlElement == nullptr)
-		return;
+	IBK_ASSERT(m_controller != nullptr);
 	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
 	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
 		quantities.push_back(QuantityDescription("TemperatureDifference","K", "The difference between inlet and outlet temperature", false));
@@ -706,8 +896,7 @@ void HNControlledPump::modelQuantityValueRefs(std::vector<const double*> &valRef
 
 
 void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) const {
-	if (m_controlElement == nullptr)
-		return; 	// only handle input reference when there is a controller
+	IBK_ASSERT(m_controller != nullptr);
 
 	switch (m_controlElement->m_controlledProperty) {
 
@@ -745,6 +934,7 @@ void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) 
 		// other combinations are not supported
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP:
 		break;
 	}
@@ -752,8 +942,7 @@ void HNControlledPump::inputReferences(std::vector<InputReference> & inputRefs) 
 
 
 void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_iterator & resultValueRefs) {
-	if (m_controlElement == nullptr)
-		return; 	// only handle input reference when there is a controller
+	IBK_ASSERT(m_controller != nullptr);
 
 	switch (m_controlElement->m_controlledProperty) {
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement :
@@ -768,14 +957,17 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 			if (m_controlElement->m_modelType == NANDRAD::HydraulicNetworkControlElement::MT_Scheduled)
 				m_massFluxSetpointRef = *(resultValueRefs++);
 		break;
-		default: ; // other control elements do not require inputs
+		// other combinations are not supported
+		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
+		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
+		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
 
 
 void HNControlledPump::dependencies(const double * mdot, std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const {
-	if (m_controlElement == nullptr)
-		return; // no control, no dependencies
+	IBK_ASSERT(m_controller != nullptr);
 	switch (m_controlElement->m_controlledProperty) {
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement:
 			resultInputDependencies.push_back(std::make_pair(mdot, m_fluidTemperatureRef) );
@@ -787,6 +979,7 @@ void HNControlledPump::dependencies(const double * mdot, std::vector<std::pair<c
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
@@ -804,22 +997,15 @@ void HNControlledPump::partials(double mdot, double p_inlet, double p_outlet,
 {
 	df_dp_inlet = 1;
 	df_dp_outlet = -1;
-	// partial derivatives of the system function to pressures are constants
-	if (m_controlElement == nullptr ) {
-		df_dmdot = 0;
-	}
-	else {
-		// generic DQ approximation of partial derivative
-		const double EPS = 1e-5; // in kg/s
-		double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
-		double f = systemFunction(mdot, p_inlet, p_outlet);
-		df_dmdot = (f_eps - f)/EPS;
-	}
+	// generic DQ approximation of partial derivative
+	const double EPS = 1e-5; // in kg/s
+	double f_eps = systemFunction(mdot+EPS, p_inlet, p_outlet);
+	double f = systemFunction(mdot, p_inlet, p_outlet);
+	df_dmdot = (f_eps - f)/EPS;
 }
 
 
 double HNControlledPump::pressureHeadControlled(double mdot) const {
-	FUNCID(HNControlledMassFluxPump::pressureHeadControlled);
 
 	double e = 0;	// deviation of controlled property
 
@@ -831,24 +1017,17 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 			// compute temperature difference of the following element. We already know that the node between this
 			// and the following element is not connected to any other flow element
 			temperatureDifference = (*m_fluidTemperatureRef - *m_followingFlowElementFluidTemperatureRef);
-
 			// compute control error
-			// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
-			// we stop it by returning pressHeadControlled = 0
-			// NOTE: we DONT do this for option CP_MassFlux !!!
 			e = temperatureDifference - *m_temperatureDifferenceSetpointRef;
-			if (e <= 0)
-				return 0;
-			// if temperature difference is larger than the required difference (positive e), we gradually increase
-			// mass flow by increasing pressure head of pump
-			//    -> pressHeadControlled = Kp*e (see below)
+			// anti-windup of PI-controller: if we get very small mass fluxes, this means the heat loss of the
+			// following element is very small. We dont want to sum up that error, so we set the integral to 0.
+			if (mdot < 1e-5)
+				m_controller->resetErrorIntegral();
 		} break;
-
 
 		case NANDRAD::HydraulicNetworkControlElement::CP_MassFlux: {
 			// external reference or constant parameter
 			const double mdotSetpoint = *m_massFluxSetpointRef;
-
 			// setpoint 0 returns 0
 			if (mdotSetpoint == 0.0)
 				return 0.0;
@@ -860,45 +1039,27 @@ double HNControlledPump::pressureHeadControlled(double mdot) const {
 		// not possible combinations
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 
-	// TODO : use controller object here
-	double pressHeadControlled = 0;
-	switch (m_controlElement->m_controllerType) {
-		case NANDRAD::HydraulicNetworkControlElement::CT_PController: {
-			// relate controller error e to zeta
-			pressHeadControlled = m_controlElement->m_para[NANDRAD::HydraulicNetworkControlElement::P_Kp].value * e;
+	// set min / max values for clipping
+	// if temperature difference is smaller than the required difference (negative e), our mass flux is too large,
+	// we stop it by setting pressHeadControlled = 0
+	// NOTE: we DONT do this for option CP_MassFlux !!!
+	if (m_controlElement->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifferenceOfFollowingElement)
+		m_controller->m_controlValueMinimum = 0;
+	// maximum pressure head depends on mass flux
+	m_controller->m_controlValueMaximum = maximumPressureHead(mdot);
 
-		} break;
+	// update controller value and obtain result
+	m_controller->update(e);
 
-		case NANDRAD::HydraulicNetworkControlElement::CT_PIController:
-			throw IBK::Exception("PIController not implemented, yet.", FUNC_ID);
-
-		case NANDRAD::HydraulicNetworkControlElement::NUM_CT: break; // just to make compiler happy
-	}
-
-	// Clipping of pressure head
-	// in case m_maxPressureHeadMinFlow or m_maxElectricalPower <=0, we dont apply clipping
-	if (m_maxPressureHeadMinFlow > 0 && m_maxElectricalPower > 0) {
-		// calculation of actual maximum pressure head which depends on mass flux
-		// --> point of maximum volume flow (at minimum pressure head)
-		const double Vmax0 = 4 * m_eta * m_maxElectricalPower / m_maxPressureHeadMinFlow;
-		// --> pressHeadMax = f (V_dot)
-		double pressHeadMax  = m_maxPressureHeadMinFlow - m_maxPressureHeadMinFlow / Vmax0 * mdot / m_density;
-		// apply clipping
-		if (pressHeadControlled > pressHeadMax)
-			pressHeadControlled = pressHeadMax;
-	}
-
-	return pressHeadControlled;
+	return m_controller->m_controlValue;
 }
 
 
 void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
-	if (m_controlElement == nullptr)
-		return;
-
 	// calculate zetaControlled value for valve
 	switch (m_controlElement->m_controlledProperty) {
 
@@ -910,14 +1071,116 @@ void HNControlledPump::updateResults(double mdot, double /*p_inlet*/, double /*p
 			m_pressureHead = pressureHeadControlled(mdot);
 		break;
 
-
 		// not possible combinations
 		case NANDRAD::HydraulicNetworkControlElement::CP_TemperatureDifference:
 		case NANDRAD::HydraulicNetworkControlElement::CP_ThermostatValue:
+		case NANDRAD::HydraulicNetworkControlElement::CP_PumpOperation:
 		case NANDRAD::HydraulicNetworkControlElement::NUM_CP: ;
 	}
 }
 
+
+void HNControlledPump::stepCompleted(double t) {
+	IBK_ASSERT(m_controller != nullptr);
+	m_controller->stepCompleted(t);
+}
+
+
+std::size_t HNControlledPump::serializationSize() const {
+	if (m_controller == nullptr )
+		return 0;
+
+	return m_controller->serializationSize();
+}
+
+
+void HNControlledPump::serialize(void *& dataPtr) const {
+	if (m_controller == nullptr )
+		return;
+	// serialize controller and shift data pointer
+	m_controller->serialize(dataPtr);
+}
+
+
+void HNControlledPump::deserialize(void *& dataPtr) {
+	if (m_controller == nullptr )
+		return;
+	// deserialize controller and shift data pointer
+	m_controller->deserialize(dataPtr);
+}
+
+
+
+// *** HNVariablePressureHeadPump ***
+
+HNVariablePressureHeadPump::HNVariablePressureHeadPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent &component,
+													   const NANDRAD::HydraulicFluid & fluid) :
+	HNAbstractPowerLimitedPumpModel(fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value,
+									component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value),
+	m_id(id)
+{
+	// initialize value reference to pressure head, pointer will be updated for given schedules in setInputValueRefs()
+	m_designPressureHead = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignPressureHead].value;
+	m_minimumPressureHead = m_designPressureHead * component.m_para[NANDRAD::HydraulicNetworkComponent::P_PressureHeadReductionFactor].value;
+	m_designMassFlux = component.m_para[NANDRAD::HydraulicNetworkComponent::P_DesignMassFlux].value;
+}
+
+
+double HNVariablePressureHeadPump::systemFunction(double mdot, double p_inlet, double p_outlet) const {
+	return p_inlet - p_outlet + pressureHead(mdot);
+}
+
+
+void HNVariablePressureHeadPump::partials(double /*mdot*/, double /*p_inlet*/, double /*p_outlet*/,
+							 double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const
+{
+	// partial derivatives of the system function to pressures are constants
+	df_dp_inlet = 1;
+	df_dp_outlet = -1;
+	df_dmdot = 0;
+}
+
+
+void HNVariablePressureHeadPump::modelQuantities(std::vector<QuantityDescription> &quantities) const {
+	quantities.push_back(QuantityDescription("PumpPressureHead","Pa", "The calculated controlled pressure head of the pump", false));
+}
+
+
+void HNVariablePressureHeadPump::modelQuantityValueRefs(std::vector<const double *> &valRefs) const {
+	valRefs.push_back(&m_pressureHead);
+}
+
+
+void HNVariablePressureHeadPump::updateResults(double mdot, double /*p_inlet*/, double /*p_outlet*/) {
+	m_pressureHead = pressureHead(mdot);
+}
+
+
+double HNVariablePressureHeadPump::pressureHead(double mdot) const {
+	// slope of linear dp-v curve
+	double slope = (m_designPressureHead - m_minimumPressureHead) / m_designMassFlux;
+
+	// for mass fluxes < 10% design mass flux, we keep a constant pressure head
+	double mdot_cut = 0.1 * m_designMassFlux;
+	double pressureHead;
+	// If our mass flux falls below the threshold mdot_cut, we return a constant pressure head.
+	// However, we cannot return the pressure head p(mdot=0) = minimumPressureHead, because our mdot > 0
+	// Hence, we just return the linearly interpolated pressure head p(mdot=mdot_cut)
+	if (mdot < mdot_cut)
+		return m_minimumPressureHead + slope * mdot_cut; // = m_minimumPressureHead + (m_designPressureHead - m_minimumPressureHead) * 0.1;
+
+	// linear dp-v curve
+	pressureHead = m_minimumPressureHead + slope * mdot;
+
+	// clipping
+	double pressHeadMax  = maximumPressureHead(mdot);
+	if (pressureHead > pressHeadMax)
+		pressureHead = pressHeadMax;
+
+	return  pressureHead;
+}
 
 
 } // namespace NANDRAD_MODEL

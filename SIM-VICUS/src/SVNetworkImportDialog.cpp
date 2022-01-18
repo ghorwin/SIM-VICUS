@@ -35,8 +35,6 @@
 #include <QDir>
 #include <QMessageBox>
 
-#include <QtExt_configuration.h>
-
 #include <VICUS_Network.h>
 #include <VICUS_NetworkLine.h>
 #include <VICUS_Project.h>

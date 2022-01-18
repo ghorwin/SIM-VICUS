@@ -1,4 +1,4 @@
-Time [h]	Zone(id=1).VentilationHeatLoad [W]	Zone(id=2).VentilationHeatLoad [W]	Zone(id=3).VentilationHeatLoad [W]
+Time [h]	Office.VentilationHeatLoad [W]	Kitchen.VentilationHeatLoad [W]	Bathroom.VentilationHeatLoad [W]
 0	0	-157.59	-70.04
 1	0	-106.276	-47.2338
 2	0	-72.2475	-32.11

@@ -57,7 +57,7 @@ SVSimulationLocationOptions::SVSimulationLocationOptions(QWidget *parent, NANDRA
 	// set proxy model into table
 	m_ui->tableViewClimateFiles->setModel(m_filterModel);
 
-	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn);
+	SVDBModelDelegate * delegate = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->tableViewClimateFiles->setItemDelegate(delegate);
 	SVStyle::formatDatabaseTableView(m_ui->tableViewClimateFiles);
 
@@ -264,11 +264,10 @@ void SVSimulationLocationOptions::updateLocationInfo(const SVClimateFileInfo * c
 	if (climateInfoPtr == nullptr)
 		m_location->m_climateFilePath.clear();
 	else {
-		// store file with placeholder
+		// store file with placeholder, but only if in "DB" mode - if user has edited the custom file path, it
+		// has already been updated in "m_location->m_climateFilePath" in either absolute or relative mode
 		if (databaseFile)
 			m_location->m_climateFilePath = climateInfoPtr->m_filename.toStdString();
-		else
-			m_location->m_climateFilePath = climateInfoPtr->m_absoluteFilePath.toStdString();
 	}
 
 	// clear info text on climate location

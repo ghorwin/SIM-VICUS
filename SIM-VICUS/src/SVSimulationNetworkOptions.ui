@@ -27,25 +27,15 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Network to simulate:</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="comboBoxNetwork"/>
-      </item>
-      <item row="3" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditReferencePressure">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Type of simulation:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBoxModelType"/>
       </item>
       <item row="4" column="1">
        <widget class="QtExt::ValidatingLineEdit" name="lineEditMaxPipeDiscretization">
@@ -61,20 +51,96 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Network to simulate:</string>
+         <string>Type of simulation:</string>
         </property>
        </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditReferencePressure">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditDefaultFluidTemperature"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
          <string>Maximum pipe discretization length [m]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBoxModelType"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBoxHeatExchangeWithGround">
+     <property name="title">
+      <string>Heat exchange with ground </string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Pipe spacing [m]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditPipeSpacing">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Pipe depth below surface [m]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditPipeDepth">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Number of different soil models</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::ValidatingLineEdit" name="lineEditNumberOfSoilModels">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLabel" name="label_10">
+        <property name="font">
+         <font>
+          <italic>true</italic>
+         </font>
+        </property>
+        <property name="text">
+         <string>set =0 to use a different soil model for each single pipe</string>
         </property>
        </widget>
       </item>

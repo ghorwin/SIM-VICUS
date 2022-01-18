@@ -29,6 +29,8 @@
 #include "VICUS_CodeGenMacros.h"
 #include <NANDRAD_Outputs.h>
 
+#include <VICUS_OutputDefinition.h>
+
 namespace VICUS {
 
 /*! Contains output definitions/specifications.
@@ -44,6 +46,10 @@ namespace VICUS {
 		- total heat conduction load in zone
 
 	Also, default object lists are being created.
+
+	Similarly, the flag "CreateDefaultNetworkOutputs" defines, whether default outputs for network objects are being created.
+
+	Additionally, custom output definitions can be specified.
 */
 class Outputs {
 	VICUS_READWRITE_PRIVATE
@@ -54,6 +60,7 @@ public:
 		F_BinaryOutputs,				// Keyword: BinaryOutputs				'If true, output files are written in binary format (the default, if flag is missing).'
 		F_CreateDefaultZoneOutputs,		// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
 		F_CreateDefaultNetworkOutputs,	// Keyword: CreateDefaultNetworkOutputs	'If true, default output definitions for networks are created.'
+		F_CreateDefaultNetworkSummationModels,	// Keyword: CreateDefaultNetworkSummationModels	'If true, default summation models and according output definitions for networks are created.'
 		NUM_F
 	};
 
@@ -64,11 +71,14 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	/*! List with output (file) definitions. */
-	std::vector<NANDRAD::OutputDefinition>				m_definitions;				// XML:E
+	/*! List with user-defined output definitions. */
+	std::vector<VICUS::OutputDefinition>				m_definitions;				// XML:E
 
 	/*! List with output grids. */
 	std::vector<NANDRAD::OutputGrid>					m_grids;					// XML:E
+
+	/*! Hash code (MD5) of output variables file 'output_reference_list.txt' */
+	std::string											m_checkSum;					// XML:A
 
 	/*! (optional) The time unit to be used in all output files.
 		If not set (undefined unit), the time unit is selected automatically

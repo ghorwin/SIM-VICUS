@@ -208,6 +208,18 @@ public:
 		return !operator!=(other);
 	}
 
+	/*! Comparison function, compares two parameters with 5 digits accuracy.
+		If you need a different level of accuracy, compare the values of the parameters
+		directly.
+		Requires the IO_units of this and the other parameter to have the same
+		base unit.
+	*/
+	bool equalTo(const Parameter& other) {
+		IBK_ASSERT(IO_unit.base_id() == other.IO_unit.base_id());
+		// compare with 5 digits accuracy
+		return IBK::nearly_equal<5>(value, other.value);
+	}
+
 	/*! This method is used to test if a physical parameter is lower than a given limit.
 		It throws an exception if the value is not lower or not lower equal.
 		Other errors are missmatching parameter names or missmatching base units.

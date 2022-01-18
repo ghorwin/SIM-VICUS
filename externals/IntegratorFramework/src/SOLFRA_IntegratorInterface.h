@@ -18,6 +18,8 @@
 #ifndef IntegratorInterfaceH
 #define IntegratorInterfaceH
 
+#include "SOLFRA_Constants.h"
+
 #include <iosfwd>
 
 #include <IBK_Path.h>
@@ -113,8 +115,8 @@ public:
 
 	// Serialization/Deserialization
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
-	virtual std::size_t serializationSize() const { return 0; }
+	/*! Computes and returns serialization size, by default returns SOLFRA_NOT_SUPPORTED_FUNCTION which means feature not supported. */
+	virtual std::size_t serializationSize() const { return SOLFRA_NOT_SUPPORTED_FUNCTION; }
 
 	/*! Stores content at memory location pointed to by dataPtr and increases
 		pointer afterwards to point just behind the memory occupied by the copied data.

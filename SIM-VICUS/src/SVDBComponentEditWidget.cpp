@@ -60,16 +60,6 @@ SVDBComponentEditWidget::SVDBComponentEditWidget(QWidget *parent) :
 		m_ui->comboBoxComponentType->addItem(VICUS::KeywordListQt::Keyword("Component::ComponentType", i), i);
 	m_ui->comboBoxComponentType->blockSignals(false);
 
-	//construction group box
-	m_ui->lineEditUValue->setReadOnly(true);
-	m_ui->lineEditConstructionName->setReadOnly(true);
-
-	//Daylight
-	m_ui->lineEditDaylightName->setReadOnly(true);
-	m_ui->pushButtonDaylightColor->setEnabled(false);
-	m_ui->lineEditRoughness->setReadOnly(true);
-	m_ui->lineEditSpecularity->setReadOnly(true);
-
 	updateInput(-1);
 }
 
@@ -137,7 +127,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::BoundaryCondition *bcA = m_db->m_boundaryConditions[comp->m_idSideABoundaryCondition];
 	if (bcA != nullptr){
 		m_ui->lineEditBoundaryConditionSideAName->setText(QtExt::MultiLangString2QString(bcA->m_displayName));
-		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription());
+		m_ui->textBrowserBCSideA->setHtml(bcA->htmlDescription(m_db->m_schedules));
 
 		if (bcA->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
 			double hc = bcA->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
@@ -152,7 +142,7 @@ void SVDBComponentEditWidget::updateInput(int id) {
 	const VICUS::BoundaryCondition *bcB = m_db->m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 	if (bcB != nullptr){
 		m_ui->lineEditBoundaryConditionSideBName->setText(QtExt::MultiLangString2QString(bcB->m_displayName));
-		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription());
+		m_ui->textBrowserBCSideB->setHtml(bcB->htmlDescription(m_db->m_schedules));
 
 		if (bcB->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::MT_Constant){
 			double hc = bcB->m_heatConduction.m_para[VICUS::InterfaceHeatConduction::P_HeatTransferCoefficient].value;
@@ -178,24 +168,53 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 		if (validUValue)
 			m_ui->lineEditUValue->setText(QString("%L1").arg(UValue, 0, 'f', 4));
+
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(true);
 		m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
 		m_ui->checkBoxActiveLayerEnabled->setChecked(m_current->m_activeLayerIndex != VICUS::INVALID_ID);
 		m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(true);
 		m_ui->spinBoxActiveLayerIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
-		m_ui->spinBoxActiveLayerIndex->setMaximum((int)con->m_materialLayers.size());
+		m_ui->labelSurfaceHeatingIndex->setEnabled(m_ui->checkBoxActiveLayerEnabled->isChecked());
+		m_ui->spinBoxActiveLayerIndex->setMaximum((int)con->m_materialLayers.size()+1);
 		if (m_current->m_activeLayerIndex != VICUS::INVALID_ID)
-			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex);
+			m_ui->spinBoxActiveLayerIndex->setValue((int)m_current->m_activeLayerIndex+1);
 		m_ui->spinBoxActiveLayerIndex->blockSignals(false);
+
+		QVector<QtExt::ConstructionLayer> layers;
+		for (unsigned int i=0; i<con->m_materialLayers.size(); ++i) {
+			QtExt::ConstructionLayer layer;
+			unsigned int matID = con->m_materialLayers[i].m_idMaterial;
+			const VICUS::Material * mat = m_db->m_materials[matID];
+			if (mat != nullptr) {
+				layer.m_name = QString::fromStdString(mat->m_displayName("de", true));
+	//			layer.m_color = mat->m_color;
+			}
+			else {
+				layer.m_name = tr("<select material>");
+			}
+
+			layer.m_width = con->m_materialLayers[i].m_thickness.value;
+	//		if (!layer.m_color.isValid())
+				layer.m_color = QtExt::ConstructionView::ColorList[i % 12];
+			layer.m_id = (int)matID;
+			layers.push_back(layer);
+		}
+		m_ui->graphicsViewConstruction->m_leftSideLabel = tr("Sida A");
+		m_ui->graphicsViewConstruction->m_rightSideLabel = tr("Sida B");
+		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
+												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
+												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
 	}
 	else {
 		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
 		m_ui->checkBoxActiveLayerEnabled->setChecked(false);
 		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
-		m_ui->spinBoxActiveLayerIndex->setValue(0);
+		m_ui->labelSurfaceHeatingIndex->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setValue(1);
 		m_ui->lineEditUValue->setText("---");
 		m_ui->lineEditConstructionName->setText("");
+		m_ui->graphicsViewConstruction->clear();
 	}
 
 	// for built-ins, disable editing/make read-only
@@ -213,6 +232,12 @@ void SVDBComponentEditWidget::updateInput(int id) {
 
 	m_ui->lineEditBoundaryConditionSideAName->setReadOnly(!isEditable);
 	m_ui->lineEditBoundaryConditionSideBName->setReadOnly(!isEditable);
+
+	if (!isEditable) {
+		m_ui->checkBoxActiveLayerEnabled->setEnabled(false);
+		m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+		m_ui->labelSurfaceHeatingIndex->setEnabled(false);
+	}
 
 	///TODO Dirk später durchführen wenn datenbanken da sind
 
@@ -296,6 +321,7 @@ void SVDBComponentEditWidget::on_pushButtonColor_colorChanged() {
 void SVDBComponentEditWidget::modelModify(){
 	m_db->m_components.m_modified = true;
 	m_dbModel->setItemModified(m_current->m_id); // tell model that we changed the data
+	SVProjectHandler::instance().setModified(SVProjectHandler::ComponentInstancesModified);
 }
 
 
@@ -325,15 +351,54 @@ void SVDBComponentEditWidget::on_toolButtonRemoveBoundaryConditionSideB_clicked(
 	updateInput((int)m_current->m_id);
 }
 
-
 void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked) {
+
 	m_ui->spinBoxActiveLayerIndex->setEnabled(checked);
+	m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
 	if (checked) {
-		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value();
+		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value()-1;
 		modelModify();
 	}
 	else {
+
+		bool askForDeletion = true;
+		// We have to make a special handling if the component is applied in component instances
+		// Then we also have handle the surface heating ID reset in the specific component instance
+		for (const VICUS::ComponentInstance &ci : SVProjectHandler::instance().project().m_componentInstances) {
+			VICUS::ComponentInstance & compInst = const_cast<VICUS::ComponentInstance &>(ci);
+			if (compInst.m_idComponent == m_current->m_id) {
+
+				// if we have assigned components in component instances
+				if (askForDeletion) {
+					m_ui->checkBoxActiveLayerEnabled->blockSignals(true);
+					m_ui->spinBoxActiveLayerIndex->setEnabled(true);
+					m_ui->labelSurfaceHeatingIndex->setEnabled(true);
+					m_ui->checkBoxActiveLayerEnabled->setChecked(true);
+
+					// delete dialog
+					askForDeletion = false;
+					QMessageBox dlg(QMessageBox::Question, tr("Delete surface heating"), tr("Do you want to delete surface heating in component instances?"), QMessageBox::Cancel, this);
+
+					QPushButton * btn = new QPushButton("Yes");
+					dlg.addButton(btn, (QMessageBox::ButtonRole)(QMessageBox::YesRole));
+					dlg.setDefaultButton(btn);
+					if(dlg.exec() == QMessageBox::Cancel) {
+						// user aborts the deletion
+						m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+						break;
+					}
+					m_ui->spinBoxActiveLayerIndex->setEnabled(false);
+					m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
+					m_ui->checkBoxActiveLayerEnabled->setChecked(false);
+					m_ui->checkBoxActiveLayerEnabled->blockSignals(false);
+				}
+				// we reset the surface heating
+				compInst.m_idSurfaceHeating = VICUS::INVALID_ID; // reset ID since we do not have anymore a component with active layer
+			}
+		}
+
 		m_current->m_activeLayerIndex = VICUS::INVALID_ID;
+
 		modelModify();
 	}
 }

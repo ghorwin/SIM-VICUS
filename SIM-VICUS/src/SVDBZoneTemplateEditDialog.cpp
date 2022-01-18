@@ -83,7 +83,7 @@ SVDBZoneTemplateEditDialog::SVDBZoneTemplateEditDialog(QWidget *parent) :
 			this, SLOT(onCurrentIndexChanged(const QModelIndex &, const QModelIndex &)) );
 
 	// set item delegate for coloring built-ins
-	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn);
+	SVDBModelDelegate * dg = new SVDBModelDelegate(this, Role_BuiltIn, Role_Local, Role_Referenced);
 	m_ui->treeView->setItemDelegate(dg);
 
 	resize(1400,600);
@@ -107,7 +107,7 @@ void SVDBZoneTemplateEditDialog::edit(unsigned int initialId) {
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
-	m_ui->treeView->expandAll();
+	//m_ui->treeView->expandAll();
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	m_ui->treeView->resizeColumnToContents(2);
@@ -128,7 +128,7 @@ unsigned int SVDBZoneTemplateEditDialog::select(unsigned int initialId) {
 	selectItemById(initialId);
 	onCurrentIndexChanged(m_ui->treeView->currentIndex(), QModelIndex()); // select nothing
 
-	m_ui->treeView->expandAll();
+	//m_ui->treeView->expandAll();
 	m_ui->treeView->resizeColumnToContents(0);
 	m_ui->treeView->resizeColumnToContents(1);
 	m_ui->treeView->resizeColumnToContents(2);

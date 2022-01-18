@@ -97,6 +97,12 @@ QVariant SVDBInfiltrationTableModel::data ( const QModelIndex & index, int role)
 
 		case Role_BuiltIn :
 			return it->second.m_builtIn;
+
+		case Role_Local :
+			return it->second.m_local;
+
+		case Role_Referenced:
+			return it->second.m_isReferenced;
 	}
 
 	return QVariant();
@@ -182,6 +188,17 @@ void SVDBInfiltrationTableModel::setColumnResizeModes(QTableView * tableView) {
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBInfiltrationTableModel::ColId, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBInfiltrationTableModel::ColCheck, QHeaderView::Fixed);
 	tableView->horizontalHeader()->setSectionResizeMode(SVDBInfiltrationTableModel::ColName, QHeaderView::Stretch);
+}
+
+
+void SVDBInfiltrationTableModel::setItemLocal(const QModelIndex &index, bool local)
+{
+	if (!index.isValid())
+		return;
+	unsigned int id = data(index, Role_Id).toUInt();
+	m_db->m_infiltration[id]->m_local = local;
+	m_db->m_infiltration.m_modified = true;
+	setItemModified(id);
 }
 
 

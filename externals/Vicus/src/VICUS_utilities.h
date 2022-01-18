@@ -64,12 +64,32 @@ unsigned int elementIndex(const std::vector<T> & vec, const std::string & name) 
 /*! Function to generate unique (lowest not yet used) ID. */
 template <typename T>
 unsigned int uniqueId(const std::vector<T>& vec) {
-	for (unsigned id=1; id<std::numeric_limits<unsigned>::max(); ++id){
-		if (std::find(vec.begin(), vec.end(), id) == vec.end())
-			return id;
+	std::set<unsigned int> idSet;
+	for (typename std::vector<T>::const_iterator it = vec.begin(); it != vec.end(); ++it)
+		idSet.insert(it->m_id);
+	unsigned int id = 1;
+	for (std::set<unsigned int>::const_iterator it = idSet.begin(); it != idSet.end(); ++it) {
+		if (*it - id > 1)
+			return id+1;
+		++id;
 	}
-	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
+	return id;
 }
+
+
+/*! Function to generate unique (lowest not yet used) ID. */
+template <>
+inline unsigned int uniqueId(const std::vector<unsigned int>& vec) {
+	std::set<unsigned int> idSet(vec.begin(), vec.end());
+	unsigned int id = 1;
+	for (std::set<unsigned int>::const_iterator it = idSet.begin(); it != idSet.end(); ++it) {
+		if (*it - id > 1)
+			return id+1;
+		++id;
+	}
+	return ++id;
+}
+
 
 /*! Function to generate unique (lowest not yet used) ID. */
 template <typename T>
@@ -80,6 +100,20 @@ unsigned int uniqueId(const std::set<T>& vec) {
 	}
 	return 999999; // just to make compiler happy, we will find an unused ID in the loop above
 }
+
+
+/*! Function to generate unique (lowest not yet used) ID. */
+template <>
+inline unsigned int uniqueId(const std::set<unsigned int>& vec) {
+	unsigned int id = 1;
+	for (std::set<unsigned int>::const_iterator it = vec.begin(); it != vec.end(); ++it) {
+		if (*it - id > 1)
+			return id+1;
+		++id;
+	}
+	return ++id;
+}
+
 
 /*! Function to generate unique ID and add this ID to the vector. */
 template <typename T>

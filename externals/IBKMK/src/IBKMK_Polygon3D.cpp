@@ -106,14 +106,26 @@ void Polygon3D::checkPolygon() {
 	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
 	detectType();
 	updateLocalCoordinateSystem();
-	// we need 3 vertexes (not collinear) to continue
-	if (m_vertexes.size() < 3)
+	if (m_normal == IBKMK::Vector3D(0,0,0)) {
+//		eleminateColinearPts();
+	}
+	// we need 3 vertexes (not collinear) to continue and a valid normal vector!
+	if (m_vertexes.size() < 3 || m_normal == IBKMK::Vector3D(0,0,0))
 		return;
 
 	update2DPolyline();
 
 	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
-	m_valid = m_polyline.isSimplePolygon();
+	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
+
+	if (m_valid && m_vertexes.size() != m_polyline.vertexes().size()) {
+		// When computing polyline we correct vertexes that are out of plane
+		// hereby, the corrected vertexes may be closer together than the original vertexes.
+		// When constructing the polyline, these vertexes will be removed.
+		// In these situations we re-compute 3D vertexes from polyline to have again
+		// a consistent polygon. Note: if the polyline is valid, we have at least 3 vertexes.
+		update3DVertexesFromPolyline(m_vertexes[0]);
+	}
 }
 
 
@@ -195,7 +207,7 @@ void Polygon3D::detectType() {
 
 
 void Polygon3D::eleminateColinearPts() {
-	IBKMK::eleminateColinearPoints(m_vertexes);
+	IBKMK::eliminateCollinearPoints(m_vertexes);
 }
 
 
@@ -218,7 +230,10 @@ void Polygon3D::updateLocalCoordinateSystem() {
 	IBKMK::Vector3D y = m_vertexes.back() - m_vertexes[0];
 	IBKMK::Vector3D n;
 	m_localX.crossProduct(y, n);
-	// TODO : proper rounding error check!
+	// if we interpret n as area between y and localX vectors, this should
+	// be reasonably large (> 1 mm2). If we, however, have a very small magnitude
+	// the vectors y and localX are (nearly) collinear, which should have been prevented by
+	// eliminateColliniarPoints() before.
 	if (n.magnitude() < 1e-9)
 		return; // invalid vertex input
 	n.normalize();
@@ -231,7 +246,7 @@ void Polygon3D::updateLocalCoordinateSystem() {
 		IBKMK::Vector3D vy = m_vertexes[i-1] - m_vertexes[i];
 		IBKMK::Vector3D vn;
 		vx.crossProduct(vy, vn);
-		// TODO : proper rounding error check!
+		// again, we check for not collinear points here (see explanation above)
 		if (vn.magnitude() < 1e-9)
 			return; // invalid vertex input
 		vn.normalize();
@@ -284,9 +299,18 @@ void Polygon3D::update2DPolyline() {
 			return;
 		}
 	}
-	m_polyline.setVertexes(poly);
+	m_polyline.setVertexes(poly); // Mind: this may lead to removal of points if two are close together
 }
 
+
+void IBKMK::Polygon3D::update3DVertexesFromPolyline(IBKMK::Vector3D offset) {
+	const std::vector<IBKMK::Vector2D> &polylineVertexes = m_polyline.vertexes();
+	m_vertexes.resize(polylineVertexes.size());
+	// Mind: we may have the case, that due to collinear points in polyline we have removed vertex (0,0), and
+	//       now the first 3D vertex no longer matches offset. Hence, we also compute the offset vertex again.
+	for (unsigned int i=0; i<m_vertexes.size(); ++i)
+		m_vertexes[i] = offset + m_localX * polylineVertexes[i].m_x + m_localY * polylineVertexes[i].m_y;
+}
 
 } // namespace IBKMK
 

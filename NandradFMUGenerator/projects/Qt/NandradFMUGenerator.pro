@@ -13,10 +13,6 @@ QT += widgets
 
 CONFIG += c++11
 
-unix {
-	QMAKE_CXXFLAGS += -std=c++11
-}
-
 LIBS += -L../../../lib$${DIR_PREFIX} \
 	-lNandrad \
 	-lQtExt \
@@ -47,6 +43,7 @@ PRE_TARGETDEPS += \
 
 
 SOURCES +=  \
+	../../src/FMUVariableTableModel.cpp \
 	../../src/NandradFMUGeneratorWidget.cpp \
 	../../src/main.cpp
 
@@ -54,6 +51,7 @@ FORMS += \
 	../../src/NandradFMUGeneratorWidget.ui
 
 HEADERS += \
+	../../src/FMUVariableTableModel.h \
 	../../src/NandradFMUGeneratorWidget.h
 
 RESOURCES += \

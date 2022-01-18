@@ -101,21 +101,22 @@ void LinearSpline::eliminateConsecutive(	const std::vector<double>& tmp_x,
 		}
 		else {
 			if (tmp2_x.back() != last_reported_duplicate) {
-				IBK::IBK_Message(FormatString("Duplicate x-value %1 found (and skipped).").arg(tmp2_x.back()), MSG_WARNING, FUNC_ID, 3);
+				IBK::IBK_Message(FormatString("Duplicate x-value %1 found (and skipped).").arg(tmp2_x.back()),
+								 MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 				last_reported_duplicate = tmp2_x.back();
 			}
 			++skipped_values;
 		}
 	}
 	// If the spline ends with a zero slope line sets y value to the original end y value
-	if( tmp_x.back() == tmp2_x.back() && tmp_y.back() != tmp2_y.back()) {
+	if (tmp_x.back() == tmp2_x.back() && tmp_y.back() != tmp2_y.back()) {
 		IBK::IBK_Message(FormatString("Duplicate x-value found at the end. End y value %1 copied to the new spline (old y value: %2.")
-						 .arg(tmp_y.back()).arg(tmp2_y.back()), MSG_WARNING, FUNC_ID, 3);
+						 .arg(tmp_y.back()).arg(tmp2_y.back()), MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 		tmp2_y.back() = tmp_y.back();
 	}
-	if (skipped_values != 0) {
-		IBK::IBK_Message(FormatString("Skipped a total of %1 values because of duplicate x-values.").arg(skipped_values), MSG_WARNING, FUNC_ID, 3);
-	}
+	if (skipped_values != 0)
+		IBK::IBK_Message(FormatString("Skipped a total of %1 values because of duplicate x-values.").arg(skipped_values),
+						 MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
 }
 
 
@@ -133,10 +134,8 @@ void LinearSpline::setValues(const std::vector<double> & xvals, const std::vecto
 	setValues(tmp_x.begin(), tmp_x.end(), tmp_y.begin());
 	std::string errstr;
 	m_valid = makeSpline(errstr);
-	if (!errstr.empty()) {
-		/// \todo Check this, shouldn't this "warning" be handled as exception instead?
-		IBK::IBK_Message(FormatString("Error while makeSpline in setValues. %1").arg(errstr), MSG_WARNING, FUNC_ID, 3);
-	}
+	if (!errstr.empty())
+		throw IBK::Exception(FormatString("Error generating spline for linear interpolation: %1").arg(errstr), FUNC_ID);
 }
 
 
@@ -146,12 +145,7 @@ bool LinearSpline::read(const std::string& x_data, const std::string& y_data, st
 	std::vector<double> tmp_y;
 
 	string2valueVector(x_data, tmp_x);
-//	std::stringstream xstrm(x_data);
-//	std::copy(std::istream_iterator<double>(xstrm), std::istream_iterator<double>(), std::back_inserter(tmp_x) );
-
 	string2valueVector(y_data, tmp_y);
-//	std::stringstream ystrm(y_data);
-//	std::copy(std::istream_iterator<double>(ystrm), std::istream_iterator<double>(), std::back_inserter(tmp_y) );
 
 	if (tmp_x.empty()) {
 		if (errorMsg != nullptr) *errorMsg = "Missing data to read!";
@@ -411,8 +405,8 @@ LinearSpline::SplineGenerationResults LinearSpline::generate(
 	// note: m_x.size() - 1 = refineIntervals.size()
 
 	IBK::IBK_Message(IBK::FormatString("Starting spline generation with %1 points, reltol = %2, abstol = %3.\n")
-		.arg((unsigned int)xvals.size()).arg(relTol).arg(absTol),
-					 IBK::MSG_PROGRESS, FUNC_ID, 3);
+					 .arg((unsigned int)xvals.size()).arg(relTol).arg(absTol),
+					 IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 
 
 	double xm, ym, ym_approx, dy;
@@ -473,7 +467,7 @@ LinearSpline::SplineGenerationResults LinearSpline::generate(
 		} while (++i < refineInterval.size());
 
 		IBK::IBK_Message(IBK::FormatString("  Intervals refined = %1, max abs. error = %2, fEvals = %4, current spline size of %3")
-			.arg(refineCount).arg(max_dy).arg((unsigned int)xvals.size()).arg(fEvals), IBK::MSG_PROGRESS, FUNC_ID, 3);
+			.arg(refineCount).arg(max_dy).arg((unsigned int)xvals.size()).arg(fEvals), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 
 		// *** PART 3 - Cleanup ***
 
@@ -496,7 +490,7 @@ LinearSpline::SplineGenerationResults LinearSpline::generate(
 				++i; // next interval
 			}
 		}
-		IBK::IBK_Message(IBK::FormatString(" [%1]\n").arg((unsigned int)xvals.size()), IBK::MSG_PROGRESS, FUNC_ID, 3);
+		IBK::IBK_Message(IBK::FormatString(" [%1]\n").arg((unsigned int)xvals.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_DETAILED);
 
 
 		if (refineCount == 0) {

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::IDGroup Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::IDGroup Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -68,9 +69,9 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1IDGroup.html','');});
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Declaration for class <a class="el" href="classNANDRAD_1_1IDGroup.html" title="Declaration for class IDGroup. ">IDGroup</a>. </p>
-<p>An <a class="el" href="classNANDRAD_1_1IDGroup.html" title="Declaration for class IDGroup. ">IDGroup</a> references one or more IDs and handles the encoding/decoding of an IDGroup-string. </p><div class="fragment"><div class="line"><span class="comment">// supported encodings</span></div><div class="line"><span class="keywordtype">string</span> severalIDs = <span class="stringliteral">&quot;16,20,22&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> allIDs = <span class="stringliteral">&quot;*&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> idInterval = <span class="stringliteral">&quot;5-10,50-60&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> mixedIDs = <span class="stringliteral">&quot;1,3,55,5-10&quot;</span>;</div><div class="line"><span class="comment">// decode with IDGroup</span></div><div class="line">IDGroup grp;</div><div class="line">grp.setEncodedString(severalIDs);</div><div class="line"><span class="comment">// encode string</span></div><div class="line">grp.encodedString();</div></div><!-- fragment --> 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00049">49</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
+<div class="textblock"><p>An <a class="el" href="classNANDRAD_1_1IDGroup.html" title="An IDGroup references one or more IDs and handles the encoding/decoding of an IDGroup-string. ">IDGroup</a> references one or more IDs and handles the encoding/decoding of an IDGroup-string. </p>
+<div class="fragment"><div class="line"><span class="comment">// supported encodings</span></div><div class="line"><span class="keywordtype">string</span> severalIDs = <span class="stringliteral">&quot;16,20,22&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> allIDs = <span class="stringliteral">&quot;*&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> idInterval = <span class="stringliteral">&quot;5-10,50-60&quot;</span>;</div><div class="line"><span class="keywordtype">string</span> mixedIDs = <span class="stringliteral">&quot;1,3,55,5-10&quot;</span>;</div><div class="line"><span class="comment">// decode with IDGroup</span></div><div class="line">IDGroup grp;</div><div class="line">grp.setEncodedString(severalIDs);</div><div class="line"><span class="comment">// encode string</span></div><div class="line">grp.encodedString();</div></div><!-- fragment --> 
+<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00047">47</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>&gt;</code></p>
 <table class="memberdecls">
@@ -131,8 +132,6 @@ Public Attributes</h2></td></tr>
 <p>Set ID group data from an encoded string. </p>
 <p>This function throws an exception, if an invalid format is encountered or IDs are specified in addition to a wildcard character. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8cpp_source.html#l00033">33</a> of file <a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a>.</p>
-
 </div>
 </div>
 <a id="a6f3316cd4fecd3e7d5032b73b4159424"></a>
@@ -151,8 +150,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Encode ID group data into a string representation. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8cpp_source.html#l00094">94</a> of file <a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -173,8 +170,6 @@ Public Attributes</h2></td></tr>
 
 <p>Returns true if neither the wildcard flag m_allIDs is set, nor any IDs are specified in m_ids or m_idIntervals. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8cpp_source.html#l00127">127</a> of file <a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a>.</p>
-
 </div>
 </div>
 <a id="ae0783ccfe9e929add82f7f9c43bcbb52"></a>
@@ -187,15 +182,13 @@ Public Attributes</h2></td></tr>
           <td class="memname">const <a class="el" href="classNANDRAD_1_1IDGroup.html">IDGroup</a> NANDRAD::IDGroup::operator+ </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classNANDRAD_1_1IDGroup.html">IDGroup</a> &amp;&#160;</td>
-          <td class="paramname"><em>group</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Merges two id groups. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8cpp_source.html#l00148">148</a> of file <a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a>.</p>
 
 </div>
 </div>
@@ -225,7 +218,7 @@ Public Attributes</h2></td></tr>
 
 <p>Comparison operator by value. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00074">74</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00072">72</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
 
 </div>
 </div>
@@ -247,8 +240,6 @@ Public Attributes</h2></td></tr>
 
 <p>Not-equal comparison operator by value. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8cpp_source.html#l00222">222</a> of file <a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -267,7 +258,7 @@ Public Attributes</h2></td></tr>
 <p>If true, the encoded string containted a wildcard character * to indicate all IDs. </p>
 <dl class="section warning"><dt>Warning</dt><dd>A wildcard overrides all other IDs. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00084">84</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00082">82</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
 
 </div>
 </div>
@@ -285,7 +276,7 @@ Public Attributes</h2></td></tr>
 
 <p>Set of individually listed IDs. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00084">84</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
 
 </div>
 </div>
@@ -303,21 +294,20 @@ Public Attributes</h2></td></tr>
 
 <p>Model id intervals. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__IDGroup_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__IDGroup_8h_source.html">NANDRAD_IDGroup.h</a></li>
-<li><a class="el" href="NANDRAD__IDGroup_8cpp_source.html">NANDRAD_IDGroup.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1IDGroup.html">IDGroup</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1IDGroup.html">IDGroup</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

@@ -49,6 +49,7 @@ void SVUndoAddNetwork::undo() {
 	theProject().m_geometricNetworks.back().updateNodeEdgeConnectionPointers(); // ensure pointers are correctly set
 	const SVDatabase & db = SVSettings::instance().m_db;
 	theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
+	theProject().updatePointers();
 
 	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
 	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);

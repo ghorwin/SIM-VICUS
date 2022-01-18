@@ -27,6 +27,7 @@
 #define SVPropVertexListWidgetH
 
 #include <QWidget>
+#include <VICUS_PlaneGeometry.h>
 
 namespace Ui {
 	class SVPropVertexListWidget;
@@ -48,6 +49,19 @@ class ModificationInfo;
 
 	Currently, this widget also holds properties of newly created geometry. Maybe this
 	widget should be renamed "SVPropNewObjectWidget".
+
+	Button state update mechanism:
+
+	- the buttons for adding building levels and zones change state through undo-actions
+	  and when the selection in a combo box further up needs an update
+	- labels, push buttons and combo boxes are enabled/disabled in updateButtonStates(), which
+	  is called from onModified() (whenever project is modified/undo-action executed)
+	  and from the on_comboBoxXXX_currentIndexChanged()
+
+	Note: property widgets are created on demand, so it may be that we load a project (with the
+		  AllModified modification signal), but since the widget hasn't been created yet, we do not
+		  get the modification signal. Hence, we update the button states also from the constructor
+		  of the widget.
 */
 class SVPropVertexListWidget : public QWidget {
 	Q_OBJECT
@@ -146,7 +160,7 @@ private:
 	bool createAnnonymousGeometry() const;
 
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
-	void updateSurfacePageState();
+	void updateButtonStates();
 
 	/*! Populates the combo box with components of matching type:
 		0 - wall
@@ -187,6 +201,11 @@ private:
 
 	/*! If true, user requested rotation of polygon. */
 	bool						m_polygonRotation = false;
+
+	/*! All points of the polyline are held here. When switching from Complex to other roof shapes,
+	 *   only the first three points are used.*/
+	std::vector<IBKMK::Vector3D>	m_roofPolygon;
+
 };
 
 

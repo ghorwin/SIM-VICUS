@@ -85,7 +85,7 @@ public:
 	};
 
 	/*! Destructor declaration needed because std::~exception() has throw specifier. */
-	~Exception() throw();
+	~Exception() {}
 
 	/*! Default constructor. */
 	Exception();

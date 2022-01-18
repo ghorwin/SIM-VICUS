@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::EmbeddedObjectWindow Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::EmbeddedObjectWindow Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -60,7 +61,6 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1EmbeddedObjectWindow.h
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1EmbeddedObjectWindow-members.html">List of all members</a>  </div>
@@ -69,203 +69,273 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1EmbeddedObjectWindow.h
 </div><!--header-->
 <div class="contents">
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Declaration for class <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html" title="Declaration for class EmbeddedObjectWindow. ">EmbeddedObjectWindow</a>. </p>
-<p>An embedded object generally defines a wall opening (a window or a door). That means, the calculation radiant heat fluxes and heat fluxes by heat transmission are performed by a window model or door model. The embedded oject stores an exchangable parameter model that defines the name for the calculation model and constant model parameters. </p>
+<div class="textblock"><p>Class <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html" title="Class EmbeddedObjectWindow defines a window and holds parameters for solar radiation flux calculation...">EmbeddedObjectWindow</a> defines a window and holds parameters for solar radiation flux calculation and heat exchange through the window. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00042">42</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00041">41</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>&gt;</code></p>
+<div class="dynheader">
+Collaboration diagram for NANDRAD::EmbeddedObjectWindow:</div>
+<div class="dyncontent">
+<div class="center"><img src="classNANDRAD_1_1EmbeddedObjectWindow__coll__graph.png" border="0" usemap="#NANDRAD_1_1EmbeddedObjectWindow_coll__map" alt="Collaboration graph"/></div>
+<map name="NANDRAD_1_1EmbeddedObjectWindow_coll__map" id="NANDRAD_1_1EmbeddedObjectWindow_coll__map">
+<area shape="rect" id="node2" href="classNANDRAD_1_1WindowFrame.html" title="WindowFrame defines the frame of a window. " alt="" coords="502,5,685,32"/>
+<area shape="rect" id="node3" href="classNANDRAD_1_1WindowGlazingSystem.html" title="WindowGlazingSystem defines the glazing to be used in a window. " alt="" coords="476,56,711,83"/>
+<area shape="rect" id="node4" href="classNANDRAD_1_1LinearSplineParameter.html" title="Class LinearSplineParameter stores a linear spline curve, the corresponding parameter name and a unit..." alt="" coords="5,81,235,108"/>
+<area shape="rect" id="node5" href="classNANDRAD_1_1WindowShading.html" title="WindowShading defines a dynamically adjustable shading. " alt="" coords="497,107,689,133"/>
+<area shape="rect" id="node6" href="classNANDRAD_1_1WindowDivider.html" title="WindowDivider defines the divider of a window. " alt="" coords="500,157,687,184"/>
+</map>
+<center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:aa91477a0ddaa1d9c6120ad775963e26c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#aa91477a0ddaa1d9c6120ad775963e26c">para_t</a> { <br />
-&#160;&#160;<b>P_GlassFraction</b>, 
-<b>P_SolarHeatGainCoefficient</b>, 
-<b>P_ThermalTransmittance</b>, 
-<b>P_ShadingFactor</b>, 
-<br />
-&#160;&#160;<b>P_LeakageCoefficient</b>, 
-<b>NUM_P</b>
-<br />
- }<tr class="memdesc:aa91477a0ddaa1d9c6120ad775963e26c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameters to be defined for the various window model types.  <a href="classNANDRAD_1_1EmbeddedObjectWindow.html#aa91477a0ddaa1d9c6120ad775963e26c">More...</a><br /></td></tr>
-</td></tr>
-<tr class="separator:aa91477a0ddaa1d9c6120ad775963e26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd9b2a07cdbc84a3471fb6b83724cff5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#afd9b2a07cdbc84a3471fb6b83724cff5">modelType_t</a> { <b>MT_Constant</b>, 
-<b>MT_Detailed</b>, 
-<b>MT_DetailedWithStorage</b>, 
-<b>NUM_MT</b>
- }<tr class="memdesc:afd9b2a07cdbc84a3471fb6b83724cff5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Model types supported by the window model.  <a href="classNANDRAD_1_1EmbeddedObjectWindow.html#afd9b2a07cdbc84a3471fb6b83724cff5">More...</a><br /></td></tr>
-</td></tr>
-<tr class="separator:afd9b2a07cdbc84a3471fb6b83724cff5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3a36d0e51c2befd8d351852071e2b122"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a3a36d0e51c2befd8d351852071e2b122">EmbeddedObjectWindow</a> ()</td></tr>
-<tr class="memdesc:a3a36d0e51c2befd8d351852071e2b122"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#a3a36d0e51c2befd8d351852071e2b122">More...</a><br /></td></tr>
-<tr class="separator:a3a36d0e51c2befd8d351852071e2b122"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8411f6019d37f660d851386173ddf0c7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a8411f6019d37f660d851386173ddf0c7">hasParameters</a> () const</td></tr>
+<tr class="memdesc:a8411f6019d37f660d851386173ddf0c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true, if a glazing system is defined.  <a href="#a8411f6019d37f660d851386173ddf0c7">More...</a><br /></td></tr>
+<tr class="separator:a8411f6019d37f660d851386173ddf0c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b9a49426ae67a88cd7d8cb9890073a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a4b9a49426ae67a88cd7d8cb9890073a5">checkParameters</a> (double grossArea, const std::vector&lt; <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &gt; &amp;materials, const std::vector&lt; <a class="el" href="classNANDRAD_1_1WindowGlazingSystem.html">WindowGlazingSystem</a> &gt; &amp;glazingSystems, const std::vector&lt; <a class="el" href="classNANDRAD_1_1ShadingControlModel.html">ShadingControlModel</a> &gt; &amp;controlModels)</td></tr>
+<tr class="memdesc:a4b9a49426ae67a88cd7d8cb9890073a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for valid parameters (value ranges).  <a href="#a4b9a49426ae67a88cd7d8cb9890073a5">More...</a><br /></td></tr>
+<tr class="separator:a4b9a49426ae67a88cd7d8cb9890073a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a50a504e02aa8fef7f79a5ad0aad0cd0f"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#afd9b2a07cdbc84a3471fb6b83724cff5">modelType_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a50a504e02aa8fef7f79a5ad0aad0cd0f">m_modelType</a></td></tr>
-<tr class="memdesc:a50a504e02aa8fef7f79a5ad0aad0cd0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the data from the xml element.  <a href="#a50a504e02aa8fef7f79a5ad0aad0cd0f">More...</a><br /></td></tr>
-<tr class="separator:a50a504e02aa8fef7f79a5ad0aad0cd0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d7d58bccf76bd5ec19b7bd5b70ab0bc"><td class="memItemLeft" align="right" valign="top">std::map&lt; int, std::set&lt; int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a1d7d58bccf76bd5ec19b7bd5b70ab0bc">m_modelTypeToParameterMapping</a></td></tr>
-<tr class="memdesc:a1d7d58bccf76bd5ec19b7bd5b70ab0bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provided parameters for all model types, stored in a set of enums.  <a href="#a1d7d58bccf76bd5ec19b7bd5b70ab0bc">More...</a><br /></td></tr>
-<tr class="separator:a1d7d58bccf76bd5ec19b7bd5b70ab0bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a97091fd9ed4239c7f7add932e78aeb94"><td class="memItemLeft" align="right" valign="top">IBK::Parameter&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a97091fd9ed4239c7f7add932e78aeb94">m_para</a> [NUM_P]</td></tr>
-<tr class="memdesc:a97091fd9ed4239c7f7add932e78aeb94"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of constant parameters.  <a href="#a97091fd9ed4239c7f7add932e78aeb94">More...</a><br /></td></tr>
-<tr class="separator:a97091fd9ed4239c7f7add932e78aeb94"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d099bf4b7578fccb8d89a655f5ac626"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a2d099bf4b7578fccb8d89a655f5ac626">m_windowTypeReference</a></td></tr>
-<tr class="memdesc:a2d099bf4b7578fccb8d89a655f5ac626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path to a window type file for detailed calculation.  <a href="#a2d099bf4b7578fccb8d89a655f5ac626">More...</a><br /></td></tr>
-<tr class="separator:a2d099bf4b7578fccb8d89a655f5ac626"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60c1b6a5fb2dbe9db2e207061c8b4788"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a60c1b6a5fb2dbe9db2e207061c8b4788">m_glazingSystemId</a> = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td></tr>
+<tr class="memdesc:a60c1b6a5fb2dbe9db2e207061c8b4788"><td class="mdescLeft">&#160;</td><td class="mdescRight">ID of the glazing system used in this window.  <a href="#a60c1b6a5fb2dbe9db2e207061c8b4788">More...</a><br /></td></tr>
+<tr class="separator:a60c1b6a5fb2dbe9db2e207061c8b4788"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af60ddc5021d8946c758728ef7adcab75"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1WindowFrame.html">WindowFrame</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#af60ddc5021d8946c758728ef7adcab75">m_frame</a></td></tr>
+<tr class="memdesc:af60ddc5021d8946c758728ef7adcab75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frame parameters (optional).  <a href="#af60ddc5021d8946c758728ef7adcab75">More...</a><br /></td></tr>
+<tr class="separator:af60ddc5021d8946c758728ef7adcab75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1918b324b8230c2f3b765bc1772d030d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1WindowDivider.html">WindowDivider</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a1918b324b8230c2f3b765bc1772d030d">m_divider</a></td></tr>
+<tr class="memdesc:a1918b324b8230c2f3b765bc1772d030d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Divider parameters (optional).  <a href="#a1918b324b8230c2f3b765bc1772d030d">More...</a><br /></td></tr>
+<tr class="separator:a1918b324b8230c2f3b765bc1772d030d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a86eae4e467d9fac87146320eff76dc86"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classNANDRAD_1_1WindowShading.html">WindowShading</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a86eae4e467d9fac87146320eff76dc86">m_shading</a></td></tr>
+<tr class="memdesc:a86eae4e467d9fac87146320eff76dc86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shading model parameters (otional).  <a href="#a86eae4e467d9fac87146320eff76dc86">More...</a><br /></td></tr>
+<tr class="separator:a86eae4e467d9fac87146320eff76dc86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac608ea84fb3e2ca7da8b5d4fdad293da"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#ac608ea84fb3e2ca7da8b5d4fdad293da">m_area</a> = 999</td></tr>
+<tr class="memdesc:ac608ea84fb3e2ca7da8b5d4fdad293da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached gross cross-section area of surface in [m2] (embedded object gross area).  <a href="#ac608ea84fb3e2ca7da8b5d4fdad293da">More...</a><br /></td></tr>
+<tr class="separator:ac608ea84fb3e2ca7da8b5d4fdad293da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad60224087af1afce4e7ced9a4f7d9b1a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#ad60224087af1afce4e7ced9a4f7d9b1a">m_glasArea</a> = 999</td></tr>
+<tr class="memdesc:ad60224087af1afce4e7ced9a4f7d9b1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cached cross-section area of glas surface in [m2] (embedded object gross area minus frame and divider cross section areas).  <a href="#ad60224087af1afce4e7ced9a4f7d9b1a">More...</a><br /></td></tr>
+<tr class="separator:ad60224087af1afce4e7ced9a4f7d9b1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16a6104a8feff421936d6e5ab03f2534"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classNANDRAD_1_1WindowGlazingSystem.html">NANDRAD::WindowGlazingSystem</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#a16a6104a8feff421936d6e5ab03f2534">m_glazingSystem</a> = nullptr</td></tr>
+<tr class="memdesc:a16a6104a8feff421936d6e5ab03f2534"><td class="mdescLeft">&#160;</td><td class="mdescRight">Quick-access pointer to the glazing system data.  <a href="#a16a6104a8feff421936d6e5ab03f2534">More...</a><br /></td></tr>
+<tr class="separator:a16a6104a8feff421936d6e5ab03f2534"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
-<a id="aa91477a0ddaa1d9c6120ad775963e26c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa91477a0ddaa1d9c6120ad775963e26c">&#9670;&nbsp;</a></span>para_t</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8411f6019d37f660d851386173ddf0c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8411f6019d37f660d851386173ddf0c7">&#9670;&nbsp;</a></span>hasParameters()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#aa91477a0ddaa1d9c6120ad775963e26c">NANDRAD::EmbeddedObjectWindow::para_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Parameters to be defined for the various window model types. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00047">47</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
-
-</div>
-</div>
-<a id="afd9b2a07cdbc84a3471fb6b83724cff5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd9b2a07cdbc84a3471fb6b83724cff5">&#9670;&nbsp;</a></span>modelType_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">enum <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#afd9b2a07cdbc84a3471fb6b83724cff5">NANDRAD::EmbeddedObjectWindow::modelType_t</a></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Model types supported by the window model. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00057">57</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
-
-</div>
-</div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a3a36d0e51c2befd8d351852071e2b122"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3a36d0e51c2befd8d351852071e2b122">&#9670;&nbsp;</a></span>EmbeddedObjectWindow()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">NANDRAD::EmbeddedObjectWindow::EmbeddedObjectWindow </td>
+          <td class="memname">bool NANDRAD::EmbeddedObjectWindow::hasParameters </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns true, if a glazing system is defined. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00051">51</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+
+</div>
+</div>
+<a id="a4b9a49426ae67a88cd7d8cb9890073a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b9a49426ae67a88cd7d8cb9890073a5">&#9670;&nbsp;</a></span>checkParameters()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void NANDRAD::EmbeddedObjectWindow::checkParameters </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>grossArea</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classNANDRAD_1_1Material.html">Material</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>materials</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classNANDRAD_1_1WindowGlazingSystem.html">WindowGlazingSystem</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>glazingSystems</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classNANDRAD_1_1ShadingControlModel.html">ShadingControlModel</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>controlModels</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Default constructor. </p>
-
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8cpp_source.html#l00036">36</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8cpp_source.html">NANDRAD_EmbeddedObjectWindow.cpp</a>.</p>
+<p>Checks for valid parameters (value ranges). </p>
+<p>Also, this function creates quick-access pointers to the referenced data structures, hereby testing for existence of referenced data types. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">grossArea</td><td>Cross section in [m2] of embedded object. Frame and divider must not exceed this cross section. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a50a504e02aa8fef7f79a5ad0aad0cd0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50a504e02aa8fef7f79a5ad0aad0cd0f">&#9670;&nbsp;</a></span>m_modelType</h2>
+<a id="a60c1b6a5fb2dbe9db2e207061c8b4788"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60c1b6a5fb2dbe9db2e207061c8b4788">&#9670;&nbsp;</a></span>m_glazingSystemId</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE <a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html#afd9b2a07cdbc84a3471fb6b83724cff5">modelType_t</a> NANDRAD::EmbeddedObjectWindow::m_modelType</td>
+          <td class="memname">unsigned int NANDRAD::EmbeddedObjectWindow::m_glazingSystemId = <a class="el" href="namespaceNANDRAD.html#af08ab22f52947823168a6d42fdd3d147">INVALID_ID</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Reads the data from the xml element. </p>
-<p>Throws an IBK::Exception if a syntax error occurs.</p>
-<p>Appends the element to the parent xml element. Throws an IBK::Exception in case of invalid data.</p>
-<p>Model type. </p>
+<p>ID of the glazing system used in this window. </p>
+<p>A glazing system with invalid ID means that this Window object is now parametrized. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00086">86</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00067">67</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
 
 </div>
 </div>
-<a id="a1d7d58bccf76bd5ec19b7bd5b70ab0bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1d7d58bccf76bd5ec19b7bd5b70ab0bc">&#9670;&nbsp;</a></span>m_modelTypeToParameterMapping</h2>
+<a id="af60ddc5021d8946c758728ef7adcab75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af60ddc5021d8946c758728ef7adcab75">&#9670;&nbsp;</a></span>m_frame</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::map&lt;int, std::set&lt;int&gt; &gt; NANDRAD::EmbeddedObjectWindow::m_modelTypeToParameterMapping</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1WindowFrame.html">WindowFrame</a> NANDRAD::EmbeddedObjectWindow::m_frame</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Provided parameters for all model types, stored in a set of enums. </p>
+<p>Frame parameters (optional). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00088">88</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00070">70</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
 
 </div>
 </div>
-<a id="a97091fd9ed4239c7f7add932e78aeb94"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97091fd9ed4239c7f7add932e78aeb94">&#9670;&nbsp;</a></span>m_para</h2>
+<a id="a1918b324b8230c2f3b765bc1772d030d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1918b324b8230c2f3b765bc1772d030d">&#9670;&nbsp;</a></span>m_divider</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">IBK::Parameter NANDRAD::EmbeddedObjectWindow::m_para[NUM_P]</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1WindowDivider.html">WindowDivider</a> NANDRAD::EmbeddedObjectWindow::m_divider</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>List of constant parameters. </p>
+<p>Divider parameters (optional). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00091">91</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00072">72</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
 
 </div>
 </div>
-<a id="a2d099bf4b7578fccb8d89a655f5ac626"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d099bf4b7578fccb8d89a655f5ac626">&#9670;&nbsp;</a></span>m_windowTypeReference</h2>
+<a id="a86eae4e467d9fac87146320eff76dc86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86eae4e467d9fac87146320eff76dc86">&#9670;&nbsp;</a></span>m_shading</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::string NANDRAD::EmbeddedObjectWindow::m_windowTypeReference</td>
+          <td class="memname"><a class="el" href="classNANDRAD_1_1WindowShading.html">WindowShading</a> NANDRAD::EmbeddedObjectWindow::m_shading</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Path to a window type file for detailed calculation. </p>
-<p>Empty for model type 'Constant' </p>
+<p>Shading model parameters (otional). </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00093">93</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00075">75</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a id="ac608ea84fb3e2ca7da8b5d4fdad293da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac608ea84fb3e2ca7da8b5d4fdad293da">&#9670;&nbsp;</a></span>m_area</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double NANDRAD::EmbeddedObjectWindow::m_area = 999</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cached gross cross-section area of surface in [m2] (embedded object gross area). </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00080">80</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+
+</div>
+</div>
+<a id="ad60224087af1afce4e7ced9a4f7d9b1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad60224087af1afce4e7ced9a4f7d9b1a">&#9670;&nbsp;</a></span>m_glasArea</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double NANDRAD::EmbeddedObjectWindow::m_glasArea = 999</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cached cross-section area of glas surface in [m2] (embedded object gross area minus frame and divider cross section areas). </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00082">82</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+
+</div>
+</div>
+<a id="a16a6104a8feff421936d6e5ab03f2534"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16a6104a8feff421936d6e5ab03f2534">&#9670;&nbsp;</a></span>m_glazingSystem</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classNANDRAD_1_1WindowGlazingSystem.html">NANDRAD::WindowGlazingSystem</a>* NANDRAD::EmbeddedObjectWindow::m_glazingSystem = nullptr</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Quick-access pointer to the glazing system data. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html#l00085">85</a> of file <a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li><a class="el" href="NANDRAD__EmbeddedObjectWindow_8h_source.html">NANDRAD_EmbeddedObjectWindow.h</a></li>
-<li><a class="el" href="NANDRAD__EmbeddedObjectWindow_8cpp_source.html">NANDRAD_EmbeddedObjectWindow.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html">EmbeddedObjectWindow</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1EmbeddedObjectWindow.html">EmbeddedObjectWindow</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

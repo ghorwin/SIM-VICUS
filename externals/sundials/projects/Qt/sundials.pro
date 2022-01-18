@@ -28,7 +28,6 @@ INCLUDEPATH += \
 	../../src/src/cvode \
 	../../src/src/kinsol \
 	../../src/src/nvec_ser \
-	../../src/src/nvec_openmp \
 	../../../SuiteSparse/src/include
 
 HEADERS += \
@@ -125,8 +124,3 @@ contains( OPTIONS, lapack ) {
 	message(Enabling Lapack in Sundials)
 }
 
-contains( OPTIONS, openmp ) {
-		HEADERS += 	../../src/include/nvector/nvector_openmp.h
-		SOURCES += 	../../src/src/nvec_openmp/nvector_openmp.c
-		message(Enabling OpenMP in Sundials)
-}

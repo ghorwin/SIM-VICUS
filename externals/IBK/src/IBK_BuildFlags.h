@@ -69,9 +69,7 @@
 	#error Define this for your compiler
 #endif
 
-#ifdef IBK_DEBUG
-	#undef IBK_DEPLOYMENT
-#else
+#ifndef IBK_DEBUG
 /*! If defined, all applications/libraries based on IBK library will build in Deployment mode.
 	\warning All files accessing the IBK_DEPLOYMENT flag need to include this file!!!
 
@@ -85,6 +83,11 @@
 
 #endif // IBK_DEBUG
 
+
+// IBK_BUILDING_DEBIAN_PACKAGE always also defines IBK_DEPLOYMENT
+#ifdef IBK_BUILDING_DEBIAN_PACKAGE
+	#define IBK_DEPLOYMENT
+#endif
 
 /*! \file IBK_BuildFlags.h
 	\brief Build-related defines and macros.

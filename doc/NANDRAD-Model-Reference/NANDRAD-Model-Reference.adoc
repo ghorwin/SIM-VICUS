@@ -1,8 +1,8 @@
 NANDRAD Modell-Referenz
 =======================
 Andreas Nicolai <andreas.nicolai@tu-dresden.de>, Dirk Weiß, Stephan Hirth, Katja Tribulowski, Hauke Hirsch, Anne Paepcke
-v0.2 (14.07.2021)
-// v0.2 date_on_line_above
+v0.7 (09.01.2022)
+// v0.7 date_on_line_above
 :Author Initials: AN
 :toc: left
 :toclevels: 3
@@ -23,6 +23,7 @@ v0.2 (14.07.2021)
 :example-caption: Beispiel
 :figure-caption: Abbildung
 :table-caption: Tabelle
+:section-refsig: Abschnitt
 
 
 ## Überblick
@@ -46,6 +47,8 @@ include::NANDRAD-Outputs.adoc[leveloffset=+1]
 include::NANDRAD-GlobalParameters.adoc[leveloffset=+1]
 include::NANDRAD-Models.adoc[leveloffset=+1]
 include::NANDRAD-Networks.adoc[leveloffset=+1]
+
+include::NANDRAD-FMI.adoc[leveloffset=+1]
 
 include::NANDRAD-Reference.adoc[leveloffset=+1]
 

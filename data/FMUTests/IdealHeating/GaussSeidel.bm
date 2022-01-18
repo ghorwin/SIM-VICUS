@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BlockMod>
+	<!--Blocks-->
+	<Blocks>
+		<Block name="IdealHeating">
+			<Position>0, 0</Position>
+			<Size>96, 128</Size>
+		</Block>
+		<Block name="HeatingModel">
+			<Position>16, 16</Position>
+			<Size>96, 128</Size>
+		</Block>
+	</Blocks>
+</BlockMod>

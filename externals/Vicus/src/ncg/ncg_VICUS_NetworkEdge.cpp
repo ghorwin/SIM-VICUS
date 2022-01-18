@@ -27,7 +27,6 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <NANDRAD_Utilities.h>
-#include <VICUS_KeywordList.h>
 
 #include <tinyxml.h>
 
@@ -50,18 +49,10 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlAttribute * attrib = element->FirstAttribute();
 		while (attrib) {
 			const std::string & attribName = attrib->NameStr();
-			if (attribName == "pipeModel")
-				try {
-					m_pipeModel = (PipeModel)KeywordList::Enumeration("NetworkEdge::PipeModel", attrib->ValueStr());
-				}
-				catch (IBK::Exception & ex) {
-					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-						IBK::FormatString("Invalid or unknown keyword '"+attrib->ValueStr()+"'.") ), FUNC_ID);
-				}
-			else if (attribName == "supply")
+			if (attribName == "supply")
 				m_supply = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "idPipe")
-				m_idPipe = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
+				m_idPipe = (IDType)NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
@@ -80,9 +71,7 @@ void NetworkEdge::readXML(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "HasHeatExchangeWithGround")
-				m_hasHeatExchangeWithGround = NANDRAD::readPODElement<bool>(c, cName);
-			else if (cName == "Length")
+			if (cName == "Length")
 				m_length = NANDRAD::readPODElement<double>(c, cName);
 			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
@@ -104,23 +93,20 @@ TiXmlElement * NetworkEdge::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("NetworkEdge");
 	parent->LinkEndChild(e);
 
-	if (m_pipeModel != NUM_PM)
-		e->SetAttribute("pipeModel", KeywordList::Keyword("NetworkEdge::PipeModel",  m_pipeModel));
 	if (m_supply != NetworkEdge().m_supply)
-		e->SetAttribute("supply", IBK::val2string<bool>(m_supply));
+			e->SetAttribute("supply", "true");
 	if (m_idPipe != VICUS::INVALID_ID)
-		e->SetAttribute("idPipe", IBK::val2string<unsigned int>(m_idPipe));
+		e->SetAttribute("idPipe", IBK::val2string<IDType>(m_idPipe));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != NetworkEdge().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+			e->SetAttribute("visible", "true");
 	if (m_idNode1 != VICUS::INVALID_ID)
 		e->SetAttribute("idNode1", IBK::val2string<unsigned int>(m_idNode1));
 	if (m_idNode2 != VICUS::INVALID_ID)
 		e->SetAttribute("idNode2", IBK::val2string<unsigned int>(m_idNode2));
 
 	m_heatExchange.writeXML(e);
-	TiXmlElement::appendSingleAttributeElement(e, "HasHeatExchangeWithGround", nullptr, std::string(), IBK::val2string<bool>(m_hasHeatExchangeWithGround));
 	TiXmlElement::appendSingleAttributeElement(e, "Length", nullptr, std::string(), IBK::val2string<double>(m_length));
 	return e;
 }

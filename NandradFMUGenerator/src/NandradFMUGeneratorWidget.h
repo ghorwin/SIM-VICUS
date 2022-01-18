@@ -4,13 +4,14 @@
 #include <QWidget>
 
 #include <NANDRAD_Project.h>
+#include "FMUVariableTableModel.h"
 
 namespace Ui {
 	class NandradFMUGeneratorWidget;
 }
 
-class QTableWidgetItem;
-class QTableWidget;
+class QSortFilterProxyModel;
+class QItemSelection;
 
 /*! The dialog for configuring and exporting NANDRAD FMUs.
 */
@@ -24,8 +25,20 @@ public:
 	/*! Handles the initial file selection. */
 	void init();
 
-	/*! Sets the target FMU filename. */
-	void setModelName(const QString & fname);
+	/*! Performs a renaming of an input variable.
+		This function is called by the table model in setData().
+		If all error checks are passed, the data storage vectors (used by the models) are modified accordingly and the function
+		returns true. Otherwise the function returns false and no changes are made to the data.
+		\note newVarName is passed by value since it may be modified in the function.
+	*/
+	bool renameInputVariable(unsigned int index, QString newVarName, bool autoAdjustName = false);
+
+	/*! Performs a renaming of an output variable.
+		This function is called by the table model in setData().
+		If all error checks are passed, the data storage vectors (used by the models) are modified accordingly and the function
+		returns true. Otherwise the function returns false and no changes are made to the data.
+	*/
+	bool renameOutputVariable(unsigned int index, const QString &newVarName, bool autoAdjustName = false);
 
 	/*! This is the work-horse function that does the entire generation stuff.
 		Expects the project file to be saved already.
@@ -55,20 +68,7 @@ public:
 
 private slots:
 	/*! Reads the NANDRAD project and if successful, configures the user interface and calls updateVariableLists(). */
-	int setup();
-
-	void autoGenerate();
-
-	void on_tableWidgetInputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-	void on_tableWidgetOutputVars_currentCellChanged(int currentRow, int currentColumn, int previousRow, int previousColumn);
-
-	void on_toolButtonAddInputVariable_clicked();
-	void on_toolButtonRemoveInputVariable_clicked();
-	void on_tableWidgetInputVars_itemDoubleClicked(QTableWidgetItem *item);
-
-	void on_toolButtonAddOutputVariable_clicked();
-	void on_toolButtonRemoveOutputVariable_clicked();
-	void on_tableWidgetOutputVars_itemDoubleClicked(QTableWidgetItem *item);
+	void setup();
 
 	void on_pushButtonGenerate_clicked();
 
@@ -79,14 +79,39 @@ private slots:
 	void on_pushButtonSaveNandradProject_clicked();
 	void on_pushButtonSelectNandradProject_clicked();
 
+	/*! Refreshes the project data when smth inside the project file changes */
+	void on_pushButtonRefresh_clicked();
+
 	/*! Called when solver process was started successfully. */
 	void onProcessStarted();
 	/*! Called when solver process could not be started. */
 	void onProcessErrorOccurred();
 
-	void on_tableWidgetInputVars_itemChanged(QTableWidgetItem *item);
 
-	void on_tableWidgetOutputVars_itemChanged(QTableWidgetItem *item);
+	// ** Input Variable Table **
+
+	void on_tableViewInputVars_doubleClicked(const QModelIndex &index);
+	void on_toolButtonAddInputVariable_clicked();
+	void on_toolButtonRemoveInputVariable_clicked();
+	void onInputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+
+	// ** Output Variable Table **
+
+	void on_tableViewOutputVars_doubleClicked(const QModelIndex &index);
+	void on_toolButtonAddOutputVariable_clicked();
+	void on_toolButtonRemoveOutputVariable_clicked();
+	void onOutputVarsSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+	void on_lineEditInputVarNameFilter_textEdited(const QString &arg1);
+
+	void on_lineEditInputVarDescFilter_textEdited(const QString &arg1);
+
+	void on_lineEditOutputVarNameFilter_textEdited(const QString &arg1);
+
+	void on_lineEditOutputVarDescFilter_textEdited(const QString &arg1);
+
+	void on_checkBoxUseDisplayNames_clicked(bool checked);
 
 private:
 	/*! Toggles the GUI state depending on whether a valid NANDRAD Project was read or not. */
@@ -118,16 +143,23 @@ private:
 	*/
 	void updateFMUVariableTables();
 
-	/*! This fills in a table with FMI variables. */
-	void populateTable(QTableWidget * table, const std::vector<NANDRAD::FMIVariableDefinition> & availableVars);
-
-	/*! Adds a new row to a table widget.
-		\param tableWidget The target table widget.
-		\param var The variable to add.
-	*/
-	void appendVariableEntry(QTableWidget * tableWidget, const NANDRAD::FMIVariableDefinition & var);
-
 	void dumpUsedValueRefs() const;
+
+	/*! Add a new variable as input/output FMI variable and assign unique value reference. */
+	void addVariable(bool inputVar);
+
+	/*! Removes an already configured FMI variable. */
+	void removeVariable(bool inputVar);
+
+	/*! Updates FMI configuration in project. */
+	void storeFMIVariables(NANDRAD::Project & prj);
+
+	/*! Helper function for removing value reference of current input variable (if and only
+		if not used by any other input variable). */
+	void removeUsedInputValueRef(unsigned int index, unsigned int fmiVarRef);
+
+	/*! Generates a new variable name based on the suggestedName that is unique among all available input/output variables. */
+	QString generateUniqueVariableName(const QString & suggestedName) const;
 
 	/*! This function returns detailed variable information to be used when generating FMU variables.
 		This might be better placed somewhere in the VICUS library?
@@ -144,10 +176,10 @@ private:
 
 
 
-	Ui::NandradFMUGeneratorWidget		*m_ui;
+	Ui::NandradFMUGeneratorWidget					*m_ui;
 
 	/*! The project, contains the currently defined FMI input/output variables. */
-	NANDRAD::Project					m_project;
+	NANDRAD::Project								m_project;
 
 	/*! This set contains a list of all value references currently used by variables
 		in the NANDRAD Project (i.e. configured variables).
@@ -158,6 +190,17 @@ private:
 	std::vector<NANDRAD::FMIVariableDefinition>		m_availableInputVariables;
 	/*! Holds all _available_ output variable definitions. */
 	std::vector<NANDRAD::FMIVariableDefinition>		m_availableOutputVariables;
+
+	/*! Table model instance for input vars. */
+	FMUVariableTableModel							*m_inputVariablesTableModel = nullptr;
+	/*! Table model instance for output vars. */
+	FMUVariableTableModel							*m_outputVariablesTableModel = nullptr;
+
+	QSortFilterProxyModel							*m_inputVariablesProxyModel = nullptr;
+	QSortFilterProxyModel							*m_outputVariablesProxyModel = nullptr;
+
+	/*! List of known display names for different model objects. */
+	std::vector<FMUVariableTableModel::DisplayNameSubstitution>		m_displayNameTable;
 
 	std::map<std::string, std::pair<std::string, std::string> > m_variableInfoMap;
 };

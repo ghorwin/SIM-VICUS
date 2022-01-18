@@ -1,0 +1,27 @@
+/*!
+
+\mainpage Overview of the QtExt Library
+
+\section intro_sec What is the QtExt library?
+
+The QtExt is something like the IBK library for Qt-specific extensions. It currently contains
+widgets that extend the Qt widget library and reporting components.
+
+All classes and types are wrapped in the QtExt namespace.
+
+\subsection widgets QtExt Widgets
+
+The following widgets may be useful.
+
+- QtExt::ValidatingLineEdit - A widget for line edits that provide input value checking
+- QtExt::ColorEditWidget - A widget that allows editing of colors (e.g. in preferences dialogs)
+- QtExt::ColorButton - A tool button that displays its color and opens a color selection widget when clicked.
+
+Uniform appearance of widgets is controlled through the QtExt::Style class static members.
+
+\subsection report Several classes assist with report generation.
+
+See QtExt::Report for details.
+
+*/
+

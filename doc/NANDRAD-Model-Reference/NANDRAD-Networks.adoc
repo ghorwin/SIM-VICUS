@@ -294,18 +294,23 @@ Es werden die folgenden Parameter benötigt:
 
 ### Modelltyp: ConstantPressurePump
 
-Diese Komponente prägt eine Druckdifferenz unabhängig vom Massenstrom auf (entspricht einer idealisierten, druckgeregelten Pumpe). Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
+Diese Komponente prägt eine konstante Druckdifferenz unabhängig vom Massenstrom auf. Das Modell bildet somit eine geregelte Pumpe mit konstanter Druckerhöhung ab. Für das Model `ConstantPressurePump` werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `PressureHead` | Pa | Konstante Druckhöhe, welche die Pumpe erzeugt | beliebig | 
 | `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
-| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
 | `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximale Druckhöhe bei minimalem Massenstrom, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet | {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximale elektrische Leistung der Pumpe, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet| {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+
 |====================
 
 Der Parameter `PressureHead` legt eine konstante Druckhöhe fest. Es ist jedoch auch möglich, eine Zeitreihe für diesen Parameter im Zeitplanparameter `PressureHeadSchedule` anzugeben. Wird in solcher Zeitplan für das jeweilige Pumpen-Strömungselement gefunden, so wird dieser Anstelle des konstanten Parameters verwendet.
+
+Werden die optionalen Parameter `MaximumPressureHead` und `PumpMaximumElectricalPower` angegeben, so wird eine maximale Druckerhöhung in Abhängigkeit des Massenstroms berechnet (linear) und die tatsächliche Druckerhöhung dementsprechend begrenzt.
 
 [WARNING]
 ====
@@ -319,6 +324,29 @@ Da sich dies in den Simulationsergebnissen jedoch leicht erkennen lässt, sollte
 Die Modellabhängigkeit von der Zeitplanvariable `PressureHeadSchedule` kann genutzt werden, um die Druckhöhe als FMU-Eingangsgröße zu definieren.
 ====
 
+Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
+
+
+
+### Modelltyp: VariablePressurePump
+
+Das Modell bildet eine Pumpe mit linear ansteigender Druckerhöhung in Abhängigkeit des Massenstroms ab. Damit entspricht die Pumpenkennlinie einer sogenannten dp-v Regelung. Es werden die folgenden Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `DesignPressureHead` | Pa | Druckerhöhung am Auslegungspunkt, benötigt für die Berechnung der linearen Kennlinie | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `DesignMassFlux` | kg/s | Massenstrom am Auslegungspunkt, benötigt für die Berechnung der linearen Kennlinie | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `PressureHeadReduction` | - | Mit diesem Faktor wird die Druckerhöhung bei einem Massenstrom von 0 berechnet, womit die lineare Kennlinie bestimmt wird. Dazu wird die Druckerhöhung am Auslegungspunkt mit diesem Faktor multipliziert.  | 0...1,{nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximale Druckhöhe bei minimalem Massenstrom, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet | {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximale elektrische Leistung der Pumpe, wird für die Berechnung der massenstromabhängigen maximalen Druckhöhe verwendet| {nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+
+|====================
+
+Werden die optionalen Parameter `MaximumPressureHead` und `PumpMaximumElectricalPower` angegeben, so wird eine maximale Druckerhöhung in Abhängigkeit des Massenstroms berechnet (linear) und die tatsächliche Druckerhöhung dementsprechend begrenzt.
 Die Pumpeneffizienz ist als der mechanische Gesamtwirkungsgrad der Pumpe definiert. D.h. die durch Volumenstrom und Druckhöhe gegebene mechanische Arbeit entspricht diesem Anteil der Gesamtarbeit. Die Differenz der Leistungen wird anteilig entsprechend des Parameters `FractionOfMotorInefficienciesToFluidStream` als Wärmequelle dem Fluid aufgeprägt.
 
 
@@ -350,7 +378,7 @@ Die Berechnung der Verlustwärme und elektrischen Leistung erfolgt analog zur `C
 
 ### Modelltyp: ControlledPump
 
-Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druckhöhe nicht fest vorgegeben ist, sonder anhand verschiedener Regelmodelle angepasst wird.
+Dieses Modell ist ähnlich der `ConstantPressurePump`, mit dem Unterschied, dass die Druckhöhe nicht fest vorgegeben ist, sondern geregelt wird. Dazu können verschiedene Regler verwendet werden (siehe auch <<NetworkControlElements>>).
 
 .Definition einer ControlledPump
 ====
@@ -360,6 +388,8 @@ Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druc
 <HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
 	<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
 	<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
+	<IBK:Parameter name="MaximumPressureHead" unit="Pa">10000</IBK:Parameter>
+	<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">50</IBK:Parameter>
 </HydraulicNetworkComponent>
 
 ...
@@ -369,9 +399,26 @@ Dieses Modell ist ähnlich der `ConstantPressurePump`, nur dass diesmal die Druc
 ----
 ====
 
-Die Parameter und Attribute der `ControlledPump` Definition entsprechen denen der `ConstantPressurePump`. Der Parameter `PressureHead` wird nicht benötigt.
 
-Die tatsächliche Pumpenleistung ergibt sich durch Anwendung des Massenstromkontrollmodells, welches vom Netzwerelement im Attribut `controlElementId` referenziert wird (siehe auch <<NetworkControlElements>>).
+Für das Model `ControlledPump` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `PumpEfficiency` | - | Gesamtwirkungsgrad der Pumpe | 0...1,{nbsp}>{nbsp}0.0 | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `FractionOfMotorInefficienciesToFluidStream` | - | Anteil der ans Fluid abgegebenen Wärmeverluste der Pumpe (Standardwert 100%, Nassläufer) | 0...1,{nbsp}>{nbsp}0.0 | _optional für Modelltyp_ `ThermalHydraulicNetwork`
+| `Volume` | m3 | Fluid volume inside the pump | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumPressureHead` | Pa | Maximum pressure head at point of minimal mass flow
+| {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `PumpMaximumElectricalPower` | W | Maximum electrical power at point of optimal operation
+| {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+Aus der maximalen Druckhöhe bei minimalem Durchfluss (`MaximumPressureHead`) und der maximalen Leistung im optimalen Betriebspunkt (`PumpMaximumElectricalPower`) berechnet das Modell die tatsächliche maximale Druckhöhe in Abhängigkeit des aktuellen Massenstroms. Diese tatsächliche maximale Druckhöhe sinkt mit zunehmenden Massenstrom linear und ist somit in der Regel geringer als die maximale Druckhöhe bei minimalem Durchfluss (`MaximumPressureHead`).
+
+Das jeweilige Strömungselement (<<NetworkElements>>) referenziert im Attribut `controlElementId` einen Regler (siehe auch <<NetworkControlElements>>). Dieser bestimmt das Regelverhalten der Pumpe.
+
+
 
 
 [[HydraulicElement_ConstantPressureLossValve]]
@@ -388,6 +435,32 @@ Für das Model `ConstantPressureLossValve` werden diese Parameter benötigt:
 | `Volume` | m3 | Fluidvolumen des Ventils | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
+[TIP]
+====
+Es ist ebenfalls möglich den Druckverlust über einen Zeitplan festzulegen. Dazu kann die Zeitplanvariable `PressureLossSchedule` genutzt werden. In diesem Fall wird der festgelegte Parameter `PressureLoss` nicht berücksichtigt.
+====
+
+
+### Modelltyp: PressureLossElement
+
+Mit diesem Modell kann ein beliebiges Druckverlustelement (z.B. T-Stück, Ventil, ...) abgebildet werden, welches  durch einen zeta-Wert und den Innendurchmesser beschrieben werden kann. 
+
+Für das Model `PressureLossElement` werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+
+|====================
+
+[TIP]
+====
+Es ist zusätzlich möglich auch Elemente zu beschreiben, welche sich in identischen parallelen Strängen befinden. Dazu wird in dem `HydraulicNetworkElement` (siehe <<NetworkElements>>), welches ein `PressureLossElement` referenziert, der Parameter `NumberParallelElements` angegeben. Siehe dazu auch <<parallel_pressureLossElements>>
+====
+
 
 [[HydraulicElement_ControlledValve]]
 ### Modelltyp: ControlledValve
@@ -400,7 +473,7 @@ Für das Model `ControlledValve` werden diese Parameter benötigt:
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert)| {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
@@ -415,24 +488,29 @@ Das Model `HeatExchanger` ist ein einfacher Wärmeübertrager, welcher mit dem F
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
 
-[[HydraulicElement_HeatPumpIdealCarnotSourceSide]]
-### ModellTyp: HeatPumpIdealCarnotSourceSide
 
-Das Model `HeatPumpIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+
+[[HydraulicElement_HeatPumpVariableIdealCarnotSourceSide]]
+### ModellTyp: HeatPumpVariableIdealCarnotSourceSide
+
+Das Model `HeatPumpVariableIdealCarnotSourceSide` ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur 
+(d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+
+Die Heizleistung wird durch den `HydraulicNetworkHeatExchange` mit dem modelType `HeatLossSplineCondenser` bestimmt.
 
 Weiterhin werden diese Parameter benötigt:
 
 [options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
-[[Parameter_HeatPumpIdealCarnotSourceSide]]
+[[Parameter_HeatPumpVariableIdealCarnotSourceSide]]
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 | `CarnotEfficiency` | --- | Carnot-Faktor zur Berechnung des COP | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 | `MaximumHeatingPower` | W | Maximale Heizleistung (= maximaler Wärmestrom des Kondensators) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
@@ -440,15 +518,15 @@ Weiterhin werden diese Parameter benötigt:
 
 
 [IMPORTANT]
-Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur 20°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
+Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
 
-[[ex_HeatPumpIdealCarnotSourceSide]]
-.Definition einer HeatPumpIdealCarnotSourceSide
+[[ex_HeatPumpVariableIdealCarnotSourceSide]]
+.Definition einer HeatPumpVariableIdealCarnotSourceSide
 ====
 [source,xml]
 ----
 <Components>
-    <HydraulicNetworkComponent id="2" modelType="HeatPumpIdealCarnotSourceSide">
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpVariableIdealCarnotSourceSide">
     	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
     	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
     	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
@@ -471,19 +549,76 @@ Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdam
 
 
 
-### ModellTyp: HeatPumpIdealCarnotSupplySide
+### ModellTyp: HeatPumpVariableIdealCarnotSupplySide
 
-Das Model `HeatPumpIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
+Das Model `HeatPumpVariableIdealCarnotSupplySide` ist eine ideale Wärmepumpe mit variable Heizleistung und gegebener Carnot-Effizienz, welche die Senkenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der warmen Seite (Kondensator) der Wärmepumpe als Teil des Netzwerks modelliert. Die auf der kalten Seite gegebene Temperatur wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Die Wärmeabgabe der Wärmepumpe wird ideal geregelt so dass immer die gegebene Kondensatoraustrittstemperatur (= Heizungsvorlauftemperatur, z.B. 35°C) erreicht wird. die Kondensatoraustrittstemperatur muss in Form eines Schedules mit der Bezeichnung `CondenserOutletSetpointSchedule` angegeben werden.
 
-Die benötigten Parameter sind identisch mit dem Modell <<HydraulicElement_HeatPumpIdealCarnotSourceSide>> und in <<Parameter_HeatPumpIdealCarnotSourceSide>> gegeben.
+Die benötigten Parameter sind identisch mit dem Modell <<HydraulicElement_HeatPumpVariableIdealCarnotSourceSide>> und in <<Parameter_HeatPumpVariableIdealCarnotSourceSide>> gegeben.
 
 
-[[HydraulicElement_HeatPumpRealSourceSide]]
-### Modelltyp: HeatPumpRealSourceSide
+
+
+[HydraulicElement_HeatPumpVariableSourceSide]]
+### ModellTyp: HeatPumpVariableSourceSide
+
+Das Model `HeatPumpVariableSourceSide` ist eine ideale Wärmepumpe mit variable Heizleistung, welche die Quellenseite der Wärmepumpe modelliert. Mit diesem Modell wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. Dem Fluid wird dort Wärme entzogen. Die von der Wärmepumpe erzeugte Wärme an der warmen Seite (Kondensator) wird durch ein Wärmeaustauschmodell (<<NetworkHeatExchange>>) als Randbedingung angegeben. Weiterhin muss die mittlere Kondensatortemperatur (d.h. der geschätzte Mittelwert zwischen Ein- und Austrittstemperatur am Kondensator, z.B. 32.5°C) in Form eines Schedules mit der Bezeichnung `CondenserMeanTemperatureSchedule` angegeben werden.
+Im Gegensatz zum Modell `HeatPumpVariableIdealCarnotSourceSide`, wird der COP durch ein Polynom bestimmt. Es werden 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung des COP in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpVariableSourceSide>>). 
+
+
+Weiterhin werden diese Parameter benötigt:
+
+[options="header",cols="22%,^ 10%,38%,^ 12%, ^ 18%",width="100%"]
+[[HeatPumpVariableSourceSide]]
+|====================
+|Name | Einheit | Beschreibung | Wertebereich | Verwendung
+| `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+| `MaximumHeatingPower` | W | Maximale Heizleistung (= maximaler Wärmestrom des Kondensators) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
+|====================
+
+
+[IMPORTANT]
+Wenn die Differenz zwischen mittlerer Kondensatortemperatur und mittlerer Verdampfertemperatur weniger als 4 K beträgt oder die Verdampfertemperatur -30°C unterschreitet, wird eine Warnung ausgegeben und die Wärmepumpe ist ausgeschaltet. Alle Ausgaben des Modells sind dann auf 0.0 gesetzt.
+
+[[ex_HeatPumpVariableSourceSide]]
+.Definition einer HeatPumpVariableSourceSide
+====
+[source,xml]
+----
+<Components>
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpVariableSourceSide">
+    	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
+    	<IBK:Parameter name="PressureLossCoefficient" unit="-">5</IBK:Parameter>
+    	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+    	<IBK:Parameter name="MaximumHeatingPower" unit="W">4000</IBK:Parameter>
+    	<PolynomCoefficients>
+			COP: -7.46562450e+01	5.87360996e-01	-1.38056160e-03	-4.45166703e-03	1.68697149e-03	1.77084233e-03
+		</PolynomCoefficients>
+    </HydraulicNetworkComponent>
+</Components>
+
+<Elements>
+    <HydraulicNetworkElement id="1" inletNodeId="2" outletNodeId="0" componentId="2" displayName="heatpump">
+    	<HydraulicNetworkHeatExchange modelType="HeatLossSplineCondenser">
+    		<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+    			<TSVFile>${Project Directory}/file/to/HeatFluxCondenser.csv</TSVFile>
+    		</LinearSplineParameter>
+    	</HydraulicNetworkHeatExchange>
+    </HydraulicNetworkElement>
+</Elements>
+----
+====
+
+
+
+
+[[HydraulicElement_HeatPumpOnOffSourceSide]]
+### Modelltyp: HeatPumpOnOffSourceSide
 
 Dieses Model stellt eine reale On/Off-Wärmepumpe dar, welche nur an oder ausgeschaltet werden kann. Die Leistung und Effizienz werden durch Polynome bestimmt. Das Modell bildet die Quellenseite der Wärmepumpe ab, es wird also der Wärmeübertrager der kalten Seite (Verdampfer) der Wärmepumpe als Teil des Netzwerks modelliert. 
 
-Es werden je 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpRealSourceSide>>). Es wird ein `Schedule` für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug `HeatPumpOnOffSignalSchedule` und ein `Schedule` für die Kondensatoraustrittstemperatur mit der Beziechnung `CondenserOutletSetpointSchedule` benötigt.
+Es werden je 6 Polynomkoeffizienten (`PolynomCoefficients`) für die Berechnung der Wärmeabgabe des Kondensators und der elektrischen Leistung werden in Form eines `DataTable` benötigt (siehe <<ex_HeatPumpOnOffSourceSide>>). Es wird ein `Schedule` für das Signal zum An- und Ausschalten der Wärmepumpe mit der Bezeichnug `HeatPumpOnOffSignalSchedule` und ein `Schedule` für die Kondensatoraustrittstemperatur mit der Beziechnung `CondenserOutletSetpointSchedule` benötigt.
 
 Weitere benötigte Parameter sind:
 
@@ -491,24 +626,24 @@ Weitere benötigte Parameter sind:
 |====================
 |Name | Einheit | Beschreibung | Wertebereich | Verwendung
 | `HydraulicDiameter` | mm | Äquivalenter hydraulischer Durchmesser (wird für die Berechnung des Strömungsquerschnitts und der Strömungsgeschwindigkeit benötigt) | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
-| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert | {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
+| `PressureLossCoefficient` | --- | Effektiver Druckverlustbeiwert (zeta-Wert)| {nbsp}>{nbsp}0.0{nbsp} | _benötigt_
 | `Volume` | m3 | Fluidvolumen im Wärmetauscher | {nbsp}>{nbsp}0.0{nbsp} | _benötigt für Modelltyp_ `ThermalHydraulicNetwork`
 |====================
 
 
-[[ex_HeatPumpRealSourceSide]]
-.Definition einer HeatPumpRealSourceSide
+[[ex_HeatPumpOnOffSourceSide]]
+.Definition einer HeatPumpOnOffSourceSide
 ====
 [source,xml]
 ----
 <Components>
-    <HydraulicNetworkComponent id="2" modelType="HeatPumpRealSourceSide">
+    <HydraulicNetworkComponent id="2" modelType="HeatPumpOnOffSourceSide">
     	<IBK:Parameter name="HydraulicDiameter" unit="mm">25.6</IBK:Parameter>
     	<IBK:Parameter name="PressureLossCoefficient" unit="---">5</IBK:Parameter>
     	<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
     	<PolynomCoefficients>
-    		QdotCondensator: 9.92879892e+00 2.88001670e-01 -6.14962264e-02 -1.64339623e-03 1.82864120e-03 1.89999998e-04;
-    		Pel: 9.67904904e-01 -1.15618685e-03 4.19591509e-03 9.77264129e-05 -2.20526428e-04 4.61199998e-04
+    		QdotCondensator: -2.39461360e+04 -2.62085728e+02  2.83610229e+02 -1.64340182e+00 1.82863445e+00  1.89987100e-01;
+			Pel: 2.53859559e+04  9.26237012e+01 -2.74451964e+02  9.77255316e-02 -2.20526410e-01  4.61200937e-01
     	</PolynomCoefficients>
     </HydraulicNetworkComponent>
 </Components>
@@ -533,6 +668,8 @@ Weitere benötigte Parameter sind:
 </Schedule>
 ----
 ====
+
+
 
 
 [[HydraulicElement_IdealHeaterCooler]]
@@ -624,7 +761,8 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 | `inletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `outletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `componentId` |  ID des referenzierten  `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
-| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_benötigt für Rohre_)
+| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional
+(_benötigt für Rohre_)
 |====================
 
 [IMPORTANT]
@@ -707,6 +845,28 @@ Durch Angabe des `IBK:IntPara` Tags mit dem Namen `NumberParallelPipes` kann man
 	<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
 	<!-- We have a pipe register here, consisting of 10 parallel pipes -->
 	<IBK:IntPara name="NumberParallelPipes">10</IBK:IntPara>
+</HydraulicNetworkElement>
+----
+====
+
+[NOTE]
+====
+Die Ausgabe Massestrom `FluidMassFlux` und Volumenstrom `FluidVolumeFlow` beziehen sich auf das gesamte Rohrbündel.
+====
+
+
+[[parallel_pressureLossElements]]
+#### Parallele Druckverlustelemente (Ventile, Einbauten)
+
+Durch Angabe des `IBK:IntPara` Tags mit dem Namen `NumberParallelElements` kann man ein Element mit Druckverlust definieren, welches identische in parallelen Strängen verbaut ist, ohne dazu jeden identischen Strang separat modellieren zu müssen.
+
+[[ex_parallel_valve]]
+.Definition eines parallelen Ventils
+====
+[source,xml]
+----
+<HydraulicNetworkElement id="4" inletNodeId="5" outletNodeId="6" componentId="10020016" displayName="Ventil">
+    <IBK:IntPara name="NumberParallelElements">2</IBK:IntPara>
 </HydraulicNetworkElement>
 ----
 ====
@@ -916,6 +1076,18 @@ Der Regler `ThermostatValue` kann nur für das Modell `SimplePipe` verwendet wer
 
 Mit diesem Regler wird der Massenstrom des Strömungselements geregelt. Der Regler `MassFlux` kann nur für die Modelle `ControlledValve` und `ControlledPump` verwendet werden.
 
+
+### Regler: PumpOperation
+
+Mit dem Regler `PumpOperation` kann eine `ConstantPressurePump` an oder aus geschaltet werden. Dies geschieht mit einer Hysterese in Abhängigkeit des Wärmestroms des folgenden Strömungselements. Es muss daher der Parameter `HeatLossOfFollowingElementThreshold` gesetzt sein. Ist der Wärmestrom des folgenden Elements 10 % höher als `HeatLossOfFollowingElementThreshold`, wird die Pumpe angeschaltet. Ist der Wärmestrom 10 % kleiner als `HeatLossOfFollowingElementThreshold`, wird die Pumpe ausgeschaltet. Andernfalls wird der vorherige Zustand beibehalten.
+
+[TIP]
+====
+Dieser Regler wurde speziell implementiert um die dezentrale Umwälzpumpe in einer Wärmepumpe zu steuern.
+====
+
+
+
 ### Parameter für die Regler-Logik
 
 Reglersollwerte
@@ -924,9 +1096,9 @@ Reglersollwerte
 |====================
 |Name | Einheit | Beschreibung |  Verwendung mit `ControlledProperty`
 
-| `TemperatureDifferenceSetpoint` | C | Sollwert der Temperaturdifferenz |  `TemperatureDifference`, `TemperatureDifferenceOfFollowingElement` 
-
+| `TemperatureDifferenceSetpoint` | C | Sollwert der Temperaturdifferenz |  `TemperatureDifference`, `TemperatureDifferenceOfFollowingElement`
 | `MassFluxSetpoint` | kg/s | Sollwert des Massenstroms |  `MassFlux` 
+| `HeatLossOfFollowingElementThreshold` | W | Grenzwert des Wärmestroms des folgenden Elements |  `PumpOperation` 
 |====================
 
 Reglerparameter

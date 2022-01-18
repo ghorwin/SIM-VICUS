@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>NandradLibrary: NANDRAD::Models Class Reference</title>
+<title>NANDRAD Data Model Library: NANDRAD::Models Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -25,9 +25,10 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">NandradLibrary
+   <div id="projectname">NANDRAD Data Model Library
    &#160;<span id="projectnumber">Version 2.0</span>
    </div>
+   <div id="projectbrief">NANDRAD</div>
   </td>
  </tr>
  </tbody>
@@ -60,6 +61,7 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Models.html','');});
 <div id="doc-content">
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classNANDRAD_1_1Models-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -69,32 +71,226 @@ $(document).ready(function(){initNavTree('classNANDRAD_1_1Models.html','');});
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A container class for all models. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00032">32</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00041">41</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
 </div>
 <p><code>#include &lt;<a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a91894bd9b9d8b521704cc1902100e983"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a91894bd9b9d8b521704cc1902100e983">checkForUniqueIDs</a> () const</td></tr>
+<tr class="memdesc:a91894bd9b9d8b521704cc1902100e983"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies that all models have different IDs.  <a href="#a91894bd9b9d8b521704cc1902100e983">More...</a><br /></td></tr>
+<tr class="separator:a91894bd9b9d8b521704cc1902100e983"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab8ddf97cd0aaa49dd7d0a52220267584"><td class="memItemLeft" align="right" valign="top">NANDRAD_READWRITE std::vector&lt; <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#ab8ddf97cd0aaa49dd7d0a52220267584">m_naturalVentilationModels</a></td></tr>
-<tr class="memdesc:ab8ddf97cd0aaa49dd7d0a52220267584"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all natural ventilation models.  <a href="#ab8ddf97cd0aaa49dd7d0a52220267584">More...</a><br /></td></tr>
-<tr class="separator:ab8ddf97cd0aaa49dd7d0a52220267584"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28dfcb5c5fe512133e984c21330dd6da"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a28dfcb5c5fe512133e984c21330dd6da">m_naturalVentilationModels</a></td></tr>
+<tr class="memdesc:a28dfcb5c5fe512133e984c21330dd6da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all natural ventilation models.  <a href="#a28dfcb5c5fe512133e984c21330dd6da">More...</a><br /></td></tr>
+<tr class="separator:a28dfcb5c5fe512133e984c21330dd6da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b52279eb5d09d280395fc10a88802fe"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1InternalLoadsModel.html">InternalLoadsModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a8b52279eb5d09d280395fc10a88802fe">m_internalLoadsModels</a></td></tr>
+<tr class="memdesc:a8b52279eb5d09d280395fc10a88802fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all internal loads models.  <a href="#a8b52279eb5d09d280395fc10a88802fe">More...</a><br /></td></tr>
+<tr class="separator:a8b52279eb5d09d280395fc10a88802fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac324f26f95dedda60619d46a7c86e6ba"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1ShadingControlModel.html">ShadingControlModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#ac324f26f95dedda60619d46a7c86e6ba">m_shadingControlModels</a></td></tr>
+<tr class="memdesc:ac324f26f95dedda60619d46a7c86e6ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all shading control models.  <a href="#ac324f26f95dedda60619d46a7c86e6ba">More...</a><br /></td></tr>
+<tr class="separator:ac324f26f95dedda60619d46a7c86e6ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae60e78ce341e383c38908887f09291c5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1Thermostat.html">Thermostat</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#ae60e78ce341e383c38908887f09291c5">m_thermostats</a></td></tr>
+<tr class="memdesc:ae60e78ce341e383c38908887f09291c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all thermostat control models.  <a href="#ae60e78ce341e383c38908887f09291c5">More...</a><br /></td></tr>
+<tr class="separator:ae60e78ce341e383c38908887f09291c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d3befaf2d4aa1ef99f80009c2e81114"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1IdealHeatingCoolingModel.html">IdealHeatingCoolingModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a1d3befaf2d4aa1ef99f80009c2e81114">m_idealHeatingCoolingModels</a></td></tr>
+<tr class="memdesc:a1d3befaf2d4aa1ef99f80009c2e81114"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all ideal heating/cooling models.  <a href="#a1d3befaf2d4aa1ef99f80009c2e81114">More...</a><br /></td></tr>
+<tr class="separator:a1d3befaf2d4aa1ef99f80009c2e81114"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aebdab8ae71abc7e6a37ee976dc7a319f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1IdealSurfaceHeatingCoolingModel.html">IdealSurfaceHeatingCoolingModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#aebdab8ae71abc7e6a37ee976dc7a319f">m_idealSurfaceHeatingCoolingModels</a></td></tr>
+<tr class="memdesc:aebdab8ae71abc7e6a37ee976dc7a319f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all ideal surface heating/cooling models.  <a href="#aebdab8ae71abc7e6a37ee976dc7a319f">More...</a><br /></td></tr>
+<tr class="separator:aebdab8ae71abc7e6a37ee976dc7a319f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60cbee45f2167cf41750b30694b0853e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1IdealPipeRegisterModel.html">IdealPipeRegisterModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a60cbee45f2167cf41750b30694b0853e">m_idealPipeRegisterModels</a></td></tr>
+<tr class="memdesc:a60cbee45f2167cf41750b30694b0853e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all ideal pipe register models.  <a href="#a60cbee45f2167cf41750b30694b0853e">More...</a><br /></td></tr>
+<tr class="separator:a60cbee45f2167cf41750b30694b0853e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1d985c4c4c4d5ae10ac4f343ee35d6b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1HeatLoadSummationModel.html">HeatLoadSummationModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#ab1d985c4c4c4d5ae10ac4f343ee35d6b">m_heatLoadSummationModels</a></td></tr>
+<tr class="memdesc:ab1d985c4c4c4d5ae10ac4f343ee35d6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all heat load summation models.  <a href="#ab1d985c4c4c4d5ae10ac4f343ee35d6b">More...</a><br /></td></tr>
+<tr class="separator:ab1d985c4c4c4d5ae10ac4f343ee35d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a75e9e32d0508b782957cb781465d519f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classNANDRAD_1_1NetworkInterfaceAdapterModel.html">NetworkInterfaceAdapterModel</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNANDRAD_1_1Models.html#a75e9e32d0508b782957cb781465d519f">m_networkInterfaceAdapterModels</a></td></tr>
+<tr class="memdesc:a75e9e32d0508b782957cb781465d519f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Container for all network interface models.  <a href="#a75e9e32d0508b782957cb781465d519f">More...</a><br /></td></tr>
+<tr class="separator:a75e9e32d0508b782957cb781465d519f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="ab8ddf97cd0aaa49dd7d0a52220267584"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8ddf97cd0aaa49dd7d0a52220267584">&#9670;&nbsp;</a></span>m_naturalVentilationModels</h2>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a91894bd9b9d8b521704cc1902100e983"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91894bd9b9d8b521704cc1902100e983">&#9670;&nbsp;</a></span>checkForUniqueIDs()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">NANDRAD_READWRITE std::vector&lt;<a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a>&gt; NANDRAD::Models::m_naturalVentilationModels</td>
+          <td class="memname">NANDRAD_READWRITE void NANDRAD::Models::checkForUniqueIDs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifies that all models have different IDs. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a28dfcb5c5fe512133e984c21330dd6da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a28dfcb5c5fe512133e984c21330dd6da">&#9670;&nbsp;</a></span>m_naturalVentilationModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1NaturalVentilationModel.html">NaturalVentilationModel</a>&gt; NANDRAD::Models::m_naturalVentilationModels</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Container for all natural ventilation models. </p>
 
-<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00037">37</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00054">54</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="a8b52279eb5d09d280395fc10a88802fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b52279eb5d09d280395fc10a88802fe">&#9670;&nbsp;</a></span>m_internalLoadsModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1InternalLoadsModel.html">InternalLoadsModel</a>&gt; NANDRAD::Models::m_internalLoadsModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all internal loads models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00056">56</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="ac324f26f95dedda60619d46a7c86e6ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac324f26f95dedda60619d46a7c86e6ba">&#9670;&nbsp;</a></span>m_shadingControlModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1ShadingControlModel.html">ShadingControlModel</a>&gt; NANDRAD::Models::m_shadingControlModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all shading control models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00058">58</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="ae60e78ce341e383c38908887f09291c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae60e78ce341e383c38908887f09291c5">&#9670;&nbsp;</a></span>m_thermostats</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1Thermostat.html">Thermostat</a>&gt; NANDRAD::Models::m_thermostats</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all thermostat control models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00060">60</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="a1d3befaf2d4aa1ef99f80009c2e81114"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d3befaf2d4aa1ef99f80009c2e81114">&#9670;&nbsp;</a></span>m_idealHeatingCoolingModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1IdealHeatingCoolingModel.html">IdealHeatingCoolingModel</a>&gt; NANDRAD::Models::m_idealHeatingCoolingModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all ideal heating/cooling models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00062">62</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="aebdab8ae71abc7e6a37ee976dc7a319f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebdab8ae71abc7e6a37ee976dc7a319f">&#9670;&nbsp;</a></span>m_idealSurfaceHeatingCoolingModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1IdealSurfaceHeatingCoolingModel.html">IdealSurfaceHeatingCoolingModel</a>&gt; NANDRAD::Models::m_idealSurfaceHeatingCoolingModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all ideal surface heating/cooling models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00064">64</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="a60cbee45f2167cf41750b30694b0853e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60cbee45f2167cf41750b30694b0853e">&#9670;&nbsp;</a></span>m_idealPipeRegisterModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1IdealPipeRegisterModel.html">IdealPipeRegisterModel</a>&gt; NANDRAD::Models::m_idealPipeRegisterModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all ideal pipe register models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00066">66</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="ab1d985c4c4c4d5ae10ac4f343ee35d6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1d985c4c4c4d5ae10ac4f343ee35d6b">&#9670;&nbsp;</a></span>m_heatLoadSummationModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1HeatLoadSummationModel.html">HeatLoadSummationModel</a>&gt; NANDRAD::Models::m_heatLoadSummationModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all heat load summation models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00068">68</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
+
+</div>
+</div>
+<a id="a75e9e32d0508b782957cb781465d519f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a75e9e32d0508b782957cb781465d519f">&#9670;&nbsp;</a></span>m_networkInterfaceAdapterModels</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classNANDRAD_1_1NetworkInterfaceAdapterModel.html">NetworkInterfaceAdapterModel</a>&gt; NANDRAD::Models::m_networkInterfaceAdapterModels</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Container for all network interface models. </p>
+
+<p class="definition">Definition at line <a class="el" href="NANDRAD__Models_8h_source.html#l00070">70</a> of file <a class="el" href="NANDRAD__Models_8h_source.html">NANDRAD_Models.h</a>.</p>
 
 </div>
 </div>
@@ -106,8 +302,8 @@ Public Attributes</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>NANDRAD</b></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Models.html">Models</a></li>
-    <li class="footer">Generated on Tue Sep 8 2020 15:29:16 for NandradLibrary by
+    <li class="navelem"><a class="el" href="namespaceNANDRAD.html">NANDRAD</a></li><li class="navelem"><a class="el" href="classNANDRAD_1_1Models.html">Models</a></li>
+    <li class="footer">Generated on Fri Sep 3 2021 07:22:31 for NANDRAD Data Model Library by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.13 </li>
   </ul>

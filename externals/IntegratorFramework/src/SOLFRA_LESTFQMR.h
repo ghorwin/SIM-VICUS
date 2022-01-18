@@ -10,6 +10,8 @@ namespace SOLFRA {
 	 of sundials requires. The init() function the registers
 	 the TFQMR solver with the sundials solver object exposed
 	 by the integrator class.
+
+	 \note TFQMR can only be used together with the CVODE integrator.
 */
 class LESTFQMR : public LESInterfaceIterative {
 public:
@@ -40,7 +42,7 @@ public:
 	/*! Writes currently collected statistics. */
 	virtual void writeStatistics(double t) override;
 
-	/*! Computes and returns serialization size, by default returns 0 which means feature not supported. */
+	/*! Computes and returns serialization size. */
 	virtual std::size_t serializationSize() const override;
 
 	/*! Stores content at memory location pointed to by dataPtr and increases
