@@ -323,6 +323,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	// *** compose vector with selected surfaces
 	std::vector<unsigned int> surfaceIDs; // holds IDs of calculated surfaces
+	std::vector<std::string> surfaceDisplayNames; // holds corresponding display names of calculated surfaces
 	for (const VICUS::Surface *s: m_selSurfaces) {
 
 		if ( s->m_componentInstance == nullptr )
@@ -339,12 +340,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
 																s->m_parent == nullptr) );
 		surfaceIDs.push_back(s->m_id);
+		surfaceDisplayNames.push_back(s->m_displayName.toStdString());
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
 																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
 																s->m_parent == nullptr) );
 	}
+
+	// *** compose vector with selected sub-surfaces
 	for (const VICUS::SubSurface *ss: m_selSubSurfaces) {
 
 		if ( ss->m_subSurfaceComponentInstance == nullptr )
@@ -372,6 +376,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we compute shading factors for this surface
 		surfaceIDs.push_back(ss->m_id);
+		// displaynames of windows use associated surface as parent
+		const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface *>(ss->m_parent);
+		// if surface has a displayname, use this as prefix
+		std::string displayName = surf->m_displayName.toStdString();
+		if (!displayName.empty())
+			displayName += ".";
+		displayName += ss->m_displayName.toStdString();
+		surfaceDisplayNames.push_back(displayName);
+
 		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->uniqueID(),
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
@@ -415,15 +428,15 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	switch ( outputType ) {
 		case TsvFile : {
 			exportFile = IBK::Path( exportFileBaseName + ".tsv");
-			m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs);
+			m_shading->writeShadingFactorsToTSV(exportFile, surfaceIDs, surfaceDisplayNames);
 		} break;
 		case D6oFile : {
 			exportFile = IBK::Path( exportFileBaseName + ".d6o" );
-			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, false);
+			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, false);
 		} break;
 		case D6bFile : {
 			exportFile = IBK::Path( exportFileBaseName + ".d6b" );
-			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, true);
+			m_shading->writeShadingFactorsToDataIO(exportFile, surfaceIDs, surfaceDisplayNames, true);
 		} break;
 	}
 	QMessageBox::information(this, QString(), tr("Calculated shading factors have been saved to '%1'.").arg(QString::fromStdString(exportFile.str())));

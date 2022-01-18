@@ -207,7 +207,9 @@ void StructuralShading::calculateShadingFactors(Notification * notify, double gr
 }
 
 
-void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs) {
+void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs,
+												 const std::vector<std::string> & surfaceDisplayNames)
+{
 	FUNCID(StructuralShading::shadingFactorsTSV);
 
 	std::vector< double >			   timePoints;
@@ -256,7 +258,11 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	tsvFile << "Time [h]\tAzimuth [Deg]\tAltitude [Deg]\t"; // write header
 	//tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-		tsvFile << surfaceIDs[i] << " [---]";
+		// lookup surface/subsurface by id
+		tsvFile << surfaceIDs[i];
+		if (!surfaceDisplayNames[i].empty())
+			tsvFile <<  " '" + surfaceDisplayNames[i] + "'";
+		tsvFile << " [---]";
 		if (i+1 < m_surfaces.size())
 			tsvFile << '\t';
 	}
@@ -299,7 +305,9 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 }
 
 
-void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs, bool isBinary) {
+void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, const std::vector<unsigned int> & surfaceIDs,
+													const std::vector<std::string> & surfaceDisplayNames, bool isBinary)
+{
 
 	// We create a dataIO container
 	DATAIO::DataIO dataContainer;
@@ -323,10 +331,12 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, cons
 	// INDICES = <surface IDs>
 	std::vector<unsigned int> nums = surfaceIDs;
 
-	// QUANTITY = <id1> | <id2> | ... | <idn>
+	// QUANTITY = <id1> '<name1>' | <id2> '<name2> | ... | <idn> <namen>
 	std::string quantity;
 	for (unsigned int i=0; i<surfaceIDs.size(); ++i) {
 		quantity += IBK::val2string(surfaceIDs[i]);
+		if (!surfaceDisplayNames[i].empty())
+			quantity += " '" + surfaceDisplayNames[i] + "'";
 		if (i+1 < surfaceIDs.size())
 			quantity +=" | ";
 	}

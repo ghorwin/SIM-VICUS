@@ -494,8 +494,14 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 			if (cap == "Azimuth" || cap == "Altitude")
 				continue;
 			unsigned int id;
+			std::string displayName;
 			try {
 				id = IBK::string2val<unsigned int>(cap); // might throw
+				// lookup displayname of referenced VICUS component instances
+				const VICUS::Surface * surf = surfaceByID(id);
+				const VICUS::SubSurface * subSurf = subSurfaceByID(id);
+				if (surf == nullptr && subSurf == nullptr) // can happen, if shading file is out of date and still references an invalid (now missing) surface ID
+					throw IBK::Exception("Invalid surface/sub-surface ID", FUNC_ID);
 			} catch (...) {
 				IBK::IBK_Message( IBK::FormatString("  Invalid surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
 				haveError = true;
@@ -509,8 +515,9 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 				continue;
 			}
 			colIndices.push_back(i);
-			// store NANDRAD ID in file header line
-			headerLine += "\t" + IBK::val2string(nandradSurfIt->second) + " [" + csv.m_units[i] + "]";
+
+			// store NANDRAD ID in file header line followed by display name;  NANDRAD parses the headers and expects first an ID number in the header label
+			headerLine += "\t" + IBK::val2string(nandradSurfIt->second) + " '" + displayName + "' [" + csv.m_units[i] + "]";
 		}
 
 		// error check

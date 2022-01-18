@@ -185,7 +185,13 @@ void Loads::setup(const NANDRAD::Location & location, const NANDRAD::SimulationP
 				// check units of all other columns units of all other columns are not checked
 				try {
 					for (unsigned int i=1; i<reader.m_nColumns; ++i) {
-						m_externalShadingFactorIDs.push_back(IBK::string2val<unsigned int>(reader.m_captions[i]));
+						// Note: headers look like "1221 'Westwand'"
+						//       we extract the first token, then convert it to a number
+						std::string caption = reader.m_captions[i];
+						std::string::size_type pos = caption.find_first_of(" '");
+						if (pos != std::string::npos)
+							caption = caption.substr(0, pos);
+						m_externalShadingFactorIDs.push_back(IBK::string2val<unsigned int>(caption));
 						if (reader.m_units[i] != "---")
 							throw IBK::Exception(IBK::FormatString("Invalid unit for shading factors '%1', expected '---'.")
 												 .arg(reader.m_units[i]), FUNC_ID);

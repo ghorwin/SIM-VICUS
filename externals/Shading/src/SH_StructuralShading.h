@@ -73,7 +73,7 @@ public:
 			m_isObstacle(isObstacle)
 		{}
 
-		unsigned int		m_id;								///< id of shading object
+		unsigned int		m_id;								///< Unique id of shading object
 		IBKMK::Polygon3D	m_polygon;							///< polygon of shading object
 		bool				m_isObstacle;						///< indicates whether it is an obstacle
 	};
@@ -109,10 +109,10 @@ public:
 	const std::vector<SunPosition> & sunPositions() const { return m_sunPositions; }
 
 	/*! Exports Shading Factors to a TSV-File */
-	void writeShadingFactorsToTSV(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs);
+	void writeShadingFactorsToTSV(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs, const std::vector<std::string> & surfaceDisplayNames);
 
 	/*! Exports Shading Factors to a DataIO-File */
-	void writeShadingFactorsToDataIO(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs, bool isBinary = true);
+	void writeShadingFactorsToDataIO(const IBK::Path &path, const std::vector<unsigned int> & surfaceIDs, const std::vector<std::string> & surfaceDisplayNames, bool isBinary = true);
 
 
 private:

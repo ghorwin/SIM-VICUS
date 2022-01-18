@@ -811,7 +811,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// do we have a climate path?
 	if (!m_location.m_climateFilePath.isValid()) {
 		errorStack.push_back(tr("A climate data file is needed. Please select a climate data file!"));
-		throw IBK::Exception("Error during NANDRAD project generation.", FUNC_ID);
+		throw IBK::Exception("Error during climate data conversion.", FUNC_ID);
 	}
 
 	// *** building geometry data and databases ***
@@ -822,14 +822,16 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	generateBuildingProjectDataNeu(p, errorStack, surfaceIdsVicusToNandrad);
 	if (!errorStack.isEmpty())
-		throw IBK::Exception("Error during NANDRAD project generation.", FUNC_ID);
+		throw IBK::Exception("Error during building data generation.", FUNC_ID);
 
 	// replace vicus ids in shading file with nandrad ids
 	IBK::Path shadingFilePath;
 	if (generateShadingFactorsFile(surfaceIdsVicusToNandrad, IBK::Path(nandradProjectPath), shadingFilePath))
 		p.m_location.m_shadingFactorFilePath = IBK::Path(shadingFilePath);
-	else
-		throw IBK::Exception("Error during NANDRAD project generation.", FUNC_ID);
+	else {
+		errorStack.push_back(tr("Shading factor file data invalid/outdated, try re-generating shading factor data!"));
+		throw IBK::Exception("Error during shading factor file generation.", FUNC_ID);
+	}
 
 	// *** generate network data ***
 
