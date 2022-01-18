@@ -220,10 +220,12 @@ bool SVPropVertexListWidget::completePolygonIfPossible() {
 
 void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo * /*data*/) {
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
+
+	// we always update our combo boxes whenever anything related to the building topology has changed
 	switch (mod) {
-		// We only need to handle changes of the building topology, in all other cases
-		// the "create new geometry" action is aborted and the widget will be hidden.
 		case SVProjectHandler::BuildingTopologyChanged:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::AllModified:
 			updateBuildingComboBox(m_ui->comboBoxBuilding);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
 			updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
@@ -234,26 +236,29 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 			updateBuildingComboBox(m_ui->comboBoxBuilding3);
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 		break;
+		default: ;// nothing to be done here
+	}
 
-		default: {
-			// clear the new geometry object
-			SVViewStateHandler::instance().m_newGeometryObject->clear();
-			// and reset view state, if we are still in vertex list mode
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
-				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-				// reset locks
-				vs.m_locks = SVViewState::NUM_L;
+	updateButtonStates();
+	// We only need to handle changes of the building topology, in all other cases
+	// the "create new geometry" action is aborted and the widget will be hidden.
+	if (mod != SVProjectHandler::BuildingTopologyChanged) {
+		// clear the new geometry object
+		SVViewStateHandler::instance().m_newGeometryObject->clear();
+		// and reset view state, if we are still in vertex list mode
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_propertyWidgetMode == SVViewState::PM_VertexList) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+			// reset locks
+			vs.m_locks = SVViewState::NUM_L;
 
-				// take xy plane out of snap option mask
-				vs.m_snapEnabled = true;
-				// now tell all UI components to toggle their view state
-				SVViewStateHandler::instance().setViewState(vs);
-			}
+			// take xy plane out of snap option mask
+			vs.m_snapEnabled = true;
+			// now tell all UI components to toggle their view state
+			SVViewStateHandler::instance().setViewState(vs);
 		}
 	}
-	updateButtonStates();
 }
 
 
