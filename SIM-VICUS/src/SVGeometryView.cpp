@@ -331,6 +331,8 @@ void SVGeometryView::coordinateInputFinished() {
 	std::string coordinateLine = m_lineEditCoordinateInput->text().trimmed().toStdString();
 	std::vector<double> vec;
 	try {
+		// we want to allow also numbers with semikolon eg. "14,3" to be parsed
+		std::replace(coordinateLine.begin(), coordinateLine.end(), ',', '.');
 		IBK::string2valueVector(coordinateLine, vec);
 		if (vec.size() == 0)
 			throw IBK::Exception("","");
