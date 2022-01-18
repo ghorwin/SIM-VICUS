@@ -466,9 +466,6 @@ void SVSimulationShadingOptions::updateFileName() {
 
 	QString projectName = QFileInfo(prj.projectFile()).completeBaseName();
 
-//	QString hashCode = "0815";
-
-//	m_shadingFactorBaseName = projectName + "_shadingFactors_" + hashCode;
 	m_shadingFactorBaseName = projectName + "_shadingFactors";
 
 	OutputType outputType = (OutputType)m_ui->comboBoxFileType->currentIndex();

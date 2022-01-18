@@ -258,7 +258,8 @@ void StructuralShading::writeShadingFactorsToTSV(const IBK::Path & path, const s
 	tsvFile << "Time [h]\tAzimuth [Deg]\tAltitude [Deg]\t"; // write header
 	//tsvFile << "Time [h]\t"; // write header
 	for ( unsigned int i=0; i<m_surfaces.size(); ++i ) {
-		// lookup surface/subsurface by id
+		// generate a parsable id / displayname string; problem: user may use # or ' as part of display name,
+		// hence we need to have the ID first in the string, even though this is sub-optimal for PostProc usage
 		tsvFile << surfaceIDs[i];
 		if (!surfaceDisplayNames[i].empty())
 			tsvFile <<  " '" + surfaceDisplayNames[i] + "'";
@@ -331,12 +332,14 @@ void StructuralShading::writeShadingFactorsToDataIO(const IBK::Path & path, cons
 	// INDICES = <surface IDs>
 	std::vector<unsigned int> nums = surfaceIDs;
 
-	// QUANTITY = <id1> '<name1>' | <id2> '<name2> | ... | <idn> <namen>
+	// QUANTITY = <name1> | <name2> | ... | <namen>
+	// Note: we do not write IDs into the quantity, because the IDs are already stored in the nums vector
 	std::string quantity;
 	for (unsigned int i=0; i<surfaceIDs.size(); ++i) {
-		quantity += IBK::val2string(surfaceIDs[i]);
 		if (!surfaceDisplayNames[i].empty())
-			quantity += " '" + surfaceDisplayNames[i] + "'";
+			quantity += surfaceDisplayNames[i];
+		else
+			quantity += "#"+IBK::val2string(surfaceIDs[i]); // backup quantity name, in case displayname is empty
 		if (i+1 < surfaceIDs.size())
 			quantity +=" | ";
 	}
