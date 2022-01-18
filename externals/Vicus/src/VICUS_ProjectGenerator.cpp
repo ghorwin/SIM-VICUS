@@ -489,19 +489,27 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 		std::string headerLine = "Time [" + csv.m_units[0] + "]";
 		colIndices.push_back(0); // we always keep column 0 with the time
 		for (unsigned int i=1; i<csv.m_captions.size(); ++i) {
-			std::string &cap = csv.m_captions[i];
+			std::string cap = csv.m_captions[i];
 			// skip Aziumuth and Altitude
 			if (cap == "Azimuth" || cap == "Altitude")
 				continue;
 			unsigned int id;
 			std::string displayName;
 			try {
+				// when reading tsv-files, the headers have format "<id>" or "<id> '<display name>'"
+				std::string::size_type pos = cap.find_first_of(" '");
+				if (pos != std::string::npos)
+					cap = cap.substr(0, pos);
 				id = IBK::string2val<unsigned int>(cap); // might throw
 				// lookup displayname of referenced VICUS component instances
 				const VICUS::Surface * surf = surfaceByID(id);
 				const VICUS::SubSurface * subSurf = subSurfaceByID(id);
 				if (surf == nullptr && subSurf == nullptr) // can happen, if shading file is out of date and still references an invalid (now missing) surface ID
 					throw IBK::Exception("Invalid surface/sub-surface ID", FUNC_ID);
+				if (surf != nullptr)
+					displayName = surf->m_displayName.toStdString();
+				else
+					displayName = subSurf->m_displayName.toStdString();
 			} catch (...) {
 				IBK::IBK_Message( IBK::FormatString("  Invalid surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
 				haveError = true;
@@ -564,8 +572,6 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 			return false;
 		}
 
-		// sanity checks? later
-
 		// we only need to process the m_nums line, substitute the IDs and also generate the quantities line
 		std::string newQuantities;
 		std::vector<unsigned int> newNums;
@@ -576,10 +582,24 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 				IBK::IBK_Message( IBK::FormatString("Invalid/unknown surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
 				return false;
 			}
+			const VICUS::Surface * surf = surfaceByID(id);
+			const VICUS::SubSurface * subSurf = subSurfaceByID(id);
+			if (surf == nullptr && subSurf == nullptr) { // can happen, if shading file is out of date and still references an invalid (now missing) surface ID
+				IBK::IBK_Message( IBK::FormatString("Invalid/unknown surface ID '%1' in shading factor file.").arg(id), IBK::MSG_ERROR);
+				return false;
+			}
+			std::string displayName;
+			if (surf != nullptr)
+				displayName = surf->m_displayName.toStdString();
+			else
+				displayName = subSurf->m_displayName.toStdString();
 			// now substitute the ID and compose the quantity string
 			if (i != 0)
 				newQuantities += " | ";
-			newQuantities += IBK::val2string(nandradSurfIt->second);
+			if (!displayName.empty())
+				newQuantities += displayName;
+			else
+				newQuantities += IBK::val2string(nandradSurfIt->second);
 			newNums.push_back(nandradSurfIt->second);
 		}
 

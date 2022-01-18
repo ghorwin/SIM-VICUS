@@ -239,6 +239,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		project().selectObjects(sel, VICUS::Project::SelectionGroups(VICUS::Project::SG_Building | VICUS::Project::SG_Obstacle), false, false);
 		// filter out surfaces
 		m_selSurfaces.clear();
+		m_selSubSurfaces.clear();
 		m_selObstacles.clear();
 		for (const VICUS::Object* o : sel) {
 			const VICUS::Surface * surf = dynamic_cast<const VICUS::Surface*>(o);
