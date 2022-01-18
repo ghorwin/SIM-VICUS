@@ -388,6 +388,7 @@ void SVGeometryView::coordinateInputFinished() {
 	po->appendVertex(offset);
 
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 
 	// if successful, clear the input widget
 	m_lineEditCoordinateInput->clear();

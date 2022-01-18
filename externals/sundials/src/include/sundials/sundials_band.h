@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -115,7 +115,7 @@ SUNDIALS_EXPORT void bandGBTRS(realtype **a, long int n, long int smu,
  * BandCopy copies the submatrix with upper and lower bandwidths
  * copymu, copyml of the N by N band matrix A into the N by N
  * band matrix B.
- *
+ * 
  * BandCopy is a wrapper around bandCopy which accesses the data
  * in the DlsMat A and DlsMat B (i.e. the fields cols)
  * -----------------------------------------------------------------
@@ -123,7 +123,7 @@ SUNDIALS_EXPORT void bandGBTRS(realtype **a, long int n, long int smu,
 
 SUNDIALS_EXPORT void BandCopy(DlsMat A, DlsMat B, long int copymu, long int copyml);
 SUNDIALS_EXPORT void bandCopy(realtype **a, realtype **b, long int n,
-			      long int a_smu, long int b_smu,
+                              long int a_smu, long int b_smu,
 			      long int copymu, long int copyml);
 
 /*
@@ -159,19 +159,19 @@ SUNDIALS_EXPORT void bandAddIdentity(realtype **a, long int n, long int smu);
  * -----------------------------------------------------------------
  * Function: BandMatvec
  * -----------------------------------------------------------------
- * BandMatvec computes the matrix-vector product y = A*x, where A
- * is an M-by-N band matrix, x is a vector of length N, and y is a
- * vector of length M.  No error checking is performed on the length
+ * BandMatvec computes the matrix-vector product y = A*x, where A 
+ * is an M-by-N band matrix, x is a vector of length N, and y is a 
+ * vector of length M.  No error checking is performed on the length 
  * of the arrays x and y.  Only y is modified in this routine.
  *
- * BandMatvec is a wrapper around bandMatvec which performs the
+ * BandMatvec is a wrapper around bandMatvec which performs the 
  * actual product by accessing the data in the DlsMat A.
  * -----------------------------------------------------------------
  */
 
 SUNDIALS_EXPORT void BandMatvec(DlsMat A, realtype *x, realtype *y);
-SUNDIALS_EXPORT void bandMatvec(realtype **a, realtype *x, realtype *y, long int n,
-                long int mu, long int ml, long int smu);
+SUNDIALS_EXPORT void bandMatvec(realtype **a, realtype *x, realtype *y, long int n, 
+		long int mu, long int ml, long int smu);
 
 #ifdef __cplusplus
 }

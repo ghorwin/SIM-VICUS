@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -50,7 +50,7 @@
 static int KINSpbcgInit(KINMem kin_mem);
 static int KINSpbcgSetup(KINMem kin_mem);
 static int KINSpbcgSolve(KINMem kin_mem, N_Vector xx,
-                         N_Vector bb, realtype *sJpnorm, realtype *sFdotJp);
+			 N_Vector bb, realtype *sJpnorm, realtype *sFdotJp);
 static int KINSpbcgFree(KINMem kin_mem);
 
 /*
@@ -128,13 +128,13 @@ int KINSpbcg(void *kinmem, int maxl)
 
   if (kinmem == NULL){
     KINProcessError(NULL, KINSPILS_MEM_NULL, "KINSPILS", "KINSpbcg", MSGS_KINMEM_NULL);
-    return(KINSPILS_MEM_NULL);
+    return(KINSPILS_MEM_NULL);  
   }
   kin_mem = (KINMem) kinmem;
 
   /* check for required vector operations */
 
-  /* Note: do NOT need to check for N_VLinearSum, N_VProd, N_VScale, N_VDiv,
+  /* Note: do NOT need to check for N_VLinearSum, N_VProd, N_VScale, N_VDiv, 
      or N_VWL2Norm because they are required by KINSOL */
 
   if ((vec_tmpl->ops->nvconst == NULL) ||
@@ -148,7 +148,7 @@ int KINSpbcg(void *kinmem, int maxl)
 
   /* set four main function fields in kin_mem */
 
-  linit  = KINSpbcgInit;
+  linit  = KINSpbcgInit; 
   lsetup = KINSpbcgSetup;
   lsolve = KINSpbcgSolve;
   lfree  = KINSpbcgFree;
@@ -158,7 +158,7 @@ int KINSpbcg(void *kinmem, int maxl)
   kinspils_mem = (KINSpilsMem) malloc(sizeof(struct KINSpilsMemRec));
   if (kinspils_mem == NULL){
     KINProcessError(NULL, KINSPILS_MEM_FAIL, "KINSPILS", "KINSpbcg", MSGS_MEM_FAIL);
-    return(KINSPILS_MEM_FAIL);
+    return(KINSPILS_MEM_FAIL);  
   }
 
   /* Set ILS type */
@@ -167,7 +167,7 @@ int KINSpbcg(void *kinmem, int maxl)
   /* set SPBCG parameters that were passed in call sequence */
 
   maxl1 = (maxl <= 0) ? KINSPILS_MAXL : maxl;
-  kinspils_mem->s_maxl = maxl1;
+  kinspils_mem->s_maxl = maxl1;  
 
   /* Set defaults for Jacobian-related fileds */
 
@@ -253,7 +253,7 @@ static int KINSpbcgInit(KINMem kin_mem)
   } else {
     pretype = PREC_NONE;
   }
-
+  
   /* set setupNonNull to TRUE iff there is preconditioning with setup */
 
   setupNonNull = ((psolve != NULL) && (pset != NULL));
@@ -268,8 +268,8 @@ static int KINSpbcgInit(KINMem kin_mem)
   }
 
   if ( (strategy == KIN_PICARD) && jtimesDQ ) {
-    KINProcessError(kin_mem, KIN_ILL_INPUT, "KINSOL", "KINSpbcgInit",
-                    MSG_NOL_FAIL);
+    KINProcessError(kin_mem, KIN_ILL_INPUT, "KINSOL", "KINSpbcgInit", 
+		    MSG_NOL_FAIL);
     return(KIN_ILL_INPUT);
   }
 
@@ -304,7 +304,7 @@ static int KINSpbcgSetup(KINMem kin_mem)
   last_flag = ret;
 
   npe++;
-  nnilset = nni;
+  nnilset = nni; 
 
   /* return the same value ret that pset returned */
 
@@ -328,21 +328,21 @@ static int KINSpbcgSetup(KINMem kin_mem)
  * -----------------------------------------------------------------
  */
 
-static int KINSpbcgSolve(KINMem kin_mem, N_Vector xx, N_Vector bb,
+static int KINSpbcgSolve(KINMem kin_mem, N_Vector xx, N_Vector bb, 
                          realtype *sJpnorm, realtype *sFdotJp)
 {
   KINSpilsMem kinspils_mem;
   SpbcgMem spbcg_mem;
   int ret, nli_inc, nps_inc;
   realtype res_norm;
-
+  
   kinspils_mem = (KINSpilsMem) lmem;
   spbcg_mem = (SpbcgMem) spils_mem;
 
   /* Set initial guess to xx = 0. bb is set, by the routine
      calling KINSpbcgSolve, to the RHS vector for the system
-     to be solved. */
-
+     to be solved. */ 
+ 
   N_VConst(ZERO, xx);
 
   new_uu = TRUE;  /* set flag required for user Jacobian routine */
@@ -353,13 +353,13 @@ static int KINSpbcgSolve(KINMem kin_mem, N_Vector xx, N_Vector bb,
                    kin_mem, fscale, fscale, KINSpilsAtimes,
                    KINSpilsPSolve, &res_norm, &nli_inc, &nps_inc);
 
-  /* increment counters nli, nps, and ncfl
+  /* increment counters nli, nps, and ncfl 
      (nni is updated in the KINSol main iteration loop) */
 
   nli = nli + (long int) nli_inc;
   nps = nps + (long int) nps_inc;
 
-  if (printfl > 2)
+  if (printfl > 2) 
     KINPrintInfo(kin_mem, PRNT_NLI, "KINSPBCG", "KINSpbcgSolve", INFO_NLI, nli_inc);
 
   if (ret != 0) ncfl++;
@@ -399,7 +399,7 @@ static int KINSpbcgSolve(KINMem kin_mem, N_Vector xx, N_Vector bb,
   if (ret > 0) {
     last_flag = SPBCG_ATIMES_FAIL_REC;
     return(1);
-  }
+  }      
   else if (ret < 0) {
     last_flag = SPBCG_ATIMES_FAIL_UNREC;
     return(-1);

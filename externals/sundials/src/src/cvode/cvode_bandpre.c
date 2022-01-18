@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4922 $
  * $Date: 2016-09-19 14:35:32 -0700 (Mon, 19 Sep 2016) $
- * -----------------------------------------------------------------
+ * ----------------------------------------------------------------- 
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh, Radu Serban,
  *                and Aaron Collier @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -41,14 +41,14 @@
 #define ONE          RCONST(1.0)
 
 /* Prototypes of CVBandPrecSetup and CVBandPrecSolve */
-
-static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy,
-                           booleantype jok, booleantype *jcurPtr,
+  
+static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy, 
+                           booleantype jok, booleantype *jcurPtr, 
                            realtype gamma, void *bp_data,
                            N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 
-static int CVBandPrecSolve(realtype t, N_Vector y, N_Vector fy,
-                           N_Vector r, N_Vector z,
+static int CVBandPrecSolve(realtype t, N_Vector y, N_Vector fy, 
+                           N_Vector r, N_Vector z, 
                            realtype gamma, realtype delta,
                            int lr, void *bp_data, N_Vector tmp);
 
@@ -59,7 +59,7 @@ static int CVBandPrecFree(CVodeMem cv_mem);
 /* Prototype for difference quotient Jacobian calculation routine */
 
 static int CVBandPDQJac(CVBandPrecData pdata,
-                        realtype t, N_Vector y, N_Vector fy,
+                        realtype t, N_Vector y, N_Vector fy, 
                         N_Vector ftemp, N_Vector ytemp);
 
 /* Redability replacements */
@@ -174,7 +174,7 @@ int CVBandPrecGetWorkSpace(void *cvode_mem, long int *lenrwBP, long int *leniwBP
   CVBandPrecData pdata;
   long int N, ml, mu, smu;
 
-
+  
   if (cvode_mem == NULL) {
     cvProcessError(NULL, CVSPILS_MEM_NULL, "CVBANDPRE", "CVBandPrecGetWorkSpace", MSGBP_MEM_NULL);
     return(CVSPILS_MEM_NULL);
@@ -190,7 +190,7 @@ int CVBandPrecGetWorkSpace(void *cvode_mem, long int *lenrwBP, long int *leniwBP
   if (cvspils_mem->s_P_data == NULL) {
     cvProcessError(cv_mem, CVSPILS_PMEM_NULL, "CVBANDPRE", "CVBandPrecGetWorkSpace", MSGBP_PMEM_NULL);
     return(CVSPILS_PMEM_NULL);
-  }
+  } 
   pdata = (CVBandPrecData) cvspils_mem->s_P_data;
 
   N   = pdata->N;
@@ -225,7 +225,7 @@ int CVBandPrecGetNumRhsEvals(void *cvode_mem, long int *nfevalsBP)
   if (cvspils_mem->s_P_data == NULL) {
     cvProcessError(cv_mem, CVSPILS_PMEM_NULL, "CVBANDPRE", "CVBandPrecGetNumRhsEvals", MSGBP_PMEM_NULL);
     return(CVSPILS_PMEM_NULL);
-  }
+  } 
   pdata = (CVBandPrecData) cvspils_mem->s_P_data;
 
   *nfevalsBP = pdata->nfeBP;
@@ -291,8 +291,8 @@ int CVBandPrecGetNumRhsEvals(void *cvode_mem, long int *nfevalsBP)
  * -----------------------------------------------------------------
  */
 
-static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy,
-                           booleantype jok, booleantype *jcurPtr,
+static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy, 
+                           booleantype jok, booleantype *jcurPtr, 
                            realtype gamma, void *bp_data,
                            N_Vector tmp1, N_Vector tmp2, N_Vector tmp3)
 {
@@ -331,14 +331,14 @@ static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy,
     BandCopy(savedJ, savedP, mu, ml);
 
   }
-
+  
   /* Scale and add I to get savedP = I - gamma*J. */
   BandScale(-gamma, savedP);
   AddIdentity(savedP);
-
+ 
   /* Do LU factorization of matrix. */
   ier = BandGBTRF(savedP, lpivots);
-
+ 
   /* Return 0 if the LU was complete; otherwise return 1. */
   if (ier > 0) return(1);
   return(0);
@@ -362,10 +362,10 @@ static int CVBandPrecSetup(realtype t, N_Vector y, N_Vector fy,
  * The value returned by the CVBandPrecSolve function is always 0,
  * indicating success.
  * -----------------------------------------------------------------
- */
+ */ 
 
-static int CVBandPrecSolve(realtype t, N_Vector y, N_Vector fy,
-                           N_Vector r, N_Vector z,
+static int CVBandPrecSolve(realtype t, N_Vector y, N_Vector fy, 
+                           N_Vector r, N_Vector z, 
                            realtype gamma, realtype delta,
                            int lr, void *bp_data, N_Vector tmp)
 {
@@ -395,7 +395,7 @@ static int CVBandPrecFree(CVodeMem cv_mem)
 
   if (cv_mem->cv_lmem == NULL) return(0);
   cvspils_mem = (CVSpilsMem) cv_mem->cv_lmem;
-
+  
   if (cvspils_mem->s_P_data == NULL) return(0);
   pdata = (CVBandPrecData) cvspils_mem->s_P_data;
 
@@ -428,8 +428,8 @@ static int CVBandPrecFree(CVodeMem cv_mem)
  * -----------------------------------------------------------------
  */
 
-static int CVBandPDQJac(CVBandPrecData pdata,
-                        realtype t, N_Vector y, N_Vector fy,
+static int CVBandPDQJac(CVBandPrecData pdata, 
+                        realtype t, N_Vector y, N_Vector fy, 
                         N_Vector ftemp, N_Vector ytemp)
 {
   CVodeMem cv_mem;
@@ -459,9 +459,9 @@ static int CVBandPDQJac(CVBandPrecData pdata,
   /* Set bandwidth and number of column groups for band differencing. */
   width = ml + mu + 1;
   ngroups = SUNMIN(width, N);
-
+  
   for (group = 1; group <= ngroups; group++) {
-
+    
     /* Increment all y_j in group. */
     for(j = group-1; j < N; j += width) {
       inc = SUNMAX(srur*SUNRabs(y_data[j]), minInc/ewt_data[j]);

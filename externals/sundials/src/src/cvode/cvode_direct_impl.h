@@ -2,13 +2,13 @@
  * -----------------------------------------------------------------
  * $Revision: 4749 $
  * $Date: 2016-04-23 18:42:38 -0700 (Sat, 23 Apr 2016) $
- * -----------------------------------------------------------------
+ * ----------------------------------------------------------------- 
  * Programmer: Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -42,7 +42,7 @@ extern "C" {
 
 /*
  * -----------------------------------------------------------------
- * Types : CVDlsMemRec, CVDlsMem
+ * Types : CVDlsMemRec, CVDlsMem                             
  * -----------------------------------------------------------------
  * CVDlsMem is pointer to a CVDlsMemRec structure.
  * -----------------------------------------------------------------
@@ -55,7 +55,7 @@ typedef struct CVDlsMemRec {
   long int d_n;           /* problem dimension (_NOT_ block-based in case of BTRIDIAG */
 
   long int d_ml;          /* lower bandwidth of Jacobian                  */
-  long int d_mu;          /* upper bandwidth of Jacobian                  */
+  long int d_mu;          /* upper bandwidth of Jacobian                  */ 
   long int d_smu;         /* upper bandwith of M = MIN(N-1,d_mu+d_ml)     */
 
   booleantype d_jacDQ;    /* TRUE if using internal DQ Jacobian approx.   */
@@ -77,7 +77,7 @@ typedef struct CVDlsMemRec {
   long int d_nfeDQ;       /* no. of calls to f due to DQ Jacobian approx. */
 
   long int d_last_flag;   /* last error return flag                       */
-
+  
 } *CVDlsMem;
 
 /*
@@ -87,18 +87,18 @@ typedef struct CVDlsMemRec {
  */
 
 int cvDlsDenseDQJac(long int N, realtype t,
-                    N_Vector y, N_Vector fy,
+                    N_Vector y, N_Vector fy, 
                     DlsMat Jac, void *data,
                     N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
-
+  
 int cvDlsBandDQJac(long int N, long int mupper, long int mlower,
-                   realtype t, N_Vector y, N_Vector fy,
+                   realtype t, N_Vector y, N_Vector fy, 
                    DlsMat Jac, void *data,
                    N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 
 
-int cvDlsBTridiagDQJac(long int N, realtype t,
-                       N_Vector y, N_Vector fy,
+int cvDlsBTridiagDQJac(long int N, realtype t, 
+                       N_Vector y, N_Vector fy, 
                        DlsMat Jac, void *data,
                        N_Vector tmp1, N_Vector tmp2, N_Vector tmp3);
 

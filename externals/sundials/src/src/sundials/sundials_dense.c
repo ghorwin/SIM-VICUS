@@ -8,8 +8,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -19,7 +19,7 @@
  * This is the implementation file for a generic package of dense
  * matrix operations.
  * -----------------------------------------------------------------
- */
+ */ 
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,8 +101,8 @@ long int denseGETRF(realtype **a, long int m, long int n, long int *p)
 
     /* check for zero pivot element */
     if (col_k[l] == ZERO) return(k+1);
-
-    /* swap a(k,1:n) and a(l,1:n) if necessary */
+    
+    /* swap a(k,1:n) and a(l,1:n) if necessary */    
     if ( l!= k ) {
       for (i=0; i<n; i++) {
         temp = a[i][l];
@@ -115,7 +115,7 @@ long int denseGETRF(realtype **a, long int m, long int n, long int *p)
      * column k by 1.0/a(k,k). After the above swap
      * a(k,k) holds the pivot element. This scaling
      * stores the pivot row multipliers a(i,k)/a(k,k)
-     * in a(i,k), i=k+1, ..., m-1.
+     * in a(i,k), i=k+1, ..., m-1.                      
      */
     mult = ONE/col_k[k];
     for(i=k+1; i < m; i++) col_k[i] *= mult;
@@ -191,7 +191,7 @@ long int densePOTRF(realtype **a, long int m)
   for (j=0; j<m; j++) {
 
     a_col_j = a[j];
-
+   
     if (j>0) {
       for(i=j; i<m; i++) {
         for(k=0;k<j;k++) {
@@ -206,7 +206,7 @@ long int densePOTRF(realtype **a, long int m)
     a_diag = SUNRsqrt(a_diag);
 
     for(i=j; i<m; i++) a_col_j[i] /= a_diag;
-
+    
   }
 
   return(0);
@@ -239,7 +239,7 @@ void densePOTRS(realtype **a, long int m, realtype *b)
   b[m-1] /= col_j[m-1];
   for (i=m-2; i>=0; i--) {
     col_i = a[i];
-    for (j=i+1; j<m; j++)
+    for (j=i+1; j<m; j++) 
       b[i] -= col_i[j]*b[j];
     b[i] /= col_i[i];
   }
@@ -250,8 +250,8 @@ void densePOTRS(realtype **a, long int m, realtype *b)
  * QR factorization of a rectangular matrix A of size m by n (m >= n)
  * using Householder reflections.
  *
- * On exit, the elements on and above the diagonal of A contain the n by n
- * upper triangular matrix R; the elements below the diagonal, with the array beta,
+ * On exit, the elements on and above the diagonal of A contain the n by n 
+ * upper triangular matrix R; the elements below the diagonal, with the array beta, 
  * represent the orthogonal matrix Q as a product of elementary reflectors .
  *
  * v (of length m) must be provided as workspace.
@@ -270,7 +270,7 @@ int denseGEQRF(realtype **a, long int m, long int n, realtype *beta, realtype *v
     col_j = a[j];
 
     ajj = col_j[j];
-
+    
     /* Compute the j-th Householder vector (of length m-j) */
     v[0] = ONE;
     s = ZERO;
@@ -286,7 +286,7 @@ int denseGEQRF(realtype **a, long int m, long int n, realtype *beta, realtype *v
       beta[j] = TWO * v1_2 / (s + v1_2);
       for(i=1; i<m-j; i++) v[i] /= v1;
     } else {
-      beta[j] = ZERO;
+      beta[j] = ZERO;      
     }
 
     /* Update upper triangle of A (load R) */
@@ -312,7 +312,7 @@ int denseGEQRF(realtype **a, long int m, long int n, realtype *beta, realtype *v
 /*
  * Computes vm = Q * vn, where the orthogonal matrix Q is stored as
  * elementary reflectors in the m by n matrix A and in the vector beta.
- * (NOTE: It is assumed that an QR factorization has been previously
+ * (NOTE: It is assumed that an QR factorization has been previously 
  * computed with denGEQRF).
  *
  * vn (IN) has length n, vm (OUT) has length m, and it's assumed that m >= n.
@@ -378,7 +378,7 @@ void denseScale(realtype c, realtype **a, long int m, long int n)
 void denseAddIdentity(realtype **a, long int n)
 {
   long int i;
-
+  
   for (i=0; i < n; i++) a[i][i] += ONE;
 }
 

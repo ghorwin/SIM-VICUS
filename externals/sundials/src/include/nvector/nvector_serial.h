@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4867 $
  * $Date: 2016-08-19 10:05:14 -0700 (Fri, 19 Aug 2016) $
- * -----------------------------------------------------------------
+ * ----------------------------------------------------------------- 
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh, Radu Serban,
  *                and Aaron Collier @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -36,8 +36,8 @@
  *     in the header file sundials_nvector.h.
  *
  *   - The definition of the type 'realtype' can be found in the
- *     header file sundials_types.h, and it may be changed (at the
- *     configuration stage) according to the user's needs.
+ *     header file sundials_types.h, and it may be changed (at the 
+ *     configuration stage) according to the user's needs. 
  *     The sundials_types.h file also contains the definition
  *     for the type 'booleantype'.
  *
@@ -141,7 +141,7 @@ typedef struct _N_VectorContent_Serial *N_VectorContent_Serial;
 /*
  * -----------------------------------------------------------------
  * PART III: functions exported by nvector_serial
- *
+ * 
  * CONSTRUCTORS:
  *    N_VNew_Serial
  *    N_VNewEmpty_Serial
@@ -215,7 +215,7 @@ SUNDIALS_EXPORT N_Vector *N_VCloneVectorArrayEmpty_Serial(int count, N_Vector w)
  * -----------------------------------------------------------------
  * Function : N_VDestroyVectorArray_Serial
  * -----------------------------------------------------------------
- * This function frees an array of SERIAL vectors created with
+ * This function frees an array of SERIAL vectors created with 
  * N_VCloneVectorArray_Serial or N_VCloneVectorArrayEmpty_Serial.
  * -----------------------------------------------------------------
  */

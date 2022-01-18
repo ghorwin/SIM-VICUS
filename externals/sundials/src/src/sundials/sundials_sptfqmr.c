@@ -7,8 +7,8 @@
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -339,13 +339,13 @@ int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vector b,
        *       if the inner loop is executed twice
        */
       if (m == 0) {
-        temp_val = SUNRsqrt(N_VDotProd(r_[1], r_[1]));
-        omega = SUNRsqrt(SUNRsqrt(N_VDotProd(r_[0], r_[0]))*temp_val);
-        N_VLinearSum(ONE, u_, SUNSQR(v_bar)*eta/alpha, d_, d_);
+	temp_val = SUNRsqrt(N_VDotProd(r_[1], r_[1]));
+	omega = SUNRsqrt(SUNRsqrt(N_VDotProd(r_[0], r_[0]))*temp_val);
+	N_VLinearSum(ONE, u_, SUNSQR(v_bar)*eta/alpha, d_, d_);
       }
       else {
-        omega = temp_val;
-        N_VLinearSum(ONE, q_, SUNSQR(v_bar)*eta/alpha, d_, d_);
+	omega = temp_val;
+	N_VLinearSum(ONE, q_, SUNSQR(v_bar)*eta/alpha, d_, d_);
       }
 
       /* v_bar = omega/tau */
@@ -368,10 +368,10 @@ int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vector b,
       *res_norm = r_curr_norm = tau*SUNRsqrt(m+1);
 
       /* Exit inner loop if iteration has converged based upon approximation
-         to norm of current residual */
+	 to norm of current residual */
       if (r_curr_norm <= delta) {
-        converged = TRUE;
-        break;
+	converged = TRUE;
+	break;
       }
 
       /* Decide if actual norm of residual vector should be computed */
@@ -387,7 +387,7 @@ int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vector b,
        *       number of psovles if using left preconditioning
        */
       if ((r_curr_norm > delta) ||
-          (r_curr_norm >= r_init_norm && m == 1 && n == l_max)) {
+	  (r_curr_norm >= r_init_norm && m == 1 && n == l_max)) {
 
 	/* Compute norm of residual ||b-A*x||_2 (preconditioned and scaled) */
 	if (scale_x) N_VDiv(x, sx, vtemp1);
@@ -399,8 +399,8 @@ int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vector b,
 	  N_VScale(ONE, vtemp2, vtemp1);
 	}
 	ier = atimes(A_data, vtemp1, vtemp2);
-	if (ier != 0)
-	  return((ier < 0) ? SPTFQMR_ATIMES_FAIL_UNREC : SPTFQMR_ATIMES_FAIL_REC);
+        if (ier != 0)
+          return((ier < 0) ? SPTFQMR_ATIMES_FAIL_UNREC : SPTFQMR_ATIMES_FAIL_REC);
 	if (preOnLeft) {
 	  ier = psolve(P_data, vtemp2, vtemp1, PREC_LEFT);
 	  (*nps)++;
@@ -423,7 +423,7 @@ int SptfqmrSolve(SptfqmrMem mem, void *A_data, N_Vector x, N_Vector b,
 	N_VLinearSum(ONE, vtemp3, -ONE, vtemp2, vtemp1);
 	*res_norm = r_curr_norm = SUNRsqrt(N_VDotProd(vtemp1, vtemp1));
 
-	/* Exit inner loop if inequality condition is satisfied
+	/* Exit inner loop if inequality condition is satisfied 
 	   (meaning exit if we have converged) */
 	if (r_curr_norm <= delta) {
 	  converged = TRUE;

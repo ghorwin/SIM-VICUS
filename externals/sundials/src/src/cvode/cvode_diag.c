@@ -2,14 +2,14 @@
  * -----------------------------------------------------------------
  * $Revision: 4922 $
  * $Date: 2016-09-19 14:35:32 -0700 (Mon, 19 Sep 2016) $
- * -----------------------------------------------------------------
+ * ----------------------------------------------------------------- 
  * Programmer(s): Scott D. Cohen, Alan C. Hindmarsh and
  *                Radu Serban @ LLNL
  * -----------------------------------------------------------------
  * LLNS Copyright Start
  * Copyright (c) 2014, Lawrence Livermore National Security
- * This work was performed under the auspices of the U.S. Department
- * of Energy by Lawrence Livermore National Laboratory in part under
+ * This work was performed under the auspices of the U.S. Department 
+ * of Energy by Lawrence Livermore National Laboratory in part under 
  * Contract W-7405-Eng-48 and in part under Contract DE-AC52-07NA27344.
  * Produced at the Lawrence Livermore National Laboratory.
  * All rights reserved.
@@ -27,7 +27,7 @@
 #include "cvode_impl.h"
 
 /* Other Constants */
-
+  
 #define FRACT RCONST(0.1)
 #define ONE   RCONST(1.0)
 
@@ -74,7 +74,7 @@ static int CVDiagFree(CVodeMem cv_mem);
 
 /*
  * -----------------------------------------------------------------
- * CVDiag
+ * CVDiag 
  * -----------------------------------------------------------------
  * This routine initializes the memory record and sets various function
  * fields specific to the diagonal linear solver module.  CVDense first
@@ -85,11 +85,11 @@ static int CVDiagFree(CVodeMem cv_mem);
  * CVDiagMemRec and sets the cv_lmem field in (*cvode_mem) to the
  * address of this structure.  It sets setupNonNull in (*cvode_mem) to
  * TRUE.  Finally, it allocates memory for M, bit, and bitcomp.
- * The CVDiag return value is SUCCESS = 0, LMEM_FAIL = -1, or
+ * The CVDiag return value is SUCCESS = 0, LMEM_FAIL = -1, or 
  * LIN_ILL_INPUT=-2.
  * -----------------------------------------------------------------
  */
-
+  
 int CVDiag(void *cvode_mem)
 {
   CVodeMem cv_mem;
@@ -110,7 +110,7 @@ int CVDiag(void *cvode_mem)
   }
 
   if (lfree != NULL) lfree(cv_mem);
-
+  
   /* Set four main function fields in cv_mem */
   linit  = CVDiagInit;
   lsetup = CVDiagSetup;
@@ -131,7 +131,7 @@ int CVDiag(void *cvode_mem)
   setupNonNull = TRUE;
 
   /* Allocate memory for M, bit, and bitcomp */
-
+    
   M = N_VClone(vec_tmpl);
   if (M == NULL) {
     cvProcessError(cv_mem, CVDIAG_MEM_FAIL, "CVDIAG", "CVDiag", MSGDG_MEM_FAIL);
@@ -258,7 +258,7 @@ char *CVDiagGetReturnFlagName(long int flag)
   switch(flag) {
   case CVDIAG_SUCCESS:
     sprintf(name,"CVDIAG_SUCCESS");
-    break;
+    break;   
   case CVDIAG_MEM_NULL:
     sprintf(name,"CVDIAG_MEM_NULL");
     break;
@@ -312,8 +312,8 @@ static int CVDiagInit(CVodeMem cv_mem)
  * -----------------------------------------------------------------
  * CVDiagSetup
  * -----------------------------------------------------------------
- * This routine does the setup operations for the diagonal linear
- * solver.  It constructs a diagonal approximation to the Newton matrix
+ * This routine does the setup operations for the diagonal linear 
+ * solver.  It constructs a diagonal approximation to the Newton matrix 
  * M = I - gamma*J, updates counters, and inverts M.
  * -----------------------------------------------------------------
  */
@@ -398,7 +398,7 @@ static int CVDiagSolve(CVodeMem cv_mem, N_Vector b, N_Vector weight,
   (void)weight; (void)ycur; (void)fcur;
 
   cvdiag_mem = (CVDiagMem) lmem;
-
+  
   /* If gamma has changed, update factor in M, and save gamma value */
 
   if (gammasv != gamma) {
@@ -433,7 +433,7 @@ static int CVDiagSolve(CVodeMem cv_mem, N_Vector b, N_Vector weight,
 static int CVDiagFree(CVodeMem cv_mem)
 {
   CVDiagMem cvdiag_mem;
-
+  
   cvdiag_mem = (CVDiagMem) lmem;
 
   N_VDestroy(M);

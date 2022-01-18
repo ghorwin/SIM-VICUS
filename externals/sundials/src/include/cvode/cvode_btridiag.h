@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------
  * Code is based on original cvode_band.h file.
  * -----------------------------------------------------------------
- * This is the header file for the CVODE block-tridiagonal linear
+ * This is the header file for the CVODE block-tridiagonal linear 
  * solver, CVBTRIDIAG.
  * -----------------------------------------------------------------
  */
@@ -18,7 +18,7 @@ extern "C" {
 
 #include <cvode/cvode_direct.h>
 #include <sundials/sundials_btridiag.h>
-
+ 
 /*
  * -----------------------------------------------------------------
  * Function : CVBTridiag
@@ -29,10 +29,10 @@ extern "C" {
  * cvode_mem is the pointer to the integrator memory returned by
  *           CVodeCreate.
  *
- * nb is the size of the ODE system in blocks/submatricies. The
+ * nb is the size of the ODE system in blocks/submatricies. The 
  *    totalnumber of unknowns is computed from nb*blocksize.
  *
- * blocksize is the dimension (blocksize x blocksize) of the
+ * blocksize is the dimension (blocksize x blocksize) of the 
  *           blocks/submatricies in the block-tridiagonal matrix.
  *
  * The return value of CVBTridiag is one of:
