@@ -499,6 +499,9 @@
    <property name="text">
     <string>Keyboard and mouse controls...</string>
    </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
   </action>
   <action name="actionHelpOnlineManual">
    <property name="text">

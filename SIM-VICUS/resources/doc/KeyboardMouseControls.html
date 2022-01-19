@@ -5,141 +5,63 @@
 	<p style="font-weight:bold">Normal Scene Navigation</p>
 	<p></p>
 	<table border="0" cellspacing="4" cellpadding="2">
-		<colgroup>
-			<col width="206"/>
-			<col width="538"/>
+		<colgroup> <col width="206"/> <col width="538"/>
 		</colgroup>
-		<tr>
-			<td>
-				<p>Hold left mouse button </p>
-			</td>
-			<td>
-				<p>Orbit controller (camera rotates around point where mouse button was clicked)</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Hold right mouse button</p>
-			</td>
-			<td>
-				<p>First person controller (mouse rotates camera around camera position)</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Hold mouse button</p>
-			</td>
-			<td>
-				<p>Mouse translates camera</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Left button click</p>
-			</td>
-			<td>
-				<p>Select/deselect surfaces (<b>hold Shift-Key</b>: also select parent and all siblings, <b>hold Alt-Key</b>: only select object itself and not its children)</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Scroll wheel</p>
-			</td>
-			<td>
-				<p>translate camera forward/backwards</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p> </p>
-			</td>
-			<td>
-				<p> </p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>W, S</p>
-			</td>
-			<td>
-				<p>translate camera forward/backwards</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>A, D</p>
-			</td>
-			<td>
-				<p>translate camera left/right (respective to camera view)</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>R, F</p>
-			</td>
-			<td>
-				<p>translate camera up/down (respective to camera view)</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Q, E</p>
-			</td>
-			<td>
-				<p>rotate camera around z-axis</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Escape</p>
-			</td>
-			<td>
-				<p>Delesects all selected surfaces</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Hold Shift</p>
-			</td>
-			<td>
-				<p>slow movement (applies to keyboard and mouse)</p>
-			</td>
-		</tr>
+		<tr>  <td> <p>Click and hold left mouse button </p></td>  <td> <p>Orbit controller (camera rotates around point where mouse button was clicked)</p> </td> </tr>
+		<tr> <td> <p>Hold right mouse button</p> </td> <td> <p>First person controller (mouse rotates camera around camera position)</p> </td> </tr>
+		<tr> <td> <p>Hold middle mouse button</p> </td> <td> <p>Mouse translates camera</p> </td> </tr>
+		<tr> <td> <p>Scroll wheel</p> </td> <td> <p>translate camera forward/backwards (<b>hold Shift-Key</b>: slow down translation)</p> </td> </tr>
+		<tr> <td> <p> </p> </td> <td> <p> </p> </td> </tr>
+		<tr> <td> <p>W, S</p> </td> <td> <p>translate camera forward/backwards (<b>hold Shift-Key</b>: slow down translation)</p> </td> </tr>
+		<tr> <td> <p>A, D</p> </td> <td> <p>translate camera left/right respective to camera view (<b>hold Shift-Key</b>: slow down translation)</p> </td> </tr>
+		<tr> <td> <p>R, F</p> </td> <td> <p>translate camera up/down respective to camera view (<b>hold Shift-Key</b>: slow down translation)</p> </td> </tr>
+		<tr> <td> <p>Q, E</p> </td> <td> <p>rotate camera around z-axis (<b>hold Shift-Key</b>: slow down translation)</p> </td> </tr>
+		<tr> <td> <p> </p> </td> <td> <p> </p> </td> </tr>
+		<tr> <td> <p>Ctrl + 2,6,8,4 or 5</p> </td> <td> <p>Reset camera to look from north, east, south, west or from above (use numpad!)</p> </td> </tr>
 	</table>
+
+	<p style="font-weight:bold">Item Selections</p>
+	<p></p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+
+		<tr> <td> <p>Left button click</p> </td> <td> <p>Select/deselect surfaces (<b>hold Shift-Key</b>: also select parent and all siblings, <b>hold Alt-Key</b>: only select object itself and not its children)</p> </td> </tr>
+		<tr><td><p>Escape</p></td> <td><p>Delesects all selected surfaces.</p> </td>
+		<tr><td><p>Ctrl+F</p></td> <td><p>Locates/finds the selected geometry, i.e. moves close to the local coordinate system. Useful when selecting an item from the navigation tree view and then quickly locating this element in the geometry.</p> </td> </tr>
+	</table>
+	
 	<p style="font-weight:bold">While drawing new geometry</p>
 	<p>Controls work as for normal scene navigation, with the changes described below:
 	</p>
 	<table border="0" cellspacing="4" cellpadding="2">
-		<colgroup>
-			<col width="206"/>
-			<col width="538"/>
+		<colgroup> <col width="206"/> <col width="538"/>
 		</colgroup>
-		<tr>
-			<td>
-				<p>Left button click</p>
-			</td>
-			<td>
-				<p>Place a vertex at the current position of the local coordinate system.</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p>Escape</p>
-			</td>
-			<td>
-				<p>Cancels drawing operation and goes back to normal scene navigation mode.</p>
-			</td>
-		</tr>
+		<tr> <td> 	<p>Left button click</p> </td> <td> 	<p>Place a vertex at the current position of the local coordinate system.</p> </td> </tr>
+		<tr> <td> 	<p>Escape</p> </td> <td> 	<p>Cancels drawing operation and goes back to normal scene navigation mode.</p> </td> </tr>
 		<tr><td><p>Enter</p></td> <td> <p>Once a valid geometry is drawn (and shown), this geometry will be added to the project and drawing is finished.</p> </td> </tr>
+	</table>
+
+
+	<p style="font-weight:bold">Global shortcuts</p>
+	<p>These shortcuts/keys work globally, but some only in a certain context, for example when the local coordinate system (LCS) is shown.
+	</p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+
+		<tr><td><p>F1</p></td> <td> <p>Opens this quick reference page.</p> </td> </tr>
 		<tr><td><p>F2</p></td> <td> <p>Open project file in text editor.</p> </td> </tr>
 		<tr><td><p>F3</p></td> <td> <p>Toggle snapping on/off.</p> </td> </tr>
-		<tr><td><p>F4</p></td> <td> <p>Put scene into "align local coordinate system" mode (see below).</p> </td> </tr>
-		<tr><td><p>F5</p></td> <td> <p>Put scene into "move local coordinate system" mode.</p> </td> </tr>
+		<tr><td><p>F4</p></td> <td> <p>Put scene into "align local coordinate system" mode (only when LCS is shown).</p> </td> </tr>
+		<tr><td><p>F5</p></td> <td> <p>Put scene into "move local coordinate system" mode (only when LCS is shown).</p> </td> </tr>
 		<tr><td><p>F6</p></td> <td> <p>Hide selected objects.</p> </td> </tr>
 		<tr><td><p>F7</p></td> <td> <p>Show selected objects.</p></td> </tr>
 		<tr><td><p>F8</p></td> <td> <p>Open directory of current project file in file manager.</p> </td> </tr>
+		<tr><td><p>F9</p></td> <td> <p>Switch to simulation start dialog/view.</p> </td> </tr>
+		<tr><td><p>c</p></td> <td> <p>Toggle between geometry editing and parametrization mode.</p> </td> </tr>
 		<tr><td><p>x,y,z</p></td> <td> <p>While drawing/creating geometry/moving local coordinate system: lock selected axis.</p> </td> </tr>
-		<tr><td><p>0...9 and -</p></td> <td> <p>While creating geometry enter coordinate offsets.</p> </td> </tr>
+		<tr><td><p>0...9 and -</p></td> <td> <p>While creating geometry, open an edit field to enter coordinate offsets.</p> </td> </tr>
 	</table>
 
 </body>
