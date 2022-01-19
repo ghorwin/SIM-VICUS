@@ -48,7 +48,7 @@ public:
 	void destroy();
 
 	/*! Modifies the location of the local coordinate system (i.e. new end point). */
-	void setTranslation(const QVector3D & translation);
+	void setMeasureLine(const QVector3D & end, const QVector3D & cameraForward);
 
 	/*! Binds the buffer and paints. */
 	void render();
@@ -57,7 +57,7 @@ public:
 	double distance() const { return (double)m_endPoint.distanceToPoint(m_startPoint); }
 
 	/*! Shader program, that the grid is painted with. */
-	ShaderProgram				*m_gridShader = nullptr;
+	ShaderProgram				*m_measurementShader = nullptr;
 
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.
