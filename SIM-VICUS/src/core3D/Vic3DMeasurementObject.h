@@ -47,6 +47,9 @@ public:
 	void create(ShaderProgram * shaderProgram);
 	void destroy();
 
+	/*! Resets the measurement object points (start and end point) and all buffers */
+	void reset();
+
 	/*! Modifies the location of the local coordinate system (i.e. new end point). */
 	void setMeasureLine(const QVector3D & end, const QVector3D & cameraForward);
 

@@ -51,9 +51,20 @@ void MeasurementObject::destroy() {
 	m_vbo.destroy();
 }
 
+void MeasurementObject::reset() {
+	m_startPoint = QVector3D();
+	m_endPoint = QVector3D();
+
+	destroy();
+
+	m_vertexCount = 0;
+}
+
 void MeasurementObject::setMeasureLine(const QVector3D & end, const QVector3D & cameraForward) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>			measurementVertexBufferData;
+
+	Q_ASSERT(m_startPoint != QVector3D() ); // start point always has to be set
 
 	// start point
 	measurementVertexBufferData.push_back(VertexC(m_startPoint));
@@ -107,7 +118,7 @@ void MeasurementObject::render() {
 	m_vao.bind();
 
 	// draw lines
-	QColor measurementLineColor = QColor("#005eaa");
+	QColor measurementLineColor = QColor("#E30513");
 	QVector4D col(measurementLineColor.redF(), measurementLineColor.greenF(), measurementLineColor.blueF(), 1.0);
 	m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[1], col);
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
