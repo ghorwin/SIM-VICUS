@@ -175,6 +175,17 @@ public:
 	/*! Returns pointer to the applications preferences dialog. */
 	SVPreferencesDialog * preferencesDialog();
 
+	/*! This function is called from the main application object, when it receives a keypress event.
+		It is the central handling function for main window wide short cuts, that are not yet filted b
+		the GeometryView itself, see SVGeometryView::handleGlobalKeyPress(). This function is called
+		after the SVGeometryView has received the key and only if the geometry view rejects key handling.
+
+		\note This function is not called, when the focus is currently on a line edit or any other widget
+			  that legitimately accepts all character inputs.
+		\return Returns true, if the key was accepted and handled.
+	*/
+	bool handleGlobalKeyPress(Qt::Key k, Qt::KeyboardModifiers modifiers);
+
 public slots:
 
 	void on_actionDBComponents_triggered();

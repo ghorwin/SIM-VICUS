@@ -2092,6 +2092,18 @@ SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 	return m_preferencesDialog;
 }
 
+bool SVMainWindow::handleGlobalKeyPress(Qt::Key k, Qt::KeyboardModifiers modifiers) {
+	// only use Key_C presses
+	if (k == Qt::Key_C && modifiers == Qt::NoModifier) {
+		if (SVViewStateHandler::instance().viewState().m_viewMode == SVViewState::VM_GeometryEditMode)
+			m_ui->actionViewToggleParametrizationMode->trigger();
+		else
+			m_ui->actionViewToggleGeometryMode->trigger();
+		return true;
+	}
+	return false;
+}
+
 
 
 //https://qt.gitorious.org/qt-creator/qt-creator/source/1a37da73abb60ad06b7e33983ca51b266be5910e:src/app/main.cpp#L13-189

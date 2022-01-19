@@ -36,6 +36,7 @@
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 #include "SVPropVertexListWidget.h"
+#include "SVMainWindow.h"
 
 bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 	FUNCID(SVDebugApplication::notify);
@@ -60,6 +61,10 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 				// maybe a key for the tool bar or snap/lock buttons? Or a scene navigation key?
 				if (SVViewStateHandler::instance().m_geometryView != nullptr) {
 					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPress((Qt::Key)ke->key()))
+						return true;
+				}
+				if (m_mainWindow != nullptr) {
+					if (m_mainWindow->handleGlobalKeyPress((Qt::Key)ke->key(), ke->modifiers()) )
 						return true;
 				}
 //				if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
