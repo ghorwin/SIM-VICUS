@@ -31,7 +31,7 @@
 #include <QtExt_ConstructionViewWidget.h>
 #include <QtExt_Locale.h>
 #include <QtExt_LanguageHandler.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <VICUS_KeywordListQt.h>
 

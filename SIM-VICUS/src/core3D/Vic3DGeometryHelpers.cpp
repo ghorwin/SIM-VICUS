@@ -26,7 +26,7 @@
 #include "Vic3DGeometryHelpers.h"
 
 #include <IBKMK_Triangulation.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 #include <VICUS_NetworkLine.h>
 
 #include <QQuaternion>
@@ -53,11 +53,11 @@ void addPlane(const VICUS::PlaneTriangulationData & g, const QColor & col,
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	QVector3D n = QtExt::IBKVector2QVector(g.m_normal);
+	QVector3D n = IBKVector2QVector(g.m_normal);
 	if (inverted)
 		n *= -1;
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = IBKVector2QVector(g.m_vertexes[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
@@ -100,9 +100,9 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	colorBufferData.resize(colorBufferData.size()+nVertexes);
 	// set data
-	QVector3D n = QtExt::IBKVector2QVector(g.normal());
+	QVector3D n = IBKVector2QVector(g.normal());
 	for (unsigned int i=0; i<nVertexes; ++i) {
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.triangulationData().m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = IBKVector2QVector(g.triangulationData().m_vertexes[i]);
 		vertexBufferData[currentVertexIndex + i].m_normal = n;
 		colorBufferData[currentVertexIndex  + i] = col;
 	}
@@ -134,7 +134,7 @@ void addPlane(const VICUS::PlaneTriangulationData & g, unsigned int & currentVer
 	vertexBufferData.resize(vertexBufferData.size()+nVertexes);
 	// set data
 	for (unsigned int i=0; i<nVertexes; ++i)
-		vertexBufferData[currentVertexIndex + i].m_coords = QtExt::IBKVector2QVector(g.m_vertexes[i]);
+		vertexBufferData[currentVertexIndex + i].m_coords = IBKVector2QVector(g.m_vertexes[i]);
 
 	unsigned int triangleIndexCount = g.m_triangles.size()*3;
 	indexBufferData.resize(indexBufferData.size()+triangleIndexCount);
@@ -185,8 +185,8 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, const Q
 	double L = cylinderAxis.magnitude();
 
 	// this is the rotation matrix to be applied to each generated vertex and normal vector
-	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), QtExt::IBKVector2QVector(cylinderAxis));
-	QVector3D trans = QtExt::IBKVector2QVector(p1);
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), IBKVector2QVector(cylinderAxis));
+	QVector3D trans = IBKVector2QVector(p1);
 
 	// add the first two vertices (which are also the last)
 
@@ -319,8 +319,8 @@ void addCylinder(const IBKMK::Vector3D & p1, const IBKMK::Vector3D & p2, double 
 	double L = cylinderAxis.magnitude();
 
 	// this is the rotation matrix to be applied to each generated vertex and normal vector
-	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), QtExt::IBKVector2QVector(cylinderAxis));
-	QVector3D trans = QtExt::IBKVector2QVector(p1);
+	QQuaternion rot = QQuaternion::rotationTo(QVector3D(1,0,0), IBKVector2QVector(cylinderAxis));
+	QVector3D trans = IBKVector2QVector(p1);
 
 	// add the first two vertices (which are also the last)
 
@@ -380,7 +380,7 @@ void addSphere(const IBKMK::Vector3D & p, const QColor & c, double radius,
 {
 	// THIS IS FOR DRAWING TRIANGLE STRIPS
 
-	QVector3D trans = QtExt::IBKVector2QVector(p);
+	QVector3D trans = IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = SPHERE_SEGMENTS*2; // number of segments to split 360° into
@@ -450,7 +450,7 @@ void addSphere(const IBKMK::Vector3D & p, double radius,
 
 	// THIS IS FOR THE WIREFRAME OBJECT - Draw Triangles mode!
 
-	QVector3D trans = QtExt::IBKVector2QVector(p);
+	QVector3D trans = IBKVector2QVector(p);
 
 	unsigned int nSeg = SPHERE_SEGMENTS; // number of segments to split 180° into
 	unsigned int nSeg2 = nSeg*2; // number of segments to split 360° into
@@ -538,7 +538,7 @@ void addIkosaeder(const IBKMK::Vector3D & p, const std::vector<QColor> & cols, d
 				  unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 				  std::vector<VertexCR> & vertexBufferData, std::vector<GLuint> & indexBufferData)
 {
-	QVector3D trans = QtExt::IBKVector2QVector(p);
+	QVector3D trans = IBKVector2QVector(p);
 
 	unsigned int nVertices = 12;
 	vertexBufferData.resize(vertexBufferData.size() + nVertices);

@@ -1,7 +1,7 @@
 #include "SVPropBuildingZoneTemplatesWidget.h"
 #include "ui_SVPropBuildingZoneTemplatesWidget.h"
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVStyle.h"
 #include "SVProjectHandler.h"

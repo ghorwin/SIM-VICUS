@@ -36,7 +36,7 @@
 #include <IBK_UnitVector.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <qwt_plot.h>
 #include <qwt_math.h>

@@ -22,8 +22,7 @@ unix|mac {
 LIBS += -lIBK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src \
-		../../../IBKMK/src
+		../../../IBK/src 
 
 DEPENDPATH = $${INCLUDEPATH}
 

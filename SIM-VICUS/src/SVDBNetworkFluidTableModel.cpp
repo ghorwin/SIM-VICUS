@@ -31,7 +31,7 @@
 #include <VICUS_Database.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVConstants.h"
 

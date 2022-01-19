@@ -27,7 +27,7 @@
 
 #include <QOpenGLShaderProgram>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -292,7 +292,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 	switch (m_geometryTransformMode) {
 		case Vic3D::CoordinateSystemObject::TM_Translate : {
 			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
-													QtExt::QVector2IBKVector(translation()), TRANSLATION_CENTER_SPHERE_FACTOR, // sphere
+													QVector2IBKVector(translation()), TRANSLATION_CENTER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
 													lotPoint // closest point on line-of-sight to sphere center
 													);
@@ -308,7 +308,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 
 		case Vic3D::CoordinateSystemObject::TM_RotateMask : {
 			// x-axis
-			IBKMK::Vector3D sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(AXIS_LENGTH, 0, 0) );
+			IBKMK::Vector3D sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(AXIS_LENGTH, 0, 0) );
 			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
@@ -323,7 +323,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				return true;
 			}
 			// y-axis
-			sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, AXIS_LENGTH, 0) );
+			sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, AXIS_LENGTH, 0) );
 			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
@@ -338,7 +338,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				return true;
 			}
 			// z-axis
-			sphereCenter = QtExt::QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, 0, AXIS_LENGTH) );
+			sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, 0, AXIS_LENGTH) );
 			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
 													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
 													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
@@ -366,7 +366,7 @@ void CoordinateSystemObject::updateCoordinateSystemSize() {
 	m_coordinateSystemSizeFactor = 1;
 	if (SVProjectHandler::instance().isValid()) {
 		IBKMK::Vector3D cameraPos = SVProjectHandler::instance().viewSettings().m_cameraTranslation;
-		IBKMK::Vector3D distance = QtExt::QVector2IBKVector(m_transform.translation()) - cameraPos;
+		IBKMK::Vector3D distance = QVector2IBKVector(m_transform.translation()) - cameraPos;
 		double dist = distance.magnitude();
 //		qDebug() << "Camera-LCS-Distance =" << dist;
 		if (dist < 20) {
@@ -471,7 +471,7 @@ void CoordinateSystemObject::updateCoordinateSystemSize() {
 //		QVector3D pos(0,AXIS_LENGTH,0);
 //		QQuaternion rot = QQuaternion::fromAxisAndAngle(QVector3D(1,0,0), 22.5 + i*45);
 //		pos = rot.rotatedVector(pos);
-//		addSphere(QtExt::QVector2IBKVector(pos), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
+//		addSphere(QVector2IBKVector(pos), QColor(Qt::red), ROTATION_MARKER_SPHERE_FACTOR*sizeFactor, currentVertexIndex, currentElementIndex,
 //				  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 //	}
 

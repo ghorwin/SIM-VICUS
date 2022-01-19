@@ -36,7 +36,7 @@
 
 #include <NANDRAD_KeywordList.h>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVConstants.h"
 #include "SVStyle.h"

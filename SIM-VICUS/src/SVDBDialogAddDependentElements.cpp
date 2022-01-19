@@ -1,7 +1,7 @@
 #include "SVDBDialogAddDependentElements.h"
 #include "ui_SVDBDialogAddDependentElements.h"
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 #include <VICUS_AbstractDBElement.h>
 
 SVDBDialogAddDependentElements::SVDBDialogAddDependentElements(QWidget *parent):

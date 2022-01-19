@@ -40,7 +40,7 @@
 #include "SVSettings.h"
 #include "Vic3DConstants.h"
 #include "SVViewStateHandler.h"
-#include "QtExt_Conversions.h"
+#include "SV_Conversions.h"
 
 namespace Vic3D {
 

@@ -3,7 +3,7 @@
 
 #include <QSpinBox>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>

@@ -32,7 +32,7 @@
 #include <QTranslator>
 
 #include <VICUS_Project.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 #include <QtExt_Settings.h>
 
 #include <IBKMK_3DCalculations.h>
@@ -165,7 +165,7 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				}
 				IBKMK::Vector3D a = m_vertexList.front();
 				IBKMK::Vector3D b = m_vertexList.back();
-				IBKMK::Vector3D c = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition);
+				IBKMK::Vector3D c = QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
 				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
 				// Note: the vertex list will still only contain 3 points!
@@ -284,14 +284,14 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			if (m_vertexList.size() == 2) {
 				IBKMK::Polygon3D d;
 				d.setVertexes(m_vertexList);
-				d.addVertex(QtExt::QVector2IBKVector(p));
+				d.addVertex(QVector2IBKVector(p));
 				if (d.isValid()) {
 					// now compute orthogonal vector to first segment and normal of plane
 					IBKMK::Vector3D first = m_vertexList[0] - m_vertexList[1];
 					IBKMK::Vector3D second;
 					first.crossProduct(d.normal(), second); // second = n x first
 					second.normalize();
-					qDebug() << QtExt::IBKVector2QVector(first) << QtExt::IBKVector2QVector(d.normal()) << QtExt::IBKVector2QVector(second);
+					qDebug() << IBKVector2QVector(first) << IBKVector2QVector(d.normal()) << IBKVector2QVector(second);
 					// compute projection onto line, starting at m_vertexList[1]
 
 					// vector from new point to starting point
@@ -299,8 +299,8 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 					// offset
 					double scale = v.scalarProduct(second);
 					IBKMK::Vector3D L = second*scale + d.vertexes()[1];
-					newPoint = QtExt::IBKVector2QVector(L);
-					qDebug() << QtExt::IBKVector2QVector(v) << scale << QtExt::IBKVector2QVector(L) << newPoint;
+					newPoint = IBKVector2QVector(L);
+					qDebug() << IBKVector2QVector(v) << scale << IBKVector2QVector(L) << newPoint;
 				}
 			}
 
@@ -315,10 +315,10 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			// if we have already a valid plane (i.e. normal vector not 0,0,0),
 			// then check if point is in plane
 			if (m_polygonGeometry.normal() != IBKMK::Vector3D(0,0,0)) {
-				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
+				IBKMK::Vector3D p2(QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
 				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
-				newPoint = QtExt::IBKVector2QVector(projected);
+				newPoint = IBKVector2QVector(projected);
 			}
 			// any change to the previously stored point?
 			if (m_localCoordinateSystemPosition == newPoint)
@@ -337,16 +337,16 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 			if (m_interactiveZoneExtrusionMode) {
 
 				// compute the projection of the current coordinate systems position on the plane
-				IBKMK::Vector3D p2(QtExt::QVector2IBKVector(p));
+				IBKMK::Vector3D p2(QVector2IBKVector(p));
 				IBKMK::Vector3D projected;
 				IBKMK::pointProjectedOnPlane(m_polygonGeometry.offset(), m_polygonGeometry.normal(), p2, projected);
-				newPoint = QtExt::IBKVector2QVector(projected);
+				newPoint = IBKVector2QVector(projected);
 				// now get the offset vector
 				QVector3D verticalOffset = p-newPoint; // Note: this vector should be collinear to the plane's normal
 				if (verticalOffset.length() < 0.001f)
-					verticalOffset = QtExt::IBKVector2QVector( m_polygonGeometry.offset() + 1*planeGeometry().normal() );
+					verticalOffset = IBKVector2QVector( m_polygonGeometry.offset() + 1*planeGeometry().normal() );
 				// and add it to the first vertex of the polygon
-				newPoint = verticalOffset + QtExt::IBKVector2QVector(m_polygonGeometry.offset());
+				newPoint = verticalOffset + IBKVector2QVector(m_polygonGeometry.offset());
 				m_localCoordinateSystemPosition = newPoint;
 				// also store the absolute height and update the generated geometry
 				setZoneHeight((double)verticalOffset.length()); // this also updates the buffers
@@ -958,7 +958,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
 			}
 			else if (m_vertexList.size() == 1) {
-				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+				m_vertexBufferData.push_back( VertexC(IBKVector2QVector(m_vertexList.front())) );
 				// now also add a vertex for the current coordinate system's position
 				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 			}
@@ -967,7 +967,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				// create a temporary plane geometry from the three given vertexes
 				IBKMK::Vector3D a = m_vertexList.front();
 				IBKMK::Vector3D b = m_vertexList.back();
-				IBKMK::Vector3D c = QtExt::QVector2IBKVector(m_localCoordinateSystemPosition);
+				IBKMK::Vector3D c = QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
 				VICUS::PlaneGeometry pg(VICUS::Polygon3D::T_Rectangle, a, b, d);
 				addPlane(pg.triangulationData(), currentVertexIndex, currentElementIndex,
@@ -975,8 +975,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 				if (m_vertexBufferData.empty() ) {
 					// we want to keep our line to show that we only need a moved local coordination system
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(m_vertexList.front())) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(m_vertexList.back())) );
 				}
 				// re-add first vertex so that we have a closed loop
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
@@ -1013,13 +1013,13 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				m_vertexBufferData.push_back( m_vertexBufferData[0] );
 				if (!m_passiveMode)
 					// add last placed vertex to draw line to current local coordinate system
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.back())) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(m_vertexList.back())) );
 			}
 			else {
 				// for invalid polygons
 				// put all the vertexes of the current polyline into buffer
 				for (const IBKMK::Vector3D & v : m_vertexList)
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(v)) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(v)) );
 			}
 			// last vertex in buffer is now the last placed vertex
 
@@ -1028,7 +1028,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				m_vertexBufferData.push_back( VertexC(m_localCoordinateSystemPosition ) );
 
 				// add again the first point of the polygon in order to draw a blue line from local coordinate system to first point of polygon
-				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(m_vertexList.front())) );
+				m_vertexBufferData.push_back( VertexC(IBKVector2QVector(m_vertexList.front())) );
 			}
 		} break;
 
@@ -1057,15 +1057,15 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 				// now add a line strip for the bottom polygon
 				for (unsigned int i=0; i<=floorPolygonVertexes.size(); ++i)
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i % floorPolygonVertexes.size()])) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(floorPolygonVertexes[i % floorPolygonVertexes.size()])) );
 				// now add a line strip for the top polygon
 				for (unsigned int i=0; i<=ceilingPolygonVertexes.size(); ++i)
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i % ceilingPolygonVertexes.size()])) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(ceilingPolygonVertexes[i % ceilingPolygonVertexes.size()])) );
 
 				// now add vertexes to draw the vertical zone walls
 				for (unsigned int i=0; i<floorPolygonVertexes.size(); ++i) {
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(floorPolygonVertexes[i])) );
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(ceilingPolygonVertexes[i])) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(floorPolygonVertexes[i])) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(ceilingPolygonVertexes[i])) );
 				}
 			}
 
@@ -1085,12 +1085,12 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			// now add a line strip for the bottom polygon
 			const std::vector<IBKMK::Vector3D> & vertexes = m_polygonGeometry.triangulationData().m_vertexes;
 			for (unsigned int i=0; i<=vertexes.size(); ++i)
-				m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes[i % vertexes.size()])) );
+				m_vertexBufferData.push_back( VertexC(IBKVector2QVector(vertexes[i % vertexes.size()])) );
 			// now add a line strip for all other planes
 			for (unsigned int j=0; j<m_generatedGeometry.size(); ++j) {
 				const std::vector<IBKMK::Vector3D> & vertexes2 = m_generatedGeometry[j].triangulationData().m_vertexes;
 				for (unsigned int i=0; i<=vertexes2.size(); ++i)
-					m_vertexBufferData.push_back( VertexC(QtExt::IBKVector2QVector(vertexes2[i % vertexes2.size()])) );
+					m_vertexBufferData.push_back( VertexC(IBKVector2QVector(vertexes2[i % vertexes2.size()])) );
 			}
 		}
 		break;

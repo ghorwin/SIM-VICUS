@@ -1,7 +1,7 @@
 #include "SVPropBuildingBoundaryConditionsWidget.h"
 #include "ui_SVPropBuildingBoundaryConditionsWidget.h"
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVStyle.h"
 #include "SVProjectHandler.h"

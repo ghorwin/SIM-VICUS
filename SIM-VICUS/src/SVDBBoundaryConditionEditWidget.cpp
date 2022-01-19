@@ -31,7 +31,7 @@
 #include <NANDRAD_KeywordList.h>
 
 #include <QtExt_LanguageHandler.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVDBBoundaryConditionTableModel.h"
 #include "SVConstants.h"

@@ -277,6 +277,7 @@ HEADERS  += \
 	../../src/SVSimulationShadingOptions.h \
 	../../src/SVTimeSeriesPreviewWidget.h \
 	../../src/SVZoneSelectionDialog.h \
+	../../src/SV_Conversions.h \
 	../../src/actions/SVUndoAddBuilding.h \
 	../../src/actions/SVUndoAddBuildingLevel.h \
 	../../src/actions/SVUndoAddNetwork.h \

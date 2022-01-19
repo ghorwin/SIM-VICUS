@@ -28,7 +28,7 @@
 #include <QOpenGLShaderProgram>
 
 #include <VICUS_Project.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
@@ -107,8 +107,8 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 		n.normalize(); // now has length 1 (as in 1 m)
 		// process all vertexes
 		for (const IBKMK::Vector3D & v : vertexes) {
-			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
-			vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
+			vertexBufferData.push_back(VertexC(IBKVector2QVector(v)));
+			vertexBufferData.push_back(VertexC(IBKVector2QVector(v + n)));
 		}
 		m_vertexCount += vertexes.size()*2;
 	}
@@ -130,8 +130,8 @@ void SurfaceNormalsObject::updateVertexBuffers() {
 					n.normalize(); // now has length 1 (as in 1 m)
 					// process all vertexes
 					for (const IBKMK::Vector3D & v : vertexes) {
-						vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v)));
-						vertexBufferData.push_back(VertexC(QtExt::IBKVector2QVector(v + n)));
+						vertexBufferData.push_back(VertexC(IBKVector2QVector(v)));
+						vertexBufferData.push_back(VertexC(IBKVector2QVector(v + n)));
 					}
 					m_vertexCount += vertexes.size()*2;
 					break;

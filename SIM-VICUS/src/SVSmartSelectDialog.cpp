@@ -33,7 +33,7 @@
 #include <VICUS_NetworkNode.h>
 #include <VICUS_Project.h>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVProjectHandler.h"
 #include "SVUndoTreeNodeState.h"

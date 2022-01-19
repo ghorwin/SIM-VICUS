@@ -31,10 +31,10 @@
 #include <QPalette>
 
 #include <VICUS_Project.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 #include <VICUS_ViewSettings.h>
 #include <VICUS_NetworkLine.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <IBKMK_3DCalculations.h>
 
@@ -222,7 +222,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// *** initialize camera placement and model placement in the world ***
 
 	if (updateCamera) {
-		QVector3D cameraTrans = QtExt::IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
+		QVector3D cameraTrans = IBKVector2QVector(SVProjectHandler::instance().viewSettings().m_cameraTranslation);
 		m_camera.setTranslation(cameraTrans);
 		m_camera.setRotation( SVProjectHandler::instance().viewSettings().m_cameraRotation.toQuaternion() );
 	}
@@ -442,7 +442,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 			// translate camera
 
-			m_camera.setTranslation(QtExt::IBKVector2QVector(m_panCameraStart + cameraTrans));
+			m_camera.setTranslation(IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
 			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
@@ -491,23 +491,23 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 							case 0 :
 								// rotate around z
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationAxis = QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationVectorX = QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+								m_rotationVectorY = QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
 							break;
 
 							case 1 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationAxis = QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+								m_rotationVectorX = QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationVectorY = QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
 							break;
 
 							case 2 :
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+								m_rotationAxis = QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+								m_rotationVectorX = QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+								m_rotationVectorY = QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
 							break;
 						}
 
@@ -527,7 +527,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				}
 				else {
 					// for orbit-controller, we  take the closest point of either
-					m_orbitControllerOrigin = QtExt::IBKVector2QVector(nearestPoint);
+					m_orbitControllerOrigin = IBKVector2QVector(nearestPoint);
 					m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
 					// Rotation matrix around origin point
@@ -624,7 +624,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// now we handle the snapping rules and also the locking
 						snapLocalCoordinateSystem(pickObject);
 
-				//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+				//		qDebug() << localMousePos << IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 						// determine vector to snapped mouse position
 						QVector3D newPoint = m_coordinateSystemObject.translation();
@@ -640,7 +640,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// rotation plane = rotation axis (e.g. TM_RotateX) and offset
 
 						// store current's coordinate system position
-						IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
+						IBKMK::Vector3D coordinateSystemLocation = QVector2IBKVector( m_coordinateSystemObject.translation() );
 
 						// pick a point and snap to some point in the scene
 						if (!pickObject.m_pickPerformed)
@@ -673,19 +673,19 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 								IBK::IBK_Message(IBK::FormatString("Rotation angle = %1 deg\n").arg(angle), IBK::MSG_PROGRESS);
 
 								// compute rotation for local coordinate system
-								QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)angle);
+								QQuaternion q = QQuaternion::fromAxisAndAngle( IBKVector2QVector(m_rotationAxis), (float)angle);
 								QQuaternion coordinateSystemRotation = q*m_originalRotation;
 
 								// rotate local coordinate system (translation isn't needed)
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( IBKVector2QVector(m_boundingBoxCenterPoint) ) );
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
 								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
+								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
 							}
 						}
 
@@ -763,7 +763,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (!pickObject.m_candidates.empty()) {
 			IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 			// move camera along line of sight towards selected object
-			m_camera.translate(QtExt::IBKVector2QVector(wheelDelta*moveDist));
+			m_camera.translate(IBKVector2QVector(wheelDelta*moveDist));
 		}
 		else {
 			m_camera.translate(wheelDelta * (float)transSpeed * m_camera.forward());
@@ -774,7 +774,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// Note: the check is necessary, because the paint event may be called as part of closing the window
 	//       and updating the UI to the "no project" state
 	if (SVProjectHandler::instance().isValid()) {
-		SVProjectHandler::instance().viewSettings().m_cameraTranslation = QtExt::QVector2IBKVector(m_camera.translation());
+		SVProjectHandler::instance().viewSettings().m_cameraTranslation = QVector2IBKVector(m_camera.translation());
 		SVProjectHandler::instance().viewSettings().m_cameraRotation = m_camera.rotation();
 		// when camera has been moved, also update the local coordinate system
 		m_coordinateSystemObject.updateCoordinateSystemSize();
@@ -798,7 +798,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		snapLocalCoordinateSystem(pickObject);
 
 		needRepaint = true;
-//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+//		qDebug() << localMousePos << IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
 		QVector3D newPoint = m_coordinateSystemObject.translation();
@@ -870,19 +870,19 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					// now build the rotation matrix
 		//			QMatrix3x3 R;
 		//			float * r = R.data();
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localX.normalized());
+		//			*(QVector3D*)r = IBKVector2QVector(localX.normalized());
 		//			r+=3;
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localY.normalized());
+		//			*(QVector3D*)r = IBKVector2QVector(localY.normalized());
 		//			r+=3;
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(n.normalized());
+		//			*(QVector3D*)r = IBKVector2QVector(n.normalized());
 		//			qDebug() << R;
 		//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
 		//			qDebug() << q;
 
 					// or use the ready-made Qt function (which surprisingly gives the same result :-)
-					QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(localX.normalized()),
-														   QtExt::IBKVector2QVector(localY.normalized()),
-														   QtExt::IBKVector2QVector(n.normalized()));
+					QQuaternion q2 = QQuaternion::fromAxes(IBKVector2QVector(localX.normalized()),
+														   IBKVector2QVector(localY.normalized()),
+														   IBKVector2QVector(n.normalized()));
 		//			qDebug() << q2;
 					m_coordinateSystemObject.setRotation(q2);
 				}
@@ -892,7 +892,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				m_coordinateSystemObject.setRotation(QQuaternion());
 			}
 
-			m_coordinateSystemObject.setTranslation( QtExt::IBKVector2QVector(nearestPoint) );
+			m_coordinateSystemObject.setTranslation( IBKVector2QVector(nearestPoint) );
 		}
 	}
 
@@ -2138,13 +2138,13 @@ void Scene::pick(PickObject & pickObject) {
 	farResult /= farResult.w();
 
 	// compute line-of-sight equation
-	IBKMK::Vector3D nearPoint = QtExt::QVector2IBKVector(nearResult.toVector3D()); // line offset = nearPoint
+	IBKMK::Vector3D nearPoint = QVector2IBKVector(nearResult.toVector3D()); // line offset = nearPoint
 	// Note: Since the NearPlane-distance is 1 and thus nearly attached to the camera (distance 0 is not permitted!),
 	//       the calculated nearPoint is actually (almost) the camera position, regardless of where one has clicked
 	//       on the screen!
 	//       So we might actually just take the camera position here and avoid the extra work, but since there may
 	//       be later the demand for "zoom" and perspective adjustment, we leave it this way.
-	IBKMK::Vector3D farPoint = QtExt::QVector2IBKVector(farResult.toVector3D());
+	IBKMK::Vector3D farPoint = QVector2IBKVector(farResult.toVector3D());
 	IBKMK::Vector3D direction = farPoint - nearPoint;	// direction vector of line-of-sight
 	pickObject.m_lineOfSightOffset = nearPoint;
 	pickObject.m_lineOfSightDirection = direction;
@@ -2350,9 +2350,9 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	IBKMK::Vector3D direction;
 	// get direction in case of axis lock
 	switch (vs.m_locks) {
-		case SVViewState::L_LocalX : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
-		case SVViewState::L_LocalY : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
-		case SVViewState::L_LocalZ : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
+		case SVViewState::L_LocalX : direction = QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
+		case SVViewState::L_LocalY : direction = QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
+		case SVViewState::L_LocalZ : direction = QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
 		case SVViewState::NUM_L: ; // no lock
 	}
 
@@ -2416,7 +2416,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		if (!pickObject.m_candidates.empty()) {
 			const PickObject::PickResult & r = pickObject.m_candidates.front();
 
-			QVector3D pickPoint = QtExt::IBKVector2QVector(r.m_pickPoint);
+			QVector3D pickPoint = IBKVector2QVector(r.m_pickPoint);
 
 			// depending on type of object, process the different snap options
 			if (r.m_snapPointType == PickObject::RT_GridPlane) {
@@ -2432,14 +2432,14 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					QVector3D closestPoint;
 					/// \todo Andreas: add support for several grid objects, or one grid object with several planes
 					///		  r.m_uniqueObjectID -> index of plane that we hit.
-					if (m_gridObject.closestSnapPoint(QtExt::IBKVector2QVector(r.m_pickPoint), closestPoint)) {
+					if (m_gridObject.closestSnapPoint(IBKVector2QVector(r.m_pickPoint), closestPoint)) {
 						// this is in world coordinates, use this as transformation vector for the
 						// coordinate system
 						float dist = (closestPoint - pickPoint).lengthSquared();
 						// close enough?
 						if (dist < SNAP_DISTANCES_THRESHHOLD) {
 							// got a snap point, store it
-							snapPoint = QtExt::QVector2IBKVector(closestPoint);
+							snapPoint = QVector2IBKVector(closestPoint);
 							snapInfo = "snap to grid point";
 						}
 					}
@@ -2474,7 +2474,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					if (snapOptions & SVViewState::Snap_ObjectVertex) {
 						// insert distances to all vertexes of selected object
 						for (const IBKMK::Vector3D & v : sVertexes) {
-							QVector3D p = QtExt::IBKVector2QVector(v);
+							QVector3D p = IBKVector2QVector(v);
 							float dist = (p - pickPoint).lengthSquared();
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 							// another snap point that's closer.
@@ -2492,7 +2492,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						for (const IBKMK::Vector3D & v : sVertexes)
 							center += v;
 						center /= sVertexes.size();
-						QVector3D p = QtExt::IBKVector2QVector(center);
+						QVector3D p = IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
 						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
 							sc.m_distToLineOfSight = (double)dist;
@@ -2509,7 +2509,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							lastNode = sVertexes[i % sVertexes.size()];
 							center += lastNode;
 							center /= 2;
-							QVector3D p = QtExt::IBKVector2QVector(center);
+							QVector3D p = IBKVector2QVector(center);
 							float dist = (p - pickPoint).lengthSquared();
 							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
 								sc.m_distToLineOfSight = (double)dist;
@@ -2550,7 +2550,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 					if (snapOptions & SVViewState::Snap_ObjectVertex) {
 						// insert distances to all vertexes of selected object
 						for (const IBKMK::Vector3D & v : sVertexes) {
-							QVector3D p = QtExt::IBKVector2QVector(v);
+							QVector3D p = IBKVector2QVector(v);
 							float dist = (p - pickPoint).lengthSquared();
 							// Only add if close enough (< SNAP_DISTANCES_THRESHHOLD) and if there isn't yet
 							// another snap point that's closer.
@@ -2568,7 +2568,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 						for (const IBKMK::Vector3D & v : sVertexes)
 							center += v;
 						center /= sVertexes.size();
-						QVector3D p = QtExt::IBKVector2QVector(center);
+						QVector3D p = IBKVector2QVector(center);
 						float dist = (p - pickPoint).lengthSquared();
 						if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
 							sc.m_distToLineOfSight = (double)dist;
@@ -2585,7 +2585,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 							lastNode = sVertexes[i % sVertexes.size()];
 							center += lastNode;
 							center /= 2;
-							QVector3D p = QtExt::IBKVector2QVector(center);
+							QVector3D p = IBKVector2QVector(center);
 							float dist = (p - pickPoint).lengthSquared();
 							if (dist < closestDepthSoFar && dist < SNAP_DISTANCES_THRESHHOLD) {
 								sc.m_distToLineOfSight = (double)dist;
@@ -2628,7 +2628,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	}
 
 	// take closest snap point and snap to it
-	QVector3D newCoordinatePoint = QtExt::IBKVector2QVector(snapPoint);
+	QVector3D newCoordinatePoint = IBKVector2QVector(snapPoint);
 	m_coordinateSystemObject.setTranslation(newCoordinatePoint);
 }
 
@@ -2681,7 +2681,7 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 		// *** place a vertex ***
 		case SVViewState::OM_PlaceVertex : {
 			// get current coordinate system's position
-			IBKMK::Vector3D p = QtExt::QVector2IBKVector(m_coordinateSystemObject.translation());
+			IBKMK::Vector3D p = QVector2IBKVector(m_coordinateSystemObject.translation());
 			// append a vertex (this will automatically update the draw buffer) and also
 			// modify the vertexListWidget.
 			m_newGeometryObject.appendVertex(p);
@@ -2788,7 +2788,7 @@ IBKMK::Vector3D Scene::calculateFarPoint(const QPoint & mousPos, const QMatrix4x
 	// don't forget normalization!
 	farResult /= farResult.w();
 
-	return QtExt::QVector2IBKVector(farResult.toVector3D());
+	return QVector2IBKVector(farResult.toVector3D());
 }
 
 
@@ -2817,7 +2817,7 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 	// if pick point is very far away, we limit the depth and adjust the pick point
 
 	// we need to store initial camera pos, selected object pos, far point
-	m_panCameraStart = QtExt::QVector2IBKVector(m_camera.translation());	// Point A
+	m_panCameraStart = QVector2IBKVector(m_camera.translation());	// Point A
 	m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
 	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
 	m_panObjectDepth = pickObject.m_candidates.front().m_depth;

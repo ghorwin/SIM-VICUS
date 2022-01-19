@@ -39,7 +39,7 @@
 
 #include <QMessageBox>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVViewStateHandler.h"
 #include "SVProjectHandler.h"
@@ -291,7 +291,7 @@ void SVPropEditGeometry::on_pushButtonAddWindow_clicked() {
 
 void SVPropEditGeometry::translate() {
 	// get translation vector from selected geometry object
-	IBKMK::Vector3D translation = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
+	IBKMK::Vector3D translation = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
 
 	if (translation == IBKMK::Vector3D())
 		return;
@@ -329,8 +329,8 @@ void SVPropEditGeometry::translate() {
 void SVPropEditGeometry::scale() {
 	// we now apply the already specified transformation
 	// get translation and scale vector from selected geometry object
-	IBKMK::Vector3D scale = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.scale());
-	IBKMK::Vector3D trans = QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
+	IBKMK::Vector3D scale = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.scale());
+	IBKMK::Vector3D trans = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
 
 	if (scale == IBKMK::Vector3D())
 		return;
@@ -347,10 +347,10 @@ void SVPropEditGeometry::scale() {
 			for ( IBKMK::Vector3D & v : vertexes ) {
 				// use just this instead of making a QVetor3D
 				Vic3D::Transform3D t, vNew;
-				t.scale(QtExt::IBKVector2QVector(scale) );
-				t.translate(QtExt::IBKVector2QVector(trans) );
-				vNew.setTranslation(t.toMatrix()*QtExt::IBKVector2QVector(v) );
-				v = QtExt::QVector2IBKVector(vNew.translation());
+				t.scale(IBKVector2QVector(scale) );
+				t.translate(IBKVector2QVector(trans) );
+				vNew.setTranslation(t.toMatrix()*IBKVector2QVector(v) );
+				v = QVector2IBKVector(vNew.translation());
 			}
 			VICUS::Surface modS(*s);
 
@@ -387,7 +387,7 @@ void SVPropEditGeometry::rotate() {
 	QVector4D qrotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation().toVector4D();
 	// use IBKMK class to permorm rotation with IBKMK Vector3D
 	IBKMK::Quaternion rotate((double) qrotate.w(),(double) qrotate.x(),(double) qrotate.y(),(double) qrotate.z());
-	IBKMK::Vector3D trans = QtExt::QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
+	IBKMK::Vector3D trans = QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
 
 	if (rotate == IBKMK::Quaternion())
 		return;
@@ -544,7 +544,7 @@ void SVPropEditGeometry::updateUi() {
 		}
 		else {
 			m_ui->labelIndication->setText(tr("z-Axis:"));
-			setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+			setRotation( QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 		}
 
 		// enable "add subsurface" button
@@ -564,7 +564,7 @@ void SVPropEditGeometry::updateUi() {
 			}
 			else {
 				m_ui->labelIndication->setText(tr("z-Axis:"));
-				setRotation( QtExt::QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
+				setRotation( QVector2IBKVector(SVViewStateHandler::instance().m_coordinateSystemObject->localZAxis() ) );
 			}
 		}
 	}
@@ -573,11 +573,11 @@ void SVPropEditGeometry::updateUi() {
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
 	m_boundingBoxDimension = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_boundingBoxCenter);
 	// position local coordinate system, but only if we are showing the edit page
-	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(IBKVector2QVector(m_boundingBoxCenter) );
 
 	// update local coordinates
 	Vic3D::Transform3D t;
-	t.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter) );
+	t.setTranslation(IBKVector2QVector(m_boundingBoxCenter) );
 	setCoordinates( t ); // calls updateInputs() internally
 
 }
@@ -715,9 +715,9 @@ void SVPropEditGeometry::updateInputs() {
 					m_ui->labelZ->setText("Z");
 
 					// cache current local coordinate systems position as fall-back values
-					m_originalValues = QtExt::QVector2IBKVector(m_localCoordinatePosition.translation());
+					m_originalValues = QVector2IBKVector(m_localCoordinatePosition.translation());
 
-					IBKMK::Vector3D trans(QtExt::QVector2IBKVector(m_localCoordinatePosition.translation()));
+					IBKMK::Vector3D trans(QVector2IBKVector(m_localCoordinatePosition.translation()));
 					m_ui->lineEditXValue->setValue(trans.m_x);
 					m_ui->lineEditYValue->setValue(trans.m_y);
 					m_ui->lineEditZValue->setValue(trans.m_z);
@@ -1028,7 +1028,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					// now compose a transform object and set it in the wireframe object
 					// first we scale our selected objects
 					Vic3D::Transform3D scaling;
-					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+					scaling.setScale( IBKVector2QVector(scale) );
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
@@ -1037,7 +1037,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
 					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
 					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
-					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+					scaling.setTranslation( IBKVector2QVector(trans) );
 
 					// we give our transformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
@@ -1058,7 +1058,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 											m_ui->lineEditZValue->value()*double( xAxis.z()+yAxis.z()+zAxis.z() ));
 
 					Vic3D::Transform3D scaling;
-					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+					scaling.setScale( IBKVector2QVector(scale) );
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
@@ -1067,7 +1067,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
 					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
 					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
-					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+					scaling.setTranslation( IBKVector2QVector(trans) );
 
 					// we give our transformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
@@ -1081,7 +1081,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					IBKMK::Vector3D  scale(m_ui->lineEditXValue->value(), m_ui->lineEditYValue->value(), m_ui->lineEditZValue->value());
 					// compute offset from current local coordinate system position
 					Vic3D::Transform3D scaling;
-					scaling.setScale( QtExt::IBKVector2QVector(scale) );
+					scaling.setScale( IBKVector2QVector(scale) );
 
 					// and the we also hav to guarantee that the center point of the bounding box stays at the same position
 					// this can be achieved since the center points are also just scaled by the specified scaling factors
@@ -1090,7 +1090,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					trans.m_x = m_boundingBoxDimension.m_x < 1E-4 ? 0.0 : m_boundingBoxCenter.m_x * ( 1 - scale.m_x );
 					trans.m_y = m_boundingBoxDimension.m_y < 1E-4 ? 0.0 : m_boundingBoxCenter.m_y * ( 1 - scale.m_y );
 					trans.m_z = m_boundingBoxDimension.m_z < 1E-4 ? 0.0 : m_boundingBoxCenter.m_z * ( 1 - scale.m_z );
-					scaling.setTranslation( QtExt::IBKVector2QVector(trans) );
+					scaling.setTranslation( IBKVector2QVector(trans) );
 
 					// we give our transformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = scaling;
@@ -1126,7 +1126,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
 
-					rota.rotate(angle, QtExt::IBKVector2QVector(rotationAxis) );
+					rota.rotate(angle, IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
 					QVector4D rotVec = rota.rotation().toVector4D();
@@ -1135,7 +1135,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
+					rota.setTranslation(IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1165,7 +1165,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					IBKMK::Quaternion centerRota((double) rotVec.w(), (double) rotVec.x(), (double) rotVec.y(), (double) rotVec.z());
 					centerRota.rotateVector(newCenter);
 
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter ) );
+					rota.setTranslation(IBKVector2QVector(m_boundingBoxCenter - newCenter ) );
 
 					// we give our tranfsformation to the wire frame object
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
@@ -1192,7 +1192,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					centerRota.rotateVector(newCenter);
 
 					// we also have to find the center point after rotation and translate our center back to its origin
-					rota.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenter - newCenter) );
+					rota.setTranslation(IBKVector2QVector(m_boundingBoxCenter - newCenter) );
 
 					SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 					const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();

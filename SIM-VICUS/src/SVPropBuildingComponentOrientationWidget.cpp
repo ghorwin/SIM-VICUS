@@ -2,7 +2,7 @@
 #include "ui_SVPropBuildingComponentOrientationWidget.h"
 
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVStyle.h"
 #include "SVViewStateHandler.h"

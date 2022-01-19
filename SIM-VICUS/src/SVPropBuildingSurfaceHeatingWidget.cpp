@@ -1,7 +1,7 @@
 #include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "ui_SVPropBuildingSurfaceHeatingWidget.h"
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include "SVStyle.h"
 #include "SVPropSurfaceHeatingDelegate.h"

@@ -32,7 +32,7 @@
 #include <VICUS_KeywordList.h>
 #include <VICUS_KeywordListQt.h>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 #include <IBK_FileReader.h>
 #include <IBK_UnitList.h>

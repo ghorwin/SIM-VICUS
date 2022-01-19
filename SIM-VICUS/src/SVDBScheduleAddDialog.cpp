@@ -29,7 +29,7 @@
 #include "VICUS_Schedule.h"
 
 #include "QtExt_LanguageHandler.h"
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 SVDBScheduleAddDialog::SVDBScheduleAddDialog(QWidget *parent) :
 	QDialog(parent),

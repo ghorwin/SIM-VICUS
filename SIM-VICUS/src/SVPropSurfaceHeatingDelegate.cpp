@@ -33,7 +33,7 @@
 #include <QTableWidget>
 #include <QLineEdit>
 
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 #include <QtExt_FilterComboBox.h>
 
 #include "SVStyle.h"

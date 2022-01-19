@@ -41,7 +41,7 @@
 
 #include <QtExt_LanguageHandler.h>
 #include <QtExt_Locale.h>
-#include <QtExt_Conversions.h>
+#include <SV_Conversions.h>
 
 
 SVDBNetworkComponentEditWidget::SVDBNetworkComponentEditWidget(QWidget *parent) :
