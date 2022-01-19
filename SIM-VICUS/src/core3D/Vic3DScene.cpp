@@ -2146,6 +2146,8 @@ void Scene::enterMeasurementMode() {
 void Scene::leaveMeasurementMode() {
 	// restore original local coordinate system
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
+	m_measurementObject.reset();
+
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 }
