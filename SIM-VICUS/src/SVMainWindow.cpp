@@ -866,7 +866,8 @@ void SVMainWindow::on_actionFileNew_triggered() {
 
 	// create new project
 	m_projectHandler.newProject(); // emits updateActions()
-	// TODO : switch to geometry view
+	if (SVViewStateHandler::instance().viewState().m_viewMode == SVViewState::VM_PropertyEditMode)
+		m_ui->actionViewToggleGeometryMode->trigger();
 }
 
 
