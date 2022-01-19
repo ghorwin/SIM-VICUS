@@ -202,6 +202,8 @@ private:
 	ShaderProgram			*m_gridShader				= nullptr;
 	/*! Shader program 'SurfaceNormals' (managed by SceneView). */
 	ShaderProgram			*m_surfaceNormalsShader		= nullptr;
+	/*! Shader program 'Measurement Line' (managed by SceneView). */
+	ShaderProgram			*m_measurementShader		= nullptr;
 	/*! Shader program 'Opaque Surfaces' (managed by SceneView). */
 	ShaderProgram			*m_buildingShader			= nullptr;
 	/*! Shader program 'Orbit controller' (managed by SceneView). */

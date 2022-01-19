@@ -69,6 +69,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
 	m_surfaceNormalsShader = &shaderPrograms[SHADER_LINES];
+	m_measurementShader = &shaderPrograms[SHADER_LINES];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
 	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
@@ -86,7 +87,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
 	m_newSubSurfaceObject.create(m_buildingShader->shaderProgram());
-	m_measurementObject.create(m_gridShader);
+	m_measurementObject.create(m_measurementShader);
 
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
@@ -817,7 +818,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		snapLocalCoordinateSystem(pickObject);
 
 		const QVector3D &point = m_coordinateSystemObject.translation();
-
 		m_newGeometryObject.updateLocalCoordinateSystemPosition(point);
 	}
 
@@ -1128,6 +1128,15 @@ void Scene::render() {
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
 		m_coordinateSystemObject.renderOpaque();
 		m_coordinateSystemShader->release();
+	}
+
+	if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
+		m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
+
+		m_measurementShader->bind();
+		m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[0], m_worldToView);
+		m_measurementObject.render();
+		m_measurementShader->release();
 	}
 
 	// clear depth buffer because we want to paint on top of all
