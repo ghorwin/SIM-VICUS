@@ -1961,7 +1961,7 @@ void SVMainWindow::addLanguageAction(const QString &langId, const QString &actio
 		m_ui->menuLanguage->insertAction(nullptr, a);
 	}
 	else {
-		IBK::IBK_Message( IBK::FormatString("Language file '%1' missing.").arg(languageFilename.toUtf8().data()),
+		IBK::IBK_Message( IBK::FormatString("Language file '%1' missing.").arg(languageFilename.toStdString()),
 						  IBK::MSG_WARNING, FUNC_ID);
 	}
 }

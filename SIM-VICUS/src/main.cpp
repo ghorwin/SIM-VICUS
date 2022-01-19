@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
 	SVMessageHandler messageHandler;
 	IBK::MessageHandlerRegistry::instance().setMessageHandler( &messageHandler );
 	std::string errmsg;
-	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toUtf8().data(), false, errmsg);
+	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toStdString(), false, errmsg);
 
 	// *** Create and initialize setting object ***
 
@@ -163,7 +163,7 @@ int main(int argc, char *argv[]) {
 		QString langid = QString::fromStdString(dummy);
 		if (langid != QtExt::LanguageHandler::instance().langId()) {
 			IBK::IBK_Message( IBK::FormatString("Installing translator for language: '%1'.\n")
-								.arg(langid.toUtf8().data()),
+								.arg(langid.toStdString()),
 								IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			QtExt::LanguageHandler::instance().installTranslator(langid);
 		}

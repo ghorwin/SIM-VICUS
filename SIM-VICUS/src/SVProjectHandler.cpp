@@ -173,7 +173,7 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 
 		try {
 			if (!read(fileName))
-				throw IBK::Exception(IBK::FormatString("Error reading project '%1'").arg(fileName.toUtf8().data()), FUNC_ID);
+				throw IBK::Exception(IBK::FormatString("Error reading project '%1'").arg(fileName.toStdString()), FUNC_ID);
 			// project read successfully
 
 		}
@@ -308,8 +308,8 @@ SVProjectHandler::SaveResult SVProjectHandler::saveProject(QWidget * parent, con
 
 	// updated created and lastEdited tags
 	if (m_project->m_projectInfo.m_created.empty())
-		m_project->m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
-	m_project->m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toUtf8().data();
+		m_project->m_projectInfo.m_created = QDateTime::currentDateTime().toString(Qt::TextDate).toStdString();
+	m_project->m_projectInfo.m_lastEdited = QDateTime::currentDateTime().toString(Qt::TextDate).toStdString();
 
 	// update standard placeholders in project file
 	m_project->m_placeholders[VICUS::DATABASE_PLACEHOLDER_NAME]			= QtExt::Directories::databasesDir().toStdString();
@@ -825,7 +825,7 @@ bool SVProjectHandler::read(const QString & fname) {
 
 	if (!QFileInfo::exists(fname)) {
 		IBK::IBK_Message(IBK::FormatString("File '%1' does not exist or permissions are missing for accessing the file.")
-						 .arg(fname.toUtf8().data()), IBK::MSG_ERROR, FUNC_ID);
+						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
 
@@ -878,22 +878,22 @@ bool SVProjectHandler::write(const QString & fname) const {
 		}
 		if (!fileExists && !QFile(fname).copy(fname + ".bak"))
 			IBK::IBK_Message(IBK::FormatString("Cannot create backup file '%1' (path does not exists or missing permissions).")
-							 .arg((fname + ".bak").toUtf8().data()), IBK::MSG_ERROR, FUNC_ID);
+							 .arg((fname + ".bak").toStdString()), IBK::MSG_ERROR, FUNC_ID);
 	}
 
 	// create file
 	QFile file(fname);
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 		IBK::IBK_Message(IBK::FormatString("Cannot create/write file '%1' (path does not exists or missing permissions).")
-						 .arg(fname.toUtf8().data()), IBK::MSG_ERROR, FUNC_ID);
+						 .arg(fname.toStdString()), IBK::MSG_ERROR, FUNC_ID);
 		return false;
 	}
 	file.close();
 
 	try {
-		IBK::Path filename(fname.toUtf8().data());
+		IBK::Path filename(fname.toStdString());
 		IBK::Path newProjectDir = filename.parentPath();
-		IBK::Path oldProjectDir(m_projectFile.toUtf8().data());
+		IBK::Path oldProjectDir(m_projectFile.toStdString());
 		std::map<std::string, IBK::Path> pmap;
 		try {
 			oldProjectDir = oldProjectDir.parentPath();
