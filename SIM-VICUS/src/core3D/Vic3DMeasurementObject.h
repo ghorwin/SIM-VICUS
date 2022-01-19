@@ -40,6 +40,10 @@ namespace Vic3D {
 class ShaderProgram;
 
 /*! This is the line object drawn when measuring distances in the 3D scene.
+	This object has three states:
+	- initial state = not yet in measurement (both start and end point == QVector3D())
+	- in measurement (start point != QVector3D() but end point = QVector3D())
+	- finished measurement (both start and end point != QVector3D() or both == QVector3D())
 */
 class MeasurementObject {
 public:
