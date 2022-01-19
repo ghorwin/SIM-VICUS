@@ -1405,6 +1405,7 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 	QDialog dlg(this);
 	QVBoxLayout * lay = new QVBoxLayout(&dlg);
 	QTextEdit * w = new QTextEdit(&dlg);
+	w->setReadOnly(true);
 	lay->addWidget(w);
 	dlg.setLayout(lay);
 	QFile manual_en(":/doc/KeyboardMouseControls.html");
