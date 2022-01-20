@@ -271,8 +271,12 @@ public:
 
 	/*! Short description of the program. */
 	std::string								m_manVersionString;
+	/*! Manual name like "MasterSim Manual", printed cented at top of man page. */
+	std::string								m_manManualName;
 	/*! Short description of the program. */
 	std::string								m_manShortDescription;
+	/*! Set here the date string like "January 1, 2022" to be used on the man page. */
+	std::string								m_manReleaseDate;
 	/*! Long description of the program. */
 	std::string								m_manLongDescription;
 	/*! Author info to show in the man page. */

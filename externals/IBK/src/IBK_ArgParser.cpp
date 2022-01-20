@@ -49,36 +49,57 @@
 #include "IBK_messages.h"
 #include "IBK_FormatString.h"
 
-using namespace std;
-
 namespace IBK {
 
 /*! Local helper function for ArgParser. */
-std::string composeFlagString(const char shortVersion, const std::string & longVersion) {
-	string flagstr;
-	if (shortVersion != 0)
-		flagstr = string("-") + shortVersion;
+std::string composeFlagString(const char shortVersion, const std::string & longVersion, bool manOutput=false) {
+	// Man output: "\fB\-h\fR, \fB\-\-help\fR"
+	std::string flagstr;
+	if (shortVersion != 0) {
+		if (manOutput)
+			flagstr += "\\fB\\";
+		flagstr += std::string("-") + shortVersion;
+		if (manOutput)
+			flagstr += "\\fR";
+	}
 	if (!longVersion.empty()) {
 		if (!flagstr.empty())
 			flagstr += ", ";
-		flagstr += "--" + longVersion;
+		if (manOutput)
+			flagstr += "\\fB\\-\\-";
+		else
+			flagstr += "--";
+		flagstr += longVersion;
+		if (manOutput)
+			flagstr += "\\fR";
 	}
 	return flagstr;
 }
 
 /*! Local helper function for ArgParser. */
-std::string composeOptionString(const char shortVersion, const std::string & longVersion, std::string optionDesc) {
-	string flagstr;
+std::string composeOptionString(const char shortVersion, const std::string & longVersion, std::string optionDesc, bool manOutput=false) {
+	// Man output: "\fB\-h\fR, \fB\-\-help\fR"
+	std::string flagstr;
 	if (optionDesc.empty()) {
 		optionDesc = "...";
 	}
-	if (shortVersion != 0)
-		flagstr = string("-") + shortVersion + "=<" + optionDesc + ">";
+	if (shortVersion != 0) {
+		if (manOutput)
+			flagstr += "\\fB\\";
+		flagstr += std::string("-") + shortVersion + "=<...>";
+		if (manOutput)
+			flagstr += "\\fR";
+	}
 	if (!longVersion.empty()) {
 		if (!flagstr.empty())
-			flagstr += ", --" + longVersion + "=<...>";
+			flagstr += ", ";
+		if (manOutput)
+			flagstr += "\\fB\\-\\-";
 		else
-			flagstr += "--" + longVersion + "=<" + optionDesc + ">";
+			flagstr += "--";
+		flagstr += longVersion + "=<" + optionDesc + ">";
+		if (manOutput)
+			flagstr += "\\fR";
 	}
 	return flagstr;
 }
@@ -109,10 +130,10 @@ void ArgParser::parse(int argc, const char* const argv[]) {
 		// check for options starting with '-'
 		if (argv[argcount][0]=='-') {
 			// check if we have an option or an =
-			string arg( argv[argcount] );
-			string option;
-			string::size_type pos = arg.find('=');
-			if (pos != string::npos) {
+			std::string arg( argv[argcount] );
+			std::string option;
+			std::string::size_type pos = arg.find('=');
+			if (pos != std::string::npos) {
 				option = arg.substr(pos+1);
 				IBK::trim(option, " \t");
 				arg = arg.substr(1, pos-1);
@@ -292,25 +313,67 @@ void ArgParser::printHelp(std::ostream & out) const {
 void ArgParser::printManPage(std::ostream & out) const {
 	// header line: .TH [name of program] [section number] [center footer] [left footer] [center header]
 	// example:     .TH foo 1 "14 May 1999" "version 1.0"
-	out << ".TH \"" << m_appname << "\" 1 \"" << __DATE__ << "\" \"version " << m_manVersionString << "\"\n";
-	// .SH NAME
-	// foo - my own text editor
+	std::string uppercaseAppName = IBK::toupper_string(m_appname);
+	out << ".TH \"" << uppercaseAppName << "\" 1 \"" << m_manReleaseDate << "\" \"" << m_manVersionString << "\" \"" << m_manManualName <<"\"\n";
 	out << ".SH NAME\n";
-	out << m_appname << " - " << m_manShortDescription << "\n";
+	out << ".B " + m_appname << "\\fR \\- " << m_manShortDescription << "\n";
+	out << ".SH SYNOPSIS\n";
+	out << ".B " + m_appname << " [flags] [options] arg1 arg2 ...\n";
+	out << ".SH DESCRIPTION\n";
+	out << m_manLongDescription << "\n"; // don't worry about line breaks, man viewer handles that!
+
+	// collect flags and options in separate lists
+	std::vector<std::string> flags;
+	for (unsigned int i=0; i<m_knownOptions.size(); ++i) {
+		if (!m_knownOptions[i].m_isFlag) continue;
+		// Line to generate: .IP "\fB\-h\fR, \fB\-\-help\fR" 4
+
+		std::string line;
+		line = ".IP \"";
+		line += composeFlagString(m_knownOptions[i].m_shortVersion, m_knownOptions[i].m_longVersion, true);
+		line += "\" 4\n" + m_knownOptions[i].m_description;
+		flags.push_back(line);
+	}
+
+	if (!flags.empty()) {
+		out << ".SH FLAGS\n";
+		for (std::vector<std::string>::const_iterator it = flags.begin(); it != flags.end(); ++it)
+			out << *it << std::endl;
+		out << std::endl;
+	}
+	// collect flags and options in separate lists
+	std::vector<std::string> options;
+	for (unsigned int i=0; i<m_knownOptions.size(); ++i) {
+		if (m_knownOptions[i].m_isFlag) continue;
+		// Line to generate: .IP "\fB\-h\fR, \fB\-\-help\fR" 4
+
+		std::string line;
+		line = ".IP \"";
+		line += composeOptionString(m_knownOptions[i].m_shortVersion, m_knownOptions[i].m_longVersion, m_knownOptions[i].m_descValue, true);
+		line += "\" 4\n" + m_knownOptions[i].m_description;
+		options.push_back(line);
+	}
+
+	if (!options.empty()) {
+		out << ".SH OPTIONS\n";
+		for (std::vector<std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
+			out << *it << std::endl;
+		out << std::endl;
+	}
 }
 
 
 bool ArgParser::handleDefaultFlags(std::ostream & out) const {
 	try {
 		if (flagEnabled("cmd-line")) {
-			out << "Command line: " << commandLine() << endl;
+			out << "Command line: " << commandLine() << std::endl;
 		}
 
 		if (flagEnabled("options-left") && !m_optionsLeft.empty()) {
 			out << "Options left:\n";
 			for (unsigned int i=0; i<m_optionsLeft.size(); ++i)
 				out << m_optionsLeft[i] << " ";
-			out << endl;
+			out << std::endl;
 		}
 
 		if (flagEnabled("help")) {
@@ -332,7 +395,7 @@ bool ArgParser::handleDefaultFlags(std::ostream & out) const {
 
 
 std::string ArgParser::commandLine() const {
-	string cmdline;
+	std::string cmdline;
 	// first the executable path
 	cmdline += m_args[0];
 	// finally all remaining arguments
@@ -347,7 +410,7 @@ std::string ArgParser::commandLine() const {
 		// only print if value was given
 		if (!o.m_givenValue.empty()) {
 			if (o.m_shortVersion == 0)	cmdline += "\n --" + o.m_longVersion;
-			else						cmdline += string("\n -") + o.m_shortVersion;
+			else						cmdline += std::string("\n -") + o.m_shortVersion;
 		}
 	}
 	// now all the options
@@ -357,7 +420,7 @@ std::string ArgParser::commandLine() const {
 		if (o.m_isFlag) continue;
 		if (!o.m_givenValue.empty()) {
 			if (o.m_shortVersion == 0)	cmdline += "\n --" + o.m_longVersion + "=" + o.m_givenValue;
-			else						cmdline += string("\n -") + o.m_shortVersion + "="  + o.m_givenValue;
+			else						cmdline += std::string("\n -") + o.m_shortVersion + "="  + o.m_givenValue;
 		}
 	}
 	return cmdline;
@@ -382,7 +445,7 @@ std::string ArgParser::commandLineForOptions() const {
 		}
 		else {
 			if (o.m_shortVersion == 0)	cmdline += " --" + o.m_longVersion + "=" + o.m_givenValue;
-			else						cmdline += string(" -") + o.m_shortVersion + "="  + o.m_givenValue;
+			else						cmdline += std::string(" -") + o.m_shortVersion + "="  + o.m_givenValue;
 		}
 	}
 
@@ -403,42 +466,42 @@ unsigned int ArgParser::findOption(const char shortVersion, const std::string & 
 
 void ArgParser::printFlags(std::ostream & out, unsigned int TEXT_WIDTH, unsigned int TAB_WIDTH) const {
 	// collect flags
-	vector<string> flags;
+	std::vector<std::string> flags;
 	for (unsigned int i=0; i<m_knownOptions.size(); ++i) {
 		if (!m_knownOptions[i].m_isFlag) continue;
-		string line = string(2, ' ');
+		std::string line = std::string(2, ' ');
 		line += composeFlagString(m_knownOptions[i].m_shortVersion, m_knownOptions[i].m_longVersion);
-		line += string(2, ' ');
-		vector<string> lines;
+		line += std::string(2, ' ');
+		std::vector<std::string> lines;
 		formatLines(line, m_knownOptions[i].m_description, lines, TAB_WIDTH, TEXT_WIDTH);
 		flags.insert(flags.end(), lines.begin(), lines.end());
 	}
 
 	if (!flags.empty()) {
 		out << "Flags:\n";
-		for (vector<string>::const_iterator it = flags.begin(); it != flags.end(); ++it)
-			out << *it << endl;
-		out << endl;
+		for (std::vector<std::string>::const_iterator it = flags.begin(); it != flags.end(); ++it)
+			out << *it << std::endl;
+		out << std::endl;
 	}
 }
 
 void ArgParser::printOptions(std::ostream & out, unsigned int TEXT_WIDTH, unsigned int TAB_WIDTH) const {
 	// collect options
-	vector<string> options;
+	std::vector<std::string> options;
 	for (unsigned int i=0; i<m_knownOptions.size(); ++i) {
 		if (m_knownOptions[i].m_isFlag) continue;
-		string line = string(2, ' ');
+		std::string line = std::string(2, ' ');
 		line += composeOptionString(m_knownOptions[i].m_shortVersion, m_knownOptions[i].m_longVersion, m_knownOptions[i].m_descValue);
-		line += string(2, ' ');
-		vector<string> lines;
+		line += std::string(2, ' ');
+		std::vector<std::string> lines;
 		formatLines(line, m_knownOptions[i].m_description, lines, TAB_WIDTH, TEXT_WIDTH);
 		options.insert(options.end(), lines.begin(), lines.end());
 	}
 	if (!options.empty()) {
 		out << "Options:\n";
-		for (vector<string>::const_iterator it = options.begin(); it != options.end(); ++it)
-			out << *it << endl;
-		out << endl;
+		for (std::vector<std::string>::const_iterator it = options.begin(); it != options.end(); ++it)
+			out << *it << std::endl;
+		out << std::endl;
 	}
 }
 
