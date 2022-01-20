@@ -487,6 +487,7 @@ namespace NANDRAD {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 				case 2 : return "ScheduledWithBaseACR";
+				case 3 : return "ScheduledWithBaseACRDynamicTLimit";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -1121,6 +1122,7 @@ namespace NANDRAD {
 				case 0 : return "Constant";
 				case 1 : return "Scheduled";
 				case 2 : return "ScheduledWithBaseACR";
+				case 3 : return "ScheduledWithBaseACRDynamicTLimit";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -1755,7 +1757,8 @@ namespace NANDRAD {
 			switch (t) {
 				case 0 : return "Constant ventilation rate (also can used as infiltration)";
 				case 1 : return "Scheduled ventilation rate";
-				case 2 : return "Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.";
+				case 2 : return "Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.";
+				case 3 : return "Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits.";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -2390,6 +2393,7 @@ namespace NANDRAD {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
+				case 3 : return "";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -3024,6 +3028,7 @@ namespace NANDRAD {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
+				case 3 : return "#FFFFFF";
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -3658,6 +3663,7 @@ namespace NANDRAD {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
+				case 3 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NaturalVentilationModel::para_t
 			case 49 :
@@ -4037,7 +4043,7 @@ namespace NANDRAD {
 			// ModelInputReference::referenceType_t
 			case 47 : return 8;
 			// NaturalVentilationModel::modelType_t
-			case 48 : return 3;
+			case 48 : return 4;
 			// NaturalVentilationModel::para_t
 			case 49 : return 4;
 			// OutputDefinition::timeType_t
@@ -4213,7 +4219,7 @@ namespace NANDRAD {
 			// ModelInputReference::referenceType_t
 			case 47 : return 7;
 			// NaturalVentilationModel::modelType_t
-			case 48 : return 2;
+			case 48 : return 3;
 			// NaturalVentilationModel::para_t
 			case 49 : return 3;
 			// OutputDefinition::timeType_t

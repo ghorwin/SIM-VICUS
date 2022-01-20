@@ -47,9 +47,11 @@ void NaturalVentilationModel::setup(const NANDRAD::NaturalVentilationModel & ven
 	m_zones = &zones;
 	m_simPara = &simPara;
 
-	// no need to check for parameters here, the NaturalVentilationModel parametrization was already checked
-	// schedule parameters are requested below
-	m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].value;
+	if(m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Constant) {
+		// no need to check for parameters here, the NaturalVentilationModel parametrization was already checked
+		// schedule parameters are requested below
+		m_ventilationRate = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationRate].value;
+	}
 
 	// all models require an object list with indication of ventilated zones
 	if (m_ventilationModel->m_zoneObjectList.empty())
@@ -180,7 +182,8 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 
 	// offset 1 + nZones
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled
-		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR)
+		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
+		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit)
 	{
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
 			InputReference ref;
@@ -194,7 +197,8 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 
 	// offset 1 + 2*nZones
 	// for MT_ScheduledWithBaseACR we also need VentilationRateIncreaseSchedule
-	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
+		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
 			InputReference ref;
 			ref.m_id = id;
@@ -205,35 +209,37 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 		}
 	}
 
-	// offset 1 + 2*nZones
-	// for MT_ScheduledWithBaseACR we also need MinimumAirTemperature
-	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+	// offset 1 + 3*nZones
+	// for MT_ScheduledWithBaseACRDynamicTLimit we also need MinimumAirTemperature
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			ref.m_name.m_name = "MinimumAirTemperatureSchedule";
-			ref.m_required = false;
+			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
 	}
 
-	// offset 1 + 2*nZones
-	// for MT_ScheduledWithBaseACR we also need MaximumAirTemperature
-	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+	// offset 1 + 4*nZones
+	// for MT_ScheduledWithBaseACRDynamicTLimit we also need MaximumAirTemperature
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		for (unsigned int id : m_objectList->m_filterID.m_ids) {
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
 			ref.m_name.m_name = "MaximumAirTemperatureSchedule";
-			ref.m_required = false;
+			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
 	}
 
 	// offset 1 + 2*nZones for MT_Scheduled  or
 	// offset 1 + 3*nZones for MT_ScheduledWithBaseACR
-	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
+	// offset 1 + 5*nZones for MT_ScheduledWithBaseACRDynamicTLimit
+	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR
+		|| m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
 		// also the wind speed from location
 		InputReference ref;
 		ref.m_id = 0;
@@ -249,37 +255,23 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 void NaturalVentilationModel::setInputValueRefs(const std::vector<QuantityDescription> & /*resultDescriptions*/,
 												const std::vector<const double *> & resultValueRefs)
 {
-	unsigned int startIndexMinAirTemperature = 0;
-	unsigned int startIndexMaxAirTemperature = 0;
 	// simply store and check value references
 	unsigned int expectedSize = 1 + m_objectList->m_filterID.m_ids.size(); // ambient temperature and all zone's temperatures
 	if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_Scheduled)
 		expectedSize += m_objectList->m_filterID.m_ids.size(); // VentilationRateSchedule
 	else if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR) {
 		expectedSize += 2*m_objectList->m_filterID.m_ids.size(); // VentilationRateSchedule and VentilationRateIncreaseSchedule
-		// mark index ranges for optional references
-		startIndexMinAirTemperature = expectedSize;
-		startIndexMaxAirTemperature = expectedSize + m_objectList->m_filterID.m_ids.size();
+		++expectedSize; // for wind velocity
+	}
+	else if (m_ventilationModel->m_modelType == NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit) {
+		expectedSize += 2*m_objectList->m_filterID.m_ids.size(); // VentilationRateSchedule and VentilationRateIncreaseSchedule
 		expectedSize += 2*m_objectList->m_filterID.m_ids.size(); // MinimumAirTemperature and MaximumAirTemperature
 		++expectedSize; // for wind velocity
 	}
 	IBK_ASSERT(resultValueRefs.size() == expectedSize);
 
-	for(unsigned int i = 0; i < expectedSize; ++i) {
-		if(resultValueRefs[i] == nullptr) {
-			// minimum air temperature
-			if(i >= startIndexMinAirTemperature && i < startIndexMaxAirTemperature) {
-				m_valueRefs.push_back(&m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MinAirTemperature].value);
-				continue;
-			}
-			// maximum air temperature
-			if(i >= startIndexMaxAirTemperature && i < startIndexMaxAirTemperature + m_objectList->m_filterID.m_ids.size()) {
-				m_valueRefs.push_back(&m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxAirTemperature].value);
-				continue;
-			}
-		}
-		m_valueRefs.push_back(resultValueRefs[i]);
-	}
+	// copy result value references
+	m_valueRefs = resultValueRefs;
 }
 
 
@@ -331,6 +323,49 @@ int NaturalVentilationModel::update() {
 				// initialize rate with base rate
 				rate = *m_valueRefs[1+zoneCount+i];
 				// get the scheduled quantities
+				double varWindVelocity = *m_valueRefs[1+3*zoneCount];
+				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
+				if (varWindVelocity > varWindSpeedACRLimit)
+					break; // wind speed to large, no increase of ventilation possible - keep already determined "rate"
+
+				// get comfort range of temperatures
+				double maxRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxAirTemperature].value;
+				double minRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MinAirTemperature].value;
+
+				// we only increase ventilation when outside of the comfort zone _and_ if increasing the ventilation rate helps
+				const double RAMPING_DELTA_T = 0.2; // ramping range
+
+				double eps = 0; // assume no increase in ventilation
+				if (Tzone < minRoomTemp) {
+					double epsRamp = IBK::scale( std::min(1., (minRoomTemp - Tzone)/RAMPING_DELTA_T ) );
+					// ventilation increases room temperature?
+					if (Tambient > Tzone) {
+						double epsRamp2 = IBK::scale( std::min(1., (Tambient - Tzone)/RAMPING_DELTA_T) );
+						eps = epsRamp*epsRamp2;
+					}
+				}
+
+				// above comfort range?
+				else if (Tzone > maxRoomTemp) {
+					double epsRamp = IBK::scale( std::min(1., (Tzone - maxRoomTemp)/RAMPING_DELTA_T ) );
+					// ventilation decreases room temperature?
+					if (Tambient < Tzone) {
+						double epsRamp2 = IBK::scale( std::min(1., (Tzone - Tambient)/RAMPING_DELTA_T) );
+						eps = epsRamp*epsRamp2;
+					}
+				}
+
+				// get _additional_ ventilation rate
+				double rateIncrease = *m_valueRefs[1+2*zoneCount+i];
+
+				// compute final rate
+				rate += eps * rateIncrease;
+			} break;
+
+			case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit : {
+				// initialize rate with base rate
+				rate = *m_valueRefs[1+zoneCount+i];
+				// get the scheduled quantities
 				double varWindVelocity = *m_valueRefs[1+5*zoneCount];
 				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
 				if (varWindVelocity > varWindSpeedACRLimit)
@@ -369,7 +404,6 @@ int NaturalVentilationModel::update() {
 				// compute final rate
 				rate += eps * rateIncrease;
 			} break;
-
 			default: ;
 		}
 		// store ventilation rate result

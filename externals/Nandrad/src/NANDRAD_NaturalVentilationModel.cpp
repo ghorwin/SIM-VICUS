@@ -57,6 +57,13 @@ void NaturalVentilationModel::checkParameters() const {
 										 " 0 m/s <= Maximum wind speed <= 40 m/s.");
 		} break;
 
+		case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit: {
+			enumVar = P_MaxWindSpeed;
+			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
+										 "m/s", "m/s", 0, true, 40, true,
+										 " 0 m/s <= Maximum wind speed <= 40 m/s.");
+		} break;
+
 		case NANDRAD::NaturalVentilationModel::NUM_MT: break;
 	}
 }

@@ -41,11 +41,13 @@ public:
 	/*! Different model variants. */
 	enum modelType_t {
 		/*! Ventilation rate is given as constant parameter. */
-		MT_Constant,					// Keyword: Constant				'Constant ventilation rate (also can used as infiltration)'
+		MT_Constant,							// Keyword: Constant							'Constant ventilation rate (also can used as infiltration)'
 		/*! Ventilation rate is provided as 'VentilationRateSchedule' schedule parameter. */
-		MT_Scheduled,					// Keyword: Scheduled				'Scheduled ventilation rate'
+		MT_Scheduled,							// Keyword: Scheduled							'Scheduled ventilation rate'
 		/*! Increased ventilation when thermal conditions apply. */
-		MT_ScheduledWithBaseACR,		// Keyword: ScheduledWithBaseACR	'Constant basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met. '
+		MT_ScheduledWithBaseACR,				// Keyword: ScheduledWithBaseACR				'Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met. '
+		/*! Increased ventilation whith scheduled minimum and maximum temperature. */
+		MT_ScheduledWithBaseACRDynamicTLimit,	// Keyword: ScheduledWithBaseACRDynamicTLimit	'Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits. '
 		NUM_MT
 	};
 
