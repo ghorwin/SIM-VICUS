@@ -53,6 +53,8 @@
 #include "SVUndoDeleteSelected.h"
 #include "SVPropModeSelectionWidget.h"
 #include "SVNavigationTreeWidget.h"
+#include "SVMeasurementWidget.h"
+#include "SVMainWindow.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -94,6 +96,8 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
+
+    m_measurementWidget = new SVMeasurementWidget();
 }
 
 
@@ -817,19 +821,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		// now we handle the snapping rules and also the locking; updates local coordinate system location
 		snapLocalCoordinateSystem(pickObject);
 
-		const QVector3D &endPoint = m_coordinateSystemObject.translation();
 		// update window with distance info
-		QVector3D &sp = m_measurementObject.m_startPoint;
-
-		// TODO Stephan : update widget's contents
-		// m_distanceWidget->setPoints(m_measurementObject.m_startPoint, endPoint, ...)
-
-//		QMessageBox::information(nullptr, tr("Distance Measurement"),
-//							  tr("d = %1 m\n\nΔX = %2 m\nΔY = %3 m\nΔZ = %4 m")
-//								 .arg(QString::number(m_measurementObject.distance(), 'f', 3 ) )
-//								 .arg(QString::number(std::fabs(sp.x()-ep.x() ), 'f', 3 ) )
-//								 .arg(QString::number(std::fabs(sp.y()-ep.y() ), 'f', 3 ) )
-//								 .arg(QString::number(std::fabs(sp.z()-ep.z() ), 'f', 3 ) ) );
+        m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+        m_measurementWidget->setEndPoint();
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
@@ -1142,7 +1136,13 @@ void Scene::render() {
 	}
 
 	if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
+
+
 		m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
+        m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+
+        m_measurementWidget->setEndPoint();
+        m_measurementWidget->setDistance();
 
 		m_measurementShader->bind();
 		m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[0], m_worldToView);
@@ -2151,6 +2151,10 @@ void Scene::enterMeasurementMode() {
 	vs.m_sceneOperationMode = SVViewState::OM_MeasureDistance;
 	SVViewStateHandler::instance().setViewState(vs);
 	qDebug() << "Entering 'Measurement' mode";
+
+    m_measurementWidget->show();
+    m_measurementWidget->setMeasurementData(m_measurementObject);
+
 }
 
 
@@ -2161,6 +2165,8 @@ void Scene::leaveMeasurementMode() {
 
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
+
+    m_measurementWidget->hide();
 }
 
 
@@ -2754,13 +2760,16 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 				m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 				// clear end point
 				m_measurementObject.m_endPoint = QVector3D();
-				const QVector3D &sp = m_measurementObject.m_startPoint;
 
-				qDebug() << "Set start point for distance measurement: \t" << sp.x() << "\t" << sp.y() << "\t" << sp.z();
+                m_measurementWidget->setStartPoint();
+
+                //qDebug() << "Set start point for distance measurement: \t" << sp.x() << "\t" << sp.y() << "\t" << sp.z();
 			}
 			else {
 				// finish measurement mode by fixing the end point
 				m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+
+                m_measurementWidget->setEndPoint();
 			}
 			return;
 		}

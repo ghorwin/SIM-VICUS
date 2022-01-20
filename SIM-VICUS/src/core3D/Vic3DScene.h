@@ -47,6 +47,7 @@
 #include "Vic3DMeasurementObject.h"
 
 #include "SVViewState.h"
+#include "SVMeasurementWidget.h"
 
 class ModificationInfo;
 
@@ -254,6 +255,9 @@ private:
 	NewSubSurfaceObject		m_newSubSurfaceObject;
 	/*! The measurement object. */
 	MeasurementObject		m_measurementObject;
+
+    /*! Pointer to measurement widget */
+    SVMeasurementWidget     *m_measurementWidget = nullptr;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;

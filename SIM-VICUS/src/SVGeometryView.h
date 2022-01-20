@@ -35,6 +35,7 @@ namespace Vic3D {
 
 class SVPropertyWidget;
 class SVLocalCoordinateView;
+class SVMeasurementWidget;
 class QSplitter;
 class QToolBar;
 class QAction;
@@ -121,7 +122,6 @@ private:
 	SVPropertyWidget			*m_propertyWidget							= nullptr;
 	/*! Splitter that contains the scene view and the property widget. */
 	QSplitter					*m_splitter									= nullptr;
-
 
 	QToolBar					*m_toolBar									= nullptr;
 
