@@ -1,5 +1,6 @@
 # Project file for DummyImportPlugin
 
+TARGET        = SVDummyImportPlugin
 TEMPLATE      = lib
 CONFIG       += plugin
 QT           += widgets
@@ -26,4 +27,3 @@ INCLUDEPATH  += \
 HEADERS       = ../../src/DummyImportPlugin.h
 SOURCES       = ../../src/DummyImportPlugin.cpp
 
-TARGET        = $$qtLibraryTarget(SVDummyImportPlugin)

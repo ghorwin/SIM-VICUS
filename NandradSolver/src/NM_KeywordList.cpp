@@ -223,23 +223,25 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "VentilationRateSchedule";
 				case 1 : return "VentilationRateIncreaseSchedule";
-				case 2 : return "EquipmentHeatLoadPerAreaSchedule";
-				case 3 : return "PersonHeatLoadPerAreaSchedule";
-				case 4 : return "LightingHeatLoadPerAreaSchedule";
-				case 5 : return "HeatingSetpointSchedule";
-				case 6 : return "CoolingSetpointSchedule";
-				case 7 : return "CondenserMeanTemperatureSchedule";
-				case 8 : return "CondenserOutletSetpointSchedule";
-				case 9 : return "EvaporatorMeanTemperatureSchedule";
-				case 10 : return "MaxMassFluxSchedule";
-				case 11 : return "MassFluxSchedule";
-				case 12 : return "MassFluxSetpointSchedule";
-				case 13 : return "TemperatureDifferenceSetpointSchedule";
-				case 14 : return "HeatPumpOnOffSignalSchedule";
-				case 15 : return "SupplyTemperatureSchedule";
-				case 16 : return "PressureHeadSchedule";
-				case 17 : return "PressureLossSchedule";
-				case 18 : return "TemperatureSchedule";
+				case 2 : return "MinimumAirTemperatureSchedule";
+				case 3 : return "MaximumAirTemperatureSchedule";
+				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
+				case 5 : return "PersonHeatLoadPerAreaSchedule";
+				case 6 : return "LightingHeatLoadPerAreaSchedule";
+				case 7 : return "HeatingSetpointSchedule";
+				case 8 : return "CoolingSetpointSchedule";
+				case 9 : return "CondenserMeanTemperatureSchedule";
+				case 10 : return "CondenserOutletSetpointSchedule";
+				case 11 : return "EvaporatorMeanTemperatureSchedule";
+				case 12 : return "MaxMassFluxSchedule";
+				case 13 : return "MassFluxSchedule";
+				case 14 : return "MassFluxSetpointSchedule";
+				case 15 : return "TemperatureDifferenceSetpointSchedule";
+				case 16 : return "HeatPumpOnOffSignalSchedule";
+				case 17 : return "SupplyTemperatureSchedule";
+				case 18 : return "PressureHeadSchedule";
+				case 19 : return "PressureLossSchedule";
+				case 20 : return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -423,23 +425,25 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "VentilationRateSchedule";
 				case 1 : return "VentilationRateIncreaseSchedule";
-				case 2 : return "EquipmentHeatLoadPerAreaSchedule";
-				case 3 : return "PersonHeatLoadPerAreaSchedule";
-				case 4 : return "LightingHeatLoadPerAreaSchedule";
-				case 5 : return "HeatingSetpointSchedule";
-				case 6 : return "CoolingSetpointSchedule";
-				case 7 : return "CondenserMeanTemperatureSchedule";
-				case 8 : return "CondenserOutletSetpointSchedule";
-				case 9 : return "EvaporatorMeanTemperatureSchedule";
-				case 10 : return "MaxMassFluxSchedule";
-				case 11 : return "MassFluxSchedule";
-				case 12 : return "MassFluxSetpointSchedule";
-				case 13 : return "TemperatureDifferenceSetpointSchedule";
-				case 14 : return "HeatPumpOnOffSignalSchedule";
-				case 15 : return "SupplyTemperatureSchedule";
-				case 16 : return "PressureHeadSchedule";
-				case 17 : return "PressureLossSchedule";
-				case 18 : return "TemperatureSchedule";
+				case 2 : return "MinimumAirTemperatureSchedule";
+				case 3 : return "MaximumAirTemperatureSchedule";
+				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
+				case 5 : return "PersonHeatLoadPerAreaSchedule";
+				case 6 : return "LightingHeatLoadPerAreaSchedule";
+				case 7 : return "HeatingSetpointSchedule";
+				case 8 : return "CoolingSetpointSchedule";
+				case 9 : return "CondenserMeanTemperatureSchedule";
+				case 10 : return "CondenserOutletSetpointSchedule";
+				case 11 : return "EvaporatorMeanTemperatureSchedule";
+				case 12 : return "MaxMassFluxSchedule";
+				case 13 : return "MassFluxSchedule";
+				case 14 : return "MassFluxSetpointSchedule";
+				case 15 : return "TemperatureDifferenceSetpointSchedule";
+				case 16 : return "HeatPumpOnOffSignalSchedule";
+				case 17 : return "SupplyTemperatureSchedule";
+				case 18 : return "PressureHeadSchedule";
+				case 19 : return "PressureLossSchedule";
+				case 20 : return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -624,23 +628,25 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "VentilationRateSchedule";
 				case 1 : if (no_description != nullptr) *no_description = true; return "VentilationRateIncreaseSchedule";
-				case 2 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
-				case 3 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
-				case 4 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";
-				case 5 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
-				case 6 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";
-				case 7 : if (no_description != nullptr) *no_description = true; return "CondenserMeanTemperatureSchedule";
-				case 8 : if (no_description != nullptr) *no_description = true; return "CondenserOutletSetpointSchedule";
-				case 9 : if (no_description != nullptr) *no_description = true; return "EvaporatorMeanTemperatureSchedule";
-				case 10 : if (no_description != nullptr) *no_description = true; return "MaxMassFluxSchedule";
-				case 11 : if (no_description != nullptr) *no_description = true; return "MassFluxSchedule";
-				case 12 : if (no_description != nullptr) *no_description = true; return "MassFluxSetpointSchedule";
-				case 13 : if (no_description != nullptr) *no_description = true; return "TemperatureDifferenceSetpointSchedule";
-				case 14 : if (no_description != nullptr) *no_description = true; return "HeatPumpOnOffSignalSchedule";
-				case 15 : if (no_description != nullptr) *no_description = true; return "SupplyTemperatureSchedule";
-				case 16 : if (no_description != nullptr) *no_description = true; return "PressureHeadSchedule";
-				case 17 : if (no_description != nullptr) *no_description = true; return "PressureLossSchedule";
-				case 18 : if (no_description != nullptr) *no_description = true; return "TemperatureSchedule";
+				case 2 : if (no_description != nullptr) *no_description = true; return "MinimumAirTemperatureSchedule";
+				case 3 : if (no_description != nullptr) *no_description = true; return "MaximumAirTemperatureSchedule";
+				case 4 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
+				case 5 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
+				case 6 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";
+				case 7 : if (no_description != nullptr) *no_description = true; return "HeatingSetpointSchedule";
+				case 8 : if (no_description != nullptr) *no_description = true; return "CoolingSetpointSchedule";
+				case 9 : if (no_description != nullptr) *no_description = true; return "CondenserMeanTemperatureSchedule";
+				case 10 : if (no_description != nullptr) *no_description = true; return "CondenserOutletSetpointSchedule";
+				case 11 : if (no_description != nullptr) *no_description = true; return "EvaporatorMeanTemperatureSchedule";
+				case 12 : if (no_description != nullptr) *no_description = true; return "MaxMassFluxSchedule";
+				case 13 : if (no_description != nullptr) *no_description = true; return "MassFluxSchedule";
+				case 14 : if (no_description != nullptr) *no_description = true; return "MassFluxSetpointSchedule";
+				case 15 : if (no_description != nullptr) *no_description = true; return "TemperatureDifferenceSetpointSchedule";
+				case 16 : if (no_description != nullptr) *no_description = true; return "HeatPumpOnOffSignalSchedule";
+				case 17 : if (no_description != nullptr) *no_description = true; return "SupplyTemperatureSchedule";
+				case 18 : if (no_description != nullptr) *no_description = true; return "PressureHeadSchedule";
+				case 19 : if (no_description != nullptr) *no_description = true; return "PressureLossSchedule";
+				case 20 : if (no_description != nullptr) *no_description = true; return "TemperatureSchedule";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -824,23 +830,25 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "1/h";
 				case 1 : return "1/h";
-				case 2 : return "W/m2";
-				case 3 : return "W/m2";
+				case 2 : return "C";
+				case 3 : return "C";
 				case 4 : return "W/m2";
-				case 5 : return "C";
-				case 6 : return "C";
+				case 5 : return "W/m2";
+				case 6 : return "W/m2";
 				case 7 : return "C";
 				case 8 : return "C";
 				case 9 : return "C";
-				case 10 : return "kg/s";
-				case 11 : return "kg/s";
+				case 10 : return "C";
+				case 11 : return "C";
 				case 12 : return "kg/s";
-				case 13 : return "K";
-				case 14 : return "---";
-				case 15 : return "C";
-				case 16 : return "Pa";
-				case 17 : return "Pa";
-				case 18 : return "C";
+				case 13 : return "kg/s";
+				case 14 : return "kg/s";
+				case 15 : return "K";
+				case 16 : return "---";
+				case 17 : return "C";
+				case 18 : return "Pa";
+				case 19 : return "Pa";
+				case 20 : return "C";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -1041,6 +1049,8 @@ namespace NANDRAD_MODEL {
 				case 16 : return "#FFFFFF";
 				case 17 : return "#FFFFFF";
 				case 18 : return "#FFFFFF";
+				case 19 : return "#FFFFFF";
+				case 20 : return "#FFFFFF";
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -1241,6 +1251,8 @@ namespace NANDRAD_MODEL {
 				case 16 : return std::numeric_limits<double>::quiet_NaN();
 				case 17 : return std::numeric_limits<double>::quiet_NaN();
 				case 18 : return std::numeric_limits<double>::quiet_NaN();
+				case 19 : return std::numeric_limits<double>::quiet_NaN();
+				case 20 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ThermalComfortModel::Results
 			case 19 :
@@ -1311,7 +1323,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 17 : return 3;
 			// Schedules::KnownQuantities
-			case 18 : return 19;
+			case 18 : return 21;
 			// ThermalComfortModel::Results
 			case 19 : return 1;
 			// ThermostatModel::VectorValuedResults
@@ -1363,7 +1375,7 @@ namespace NANDRAD_MODEL {
 			// RoomStatesModel::Results
 			case 17 : return 2;
 			// Schedules::KnownQuantities
-			case 18 : return 18;
+			case 18 : return 20;
 			// ThermalComfortModel::Results
 			case 19 : return 0;
 			// ThermostatModel::VectorValuedResults

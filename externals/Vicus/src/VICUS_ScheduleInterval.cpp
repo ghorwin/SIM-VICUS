@@ -83,8 +83,8 @@ bool ScheduleInterval::isValid() const {
 	return true;
 }
 
-bool ScheduleInterval::usedAllDayTypes(bool withHolyday) const
-{
+
+bool ScheduleInterval::usedAllDayTypes(bool withHolyday) const {
 	//set for all day types
 	std::set<int> allDayTypes;
 
@@ -114,8 +114,8 @@ bool ScheduleInterval::usedAllDayTypes(bool withHolyday) const
 
 	//compare the two sets
 	return allDayTypes == allValidDayTypes;
-
 }
+
 
 std::set<int> ScheduleInterval::freeDayTypes(){
 	std::set<int> allValidDayTypes;
@@ -138,18 +138,15 @@ std::set<int> ScheduleInterval::freeDayTypes(){
 	return allValidDayTypes;
 }
 
-ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsigned int startDay) const
-{
-	ScheduleInterval schedInt;
-	if(!isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return schedInt;
-	}
 
-	if(!other.isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return schedInt;
-	}
+ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsigned int startDay) const {
+	FUNCID(ScheduleInterval::multiply);
+	ScheduleInterval schedInt;
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+	if (!other.isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
 
 
 	//multiply each daily cycle (dc) of the first dc with the second dc
@@ -170,16 +167,13 @@ ScheduleInterval ScheduleInterval::multiply(const ScheduleInterval &other, unsig
 	return schedInt;
 }
 
+
 ScheduleInterval ScheduleInterval::multiply(double val) const{
 	FUNCID(ScheduleInterval::multiply);
 	ScheduleInterval schedInt;
-	if(!isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return schedInt;
-	}
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
 
-	if(val<0)
-		IBK::Exception(IBK::FormatString("Multiply negative values to a schedule interval is not allowed."), FUNC_ID);
 
 	schedInt = *this;
 
@@ -187,16 +181,44 @@ ScheduleInterval ScheduleInterval::multiply(double val) const{
 		schedInt.m_dailyCycles[i] = schedInt.m_dailyCycles[i] * val;
 
 	return schedInt;
-
 }
 
-ScheduleInterval ScheduleInterval::add(double val) const{
-//	FUNCID(ScheduleInterval::add);
+
+ScheduleInterval ScheduleInterval::add(const ScheduleInterval & other, unsigned int startDay) const {
+	FUNCID(ScheduleInterval::add);
 	ScheduleInterval schedInt;
-	if(!isValid()){
-		//Schedule interval '%1' with (id=%2) is not valid.
-		return schedInt;
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+
+	if (!other.isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+
+	//add each daily cycle (dc) of the to dc with the second dc
+	for(unsigned int i=0; i<m_dailyCycles.size(); ++i){
+		for(unsigned int j=0; j<other.m_dailyCycles.size();++j){
+			DailyCycle dc = m_dailyCycles[i] + other.m_dailyCycles[j];
+			if(dc != DailyCycle())
+				schedInt.m_dailyCycles.push_back(dc);
+		}
 	}
+	if(schedInt.m_dailyCycles.empty()){
+		return ScheduleInterval();
+	}
+
+	schedInt.m_displayName = m_displayName;
+	schedInt.m_intervalStartDay = startDay;
+
+	return schedInt;
+}
+
+
+ScheduleInterval ScheduleInterval::add(double val) const{
+	FUNCID(ScheduleInterval::add);
+	ScheduleInterval schedInt;
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
 
 	schedInt = *this;
 
@@ -205,6 +227,7 @@ ScheduleInterval ScheduleInterval::add(double val) const{
 
 	return schedInt;
 }
+
 
 void ScheduleInterval::createConstScheduleInterval(double val){
 	m_intervalStartDay=0;
@@ -293,6 +316,7 @@ void ScheduleInterval::createWeekDataVector(std::vector<double> &timepoints, std
 
 	// now the data vector contains all data for a week starting at monday
 }
+
 
 bool ScheduleInterval::operator!=(const ScheduleInterval &other) const {
 	if(m_displayName != other.m_displayName ||

@@ -85,5 +85,7 @@
         <file>gfx/actions/Move-Coordinate-System.png</file>
         <file>gfx/actions/Rotate-Coordinate-System.png</file>
         <file>gfx/actions/Object-Snap.png</file>
+        <file>modelDescription.xml.template</file>
+        <file>coSimulation.msim.template</file>
     </qresource>
 </RCC>

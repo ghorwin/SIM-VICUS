@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fmiModelDescription
+	fmiVersion="2.0"
+	modelName=${MODELNAME}
+	guid=${GUID}
+	version=${VERSION}
+	author="not specified"
+	copyright="not specified"
+	license="not specified"
+	description=${DESCRIPTION}
+	generationTool="ghorwin/FMICodeGenerator@github - C++ Code using FMI support functions from IBK@TU Dresden"
+	generationDateAndTime=${DATETIME}
+	variableNamingConvention="structured"
+	numberOfEventIndicators="0">
+
+	<CoSimulation
+		modelIdentifier=${MODELNAME}
+		canHandleVariableCommunicationStepSize="true"
+		canInterpolateInputs="false"
+		maxOutputDerivativeOrder="0"
+		canNotUseMemoryManagementFunctions="true"
+		canGetAndSetFMUstate="true"
+		canSerializeFMUstate="true"
+	/>
+
+${UNIT_DEFINITIONS}
+	<LogCategories>
+		<Category name="logStatusWarning" />
+		<Category name="logStatusError" />
+		<Category name="logAll" />
+		<Category name="logFmi2Call" />
+	</LogCategories>
+
+	<DefaultExperiment startTime="0.0" stopTime="10.0" tolerance="1e-06"/>
+
+	<ModelVariables>
+${MODELVARIABLES}
+		<ScalarVariable name="ResultsRootDir" valueReference="42" description="Root path for simulation results and log files." variability="fixed" causality="parameter">
+			<String start="" />
+		</ScalarVariable>
+	</ModelVariables>
+
+	<ModelStructure>
+		<Outputs>
+${MODEL_STRUCTURE_OUTPUTS}
+		</Outputs>
+	</ModelStructure>
+
+</fmiModelDescription>
+

@@ -155,13 +155,91 @@ DailyCycle DailyCycle::multiply(double factor) const {
 	if (!isValid())
 		throw IBK::Exception("Daily cycle must be valid in order to be multiplied.", FUNC_ID);
 
-	if (factor <= 0)
-		IBK::Exception(IBK::FormatString("Multiply negative values or zero to a daily cycle is not allowed."), FUNC_ID);
-
 	DailyCycle dc(*this);
 
 	for (unsigned int i=0; i<dc.m_values.size(); ++i)
 		dc.m_values[i] *= factor;
+
+	return dc;
+}
+
+
+DailyCycle DailyCycle::add(const DailyCycle & other) const
+{
+	FUNCID(DailyCycle::add);
+
+	DailyCycle dc;
+
+	if (!isValid() || !other.isValid())
+		throw IBK::Exception("Both daily cycles must be valid in order to be added.", FUNC_ID);
+
+	// Only keep equal day types
+	for (unsigned int i=0; i<m_dayTypes.size(); ++i){
+		for (unsigned int j=0; j<other.m_dayTypes.size(); ++j){
+			if (m_dayTypes[i] == other.m_dayTypes[j])
+				dc.m_dayTypes.push_back(m_dayTypes[i]);
+		}
+	}
+	if (dc.m_dayTypes.empty())
+		return dc;
+
+	// make a copy of the other daily cycle to the new daily cycle
+	dc.m_timePoints = other.m_timePoints;
+	dc.m_values = other.m_values;
+
+	// compare timepoints
+	unsigned int j=0;
+	unsigned int i=0;
+	while (i<dc.m_timePoints.size()) {
+
+		double timePoint = m_timePoints[j];
+		double timePoint2 = dc.m_timePoints[i];
+		double val = dc.m_values[i];
+		if(IBK::nearly_equal<3>(timePoint, timePoint2)){
+			if(j+1 >= m_timePoints.size())
+				//fertig
+				break;
+			//add
+			//dc.m_values[i] += m_values[j];
+			++j;
+		}
+		else if(timePoint > timePoint2){
+			bool haveNext = i+1<dc.m_timePoints.size();
+
+			//insert a time point from this daily cycle in the new daily cycle
+			if((haveNext && timePoint < dc.m_timePoints[i+1]) || !haveNext){
+				dc.m_timePoints.insert(dc.m_timePoints.begin()+i+1, timePoint);
+				dc.m_values.insert(dc.m_values.begin()+i+1, val);
+			}
+			++i;
+		}
+	}
+
+	//multi
+	i=0;
+	j=0;
+	//now daily cycle (dc) holds all start times (interval start point)
+	//iterate dc time points and check for same or lower time points in dc
+	//if true multiply
+	//otherwise increment
+	while (i<dc.m_timePoints.size()){
+		double timePoint = m_timePoints[j];
+		double timePoint2 = dc.m_timePoints[i];
+
+		if(IBK::nearly_equal<3>(timePoint, timePoint2) ||
+				(timePoint2 > timePoint &&
+				j+1<m_timePoints.size() &&
+				timePoint2 < m_timePoints[j+1]) ||
+				j+1 >= m_timePoints.size()){
+
+			dc.m_values[i] += m_values[j];
+			++i;
+		}
+		else if(j+1<m_timePoints.size() &&
+				timePoint2 >= m_timePoints[j+1]){
+			++j;
+		}
+	}
 
 	return dc;
 }

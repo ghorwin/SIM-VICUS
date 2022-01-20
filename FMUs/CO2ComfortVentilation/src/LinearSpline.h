@@ -51,9 +51,6 @@ public:
 	/*! Default constructor, creates an empty spline. */
 	LinearSpline();
 
-	/*! Virtual destructor, default implementation does nothing. */
-	virtual ~LinearSpline() {}
-
 	/*! Reads externally referenced tsv-file.
 	m_tsvFile is expected to contain a valid absolute path, optionally with trailing ?n column identifier.
 	*/

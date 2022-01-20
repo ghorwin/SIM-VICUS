@@ -501,7 +501,9 @@ bool SVSimulationStartNandrad::generateNANDRAD(QString & resultPath, bool genera
 	p.writeXML(IBK::Path(m_nandradProjectFilePath.toStdString()));
 	/// TODO : check if project file was correctly written
 
+	// get basename, for example /var/test/project.bla.12.2.nandrad  -> "project.bla.12.2"
 	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).completeBaseName();
+	// compose result path "/var/test/project.bla.12.2"
 	resultPath = QFileInfo(SVProjectHandler::instance().projectFile()).dir().filePath(resultPath);
 	return true;
 }

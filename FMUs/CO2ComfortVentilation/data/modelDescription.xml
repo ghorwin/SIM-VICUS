@@ -66,7 +66,6 @@
 			initial="exact">
 			<String start=""/>
 		</ScalarVariable>		
-		
 
 		<!-- Index of variable = "2" -->
 		<ScalarVariable
@@ -90,7 +89,6 @@
 			initial="exact">
 			<Real start="293.15" unit="K"/>
 		</ScalarVariable>		
-		
 
 		<!-- Index of variable = "4" -->
 		<ScalarVariable
@@ -116,64 +114,229 @@
 
 		<!-- Index of variable = "6" -->
 		<ScalarVariable
-			name="AirChangeRate_id_1"
-            description="AirChangeRate"
+			name="MaximumCO2Concentration_id_1"
+            description="MaximumCO2Concentration"
 			valueReference="2001"
 			variability="continuous"
-			causality="output"
+			causality="input"
 			initial="exact">
-			<Real start="0" unit="1/s"/>
+			<Real start="1.3e-06" unit="mol/mol"/>
 		</ScalarVariable>		
-		
+
 		<!-- Index of variable = "7" -->
 		<ScalarVariable
-			name="AirChangeRate_id_3"
-            description="AirChangeRate"
+			name="MaximumCO2Concentration_id_3"
+            description="MaximumCO2Concentration"
 			valueReference="2003"
 			variability="continuous"
-			causality="output"
+			causality="input"
 			initial="exact">
-			<Real start="0" unit="1/s"/>
+			<Real start="1.3e-06" unit="mol/mol"/>
 		</ScalarVariable>		
 
 		<!-- Index of variable = "8" -->
 		<ScalarVariable
-			name="AirChangeRate_id_7"
-            description="AirChangeRate"
+			name="MaximumCO2Concentration_id_7"
+            description="MaximumCO2Concentration"
 			valueReference="2007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="1.3e-06" unit="mol/mol"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "9" -->
+		<ScalarVariable
+			name="MinimumAirTemperature_id_1"
+            description="MinimumAirTemperature"
+			valueReference="3001"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="273.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "10" -->
+		<ScalarVariable
+			name="MinimumAirTemperature_id_3"
+            description="MinimumAirTemperature"
+			valueReference="3003"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="273.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "11" -->
+		<ScalarVariable
+			name="MinimumAirTemperature_id_7"
+            description="MinimumAirTemperature"
+			valueReference="3007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="273.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "12" -->
+		<ScalarVariable
+			name="MaximumAirTemperature_id_1"
+            description="MaximumAirTemperature"
+			valueReference="4001"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="297.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "13" -->
+		<ScalarVariable
+			name="MaximumAirTemperature_id_3"
+            description="MaximumAirTemperature"
+			valueReference="4003"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="297.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "14" -->
+		<ScalarVariable
+			name="MaximumAirTemperature_id_7"
+            description="MaximumAirTemperature"
+			valueReference="4007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="297.15" unit="K"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "15" -->
+		<ScalarVariable
+			name="MinimumAirChangeRate_id_1"
+            description="MinimumAirChangeRate"
+			valueReference="5001"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "16" -->
+		<ScalarVariable        
+			name="MinimumAirChangeRate_id_3"
+            description="MinimumAirChangeRate"
+			valueReference="5003"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0" unit=1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "17" -->
+		<ScalarVariable
+			name="MinimumAirChangeRate_id_7"
+            description="MinimumAirChangeRate"
+			valueReference="5007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "18" -->
+		<ScalarVariable
+			name="MaximumAirChangeRateIncrease_id_1"
+            description="MaximumAirChangeRateIncrease"
+			valueReference="6001"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0011" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "19" -->
+		<ScalarVariable        
+			name="MaximumAirChangeRateIncrease_id_3"
+            description="MaximumAirChangeRateIncrease"
+			valueReference="6003"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0011" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "20" -->
+		<ScalarVariable
+			name="MaximumAirChangeRateIncrease_id_7"
+            description="MaximumAirChangeRateIncrease"
+			valueReference="6007"
+			variability="continuous"
+			causality="input"
+			initial="exact">
+			<Real start="0.0011" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "21" -->
+		<ScalarVariable
+			name="AirChangeRate_id_1"
+            description="AirChangeRate"
+			valueReference="7001"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="1/s"/>
+		</ScalarVariable>		
+		
+		<!-- Index of variable = "22" -->
+		<ScalarVariable
+			name="AirChangeRate_id_3"
+            description="AirChangeRate"
+			valueReference="7003"
 			variability="continuous"
 			causality="output"
 			initial="exact">
 			<Real start="0" unit="1/s"/>
 		</ScalarVariable>		
 
-		<!-- Index of variable = "9" -->
+		<!-- Index of variable = "23" -->
+		<ScalarVariable
+			name="AirChangeRate_id_7"
+            description="AirChangeRate"
+			valueReference="7007"
+			variability="continuous"
+			causality="output"
+			initial="exact">
+			<Real start="0" unit="1/s"/>
+		</ScalarVariable>		
+
+		<!-- Index of variable = "24" -->
 		<ScalarVariable
 			name="CO2Concentration_id_1"
             description="CO2Concentration"
-			valueReference="3001"
+			valueReference="8001"
 			variability="continuous"
 			causality="output"
 			initial="exact">
 			<Real start="0" unit="mol/mol"/>
 		</ScalarVariable>		
 		
-		<!-- Index of variable = "10" -->
+		<!-- Index of variable = "25" -->
 		<ScalarVariable
 			name="CO2Concentration_id_3"
             description="CO2Concentration"
-			valueReference="3003"
+			valueReference="8003"
 			variability="continuous"
 			causality="output"
 			initial="exact">
 			<Real start="0" unit="mol/mol"/>
 		</ScalarVariable>		
 
-		<!-- Index of variable = "11" -->
+		<!-- Index of variable = "26" -->
 		<ScalarVariable
 			name="CO2Concentration_id_7"
             description="CO2Concentration"
-			valueReference="3007"
+			valueReference="8007"
 			variability="continuous"
 			causality="output"
 			initial="exact">

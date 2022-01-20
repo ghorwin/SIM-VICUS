@@ -681,6 +681,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	IdealSurfaceHeatingCoolingModelGenerator idealSurfaceHeatCoolGenerator(this);
 	idealSurfaceHeatCoolGenerator.m_placeholders = p.m_placeholders;
 	idealSurfaceHeatCoolGenerator.generate(constrInstaModelGenerator.m_surfaceHeatingData, usedModelIds, errorStack);
+	if (!errorStack.isEmpty())	return;
 
 	// *** Models based on zone templates ***
 
@@ -1247,7 +1248,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	if(infiltration != nullptr)
 		idSubTempInf = infiltration->m_id;
 
-	if(ctrlVentilation != nullptr  && !ctrlVentilation->isValid())
+	if(ctrlVentilation != nullptr  && !ctrlVentilation->isValid(m_scheduleDB))
 		errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
 						   .arg(ctrlVentilation->m_id)
 						   .arg(zoneTemplate->m_id)
@@ -2160,7 +2161,8 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 	}  catch (...) {
 		errorStack << QString("The climate file is not valid. Heating and cooling curve cannot be calculated. Filepath '%1'")
-					  .arg(QString::fromUtf8(climatePath.c_str()));
+					  .arg(QString::fromStdString(climatePath.str()));
+		return;
 	}
 
 	//first vector -> timepoints; second temperature in C

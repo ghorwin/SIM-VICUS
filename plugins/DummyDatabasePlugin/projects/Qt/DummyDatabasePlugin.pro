@@ -1,5 +1,6 @@
 # Project file for DummyDatabasePlugin
 
+TARGET        = DummyDatabasePlugin
 TEMPLATE      = lib
 CONFIG       += plugin
 QT           += widgets
@@ -25,6 +26,4 @@ INCLUDEPATH  += \
 
 HEADERS       = ../../src/DummyDatabasePlugin.h
 SOURCES       = ../../src/DummyDatabasePlugin.cpp
-
-TARGET        = $$qtLibraryTarget(DummyDatabasePlugin)
 

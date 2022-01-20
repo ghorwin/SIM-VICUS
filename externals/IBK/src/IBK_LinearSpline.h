@@ -91,9 +91,6 @@ public:
 	/*! Default constructor, creates an empty spline. */
 	LinearSpline();
 
-	/*! Virtual destructor, default implementation does nothing. */
-	virtual ~LinearSpline() {}
-
 	/*! Reads the spline from two vectors containing the x and y coordinates.
 		This function returns true or false thus indicating whether the reading was
 		successful or not. If an error occurred, it stores an error message in the

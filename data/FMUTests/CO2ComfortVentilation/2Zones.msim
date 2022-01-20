@@ -1,0 +1,44 @@
+# Created:	Fr Dez 17 14:00:25 2021
+# LastModified:	2022-01-20T13:14:52
+
+tStart                   0 d
+tEnd                     365 d
+hMax                     10 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+simulator 0 0 MaximumCO2Concentration_Test_Zone_Template #4682b4 "2Zones.fmus/MaximumCO2Concentration_Test_Zone_Template.tsv"
+simulator 1 0 MinimumAirTemperature_Test_Zone_Template #4682b4 "2Zones.fmus/MinimumAirTemperature_Test_Zone_Template.tsv"
+simulator 2 0 MaximumAirTemperature_Test_Zone_Template #4682b4 "2Zones.fmus/MaximumAirTemperature_Test_Zone_Template.tsv"
+simulator 3 0 MaximumAirChangeRateIncrease_Test_Zone_Template #4682b4 "2Zones.fmus/MaximumAirChangeRateIncrease_Test_Zone_Template.tsv"
+simulator 4 0 CO2ComfortVentilation #a0522d "2Zones.fmus/CO2ComfortVentilation.fmu"
+simulator 5 0 NANDRAD #a0522d "2Zones.fmus/NANDRAD.fmu"
+
+
+graph NANDRAD.AmbientTemperature CO2ComfortVentilation.AmbientTemperature
+graph NANDRAD.RoomAirTemperature_id_10 CO2ComfortVentilation.RoomAirTemperature_id_10
+graph NANDRAD.RoomAirTemperature_id_16 CO2ComfortVentilation.RoomAirTemperature_id_16
+graph MaximumCO2Concentration_Test_Zone_Template.MaximumCO2Concentration CO2ComfortVentilation.MaximumCO2Concentration_id_10 0 0.000001
+graph MaximumCO2Concentration_Test_Zone_Template.MaximumCO2Concentration CO2ComfortVentilation.MaximumCO2Concentration_id_16 0 0.000001
+graph MinimumAirTemperature_Test_Zone_Template.MinimumAirTemperature CO2ComfortVentilation.MinimumAirTemperature_id_10 273.15 1
+graph MinimumAirTemperature_Test_Zone_Template.MinimumAirTemperature CO2ComfortVentilation.MinimumAirTemperature_id_16 273.15 1
+graph MaximumAirTemperature_Test_Zone_Template.MaximumAirTemperature CO2ComfortVentilation.MaximumAirTemperature_id_10 273.15 1
+graph MaximumAirTemperature_Test_Zone_Template.MaximumAirTemperature CO2ComfortVentilation.MaximumAirTemperature_id_16 273.15 1
+graph NANDRAD.MinimumAirChangeRate_id_10 CO2ComfortVentilation.MinimumAirChangeRate_id_10
+graph NANDRAD.MinimumAirChangeRate_id_16 CO2ComfortVentilation.MinimumAirChangeRate_id_16
+graph MaximumAirChangeRateIncrease_Test_Zone_Template.MaximumAirChangeRateIncrease CO2ComfortVentilation.MaximumAirChangeRateIncrease_id_10 0 0.0002778
+graph MaximumAirChangeRateIncrease_Test_Zone_Template.MaximumAirChangeRateIncrease CO2ComfortVentilation.MaximumAirChangeRateIncrease_id_16 0 0.0002778
+graph CO2ComfortVentilation.AirChangeRate_id_10 NANDRAD.AirChangeRate_id_10
+graph CO2ComfortVentilation.AirChangeRate_id_16 NANDRAD.AirChangeRate_id_16
+

@@ -141,8 +141,8 @@ bool Schedule::isValid(std::string &err, bool checkAnnualScheds, const std::map<
 	return isValid();
 }
 
-bool Schedule::isValid() const {
 
+bool Schedule::isValid() const {
 
 	// *** daily cycle based schedule check ***
 
@@ -175,25 +175,59 @@ bool Schedule::isValid() const {
 }
 
 
+bool Schedule::isSimilar(const Schedule & other) const {
+	FUNCID(Schedule::isSimilar(Schedule));
+
+	// do not allow comparison of annual schedules
+	if(m_haveAnnualSchedule || other.m_haveAnnualSchedule)
+		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have annual schedules."
+												" These are not comparable.").arg(m_id).arg(other.m_id), FUNC_ID);
+
+	// check if values are equal
+	Schedule sched = other;
+	// subtract other schedule and add the current
+	try {
+		sched = sched.multiply(-1.0);
+		sched = sched.add(*this);
+	}
+	catch(...) {
+		// something did not match
+		return false;
+	}
+
+	// if schedules are not equal, than minimum one value difference must be != 0
+	for(const ScheduleInterval &schedIntval : sched.m_periods) {
+		for(const DailyCycle& dailyCycle : schedIntval.m_dailyCycles) {
+			for(const double val: dailyCycle.m_values) {
+				// allow numerical errors
+				if(!IBK::nearly_equal<3>(val, 0.0))
+					return false;
+			}
+		}
+	}
+
+	// now we ensured, that data of both schedules are equal
+	return true;
+}
+
+
 Schedule Schedule::multiply(const Schedule &other) const {
 	FUNCID(Schedule::multiply(Schedule));
 
 	Schedule sched;
 
-	if(!isValid()){
-		//Schedule '%1' with (id=%2) is not valid.
-		return sched;
-	}
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
 
-	if(!other.isValid()){
-		//Schedule '%1' with (id=%2) is not valid.
-		return sched;
-	}
-	if(m_useLinearInterpolation != other.m_useLinearInterpolation)
+	if (!other.isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+	if (m_useLinearInterpolation != other.m_useLinearInterpolation)
 		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have different interpolation method."
 												" Multiply is not possible").arg(m_id).arg(other.m_id), FUNC_ID);
 	//make a copy of the other schedule to the new schedule
 	sched = other;
+
 	//compare periods
 	unsigned int j=0;
 	unsigned int i=0;
@@ -245,21 +279,19 @@ Schedule Schedule::multiply(const Schedule &other) const {
 	return sched;
 }
 
+
 Schedule Schedule::multiply(double val) const {
-	FUNCID(Schedule::multiply(double));
+	FUNCID(Schedule::multiply);
 
 	Schedule sched;
 
-	if(!isValid()){
-		//Schedule '%1' with (id=%2) is not valid.
-		return sched;
-	}
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
 
-	if(val < 0)
-		IBK::Exception(IBK::FormatString("Multiply negative values to a schedule is not allowed."), FUNC_ID);
 
 	//make a copy of the other schedule to the new schedule
 	sched = *this;
+
 	//multi
 	//now sched holds all start days
 	//iterate sched periods and check for same or lower startdays in m_periods
@@ -272,15 +304,86 @@ Schedule Schedule::multiply(double val) const {
 	return sched;
 }
 
-Schedule Schedule::add(double val) const{
-//	FUNCID(Schedule::add(double));
+
+Schedule Schedule::add(const Schedule & other) const {
+	FUNCID(Schedule::add(Schedule));
 
 	Schedule sched;
 
-	if(!isValid()){
-		//Schedule '%1' with (id=%2) is not valid.
-		return sched;
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+
+	if (!other.isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
+	if(m_useLinearInterpolation != other.m_useLinearInterpolation)
+		throw IBK::Exception(IBK::FormatString("Schedule with id %1 and %2 have different interpolation method."
+												" Adding is not possible").arg(m_id).arg(other.m_id), FUNC_ID);
+
+	//make a copy of the other schedule to the new schedule
+	sched = other;
+
+	//compare periods
+	unsigned int j=0;
+	unsigned int i=0;
+	while(i<sched.m_periods.size()){
+		const ScheduleInterval &period = m_periods[j];
+		ScheduleInterval period2 = sched.m_periods[i];
+		//for same start day make an addition
+		if(period.m_intervalStartDay == period2.m_intervalStartDay){
+			if(j+1 >= m_periods.size())
+				//fertig
+				break;
+			++j;
+		}
+		//check for insert
+		else if(period.m_intervalStartDay > period2.m_intervalStartDay){
+			bool haveNext = i+1<sched.m_periods.size();
+			//insert a period from this schedule in the sched
+			if((haveNext && period.m_intervalStartDay < sched.m_periods[i+1].m_intervalStartDay) || !haveNext){
+				period2.m_intervalStartDay = period.m_intervalStartDay;
+				sched.m_periods.insert(sched.m_periods.begin()+i+1, period2);
+			}
+			++i;
+		}
 	}
+	//add
+	i=0;
+	j=0;
+	//now sched holds all start days
+	//iterate sched periods and check for same or lower startdays in m_periods
+	//if true add
+	//otherwise increment
+	while(i<sched.m_periods.size()){
+		const ScheduleInterval &period = m_periods[j];
+		ScheduleInterval period2 = sched.m_periods[i];
+
+		if(period2.m_intervalStartDay == period.m_intervalStartDay ||
+				(period2.m_intervalStartDay > period.m_intervalStartDay &&
+				 j+1<m_periods.size() &&
+				 period2.m_intervalStartDay < m_periods[j+1].m_intervalStartDay) ||
+				j+1 >= m_periods.size()){
+			sched.m_periods[i] = sched.m_periods[i].add(m_periods[j], sched.m_periods[i].m_intervalStartDay);
+			++i;
+		}
+		else if(j+1<m_periods.size() &&
+				period2.m_intervalStartDay >= m_periods[j+1].m_intervalStartDay){
+			++j;
+		}
+	}
+	return sched;
+}
+
+
+Schedule Schedule::add(double val) const{
+	FUNCID(Schedule::add(double));
+
+	Schedule sched;
+
+	if (!isValid())
+		IBK::Exception(IBK::FormatString("Invalid schedule interval."), FUNC_ID);
+
 
 	//make a copy of the other schedule to the new schedule
 	sched = *this;
@@ -291,11 +394,13 @@ Schedule Schedule::add(double val) const{
 	return sched;
 }
 
+
 void Schedule::createConstSchedule(double val) {
 	ScheduleInterval si;
 	si.createConstScheduleInterval(val);
 	m_periods.push_back(si);
 }
+
 
 void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector<double> &data) const {
 	if (m_periods.empty())
@@ -371,10 +476,11 @@ void Schedule::createYearDataVector(std::vector<double> &timepoints, std::vector
 	}
 }
 
+
 Schedule Schedule::createAnnualScheduleFromPeriodSchedule(std::string &name, const IBK::Unit & unit, unsigned int startDayOfYear) {
 	FUNCID(Schedule::createAnnualScheduleFromPeriodSchedule);
-	if(m_periods.empty())
-		return Schedule();
+	if (m_periods.empty())
+		IBK::Exception(IBK::FormatString("Schedule must have at least one period."), FUNC_ID);
 
 	// save start day of year for shifting later
 	unsigned int startDayOfPeriod = startDayOfYear;
@@ -486,6 +592,7 @@ AbstractDBElement::ComparisonResult Schedule::equal(const AbstractDBElement *oth
 
 	return Equal;
 }
+
 
 void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::vector<NANDRAD::Schedule> &scheduleGroup) const{
 	if (scheduleGroup.empty()){
@@ -604,6 +711,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::v
 		}
 	}
 }
+
 
 void Schedule::insertIntoNandradSchedulegroup(const std::string & varName, std::vector<NANDRAD::Schedule> & scheduleGroup,
 											  std::vector<NANDRAD::LinearSplineParameter> &splines,

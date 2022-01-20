@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.99">
+	<Project>
+		<ProjectInfo>
+			<Comment>Increased ACR test with 3 zones</Comment>
+			<Created>2020-08-24</Created>
+			<LastEdited>2020-08-24</LastEdited>
+		</ProjectInfo>
+		<Zones>
+			<Zone id="1" displayName="Office" type="Active">
+				<IBK:Parameter name="Area" unit="m2">30</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">90</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Zones>
+			<Zone id="2" displayName="Kitchen" type="Active">
+				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">45</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<Zones>
+			<Zone id="3" displayName="Bathroom" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">20</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<SimulationParameter>
+			<Interval>
+				<IBK:Parameter name="Start" unit="d">200</IBK:Parameter>
+				<IBK:Parameter name="End" unit="d">250</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<Location>
+			<IBK:Parameter name="Albedo" unit="---">0.2</IBK:Parameter>
+			<ClimateFilePath>${Project Directory}/../climate/DEU_Potsdam_60.c6b</ClimateFilePath>
+		</Location>
+		<Models>
+			<NaturalVentilationModels>
+				<NaturalVentilationModel id="1" displayName="Wet zone vent" modelType="ScheduledWithBaseACR">
+					<ZoneObjectList>Wet areas</ZoneObjectList>
+					<!-- Komfortbereich 22-26 °C -->
+					<IBK:Parameter name="MaxAirTemperature" unit="C">100</IBK:Parameter>
+					<IBK:Parameter name="MinAirTemperature" unit="C">-10</IBK:Parameter>
+					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
+				</NaturalVentilationModel>
+				<NaturalVentilationModel id="2" displayName="Wet zone vent" modelType="ScheduledWithBaseACR">
+					<ZoneObjectList>Office</ZoneObjectList>
+					<!-- Komfortbereich 18-24 °C -->
+					<IBK:Parameter name="MaxAirTemperature" unit="C">100</IBK:Parameter>
+					<IBK:Parameter name="MinAirTemperature" unit="C">-10</IBK:Parameter>
+					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
+				</NaturalVentilationModel>
+			</NaturalVentilationModels>
+		</Models>
+		<Schedules>
+			<ScheduleGroups>
+				<ScheduleGroup objectList="Wet areas">
+					<Schedule type="WeekDay">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,7,19</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0.05,0.3,0.05;VentilationRateIncreaseSchedule [1/h]:2.95,2.7,2.95;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="WeekEnd">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0.05;VentilationRateIncreaseSchedule [1/h]:2.95;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>MinimumAirTemperatureSchedule [C]:22;MaximumAirTemperatureSchedule [C]:26;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+				<ScheduleGroup objectList="Office">
+					<Schedule type="WeekDay">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0,8,11,13,16</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0.05,0.8,0.05,0.8,0.05;VentilationRateIncreaseSchedule [1/h]:2.95,2.2,2.95,2.2,2.95;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="WeekEnd">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>VentilationRateSchedule [1/h]:0.05;VentilationRateIncreaseSchedule [1/h]:2.95;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+					<Schedule type="AllDays">
+						<StartDayOfTheYear>0</StartDayOfTheYear>
+						<EndDayOfTheYear>364</EndDayOfTheYear>
+						<DailyCycles>
+							<DailyCycle interpolation="Constant">
+								<TimePoints>0</TimePoints>
+								<Values>MinimumAirTemperatureSchedule [C]:18;MaximumAirTemperatureSchedule [C]:24;</Values>
+							</DailyCycle>
+						</DailyCycles>
+					</Schedule>
+				</ScheduleGroup>
+			</ScheduleGroups>
+		</Schedules>
+		<Outputs>
+			<TimeUnit>h</TimeUnit>
+			<Definitions>
+				<!-- hourly values - None -->
+				<OutputDefinition>
+					<Quantity>VentilationRate[1]</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>VentilationRate[2]</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>VentilationRate[3]</Quantity>
+					<ObjectListName>Models</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>AirTemperature</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+
+				<OutputDefinition>
+					<Quantity>VentilationHeatLoad</Quantity>
+					<ObjectListName>All zones</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="h">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="Models">
+				<FilterID>*</FilterID>
+				<ReferenceType>Model</ReferenceType>
+			</ObjectList>
+			<ObjectList name="All zones">
+				<FilterID>*</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Office">
+				<FilterID>1</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Wet areas">
+				<FilterID>2,3</FilterID>
+				<ReferenceType>Zone</ReferenceType>
+			</ObjectList>
+		</ObjectLists>
+	</Project>
+</NandradProject>

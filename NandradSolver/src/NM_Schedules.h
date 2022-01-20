@@ -67,6 +67,8 @@ public:
 	enum KnownQuantities {
 		SQ_VentilationRateSchedule,								// Keyword: VentilationRateSchedule							[1/h]
 		SQ_VentilationRateIncreaseSchedule,						// Keyword: VentilationRateIncreaseSchedule					[1/h]
+		SQ_MinimumAirTemperatureSchedule,						// Keyword: MinimumAirTemperatureSchedule					[C]
+		SQ_MaximumAirTemperatureSchedule,						// Keyword: MaximumAirTemperatureSchedule					[C]
 		SQ_EquipmentHeatLoadPerAreaSchedule,					// Keyword: EquipmentHeatLoadPerAreaSchedule				[W/m2]
 		SQ_PersonHeatLoadPerAreaSchedule,						// Keyword: PersonHeatLoadPerAreaSchedule					[W/m2]
 		SQ_LightingHeatLoadPerAreaSchedule,						// Keyword: LightingHeatLoadPerAreaSchedule					[W/m2]

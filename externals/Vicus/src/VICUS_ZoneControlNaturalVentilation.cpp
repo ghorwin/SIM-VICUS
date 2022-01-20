@@ -29,7 +29,7 @@
 namespace VICUS {
 
 
-bool ZoneControlNaturalVentilation::isValid() const
+bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB) const
 {
 	// we have to check if the object is valid
 
@@ -40,11 +40,14 @@ bool ZoneControlNaturalVentilation::isValid() const
 	for (int i = 0; i < NUM_ST; ++i) {
 		// is a schedule ID set?
 		if (m_idSchedules[i] != INVALID_ID) {
-			/// TODO Check Schedule ID
-			/// we have to check also if the schedule with the specified ID exists!
-			///
-			/// for now we always return false
-			return false;
+			// check if schedule ID is existing and valid
+			const Schedule * sched = scheduleDB[m_idSchedules[i]];
+			if (sched == nullptr)
+				return false;
+			if (!sched->isValid())
+				return false;
+			// either scheudle or parameter are requested
+			continue;
 		}
 
 		try {
@@ -55,12 +58,17 @@ bool ZoneControlNaturalVentilation::isValid() const
 			case ST_TemperatureOutsideMax:
 				// check whether a parameter with the correct unit has been set
 				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
-													 "T", "T", -100, true, 100, true, nullptr);
+													 "C", "C", -100, true, 100, true, nullptr);
 			break;
 			case ST_TemperatureDifference:
 				// check whether a parameter with the correct unit has been set
 				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
 													 "K", "K", -100, true, 100, true, nullptr);
+			break;
+			case ST_AirChangeRateIncrease:
+				// check whether a parameter with the correct unit has been set
+				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
+													 "1/s", "1/s", 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			break;
 			case ST_WindSpeedMax:
 				// check whether a parameter with the correct unit has been set

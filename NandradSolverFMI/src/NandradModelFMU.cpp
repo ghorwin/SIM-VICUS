@@ -104,6 +104,7 @@ void NandradModelFMU::startCommunicationInterval(double tStart, bool noSetFMUSta
 		setTime(t0());
 		setY(y0());
 		ydot(nullptr);
+		stepCompleted(t0(), y0());
 		writeOutputs( t0(), y0());
 	}
 

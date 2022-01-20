@@ -159,7 +159,7 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 								valid = ((const VICUS::ZoneControlThermostat*)dbElement)->isValid(m_db->m_schedules);
 							break;
 							case VICUS::ZoneTemplate::ST_ControlVentilationNatural:
-								valid = ((const VICUS::ZoneControlNaturalVentilation*)dbElement)->isValid();
+								valid = ((const VICUS::ZoneControlNaturalVentilation*)dbElement)->isValid(m_db->m_schedules);
 							break;
 							case VICUS::ZoneTemplate::ST_Infiltration:
 								valid = ((const VICUS::Infiltration*)dbElement)->isValid();

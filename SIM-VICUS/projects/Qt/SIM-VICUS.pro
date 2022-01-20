@@ -512,7 +512,3 @@ RESOURCES += \
 	../../resources/qdarkstyle/style.qrc \
 	../../src/shaders/shaders.qrc
 
-
-
-
-

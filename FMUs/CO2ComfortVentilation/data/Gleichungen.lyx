@@ -208,7 +208,7 @@ reference "eq:Faltungsfunktion"
 
 \begin_inset Formula 
 \begin{eqnarray}
-G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(\exp\left[n\left(t-t_{0}\right)\right]-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(t\right)\exp\left[n\left(s-t_{0}\right)\right]ds\label{eq:Faltungsfunktion}
+G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(\exp\left[n\left(t-t_{0}\right)\right]-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(s\right)\exp\left[n\left(s-t_{0}\right)\right]ds\label{eq:Faltungsfunktion}
 \end{eqnarray}
 
 \end_inset

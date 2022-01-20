@@ -1,52 +1,12 @@
-# ----------------------------------
-# Qt Project for building FMU 
-# ----------------------------------
-#
-# This file is part of FMICodeGenerator (https://github.com/ghorwin/FMICodeGenerator)
-# 
-# BSD 3-Clause License
-#
-# Copyright (c) 2018, Andreas Nicolai
-# All rights reserved.
-#
-# see https://github.com/ghorwin/FMICodeGenerator/blob/master/LICENSE for details.
+# ------------------------------------------
+# Qt Project for CO2 confort ventilation FMU
+# ------------------------------------------
 
+TARGET        = CO2ComfortVentilation
+TEMPLATE      = lib
 
-TARGET = CO2ComfortVentilation
-TEMPLATE = lib
-
-# no GUI
-QT -= core gui
-
-CONFIG(debug, debug|release) {
-	windows {
-		DLLDESTDIR = ../../bin/debug$${DIR_PREFIX}
-	}
-	else {
-		DESTDIR = ../../bin/debug$${DIR_PREFIX}
-	}
-}
-else {
-	windows {
-		DLLDESTDIR = ../../bin/release$${DIR_PREFIX}
-	}
-	else {
-		DESTDIR = ../../bin/release$${DIR_PREFIX}
-	}
-}
-
-#DEFINES += FMI2_FUNCTION_PREFIX=CO2ComfortVentilation_
-
-unix|mac {
-	VER_MAJ = 1
-	VER_MIN = 0
-	VER_PAT = 0
-	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
-}
-
-unix {
-        QMAKE_POST_LINK += $$quote(mv $${DESTDIR}/lib$${TARGET}.so $${DESTDIR}/$${TARGET}.so)
-}
+# this pri must be sourced from all our applications
+include( ../../../Qt/fmus.pri )
 
 INCLUDEPATH = ../../src
 

@@ -1,0 +1,23 @@
+# Created:	Fr Dez 17 14:00:25 2021
+# LastModified:	${DATETIME}
+
+tStart                   ${STARTTIME}
+tEnd                     ${ENDTIME}
+hMax                     10 min
+hMin                     1e-05 s
+hFallBackLimit           0.001 s
+hStart                   10 min
+hOutputMin               10 min
+outputTimeUnit           s
+adjustStepSize           no
+preventOversteppingOfEndTime yes
+absTol                   1e-06
+relTol                   1e-05
+MasterMode               GAUSS_SEIDEL
+ErrorControlMode         NONE
+maxIterations            1
+writeInternalVariables   no
+
+${SIMULATORS}
+
+${CONNECTIONS}

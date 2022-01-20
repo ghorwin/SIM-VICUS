@@ -91,7 +91,9 @@ private:
 	/*! Calculation function:*/
 	/*!	Digital/hysteresis controller for air change rate*/
 	void calculateAirChangeRate(double &airChangeRate, double airTemperature, double ambientTemperature,
-								double maxCO2Concentration, double CO2Concentration);
+								double CO2Concentration,
+								double maxCO2Concentration, double minAirTemperature, double maxAirTemperature,
+								double minAirChangeRate, double maxAirChangeRate);
 
 	/*! static constants */
 
@@ -117,20 +119,14 @@ private:
 	std::map<int, double>		m_zoneVolumes;
 	/*! Zone floor area [m2], sorted by zone ids*/
 	std::map<int, double>		m_zoneFloorAreas;
-	/*! Zone schedule name, sorted by zone ids*/
+	/*! Zone schedule names for CO2 source, sorted by zone ids*/
 	std::map<int, std::string>	m_zoneScheduleNames;
 	/*! CO2 source [kg/s] (sorted by schedule name)*/
-	std::map<std::string, LinearSpline>	m_CO2SourcePerZoneFloorAreasSplines;
-	/*! Maximum zone air CO2 concentration, before ventilation is activated [mol/mol] (sorted by schedule name)*/
-	std::map<std::string, LinearSpline>	m_maximumCO2ConcentrationSplines;
+	std::map<std::string, LinearSpline>	m_co2LoadPerZoneFloorAreasSplines;
 	/*! Ambient CO2 concentration [mol/mol]*/
 	LinearSpline				m_ambientCO2ConcentrationSpline;
 	/*! Start value for zone air CO2 concentration [mol/mol]*/
 	double						m_startCO2Concentration = -999;
-	/*! Minimum zone air temperature, before heating ventilation is activated [K]*/
-	double						m_minimumAirTemperature = -999;
-	/*! Maximum zone air temperature, before cooling ventilation is activated [K]*/
-	double						m_maximumAirTemperature = -999;
 	/*! Start value for zone air temperature [K]*/
 	double						m_startAirTemperature = -999;
 	/*! Tolerance band for hystersis controller for CO2 concentration [mol/mol]
@@ -139,10 +135,6 @@ private:
 	/*! Tolerance band for hystersis controller for zone air temperature [K]
 		(if deactivated, digital controller is chosen)*/
 	double						m_temperatureToleranceBand = 0;
-	/*! Minimum air change.*/
-	double						m_minimumAirChangeRate = -999;
-	/*! Maximum air change rate for control.*/
-	double						m_maximumAirChangeRate = -999;
 
 	/*! Time integration quantities*/
 

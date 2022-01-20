@@ -61,6 +61,9 @@ public:
 	/*! Multiply a value to schedule intervals and create a new one. */
 	ScheduleInterval multiply(double val)const;
 
+	/*! Add schedule intervals and create a new one. */
+	ScheduleInterval add(const ScheduleInterval &other, unsigned int startDay) const;
+
 	/*! Add a value to a schedule interval and returns the result. */
 	ScheduleInterval add(double val) const;
 

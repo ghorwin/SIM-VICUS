@@ -59,11 +59,17 @@ public:
 	/*! Checks if all referenced schedule is valid. Only for period schedules. */
 	bool isValid() const;
 
+	/*! Checks if two schedules encode the same physical behaviour, allowing for small rounding errors. */
+	bool isSimilar(const Schedule &other) const;
+
 	/*! Multiply a schedule with another schedule. Returns the result schedule. */
 	Schedule multiply(const Schedule &other) const;
 
 	/*! Multiply a schedule with constant value. Returns the result schedule. */
 	Schedule multiply(double val) const;
+
+	/*! Multiply a schedule with another schedule. Returns the result schedule. */
+	Schedule add(const Schedule &other) const;
 
 	/*! Add a constant value to a schedule. Returns the result schedule. */
 	Schedule add(double val) const;

@@ -22,6 +22,9 @@ add_library( ${PROJECT_NAME} SHARED
 	${PROJECT_SOURCE_DIR}/../../src/${PROJECT_NAME}.cpp
 	${PROJECT_SOURCE_DIR}/../../src/fmi2common/fmi2Functions.cpp
 	${PROJECT_SOURCE_DIR}/../../src/fmi2common/InstanceData.cpp
+	${PROJECT_SOURCE_DIR}/../../src/Helpers.cpp
+	${PROJECT_SOURCE_DIR}/../../src/LinearSpline.cpp
+	${PROJECT_SOURCE_DIR}/../../src/Path.cpp
 )
 
 # link against the dependent libraries

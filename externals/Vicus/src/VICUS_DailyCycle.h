@@ -59,6 +59,12 @@ public:
 	/*! Scale all values of the daily cycle with a constant factor. */
 	DailyCycle multiply(double factor) const;
 
+	/*! Adds current daily cycle to other daily cycle and generates a new daily cycle that contains
+		the union of all time points.
+		Only those day types will be in the generated DC that are present in both the current and other daily cycle.
+	*/
+	DailyCycle add(const DailyCycle &other) const;
+
 	/*! Adds a value to the daily cycle. */
 	DailyCycle add(double val) const;
 
@@ -67,6 +73,12 @@ public:
 
 	/*! Multiply operator. */
 	DailyCycle operator *(double val) const {return multiply(val);}
+
+	/*! Add operator. */
+	DailyCycle operator +(const DailyCycle &other) const {return add(other);}
+
+	/*! Add operator. */
+	DailyCycle operator +(double val) const {return add(val);}
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

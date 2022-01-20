@@ -34,6 +34,8 @@
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Constants.h"
 #include "VICUS_AbstractDBElement.h"
+#include "VICUS_Database.h"
+#include "VICUS_Schedule.h"
 
 namespace VICUS {
 
@@ -51,6 +53,7 @@ public:
 		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax				[C]		'Upper limit for outside air temperature.'
 		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin				[C]		'Lower limit for outside air temperature.'
 		ST_TemperatureDifference,	// Keyword: TemperatureDifference				[K]		'Temperature difference limit (inside - outside).'
+		ST_AirChangeRateIncrease,	// Keyword: AirChangeRateIncrease				[1/h]	'Maximum increase of air change rate'
 		ST_WindSpeedMax,			// Keyword: WindSpeedMax						[m/s]	'Limit for wind speed .'
 		NUM_ST
 	};
@@ -67,7 +70,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if all parameters are valid. */
-	bool isValid() const;
+	bool isValid(const Database<Schedule> &scheduleDB) const;
 
 	/*! Comparison operator */
 	ComparisonResult equal(const AbstractDBElement *other) const override;

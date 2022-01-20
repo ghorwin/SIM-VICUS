@@ -43,7 +43,7 @@ image::QtCreator_DebugFmuConfig.png[]
   - (blau) Pfad zur `msim`-Projektdatei und zusätzlich das Argument `--skip-unzip`
   
 . Dann unten bei der Ausführungsumgebung die Details ausklappen
-. Die Umgebungsvariable `LD_LIBRARY_PATH` hinzufügen, und als Wert den Pfad zum `SIM-VICUS/externals/lib_x64` Pfad eintragen
+. Die Umgebungsvariable `LD_LIBRARY_PATH` hinzufügen, und als Wert den Pfad zum `SIM-VICUS/externals/lib_x64:` Pfad eintragen; MasterSim muss beim Laden der FMU-Bibliothek alle von ihr gelinkten, dynamischen Bibliotheken finden.
 
 
 Jetzt kann man den Debugger starten (F5) und man müsste MasterSim durchlaufen sehen.

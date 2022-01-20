@@ -18,8 +18,13 @@
 #define FMI_PARA_ResultRootDir 42
 #define FMI_INPUT_AmbientTemperature 1
 #define FMI_INPUT_RoomAirTemperature 1000
-#define FMI_OUTPUT_AirChangeRate 2000
-#define FMI_OUTPUT_CO2Concentration 3000
+#define FMI_INPUT_MaximumCO2Concentration 2000
+#define FMI_INPUT_MinimumAirTemperature 3000
+#define FMI_INPUT_MaximumAirTemperature 4000
+#define FMI_INPUT_MinimumAirChangeRate 5000
+#define FMI_INPUT_MaximumAirChangeRateIncrease 6000
+#define FMI_OUTPUT_AirChangeRate 7000
+#define FMI_OUTPUT_CO2Concentration 8000
 
 
 // *** Variables and functions to be implemented in user code. ***
@@ -66,57 +71,47 @@ void CO2ComfortVentilation::init() {
 
 			// initialize from project file
 			// Generate project filename
-			Path filePath = Path::fromURI(m_resourceLocation);
-			filePath /= "Project.txt"; // append project file, always the same within FMU container
+			Path resourcePath = Path::fromURI(m_resourceLocation);
+			Path filePath = resourcePath / "Project.txt"; // append project file, always the same within FMU container
 			read(filePath);
 
 			// create path name including schedules
-			Path tsvCO2LoadBasePath = m_resourceLocation / Path("CO2LoadPerAreaSchedule");
-			Path tsvMaxCO2ConcentrationBasePath = m_resourceLocation / Path("MaximumCO2ConcentrationSchedule");
+			Path tsvBasePathCo2Load = m_resourceLocation / Path("CO2LoadPerAreaSchedule");
 
 			// select all schedule names
-			std::set<std::string> scheduleNames;
-			for (const std::pair<unsigned int, std::string> &scheduleName : m_zoneScheduleNames)
-				scheduleNames.insert(scheduleName.second);
+			std::set<std::string> scheduleCO2SourceNames;
+			for (const std::pair<const int, std::string> &scheduleName : m_zoneScheduleNames) {
+				// skip empty names
+				if(scheduleName.second.empty())
+					continue;
+
+				scheduleCO2SourceNames.insert(scheduleName.second);
+			}
 
 			// now create splines for all schedules
-			for (const std::string &scheduleName : scheduleNames) {
+			for (const std::string &scheduleName : scheduleCO2SourceNames) {
 
 				// read CO2 load schedule
-				Path tsvPath = tsvCO2LoadBasePath + std::string("_") + scheduleName;
+				Path tsvPath = resourcePath / scheduleName;
 				tsvPath.addExtension("tsv");
+
 				try {
 					// read schedule splines
 					LinearSpline spline;
 					spline.readTsv(tsvPath);
 
 					// store spline
-					m_CO2SourcePerZoneFloorAreasSplines[scheduleName] = spline;
+					m_co2LoadPerZoneFloorAreasSplines[scheduleName] = spline;
 				}
 				catch (std::runtime_error &ex) {
 					throw std::runtime_error(std::string("Error reading schedule from file '")
 						+ tsvPath.str() + std::string("': ") + ex.what() + std::string("."));
 				}
 
-				// read maximum CO2 concentration
-				tsvPath = tsvMaxCO2ConcentrationBasePath + std::string("_") + scheduleName;
-				tsvPath.addExtension("tsv");
-				try {
-					// read schedule splines
-					LinearSpline spline;
-					spline.readTsv(tsvPath);
-
-					// store spline
-					m_maximumCO2ConcentrationSplines[scheduleName] = spline;
-				}
-				catch (std::runtime_error &ex) {
-					throw std::runtime_error(std::string("Error reading schedule from file '")
-						+ tsvPath.str() + std::string("': ") + ex.what() + std::string("."));
-				}
 			}
 
 			// read ambient CO2 concentration spline
-			Path tsvBasePathAmbientCO2 = m_resourceLocation / Path("AmbientCO2ConcentrationSchedule.tsv");
+			Path tsvBasePathAmbientCO2 = resourcePath / "AmbientCO2ConcentrationSchedule.tsv";
 			try {
 				// read schedule splines
 				LinearSpline spline;
@@ -130,20 +125,33 @@ void CO2ComfortVentilation::init() {
 					+ tsvBasePathAmbientCO2.str() + std::string("': ") + ex.what() + std::string("."));
 			}
 
-			// set start value
-			double startAirChangeRate = m_minimumAirChangeRate;
-
 			// initialize result quantities, input output variables
-			for (const std::pair<int, double> &zoneVol : m_zoneVolumes) {
+			for (const std::pair<const int, double> &zoneVol : m_zoneVolumes) {
 				// retrieve zone id
 				int zoneId = zoneVol.first;
-				// retrieve linear spline
-				std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
-					m_maximumCO2ConcentrationSplines.find(m_zoneScheduleNames[zoneId]);
-				assert(maxCO2ConcentrationIt != m_maximumCO2ConcentrationSplines.end());
+				// set start values
+				double startAirChangeRate = 0.;
+				// resize and set input varables
+				m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId] = startAirChangeRate;
+				// zone air temperature [K] from FMI inputs
+				m_realVar[FMI_INPUT_RoomAirTemperature + zoneId] = m_startAirTemperature;
+				// maximum CO2 concentration [mol/mol] from FMI inputs
+				m_realVar[FMI_INPUT_MaximumCO2Concentration + zoneId] = m_startCO2Concentration;
+				// minimum air change rate [1/s] from FMI inputs
+				m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId] = 0.0;
+				// maximum air change rate [1/s] from FMI inputs
+				m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + zoneId] = 0.0;
+				// minimum air temperature [K] from FMI inputs
+				m_realVar[FMI_INPUT_MinimumAirTemperature + zoneId] = m_startAirTemperature;
+				// maximum air temperature [K] from FMI inputs
+				m_realVar[FMI_INPUT_MaximumAirTemperature + zoneId] = m_startAirTemperature;
 
-				double maxCO2Concentration = maxCO2ConcentrationIt->second.value(0.0);
-				calculateAirChangeRate(startAirChangeRate, m_startAirTemperature, 0.0, maxCO2Concentration, m_startCO2Concentration);
+				// set individual values
+
+				// cluclate air change rate
+				calculateAirChangeRate(startAirChangeRate, m_startAirTemperature, 273.15, m_startCO2Concentration,
+									   m_startCO2Concentration, m_startAirTemperature, m_startAirTemperature,
+									   0.0, 0.0);
 				// calculte mass
 				double startCO2Density = m_startCO2Concentration * molarMassCO2 * referencePressure/( RIdealGas * m_startAirTemperature);
 
@@ -151,7 +159,6 @@ void CO2ComfortVentilation::init() {
 				m_zoneCO2Masses[zoneId] = startCO2Density * zoneVol.second;
 				m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = startAirChangeRate;
 				m_realVar[FMI_OUTPUT_CO2Concentration + zoneId] = m_startCO2Concentration;
-				m_realVar[FMI_INPUT_RoomAirTemperature + zoneId] = m_startAirTemperature;
 			}
 
 			// initialize integrator for co-simulation
@@ -159,8 +166,8 @@ void CO2ComfortVentilation::init() {
 			m_lastTimePoint = 0;
 		}
 		catch (std::runtime_error &ex) {
-			logger(fmi2Error, "error", std::string("Error initializing FMU: ") + ex.what() + std::string("."));
-			return;
+			logger(fmi2Error, "logStatusError", ex.what());
+			throw std::runtime_error("Error initializing FMU.");
 		}
 	}
 
@@ -208,6 +215,16 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 
 		// zone air temperature [K] from FMI inputs
 		double zoneAirTemperature = m_realVar[FMI_INPUT_RoomAirTemperature + zoneId];
+		// maximum CO2 concentration [mol/mol] from FMI inputs
+		double maximumCO2Concentration = m_realVar[FMI_INPUT_MaximumCO2Concentration + zoneId];
+		// minimum air change rate [1/s] from FMI inputs
+		double minimumAirChangeRate = m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId];
+		// maximum air change rate [1/s] from FMI inputs
+		double maximumAirChangeRate = m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + zoneId] + minimumAirChangeRate;
+		// minimum air temperature [K] from FMI inputs
+		double minimumAirTemperature = m_realVar[FMI_INPUT_MinimumAirTemperature + zoneId];
+		// maximum air temperature [K] from FMI inputs
+		double maximumAirTemperature = m_realVar[FMI_INPUT_MaximumAirTemperature + zoneId];
 
 		// CO2 mass of last time step [kg/s] from solution vector
 		double zoneCO2MassLast = m_zoneCO2MassesLastTimePoint[zoneId];
@@ -216,27 +233,18 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		// zone area [m2] from parameter vector
 		double zoneArea = m_zoneFloorAreas[zoneId];
 
-		// retrieve linear spline
-		std::map<std::string, LinearSpline>::iterator CO2SourcePerArea =
-			m_CO2SourcePerZoneFloorAreasSplines.find(m_zoneScheduleNames[zoneId]);
-		assert(CO2SourcePerArea != m_CO2SourcePerZoneFloorAreasSplines.end());
-
 		// maximum CO2 mass of ambient air [kg]
 		double ambientCO2Mass = ambientCO2Density * zoneVolume;
 		// CO2 density of last time step [kg/s] from solution vector
 		double CO2DensityLast = zoneCO2MassLast / zoneVolume;
 		// calcualtes quantties: CO2 setpoint density [kg/m3]
 		double zoneCO2ConcentrationLast = CO2DensityLast/ molarMassCO2 * RIdealGas * zoneAirTemperature /referencePressure;
-		// retrieve linear spline for maximum CO2 concentration
-		std::map<std::string, LinearSpline>::iterator maxCO2ConcentrationIt =
-			m_maximumCO2ConcentrationSplines.find(m_zoneScheduleNames[zoneId]);
-		assert(maxCO2ConcentrationIt != m_maximumCO2ConcentrationSplines.end());
-		// calculate value at begin of communication interval
-		double maxCO2ConcentrationLast = maxCO2ConcentrationIt->second.value(m_lastTimePoint);
 		// calculate air exchange rate
 		double &zoneAirChangeRate = m_zoneAirChangeRates[zoneId];
 
-		calculateAirChangeRate(zoneAirChangeRate, zoneAirTemperature, ambientTemperature, maxCO2ConcentrationLast, zoneCO2ConcentrationLast);
+		calculateAirChangeRate(zoneAirChangeRate, zoneAirTemperature, ambientTemperature, zoneCO2ConcentrationLast,
+							   maximumCO2Concentration, minimumAirTemperature, maximumAirTemperature,
+							   minimumAirChangeRate, maximumAirChangeRate);
 
 		// solve ODE
 		double expN = std::exp(-zoneAirChangeRate * deltaT);
@@ -246,36 +254,48 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		double tNext = m_lastTimePoint;
 		double expNNext = expN;
 		// start integral values
-		double CO2Source = CO2SourcePerArea->second.value(tNext) * zoneArea;
-		double CO2SourceExp = CO2Source * expNNext;
-		double CO2SourceNext = 0.0;
-		double CO2SourceExpNext = 0.0;
+
+		std::string scheduleName = m_zoneScheduleNames[zoneId];
 
 		// integral values
 		double CO2SourceIntegral = 0.0;
 
-		// calculate multiplicator
-		double expFacDt = std::exp(zoneAirChangeRate * dt);
+		// integrate CO2 sources (only for existing schedules
+		if(!scheduleName.empty()) {
 
-		// numerical integration of source terms
-		for (unsigned int i = 0; i < NUM_INT_INTVALS; ++i) {
+			// retrieve linear spline
+			std::map<std::string, LinearSpline>::iterator CO2SourcePerArea =
+				m_co2LoadPerZoneFloorAreasSplines.find(scheduleName);
+			assert(CO2SourcePerArea != m_co2LoadPerZoneFloorAreasSplines.end());
 
-			// get next integration point
-			tNext += dt;
-			// calculate source vale at next integration time point
-			CO2SourceNext = CO2SourcePerArea->second.value(tNext) * zoneArea;
+			double CO2Source = CO2SourcePerArea->second.value(tNext) * zoneArea;
+			double CO2SourceExp = CO2Source * expNNext;
+			double CO2SourceNext = 0.0;
+			double CO2SourceExpNext = 0.0;
 
-			// calculate next values
-			// expNNext = exp(-airExhangeRate * (tEnd - tNext)) = exp(-airExhangeRate * (tEnd - tPrev - dt))
-			//          = exp(-airExhangeRate * (tEnd - tPrev) * exp(airExhangeRate * dt)
-			expNNext *= expFacDt;
-			CO2SourceExpNext = CO2SourceNext * expNNext;
+			// calculate multiplicator
+			double expFacDt = std::exp(zoneAirChangeRate * dt);
 
-			// cummulate integral values
-			CO2SourceIntegral += 0.5 * (CO2SourceExp + CO2SourceExpNext) * dt;
+			// numerical integration of source terms
+			for (unsigned int i = 0; i < NUM_INT_INTVALS; ++i) {
 
-			// store old value
-			CO2SourceExp = CO2SourceExpNext;
+				// get next integration point
+				tNext += dt;
+				// calculate source vale at next integration time point
+				CO2SourceNext = CO2SourcePerArea->second.value(tNext) * zoneArea;
+
+				// calculate next values
+				// expNNext = exp(-airExhangeRate * (tEnd - tNext)) = exp(-airExhangeRate * (tEnd - tPrev - dt))
+				//          = exp(-airExhangeRate * (tEnd - tPrev) * exp(airExhangeRate * dt)
+				expNNext *= expFacDt;
+				CO2SourceExpNext = CO2SourceNext * expNNext;
+
+				// cummulate integral values
+				CO2SourceIntegral += 0.5 * (CO2SourceExp + CO2SourceExpNext) * dt;
+
+				// store old value
+				CO2SourceExp = CO2SourceExpNext;
+			}
 		}
 
 		// calculate new value
@@ -286,7 +306,7 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		double zoneCO2Concentration = zoneCO2Density / molarMassCO2 * RIdealGas * zoneAirTemperature / referencePressure;
 
 		// output variables
-		m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = zoneAirChangeRate; // TODO : store your results here
+		m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = zoneAirChangeRate;
 		m_realVar[FMI_OUTPUT_CO2Concentration + zoneId] = zoneCO2Concentration;
 	}
 
@@ -320,19 +340,6 @@ void CO2ComfortVentilation::computeFMUStateSize() {
 	{
 		m_fmuStateSize += sizeof(int) + sizeof(int) + it->second.size() + 1; // add one char for \0
 	}
-
-
-	// other variables: distinguish between ModelExchange and CoSimulation
-	if (m_modelExchange) {
-
-		// TODO : store state variables and already computed derivatives
-
-	}
-	else {
-
-		// TODO : store integrator state
-
-	}
 }
 
 
@@ -355,7 +362,7 @@ template <typename T>
 bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const char * typeID, std::map<int, T> & varMap) {
 	// now de-serialize the maps: first the size (for checking), then each key-value pair
 	int mapsize;
-	DESERIALIZE(const int, dataPtr, mapsize);
+	DESERIALIZE(const int, dataPtr, mapsize)
 	if (mapsize != static_cast<int>(varMap.size())) {
 		std::stringstream strm;
 		strm << "Bad binary data or invalid/uninitialized model data. "<< typeID << "-Map size mismatch.";
@@ -365,7 +372,7 @@ bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const c
 	for (int i=0; i<mapsize; ++i) {
 		int valueRef;
 		T val;
-		DESERIALIZE(const int, dataPtr, valueRef);
+		DESERIALIZE(const int, dataPtr, valueRef)
 		if (varMap.find(valueRef) == varMap.end()) {
 			std::stringstream strm;
 			strm << "Bad binary data or invalid/uninitialized model data. "<< typeID << "-Variable with value ref "<< valueRef
@@ -373,7 +380,7 @@ bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const c
 			obj->logger(fmi2Error, "deserialization", strm.str());
 			return false;
 		}
-		DESERIALIZE(const T, dataPtr, val);
+		DESERIALIZE(const T, dataPtr, val)
 		varMap[valueRef] = val;
 	}
 	return true;
@@ -384,47 +391,47 @@ bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const c
 void CO2ComfortVentilation::serializeFMUstate(void * FMUstate) {
 	char * dataPtr = reinterpret_cast<char*>(FMUstate);
 	if (m_modelExchange) {
-		SERIALIZE(double, dataPtr, m_tInput);
+		SERIALIZE(double, dataPtr, m_tInput)
 
 		// TODO ModelExchange-specific serialization
 	}
 	else {
-		SERIALIZE(double, dataPtr, m_currentTimePoint);
+		SERIALIZE(double, dataPtr, m_currentTimePoint)
 
 		// store actual solution data
 		for (std::map<int, double>::const_iterator it = m_zoneCO2Masses.begin(); it != m_zoneCO2Masses.end(); ++it) {
-			SERIALIZE(int, dataPtr, it->first);
-			SERIALIZE(double, dataPtr, it->second);
+			SERIALIZE(int, dataPtr, it->first)
+			SERIALIZE(double, dataPtr, it->second)
 		}
 	}
 
 	// write map size for checking
 	int mapSize = static_cast<int>(m_realVar.size());
-	SERIALIZE(int, dataPtr, mapSize);
+	SERIALIZE(int, dataPtr, mapSize)
 	// now serialize all members of the map
 	for (std::map<int,double>::const_iterator it = m_realVar.begin(); it != m_realVar.end(); ++it) {
-		SERIALIZE(int, dataPtr, it->first);
-		SERIALIZE(double, dataPtr, it->second);
+		SERIALIZE(int, dataPtr, it->first)
+		SERIALIZE(double, dataPtr, it->second)
 	}
 	mapSize = static_cast<int>(m_integerVar.size());
-	SERIALIZE(int, dataPtr, mapSize);
+	SERIALIZE(int, dataPtr, mapSize)
 	for (std::map<int,int>::const_iterator it = m_integerVar.begin(); it != m_integerVar.end(); ++it) {
-		SERIALIZE(int, dataPtr, it->first);
-		SERIALIZE(int, dataPtr, it->second);
+		SERIALIZE(int, dataPtr, it->first)
+		SERIALIZE(int, dataPtr, it->second)
 	}
 	mapSize = static_cast<int>(m_boolVar.size());
-	SERIALIZE(int, dataPtr, mapSize);
+	SERIALIZE(int, dataPtr, mapSize)
 	for (std::map<int,int>::const_iterator it = m_boolVar.begin(); it != m_boolVar.end(); ++it) {
-		SERIALIZE(int, dataPtr, it->first);
-		SERIALIZE(int, dataPtr, it->second);
+		SERIALIZE(int, dataPtr, it->first)
+		SERIALIZE(int, dataPtr, it->second)
 	}
 	mapSize = static_cast<int>(m_stringVar.size());
-	SERIALIZE(int, dataPtr, mapSize);
+	SERIALIZE(int, dataPtr, mapSize)
 	for (std::map<int, std::string>::const_iterator it = m_stringVar.begin();
 		 it != m_stringVar.end(); ++it)
 	{
-		SERIALIZE(int, dataPtr, it->first);				// map key
-		SERIALIZE(int, dataPtr, static_cast<int>(it->second.size()));		// string size
+		SERIALIZE(int, dataPtr, it->first)		// map key
+		SERIALIZE(int, dataPtr, static_cast<int>(it->second.size()))		// string size
 		std::memcpy(dataPtr, it->second.c_str(), it->second.size()+1); // also copy the trailing \0
 		dataPtr += it->second.size()+1;
 	}
@@ -433,19 +440,11 @@ void CO2ComfortVentilation::serializeFMUstate(void * FMUstate) {
 
 bool CO2ComfortVentilation::deserializeFMUstate(void * FMUstate) {
 	const char * dataPtr = reinterpret_cast<const char*>(FMUstate);
-	if (m_modelExchange) {
-		DESERIALIZE(const double, dataPtr, m_tInput);
+	DESERIALIZE(const double, dataPtr, m_currentTimePoint)
 
-		// TODO ModelExchange-specific deserialization
-		m_externalInputVarsModified = true;
-	}
-	else {
-		DESERIALIZE(const double, dataPtr, m_currentTimePoint);
-
-		// deserialize solution state
-		if (!deserializeMap(this, dataPtr, "real", m_zoneCO2Masses))
-			return false;
-	}
+	// deserialize solution state
+	if (!deserializeMap(this, dataPtr, "real", m_zoneCO2Masses))
+		return false;
 
 	if (!deserializeMap(this, dataPtr, "real", m_realVar))
 		return false;
@@ -456,14 +455,14 @@ bool CO2ComfortVentilation::deserializeFMUstate(void * FMUstate) {
 
 	// special handling for deserialization of string map
 	int mapsize;
-	DESERIALIZE(const int, dataPtr, mapsize);
+	DESERIALIZE(const int, dataPtr, mapsize)
 	if (mapsize != static_cast<int>(m_stringVar.size())) {
 		logger(fmi2Error, "deserialization", "Bad binary data or invalid/uninitialized model data. string-variable map size mismatch.");
 		return false;
 	}
 	for (int i=0; i<mapsize; ++i) {
 		int valueRef;
-		DESERIALIZE(const int, dataPtr, valueRef);
+		DESERIALIZE(const int, dataPtr, valueRef)
 		if (m_stringVar.find(valueRef) == m_stringVar.end()) {
 			std::stringstream strm;
 			strm << "Bad binary data or invalid/uninitialized model data. string-variable with value ref "<< valueRef
@@ -473,7 +472,7 @@ bool CO2ComfortVentilation::deserializeFMUstate(void * FMUstate) {
 		}
 		// get length of string
 		int strLen;
-		DESERIALIZE(const int, dataPtr, strLen);
+		DESERIALIZE(const int, dataPtr, strLen)
 		// create a string of requested length
 		std::string s(static_cast<size_t>(strLen), ' ');
 		// copy contents of string
@@ -508,7 +507,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 		std::ifstream in(fpath.c_str());
 #endif
 		if (!in)
-			std::cout << std::string("File '") + fpath.str() + std::string("' doesn't exist or cannot open/access file.");
+			throw std::runtime_error(std::string("File '") + fpath.str() + std::string("' doesn't exist or cannot open/access file."));
 
 		std::string line;
 		// values and definitions are divided by assignment '='
@@ -525,9 +524,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			explode(line, values, sepChars);
 
 			// we expect 2 tokens
-			if (values.size() != 2) {
+			if (values.size() != 2)
 				throw std::runtime_error((std::string("Malformed line '") + line + std::string(". Expected format '<attribute> = <value>'.")).c_str());
-			}
 
 			// extract attribute
 			std::string attribute = values[0];
@@ -551,10 +549,9 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			if (attribute != "zoneIds")
 				continue;
 			// no indexes are allowed
-			if (!index.empty()) {
-				throw std::runtime_error((std::string("Invalid index notation in attribute ')") +
-					attribute + std::string("'.")).c_str());
-			}
+			if (!index.empty())
+				throw std::runtime_error("Invalid index notation in attribute ')" + attribute + "'.");
+
 			// trim value attribute
 			trim(value, "[]{}");
 			// and read zone ids
@@ -563,10 +560,9 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			try {
 				for (std::string idStr : values) {
 					unsigned int id = string2val<unsigned int>(idStr);
-					if (zoneIds.find(id) != zoneIds.end()) {
-						throw std::runtime_error((std::string("Duplicate zone id ") + idStr + std::string("."))
-							.c_str());
-					}
+					if (zoneIds.find(id) != zoneIds.end())
+						throw std::runtime_error(std::string("Duplicate zone id ") + idStr + std::string("."));
+
 					// temporarilly store zone ids
 					zoneIds.insert(id);
 				}
@@ -592,9 +588,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			explode(line, values, sepChars);
 
 			// we expect 2 tokens
-			if (values.size() != 2) {
+			if (values.size() != 2)
 				throw std::runtime_error((std::string("Malformed line '") + line + std::string(". Expected format '<attribute> = <value>'.")).c_str());
-			}
 
 			// extract attribute
 			std::string attribute = values[0];
@@ -619,7 +614,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			// get value
 			trim(value, "\t\r ");
 
-			// schedule names
+			// schedule names fotr CO2 source
 			if (attribute == "zoneScheduleNames") {
 				// indexes are requested
 				if (index.empty()) {
@@ -627,9 +622,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 						attribute + std::string("'.")).c_str());
 				}
 				// zoneIds are requested
-				if (zoneIds.empty()) {
+				if (zoneIds.empty())
 					throw std::runtime_error("Missing zone id definition. Define attribute 'zoneIds' first!");
-				}
 
 				unsigned int id = 0;
 				// read id
@@ -663,22 +657,10 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 					targetUnit = "m2";
 				else if (attribute == "zoneVolumes")
 					targetUnit = "m3";
-				else if (attribute == "maximumCO2Concentration")
-					targetUnit = "mol/mol";
-				else if (attribute == "minimumAirTemperature")
-					targetUnit = "K";
-				else if (attribute == "maximumAirTemperature")
-					targetUnit = "K";
-				else if (attribute == "minimumAirChangeRate")
-					targetUnit = "1/s";
-				else if (attribute == "maximumAirChangeRate")
-					targetUnit = "1/s";
 				else if (attribute == "startCO2Concentration")
 					targetUnit = "mol/mol";
 				else if (attribute == "startAirTemperature")
 					targetUnit = "K";
-				else if (attribute == "ambientCO2Concentration")
-					targetUnit = "mol/mol";
 				else if (attribute == "CO2ToleranceBand")
 					targetUnit = "mol/mol";
 				else if (attribute == "temperatureToleranceBand")
@@ -759,15 +741,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 							attribute + std::string("'.")).c_str());
 					}
 
-					if (attribute == "minimumAirTemperature")
-						m_minimumAirTemperature = val;
-					else if (attribute == "maximumAirTemperature")
-						m_maximumAirTemperature = val;
-					else if (attribute == "minimumAirChangeRate")
-						m_minimumAirChangeRate = val;
-					else if (attribute == "maximumAirChangeRate")
-						m_maximumAirChangeRate = val;
-					else if (attribute == "startCO2Concentration")
+					if (attribute == "startCO2Concentration")
 						m_startCO2Concentration = val;
 					else if (attribute == "startAirTemperature")
 						m_startAirTemperature = val;
@@ -778,26 +752,19 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				}
 			}
 		}
-		// check that we filled all zoen specific quantities
+		// fill all missing CO2 load schedules with empty name
 		if (m_zoneScheduleNames.size() != zoneIds.size()) {
 			// find missing quantities
 			std::set<unsigned int> missingIds = zoneIds;
 			for (const std::pair<unsigned int, std::string> &scheduleName : m_zoneScheduleNames) {
 				missingIds.erase(scheduleName.first);
 			}
-			// write missing ids into string (minimum one is missing
-			std::set<unsigned int>::const_iterator it = missingIds.begin();
-			assert(it != missingIds.end());
-			// add to string
-			std::string missingIdsStr = val2string<unsigned int>(*it);
-			++it;
-			for (; it != missingIds.end(); ++it) {
-				missingIdsStr += std::string(",") + val2string<unsigned int>(*it);
+			// add empty schedule name to list
+			for (std::set<unsigned int>::const_iterator it = missingIds.begin(); it != missingIds.end(); ++it) {
+				m_zoneScheduleNames[(int) *it] = std::string();
 			}
-			// create a meaningful error message
-			throw std::runtime_error((std::string("Missing ids ") + missingIdsStr +
-				std::string("in attribute 'zoneScheduleNames'")).c_str());
 		}
+		// check that we filled all zoen specific quantities
 		if (m_zoneFloorAreas.size() != zoneIds.size()) {
 			// find missing quantities
 			std::set<unsigned int> missingIds = zoneIds;
@@ -837,15 +804,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				std::string("in attribute 'zoneVolumes'")).c_str());
 		}
 		// check obligatory parameters
-		if (m_minimumAirTemperature == -999)
-			throw std::runtime_error("Missing attribute 'minimumAirTemperature'.");
-		else if (m_maximumAirTemperature == -999)
-			throw std::runtime_error("Missing attribute 'maximumAirTemperature'.");
-		else if (m_minimumAirChangeRate == -999)
-			throw std::runtime_error("Missing attribute 'minimumAirChangeRate'.");
-		else if (m_maximumAirChangeRate == -999)
-			throw std::runtime_error("Missing attribute 'maximumAirChangeRate'.");
-		else if (m_startCO2Concentration == -999)
+		if (m_startCO2Concentration == -999)
 			throw std::runtime_error("Missing attribute 'startCO2Concentration'.");
 		else if (m_startAirTemperature == -999)
 			throw std::runtime_error("Missing attribute 'startAirTemperature'.");
@@ -857,33 +816,36 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 
 
 void CO2ComfortVentilation::calculateAirChangeRate(double &airChangeRate, double airTemperature, double ambientTemperature,
-	double maxCO2Concentration, double CO2Concentration) {
+												   double CO2Concentration,
+												   double maxCO2Concentration, double minAirTemperature, double maxAirTemperature,
+												   double minAirChangeRate, double maxAirChangeRate) {
+
 	// return maximum rate either if CO2 concentraton is exceeded...
 	if (CO2Concentration > maxCO2Concentration + 0.5 * m_CO2ToleranceBand) {
-		airChangeRate = m_maximumAirChangeRate;
+		airChangeRate = maxAirChangeRate;
 		return;
 	}
 	// ...or air temperature is above limit
-	if (airTemperature > m_maximumAirTemperature + 0.5 * m_temperatureToleranceBand && airTemperature > ambientTemperature) {
-		airChangeRate = m_maximumAirChangeRate;
+	if (airTemperature > maxAirTemperature + 0.5 * m_temperatureToleranceBand && airTemperature > ambientTemperature) {
+		airChangeRate = maxAirChangeRate;
 		return;
 	}
 	// ...or air temperature is below limit
-	if (airTemperature < m_minimumAirTemperature - 0.5 * m_temperatureToleranceBand &&
+	if (airTemperature < minAirTemperature - 0.5 * m_temperatureToleranceBand &&
 		airTemperature < ambientTemperature) {
-		airChangeRate = m_maximumAirChangeRate;
+		airChangeRate = maxAirChangeRate;
 		return;
 	}
 	// return minimum rate either if CO2 is below tolerance band...
 	if (CO2Concentration <= maxCO2Concentration - 0.5 * m_CO2ToleranceBand) {
 		// ... and temperature is below tolerance band (cooling case)
-		if (airTemperature <= m_maximumAirTemperature - 0.5 * m_temperatureToleranceBand && airTemperature > ambientTemperature) {
-			airChangeRate = m_minimumAirChangeRate;
+		if (airTemperature <= maxAirTemperature - 0.5 * m_temperatureToleranceBand && airTemperature > ambientTemperature) {
+			airChangeRate = minAirChangeRate;
 			return;
 		}
 		// ... and temperature is above tolerance band (heating case
-		if (airTemperature >= m_minimumAirTemperature + 0.5 * m_temperatureToleranceBand && airTemperature < ambientTemperature) {
-			airChangeRate = m_minimumAirChangeRate;
+		if (airTemperature >= minAirTemperature + 0.5 * m_temperatureToleranceBand && airTemperature < ambientTemperature) {
+			airChangeRate = minAirChangeRate;
 			return;
 		}
 	}
