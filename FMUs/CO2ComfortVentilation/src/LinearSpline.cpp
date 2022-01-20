@@ -69,7 +69,7 @@ void LinearSpline::setValues(const std::vector<double> & xvals, const std::vecto
 	m_valid = makeSpline(errstr);
 	if (!errstr.empty()) {
 		/// \todo Check this, shouldn't this "warning" be handled as exception instead?
-		throw std::runtime_error(std::string("Error while makeSpline in setValues. " + errstr).c_str());
+		throw std::runtime_error("Error while makeSpline in setValues: " + errstr);
 	}
 }
 
@@ -88,10 +88,10 @@ void LinearSpline::readTsv(const Path &fpath) {
 			std::string str(filenameStr.substr(pos + 1));
 			std::stringstream strm(str);
 			if (!(strm >> colIndex))
-				throw std::runtime_error((std::string("Could not convert ")+ str + std::string(" into value.")).c_str());
+				throw std::runtime_error("Could not convert " + str + " into value.");
 		}
 		catch (...) {
-			throw std::runtime_error((std::string("Malformed file name  ")+ filenameStr + std::string(" (invalid column indicator).")).c_str());
+			throw std::runtime_error("Malformed file name  " + filenameStr + " (invalid column indicator).");
 		}
 		filename = filenameStr.substr(0, pos);
 	}
@@ -100,7 +100,7 @@ void LinearSpline::readTsv(const Path &fpath) {
 	Path tsvFilePath(filename);
 
 	if (!Path(tsvFilePath).exists())
-		throw std::runtime_error(std::string("File '")+ tsvFilePath.str() + std::string("' does not exist."));
+		throw std::runtime_error("File '"+ tsvFilePath.str() + "' does not exist.");
 	std::vector<std::vector<double> > rowData;
 	// this is now the path without column indicator
 	try {
@@ -126,8 +126,8 @@ void LinearSpline::readTsv(const Path &fpath) {
 		if (nColumns <= colIndex) {
 			std::stringstream strm;
 			strm << colIndex + 1;
-			throw std::runtime_error(std::string("File '") + tsvFilePath.str() + std::string("' must have exactly ")
-				+ strm.str() + std::string(" columns.")); // Mind: column count = 1 (time column) + colIndex
+			throw std::runtime_error("File '" + tsvFilePath.str() + "' must have exactly " + strm.str() + " columns.");
+			// Mind: column count = 1 (time column) + colIndex
 		}
 		// extract unit from caption
 		std::string timeStr = captions[0];
@@ -135,7 +135,7 @@ void LinearSpline::readTsv(const Path &fpath) {
 		// try to exclude index notation
 		explode(timeStr, tokens, "[");
 		if (tokens.size() < 2) {
-			throw std::runtime_error((std::string("Missing time unit in file '") + tsvFilePath.str() + std::string("'.")).c_str());
+			throw std::runtime_error("Missing time unit in file '" + tsvFilePath.str() + "'.");
 		}
 		std::string timeUnit = tokens[1];
 		trim(timeUnit, "] ");
@@ -145,15 +145,14 @@ void LinearSpline::readTsv(const Path &fpath) {
 		convertToBaseUnit(testVal, baseUnit, timeUnit);
 		// error in conversion
 		if (baseUnit != "s") {
-			throw std::runtime_error((std::string("Invalid time unit '") + timeUnit + std::string("in file '")
-				+ tsvFilePath.str() + std::string("'.")).c_str());
+			throw std::runtime_error("Invalid time unit '" + timeUnit + "in file '" + tsvFilePath.str() + "'.");
 		}
 
 		std::string valueStr = captions[colIndex];
 		// try to exclude index notation
 		explode(valueStr, tokens, "[");
 		if (tokens.size() < 2) {
-			throw std::runtime_error((std::string("Missing value unit in file '") + tsvFilePath.str() + std::string("'.")).c_str());
+			throw std::runtime_error("Missing value unit in file '" + tsvFilePath.str() + "'.");
 		}
 		std::string valueUnit = tokens[1];
 		trim(valueUnit, "] ");
@@ -192,10 +191,10 @@ void LinearSpline::readTsv(const Path &fpath) {
 		setValues(timeData, colData);
 	}
 	catch (std::runtime_error & ex) {
-		throw std::runtime_error((std::string("Error reading file ") + tsvFilePath.str() + std::string(": ") + ex.what()).c_str());
+		throw std::runtime_error("Error reading file " + tsvFilePath.str() + ": " + ex.what());
 	}
 	if (rowData.size() < 2)
-		throw std::runtime_error((std::string("File ") + tsvFilePath.str() + std::string(" must have at least 2 rows.")).c_str());
+		throw std::runtime_error("File " + tsvFilePath.str() + " must have at least 2 rows.");
 
 }
 
@@ -318,8 +317,8 @@ bool LinearSpline::makeSpline(std::string & errMsg) {
 LinearSpline::SplineGenerationResults LinearSpline::generate(
 		double xMin,
 		double xMax,
-		double absTol,
-		double relTol,
+		double /*absTol*/,
+		double /*relTol*/,
 		unsigned int maxPoints)
 {
 	// *** PART 1 - Initialization ***

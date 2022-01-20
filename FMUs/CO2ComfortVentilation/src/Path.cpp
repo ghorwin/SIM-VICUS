@@ -219,11 +219,11 @@ Path Path::relativePath(const Path& toPath) const {
 	}
 
 	if (orgBranches.empty()) {
-		throw std::runtime_error( std::string("Invalid original path: '") + m_path + std::string("'"));
+		throw std::runtime_error("Invalid original path: '" + m_path + "'");
 	}
 
 	if (toBranches.empty()) {
-		throw std::runtime_error( std::string("Invalid to path: '") + m_path + std::string("'") );
+		throw std::runtime_error("Invalid to path: '" + m_path + "'");
 	}
 
 	unsigned int equalCount = 0;
@@ -253,14 +253,14 @@ Path Path::relativePath(const Path& toPath) const {
 		assert(notEqualCount >= 0); // should not possible
 
 		if (notEqualCount > 0)
-			finalPath /= absolute.subBranch(equalCount, notEqualCount); // add rest
+			finalPath /= absolute.subBranch(equalCount, (unsigned int) notEqualCount); // add rest
 		// if resulting path becomes an absolute path (on Linux/Mac), remove leading slash
 		if (!finalPath.m_path.empty() && finalPath.m_path[0] == '/')
 			finalPath.m_path.erase(0,1);
 		return finalPath;
 	}
-	catch(std::exception& e) {
-		throw std::runtime_error(std::string("Error while creating final path") + e.what());
+	catch (std::runtime_error &ex) {
+		throw std::runtime_error("Error reading schedule from file '" + toPath.str() + "': " + ex.what() );
 	}
 }
 
@@ -282,7 +282,7 @@ Path Path::parentPath() const {
 	std::string resPath = m_path;
 
 	if (!isValid())
-		throw std::runtime_error(std::string("Invalid path: '") + m_path + std::string("'"));
+		throw std::runtime_error("Invalid path: '" + m_path + "'.");
 
 	if (resPath.size() == 2) {
 		pos = resPath.find(':');
@@ -324,7 +324,7 @@ Path Path::filename() const {
 
 	// IBK::Path("").filename() --> exception
 	if (m_path.empty())
-		throw std::runtime_error(std::string("Invalid path: '") + m_path + std::string("'"));
+		throw std::runtime_error("Invalid path: '" + m_path + "'.");
 
 	if (m_path.size() == 1){
 
@@ -484,7 +484,7 @@ Path Path::subBranch(unsigned int begin, unsigned int count) const {
 		return *this;
 
 	if (!isValid())
-		throw std::runtime_error(std::string("Invalid path: '") + m_path + std::string("'"));
+		throw std::runtime_error("Invalid path: '" + m_path + "'.");
 
 	if ( m_path[0] == '/' ) {
 		isLinuxAbsolute = true;
@@ -563,15 +563,13 @@ Path Path::current() {
 	if(! _wgetcwd(currentDir, FILENAME_MAX)) {
 		switch(errno) {
 			case ENOMEM: {
-				std::cout << "Out of memory! Can not reserve " << FILENAME_MAX << " bytes. " << std::endl;
-				break;
+				throw std::runtime_error("Out of memory! Can not reserve " + FILENAME_MAX + " bytes.");
 			}
 			case ERANGE: {
-				std::cout << "Path longer than " << FILENAME_MAX << " characters. " << std::endl;
-				break;
+				throw std::runtime_error("Path longer than " + FILENAME_MAX + " characters.");
 			}
 			default: {
-				std::cout << "Couldn't deduce user directory. " << std::endl;
+				throw std::runtime_error("Couldn't deduce user directory." );
 			}
 		}
 
@@ -581,14 +579,13 @@ Path Path::current() {
 		return Path( WstringToUTF8(currentDir) );
 	}
 	catch(...) {
-		return Path("");
+		throw std::runtime_error("Couldn't deduce user directory.");
 	}
 #elif __GNUC__
 	char currentDir[FILENAME_MAX] = {0};
 	if(!getcwd(currentDir, FILENAME_MAX)) {
 		/// \todo some more error handling here
-		std::cout << "Couldn't deduce user directory. " <<std::endl;
-		return Path("");
+		throw std::runtime_error("Couldn't deduce user directory.");
 	}
 	return Path(currentDir);
 #else
@@ -761,7 +758,9 @@ Path::DirExistsResult Path::directoryExists(const std::string& dirname) const {
 	int res = stat(cleanPath.c_str(), &buf);
 	if (res == -1) {
 		switch (errno) {
-			case EACCES : std::cout << "Cannot access file/directory '"+dirname+"'!" << std::endl; break;
+			case EACCES :
+				throw std::runtime_error( "Cannot access file/directory '" + dirname + "'!");
+			default: break;
 		}
 		return NoSuchDirectory;
 	}
