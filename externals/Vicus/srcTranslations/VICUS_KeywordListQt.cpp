@@ -239,6 +239,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Upper limit for outside air temperature.");
 	tr("Lower limit for outside air temperature.");
 	tr("Temperature difference limit (inside - outside).");
+	tr("Maximum increase of air change rate");
 	tr("Limit for wind speed .");
 	tr("Global horizontal (upper) sensor setpoint value.");
 	tr("Global north (upper) sensor setpoint value.");
