@@ -55,7 +55,11 @@ public:
 		NUM_MT						// Keyword: None			'No convective heat exchange'
 	};
 
-	/*! Defines what kind of zone is connected via this boundary condition. */
+	/*! Defines what kind of zone is connected via this boundary condition.
+		If 'Constant' or 'Scheduled' are used when neighbouring zones are not calculated themselves
+		but their temperature is known. For ground zones, i.e. in case of soil contact to the construction
+		the heat exchange coeff. should be very high 1000 W/m2K to neglect the heat transfer resistance.
+	*/
 	enum OtherZoneType {
 		OZ_Standard,			// Keyword: Standard			'Active zone or outside'
 		OZ_Constant,			// Keyword: Constant			'Zone/ground with constant temperature'
@@ -67,7 +71,7 @@ public:
 	enum para_t {
 		/*! Constant heat transfer coefficient [W/m2K] */
 		P_HeatTransferCoefficient,	// Keyword: HeatTransferCoefficient [W/m2K]		'Convective heat transfer coefficient'
-		/*! Reference to a const temperature of neighboring zone. */
+		/*! Reference to a const temperature of neighboring zone (required for OZ_Constant). */
 		P_ConstTemperature,			// Keyword: ConstTemperature [C]				'Constant temperature of other zone/ground'
 		NUM_P
 	};
