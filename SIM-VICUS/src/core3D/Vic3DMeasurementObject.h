@@ -80,6 +80,9 @@ public:
 	QVector3D					m_startPoint;
 	/*! Starting point of the line distance measurement. */
 	QVector3D					m_endPoint;
+    /*! Indicates whether measurement is currently actice or on finished state */
+    bool                        m_isActive = true;
+
 };
 
 } // namespace Vic3D

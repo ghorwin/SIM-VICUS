@@ -38,6 +38,8 @@
 
 #include "SVSettings.h"
 #include "SVGeometryView.h"
+#include "SVViewStateHandler.h"
+#include "SVMeasurementWidget.h"
 
 namespace Vic3D {
 
@@ -58,6 +60,8 @@ void MeasurementObject::reset() {
 	destroy();
 
 	m_vertexCount = 0;
+
+    m_isActive = true;
 }
 
 void MeasurementObject::setMeasureLine(const QVector3D & end, const QVector3D & cameraForward) {
@@ -118,7 +122,7 @@ void MeasurementObject::render() {
 	m_vao.bind();
 
 	// draw lines
-	QColor measurementLineColor = QColor("#E30513");
+    QColor measurementLineColor = SVViewStateHandler::instance().m_measurementWidget->m_color;
 	QVector4D col(measurementLineColor.redF(), measurementLineColor.greenF(), measurementLineColor.blueF(), 1.0);
 	m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[1], col);
 	glDrawArrays(GL_LINES, 0, m_vertexCount);
