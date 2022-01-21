@@ -55,6 +55,7 @@
 #include "SVNavigationTreeWidget.h"
 #include "SVMeasurementWidget.h"
 #include "SVMainWindow.h"
+#include "SVGeometryView.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -97,7 +98,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
 
-    m_measurementWidget = new SVMeasurementWidget();
+	m_measurementWidget = new SVMeasurementWidget(SVViewStateHandler::instance().m_geometryView);
 }
 
 
@@ -115,113 +116,113 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// filter out all modification types that we handle
 	SVProjectHandler::ModificationTypes mod = (SVProjectHandler::ModificationTypes)modificationType;
 	switch (mod) {
-		case SVProjectHandler::AllModified : {
-			updateGrid = true;
-			updateBuilding = true;
-			updateNetwork = true;
-			updateCamera = true;
-			updateSelection = true;
-			// clear new polygon drawing object
-			m_newGeometryObject.clear();
-			// set scene operation mode to "normal" if we are in place vertex mode
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+	case SVProjectHandler::AllModified : {
+		updateGrid = true;
+		updateBuilding = true;
+		updateNetwork = true;
+		updateCamera = true;
+		updateSelection = true;
+		// clear new polygon drawing object
+		m_newGeometryObject.clear();
+		// set scene operation mode to "normal" if we are in place vertex mode
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			vs.m_sceneOperationMode = SVViewState::NUM_OM;
+			vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+		}
+
+		// clear selection object, to avoid accessing invalidated pointers
+		m_selectedGeometryObject.m_selectedObjects.clear();
+		SVViewStateHandler::instance().setViewState(vs);
+	} break;
+
+	case SVProjectHandler::BuildingTopologyChanged :
+		refreshColors();
+		break;
+
+	case SVProjectHandler::BuildingGeometryChanged : {
+		updateBuilding = true;
+		updateSelection = true;
+		// we might have just deleted all selected items, in this case switch back to
+
+		std::set<const VICUS::Object*> selectedObjects;
+
+		project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+		// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			if (selectedObjects.empty()) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
 				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 			}
-
-			// clear selection object, to avoid accessing invalidated pointers
-			m_selectedGeometryObject.m_selectedObjects.clear();
+			else {
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+				// Do not modify property widget mode
+			}
 			SVViewStateHandler::instance().setViewState(vs);
-		} break;
-
-		case SVProjectHandler::BuildingTopologyChanged :
-			refreshColors();
-		break;
-
-		case SVProjectHandler::BuildingGeometryChanged : {
-			updateBuilding = true;
-			updateSelection = true;
-			// we might have just deleted all selected items, in this case switch back to
-
-			std::set<const VICUS::Object*> selectedObjects;
-
-			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
-			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-				if (selectedObjects.empty()) {
-					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-				}
-				else {
-					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-					// Do not modify property widget mode
-				}
-				SVViewStateHandler::instance().setViewState(vs);
-			}
-
-		} break;
-
-		case SVProjectHandler::GridModified :
-			updateGrid = true;
-			updateCamera = true;
-		break;
-
-		case SVProjectHandler::NetworkModified :
-			updateNetwork = true;
-			updateSelection = true;
-		break;
-
-		case SVProjectHandler::ComponentInstancesModified : {
-			const SVViewState & vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-				refreshColors();
-				if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
-					m_transparentBuildingObject.updateBuffers();
-			}
-			return;
 		}
 
-		case SVProjectHandler::SubSurfaceComponentInstancesModified :
-			// changes in sub-surface assignments may change the transparency of constructions, hence
-			// requires a re-setup of building geometry
-			updateBuilding = true;
+	} break;
+
+	case SVProjectHandler::GridModified :
+		updateGrid = true;
+		updateCamera = true;
+		break;
+
+	case SVProjectHandler::NetworkModified :
+		updateNetwork = true;
+		updateSelection = true;
+		break;
+
+	case SVProjectHandler::ComponentInstancesModified : {
+		const SVViewState & vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+			refreshColors();
+			if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
+				m_transparentBuildingObject.updateBuffers();
+		}
+		return;
+	}
+
+	case SVProjectHandler::SubSurfaceComponentInstancesModified :
+		// changes in sub-surface assignments may change the transparency of constructions, hence
+		// requires a re-setup of building geometry
+		updateBuilding = true;
 		break;
 
 		// *** selection and visibility properties changed ***
-		case SVProjectHandler::NodeStateModified : {
-			// for now trigger update of building and network geometry objects
-			// TODO : for large objects this may not necessarily be fast, especially if only few
-			//        elements are selected, but at least this is very robust
-			updateBuilding = true;
-			updateNetwork = true;
+	case SVProjectHandler::NodeStateModified : {
+		// for now trigger update of building and network geometry objects
+		// TODO : for large objects this may not necessarily be fast, especially if only few
+		//        elements are selected, but at least this is very robust
+		updateBuilding = true;
+		updateNetwork = true;
 
-			// Now check if our new selection set is different from the previous selection set.
-			std::set<const VICUS::Object*> selectedObjects;
+		// Now check if our new selection set is different from the previous selection set.
+		std::set<const VICUS::Object*> selectedObjects;
 
-			project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
-			if (selectedObjects != m_selectedGeometryObject.m_selectedObjects)
-				updateSelection = true;
+		project().selectObjects(selectedObjects, VICUS::Project::SG_All, true, true);
+		if (selectedObjects != m_selectedGeometryObject.m_selectedObjects)
+			updateSelection = true;
 
-			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
-			SVViewState vs = SVViewStateHandler::instance().viewState();
-			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
-				if (selectedObjects.empty()) {
-					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-				}
-				else {
-					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-					// Do not modify property widget mode
-				}
-				SVViewStateHandler::instance().setViewState(vs);
+		// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+		SVViewState vs = SVViewStateHandler::instance().viewState();
+		if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
+			if (selectedObjects.empty()) {
+				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 			}
+			else {
+				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+				// Do not modify property widget mode
+			}
+			SVViewStateHandler::instance().setViewState(vs);
+		}
 
-		} break;
+	} break;
 
-		default:
-			return; // do nothing by default
+	default:
+		return; // do nothing by default
 	}
 
 	// *** initialize camera placement and model placement in the world ***
@@ -318,7 +319,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* aspect ratio */   width / float(height),
 				/* near */           0.1f,
 				/* far */            farDistance
-		);
+				);
 	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
 	// the small view projection matrix is constant
@@ -329,7 +330,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* aspect ratio */   1, // it's a square window
 				/* near */           0.1f,
 				/* far */            farDistance
-		);
+				);
 
 	// update cached world2view matrix
 	updateWorld2ViewMatrix();
@@ -363,11 +364,11 @@ void Scene::updateWorld2ViewMatrix() {
 
 
 bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
-//	QPoint lastLeftButtonPos;
-//	if (keyboardMouseHandler.buttonReleased(Qt::LeftButton))
-//		lastLeftButtonPos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
-//	else
-//		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
+	//	QPoint lastLeftButtonPos;
+	//	if (keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+	//		lastLeftButtonPos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
+	//	else
+	//		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
 
 	// NOTE: In this function we handle only those keyboard inputs that affect the scene navigation.
 	//       Single key release events are handled in Vic3DSceneView, since they do not require repeated screen redraws.
@@ -410,7 +411,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	newLocalMousePos = localMousePos;
 	// retrieve mouse delta
 	QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos());
-//	qDebug() << mouseDelta << m_navigationMode;
+	//	qDebug() << mouseDelta << m_navigationMode;
 	int mouse_dx = mouseDelta.x();
 	int mouse_dy = mouseDelta.y();
 
@@ -494,26 +495,26 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						m_navigationMode = NM_InteractiveRotation;
 						// which axis?
 						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
-							case 0 :
-								// rotate around z
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+						case 0 :
+							// rotate around z
+							m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
+							m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+							m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+							m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
 							break;
 
-							case 1 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+						case 1 :
+							m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateX;
+							m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+							m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+							m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
 							break;
 
-							case 2 :
-								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
-								m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
-								m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
-								m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
+						case 2 :
+							m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateY;
+							m_rotationAxis = QtExt::QVector2IBKVector( m_coordinateSystemObject.localYAxis() );
+							m_rotationVectorX = QtExt::QVector2IBKVector( m_coordinateSystemObject.localZAxis() );
+							m_rotationVectorY = QtExt::QVector2IBKVector( m_coordinateSystemObject.localXAxis() );
 							break;
 						}
 
@@ -555,147 +556,147 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				m_mouseMoveDistance += mouse_dx*mouse_dx + mouse_dy*mouse_dy;
 
 				switch (m_navigationMode) {
-					case Vic3D::Scene::NM_Panning:
-					case Vic3D::Scene::NM_FirstPerson:
-					case Vic3D::Scene::NUM_NM:
+				case Vic3D::Scene::NM_Panning:
+				case Vic3D::Scene::NM_FirstPerson:
+				case Vic3D::Scene::NUM_NM:
 					break; // for these modes, do nothing (can happen for multi-mouse-button-press and dragging)
 
-					case NM_OrbitController : {
-						// vector from pick point (center of orbit) to camera position
-						QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
+				case NM_OrbitController : {
+					// vector from pick point (center of orbit) to camera position
+					QVector3D lineOfSight = m_camera.translation() - m_orbitControllerOrigin;
 
-						// create a transformation object
-						Transform3D orbitTrans;
+					// create a transformation object
+					Transform3D orbitTrans;
 
-						// mouse x translation = rotation around rotation axis
+					// mouse x translation = rotation around rotation axis
 
-						const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
-						// set rotation around z axis for x-mouse-delta
-						orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+					const QVector3D GlobalUpwardsVector(0.0f, 0.0f, 1.0f);
+					// set rotation around z axis for x-mouse-delta
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
 
 
-						// mouse y translation = rotation around "right" axis
-						int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
+					// mouse y translation = rotation around "right" axis
+					int mouseInversionFactor = SVSettings::instance().m_invertYMouseAxis ? -1 : 1;
 
-						QVector3D LocalRight = m_camera.right().normalized();
-						// set rotation around "right" axis for y-mouse-delta
-						orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+					QVector3D LocalRight = m_camera.right().normalized();
+					// set rotation around "right" axis for y-mouse-delta
+					orbitTrans.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
-						// rotate vector to camera
-						lineOfSight = orbitTrans.toMatrix() * lineOfSight;
+					// rotate vector to camera
+					lineOfSight = orbitTrans.toMatrix() * lineOfSight;
 
-						// rotate the camera around the same angles
-						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
-						m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
+					// rotate the camera around the same angles
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dx, GlobalUpwardsVector);
+					m_camera.rotate(MOUSE_ROTATION_SPEED * mouse_dy * mouseInversionFactor, LocalRight);
 
 #if 1
-						// fix "roll" error due to rounding
-						// only do this when we are not viewing the scene from vertically from above/below
-						float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
-						if (std::fabs(cosViewAngle) < 0.6f) {
-							// up and forward vectors should be always in a vertical plane
-							// forward and z-axis form a vertical plane with normal
-							QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
-							verticalPlaneNormal.normalize();
+					// fix "roll" error due to rounding
+					// only do this when we are not viewing the scene from vertically from above/below
+					float cosViewAngle = QVector3D::dotProduct(m_camera.forward(), GlobalUpwardsVector);
+					if (std::fabs(cosViewAngle) < 0.6f) {
+						// up and forward vectors should be always in a vertical plane
+						// forward and z-axis form a vertical plane with normal
+						QVector3D verticalPlaneNormal = QVector3D::crossProduct(m_camera.forward(), GlobalUpwardsVector);
+						verticalPlaneNormal.normalize();
 
-							// the camera right angle should always match this normal vector
-							float cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-							if (cosBeta > -1 && cosBeta < 1) {
-								float beta = std::acos(cosBeta)/3.14159265f*180;
-								// which direction to rotate?
-								m_camera.rotate(beta, m_camera.forward());
-								float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-								if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
-									m_camera.rotate(-2*beta, m_camera.forward());
-								//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
-							}
+						// the camera right angle should always match this normal vector
+						float cosBeta = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+						if (cosBeta > -1 && cosBeta < 1) {
+							float beta = std::acos(cosBeta)/3.14159265f*180;
+							// which direction to rotate?
+							m_camera.rotate(beta, m_camera.forward());
+							float cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
+							if (std::fabs(std::fabs(cosBeta2) - 1) > 1e-5f)
+								m_camera.rotate(-2*beta, m_camera.forward());
+							//						cosBeta2 = QVector3D::dotProduct(verticalPlaneNormal, m_camera.right().normalized());
 						}
+					}
 #endif
-						// get new camera location
-						QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
-						//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
+					// get new camera location
+					QVector3D newCamPos = m_orbitControllerOrigin + lineOfSight;
+					//					qDebug() << "Moving camera from " << m_camera.translation() << "to" << newCamPos;
 
-						// move camera
-						m_camera.setTranslation(newCamPos);
+					// move camera
+					m_camera.setTranslation(newCamPos);
 
-						// cursor wrap adjustment
-						adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
-					} break; // orbit controller active
+					// cursor wrap adjustment
+					adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
+				} break; // orbit controller active
 
-					case NM_InteractiveTranslation: {
-						// pick a point and snap to some point in the scene
-						if (!pickObject.m_pickPerformed)
-							pick(pickObject);
+				case NM_InteractiveTranslation: {
+					// pick a point and snap to some point in the scene
+					if (!pickObject.m_pickPerformed)
+						pick(pickObject);
 
-						// now we handle the snapping rules and also the locking
-						snapLocalCoordinateSystem(pickObject);
+					// now we handle the snapping rules and also the locking
+					snapLocalCoordinateSystem(pickObject);
 
-				//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+					//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
-						// determine vector to snapped mouse position
-						QVector3D newPoint = m_coordinateSystemObject.translation();
-						// vector offset from starting point to current location
-						QVector3D translationVector = newPoint - m_translateOrigin;
-						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
-					} break;// interactive translation active
+					// determine vector to snapped mouse position
+					QVector3D newPoint = m_coordinateSystemObject.translation();
+					// vector offset from starting point to current location
+					QVector3D translationVector = newPoint - m_translateOrigin;
+					// now set this in the wireframe object as translation
+					m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+				} break;// interactive translation active
 
 
-					case NM_InteractiveRotation: {
-						// take the line-of-sight and compute intersection point with current rotation plane
-						// rotation plane = rotation axis (e.g. TM_RotateX) and offset
+				case NM_InteractiveRotation: {
+					// take the line-of-sight and compute intersection point with current rotation plane
+					// rotation plane = rotation axis (e.g. TM_RotateX) and offset
 
-						// store current's coordinate system position
-						IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
+					// store current's coordinate system position
+					IBKMK::Vector3D coordinateSystemLocation = QtExt::QVector2IBKVector( m_coordinateSystemObject.translation() );
 
-						// pick a point and snap to some point in the scene
-						if (!pickObject.m_pickPerformed)
-							pick(pickObject); // TODO : if a performance hit, reduce to only compute line-of-sight
+					// pick a point and snap to some point in the scene
+					if (!pickObject.m_pickPerformed)
+						pick(pickObject); // TODO : if a performance hit, reduce to only compute line-of-sight
 
-						IBKMK::Vector3D intersectionPoint;
-						double dist;
-						bool haveIntersection = IBKMK::linePlaneIntersection(coordinateSystemLocation, m_rotationAxis, /* rotation plane */
-																			 pickObject.m_lineOfSightOffset, pickObject.m_lineOfSightDirection,
-																			 intersectionPoint, dist);
-						if (!haveIntersection) {
-							IBK::IBK_Message("Cannot compute intersection between line of sight and rotation plane.");
+					IBKMK::Vector3D intersectionPoint;
+					double dist;
+					bool haveIntersection = IBKMK::linePlaneIntersection(coordinateSystemLocation, m_rotationAxis, /* rotation plane */
+																		 pickObject.m_lineOfSightOffset, pickObject.m_lineOfSightDirection,
+																		 intersectionPoint, dist);
+					if (!haveIntersection) {
+						IBK::IBK_Message("Cannot compute intersection between line of sight and rotation plane.");
+					}
+
+					if (haveIntersection) {
+						// compute angle between intersection point and offset and rotation start point and offset
+						// snap angle to 10 degrees, except if shift is pressed
+
+						double x,y;
+						bool res = planeCoordinates(coordinateSystemLocation, m_rotationVectorX, m_rotationVectorY,
+													intersectionPoint, x, y);
+						if (res) {
+							double angle = std::atan2(y,x)/IBK::DEG2RAD;
+							if (angle < 0)
+								angle = 360 + angle;
+
+							// snap angle
+							if (!keyboardHandler.keyDown(Qt::Key_Shift))
+								angle = std::floor(angle/10 + 0.5)*10;
+							IBK::IBK_Message(IBK::FormatString("Rotation angle = %1 deg\n").arg(angle), IBK::MSG_PROGRESS);
+
+							// compute rotation for local coordinate system
+							QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)angle);
+							QQuaternion coordinateSystemRotation = q*m_originalRotation;
+
+							// rotate local coordinate system (translation isn't needed)
+							m_coordinateSystemObject.setRotation(coordinateSystemRotation);
+
+							// determine new center point if selected geometry were rotated around origin
+							IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+							// now rotate selected geometry and move it back into original center
+
+							// now set this in the wireframe object as translation
+							m_selectedGeometryObject.m_transform.setRotation(q);
+							m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
 						}
+					}
 
-						if (haveIntersection) {
-							// compute angle between intersection point and offset and rotation start point and offset
-							// snap angle to 10 degrees, except if shift is pressed
-
-							double x,y;
-							bool res = planeCoordinates(coordinateSystemLocation, m_rotationVectorX, m_rotationVectorY,
-														intersectionPoint, x, y);
-							if (res) {
-								double angle = std::atan2(y,x)/IBK::DEG2RAD;
-								if (angle < 0)
-									angle = 360 + angle;
-
-								// snap angle
-								if (!keyboardHandler.keyDown(Qt::Key_Shift))
-									angle = std::floor(angle/10 + 0.5)*10;
-								IBK::IBK_Message(IBK::FormatString("Rotation angle = %1 deg\n").arg(angle), IBK::MSG_PROGRESS);
-
-								// compute rotation for local coordinate system
-								QQuaternion q = QQuaternion::fromAxisAndAngle( QtExt::IBKVector2QVector(m_rotationAxis), (float)angle);
-								QQuaternion coordinateSystemRotation = q*m_originalRotation;
-
-								// rotate local coordinate system (translation isn't needed)
-								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
-
-								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QtExt::QVector2IBKVector( q.rotatedVector( QtExt::IBKVector2QVector(m_boundingBoxCenterPoint) ) );
-								// now rotate selected geometry and move it back into original center
-
-								// now set this in the wireframe object as translation
-								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(QtExt::IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
-							}
-						}
-
-					} break;// interactive translation active
+				} break;// interactive translation active
 				} // switch
 			} // mouse dragged
 		}
@@ -794,7 +795,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	QVector3D oldPos = m_coordinateSystemObject.translation();
 	// if in "place vertex" mode, perform picking operation and snap coordinate system to grid
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
+			SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 	{
 		// follow line of sign and determine possible objects to hit
 		if (!pickObject.m_pickPerformed)
@@ -804,14 +805,14 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		snapLocalCoordinateSystem(pickObject);
 
 		needRepaint = true;
-//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
+		//		qDebug() << localMousePos << QtExt::IBKVector2QVector(o.m_pickPoint) << m_coordinateSystemObject.translation();
 
 		// update the movable coordinate system's location in the new polygon object
 		QVector3D newPoint = m_coordinateSystemObject.translation();
 		if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
-
+	// measurement is updated in scene
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
 
 		// follow line of sign and determine possible objects to hit
@@ -820,10 +821,15 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 		// now we handle the snapping rules and also the locking; updates local coordinate system location
 		snapLocalCoordinateSystem(pickObject);
-
 		// update window with distance info
-        m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
-        m_measurementWidget->setEndPoint();
+		if(m_measurementObject.m_isActive) {
+			if(m_measurementObject.m_startPoint == QVector3D() ) {
+				m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
+			}
+			else {
+				m_measurementWidget->showEndPoint(m_coordinateSystemObject.translation() );
+			}
+		}
 	}
 
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
@@ -888,22 +894,22 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					// each of the columns of the rotation matrix is the normalized local coordinate axis
 					//
 					// now build the rotation matrix
-		//			QMatrix3x3 R;
-		//			float * r = R.data();
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localX.normalized());
-		//			r+=3;
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(localY.normalized());
-		//			r+=3;
-		//			*(QVector3D*)r = QtExt::IBKVector2QVector(n.normalized());
-		//			qDebug() << R;
-		//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
-		//			qDebug() << q;
+					//			QMatrix3x3 R;
+					//			float * r = R.data();
+					//			*(QVector3D*)r = QtExt::IBKVector2QVector(localX.normalized());
+					//			r+=3;
+					//			*(QVector3D*)r = QtExt::IBKVector2QVector(localY.normalized());
+					//			r+=3;
+					//			*(QVector3D*)r = QtExt::IBKVector2QVector(n.normalized());
+					//			qDebug() << R;
+					//			QQuaternion q = QQuaternion::fromRotationMatrix(R);
+					//			qDebug() << q;
 
 					// or use the ready-made Qt function (which surprisingly gives the same result :-)
 					QQuaternion q2 = QQuaternion::fromAxes(QtExt::IBKVector2QVector(localX.normalized()),
 														   QtExt::IBKVector2QVector(localY.normalized()),
 														   QtExt::IBKVector2QVector(n.normalized()));
-		//			qDebug() << q2;
+					//			qDebug() << q2;
 					m_coordinateSystemObject.setRotation(q2);
 				}
 			}
@@ -999,7 +1005,7 @@ void Scene::render() {
 	// set view position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], viewPos);
 
-//#define FIXED_LIGHT_POSITION
+	//#define FIXED_LIGHT_POSITION
 #ifdef FIXED_LIGHT_POSITION
 	// use a fixed light position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
@@ -1100,10 +1106,10 @@ void Scene::render() {
 	// *** movable coordinate system  ***
 
 	bool drawLocalCoordinateSystem = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
+									  vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+									  vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+									  vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
+									  vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
 
 	// do not draw LCS if we are in sub-surface mode
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
@@ -1125,7 +1131,7 @@ void Scene::render() {
 		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
 		// this reverts the effect introduced by the model2world matrix on the light/view coordinates.
 		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
-//		qDebug() << viewPos << m_coordinateSystemObject.translation();
+		//		qDebug() << viewPos << m_coordinateSystemObject.translation();
 
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
@@ -1137,12 +1143,16 @@ void Scene::render() {
 
 	if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
 
+		QVector3D ep;
 
-		m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
-        m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+		if (m_measurementObject.m_isActive)
+			ep = m_coordinateSystemObject.translation();
+		else
+			ep = m_measurementObject.m_endPoint;
 
-        m_measurementWidget->setEndPoint();
-        m_measurementWidget->setDistance();
+		m_measurementObject.setMeasureLine(ep, m_camera.forward() );
+		m_measurementWidget->showEndPoint(ep);
+		m_measurementWidget->showDistance(ep-m_measurementObject.m_startPoint);
 
 		m_measurementShader->bind();
 		m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[0], m_worldToView);
@@ -1172,7 +1182,7 @@ void Scene::setViewState(const SVViewState & vs) {
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
-			m_lastColorObjectID != vs.m_colorModePropertyID)
+				m_lastColorObjectID != vs.m_colorModePropertyID)
 		{
 			colorUpdateNeeded = true;
 		}
@@ -1241,11 +1251,11 @@ void Scene::refreshColors() {
 
 
 void Scene::generateBuildingGeometry() {
-//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-//	// when we show transparent building, we do not need to update the building geometry
-//	// when we switch object color mode, this function will be called again anyways
-//	if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
-//		return;
+	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	//	// when we show transparent building, we do not need to update the building geometry
+	//	// when we switch object color mode, this function will be called again anyways
+	//	if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
+	//		return;
 
 	QElapsedTimer t;
 	t.start();
@@ -1301,7 +1311,7 @@ void Scene::generateBuildingGeometry() {
 					for (unsigned int i=0; i<s.subSurfaces().size(); ++i) {
 						const VICUS::SubSurface & sub = s.subSurfaces()[i];
 						if (sub.m_subSurfaceComponentInstance != nullptr &&
-							sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
+								sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
 						{
 							// lookup subsurface component - if it exists
 							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
@@ -1318,9 +1328,9 @@ void Scene::generateBuildingGeometry() {
 
 						// not a transparent surface, just add surface as opaque surface
 						addSubSurface(s, i, currentVertexIndex, currentElementIndex,
-								   m_buildingGeometryObject.m_vertexBufferData,
-								   m_buildingGeometryObject.m_colorBufferData,
-								   m_buildingGeometryObject.m_indexBufferData);
+									  m_buildingGeometryObject.m_vertexBufferData,
+									  m_buildingGeometryObject.m_colorBufferData,
+									  m_buildingGeometryObject.m_indexBufferData);
 					}
 				}
 			}
@@ -1361,9 +1371,9 @@ void Scene::generateBuildingGeometry() {
 
 
 void Scene::generateTransparentBuildingGeometry() {
-//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
-//		return;
+	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
+	//		return;
 
 	QElapsedTimer t;
 	t.start();
@@ -1412,7 +1422,7 @@ void Scene::generateTransparentBuildingGeometry() {
 		// invalid polygons should be highlighted somewhere else
 
 		if (!ci.m_sideASurface->geometry().isValid() ||
-			!ci.m_sideBSurface->geometry().isValid())
+				!ci.m_sideBSurface->geometry().isValid())
 			continue;
 
 		// both polygons must be visible
@@ -1444,7 +1454,7 @@ void Scene::generateTransparentBuildingGeometry() {
 		IBKMK::Vector3D n2 = (v2[0] - v2[1]).crossProduct(v2[2]-v2[1]);
 		IBKMK::Vector3D centerLine = s2center - s1center;
 
-		 // make sure normals of both polygons point along center line
+		// make sure normals of both polygons point along center line
 		if (centerLine.scalarProduct(n1) < 0)
 			std::reverse(v1.begin(), v1.end());
 		if (centerLine.scalarProduct(n2) < 0)
@@ -1482,9 +1492,9 @@ void Scene::generateTransparentBuildingGeometry() {
 		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
 			linkBoxColor = QColor(255,64,32,226);
 		addBox(v1, linkBoxColor, currentVertexIndex, currentElementIndex,
-				 m_transparentBuildingObject.m_vertexBufferData,
-				 m_transparentBuildingObject.m_colorBufferData,
-				 m_transparentBuildingObject.m_indexBufferData);
+			   m_transparentBuildingObject.m_vertexBufferData,
+			   m_transparentBuildingObject.m_colorBufferData,
+			   m_transparentBuildingObject.m_indexBufferData);
 	}
 
 	for (const VICUS::Building & b : p.m_buildings) {
@@ -1514,7 +1524,7 @@ void Scene::generateTransparentBuildingGeometry() {
 						if (!sub.m_visible || sub.m_selected)
 							continue;
 						if (sub.m_subSurfaceComponentInstance != nullptr &&
-							sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
+								sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent != VICUS::INVALID_ID)
 						{
 							// lookup subsurface component - if it exists
 							const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[sub.m_subSurfaceComponentInstance->m_idSubSurfaceComponent];
@@ -1595,10 +1605,10 @@ void Scene::generateNetworkGeometry() {
 
 			m_networkGeometryObject.m_vertexStartMap[no.uniqueID()] = currentVertexIndex;
 			addSphere(no.m_position, col, radius,
-						currentVertexIndex, currentElementIndex,
-						m_networkGeometryObject.m_vertexBufferData,
-						m_networkGeometryObject.m_colorBufferData,
-						m_networkGeometryObject.m_indexBufferData);
+					  currentVertexIndex, currentElementIndex,
+					  m_networkGeometryObject.m_vertexBufferData,
+					  m_networkGeometryObject.m_colorBufferData,
+					  m_networkGeometryObject.m_indexBufferData);
 		}
 	}
 
@@ -1673,265 +1683,265 @@ void Scene::recolorObjects(SVViewState::ObjectColorMode ocm, unsigned int id) co
 	//       have a different color than regular surfaces without component
 
 	switch (ocm) {
-		case SVViewState::OCM_InterlinkedSurfaces:
-		case SVViewState::OCM_None: break;
+	case SVViewState::OCM_InterlinkedSurfaces:
+	case SVViewState::OCM_None: break;
 
-		case SVViewState::OCM_SelectedSurfacesHighlighted: {
-			for (const VICUS::Building & b : p.m_buildings) {
-				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-					for (const VICUS::Room & r : bl.m_rooms) {
-						for (const VICUS::Surface & s : r.m_surfaces) {
+	case SVViewState::OCM_SelectedSurfacesHighlighted: {
+		for (const VICUS::Building & b : p.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					for (const VICUS::Surface & s : r.m_surfaces) {
 
-							// change color of selected surfaces
-							if (s.m_selected)
-								s.m_color = QColor(255,144,0,255); // nice orange
-						}
+						// change color of selected surfaces
+						if (s.m_selected)
+							s.m_color = QColor(255,144,0,255); // nice orange
 					}
 				}
 			}
-		} break;
+		}
+	} break;
 
-		case SVViewState::OCM_Components: {
-			// now color all surfaces that appear somewhere in a ComponentInstance
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
-				QColor col;
-				if (ci.m_idComponent == VICUS::INVALID_ID)
-					col = QColor(96,0,0);
-				else {
-					// lookup component definition
-					const VICUS::Component * comp = db.m_components[ci.m_idComponent];
-					if (comp == nullptr)
-						col = QColor(148,64,64);
-					else
-						col = comp->m_color;
-				}
-				if (ci.m_sideASurface != nullptr)
-					ci.m_sideASurface->m_color = col;
-				if (ci.m_sideBSurface != nullptr)
-					ci.m_sideBSurface->m_color = col;
-			}
-		} break;
-
-		case SVViewState::OCM_SubSurfaceComponents:
-		case SVViewState::OCM_ComponentOrientation:
-		case SVViewState::OCM_SurfaceHeating:
-		case SVViewState::OCM_BoundaryConditions: {
-			// now color all surfaces, this works by first looking up the components, associated with each surface
-			for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+	case SVViewState::OCM_Components: {
+		// now color all surfaces that appear somewhere in a ComponentInstance
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			QColor col;
+			if (ci.m_idComponent == VICUS::INVALID_ID)
+				col = QColor(96,0,0);
+			else {
 				// lookup component definition
 				const VICUS::Component * comp = db.m_components[ci.m_idComponent];
 				if (comp == nullptr)
-					continue; // no component definition - keep default (gray) color
-				switch (ocm) {
-					case SVViewState::OCM_ComponentOrientation:
-						// color surfaces when either filtering is off (id == 0)
-						// or when component ID matches selected id
-						if (id == VICUS::INVALID_ID || ci.m_idComponent == id) {
-							// color side A surfaces with blue,
-							// side B surfaces with orange
-							if (ci.m_sideASurface != nullptr)
-								ci.m_sideASurface->m_color = QColor(47,125,212);
-							if (ci.m_sideBSurface != nullptr)
-								ci.m_sideBSurface->m_color = QColor(255, 206, 48);
-						}
-					break;
-					case SVViewState::OCM_BoundaryConditions:
-						if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-							// lookup boundary condition definition
-							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-							if (bc != nullptr)
-								ci.m_sideASurface->m_color = bc->m_color;
-						}
-						if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-							// lookup boundary condition definition
-							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-							if (bc != nullptr)
-								ci.m_sideBSurface->m_color = bc->m_color;
-						}
-					break;
+					col = QColor(148,64,64);
+				else
+					col = comp->m_color;
+			}
+			if (ci.m_sideASurface != nullptr)
+				ci.m_sideASurface->m_color = col;
+			if (ci.m_sideBSurface != nullptr)
+				ci.m_sideBSurface->m_color = col;
+		}
+	} break;
 
-					case SVViewState::OCM_SurfaceHeating: {
-						// lookup surface heating definition
-						const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
-						if (surfHeat != nullptr) {
-							if (ci.m_sideASurface != nullptr)
-								ci.m_sideASurface->m_color = surfHeat->m_color;
-							if (ci.m_sideBSurface != nullptr)
-								ci.m_sideBSurface->m_color = surfHeat->m_color;
-						}
-						else {
-							if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
-								if (ci.m_sideASurface != nullptr)
-									ci.m_sideASurface->m_color = QColor("#758eb3");
-								if (ci.m_sideBSurface != nullptr)
-									ci.m_sideBSurface->m_color = QColor("#758eb3");
-							}
+	case SVViewState::OCM_SubSurfaceComponents:
+	case SVViewState::OCM_ComponentOrientation:
+	case SVViewState::OCM_SurfaceHeating:
+	case SVViewState::OCM_BoundaryConditions: {
+		// now color all surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::ComponentInstance & ci : project().m_componentInstances) {
+			// lookup component definition
+			const VICUS::Component * comp = db.m_components[ci.m_idComponent];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (gray) color
+			switch (ocm) {
+			case SVViewState::OCM_ComponentOrientation:
+				// color surfaces when either filtering is off (id == 0)
+				// or when component ID matches selected id
+				if (id == VICUS::INVALID_ID || ci.m_idComponent == id) {
+					// color side A surfaces with blue,
+					// side B surfaces with orange
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = QColor(47,125,212);
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = QColor(255, 206, 48);
+				}
+				break;
+			case SVViewState::OCM_BoundaryConditions:
+				if (ci.m_sideASurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+					if (bc != nullptr)
+						ci.m_sideASurface->m_color = bc->m_color;
+				}
+				if (ci.m_sideBSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+					if (bc != nullptr)
+						ci.m_sideBSurface->m_color = bc->m_color;
+				}
+				break;
 
-						}
+			case SVViewState::OCM_SurfaceHeating: {
+				// lookup surface heating definition
+				const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
+				if (surfHeat != nullptr) {
+					if (ci.m_sideASurface != nullptr)
+						ci.m_sideASurface->m_color = surfHeat->m_color;
+					if (ci.m_sideBSurface != nullptr)
+						ci.m_sideBSurface->m_color = surfHeat->m_color;
+				}
+				else {
+					if (comp->m_activeLayerIndex != VICUS::INVALID_ID) {
+						if (ci.m_sideASurface != nullptr)
+							ci.m_sideASurface->m_color = QColor("#758eb3");
+						if (ci.m_sideBSurface != nullptr)
+							ci.m_sideBSurface->m_color = QColor("#758eb3");
 					}
-					break;
 
-					// the color modes below are not handled here and are only added to get rid of compiler warnins
-					case SVViewState::OCM_Components:
-					case SVViewState::OCM_ZoneTemplates:
-					case SVViewState::OCM_SubSurfaceComponents:
-					case SVViewState::OCM_None:
-					case SVViewState::OCM_Network:
-					case SVViewState::OCM_NetworkEdge:
-					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkSubNetworks:
-					case SVViewState::OCM_NetworkHeatExchange:
-					case SVViewState::OCM_SelectedSurfacesHighlighted:
-					case SVViewState::OCM_InterlinkedSurfaces:
-					break;
 				}
 			}
+				break;
 
-			// now color all sub-surfaces, this works by first looking up the components, associated with each surface
-			for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
-				// lookup component definition
-				const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
-				if (comp == nullptr)
-					continue; // no component definition - keep default (uninterested) color
-				switch (ocm) {
-					case SVViewState::OCM_SubSurfaceComponents:
-						if (ci.m_sideASubSurface != nullptr) {
-							ci.m_sideASubSurface->m_color = comp->m_color;
-							// TODO : decide upon alpha value based on component type
-							ci.m_sideASubSurface->m_color.setAlpha(128);
-						}
-						if (ci.m_sideBSubSurface != nullptr) {
-							ci.m_sideBSubSurface->m_color = comp->m_color;
-							ci.m_sideBSubSurface->m_color.setAlpha(128);
-						}
-					break;
-					case SVViewState::OCM_ComponentOrientation:
-						// color surfaces when either filtering is off (id == 0)
-						// or when component ID matches selected id
-						if (id == VICUS::INVALID_ID || ci.m_idSubSurfaceComponent == id) {
-							// color side A surfaces with blue,
-							// side B surfaces with orange
-							// colors slightly brighter than components, to allow differntiation
-							if (ci.m_sideASubSurface != nullptr)
-								ci.m_sideASubSurface->m_color = QColor(92,149,212, 128); // set slightly transparent to have effect on windows
-							if (ci.m_sideBSubSurface != nullptr)
-								ci.m_sideBSubSurface->m_color = QColor(255, 223, 119, 128); // set slightly transparent to have effect on windows
-						}
-					break;
-					case SVViewState::OCM_BoundaryConditions :
-						if (ci.m_sideASubSurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
-							// lookup boundary condition definition
-							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
-							if (bc != nullptr) {
-								ci.m_sideASubSurface->m_color = bc->m_color.lighter(50);
-								ci.m_sideASubSurface->m_color.setAlpha(128);
-							}
-						}
-						if (ci.m_sideBSubSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
-							// lookup boundary condition definition
-							const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
-							if (bc != nullptr) {
-								ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
-								ci.m_sideBSubSurface->m_color.setAlpha(128);
-							}
-						}
-					break;
-
-						// the color modes below are not handled here and are only added to get rid of compiler warnins
-					case SVViewState::OCM_ZoneTemplates:
-					case SVViewState::OCM_Components:
-					case SVViewState::OCM_None:
-					case SVViewState::OCM_SelectedSurfacesHighlighted:
-					case SVViewState::OCM_Network:
-					case SVViewState::OCM_NetworkEdge:
-					case SVViewState::OCM_NetworkNode:
-					case SVViewState::OCM_NetworkSubNetworks:
-					case SVViewState::OCM_NetworkHeatExchange:
-					case SVViewState::OCM_SurfaceHeating:
-					case SVViewState::OCM_InterlinkedSurfaces:
-					break;
-				} // switch
+				// the color modes below are not handled here and are only added to get rid of compiler warnins
+			case SVViewState::OCM_Components:
+			case SVViewState::OCM_ZoneTemplates:
+			case SVViewState::OCM_SubSurfaceComponents:
+			case SVViewState::OCM_None:
+			case SVViewState::OCM_Network:
+			case SVViewState::OCM_NetworkEdge:
+			case SVViewState::OCM_NetworkNode:
+			case SVViewState::OCM_NetworkSubNetworks:
+			case SVViewState::OCM_NetworkHeatExchange:
+			case SVViewState::OCM_SelectedSurfacesHighlighted:
+			case SVViewState::OCM_InterlinkedSurfaces:
+				break;
 			}
+		}
 
-		} break;
-
-		case SVViewState::OCM_ZoneTemplates: {
-			for (const VICUS::Building & b : p.m_buildings) {
-				for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-					for (const VICUS::Room & r : bl.m_rooms) {
-						// skip all without zone template
-						if (r.m_idZoneTemplate == VICUS::INVALID_ID)
-							continue; // they keep the default gray
-						if (id == VICUS::INVALID_ID || r.m_idZoneTemplate == id) {
-							// lookup zone template
-							const VICUS::ZoneTemplate * zt = db.m_zoneTemplates[r.m_idZoneTemplate];
-							if (zt == nullptr)
-								continue; // no definition - keep default (gray) color
-							// color all surfaces of room based on zone template color
-							for (const VICUS::Surface & s : r.m_surfaces)
-								s.m_color = zt->m_color;
-							// TODO : subsurfaces
-
-						}
+		// now color all sub-surfaces, this works by first looking up the components, associated with each surface
+		for (const VICUS::SubSurfaceComponentInstance & ci : project().m_subSurfaceComponentInstances) {
+			// lookup component definition
+			const VICUS::SubSurfaceComponent * comp = db.m_subSurfaceComponents[ci.m_idSubSurfaceComponent];
+			if (comp == nullptr)
+				continue; // no component definition - keep default (uninterested) color
+			switch (ocm) {
+			case SVViewState::OCM_SubSurfaceComponents:
+				if (ci.m_sideASubSurface != nullptr) {
+					ci.m_sideASubSurface->m_color = comp->m_color;
+					// TODO : decide upon alpha value based on component type
+					ci.m_sideASubSurface->m_color.setAlpha(128);
+				}
+				if (ci.m_sideBSubSurface != nullptr) {
+					ci.m_sideBSubSurface->m_color = comp->m_color;
+					ci.m_sideBSubSurface->m_color.setAlpha(128);
+				}
+				break;
+			case SVViewState::OCM_ComponentOrientation:
+				// color surfaces when either filtering is off (id == 0)
+				// or when component ID matches selected id
+				if (id == VICUS::INVALID_ID || ci.m_idSubSurfaceComponent == id) {
+					// color side A surfaces with blue,
+					// side B surfaces with orange
+					// colors slightly brighter than components, to allow differntiation
+					if (ci.m_sideASubSurface != nullptr)
+						ci.m_sideASubSurface->m_color = QColor(92,149,212, 128); // set slightly transparent to have effect on windows
+					if (ci.m_sideBSubSurface != nullptr)
+						ci.m_sideBSubSurface->m_color = QColor(255, 223, 119, 128); // set slightly transparent to have effect on windows
+				}
+				break;
+			case SVViewState::OCM_BoundaryConditions :
+				if (ci.m_sideASubSurface != nullptr && comp->m_idSideABoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
+					if (bc != nullptr) {
+						ci.m_sideASubSurface->m_color = bc->m_color.lighter(50);
+						ci.m_sideASubSurface->m_color.setAlpha(128);
 					}
 				}
-			}
-		} break;
+				if (ci.m_sideBSubSurface != nullptr && comp->m_idSideBBoundaryCondition != VICUS::INVALID_ID) {
+					// lookup boundary condition definition
+					const VICUS::BoundaryCondition * bc = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
+					if (bc != nullptr) {
+						ci.m_sideBSubSurface->m_color = bc->m_color.lighter(50);
+						ci.m_sideBSubSurface->m_color.setAlpha(128);
+					}
+				}
+				break;
 
+				// the color modes below are not handled here and are only added to get rid of compiler warnins
+			case SVViewState::OCM_ZoneTemplates:
+			case SVViewState::OCM_Components:
+			case SVViewState::OCM_None:
+			case SVViewState::OCM_SelectedSurfacesHighlighted:
+			case SVViewState::OCM_Network:
+			case SVViewState::OCM_NetworkEdge:
+			case SVViewState::OCM_NetworkNode:
+			case SVViewState::OCM_NetworkSubNetworks:
+			case SVViewState::OCM_NetworkHeatExchange:
+			case SVViewState::OCM_SurfaceHeating:
+			case SVViewState::OCM_InterlinkedSurfaces:
+				break;
+			} // switch
+		}
 
-		case SVViewState::OCM_Network:
-		case SVViewState::OCM_NetworkNode:
-		case SVViewState::OCM_NetworkEdge:
-		case SVViewState::OCM_NetworkHeatExchange:
-		case SVViewState::OCM_NetworkSubNetworks:
-			for (const VICUS::Network & net: p.m_geometricNetworks){
+	} break;
 
-				switch (ocm) {
-					case SVViewState::OCM_NetworkNode: {
-						for (const VICUS::NetworkNode & node: net.m_nodes){
-							if (node.m_type == VICUS::NetworkNode::NT_Source)
-								node.m_color = QColor(230, 138, 0); // orange
-							else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
-								node.m_color = QColor(119, 179, 0); // green
-							else // Building
-								node.m_color = QColor(0, 107, 179); // blue
-						}
-					} break;
-					case SVViewState::OCM_NetworkEdge: {
-						for (const VICUS::NetworkEdge & edge: net.m_edges){
-							unsigned int id = edge.m_idPipe;
-							if (db.m_pipes[id] != nullptr)
-								edge.m_color = db.m_pipes[id]->m_color;
-						}
-					} break;
-					case SVViewState::OCM_NetworkHeatExchange: {
-						for (const VICUS::NetworkEdge & edge: net.m_edges)
-							edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
-						for (const VICUS::NetworkNode & node: net.m_nodes)
-							node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
-					} break;
-					case SVViewState::OCM_NetworkSubNetworks: {
-						for (const VICUS::NetworkNode & node: net.m_nodes){
-							unsigned int id = node.m_idSubNetwork;
-							if (db.m_subNetworks[id] != nullptr)
-								node.m_color = db.m_subNetworks[id]->m_color;
-						}
-					} break;
+	case SVViewState::OCM_ZoneTemplates: {
+		for (const VICUS::Building & b : p.m_buildings) {
+			for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+				for (const VICUS::Room & r : bl.m_rooms) {
+					// skip all without zone template
+					if (r.m_idZoneTemplate == VICUS::INVALID_ID)
+						continue; // they keep the default gray
+					if (id == VICUS::INVALID_ID || r.m_idZoneTemplate == id) {
+						// lookup zone template
+						const VICUS::ZoneTemplate * zt = db.m_zoneTemplates[r.m_idZoneTemplate];
+						if (zt == nullptr)
+							continue; // no definition - keep default (gray) color
+						// color all surfaces of room based on zone template color
+						for (const VICUS::Surface & s : r.m_surfaces)
+							s.m_color = zt->m_color;
+						// TODO : subsurfaces
 
-						// rest only to avoid compiler warnings
-					case SVViewState::OCM_None:
-					case SVViewState::OCM_SelectedSurfacesHighlighted:
-					case SVViewState::OCM_Components:
-					case SVViewState::OCM_SubSurfaceComponents:
-					case SVViewState::OCM_ComponentOrientation:
-					case SVViewState::OCM_BoundaryConditions:
-					case SVViewState::OCM_ZoneTemplates:
-					case SVViewState::OCM_SurfaceHeating:
-					case SVViewState::OCM_Network:
-					case SVViewState::OCM_InterlinkedSurfaces:
-					break;
+					}
 				}
 			}
+		}
+	} break;
+
+
+	case SVViewState::OCM_Network:
+	case SVViewState::OCM_NetworkNode:
+	case SVViewState::OCM_NetworkEdge:
+	case SVViewState::OCM_NetworkHeatExchange:
+	case SVViewState::OCM_NetworkSubNetworks:
+		for (const VICUS::Network & net: p.m_geometricNetworks){
+
+			switch (ocm) {
+			case SVViewState::OCM_NetworkNode: {
+				for (const VICUS::NetworkNode & node: net.m_nodes){
+					if (node.m_type == VICUS::NetworkNode::NT_Source)
+						node.m_color = QColor(230, 138, 0); // orange
+					else if (node.m_type == VICUS::NetworkNode::NT_Mixer)
+						node.m_color = QColor(119, 179, 0); // green
+					else // Building
+						node.m_color = QColor(0, 107, 179); // blue
+				}
+			} break;
+			case SVViewState::OCM_NetworkEdge: {
+				for (const VICUS::NetworkEdge & edge: net.m_edges){
+					unsigned int id = edge.m_idPipe;
+					if (db.m_pipes[id] != nullptr)
+						edge.m_color = db.m_pipes[id]->m_color;
+				}
+			} break;
+			case SVViewState::OCM_NetworkHeatExchange: {
+				for (const VICUS::NetworkEdge & edge: net.m_edges)
+					edge.m_color = VICUS::Network::colorHeatExchangeType(edge.m_heatExchange.m_modelType);
+				for (const VICUS::NetworkNode & node: net.m_nodes)
+					node.m_color = VICUS::Network::colorHeatExchangeType(node.m_heatExchange.m_modelType);
+			} break;
+			case SVViewState::OCM_NetworkSubNetworks: {
+				for (const VICUS::NetworkNode & node: net.m_nodes){
+					unsigned int id = node.m_idSubNetwork;
+					if (db.m_subNetworks[id] != nullptr)
+						node.m_color = db.m_subNetworks[id]->m_color;
+				}
+			} break;
+
+				// rest only to avoid compiler warnings
+			case SVViewState::OCM_None:
+			case SVViewState::OCM_SelectedSurfacesHighlighted:
+			case SVViewState::OCM_Components:
+			case SVViewState::OCM_SubSurfaceComponents:
+			case SVViewState::OCM_ComponentOrientation:
+			case SVViewState::OCM_BoundaryConditions:
+			case SVViewState::OCM_ZoneTemplates:
+			case SVViewState::OCM_SurfaceHeating:
+			case SVViewState::OCM_Network:
+			case SVViewState::OCM_InterlinkedSurfaces:
+				break;
+			}
+		}
 		break;
 	}
 
@@ -2077,14 +2087,14 @@ void Scene::leaveAnySpecialMode() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	// leave any mode we are currently in and restore previous state
 	switch (vs.m_sceneOperationMode) {
-		case SVViewState::OM_AlignLocalCoordinateSystem :
-			leaveCoordinateSystemAdjustmentMode(true);
+	case SVViewState::OM_AlignLocalCoordinateSystem :
+		leaveCoordinateSystemAdjustmentMode(true);
 		break;
-		case SVViewState::OM_MoveLocalCoordinateSystem :
-			leaveCoordinateSystemTranslationMode(true);
+	case SVViewState::OM_MoveLocalCoordinateSystem :
+		leaveCoordinateSystemTranslationMode(true);
 		break;
-		case SVViewState::OM_MeasureDistance:
-			leaveMeasurementMode();
+	case SVViewState::OM_MeasureDistance:
+		leaveMeasurementMode();
 		break;
 	}
 }
@@ -2152,8 +2162,7 @@ void Scene::enterMeasurementMode() {
 	SVViewStateHandler::instance().setViewState(vs);
 	qDebug() << "Entering 'Measurement' mode";
 
-    m_measurementWidget->show();
-    m_measurementWidget->setMeasurementData(m_measurementObject);
+	m_measurementWidget->show();
 
 }
 
@@ -2166,7 +2175,8 @@ void Scene::leaveMeasurementMode() {
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 
-    m_measurementWidget->hide();
+	m_measurementWidget->hide();
+	m_measurementWidget->reset();
 }
 
 
@@ -2220,7 +2230,7 @@ void Scene::pick(PickObject & pickObject) {
 	// In this function we only collect the pick candidates. The calling function has to
 	// pick the right one.
 
-//#define SHOW_PICK_TIME
+	//#define SHOW_PICK_TIME
 #ifdef SHOW_PICK_TIME
 	QElapsedTimer pickTimer;
 	pickTimer.start();
@@ -2415,10 +2425,10 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	IBKMK::Vector3D direction;
 	// get direction in case of axis lock
 	switch (vs.m_locks) {
-		case SVViewState::L_LocalX : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
-		case SVViewState::L_LocalY : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
-		case SVViewState::L_LocalZ : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
-		case SVViewState::NUM_L: ; // no lock
+	case SVViewState::L_LocalX : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
+	case SVViewState::L_LocalY : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
+	case SVViewState::L_LocalZ : direction = QtExt::QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
+	case SVViewState::NUM_L: ; // no lock
 	}
 
 	// compute closest point between line-of-sight and locked axis
@@ -2679,7 +2689,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	} // with snapping
 
-//	qDebug() << "Snap to: " << snapInfo.c_str();
+	//	qDebug() << "Snap to: " << snapInfo.c_str();
 
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line
@@ -2699,12 +2709,12 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 
 void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
-											 QPoint & newLocalMousePos, PickObject & pickObject)
+										QPoint & newLocalMousePos, PickObject & pickObject)
 {
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
-//						qDebug() << "Resetting mousepos to right side of window.";
+		//						qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePos.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
@@ -2735,71 +2745,65 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 
 	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
-		// *** place a vertex ***
-		case SVViewState::NUM_OM :
-		case SVViewState::OM_SelectedGeometry : {
-			// selection handling
-			handleSelection(keyboardHandler, o);
-			return;
+	// *** place a vertex ***
+	case SVViewState::NUM_OM :
+	case SVViewState::OM_SelectedGeometry : {
+		// selection handling
+		handleSelection(keyboardHandler, o);
+		return;
+	}
+
+	case SVViewState::OM_MeasureDistance : {
+		// we start a new measurement when:
+		// a) no start and no end point have been set yet (i.e. mode has just started)
+		// b) last measurement is complete, i.e. both start and end point are set
+
+		// new starting point for measurement selected
+		if (m_measurementObject.m_startPoint == QVector3D())
+		{
+			// if we start from "initial mode", show the distance widget
+			// store new start point
+			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 		}
-
-		case SVViewState::OM_MeasureDistance : {
-			// we start a new measurement when:
-			// a) no start and no end point have been set yet (i.e. mode has just started)
-			// b) last measurement is complete, i.e. both start and end point are set
-
-			// new starting point for measurement selected
-			if (m_measurementObject.m_startPoint == QVector3D() ||
-				(m_measurementObject.m_startPoint != QVector3D() && m_measurementObject.m_endPoint != QVector3D()) )
-			{
-				// if we start from "initial mode", show the distance widget
-				if (m_measurementObject.m_startPoint == QVector3D()) {
-					// TODO : Stephan, m_distanceWidget->show(); m_distanceWidget->setPos(...)
-				}
-				// store new start point
-				m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
-				// clear end point
-				m_measurementObject.m_endPoint = QVector3D();
-
-                m_measurementWidget->setStartPoint();
-
-                //qDebug() << "Set start point for distance measurement: \t" << sp.x() << "\t" << sp.y() << "\t" << sp.z();
-			}
-			else {
-				// finish measurement mode by fixing the end point
-				m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
-
-                m_measurementWidget->setEndPoint();
-			}
-			return;
+		else if (m_measurementObject.m_startPoint != QVector3D() && m_measurementObject.m_endPoint != QVector3D()) {
+			m_measurementObject.reset();
+			m_measurementWidget->reset();
+			m_measurementObject.m_isActive = true;
 		}
+		else {
+			// finish measurement mode by fixing the end point
+			m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+			m_measurementObject.m_isActive = false;
+		}
+		return;
+	}
 
 		// *** place a vertex ***
-		case SVViewState::OM_PlaceVertex : {
-			// get current coordinate system's position
-			IBKMK::Vector3D p = QtExt::QVector2IBKVector(m_coordinateSystemObject.translation());
-			// append a vertex (this will automatically update the draw buffer) and also
-			// modify the vertexListWidget.
-			m_newGeometryObject.appendVertex(p);
-			return;
-		}
+	case SVViewState::OM_PlaceVertex : {
+		// get current coordinate system's position
+		IBKMK::Vector3D p = QtExt::QVector2IBKVector(m_coordinateSystemObject.translation());
+		// append a vertex (this will automatically update the draw buffer) and also
+		// modify the vertexListWidget.
+		m_newGeometryObject.appendVertex(p);
+		return;
+	}
 
 		// *** align coordinate system ***
-		case SVViewState::OM_AlignLocalCoordinateSystem : {
-			// finish aligning coordinate system and keep selected rotation in coordinate system
-			// but restore origin of local coordinate system object
-			m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
-			// switch back to previous view state
-			leaveCoordinateSystemAdjustmentMode(false);
-			return;
-		}
+	case SVViewState::OM_AlignLocalCoordinateSystem : {
+		// finish aligning coordinate system and keep selected rotation in coordinate system
+		// but restore origin of local coordinate system object
+		m_coordinateSystemObject.setTranslation(m_oldCoordinateSystemTransform.translation());
+		// switch back to previous view state
+		leaveCoordinateSystemAdjustmentMode(false);
+		return;
+	}
 
 		// *** move coordinate system ***
-		case SVViewState::OM_MoveLocalCoordinateSystem : {
-			// finish moving coordinate system and current local coordinate system location
-			leaveCoordinateSystemTranslationMode(false);
-			return;
-		}
+	case SVViewState::OM_MoveLocalCoordinateSystem : {
+		// finish moving coordinate system and current local coordinate system location
+		leaveCoordinateSystemTranslationMode(false);
+		return;
+	}
 	}
 
 }
@@ -2839,10 +2843,10 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 
 		// create undo-action that toggles the selection
 		SVUndoTreeNodeState * action = SVUndoTreeNodeState::createUndoAction(tr("Selection changed"),
-															   SVUndoTreeNodeState::SelectedState,
-															   uniqueID,
-															   selectChildren, // if true, select all children, otherwise only the object itself
-															   !obj->m_selected);
+																			 SVUndoTreeNodeState::SelectedState,
+																			 uniqueID,
+																			 selectChildren, // if true, select all children, otherwise only the object itself
+																			 !obj->m_selected);
 		action->push();
 
 		// now the data model and the views have been updated, also now signal the navigation tree view to scroll

@@ -228,6 +228,10 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 	return true;
 }
 
+QPoint SVGeometryView::topLeft() {
+	return m_sceneViewContainerWidget->rect().topLeft();
+}
+
 
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();

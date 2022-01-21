@@ -91,6 +91,8 @@ public:
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);
 
+	QPoint topLeft();
+
 public slots:
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
 		visibility of the local coordinate system.

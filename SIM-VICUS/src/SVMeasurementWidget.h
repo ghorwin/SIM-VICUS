@@ -36,6 +36,7 @@ namespace Vic3D {
     class MeasurementObject;
 };
 
+/* This is the measurement widget which show all data needed for measurements inside the scene. */
 class SVMeasurementWidget : public QWidget
 {
 	Q_OBJECT
@@ -44,18 +45,28 @@ public:
     explicit SVMeasurementWidget(QWidget *parent = nullptr);
     ~SVMeasurementWidget();
 
-    void setMeasurementData(Vic3D::MeasurementObject &mo);
+	/*! Resets all line edits in measurement widget. */
+	void reset();
 
-    void setDistance();
+	/*! Updates the distance based on start and end point in the measurement object. */
+	void showDistance(const QVector3D &diff);
+	/*! Sets the start point based on the measurement object. */
+	void showStartPoint(const QVector3D &sp);
+	/*! Sets the end point based on the measurement object. */
+	void showEndPoint(const QVector3D &ep);
 
-    void setStartPoint();
+	/*! Color of measurementLine. */
+	QColor  m_color = Qt::red;
 
-    void setEndPoint();
+private slots:
+	void on_pushButtonCopyInformation_clicked();
+
+	void on_pushButtonColor_colorChanged();
 
 private:
     Ui::SVMeasurementWidget                 *m_ui;
 
-    Vic3D::MeasurementObject                *m_measurementObject = nullptr;
+
 };
 
 #endif // SVMeasurementWidgetH
