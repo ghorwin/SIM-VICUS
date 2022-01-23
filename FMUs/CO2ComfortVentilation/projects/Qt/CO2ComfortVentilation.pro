@@ -22,7 +22,6 @@ HEADERS += \
 	../../src/Helpers.h \
 	../../src/LinearSpline.h \
 	../../src/Path.h \
-	../../src/fast_double_parser/fast_double_parser.h \
 	../../src/fmi2common/fmi2Functions.h \
 	../../src/fmi2common/fmi2Functions_complete.h \
 	../../src/fmi2common/fmi2FunctionTypes.h \

@@ -13,18 +13,47 @@
 #endif
 
 #include "Helpers.h"
-#include "fast_double_parser/fast_double_parser.h"
+
+#ifdef _WIN32
+
+  #ifndef _WIN64
+
+	#define IBK_USE_STOD
+
+  #else
+
+	#include "fast_float/fast_float.h"
+
+  #endif
+
+#else
+
+  #include "fast_float/fast_float.h"
+
+#endif
 
 template <>
 double string2val<double>(const std::string& str) {
 	double val;
-	if (str == "1.#QNAN")
+	if (str=="1.#QNAN")
 		return std::numeric_limits<double>::quiet_NaN();
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok) {
+#ifdef IBK_USE_STOD
+	// for 32-bit, use std::stod()
+	size_t pos;
+	try {
+		val = std::stod(str, &pos); // may throw std::out_of_range or std::invalid_argument
+		if (str.find_first_not_of(" \t\n", pos) != std::string::npos)
+			throw std::exception();
+	}
+	catch (...) {
+		throw IBK::Exception(IBK::FormatString("Could not convert '%1' into value.").arg(str), "[IBK::string2val<double>]");
+	}
+#else
+	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
+	if (answer.ec != std::errc())
 		throw std::runtime_error((std::string("Could not convert " + str +
 			std::string(" into value."))).c_str());
-	}
+#endif
 	return val;
 }
 
@@ -41,15 +70,31 @@ bool string2val<bool>(const std::string & str) {
 
 template <>
 double string2valDef<double>(const std::string& str, const double & def) {
-	if (str == "1.#QNAN")
+	if (str=="1.#QNAN")
 		return std::numeric_limits<double>::quiet_NaN();
 	double val;
-	bool isok = fast_double_parser::decimal_separator_dot::parse_number(str.c_str(), &val);
-	if (!isok)
+#ifdef IBK_USE_STOD
+	// for 32-bit, use std::stod()
+	size_t pos;
+	if (std::locale().name() != "C")
+		setlocale(LC_ALL, "C");
+	try {
+		val = std::stod(str, &pos); // may throw std::out_of_range or std::invalid_argument
+		if (str.find_first_not_of(" \t\n", pos) != std::string::npos)
+			throw std::exception();
+	}
+	catch (...) {
 		throw std::runtime_error((std::string("Could not convert " + str +
 			std::string(" into value."))).c_str());
+	}
+#else
+	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
+	if (answer.ec != std::errc())
+		return def;
+#endif
 	return val;
 }
+
 
 size_t explode(const std::string& str, std::vector<std::string>& tokens, const std::string& delims) {
 	tokens.clear();

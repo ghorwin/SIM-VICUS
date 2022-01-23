@@ -114,44 +114,44 @@ private:
 	/*! Parameters*/
 
 	/*! Number of zones*/
-	unsigned int				m_nZones = 999;
+	unsigned int						m_nZones = 999;
 	/*! Zone air volume [m3], sorted by zone ids*/
-	std::map<int, double>		m_zoneVolumes;
+	std::map<unsigned int, double>		m_zoneVolumes;
 	/*! Zone floor area [m2], sorted by zone ids*/
-	std::map<int, double>		m_zoneFloorAreas;
+	std::map<unsigned int, double>		m_zoneFloorAreas;
 	/*! Zone schedule names for CO2 source, sorted by zone ids*/
-	std::map<int, std::string>	m_zoneScheduleNames;
+	std::map<unsigned int, std::string>	m_zoneScheduleNames;
 	/*! CO2 source [kg/s] (sorted by schedule name)*/
 	std::map<std::string, LinearSpline>	m_co2LoadPerZoneFloorAreasSplines;
 	/*! Ambient CO2 concentration [mol/mol]*/
-	LinearSpline				m_ambientCO2ConcentrationSpline;
+	LinearSpline						m_ambientCO2ConcentrationSpline;
 	/*! Start value for zone air CO2 concentration [mol/mol]*/
-	double						m_startCO2Concentration = -999;
+	double								m_startCO2Concentration = -999;
 	/*! Start value for zone air temperature [K]*/
-	double						m_startAirTemperature = -999;
+	double								m_startAirTemperature = -999;
 	/*! Tolerance band for hystersis controller for CO2 concentration [mol/mol]
 		(if deactivated, digital controller is chosen)*/
-	double						m_CO2ToleranceBand = 0;
+	double								m_CO2ToleranceBand = 0;
 	/*! Tolerance band for hystersis controller for zone air temperature [K]
 		(if deactivated, digital controller is chosen)*/
-	double						m_temperatureToleranceBand = 0;
+	double								m_temperatureToleranceBand = 0;
 
 	/*! Time integration quantities*/
 
 	/*! Cached current time point of the FMU, defines starting point for time integration in co-simulation mode. */
-	double m_currentTimePoint;
+	double								m_currentTimePoint;
 
 	/*! Last time point*/
-	double						m_lastTimePoint;
+	double								m_lastTimePoint;
 
 	/*! Solution quantities*/
 
 	/*! Vector of CO2 masses.*/
-	std::map<int, double>		m_zoneCO2Masses;
+	std::map<unsigned int, double>		m_zoneCO2Masses;
 	/*! Vector of CO2 masses of the previos time point*/
-	std::map<int, double>		m_zoneCO2MassesLastTimePoint;
+	std::map<unsigned int, double>		m_zoneCO2MassesLastTimePoint;
 	/*! Vector of calculated air change rates*/
-	std::map<int, double>		m_zoneAirChangeRates;
+	std::map<unsigned int, double>		m_zoneAirChangeRates;
 }; // class CO2ComfortVentilation
 
 #endif // CO2ComfortVentilationH

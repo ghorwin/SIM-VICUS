@@ -80,7 +80,7 @@ void CO2ComfortVentilation::init() {
 
 			// select all schedule names
 			std::set<std::string> scheduleCO2SourceNames;
-			for (const std::pair<const int, std::string> &scheduleName : m_zoneScheduleNames) {
+			for (const std::pair<const unsigned int, std::string> &scheduleName : m_zoneScheduleNames) {
 				// skip empty names
 				if(scheduleName.second.empty())
 					continue;
@@ -126,25 +126,25 @@ void CO2ComfortVentilation::init() {
 			}
 
 			// initialize result quantities, input output variables
-			for (const std::pair<const int, double> &zoneVol : m_zoneVolumes) {
+			for (const std::pair<const unsigned int, double> &zoneVol : m_zoneVolumes) {
 				// retrieve zone id
-				int zoneId = zoneVol.first;
+				unsigned int zoneId = zoneVol.first;
 				// set start values
 				double startAirChangeRate = 0.;
 				// resize and set input varables
-				m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId] = startAirChangeRate;
+				m_realVar[FMI_INPUT_MinimumAirChangeRate + (int)zoneId] = startAirChangeRate;
 				// zone air temperature [K] from FMI inputs
-				m_realVar[FMI_INPUT_RoomAirTemperature + zoneId] = m_startAirTemperature;
+				m_realVar[FMI_INPUT_RoomAirTemperature + (int)zoneId] = m_startAirTemperature;
 				// maximum CO2 concentration [mol/mol] from FMI inputs
-				m_realVar[FMI_INPUT_MaximumCO2Concentration + zoneId] = m_startCO2Concentration;
+				m_realVar[FMI_INPUT_MaximumCO2Concentration + (int)zoneId] = m_startCO2Concentration;
 				// minimum air change rate [1/s] from FMI inputs
-				m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId] = 0.0;
+				m_realVar[FMI_INPUT_MinimumAirChangeRate + (int)zoneId] = 0.0;
 				// maximum air change rate [1/s] from FMI inputs
-				m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + zoneId] = 0.0;
+				m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + (int)zoneId] = 0.0;
 				// minimum air temperature [K] from FMI inputs
-				m_realVar[FMI_INPUT_MinimumAirTemperature + zoneId] = m_startAirTemperature;
+				m_realVar[FMI_INPUT_MinimumAirTemperature + (int)zoneId] = m_startAirTemperature;
 				// maximum air temperature [K] from FMI inputs
-				m_realVar[FMI_INPUT_MaximumAirTemperature + zoneId] = m_startAirTemperature;
+				m_realVar[FMI_INPUT_MaximumAirTemperature + (int)zoneId] = m_startAirTemperature;
 
 				// set individual values
 
@@ -157,8 +157,8 @@ void CO2ComfortVentilation::init() {
 
 				m_zoneAirChangeRates[zoneId] = startAirChangeRate;
 				m_zoneCO2Masses[zoneId] = startCO2Density * zoneVol.second;
-				m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = startAirChangeRate;
-				m_realVar[FMI_OUTPUT_CO2Concentration + zoneId] = m_startCO2Concentration;
+				m_realVar[FMI_OUTPUT_AirChangeRate + (int)zoneId] = startAirChangeRate;
+				m_realVar[FMI_OUTPUT_CO2Concentration + (int)zoneId] = m_startCO2Concentration;
 			}
 
 			// initialize integrator for co-simulation
@@ -205,26 +205,26 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 	double deltaT = tCommunicationIntervalEnd - m_lastTimePoint;
 
 	// we loop through all containers via iterator in order to avoid unneccesary search operations
-	std::map<int, double>::const_iterator zoneIt = m_zoneVolumes.begin();
+	std::map<unsigned int, double>::const_iterator zoneIt = m_zoneVolumes.begin();
 
 	// loop over all zones
 	for (; zoneIt != m_zoneVolumes.end();	++zoneIt) {
 
 		// retrieve zone id
-		int zoneId = zoneIt->first;
+		unsigned int zoneId = zoneIt->first;
 
 		// zone air temperature [K] from FMI inputs
-		double zoneAirTemperature = m_realVar[FMI_INPUT_RoomAirTemperature + zoneId];
+		double zoneAirTemperature = m_realVar[FMI_INPUT_RoomAirTemperature + (int)zoneId];
 		// maximum CO2 concentration [mol/mol] from FMI inputs
-		double maximumCO2Concentration = m_realVar[FMI_INPUT_MaximumCO2Concentration + zoneId];
+		double maximumCO2Concentration = m_realVar[FMI_INPUT_MaximumCO2Concentration + (int)zoneId];
 		// minimum air change rate [1/s] from FMI inputs
-		double minimumAirChangeRate = m_realVar[FMI_INPUT_MinimumAirChangeRate + zoneId];
+		double minimumAirChangeRate = m_realVar[FMI_INPUT_MinimumAirChangeRate + (int)zoneId];
 		// maximum air change rate [1/s] from FMI inputs
-		double maximumAirChangeRate = m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + zoneId] + minimumAirChangeRate;
+		double maximumAirChangeRate = m_realVar[FMI_INPUT_MaximumAirChangeRateIncrease + (int)zoneId] + minimumAirChangeRate;
 		// minimum air temperature [K] from FMI inputs
-		double minimumAirTemperature = m_realVar[FMI_INPUT_MinimumAirTemperature + zoneId];
+		double minimumAirTemperature = m_realVar[FMI_INPUT_MinimumAirTemperature + (int)zoneId];
 		// maximum air temperature [K] from FMI inputs
-		double maximumAirTemperature = m_realVar[FMI_INPUT_MaximumAirTemperature + zoneId];
+		double maximumAirTemperature = m_realVar[FMI_INPUT_MaximumAirTemperature + (int)zoneId];
 
 		// CO2 mass of last time step [kg/s] from solution vector
 		double zoneCO2MassLast = m_zoneCO2MassesLastTimePoint[zoneId];
@@ -306,8 +306,8 @@ void CO2ComfortVentilation::integrateTo(double tCommunicationIntervalEnd) {
 		double zoneCO2Concentration = zoneCO2Density / molarMassCO2 * RIdealGas * zoneAirTemperature / referencePressure;
 
 		// output variables
-		m_realVar[FMI_OUTPUT_AirChangeRate + zoneId] = zoneAirChangeRate;
-		m_realVar[FMI_OUTPUT_CO2Concentration + zoneId] = zoneCO2Concentration;
+		m_realVar[FMI_OUTPUT_AirChangeRate + (int)zoneId] = zoneAirChangeRate;
+		m_realVar[FMI_OUTPUT_CO2Concentration + (int)zoneId] = zoneCO2Concentration;
 	}
 
 
@@ -358,8 +358,8 @@ void CO2ComfortVentilation::computeFMUStateSize() {
 }
 
 
-template <typename T>
-bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const char * typeID, std::map<int, T> & varMap) {
+template <typename T, typename IntType>
+bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const char * typeID, std::map<IntType, T> & varMap) {
 	// now de-serialize the maps: first the size (for checking), then each key-value pair
 	int mapsize;
 	DESERIALIZE(const int, dataPtr, mapsize)
@@ -370,9 +370,9 @@ bool deserializeMap(CO2ComfortVentilation * obj, const char * & dataPtr, const c
 		return false;
 	}
 	for (int i=0; i<mapsize; ++i) {
-		int valueRef;
+		IntType valueRef;
 		T val;
-		DESERIALIZE(const int, dataPtr, valueRef)
+		DESERIALIZE(const IntType, dataPtr, valueRef)
 		if (varMap.find(valueRef) == varMap.end()) {
 			std::stringstream strm;
 			strm << "Bad binary data or invalid/uninitialized model data. "<< typeID << "-Variable with value ref "<< valueRef
@@ -399,8 +399,8 @@ void CO2ComfortVentilation::serializeFMUstate(void * FMUstate) {
 		SERIALIZE(double, dataPtr, m_currentTimePoint)
 
 		// store actual solution data
-		for (std::map<int, double>::const_iterator it = m_zoneCO2Masses.begin(); it != m_zoneCO2Masses.end(); ++it) {
-			SERIALIZE(int, dataPtr, it->first)
+		for (std::map<unsigned int, double>::const_iterator it = m_zoneCO2Masses.begin(); it != m_zoneCO2Masses.end(); ++it) {
+			SERIALIZE(unsigned int, dataPtr, it->first)
 			SERIALIZE(double, dataPtr, it->second)
 		}
 	}
@@ -722,8 +722,9 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 					}
 
 					// duplicate definition
-					if (attribute == "zoneFloorAreas" &&m_zoneFloorAreas.find(id) != m_zoneFloorAreas.end()
-						|| attribute == "zoneVolumes" &&m_zoneVolumes.find(id) != m_zoneVolumes.end()) {
+					if (   (attribute == "zoneFloorAreas" && m_zoneFloorAreas.find(id) != m_zoneFloorAreas.end() )
+						|| ( attribute == "zoneVolumes" && m_zoneVolumes.find(id) != m_zoneVolumes.end()) )
+					{
 						throw std::runtime_error((std::string("Duplicate id ") + index + std::string(" in attribute '") +
 							attribute + std::string(".")).c_str());
 					}
@@ -756,19 +757,19 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 		if (m_zoneScheduleNames.size() != zoneIds.size()) {
 			// find missing quantities
 			std::set<unsigned int> missingIds = zoneIds;
-			for (const std::pair<unsigned int, std::string> &scheduleName : m_zoneScheduleNames) {
+			for (const std::pair<const unsigned int, std::string> &scheduleName : m_zoneScheduleNames) {
 				missingIds.erase(scheduleName.first);
 			}
 			// add empty schedule name to list
 			for (std::set<unsigned int>::const_iterator it = missingIds.begin(); it != missingIds.end(); ++it) {
-				m_zoneScheduleNames[(int) *it] = std::string();
+				m_zoneScheduleNames[*it] = std::string();
 			}
 		}
 		// check that we filled all zoen specific quantities
 		if (m_zoneFloorAreas.size() != zoneIds.size()) {
 			// find missing quantities
 			std::set<unsigned int> missingIds = zoneIds;
-			for (const std::pair<unsigned int, double> &floorArea : m_zoneFloorAreas) {
+			for (const std::pair<const unsigned int, double> &floorArea : m_zoneFloorAreas) {
 				missingIds.erase(floorArea.first);
 			}
 			// write missing ids into string (minimum one is missing
@@ -787,7 +788,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 		if (m_zoneVolumes.size() != zoneIds.size()) {
 			// find missing quantities
 			std::set<unsigned int> missingIds = zoneIds;
-			for (const std::pair<unsigned int, double> &volume : m_zoneVolumes) {
+			for (const std::pair<const unsigned int, double> &volume : m_zoneVolumes) {
 				missingIds.erase(volume.first);
 			}
 			// write missing ids into string (minimum one is missing
@@ -804,9 +805,9 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				std::string("in attribute 'zoneVolumes'")).c_str());
 		}
 		// check obligatory parameters
-		if (m_startCO2Concentration == -999)
+		if ((int)m_startCO2Concentration == -999)
 			throw std::runtime_error("Missing attribute 'startCO2Concentration'.");
-		else if (m_startAirTemperature == -999)
+		else if ((int)m_startAirTemperature == -999)
 			throw std::runtime_error("Missing attribute 'startAirTemperature'.");
 	}
 	catch (std::runtime_error & ex) {
