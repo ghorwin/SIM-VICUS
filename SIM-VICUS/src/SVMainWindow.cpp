@@ -1807,6 +1807,7 @@ void SVMainWindow::setupPlugins() {
 			continue;
 		// skip files that do not have a valid file extensions
 		QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
+		loader.setLoadHints(QLibrary::DeepBindHint);  // when loading plugins with IBK library support (yet other versions), this ensures that libraries use their own statically linked code
 		QObject *plugin = loader.instance();
 		if (plugin != nullptr) {
 			IBK::IBK_Message(IBK::FormatString("  Loading '%1'\n").arg(IBK::Path(fileName.toStdString()).filename().withoutExtension()) );
