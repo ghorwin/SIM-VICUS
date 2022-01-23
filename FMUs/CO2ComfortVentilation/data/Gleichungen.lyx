@@ -160,7 +160,7 @@ mit der Lösung
 .
 \begin_inset Formula 
 \begin{eqnarray}
-m_{CO_{2},h}\left(t\right) & = & \exp\left[-n\left(t-t_{0}\right)\right]
+m_{CO_{2},h}\left(t\right) & = & e^{-n\left(t-t_{0}\right)}
 \end{eqnarray}
 
 \end_inset
@@ -185,8 +185,28 @@ m_{CO_{2}}\left(t\right)=\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\l
 
 \end_inset
 
-Konkret führt Einsetzen in die Bilanzgleichung auf eine Bestimmungsformel
- für die Faltungsfunktion 
+Konkret führt Einsetzen in die Bilanzgleichung (d.h.
+ Ableiten von 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:InhomogeneLösung"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ nach der Zeit und Gleichsetzen 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:CO2Bilanz"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+) auf eine Bestimmungsformel für die Faltungsfunktion 
 \begin_inset Formula $G(t)$
 \end_inset
 
@@ -205,10 +225,24 @@ reference "eq:Faltungsfunktion"
 
 \end_inset
 
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(Anne: wie kommst Du auf diesen Ansatz? Mathematische Erfahrung oder steht
+ das irgendwo in einem Tafelwerk?)
+\end_layout
+
+\end_inset
+
 
 \begin_inset Formula 
 \begin{eqnarray}
-G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(\exp\left[n\left(t-t_{0}\right)\right]-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(s\right)\exp\left[n\left(s-t_{0}\right)\right]ds\label{eq:Faltungsfunktion}
+G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(e^{n\left(t-t_{0}\right)}-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(s\right)e^{n\left(s-t_{0}\right)}ds\label{eq:Faltungsfunktion}
 \end{eqnarray}
 
 \end_inset
@@ -220,12 +254,36 @@ reference "eq:Lösung"
 
 \end_inset
 
+ 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+(der Schritt von 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Faltungsfunktion"
+
+\end_inset
+
+ nach 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "eq:Lösung"
+
+\end_inset
+
+ ist mir nicht klar)
+\end_layout
+
+\end_inset
+
 .
  
 \begin_inset Formula 
 \begin{eqnarray}
-m_{CO_{2}}\left(t\right) & = & m_{CO_{2},0}\exp\left[-n\left(t-t_{0}\right)\right]+\rho_{CO_{2},amb}V_{zone}\left(1-\exp\left[-n\left(t-t_{0}\right)\right]\right)\label{eq:Lösung}\\
- &  & +\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(t\right)\exp\left[-n\left(t-s\right)\right]ds
+m_{CO_{2}}\left(t\right) & = & m_{CO_{2},0}e^{-n\left(t-t_{0}\right)}+\rho_{CO_{2},amb}V_{zone}\left(1-e^{-n\left(t-t_{0}\right)}\right)\label{eq:Lösung}\\
+ &  & +\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(t\right)e^{-n\left(t-s\right)}ds
 \end{eqnarray}
 
 \end_inset
@@ -249,8 +307,8 @@ reference "eq:Zeitintegration"
  
 \begin_inset Formula 
 \begin{eqnarray}
-m_{CO_{2}}\left(t_{n+1}\right) & = & m_{CO_{2}}\left(t_{n}\right)\exp\left[-n\triangle t\right]+\rho_{CO_{2},amb}V_{zone}\left(1-\exp\left[-n\triangle t\right]\right)\label{eq:Zeitintegration}\\
- &  & +\int_{t_{n}}^{t_{n+1}}\dot{m}_{CO_{2}}\left(t\right)\exp\left[-n\left(t_{n+1}-t\right)\right]dt
+m_{CO_{2}}\left(t_{n+1}\right) & = & m_{CO_{2}}\left(t_{n}\right)e^{-n\triangle t}+\rho_{CO_{2},amb}V_{zone}\left(1-e^{-n\triangle t}\right)\label{eq:Zeitintegration}\\
+ &  & +\int_{t_{n}}^{t_{n+1}}\dot{m}_{CO_{2}}\left(t\right)e^{-n\left(t_{n+1}-t\right)}dt
 \end{eqnarray}
 
 \end_inset
