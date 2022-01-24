@@ -106,6 +106,7 @@ private slots:
 	void coordinateInputFinished();
 
 	void on_actionSnap_toggled(bool);
+	void on_actionMeasure_toggled(bool);
 	void on_actionXLock_toggled(bool);
 	void on_actionYLock_toggled(bool);
 	void on_actionZLock_toggled(bool);
@@ -125,6 +126,7 @@ private:
 	QToolBar					*m_toolBar									= nullptr;
 
 	QAction						*m_snapAction								= nullptr;
+	QAction						*m_measureAction							= nullptr;
 	QAction						*m_xLockAction								= nullptr;
 	QAction						*m_yLockAction								= nullptr;
 	QAction						*m_zLockAction								= nullptr;

@@ -65,6 +65,8 @@ public:
 	void toggleAlignCoordinateSystem();
 	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
 	void toggleTranslateCoordinateSystem();
+	/*! Called when the global hot key has been pressed, simply relays the call to the main scene.. */
+	void toggleMeasurementMode();
 
 	/*! Resets the camera position to be looking nicely onto the scene.
 		See SVGeometryView::resetCamera().

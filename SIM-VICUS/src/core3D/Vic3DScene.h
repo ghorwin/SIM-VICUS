@@ -44,6 +44,7 @@
 #include "Vic3DNewSubSurfaceObject.h"
 #include "Vic3DSurfaceNormalsObject.h"
 #include "Vic3DPickObject.h"
+#include "Vic3DMeasurementObject.h"
 
 #include "SVViewState.h"
 
@@ -131,6 +132,11 @@ public:
 	void enterCoordinateSystemTranslationMode();
 	/*! Leaves the coordinate system positioning mode and returns to previous mode. */
 	void leaveCoordinateSystemTranslationMode(bool abort);
+
+	/*! Toggles "measurement" mode on. */
+	void enterMeasurementMode();
+	/*! Leaves the "measurement" mode and returns to previous mode. */
+	void leaveMeasurementMode();
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
@@ -244,6 +250,8 @@ private:
 	NewGeometryObject		m_newGeometryObject;
 	/*! Object to display new subsurface geometry. */
 	NewSubSurfaceObject		m_newSubSurfaceObject;
+	/*! The measurement object. */
+	MeasurementObject		m_measurementObject;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;

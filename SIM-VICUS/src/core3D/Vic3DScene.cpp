@@ -40,7 +40,6 @@
 
 #include "Vic3DShaderProgram.h"
 #include "Vic3DKeyboardMouseHandler.h"
-#include "Vic3DPickObject.h"
 #include "Vic3DGeometryHelpers.h"
 #include "Vic3DConstants.h"
 #include "Vic3DSceneView.h"
@@ -87,6 +86,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
 	m_newSubSurfaceObject.create(m_buildingShader->shaderProgram());
+	m_measurementObject.create(m_gridShader);
 
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
@@ -291,6 +291,7 @@ void Scene::destroy() {
 	m_transparentBuildingObject.destroy();
 	m_networkGeometryObject.destroy();
 	m_selectedGeometryObject.destroy();
+	m_measurementObject.destroy();
 	m_coordinateSystemObject.destroy();
 	m_smallCoordinateSystemObject.destroy();
 	m_newGeometryObject.destroy();
@@ -2047,9 +2048,12 @@ void Scene::leaveAnySpecialMode() {
 		case SVViewState::OM_MoveLocalCoordinateSystem :
 			leaveCoordinateSystemTranslationMode(true);
 		break;
-		default: ; // no other modes
+		case SVViewState::OM_MeasureDistance:
+			leaveMeasurementMode();
+		break;
 	}
 }
+
 
 void Scene::enterCoordinateSystemAdjustmentMode() {
 	// store current transformation of local coordinate system object
@@ -2100,6 +2104,24 @@ void Scene::leaveCoordinateSystemTranslationMode(bool abort) {
 		// finish aligning coordinate system
 		qDebug() << "Leaving 'Translate coordinate system' mode";
 	}
+	// switch back to previous view state
+	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
+}
+
+
+void Scene::enterMeasurementMode() {
+	// store current transformation of local coordinate system object
+	m_oldCoordinateSystemTransform = m_coordinateSystemObject.transform();
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_sceneOperationMode = SVViewState::OM_MeasureDistance;
+	SVViewStateHandler::instance().setViewState(vs);
+	qDebug() << "Entering 'Measurement' mode";
+}
+
+
+void Scene::leaveMeasurementMode() {
+	// restore original local coordinate system
+	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 }
@@ -2675,6 +2697,12 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 		case SVViewState::OM_SelectedGeometry : {
 			// selection handling
 			handleSelection(keyboardHandler, o);
+			return;
+		}
+
+		case SVViewState::OM_MeasureDistance : {
+			// new starting point for measurement selected
+			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 			return;
 		}
 

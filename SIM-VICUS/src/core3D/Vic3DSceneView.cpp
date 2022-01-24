@@ -204,6 +204,17 @@ void SceneView::toggleTranslateCoordinateSystem() {
 }
 
 
+void SceneView::toggleMeasurementMode() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance)
+		m_mainScene.leaveMeasurementMode(); // leave measurement mode
+	else {
+		m_mainScene.leaveAnySpecialMode(); // now leave any other, special mode
+		m_mainScene.enterMeasurementMode();
+	}
+}
+
+
 void SceneView::resetCamera(int position) {
 	// reset camera position
 	switch (position) {

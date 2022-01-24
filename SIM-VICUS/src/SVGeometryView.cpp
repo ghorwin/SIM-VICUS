@@ -235,6 +235,10 @@ void SVGeometryView::onViewStateChanged() {
 	m_snapAction->setChecked(vs.m_snapEnabled);
 	m_snapAction->blockSignals(false);
 
+	m_measureAction->blockSignals(true);
+	m_measureAction->setChecked(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance);
+	m_measureAction->blockSignals(false);
+
 	m_xLockAction->blockSignals(true);
 	m_xLockAction->setChecked(vs.m_locks == SVViewState::L_LocalX);
 	m_xLockAction->blockSignals(false);
@@ -406,6 +410,16 @@ void SVGeometryView::on_actionSnap_toggled(bool on) {
 }
 
 
+void SVGeometryView::on_actionMeasure_toggled(bool on) {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on && vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
+		qDebug() << "Measurement mode is already on, yet button is off...";
+		return;
+	}
+	m_sceneView->toggleMeasurementMode();
+}
+
+
 void SVGeometryView::on_actionXLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -455,6 +469,15 @@ void SVGeometryView::setupToolBar() {
 	m_toolBar->addAction(m_snapAction);
 	m_toolBar->setIconSize(QSize(24,24) );
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
+
+	m_measureAction = new QAction(tr("Measure"), this);
+	m_measureAction->setCheckable(true);
+	m_measureAction->setToolTip(tr("Toggles distance measurement mode on/off"));
+	m_measureAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
+
+	m_toolBar->addAction(m_measureAction);
+	m_toolBar->setIconSize(QSize(24,24) );
+	connect(m_measureAction, &QAction::toggled, this, &SVGeometryView::on_actionMeasure_toggled);
 
 	m_xLockAction = new QAction(tr("X"), this);
 	m_xLockAction->setCheckable(true);
