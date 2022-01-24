@@ -98,7 +98,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
 
-	m_measurementWidget = new SVMeasurementWidget(SVViewStateHandler::instance().m_geometryView);
+	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
 
@@ -1179,6 +1179,8 @@ void Scene::setViewState(const SVViewState & vs) {
 	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+		if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance)
+			leaveMeasurementMode();
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
@@ -2163,7 +2165,7 @@ void Scene::enterMeasurementMode() {
 	qDebug() << "Entering 'Measurement' mode";
 
 	m_measurementWidget->show();
-
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget(); // firstly height and width is set here
 }
 
 
