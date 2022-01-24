@@ -56,12 +56,10 @@ private slots:
 	void on_lineEditName_editingFinished();
 	void on_pushButtonColor_colorChanged();
 
-	void on_lineEditTemperatureAirOutsideMaximum_editingFinishedSuccessfully();
-	void on_lineEditTemperatureAirOutsideMinimum_editingFinishedSuccessfully();
 	void on_lineEditTemperatureAirRoomMaximum_editingFinishedSuccessfully();
 	void on_lineEditTemperatureAirRoomMinimum_editingFinishedSuccessfully();
-	void on_lineEditTemperatureDifference_editingFinishedSuccessfully();
 	void on_lineEditWindSpeedMax_editingFinishedSuccessfully();
+	void on_lineEditMaximumAirChangeRateComfort_editingFinishedSuccessfully();
 
 private:
 

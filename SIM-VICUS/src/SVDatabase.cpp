@@ -818,7 +818,7 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			}
 			for (const auto & p : m_zoneControlVentilationNatural) {
 				VICUS::ZoneControlNaturalVentilation & c = const_cast<VICUS::ZoneControlNaturalVentilation &>(p.second); // const-cast is ok here
-				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_ST; ++j)
+				for (int j=0; j<VICUS::ZoneControlNaturalVentilation::NUM_P; ++j)
 					replaceID(elementID, replacementElementID, c.m_idSchedules[j], m_zoneControlVentilationNatural);
 			}
 			for (const auto & p : m_networkComponents) {
