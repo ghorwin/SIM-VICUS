@@ -422,6 +422,7 @@ equals(TEMPLATE,lib) {
 		}
 	}
 	else {
+		# on Unix/MacOS we always build our libraries as dynamic libs
 		CONFIG += shared
 	}
 

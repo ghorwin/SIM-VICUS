@@ -303,7 +303,11 @@ const std::string & ArgParser::option(const std::string & longVersion) const {
 }
 
 void ArgParser::printHelp(std::ostream & out) const {
-	out << "Syntax: " << m_appname << " [flags] [options] arg1 arg2 ...\n\n";
+	out << "Syntax: " << m_appname;
+	if (m_syntaxArguments.empty())
+		out << " [flags] [options] arg1 arg2 ...\n\n";
+	else
+		out << " " << m_syntaxArguments << "\n\n";
 	const unsigned int TEXT_WIDTH = 79;
 	const unsigned int TAB_WIDTH = 20;
 	printFlags(out,TEXT_WIDTH,TAB_WIDTH);
@@ -318,7 +322,11 @@ void ArgParser::printManPage(std::ostream & out) const {
 	out << ".SH NAME\n";
 	out << ".B " + m_appname << "\\fR \\- " << m_manShortDescription << "\n";
 	out << ".SH SYNOPSIS\n";
-	out << ".B " + m_appname << " [flags] [options] arg1 arg2 ...\n";
+	out << ".B " + m_appname;
+	if (m_syntaxArguments.empty())
+		out << " [flags] [options] arg1 arg2 ...\n";
+	else
+		out << "\\fR " << m_syntaxArguments << "\n";
 	out << ".SH DESCRIPTION\n";
 	out << m_manLongDescription << "\n"; // don't worry about line breaks, man viewer handles that!
 

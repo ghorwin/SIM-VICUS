@@ -268,6 +268,8 @@ public:
 
 	/*! Application name, used in the syntax line of printHelp(). */
 	std::string								m_appname;
+	/*! If not empty, this string will be printed after the appname in the help/man page. */
+	std::string								m_syntaxArguments;
 
 	/*! Short description of the program. */
 	std::string								m_manVersionString;
