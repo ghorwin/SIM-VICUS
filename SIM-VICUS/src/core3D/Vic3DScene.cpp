@@ -72,6 +72,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	m_parent = parent;
 	m_gridShader = &shaderPrograms[SHADER_GRID];
 	m_surfaceNormalsShader = &shaderPrograms[SHADER_LINES];
+	m_measurementShader = &shaderPrograms[SHADER_LINES];
 	m_buildingShader = &shaderPrograms[SHADER_OPAQUE_GEOMETRY];
 	m_fixedColorTransformShader = &shaderPrograms[SHADER_WIREFRAME];
 	m_coordinateSystemShader = &shaderPrograms[SHADER_COORDINATE_SYSTEM];
@@ -89,7 +90,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// we create the new geometry object here, but data is added once it is used
 	m_newGeometryObject.create(m_fixedColorTransformShader);
 	m_newSubSurfaceObject.create(m_buildingShader->shaderProgram());
-	m_measurementObject.create(m_gridShader);
+	m_measurementObject.create(m_measurementShader);
 
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
