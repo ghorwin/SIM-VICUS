@@ -48,6 +48,9 @@ public:
 	/*! Resets all line edits in measurement widget. */
 	void reset();
 
+	/*! Moves the widget according to the point position and maps it to the parent widgets position */
+	void setPosition(const QPoint &position);
+
 	/*! Updates the distance based on start and end point in the measurement object. */
 	void showDistance(const QVector3D &diff);
 	/*! Sets the start point based on the measurement object. */

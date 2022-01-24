@@ -8,6 +8,7 @@
 #include <QClipboard>
 #include <QTextStream>
 #include <QColorDialog>
+#include <QDebug>
 #include <QSizePolicy>
 
 SVMeasurementWidget::SVMeasurementWidget(QWidget *parent) :
@@ -37,6 +38,12 @@ void SVMeasurementWidget::reset() {
 	m_ui->lineEditStartX->clear();
 	m_ui->lineEditStartY->clear();
 	m_ui->lineEditStartZ->clear();
+}
+
+void SVMeasurementWidget::setPosition(const QPoint &position) {
+//	QPoint mapped = QWidget::mapToGlobal(position);
+	qDebug() << "X: " << position.x() << "Y: " << position.y();
+	move(position.x()-width(), position.y()-height() );
 }
 
 void SVMeasurementWidget::showDistance(const QVector3D &diff) {
