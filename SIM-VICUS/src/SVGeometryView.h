@@ -91,7 +91,8 @@ public:
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);
 
-	QPoint topLeft();
+	/*! Moves the measurement Widget to the bottom right of the scene view. */
+	void moveMeasurementWidget();
 
 public slots:
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
@@ -127,6 +128,9 @@ private:
 
 	QToolBar					*m_toolBar									= nullptr;
 
+	/*! Pointer to measurement widget */
+	SVMeasurementWidget			*m_measurementWidget = nullptr;
+
 	QAction						*m_snapAction								= nullptr;
 	QAction						*m_measureAction							= nullptr;
 	QAction						*m_xLockAction								= nullptr;
@@ -139,6 +143,10 @@ private:
 	/*! Local Coordinate System View Widget */
 	SVLocalCoordinateView		*m_localCoordinateSystemView				= nullptr;
 	QAction						*m_actionlocalCoordinateSystemCoordinates	= nullptr;
+
+	// QWidget interface
+protected:
+	void resizeEvent(QResizeEvent *event);
 };
 
 
