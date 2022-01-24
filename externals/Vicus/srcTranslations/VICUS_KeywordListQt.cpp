@@ -234,12 +234,9 @@ KeywordListQt::KeywordListQt() {
 	tr("Standard globbed-layers model");
 	tr("Thermal transmittance");
 	tr("Incidence-angle dependent short wave transmittance across glazing system");
+	tr("Maximum air change rate for natural ventilation to reach comfort conditions (if possible).");
 	tr("Upper limit for room air temperature.");
 	tr("Lower limit for room air temperature.");
-	tr("Upper limit for outside air temperature.");
-	tr("Lower limit for outside air temperature.");
-	tr("Temperature difference limit (inside - outside).");
-	tr("Maximum increase of air change rate");
 	tr("Limit for wind speed .");
 	tr("Global horizontal (upper) sensor setpoint value.");
 	tr("Global north (upper) sensor setpoint value.");

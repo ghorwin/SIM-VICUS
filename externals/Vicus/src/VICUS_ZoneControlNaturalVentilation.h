@@ -47,22 +47,21 @@ public:
 		defined as scheduled quantities. For each of these parameters that is provided as schedule, the
 		m_idSchedules[] vector contains non INVALID_ID entries.
 	*/
-	enum ScheduleType {
-		ST_TemperatureAirMax,		// Keyword: TemperatureAirMax					[C]		'Upper limit for room air temperature.'
-		ST_TemperatureAirMin,		// Keyword: TemperatureAirMin					[C]		'Lower limit for room air temperature.'
-		ST_TemperatureOutsideMax,	// Keyword: TemperatureOutsideMax				[C]		'Upper limit for outside air temperature.'
-		ST_TemperatureOutsideMin,	// Keyword: TemperatureOutsideMin				[C]		'Lower limit for outside air temperature.'
-		ST_TemperatureDifference,	// Keyword: TemperatureDifference				[K]		'Temperature difference limit (inside - outside).'
-		ST_AirChangeRateIncrease,	// Keyword: AirChangeRateIncrease				[1/h]	'Maximum increase of air change rate'
-		ST_WindSpeedMax,			// Keyword: WindSpeedMax						[m/s]	'Limit for wind speed .'
-		NUM_ST
+
+
+	enum para_t {
+		P_MaximumAirChangeRateComfort,				// Keyword: MaximumAirChangeRateComfort			[1/h]	' Maximum air change rate for natural ventilation to reach comfort conditions (if possible).'
+		P_TemperatureAirMax,						// Keyword: TemperatureAirMax					[C]		'Upper limit for room air temperature.'
+		P_TemperatureAirMin,						// Keyword: TemperatureAirMin					[C]		'Lower limit for room air temperature.'
+		P_WindSpeedMax,								// Keyword: WindSpeedMax						[m/s]	'Limit for wind speed .'
+		NUM_P
 	};
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Default constructor, initializes m_idSchedules with INVALID_ID */
 	ZoneControlNaturalVentilation() {
-		for (int i=0; i<NUM_ST; ++i)
+		for (int i=0; i<NUM_P; ++i)
 			m_idSchedules[i] = INVALID_ID;
 	}
 
@@ -88,11 +87,10 @@ public:
 	IBK::MultiLanguageString		m_dataSource;							// XML:E
 
 	/*! Schedule ID. */
-	IDType							m_idSchedules[NUM_ST];					// XML:E
+	IDType							m_idSchedules[NUM_P];					// XML:E
 
 	/*! List of constant parameters. */
-	IBK::Parameter					m_para[NUM_ST];							// XML:E
-
+	IBK::Parameter					m_para[NUM_P];							// XML:E
 };
 
 }

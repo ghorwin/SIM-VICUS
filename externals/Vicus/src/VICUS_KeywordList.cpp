@@ -84,7 +84,7 @@ namespace VICUS {
 		"WindowGlazingSystem::modelType_t",
 		"WindowGlazingSystem::para_t",
 		"WindowGlazingSystem::splinePara_t",
-		"ZoneControlNaturalVentilation::ScheduleType",
+		"ZoneControlNaturalVentilation::para_t",
 		"ZoneControlShading::para_t",
 		"ZoneControlShading::Category",
 		"ZoneControlThermostat::para_t",
@@ -513,16 +513,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
-				case 0 : return "TemperatureAirMax";
-				case 1 : return "TemperatureAirMin";
-				case 2 : return "TemperatureOutsideMax";
-				case 3 : return "TemperatureOutsideMin";
-				case 4 : return "TemperatureDifference";
-				case 5 : return "AirChangeRateIncrease";
-				case 6 : return "WindSpeedMax";
+				case 0 : return "MaximumAirChangeRateComfort";
+				case 1 : return "TemperatureAirMax";
+				case 2 : return "TemperatureAirMin";
+				case 3 : return "WindSpeedMax";
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -990,16 +987,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "SHGC";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
-				case 0 : return "TemperatureAirMax";
-				case 1 : return "TemperatureAirMin";
-				case 2 : return "TemperatureOutsideMax";
-				case 3 : return "TemperatureOutsideMin";
-				case 4 : return "TemperatureDifference";
-				case 5 : return "AirChangeRateIncrease";
-				case 6 : return "WindSpeedMax";
+				case 0 : return "MaximumAirChangeRateComfort";
+				case 1 : return "TemperatureAirMax";
+				case 2 : return "TemperatureAirMin";
+				case 3 : return "WindSpeedMax";
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -1468,16 +1462,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Incidence-angle dependent short wave transmittance across glazing system";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
-				case 0 : return "Upper limit for room air temperature.";
-				case 1 : return "Lower limit for room air temperature.";
-				case 2 : return "Upper limit for outside air temperature.";
-				case 3 : return "Lower limit for outside air temperature.";
-				case 4 : return "Temperature difference limit (inside - outside).";
-				case 5 : return "Maximum increase of air change rate";
-				case 6 : return "Limit for wind speed .";
+				case 0 : return "Maximum air change rate for natural ventilation to reach comfort conditions (if possible).";
+				case 1 : return "Upper limit for room air temperature.";
+				case 2 : return "Lower limit for room air temperature.";
+				case 3 : return "Limit for wind speed .";
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -1945,16 +1936,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "---";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
-				case 0 : return "C";
+				case 0 : return "1/h";
 				case 1 : return "C";
 				case 2 : return "C";
-				case 3 : return "C";
-				case 4 : return "K";
-				case 5 : return "1/h";
-				case 6 : return "m/s";
+				case 3 : return "m/s";
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -2422,16 +2410,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "#FFFFFF";
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
-				case 4 : return "#FFFFFF";
-				case 5 : return "#FFFFFF";
-				case 6 : return "#FFFFFF";
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -2899,16 +2884,13 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// ZoneControlNaturalVentilation::ScheduleType
+			// ZoneControlNaturalVentilation::para_t
 			case 49 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
-				case 4 : return std::numeric_limits<double>::quiet_NaN();
-				case 5 : return std::numeric_limits<double>::quiet_NaN();
-				case 6 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// ZoneControlShading::para_t
 			case 50 :
@@ -3069,8 +3051,8 @@ namespace VICUS {
 			case 47 : return 1;
 			// WindowGlazingSystem::splinePara_t
 			case 48 : return 1;
-			// ZoneControlNaturalVentilation::ScheduleType
-			case 49 : return 7;
+			// ZoneControlNaturalVentilation::para_t
+			case 49 : return 4;
 			// ZoneControlShading::para_t
 			case 50 : return 6;
 			// ZoneControlShading::Category
@@ -3191,8 +3173,8 @@ namespace VICUS {
 			case 47 : return 0;
 			// WindowGlazingSystem::splinePara_t
 			case 48 : return 0;
-			// ZoneControlNaturalVentilation::ScheduleType
-			case 49 : return 6;
+			// ZoneControlNaturalVentilation::para_t
+			case 49 : return 3;
 			// ZoneControlShading::para_t
 			case 50 : return 5;
 			// ZoneControlShading::Category
