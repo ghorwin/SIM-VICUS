@@ -39,6 +39,7 @@
 #include "SVProjectHandler.h"
 #include "SVSettings.h"
 #include "SVNavigationTreeWidget.h"
+#include "SVGeometryView.h"
 #include "Vic3DConstants.h"
 #include "SVViewStateHandler.h"
 #include "QtExt_Conversions.h"
@@ -434,16 +435,8 @@ void SceneView::initializeGL() {
 
 void SceneView::resizeGL(int width, int height) {
 	m_mainScene.resize(width, height, devicePixelRatio());
-
-	if(SVViewStateHandler::instance().m_measurementWidget == nullptr)
-		return;
-
-
-	const QPoint &topLeft = SVViewStateHandler::instance().m_navigationTreeWidget->rect().topRight();
-
-	qDebug() << "X: " << topLeft.x() << "Y: " << topLeft.y();
-
-	SVViewStateHandler::instance().m_measurementWidget->move(topLeft.x(), topLeft.y() );
+	// move the measurement widget
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
 }
 
 
