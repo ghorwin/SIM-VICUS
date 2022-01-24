@@ -505,6 +505,10 @@ private:
 
 	friend class SVThreadBase;
 
+
+	// QWidget interface
+protected:
+	void moveEvent(QMoveEvent *event);
 };
 
 #endif // SVMainWindowH
