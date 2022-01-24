@@ -26,22 +26,22 @@
    </item>
    <item row="0" column="1">
     <widget class="QLineEdit" name="lineEditStartX">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="0" column="2">
     <widget class="QLineEdit" name="lineEditStartY">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="0" column="3">
     <widget class="QLineEdit" name="lineEditStartZ">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -54,22 +54,22 @@
    </item>
    <item row="1" column="1">
     <widget class="QLineEdit" name="lineEditEndX">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
     <widget class="QLineEdit" name="lineEditEndY">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="3">
     <widget class="QLineEdit" name="lineEditEndZ">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -89,8 +89,8 @@
    </item>
    <item row="3" column="1">
     <widget class="QLineEdit" name="lineEditDistance">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -103,22 +103,22 @@
    </item>
    <item row="4" column="1">
     <widget class="QLineEdit" name="lineEditDistX">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="4" column="2">
     <widget class="QLineEdit" name="lineEditDistY">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
    <item row="4" column="3">
     <widget class="QLineEdit" name="lineEditDistZ">
-     <property name="enabled">
-      <bool>false</bool>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
