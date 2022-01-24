@@ -37,13 +37,18 @@ bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB
 	if ( m_id == INVALID_ID )
 		return false;
 
-	for (int i = 0; i < NUM_ST; ++i) {
+	for (int i = 0; i < NUM_P; ++i) {
 		// is a schedule ID set?
 		if (m_idSchedules[i] != INVALID_ID) {
+			// ensure, that no schedule for comfort air change rate was set
+			IBK_ASSERT(i != P_MaximumAirChangeRateComfort);
+
 			// check if schedule ID is existing and valid
 			const Schedule * sched = scheduleDB[m_idSchedules[i]];
+
 			if (sched == nullptr)
 				return false;
+
 			if (!sched->isValid())
 				return false;
 			// either scheudle or parameter are requested
@@ -52,27 +57,20 @@ bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB
 
 		try {
 			switch (i) {
-			case ST_TemperatureAirMax:
-			case ST_TemperatureAirMin:
-			case ST_TemperatureOutsideMin:
-			case ST_TemperatureOutsideMax:
+			case P_TemperatureAirMax:
+			case P_TemperatureAirMin:
 				// check whether a parameter with the correct unit has been set
-				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
+				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::para_t", i),
 													 "C", "C", -100, true, 100, true, nullptr);
 			break;
-			case ST_TemperatureDifference:
+			case P_MaximumAirChangeRateComfort:
 				// check whether a parameter with the correct unit has been set
-				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
-													 "K", "K", -100, true, 100, true, nullptr);
+				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::para_t", i),
+													 "1/h", "1/h", 0, false, 30, false, nullptr);
 			break;
-			case ST_AirChangeRateIncrease:
+			case P_WindSpeedMax:
 				// check whether a parameter with the correct unit has been set
-				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
-													 "1/s", "1/s", 0, false, std::numeric_limits<double>::max(), false, nullptr);
-			break;
-			case ST_WindSpeedMax:
-				// check whether a parameter with the correct unit has been set
-				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::ScheduleType", i),
+				m_para[i].checkedValue(VICUS::KeywordList::Keyword("ZoneControlNaturalVentilation::para_t", i),
 													 "m/s", "m/s", 0, true, 40, true, nullptr);
 			break;
 			}
@@ -93,12 +91,12 @@ AbstractDBElement::ComparisonResult ZoneControlNaturalVentilation::equal(const A
 	//first check critical data
 
 	//check parameters
-	for(unsigned int i=0; i<NUM_ST; ++i){
+	for(unsigned int i=0; i<NUM_P; ++i){
 		if(m_para[i] != otherVent->m_para[i])
 			return Different;
 	}
 
-	for(unsigned int i=0; i<NUM_ST; ++i)
+	for(unsigned int i=0; i<NUM_P; ++i)
 		if(m_idSchedules[i] != otherVent->m_idSchedules[i])
 			return Different;
 

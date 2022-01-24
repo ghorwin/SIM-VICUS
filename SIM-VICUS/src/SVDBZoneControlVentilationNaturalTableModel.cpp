@@ -152,12 +152,10 @@ QModelIndex SVDBZoneControlVentilationNaturalTableModel::addNewItem() {
 	// set default parameters
 
 
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax, 60.0);
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin, 20.0);
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMax, 60.0);
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureOutsideMin, 0.0);
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference, 2.0);
-	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::ScheduleType", VICUS::ZoneControlNaturalVentilation::ST_TemperatureDifference, 2.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax, 60.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin, 20.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::P_WindSpeedMax, 10.0);
+	VICUS::KeywordList::setParameter(venti.m_para, "ZoneControlNaturalVentilation::para_t", VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort, 5.0);
 
 	venti.m_color = SVStyle::randomColor();
 

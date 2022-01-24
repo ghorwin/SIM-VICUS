@@ -585,7 +585,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 	IBK_ASSERT(controlVentilation != nullptr);
 
 	// we need an actiobity schedule for minimum air temperature (obligatory)...
-	unsigned int scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMin];
+	unsigned int scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin];
 
 	// missing schedule
 	if(scheduleId == VICUS::INVALID_ID) {
@@ -594,7 +594,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 		return;
 	}
 
-	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::ST_TemperatureAirMax];
+	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax];
 
 	// missing schedule
 	if(scheduleId == VICUS::INVALID_ID) {
@@ -603,14 +603,14 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 		return;
 	}
 
-	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::ST_AirChangeRateIncrease];
+//	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_AirChangeRateIncrease];
 
-	// missing schedule
-	if(scheduleId == VICUS::INVALID_ID) {
-		// no control ventilation control possible
-		errmsg = "Missing schedule 'AirChangeRateIncrease' for room '" + room.m_displayName + "'. Please add missing schedule data!";
-		return;
-	}
+//	// missing schedule
+//	if(scheduleId == VICUS::INVALID_ID) {
+//		// no control ventilation control possible
+//		errmsg = "Missing schedule 'AirChangeRateIncrease' for room '" + room.m_displayName + "'. Please add missing schedule data!";
+//		return;
+//	}
 }
 
 

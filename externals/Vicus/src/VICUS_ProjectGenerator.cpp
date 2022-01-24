@@ -1254,6 +1254,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 						   .arg(zoneTemplate->m_id)
 						   .arg(MultiLangString2QString(zoneTemplate->m_displayName)));
 
+
+
 	// only continue if there were no errors so far
 	if (!errorStack.isEmpty())
 		return;
@@ -1273,6 +1275,13 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	if(isInf && !isVenti)				ventiType = V_Infiltration;
 	else if(!isInf && isVenti)			ventiType = V_Ventilation;
 	else if(isInf && isVenti)			ventiType = V_InfAndVenti;
+
+	// prüfe den zeitplan auf das maximum
+	// bei nur INFILTRATION werden nur die parameter gerprüft
+	// bei nur VENTILATION / VENTI*INFI muss das Maximum aus dem Zeitplan (+ConstInfValu) ermittelt werden + Prüfung
+
+	// anschließend wird ein zeitplan nach folgenden schema erzeugt
+	// Maximum air change rate comfort - zeitplan aus INFI und/oder VENTI
 
 	NANDRAD::NaturalVentilationModel natVentMod;
 	natVentMod.m_id = VICUS::uniqueIdWithPredef(usedModelIds, 1);
