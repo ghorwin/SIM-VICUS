@@ -40,6 +40,10 @@ namespace Vic3D {
 class ShaderProgram;
 
 /*! This is the line object drawn when measuring distances in the 3D scene.
+	This object has three states:
+	- initial state = not yet in measurement (both start and end point == QVector3D())
+	- in measurement (start point != QVector3D() but end point = QVector3D())
+	- finished measurement (both start and end point != QVector3D() or both == QVector3D())
 */
 class MeasurementObject {
 public:
@@ -47,17 +51,17 @@ public:
 	void create(ShaderProgram * shaderProgram);
 	void destroy();
 
+	/*! Resets the measurement object points (start and end point) and all buffers */
+	void reset();
+
 	/*! Modifies the location of the local coordinate system (i.e. new end point). */
-	void setTranslation(const QVector3D & translation);
+	void setMeasureLine(const QVector3D & end, const QVector3D & cameraForward);
 
 	/*! Binds the buffer and paints. */
 	void render();
 
-	/*! Returns the distances between start and end points in [m]. */
-	double distance() const { return (double)m_endPoint.distanceToPoint(m_startPoint); }
-
 	/*! Shader program, that the grid is painted with. */
-	ShaderProgram				*m_gridShader = nullptr;
+	ShaderProgram				*m_measurementShader = nullptr;
 
 	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
 		If zero, grid is disabled.

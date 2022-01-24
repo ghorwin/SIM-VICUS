@@ -40,6 +40,7 @@ namespace Vic3D {
 class SVNavigationTreeWidget;
 class SVPropEditGeometry;
 class SVPropVertexListWidget;
+class SVMeasurementWidget;
 class SVGeometryView;
 class SVPropModeSelectionWidget;
 class SVLocalCoordinateView;
@@ -96,6 +97,9 @@ public:
 		from property widgets.
 	*/
 	SVNavigationTreeWidget				*m_navigationTreeWidget = nullptr;
+
+    /*! Pointer to Widget that shows all information needed to perform measurements in scene. */
+    SVMeasurementWidget                 *m_measurementWidget = nullptr;
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;

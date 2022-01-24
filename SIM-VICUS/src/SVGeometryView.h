@@ -35,6 +35,7 @@ namespace Vic3D {
 
 class SVPropertyWidget;
 class SVLocalCoordinateView;
+class SVMeasurementWidget;
 class QSplitter;
 class QToolBar;
 class QAction;
@@ -90,6 +91,9 @@ public:
 	*/
 	bool handleGlobalKeyPress(Qt::Key k);
 
+	/*! Moves the measurement Widget to the bottom right of the scene view. */
+	void moveMeasurementWidget();
+
 public slots:
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
 		visibility of the local coordinate system.
@@ -122,8 +126,10 @@ private:
 	/*! Splitter that contains the scene view and the property widget. */
 	QSplitter					*m_splitter									= nullptr;
 
-
 	QToolBar					*m_toolBar									= nullptr;
+
+	/*! Pointer to measurement widget */
+	SVMeasurementWidget			*m_measurementWidget = nullptr;
 
 	QAction						*m_snapAction								= nullptr;
 	QAction						*m_measureAction							= nullptr;
@@ -137,6 +143,10 @@ private:
 	/*! Local Coordinate System View Widget */
 	SVLocalCoordinateView		*m_localCoordinateSystemView				= nullptr;
 	QAction						*m_actionlocalCoordinateSystemCoordinates	= nullptr;
+
+	// QWidget interface
+protected:
+	void resizeEvent(QResizeEvent *event);
 };
 
 

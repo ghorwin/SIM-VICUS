@@ -47,6 +47,7 @@
 #include "Vic3DMeasurementObject.h"
 
 #include "SVViewState.h"
+#include "SVMeasurementWidget.h"
 
 class ModificationInfo;
 
@@ -202,6 +203,8 @@ private:
 	ShaderProgram			*m_gridShader				= nullptr;
 	/*! Shader program 'SurfaceNormals' (managed by SceneView). */
 	ShaderProgram			*m_surfaceNormalsShader		= nullptr;
+	/*! Shader program 'Measurement Line' (managed by SceneView). */
+	ShaderProgram			*m_measurementShader		= nullptr;
 	/*! Shader program 'Opaque Surfaces' (managed by SceneView). */
 	ShaderProgram			*m_buildingShader			= nullptr;
 	/*! Shader program 'Orbit controller' (managed by SceneView). */
@@ -252,6 +255,9 @@ private:
 	NewSubSurfaceObject		m_newSubSurfaceObject;
 	/*! The measurement object. */
 	MeasurementObject		m_measurementObject;
+
+	/*! Pointer to measurement widget */
+	SVMeasurementWidget     *m_measurementWidget = nullptr;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;

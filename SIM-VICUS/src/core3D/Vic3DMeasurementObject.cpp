@@ -32,14 +32,19 @@
 #include <VICUS_Project.h>
 #include "SVProjectHandler.h"
 #include "Vic3DShaderProgram.h"
+#include "Vic3DVertex.h"
+#include "Vic3DSceneView.h"
+#include "Vic3DScene.h"
 
 #include "SVSettings.h"
+#include "SVGeometryView.h"
+#include "SVViewStateHandler.h"
+#include "SVMeasurementWidget.h"
 
 namespace Vic3D {
 
 void MeasurementObject::create(ShaderProgram * shaderProgram) {
-	m_gridShader = shaderProgram;
-
+	m_measurementShader = shaderProgram;
 }
 
 
@@ -48,9 +53,41 @@ void MeasurementObject::destroy() {
 	m_vbo.destroy();
 }
 
-void MeasurementObject::setTranslation(const QVector3D & translation) {
+void MeasurementObject::reset() {
+	m_startPoint = QVector3D();
+	m_endPoint = QVector3D();
+
+	destroy();
+
+	m_vertexCount = 0;
+}
+
+void MeasurementObject::setMeasureLine(const QVector3D & end, const QVector3D & cameraForward) {
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
-	std::vector<float>			gridVertexBufferData;
+	std::vector<VertexC>			measurementVertexBufferData;
+
+	Q_ASSERT(m_startPoint != QVector3D() ); // start point always has to be set
+
+	// start point
+	measurementVertexBufferData.push_back(VertexC(m_startPoint));
+	// end point
+	measurementVertexBufferData.push_back(VertexC(end));
+
+	QVector3D uprightVec = QVector3D::crossProduct(cameraForward, end-m_startPoint).normalized();
+
+	QVector3D startLine1 = m_startPoint + 0.5 * uprightVec;
+	QVector3D endLine1 = m_startPoint - 0.5 * uprightVec;
+
+	QVector3D startLine2 = end + 0.5 * uprightVec;
+	QVector3D endLine2 = end - 0.5 * uprightVec;
+
+	measurementVertexBufferData.push_back(VertexC(startLine1));
+	measurementVertexBufferData.push_back(VertexC(endLine1));
+
+	measurementVertexBufferData.push_back(VertexC(startLine2));
+	measurementVertexBufferData.push_back(VertexC(endLine2));
+
+	m_vertexCount = measurementVertexBufferData.size();
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {
@@ -62,17 +99,13 @@ void MeasurementObject::setTranslation(const QVector3D & translation) {
 		m_vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 		m_vbo.bind();
 
-		// layout(location = 0) = vec2 position
-		m_gridShader->shaderProgram()->enableAttributeArray(0); // array with index/id 0
-		m_gridShader->shaderProgram()->setAttributeBuffer(0, GL_FLOAT,
-									  0 /* position/vertex offset */,
-									  2 /* two floats per position = vec2 */,
-									  0 /* vertex after vertex, no interleaving */);
+		// layout(location = 0) = vec3 vertex coordinates
+		m_measurementShader->shaderProgram()->enableAttributeArray(0); // array with index/id 0
+		m_measurementShader->shaderProgram()->setAttributeBuffer(0, GL_FLOAT, 0, 3 /* vec3 */, sizeof(VertexC));
 	}
 
 	m_vbo.bind();
-	unsigned long vertexMemSize = gridVertexBufferData.size()*sizeof(float);
-	m_vbo.allocate(gridVertexBufferData.data(), vertexMemSize);
+	m_vbo.allocate(measurementVertexBufferData.data(), measurementVertexBufferData.size()*sizeof(VertexC));
 
 	m_vao.release(); // Mind: always release VAO before index buffer
 	m_vbo.release();
@@ -87,11 +120,10 @@ void MeasurementObject::render() {
 	m_vao.bind();
 
 	// draw lines
-
-	QVector3D lineColor(1.0f, 0.2f, 0.2f);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], lineColor );
-	glDrawArrays(GL_LINES, m_vertexCount, 2);
-
+	QColor measurementLineColor = SVViewStateHandler::instance().m_measurementWidget->m_color;
+	QVector4D col(measurementLineColor.redF(), measurementLineColor.greenF(), measurementLineColor.blueF(), 1.0);
+	m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[1], col);
+	glDrawArrays(GL_LINES, 0, m_vertexCount);
 	m_vao.release();
 }
 

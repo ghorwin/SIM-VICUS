@@ -119,6 +119,9 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	setupToolBar();
 
+	// *** create Measurement Widget
+	m_measurementWidget = new SVMeasurementWidget(this);
+
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
 
@@ -228,6 +231,10 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 	return true;
 }
 
+void SVGeometryView::moveMeasurementWidget() {
+	const QPoint &point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
+	SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
+}
 
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -512,5 +519,9 @@ void SVGeometryView::setupToolBar() {
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
 	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
+}
+
+void SVGeometryView::resizeEvent(QResizeEvent *event) {
+	moveMeasurementWidget();
 }
 

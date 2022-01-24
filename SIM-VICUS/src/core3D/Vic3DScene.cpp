@@ -53,6 +53,9 @@
 #include "SVUndoDeleteSelected.h"
 #include "SVPropModeSelectionWidget.h"
 #include "SVNavigationTreeWidget.h"
+#include "SVMeasurementWidget.h"
+#include "SVMainWindow.h"
+#include "SVGeometryView.h"
 
 const float TRANSLATION_SPEED = 1.2f;
 const float MOUSE_ROTATION_SPEED = 0.5f;
@@ -93,6 +96,8 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
 												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
+
+	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
 
@@ -313,7 +318,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* aspect ratio */   width / float(height),
 				/* near */           0.1f,
 				/* far */            farDistance
-		);
+				);
 	// Mind: do not use 0.0 for near plane, otherwise depth buffering and depth testing won't work!
 
 	// the small view projection matrix is constant
@@ -324,7 +329,7 @@ void Scene::resize(int width, int height, qreal retinaScale) {
 				/* aspect ratio */   1, // it's a square window
 				/* near */           0.1f,
 				/* far */            farDistance
-		);
+				);
 
 	// update cached world2view matrix
 	updateWorld2ViewMatrix();
@@ -358,11 +363,11 @@ void Scene::updateWorld2ViewMatrix() {
 
 
 bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoint & localMousePos, QPoint & newLocalMousePos) {
-//	QPoint lastLeftButtonPos;
-//	if (keyboardMouseHandler.buttonReleased(Qt::LeftButton))
-//		lastLeftButtonPos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
-//	else
-//		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
+	//	QPoint lastLeftButtonPos;
+	//	if (keyboardMouseHandler.buttonReleased(Qt::LeftButton))
+	//		lastLeftButtonPos = mapFromGlobal(m_keyboardMouseHandler.mouseReleasePos());
+	//	else
+	//		localMousePos = mapFromGlobal(m_keyboardMouseHandler.mouseDownPos());
 
 	// NOTE: In this function we handle only those keyboard inputs that affect the scene navigation.
 	//       Single key release events are handled in Vic3DSceneView, since they do not require repeated screen redraws.
@@ -405,7 +410,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	newLocalMousePos = localMousePos;
 	// retrieve mouse delta
 	QPoint mouseDelta = keyboardHandler.mouseDelta(QCursor::pos());
-//	qDebug() << mouseDelta << m_navigationMode;
+	//	qDebug() << mouseDelta << m_navigationMode;
 	int mouse_dx = mouseDelta.x();
 	int mouse_dy = mouseDelta.y();
 
@@ -807,6 +812,29 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
 
+	// measurement is updated in scene
+	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
+
+		// follow line of sign and determine possible objects to hit
+		if (!pickObject.m_pickPerformed)
+			pick(pickObject);
+
+		// now we handle the snapping rules and also the locking; updates local coordinate system location
+		snapLocalCoordinateSystem(pickObject);
+		// initially, we have not start point so we show the local coordinate system's position
+		if (m_measurementObject.m_startPoint == QVector3D() ) {
+			m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
+		}
+		// while measuring, endPoint is QVector3D() and we update LCS position as end point
+		// otherwise measurement has ended and we do no longer update any coordinates
+		else if (m_measurementObject.m_endPoint == QVector3D() ) {
+			// end point is the same as camera position
+			m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
+			// update end point's coordinates and show distance in widget
+			m_measurementWidget->showEndPoint(m_coordinateSystemObject.translation() );
+		}
+	}
+
 	// if in "align coordinate system mode" perform picking operation and update local coordinate system orientation
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem) {
 		// follow line of sign and determine possible objects to hit
@@ -980,7 +1008,7 @@ void Scene::render() {
 	// set view position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], viewPos);
 
-//#define FIXED_LIGHT_POSITION
+	//#define FIXED_LIGHT_POSITION
 #ifdef FIXED_LIGHT_POSITION
 	// use a fixed light position
 	m_buildingShader->shaderProgram()->setUniformValue(m_buildingShader->m_uniformIDs[1], m_lightPos);
@@ -1081,9 +1109,10 @@ void Scene::render() {
 	// *** movable coordinate system  ***
 
 	bool drawLocalCoordinateSystem = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
-		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
-		vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem );
+									  vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry ||
+									  vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
+									  vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem ||
+									  vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance );
 
 	// do not draw LCS if we are in sub-surface mode
 	if (vs.m_propertyWidgetMode == SVViewState::PM_AddSubSurfaceGeometry)
@@ -1105,7 +1134,7 @@ void Scene::render() {
 		// To fix this, we translate/rotate the view/light position inversely to the model2world transformation and
 		// this reverts the effect introduced by the model2world matrix on the light/view coordinates.
 		QVector3D translatedViewPos = m_coordinateSystemObject.inverseTransformationMatrix() * viewPos;
-//		qDebug() << viewPos << m_coordinateSystemObject.translation();
+		//		qDebug() << viewPos << m_coordinateSystemObject.translation();
 
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[0], m_worldToView);
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[1], translatedViewPos); // lightpos
@@ -1113,6 +1142,16 @@ void Scene::render() {
 		m_coordinateSystemShader->shaderProgram()->setUniformValue(m_coordinateSystemShader->m_uniformIDs[3], translatedViewPos); // viewpos
 		m_coordinateSystemObject.renderOpaque();
 		m_coordinateSystemShader->release();
+	}
+
+	// in measurement mode we always draw the line, except for the initial state where we are waiting for the first click
+	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
+
+		// measurement line's coordinates are adjusted in inputEvent()
+		m_measurementShader->bind();
+		m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[0], m_worldToView);
+		m_measurementObject.render();
+		m_measurementShader->release();
 	}
 
 	// clear depth buffer because we want to paint on top of all
@@ -1134,10 +1173,12 @@ void Scene::setViewState(const SVViewState & vs) {
 	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
+		if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance)
+			leaveMeasurementMode();
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
-			m_lastColorObjectID != vs.m_colorModePropertyID)
+				m_lastColorObjectID != vs.m_colorModePropertyID)
 		{
 			colorUpdateNeeded = true;
 		}
@@ -1206,11 +1247,11 @@ void Scene::refreshColors() {
 
 
 void Scene::generateBuildingGeometry() {
-//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-//	// when we show transparent building, we do not need to update the building geometry
-//	// when we switch object color mode, this function will be called again anyways
-//	if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
-//		return;
+	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	//	// when we show transparent building, we do not need to update the building geometry
+	//	// when we switch object color mode, this function will be called again anyways
+	//	if (vs.m_objectColorMode == SVViewState::OCM_InterlinkedSurfaces)
+	//		return;
 
 	QElapsedTimer t;
 	t.start();
@@ -1283,9 +1324,9 @@ void Scene::generateBuildingGeometry() {
 
 						// not a transparent surface, just add surface as opaque surface
 						addSubSurface(s, i, currentVertexIndex, currentElementIndex,
-								   m_buildingGeometryObject.m_vertexBufferData,
-								   m_buildingGeometryObject.m_colorBufferData,
-								   m_buildingGeometryObject.m_indexBufferData);
+									  m_buildingGeometryObject.m_vertexBufferData,
+									  m_buildingGeometryObject.m_colorBufferData,
+									  m_buildingGeometryObject.m_indexBufferData);
 					}
 				}
 			}
@@ -1326,9 +1367,9 @@ void Scene::generateBuildingGeometry() {
 
 
 void Scene::generateTransparentBuildingGeometry() {
-//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
-//		return;
+	//	const SVViewState & vs = SVViewStateHandler::instance().viewState();
+	//	if (vs.m_objectColorMode != SVViewState::OCM_InterlinkedSurfaces)
+	//		return;
 
 	QElapsedTimer t;
 	t.start();
@@ -1409,7 +1450,7 @@ void Scene::generateTransparentBuildingGeometry() {
 		IBKMK::Vector3D n2 = (v2[0] - v2[1]).crossProduct(v2[2]-v2[1]);
 		IBKMK::Vector3D centerLine = s2center - s1center;
 
-		 // make sure normals of both polygons point along center line
+		// make sure normals of both polygons point along center line
 		if (centerLine.scalarProduct(n1) < 0)
 			std::reverse(v1.begin(), v1.end());
 		if (centerLine.scalarProduct(n2) < 0)
@@ -1447,9 +1488,9 @@ void Scene::generateTransparentBuildingGeometry() {
 		if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
 			linkBoxColor = QColor(255,64,32,226);
 		addBox(v1, linkBoxColor, currentVertexIndex, currentElementIndex,
-				 m_transparentBuildingObject.m_vertexBufferData,
-				 m_transparentBuildingObject.m_colorBufferData,
-				 m_transparentBuildingObject.m_indexBufferData);
+			   m_transparentBuildingObject.m_vertexBufferData,
+			   m_transparentBuildingObject.m_colorBufferData,
+			   m_transparentBuildingObject.m_indexBufferData);
 	}
 
 	for (const VICUS::Building & b : p.m_buildings) {
@@ -1560,10 +1601,10 @@ void Scene::generateNetworkGeometry() {
 
 			m_networkGeometryObject.m_vertexStartMap[no.uniqueID()] = currentVertexIndex;
 			addSphere(no.m_position, col, radius,
-						currentVertexIndex, currentElementIndex,
-						m_networkGeometryObject.m_vertexBufferData,
-						m_networkGeometryObject.m_colorBufferData,
-						m_networkGeometryObject.m_indexBufferData);
+					  currentVertexIndex, currentElementIndex,
+					  m_networkGeometryObject.m_vertexBufferData,
+					  m_networkGeometryObject.m_colorBufferData,
+					  m_networkGeometryObject.m_indexBufferData);
 		}
 	}
 
@@ -2116,14 +2157,22 @@ void Scene::enterMeasurementMode() {
 	vs.m_sceneOperationMode = SVViewState::OM_MeasureDistance;
 	SVViewStateHandler::instance().setViewState(vs);
 	qDebug() << "Entering 'Measurement' mode";
+
+	m_measurementWidget->show();
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget(); // firstly height and width is set here
 }
 
 
 void Scene::leaveMeasurementMode() {
 	// restore original local coordinate system
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
+	m_measurementObject.reset();
+
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
+
+	m_measurementWidget->hide();
+	m_measurementWidget->reset();
 }
 
 
@@ -2636,7 +2685,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 	} // with snapping
 
-//	qDebug() << "Snap to: " << snapInfo.c_str();
+	//	qDebug() << "Snap to: " << snapInfo.c_str();
 
 	// we now have a snap point
 	// if we also have line snap on, calculate the projection of this intersection point with the line
@@ -2656,12 +2705,12 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 
 
 void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
-											 QPoint & newLocalMousePos, PickObject & pickObject)
+										QPoint & newLocalMousePos, PickObject & pickObject)
 {
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
 	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
-//						qDebug() << "Resetting mousepos to right side of window.";
+		//						qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(m_viewPort.width()-WINDOW_MOVE_MARGIN);
 	}
 	else if (localMousePos.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
@@ -2692,19 +2741,41 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 
 	switch (SVViewStateHandler::instance().viewState().m_sceneOperationMode) {
 
-		// *** place a vertex ***
-		case SVViewState::NUM_OM :
-		case SVViewState::OM_SelectedGeometry : {
-			// selection handling
-			handleSelection(keyboardHandler, o);
-			return;
-		}
+	// *** place a vertex ***
+	case SVViewState::NUM_OM :
+	case SVViewState::OM_SelectedGeometry : {
+		// selection handling
+		handleSelection(keyboardHandler, o);
+		return;
+	}
 
-		case SVViewState::OM_MeasureDistance : {
-			// new starting point for measurement selected
+	case SVViewState::OM_MeasureDistance : {
+		// we start a new measurement when:
+		// a) no start and no end point have been set yet (i.e. mode has just started)
+		// b) last measurement is complete, i.e. both start and end point are set
+
+		// new starting point for measurement selected
+		if (m_measurementObject.m_startPoint == QVector3D())
+		{
+			// if we start from "initial mode", show the distance widget
+			// store new start point
 			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
-			return;
+			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
 		}
+		else if (m_measurementObject.m_startPoint != QVector3D() && m_measurementObject.m_endPoint != QVector3D()) {
+			// first reset object and widget
+			m_measurementObject.reset();
+			m_measurementWidget->reset();
+			// then start next measurement from current LCS position
+			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
+		}
+		else {
+			// finish measurement mode by fixing the end point
+			m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
+		}
+		return;
+	}
 
 		// *** place a vertex ***
 		case SVViewState::OM_PlaceVertex : {

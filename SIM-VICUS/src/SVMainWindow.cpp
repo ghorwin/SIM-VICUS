@@ -2079,6 +2079,10 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 	return true;
 }
 
+void SVMainWindow::moveEvent(QMoveEvent *event) {
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+}
+
 
 SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
 	return m_simulationStartNandrad;
