@@ -256,8 +256,8 @@ private:
 	/*! The measurement object. */
 	MeasurementObject		m_measurementObject;
 
-    /*! Pointer to measurement widget */
-    SVMeasurementWidget     *m_measurementWidget = nullptr;
+	/*! Pointer to measurement widget */
+	SVMeasurementWidget     *m_measurementWidget = nullptr;
 
 	/*! The small coordinate system at the bottom/left. */
 	SmallCoordinateSystemObject	m_smallCoordinateSystemObject;

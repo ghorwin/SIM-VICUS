@@ -812,6 +812,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex)
 			m_newGeometryObject.updateLocalCoordinateSystemPosition(newPoint);
 	}
+
 	// measurement is updated in scene
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
 
@@ -821,14 +822,17 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 		// now we handle the snapping rules and also the locking; updates local coordinate system location
 		snapLocalCoordinateSystem(pickObject);
-		// update window with distance info
-		if(m_measurementObject.m_isActive) {
-			if(m_measurementObject.m_startPoint == QVector3D() ) {
-				m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
-			}
-			else {
-				m_measurementWidget->showEndPoint(m_coordinateSystemObject.translation() );
-			}
+		// initially, we have not start point so we show the local coordinate system's position
+		if (m_measurementObject.m_startPoint == QVector3D() ) {
+			m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
+		}
+		// while measuring, endPoint is QVector3D() and we update LCS position as end point
+		// otherwise measurement has ended and we do no longer update any coordinates
+		else if (m_measurementObject.m_endPoint == QVector3D() ) {
+			// end point is the same as camera position
+			m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
+			// update end point's coordinates and show distance in widget
+			m_measurementWidget->showEndPoint(m_coordinateSystemObject.translation() );
 		}
 	}
 
@@ -1141,19 +1145,10 @@ void Scene::render() {
 		m_coordinateSystemShader->release();
 	}
 
-	if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
+	// in measurement mode we always draw the line, except for the initial state where we are waiting for the first click
+	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
 
-		QVector3D ep;
-
-		if (m_measurementObject.m_isActive)
-			ep = m_coordinateSystemObject.translation();
-		else
-			ep = m_measurementObject.m_endPoint;
-
-		m_measurementObject.setMeasureLine(ep, m_camera.forward() );
-		m_measurementWidget->showEndPoint(ep);
-		m_measurementWidget->showDistance(ep-m_measurementObject.m_startPoint);
-
+		// measurement line's coordinates are adjusted in inputEvent()
 		m_measurementShader->bind();
 		m_measurementShader->shaderProgram()->setUniformValue(m_measurementShader->m_uniformIDs[0], m_worldToView);
 		m_measurementObject.render();
@@ -2766,16 +2761,19 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 			// if we start from "initial mode", show the distance widget
 			// store new start point
 			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
 		}
 		else if (m_measurementObject.m_startPoint != QVector3D() && m_measurementObject.m_endPoint != QVector3D()) {
+			// first reset object and widget
 			m_measurementObject.reset();
 			m_measurementWidget->reset();
-			m_measurementObject.m_isActive = true;
+			// then start next measurement from current LCS position
+			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
+			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
 		}
 		else {
 			// finish measurement mode by fixing the end point
 			m_measurementObject.m_endPoint = m_coordinateSystemObject.translation();
-			m_measurementObject.m_isActive = false;
 		}
 		return;
 	}

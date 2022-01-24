@@ -9,38 +9,138 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>391</width>
-    <height>197</height>
+    <width>435</width>
+    <height>184</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Distance</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
+   <item row="0" column="0">
+    <widget class="QLabel" name="labelStartPoint">
+     <property name="text">
+      <string>Start point (X/Y/Z):</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="lineEditStartX">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="lineEditStartY">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLineEdit" name="lineEditStartZ">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
     <widget class="QLabel" name="labelStartPoint_2">
      <property name="text">
-      <string>End point:</string>
+      <string>End point (X/Y/Z):</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="14">
-    <widget class="QLabel" name="labelStartZ">
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="lineEditEndX">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLineEdit" name="lineEditEndY">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QLineEdit" name="lineEditEndZ">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Z</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <string>Distance [m]:</string>
      </property>
     </widget>
    </item>
-   <item row="9" column="5">
+   <item row="3" column="1">
+    <widget class="QLineEdit" name="lineEditDistance">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Offsets (ΔX/ΔY/ΔZ) [m]:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QLineEdit" name="lineEditDistX">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QLineEdit" name="lineEditDistY">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QLineEdit" name="lineEditDistZ">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1" colspan="3">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+     <item>
+      <widget class="QtExt::ColorButton" name="pushButtonColor">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButtonCopyInformation">
+       <property name="text">
+        <string>Copy Information</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -48,186 +148,10 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
-   </item>
-   <item row="0" column="5" colspan="4">
-    <widget class="QLineEdit" name="lineEditStartX">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="15">
-    <widget class="QLineEdit" name="lineEditEndZ">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" colspan="3">
-    <widget class="QLabel" name="labelStartX_2">
-     <property name="text">
-      <string>X</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="15">
-    <widget class="QLineEdit" name="lineEditStartZ">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="10" colspan="4">
-    <widget class="QLineEdit" name="lineEditDistY">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="15">
-    <widget class="QLineEdit" name="lineEditDistZ">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="10" colspan="4">
-    <widget class="QLineEdit" name="lineEditEndY">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" rowspan="2" colspan="16">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="5" colspan="4">
-    <widget class="QLineEdit" name="lineEditEndX">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="labelStartPoint">
-     <property name="text">
-      <string>Start point:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="5" colspan="4">
-    <widget class="QLineEdit" name="lineEditDistX">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="3" colspan="2">
-    <widget class="QLabel" name="labelDIstX">
-     <property name="text">
-      <string>ΔX</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="5" colspan="11">
-    <widget class="QLineEdit" name="lineEditDistance">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="14">
-    <widget class="QLabel" name="labelStartZ_2">
-     <property name="text">
-      <string>Z</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="10" colspan="4">
-    <widget class="QLineEdit" name="lineEditStartY">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Distance:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="14">
-    <widget class="QLabel" name="labelDIstZ">
-     <property name="text">
-      <string>ΔZ</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="9">
-    <widget class="QLabel" name="labelDIstY">
-     <property name="text">
-      <string>ΔY</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="9">
-    <widget class="QLabel" name="labelStartY_2">
-     <property name="text">
-      <string>Y</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="9">
-    <widget class="QLabel" name="labelStartY">
-     <property name="text">
-      <string>Y</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2" colspan="3">
-    <widget class="QLabel" name="labelStartX">
-     <property name="text">
-      <string>X</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3" colspan="3">
-    <widget class="QtExt::ColorButton" name="pushButtonColor">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="6" colspan="10">
-    <widget class="QPushButton" name="pushButtonCopyInformation">
-     <property name="text">
-      <string>Copy Information</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>

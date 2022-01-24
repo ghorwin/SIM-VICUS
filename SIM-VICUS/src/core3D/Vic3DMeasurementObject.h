@@ -60,9 +60,6 @@ public:
 	/*! Binds the buffer and paints. */
 	void render();
 
-	/*! Returns the distances between start and end points in [m]. */
-	double distance() const { return (double)m_endPoint.distanceToPoint(m_startPoint); }
-
 	/*! Shader program, that the grid is painted with. */
 	ShaderProgram				*m_measurementShader = nullptr;
 
@@ -80,9 +77,6 @@ public:
 	QVector3D					m_startPoint;
 	/*! Starting point of the line distance measurement. */
 	QVector3D					m_endPoint;
-    /*! Indicates whether measurement is currently actice or on finished state */
-    bool                        m_isActive = true;
-
 };
 
 } // namespace Vic3D
