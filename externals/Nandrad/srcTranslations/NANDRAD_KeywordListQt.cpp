@@ -184,6 +184,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.");
 	tr("Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits.");
 	tr("Ventilation rate for Constant model");
+	tr("Ventilation rate increase");
 	tr("Upper limit of comfort range");
 	tr("Lower limit of comfort range");
 	tr("Maximum wind speed to allow ventilation increase");

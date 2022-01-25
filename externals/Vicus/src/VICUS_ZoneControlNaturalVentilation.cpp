@@ -41,7 +41,11 @@ bool ZoneControlNaturalVentilation::isValid(const Database<Schedule> &scheduleDB
 		// is a schedule ID set?
 		if (m_idSchedules[i] != INVALID_ID) {
 			// ensure, that no schedule for comfort air change rate was set
-			IBK_ASSERT(i != P_MaximumAirChangeRateComfort);
+			if(i == P_MaximumAirChangeRateComfort)
+				return false;
+			// ensure, that no schedule for wind speed was set
+			if(i == P_WindSpeedMax)
+				return false;
 
 			// check if schedule ID is existing and valid
 			const Schedule * sched = scheduleDB[m_idSchedules[i]];

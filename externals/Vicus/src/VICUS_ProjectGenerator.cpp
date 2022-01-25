@@ -135,6 +135,7 @@ public:
 
 class VentilationModelGenerator : public ModelGeneratorBase {
 public:
+
 	VentilationModelGenerator(const VICUS::Project * pro) :
 		ModelGeneratorBase(pro)
 	{}
@@ -147,6 +148,9 @@ public:
 	std::vector<NANDRAD::ObjectList>				m_objLists;
 	std::vector<std::string>						m_objListNames;
 
+	// store VICUS schedules for similarity check of a new schedule
+	std::vector< const Schedule* >
+													m_generatingSchedules;
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
 	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
@@ -1196,39 +1200,6 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		return;
 
 	const VICUS::ZoneTemplate * zoneTemplate = VICUS::element(m_project->m_embeddedDB.m_zoneTemplates, r->m_idZoneTemplate);
-//	try {
-//		if (infiltration != nullptr && !infiltration->isValid())
-//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-//	}
-//	catch (IBK::Exception & ex) {
-//		errorStack.append( QString::fromStdString(ex.what()) );
-//		return;
-//	}
-
-//	try {
-//		if (ventilation != nullptr && !ventilation->isValid(m_scheduleDB))
-//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_VentilationNatural])
-//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-//	}
-//	catch (IBK::Exception & ex) {
-//		errorStack.append( QString::fromStdString(ex.what()) );
-//		return;
-//	}
-
-
-//	try {
-//		if (ctrlVentilation != nullptr && !ctrlVentilation->isValid())
-//			throw IBK::Exception( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
-//								  .arg(zoneTemplate->m_idReferences[ZoneTemplate::SubTemplateType::ST_Infiltration])
-//								  .arg(zoneTemplate->m_id).arg(MultiLangString2QString(zoneTemplate->m_displayName)).toStdString(), FUNC_ID);
-//	}
-//	catch (IBK::Exception & ex) {
-//		errorStack.append( QString::fromStdString(ex.what()) );
-//		return;
-//	}
 
 	if(ventilation != nullptr  && !ventilation->isValid(m_scheduleDB))
 			errorStack.append( qApp->tr("Invalid sub template ID #%1 referenced from zone template #%2 '%3'.")
@@ -1288,70 +1259,19 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	natVentMod.m_displayName = zoneTemplate->m_displayName.string();
 	//TODO id and display name
 
-	//if we have a controlling than add control parameter
-	if(ctrlVentilation != nullptr){
-#if 0
-		//set all control values
+	// model type and constant parameters
+	if(ctrlVentilation != nullptr) {
+		natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACRDynamicTLimit;
+		// copy wind speed parameter
 		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_MaximumEnviromentAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureOutsideMax].get_value("C"));
-		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_MaximumRoomAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureAirMax].get_value("C"));
-		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_MinimumEnviromentAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureOutsideMin].get_value("C"));
-		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_MinimumRoomAirTemperatureACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureAirMin].get_value("C"));
-		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_DeltaTemperatureACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_TemperatureDifference].get_value("K"));
-		NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-										   NANDRAD::NaturalVentilationModel::P_WindSpeedACRLimit,
-										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::ST_WindSpeedMax].get_value("m/s"));
-#endif
+										   NANDRAD::NaturalVentilationModel::P_MaxWindSpeed,
+										   ctrlVentilation->m_para[ZoneControlNaturalVentilation::P_WindSpeedMax].get_value("m/s"));
 	}
-
-	//now add other parameter
-	switch(ventiType){
-		case VentiType::V_Infiltration:{
-			natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
-			switch(infiltration->m_airChangeType){
-				case VICUS::Infiltration::AC_normal:{
-					NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-													   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-													   infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h"));
-				}break;
-				case VICUS::Infiltration::AC_n50:{
-					double val = infiltration->m_para[VICUS::Infiltration::P_AirChangeRate].get_value("1/h");
-					val *= infiltration->m_para[VICUS::Infiltration::P_ShieldingCoefficient].get_value("-");
-					NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-													   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-													   val);
-				}break;
-				case VICUS::Infiltration::NUM_AC:	//only for compiler
-				break;
-			}
-		}
-		break;
-		case VentiType::V_Ventilation:{
-			if(ctrlVentilation == nullptr)
-				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-			else{
-				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
-				NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-												   NANDRAD::NaturalVentilationModel::P_VentilationRate,
-												   0);
-			}
-		}
-		break;
-		case VentiType::V_InfAndVenti:{
-			if(ctrlVentilation == nullptr)
-				//create one schedule with summed value of infiltration + ventilation
-				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-			else{
-				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR;
+	else {
+		//now add other parameter
+		switch(ventiType){
+			case VentiType::V_Infiltration:{
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Constant;
 				switch(infiltration->m_airChangeType){
 					case VICUS::Infiltration::AC_normal:{
 						NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
@@ -1369,33 +1289,139 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 					break;
 				}
 			}
+			break;
+			case VentiType::V_Ventilation:
+			case VentiType::V_InfAndVenti: {
+				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
+				// copy wind speed parameter
+				NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
+												   NANDRAD::NaturalVentilationModel::P_MaxWindSpeed,
+												   ctrlVentilation->m_para[ZoneControlNaturalVentilation::P_WindSpeedMax].get_value("m/s"));
+			}
+			break;
 		}
-		break;
 	}
 
 	// *** schedules ***
-	// schedule generation:
 	//
-	// 1. create basic schedule (name?)
-	std::vector<NANDRAD::Schedule> scheds;
-	VICUS::Schedule combinedSchedule;
-	if(ventiType != V_Infiltration){
+	// 1. create basic schedule for ventilation rate (name?)
+	Schedule vicusScheds[NANDRAD::NaturalVentilationModel::NUM_P];
+	VICUS::Schedule ventilationSchedule;
+
+	// for control model with constant infiltration we create a constant schedule
+	if(ventiType == V_Infiltration) {
+		if(ctrlVentilation != nullptr) {
+			// check values
+			double val = infiltration->m_para[Infiltration::P_AirChangeRate].value;
+			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].value;
+			if(val > maxVal)  {
+
+				QString errmsg = QString("Error in Infiltration with id: "
+									   "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
+									   "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+				errorStack.push_back(errmsg);
+			}
+			else {
+				// create a constant schedule
+				ventilationSchedule.createConstSchedule(val);
+			}
+		}
+	}
+	else {
 		const Schedule * ventSched = m_scheduleDB[ventilation->m_idSchedule];
-		combinedSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].get_value("1/h"));
+		ventilationSchedule = ventSched->multiply(ventilation->m_para[VentilationNatural::P_AirChangeRate].get_value("1/h"));
 		if(!(ventiType == V_Ventilation || (ventiType == V_InfAndVenti && ctrlVentilation != nullptr))){
 			double infVal = infiltration->m_para[Infiltration::P_AirChangeRate].get_value("1/h");
 			if(infiltration->m_airChangeType == Infiltration::AC_n50)
 				infVal *= infiltration->m_para[Infiltration::P_ShieldingCoefficient].value;
-			combinedSchedule = combinedSchedule.add(infVal);
+			ventilationSchedule = ventilationSchedule.add(infVal);
 		}
-		std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
-											NANDRAD::NaturalVentilationModel::P_VentilationRate) + "Schedule [1/h]";
-		combinedSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
+
+		bool errorOccured = false;
+		// check schedule values
+		if(ctrlVentilation != nullptr) {
+			// check schedule values
+			std::vector<double> timepoints, values;
+			ventilationSchedule.createYearDataVector(timepoints, values);
+
+			double maxVal = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
+			for(double val: values) {
+				if(val > maxVal)  {
+
+					QString errmsg = QString("Error in Infiltration with id: "
+										   "Parameter 'AirChangeRate' must always be below 'MaximumAirChangeRateComfort' "
+										   "with %2 1/h!").arg(ctrlVentilation->m_id).arg(maxVal);
+					errorStack.push_back(errmsg);
+					errorOccured = true;
+					break;
+				}
+			}
+		}
+	}
+	// register generating schedule
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRate] = ventilationSchedule;
+
+	// only continue if there were no errors so far
+	if (!errorStack.isEmpty())
+		return;
+
+	// 2. create basic schedules for controlled ventilation
+	// we only support modelType 'ScheduledWithBaseACRDynamicTLimit' and therefore
+	// convert minimum and maximum air temperatures into schedules, as well as ventilation increase
+	Schedule ventilationIncreateSchedule;
+	Schedule minAirTempSchedule;
+	Schedule maxAirTempSchedule;
+
+	if(ctrlVentilation != nullptr) {
+		double maxVentilationRate = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
+		// subtract from ventilation schedule
+		IBK_ASSERT(!ventilationSchedule.m_periods.empty());
+		// create a schedule for ventilation increaes
+		ventilationIncreateSchedule = ventilationSchedule.multiply(-1.0);
+		ventilationIncreateSchedule = ventilationIncreateSchedule.add(maxVentilationRate);
+
+		// 3. create basic schedule for minimum and maximum air temperature
+		if(!ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin].empty()) {
+
+			// we both require minimum and maximum air temperature
+			IBK_ASSERT(!ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax].empty());
+
+			double minAirTemp = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin].get_value("C");
+			double maxAirTemp = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax].get_value("C");
+
+			// create constant schedules:
+			// minimum air temperature
+			minAirTempSchedule.createConstSchedule(minAirTemp);
+			// maximum air temperature
+			maxAirTempSchedule.createConstSchedule(maxAirTemp);
+		}
+		else  {
+			// ensure existecnce of corresponding schedules
+			IBK_ASSERT(ctrlVentilation->m_idSchedules[ZoneControlNaturalVentilation::P_TemperatureAirMin] != VICUS::INVALID_ID);
+			IBK_ASSERT(ctrlVentilation->m_idSchedules[ZoneControlNaturalVentilation::P_TemperatureAirMax] != VICUS::INVALID_ID);
+			// read schedules:
+
+			// for minimum air temperature
+			const Schedule * minAirTempSchedPtr = m_scheduleDB[ctrlVentilation->m_idSchedules[ZoneControlNaturalVentilation::P_TemperatureAirMin]];
+			IBK_ASSERT(minAirTempSchedPtr != nullptr);
+			minAirTempSchedule = *minAirTempSchedPtr;
+			// for maximum air temperature
+			const Schedule * maxAirTempSchedPtr = m_scheduleDB[ctrlVentilation->m_idSchedules[ZoneControlNaturalVentilation::P_TemperatureAirMax]];
+			IBK_ASSERT(maxAirTempSchedPtr != nullptr);
+			maxAirTempSchedule = *maxAirTempSchedPtr;
+		}
 	}
 
 	// only continue if there were no errors so far
 	if (!errorStack.isEmpty())
 		return;
+
+	// register generating schedules
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRateIcrease] = ventilationIncreateSchedule;
+	// register generating schedule
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_MinAirTemperature] = minAirTempSchedule;
+	// register generating schedule
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_MaxAirTemperature] = maxAirTempSchedule;
 
 	// now we have a valid schedule group, yet without object list name
 
@@ -1406,8 +1432,20 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 
 	bool foundModel = false;
 	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
-		if (m_natVentObjects[i].equal(natVentMod) &&
-			NANDRAD::Schedules::equalSchedules(m_schedules[i], scheds) ) {
+		if (m_natVentObjects[i].equal(natVentMod) ) {
+			// check similarity of schedules
+			const Schedule *others =m_generatingSchedules[i];
+
+			for(unsigned int j = 0; j < NANDRAD::NaturalVentilationModel::NUM_P; ++j) {
+				// skip empty schedules
+				if(vicusScheds[j].m_periods.empty())
+					continue;
+
+				IBK_ASSERT(!others[j].m_periods.empty());
+				// schedules are not similar
+				if(!others[j].isSimilar(vicusScheds[j]))
+					break;
+			}
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
@@ -1426,9 +1464,38 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 
 		// add all definitions
 		m_natVentObjects.push_back(natVentMod);
-		m_schedules.push_back(scheds);
+		m_generatingSchedules.push_back(vicusScheds);
 		m_objLists.push_back(ol);
 		m_objListNames.push_back(ol.m_name);
+
+		std::vector<NANDRAD::Schedule> scheds;
+		// register schedules:
+		if(!ventilationSchedule.m_periods.empty()) {
+			// ventilation
+			std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
+												NANDRAD::NaturalVentilationModel::P_VentilationRate) + "Schedule [1/h]";
+			ventilationSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
+		}
+		if(!ventilationIncreateSchedule.m_periods.empty()) {
+			// ventilation increase
+			std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
+												NANDRAD::NaturalVentilationModel::P_VentilationRateIcrease) + "Schedule [1/h]";
+			ventilationIncreateSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
+		}
+		if(!minAirTempSchedule.m_periods.empty()) {
+			// minimum air temperature
+			std::string minTempSchedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
+											NANDRAD::NaturalVentilationModel::P_MinAirTemperature) + "Schedule [C]";
+			minAirTempSchedule.insertIntoNandradSchedulegroup(minTempSchedName, scheds);
+		}
+		if(!maxAirTempSchedule.m_periods.empty()) {
+			// maximum air temperature
+			std::string maxTempSchedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
+											NANDRAD::NaturalVentilationModel::P_MaxAirTemperature) + "Schedule [C]";
+			maxAirTempSchedule.insertIntoNandradSchedulegroup(maxTempSchedName, scheds);
+		}
+
+		m_schedules.push_back(scheds);
 	}
 }
 

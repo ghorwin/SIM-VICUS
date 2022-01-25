@@ -405,51 +405,6 @@
 						</ScheduleInterval>
 					</Periods>
 				</Schedule>
-				<Schedule id="60008" displayName="DE: On |EN: &lt;new schedule&gt;">
-					<UseLinearInterpolation>true</UseLinearInterpolation>
-					<HaveAnnualSchedule>false</HaveAnnualSchedule>
-					<Periods>
-						<ScheduleInterval intervalStartDay="0">
-							<DailyCycles>
-								<DailyCycle>
-									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
-									<TimePoints>0</TimePoints>
-									<Values>23</Values>
-								</DailyCycle>
-							</DailyCycles>
-						</ScheduleInterval>
-					</Periods>
-				</Schedule>
-				<Schedule id="60009" displayName="DE: On |EN: &lt;new schedule&gt;">
-					<UseLinearInterpolation>true</UseLinearInterpolation>
-					<HaveAnnualSchedule>false</HaveAnnualSchedule>
-					<Periods>
-						<ScheduleInterval intervalStartDay="0">
-							<DailyCycles>
-								<DailyCycle>
-									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
-									<TimePoints>0</TimePoints>
-									<Values>100</Values>
-								</DailyCycle>
-							</DailyCycles>
-						</ScheduleInterval>
-					</Periods>
-				</Schedule>
-				<Schedule id="60005" displayName="DE: On |EN: &lt;new schedule&gt;">
-					<UseLinearInterpolation>true</UseLinearInterpolation>
-					<HaveAnnualSchedule>false</HaveAnnualSchedule>
-					<Periods>
-						<ScheduleInterval intervalStartDay="0">
-							<DailyCycles>
-								<DailyCycle>
-									<DayTypes>3,4,5,6,7,8,9,10</DayTypes>
-									<TimePoints>0</TimePoints>
-									<Values>2</Values>
-								</DailyCycle>
-							</DailyCycles>
-						</ScheduleInterval>
-					</Periods>
-				</Schedule>
 			</Schedules>
 			<InternalLoads>
 				<InternalLoad id="70003" displayName="DE: Electric Equip |EN: &lt;new internal load model&gt;" color="#5a6eff">
@@ -495,12 +450,9 @@
 			</VentilationNatural>
 			<ZoneControlVentilationNatural>
 				<ZoneControlVentilationNatural id="160003" displayName="DE: Venti Test Model |EN: &lt;new zone control ventilation model&gt;" color="#5a6eff">
-					<TemperatureAirMin>60008</TemperatureAirMin>
-					<TemperatureAirMax>60009</TemperatureAirMax>
-					<AirChangeRateIncrease>60005</AirChangeRateIncrease>
-					<IBK:Parameter name="TemperatureOutsideMax" unit="C">25.0</IBK:Parameter>
-					<IBK:Parameter name="TemperatureOutsideMin" unit="C">18.0</IBK:Parameter>
-					<IBK:Parameter name="TemperatureDifference" unit="K">1.0</IBK:Parameter>
+					<IBK:Parameter name="TemperatureAirMin" unit="C">23.0</IBK:Parameter>
+					<IBK:Parameter name="TemperatureAirMax" unit="C">100.0</IBK:Parameter>
+					<IBK:Parameter name="MaximumAirChangeRateComfort" unit="1/h">5.0</IBK:Parameter>
 					<IBK:Parameter name="WindSpeedMax" unit="m/s">5.0</IBK:Parameter>
 				</ZoneControlVentilationNatural>
 			</ZoneControlVentilationNatural>

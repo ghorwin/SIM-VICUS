@@ -29,7 +29,6 @@
 #define FMI_OUTPUT_AirChangeRate 7000
 #define FMI_OUTPUT_CO2Concentration 8000
 
-#define ControlledVentilationNotImplemented 1
 
 struct SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject {
 	// mapping from zone id to zone volume
@@ -447,8 +446,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		// create reference for minimum air temperature
 		inputVar.m_fmiVarName = "MinimumAirTemperature_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MinimumAirTemperature";
-		inputVar.m_fmiValueRef = FMI_INPUT_MinimumAirTemperature + zoneId;
-//		inputVar.m_varName = "Zone.MinimumAirTemperatureSchedule";
+		inputVar.m_varName = "Zone.MinAirTemperatureSchedule";
 		inputVar.m_varName.clear();
 		inputVar.m_fmiStartValue = 293.15;
 		inputVar.m_unit = "K";
@@ -458,8 +456,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		inputVar.m_fmiVarName = "MaximumAirTemperature_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MaximumAirTemperature";
 		inputVar.m_fmiValueRef = FMI_INPUT_MaximumAirTemperature + zoneId;
-//		inputVar.m_varName = "Zone.MaximumAirTemperatureSchedule";
-		inputVar.m_varName.clear();
+		inputVar.m_varName = "Zone.MaxAirTemperatureSchedule";
 		inputVar.m_fmiStartValue = 293.15;
 		inputVar.m_unit = "K";
 		co2InputVariables[inputVar.m_fmiValueRef] = inputVar;
@@ -467,7 +464,6 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		// create reference for minimum air change rate
 		inputVar.m_fmiVarName = "MinimumAirChangeRate_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MinimumAirChangeRate";
-		inputVar.m_fmiValueRef = FMI_INPUT_MinimumAirChangeRate + zoneId;
 		inputVar.m_varName = "Zone.VentilationRateSchedule";
 		inputVar.m_fmiStartValue = 0.0;
 		inputVar.m_unit = "1/s";
@@ -477,8 +473,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		inputVar.m_fmiVarName = "MaximumAirChangeRateIncrease_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MaximumAirChangeRateIncrease";
 		inputVar.m_fmiValueRef = FMI_INPUT_MaximumAirChangeRateIncrease + zoneId;
-//		inputVar.m_varName = "Zone.VentilationRateIncreaseSchedule";
-		inputVar.m_varName.clear();
+		inputVar.m_varName = "Zone.VentilationRateIncreaseSchedule";
 		inputVar.m_fmiStartValue = 0.0;
 		inputVar.m_unit = "1/s";
 		co2InputVariables[inputVar.m_fmiValueRef] = inputVar;
@@ -583,34 +578,6 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 
 	// should be checked in initialization
 	IBK_ASSERT(controlVentilation != nullptr);
-
-	// we need an actiobity schedule for minimum air temperature (obligatory)...
-	unsigned int scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin];
-
-	// missing schedule
-	if(scheduleId == VICUS::INVALID_ID) {
-		// no control ventilation control possible
-		errmsg = "Missing schedule 'TemperatureAirMin' for room '" + room.m_displayName + "'. Please add missing schedule data!";
-		return;
-	}
-
-	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMax];
-
-	// missing schedule
-	if(scheduleId == VICUS::INVALID_ID) {
-		// no control ventilation control possible
-		errmsg = "Missing schedule 'TemperatureAirMax' for room '" + room.m_displayName + "'. Please add missing schedule data!";
-		return;
-	}
-
-//	scheduleId = controlVentilation->m_idSchedules[VICUS::ZoneControlNaturalVentilation::P_AirChangeRateIncrease];
-
-//	// missing schedule
-//	if(scheduleId == VICUS::INVALID_ID) {
-//		// no control ventilation control possible
-//		errmsg = "Missing schedule 'AirChangeRateIncrease' for room '" + room.m_displayName + "'. Please add missing schedule data!";
-//		return;
-//	}
 }
 
 
@@ -904,7 +871,6 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 														const QString &modelName) const
 {
 
-#ifdef ControlledVentilationNotImplemented
 	// create tsv files for all missing schedules
 
 	// create a constant schedule for the first try
@@ -935,72 +901,8 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 		tsvDataCO2 << 8760 << "\t" << 1300 << "\n";
 		}
 		CO2file.close();
-
-
-		// write file for minimum air temperature
-		scheduleName = "MinimumAirTemperature_" + templateName;
-		tsvFile = targetDir + "/" + modelName + ".fmus/" + scheduleName + ".tsv";
-
-		QFile minAirTempFile(tsvFile);
-		minAirTempFile.open(QIODevice::WriteOnly | QIODevice::Text);
-
-		{
-		// write file header
-		QTextStream tsvDataMinTemp(&minAirTempFile);
-
-		// write header
-		tsvDataMinTemp << "Time [h]\tMinimumAirTemperature [C]\n";
-
-		// write file
-		tsvDataMinTemp << 0.0 << "\t" << 25 << "\n";
-		tsvDataMinTemp << 8760 << "\t" << 25 << "\n";
-		}
-		minAirTempFile.close();
-
-
-		// write file for maximum air temperature
-		scheduleName = "MaximumAirTemperature_" + templateName;
-		tsvFile = targetDir + "/" + modelName + ".fmus/" + scheduleName + ".tsv";
-
-		QFile maxAirTempFile(tsvFile);
-		maxAirTempFile.open(QIODevice::WriteOnly | QIODevice::Text);
-
-		{
-		// write file header
-		QTextStream tsvDataMaxTemp(&maxAirTempFile);
-
-		// write header
-		tsvDataMaxTemp << "Time [h]\tMaximumAirTemperature [C]\n";
-
-		// write file
-		tsvDataMaxTemp << 0.0 << "\t" << 100 << "\n";
-		tsvDataMaxTemp << 8760 << "\t" << 100 << "\n";
-
-		}
-		maxAirTempFile.close();
-
-		// write file for maximumCO2 concentration
-		scheduleName = "MaximumAirChangeRateIncrease_" + templateName;
-		tsvFile = targetDir + "/" + modelName + ".fmus/" + scheduleName + ".tsv";
-
-		QFile maxAirRateFile(tsvFile);
-		maxAirRateFile.open(QIODevice::WriteOnly | QIODevice::Text);
-
-		{
-		// write file header
-		QTextStream tsvDataMaxAirRate(&maxAirRateFile);
-
-		// write header
-		tsvDataMaxAirRate << "Time [h]\tMaximumAirChangeRateIncrease [1/h]\n";
-
-		// write file
-		tsvDataMaxAirRate << 0 << "\t" << 2.0 << "\n";
-		tsvDataMaxAirRate << 8760 << "\t" << 2.0 << "\n";
-		}
-		maxAirRateFile.close();
 	}
 
-#endif
 
 	const char * const MAX_CO2_FILE_TEMPLATE =
 			"simulator ${INDEX} 0 MaximumCO2Concentration_${TEMPLATE} #4682b4 \"${NAME}.fmus/MaximumCO2Concentration_${TEMPLATE}.tsv\"\n";
@@ -1019,26 +921,6 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 
 	const char * const MAX_CO2_CONNECTION_TEMPLATE =
 			"graph MaximumCO2Concentration_${TEMPLATE}.MaximumCO2Concentration CO2ComfortVentilation.${NAME} 0 0.000001\n";
-
-#ifdef ControlledVentilationNotImplemented
-	const char * const MIN_AIRTEMP_FILE_TEMPLATE =
-			"simulator ${INDEX} 0 MinimumAirTemperature_${TEMPLATE} #4682b4 \"${NAME}.fmus/MinimumAirTemperature_${TEMPLATE}.tsv\"\n";
-
-	const char * const MAX_AIRTEMP_FILE_TEMPLATE =
-			"simulator ${INDEX} 0 MaximumAirTemperature_${TEMPLATE} #4682b4 \"${NAME}.fmus/MaximumAirTemperature_${TEMPLATE}.tsv\"\n";
-
-	const char * const MAX_AIRRATEINCREASE_FILE_TEMPLATE =
-			"simulator ${INDEX} 0 MaximumAirChangeRateIncrease_${TEMPLATE} #4682b4 \"${NAME}.fmus/MaximumAirChangeRateIncrease_${TEMPLATE}.tsv\"\n";
-
-	const char * const MIN_AIRTEMP_CONNECTION_TEMPLATE =
-			"graph MinimumAirTemperature_${TEMPLATE}.MinimumAirTemperature CO2ComfortVentilation.${NAME} 273.15 1\n";
-
-	const char * const MAX_AIRTEMP_CONNECTION_TEMPLATE =
-			"graph MaximumAirTemperature_${TEMPLATE}.MaximumAirTemperature CO2ComfortVentilation.${NAME} 273.15 1\n";
-
-	const char * const MAX_AIRRATEINCREASE_CONNECTION_TEMPLATE =
-			"graph MaximumAirChangeRateIncrease_${TEMPLATE}.MaximumAirChangeRateIncrease CO2ComfortVentilation.${NAME} 0 0.0002778\n";
-#endif
 
 	// start with global template
 	IBK::Path fPath(":/templates/coSimulation.msim.template");
@@ -1067,12 +949,7 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 	// generate simulator section
 
 	QString simulators;
-
-#ifdef ControlledVentilationNotImplemented
 	templateNames.clear();
-#else
-	std::set<QString> templateNames;
-#endif
 
 	// add all tsv files
 	int index = 0;
@@ -1090,26 +967,6 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 		tsvFile.replace("${TEMPLATE}", templateName);
 		tsvFile.replace("${NAME}", modelName);
 		simulators += tsvFile;
-
-#ifdef ControlledVentilationNotImplemented
-		tsvFile = MIN_AIRTEMP_FILE_TEMPLATE;
-		tsvFile.replace("${INDEX}", QString("%1").arg(index++));
-		tsvFile.replace("${TEMPLATE}", templateName);
-		tsvFile.replace("${NAME}", modelName);
-		simulators += tsvFile;
-
-		tsvFile = MAX_AIRTEMP_FILE_TEMPLATE;
-		tsvFile.replace("${INDEX}", QString("%1").arg(index++));
-		tsvFile.replace("${TEMPLATE}", templateName);
-		tsvFile.replace("${NAME}", modelName);
-		simulators += tsvFile;
-
-		tsvFile = MAX_AIRRATEINCREASE_FILE_TEMPLATE;
-		tsvFile.replace("${INDEX}", QString("%1").arg(index++));
-		tsvFile.replace("${TEMPLATE}", templateName);
-		tsvFile.replace("${NAME}", modelName);
-		simulators += tsvFile;
-#endif
 
 		// register template name
 		templateNames.insert(templateName);
@@ -1153,29 +1010,6 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 				connection.replace("${TEMPLATE}", templateName->second);
 				connections += connection;
 			}
-#ifdef ControlledVentilationNotImplemented
-			else if(inputVar.m_fmiVarName.find("MinimumAirTemperature") != std::string::npos) {
-				// fill line
-				QString connection = MIN_AIRTEMP_CONNECTION_TEMPLATE;
-				connection.replace("${NAME}", QString::fromStdString(inputVar.m_fmiVarName));
-				connection.replace("${TEMPLATE}", templateName->second);
-				connections += connection;
-			}
-			else if(inputVar.m_fmiVarName.find("MaximumAirTemperature") != std::string::npos) {
-				// fill line
-				QString connection = MAX_AIRTEMP_CONNECTION_TEMPLATE;
-				connection.replace("${NAME}", QString::fromStdString(inputVar.m_fmiVarName));
-				connection.replace("${TEMPLATE}", templateName->second);
-				connections += connection;
-			}
-			else if(inputVar.m_fmiVarName.find("MaximumAirChangeRateIncrease") != std::string::npos) {
-				// fill line
-				QString connection = MAX_AIRRATEINCREASE_CONNECTION_TEMPLATE;
-				connection.replace("${NAME}", QString::fromStdString(inputVar.m_fmiVarName));
-				connection.replace("${TEMPLATE}", templateName->second);
-				connections += connection;
-			}
-#endif
 			else
 				continue;
 		}
