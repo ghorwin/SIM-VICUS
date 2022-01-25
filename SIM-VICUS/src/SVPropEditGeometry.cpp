@@ -678,6 +678,11 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
 		}
 	}
+//	else if (event->type() == QEvent::FocusOut) {
+//		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
+//		if(edit != nullptr)
+//			 emit edit->editingFinished();
+//	}
 	return false;
 }
 
@@ -1739,7 +1744,7 @@ void SVPropEditGeometry::on_lineEditXValue_editingFinished() {
 		m_ui->lineEditXValue->setValue( m_originalValues.m_z );
 		return;
 	}
-	if ( ( m_originalValues.m_z - m_ui->lineEditXValue->value() ) < 1E-3 )
+	if ( std::fabs( m_originalValues.m_z - m_ui->lineEditXValue->value() ) < 1E-3 )
 		return;
 
 	switch ( m_modificationType ) {
@@ -1755,7 +1760,7 @@ void SVPropEditGeometry::on_lineEditYValue_editingFinished() {
 		m_ui->lineEditYValue->setValue( m_originalValues.m_y );
 		return;
 	}
-	if ( ( m_originalValues.m_y - m_ui->lineEditYValue->value() ) < 1E-3 )
+	if ( std::fabs( m_originalValues.m_y - m_ui->lineEditYValue->value() ) < 1E-3 )
 		return;
 
 	switch ( m_modificationType ) {
@@ -1771,7 +1776,7 @@ void SVPropEditGeometry::on_lineEditZValue_editingFinished() {
 		m_ui->lineEditZValue->setValue( m_originalValues.m_z );
 		return;
 	}
-	if ( ( m_originalValues.m_z - m_ui->lineEditZValue->value() ) < 1E-3 )
+	if ( std::fabs( m_originalValues.m_z - m_ui->lineEditZValue->value() ) < 1E-3 )
 		return;
 
 	switch ( m_modificationType ) {
