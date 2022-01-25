@@ -87,5 +87,6 @@
         <file>gfx/actions/Object-Snap.png</file>
         <file>templates/modelDescription.xml.template</file>
         <file>templates/coSimulation.msim.template</file>
+        <file>gfx/actions/Measurement.png</file>
     </qresource>
 </RCC>

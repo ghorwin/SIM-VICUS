@@ -480,7 +480,7 @@ void SVGeometryView::setupToolBar() {
 	m_measureAction = new QAction(tr("Measure"), this);
 	m_measureAction->setCheckable(true);
 	m_measureAction->setToolTip(tr("Toggles distance measurement mode on/off"));
-	m_measureAction->setIcon(QIcon(":/gfx/actions/icon-gesture-drag.svg") );
+	m_measureAction->setIcon(QIcon(":/gfx/actions/Measurement.png") );
 
 	m_toolBar->addAction(m_measureAction);
 	m_toolBar->setIconSize(QSize(24,24) );
