@@ -137,10 +137,7 @@ args.path = os.path.abspath(args.path)
 print "Test suite             : " + args.path
 print "Binaries directory     : " + args.binaries
 
-if not 'MASTERSIM_PATH' in os.environ:
-	printError("Environment variable 'MASTERSIM_PATH' missing.")
-	exit(1)
-MASTERSIM_BIN = os.environ['MASTERSIM_PATH']
+MASTERSIM_BIN = 'MasterSimulator'
 print "MasterSimulator        : " + MASTERSIM_BIN
 
 NANDRADFMUGEN_BIN = os.path.join(args.binaries, 'NandradFMUGenerator')
