@@ -88,5 +88,6 @@
         <file>templates/modelDescription.xml.template</file>
         <file>templates/coSimulation.msim.template</file>
         <file>gfx/actions/Measurement.png</file>
+        <file>gfx/actions/Add.png</file>
     </qresource>
 </RCC>
