@@ -97,6 +97,7 @@ void SVSettings::setDefaults() {
 	m_7zExecutable = "7z.exe";
 #else
 	m_7zExecutable = "7z";
+	m_masterSimExecutable = "MasterSimulator";
 #endif
 	m_thumbNailSize = 400;
 
@@ -119,6 +120,8 @@ void SVSettings::setDefaults() {
 //			break;
 //		}
 //	}
+
+
 
 	// initialize random number generator
 	qsrand(time(nullptr));
