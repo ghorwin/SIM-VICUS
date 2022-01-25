@@ -122,7 +122,7 @@
           <widget class="QToolButton" name="toolButtonAddInputVariable">
            <property name="icon">
             <iconset resource="../resources/NandradFMUGenerator.qrc">
-             <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+             <normaloff>:/gfx/plus.png</normaloff>:/gfx/plus.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -136,7 +136,7 @@
           <widget class="QToolButton" name="toolButtonRemoveInputVariable">
            <property name="icon">
             <iconset resource="../resources/NandradFMUGenerator.qrc">
-             <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+             <normaloff>:/gfx/minus.png</normaloff>:/gfx/minus.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -208,7 +208,7 @@
           <widget class="QToolButton" name="toolButtonAddOutputVariable">
            <property name="icon">
             <iconset resource="../resources/NandradFMUGenerator.qrc">
-             <normaloff>:/plus.png</normaloff>:/plus.png</iconset>
+             <normaloff>:/gfx/plus.png</normaloff>:/gfx/plus.png</iconset>
            </property>
            <property name="iconSize">
             <size>
@@ -222,7 +222,7 @@
           <widget class="QToolButton" name="toolButtonRemoveOutputVariable">
            <property name="icon">
             <iconset resource="../resources/NandradFMUGenerator.qrc">
-             <normaloff>:/minus.png</normaloff>:/minus.png</iconset>
+             <normaloff>:/gfx/minus.png</normaloff>:/gfx/minus.png</iconset>
            </property>
            <property name="iconSize">
             <size>

@@ -42,7 +42,7 @@ NandradFMUGeneratorWidget::NandradFMUGeneratorWidget(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	qApp->setApplicationName(QString("NANDRAD FMU Generator %1").arg(NANDRAD::LONG_VERSION));
-	qApp->setWindowIcon(QIcon(":/NandradIcon_64.png"));
+	qApp->setWindowIcon(QIcon(":/logo/icons/NandradIcon_64.png"));
 	setWindowTitle(QString("NANDRAD FMU Generator %1").arg(NANDRAD::LONG_VERSION));
 
 	m_ui->lineEditTargetDirectory->setup("", false, true, QString(), true);
@@ -1436,7 +1436,7 @@ bool  NandradFMUGeneratorWidget::generate() {
 	// generate the modelDescription.xml file
 
 	// load template and replace variables
-	IBK::Path fPath(":/modelDescription.xml.template");
+	IBK::Path fPath(":/templates/modelDescription.xml.template");
 	QFile f(fPath.c_str());
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
