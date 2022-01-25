@@ -1041,7 +1041,7 @@ void SVCoSimCO2VentilationDialog::generateMasterSimFile(const SVCoSimCO2Ventilat
 #endif
 
 	// start with global template
-	IBK::Path fPath(":/coSimulation.msim.template");
+	IBK::Path fPath(":/templates/coSimulation.msim.template");
 	QFile f(fPath.c_str());
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
@@ -1300,7 +1300,7 @@ void SVCoSimCO2VentilationDialog::generateModelDescription(const QString & targe
 	FUNCID(SVCoSimCO2VentilationDialog::generateModelDescription);
 
 	// start with global template
-	IBK::Path fPath(":/modelDescription.xml.template");
+	IBK::Path fPath(":/templates/modelDescription.xml.template");
 	QFile f(fPath.c_str());
 	f.open(QFile::ReadOnly);
 	QTextStream strm(&f);
