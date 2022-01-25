@@ -1916,11 +1916,11 @@ bool SVMainWindow::importProjectPackage(const QString & packageFilePath, const Q
 	else {
 		Q_FOREACH(QString fname, extractedFiles) {
 			// now try to determine project file in project package
-			if (isPackage && fname.endsWith(".vicpac")) {
+			if (isPackage && fname.endsWith(".vicus")) {
 				projectFilePath = fname;
 				break;
 			}
-			else if (!isPackage && fname.endsWith(".vicpac")) {
+			else if (!isPackage && fname.endsWith(".vicus")) {
 				projectFilePath = fname;
 				break;
 			}
@@ -2067,17 +2067,19 @@ bool SVMainWindow::processProjectPackage(QString & filename, bool renameProjectF
 
 
 bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project & project) {
-	QDir targetBaseDir(targetDirPath);
-	// create subdirectory for materials
-	targetBaseDir.mkpath(targetDirPath + "/db");
-	// create subdirectory for climate data (if any climate data reference is used)
-	targetBaseDir.mkpath(targetDirPath + "/climate");
-
 	// TODO : implement project export
+	//
+	// - create a temporary project copy
+	// - copy climate data file to target directory
+	// - adjust path to climate data file (like ${Project Directory}/climateFilePath.c6b )
+	// - copy all externally referenced files (are there any?)
+	// - save modified project
+	(void)targetDirPath;
 	(void)project;
 
 	return true;
 }
+
 
 void SVMainWindow::moveEvent(QMoveEvent *event) {
 	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
