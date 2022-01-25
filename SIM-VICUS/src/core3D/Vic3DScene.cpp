@@ -2160,7 +2160,8 @@ void Scene::enterMeasurementMode() {
 	qDebug() << "Entering 'Measurement' mode";
 
 	m_measurementWidget->show();
-	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget(); // firstly height and width is set here
+	// move measurement widget to correct position
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
 }
 
 
@@ -2168,6 +2169,7 @@ void Scene::leaveMeasurementMode() {
 	// restore original local coordinate system
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 	m_measurementObject.reset();
+	qDebug() << "Leaving 'Measurement' mode";
 
 	// switch back to previous view state
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();

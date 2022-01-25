@@ -435,7 +435,7 @@ void SceneView::initializeGL() {
 
 void SceneView::resizeGL(int width, int height) {
 	m_mainScene.resize(width, height, devicePixelRatio());
-	// move the measurement widget
+	// move the measurement widget, needed when the scene's width changes due to moving of the right splitter
 	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
 }
 

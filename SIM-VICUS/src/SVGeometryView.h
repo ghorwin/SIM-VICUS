@@ -115,6 +115,12 @@ private slots:
 	void on_actionYLock_toggled(bool);
 	void on_actionZLock_toggled(bool);
 
+protected:
+	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
+		without changing scene size (by moving left splitter).
+	*/
+	void resizeEvent(QResizeEvent *event);
+
 private:
 	void setupToolBar();
 
@@ -144,10 +150,8 @@ private:
 	SVLocalCoordinateView		*m_localCoordinateSystemView				= nullptr;
 	QAction						*m_actionlocalCoordinateSystemCoordinates	= nullptr;
 
-	// QWidget interface
-protected:
-	void resizeEvent(QResizeEvent *event);
 };
+
 
 
 #endif // SVGeometryViewH

@@ -607,6 +607,12 @@ void SVMainWindow::closeEvent(QCloseEvent * event) {
 }
 
 
+void SVMainWindow::moveEvent(QMoveEvent *event) {
+	QMainWindow::moveEvent(event);
+	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+}
+
+
 void SVMainWindow::setup() {
 
 	// setup log widget already, so that error messages resulting from initialization errors are already
@@ -2081,14 +2087,10 @@ bool SVMainWindow::exportProjectCopy(QString targetDirPath, const VICUS::Project
 }
 
 
-void SVMainWindow::moveEvent(QMoveEvent *event) {
-	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
-}
-
-
 SVSimulationStartNandrad * SVMainWindow::simulationStartNandrad() const {
 	return m_simulationStartNandrad;
 }
+
 
 SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 	if (m_preferencesDialog == nullptr) {

@@ -98,8 +98,8 @@ public:
 	*/
 	SVNavigationTreeWidget				*m_navigationTreeWidget = nullptr;
 
-    /*! Pointer to Widget that shows all information needed to perform measurements in scene. */
-    SVMeasurementWidget                 *m_measurementWidget = nullptr;
+	/*! Pointer to Widget that shows all information needed to perform measurements in scene. */
+	SVMeasurementWidget					*m_measurementWidget = nullptr;
 
 	/*! Pointer to geometry edit widget - is needed to set the absolute scale factor ( bounding box) on selection change. */
 	SVPropEditGeometry					*m_propEditGeometryWidget = nullptr;

@@ -120,7 +120,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	setupToolBar();
 
 	// *** create Measurement Widget
-	m_measurementWidget = new SVMeasurementWidget(this);
+	m_measurementWidget = new SVMeasurementWidget(this); // sets the pointer to the widget in SVViewStateHandler::instance()
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
@@ -231,10 +231,12 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 	return true;
 }
 
+
 void SVGeometryView::moveMeasurementWidget() {
 	const QPoint &point = m_sceneViewContainerWidget->mapToGlobal(m_sceneViewContainerWidget->rect().bottomRight() );
 	SVViewStateHandler::instance().m_measurementWidget->setPosition(point);
 }
+
 
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
@@ -521,7 +523,9 @@ void SVGeometryView::setupToolBar() {
 	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
 }
 
+
 void SVGeometryView::resizeEvent(QResizeEvent *event) {
-	moveMeasurementWidget();
+	QWidget::resizeEvent(event); // call parent's class implementation
+	moveMeasurementWidget(); // adjust position of measurement widget
 }
 

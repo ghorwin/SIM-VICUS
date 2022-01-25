@@ -195,6 +195,8 @@ protected:
 	void changeEvent(QEvent *event) override;
 	/*! Does the confirm-saving-before-close stuff. */
 	void closeEvent(QCloseEvent * event) override;
+	/*! Called when the window is moved. Repositions measurement widget. */
+	void moveEvent(QMoveEvent *event) override;
 
 private slots:
 	/*! Does the entire UI initialization.
@@ -515,11 +517,6 @@ private:
 	SVCoSimCO2VentilationDialog			*m_coSimCO2VentilationDialog					= nullptr;
 
 	friend class SVThreadBase;
-
-
-	// QWidget interface
-protected:
-	void moveEvent(QMoveEvent *event);
 };
 
 #endif // SVMainWindowH

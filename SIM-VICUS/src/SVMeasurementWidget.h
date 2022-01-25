@@ -48,7 +48,9 @@ public:
 	/*! Resets all line edits in measurement widget. */
 	void reset();
 
-	/*! Moves the widget according to the point position and maps it to the parent widgets position */
+	/*! Moves the widget according to the point position and maps it to the parent widgets position.
+		\param position The bottom-right corner position of the widget.
+	*/
 	void setPosition(const QPoint &position);
 
 	/*! Sets the start point based on the measurement object. */
