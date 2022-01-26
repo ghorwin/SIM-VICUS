@@ -52,9 +52,6 @@ public:
 	/*! Sets default surface color based on inclination of associated plane geometry. */
 	void initializeColorBasedOnInclination();
 
-	/*! Creates a copy of the surface object but with a new unique ID. */
-	Surface clone() const;
-
 	void updateParents();
 
 	/*! Heals the geometry via projecting all polygon3D points onto a plane spanned by 3 connecting

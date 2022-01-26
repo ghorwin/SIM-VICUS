@@ -38,54 +38,42 @@ namespace VICUS {
 /*! Base class for all objects that have a parent and are shown in the
 	navigation tree widget.
 
-	Also, each object has a unique ID that is used throughout the user interface to
-	identify it.
-
-	Basically, whenever such an object is newly created, it will get a new unique ID.
+	Also, each object has a unique ID m_id that is used throughout the user interface and
+	data model to identify it.
 
 	Note: whenever you add/remove an object in the item hierarchy, make sure to call updateParents() in top level node.
 */
 class Object {
 public:
 	/*! Standard C'tor. */
-	Object() : m_uniqueID(++LAST_ID) {}
+	Object() = default;
 	/*! Default copy constructor. */
 	Object(Object const&) = default;
 	/*! D'tor. */
 	virtual ~Object();
 
-	unsigned int uniqueID() const { return m_uniqueID; }
-
-	/*! Recursively searches through data hierarchy and returns pointer to object matching the given unique ID.
+	/*! Recursively searches through data hierarchy and returns pointer to object matching the given ID.
 		\return Returns pointer to wanted object or nullptr, if it couldn't be found.
 	*/
-	Object * findChild(unsigned int uID);
+	Object * findChild(unsigned int ID);
 	/*! Same as function above, const version. */
-	const Object * findChild(unsigned int uID) const;
+	const Object * findChild(unsigned int ID) const;
 
 	/*! Recursively selected all unique IDs of children. */
 	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
 
-	/*! Takes an old object and returns a new object with a new unique ID, but same m_parent and m_children. */
-	Object clone() const {
-		Object o(*this);
-		o.m_uniqueID = ++LAST_ID;
-		return o;
-	}
-
-
 	/*! Parent pointer, do not modify. */
 	Object	*m_parent = nullptr;
-
-	/*! Stores visibility information for this surface. */
-	bool								m_selected = false;
-	/*! Stores visibility information for this surface (serialized manually in derived classes). */
-	bool								m_visible = true;
 
 	/*! Persistant ID of object (not the unique ID, may not be unique in DB model, must be handled
 		appropriately in error handling).
 	*/
 	unsigned int						m_id = INVALID_ID;
+
+	/*! Stores visibility information for this surface. */
+	bool								m_selected = false;
+	/*! Stores visibility information for this surface (serialized manually in derived classes). */
+	bool								m_visible = true;
 
 	/*! The descriptive name of the object. */
 	QString								m_displayName;
@@ -93,12 +81,6 @@ public:
 protected:
 	/*! List of all children. */
 	std::vector<Object *>				m_children;
-
-private:
-	unsigned int						m_uniqueID;
-
-	/*! Unique ID marker, incremented in each constructor call. */
-	static unsigned int LAST_ID;
 };
 
 } // namespace VICUS

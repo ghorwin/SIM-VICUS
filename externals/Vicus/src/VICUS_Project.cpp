@@ -420,19 +420,17 @@ void Project::updatePointers() {
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
 
-	// clear component/surface pointers (this is needed to check for duplicate IDs later on)
 	for (VICUS::Building & b : m_buildings) {
-		m_objectPtr[b.uniqueID()] = &b;
+		addAndCheckForUniqueness(&b);
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			m_objectPtr[bl.uniqueID()] = &bl;
-			// TODO : Dirk, sum up net floor area and update bl.m_netFloorArea
+			addAndCheckForUniqueness(&bl);
 			for (VICUS::Room & r : bl.m_rooms) {
-				m_objectPtr[r.uniqueID()] = &r;
+				addAndCheckForUniqueness(&r);
 				for (VICUS::Surface & s : r.m_surfaces) {
-					m_objectPtr[s.uniqueID()] = &s;
+					addAndCheckForUniqueness(&s);
 					s.m_componentInstance = nullptr;
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) ) {
-						m_objectPtr[sub.uniqueID()] = &sub;
+						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
 				}
@@ -508,11 +506,11 @@ void Project::updatePointers() {
 	// networks
 
 	for (VICUS::Network & n : m_geometricNetworks) {
-		m_objectPtr[n.uniqueID()] = &n;
+		addAndCheckForUniqueness(&n);
 		for (VICUS::NetworkEdge & e : n.m_edges)
-			m_objectPtr[e.uniqueID()] = &e;
+			addAndCheckForUniqueness(&e);
 		for (VICUS::NetworkNode & nod : n.m_nodes)
-			m_objectPtr[nod.uniqueID()] = &nod;
+			addAndCheckForUniqueness(&nod);
 
 		n.updateNodeEdgeConnectionPointers();
 	}
@@ -520,69 +518,24 @@ void Project::updatePointers() {
 	// plain geometry
 
 	for (VICUS::Surface & s : m_plainGeometry)
-		m_objectPtr[s.uniqueID()] = &s;
-
+		addAndCheckForUniqueness(&s);
 }
 
 
 unsigned int Project::nextUnusedID() const {
-	unsigned int id = 0;
-	for (auto o : m_objectPtr)
-		id = std::max(id, o.second->m_id);
-	return id+1;
+	if (m_objectPtr.empty())
+		return 1;
+	else
+		return m_objectPtr.rbegin()->first + 1;
 }
 
 
-const VICUS::Object * Project::objectByUniqueId(unsigned int uniqueID) const {
-	auto objPtrIt = m_objectPtr.find(uniqueID);
+Object * Project::objectById(unsigned int id) {
+	auto objPtrIt = m_objectPtr.find(id);
 	if (objPtrIt != m_objectPtr.end())
 		return objPtrIt->second;
 	else
 		return nullptr;
-}
-
-
-const Object * Project::objectById(unsigned int id) const {
-	for (const auto & o : m_objectPtr)
-		if (o.second->m_id == id)
-			return o.second;
-	return nullptr;
-}
-
-
-Room * Project::roomByID(unsigned int roomID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				if (r.m_id == roomID)
-					return &r;
-	return nullptr;
-}
-
-
-Surface * Project::surfaceByID(unsigned int surfaceID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				for (Surface & s : r.m_surfaces) {
-					if (s.m_id == surfaceID)
-						return &s;
-				}
-	return nullptr;
-}
-
-
-SubSurface * Project::subSurfaceByID(unsigned int surfID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				for (Surface & s : r.m_surfaces)
-					for (const SubSurface & sub : s.subSurfaces())
-					{
-						if (sub.m_id == surfID)
-							return const_cast<SubSurface*>(&sub);
-					}
-	return nullptr;
 }
 
 
@@ -797,6 +750,16 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 	qDebug() << "Not implemented, yet";
 
 	return false;
+}
+
+
+void Project::addAndCheckForUniqueness(Object * o) {
+	FUNCID(Project::addAndCheckForUniqueness);
+	// TODO : Andreas, find out how to efficiently add an element to a map and at the same time
+	//        check if there was such an element already (avoid traveling the tree twice)
+	if (m_objectPtr.find(o->m_id) != m_objectPtr.end())
+		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model.").arg(o->m_id), FUNC_ID);
+	m_objectPtr[o->m_id] = o;
 }
 
 

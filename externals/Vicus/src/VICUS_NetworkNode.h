@@ -60,13 +60,13 @@ public:
 
 	NetworkNode() = default;
 
-	/*! creates a cpoy with new unique id */
-	NetworkNode clone() const{
-		NetworkNode n(*this); // create new network with same unique ID
-		Object & o = n;
-		(Object&)n = o.clone(); // assign new ID only
-		return n;
-	}
+//	/*! creates a cpoy with new unique id */
+//	NetworkNode clone() const{
+//		NetworkNode n(*this); // create new network with same unique ID
+//		Object & o = n;
+//		(Object&)n = o.clone(); // assign new ID only
+//		return n;
+//	}
 
 	NetworkNode(const unsigned id, const NodeType type, const IBKMK::Vector3D &v, const double heatDemand=0):
 		m_position(v),
