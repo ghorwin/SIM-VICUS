@@ -525,6 +525,14 @@ void Project::updatePointers() {
 }
 
 
+unsigned int Project::nextUnusedID() const {
+	unsigned int id = 0;
+	for (auto o : m_objectPtr)
+		id = std::max(id, o.first);
+	return id+1;
+}
+
+
 const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
 	auto objPtrIt = m_objectPtr.find(uniqueID);
 	Q_ASSERT(objPtrIt != m_objectPtr.end());

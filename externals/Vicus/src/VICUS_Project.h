@@ -110,6 +110,12 @@ public:
 	*/
 	void updatePointers();
 
+	/*! Searches through all objects and determines the largest ID used for buildings, buildingLevels, rooms, surface,
+		subsurfaces, networks, ... and return the next ID to be used for new data elements.
+		\note Expects that updatePointers() has been called beforehand (i.e. project is synced)
+	*/
+	unsigned int nextUnusedID() const;
+
 	/*! Searches through all unique id-objects in project structure for the uniqueID.
 		Throws an exception, if no object with this unique ID can be found.
 	*/
