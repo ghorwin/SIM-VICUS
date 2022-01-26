@@ -110,7 +110,7 @@ public:
 	*/
 	void updatePointers();
 
-	/*! Searches through all objects and determines the largest ID used for buildings, buildingLevels, rooms, surface,
+	/*! Searches through all objects and determines the largest object ID (not unique ID!) used for buildings, buildingLevels, rooms, surface,
 		subsurfaces, networks, ... and return the next ID to be used for new data elements.
 		\note Expects that updatePointers() has been called beforehand (i.e. project is synced)
 	*/
@@ -120,6 +120,11 @@ public:
 		\return Returns nullptr, when object cannot be found.
 	*/
 	const VICUS::Object * objectByUniqueId(unsigned int uniqueID) const;
+
+	/*! Searches through all objects in project structure for the first (and hopefully only) object with the object ID.
+		\return Returns nullptr, when object cannot be found.
+	*/
+	const VICUS::Object * objectById(unsigned int id) const;
 
 	/*! Searches through all buildings and tries to find a room with given room ID (this
 		is not the uniqueID, but the persistant id from the data model).

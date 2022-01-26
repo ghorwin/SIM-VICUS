@@ -528,7 +528,7 @@ void Project::updatePointers() {
 unsigned int Project::nextUnusedID() const {
 	unsigned int id = 0;
 	for (auto o : m_objectPtr)
-		id = std::max(id, o.first);
+		id = std::max(id, o.second->m_id);
 	return id+1;
 }
 
@@ -539,6 +539,14 @@ const VICUS::Object * Project::objectByUniqueId(unsigned int uniqueID) const {
 		return objPtrIt->second;
 	else
 		return nullptr;
+}
+
+
+const Object * Project::objectById(unsigned int id) const {
+	for (const auto & o : m_objectPtr)
+		if (o.second->m_id == id)
+			return o.second;
+	return nullptr;
 }
 
 
