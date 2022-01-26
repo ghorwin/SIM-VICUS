@@ -59,6 +59,9 @@ void qDebugMsgHandler(QtMsgType type, const QMessageLogContext &context, const Q
 int main(int argc, char *argv[]) {
 	const char * const FUNC_ID = "[main]";
 
+	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
 	QtExt::Directories::appname = "SIM-VICUS";
 	QtExt::Directories::devdir = "SIM-VICUS";
 
