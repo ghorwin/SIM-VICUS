@@ -420,10 +420,6 @@ Die Variablenliste beschreibt alle Namen und die Einheiten, die in den Zeitplän
 |====================
 |Name 
 |Einheit|Beschreibung
-|`VentilationRate`|1/h|Austauschrate für natürliche Lüftung
-|`VentilationRateIncrease`|1/h|Maximale Luftwechselrate = Offset für Nutzerkomfort
-|`VentilationMaxAirTemperature`|C|Temperaturgrenzwert, unterhalb dessen die Komfortlüftung aktiviert wird
-|`VentilationMinAirTemperature`|C|Temperaturgrenze, ab der die Komfortlüftung aktiviert wird
 |`HeatingSetPointTemperature`|C| Sollwerttemperatur für Heizung
 |`CoolingSetPointTemperature`|C| Sollwerttemperatur für Kühlen
 |`AirConditionSetPointTemperature`|C|Solltemperatur für die Klimatisierung
@@ -446,6 +442,10 @@ Die Variablenliste beschreibt alle Namen und die Einheiten, die in den Zeitplän
 |`EquipmentUtilizationRatio`|---|Verhältnis des Verbrauchs für vorhandene elektrische Geräte
 |`LightingUtilizationRatio`|---|Verhältnis des Verbrauchs für die Beleuchtung
 |`MaximumSolarRadiationIntensity`|W/m2|Maximale Sonneneinstrahlungsintensität bevor die Beschattung aktiviert wird
+|`UserVentilationAirChangeRate`|1/h|Austauschrate für natürliche Lüftung
+|`UserVentilationComfortAirChangeRate`|1/h|Maximale Luftwechselrate = Offset für Nutzerkomfort
+|`UserVentilationMinimumRoomTemperature`|C|Temperaturgrenze, ab der die Komfortlüftung aktiviert wird
+|`UserVentilationMaximumRoomTemperature`|C|Temperaturgrenzwert, unterhalb dessen die Komfortlüftung aktiviert wird
 |`InfiltrationAirChangeRate`|1/h|Austauschrate für Infiltration
 |`ShadingFactor`|---|Schattierungsfaktor [0...1]
 

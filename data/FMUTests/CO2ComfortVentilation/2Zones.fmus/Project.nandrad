@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <NandradProject fileVersion="2.0">
+	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
+	<DirectoryPlaceholders>
+		<Placeholder name="User Database">/home/ischta/.local/share/SIM-VICUS</Placeholder>
+	</DirectoryPlaceholders>
+
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
 	<Project>
 		<ProjectInfo>
-			<Comment>Project file: /media/ischta/Datengrab/Programmierung/SIM-VICUS/data/FMUTests/CO2ComfortVentilation/2Zones.vicus</Comment>
-			<Created>Mo. Jan. 17 15:33:53 2022</Created>
+			<Comment>Project file: /media/ischta/Datengrab/Programmierung/SIM-VICUS/data/FMUTests/CO2ComfortVentilation/2Zones.fmus/NANDRAD/resources/Project.vicus</Comment>
+			<Created>Mi. Jan. 26 11:10:49 2022</Created>
 		</ProjectInfo>
 		<Location>
 			<IBK:Parameter name="Latitude" unit="Deg">45</IBK:Parameter>
@@ -397,11 +404,11 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Linear">
 								<TimePoints>0</TimePoints>
-								<Values>VentilationRateSchedule [1/h]:0.1;</Values>
+								<Values>VentilationRateIncreaseSchedule [1/h]:4.9;VentilationRateSchedule [1/h]:0.1;</Values>
 							</DailyCycle>
-							<DailyCycle interpolation="Linear">
+							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>VentilationRateIncreaseSchedule [1/h]:2.0;</Values>
+								<Values>VentilationMaxAirTemperatureSchedule [C]:100;VentilationMinAirTemperatureSchedule [C]:23;</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -410,12 +417,9 @@
 		</Schedules>
 		<Models>
 			<NaturalVentilationModels>
-				<NaturalVentilationModel id="3" displayName="Test Zone Template" modelType="ScheduledWithBaseACR">
+				<NaturalVentilationModel id="3" displayName="Test Zone Template" modelType="ScheduledWithBaseACRDynamicTLimit">
 					<ZoneObjectList>Ventilation-Test Zone Template</ZoneObjectList>
-					<IBK:Parameter name="VentilationRate" unit="1/h">0.1</IBK:Parameter>
-					<IBK:Parameter name="MinAirTemperature" unit="C">23</IBK:Parameter>
-					<IBK:Parameter name="MaxAirTemperature" unit="C">100</IBK:Parameter>
-					<IBK:Parameter name="MaxWindSpeed" unit="m/s">40</IBK:Parameter>
+					<IBK:Parameter name="MaxWindSpeed" unit="m/s">5</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>
 			<InternalLoadsModels>
@@ -522,7 +526,7 @@
 			</ObjectList>
 		</ObjectLists>
 		<FMIDescription>
-			<ModelName>Test01</ModelName>
+			<ModelName>2Zones</ModelName>
 			<InputVariables>
 				<FMIVariableDefinition fmiVarName="AirChangeRate_id_10" unit="1/s" fmiValueRef="7010">
 					<FmiVarDescription>AirChangeRate</FmiVarDescription>
@@ -561,6 +565,34 @@
 					<VarName>Zone.AirTemperature</VarName>
 					<ObjectId>16</ObjectId>
 				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MinimumAirTemperature_id_10" unit="K" fmiValueRef="3010">
+					<FmiVarDescription>MinimumAirTemperature</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>293.15</FmiStartValue>
+					<VarName>Zone.VentilationMinAirTemperatureSchedule</VarName>
+					<ObjectId>10</ObjectId>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MinimumAirTemperature_id_16" unit="K" fmiValueRef="3016">
+					<FmiVarDescription>MinimumAirTemperature</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>293.15</FmiStartValue>
+					<VarName>Zone.VentilationMinAirTemperatureSchedule</VarName>
+					<ObjectId>16</ObjectId>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MaximumAirTemperature_id_10" unit="K" fmiValueRef="4010">
+					<FmiVarDescription>MaximumAirTemperature</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>293.15</FmiStartValue>
+					<VarName>Zone.VentilationMaxAirTemperatureSchedule</VarName>
+					<ObjectId>10</ObjectId>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MaximumAirTemperature_id_16" unit="K" fmiValueRef="4016">
+					<FmiVarDescription>MaximumAirTemperature</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>293.15</FmiStartValue>
+					<VarName>Zone.VentilationMaxAirTemperatureSchedule</VarName>
+					<ObjectId>16</ObjectId>
+				</FMIVariableDefinition>
 				<FMIVariableDefinition fmiVarName="MinimumAirChangeRate_id_10" unit="1/s" fmiValueRef="5010">
 					<FmiVarDescription>MinimumAirChangeRate</FmiVarDescription>
 					<FmiTypeName>output</FmiTypeName>
@@ -573,6 +605,20 @@
 					<FmiTypeName>output</FmiTypeName>
 					<FmiStartValue>0</FmiStartValue>
 					<VarName>Zone.VentilationRateSchedule</VarName>
+					<ObjectId>16</ObjectId>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MaximumAirChangeRateIncrease_id_10" unit="1/s" fmiValueRef="6010">
+					<FmiVarDescription>MaximumAirChangeRateIncrease</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>0</FmiStartValue>
+					<VarName>Zone.VentilationRateIncreaseSchedule</VarName>
+					<ObjectId>10</ObjectId>
+				</FMIVariableDefinition>
+				<FMIVariableDefinition fmiVarName="MaximumAirChangeRateIncrease_id_16" unit="1/s" fmiValueRef="6016">
+					<FmiVarDescription>MaximumAirChangeRateIncrease</FmiVarDescription>
+					<FmiTypeName>output</FmiTypeName>
+					<FmiStartValue>0</FmiStartValue>
+					<VarName>Zone.VentilationRateIncreaseSchedule</VarName>
 					<ObjectId>16</ObjectId>
 				</FMIVariableDefinition>
 			</OutputVariables>

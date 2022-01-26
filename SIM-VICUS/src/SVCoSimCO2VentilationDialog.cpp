@@ -570,14 +570,10 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::checkVentilation
 		return;
 	}
 
-	// Check for parameter '
-	// find out internal load model
-	const VICUS::ZoneControlNaturalVentilation * controlVentilation = dynamic_cast<const VICUS::ZoneControlNaturalVentilation*>
-			(VICUS::element(project.m_embeddedDB.m_zoneControlVentilationNatural,
-							 idReference) );
-
 	// should be checked in initialization
-	IBK_ASSERT(controlVentilation != nullptr);
+	IBK_ASSERT(dynamic_cast<const VICUS::ZoneControlNaturalVentilation*>
+			   (VICUS::element(project.m_embeddedDB.m_zoneControlVentilationNatural,
+								idReference) ) != nullptr);
 }
 
 

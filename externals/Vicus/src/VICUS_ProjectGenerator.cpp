@@ -136,6 +136,14 @@ public:
 class VentilationModelGenerator : public ModelGeneratorBase {
 public:
 
+	enum scheduleType_t {
+		ST_VentilationRate,
+		ST_VentilationRateIncrease,
+		ST_VentilationMaxAirTemperature,
+		ST_VentilationMinAirTemperature,
+		NUM_ST
+	};
+
 	VentilationModelGenerator(const VICUS::Project * pro) :
 		ModelGeneratorBase(pro)
 	{}
@@ -1305,7 +1313,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	// *** schedules ***
 	//
 	// 1. create basic schedule for ventilation rate (name?)
-	Schedule vicusScheds[NANDRAD::NaturalVentilationModel::NUM_P];
+	Schedule vicusScheds[NUM_ST];
 	VICUS::Schedule ventilationSchedule;
 
 	// for control model with constant infiltration we create a constant schedule
@@ -1359,7 +1367,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		}
 	}
 	// register generating schedule
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRate] = ventilationSchedule;
+	vicusScheds[ST_VentilationRate] = ventilationSchedule;
 
 	// only continue if there were no errors so far
 	if (!errorStack.isEmpty())
@@ -1417,11 +1425,11 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		return;
 
 	// register generating schedules
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRateIncrease] = ventilationIncreaseSchedule;
+	vicusScheds[ST_VentilationRateIncrease] = ventilationIncreaseSchedule;
 	// register generating schedule
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationMinAirTemperature] = minAirTempSchedule;
+	vicusScheds[ST_VentilationMinAirTemperature] = minAirTempSchedule;
 	// register generating schedule
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationMaxAirTemperature] = maxAirTempSchedule;
+	vicusScheds[ST_VentilationMaxAirTemperature] = maxAirTempSchedule;
 
 	// now we have a valid schedule group, yet without object list name
 
@@ -1436,7 +1444,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			// check similarity of schedules
 			const Schedule *others =m_generatingSchedules[i];
 
-			for(unsigned int j = 0; j < NANDRAD::NaturalVentilationModel::NUM_P; ++j) {
+			for(unsigned int j = 0; j < NUM_ST; ++j) {
 				// skip empty schedules
 				if(vicusScheds[j].m_periods.empty())
 					continue;
@@ -1478,8 +1486,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		}
 		if(!ventilationIncreaseSchedule.m_periods.empty()) {
 			// ventilation increase
-			std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
-												NANDRAD::NaturalVentilationModel::P_VentilationRateIncrease) + "Schedule [1/h]";
+			std::string schedName = "VentilationRateIncreaseSchedule [1/h]";
 			ventilationIncreaseSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
 		}
 		if(!minAirTempSchedule.m_periods.empty()) {

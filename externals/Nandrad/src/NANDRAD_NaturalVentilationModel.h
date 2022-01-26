@@ -54,7 +54,6 @@ public:
 	/*! Model parameters. */
 	enum para_t {
 		P_VentilationRate,				// Keyword: VentilationRate					[1/h]	'Ventilation rate for Constant model'
-		P_VentilationRateIncrease,		// Keyword: VentilationRateIncrease			[1/h]	'Ventilation rate increase'
 		P_VentilationMaxAirTemperature,	// Keyword: VentilationMaxAirTemperature	[C]		'Upper limit of comfort range'
 		P_VentilationMinAirTemperature,	// Keyword: VentilationMinAirTemperature	[C]		'Lower limit of comfort range'
 		P_MaxWindSpeed,					// Keyword: MaxWindSpeed					[m/s]	'Maximum wind speed to allow ventilation increase'
