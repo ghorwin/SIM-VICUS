@@ -39,15 +39,15 @@
 				<NaturalVentilationModel id="1" displayName="Wet zone vent" modelType="ScheduledWithBaseACR">
 					<ZoneObjectList>Wet areas</ZoneObjectList>
 					<!-- Komfortbereich 22-26 °C -->
-					<IBK:Parameter name="MaxAirTemperature" unit="C">26</IBK:Parameter>
-					<IBK:Parameter name="MinAirTemperature" unit="C">22</IBK:Parameter>
+					<IBK:Parameter name="VentilationMaxAirTemperature" unit="C">26</IBK:Parameter>
+					<IBK:Parameter name="VentilationMinAirTemperature" unit="C">22</IBK:Parameter>
 					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
 				</NaturalVentilationModel>
 				<NaturalVentilationModel id="2" displayName="Wet zone vent" modelType="ScheduledWithBaseACR">
 					<ZoneObjectList>Office</ZoneObjectList>
 					<!-- Komfortbereich 18-24 °C -->
-					<IBK:Parameter name="MaxAirTemperature" unit="C">24</IBK:Parameter>
-					<IBK:Parameter name="MinAirTemperature" unit="C">18</IBK:Parameter>
+					<IBK:Parameter name="VentilationMaxAirTemperature" unit="C">24</IBK:Parameter>
+					<IBK:Parameter name="VentilationMinAirTemperature" unit="C">18</IBK:Parameter>
 					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
 				</NaturalVentilationModel>
 			</NaturalVentilationModels>

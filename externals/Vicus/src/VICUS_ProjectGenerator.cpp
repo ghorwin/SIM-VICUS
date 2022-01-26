@@ -1368,7 +1368,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	// 2. create basic schedules for controlled ventilation
 	// we only support modelType 'ScheduledWithBaseACRDynamicTLimit' and therefore
 	// convert minimum and maximum air temperatures into schedules, as well as ventilation increase
-	Schedule ventilationIncreateSchedule;
+	Schedule ventilationIncreaseSchedule;
 	Schedule minAirTempSchedule;
 	Schedule maxAirTempSchedule;
 
@@ -1377,8 +1377,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		// subtract from ventilation schedule
 		IBK_ASSERT(!ventilationSchedule.m_periods.empty());
 		// create a schedule for ventilation increaes
-		ventilationIncreateSchedule = ventilationSchedule.multiply(-1.0);
-		ventilationIncreateSchedule = ventilationIncreateSchedule.add(maxVentilationRate);
+		ventilationIncreaseSchedule = ventilationSchedule.multiply(-1.0);
+		ventilationIncreaseSchedule = ventilationIncreaseSchedule.add(maxVentilationRate);
 
 		// 3. create basic schedule for minimum and maximum air temperature
 		if(!ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_TemperatureAirMin].empty()) {
@@ -1417,11 +1417,11 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 		return;
 
 	// register generating schedules
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRateIcrease] = ventilationIncreateSchedule;
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationRateIncrease] = ventilationIncreaseSchedule;
 	// register generating schedule
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_MinAirTemperature] = minAirTempSchedule;
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationMinAirTemperature] = minAirTempSchedule;
 	// register generating schedule
-	vicusScheds[NANDRAD::NaturalVentilationModel::P_MaxAirTemperature] = maxAirTempSchedule;
+	vicusScheds[NANDRAD::NaturalVentilationModel::P_VentilationMaxAirTemperature] = maxAirTempSchedule;
 
 	// now we have a valid schedule group, yet without object list name
 
@@ -1476,22 +1476,22 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 												NANDRAD::NaturalVentilationModel::P_VentilationRate) + "Schedule [1/h]";
 			ventilationSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
 		}
-		if(!ventilationIncreateSchedule.m_periods.empty()) {
+		if(!ventilationIncreaseSchedule.m_periods.empty()) {
 			// ventilation increase
 			std::string schedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
-												NANDRAD::NaturalVentilationModel::P_VentilationRateIcrease) + "Schedule [1/h]";
-			ventilationIncreateSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
+												NANDRAD::NaturalVentilationModel::P_VentilationRateIncrease) + "Schedule [1/h]";
+			ventilationIncreaseSchedule.insertIntoNandradSchedulegroup(schedName, scheds);
 		}
 		if(!minAirTempSchedule.m_periods.empty()) {
 			// minimum air temperature
 			std::string minTempSchedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
-											NANDRAD::NaturalVentilationModel::P_MinAirTemperature) + "Schedule [C]";
+											NANDRAD::NaturalVentilationModel::P_VentilationMinAirTemperature) + "Schedule [C]";
 			minAirTempSchedule.insertIntoNandradSchedulegroup(minTempSchedName, scheds);
 		}
 		if(!maxAirTempSchedule.m_periods.empty()) {
 			// maximum air temperature
 			std::string maxTempSchedName =  (std::string)NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t",
-											NANDRAD::NaturalVentilationModel::P_MaxAirTemperature) + "Schedule [C]";
+											NANDRAD::NaturalVentilationModel::P_VentilationMaxAirTemperature) + "Schedule [C]";
 			maxAirTempSchedule.insertIntoNandradSchedulegroup(maxTempSchedName, scheds);
 		}
 

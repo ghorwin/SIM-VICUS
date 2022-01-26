@@ -493,9 +493,9 @@ namespace NANDRAD {
 			case 49 :
 			switch (t) {
 				case 0 : return "VentilationRate";
-				case 1 : return "VentilationRateIcrease";
-				case 2 : return "MaxAirTemperature";
-				case 3 : return "MinAirTemperature";
+				case 1 : return "VentilationRateIncrease";
+				case 2 : return "VentilationMaxAirTemperature";
+				case 3 : return "VentilationMinAirTemperature";
 				case 4 : return "MaxWindSpeed";
 			} break;
 			// OutputDefinition::timeType_t
@@ -1129,9 +1129,9 @@ namespace NANDRAD {
 			case 49 :
 			switch (t) {
 				case 0 : return "VentilationRate";
-				case 1 : return "VentilationRateIcrease";
-				case 2 : return "MaxAirTemperature";
-				case 3 : return "MinAirTemperature";
+				case 1 : return "VentilationRateIncrease";
+				case 2 : return "VentilationMaxAirTemperature";
+				case 3 : return "VentilationMinAirTemperature";
 				case 4 : return "MaxWindSpeed";
 			} break;
 			// OutputDefinition::timeType_t

@@ -223,8 +223,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "VentilationRateSchedule";
 				case 1 : return "VentilationRateIncreaseSchedule";
-				case 2 : return "MinimumAirTemperatureSchedule";
-				case 3 : return "MaximumAirTemperatureSchedule";
+				case 2 : return "VentilationMaxAirTemperatureSchedule";
+				case 3 : return "VentilationMinAirTemperatureSchedule";
 				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : return "PersonHeatLoadPerAreaSchedule";
 				case 6 : return "LightingHeatLoadPerAreaSchedule";
@@ -425,8 +425,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : return "VentilationRateSchedule";
 				case 1 : return "VentilationRateIncreaseSchedule";
-				case 2 : return "MinimumAirTemperatureSchedule";
-				case 3 : return "MaximumAirTemperatureSchedule";
+				case 2 : return "VentilationMaxAirTemperatureSchedule";
+				case 3 : return "VentilationMinAirTemperatureSchedule";
 				case 4 : return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : return "PersonHeatLoadPerAreaSchedule";
 				case 6 : return "LightingHeatLoadPerAreaSchedule";
@@ -628,8 +628,8 @@ namespace NANDRAD_MODEL {
 			switch (t) {
 				case 0 : if (no_description != nullptr) *no_description = true; return "VentilationRateSchedule";
 				case 1 : if (no_description != nullptr) *no_description = true; return "VentilationRateIncreaseSchedule";
-				case 2 : if (no_description != nullptr) *no_description = true; return "MinimumAirTemperatureSchedule";
-				case 3 : if (no_description != nullptr) *no_description = true; return "MaximumAirTemperatureSchedule";
+				case 2 : if (no_description != nullptr) *no_description = true; return "VentilationMaxAirTemperatureSchedule";
+				case 3 : if (no_description != nullptr) *no_description = true; return "VentilationMinAirTemperatureSchedule";
 				case 4 : if (no_description != nullptr) *no_description = true; return "EquipmentHeatLoadPerAreaSchedule";
 				case 5 : if (no_description != nullptr) *no_description = true; return "PersonHeatLoadPerAreaSchedule";
 				case 6 : if (no_description != nullptr) *no_description = true; return "LightingHeatLoadPerAreaSchedule";

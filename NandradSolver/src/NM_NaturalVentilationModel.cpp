@@ -216,7 +216,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ref.m_name.m_name = "MinimumAirTemperatureSchedule";
+			ref.m_name.m_name = "VentilationMinAirTemperatureSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
@@ -229,7 +229,7 @@ void NaturalVentilationModel::inputReferences(std::vector<InputReference> & inpu
 			InputReference ref;
 			ref.m_id = id;
 			ref.m_referenceType = NANDRAD::ModelInputReference::MRT_ZONE;
-			ref.m_name.m_name = "MaximumAirTemperatureSchedule";
+			ref.m_name.m_name = "VentilationMaxAirTemperatureSchedule";
 			ref.m_required = true;
 			inputRefs.push_back(ref);
 		}
@@ -329,8 +329,8 @@ int NaturalVentilationModel::update() {
 					break; // wind speed to large, no increase of ventilation possible - keep already determined "rate"
 
 				// get comfort range of temperatures
-				double maxRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxAirTemperature].value;
-				double minRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MinAirTemperature].value;
+				double maxRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationMaxAirTemperature].value;
+				double minRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationMinAirTemperature].value;
 
 				// we only increase ventilation when outside of the comfort zone _and_ if increasing the ventilation rate helps
 				const double RAMPING_DELTA_T = 0.2; // ramping range

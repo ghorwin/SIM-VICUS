@@ -32,9 +32,9 @@
 				<NaturalVentilationModel id="501" displayName="Zone vent" modelType="ScheduledWithBaseACR">
 					<ZoneObjectList>All zones</ZoneObjectList>
 					<!-- Erhöhte Lüftungsrate verwenden, wenn Raumtemperatur 24°C überschreitet und es draußen kälter ist. -->
-					<IBK:Parameter name="MaxAirTemperature" unit="C">24</IBK:Parameter>
+					<IBK:Parameter name="VentilationMaxAirTemperature" unit="C">24</IBK:Parameter>
 					<!-- Erhöhung der Lüftungsrate verwenden, wenn Raumtemperatur 18°C unterschreitet und es draußen wärmer ist. -->
-					<IBK:Parameter name="MinAirTemperature" unit="C">18</IBK:Parameter>
+					<IBK:Parameter name="VentilationMinAirTemperature" unit="C">18</IBK:Parameter>
 					<!-- Über 10 m/s wird die erhöhte Lüftung ausgeschaltet. -->
 					<IBK:Parameter name="MaxWindSpeed" unit="m/s">10</IBK:Parameter>
 				</NaturalVentilationModel>

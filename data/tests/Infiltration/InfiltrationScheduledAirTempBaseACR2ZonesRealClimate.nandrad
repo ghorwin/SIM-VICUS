@@ -77,7 +77,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>MinimumAirTemperatureSchedule [C]:22;MaximumAirTemperatureSchedule [C]:26;</Values>
+								<Values>VentilationMinAirTemperatureSchedule [C]:22;VentilationMaxAirTemperatureSchedule [C]:26;</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -109,7 +109,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>MinimumAirTemperatureSchedule [C]:18;MaximumAirTemperatureSchedule [C]:24;</Values>
+								<Values>VentilationMinAirTemperatureSchedule [C]:18;VentilationMaxAirTemperatureSchedule [C]:24;</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>

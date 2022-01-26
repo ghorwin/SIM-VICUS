@@ -437,7 +437,6 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		inputVar.m_fmiVarName = "MaximumCO2Concentration_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MaximumCO2Concentration";
 		inputVar.m_fmiValueRef = FMI_INPUT_MaximumCO2Concentration + zoneId;
-//		inputVar.m_varName = "Zone.MaximumCO2Concentration";
 		inputVar.m_varName.clear();
 		inputVar.m_fmiStartValue = 0.0;
 		inputVar.m_unit = "mol/mol";
@@ -446,8 +445,8 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		// create reference for minimum air temperature
 		inputVar.m_fmiVarName = "MinimumAirTemperature_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MinimumAirTemperature";
-		inputVar.m_varName = "Zone.MinAirTemperatureSchedule";
-		inputVar.m_varName.clear();
+		inputVar.m_fmiValueRef = FMI_INPUT_MinimumAirTemperature + zoneId;
+		inputVar.m_varName = "Zone.VentilationMinAirTemperatureSchedule";
 		inputVar.m_fmiStartValue = 293.15;
 		inputVar.m_unit = "K";
 		co2InputVariables[inputVar.m_fmiValueRef] = inputVar;
@@ -456,7 +455,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		inputVar.m_fmiVarName = "MaximumAirTemperature_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MaximumAirTemperature";
 		inputVar.m_fmiValueRef = FMI_INPUT_MaximumAirTemperature + zoneId;
-		inputVar.m_varName = "Zone.MaxAirTemperatureSchedule";
+		inputVar.m_varName = "Zone.VentilationMaxAirTemperatureSchedule";
 		inputVar.m_fmiStartValue = 293.15;
 		inputVar.m_unit = "K";
 		co2InputVariables[inputVar.m_fmiValueRef] = inputVar;
@@ -464,6 +463,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::generateFMIDefin
 		// create reference for minimum air change rate
 		inputVar.m_fmiVarName = "MinimumAirChangeRate_id_" + IBK::val2string<unsigned int>(zoneId);
 		inputVar.m_fmiVarDescription = "MinimumAirChangeRate";
+		inputVar.m_fmiValueRef = FMI_INPUT_MinimumAirChangeRate + zoneId;
 		inputVar.m_varName = "Zone.VentilationRateSchedule";
 		inputVar.m_fmiStartValue = 0.0;
 		inputVar.m_unit = "1/s";

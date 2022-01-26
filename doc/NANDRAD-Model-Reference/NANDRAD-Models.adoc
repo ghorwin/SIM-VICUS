@@ -99,7 +99,10 @@ a| Setzt den Typ des Lüftungsmodells
 * `Constant` - Konstante Luftwechselrate
 * `Scheduled` - Luftwechselrate ändert sich nach einem definierten Zeitplan. Dieses Modell sollte verwendet werden, wenn ein spezielles Lüftungsmodell über die FMU-Schnittstelle dazugeschaltet wird.
 
-* `ScheduledWithBaseACR` - Es werden ein Grundluftwechsel und eine _Erhöhung_ des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien.
+* `ScheduledWithBaseACR` - Es werden ein Grundluftwechsel und eine _Erhöhung_ des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien. Speziellfür diesen Modelltyp sind die Grenztemperaturen 'MaxAirTemperature' und 'MinAirTemperature' als konstante Parameter gegeben. Dies ist eine spezielle AUsprägung des allgemeineren Falles 'ScheduledWithBaseACRDynamicTLimit' und  primär zum Testen vorgesehen.
+
+* `ScheduledWithBaseACRDynamicTLimit` - Es werden ein Grundluftwechsel und eine _Erhöhung_ des Luftwechsels jeweils als zeitabhängige Zeitpläne gegeben. Die Aktivierung des zusätzlichen Luftwechsels hängt an zusätzlichen Kriterien. Dazu zählen die Unter- und Überschreitung der Grenztemperaturen 'MaxAirTemperature' und 'MinAirTemperature', welche als zeitabhängige Zeitpläne gegeben sind.
+
 
 * (*)`Realistic`- Lüftungsrate ergibt sich aus physikalischen Bedingungen (Wind, Temperaturdifferenzen, Fensteröffnungszustand, ...)
 
@@ -114,9 +117,9 @@ Gleitkommazahlen-Parameter (siehe <<IBK_Parameter>> für eine Beschreibung des E
 |====================
 |Name|Vorgabeeinheit|Beschreibung|Wertebereich |Verwendung
 | `VentilationRate` | 1/h | Konstante Luftwechselrate | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `Constant`
-| `MaxAirTemperature` | C | obere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `MinAirTemperature` | C | untere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
-| `MaxWindSpeed` | m/s | maximale Windgeschwindigkeit für erhöhte Lüftung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `VentilationMaxAirTemperature` | C | obere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `VentilationMinAirTemperature` | C | untere Raumluft-Grenztemperatur | {nbsp}>={nbsp}-100.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR`
+| `MaxWindSpeed` | m/s | maximale Windgeschwindigkeit für erhöhte Lüftung | {nbsp}>={nbsp}0.0{nbsp} | _erforderlich für Modelltyp_ `ScheduledWithBaseACR` und 'ScheduledWithBaseACRDynamicTLimit'
 |====================
 
 Beim Modelltyp `Constant` wird durchweg eine konstante Luftwechselrate (Parameter `VentilationRate`) verwendet.
@@ -162,7 +165,7 @@ Nachfolgend finden Sie ein Beispiel für einen Zeitplan, der den Parameter `Vent
 ====
 
 
-Beim Modelltyp `ScheduledWithBaseACR` wird ein Grundluftwechsel (Schedule `VentilationRateSchedule`) analog zum Modelltyp `Scheduled` verwendet. Unter bestimmten Bedingungen wird dieser Grundluftwechsel durch ein zusätzlichen Luftwechsel entsprechend eines gegebenen Zeitplans in  `VentilationRateIncreaseSchedule` *erhöht*.
+Bei den Modelltypen `ScheduledWithBaseACR` und 'ScheduledWithBaseACRDynamicTLimit' wird ein Grundluftwechsel (Schedule `VentilationRateSchedule`) analog zum Modelltyp `Scheduled` verwendet. Unter bestimmten Bedingungen wird dieser Grundluftwechsel durch ein zusätzlichen Luftwechsel entsprechend eines gegebenen Zeitplans in  `VentilationRateIncreaseSchedule` *erhöht*.
 
 Die Luftwechselrate wird berechnet:
 
@@ -173,7 +176,7 @@ n = n_Grundluftwechsel + n_erhöhterLuftwechsel  // wenn Bedingungen erfüllt
 
 [IMPORTANT]
 ====
-Bei Definition der `VentilationRateIncreaseSchedule` für das `ScheduledWithBaseACR` beachten, dass dies die _zusätzliche_ Lüftungsrate zum Grundluftwechsel ist.
+Bei Definition der `VentilationRateIncreaseSchedule` ist zu beachten, dass dies die _zusätzliche_ Lüftungsrate zum Grundluftwechsel ist.
 ====
 
 .Zeitplan für Modelltyp `ScheduledWithBaseACR`; Grundluftwechsel = 0.5 1/h, Luftwechsel bei Erhöhung = 2 1/h = (0.5 + 1.5) 1/h
@@ -196,6 +199,31 @@ Bei Definition der `VentilationRateIncreaseSchedule` für das `ScheduledWithBase
 </ScheduleGroup>
 ----
 ====
+
+Der Modelltyp 'ScheduledWithBaseACRDynamicTLimit' verlangt zusätzlich den Schedule `VentilationMaxAirTemperatureSchedule` und `VentilationMinAirTemperatureSchedule`. Die dazugehörigen Grenztemperaturen werden dann dynamisch ausgewertet. Konstante Temperaturannahmen werden hiervon umfasst und können durch passende Zeitpläne generiert werden:
+
+.Zeitplan für Modelltyp `ScheduledWithBaseACRDynamicTLimit`; konstante Grenztemperaturen (Minimum: 23 C, Maximum 100 C)
+====
+[source,xml]
+----
+<ScheduleGroup objectList="All zones">
+	<Schedule type="AllDays">
+		<DailyCycles>
+			<DailyCycle interpolation="Constant">
+				<TimePoints>0</TimePoints>
+				<!-- Konstante Grenztemperaturen -->
+				<Values>
+					VentilationMaxAirTemperatureSchedule [C]:100;
+				    VentilationMinAirTemperatureSchedule [C]:23
+				</Values>
+			</DailyCycle>
+		</DailyCycles>
+	</Schedule>
+</ScheduleGroup>
+----
+====
+
+
 ### Regelbedingungen
 
 Die Komfortlüftung (Modelltyp `ScheduledWithBaseACR`) folgt einer einfachen Logik:

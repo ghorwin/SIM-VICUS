@@ -1,5 +1,5 @@
 # Created:	Fr Dez 17 14:00:25 2021
-# LastModified:	2022-01-25T18:19:39
+# LastModified:	2022-01-26T11:10:54
 
 tStart                   0 d
 tEnd                     365 d
@@ -26,6 +26,12 @@ simulator 2 0 NANDRAD #a0522d "2Zones.fmus/NANDRAD.fmu"
 graph NANDRAD.AmbientTemperature CO2ComfortVentilation.AmbientTemperature
 graph NANDRAD.RoomAirTemperature_id_10 CO2ComfortVentilation.RoomAirTemperature_id_10
 graph NANDRAD.RoomAirTemperature_id_16 CO2ComfortVentilation.RoomAirTemperature_id_16
+graph MaximumCO2Concentration_Test_Zone_Template.MaximumCO2Concentration CO2ComfortVentilation.MaximumCO2Concentration_id_10 0 0.000001
+graph MaximumCO2Concentration_Test_Zone_Template.MaximumCO2Concentration CO2ComfortVentilation.MaximumCO2Concentration_id_16 0 0.000001
+graph NANDRAD.MinimumAirTemperature_id_10 CO2ComfortVentilation.MinimumAirTemperature_id_10
+graph NANDRAD.MinimumAirTemperature_id_16 CO2ComfortVentilation.MinimumAirTemperature_id_16
+graph NANDRAD.MaximumAirTemperature_id_10 CO2ComfortVentilation.MaximumAirTemperature_id_10
+graph NANDRAD.MaximumAirTemperature_id_16 CO2ComfortVentilation.MaximumAirTemperature_id_16
 graph NANDRAD.MinimumAirChangeRate_id_10 CO2ComfortVentilation.MinimumAirChangeRate_id_10
 graph NANDRAD.MinimumAirChangeRate_id_16 CO2ComfortVentilation.MinimumAirChangeRate_id_16
 graph NANDRAD.MaximumAirChangeRateIncrease_id_10 CO2ComfortVentilation.MaximumAirChangeRateIncrease_id_10

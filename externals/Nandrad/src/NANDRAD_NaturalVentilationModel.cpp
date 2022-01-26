@@ -43,11 +43,11 @@ void NaturalVentilationModel::checkParameters() const {
 		break;
 
 		case NANDRAD::NaturalVentilationModel::MT_ScheduledWithBaseACR: {
-			enumVar = P_MaxAirTemperature;
+			enumVar = P_VentilationMaxAirTemperature;
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "C", "C", -100, true, 100, true,
 										 " -100 C <= Maximum room air temperature <= 100 C.");
-			enumVar = P_MinAirTemperature;
+			enumVar = P_VentilationMinAirTemperature;
 			m_para[enumVar].checkedValue(NANDRAD::KeywordList::Keyword("NaturalVentilationModel::para_t", enumVar),
 										 "C", "C", -100, true, 100, true,
 										 " -100 C <= Minimum room air temperature <= 100 C.");
