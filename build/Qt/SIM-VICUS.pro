@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS = \
+		../../FMUs/CO2ComfortVentilation/projects/Qt/CO2ComfortVentilation.pro \
 		DummyDatabasePlugin \
 		DummyImportPlugin \
 		SIM-VICUS \

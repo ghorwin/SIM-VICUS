@@ -1325,7 +1325,7 @@ void SVCoSimCO2VentilationDialog::on_pushButtonGenerate_clicked() {
 
 	// create CO2ComfortVentilation.fmu
 	fmuDir.mkdir("binaries");
-	generateBinaries(installDir, binariesDir, "libCO2ComfortVentilation", "CO2ComfortVentilation");
+	generateBinaries(installDir, binariesDir, "libCO2ComfortVentilation", "CO2ComfortVentilation", version);
 
 	if (success) {
 
