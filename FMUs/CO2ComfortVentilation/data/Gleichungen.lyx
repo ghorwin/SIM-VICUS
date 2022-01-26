@@ -165,7 +165,8 @@ m_{CO_{2},h}\left(t\right) & = & e^{-n\left(t-t_{0}\right)}
 
 \end_inset
 
-Die geschlossene Lösung ergibt sich durch den Ansatz 
+Die geschlossene Lösung ergibt sich durch die Variation der Konstanten nach
+ 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:InhomogeneLösung"
@@ -180,8 +181,55 @@ reference "eq:InhomogeneLösung"
  
 \begin_inset Formula 
 \begin{equation}
-m_{CO_{2}}\left(t\right)=\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\left(t\right)\label{eq:InhomogeneLösung}
+m_{CO_{2}}\left(t\right)=\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\left(t\right)\qquad\textrm{mit }G\left(t_{0}\right)=0,\label{eq:InhomogeneLösung}
 \end{equation}
+
+\end_inset
+
+Kennzeichnend ist der homogene Anteil 
+\begin_inset Formula $m_{CO_{2},0}m_{CO_{2},h}\left(t\right)$
+\end_inset
+
+ und der inhomogene Anteil 
+\begin_inset Formula $G\left(t\right)m_{CO_{2},h}\left(t\right)$
+\end_inset
+
+, welche zusammen die Startbedingung 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Startbedingung"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ erfüllen.
+\begin_inset Formula 
+\begin{eqnarray}
+m_{CO_{2}}\left(t_{0}\right)=m_{CO_{2},0}m_{CO_{2},h}\left(t_{0}\right) & = & m_{CO_{2},0}\label{eq:Startbedingung}
+\end{eqnarray}
+
+\end_inset
+
+Die Rechtfertigung dieses Ansatzes ergibt sich durch Einsetzen.
+ Konkret gilt die Summationsregel 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:Summationsregel"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, welche bereits eine Auflösung der meisten Terme der originalen Differentialgle
+ichung erlaubt.
+\begin_inset Formula 
+\begin{eqnarray}
+\frac{\partial m_{CO_{2}}\left(t\right)}{\partial t} & = & \left(m_{CO_{2},0}+G\left(t\right)\right)\frac{\partial m_{CO_{2},h}\left(t\right)}{\partial t}+\frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right)\nonumber \\
+ & = & -n\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\left(t\right)+\frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right)\label{eq:Summationsregel}
+\end{eqnarray}
 
 \end_inset
 
@@ -206,40 +254,39 @@ noprefix "false"
 
 \end_inset
 
-) auf eine Bestimmungsformel für die Faltungsfunktion 
-\begin_inset Formula $G(t)$
+) auf 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:InhomogeneDGL"
+plural "false"
+caps "false"
+noprefix "false"
+
 \end_inset
 
-:
+.
 \begin_inset Formula 
 \begin{eqnarray}
-\frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right) & = & n\rho_{CO_{2},amb}V_{zone}+\dot{m}_{CO_{2}}\left(t\right)\label{eq:InhomogeneDGL}
+ &  & \frac{\partial m_{CO_{2}}\left(t\right)}{\partial t}=n\text{\left(\rho_{CO_{2},amb}V_{zone}-m_{CO_{2}}\left(t\right)\right)+\dot{m}_{CO_{2}}\left(t\right)}\nonumber \\
+ & \longrightarrow & -n\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\left(t\right)+\frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right)\nonumber \\
+ &  & =n\text{\left(\rho_{CO_{2},amb}V_{zone}-\left(m_{CO_{2},0}+G\left(t\right)\right)m_{CO_{2},h}\right)+\dot{m}_{CO_{2}}\left(t\right)}\nonumber \\
+ & \longrightarrow & \frac{\partial G(t)}{\partial t}m_{CO_{2},h}\left(t\right)=n\rho_{CO_{2},amb}V_{zone}\text{+\dot{m}_{CO_{2}}\left(t\right)}\label{eq:InhomogeneDGL}
 \end{eqnarray}
 
 \end_inset
 
-Dies führt das auf den Lösungsansatz 
+Dies ergibt eine Bestimmungsformel für die sogenannte Faltungsfunktion 
+\begin_inset Formula $G(t)$
+\end_inset
+
+ und führt auf den Lösungsansatz 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:Faltungsfunktion"
 
 \end_inset
 
- 
-\end_layout
-
-\begin_layout Standard
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(Anne: wie kommst Du auf diesen Ansatz? Mathematische Erfahrung oder steht
- das irgendwo in einem Tafelwerk?)
-\end_layout
-
-\end_inset
-
-
+,
 \begin_inset Formula 
 \begin{eqnarray}
 G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(e^{n\left(t-t_{0}\right)}-1\right)+\int_{t_{0}}^{t}\dot{m}_{CO_{2}}\left(s\right)e^{n\left(s-t_{0}\right)}ds\label{eq:Faltungsfunktion}
@@ -247,34 +294,10 @@ G(t) & = & \rho_{CO_{2},amb}V_{zone}\left(e^{n\left(t-t_{0}\right)}-1\right)+\in
 
 \end_inset
 
-und der geschlossenen Lösung 
+sowie der geschlossenen Lösung 
 \begin_inset CommandInset ref
 LatexCommand eqref
 reference "eq:Lösung"
-
-\end_inset
-
- 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-(der Schritt von 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:Faltungsfunktion"
-
-\end_inset
-
- nach 
-\begin_inset CommandInset ref
-LatexCommand ref
-reference "eq:Lösung"
-
-\end_inset
-
- ist mir nicht klar)
-\end_layout
 
 \end_inset
 
