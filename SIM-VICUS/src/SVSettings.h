@@ -279,6 +279,8 @@ public:
 	/*! Our database. */
 	SVDatabase					m_db;
 
+	/*! Holds the acctual device pixel ratio needed for HighDPI scaling. */
+	double						m_ratio;
 
 private:
 

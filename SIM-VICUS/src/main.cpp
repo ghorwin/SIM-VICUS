@@ -109,6 +109,7 @@ int main(int argc, char *argv[]) {
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
+	settings.m_ratio = qApp->devicePixelRatio();
 	// if we have just upgraded to a new version, try to import settings from the last minor version
 	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
 		unsigned int major, minor, patch;

@@ -29,6 +29,7 @@
 #include <QDebug>
 #include <QCursor>
 #include <QPalette>
+#include <QApplication>
 
 #include <VICUS_Project.h>
 #include <SV_Conversions.h>
@@ -404,7 +405,11 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// To avoid duplicate picking operation, we create the pick object here.
 	// Then, when we actually need picking, we check if the pick was already executed, and then only
 	// retrieve the pick result values
-	PickObject pickObject(localMousePos);
+
+	// we need to mind the pixel ratio when HighDPI Scaling is active
+	// This is because localMousePos gives us sort of 'hardware' pixel
+	// whereas we need 'logical' pixel
+	PickObject pickObject(localMousePos * SVSettings::instance().m_ratio);
 
 	// *** Mouse ***
 
