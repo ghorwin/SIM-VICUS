@@ -407,7 +407,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// retrieve the pick result values
 
 	// we need to mind the pixel ratio when HighDPI Scaling is active
-	// This is because localMousePos gives us sort of 'hardware' pixel
+	// This is because localMousePos gives us sort of 'hardware' pixe
 	// whereas we need 'logical' pixel
 	PickObject pickObject(localMousePos * SVSettings::instance().m_ratio);
 
@@ -440,22 +440,26 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 	// middle mouse button moves the geometry (panning)
 	if (keyboardHandler.buttonDown(Qt::MidButton)) {
 		// only do panning, if not in any other mode
+		// qDebug() << m_camera.translation().x() << "\t" << m_camera.translation().y() << "\t" << m_camera.translation().z();
+
 		if (m_navigationMode == NUM_NM) {
 			// we enter pan mode
-			panStart(localMousePos, pickObject, false);
+			panStart(localMousePos*SVSettings::instance().m_ratio, pickObject, false);
+			// qDebug() << "Panning starts";
 		}
 		if ((mouseDelta != QPoint(0,0)) && (m_navigationMode == NM_Panning)) {
 
 			// get the new far point, the point B'
-			IBKMK::Vector3D newFarPoint = calculateFarPoint(localMousePos, m_panOriginalTransformMatrix);
+			IBKMK::Vector3D newFarPoint = calculateFarPoint(localMousePos*SVSettings::instance().m_ratio, m_panOriginalTransformMatrix);
 
 			IBKMK::Vector3D BBDashVec = m_panFarPointStart-newFarPoint;
 			IBKMK::Vector3D cameraTrans = m_panCABARatio*BBDashVec;
 
 			// translate camera
-
+			// qDebug() << "Camera translation";
 			m_camera.setTranslation(IBKVector2QVector(m_panCameraStart + cameraTrans));
 			// cursor wrap adjustment
+			// qDebug() << "Adjust Dragging";
 			adjustCursorDuringMouseDrag(mouseDelta, localMousePos, newLocalMousePos, pickObject);
 		}
 	}
@@ -2715,29 +2719,30 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 void Scene::adjustCursorDuringMouseDrag(const QPoint & mouseDelta, const QPoint & localMousePos,
 										QPoint & newLocalMousePos, PickObject & pickObject)
 {
+	QPoint localMousePosScaled = localMousePos * SVSettings::instance().m_ratio;
 	// cursor position moves out of window?
 	const int WINDOW_MOVE_MARGIN = 50;
-	if (localMousePos.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
+	if (localMousePosScaled.x() < WINDOW_MOVE_MARGIN && mouseDelta.x() < 0) {
 		//						qDebug() << "Resetting mousepos to right side of window.";
-		newLocalMousePos.setX(m_viewPort.width()-WINDOW_MOVE_MARGIN);
+		newLocalMousePos.setX(m_viewPort.width()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
-	else if (localMousePos.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
+	else if (localMousePosScaled.x() > (m_viewPort.width()-WINDOW_MOVE_MARGIN) && mouseDelta.x() > 0) {
 		//						qDebug() << "Resetting mousepos to right side of window.";
 		newLocalMousePos.setX(WINDOW_MOVE_MARGIN);
 	}
 
-	if (localMousePos.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
+	if (localMousePosScaled.y() < WINDOW_MOVE_MARGIN && mouseDelta.y() < 0) {
 		qDebug() << "Resetting mousepos to bottom side of window.";
-		newLocalMousePos.setY(m_viewPort.height()-WINDOW_MOVE_MARGIN);
+		newLocalMousePos.setY(m_viewPort.height()/SVSettings::instance().m_ratio-WINDOW_MOVE_MARGIN);
 	}
-	else if (localMousePos.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
+	else if (localMousePosScaled.y() > (m_viewPort.height()-WINDOW_MOVE_MARGIN) && mouseDelta.y() > 0) {
 		qDebug() << "Resetting mousepos to top side of window.";
 		newLocalMousePos.setY(WINDOW_MOVE_MARGIN);
 	}
 
 	// if panning is enabled, reset the pan start positions/variables
 	if (m_navigationMode == NM_Panning && newLocalMousePos != localMousePos) {
-		pickObject.m_localMousePos = newLocalMousePos;
+		pickObject.m_localMousePos = newLocalMousePos * SVSettings::instance().m_ratio;
 		pick(pickObject);
 		panStart(newLocalMousePos, pickObject, true);
 	}
