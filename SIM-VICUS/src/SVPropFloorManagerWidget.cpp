@@ -163,7 +163,7 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 	m_currentBuildingLevel = nullptr;
 
 	// and lookup object in project
-	const VICUS::Object * obj = project().objectById(selObjectUniqueId);
+	const VICUS::Object * obj = project().objectByUniqueId(selObjectUniqueId);
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building *>(obj);
 	if (b != nullptr) {
 		m_currentBuilding = b;

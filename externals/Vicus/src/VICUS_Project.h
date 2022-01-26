@@ -117,9 +117,9 @@ public:
 	unsigned int nextUnusedID() const;
 
 	/*! Searches through all unique id-objects in project structure for the uniqueID.
-		Throws an exception, if no object with this unique ID can be found.
+		\return Returns nullptr, when object cannot be found.
 	*/
-	const VICUS::Object * objectById(unsigned int uniqueID) const;
+	const VICUS::Object * objectByUniqueId(unsigned int uniqueID) const;
 
 	/*! Searches through all buildings and tries to find a room with given room ID (this
 		is not the uniqueID, but the persistant id from the data model).

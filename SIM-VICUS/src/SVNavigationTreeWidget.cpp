@@ -104,7 +104,7 @@ void SVNavigationTreeWidget::onModified(int modificationType, ModificationInfo *
 			Q_ASSERT(info != nullptr);
 
 			for (unsigned int uID : info->m_nodeIDs) {
-				const VICUS::Object * o = project().objectById(uID);
+				const VICUS::Object * o = project().objectByUniqueId(uID);
 				auto itemId = m_treeItemMap.find(uID);
 				Q_ASSERT(itemId != m_treeItemMap.end());
 				QTreeWidgetItem * item = itemId->second;
@@ -345,7 +345,7 @@ void SVNavigationTreeWidget::on_treeWidget_itemChanged(QTreeWidgetItem *item, in
 	QString newText = item->text(0).trimmed();
 	unsigned int uID = item->data(0, SVNavigationTreeItemDelegate::NodeID).toUInt();
 	// lookup object in project data structure
-	const VICUS::Object * o = project().objectById(uID);
+	const VICUS::Object * o = project().objectByUniqueId(uID);
 	if (o == nullptr) {
 		qDebug() << "Invalid/unknown uid of tree node item";
 		return;

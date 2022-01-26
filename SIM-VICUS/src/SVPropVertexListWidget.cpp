@@ -404,7 +404,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 
 	// get currently selected building
 	unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
-	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectById(buildingUniqueID));
+	const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(project().objectByUniqueId(buildingUniqueID));
 	Q_ASSERT(b != nullptr);
 
 	std::set<QString> existingNames;
@@ -429,7 +429,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 	// get currently selected building
 	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectByUniqueId(buildingLevelUniqueID));
 	Q_ASSERT(bl != nullptr);
 
 	std::set<QString> existingNames;
@@ -468,7 +468,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 	if (m_ui->comboBoxBuildingLevel->count() == 0)
 		return;
 	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel->currentData().toUInt();
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectByUniqueId(buildingLevelUniqueID));
 	// also transfer nominal height into zone-height line edit
 	if (bl != nullptr) {
 		m_ui->lineEditZoneHeight->setValue(bl->m_height);
@@ -568,7 +568,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel2_currentIndexChanged(int /
 	if (m_ui->comboBoxBuildingLevel2->count() == 0)
 		return;
 	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel2->currentData().toUInt();
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectByUniqueId(buildingLevelUniqueID));
 	// also transfer nominal height into zone-height line edit
 	if (bl != nullptr) {
 		m_ui->lineEditZoneHeight->setValue(bl->m_height);
@@ -707,7 +707,7 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel3_currentIndexChanged(int /
 	if (m_ui->comboBoxBuildingLevel3->count() == 0)
 		return;
 	unsigned int buildingLevelUniqueID = m_ui->comboBoxBuildingLevel3->currentData().toUInt();
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectById(buildingLevelUniqueID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(project().objectByUniqueId(buildingLevelUniqueID));
 	// also transfer nominal height into zone-height line edit
 	if (bl != nullptr) {
 		m_ui->lineEditRoofHeight->setValue(bl->m_height);
@@ -970,7 +970,7 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, con
 	if (buildingCombo->count() != 0) {
 		const VICUS::Project & prj = project();
 		unsigned int buildingUniqueID = buildingCombo->currentData().toUInt();
-		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectById(buildingUniqueID));
+		const VICUS::Building * b = dynamic_cast<const VICUS::Building*>(prj.objectByUniqueId(buildingUniqueID));
 		Q_ASSERT(b != nullptr);
 		int rowOfCurrent = -1;
 		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
@@ -999,7 +999,7 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 	if (buildingLevelCombo->count() != 0) {
 		const VICUS::Project & prj = project();
 		unsigned int buildingLevelUniqueID = buildingLevelCombo->currentData().toUInt();
-		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(prj.objectById(buildingLevelUniqueID));
+		const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(prj.objectByUniqueId(buildingLevelUniqueID));
 		Q_ASSERT(bl != nullptr);
 		int rowOfCurrent = -1;
 		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {

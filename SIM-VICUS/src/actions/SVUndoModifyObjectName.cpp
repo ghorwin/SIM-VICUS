@@ -37,7 +37,7 @@ SVUndoModifyObjectName::SVUndoModifyObjectName(const QString & label, const VICU
 
 void SVUndoModifyObjectName::undo() {
 	// get object
-	const VICUS::Object * o = theProject().objectById(m_objectUid);
+	const VICUS::Object * o = theProject().objectByUniqueId(m_objectUid);
 	Q_ASSERT(o != nullptr);
 
 	const_cast<VICUS::Object*>(o)->m_displayName.swap(m_displayName);

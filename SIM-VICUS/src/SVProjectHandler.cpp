@@ -46,11 +46,13 @@
 #include <QtExt_Directories.h>
 
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include "SVSettings.h"
 #include "SVConstants.h"
 #include "SVLogFileDialog.h"
 #include "SVViewStateHandler.h"
+#include "SVUndoModifyProject.h"
 
 SVProjectHandler * SVProjectHandler::m_self = nullptr;
 
@@ -210,7 +212,7 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 		have_modified_project = importEmbeddedDB(*m_project); // Note: project may be modified in case IDs were adjusted
 
 		// fix problems in the project; will set have_modified_project to true if fixes were applied
-		fixProject(have_modified_project);
+		fixProject(*m_project, have_modified_project);
 
 		setModified(AllModified); // notify all views that the entire data has changed
 
@@ -264,6 +266,100 @@ void SVProjectHandler::reloadProject(QWidget * parent) {
 	m_modified = false; // so that closeProject doesn't ask questions
 	closeProject(parent);
 	loadProject(parent, projectFileName, false); // emits updateActions() if project was successfully loaded
+}
+
+
+void SVProjectHandler::importProject(VICUS::Project & other) {
+	// we must have a project loaded
+	IBK_ASSERT(isValid());
+
+	importEmbeddedDB(other); // Note: project may be modified in case IDs were adjusted
+
+	// now merge project data into our project, hereby creating mapping tables to relable building, room, surface and subsurface IDs
+	std::map<unsigned int, unsigned int> IDMap; // newID = IDMap[oldID]
+	IDMap[VICUS::INVALID_ID] = VICUS::INVALID_ID;
+
+	unsigned int nextID = m_project->nextUnusedID();
+
+	// process all buildings in 'other' and adjust IDs where conflicts with existing IDs exist
+	for (VICUS::Building & b : other.m_buildings) {
+		if (m_project->objectByUniqueId(b.m_id) != nullptr) {
+			// give building a new ID
+			unsigned int newID = nextID++;
+			IDMap[b.m_id] = newID;
+			b.m_id = newID;
+		}
+		else	IDMap[b.m_id] = b.m_id;
+
+		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
+			if (m_project->objectByUniqueId(bl.m_id) != nullptr) {
+				unsigned int newID = nextID++;
+				IDMap[bl.m_id] = newID;
+				bl.m_id = newID;
+			}
+			else	IDMap[bl.m_id] = bl.m_id;
+
+			for (VICUS::Room & r : bl.m_rooms) {
+				if (m_project->objectByUniqueId(r.m_id) != nullptr) {
+					unsigned int newID = nextID++;
+					IDMap[r.m_id] = newID;
+					r.m_id = newID;
+				}
+				else	IDMap[r.m_id] = r.m_id;
+
+				for (VICUS::Surface & s : r.m_surfaces) {
+					if (m_project->objectByUniqueId(s.m_id) != nullptr) {
+						unsigned int newID = nextID++;
+						IDMap[s.m_id] = newID;
+						s.m_id = newID;
+					}
+					else	IDMap[s.m_id] = s.m_id;
+
+					// process the subsurfaces as well - since we only modify IDs, we can const-cast the sub-surfaces vector
+					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface>&>(s.subSurfaces()) ) {
+						if (m_project->objectByUniqueId(sub.m_id) != nullptr) {
+							unsigned int newID = nextID++;
+							IDMap[sub.m_id] = newID;
+							sub.m_id = newID;
+						}
+						else	IDMap[sub.m_id] = sub.m_id;
+					}
+				}
+			}
+		}
+	}
+
+	// TODO Andreas, adjust Plain geometry
+	// TODO Hauke, adjust Network
+
+	// all IDs adjusted, now modify component instances
+	for (VICUS::ComponentInstance & c : other.m_componentInstances) {
+		c.m_idSideASurface = IDMap[c.m_idSideASurface];
+		c.m_idSideBSurface = IDMap[c.m_idSideBSurface];
+	}
+
+	for (VICUS::SubSurfaceComponentInstance & c : other.m_subSurfaceComponentInstances) {
+		c.m_idSideASurface = IDMap[c.m_idSideASurface];
+		c.m_idSideBSurface = IDMap[c.m_idSideBSurface];
+	}
+
+	// fix problems in the project; will set have_modified_project to true if fixes were applied
+	bool haveErrors;
+	// update internal pointer-based links
+	other.updatePointers();
+	fixProject(other, haveErrors);
+
+	// now create a project-modified undo action
+	VICUS::Project mergedProject(*m_project);
+	// copy all data from 'other' into project
+	mergedProject.m_buildings.insert(mergedProject.m_buildings.end(), other.m_buildings.begin(), other.m_buildings.end());
+	mergedProject.m_geometricNetworks.insert(mergedProject.m_geometricNetworks.end(), other.m_geometricNetworks.begin(), other.m_geometricNetworks.end());
+	mergedProject.m_componentInstances.insert(mergedProject.m_componentInstances.end(), other.m_componentInstances.begin(), other.m_componentInstances.end());
+	mergedProject.m_subSurfaceComponentInstances.insert(mergedProject.m_subSurfaceComponentInstances.end(), other.m_subSurfaceComponentInstances.begin(), other.m_subSurfaceComponentInstances.end());
+	mergedProject.m_plainGeometry.insert(mergedProject.m_plainGeometry.end(), other.m_plainGeometry.begin(), other.m_plainGeometry.end());
+
+	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Merged imported project"), mergedProject);
+	undo->push();
 }
 
 
@@ -984,7 +1080,7 @@ void SVProjectHandler::updateSurfaceColors() {
 }
 
 
-void SVProjectHandler::fixProject(bool & haveModifiedProject) {
+void SVProjectHandler::fixProject(VICUS::Project & project, bool & haveModifiedProject) {
 	FUNCID(SVProjectHandler::fixProject);
 
 	// Note: the pointer interlinks have been updated in Project::readXML() already
@@ -993,7 +1089,7 @@ void SVProjectHandler::fixProject(bool & haveModifiedProject) {
 
 	// remove/fix invalid CI
 	std::vector<VICUS::ComponentInstance> fixedCI;
-	for (const VICUS::ComponentInstance & ci : m_project->m_componentInstances) {
+	for (const VICUS::ComponentInstance & ci : project.m_componentInstances) {
 		// surface IDs are the same on both sides?
 		if (ci.m_idSideASurface == ci.m_idSideBSurface) {
 			IBK::IBK_Message(IBK::FormatString("Removing ComponentInstance #%1 because both assigned surfaces have the same ID.").arg(ci.m_id),
@@ -1030,14 +1126,14 @@ void SVProjectHandler::fixProject(bool & haveModifiedProject) {
 		fixedCI.push_back(ci);
 	}
 
-	if (fixedCI.size() != m_project->m_componentInstances.size()) {
+	if (fixedCI.size() != project.m_componentInstances.size()) {
 		haveModifiedProject = true;
-		m_project->m_componentInstances.swap(fixedCI);
+		project.m_componentInstances.swap(fixedCI);
 	}
 
 
 	std::vector<VICUS::SubSurfaceComponentInstance> fixedSCI;
-	for (const VICUS::SubSurfaceComponentInstance & ci : m_project->m_subSurfaceComponentInstances) {
+	for (const VICUS::SubSurfaceComponentInstance & ci : project.m_subSurfaceComponentInstances) {
 		// surface IDs are the same on both sides?
 		if (ci.m_idSideASurface == ci.m_idSideBSurface) {
 			IBK::IBK_Message(IBK::FormatString("Removing SubSurfaceComponentInstance #%1 because both assigned surfaces have the same ID.").arg(ci.m_id),
@@ -1074,16 +1170,12 @@ void SVProjectHandler::fixProject(bool & haveModifiedProject) {
 		fixedSCI.push_back(ci);
 	}
 
-	if (fixedSCI.size() != m_project->m_subSurfaceComponentInstances.size()) {
+	if (fixedSCI.size() != project.m_subSurfaceComponentInstances.size()) {
 		haveModifiedProject = true;
-		m_project->m_subSurfaceComponentInstances.swap(fixedSCI);
+		project.m_subSurfaceComponentInstances.swap(fixedSCI);
 	}
 
 	/// \todo Hauke, check uniqueness of IDs in networks
-
-	/// \todo Andreas: implement and project data checks with automatic fixes and
-	///		  set haveModifiedProject to true
-	///		  in such cases, so that the project starts up in "modified" state.
 }
 
 

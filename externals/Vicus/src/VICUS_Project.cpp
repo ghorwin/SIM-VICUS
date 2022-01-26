@@ -533,10 +533,12 @@ unsigned int Project::nextUnusedID() const {
 }
 
 
-const VICUS::Object * Project::objectById(unsigned int uniqueID) const {
+const VICUS::Object * Project::objectByUniqueId(unsigned int uniqueID) const {
 	auto objPtrIt = m_objectPtr.find(uniqueID);
-	Q_ASSERT(objPtrIt != m_objectPtr.end());
-	return objPtrIt->second;
+	if (objPtrIt != m_objectPtr.end())
+		return objPtrIt->second;
+	else
+		return nullptr;
 }
 
 

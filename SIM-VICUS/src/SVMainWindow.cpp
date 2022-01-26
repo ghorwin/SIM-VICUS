@@ -1010,16 +1010,7 @@ void SVMainWindow::on_actionFileImportEneryPlusIDF_triggered() {
 		} break;
 
 		case SVImportIDFDialog::MergeProjects : {
-			// import and merge databases
-
-			// take building from project and add as new building to existing data structure via undo-action
-			if (!m_importIDFDialog->m_importedProject.m_buildings.empty()) {
-				// TODO : Dirk, merge databases into UI DB
-				// TODO : Dirk, import all project data with overwriting tests
-
-				SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Added imported building"), m_importIDFDialog->m_importedProject.m_buildings[0], false);
-				undo->push();
-			}
+			SVProjectHandler::instance().importProject(m_importIDFDialog->m_importedProject);
 		} break;
 
 		case SVImportIDFDialog::ImportCancelled :

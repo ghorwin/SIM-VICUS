@@ -165,6 +165,12 @@ public:
 	*/
 	void reloadProject(QWidget *parent);
 
+	/*! Imports data from the other project into the currently loaded project. Creates an Undo-Action.
+		Must only be called with a valid project.
+		\note Project may be modified, in case that IDs have to be re-mapped.
+	*/
+	void importProject(VICUS::Project & other);
+
 	/*! Saves project with new filename (interactive function, asks user to input filename).
 		Calls saveProject() internally.
 	*/
@@ -333,8 +339,9 @@ private:
 		Here, all clearly invalid data elements are removed so that the project retains a meaningful state.
 
 		The argument 'haveModifiedProject' is set to true, if any changes were made to the project.
+		\note Call updatePointers() on project before calling this function!
 	*/
-	void fixProject(bool & haveModifiedProject);
+	static void fixProject(VICUS::Project & project, bool & haveModifiedProject);
 
 	// *** PRIVATE DATA MEMBERS ***
 

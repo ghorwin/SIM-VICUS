@@ -158,7 +158,7 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 
 	// now find the object collect child IDs
 	if (withChildren) {
-		const VICUS::Object * obj = p.objectById(nodeID);
+		const VICUS::Object * obj = p.objectByUniqueId(nodeID);
 		if (obj != nullptr) {
 			// also store IDs of all children
 			obj->collectChildIDs(nodeIDs);

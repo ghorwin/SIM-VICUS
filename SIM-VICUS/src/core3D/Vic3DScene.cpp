@@ -872,7 +872,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// object found?
 			if (uniqueID != 0) {
 				// lookup object
-				const VICUS::Object * obj = project().objectById(uniqueID);
+				const VICUS::Object * obj = project().objectByUniqueId(uniqueID);
 				// should be a surface
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
 				// but maybe a nullptr, if we hit a sphere/cylinder from a network object
@@ -2524,7 +2524,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// We hit an object!
 
 				// find out if this is a surface, a network node or an edge
-				const VICUS::Object * obj = project().objectById(r.m_uniqueObjectID);
+				const VICUS::Object * obj = project().objectByUniqueId(r.m_uniqueObjectID);
 				Q_ASSERT(obj != nullptr);
 
 				// *** surfaces ***
@@ -2827,7 +2827,7 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 
 	if (uniqueID != 0) {
 		// find the selected object
-		const VICUS::Object * obj = project().objectById(uniqueID);
+		const VICUS::Object * obj = project().objectByUniqueId(uniqueID);
 
 		// if using shift-click, we go up one level, select the parent and all its children
 		bool selectChildren = true;

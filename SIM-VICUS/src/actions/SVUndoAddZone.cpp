@@ -42,7 +42,7 @@ SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUU
 
 void SVUndoAddZone::undo() {
 	// lookup modified building level
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectById(m_buildingLevelUUID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectByUniqueId(m_buildingLevelUUID));
 	Q_ASSERT(bl != nullptr);
 
 	// remove last building level
@@ -66,7 +66,7 @@ void SVUndoAddZone::undo() {
 
 void SVUndoAddZone::redo() {
 	// lookup modified building level
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectById(m_buildingLevelUUID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectByUniqueId(m_buildingLevelUUID));
 	Q_ASSERT(bl != nullptr);
 
 	// append building level

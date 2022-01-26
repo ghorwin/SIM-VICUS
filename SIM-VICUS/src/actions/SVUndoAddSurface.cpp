@@ -44,7 +44,7 @@ void SVUndoAddSurface::undo() {
 	// find room, if given
 	if (m_parentNodeID != 0) {
 		// find the parent room node (it must be a room node!)
-		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(theProject().objectById(m_parentNodeID));
+		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(theProject().objectByUniqueId(m_parentNodeID));
 		Q_ASSERT(r != nullptr);
 		// remove previously added surface
 		Q_ASSERT(!r->m_surfaces.empty());
@@ -70,7 +70,7 @@ void SVUndoAddSurface::redo() {
 	if (m_parentNodeID != 0) {
 
 		// find the parent room node (it must be a room node!)
-		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(theProject().objectById(m_parentNodeID));
+		const VICUS::Room * r = dynamic_cast<const VICUS::Room *>(theProject().objectByUniqueId(m_parentNodeID));
 		Q_ASSERT(r != nullptr);
 		// add surface to room surfaces
 		const_cast<VICUS::Room*>(r)->m_surfaces.push_back(m_addedSurface);
