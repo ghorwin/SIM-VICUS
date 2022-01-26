@@ -283,7 +283,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 
 	// process all buildings in 'other' and adjust IDs where conflicts with existing IDs exist
 	for (VICUS::Building & b : other.m_buildings) {
-		if (m_project->objectByUniqueId(b.m_id) != nullptr) {
+		if (m_project->objectById(b.m_id) != nullptr) {
 			// give building a new ID
 			unsigned int newID = nextID++;
 			IDMap[b.m_id] = newID;
@@ -292,7 +292,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 		else	IDMap[b.m_id] = b.m_id;
 
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			if (m_project->objectByUniqueId(bl.m_id) != nullptr) {
+			if (m_project->objectById(bl.m_id) != nullptr) {
 				unsigned int newID = nextID++;
 				IDMap[bl.m_id] = newID;
 				bl.m_id = newID;
@@ -300,7 +300,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 			else	IDMap[bl.m_id] = bl.m_id;
 
 			for (VICUS::Room & r : bl.m_rooms) {
-				if (m_project->objectByUniqueId(r.m_id) != nullptr) {
+				if (m_project->objectById(r.m_id) != nullptr) {
 					unsigned int newID = nextID++;
 					IDMap[r.m_id] = newID;
 					r.m_id = newID;
@@ -308,7 +308,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 				else	IDMap[r.m_id] = r.m_id;
 
 				for (VICUS::Surface & s : r.m_surfaces) {
-					if (m_project->objectByUniqueId(s.m_id) != nullptr) {
+					if (m_project->objectById(s.m_id) != nullptr) {
 						unsigned int newID = nextID++;
 						IDMap[s.m_id] = newID;
 						s.m_id = newID;
@@ -317,7 +317,7 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 
 					// process the subsurfaces as well - since we only modify IDs, we can const-cast the sub-surfaces vector
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface>&>(s.subSurfaces()) ) {
-						if (m_project->objectByUniqueId(sub.m_id) != nullptr) {
+						if (m_project->objectById(sub.m_id) != nullptr) {
 							unsigned int newID = nextID++;
 							IDMap[sub.m_id] = newID;
 							sub.m_id = newID;
@@ -348,7 +348,6 @@ void SVProjectHandler::importProject(VICUS::Project & other) {
 	// update internal pointer-based links
 	other.updatePointers();
 	fixProject(other, haveErrors);
-
 	// now create a project-modified undo action
 	VICUS::Project mergedProject(*m_project);
 	// copy all data from 'other' into project
