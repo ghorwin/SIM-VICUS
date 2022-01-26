@@ -32,6 +32,7 @@
 #include <QLayout>
 #include <QTableView>
 #include <QTreeView>
+#include <QLineEdit>
 #include <QHeaderView>
 #include <QDebug>
 #if QT_VERSION >= 0x050a00
@@ -163,6 +164,18 @@ void SVStyle::formatListView(QListView * v) {
 	QString viewStyleSheet = QString("QListView {font-size:%1pt;}").arg(pointSize);
 	v->setStyleSheet(viewStyleSheet);
 #endif
+}
+
+void SVStyle::formatLineEditReadOnly(QLineEdit *v) {
+	QString color;
+
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
+		color = "#3a3b3f";
+	else if (SVSettings::instance().m_theme == SVSettings::TT_White)
+		color = "#3a3b3f";
+
+	QString styleSheet = QString("QLineEdit {color: #404040;} QLineEdit:hover, QLineEdit:focus { border: 1px solid %1;}").arg(color);
+	v->setStyleSheet(styleSheet);
 }
 
 

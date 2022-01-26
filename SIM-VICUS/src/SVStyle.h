@@ -35,6 +35,7 @@ class QWidget;
 class QTableView;
 class QTreeView;
 class QListView;
+class QLineEdit;
 
 /*! Central implementation and configuration of visual appearance of the software.
 	This class provides several member functions that can be used to tune the appearance of the software.
@@ -56,6 +57,7 @@ public:
 	static void formatDatabaseTableView(QTableView * v);
 	static void formatDatabaseTreeView(QTreeView * v);
 	static void formatListView(QListView * v);
+	static void formatLineEditReadOnly(QLineEdit * v);
 
 	/*! Replaces all color text placeholders with colors based on the current style sheet. */
 	static void formatWelcomePage(QString & htmlCode);
