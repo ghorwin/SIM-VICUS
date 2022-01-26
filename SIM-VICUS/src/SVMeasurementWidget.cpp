@@ -3,6 +3,7 @@
 
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
+#include "SVStyle.h"
 #include "Vic3DMeasurementObject.h"
 
 #include <QClipboard>
@@ -20,6 +21,17 @@ SVMeasurementWidget::SVMeasurementWidget(QWidget *parent) :
 	setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint | Qt::MSWindowsFixedSizeDialogHint);
 
 	SVViewStateHandler::instance().m_measurementWidget = this;
+
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistZ);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistance);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndZ);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartZ);
 }
 
 
