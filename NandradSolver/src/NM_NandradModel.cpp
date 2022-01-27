@@ -1813,7 +1813,7 @@ void NandradModel::initModelDependencies() {
 #else
 		{
 #endif
-			if (timer.intervalCompleted()) // side-effect guarded by _OPENMP ifdef
+			if (timer.intervalCompleted()) // Note: side-effect guarded by _OPENMP ifdef
 				IBK::IBK_Message(IBK::FormatString("  Loop 2: %1 %% done\n").arg(i*100.0 / m_modelContainer.size()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 		} // end master section
 
@@ -1831,17 +1831,19 @@ void NandradModel::initModelDependencies() {
 			// request published input variables from model instance
 			std::vector<InputReference> inputRefs;
 			currentStateDependency->inputReferences(inputRefs);
+
 #if defined(_OPENMP)
-			// TODO OPENMP FIX
-#endif
+#pragma omp critical
 {
-			/// TODO : Andreas, openMP upgrade, use thread specific globalInputRefLists and merge at end
+#endif
 			for (const InputReference & iref : inputRefs) {
 				// ignore invalid/unused input references
 				if (iref.m_referenceType != NANDRAD::ModelInputReference::NUM_MRT)
 					globalInputRefList.insert(iref);
 			}
+#if defined(_OPENMP)
 }
+#endif
 
 			std::vector<const double*> resultValueRefs;
 			std::vector<QuantityDescription> resultQuantityDescs;
