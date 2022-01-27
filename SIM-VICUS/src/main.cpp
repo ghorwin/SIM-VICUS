@@ -69,14 +69,20 @@ int main(int argc, char *argv[]) {
 	// *** Create and initialize setting object ***
 
 	// create global settings object, from here until end-of-program-life accessible via SVSettings::instance()
+
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
+	// TODO : Stephan, cannot use qApp before initializing QApplication!
 	settings.m_ratio = qApp->devicePixelRatio();
+
+	// TODO : Stephan, port "old settings read functionality" from MasterSim....
 
 	if( settings.m_useHighDPIScaling ) {
 		// We have to do this before our QApplication is initialized
+#if QT_VERSION >= 0x050E00
 		QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 		QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 		QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 	}
@@ -98,8 +104,6 @@ int main(int argc, char *argv[]) {
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
 	QApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
-#elif QT_VERSION >= 0x050600
-	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
 	// initialize resources in dependent libraries
