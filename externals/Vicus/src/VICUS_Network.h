@@ -97,7 +97,10 @@ public:
 
 	Network();
 
-	/*! Copies basic information except nodes and edges. */
+	/*! Copies basic information except nodes and edges.
+		This is a convenience function and equivalent with copying the entire network, setting the new ID and removing
+		all nodes and edges.
+	*/
 	Network copyWithBaseParameters(unsigned int newID);
 
 	/*! call private addNode and set position relative to orign.

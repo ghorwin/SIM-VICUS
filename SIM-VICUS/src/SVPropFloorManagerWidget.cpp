@@ -223,7 +223,7 @@ void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 	if (text.isEmpty()) return;
 	// modify project
 	VICUS::Building b;
-	b.m_id = VICUS::uniqueId(project().m_buildings);
+	b.m_id = project().nextUnusedID();
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
 	undo->push(); // this will update our tree widget
@@ -258,7 +258,7 @@ void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 
 	// modify project
 	VICUS::BuildingLevel bl;
-	bl.m_id = VICUS::uniqueId(m_currentBuilding->m_buildingLevels);
+	bl.m_id = project().nextUnusedID();
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
 	undo->push(); // this will update our tree widget

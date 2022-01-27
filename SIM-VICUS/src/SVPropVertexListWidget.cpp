@@ -380,7 +380,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuilding_clicked() {
 	if (text.isEmpty()) return;
 	// modify project
 	VICUS::Building b;
-	b.m_id = VICUS::uniqueId(project().m_buildings);
+	b.m_id = project().nextUnusedID();
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
 	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
@@ -431,7 +431,7 @@ void SVPropVertexListWidget::on_toolButtonAddBuildingLevel_clicked() {
 
 	// modify project
 	VICUS::BuildingLevel bl;
-	bl.m_id = VICUS::uniqueId(b->m_buildingLevels);
+	bl.m_id = project().nextUnusedID();
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingID, bl, true);
 	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
@@ -456,7 +456,7 @@ void SVPropVertexListWidget::on_toolButtonAddZone_clicked() {
 
 	// modify project
 	VICUS::Room r;
-	r.m_id = VICUS::uniqueId(bl->m_rooms);
+	r.m_id = project().nextUnusedID();
 	r.m_displayName = text;
 	SVUndoAddZone * undo = new SVUndoAddZone(tr("Adding building zone '%1'").arg(r.m_displayName), buildingLevelID, r, true);
 	undo->push(); // this will update our combo boxes and also call updateButtonStates() indirectly
@@ -513,13 +513,13 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface s;
+	s.m_id = project().nextUnusedID();
 	s.m_displayName = m_ui->lineEditName->text().trimmed();
 	s.setPolygon3D( po->planeGeometry().polygon() );
 
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
 		s.m_displayColor = s.m_color = QColor("#206000");
-		s.m_id = VICUS::uniqueId(project().m_plainGeometry);
 		// modify project
 		SVUndoAddSurface * undo = new SVUndoAddSurface(tr("Added surface '%1'").arg(s.m_displayName), s, 0);
 		undo->push();
@@ -534,9 +534,6 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 		Q_ASSERT(zoneUUID != 0);
 
 		s.initializeColorBasedOnInclination(); // set color based on orientation
-		// the surface will get the unique ID as persistant ID
-		s.m_id = s.m_id;
-		s.initializeColorBasedOnInclination();
 		s.m_color = s.m_displayColor;
 		// also store component information
 		VICUS::ComponentInstance compInstance;
@@ -632,16 +629,18 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	}
 
 	std::vector<VICUS::ComponentInstance> componentInstances;
+	unsigned int nextID = project().nextUnusedID();
 	VICUS::Room r;
+	r.m_id = nextID;
 	r.m_displayName = m_ui->lineEditNameZone->text().trimmed();
 	// now we can create the surfaces for top and bottom
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface sFloor;
 	sFloor.m_displayName = tr("Floor");
-	sFloor.m_id = sFloor.m_id;
+	sFloor.m_id = ++nextID;
 	VICUS::Surface sCeiling;
 	sCeiling.m_displayName = tr("Ceiling");
-	sCeiling.m_id = sCeiling.m_id;
+	sCeiling.m_id = ++nextID;
 	// if the ceiling has a normal vector pointing up, we take it as ceiling, otherwise it's going to be the floor
 	if (IBKMK::Vector3D(0,0,1).scalarProduct(ceiling.normal()) > 0) {
 		sCeiling.setPolygon3D(ceiling);
@@ -664,7 +663,6 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
 		 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
 
-	r.m_id = r.m_id;
 	r.m_surfaces.push_back(sFloor);
 	r.m_surfaces.push_back(sCeiling);
 
@@ -684,7 +682,7 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
 
 		VICUS::Surface sWall;
-		sWall.m_id = sWall.m_id;
+		sWall.m_id = ++nextID;
 		sWall.m_displayName = tr("Wall %1").arg(i+1);
 		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
 		sWall.initializeColorBasedOnInclination();
@@ -777,17 +775,18 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	const VICUS::Polygon3D & floor = po->planeGeometry().polygon();
 
 	// generate floor surface (no component assigned!)
+	unsigned int nextID = project().nextUnusedID();
 	VICUS::Room r;
+	r.m_id = nextID;
 	r.m_displayName = m_ui->lineEditNameRoof->text().trimmed();
 	// now we can create the surfaces for top and bottom
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface sFloor;
 	sFloor.m_displayName = tr("Floor");
-	sFloor.m_id = sFloor.m_id;
+	sFloor.m_id = ++nextID;
 	sFloor.setPolygon3D(floor);
 	sFloor.m_displayColor = QColor(150,50,20,255);	//for floor
 
-	r.m_id = r.m_id;
 	r.m_surfaces.push_back(sFloor);
 
 	std::vector<VICUS::ComponentInstance> componentInstances;
@@ -797,8 +796,8 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	unsigned int wallCount = 0;
 	for (unsigned int i=0; i<po->generatedGeometry().size(); ++i) {
 		VICUS::Surface sRoof;
+		sRoof.m_id = ++nextID;
 		sRoof.m_displayName = tr("Wall surface");//.arg(++roofSurfaceCount);
-		sRoof.m_id = sRoof.m_id;
 		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
 		sRoof.m_displayColor = QColor(200,200,140,255);	//for walls
 

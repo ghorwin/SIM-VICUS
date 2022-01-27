@@ -525,10 +525,16 @@ void Project::updatePointers() {
 
 
 unsigned int Project::nextUnusedID() const {
-	if (m_objectPtr.empty())
-		return 1;
-	else
-		return m_objectPtr.rbegin()->first + 1;
+	Q_ASSERT(!m_objectPtr.empty());
+	// the last element in m_objectPtr is always INVALID_ID
+	auto it = m_objectPtr.rbegin();
+	Q_ASSERT(it->first == VICUS::INVALID_ID);
+	// we return the ID following that element before that
+	++it;
+	// do we have such an element?
+	if (it == m_objectPtr.rend())
+		return 1; // no element yet in the vector; this will hardly occur, only when loading a completely empty project
+	return it->first + 1;
 }
 
 
