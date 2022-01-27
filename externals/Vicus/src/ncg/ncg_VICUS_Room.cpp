@@ -112,7 +112,7 @@ TiXmlElement * Room::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Room().m_visible)
-			e->SetAttribute("visible", "true");
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_idZoneTemplate != VICUS::INVALID_ID)
 			TiXmlElement::appendSingleAttributeElement(e, "IdZoneTemplate", nullptr, std::string(), IBK::val2string<unsigned int>(m_idZoneTemplate));
 

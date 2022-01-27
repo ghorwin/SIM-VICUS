@@ -191,7 +191,7 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != Network().m_visible)
-			e->SetAttribute("visible", "true");
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_idFluid != VICUS::INVALID_ID)
 		e->SetAttribute("idFluid", IBK::val2string<unsigned int>(m_idFluid));
 	if (m_modelType != NUM_MT)

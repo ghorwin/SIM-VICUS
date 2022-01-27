@@ -91,7 +91,7 @@ TiXmlElement * HeatLoadSummationModel::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.empty())
 		e->SetAttribute("displayName", m_displayName);
 	if (m_zoneCoolingLoad != HeatLoadSummationModel().m_zoneCoolingLoad)
-			e->SetAttribute("zoneCoolingLoad", "true");
+		e->SetAttribute("zoneCoolingLoad", IBK::val2string<bool>(m_zoneCoolingLoad));
 	if (!m_objectList.empty())
 		TiXmlElement::appendSingleAttributeElement(e, "ObjectList", nullptr, std::string(), m_objectList);
 	return e;

@@ -336,8 +336,8 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					// for booleans, check if still default value, otherwise write it out
 					if (xmlInfo.typeStr == "bool") {
-						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n	"
-								   "		e->SetAttribute(\""+attribName+"\", \"true\");\n";
+						attribs += "	if (m_"+attribName+" != "+ci.m_className+"().m_"+attribName+")\n"
+								   "		e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n"; // m_attribName ? \"true\" : \"false\"
 					}
 					else
 						attribs += "	e->SetAttribute(\""+attribName+"\", IBK::val2string<"+xmlInfo.typeStr+">(m_"+attribName+"));\n";
