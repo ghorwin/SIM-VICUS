@@ -1,0 +1,20 @@
+Source: mastersim
+Section: science
+Priority: optional
+Maintainer: Andreas Nicolai <andreas.nicolai@gmx.net>
+Build-Depends: debhelper-compat (= 12), cmake, zlib1g-dev, qtbase5-dev, libqt5core5a, libqt5concurrent5, libqt5gui5, libqt5network5, libqt5svg5-dev, libqt5xml5, libqt5widgets5, p7zip-full
+Standards-Version: 4.5.0
+Homepage: https://bauklimatik-dresden.de/mastersim
+Vcs-Git: https://github.com/ghorwin/MasterSim.git
+Vcs-Browser: https://github.com/ghorwin/MasterSim
+Rules-Requires-Root: binary-targets
+
+Package: mastersim
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: FMI Co-Simulation Masterprogramm
+ MasterSim is an FMI Co-Simulation master and programming library. It
+ supports the Functional Mock-Up Interface for Co-Simulation in Version
+ 1.0 and 2.0. Using the functionality of version 2.0, it implements
+ various iteration algorithms that rollback FMU slaves and increase
+ stability of coupled simulations.
