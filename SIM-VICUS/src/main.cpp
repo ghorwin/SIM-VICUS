@@ -73,8 +73,6 @@ int main(int argc, char *argv[]) {
 	SVSettings settings(ORG_NAME, ProgramVersionName);
 	settings.setDefaults();
 	settings.read();
-	// TODO : Stephan, cannot use qApp before initializing QApplication!
-	settings.m_ratio = qApp->devicePixelRatio();
 
 	// TODO : Stephan, port "old settings read functionality" from MasterSim....
 
@@ -100,6 +98,7 @@ int main(int argc, char *argv[]) {
 
 	qApp->setWindowIcon(QIcon(":/logo/icons/Icon_64.png"));
 	qApp->setApplicationName(ProgramVersionName);
+	settings.m_ratio = qApp->devicePixelRatio();
 
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
