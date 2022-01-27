@@ -761,7 +761,8 @@ void Project::addAndCheckForUniqueness(Object * o) {
 	//        check if there was such an element already (avoid traveling the tree twice)
 	std::map<unsigned int, VICUS::Object*>::const_iterator existingObj = m_objectPtr.find(o->m_id);
 	if (existingObj != m_objectPtr.end()) {
-		// get info about first object
+		if (o->m_id == VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Object %1 does not have a valid ID.").arg(o->info().toStdString()), FUNC_ID);
 		std::string objInfo = existingObj->second->info().toStdString();
 		std::string duplicateInfo = o->info().toStdString();
 		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model: First object with this ID is '%2', "

@@ -95,6 +95,21 @@ SVPropVertexListWidget::SVPropVertexListWidget(QWidget *parent) :
 	connect(m_ui->toolButtonEditComponents8, &QToolButton::clicked, this, &SVPropVertexListWidget::onEditComponents);
 
 	updateButtonStates(); // see class comment
+
+	// when we have a project loaded, initialize combo boxes accordingly
+	if (SVProjectHandler::instance().isValid()) {
+
+		updateBuildingComboBox(m_ui->comboBoxBuilding);
+		updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel, m_ui->comboBoxBuilding);
+		updateZoneComboBox(m_ui->comboBoxZone, m_ui->comboBoxBuildingLevel);
+
+		updateBuildingComboBox(m_ui->comboBoxBuilding2);
+		updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel2, m_ui->comboBoxBuilding2);
+
+		updateBuildingComboBox(m_ui->comboBoxBuilding3);
+		updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
+
+	}
 }
 
 

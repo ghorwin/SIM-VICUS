@@ -93,10 +93,20 @@ bool SVProjectHandler::newProject(VICUS::Project * project) {
 	createProject();
 	if (project != nullptr) {
 		*m_project = *project; // copy over project
-		// update all internal pointers
-		m_project->updatePointers();
 	}
-
+	else {
+		// add default building and building level
+		VICUS::Building b;
+		b.m_id = 1;
+		b.m_displayName = tr("Building");
+		VICUS::BuildingLevel bl;
+		bl.m_id = 2;
+		bl.m_displayName = tr("Ground floor");
+		b.m_buildingLevels.push_back(bl);
+		m_project->m_buildings.push_back(b);
+	}
+	// update all internal pointers
+	m_project->updatePointers();
 	// initialize viewstate
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	SVViewStateHandler::instance().setViewState(vs);

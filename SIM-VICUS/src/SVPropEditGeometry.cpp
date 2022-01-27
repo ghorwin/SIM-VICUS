@@ -531,8 +531,8 @@ void SVPropEditGeometry::updateUi() {
 	m_ui->pushButtonCopySurfaces->setEnabled(!m_selSurfaces.empty());
 	m_ui->pushButtonCopyRooms->setEnabled(!m_selRooms.empty());
 	// TODO Stephan
-//	m_ui->pushButtonCopyBuildingLvls->setEnabled(false);
-//	m_ui->pushButtonCopyBuilding->setEnabled(false);
+	m_ui->pushButtonCopyBuildingLevels->setEnabled(false);
+	m_ui->pushButtonCopyBuilding->setEnabled(false);
 
 	// handling if surfaces are selected
 	if (!m_selSurfaces.empty()) {
