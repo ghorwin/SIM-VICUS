@@ -46,6 +46,8 @@ class ComponentInstance;
 class Surface : public Object {
 	VICUS_READWRITE_PRIVATE
 public:
+		/*! Type-info string. */
+		const char * typeinfo() const override { return "Surface"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 

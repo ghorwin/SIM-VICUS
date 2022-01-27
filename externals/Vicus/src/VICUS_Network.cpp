@@ -62,8 +62,9 @@ Network::Network() {
 }
 
 
-Network Network::copyWithBaseParameters() {
+Network Network::copyWithBaseParameters(unsigned int newID) {
 	Network copy;
+	copy.m_id = newID;
 	copy.m_type = this->m_type;
 	copy.m_modelType = this->m_modelType;
 	copy.m_idFluid = this->m_idFluid;

@@ -416,6 +416,8 @@ void Project::updatePointers() {
 	FUNCID(Project::updatePointers);
 
 	m_objectPtr.clear();
+	m_objectPtr[VICUS::INVALID_ID] = nullptr; // this will help us detect invalid IDs in the data model
+
 	// update hierarchy
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
@@ -757,8 +759,14 @@ void Project::addAndCheckForUniqueness(Object * o) {
 	FUNCID(Project::addAndCheckForUniqueness);
 	// TODO : Andreas, find out how to efficiently add an element to a map and at the same time
 	//        check if there was such an element already (avoid traveling the tree twice)
-	if (m_objectPtr.find(o->m_id) != m_objectPtr.end())
-		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model.").arg(o->m_id), FUNC_ID);
+	std::map<unsigned int, VICUS::Object*>::const_iterator existingObj = m_objectPtr.find(o->m_id);
+	if (existingObj != m_objectPtr.end()) {
+		// get info about first object
+		std::string objInfo = existingObj->second->info().toStdString();
+		std::string duplicateInfo = o->info().toStdString();
+		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model: First object with this ID is '%2', "
+											   "duplicate is '%3'").arg(o->m_id).arg(objInfo).arg(duplicateInfo), FUNC_ID);
+	}
 	m_objectPtr[o->m_id] = o;
 }
 

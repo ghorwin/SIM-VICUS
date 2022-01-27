@@ -44,13 +44,10 @@ class SubSurfaceComponentInstance;
 /*! Represents a SubSurface and its associated properties. */
 class SubSurface : public Object {
 public:
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "SubSurface"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
-
-//	/*! Creates a copy of the SubSurface object but with a new unique ID. */
-//	SubSurface clone(unsigned int newID) const {
-//		return Object::clone(const_cast<const SubSurface&>(*this), newID);
-//	}
 
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID

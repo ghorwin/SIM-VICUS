@@ -62,6 +62,12 @@ public:
 	/*! Recursively selected all unique IDs of children. */
 	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
 
+	/*! Returns a short descriptive string usable for error messages that identifies the object type. */
+	virtual const char * typeinfo() const = 0;
+
+	/*! Returns a descriptive string with object type, ID and optionally displayname that helps identifying this object. */
+	QString info() const;
+
 	/*! Parent pointer, do not modify. */
 	Object	*m_parent = nullptr;
 

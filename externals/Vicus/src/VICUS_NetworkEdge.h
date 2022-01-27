@@ -48,6 +48,8 @@ namespace VICUS {
 */
 class NetworkEdge : public Object {
 public:
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "NetworkEdge"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -62,14 +64,6 @@ public:
 		m_idNode2(nodeId2),
 		m_length(length)
 	{}
-
-//	/*! creates a cpoy with new unique id */
-//	NetworkEdge clone() const{
-//		NetworkEdge e(*this); // create new network with same unique ID
-//		Object & o = e;
-//		(Object&)e = o.clone(); // assign new ID only
-//		return e;
-//	}
 
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 								std::set<const NetworkEdge*> & connectedEdge) const;

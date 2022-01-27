@@ -54,6 +54,8 @@ class NetworkFluid;
 
 class Network : public Object {
 public:
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "Network"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -93,23 +95,10 @@ public:
 		NUM_P
 	};
 
-
 	Network();
 
-//	/*! creates a copy with new unique id */
-//	Network clone() const{
-//		Network n(*this); // create new network with same unique ID
-//		for (unsigned int i=0; i<m_edges.size(); ++i)
-//			n.m_edges[i].m_id = m_edges[i].clone();
-//		for (unsigned int i=0; i<m_nodes.size(); ++i)
-//			n.m_nodes[i] = m_nodes[i].clone();
-//		Object & o = n;
-//		(Object&)n = o.clone(); // assign new ID only
-//		return n;
-//	}
-
-	/*! copies basic information except nodes and edges */
-	Network copyWithBaseParameters();
+	/*! Copies basic information except nodes and edges. */
+	Network copyWithBaseParameters(unsigned int newID);
 
 	/*! call private addNode and set position relative to orign.
 	 * ALWAYS use this funtion If you add nodes in original coordinates to a network where m_origin may has been already set */
@@ -326,6 +315,7 @@ private:
 	unsigned int addNode(const NetworkNode & nodeById, const bool considerCoordinates=true);
 
 };
+
 
 
 } // namespace VICUS

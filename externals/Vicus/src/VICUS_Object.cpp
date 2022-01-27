@@ -59,5 +59,13 @@ void Object::collectChildIDs(std::set<unsigned int> & nodeContainer) const {
 }
 
 
+QString Object::info() const {
+	QString infoStr = QString("%1 #%2").arg(typeinfo()).arg(m_id);
+	if (!m_displayName.isEmpty())
+		infoStr +=" '" + m_displayName + "'";
+	return infoStr;
+}
+
+
 
 } // namespace VICUS

@@ -37,6 +37,8 @@ namespace VICUS {
 
 class BuildingLevel : public Object {
 public:
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "BuildingLevel"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
