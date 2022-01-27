@@ -5,15 +5,15 @@
 
 DEB_VERSION=$(dpkg-parsechangelog --show-field Version)
 VERSION=${DEB_VERSION%%-*}
-TARGETDIR="mastersim-$VERSION"
+TARGETDIR="simvicus-$VERSION"
 
 echo "Building binary package $DEB_VERSION for upstream version $VERSION" && 
-if [ ! -d ../mastersim-$VERSION ]; then
-	echo "Missing source directory ../mastersim-$VERSION"
+if [ ! -d ../simvicus-$VERSION ]; then
+	echo "Missing source directory ../simvicus-$VERSION"
 	exit 1
 fi &&
 
-if [ ! -e mastersim_${DEB_VERSION}_source.changes ]; then
+if [ ! -e simvicus_${DEB_VERSION}_source.changes ]; then
 	echo "Build source package first!"
 	exit 1
 fi && 
@@ -23,4 +23,4 @@ dpkg-buildpackage &&
 
 echo "*** running lintian ***" &&
 
-lintian -EvI --pedantic --show-overrides --color=auto ../mastersim_${DEB_VERSION}_amd64.changes
+lintian -EvI --pedantic --show-overrides --color=auto ../simvicus_${DEB_VERSION}_amd64.changes
