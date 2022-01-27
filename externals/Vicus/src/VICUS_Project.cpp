@@ -757,18 +757,16 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 
 void Project::addAndCheckForUniqueness(Object * o) {
 	FUNCID(Project::addAndCheckForUniqueness);
-	// TODO : Andreas, find out how to efficiently add an element to a map and at the same time
-	//        check if there was such an element already (avoid traveling the tree twice)
-	std::map<unsigned int, VICUS::Object*>::const_iterator existingObj = m_objectPtr.find(o->m_id);
-	if (existingObj != m_objectPtr.end()) {
+	// try to insert the object's id into the map
+	auto insertResult = m_objectPtr.insert(std::make_pair(o->m_id, o));
+	if (!insertResult.second) {
 		if (o->m_id == VICUS::INVALID_ID)
 			throw IBK::Exception(IBK::FormatString("Object %1 does not have a valid ID.").arg(o->info().toStdString()), FUNC_ID);
-		std::string objInfo = existingObj->second->info().toStdString();
+		std::string objInfo = insertResult.first->second->info().toStdString();
 		std::string duplicateInfo = o->info().toStdString();
-		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model: First object with this ID is '%2', "
-											   "duplicate is '%3'").arg(o->m_id).arg(objInfo).arg(duplicateInfo), FUNC_ID);
+		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model: First object with this ID is %2, "
+											   "duplicate is %3").arg(o->m_id).arg(objInfo).arg(duplicateInfo), FUNC_ID);
 	}
-	m_objectPtr[o->m_id] = o;
 }
 
 
