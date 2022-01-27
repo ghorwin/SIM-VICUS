@@ -59,11 +59,27 @@ void qDebugMsgHandler(QtMsgType type, const QMessageLogContext &context, const Q
 int main(int argc, char *argv[]) {
 	const char * const FUNC_ID = "[main]";
 
-	QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-	QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
-
 	QtExt::Directories::appname = "SIM-VICUS";
 	QtExt::Directories::devdir = "SIM-VICUS";
+
+	// Compose program name using the always use the major.minor version variant,
+	// since this string is used to identify the registry/config file location.
+	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
+
+	// *** Create and initialize setting object ***
+
+	// create global settings object, from here until end-of-program-life accessible via SVSettings::instance()
+	SVSettings settings(ORG_NAME, ProgramVersionName);
+	settings.setDefaults();
+	settings.read();
+	settings.m_ratio = qApp->devicePixelRatio();
+
+	if( settings.m_useHighDPIScaling ) {
+		// We have to do this before our QApplication is initialized
+		QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+		QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+		QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+	}
 
 	// create wrapped-QApplication class (to catch rogue exceptions)
 	SVDebugApplication a(argc, argv);
@@ -75,10 +91,6 @@ int main(int argc, char *argv[]) {
 #if defined(Q_OS_UNIX)
 	setlocale(LC_NUMERIC,"C");
 #endif
-
-	// Compose program name using the always use the major.minor version variant,
-	// since this string is used to identify the registry/config file location.
-	const QString ProgramVersionName = QString("SIM-VICUS %1").arg(VICUS::VERSION);
 
 	qApp->setWindowIcon(QIcon(":/logo/icons/Icon_64.png"));
 	qApp->setApplicationName(ProgramVersionName);
@@ -103,13 +115,6 @@ int main(int argc, char *argv[]) {
 	std::string errmsg;
 	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toStdString(), false, errmsg);
 
-	// *** Create and initialize setting object ***
-
-	// create global settings object, from here until end-of-program-life accessible via SVSettings::instance()
-	SVSettings settings(ORG_NAME, ProgramVersionName);
-	settings.setDefaults();
-	settings.read();
-	settings.m_ratio = qApp->devicePixelRatio();
 	// if we have just upgraded to a new version, try to import settings from the last minor version
 	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
 		unsigned int major, minor, patch;
