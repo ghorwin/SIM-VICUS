@@ -11,8 +11,13 @@ cmake_minimum_required( VERSION 3.10 )
 cmake_policy(SET CMP0042 NEW)
 
 # Debian package build flag for IBK-based applications
-if (UNIX AND NOT APPLE)
-	ADD_DEFINITIONS( -DIBK_BUILDING_DEBIAN_PACKAGE )
-endif (UNIX AND NOT APPLE)
+add_definitions( -DIBK_BUILDING_DEBIAN_PACKAGE )
+
+# Configure build
+set( CMAKE_BUILD_TYPE Release CACHE STRING
+	"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+
+set( USE_OMP ON CACHE BOOL
+	"Enable/Disable OpenMP build." FORCE)
 
 add_subdirectory( build/cmake SimVicusPackage)
