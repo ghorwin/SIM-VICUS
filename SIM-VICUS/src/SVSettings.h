@@ -208,6 +208,9 @@ public:
 	*/
 	QString						m_nandradExportFileName;
 
+	/*! Holds the acctual device pixel ratio needed for HighDPI scaling. */
+	double						m_ratio;
+
 	// *** members below are stored in settings file ***
 
 	/*! This string is to be read from the settings and used to check if the settings exist already
@@ -279,8 +282,9 @@ public:
 	/*! Our database. */
 	SVDatabase					m_db;
 
-	/*! Holds the acctual device pixel ratio needed for HighDPI scaling. */
-	double						m_ratio;
+	/*! Enables HighDPI Scaling. */
+	bool						m_useHighDPIScaling = true;
+
 
 private:
 

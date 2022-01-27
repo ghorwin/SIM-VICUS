@@ -195,6 +195,7 @@ void SVSettings::read() {
 //				 << m_themeSettings[TT_White].m_minorGridColor.name()
 //				 << m_themeSettings[TT_White].m_sceneBackgroundColor.name()
 //				 << m_themeSettings[TT_White].m_selectedSurfaceColor.name();
+	m_useHighDPIScaling = settings.value("UseHighDPIScaling", m_useHighDPIScaling).toBool();
 }
 
 
@@ -210,6 +211,7 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("FontPointSize", m_fontPointSize);
 	settings.setValue("InvertYMouseAxis", m_invertYMouseAxis);
 	settings.setValue("TerminalEmulator", m_terminalEmulator);
+	settings.setValue("UseHighDPIScaling", m_useHighDPIScaling);
 
 	settings.setValue("Theme", m_theme);
 
