@@ -32,7 +32,7 @@ SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUU
 							 bool topologyOnly, const std::vector<VICUS::ComponentInstance> * componentInstances) :
 	m_addedRoom(addedRoom),
 	m_topologyOnly(topologyOnly),
-	m_buildingLevelUUID(buildingLevelUUID)
+	m_buildingLevelID(buildingLevelUUID)
 {
 	setText( label );
 	if (componentInstances != nullptr)
@@ -42,7 +42,7 @@ SVUndoAddZone::SVUndoAddZone(const QString & label, unsigned int buildingLevelUU
 
 void SVUndoAddZone::undo() {
 	// lookup modified building level
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectByUniqueId(m_buildingLevelUUID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectById(m_buildingLevelID));
 	Q_ASSERT(bl != nullptr);
 
 	// remove last building level
@@ -66,7 +66,7 @@ void SVUndoAddZone::undo() {
 
 void SVUndoAddZone::redo() {
 	// lookup modified building level
-	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectByUniqueId(m_buildingLevelUUID));
+	const VICUS::BuildingLevel * bl = dynamic_cast<const VICUS::BuildingLevel*>(theProject().objectById(m_buildingLevelID));
 	Q_ASSERT(bl != nullptr);
 
 	// append building level

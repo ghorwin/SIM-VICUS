@@ -52,7 +52,7 @@ public:
 	virtual void redo();
 
 private:
-	unsigned int	m_objectUid;
+	unsigned int	m_objectID;
 	QString			m_displayName;
 };
 

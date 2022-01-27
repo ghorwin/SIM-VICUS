@@ -1129,9 +1129,10 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					Vic3D::Transform3D rota;
 					// we now also have to find the angle between both normals
 
-					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
+					double angle = angleBetweenVectorsDeg(m_normal, newNormal);
 
-					rota.rotate(angle, IBKVector2QVector(rotationAxis) );
+					// TODO : use IBK::Quaternion
+					rota.rotate((float)angle, IBKVector2QVector(rotationAxis) );
 
 					// we take the QQuarternion to rotate
 					QVector4D rotVec = rota.rotation().toVector4D();
@@ -1265,36 +1266,32 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 	// this map stores the old vs. new ID association, needed for copying component instance
 	std::map<unsigned int, unsigned int> oldNewIDMap;
 
+	unsigned int newID = project().nextUnusedID();
+
 	// we go through all objects and find the hierarchy
 	for (const VICUS::Surface * s : m_selSurfaces) {
 		// remember ID of surface to be deselected
-		deselectedSurfaceUniqueIDs.insert(s->uniqueID());
+		deselectedSurfaceUniqueIDs.insert(s->m_id);
 
 		// we make a copy of the surface but with a new unique ID
-		VICUS::Surface newSurf = s->clone();
-		// we also have to take care that we have to change the id (not unique id) of the surface
-		// for now I assume that I can take the unique id as the id
-		// needed for component instances
-		newSurf.m_id = newSurf.uniqueID();
+		VICUS::Surface newSurf(*s);
+		newSurf.m_id = newID++;
 		newSurf.m_selected = true; // select copied surface
 
-		// if we copy only selected, remove all sub-surfaces that are not selected
+		// NOTE: newSurf has a new unique ID, yet the copied subsurfaces still have the original IDs
+
 		std::vector<VICUS::SubSurface> subs;
 		for (std::vector<VICUS::SubSurface>::const_iterator it = newSurf.subSurfaces().begin();
 			 it != newSurf.subSurfaces().end(); ++it)
 		{
+			// if we copy only selected, only add sub-surfaces that are selected
 			if (copyAllSubSurfaces == 2 || it->m_selected) {
-				const VICUS::SubSurface &clonedSubSurf =  it->clone();	// we have to copy the SubSurface
-
-				const_cast<VICUS::SubSurface&>(clonedSubSurf).m_id = clonedSubSurf.uniqueID(); // same as for surface
-
-				const_cast<VICUS::SubSurface&>(clonedSubSurf).m_displayName = VICUS::uniqueName(it->m_displayName, m_subSurfNames);
+				const_cast<VICUS::SubSurface&>(*it).m_id = newID++; // give new ID
+				const_cast<VICUS::SubSurface&>(*it).m_displayName = VICUS::uniqueName(it->m_displayName, m_subSurfNames);
 				// remember old vs. new surface ID map
-				oldNewIDMap[it->m_id] = clonedSubSurf.m_id;
+				oldNewIDMap[it->m_id] = it->m_id;
 
-
-
-				subs.push_back(clonedSubSurf);							// keeps unqiue ID
+				subs.push_back(*it);							// keeps unqiue ID
 			}
 		}
 		newSurf.setSubSurfaces(subs);
@@ -1391,10 +1388,10 @@ void SVPropEditGeometry::on_pushButtonCopySurfaces_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
-	/// We now also want to copy rooms
-	///	Therefore we first check which rooms are checked
-	///	Then we also have to check if all surfaces are checked
-	/// same for the subsurfaces
+	// We now also want to copy rooms
+	// Therefore we first check which rooms are checked
+	// Then we also have to check if all surfaces are checked
+	// same for the subsurfaces
 
 	bool allSurfacesSelected = true;
 	// check if all subsurfaces (if existing) of selected surfaces are selected as well
@@ -1416,94 +1413,93 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 	}
 
 	// we get our copy method
-	int copyAllSubSurfaces = 1;
+	int copyAllSurfaces = 1;
 
 	// if we have some invisible ones, ask user what to do
 	if (!allSurfacesSelected)
-		copyAllSubSurfaces = requestCopyOperation(dynamic_cast<QWidget *>(this), tr("Method for copying rooms"),
+		copyAllSurfaces = requestCopyOperation(dynamic_cast<QWidget *>(this), tr("Method for copying rooms"),
 			tr("Some of the rooms have un-selected surfaces or sub-surfaces. Copy them anyway?"),
 			tr("Copy all"),								// returns 1
 			tr("Copy only selected and visible") );		// returns 2
 
-	if (copyAllSubSurfaces == -1)
+	if (copyAllSurfaces == -1)
 		return;
 
 	// now create a vector for the new surfaces
 	std::vector<VICUS::Room> newRooms;
 	std::set<unsigned int> deselectedUniqueIDs;
 
-	// this map stores the old vs. new ID association, needed for copying component instance
+	// this map stores the old vs. new ID association, needed for copying component instances
 	std::map<unsigned int, unsigned int> oldNewIDMap;
+
+	// get next free unqiue ID
+	unsigned int newID = project().nextUnusedID();
 
 	for ( const VICUS::Room *r : m_selRooms ) {
 
 		// remeber IDs so that we can deselct the rooms
-		deselectedUniqueIDs.insert(r->uniqueID());
+		deselectedUniqueIDs.insert(r->m_id);
 
-		// we make a copy of the surface but with a new unique ID
-		VICUS::Room newRoom = r->clone();
-		// we also have to take care that we have to change the id (not unique id) of the surface
-		// for now I assume that I can take the unique id as the id
-		// needed for component instances
-		newRoom.m_id = newRoom.uniqueID();
+		// we make a copy of the room but with a new unique ID
+		VICUS::Room newRoom(*r);
+		newRoom.m_surfaces.clear(); // we add surfaces back below
+		newRoom.m_displayName = VICUS::uniqueName(r->m_displayName, m_roomNames);
+
+		newRoom.m_id = newID++;
 		newRoom.m_selected = true; // select copied surface
 
 		// if we copy only selected, remove all sub-surfaces that are not selected
 		std::vector<VICUS::Surface> surfs;
-		for (std::vector<VICUS::Surface>::const_iterator itSurf = newRoom.m_surfaces.begin();
-			 itSurf != newRoom.m_surfaces.end(); ++itSurf)
-		{
+		for (const VICUS::Surface & surf : newRoom.m_surfaces) {
+			// skip if neither selected and not "Copy All" mode
+			if (copyAllSurfaces != 2 && !surf.m_selected) continue;
+
+			// remember ID so that we can deselect it
+			deselectedUniqueIDs.insert(surf.m_id);
+
+			// create a copy of the surface and give it a new unique ID
+			VICUS::Surface newSurf(surf);
+			newSurf.m_id = newID++;
+			// TODO: Stephan, select suitable unique name for subsurface
+
+			// NOTE: we replace the subsurfaces below
+
+			// remember old vs. new surface ID map
+			oldNewIDMap[surf.m_id] = newSurf.m_id;
 
 			std::vector<VICUS::SubSurface> subs;
+			// process all copied subsurfaces and only keep selected (unless "Copy all" was used)
+			for (const VICUS::SubSurface & sub : surf.subSurfaces()) {
+				// skip if neither selected and not "Copy All" mode
+				if (copyAllSurfaces != 2 && !sub.m_selected) continue;
 
-			// remeber IDs so that we can deselct the rooms
-			deselectedUniqueIDs.insert(itSurf->uniqueID());
+				// remember ID so that we can deselect it
+				deselectedUniqueIDs.insert(sub.m_id);
 
-			if (copyAllSubSurfaces == 2 || itSurf->m_selected) {
-				const VICUS::Surface &clonedSurf =  itSurf->clone();	// we have to copy the SubSurface
-
-
-				const_cast<VICUS::Surface&>(clonedSurf).m_id = clonedSurf.uniqueID(); // same as for surface
+				// create a copy of the subsurface
+				VICUS::SubSurface newSubSurf(sub);
+				newSubSurf.m_id = newID++;
+				// TODO : Stephan, select suitable unique name for subsurface
 
 				// remember old vs. new surface ID map
-				oldNewIDMap[itSurf->m_id] = clonedSurf.m_id;
+				oldNewIDMap[sub.m_id] = newSubSurf.m_id;
 
-				for (std::vector<VICUS::SubSurface>::const_iterator itSub = itSurf->subSurfaces().begin();
-					 itSub != itSurf->subSurfaces().end(); ++itSub)
-				{
-					if (copyAllSubSurfaces == 2 || itSub->m_selected) {
-						const VICUS::SubSurface &clonedSubSurf =  itSub->clone();	// we have to copy the SubSurface
-
-						// remeber IDs so that we can deselct the rooms
-						deselectedUniqueIDs.insert(itSub->uniqueID());
-
-						const_cast<VICUS::SubSurface&>(clonedSubSurf).m_id = clonedSubSurf.uniqueID(); // same as for surface
-
-						// remember old vs. new surface ID map
-						oldNewIDMap[itSub->m_id] = clonedSubSurf.m_id;
-
-						subs.push_back(clonedSubSurf);							// keeps unqiue ID
-					}
-				}
-				const_cast<VICUS::Surface&>(clonedSurf).setSubSurfaces(subs);
-
-				const_cast<VICUS::Surface&>(clonedSurf).m_displayName = VICUS::uniqueName(itSurf->m_displayName, m_surfNames);
-
-				// now translate Room566 gh; no need to translate sub-surfaces, since they are embedded anyway
-				std::vector<IBKMK::Vector3D> vertexes = const_cast<VICUS::Surface&>(clonedSurf).polygon3D().vertexes();
-				for ( IBKMK::Vector3D &v : vertexes ) {
-					v += m_translation;
-				}
-				const_cast<VICUS::Surface&>(clonedSurf).setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-				const_cast<VICUS::Surface&>(clonedSurf).m_parent = new VICUS::Object();
-
-				surfs.push_back(clonedSurf);		// keeps unqiue ID
+				subs.push_back(newSubSurf);
 			}
+			// replace sub-surfaces in copied surface
+			newSurf.setSubSurfaces(subs);
 
+			// now translate surface vertexes,
+			// no need to translate sub-surfaces, since they are embedded anyway
+			std::vector<IBKMK::Vector3D> vertexes = newSurf.polygon3D().vertexes();
+			for ( IBKMK::Vector3D &v : vertexes ) {
+				v += m_translation;
+			}
+			newSurf.setPolygon3D( VICUS::Polygon3D(vertexes) );
+
+			surfs.push_back(newSurf);
 		}
 		newRoom.m_surfaces = surfs;
-
 
 		// TODO Stephan, lookup "name generation" function
 		// name generation

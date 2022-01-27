@@ -34,7 +34,7 @@ public:
 	hasUniqueID(unsigned int uID) : m_uID(uID) {}
 
 	bool operator()(const VICUS::Surface & s) {
-		return s.uniqueID() == m_uID;
+		return s.m_id == m_uID;
 	}
 
 	unsigned int m_uID;
@@ -48,7 +48,7 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 
 	std::set<unsigned int>						selectedUniqueIDs;
 	for (const VICUS::Object * p : objectsToBeRemoved)
-		selectedUniqueIDs.insert(p->uniqueID());
+		selectedUniqueIDs.insert(p->m_id);
 
 	// create a copy of all data structures that need something removed from
 	m_buildings = project().m_buildings;
@@ -63,32 +63,32 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 				VICUS::Room & r = bl.m_rooms[rIdx];
 				for (unsigned int sIdx = 0; sIdx < r.m_surfaces.size(); /* no counter increase here */) {
 					// is surface selected for deletion?
-					if (selectedUniqueIDs.find(r.m_surfaces[sIdx].uniqueID()) != selectedUniqueIDs.end())
+					if (selectedUniqueIDs.find(r.m_surfaces[sIdx].m_id) != selectedUniqueIDs.end())
 						r.m_surfaces.erase(r.m_surfaces.begin() + sIdx); // remove surface, keep counter
 					else {
 						// search through all subsurfaces of current surface and remove those
 						std::vector<VICUS::SubSurface> remainingSubSurfaces;
 						for (const VICUS::SubSurface & sub : r.m_surfaces[sIdx].subSurfaces())
-							if (selectedUniqueIDs.find(sub.uniqueID()) == selectedUniqueIDs.end() )
+							if (selectedUniqueIDs.find(sub.m_id) == selectedUniqueIDs.end() )
 								remainingSubSurfaces.push_back(sub); // keep only those that are not selected
 						r.m_surfaces[sIdx].setSubSurfaces(remainingSubSurfaces); // keep remaining subs
 						++sIdx; // go to next surface
 					}
 				}
 				// selected for deletion and empty?
-				if (selectedUniqueIDs.find(r.uniqueID()) != selectedUniqueIDs.end() && r.m_surfaces.empty())
+				if (selectedUniqueIDs.find(r.m_id) != selectedUniqueIDs.end() && r.m_surfaces.empty())
 					bl.m_rooms.erase(bl.m_rooms.begin() + rIdx); // remove, keep counter
 				else
 					++rIdx; // go to next room
 			}
 			// selected for deletion and empty?
-			if (selectedUniqueIDs.find(bl.uniqueID()) != selectedUniqueIDs.end() && bl.m_rooms.empty())
+			if (selectedUniqueIDs.find(bl.m_id) != selectedUniqueIDs.end() && bl.m_rooms.empty())
 				b.m_buildingLevels.erase(b.m_buildingLevels.begin() + blIdx); // remove, keep counter
 			else
 				++blIdx; // go to next room
 		}
 		// selected for deletion and empty?
-		if (selectedUniqueIDs.find(b.uniqueID()) != selectedUniqueIDs.end() && b.m_buildingLevels.empty())
+		if (selectedUniqueIDs.find(b.m_id) != selectedUniqueIDs.end() && b.m_buildingLevels.empty())
 			m_buildings.erase(m_buildings.begin() + bIdx); // remove, keep counter
 		else
 			++bIdx; // go to next room
@@ -98,7 +98,7 @@ SVUndoDeleteSelected::SVUndoDeleteSelected(const QString & label,
 	m_plainGeometry.reserve(project().m_plainGeometry.size());
 	for (const VICUS::Surface & s : project().m_plainGeometry) {
 		// not found? -> not marked for deletion!
-		if (selectedUniqueIDs.find(s.uniqueID()) == selectedUniqueIDs.end())
+		if (selectedUniqueIDs.find(s.m_id) == selectedUniqueIDs.end())
 			m_plainGeometry.push_back(s); // copy surface over to data store
 	}
 

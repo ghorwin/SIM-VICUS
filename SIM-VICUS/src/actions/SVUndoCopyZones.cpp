@@ -59,10 +59,10 @@ void SVUndoCopyZones::undo() {
 	for (VICUS::Building & b : theProject().m_buildings)
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms) {
-				if (m_deselectedUniqueIDs.find(r.uniqueID()) != m_deselectedUniqueIDs.end())
+				if (m_deselectedUniqueIDs.find(r.m_id) != m_deselectedUniqueIDs.end())
 					r.m_selected = true;
 				for (VICUS::Surface & s : r.m_surfaces) {
-						if (m_deselectedUniqueIDs.find(s.uniqueID()) != m_deselectedUniqueIDs.end())
+						if (m_deselectedUniqueIDs.find(s.m_id) != m_deselectedUniqueIDs.end())
 							s.m_selected = true;
 				}
 			}
@@ -103,10 +103,10 @@ void SVUndoCopyZones::redo() {
 	for (VICUS::Building & b : theProject().m_buildings)
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms) {
-				if (m_deselectedUniqueIDs.find(r.uniqueID()) != m_deselectedUniqueIDs.end())
+				if (m_deselectedUniqueIDs.find(r.m_id) != m_deselectedUniqueIDs.end())
 					r.m_selected = false;
 				for (VICUS::Surface & s : r.m_surfaces) {
-						if (m_deselectedUniqueIDs.find(s.uniqueID()) != m_deselectedUniqueIDs.end())
+						if (m_deselectedUniqueIDs.find(s.m_id) != m_deselectedUniqueIDs.end())
 							s.m_selected = false;
 						for (const VICUS::SubSurface & subS : s.subSurfaces() )
 							const_cast<VICUS::SubSurface &>(subS).m_selected = false;

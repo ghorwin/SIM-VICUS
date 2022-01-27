@@ -154,7 +154,7 @@ void SVPropBuildingBoundaryConditionsWidget::on_pushButtonSelectBoundaryConditio
 
 	std::set<unsigned int> objs;
 	for (const VICUS::Surface * s : cit->second)
-		objs.insert(s->uniqueID());
+		objs.insert(s->m_id);
 
 	QString undoText;
 	if (bc != nullptr)

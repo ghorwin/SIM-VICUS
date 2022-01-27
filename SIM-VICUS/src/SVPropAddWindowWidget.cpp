@@ -269,7 +269,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 		std::vector<VICUS::SubSurface> subs;
 		for (const VICUS::Polygon2D & p : geometries[i].holes()) {
 			VICUS::SubSurface subsurf;
-			subsurf.m_id = subsurf.uniqueID();
+			subsurf.m_id = subsurf.m_id;
 			subsurf.m_polygon2D = p;
 			if (m_ui->radioButtonSubSurfaceTypeWindow->isChecked()) {
 				subsurf.m_displayName = tr("Window #%1").arg(subsurf.m_id);

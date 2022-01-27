@@ -61,20 +61,20 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 
 	// search buildings
 	for (const VICUS::Building & b : p.m_buildings) {
-		if (exclusive || nodeIDs.find(b.uniqueID()) != nodeIDs.end())
-			storeState(b, m_nodeStates[b.uniqueID()]);
+		if (exclusive || nodeIDs.find(b.m_id) != nodeIDs.end())
+			storeState(b, m_nodeStates[b.m_id]);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			if (exclusive || nodeIDs.find(bl.uniqueID()) != nodeIDs.end())
-				storeState(bl, m_nodeStates[bl.uniqueID()]);
+			if (exclusive || nodeIDs.find(bl.m_id) != nodeIDs.end())
+				storeState(bl, m_nodeStates[bl.m_id]);
 			for (const VICUS::Room & r : bl.m_rooms) {
-				if (exclusive || nodeIDs.find(r.uniqueID()) != nodeIDs.end())
-					storeState(r, m_nodeStates[r.uniqueID()]);
+				if (exclusive || nodeIDs.find(r.m_id) != nodeIDs.end())
+					storeState(r, m_nodeStates[r.m_id]);
 				for (const VICUS::Surface & s : r.m_surfaces) {
-					if (exclusive || nodeIDs.find(s.uniqueID()) != nodeIDs.end())
-						storeState(s, m_nodeStates[s.uniqueID()]);
+					if (exclusive || nodeIDs.find(s.m_id) != nodeIDs.end())
+						storeState(s, m_nodeStates[s.m_id]);
 					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
-						if (exclusive || nodeIDs.find(sub.uniqueID()) != nodeIDs.end())
-							storeState(sub, m_nodeStates[sub.uniqueID()]);
+						if (exclusive || nodeIDs.find(sub.m_id) != nodeIDs.end())
+							storeState(sub, m_nodeStates[sub.m_id]);
 					}
 				}
 			}
@@ -83,23 +83,23 @@ SVUndoTreeNodeState::SVUndoTreeNodeState(const QString & label,
 
 	// search plain geometry
 	for (const VICUS::Surface & s : p.m_plainGeometry) {
-		if (exclusive || nodeIDs.find(s.uniqueID()) != nodeIDs.end())
-			storeState(s, m_nodeStates[s.uniqueID()]);
+		if (exclusive || nodeIDs.find(s.m_id) != nodeIDs.end())
+			storeState(s, m_nodeStates[s.m_id]);
 	}
 
 	// search in networks
 	for (const VICUS::Network & n : p.m_geometricNetworks) {
-		if (exclusive || nodeIDs.find(n.uniqueID()) != nodeIDs.end())
-			storeState(n, m_nodeStates[n.uniqueID()]);
+		if (exclusive || nodeIDs.find(n.m_id) != nodeIDs.end())
+			storeState(n, m_nodeStates[n.m_id]);
 		// search nodes
 		for (const VICUS::NetworkNode & no : n.m_nodes) {
-			if (exclusive || nodeIDs.find(no.uniqueID()) != nodeIDs.end())
-				storeState(no, m_nodeStates[no.uniqueID()]);
+			if (exclusive || nodeIDs.find(no.m_id) != nodeIDs.end())
+				storeState(no, m_nodeStates[no.m_id]);
 		}
 		// search edges
 		for (const VICUS::NetworkEdge & ne : n.m_edges) {
-			if (exclusive || nodeIDs.find(ne.uniqueID()) != nodeIDs.end())
-				storeState(ne, m_nodeStates[ne.uniqueID()]);
+			if (exclusive || nodeIDs.find(ne.m_id) != nodeIDs.end())
+				storeState(ne, m_nodeStates[ne.m_id]);
 		}
 	}
 
@@ -158,7 +158,7 @@ SVUndoTreeNodeState * SVUndoTreeNodeState::createUndoAction(const QString & labe
 
 	// now find the object collect child IDs
 	if (withChildren) {
-		const VICUS::Object * obj = p.objectByUniqueId(nodeID);
+		const VICUS::Object * obj = p.objectById(nodeID);
 		if (obj != nullptr) {
 			// also store IDs of all children
 			obj->collectChildIDs(nodeIDs);
@@ -189,22 +189,22 @@ void SVUndoTreeNodeState::redo() {
 
 	// process all buildings
 	for (VICUS::Building & b : p.m_buildings) {
-		if ((it = m_nodeStates.find(b.uniqueID())) != m_nodeStates.end()) {
+		if ((it = m_nodeStates.find(b.m_id)) != m_nodeStates.end()) {
 			setState(b, it->second);
 			modifiedIDs.push_back(it->first);
 		}
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			if ((it = m_nodeStates.find(bl.uniqueID())) != m_nodeStates.end()) {
+			if ((it = m_nodeStates.find(bl.m_id)) != m_nodeStates.end()) {
 				setState(bl, it->second);
 				modifiedIDs.push_back(it->first);
 			}
 			for (VICUS::Room & r : bl.m_rooms) {
-				if ((it = m_nodeStates.find(r.uniqueID())) != m_nodeStates.end()) {
+				if ((it = m_nodeStates.find(r.m_id)) != m_nodeStates.end()) {
 					setState(r, it->second);
 					modifiedIDs.push_back(it->first);
 				}
 				for (VICUS::Surface & s : r.m_surfaces) {
-					if ((it = m_nodeStates.find(s.uniqueID())) != m_nodeStates.end()) {
+					if ((it = m_nodeStates.find(s.m_id)) != m_nodeStates.end()) {
 						setState(s, it->second);
 						modifiedIDs.push_back(it->first);
 					}
@@ -212,7 +212,7 @@ void SVUndoTreeNodeState::redo() {
 					// Note: use of const-cast is ok here, since we do not modify polygons or anything else that
 					//       changes triangulation
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces())) {
-						if ((it = m_nodeStates.find(sub.uniqueID())) != m_nodeStates.end()) {
+						if ((it = m_nodeStates.find(sub.m_id)) != m_nodeStates.end()) {
 							setState(sub, it->second);
 							modifiedIDs.push_back(it->first);
 						}
@@ -224,7 +224,7 @@ void SVUndoTreeNodeState::redo() {
 
 	// search in plain geometry
 	for (VICUS::Surface & s : p.m_plainGeometry) {
-		if ((it = m_nodeStates.find(s.uniqueID())) != m_nodeStates.end()) {
+		if ((it = m_nodeStates.find(s.m_id)) != m_nodeStates.end()) {
 			setState(s, it->second);
 			modifiedIDs.push_back(it->first);
 		}
@@ -232,20 +232,20 @@ void SVUndoTreeNodeState::redo() {
 
 	// search in networks
 	for (VICUS::Network & n : p.m_geometricNetworks) {
-		if ((it = m_nodeStates.find(n.uniqueID())) != m_nodeStates.end()) {
+		if ((it = m_nodeStates.find(n.m_id)) != m_nodeStates.end()) {
 			setState(n, it->second);
 			modifiedIDs.push_back(it->first);
 		}
 		// search nodes
 		for (VICUS::NetworkNode & no : n.m_nodes) {
-			if ((it = m_nodeStates.find(no.uniqueID())) != m_nodeStates.end()) {
+			if ((it = m_nodeStates.find(no.m_id)) != m_nodeStates.end()) {
 				setState(no, it->second);
 				modifiedIDs.push_back(it->first);
 			}
 		}
 		// search edges
 		for (VICUS::NetworkEdge & ne : n.m_edges) {
-			if ((it = m_nodeStates.find(ne.uniqueID())) != m_nodeStates.end()) {
+			if ((it = m_nodeStates.find(ne.m_id)) != m_nodeStates.end()) {
 				setState(ne, it->second);
 				modifiedIDs.push_back(it->first);
 			}

@@ -301,7 +301,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				r.m_snapPointType = PickObject::RT_CoordinateSystemCenter;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
-				r.m_uniqueObjectID = 0; // not needed, since type is already expressive enough
+				r.m_objectID = 0; // not needed, since type is already expressive enough
 				return true;
 			}
 		} break;
@@ -319,7 +319,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				r.m_snapPointType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
-				r.m_uniqueObjectID = 0; // indicates x axis, i.e. rotation around z
+				r.m_objectID = 0; // indicates x axis, i.e. rotation around z
 				return true;
 			}
 			// y-axis
@@ -334,7 +334,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				r.m_snapPointType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
-				r.m_uniqueObjectID = 1; // indicates y axis
+				r.m_objectID = 1; // indicates y axis
 				return true;
 			}
 			// z-axis
@@ -349,7 +349,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 				r.m_snapPointType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
-				r.m_uniqueObjectID = 2; // indicates z axis
+				r.m_objectID = 2; // indicates z axis
 				return true;
 			}
 		} break;

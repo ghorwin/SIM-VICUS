@@ -163,9 +163,9 @@ void SVPropBuildingComponentOrientationWidget::alignSelectedComponents(bool toSi
 			Q_ASSERT(it != compInstances.end());
 
 			if (sideASelected)
-				surfacesToDDeselect.insert(it->m_sideASurface->uniqueID()); // Mind: use uniqueID here for selection change!
+				surfacesToDDeselect.insert(it->m_sideASurface->m_id);
 			if (sideBSelected)
-				surfacesToDDeselect.insert(it->m_sideBSurface->uniqueID());
+				surfacesToDDeselect.insert(it->m_sideBSurface->m_id);
 			std::swap(it->m_idSideASurface, it->m_idSideBSurface);
 		}
 	}

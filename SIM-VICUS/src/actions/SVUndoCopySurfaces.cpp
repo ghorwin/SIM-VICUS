@@ -56,7 +56,7 @@ void SVUndoCopySurfaces::undo() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
 				for (VICUS::Surface & s : r.m_surfaces)
-					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end())
+					if (m_deselectedSurfaceUniqueIDs.find(s.m_id) != m_deselectedSurfaceUniqueIDs.end())
 						s.m_selected = true;
 
 	// remove appended component instances (if any)
@@ -88,7 +88,7 @@ void SVUndoCopySurfaces::redo() {
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
 				for (VICUS::Surface & s : r.m_surfaces)
-					if (m_deselectedSurfaceUniqueIDs.find(s.uniqueID()) != m_deselectedSurfaceUniqueIDs.end()) {
+					if (m_deselectedSurfaceUniqueIDs.find(s.m_id) != m_deselectedSurfaceUniqueIDs.end()) {
 						s.m_selected = false;
 						for (const VICUS::SubSurface & subS : s.subSurfaces() )
 							const_cast<VICUS::SubSurface &>(subS).m_selected = false;

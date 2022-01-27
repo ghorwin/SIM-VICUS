@@ -212,11 +212,11 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	vp.m_buildings.resize(1);
 	vp.m_buildings[0].m_buildingLevels.resize(1);
-	vp.m_buildings[0].m_id = vp.m_buildings[0].uniqueID();
+	vp.m_buildings[0].m_id = vp.m_buildings[0].m_id;
 	vp.m_buildings[0].m_displayName = tr("Imported IDF Building Geometry");
 
 	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
-	bl.m_id = bl.uniqueID();
+	bl.m_id = bl.m_id;
 	bl.m_displayName = tr("Default building level");
 
 	// count all elements to be imported
@@ -753,7 +753,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Room r;
-		r.m_id = r.uniqueID();
+		r.m_id = r.m_id;
 		r.m_displayName = codec->toUnicode(z.m_name.c_str()); // Mind text encoding here!
 
 		// remember zone name - id association
@@ -803,7 +803,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		unsigned idx = zoneIt->second;
 
 		VICUS::Surface surf;
-		surf.m_id = surf.uniqueID();
+		surf.m_id = surf.m_id;
 		surf.m_displayName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
 		// set the polygon of the BSD in the surface; the polygon will be checked and the triangulation will be computed,
@@ -1077,7 +1077,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// set the subsurface
 		VICUS::SubSurface subSurf;
-		subSurf.m_id = subSurf.uniqueID();
+		subSurf.m_id = subSurf.m_id;
 		subSurf.m_displayName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		subSurf.m_polygon2D.setVertexes(subSurfaceVertexes);
 		if (!subSurf.m_polygon2D.isValid()) {
@@ -1313,7 +1313,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Surface surf;
-		surf.m_id = surf.uniqueID();
+		surf.m_id = surf.m_id;
 		surf.m_displayName = codec->toUnicode(sh.m_name.c_str()); // Mind text encoding here!
 		surf.setPolygon3D( VICUS::Polygon3D( sh.m_polyline ) );
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);

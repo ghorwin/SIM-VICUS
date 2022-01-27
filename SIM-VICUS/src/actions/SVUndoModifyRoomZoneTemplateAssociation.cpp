@@ -49,7 +49,7 @@ void SVUndoModifyRoomZoneTemplateAssociation::undo() {
 				// check if room is in the set of modified IDs, and if so, determine room index in id vector
 				unsigned int idx = 0;
 				for (; idx < m_roomIDs.size(); ++idx)
-					if (m_roomIDs[idx] == r.uniqueID())
+					if (m_roomIDs[idx] == r.m_id)
 						break;
 
 				// it is possible that the current room is not selected for modification

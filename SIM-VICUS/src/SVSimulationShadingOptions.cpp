@@ -318,7 +318,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 	// *** compose vectors with obstacles
 
 	for (const VICUS::Surface *s: m_selObstacles)
-		selObst.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
 																true) );
 
@@ -337,14 +337,14 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 			continue; // skip inside constructions
 
 		// we compute shading factors for this surface
-		selSurf.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
 																s->m_parent == nullptr) );
 		surfaceIDs.push_back(s->m_id);
 		surfaceDisplayNames.push_back(s->m_displayName.toStdString());
 
 		// Mind: surface planes may also shade other surfaces
-		selObst.push_back( SH::StructuralShading::ShadingObject(s->uniqueID(),
+		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
 																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
 																s->m_parent == nullptr) );
 	}
@@ -386,7 +386,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		displayName += ss->m_displayName.toStdString();
 		surfaceDisplayNames.push_back(displayName);
 
-		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->uniqueID(),
+		selSurf.push_back(SH::StructuralShading::ShadingObject(ss->m_id,
 															   IBKMK::Polygon3D(subSurf3D),
 															   false) );
 	}

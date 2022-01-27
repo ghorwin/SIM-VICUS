@@ -995,8 +995,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceDeadEnds_clicked()
 }
 
 
-void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
-{
+void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked() {
 	if (!setNetwork())
 		return;
 
@@ -1007,8 +1006,8 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 	undoMod->push(); // modifies project and updates views
 
 	// make copy with reduced nodes
-	VICUS::Network newNetwork = m_currentNetwork.clone();
-	newNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);  // new unique id
+	VICUS::Network newNetwork(m_currentNetwork);
+	newNetwork.m_id = project().nextUnusedID();
 	newNetwork.m_edges.clear();
 	newNetwork.m_nodes.clear();
 	newNetwork.m_displayName = QString("%1_noRedundants").arg(m_currentNetwork.m_displayName);
@@ -1026,8 +1025,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked()
 }
 
 
-void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
-{
+void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked() {
 	if (!setNetwork())
 		return;
 
@@ -1038,8 +1036,12 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 		return;
 
 	// make a copy which will keep the original network data
-	VICUS::Network reducedNetwork = m_currentNetwork.clone();
-	reducedNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);  // new unique id
+	VICUS::Network reducedNetwork(m_currentNetwork);
+	reducedNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
+	reducedNetwork.m_id = project().nextUnusedID();
+	// TODO : Hauke, das kopierte Netzwerk enthält noch Edges/Nodes mit alten IDs, diese
+	//        müssen zwingend auch neue IDs erhalten, und die Verknüpfungen untereinander müssen auch
+	//        korrigiert werden!!!!
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
 	m_currentNetwork.setVisible(false);
 	reducedNetwork.setVisible(false);
@@ -1048,8 +1050,6 @@ void SVPropNetworkEditWidget::on_pushButtonRemoveSmallEdge_clicked()
 	undoMod->push(); // modifies project and updates views
 
 	// now modify the current network (new id, new name)
-	reducedNetwork.m_id = VICUS::uniqueId(project().m_geometricNetworks);
-	reducedNetwork.m_displayName = QString("%1_noShortEdges").arg(m_currentNetwork.m_displayName);
 	reducedNetwork.removeShortEdges(threshold);
 	reducedNetwork.setVisible(true);
 	reducedNetwork.updateExtends();
@@ -1194,7 +1194,7 @@ void SVPropNetworkEditWidget::on_pushButtonSelectEdgesWithPipe_clicked() {
 	std::set<unsigned int> edgeIds;
 	for (const VICUS::NetworkEdge &e: m_currentConstNetwork->m_edges) {
 		if (e.m_idPipe == pipeId)
-			edgeIds.insert(e.uniqueID());
+			edgeIds.insert(e.m_id);
 	}
 
 	const VICUS::NetworkPipe * pipe = SVSettings::instance().m_db.m_pipes[pipeId];
@@ -1284,7 +1284,7 @@ void SVPropNetworkEditWidget::on_pushButtonSelectNodesWithSubNetwork_clicked()
 	std::set<unsigned int> nodeIds;
 	for (const VICUS::NetworkNode &n: m_currentConstNetwork->m_nodes) {
 		if (n.m_idSubNetwork == id)
-			nodeIds.insert(n.uniqueID());
+			nodeIds.insert(n.m_id);
 	}
 
 	const VICUS::SubNetwork * sub = SVSettings::instance().m_db.m_subNetworks[id];
