@@ -40,6 +40,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="checkBoxScaling">
+        <property name="text">
+         <string>Use Scaling for high resolution displays</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

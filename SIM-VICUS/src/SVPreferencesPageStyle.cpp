@@ -63,6 +63,9 @@ void SVPreferencesPageStyle::updateUi() {
 	m_ui->pushButtonMinorGridColor->setColor(ts.m_minorGridColor);
 	m_ui->pushButtonSceneBackgroundColor->setColor(ts.m_sceneBackgroundColor);
 	m_ui->pushButtonSelectedSurfaceColor->setColor(ts.m_selectedSurfaceColor);
+	m_ui->checkBoxScaling->blockSignals(true);
+	m_ui->checkBoxScaling->setChecked(s.m_useHighDPIScaling);
+	m_ui->checkBoxScaling->blockSignals(false);
 }
 
 
@@ -141,3 +144,9 @@ void SVPreferencesPageStyle::on_pushButtonDefault_clicked() {
 	emit styleChanged();
 	qApp->processEvents();
 }
+
+void SVPreferencesPageStyle::on_checkBoxScaling_toggled(bool useScaling) {
+	SVSettings::instance().m_useHighDPIScaling = useScaling;
+	QMessageBox::information(this, tr("High Resolution Scaling"), tr("Scaling of Interface will apply after program restart.") );
+}
+

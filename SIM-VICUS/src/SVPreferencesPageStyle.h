@@ -62,6 +62,8 @@ private slots:
 
 	void on_pushButtonDefault_clicked();
 
+	void on_checkBoxScaling_toggled(bool checked);
+
 private:
 	Ui::SVPreferencesPageStyle *m_ui;
 };
