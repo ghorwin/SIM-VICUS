@@ -45,6 +45,8 @@ rm -rf $TARGETDIR/data &&
 rm -rf $TARGETDIR/debian &&
 rm -rf $TARGETDIR/NandradDevTests &&
 rm -rf $TARGETDIR/externals/clipper/doc &&
+rm -rf $TARGETDIR/externals/qwt/doc/ &&
+rm -rf $TARGETDIR/externals/qwt/playground/ &&
 du -h --summarize $TARGETDIR/ &&
 
 echo "*** STEP 4 : Copy top-level CMakeLists.txt file ***" &&
