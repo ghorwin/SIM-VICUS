@@ -16,8 +16,6 @@
 # ---------------------------------------------------------------
 # CMakeLists.txt file for the serial NVECTOR library
 
-INSTALL(CODE "MESSAGE(\"\nInstall NVECTOR_SERIAL\n\")")
-
 # Add variable nvecserial_SOURCES with the sources for the NVECSERIAL lib
 SET(nvecserial_SOURCES nvector_serial.c)
 
@@ -44,7 +42,6 @@ IF(BUILD_STATIC_LIBS)
   ADD_LIBRARY(sundials_nvecserial_static STATIC ${nvecserial_SOURCES} ${shared_SOURCES})
   SET_TARGET_PROPERTIES(sundials_nvecserial_static
     PROPERTIES OUTPUT_NAME sundials_nvecserial CLEAN_DIRECT_OUTPUT 1)
-  INSTALL(TARGETS sundials_nvecserial_static DESTINATION lib)
 ENDIF(BUILD_STATIC_LIBS)
 
 # Rules for building and installing the shared library:
@@ -58,11 +55,7 @@ IF(BUILD_SHARED_LIBS)
     PROPERTIES OUTPUT_NAME sundials_nvecserial CLEAN_DIRECT_OUTPUT 1)
   SET_TARGET_PROPERTIES(sundials_nvecserial_shared
     PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
-  INSTALL(TARGETS sundials_nvecserial_shared DESTINATION lib)
 ENDIF(BUILD_SHARED_LIBS)
-
-# Install the NVECSERIAL header files
-INSTALL(FILES ${nvecserial_HEADERS} DESTINATION include/nvector)
 
 # If FCMIX is enabled, build and install the FNVECSERIAL library
 IF(FCMIX_ENABLE AND F77_FOUND)
@@ -71,7 +64,6 @@ IF(FCMIX_ENABLE AND F77_FOUND)
     ADD_LIBRARY(sundials_fnvecserial_static STATIC ${fnvecserial_SOURCES})
     SET_TARGET_PROPERTIES(sundials_fnvecserial_static
       PROPERTIES OUTPUT_NAME sundials_fnvecserial CLEAN_DIRECT_OUTPUT 1)
-    INSTALL(TARGETS sundials_fnvecserial_static DESTINATION lib)
   ENDIF(BUILD_STATIC_LIBS)
   IF(BUILD_SHARED_LIBS)
     ADD_LIBRARY(sundials_fnvecserial_shared ${fnvecserial_SOURCES})
@@ -79,7 +71,6 @@ IF(FCMIX_ENABLE AND F77_FOUND)
       PROPERTIES OUTPUT_NAME sundials_fnvecserial CLEAN_DIRECT_OUTPUT 1)
     SET_TARGET_PROPERTIES(sundials_fnvecserial_shared 
       PROPERTIES VERSION ${nveclib_VERSION} SOVERSION ${nveclib_SOVERSION})
-    INSTALL(TARGETS sundials_fnvecserial_shared DESTINATION lib)
   ENDIF(BUILD_SHARED_LIBS)
 ENDIF(FCMIX_ENABLE AND F77_FOUND)
 

@@ -16,8 +16,6 @@
 # ---------------------------------------------------------------
 # CMakeLists.txt file for the KINSOL library
 
-INSTALL(CODE "MESSAGE(\"\nInstall KINSOL\n\")")
-
 # Add variable kinsol_SOURCES with the sources for the KINSOL library
 SET(kinsol_SOURCES
   kinsol.c
@@ -134,8 +132,6 @@ IF(BUILD_STATIC_LIBS)
   SET_TARGET_PROPERTIES(sundials_kinsol_static
     PROPERTIES OUTPUT_NAME sundials_kinsol CLEAN_DIRECT_OUTPUT 1)
 
-  # Install the KINSOL library
-  INSTALL(TARGETS sundials_kinsol_static DESTINATION lib)
 
 ENDIF(BUILD_STATIC_LIBS)
 
@@ -154,16 +150,9 @@ IF(BUILD_SHARED_LIBS)
   SET_TARGET_PROPERTIES(sundials_kinsol_shared
     PROPERTIES VERSION ${kinsollib_VERSION} SOVERSION ${kinsollib_SOVERSION})
 
-  # Install the KINSOL library
-  INSTALL(TARGETS sundials_kinsol_shared DESTINATION lib)
 
 ENDIF(BUILD_SHARED_LIBS)
 
-# Install the KINSOL header files
-INSTALL(FILES ${kinsol_HEADERS} ${kinsol_BL_HEADERS} ${kinsol_SLU_HEADERS} ${kinsol_KLU_HEADERS} DESTINATION include/kinsol)
-
-# Install the KINSOL implementation header file
-INSTALL(FILES kinsol_impl.h DESTINATION include/kinsol)
 
 #
 MESSAGE(STATUS "Added KINSOL module")

@@ -56,8 +56,5 @@ ADD_LIBRARY(sundials_fcvode_static STATIC ${fcvode_SOURCES} ${fcvode_BL_SOURCES}
 SET_TARGET_PROPERTIES(sundials_fcvode_static
   PROPERTIES OUTPUT_NAME sundials_fcvode CLEAN_DIRECT_OUTPUT 1)
 
-# Install the FCVODE library
-INSTALL(TARGETS sundials_fcvode_static DESTINATION lib)
-
 #
 MESSAGE(STATUS "Added CVODE FCMIX module")

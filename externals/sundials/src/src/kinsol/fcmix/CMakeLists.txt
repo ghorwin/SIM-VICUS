@@ -53,8 +53,6 @@ ADD_LIBRARY(sundials_fkinsol_static STATIC ${fkinsol_SOURCES} ${fkinsol_BL_SOURC
 SET_TARGET_PROPERTIES(sundials_fkinsol_static
   PROPERTIES OUTPUT_NAME sundials_fkinsol CLEAN_DIRECT_OUTPUT 1)
 
-# Install the FKINSOL library
-INSTALL(TARGETS sundials_fkinsol_static DESTINATION lib)
 
 #
 MESSAGE(STATUS "Added KINSOL FCMIX module")

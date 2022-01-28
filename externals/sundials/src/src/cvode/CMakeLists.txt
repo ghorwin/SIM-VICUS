@@ -16,8 +16,6 @@
 # ---------------------------------------------------------------
 # CMakeLists.txt file for the CVODE library
 
-INSTALL(CODE "MESSAGE(\"\nInstall CVODE\n\")")
-
 IF(MPI_MPICC)
   # use MPI_MPICC as the compiler
   SET(CMAKE_C_COMPILER ${MPI_MPICC})
@@ -139,9 +137,6 @@ IF(BUILD_STATIC_LIBS)
   SET_TARGET_PROPERTIES(sundials_cvode_static
     PROPERTIES OUTPUT_NAME sundials_cvode CLEAN_DIRECT_OUTPUT 1)
 
-  # Install the CVODE library
-  INSTALL(TARGETS sundials_cvode_static DESTINATION lib)
-
 ENDIF(BUILD_STATIC_LIBS)
 
 # Build the shared library
@@ -159,16 +154,8 @@ IF(BUILD_SHARED_LIBS)
   SET_TARGET_PROPERTIES(sundials_cvode_shared
     PROPERTIES VERSION ${cvodelib_VERSION} SOVERSION ${cvodelib_SOVERSION})
 
-  # Install the CVODE library
-  INSTALL(TARGETS sundials_cvode_shared DESTINATION lib)
-
 ENDIF(BUILD_SHARED_LIBS)
 
-# Install the CVODE header files
-INSTALL(FILES ${cvode_HEADERS} ${cvode_BL_HEADERS} DESTINATION include/cvode)
-
-# Install the CVODE implementation header file
-INSTALL(FILES cvode_impl.h DESTINATION include/cvode)
 
 #
 MESSAGE(STATUS "Added CVODE module")

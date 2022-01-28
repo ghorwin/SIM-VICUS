@@ -383,19 +383,6 @@ IF(NOT MPI_ENABLE)
 ENDIF(NOT MPI_ENABLE)
 
 # -------------------------------------------------------------
-# Enable OpenMP support?
-# -------------------------------------------------------------
-
-OPTION(OPENMP_ENABLE "Enable OpenMP support" OFF)
-
-IF(OPENMP_ENABLE)
-  FIND_PACKAGE(OpenMP)
-  IF(NOT OPENMP_FOUND)
-    message(STATUS "Disabling OpenMP support, could not determine compiler flags")
-  ENDIF(NOT OPENMP_FOUND)
-ENDIF(OPENMP_ENABLE)
-
-# -------------------------------------------------------------
 # Enable Pthread support?
 # -------------------------------------------------------------
 
@@ -1184,13 +1171,4 @@ IF(EXAMPLES_ENABLE)
   
 ENDIF(EXAMPLES_ENABLE)
 
-#----------------------------------
-# Install configuration header file
-#----------------------------------
-
-# install configured header file
-INSTALL(
-  FILES ${PROJECT_BINARY_DIR}/include/sundials/sundials_config.h
-  DESTINATION include/sundials
-  )
 

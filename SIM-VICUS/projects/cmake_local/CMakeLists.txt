@@ -191,21 +191,19 @@ if (UNIX AND NOT APPLE)
 	set(ICON_ROOT_DIR ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor)
 
 	foreach(ICON_SIZE 512 256 128 96 64 48 32 24 16)
-		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/Icon_${ICON_SIZE}.png 
+		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/icons/Icon_${ICON_SIZE}.png 
 				DESTINATION ${ICON_ROOT_DIR}/${ICON_SIZE}x${ICON_SIZE}/apps 
 				RENAME simvicus.png)
 
-		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/Icon_${ICON_SIZE}.png 
+		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/icons/Icon_${ICON_SIZE}.png 
 				DESTINATION ${ICON_ROOT_DIR}/${ICON_SIZE}x${ICON_SIZE}/mimetypes 
 				RENAME application-simvicus.png)
 	endforeach()
 
 	# Databases
 	file( GLOB DB_FILES ${PROJECT_SOURCE_DIR}/../../../data/*.xml )
-	message(${DB_FILES})
-	install(DIRECTORY  ${PROJECT_SOURCE_DIR}/../../../data 
-			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/simvicus
-			FILES_MATCHING PATTERN "*.xml")
+	install(FILES  ${DB_FILES}
+			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/simvicus)
 
 endif (UNIX AND NOT APPLE)
 
