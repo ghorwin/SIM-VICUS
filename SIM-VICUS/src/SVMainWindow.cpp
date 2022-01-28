@@ -145,7 +145,9 @@ SVMainWindow::SVMainWindow(QWidget * /*parent*/) :
 	// potentially lengthy initialization
 	QTimer::singleShot(25, this, SLOT(setup()));
 
-#ifndef Q_OS_LINUX
+#if defined(Q_OS_LINUX) && !defined(IBK_BUILDING_DEBIAN_PACKAGE)
+	m_ui->actionHelpLinuxDesktopIntegration->setVisible(true);
+#else
 	m_ui->actionHelpLinuxDesktopIntegration->setVisible(false);
 #endif
 }

@@ -200,6 +200,13 @@ if (UNIX AND NOT APPLE)
 				RENAME application-simvicus.png)
 	endforeach()
 
+	# Databases
+	file( GLOB DB_FILES ${PROJECT_SOURCE_DIR}/../../../data/*.xml )
+	message(${DB_FILES})
+	install(DIRECTORY  ${PROJECT_SOURCE_DIR}/../../../data 
+			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/simvicus
+			FILES_MATCHING PATTERN "*.xml")
+
 endif (UNIX AND NOT APPLE)
 
 
