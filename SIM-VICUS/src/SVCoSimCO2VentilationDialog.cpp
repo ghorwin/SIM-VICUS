@@ -1440,10 +1440,35 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 
 #ifdef Q_OS_LINUX
 	if(!masterSimPath.isEmpty()) {
-		// QFileInfo does not search through all pathes
-		// For that reason set default default directory in the case of default behaviour
-		if(masterSimPath == "MasterSimulator" && !info.exists())
-			info.setFile("/usr/bin/MasterSimulator");
+		//search file through all pathes
+		if(!info.exists() && info.path()==".") {
+			// retrieve file path using linux 'which' commmanf
+			std::string cmd = "which " + masterSimPath.toStdString();
+
+			char buffer[128];
+			std::string result;
+			// use pipe for executing command and getting feedback
+			FILE* pipe = popen(cmd.c_str(), "r");
+
+			if (!pipe) {
+				QMessageBox::critical(this, tr("Error starting external application"), tr("MASTERSIM path '%1' could not be found.")
+									  .arg(masterSimPath));
+			}
+			try {
+				while (fgets(buffer, sizeof buffer, pipe) != nullptr)
+					result += buffer;
+			}
+			catch (...) {
+				pclose(pipe);
+				QMessageBox::critical(this, tr("Error starting external application"), tr("MASTERSIM path '%1' could not be found.")
+									  .arg(masterSimPath));
+				return;
+			}
+			pclose(pipe);
+
+			masterSimPath = QString::fromStdString(result).simplified();
+			info.setFile(masterSimPath);
+		}
 	}
 #endif
 
