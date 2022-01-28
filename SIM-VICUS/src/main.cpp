@@ -99,6 +99,9 @@ int main(int argc, char *argv[]) {
 	qApp->setWindowIcon(QIcon(":/logo/icons/Icon_64.png"));
 	qApp->setApplicationName(ProgramVersionName);
 	settings.m_ratio = qApp->devicePixelRatio();
+	// note, that application path has to be reset, because QtExtSettings::setDefaults()
+	// was called before SVDebugApplication was called and QApplication is initialized
+	settings.m_installDir = qApp->applicationDirPath();
 
 	// disable ? button in windows
 #if QT_VERSION >= 0x050A00
