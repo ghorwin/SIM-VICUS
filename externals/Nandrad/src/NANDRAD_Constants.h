@@ -28,6 +28,8 @@ namespace NANDRAD {
 extern const char * const VERSION;
 /*! Long version number of the data model and project file. */
 extern const char * const LONG_VERSION;
+/*! Release Date. */
+extern const char * const RELEASE_DATE;
 
 /*! defines an invalid id */
 extern unsigned int INVALID_ID;

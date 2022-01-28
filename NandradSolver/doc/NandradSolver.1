@@ -1,0 +1,53 @@
+.TH "NANDRADSOLVER" 1 "January 23rd, 2022" "2.0.0" "SIM-VICUS Manual"
+.SH NAME
+.B NandradSolver\fR \- Building energy and district simulation solver
+.SH SYNOPSIS
+.B NandradSolver\fR [flags] [options] <project file>
+.SH DESCRIPTION
+.B NandradSolver
+runs the building energy/district simulation defined in the nandrad project file. By default all temporary files and all output is created in a subdirectory with the same name as the project. You can change that with the 
+.BR -o,
+.BR --output-dir
+option.
+.SH FLAGS
+.IP "\fB\-\-help\fR" 4
+Prints the help page.
+.IP "\fB\-\-man-page\fR" 4
+Prints the man page (source version) to std output.
+.IP "\fB\-\-cmd-line\fR" 4
+Prints the command line as it was understood by the command line parser.
+.IP "\fB\-\-options-left\fR" 4
+Prints all options that are unknown to the command line parser.
+.IP "\fB\-v\fR, \fB\-\-version\fR" 4
+Show solver version info.
+.IP "\fB\-\-disable-headers\fR" 4
+Disable periodically printed headers in console output.
+.IP "\fB\-\-step-stats\fR" 4
+Enable statistics outputs after each completed solver step.
+.IP "\fB\-x\fR, \fB\-\-close-on-exit\fR" 4
+Close console window after finishing simulation.
+.IP "\fB\-\-restart-info\fR" 4
+Prints information about the restart file (if available).
+.IP "\fB\-r\fR, \fB\-\-restart\fR" 4
+Continue stopped simulation from last restart check-point.
+.IP "\fB\-\-disable-periodic-restart-file-writing\fR" 4
+Disable periodic restart file writing (do not write restart file during simulation, only at end of simulation).
+.IP "\fB\-t\fR, \fB\-\-test-init\fR" 4
+Run the solver initialization and stop.
+
+.SH OPTIONS
+.IP "\fB\-\-verbosity-level=<0-4>\fR" 4
+Level of output detail (0-3).
+.IP "\fB\-\-restart-from=<value unit>\fR" 4
+Continue stopped simulation from the given restart time.
+.IP "\fB\-o=<...>\fR, \fB\-\-output-dir=<directory>\fR" 4
+Writes solver output to different base directory.
+.IP "\fB\-p=<...>\fR, \fB\-\-parallel-threads=<0...MaxNumThreads>\fR" 4
+Number of threads to use by the solver, 0 means use of OMP_NUM_THREADS environment variable.
+.IP "\fB\-\-integrator=<auto|CVode|ImplicitEuler>\fR" 4
+auto|CVode|ImplicitEuler|ExplicitEuler
+.IP "\fB\-\-les-solver=<auto|BTridiag|Band|GMRES|BiCGStab|TFQMR>\fR" 4
+auto|Dense|KLU|GMRES|BiCGStab
+.IP "\fB\-\-precond=<auto|Band|ILU>\fR" 4
+auto|ILU
+

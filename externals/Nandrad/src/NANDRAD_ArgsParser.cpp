@@ -21,16 +21,26 @@
 
 #include "NANDRAD_ArgsParser.h"
 
+#include "NANDRAD_Constants.h"
+
 namespace NANDRAD {
 
 ArgsParser::ArgsParser() {
-	setAppName("NandradSolver");
-	addOption(0, "fmu-export",
-		"(optional) Generate FMU based on project file specification.",
-		"FMU file name",
-		"");
-	addFlag(0, "fmu-modelica-wrapper",
-		"(optional) If given, a Modelica wrapper for the exported FMU is created. Only works in combination with 'fmu-export'.");
+	m_appname = "NandradSolver";
+	m_syntaxArguments = "[flags] [options] <project file>";
+	// configure man page output
+	m_manManualName = "SIM-VICUS Manual";
+	m_manReleaseDate = RELEASE_DATE;
+	m_manVersionString = LONG_VERSION;
+	m_manShortDescription = "Building energy and district simulation solver";
+
+	// Note: mind the line breaks that end format commands!
+	m_manLongDescription = ".B NandradSolver\n"
+			"runs the building energy/district simulation defined in the nandrad "
+			"project file. By default all temporary files and all output is created in a subdirectory "
+			"with the same name as the project. You can change that with the \n"
+			".BR -o,\n.BR --output-dir\n"
+			"option.";
 
 	// adjust options for les-solver, integrator and precond to show only the options available for NANDRAD
 	for (OptionType & ot : m_knownOptions) {
@@ -62,7 +72,7 @@ void ArgsParser::printHelp(std::ostream & out) const {
 		"> "<< m_appname << " -p=8 <project file>\n\n"
 		"Starting solver with different LES solver\n"
 		"> "<< m_appname << " --les-solver=GMRES <project file>\n\n"
-		"Starting solver with BiCGStab iterative solver, Krylov subspace limit of 50 and ILU preconditioner\n"
+		"Starting solver with BiCGStab iterative solver, Krylov subspace limit of 50 and ILUT preconditioner\n"
 		"> "<< m_appname << " --les-solver=BiCGStab(50) --precond=ILU <project file>\n\n";
 }
 

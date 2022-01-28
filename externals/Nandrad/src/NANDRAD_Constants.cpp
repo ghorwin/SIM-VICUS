@@ -23,8 +23,9 @@
 
 namespace NANDRAD {
 
-const char * const VERSION = "2.0";
-const char * const LONG_VERSION = "2.0.0";
+const char * const VERSION			= "2.0";
+const char * const LONG_VERSION		= "2.0.0";
+const char * const RELEASE_DATE		= "January 23rd, 2022";
 
 unsigned int INVALID_ID = 0xFFFFFFFF;
 
