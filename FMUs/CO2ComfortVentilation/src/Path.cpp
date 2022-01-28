@@ -38,6 +38,8 @@
 
 #include "Path.h"
 
+#include "Helpers.h"
+
 #if defined(_WIN32)
 	#include <Windows.h>
 	#include <direct.h>
@@ -563,10 +565,10 @@ Path Path::current() {
 	if(! _wgetcwd(currentDir, FILENAME_MAX)) {
 		switch(errno) {
 			case ENOMEM: {
-				throw std::runtime_error("Out of memory! Can not reserve " + FILENAME_MAX + " bytes.");
+				throw std::runtime_error("Out of memory! Can not reserve " + val2string<int>(FILENAME_MAX) + " bytes.");
 			}
 			case ERANGE: {
-				throw std::runtime_error("Path longer than " + FILENAME_MAX + " characters.");
+				throw std::runtime_error("Path longer than " + val2string<int>(FILENAME_MAX) + " characters.");
 			}
 			default: {
 				throw std::runtime_error("Couldn't deduce user directory." );
