@@ -218,9 +218,6 @@ public:
 	*/
 	QString						m_versionIdentifier;
 
-	/*! Solver executable name. */
-	QString						m_currentSolverExecutableName;
-
 	/*! Path to external post processing. */
 	QString						m_postProcExecutable;
 

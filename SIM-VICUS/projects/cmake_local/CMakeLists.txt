@@ -161,6 +161,45 @@ target_link_libraries( ${PROJECT_NAME}
 )
 
 
+# Support for 'make install' on Unix/Linux (not on MacOS!)
+if (UNIX AND NOT APPLE)
 
+	# installation targets for Unix systems
+	include(GNUInstallDirs)
+
+	# executable -> /usr/bin
+	install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin )
+
+	# Man-page
+	install(FILES ${PROJECT_SOURCE_DIR}/../../doc/${PROJECT_NAME}.1 
+			DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 )
+
+	# Translation files
+	install(FILES ${PROJECT_SOURCE_DIR}/../../resources/translations/${PROJECT_NAME}_de.qm 
+			DESTINATION ${CMAKE_INSTALL_LOCALEDIR}/de/LC_MESSAGES/
+			RENAME ${PROJECT_NAME}.qm)
+
+	# Desktop file
+	install(FILES ${PROJECT_SOURCE_DIR}/../../resources/simvicus.desktop 
+			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications )
+
+	# Mime type
+	install(FILES ${PROJECT_SOURCE_DIR}/../../resources/simvicus.xml 
+			DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/mime/packages )
+
+	# Icons
+	set(ICON_ROOT_DIR ${CMAKE_INSTALL_DATAROOTDIR}/icons/hicolor)
+
+	foreach(ICON_SIZE 512 256 128 96 64 48 32 24 16)
+		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/Icon_${ICON_SIZE}.png 
+				DESTINATION ${ICON_ROOT_DIR}/${ICON_SIZE}x${ICON_SIZE}/apps 
+				RENAME simvicus.png)
+
+		install(FILES ${PROJECT_SOURCE_DIR}/../../resources/logo/Icon_${ICON_SIZE}.png 
+				DESTINATION ${ICON_ROOT_DIR}/${ICON_SIZE}x${ICON_SIZE}/mimetypes 
+				RENAME application-simvicus.png)
+	endforeach()
+
+endif (UNIX AND NOT APPLE)
 
 

@@ -74,8 +74,23 @@ int main(int argc, char *argv[]) {
 	settings.setDefaults();
 	settings.read();
 
-	// TODO : Stephan, port "old settings read functionality" from MasterSim....
+	// if we have just upgraded to a new version, try to import settings from the last minor version
+	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
+		unsigned int major, minor, patch;
+		IBK::decode_version_number(VICUS::VERSION, major, minor, patch);
+		for (int i=(int)minor-1; i>0; --i) {
+			QString VersionName = QString("SIM-VICUS %1.%2").arg(major).arg(i);
+			settings.m_appName = VersionName;
+			settings.read();
+			if (!settings.m_versionIdentifier.isEmpty() || !settings.m_lastProjectFile.isEmpty())
+				break;
+		}
+		settings.m_appName = ProgramVersionName;
+	}
+	settings.m_versionIdentifier = VICUS::VERSION;
 
+	// set QApplication configuration
+	// IMPORTANT: this has to be done before QApplication (and thus SVDebugApplication) is instantiated
 	if( settings.m_useHighDPIScaling ) {
 		// We have to do this before our QApplication is initialized
 #if QT_VERSION >= 0x050E00
@@ -121,21 +136,6 @@ int main(int argc, char *argv[]) {
 	std::string errmsg;
 	messageHandler.openLogFile(QtExt::Directories::globalLogFile().toStdString(), false, errmsg);
 
-	// if we have just upgraded to a new version, try to import settings from the last minor version
-	if (settings.m_versionIdentifier.isEmpty() && settings.m_lastProjectFile.isEmpty()) {
-		unsigned int major, minor, patch;
-		IBK::decode_version_number(VICUS::VERSION, major, minor, patch);
-		for (int i=(int)minor-1; i>0; --i) {
-			QString VersionName = QString("SIM-VICUS %1.%2").arg(major).arg(i);
-			settings.m_appName = VersionName;
-			settings.read();
-			if (!settings.m_versionIdentifier.isEmpty() || !settings.m_lastProjectFile.isEmpty())
-				break;
-		}
-		settings.m_appName = ProgramVersionName;
-	}
-	settings.m_versionIdentifier = VICUS::VERSION;
-
 	// adjust log file verbosity
 	messageHandler.setConsoleVerbosityLevel( settings.m_userLogLevelConsole );
 	messageHandler.setLogfileVerbosityLevel( settings.m_userLogLevelLogfile );
@@ -151,14 +151,23 @@ int main(int argc, char *argv[]) {
 	IBK::ArgParser argParser;
 	settings.updateArgParser(argParser);
 	argParser.setAppName(ProgramVersionName.toStdString());
+	argParser.m_appname = "SIM-VICUS";
+	argParser.m_syntaxArguments = "[flags] [options] [<project file>]";
+	// configure man page output
+	argParser.m_manManualName = "SIM-VICUS Manual";
+	argParser.m_manReleaseDate = NANDRAD::RELEASE_DATE;
+	argParser.m_manVersionString = VICUS::LONG_VERSION;
+	argParser.m_manShortDescription = "Building energy and district simulation modeling environment";
+	// Note: mind the line breaks that end format commands!
+	argParser.m_manLongDescription = ".B SIM-VICUS\n"
+			"is a graphical modeling environment for building energy models and district networks.";
 
 	// *** Apply command line arguments ***
 	argParser.parse(argc, argv);
 	// handle default arguments (--help)
-	if (argParser.flagEnabled("help")) {
-		argParser.printHelp(std::cout);
+	if (argParser.handleDefaultFlags(std::cout))
 		return EXIT_SUCCESS;
-	}
+
 	settings.applyCommandLineArgs(argParser);
 
 

@@ -29,8 +29,6 @@
         <file>gfx/actions/64x64/open.png</file>
         <file>gfx/actions/64x64/simStart.png</file>
         <file>gfx/actions/64x64/Wavy_checkered_flag.svg</file>
-        <file>gfx/icons/de.png</file>
-        <file>gfx/icons/en.png</file>
         <file>gfx/actions/32x32/CCMEditor_32.png</file>
         <file>gfx/actions/64x64/projectProperties.png</file>
         <file>gfx/splashscreen/SIM-VICUS.jpg</file>
@@ -89,5 +87,10 @@
         <file>templates/coSimulation.msim.template</file>
         <file>gfx/actions/Measurement.png</file>
         <file>gfx/actions/Add.png</file>
+        <file>gfx/languages/de.png</file>
+        <file>gfx/languages/en.png</file>
+        <file>gfx/languages/es.png</file>
+        <file>gfx/languages/fr.png</file>
+        <file>gfx/languages/it.png</file>
     </qresource>
 </RCC>
