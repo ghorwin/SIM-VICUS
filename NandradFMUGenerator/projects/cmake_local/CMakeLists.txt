@@ -58,7 +58,7 @@ if( APPLE )
   set( MACOSX_BUNDLE_LONG_VERSION_STRING "Version 1.0.0" )
   set( MACOSX_BUNDLE_SHORT_VERSION_STRING "1.0" ) # the version shown in Finder
   set( MACOSX_BUNDLE_ICON_FILE NandradFMUGenerator.icns )
-  SET_SOURCE_FILES_PROPERTIES( ${PROJECT_SOURCE_DIR}/../../resources/NandradFMUGenerator.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+  SET_SOURCE_FILES_PROPERTIES( ${PROJECT_SOURCE_DIR}/../../resources/logo/NandradFMUGenerator.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 endif( APPLE )
 
 
@@ -84,7 +84,7 @@ if( UNIX )
 	if( APPLE )
 		add_executable( ${PROJECT_NAME} MACOSX_BUNDLE 
 						${APP_SRCS} ${APP_MOC_SRCS} ${APP_RC_SRCS} ${APP_UI_SRCS}
-						${PROJECT_SOURCE_DIR}/../../resources/NandradFMUGenerator.icns
+						${PROJECT_SOURCE_DIR}/../../resources/logo/NandradFMUGenerator.icns
 		)
 	else( APPLE )
 		add_executable( ${PROJECT_NAME} 
