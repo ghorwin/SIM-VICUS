@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>226</height>
+    <height>247</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -23,13 +23,6 @@
       <string>External tools</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>PostProc 2:</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="filepathPostProc" native="true">
         <property name="minimumSize">
@@ -40,8 +33,22 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="pushButtonAutoDetectPP2">
+      <item row="2" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetect7zip">
+        <property name="text">
+         <string>Auto-detect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>CCM Editor:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectCCM">
         <property name="text">
          <string>Auto-detect</string>
         </property>
@@ -64,12 +71,22 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="pushButtonAutoDetectTextEditor">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectPP2">
         <property name="text">
          <string>Auto-detect</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>PostProc 2:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filePath7Zip" native="true"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -78,28 +95,28 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QtExt::BrowseFilenameWidget" name="filePath7Zip" native="true"/>
-      </item>
-      <item row="2" column="2">
-       <widget class="QPushButton" name="pushButtonAutoDetect7zip">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectTextEditor">
         <property name="text">
          <string>Auto-detect</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>CCM Editor:</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
        <widget class="QtExt::BrowseFilenameWidget" name="filePathCCMEditor" native="true"/>
       </item>
-      <item row="3" column="2">
-       <widget class="QPushButton" name="pushButtonAutoDetectCCM">
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>MasterSim</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QtExt::BrowseFilenameWidget" name="filePathMasterSim" native="true"/>
+      </item>
+      <item row="4" column="2">
+       <widget class="QPushButton" name="pushButtonAutoDetectMasterSim">
         <property name="text">
          <string>Auto-detect</string>
         </property>

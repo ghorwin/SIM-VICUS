@@ -115,6 +115,7 @@ void SVCoSimCO2VentilationDialog::CO2ComfortVentilationProject::init(const VICUS
 			}
 		}
 	}
+
 	// generate schedules
 	generateCO2LoadSchedules(project);
 	// generate FMI definitions
@@ -1434,16 +1435,27 @@ void SVCoSimCO2VentilationDialog::on_pushButtonGenerate_clicked() {
 void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 	// check if we have MasterSim path configured
 	QString masterSimPath = SVSettings::instance().m_masterSimExecutable;
-	if (masterSimPath.isEmpty() || !QFileInfo::exists(masterSimPath))
+
+	QFileInfo info(masterSimPath);
+
+	// QFileInfo does not search through all pathes
+	// For that reason try default directory
+	if(masterSimPath == "MasterSimulator" && !info.exists()) {
+		info.setFile("/usr/bin/MasterSimulator");
+	}
+
+	if (masterSimPath.isEmpty() || !info.exists())
 	{
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to "
 																  "MASTERSIM in the preferences dialog!"));
 		SVMainWindow::instance().preferencesDialog()->edit(0);
 		// TODO Andreas, find a way to show a mode-less window within a dialog's event loop
-		masterSimPath = SVSettings::instance().m_masterSimExecutable;
-		// still no valid path?
-		if (masterSimPath.isEmpty() || !QFileInfo::exists(masterSimPath))
-			return;
+
+		// ?? This is the same code as before
+//		masterSimPath = SVSettings::instance().m_masterSimExecutable;
+//		// still no valid path?
+//		if (masterSimPath.isEmpty() || !QFileInfo::exists(masterSimPath))
+		return;
 	}
 
 	// launch MasterSim

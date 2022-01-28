@@ -39,11 +39,13 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->filepathTextEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePath7Zip->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathCCMEditor->setup("", true, true, tr("Executables (*.exe);;All files (*.*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathMasterSim->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #else
 	m_ui->filepathPostProc->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filepathTextEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePath7Zip->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 	m_ui->filePathCCMEditor->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
+	m_ui->filePathMasterSim->setup("", true, true, tr("All files (*)"), SVSettings::instance().m_dontUseNativeDialogs);
 #endif
 
 
@@ -53,6 +55,7 @@ SVPreferencesPageTools::SVPreferencesPageTools(QWidget *parent) :
 	m_ui->pushButtonAutoDetect7zip->setVisible(false);
 	m_ui->pushButtonAutoDetectCCM->setVisible(false);
 	m_ui->pushButtonAutoDetectTextEditor->setVisible(false);
+	m_ui->pushButtonAutoDetectMasterSim->setVisible(false);
 #endif
 }
 
@@ -69,12 +72,13 @@ void SVPreferencesPageTools::updateUi() {
 	m_ui->filepathPostProc->setFilename(s.m_postProcExecutable);
 	m_ui->filePath7Zip->setFilename(s.m_7zExecutable);
 	m_ui->filePathCCMEditor->setFilename(s.m_CCMEditorExecutable);
+	m_ui->filePathMasterSim->setFilename(s.m_masterSimExecutable);
 
 
 	// TODO : Refactor, let SVSettings auto-detect tool paths and just take them here
 
 	// auto-detect postproc 2 and CCM
-	QString postProc2Path, ccmPath;
+	QString postProc2Path, ccmPath, masterSimPath;
 
 #ifdef Q_OS_WIN
 	// search for installed x64 version of PostProc2
@@ -113,6 +117,29 @@ void SVPreferencesPageTools::updateUi() {
 		m_ui->filePathCCMEditor->setFilename(ccmPath);
 	}
 
+	// search for installed x64 version of MasterSim
+	QFileInfo masterSim = s.m_masterSimExecutable;
+	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator.%1\\MasterSimulator.exe";
+	for (int i=9; i>=0; --i) {
+		QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC).arg(i);
+		if (QFileInfo(masterSimLoc).exists()) {
+			masterSimPath = masterSimLoc;
+			break;
+		}
+	}
+	if (masterSimPath.isEmpty()) {
+		// search for installed x86 version
+		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 2.%1\\MasterSimulator.exe";
+		for (int i=9; i>=0; --i) {
+			QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC2).arg(i);
+			if (QFileInfo(masterSimLoc).exists()) {
+				masterSimPath = masterSimLoc;
+				break;
+			}
+		}
+	}
+
+
 #else
 	// no D5 PostProc on linux/mac
 #if defined(Q_OS_MAC)
@@ -120,16 +147,38 @@ void SVPreferencesPageTools::updateUi() {
 	const QString POST_PROC_INSTALL_LOC = "/Applications/PostProcApp.app";
 	if (QFileInfo(POST_PROC_INSTALL_LOC).exists())
 		postProc2Path = POST_PROC_INSTALL_LOC;
+
+	// mastersim path on max?
 #else
 	// search for version in bin directory
 	const QString POST_PROC_INSTALL_LOC = s.m_installDir + "/PostProcApp";
 	if (QFileInfo(POST_PROC_INSTALL_LOC).exists())
 		postProc2Path = POST_PROC_INSTALL_LOC;
+
+	// search for version in bin directory
+	const QString MASTER_SIM_INSTALL_LOC = "MasterSimulator";
+	if (QFileInfo("usr/bin/" + MASTER_SIM_INSTALL_LOC).exists())
+		masterSimPath = MASTER_SIM_INSTALL_LOC;
+
 #endif
 
 #endif // Q_OS_WIN
 
+	// update all pathes
+	if (!postProc2Path.isEmpty()) {
+		m_ui->filepathPostProc->setFilename(postProc2Path);
+		s.m_postProcExecutable = postProc2Path;
+	}
+	if (!ccmPath.isEmpty()) {
+		m_ui->filePathCCMEditor->setFilename(ccmPath);
+		s.m_CCMEditorExecutable = ccmPath;
+	}
+	if (!masterSimPath.isEmpty()) {
+		m_ui->filePathMasterSim->setFilename(masterSimPath);
+		s.m_masterSimExecutable = masterSimPath;
+	}
 }
+
 
 
 
@@ -221,8 +270,6 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectTextEditor_clicked() {
 #elif defined(Q_OS_MAC)
 
 	// text editor on Mac?
-#elif defined(Q_OS_LINUX)
-	toolPath = "/usr/bin/geany";
 #endif
 
 	if (!toolPath.isEmpty()) {
@@ -230,3 +277,52 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectTextEditor_clicked() {
 		s.m_textEditorExecutable = toolPath;
 	}
 }
+
+void SVPreferencesPageTools::on_filePathMasterSim_editingFinished() {
+	SVSettings & s = SVSettings::instance();
+	s.m_masterSimExecutable = m_ui->filePathMasterSim->filename();
+}
+
+
+void SVPreferencesPageTools::on_filePathMasterSim_returnPressed() {
+	on_filePathMasterSim_editingFinished();
+}
+
+
+void SVPreferencesPageTools::on_pushButtonAutoDetectMasterSim_clicked()
+{
+	SVSettings & s = SVSettings::instance();
+	QString toolPath;
+#ifdef Q_OS_WIN
+	// search for installed x64 version of MasterSim
+	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator.%1\\MasterSimulator.exe";
+	for (int i=9; i>=0; --i) {
+		QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC).arg(i);
+		if (QFileInfo(masterSimLoc).exists()) {
+			toolPath = masterSimLoc;
+			break;
+		}
+	}
+	if (toolPath.isEmpty()) {
+		// search for installed x86 version
+		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 2.%1\\MasterSimulator.exe";
+		for (int i=9; i>=0; --i) {
+			QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC2).arg(i);
+			if (QFileInfo(masterSimLoc).exists()) {
+				toolPath = masterSimLoc;
+				break;
+			}
+		}
+	}
+#elif defined(Q_OS_MAC)
+
+	// master simulator on Mac?
+#endif
+
+	if (!toolPath.isEmpty()) {
+		m_ui->filePathMasterSim->setFilename(toolPath);
+		s.m_masterSimExecutable = toolPath;
+	}
+}
+
+

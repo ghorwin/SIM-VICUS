@@ -56,6 +56,10 @@ private slots:
 
 	void on_pushButtonAutoDetectTextEditor_clicked();
 
+	void on_pushButtonAutoDetectMasterSim_clicked();
+
+	void on_filePathMasterSim_editingFinished();
+	void on_filePathMasterSim_returnPressed();
 private:
 	Ui::SVPreferencesPageTools *m_ui;
 };
