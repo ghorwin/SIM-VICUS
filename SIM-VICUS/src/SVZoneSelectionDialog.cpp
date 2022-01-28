@@ -32,23 +32,10 @@
 
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
+#include "SVZoneListModel.h"
 
 #include <VICUS_Project.h>
 
-// A model that provides a list of zones and their IDs via UserRole.
-class SVZoneListModel : public QAbstractListModel {
-	Q_OBJECT
-public:
-
-	SVZoneListModel(QObject * parent, const VICUS::Project &project);
-
-	int rowCount(const QModelIndex & parent) const override;
-	QVariant data(const QModelIndex & index, int role) const override;
-
-private:
-	QStringList					m_roomNames;
-	std::vector<unsigned int>	m_roomIds;
-};
 
 
 
