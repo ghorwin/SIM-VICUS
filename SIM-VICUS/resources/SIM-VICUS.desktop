@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=SIM-VICUS
+GenericName=Building Simulation Tool
+Comment=Building Energy and District Simulation Tool
+Keywords=Building Simulation;Simulation
+Exec=SIM-VICUS %f
+Icon=simvicus
+Terminal=false
+Type=Application
+Categories=Science
+StartupNotify=true
+MimeType=application/simvicus
