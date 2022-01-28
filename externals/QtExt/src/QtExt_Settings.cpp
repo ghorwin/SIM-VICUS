@@ -62,9 +62,6 @@ Settings::Settings(const QString & organization, const QString & appName) :
 void Settings::setDefaults() {
 	// compose default values
 
-	// installation directory
-	m_installDir = qApp->applicationDirPath();
-
 	// clear last project file (if any, it is read in the read() function)
 	m_lastProjectFile.clear();
 

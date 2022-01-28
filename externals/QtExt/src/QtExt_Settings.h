@@ -173,7 +173,11 @@ public:
 	QString						m_initialProjectFile;
 
 	/*! Installation path (without trailing backslash).
-		This value is composed from the application file name in the setDefaults() function.
+		Set this value once QApplication object has been constructed with
+		\code
+		m_installDir = qApp->applicationDirPath();
+		\endcode
+
 		\warning The install dir can be a relative path name.
 
 		\note This value is NOT stored in the configuration and must not be altered by the user.
