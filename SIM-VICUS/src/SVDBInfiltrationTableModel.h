@@ -34,6 +34,7 @@
 
 /*! Model for accessing the zone control Thermostat in database. */
 class SVDBInfiltrationTableModel : public SVAbstractDatabaseTableModel {
+	Q_OBJECT
 public:
 
 	/*! Columns shown in the table view. */

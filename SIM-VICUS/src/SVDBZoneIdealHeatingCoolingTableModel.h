@@ -34,6 +34,7 @@
 
 /*! Model for accessing the zone ideal heating/cooling in database. */
 class SVDBZoneIdealHeatingCoolingTableModel : public SVAbstractDatabaseTableModel {
+	Q_OBJECT
 public:
 
 	/*! Columns shown in the table view. */

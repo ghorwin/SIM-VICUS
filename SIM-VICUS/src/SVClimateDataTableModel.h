@@ -37,6 +37,7 @@
 	read for diagram display.
 */
 class SVClimateDataTableModel : public QAbstractTableModel {
+	Q_OBJECT
 public:
 	/*! Different columns provided by the model.
 		Country and City are stored as meta data in the climate data containers.

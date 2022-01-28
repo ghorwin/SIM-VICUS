@@ -34,6 +34,7 @@
 
 /*! Model for accessing the zone control Shading in database. */
 class SVDBZoneControlShadingTableModel : public SVAbstractDatabaseTableModel {
+	Q_OBJECT
 public:
 
 	/*! Columns shown in the table view. */

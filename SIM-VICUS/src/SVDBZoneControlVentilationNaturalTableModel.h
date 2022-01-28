@@ -34,6 +34,7 @@
 
 /*! Model for accessing the zone control ventilation natural in database. */
 class SVDBZoneControlVentilationNaturalTableModel : public SVAbstractDatabaseTableModel {
+	Q_OBJECT
 public:
 
 	/*! Columns shown in the table view. */

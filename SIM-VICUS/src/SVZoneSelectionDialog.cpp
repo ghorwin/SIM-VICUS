@@ -37,6 +37,7 @@
 
 // A model that provides a list of zones and their IDs via UserRole.
 class SVZoneListModel : public QAbstractListModel {
+	Q_OBJECT
 public:
 
 	SVZoneListModel(QObject * parent, const VICUS::Project &project);

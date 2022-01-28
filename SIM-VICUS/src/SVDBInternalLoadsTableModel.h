@@ -34,6 +34,7 @@
 
 /*! Model for accessing the internal loads in the internal loads database. */
 class SVDBInternalLoadsTableModel : public SVAbstractDatabaseTableModel {
+	Q_OBJECT
 public:
 
 	/*! Columns shown in the table view. */
