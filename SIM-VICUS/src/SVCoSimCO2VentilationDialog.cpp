@@ -1438,11 +1438,14 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 
 	QFileInfo info(masterSimPath);
 
-	// QFileInfo does not search through all pathes
-	// For that reason try default directory
-	if(masterSimPath == "MasterSimulator" && !info.exists()) {
-		info.setFile("/usr/bin/MasterSimulator");
+#ifdef Q_OS_LINUX
+	if(!masterSimPath.isEmpty()) {
+		// QFileInfo does not search through all pathes
+		// For that reason set default default directory in the case of default behaviour
+		if(masterSimPath == "MasterSimulator" && !info.exists())
+			info.setFile("/usr/bin/MasterSimulator");
 	}
+#endif
 
 	if (masterSimPath.isEmpty() || !info.exists())
 	{
