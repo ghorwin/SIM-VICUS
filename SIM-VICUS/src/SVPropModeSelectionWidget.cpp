@@ -51,6 +51,7 @@ SVPropModeSelectionWidget::SVPropModeSelectionWidget(QWidget *parent) :
 	m_ui->comboBoxBuildingProperties->addItem(tr("Building levels"), BT_FloorManager);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Zone templates"), BT_ZoneTemplates);
 	m_ui->comboBoxBuildingProperties->addItem(tr("Surface heating"), BT_SurfaceHeating);
+	m_ui->comboBoxBuildingProperties->addItem(tr("Room properties"), BT_ZoneProperty);
 	m_ui->comboBoxBuildingProperties->blockSignals(false);
 
 	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,

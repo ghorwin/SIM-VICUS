@@ -100,8 +100,10 @@ SOURCES += \
 	../../src/SVPropBuildingSubComponentsWidget.cpp \
 	../../src/SVPropBuildingSurfaceConnectionWidget.cpp \
 	../../src/SVPropBuildingSurfaceHeatingWidget.cpp \
+	../../src/SVPropBuildingZoneProperty.cpp \
 	../../src/SVPropBuildingZoneTemplatesWidget.cpp \
 	../../src/SVPropSurfaceHeatingDelegate.cpp \
+	../../src/SVPropZonePropertyDelegate.cpp \
 	../../src/SVSimulationNetworkOptions.cpp \
 	../../src/SVSimulationOutputTableDelegate.cpp \
 	../../src/SVSimulationOutputTableModel.cpp \
@@ -123,6 +125,7 @@ SOURCES += \
 	../../src/actions/SVUndoDeleteSelected.cpp \
 	../../src/actions/SVUndoModifyBuilding.cpp \
 	../../src/actions/SVUndoModifyBuildingLevel.cpp \
+	../../src/actions/SVUndoModifyRoom.cpp \
 	../../src/actions/SVUndoModifyBuildingTopology.cpp \
 	../../src/actions/SVUndoModifyComponentInstances.cpp \
 	../../src/actions/SVUndoModifyNetwork.cpp \
@@ -272,8 +275,10 @@ HEADERS  += \
 	../../src/SVPropBuildingSubComponentsWidget.h \
 	../../src/SVPropBuildingSurfaceConnectionWidget.h \
 	../../src/SVPropBuildingSurfaceHeatingWidget.h \
+	../../src/SVPropBuildingZoneProperty.h \
 	../../src/SVPropBuildingZoneTemplatesWidget.h \
 	../../src/SVPropSurfaceHeatingDelegate.h \
+	../../src/SVPropZonePropertyDelegate.h \
 	../../src/SVSimulationNetworkOptions.h \
 	../../src/SVSimulationOutputTableDelegate.h \
 	../../src/SVSimulationOutputTableModel.h \
@@ -297,6 +302,7 @@ HEADERS  += \
 	../../src/actions/SVUndoDeleteSelected.h \
 	../../src/actions/SVUndoModifyBuilding.h \
 	../../src/actions/SVUndoModifyBuildingLevel.h \
+	../../src/actions/SVUndoModifyRoom.h \
 	../../src/actions/SVUndoModifyBuildingTopology.h \
 	../../src/actions/SVUndoModifyComponentInstances.h \
 	../../src/actions/SVUndoModifyNetwork.h \
@@ -490,6 +496,7 @@ FORMS    += \
 	../../src/SVPropBuildingSubComponentsWidget.ui \
 	../../src/SVPropBuildingSurfaceConnectionWidget.ui \
 	../../src/SVPropBuildingSurfaceHeatingWidget.ui \
+	../../src/SVPropBuildingZoneProperty.ui \
 	../../src/SVPropBuildingZoneTemplatesWidget.ui \
 	../../src/SVPropEditGeometry.ui \
 	../../src/SVPropFloorManagerWidget.ui \

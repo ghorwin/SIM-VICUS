@@ -97,7 +97,9 @@ enum BuildingPropertyTypes {
 	/*! Zone templates. */
 	BT_ZoneTemplates,
 	/*! Surface heating */
-	BT_SurfaceHeating
+	BT_SurfaceHeating,
+	/*! Zone property */
+	BT_ZoneProperty
 };
 
 /*! \file SVConstants.h
