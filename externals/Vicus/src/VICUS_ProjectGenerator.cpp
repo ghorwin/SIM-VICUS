@@ -1301,10 +1301,6 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 			case VentiType::V_Ventilation:
 			case VentiType::V_InfAndVenti: {
 				natVentMod.m_modelType = NANDRAD::NaturalVentilationModel::MT_Scheduled;
-				// copy wind speed parameter
-				NANDRAD::KeywordList::setParameter(natVentMod.m_para, "NaturalVentilationModel::para_t",
-												   NANDRAD::NaturalVentilationModel::P_MaxWindSpeed,
-												   ctrlVentilation->m_para[ZoneControlNaturalVentilation::P_WindSpeedMax].get_value("m/s"));
 			}
 			break;
 		}
