@@ -459,12 +459,12 @@ void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<P
 }
 
 
-double PlaneGeometry::area() const {
+double PlaneGeometry::area(int digits) const {
 	FUNCID(PlaneGeometry::area);
 	if (!isValid())
 		throw IBK::Exception(IBK::FormatString("Invalid polygon set."), FUNC_ID);
 
-	return polygon2D().area();
+	return polygon2D().area(digits);
 }
 
 

@@ -134,7 +134,7 @@ public:
 	const Polygon2D & polygon2D() const { return (const Polygon2D &)m_polygon.polyline(); }
 
 	/*! Calculates surface area in m2. */
-	double area() const;
+	double area(int digits = 1) const;
 
 	/*! Calculates the center point of the surface/polygon */
 	IBKMK::Vector3D centerPoint() const { return m_polygon.centerPoint(); }
