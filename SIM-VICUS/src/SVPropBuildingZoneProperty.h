@@ -44,6 +44,10 @@ private slots:
 
 	void on_pushButtonVolumeAllRooms_clicked();
 
+	//void on_tableWidgetZones_itemSelectionChanged();
+
+	//void on_tableWidgetZones_cellPressed(int row, int column);
+
 private:
 
 	void calculatedParameters(bool floorAreaCalc = true, bool onlySelected = true);

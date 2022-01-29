@@ -221,10 +221,8 @@ void SVPropBuildingZoneProperty::updateUi() {
 	m_ui->tableWidgetZones->selectionModel()->blockSignals(false);
 	m_ui->tableWidgetZones->setSortingEnabled(true);
 
-	// insert all referenced rooms into set
-	m_selectedRooms.clear();
-	for (const VICUS::Room* r : rooms)
-		m_selectedRooms.insert(r);
+//	for (const VICUS::Room* r : rooms)
+//		m_selectedRooms.insert(r);
 
 	// populate table with all components that are currently selected by filter
 	// we only show assigned components with active layers
@@ -237,9 +235,17 @@ void SVPropBuildingZoneProperty::updateUi() {
 	// enable/disable selection-based buttons
 	//on_tableWidgetSurfaceHeating_itemSelectionChanged();
 
-	bool roomsSelected = !rooms.empty();
-	m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(roomsSelected);
-	m_ui->pushButtonVolumeSelectedRooms->setEnabled(roomsSelected);
+	// insert all referenced rooms into set
+	std::vector<unsigned int> selectedRoomIds;
+	bool roomsSelected = !selectedRoomIds.empty();
+	for(auto *item : m_ui->tableWidgetZones->selectedItems()){
+		if(item->column() != 0)
+			continue;
+		selectedRoomIds.push_back(item->text().toUInt());
+	}
+	/// ToDo Heiko->Dirk: Wie geht die Aktivierung richtig siehe Frage ganz unten.
+	//m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(roomsSelected);
+	//m_ui->pushButtonVolumeSelectedRooms->setEnabled(roomsSelected);
 
 }
 
@@ -566,5 +572,22 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
+	updateUi();
 }
+
+
+//void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
+//	updateUi();
+//}
+
+
+//void SVPropBuildingZoneProperty::on_tableWidgetZones_cellPressed(int row, int column)
+//{
+//	updateUi();
+//}
+
+/// ToDo Heiko->Dirk: wie kann ich abfangen wenn einer eine zelle bzw. mehrere markiert. dann muss der Button freigeschaltet werden
+/// derzeit passiert das zwar mit cellPressed oder itemSelectionChanged aber danach ist dann nicht mehr die Zeile markiert.
+/// weitere sind auch nicht mehr zu markieren
+/// was mach ich falsch?
 
