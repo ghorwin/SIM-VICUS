@@ -540,7 +540,7 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 	}
 	else{
 		for(int row=0; row<m_ui->tableWidgetZones->rowCount(); ++row)
-			roomIds.push_back(m_ui->tableWidgetZones->item(row,0)->data(Qt::UserRole).UInt);
+			roomIds.push_back(m_ui->tableWidgetZones->item(row,0)->text().toUInt());
 
 		if(roomIds.empty())
 			return;
