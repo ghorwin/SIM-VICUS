@@ -58,6 +58,12 @@ public:
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
+	/*! Calculates the floor area of the room. */
+	void calculateFloorArea();
+
+	/*! Calculates the volume of the room. Room must have a closed shell. */
+	void calculateVolume();
+
 	void updateParents() {
 		m_children.clear();
 		for (Surface & s : m_surfaces) {
