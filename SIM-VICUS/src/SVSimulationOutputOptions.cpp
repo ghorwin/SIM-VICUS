@@ -457,12 +457,8 @@ void SVSimulationOutputOptions::on_toolButtonAddDefinition_clicked() {
 
 	// any vector IDs selected?
 	if (m_ui->listWidgetVectorIndexes->count() != 0) {
-		NANDRAD::IDGroup idGroup;
-
 		for (const QListWidgetItem * i : m_ui->listWidgetVectorIndexes->selectedItems())
-			idGroup.m_ids.insert(i->data(Qt::UserRole).toUInt());
-
-		def.m_quantity = def.m_quantity + "[" + idGroup.encodedString() + "]";
+			def.m_vectorIds.push_back(i->data(Qt::UserRole).toUInt());
 	}
 
 	m_outputs->m_definitions.push_back(def);

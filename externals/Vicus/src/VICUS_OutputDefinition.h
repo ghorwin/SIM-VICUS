@@ -79,8 +79,9 @@ public:
 	VICUS_COMP(OutputDefinition)
 
 	/*! Name of result variable, for example 'AirTemperature'.
-		In case of vector-valued quantities, the index is stored in [], for example
-		'ThermalLoad[2]'.
+		\note While NANDRAD::OutputDefinition stores IDs of vector-valued quantities in [], for example
+			  'ThermalLoad[2]', VICUS::OutputDefinition holds only the quantity name itself in member m_quantity,
+			  and the vector IDs separately in member m_vectorIds.
 	*/
 	std::string										m_quantity;						// XML:A:required
 
