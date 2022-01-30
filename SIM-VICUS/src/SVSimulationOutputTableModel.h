@@ -67,8 +67,8 @@ private:
 
 	/*! Holds the data of a single line in the file 'output_reference_list.txt'. */
 	struct OutputVariable {
-		std::string m_objectTypeName;
-		std::string m_quantity;
+		std::string m_objectTypeName;		// "Zone", or "ConstructionInstance"
+		std::string m_quantity;				// "Temperature"
 		std::string m_description;
 		std::string m_unit;
 		std::set<unsigned int> m_objectIds;

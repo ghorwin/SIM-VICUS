@@ -363,18 +363,69 @@ void SVSimulationOutputOptions::on_listWidgetObjectIDs_itemSelectionChanged() {
 	// populate list widget
 	m_ui->listWidgetVectorIndexes->clear();
 	m_ui->listWidgetVectorIndexes->blockSignals(true);
+	const QString & objectType = srcIndex.data(Qt::UserRole + 2).toString();
+
+	int objectTypeID = -1;
+	if (objectType == "Zone")
+		objectTypeID = 0;
+	else if (objectType == "ConstructionInstance")
+		objectTypeID = 1;
+	else if (objectType == "Model") {
+		// might be a Model with Zone or ConstructionInstance IDs, we hardcode the possible options here
+		const QString & quantity = srcIndex.data(Qt::UserRole + 3).toString();
+		static const std::vector<QString> zoneModelNames = {
+			"ConvectiveEquipmentHeatLoad",
+			"ConvectivePersonHeatLoad",
+			"ConvectiveLightingHeatLoad",
+			"ConvectiveVentilationHeatLoad",
+			"HeatingControlValue"
+			"CoolingControlValue"
+		};
+		if (std::find(zoneModelNames.begin(), zoneModelNames.end(), quantity) != zoneModelNames.end())
+			objectTypeID = 0;
+	}
 	for (unsigned int i : vectorIDs) {
-		QListWidgetItem * item = new QListWidgetItem(QString("%1").arg(i));
+		// lookup type-specific object and show respective display name
+		QString displayName;
+		switch (objectTypeID) {
+			case 0 : {
+				const VICUS::Room * ob = project().roomByID(i);
+				if (ob != nullptr)
+					displayName = ob->m_displayName;
+			} break;
+
+			case 1 : {
+				// lookup component name
+			} break;
+		}
+
+		QString label;
+		if (displayName.isEmpty())
+			label = QString("%1").arg(i);
+		else
+			label = QString("%1 '%2'").arg(i).arg(displayName);
+
+		QListWidgetItem * item = new QListWidgetItem(label);
 		item->setData(Qt::UserRole, i);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->listWidgetVectorIndexes->addItem(item);
 	}
 
 	m_ui->listWidgetVectorIndexes->setEnabled(true);
-	m_ui->listWidgetVectorIndexes->blockSignals(false);
-
 	// now select the first element
 	m_ui->listWidgetVectorIndexes->item(0)->setSelected(true);
+	m_ui->listWidgetVectorIndexes->blockSignals(false);
+	on_listWidgetVectorIndexes_itemSelectionChanged();
+}
+
+
+void SVSimulationOutputOptions::on_listWidgetVectorIndexes_itemSelectionChanged() {
+	// depending on the selection, enable/disable push button to add output definitions
+	QList<QListWidgetItem*> sel = m_ui->listWidgetVectorIndexes->selectedItems();
+	if (!sel.empty()) {
+		// also enable the button for configuring outputs
+		m_ui->toolButtonAddDefinition->setEnabled(true);
+	}
 }
 
 
@@ -631,4 +682,5 @@ void SVSimulationOutputOptions::on_checkBoxDefaultNetworkSummationModels_clicked
 void SVSimulationOutputOptions::on_checkBoxDefaultBuildingOutputs_clicked(bool checked) {
 	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].set("CreateDefaultZoneOutputs", checked);
 }
+
 

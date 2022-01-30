@@ -113,15 +113,13 @@ private slots:
 	void on_pushButtonUpdateOutputList_clicked();
 
 	void on_listWidgetObjectIDs_itemSelectionChanged();
+	void on_listWidgetVectorIndexes_itemSelectionChanged();
 
 	void on_toolButtonAddDefinition_clicked();
-
 	void on_toolButtonRemoveDefinition_clicked();
 
 	void on_toolButtonAddGrid_clicked();
-
 	void on_toolButtonEditGrid_clicked();
-
 	void on_toolButtonRemoveGrid_clicked();
 
 	void on_tableViewAvailableOutputs_doubleClicked(const QModelIndex &index);
@@ -130,10 +128,9 @@ private slots:
 	void on_tableWidgetOutputDefinitions_itemChanged(QTableWidgetItem *item);
 
 	void on_checkBoxDefaultNetworkOutputs_clicked(bool checked);
-
 	void on_checkBoxDefaultNetworkSummationModels_clicked(bool checked);
-
 	void on_checkBoxDefaultBuildingOutputs_clicked(bool checked);
+
 
 private:
 	/*! Updates the output definition table, using the model with available outputs. */
