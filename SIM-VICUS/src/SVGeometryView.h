@@ -132,7 +132,8 @@ private:
 	/*! Splitter that contains the scene view and the property widget. */
 	QSplitter					*m_splitter									= nullptr;
 
-	QToolBar					*m_toolBar									= nullptr;
+	/*! This tool bar contains buttons/widgets used only in geometry editing mode. */
+	QToolBar					*m_geometryToolBar							= nullptr;
 
 	/*! Pointer to measurement widget */
 	SVMeasurementWidget			*m_measurementWidget = nullptr;

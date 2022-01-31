@@ -72,10 +72,10 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	// *** create toolbar and place it below the scene
 
-	m_toolBar = new QToolBar(this);
-	m_toolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->setMaximumHeight(32);
-	m_toolBar->layout()->setMargin(0);
+	m_geometryToolBar = new QToolBar(this);
+	m_geometryToolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+	m_geometryToolBar->setMaximumHeight(32);
+	m_geometryToolBar->layout()->setMargin(0);
 
 //	m_dockWidget = new QWidget(this);
 //	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -83,7 +83,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	QVBoxLayout * vbLay = new QVBoxLayout;
 	vbLay->addWidget(m_sceneViewContainerWidget);
-	vbLay->addWidget(m_toolBar);
+	vbLay->addWidget(m_geometryToolBar);
 	vbLay->setMargin(0);
 	vbLay->setSpacing(0);
 
@@ -264,6 +264,10 @@ void SVGeometryView::onViewStateChanged() {
 	m_xLockAction->setVisible(lockVisible);
 	m_yLockAction->setVisible(lockVisible);
 	m_zLockAction->setVisible(lockVisible);
+
+	bool geometryModeActive = (vs.m_viewMode == SVViewState::VM_GeometryEditMode);
+	m_geometryToolBar->setVisible(geometryModeActive);
+	m_measureAction->setEnabled(geometryModeActive); // to disable short-cut as well
 
 	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
 	//       the associated actions.
@@ -475,8 +479,8 @@ void SVGeometryView::setupToolBar() {
 	m_snapAction->setToolTip(tr("Toggles object snap on/off (F3)"));
 	m_snapAction->setIcon(QIcon(":/gfx/actions/Object-Snap.png") );
 
-	m_toolBar->addAction(m_snapAction);
-	m_toolBar->setIconSize(QSize(24,24) );
+	m_geometryToolBar->addAction(m_snapAction);
+	m_geometryToolBar->setIconSize(QSize(24,24) );
 	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
 
 	m_measureAction = new QAction(tr("Measure"), this);
@@ -484,31 +488,31 @@ void SVGeometryView::setupToolBar() {
 	m_measureAction->setToolTip(tr("Toggles distance measurement mode on/off"));
 	m_measureAction->setIcon(QIcon(":/gfx/actions/Measurement.png") );
 
-	m_toolBar->addAction(m_measureAction);
-	m_toolBar->setIconSize(QSize(24,24) );
+	m_geometryToolBar->addAction(m_measureAction);
+	m_geometryToolBar->setIconSize(QSize(24,24) );
 	connect(m_measureAction, &QAction::toggled, this, &SVGeometryView::on_actionMeasure_toggled);
 
 	m_xLockAction = new QAction(tr("X"), this);
 	m_xLockAction->setCheckable(true);
-	m_toolBar->addAction(m_xLockAction);
+	m_geometryToolBar->addAction(m_xLockAction);
 	connect(m_xLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
 
 	m_yLockAction = new QAction(tr("Y"), this);
 	m_yLockAction->setCheckable(true);
-	m_toolBar->addAction(m_yLockAction);
+	m_geometryToolBar->addAction(m_yLockAction);
 	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionYLock_toggled);
 
 	m_zLockAction = new QAction(tr("Z"), this);
 	m_zLockAction->setCheckable(true);
-	m_toolBar->addAction(m_zLockAction);
+	m_geometryToolBar->addAction(m_zLockAction);
 	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionZLock_toggled);
 
-	m_toolBar->addSeparator();
+	m_geometryToolBar->addSeparator();
 
 	// the line edit for entering vertex coordinates
-	m_lineEditCoordinateInput = new QLineEdit(m_toolBar);
+	m_lineEditCoordinateInput = new QLineEdit(m_geometryToolBar);
 	m_lineEditCoordinateInput->setToolTip(tr("Without axis lock, enter coordinates in format <x> <y> <z>. With axis lock enter only the offset in the respective axis direction."));
-	m_actionCoordinateInput = m_toolBar->addWidget(m_lineEditCoordinateInput);
+	m_actionCoordinateInput = m_geometryToolBar->addWidget(m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
 	m_lineEditCoordinateInput->setMaximumWidth(400);
@@ -516,11 +520,11 @@ void SVGeometryView::setupToolBar() {
 	// stretcher
 	QWidget * spacerWidget = new QWidget;
 	spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_toolBar->addWidget(spacerWidget);
+	m_geometryToolBar->addWidget(spacerWidget);
 
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
-	m_actionlocalCoordinateSystemCoordinates = m_toolBar->addWidget(m_localCoordinateSystemView);
+	m_actionlocalCoordinateSystemCoordinates = m_geometryToolBar->addWidget(m_localCoordinateSystemView);
 }
 
 
