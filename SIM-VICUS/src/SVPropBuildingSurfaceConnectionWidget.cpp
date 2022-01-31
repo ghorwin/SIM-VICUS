@@ -85,7 +85,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 
 		item = new QTableWidgetItem(ci.m_sideASurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setData(Qt::UserRole, ci.m_sideASurface->uniqueID()); // uniqueID is the user role
+		item->setData(Qt::UserRole, ci.m_sideASurface->m_id); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideASurface) != m_selectedSurfaces.end())
 			selectedRows.insert(row);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 2, item);
@@ -94,7 +94,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 
 		item = new QTableWidgetItem(ci.m_sideBSurface->m_displayName);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setData(Qt::UserRole, ci.m_sideBSurface->uniqueID()); // uniqueID is the user role
+		item->setData(Qt::UserRole, ci.m_sideBSurface->m_id); // uniqueID is the user role
 		if (m_selectedSurfaces.find(ci.m_sideBSurface) != m_selectedSurfaces.end())
 			selectedRows.insert(row);
 		m_ui->tableWidgetInterlinkedSurfaces->setItem(row, 3, item);
@@ -293,9 +293,9 @@ void SVPropBuildingSurfaceConnectionWidget::on_pushButtonRemoveComponentInstance
 		}
 
 		if ( (ci.m_sideASurface != nullptr &&
-				connectedSurfacesIDs.find(ci.m_sideASurface->uniqueID()) != connectedSurfacesIDs.end()) ||
+				connectedSurfacesIDs.find(ci.m_sideASurface->m_id) != connectedSurfacesIDs.end()) ||
 			(ci.m_sideBSurface != nullptr &&
-							connectedSurfacesIDs.find(ci.m_sideBSurface->uniqueID()) != connectedSurfacesIDs.end()) )
+							connectedSurfacesIDs.find(ci.m_sideBSurface->m_id) != connectedSurfacesIDs.end()) )
 		{
 			// create two copies of the ComponentInstance and remove sideA and sideB in either one
 			VICUS::ComponentInstance ci1(ci);

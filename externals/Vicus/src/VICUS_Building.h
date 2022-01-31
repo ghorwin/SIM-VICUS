@@ -40,6 +40,8 @@ namespace VICUS {
 /*! Represents the building level node in the data hierarchy. */
 class Building : public Object {
 public:
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "Building"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 

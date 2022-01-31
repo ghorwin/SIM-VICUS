@@ -117,46 +117,48 @@ public:
 	*/
 	unsigned int nextUnusedID() const;
 
-	/*! Searches through all unique id-objects in project structure for the uniqueID.
+
+	/*! Searches through all objects in project structure for the object with the object ID.
 		\return Returns nullptr, when object cannot be found.
 	*/
-	const VICUS::Object * objectByUniqueId(unsigned int uniqueID) const;
+	VICUS::Object * objectById(unsigned int id);
 
-	/*! Searches through all objects in project structure for the first (and hopefully only) object with the object ID.
+	/*! Searches through all objects in project structure for the object with the object ID.
+		Const version of the above function.
 		\return Returns nullptr, when object cannot be found.
 	*/
-	const VICUS::Object * objectById(unsigned int id) const;
+	const VICUS::Object * objectById(unsigned int id) const {
+		return const_cast<VICUS::Project*>(this)->objectById(id);
+	}
 
-	/*! Searches through all buildings and tries to find a room with given room ID (this
-		is not the uniqueID, but the persistant id from the data model).
-		\note This function is rather expensive, try to limit its use.
-	*/
-	VICUS::Room * roomByID(unsigned int roomID);
+	/*! Tries to find a room with given ID. A convenience function that uses objectById() internally. */
+	VICUS::Room * roomByID(unsigned int roomID) {
+		return dynamic_cast<VICUS::Room *>(objectById(roomID));
+	}
 
 	/*! Const-version of the function above. */
 	const VICUS::Room * roomByID(unsigned int roomID) const {
-		return const_cast<Project*>(this)->roomByID(roomID);
+		return dynamic_cast<const VICUS::Room *>(objectById(roomID));
 	}
 
-	/*! Searches through all buildings and tries to find a surface with given surface ID (this
-		is not the uniqueID, but the persistant id from the data model).
-		\note This function is rather expensive, try to limit its use.
-	*/
-	VICUS::Surface * surfaceByID(unsigned int surfaceID);
+	/*! Tries to find a surface with given ID. A convenience function that uses objectById() internally. */
+	VICUS::Surface * surfaceByID(unsigned int surfaceID) {
+		return dynamic_cast<VICUS::Surface *>(objectById(surfaceID));
+	}
 
 	/*! Const-version of the function above. */
 	const VICUS::Surface * surfaceByID(unsigned int surfaceID) const {
-		return const_cast<Project*>(this)->surfaceByID(surfaceID);
+		return dynamic_cast<const VICUS::Surface *>(objectById(surfaceID));
 	}
 
-	/*! Searches through all buildings and tries to find a subsurface with given subsurface ID (this
-		is not the uniqueID, but the persistant id from the data model).
-	*/
-	VICUS::SubSurface * subSurfaceByID(unsigned int surfID);
+	/*! Tries to find a sub-surface with given ID. A convenience function that uses objectById() internally. */
+	VICUS::SubSurface * subSurfaceByID(unsigned int surfID) {
+		return dynamic_cast<VICUS::SubSurface *>(objectById(surfID));
+	}
 
 	/*! Const-version of the function above. */
-	const VICUS::SubSurface * subSurfaceByID(unsigned int surfaceID) const {
-		return const_cast<Project*>(this)->subSurfaceByID(surfaceID);
+	const VICUS::SubSurface * subSurfaceByID(unsigned int surfID) const {
+		return dynamic_cast<const VICUS::SubSurface *>(objectById(surfID));
 	}
 
 	/*! Selects objects and return set with pointers according to additional filters.
@@ -314,10 +316,15 @@ private:
 									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
 
-	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() function.
+	/*! Adds the given object to the m_objectPtr map but first checks if its ID is already in the map.
+		If there is an ID conflict, the function throws an IBK::Exception.
+	*/
+	void addAndCheckForUniqueness(VICUS::Object* o);
+
+	/*! Cached unique-ID -> object ptr map. Greatly speeds up objectByID() and any other lookup functions.
 		This map is updated in updatePointers().
 	*/
-	std::map<unsigned int, const VICUS::Object*>		m_objectPtr;
+	std::map<unsigned int, VICUS::Object*>		m_objectPtr;
 
 };
 

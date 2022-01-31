@@ -416,23 +416,23 @@ void Project::updatePointers() {
 	FUNCID(Project::updatePointers);
 
 	m_objectPtr.clear();
+	m_objectPtr[VICUS::INVALID_ID] = nullptr; // this will help us detect invalid IDs in the data model
+
 	// update hierarchy
 	for (VICUS::Building & b : m_buildings)
 		b.updateParents();
 
-	// clear component/surface pointers (this is needed to check for duplicate IDs later on)
 	for (VICUS::Building & b : m_buildings) {
-		m_objectPtr[b.uniqueID()] = &b;
+		addAndCheckForUniqueness(&b);
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels) {
-			m_objectPtr[bl.uniqueID()] = &bl;
-			// TODO : Dirk, sum up net floor area and update bl.m_netFloorArea
+			addAndCheckForUniqueness(&bl);
 			for (VICUS::Room & r : bl.m_rooms) {
-				m_objectPtr[r.uniqueID()] = &r;
+				addAndCheckForUniqueness(&r);
 				for (VICUS::Surface & s : r.m_surfaces) {
-					m_objectPtr[s.uniqueID()] = &s;
+					addAndCheckForUniqueness(&s);
 					s.m_componentInstance = nullptr;
 					for (VICUS::SubSurface & sub : const_cast<std::vector<VICUS::SubSurface> &>(s.subSurfaces()) ) {
-						m_objectPtr[sub.uniqueID()] = &sub;
+						addAndCheckForUniqueness(&sub);
 						sub.m_subSurfaceComponentInstance = nullptr;
 					}
 				}
@@ -508,11 +508,11 @@ void Project::updatePointers() {
 	// networks
 
 	for (VICUS::Network & n : m_geometricNetworks) {
-		m_objectPtr[n.uniqueID()] = &n;
+		addAndCheckForUniqueness(&n);
 		for (VICUS::NetworkEdge & e : n.m_edges)
-			m_objectPtr[e.uniqueID()] = &e;
+			addAndCheckForUniqueness(&e);
 		for (VICUS::NetworkNode & nod : n.m_nodes)
-			m_objectPtr[nod.uniqueID()] = &nod;
+			addAndCheckForUniqueness(&nod);
 
 		n.updateNodeEdgeConnectionPointers();
 	}
@@ -520,69 +520,30 @@ void Project::updatePointers() {
 	// plain geometry
 
 	for (VICUS::Surface & s : m_plainGeometry)
-		m_objectPtr[s.uniqueID()] = &s;
-
+		addAndCheckForUniqueness(&s);
 }
 
 
 unsigned int Project::nextUnusedID() const {
-	unsigned int id = 0;
-	for (auto o : m_objectPtr)
-		id = std::max(id, o.second->m_id);
-	return id+1;
+	Q_ASSERT(!m_objectPtr.empty());
+	// the last element in m_objectPtr is always INVALID_ID
+	auto it = m_objectPtr.rbegin();
+	Q_ASSERT(it->first == VICUS::INVALID_ID);
+	// we return the ID following that element before that
+	++it;
+	// do we have such an element?
+	if (it == m_objectPtr.rend())
+		return 1; // no element yet in the vector; this will hardly occur, only when loading a completely empty project
+	return it->first + 1;
 }
 
 
-const VICUS::Object * Project::objectByUniqueId(unsigned int uniqueID) const {
-	auto objPtrIt = m_objectPtr.find(uniqueID);
+Object * Project::objectById(unsigned int id) {
+	auto objPtrIt = m_objectPtr.find(id);
 	if (objPtrIt != m_objectPtr.end())
 		return objPtrIt->second;
 	else
 		return nullptr;
-}
-
-
-const Object * Project::objectById(unsigned int id) const {
-	for (const auto & o : m_objectPtr)
-		if (o.second->m_id == id)
-			return o.second;
-	return nullptr;
-}
-
-
-Room * Project::roomByID(unsigned int roomID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				if (r.m_id == roomID)
-					return &r;
-	return nullptr;
-}
-
-
-Surface * Project::surfaceByID(unsigned int surfaceID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				for (Surface & s : r.m_surfaces) {
-					if (s.m_id == surfaceID)
-						return &s;
-				}
-	return nullptr;
-}
-
-
-SubSurface * Project::subSurfaceByID(unsigned int surfID) {
-	for (Building & b : m_buildings)
-		for (BuildingLevel & bl : b.m_buildingLevels)
-			for (Room & r : bl.m_rooms)
-				for (Surface & s : r.m_surfaces)
-					for (const SubSurface & sub : s.subSurfaces())
-					{
-						if (sub.m_id == surfID)
-							return const_cast<SubSurface*>(&sub);
-					}
-	return nullptr;
 }
 
 
@@ -797,6 +758,21 @@ bool Project::connectSurfaces(double maxDist, double maxAngle, const std::set<co
 	qDebug() << "Not implemented, yet";
 
 	return false;
+}
+
+
+void Project::addAndCheckForUniqueness(Object * o) {
+	FUNCID(Project::addAndCheckForUniqueness);
+	// try to insert the object's id into the map
+	auto insertResult = m_objectPtr.insert(std::make_pair(o->m_id, o));
+	if (!insertResult.second) {
+		if (o->m_id == VICUS::INVALID_ID)
+			throw IBK::Exception(IBK::FormatString("Object %1 does not have a valid ID.").arg(o->info().toStdString()), FUNC_ID);
+		std::string objInfo = insertResult.first->second->info().toStdString();
+		std::string duplicateInfo = o->info().toStdString();
+		throw IBK::Exception(IBK::FormatString("Duplicate ID %1 in data model: First object with this ID is %2, "
+											   "duplicate is %3").arg(o->m_id).arg(objInfo).arg(duplicateInfo), FUNC_ID);
+	}
 }
 
 

@@ -62,18 +62,19 @@ Network::Network() {
 }
 
 
-Network Network::copyWithBaseParameters() {
-	Network copy;
-	copy.m_type = this->m_type;
-	copy.m_modelType = this->m_modelType;
-	copy.m_idFluid = this->m_idFluid;
-	copy.m_scaleEdges = this->m_scaleEdges;
-	copy.m_scaleNodes = this->m_scaleNodes;
-	copy.m_origin = this->m_origin;
+Network Network::copyWithBaseParameters(unsigned int newID) {
+	Network n;
+	n.m_id = newID;
+	n.m_type = this->m_type;
+	n.m_modelType = this->m_modelType;
+	n.m_idFluid = this->m_idFluid;
+	n.m_scaleEdges = this->m_scaleEdges;
+	n.m_scaleNodes = this->m_scaleNodes;
+	n.m_origin = this->m_origin;
 	for (unsigned int i=0; i<VICUS::Network::NUM_P; ++i)
-		copy.m_para[i] = this->m_para[i];
+		n.m_para[i] = this->m_para[i];
 
-	return copy;
+	return n;
 }
 
 
@@ -88,7 +89,7 @@ unsigned int Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeT
 	}
 
 	// else add new node
-	unsigned id = VICUS::uniqueId(m_nodes);
+	unsigned id = 1; // TODO : Hauke, uniqueID handling!
 	m_nodes.push_back(NetworkNode(id, type, v));
 	updateNodeEdgeConnectionPointers();
 

@@ -503,7 +503,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					if (m_coordinateSystemObject.m_geometryTransformMode == Vic3D::CoordinateSystemObject::TM_RotateMask) {
 						m_navigationMode = NM_InteractiveRotation;
 						// which axis?
-						switch (pickObject.m_candidates.front().m_uniqueObjectID) {
+						switch (pickObject.m_candidates.front().m_objectID) {
 							case 0 :
 								// rotate around z
 								m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateZ;
@@ -860,7 +860,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		for (const PickObject::PickResult & r : pickObject.m_candidates) {
 			if (r.m_snapPointType == PickObject::RT_Object) {
 				nearestPoint = r.m_pickPoint;
-				uniqueID = r.m_uniqueObjectID;
+				uniqueID = r.m_objectID;
 				found = true;
 				break;
 			}
@@ -870,7 +870,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			for (const PickObject::PickResult & r : pickObject.m_candidates) {
 				if (r.m_snapPointType == PickObject::RT_GridPlane) {
 					nearestPoint = r.m_pickPoint;
-					uniqueID = r.m_uniqueObjectID;
+					uniqueID = r.m_objectID;
 					found = true;
 					break;
 				}
@@ -881,7 +881,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// object found?
 			if (uniqueID != 0) {
 				// lookup object
-				const VICUS::Object * obj = project().objectByUniqueId(uniqueID);
+				const VICUS::Object * obj = project().objectById(uniqueID);
 				// should be a surface
 				const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(obj);
 				// but maybe a nullptr, if we hit a sphere/cylinder from a network object
@@ -1303,7 +1303,7 @@ void Scene::generateBuildingGeometry() {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 
 					// remember where the vertexes for this surface start in the buffer
-					m_buildingGeometryObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
+					m_buildingGeometryObject.m_vertexStartMap[s.m_id] = currentVertexIndex;
 
 					// now we store the surface data into the vertex/color and index buffers
 					// the indexes are advanced and the buffers enlarged as needed.
@@ -1347,7 +1347,7 @@ void Scene::generateBuildingGeometry() {
 	for (const VICUS::Surface & s : p.m_plainGeometry) {
 
 		// remember where the vertexes for this surface start in the buffer
-		m_buildingGeometryObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
+		m_buildingGeometryObject.m_vertexStartMap[s.m_id] = currentVertexIndex;
 
 		// now we store the surface data into the vertex/color and index buffers
 		// the indexes are advanced and the buffers enlarged as needed.
@@ -1509,7 +1509,7 @@ void Scene::generateTransparentBuildingGeometry() {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 
 					// remember where the vertexes for this surface start in the buffer
-					m_transparentBuildingObject.m_vertexStartMap[s.uniqueID()] = currentVertexIndex;
+					m_transparentBuildingObject.m_vertexStartMap[s.m_id] = currentVertexIndex;
 					// TODO : also store average depth of polygon
 
 					// general slightly gray - strong transparent
@@ -1594,7 +1594,7 @@ void Scene::generateNetworkGeometry() {
 			if (!e.m_visible || e.m_selected)
 				pipeColor.setAlpha(0);
 
-			m_networkGeometryObject.m_vertexStartMap[e.uniqueID()] = currentVertexIndex;
+			m_networkGeometryObject.m_vertexStartMap[e.m_id] = currentVertexIndex;
 			addCylinder(e.m_node1->m_position, e.m_node2->m_position, pipeColor, radius,
 						currentVertexIndex, currentElementIndex,
 						m_networkGeometryObject.m_vertexBufferData,
@@ -1609,7 +1609,7 @@ void Scene::generateNetworkGeometry() {
 			if (!no.m_visible || !network.m_visible)
 				col.setAlpha(0);
 
-			m_networkGeometryObject.m_vertexStartMap[no.uniqueID()] = currentVertexIndex;
+			m_networkGeometryObject.m_vertexStartMap[no.m_id] = currentVertexIndex;
 			addSphere(no.m_position, col, radius,
 					  currentVertexIndex, currentElementIndex,
 					  m_networkGeometryObject.m_vertexBufferData,
@@ -1964,7 +1964,7 @@ void Scene::selectAll() {
 	std::set<unsigned int> nodeIDs;
 	for (const VICUS::Object * o : selObjects) {
 		if (!o->m_selected)
-			nodeIDs.insert(o->uniqueID());
+			nodeIDs.insert(o->m_id);
 	}
 
 	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("All objects selected"),
@@ -1982,19 +1982,19 @@ void Scene::deselectAll() {
 	const VICUS::Project & p = project();
 	for (const VICUS::Building & b : p.m_buildings) {
 		if (b.m_selected)
-			objIDs.insert(b.uniqueID());
+			objIDs.insert(b.m_id);
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			if (bl.m_selected)
-				objIDs.insert(bl.uniqueID());
+				objIDs.insert(bl.m_id);
 			for (const VICUS::Room & r : bl.m_rooms) {
 				if (r.m_selected)
-					objIDs.insert(r.uniqueID());
+					objIDs.insert(r.m_id);
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					if (s.m_selected)
-						objIDs.insert(s.uniqueID());
+						objIDs.insert(s.m_id);
 					for (const VICUS::SubSurface & sub : s.subSurfaces()) {
 						if (sub.m_selected)
-							objIDs.insert(sub.uniqueID());
+							objIDs.insert(sub.m_id);
 					}
 				}
 			}
@@ -2004,7 +2004,7 @@ void Scene::deselectAll() {
 	// now the plain geometry
 	for (const VICUS::Surface & s : p.m_plainGeometry) {
 		if (s.m_selected)
-			objIDs.insert(s.uniqueID());
+			objIDs.insert(s.m_id);
 	}
 
 	// now network stuff
@@ -2013,16 +2013,16 @@ void Scene::deselectAll() {
 	for (const VICUS::Network & network : p.m_geometricNetworks) {
 		for (const VICUS::NetworkEdge & e : network.m_edges) {
 			if (e.m_selected)
-				objIDs.insert(e.uniqueID());
+				objIDs.insert(e.m_id);
 		}
 
 		// add spheres for nodes
 		for (const VICUS::NetworkNode & no : network.m_nodes) {
 			if (no.m_selected)
-				objIDs.insert(no.uniqueID());
+				objIDs.insert(no.m_id);
 		}
 		if (network.m_selected)
-			objIDs.insert(network.uniqueID());
+			objIDs.insert(network.m_id);
 	}
 
 	// if nothing is selected, do nothing
@@ -2057,7 +2057,7 @@ void Scene::showSelected() {
 	std::set<unsigned int> selectedObjectIDs;
 	// Note: all objects in m_selectedGeometryObject.m_selectedObjects are required to be visible!
 	for (const VICUS::Object * obj : selectedObjects)
-		selectedObjectIDs.insert(obj->uniqueID());
+		selectedObjectIDs.insert(obj->m_id);
 
 	if (selectedObjectIDs.empty())
 		return;
@@ -2075,7 +2075,7 @@ void Scene::hideSelected() {
 	std::set<unsigned int> selectedObjectIDs;
 	// Note: all objects in m_selectedGeometryObject.m_selectedObjects are required to be visible!
 	for (const VICUS::Object * obj : m_selectedGeometryObject.m_selectedObjects)
-		selectedObjectIDs.insert(obj->uniqueID());
+		selectedObjectIDs.insert(obj->m_id);
 
 	if (selectedObjectIDs.empty())
 		return;
@@ -2256,7 +2256,7 @@ void Scene::pick(PickObject & pickObject) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_GridPlane;
-			r.m_uniqueObjectID = i;
+			r.m_objectID = i;
 			r.m_depth = t;
 			r.m_pickPoint = intersectionPoint;
 			pickObject.m_candidates.push_back(r);
@@ -2291,10 +2291,10 @@ void Scene::pick(PickObject & pickObject) {
 							r.m_holeIdx = holeIndex;
 							if (holeIndex != -1) {
 								// store ID of window/embedded surface
-								r.m_uniqueObjectID = s.subSurfaces()[(unsigned int)holeIndex].uniqueID();
+								r.m_objectID = s.subSurfaces()[(unsigned int)holeIndex].m_id;
 							}
 							else
-								r.m_uniqueObjectID = s.uniqueID();
+								r.m_objectID = s.m_id;
 							pickObject.m_candidates.push_back(r);
 						}
 					}
@@ -2320,7 +2320,7 @@ void Scene::pick(PickObject & pickObject) {
 			r.m_depth = dist;
 			r.m_pickPoint = intersectionPoint;
 			// TODO : Dirk, can "dump geometry" contain sub-surfaces?
-			r.m_uniqueObjectID = s.uniqueID();
+			r.m_objectID = s.m_id;
 			pickObject.m_candidates.push_back(r);
 		}
 	}
@@ -2347,7 +2347,7 @@ void Scene::pick(PickObject & pickObject) {
 				r.m_snapPointType = PickObject::RT_Object;
 				r.m_depth = dist; // the depth to the point on the line-of-sight that is closest to the sphere's center point
 				r.m_pickPoint = closestPoint; // this
-				r.m_uniqueObjectID = no.uniqueID();
+				r.m_objectID = no.m_id;
 				pickObject.m_candidates.push_back(r);
 			}
 		}
@@ -2372,7 +2372,7 @@ void Scene::pick(PickObject & pickObject) {
 				r.m_snapPointType = PickObject::RT_Object;
 				r.m_depth = dist;
 				r.m_pickPoint = closestPoint;
-				r.m_uniqueObjectID = e.uniqueID();
+				r.m_objectID = e.m_id;
 				pickObject.m_candidates.push_back(r);
 			}
 		}
@@ -2533,7 +2533,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// We hit an object!
 
 				// find out if this is a surface, a network node or an edge
-				const VICUS::Object * obj = project().objectByUniqueId(r.m_uniqueObjectID);
+				const VICUS::Object * obj = project().objectById(r.m_objectID);
 				Q_ASSERT(obj != nullptr);
 
 				// *** surfaces ***
@@ -2830,14 +2830,14 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 	for (const PickObject::PickResult & r : o.m_candidates) {
 		if (r.m_snapPointType == PickObject::RT_Object)
 		{
-			uniqueID = r.m_uniqueObjectID;
+			uniqueID = r.m_objectID;
 			break;
 		}
 	}
 
 	if (uniqueID != 0) {
 		// find the selected object
-		const VICUS::Object * obj = project().objectByUniqueId(uniqueID);
+		const VICUS::Object * obj = project().objectById(uniqueID);
 
 		// if using shift-click, we go up one level, select the parent and all its children
 		bool selectChildren = true;
@@ -2845,7 +2845,7 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 			// check for valid parent - anonymous geometry does not have parents!
 			if (obj->m_parent != nullptr) {
 				obj = obj->m_parent;
-				uniqueID = obj->uniqueID();
+				uniqueID = obj->m_id;
 			}
 		}
 

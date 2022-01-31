@@ -50,7 +50,7 @@ private:
 	/*! If true, the change event sent is BuildingTopologyChanged, otherwise BuildingGeometryChanged. */
 	bool					m_topologyOnly;
 
-	unsigned int			m_buildingLevelUUID;
+	unsigned int			m_buildingLevelID;
 
 	/*! If not empty, this vector contains component instances that are created alongside the room's surfaces. */
 	std::vector<VICUS::ComponentInstance>	m_componentInstances;

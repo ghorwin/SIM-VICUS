@@ -54,7 +54,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 
 	for (const VICUS::Surface *sOld : surfacesProject ) {
 		for ( VICUS::Surface &sNew : m_surfaces ) {
-			if ( sOld->uniqueID() == sNew.uniqueID() ) {
+			if ( sOld->m_id == sNew.m_id ) {
 				// we swap the surface's polygon and the subsurfaces polygons
 				// and then update the geometry object
 				VICUS::Surface * oldS = const_cast<VICUS::Surface *>(sOld);

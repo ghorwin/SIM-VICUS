@@ -86,11 +86,11 @@ void SVView3DDialog::exportView3d() {
 
 		view3dRoom &v3dRoom = m_vicusRoomIdToView3dRoom[r->m_id];
 
-		view3dExtendedSurfaces extendedSurf ( surf->uniqueID() );
+		view3dExtendedSurfaces extendedSurf ( surf->m_id );
 		v3dRoom.m_extendedSurfaces.push_back( extendedSurf );
 
 		for (const VICUS::SubSurface &subSurf : s.subSurfaces() ) {
-			view3dExtendedSurfaces extendedSubSurf ( subSurf.uniqueID(), true );
+			view3dExtendedSurfaces extendedSubSurf ( subSurf.m_id, true );
 			v3dRoom.m_extendedSurfaces.push_back( extendedSubSurf );	// in extended surfaces we share the view factor
 		}
 

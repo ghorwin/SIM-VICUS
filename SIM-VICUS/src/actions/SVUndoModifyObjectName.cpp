@@ -29,7 +29,7 @@
 #include "SVProjectHandler.h"
 
 SVUndoModifyObjectName::SVUndoModifyObjectName(const QString & label, const VICUS::Object * o, const QString & newName) :
-	m_objectUid(o->uniqueID()), m_displayName(newName)
+	m_objectID(o->m_id), m_displayName(newName)
 {
 	setText( label );
 }
@@ -37,7 +37,7 @@ SVUndoModifyObjectName::SVUndoModifyObjectName(const QString & label, const VICU
 
 void SVUndoModifyObjectName::undo() {
 	// get object
-	const VICUS::Object * o = theProject().objectByUniqueId(m_objectUid);
+	const VICUS::Object * o = theProject().objectById(m_objectID);
 	Q_ASSERT(o != nullptr);
 
 	const_cast<VICUS::Object*>(o)->m_displayName.swap(m_displayName);

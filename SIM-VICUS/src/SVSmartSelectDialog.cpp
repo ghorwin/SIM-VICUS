@@ -276,7 +276,7 @@ void SVSmartSelectDialog::onSelectClicked() {
 
 		std::set<unsigned int> nodeIDs;
 		for (const VICUS::Object* o : selectedObjects)
-			nodeIDs.insert(o->uniqueID());
+			nodeIDs.insert(o->m_id);
 
 		// create an undo-action with the selected
 		SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(tr("Selecting objects"), SVUndoTreeNodeState::SelectedState, nodeIDs, true);
@@ -352,7 +352,7 @@ void SVSmartSelectDialog::onSelectClicked() {
 						continue;
 
 					// all filters match, store unique ID of this node
-					nodeIDs.insert(n.uniqueID());
+					nodeIDs.insert(n.m_id);
 				}
 			}
 
@@ -388,7 +388,7 @@ void SVSmartSelectDialog::onSelectClicked() {
 						continue;
 
 					// all filters match, store unique ID of this node
-					edgeIDs.insert(edge.uniqueID());
+					edgeIDs.insert(edge.m_id);
 				}
 			}
 

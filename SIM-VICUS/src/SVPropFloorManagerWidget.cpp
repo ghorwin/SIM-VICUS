@@ -114,9 +114,9 @@ void SVPropFloorManagerWidget::onModified(int modificationType, ModificationInfo
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 		if (selectedItem == nullptr)
 			selectedItem = item; // by default, always select the first one
-		item->setData(0, Qt::UserRole, b.uniqueID());
+		item->setData(0, Qt::UserRole, b.m_id);
 		m_ui->treeWidget->addTopLevelItem(item);
-		if (selObjectUniqueId == b.uniqueID())
+		if (selObjectUniqueId == b.m_id)
 			selectedItem = item;
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QStringList columns;
@@ -124,10 +124,10 @@ void SVPropFloorManagerWidget::onModified(int modificationType, ModificationInfo
 			columns << QString("%L1").arg(bl.m_elevation, 0, 'g', 2);
 			columns << QString("%L1").arg(bl.m_height, 0, 'g', 2);
 			QTreeWidgetItem * levelItem = new QTreeWidgetItem(columns);
-			levelItem->setData(0, Qt::UserRole, bl.uniqueID());
+			levelItem->setData(0, Qt::UserRole, bl.m_id);
 			levelItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
 			item->addChild(levelItem);
-			if (selObjectUniqueId == bl.uniqueID())
+			if (selObjectUniqueId == bl.m_id)
 				selectedItem = levelItem;
 		}
 	}
@@ -157,13 +157,13 @@ void SVPropFloorManagerWidget::on_treeWidget_itemSelectionChanged() {
 		return;
 
 	// get unique ID of selected object
-	unsigned int selObjectUniqueId = sel.front()->data(0,Qt::UserRole).toUInt();
+	unsigned int selObjectID = sel.front()->data(0,Qt::UserRole).toUInt();
 
 	m_currentBuilding = nullptr;
 	m_currentBuildingLevel = nullptr;
 
 	// and lookup object in project
-	const VICUS::Object * obj = project().objectByUniqueId(selObjectUniqueId);
+	const VICUS::Object * obj = project().objectById(selObjectID);
 	const VICUS::Building * b = dynamic_cast<const VICUS::Building *>(obj);
 	if (b != nullptr) {
 		m_currentBuilding = b;
@@ -223,7 +223,7 @@ void SVPropFloorManagerWidget::on_pushButtonAddBuilding_clicked() {
 	if (text.isEmpty()) return;
 	// modify project
 	VICUS::Building b;
-	b.m_id = VICUS::uniqueId(project().m_buildings);
+	b.m_id = project().nextUnusedID();
 	b.m_displayName = text;
 	SVUndoAddBuilding * undo = new SVUndoAddBuilding(tr("Adding building '%1'").arg(b.m_displayName), b, true);
 	undo->push(); // this will update our tree widget
@@ -247,7 +247,7 @@ void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 	}
 	Q_ASSERT(m_currentBuilding != nullptr);
 
-	unsigned int buildingUniqueID = m_currentBuilding->uniqueID();
+	unsigned int buildingUniqueID = m_currentBuilding->m_id;
 
 	std::set<QString> existingNames;
 	for (const VICUS::BuildingLevel & bl : m_currentBuilding->m_buildingLevels)
@@ -258,7 +258,7 @@ void SVPropFloorManagerWidget::on_pushButtonAddLevel_clicked() {
 
 	// modify project
 	VICUS::BuildingLevel bl;
-	bl.m_id = VICUS::uniqueId(m_currentBuilding->m_buildingLevels);
+	bl.m_id = project().nextUnusedID();
 	bl.m_displayName = text;
 	SVUndoAddBuildingLevel * undo = new SVUndoAddBuildingLevel(tr("Adding building level '%1'").arg(bl.m_displayName), buildingUniqueID, bl, true);
 	undo->push(); // this will update our tree widget

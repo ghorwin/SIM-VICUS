@@ -78,7 +78,7 @@ struct PickObject {
 		/*! Stores the unique ID of the clicked-on object for m_snapPointType == SP_Object.
 			For m_snapPointType == RT_GridPlane, this holds the index of the plane in the Vic3DScene::m_gridPlanes vector.
 		*/
-		unsigned int	m_uniqueObjectID = 0;
+		unsigned int	m_objectID = 0;
 		/*! Stores the index of a hole/window or any other embedded object. */
 		int				m_holeIdx = -1;
 

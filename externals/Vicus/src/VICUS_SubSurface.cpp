@@ -27,14 +27,6 @@
 
 namespace VICUS {
 
-SubSurface SubSurface::clone() const {
-	SubSurface r(*this); // create new SubSurface with same unique ID
-	Object & o = r;
-	(Object&)r = o.clone(); // assign new ID only
-	return r;
-}
-
-
 void SubSurface::updateColor() {
 	if (m_subSurfaceComponentInstance == nullptr) {
 		// no subsurface assigned -> opaque light gray

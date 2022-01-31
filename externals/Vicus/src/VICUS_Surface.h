@@ -46,14 +46,13 @@ class ComponentInstance;
 class Surface : public Object {
 	VICUS_READWRITE_PRIVATE
 public:
+		/*! Type-info string. */
+		const char * typeinfo() const override { return "Surface"; }
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Sets default surface color based on inclination of associated plane geometry. */
 	void initializeColorBasedOnInclination();
-
-	/*! Creates a copy of the surface object but with a new unique ID. */
-	Surface clone() const;
 
 	void updateParents();
 

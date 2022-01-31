@@ -153,9 +153,9 @@ void SVPropBuildingZoneTemplatesWidget::zoneTemplateSelectionChanged() {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				// skip all rooms that do not have the same zone template as we have
 				if (r.m_idZoneTemplate != zt->m_id) continue;
-				nodeIDs.insert(r.uniqueID()); // Mind: unique IDs!
+				nodeIDs.insert(r.m_id); // Mind: unique IDs!
 				for (const VICUS::Surface & s : r.m_surfaces)
-					nodeIDs.insert(s.uniqueID()); // Mind: unique IDs!
+					nodeIDs.insert(s.m_id); // Mind: unique IDs!
 			}
 		}
 	}
@@ -186,7 +186,7 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonAssignZoneTemplate_clicked(
 	for (const VICUS::Object * o : objs) {
 		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
 		if (room == nullptr) continue; // skip all but rooms
-		modifiedRoomIDs.push_back(room->uniqueID());
+		modifiedRoomIDs.push_back(room->m_id);
 	}
 	// now create an undo action for modifying zone template assignments
 	SVUndoModifyRoomZoneTemplateAssociation * undo = new SVUndoModifyRoomZoneTemplateAssociation(
@@ -245,7 +245,7 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonExchangeZoneTemplates_click
 		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(o);
 		if (room == nullptr) continue; // skip all but rooms
 		if (room->m_idZoneTemplate == oldId)
-			modifiedRoomIDs.push_back(room->uniqueID()); // Mind: unique IDs!
+			modifiedRoomIDs.push_back(room->m_id); // Mind: unique IDs!
 	}
 
 
@@ -287,9 +287,9 @@ void SVPropBuildingZoneTemplatesWidget::on_pushButtonSelectObjectsWithZoneTempla
 
 	std::set<unsigned int> objIds;
 	for(const VICUS::Room *r : m_zoneTemplateAssignments[zt]){
-		objIds.insert(r->uniqueID());
+		objIds.insert(r->m_id);
 		for (const VICUS::Surface &s : r->m_surfaces)
-			objIds.insert(s.uniqueID());
+			objIds.insert(s.m_id);
 	}
 
 	QString undoText;

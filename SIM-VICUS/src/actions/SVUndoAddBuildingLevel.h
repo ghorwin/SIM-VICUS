@@ -47,7 +47,7 @@ private:
 	/*! If true, the change event sent is BuildingTopologyChanged, otherwise BuildingGeometryChanged. */
 	bool					m_topologyOnly;
 
-	unsigned int			m_buildingUUID;
+	unsigned int			m_buildingID;
 };
 
 
