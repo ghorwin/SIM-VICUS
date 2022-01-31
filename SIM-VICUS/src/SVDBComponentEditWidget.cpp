@@ -200,8 +200,8 @@ void SVDBComponentEditWidget::updateInput(int id) {
 			layer.m_id = (int)matID;
 			layers.push_back(layer);
 		}
-		m_ui->graphicsViewConstruction->m_leftSideLabel = tr("Sida A");
-		m_ui->graphicsViewConstruction->m_rightSideLabel = tr("Sida B");
+		m_ui->graphicsViewConstruction->m_leftSideLabel = tr("Side A");
+		m_ui->graphicsViewConstruction->m_rightSideLabel = tr("Side B");
 		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
 												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
 												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
