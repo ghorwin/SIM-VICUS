@@ -207,16 +207,18 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	SVDatabase & db = SVSettings::instance().m_db; // readability improvement
 
+	unsigned int nextID = 100000; /// TODO : allow user to set a base ID to start numbering from
+
 	VICUS::Project & vp = m_importedProject; // readability improvement
 	vp = VICUS::Project(); // clear any previous data
 
 	vp.m_buildings.resize(1);
 	vp.m_buildings[0].m_buildingLevels.resize(1);
-	vp.m_buildings[0].m_id = vp.m_buildings[0].m_id;
+	vp.m_buildings[0].m_id = ++nextID;
 	vp.m_buildings[0].m_displayName = tr("Imported IDF Building Geometry");
 
 	VICUS::BuildingLevel & bl = vp.m_buildings[0].m_buildingLevels[0];
-	bl.m_id = bl.m_id;
+	bl.m_id = ++nextID;
 	bl.m_displayName = tr("Default building level");
 
 	// count all elements to be imported
@@ -261,6 +263,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// generate VICUS::Material
 		VICUS::Material mat;
 		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
+		mat.m_id = ++nextID;
 		mat.m_displayName.setEncodedString(matName.toStdString() );
 		mat.m_color = SVStyle::randomColor();
 
@@ -300,13 +303,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	for (const EP::WindowMaterial & m : prj.m_windowMaterial) {
 		// generate VICUS::WindowGlazingSystem
 
-		VICUS::WindowGlazingSystem mat;
+		VICUS::WindowGlazingSystem glazing;
+		glazing.m_id = ++nextID;
 		QString matName = codec->toUnicode(m.m_name.c_str()); // Mind text encoding here!
-		mat.m_displayName.setEncodedString(matName.toStdString() );
-		mat.m_color = SVStyle::randomColor();
-		mat.m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
+		glazing.m_displayName.setEncodedString(matName.toStdString() );
+		glazing.m_color = SVStyle::randomColor();
+		glazing.m_modelType = VICUS::WindowGlazingSystem::MT_Simple;
 
-		VICUS::KeywordList::setParameter(mat.m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m.m_uValue);
+		VICUS::KeywordList::setParameter(glazing.m_para, "WindowGlazingSystem::para_t", VICUS::WindowGlazingSystem::P_ThermalTransmittance, m.m_uValue);
 		//create a default spline for SHGC
 		std::vector<double> angles;
 		std::vector<double> values;
@@ -328,15 +332,15 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		for (double & v : values)
 			v *= m.m_SHGC;
 
-		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name = "SHGC";
-		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit.set("Deg");
-		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_yUnit.set("---");
-		mat.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, values);
+		glazing.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_name = "SHGC";
+		glazing.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_xUnit.set("Deg");
+		glazing.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_yUnit.set("---");
+		glazing.m_splinePara[VICUS::WindowGlazingSystem::SP_SHGC].m_values.setValues(angles, values);
 
 		// color and ID don't matter for now, try to find similar material in DB
 		bool found = false;
 		for (const std::pair<const unsigned int, VICUS::WindowGlazingSystem> & dbMat : db.m_windowGlazingSystems) {
-			if (dbMat.second.equal(&mat) != VICUS::AbstractDBElement::Different) {
+			if (dbMat.second.equal(&glazing) != VICUS::AbstractDBElement::Different) {
 				// re-use this material
 				IBK::IBK_Message( IBK::FormatString("  %1 -> using existing window glazing system '%2' [#%3] \n")
 								  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left)
@@ -349,7 +353,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 		if (!found) {
 			// no matching material found, add new material to DB
-			unsigned int newID = db.m_windowGlazingSystems.add(mat);
+			unsigned int newID = db.m_windowGlazingSystems.add(glazing);
 			IBK::IBK_Message( IBK::FormatString("  %1 -> imported with ID #%2\n")
 							  .arg("'"+matName.toStdString()+"'", 40, std::ios_base::left).arg(newID), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 			idfWindowGlazingSystem2VicusIDs.push_back(newID);
@@ -462,6 +466,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		// generate VICUS::ConstructionType
 		VICUS::Construction con;
 		VICUS::Window window;
+		window.m_id = ++nextID;
 
 
 		QString conName = codec->toUnicode(construction.m_name.c_str()); // Mind text encoding here!
@@ -517,6 +522,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 			con.m_dataSource.setEncodedString("IDF Import");
 
 			VICUS::Construction conRev(con);
+			conRev.m_id = ++nextID;
 			std::reverse(conRev.m_materialLayers.begin(), conRev.m_materialLayers.end());
 
 			bool found = false;
@@ -613,6 +619,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	unsigned int bcIDSurface = VICUS::INVALID_ID; // holds the ID of inside surfaces
 	{
 		VICUS::BoundaryCondition bcSurface;
+		bcSurface.m_id = ++nextID;
 		QString bcName = tr("Inside surface");
 		bcSurface.m_displayName.setEncodedString(bcName.toStdString());
 		bcSurface.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
@@ -647,6 +654,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	unsigned int bcIDGround = VICUS::INVALID_ID;
 	{
 		VICUS::BoundaryCondition bc;
+		bc.m_id = ++nextID;
 		QString bcName = tr("Ground surface");
 		bc.m_displayName.setEncodedString(bcName.toStdString());
 		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
@@ -683,6 +691,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	unsigned int bcIDAdiabatic= VICUS::INVALID_ID;
 	{
 		VICUS::BoundaryCondition bc;
+		bc.m_id = ++nextID;
 		QString bcName = tr("Adiabatic surface");
 		bc.m_displayName.setEncodedString(bcName.toStdString());
 		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
@@ -716,6 +725,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 	unsigned int bcIDOutside= VICUS::INVALID_ID;
 	{
 		VICUS::BoundaryCondition bc;
+		bc.m_id = ++nextID;
 		QString bcName = tr("Outside surface");
 		bc.m_displayName.setEncodedString(bcName.toStdString());
 		bc.m_heatConduction.m_modelType = VICUS::InterfaceHeatConduction::MT_Constant;
@@ -753,7 +763,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Room r;
-		r.m_id = r.m_id;
+		r.m_id = ++nextID;
 		r.m_displayName = codec->toUnicode(z.m_name.c_str()); // Mind text encoding here!
 
 		// remember zone name - id association
@@ -803,7 +813,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		unsigned idx = zoneIt->second;
 
 		VICUS::Surface surf;
-		surf.m_id = surf.m_id;
+		surf.m_id = ++nextID;
 		surf.m_displayName = codec->toUnicode(bsd.m_name.c_str()); // Mind text encoding here!
 
 		// set the polygon of the BSD in the surface; the polygon will be checked and the triangulation will be computed,
@@ -887,6 +897,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// we first create a component with the referenced construction
 		VICUS::Component com;
+		com.m_id = ++nextID;
 		// lookup construction
 		unsigned int conIdx = VICUS::elementIndex(prj.m_constructions, bsd.m_constructionName);
 		if (conIdx == prj.m_constructions.size()) {
@@ -1037,7 +1048,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	// we need to collect a vector of subsurfaces for each surface to add to
 	// also, we need to create subsurface components and reference these
-
+	vp.updatePointers(); // remember to update pointer reference table before calling surfaceByID
 
 	IBK::IBK_Message("\nImporting windows (sub-surfaces)...\n", IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD);
 	for (const EP::FenestrationSurfaceDetailed &fsd : prj.m_fsd) {
@@ -1056,7 +1067,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 
 		VICUS::Surface * surf = vp.surfaceByID(bsd->second);
+		if  (surf == nullptr) {
 		IBK_ASSERT(surf != nullptr);
+		}
 
 		// now convert the 3D polyline into projected 2D coordinates
 
@@ -1077,7 +1090,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// set the subsurface
 		VICUS::SubSurface subSurf;
-		subSurf.m_id = subSurf.m_id;
+		subSurf.m_id = ++nextID;
 		subSurf.m_displayName = codec->toUnicode(fsd.m_name.c_str()); // Mind text encoding here!
 		subSurf.m_polygon2D.setVertexes(subSurfaceVertexes);
 		if (!subSurf.m_polygon2D.isValid()) {
@@ -1120,22 +1133,23 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		// we first create a component with the referenced construction
 		VICUS::SubSurfaceComponent com;
+		com.m_id = ++nextID;
 
 		//set up type
 		switch (fsd.m_surfaceType ) {
-		case EP::FenestrationSurfaceDetailed::ST_Door:
-			com.m_type = VICUS::SubSurfaceComponent::CT_Door;
-			break;
-		case EP::FenestrationSurfaceDetailed::ST_GlassDoor:
-		case EP::FenestrationSurfaceDetailed::ST_Window:
-			com.m_type = VICUS::SubSurfaceComponent::CT_Window;
-			break;
-		case EP::FenestrationSurfaceDetailed::NUM_ST: {
-			IBK::IBK_Message(IBK::FormatString("FSD '%1' does not have a supported type.")
-							 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
-							 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
-			continue;
-		}
+			case EP::FenestrationSurfaceDetailed::ST_Door:
+				com.m_type = VICUS::SubSurfaceComponent::CT_Door;
+				break;
+			case EP::FenestrationSurfaceDetailed::ST_GlassDoor:
+			case EP::FenestrationSurfaceDetailed::ST_Window:
+				com.m_type = VICUS::SubSurfaceComponent::CT_Window;
+				break;
+			case EP::FenestrationSurfaceDetailed::NUM_ST: {
+				IBK::IBK_Message(IBK::FormatString("FSD '%1' does not have a supported type.")
+								 .arg(codec->toUnicode(fsd.m_constructionName.c_str()).toStdString())
+								 .arg(fsdName.toStdString()), IBK::MSG_ERROR, FUNC_ID);
+				continue;
+			}
 		}
 
 		// lookup construction
@@ -1277,15 +1291,18 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 		ssci.m_idSubSurfaceComponent = comId;
 
-		VICUS::SubSurface * subsurf = vp.subSurfaceByID(ssci.m_idSideASurface); //hier kann ein nullptr drin sein
-		switch (com.m_type) {
-		case VICUS::SubSurfaceComponent::CT_Window:
-			subsurf->m_color = QColor(96,96,255,64);
-			break;
-		case VICUS::SubSurfaceComponent::CT_Door:
-		case VICUS::SubSurfaceComponent::CT_Miscellaneous:
-		case VICUS::SubSurfaceComponent::NUM_CT:
-			subsurf->m_color = QColor(164,164,164,255);
+		VICUS::SubSurface * subsurf = vp.subSurfaceByID(ssci.m_idSideASurface);
+		// Mind: nullptr is possible here!
+		if (subsurf != nullptr) {
+			switch (com.m_type) {
+				case VICUS::SubSurfaceComponent::CT_Window:
+					subsurf->m_color = QColor(96,96,255,64);
+					break;
+				case VICUS::SubSurfaceComponent::CT_Door:
+				case VICUS::SubSurfaceComponent::CT_Miscellaneous:
+				case VICUS::SubSurfaceComponent::NUM_CT:
+					subsurf->m_color = QColor(164,164,164,255);
+			}
 		}
 
 		//not used now
@@ -1313,7 +1330,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		updateProgress(&dlg, progressTimer, ++count);
 
 		VICUS::Surface surf;
-		surf.m_id = surf.m_id;
+		surf.m_id = ++nextID;
 		surf.m_displayName = codec->toUnicode(sh.m_name.c_str()); // Mind text encoding here!
 		surf.setPolygon3D( VICUS::Polygon3D( sh.m_polyline ) );
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
