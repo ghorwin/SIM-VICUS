@@ -71,7 +71,7 @@ private slots:
 private:
 
 	/*! Transfers data from read project to VICUS::Project. */
-	void transferData(const EP::Project & prj);
+	void transferData(const EP::Project & prj, unsigned int startID);
 
 	/*! Displays material/construction/zone names with non-latin1 characters in selected encoding. */
 	void updateEncodingPreview();

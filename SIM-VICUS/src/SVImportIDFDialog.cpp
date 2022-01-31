@@ -191,7 +191,8 @@ int constructionType(const std::string &conName, const EP::Project &prj, std::st
 	return result;
 }
 
-void SVImportIDFDialog::transferData(const EP::Project & prj) {
+
+void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int startID) {
 	FUNCID(SVImportIDFDialog::transferData);
 
 	m_ui->plainTextEdit->clear();
@@ -207,7 +208,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 
 	SVDatabase & db = SVSettings::instance().m_db; // readability improvement
 
-	unsigned int nextID = 100000; /// TODO : allow user to set a base ID to start numbering from
+	unsigned int nextID = startID;
 
 	VICUS::Project & vp = m_importedProject; // readability improvement
 	vp = VICUS::Project(); // clear any previous data
@@ -1067,9 +1068,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj) {
 		}
 
 		VICUS::Surface * surf = vp.surfaceByID(bsd->second);
-		if  (surf == nullptr) {
 		IBK_ASSERT(surf != nullptr);
-		}
 
 		// now convert the 3D polyline into projected 2D coordinates
 
@@ -1411,8 +1410,13 @@ void SVImportIDFDialog::on_pushButtonMerge_clicked() {
 
 void SVImportIDFDialog::on_pushButtonImport_clicked() {
 	try {
+		// we assume, that the user want's to add the project to the existing project, so
+		// start numbering in higher ID space
+		unsigned int nextID = 10000;
+		if (SVProjectHandler::instance().isValid())
+			nextID = project().nextUnusedID();
 		// now transfer data to temporary VICUS project structure.
-		transferData(*m_idfProject);
+		transferData(*m_idfProject, nextID);
 		QMessageBox::information(this, tr("IDF Import"),
 								 tr("IDF data imported, successfully. Please review the import log for warnings!"));
 	}
