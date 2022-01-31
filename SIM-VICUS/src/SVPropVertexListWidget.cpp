@@ -927,9 +927,8 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	double area = sFloor.geometry().area();
 	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
 
-	// TODO Dirk: compute roof volume, this should be done by NewGeometryObject
-	double volume = 10;
-	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, volume);
+	// compute roof volume
+	r.calculateVolume();
 
 	// transfer default colors
 	for (VICUS::Surface & s : r.m_surfaces)
