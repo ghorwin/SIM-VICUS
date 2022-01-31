@@ -161,7 +161,7 @@ void SVDBSubSurfaceComponentEditWidget::updateInput(int id) {
 		m_ui->lineEditWindowName->setText(QtExt::MultiLangString2QString(win->m_displayName));
 		double UValue;
 		// Take for uvalue calculation the surface resistance from the side A and B if this exist.
-		// If all resistance are zero -> take standard resistance of 0.17+0.04 = 0.21
+		// If all resistance are zero -> take standard resistance of 0.13+0.04 = 0.17
 		bool validUValue = false;
 		if (surfaceResistanceSideA>0 || surfaceResistanceSideB>0)
 			validUValue = win->calculateUValue(UValue,
