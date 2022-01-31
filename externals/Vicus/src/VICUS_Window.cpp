@@ -136,10 +136,19 @@ bool Window::isValid() const {
 
 
 bool Window::calculateUValue(double & UValue, const VICUS::Database<Material> & materials,
-							 const VICUS::Database<WindowGlazingSystem> & glazingSystem,
-							 double ri, double re) const
-{
+							 const VICUS::Database<WindowGlazingSystem> & glazingSystems,
+							 double ri, double re) const {
+
 	UValue = -1;
+	if(m_idGlazingSystem == VICUS::INVALID_ID)
+		return false;
+
+	const WindowGlazingSystem *glSys = glazingSystems[m_idGlazingSystem];
+
+	if(glSys == nullptr)
+		return false;
+
+	UValue = 1/(1/glSys->uValue() + ri + re);
 	return true;
 }
 

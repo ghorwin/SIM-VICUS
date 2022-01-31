@@ -73,7 +73,7 @@ public:
 	/*! Computes the u-Value. */
 	bool calculateUValue(double & UValue,
 						 const VICUS::Database<Material> & materials,
-						 const VICUS::Database<WindowGlazingSystem> & glazingSystem,
+						 const VICUS::Database<WindowGlazingSystem> & glazingSystems,
 						 double ri, double re) const;
 
 	// *** PUBLIC MEMBER VARIABLES ***
