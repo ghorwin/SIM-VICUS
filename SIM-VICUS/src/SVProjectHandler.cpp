@@ -291,7 +291,7 @@ bool SVProjectHandler::importProject(VICUS::Project * project) {
 	have_modified_project = importEmbeddedDB(*m_project); // Note: project may be modified in case IDs were adjusted
 
 	// fix problems in the project; will set have_modified_project to true if fixes were applied
-	fixProject(have_modified_project);
+	fixProject(*m_project, have_modified_project);
 
 	// this will clear the modified flag again (since we just read the project) except if we had made some automatic
 	// fixes above
