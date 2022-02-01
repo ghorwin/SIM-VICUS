@@ -373,6 +373,8 @@ Die vom linearen Spline gelieferten Werte können als linear/konstant interpolie
 Bei linearen Splines wird die Schrittglättung *nicht* vom Solver angewendet. Es ist Sache des Anwenders, geeignete Daten bereitzustellen oder durch langsame Simulationszeiten bestraft zu werden.
 ====
 
+### Definition von Jahreszeitplänen im XML-File
+
 Innerhalb des XML-tags `AnnualSchedules` gibt es ein oder mehrere XML-Tochtertags `ScheduleGroup`, jedes mit einem obligatorischen XML-Attribut `objectList`. Dieses referenziert, genau wie bei den täglichen Zyklusplänen eine Objektliste und damit Objekte, auf die sich die geplanten Variablen beziehen. <<ex_AnnualSchedule>> zeigt ein Beispiel für jährliche Zeitpläne, die innerhalb einer einzigen `ScheduleGroup` definiert sind.
 
 :xrefstyle: basic 
@@ -407,7 +409,50 @@ Die eigentlichen Daten werden in den XML-tags `AnnualSchedule` angegeben, die ei
 
 Die Einheit des X-Wertes muss eine Zeiteinheit sein. Die Einheit des Y-Wertes ist die Einheit der geplanten Menge.
 
+### Definition von Jahreszeitplänen durch Einbindung von TSV-Dateien
 
+Ein Jahreszeitplan kann ebenso über die Einbindung von Daten aus einem *tsv-File eingebunden werden. Hierbei muss die Datei den folgenden Konventionen entsprechen:
+
+* Die Nullte Spalte enthält das Zeitintervall. Deren Einheit ist frei wählbar (a,d,h,min,s).
+* Die nachfolgenden Spalten müssen mit der jeweiligen Einheit des Parameters im Header versehen werden.
+
+
+[[ex_AnnualSchedule]]
+.Beispiel Tsv-Datei
+====
+[source,xml,tabsize=4]
+Time [h]	PersonHeatLoadPerAreaSchedule [W/m2]	EquipmentHeatLoadPerAreaSchedule [W/m2]		
+0	10	30
+1	15	30
+2	20	30
+3	10	30
+4	20	30
+...
+====
+
+
+[[ex_AnnualSchedule]]
+.Definition von Jahresplänen aus TSV-Datei
+====
+[source,xml,tabsize=4]
+----
+<AnnualSchedules>
+    ...
+	<ScheduleGroup objectList="All zones">
+    	<AnnualSchedule name="PersonHeatLoadPerAreaSchedule" interpolationMethod="constant">
+			<TSVFile>$(Project Directory)/Schedules.tsv?1</TSVFile>
+		</AnnualSchedule>
+    </ScheduleGroup>
+    ...
+</AnnualSchedules>
+----
+====
+[NOTE]
+====
+Die Angabe der *Spalte* des zeitplangesteuerten Parameters aus dem TSV-File wird am Ende des Dateipfades festgelegt.
+
+<TSVFile>$(Project Directory)/Schedules.tsv?*1*</TSVFile>
+====
 
 [[schedule_variable_list]]
 ## Variablenliste
@@ -430,13 +475,12 @@ Die Variablenliste beschreibt alle Namen und die Einheiten, die in den Zeitplän
 |`MoistureLoad`|g/h|Feuchtelast
 |`CoolingPower`|W|Kühlleistung
 |`LightingPower`|W|Beleuchtungsleistung
-|`DomesticWaterSetpointTemperature`|C|Solltemperatur für Brauchwasser
-|`DomesticWaterMassFlow`|kg/s|Massenstrom des Brauchwasserbedarfs für die gesamte Zone (Warmwasser und Geräte)
 |`ThermalEnergyLossPerPerson`|W/Person|Energie der Aktivitäten einer einzelnen Person, die nicht als Heizwärme zur Verfügung steht
 |`TotalEnergyProductionPerPerson`|W/Person|Gesamtenergieproduktion des Körpers einer einzelnen Person bei einer bestimmten Tätigkeit
 |`MoistureReleasePerPerson`|kg/s|Feuchtigkeitsabgabe eines einzelnen Personenkörpers bei einer bestimmten Tätigkeit
 |`CO2EmissionPerPerson`|kg/s|CO2-Emissionsmassenstrom einer einzelnen Person bei einer bestimmten Tätigkeit
 |`MassFluxRate`|---|Fraktion des realen Massenstroms zum maximalen Massenstrom für verschiedene Tageszeiten
+|`PersonHeatLoadPerAreaSchedule`|W/m2|Interne Wärmelast infolge flächenabhängiger Personenbelegung
 |`PressureHead`|Pa|Versorgungsdruckhöhe einer Pumpe
 |`OccupancyRate`|---|Fraktion der realen Belegung zur maximalen Belegung für verschiedene Tageszeiten
 |`EquipmentUtilizationRatio`|---|Verhältnis des Verbrauchs für vorhandene elektrische Geräte
