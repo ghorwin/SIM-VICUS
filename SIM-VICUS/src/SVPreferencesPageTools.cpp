@@ -119,7 +119,7 @@ void SVPreferencesPageTools::updateUi() {
 
 	// search for installed x64 version of MasterSim
 	QFileInfo masterSim = s.m_masterSimExecutable;
-	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator.%1\\MasterSimulator.exe";
+	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator 0.%1\\MasterSimulator.exe";
 	for (int i=9; i>=0; --i) {
 		QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC).arg(i);
 		if (QFileInfo(masterSimLoc).exists()) {
@@ -129,7 +129,7 @@ void SVPreferencesPageTools::updateUi() {
 	}
 	if (masterSimPath.isEmpty()) {
 		// search for installed x86 version
-		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 2.%1\\MasterSimulator.exe";
+		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 0.%1\\MasterSimulator.exe";
 		for (int i=9; i>=0; --i) {
 			QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC2).arg(i);
 			if (QFileInfo(masterSimLoc).exists()) {
@@ -295,7 +295,7 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectMasterSim_clicked()
 	QString toolPath;
 #ifdef Q_OS_WIN
 	// search for installed x64 version of MasterSim
-	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator.%1\\MasterSimulator.exe";
+	const char * const MASTER_SIM_INSTALL_LOC = "c:\\Program Files\\IBK\\MasterSimulator 0.%1\\MasterSimulator.exe";
 	for (int i=9; i>=0; --i) {
 		QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC).arg(i);
 		if (QFileInfo(masterSimLoc).exists()) {
@@ -305,7 +305,7 @@ void SVPreferencesPageTools::on_pushButtonAutoDetectMasterSim_clicked()
 	}
 	if (toolPath.isEmpty()) {
 		// search for installed x86 version
-		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 2.%1\\MasterSimulator.exe";
+		const char * const MASTER_SIM_INSTALL_LOC2 = "c:\\Program Files (x86)\\IBK\\MasterSimulator 0.%1\\MasterSimulator.exe";
 		for (int i=9; i>=0; --i) {
 			QString masterSimLoc = QString(MASTER_SIM_INSTALL_LOC2).arg(i);
 			if (QFileInfo(masterSimLoc).exists()) {

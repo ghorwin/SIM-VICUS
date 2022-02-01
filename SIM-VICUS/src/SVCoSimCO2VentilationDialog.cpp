@@ -844,7 +844,7 @@ void SVCoSimCO2VentilationDialog::generateNandradFMU(NANDRAD::Project project, c
 	fmuDir.mkdir(libraryDir);
 
 	// copy the binaries
-	generateBinaries(installDir, libraryDir, "libNandradSolverFMI", modelName, version);
+	generateBinaries(installDir, libraryDir, "NandradSolverFMI", modelName, version);
 
 	if (success) {
 
@@ -1053,10 +1053,10 @@ void SVCoSimCO2VentilationDialog::generateBinaries(const QString & sourceDir,
 
 #ifdef IBK_DEBUG
 	if(!version.isEmpty()) {
-		fmuLibFile = sourceDir + "/" + sourceName + ".so" + "." + version;
+		fmuLibFile = sourceDir + "/lib" + sourceName + ".so" + "." + version;
 	}
 	else {
-		fmuLibFile = sourceDir + "/" + sourceName + ".so";
+		fmuLibFile = sourceDir + "/lib" + sourceName + ".so";
 	}
 #else
 	fmuLibFile = sourceDir + "/" + sourceName + ".so";
@@ -1074,7 +1074,7 @@ void SVCoSimCO2VentilationDialog::generateBinaries(const QString & sourceDir,
 	}
 
 	// macos
-	fmuLibFile = sourceDir + "/" + sourceName + ".dylib";
+	fmuLibFile = sourceDir + "/lib" + sourceName + ".dylib";
 	if (QFile(fmuLibFile).exists()) {
 		fmuDir.mkdir(targetDir + "/darwin64");
 		QString targetPath = targetDir + "/darwin64/" + targetName + ".dylib";
@@ -1089,6 +1089,7 @@ void SVCoSimCO2VentilationDialog::generateBinaries(const QString & sourceDir,
 
 	// win64
 	fmuLibFile = sourceDir + "/" + sourceName + ".dll";
+
 	if (QFile(fmuLibFile).exists()) {
 		IBK::IBK_Message( IBK::FormatString("Copying Win64 FMU lib '%1'\n").arg(fmuLibFile.toStdString()),
 						  IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_INFO);
@@ -1326,7 +1327,7 @@ void SVCoSimCO2VentilationDialog::on_pushButtonGenerate_clicked() {
 
 	// create CO2ComfortVentilation.fmu
 	fmuDir.mkdir("binaries");
-	generateBinaries(installDir, binariesDir, "libCO2ComfortVentilation", "CO2ComfortVentilation", version);
+	generateBinaries(installDir, binariesDir, "CO2ComfortVentilation", "CO2ComfortVentilation", version);
 
 	if (success) {
 
@@ -1476,13 +1477,17 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 	{
 		QMessageBox::information(this, tr("Setup external tool"), tr("Please select first the path to "
 																  "MASTERSIM in the preferences dialog!"));
+
 		SVMainWindow::instance().preferencesDialog()->edit(0);
 		// TODO Andreas, find a way to show a mode-less window within a dialog's event loop
 
-		// ?? This is the same code as before
-//		masterSimPath = SVSettings::instance().m_masterSimExecutable;
-//		// still no valid path?
-//		if (masterSimPath.isEmpty() || !QFileInfo::exists(masterSimPath))
+		// ensure that preferences dialog is in foreground
+//		stackUnder(SVMainWindow::instance().preferencesDialog());
+
+		masterSimPath = SVSettings::instance().m_masterSimExecutable;
+
+		// still no valid path?
+		if (masterSimPath.isEmpty() || !QFileInfo::exists(masterSimPath))
 		return;
 	}
 

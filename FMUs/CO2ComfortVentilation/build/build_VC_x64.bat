@@ -22,7 +22,7 @@ if ERRORLEVEL 1 GOTO fail
 popd
 
 :: copy executable to bin/release dir
-copy /Y .\bb_VC_x64\%FMU_SHARED_LIB_NAME% ..\..\..\bin\release_x64\lib%FMU_SHARED_LIB_NAME%
+xcopy /Y .\bb_VC_x64\%FMU_SHARED_LIB_NAME% ..\..\..\bin\release_x64
 
 pause
 exit /b 0
