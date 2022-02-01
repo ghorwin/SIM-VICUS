@@ -270,6 +270,42 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 }
 
+bool SVProjectHandler::importProject(VICUS::Project * project) {
+	if(project == nullptr) {
+		return newProject(project);
+	}
+
+	createProject();
+	*m_project = *project; // copy over project
+	// update all internal pointers
+	m_project->updatePointers();
+
+	// initialize viewstate
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	SVViewStateHandler::instance().setViewState(vs);
+
+	// once the project has been read, perform "post-read" actions
+	bool have_modified_project = false;
+
+	// import embedded DB into our user DB
+	have_modified_project = importEmbeddedDB(*m_project); // Note: project may be modified in case IDs were adjusted
+
+	// fix problems in the project; will set have_modified_project to true if fixes were applied
+	fixProject(have_modified_project);
+
+	// this will clear the modified flag again (since we just read the project) except if we had made some automatic
+	// fixes above
+	m_modified = have_modified_project;
+
+	setModified(AllModified);
+
+	// signal UI that we now have a project
+	emit updateActions();
+
+	return true;
+}
+
+
 
 void SVProjectHandler::reloadProject(QWidget * parent) {
 	QString projectFileName = projectFile();

@@ -815,7 +815,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		// if we have no project, yet, create a new project based on our imported data
 		if (!m_projectHandler.isValid()) {
 			// create new project
-			m_projectHandler.newProject(&p); // emits updateActions()
+			m_projectHandler.importProject(&p); // emits updateActions()
 		}
 		else {
 			// ask user about preference
@@ -827,8 +827,9 @@ void SVMainWindow::onImportPluginTriggered() {
 				// close project if we have one
 				if (!m_projectHandler.closeProject(this)) // emits updateActions() if project was closed
 					return;
+
 				// create new project
-				m_projectHandler.newProject(&p); // emits updateActions()
+				m_projectHandler.importProject(&p); // emits updateActions()
 			}
 			else {
 				// The merging of project and referenced data is a bit complicated.

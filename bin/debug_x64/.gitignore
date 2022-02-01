@@ -14,4 +14,4 @@
 
 /AlgorithmTests
 /plugins/
-*.so*
+/dump_mesh_debug.txt

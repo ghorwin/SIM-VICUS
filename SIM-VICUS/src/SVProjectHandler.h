@@ -160,6 +160,12 @@ public:
 						const QString & filename,
 						bool silent);
 
+	/*! Import the given project instance (must not have one already) and resets project file name.
+		Emits updateActions() to signal that view state has changed.
+		\return Returns false if New Project Wizard was aborted by user.
+	*/
+	bool importProject(VICUS::Project * project);
+
 	/*! Closes project (discarding modifications) and reopens the project.
 		Project must have a valid filename already.
 	*/
