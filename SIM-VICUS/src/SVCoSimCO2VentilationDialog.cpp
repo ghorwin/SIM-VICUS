@@ -1059,7 +1059,7 @@ void SVCoSimCO2VentilationDialog::generateBinaries(const QString & sourceDir,
 		fmuLibFile = sourceDir + "/lib" + sourceName + ".so";
 	}
 #else
-	fmuLibFile = sourceDir + "/" + sourceName + ".so";
+	fmuLibFile = sourceDir + "/lib" + sourceName + ".so";
 #endif
 	if (QFile(fmuLibFile).exists()) {
 		fmuDir.mkdir(targetDir + "/linux64");
