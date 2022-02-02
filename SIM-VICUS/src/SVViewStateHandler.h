@@ -45,6 +45,7 @@ class SVGeometryView;
 class SVPropModeSelectionWidget;
 class SVLocalCoordinateView;
 class SVPropAddWindowWidget;
+class SVPreferencesDialog;
 
 /*! This singleton makes the current UI view state available to all.
 	Widgets that need to be informed from view state changes, should
@@ -115,8 +116,11 @@ public:
 	*/
 	SVPropModeSelectionWidget			*m_propModeSelectionWidget = nullptr;
 
-	/*! Pointer to property widget for adding windows/doors */
+	/*! Pointer to property widget for adding windows/doors. */
 	SVPropAddWindowWidget				*m_propAddWindowWidget = nullptr;
+
+	/*! Pointer Preferences Dialog. */
+	SVPreferencesDialog					*m_preferencesDialog = nullptr;
 
 public slots:
 
