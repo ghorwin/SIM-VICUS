@@ -537,6 +537,9 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 				case SVViewState::OM_MoveLocalCoordinateSystem :
 					m_mainScene.leaveCoordinateSystemAdjustmentMode(true);
 				break;
+				case SVViewState::OM_MeasureDistance :
+					m_mainScene.leaveMeasurementMode();
+				break;
 				default:
 					// default mode - Escape clears selection
 					m_mainScene.deselectAll();
