@@ -84,6 +84,7 @@ void KeyboardMouseHandler::mouseReleaseEvent(QMouseEvent *event) {
 	// and now someone clicked with the mouse into the scene.
 	// In this case, the key press event was not received by the keyboard mouse handler and hence needs to
 	// be set manually.
+
 	if (event->modifiers() & Qt::ShiftModifier)
 		pressKey(Qt::Key_Shift);
 	if (event->modifiers() & Qt::AltModifier)
@@ -101,9 +102,10 @@ void KeyboardMouseHandler::wheelEvent(QWheelEvent *event) {
 		m_wheelDelta += numPixels.y();
 	} else if (!numDegrees.isNull()) {
 		QPoint numSteps = numDegrees / 15;
-		m_wheelDelta += numSteps.y();
-	}
 
+		// unfortunately alt key changes x and y delta
+		m_wheelDelta += std::abs(numSteps.x() )>0 ? numSteps.x() : numSteps.y();
+	}
 	event->accept();
 }
 
