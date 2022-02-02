@@ -291,6 +291,15 @@ void SceneView::resetCamera(int position) {
 void SceneView::setMainGridVisible(bool visible) {
 	m_mainScene.m_gridVisible = visible;
 	renderLater();
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+
+	if(visible)
+		vs.m_snapOptionMask = SVViewState::Snap_GridPlane | SVViewState::Snap_ObjectCenter | SVViewState::Snap_ObjectEdgeCenter | SVViewState::Snap_ObjectVertex;
+	else
+		vs.m_snapOptionMask = SVViewState::Snap_ObjectCenter | SVViewState::Snap_ObjectEdgeCenter | SVViewState::Snap_ObjectVertex;
+
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
