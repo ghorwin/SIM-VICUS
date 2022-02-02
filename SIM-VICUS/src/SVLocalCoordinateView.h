@@ -49,6 +49,10 @@ public:
 	/*! Called from GeometryView when view state changes. */
 	void setMoveCoordinateSystemButtonChecked(bool checked);
 
+public slots:
+	/*! Connected to preference dialog and is called when style is changed from dark to white theme. */
+	void onStyleChanged();
+
 private slots:
 	void on_toolButtonAlignCoordinateSystem_clicked();
 	void on_toolButtonMoveCoordinateSystem_clicked();

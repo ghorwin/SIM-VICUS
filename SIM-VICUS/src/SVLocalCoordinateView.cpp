@@ -30,6 +30,7 @@
 
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
+#include "SVStyle.h"
 
 SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 	QWidget(parent),
@@ -40,6 +41,9 @@ SVLocalCoordinateView::SVLocalCoordinateView(QWidget *parent) :
 
 	// make us known to the world
 	SVViewStateHandler::instance().m_localCoordinateViewWidget = this;
+
+	// to set colors on start
+	onStyleChanged();
 }
 
 
@@ -65,6 +69,12 @@ void SVLocalCoordinateView::setAlignCoordinateSystemButtonChecked(bool checked) 
 
 void SVLocalCoordinateView::setMoveCoordinateSystemButtonChecked(bool checked) {
 	m_ui->toolButtonMoveCoordinateSystem->setChecked(checked);
+}
+
+void SVLocalCoordinateView::onStyleChanged() {
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditXValue);
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditYValue);
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditZValue);
 }
 
 
