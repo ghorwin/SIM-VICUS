@@ -35,6 +35,7 @@
 #include <QLineEdit>
 #include <QHeaderView>
 #include <QDebug>
+#include <QColor>
 #if QT_VERSION >= 0x050a00
 #include <QRandomGenerator>
 #endif
@@ -167,14 +168,20 @@ void SVStyle::formatListView(QListView * v) {
 }
 
 void SVStyle::formatLineEditReadOnly(QLineEdit *v) {
-	QString color;
+	// set palette
+	QString borderColor, fontColor;
 
-	if (SVSettings::instance().m_theme == SVSettings::TT_Dark)
-		color = "#3a3b3f";
-	else if (SVSettings::instance().m_theme == SVSettings::TT_White)
-		color = "#3a3b3f";
+	if (SVSettings::instance().m_theme == SVSettings::TT_Dark) {
+		borderColor = "#888888";
+		fontColor = "#afafaf";
+	}
+	else if (SVSettings::instance().m_theme == SVSettings::TT_White) {
+		borderColor = "#363636";
+		fontColor = "#2b2e31";
+	} // probably we will have a third design sometimes
 
-	QString styleSheet = QString("QLineEdit {color: #404040;} QLineEdit:hover, QLineEdit:focus { border: 1px solid %1;}").arg(color);
+	QString styleSheet = QString("QLineEdit {color: %1; border: 1px solid %2;} "
+								 "QLineEdit:hover, QLineEdit:focus { border: 1px solid %2;}").arg(fontColor).arg(borderColor);
 	v->setStyleSheet(styleSheet);
 }
 
@@ -252,6 +259,7 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		m_alternativeBackgroundBright				= "#73580e";
 		m_alternativeBackgroundDark					= "#57430b";
 		m_alternativeBackgroundText					= "#ffedce";
+
 		m_readOnlyEditFieldBackground				= "#5f7da0";
 		m_alternativeReadOnlyEditFieldBackground	= "#7f94ab";
 		m_errorEditFieldBackground					= "#ab4e4e";
@@ -311,7 +319,6 @@ void SVStyle::setStyle(SVSettings::ThemeType theme) {
 		// clear style sheet for default style.
 		qApp->setStyleSheet("");
 	}
-
 	// Note: other, widget-specific adjustments, like change of action icons etc. is handled
 	//       in the individual format update slots connected to the SVPreferencesPageStyle::styleChanged() slots.
 }

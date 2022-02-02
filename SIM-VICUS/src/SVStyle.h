@@ -81,8 +81,10 @@ public:
 	QColor				m_alternativeBackgroundDark; // TODO
 	QColor				m_alternativeBackgroundBright; // TODO
 	QColor				m_alternativeBackgroundText; // TODO
+
 	QColor				m_readOnlyEditFieldBackground;		// TODO : subtitute with QtExt::Style::ReadOnlyEditFieldBackground
 	QColor				m_alternativeReadOnlyEditFieldBackground; // TODO
+
 	QColor				m_errorEditFieldBackground; // TODO
 
 	QColor				m_userDBBackgroundBright;
@@ -97,7 +99,6 @@ public:
 
 private:
 	static SVStyle		*m_self;
-
 
 	/*! The hue value of the last randomly generated color. */
 	static double		m_randomColorHueValue;
