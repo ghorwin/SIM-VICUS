@@ -29,6 +29,10 @@
 #include "SVPreferencesPageTools.h"
 #include "SVPreferencesPageStyle.h"
 #include "SVPreferencesPageMisc.h"
+#include "SVViewStateHandler.h"
+#include "SVMeasurementWidget.h"
+#include "SVLocalCoordinateView.h"
+
 #include <QStackedWidget>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -56,6 +60,13 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 	m_ui->tabWidget->addTab(m_pageMisc, tr("Miscellaneous"));
 
 	// ... other pages
+
+	// register to view state handler
+	SVViewStateHandler::instance().m_preferencesDialog = this;
+
+	// we also register style changes for the read only line edits
+	connect(this->pageStyle(), &SVPreferencesPageStyle::styleChanged, SVViewStateHandler::instance().m_measurementWidget, &SVMeasurementWidget::onStyleChanged);
+	connect(this->pageStyle(), &SVPreferencesPageStyle::styleChanged, SVViewStateHandler::instance().m_localCoordinateViewWidget, &SVLocalCoordinateView::onStyleChanged);
 }
 
 
