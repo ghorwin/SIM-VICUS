@@ -29,8 +29,10 @@
 #include <QWidget>
 #include <QVector3D>
 
+class SVPreferencesDialog;
+
 namespace Ui {
-class SVMeasurementWidget;
+	class SVMeasurementWidget;
 }
 
 namespace Vic3D {
@@ -61,6 +63,11 @@ public:
 	/*! Color of measurementLine. */
 	QColor							m_color = Qt::red;
 
+public slots:
+	/*! Updates the read only line edits on style change. */
+	void onStyleChanged();
+
+
 private slots:
 	void on_pushButtonCopyInformation_clicked();
 
@@ -72,6 +79,8 @@ private:
 	/*! Cached value of start point, updated in showStartPoint. */
 	QVector3D						m_startPoint;
 
+	/*! User preferences. */
+	SVPreferencesDialog				*m_preferencesDialog									= nullptr;
 };
 
 #endif // SVMeasurementWidgetH

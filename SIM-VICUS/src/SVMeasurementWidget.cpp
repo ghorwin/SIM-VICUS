@@ -4,6 +4,9 @@
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 #include "SVStyle.h"
+#include "SVPreferencesDialog.h"
+#include "SVPreferencesPageStyle.h"
+
 #include "Vic3DMeasurementObject.h"
 
 #include <QClipboard>
@@ -22,16 +25,8 @@ SVMeasurementWidget::SVMeasurementWidget(QWidget *parent) :
 
 	SVViewStateHandler::instance().m_measurementWidget = this;
 
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistZ);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistance);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndZ);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartX);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartY);
-	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartZ);
+	// to set colors on start
+	onStyleChanged();
 }
 
 
@@ -99,5 +94,18 @@ void SVMeasurementWidget::on_pushButtonCopyInformation_clicked() {
 void SVMeasurementWidget::on_pushButtonColor_colorChanged() {
 	m_color = m_ui->pushButtonColor->color();
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+}
+
+void SVMeasurementWidget::onStyleChanged() {
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistZ);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditDistance);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditEndZ);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartX);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartY);
+	SVStyle::formatLineEditReadOnly(m_ui->lineEditStartZ);
 }
 
