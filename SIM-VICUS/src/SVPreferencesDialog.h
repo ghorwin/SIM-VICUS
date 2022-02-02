@@ -53,6 +53,13 @@ public:
 	/*! Provides read-only access to pageStyle() so that signals can be connected. */
 	const SVPreferencesPageStyle * pageStyle() const { return m_pageStyle; }
 
+signals:
+	/*! Emitted to signal a preference decision for the calling window/dialog event loop.*/
+	void closed();
+
+protected:
+	void closeEvent(QCloseEvent *event) override;
+
 private:
 	/*! Transfers values from Settings object to user interface (config pages).*/
 	void updateUi();

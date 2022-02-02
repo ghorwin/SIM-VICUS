@@ -42,6 +42,7 @@ SVPreferencesDialog::SVPreferencesDialog(QWidget * parent) :
 	QWidget(parent, Qt::Window | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint),
 	m_ui(new Ui::SVPreferencesDialog)
 {
+	setWindowFlags(Qt::Dialog);
 	m_ui->setupUi(this);
 
 
@@ -75,6 +76,12 @@ void SVPreferencesDialog::edit(int initialPage) {
 	}
 	else
 		show();
+}
+
+
+void SVPreferencesDialog::closeEvent(QCloseEvent * event) {
+	(void) event;
+	emit closed();
 }
 
 

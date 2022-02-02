@@ -1480,6 +1480,9 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 
 		SVMainWindow::instance().preferencesDialog()->edit(0);
 		// TODO Andreas, find a way to show a mode-less window within a dialog's event loop
+		QEventLoop loop;
+		connect(SVMainWindow::instance().preferencesDialog(), &SVPreferencesDialog::closed, &loop, &QEventLoop::quit);
+		loop.exec();
 
 		// ensure that preferences dialog is in foreground
 //		stackUnder(SVMainWindow::instance().preferencesDialog());
@@ -1492,7 +1495,10 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 	}
 
 	// launch MasterSim
-	bool res = QProcess::startDetached(masterSimPath, QStringList() << m_msimProjectFilePath, QString());
+	// launch solver - run option will always be -1
+	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
+
+	bool res = SVSettings::startProcess(masterSimPath, QStringList(), m_msimProjectFilePath, runOption);
 	if (!res) {
 		QMessageBox::critical(this, tr("Error starting external application"), tr("MASTERSIM '%1' could not be started.")
 							  .arg(masterSimPath));
