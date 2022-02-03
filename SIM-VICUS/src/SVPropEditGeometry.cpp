@@ -1735,6 +1735,16 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 
 
 void SVPropEditGeometry::on_lineEditXValue_editingFinished() {
+
+	// ==================================================================
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+	  return;
+	lineEdit->setModified( false );
+	// ==================================================================
+
 	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditXValue->isValid() ) {
 		m_ui->lineEditXValue->setValue( m_originalValues.m_z );
@@ -1748,9 +1758,21 @@ void SVPropEditGeometry::on_lineEditXValue_editingFinished() {
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
 	}
+
+	updateInputs();
 }
 
 void SVPropEditGeometry::on_lineEditYValue_editingFinished() {
+
+	// ==================================================================
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+	  return;
+	lineEdit->setModified( false );
+	// ==================================================================
+
 	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditYValue->isValid() ) {
 		m_ui->lineEditYValue->setValue( m_originalValues.m_y );
@@ -1764,9 +1786,21 @@ void SVPropEditGeometry::on_lineEditYValue_editingFinished() {
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
 	}
+
+	updateInputs();
 }
 
 void SVPropEditGeometry::on_lineEditZValue_editingFinished() {
+
+	// ==================================================================
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+	  return;
+	lineEdit->setModified( false );
+	// ==================================================================
+
 	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditZValue->isValid() ) {
 		m_ui->lineEditZValue->setValue( m_originalValues.m_z );
@@ -1780,5 +1814,7 @@ void SVPropEditGeometry::on_lineEditZValue_editingFinished() {
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
 	}
+
+
 }
 
