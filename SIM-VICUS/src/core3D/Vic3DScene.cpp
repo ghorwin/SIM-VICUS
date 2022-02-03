@@ -2171,6 +2171,8 @@ void Scene::enterMeasurementMode() {
 	m_measurementWidget->show();
 	// move measurement widget to correct position
 	SVViewStateHandler::instance().m_geometryView->moveMeasurementWidget();
+
+	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(SVViewStateHandler::instance().m_measurementWidget->m_color);
 }
 
 
@@ -2185,6 +2187,8 @@ void Scene::leaveMeasurementMode() {
 
 	m_measurementWidget->hide();
 	m_measurementWidget->reset();
+
+	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(QColor("burlywood"));
 }
 
 

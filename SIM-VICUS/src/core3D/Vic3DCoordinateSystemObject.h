@@ -141,6 +141,8 @@ public:
 	*/
 	int m_geometryTransformMode = 0;
 
+	void setOrbColor(const QColor &newOrbColor);
+
 private:
 	/*! Updates the inverse matrix. */
 	void updateInverse();
@@ -170,6 +172,8 @@ private:
 	/*! Holds positions of lines (x-x, y-y, z-z lines, 6 VertexC coordinates). */
 	QOpenGLBuffer				m_lineVbo;
 
+	/*! Main orb Color. */
+	QColor						m_orbColor = QColor("burlywood");
 
 	/*! Vertex buffer in CPU memory, holds data of all vertices (coords and normals). */
 	std::vector<Vertex>			m_vertexBufferData;

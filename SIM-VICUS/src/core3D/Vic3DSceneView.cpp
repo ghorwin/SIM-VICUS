@@ -208,6 +208,7 @@ void SceneView::toggleTranslateCoordinateSystem() {
 
 void SceneView::toggleMeasurementMode() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
+
 	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance)
 		m_mainScene.leaveMeasurementMode(); // leave measurement mode
 	else {

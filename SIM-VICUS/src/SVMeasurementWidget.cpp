@@ -8,6 +8,7 @@
 #include "SVPreferencesPageStyle.h"
 
 #include "Vic3DMeasurementObject.h"
+#include "Vic3DCoordinateSystemObject.h"
 
 #include <QClipboard>
 #include <QTextStream>
@@ -94,6 +95,7 @@ void SVMeasurementWidget::on_pushButtonCopyInformation_clicked() {
 void SVMeasurementWidget::on_pushButtonColor_colorChanged() {
 	m_color = m_ui->pushButtonColor->color();
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(m_color);
 }
 
 void SVMeasurementWidget::onStyleChanged() {

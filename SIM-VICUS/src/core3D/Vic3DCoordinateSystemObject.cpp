@@ -421,7 +421,7 @@ void CoordinateSystemObject::updateCoordinateSystemSize() {
 
 	m_objectStartIndexes[ELEMENT_CENTER_SPHERE_INDEX] = currentElementIndex;
 
-	addSphere(IBKMK::Vector3D(0,0,0), QColor("burlywood"), 0.15*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
+	addSphere(IBKMK::Vector3D(0,0,0), m_orbColor, 0.15*m_coordinateSystemSizeFactor, currentVertexIndex, currentElementIndex,
 			  m_vertexBufferData, m_colorBufferData, m_indexBufferData);
 
 	m_objectStartIndexes[ELEMENT_AXES_CYLINDER_INDEX] = currentElementIndex;
@@ -601,6 +601,11 @@ void CoordinateSystemObject::updateInverse() {
 	m_inverseMatrix.setToIdentity();
 	m_inverseMatrix.rotate(m_transform.rotation().conjugated());
 	m_inverseMatrix.translate(-m_transform.translation());
+}
+
+void CoordinateSystemObject::setOrbColor(const QColor &newOrbColor) {
+	m_orbColor = newOrbColor;
+	updateCoordinateSystemSize();
 }
 
 
