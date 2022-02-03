@@ -1494,9 +1494,12 @@ void SVCoSimCO2VentilationDialog::on_pushButtonLaunchMasterSim_clicked() {
 		return;
 	}
 
-	// launch MasterSim
-	// launch solver - run option will always be -1
+	// launch MasterSim - run option is only needed for linux, and otherwise it will always be -1
+#if defined(Q_OS_LINUX)
+	SVSettings::TerminalEmulators runOption = SVSettings::instance().m_terminalEmulator;
+#else
 	SVSettings::TerminalEmulators runOption = (SVSettings::TerminalEmulators)-1;
+#endif
 
 	bool res = SVSettings::startProcess(masterSimPath, QStringList(), m_msimProjectFilePath, runOption);
 	if (!res) {
