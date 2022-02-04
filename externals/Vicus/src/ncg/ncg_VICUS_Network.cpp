@@ -114,18 +114,6 @@ void Network::readXML(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
-			else if (cName == "HydraulicSubNetworks") {
-				const TiXmlElement * c2 = c->FirstChildElement();
-				while (c2) {
-					const std::string & c2Name = c2->ValueStr();
-					if (c2Name != "HydraulicNetwork")
-						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
-					NANDRAD::HydraulicNetwork obj;
-					obj.readXML(c2);
-					m_hydraulicSubNetworks.push_back(obj);
-					c2 = c2->NextSiblingElement();
-				}
-			}
 			else if (cName == "IBK:Parameter") {
 				IBK::Parameter p;
 				NANDRAD::readParameterElement(c, p);
@@ -225,18 +213,6 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
 		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
 	}
-
-	if (!m_hydraulicSubNetworks.empty()) {
-		TiXmlElement * child = new TiXmlElement("HydraulicSubNetworks");
-		e->LinkEndChild(child);
-
-		for (std::vector<NANDRAD::HydraulicNetwork>::const_iterator it = m_hydraulicSubNetworks.begin();
-			it != m_hydraulicSubNetworks.end(); ++it)
-		{
-			it->writeXML(child);
-		}
-	}
-
 
 	if (m_type != NUM_NET)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));

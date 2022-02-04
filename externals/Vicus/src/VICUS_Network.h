@@ -261,9 +261,6 @@ public:
 	/*! Origin of the network. */
 	IBKMK::Vector3D							m_origin = IBKMK::Vector3D(0.0, 0.0, 0.0);	// XML:E
 
-	/*! Hydraulic sub networks in the network. */
-	std::vector<NANDRAD::HydraulicNetwork>	m_hydraulicSubNetworks;						// XML:E
-
 	NetworkType								m_type = NET_DoublePipe;					// XML:E
 
 	/*! Network parameters (e.g. for pipe sizing algorithm) */

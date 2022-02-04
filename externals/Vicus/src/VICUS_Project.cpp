@@ -509,8 +509,10 @@ void Project::updatePointers() {
 
 	for (VICUS::Network & n : m_geometricNetworks) {
 		addAndCheckForUniqueness(&n);
-		for (VICUS::NetworkEdge & e : n.m_edges)
+		for (VICUS::NetworkEdge & e : n.m_edges){
+			e.m_id = nextUnusedID();
 			addAndCheckForUniqueness(&e);
+		}
 		for (VICUS::NetworkNode & nod : n.m_nodes)
 			addAndCheckForUniqueness(&nod);
 
