@@ -103,6 +103,11 @@ struct PickObject {
 	*/
 	std::vector<PickResult>	m_candidates;
 
+	/*! Here we store all possible orbit pick candidates.
+		Added will be only those, whose depths is between 0 and 1 (line-of-sight factor).
+	*/
+	std::vector<PickResult>	m_orbitCandidates;
+
 	IBKMK::Vector3D			m_lineOfSightOffset;
 	IBKMK::Vector3D			m_lineOfSightDirection;
 };

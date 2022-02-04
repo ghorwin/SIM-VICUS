@@ -543,7 +543,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				}
 				else {
 					// for orbit-controller, we  take the closest point of either
-					m_orbitControllerOrigin = IBKVector2QVector(nearestPoint);
+					bool snapGrid = SVViewStateHandler::instance().viewState().m_snapOptionMask & SVViewState::Snap_GridPlane;
+
+					m_orbitControllerOrigin = IBKVector2QVector(pickObject.m_orbitCandidates.front().m_pickPoint);
 					m_orbitControllerObject.m_transform.setTranslation(m_orbitControllerOrigin);
 
 					// Rotation matrix around origin point
@@ -2261,9 +2263,15 @@ void Scene::pick(PickObject & pickObject) {
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_GridPlane;
 			r.m_objectID = i;
-			r.m_depth = t;
-			r.m_pickPoint = intersectionPoint;
+			bool pickPlane = SVViewStateHandler::instance().viewState().m_snapOptionMask & SVViewState::Snap_GridPlane;
+			r.m_depth = pickPlane ? t : direction.magnitude();
+			r.m_pickPoint = pickPlane ? intersectionPoint : farPoint;
 			pickObject.m_candidates.push_back(r);
+
+			// also we store the orbit point
+			r.m_pickPoint = intersectionPoint;
+			r.m_depth = t;
+			pickObject.m_orbitCandidates.push_back(r);
 		}
 	}
 
@@ -2300,6 +2308,7 @@ void Scene::pick(PickObject & pickObject) {
 							else
 								r.m_objectID = s.m_id;
 							pickObject.m_candidates.push_back(r);
+							pickObject.m_orbitCandidates.push_back(r);
 						}
 					}
 				}
@@ -2326,6 +2335,7 @@ void Scene::pick(PickObject & pickObject) {
 			// TODO : Dirk, can "dump geometry" contain sub-surfaces?
 			r.m_objectID = s.m_id;
 			pickObject.m_candidates.push_back(r);
+			pickObject.m_orbitCandidates.push_back(r);
 		}
 	}
 
@@ -2353,6 +2363,7 @@ void Scene::pick(PickObject & pickObject) {
 				r.m_pickPoint = closestPoint; // this
 				r.m_objectID = no.m_id;
 				pickObject.m_candidates.push_back(r);
+				pickObject.m_orbitCandidates.push_back(r);
 			}
 		}
 
@@ -2378,6 +2389,7 @@ void Scene::pick(PickObject & pickObject) {
 				r.m_pickPoint = closestPoint;
 				r.m_objectID = e.m_id;
 				pickObject.m_candidates.push_back(r);
+				pickObject.m_orbitCandidates.push_back(r);
 			}
 		}
 	}
@@ -2400,12 +2412,14 @@ void Scene::pick(PickObject & pickObject) {
 				if (m_coordinateSystemObject.m_geometryTransformMode != CoordinateSystemObject::TM_None)
 					pickObject.m_candidates.clear();
 				pickObject.m_candidates.push_back(r);
+				pickObject.m_orbitCandidates.push_back(r);
 			}
 		}
 	}
 
 	// finally sort the pick candidates based on depth value
 	std::sort(pickObject.m_candidates.begin(), pickObject.m_candidates.end());
+	std::sort(pickObject.m_orbitCandidates.begin(), pickObject.m_orbitCandidates.end());
 
 #ifdef SHOW_PICK_TIME
 	qDebug() << "Pick duration = " << pickTimer.elapsed() << "ms";
