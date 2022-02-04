@@ -13,7 +13,7 @@ call %VCVARSALL_PATH%
 
 :: These environment variables can also be set externally
 if not defined JOM_PATH (
-	set JOM_PATH=c:\Qt\Tools\QtCreator\bin
+	set JOM_PATH=c:\Qt\Tools\QtCreator\bin\jom
 )
 if not defined CMAKE_PREFIX_PATH (
 	set CMAKE_PREFIX_PATH=C:\Qt\5.15.2\msvc2019_64

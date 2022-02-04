@@ -156,6 +156,8 @@ private:
 		in base SI units.
 	*/
 	std::vector<IBK::LinearSpline>					m_valueSpline;
+	/*! Corresponding interpolation method (only used for annual splines) */
+	std::vector<NANDRAD::LinearSplineParameter::interpolationMethod_t>		m_interpolationMethod;
 	/*! Variables, computed/updated during the calculation.	*/
 	std::vector<double>								m_results;
 };

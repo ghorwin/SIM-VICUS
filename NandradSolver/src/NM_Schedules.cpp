@@ -68,7 +68,11 @@ int Schedules::setTime(double t) {
 	// calculate all parameter values
 	double * result = &m_results[0]; // points to first double in vector with calculated spline values
 	for (unsigned int i = 0; i<m_results.size(); ++i) {
-		result[i] = m_valueSpline[i].value(t);
+		if (m_interpolationMethod[i] == NANDRAD::LinearSplineParameter::I_LINEAR ||
+			m_interpolationMethod[i] == NANDRAD::LinearSplineParameter::NUM_I)
+			result[i] = m_valueSpline[i].value(t);
+		else
+			result[i] = m_valueSpline[i].nonInterpolatedValue(t);
 	}
 	return 0;
 }
@@ -156,6 +160,8 @@ void Schedules::setup(NANDRAD::Project &project) {
 			m_valueSpline.push_back(IBK::LinearSpline());
 			// and initialize memory for corresponding result values
 			m_results.push_back(0);
+			// this is just a dummy to keep vector at same size
+			m_interpolationMethod.push_back(NANDRAD::LinearSplineParameter::NUM_I);
 
 			// now populate spline
 			IBK::LinearSpline & spl = m_valueSpline.back();
@@ -218,6 +224,7 @@ void Schedules::setup(NANDRAD::Project &project) {
 			m_variableUnits.push_back(spl.m_yUnit);
 			// now generate the linear splines
 			m_valueSpline.push_back(spl.m_values);
+			m_interpolationMethod.push_back(spl.m_interpolationMethod);
 			// and initialize memory for corresponding result values
 			m_results.push_back(0);
 		}

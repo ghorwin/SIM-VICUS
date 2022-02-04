@@ -101,7 +101,7 @@ TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != BuildingLevel().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+			e->SetAttribute("visible", "true");
 	TiXmlElement::appendSingleAttributeElement(e, "Elevation", nullptr, std::string(), IBK::val2string<double>(m_elevation));
 	TiXmlElement::appendSingleAttributeElement(e, "Height", nullptr, std::string(), IBK::val2string<double>(m_height));
 

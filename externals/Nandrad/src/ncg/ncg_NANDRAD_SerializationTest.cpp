@@ -261,7 +261,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	if (m_id2 != NANDRAD::INVALID_ID)
 		e->SetAttribute("id2", IBK::val2string<unsigned int>(m_id2));
 	if (m_flag1 != SerializationTest().m_flag1)
-		e->SetAttribute("flag1", IBK::val2string<bool>(m_flag1));
+			e->SetAttribute("flag1", "true");
 	e->SetAttribute("val1", IBK::val2string<double>(m_val1));
 	if (m_testBla != NUM_test)
 		e->SetAttribute("testBla", KeywordList::Keyword("SerializationTest::test_t",  m_testBla));

@@ -679,4 +679,3 @@ void SVSimulationOutputOptions::on_checkBoxDefaultBuildingOutputs_clicked(bool c
 	m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].set("CreateDefaultZoneOutputs", checked);
 }
 
-
