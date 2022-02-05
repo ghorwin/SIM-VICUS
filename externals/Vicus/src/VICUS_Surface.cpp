@@ -85,70 +85,9 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 
 
 void Surface::flip() {
-
-	// TODO  : Dirk
-
-	// compute 3D vertex coordinates of all subsurfaces
-	// flip polygon
-	// flip subsurface polygons (3D vertex variants)
-	// recompute 2D vertex coordinates for all subsurfaces
-
-	// we cache the sub surfaces
-	std::vector<std::vector<IBKMK::Vector3D>> copiedSubSurf3D;
-
-	const std::vector<IBKMK::Vector3D> &vertexes = m_geometry.polygon().vertexes();
-	std::vector<IBKMK::Vector3D> newVertexes;
-
-	// updated subsurfaces
-	std::vector<SubSurface> newSubSurfaces (m_subSurfaces.size() );
-
-	// cache 3D Points of SubSurfaces
-	for ( unsigned int i = 0; i<m_subSurfaces.size(); ++i) {
-		copiedSubSurf3D.push_back(std::vector<IBKMK::Vector3D>() );
-		const SubSurface &sub = m_subSurfaces[i];
-
-		for ( unsigned	int j = 0; j<sub.m_polygon2D.vertexes().size(); ++j ) {
-			const IBKMK::Vector2D &poly2D = sub.m_polygon2D.vertexes()[j];
-			IBKMK::Vector3D v = vertexes[0] + poly2D.m_x * geometry().localX() + poly2D.m_y * geometry().localY();
-			copiedSubSurf3D[i].push_back(v);
-		}
-	}
-
-	// we generate the new Polygon3D
-	for (unsigned int i=(unsigned int)vertexes.size(); i>0; --i)
-		newVertexes.push_back(vertexes[i-1]);
-
-	// construct the new Polygon3D
-	setPolygon3D(newVertexes);
-
-	std::vector<SubSurface> newSubSurf(m_subSurfaces.size());
-
-	// we update the subsurfaces
-	for ( unsigned int i=0; i<copiedSubSurf3D.size(); ++i ) {
-
-		Q_ASSERT(m_subSurfaces.size() == copiedSubSurf3D.size() );
-
-		// we construct a new Polygon2D to save calculated points
-		Polygon2D newPoly2D;
-
-		for ( unsigned int j=0; j<copiedSubSurf3D[i].size(); ++j ) {
-
-			Q_ASSERT(m_subSurfaces[i].m_polygon2D.vertexes().size() == copiedSubSurf3D[i].size() );
-
-			// we calculate our new points
-			IBKMK::Vector2D v;
-
-			if (!IBKMK::planeCoordinates(newVertexes[0], geometry().localX(), geometry().localY(), copiedSubSurf3D[i][j], v.m_x, v.m_y, 1e-4))
-				return;
-
-			newPoly2D.addVertex(v);
-
-		}
-
-		// new we finally updated the polygon2D in the subsurface
-		m_subSurfaces[i].m_polygon2D = newPoly2D;
-	}
+	m_polygon3D.setRotation(-1.0*m_polygon3D.normal(), m_polygon3D.localX());
 }
+
 
 void Surface::healGeometry(const std::vector<IBKMK::Vector3D> &poly3D) {
 	// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.

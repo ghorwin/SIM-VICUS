@@ -46,19 +46,28 @@
 
 namespace VICUS {
 
-// *** Polygon3D ***
+
+bool Polygon3D::operator!=(const Polygon3D & other) const {
+	// 3D polygon is equal when polylines match and all three vectors are the same
+	if (m_normal != other.m_normal)
+		return true;
+	if (m_localX != other.m_localX)
+		return true;
+	if (m_offset != other.m_offset)
+		return true;
+
+	if (m_polyline != other.m_polyline)
+		return true;
+	return false;
+}
 
 
 void Polygon3D::readXML(const TiXmlElement * element) {
-	FUNCID(Polygon3D::readXML);
+	readXMLPrivate(element); // when Polygon2D is read, it will be checked for validity already
 
-	// read data (throws an exception in case of errors)
-	NANDRAD::readVector3D(element, "Polygon3D", m_vertexes);
-
-	unsigned int nVert = m_vertexes.size();
-	checkPolygon();
-	if (nVert != m_vertexes.size())
-		IBK::IBK_Message(IBK::FormatString("Invalid polygon in project, removed invalid vertexes."), IBK::MSG_WARNING, FUNC_ID);
+	// now check the normal vector and xAxis and update the yAxis
+	// also marks the 3D vertexes as "dirty"
+	setRotation(m_normal, m_localX); // Might throw an exception if validity check fails
 }
 
 
@@ -66,13 +75,68 @@ TiXmlElement * Polygon3D::writeXML(TiXmlElement * parent) const {
 	if (*this == Polygon3D())
 		return nullptr;
 
-	return NANDRAD::writeVector3D(parent, "Polygon3D", m_vertexes);
+	return writeXMLPrivate(parent);
 }
 
 
-// Comparison operator !=
-bool Polygon3D::operator!=(const Polygon3D &other) const {
-	return IBKMK::Polygon3D::operator!=(other);
+bool Polygon3D::isValid() const {
+	if (m_normal == IBKMK::Vector3D())
+		return false; // never set a valid plane orientation
+	return m_polyline.isValid();
+}
+
+
+void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) {
+	FUNCID(Polygon3D::setRotation);
+
+	if (!IBK::nearly_equal<6>(normal.magnitudeSquared(), 1.0))
+		throw IBK::Exception("Normal vector does not have unit length!", FUNC_ID);
+	if (!IBK::nearly_equal<6>(xAxis.magnitudeSquared(), 1.0))
+		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
+	// check that the vectors are (nearly) orthogonal
+	double sp = normal.scalarProduct(xAxis);
+	if (!IBK::nearly_equal<6>(sp, 1.0))
+		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
+
+	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
+	m_normal = normal;
+	m_localX = xAxis;
+	normal.crossProduct(xAxis, m_localY); // Y = N x X - right-handed coordinate system
+	m_localY.normalize();
+	m_dirty = true; // mark 3D vertexes as dirty
+}
+
+
+IBKMK::Vector3D Polygon3D::centerPoint() const {
+	FUNCID(Polygon3D::centerPoint);
+	if (!isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+
+	size_t counter=0;
+	IBKMK::Vector3D vCenter;
+
+	for (const IBKMK::Vector3D & v : vertexes()) {
+		vCenter += v;
+		++counter;
+	}
+	vCenter/=static_cast<double>(counter);
+
+	return vCenter;
+}
+
+
+const std::vector<IBKMK::Vector3D> & Polygon3D::vertexes() const {
+	if (m_dirty) {
+		// re-compute 3D vertex coordinates
+		unsigned int vertexCount = m_polyline.vertexes().size();
+		m_vertexes.resize(vertexCount);
+		for (unsigned int i=0; i<vertexCount; ++i) {
+			const IBKMK::Vector2D & v2 = m_polyline.vertexes()[i];
+			m_vertexes[i] = m_offset + v2.m_x*m_localX + v2.m_y*m_localY;
+		}
+		m_dirty = false;
+	}
+	return m_vertexes;
 }
 
 
