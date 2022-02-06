@@ -6,10 +6,6 @@
 #
 ############################################
 
-# Enable this option, if you plan on doing some FMU debugging on Linux
-# This will cause all libraries depending on IBK to be statically linked
-#OPTIONS += FMU_Debugging
-
 # This option enables extensive runtime checks.
 #OPTIONS += sanitize_checks
 

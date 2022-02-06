@@ -10,12 +10,6 @@ TEMPLATE = lib
 # it contains all functions defined for casual libraries
 include( ../../../IBK/projects/Qt/IBK.pri )
 
-# we need IBK lib to be statically linked, to debug other IBK-related FMUs
-contains( OPTIONS, FMU_Debugging ) {
-	CONFIG -= shared
-	CONFIG += static
-}
-
 # finally we setup our custom library specfic things
 # like version number etc., we also may reset all
 #
