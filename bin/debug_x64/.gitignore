@@ -7,7 +7,7 @@
 /platforms/
 /styles/
 /translations/
-/libNandradSolverFMI.so.2*
+/libNandradSolverFMI.so.*
 /View3D
 /NandradFMUGenerator
 /View3D.log
@@ -15,3 +15,5 @@
 /AlgorithmTests
 /plugins/
 /dump_mesh_debug.txt
+/libCO2ComfortVentilation.so.*
+
