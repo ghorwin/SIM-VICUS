@@ -12,11 +12,21 @@
 This is all done by a script:
 
 ```bash
-# ran in this directory
-scripts/update_source_code_archive.sh
+# run in this directory
+update_source_code_archive.sh
+```
+Then enter the distro-specific release directory and create the release:
+
+```bash
+cd ubuntu-20.04-focal
+./newUpstreamVersion.sh
 ```
 
-Then enter the distro-specific release directory and create the release
+After creating the source package, you can locally build a binary package with:
+
+```bash
+./buildBinary.sh
+```
 
 ### Releases for same upstream version, but different distro
 

@@ -14,12 +14,12 @@ read -t 10 -n 1
 echo "*** STEP 1 : cloning SIM-VICUS.git ***" &&
 
 if [ ! -d "SIM-VICUS-git" ]; then
-  echo "Cloning github repo"
-  git clone https://github.com/ghorwin/SIM-VICUS.git SIM-VICUS-git
-else
-  echo "Reverting local changes and pulling newest revisions from github"
-  (cd SIM-VICUS-git && git reset --hard HEAD && git clean -fdx && git pull --rebase)
+  echo "Cloning github repo (creating a copy of the parent's git repo)" &&
+  rsync -a --delete --exclude="debian*" ../ SIM-VICUS-git/
+  # git clone https://github.com/ghorwin/SIM-VICUS.git SIM-VICUS-git
 fi &&
+echo "Reverting local changes and pulling newest revisions from github" && 
+(cd SIM-VICUS-git && git reset --hard HEAD && git clean -fdx && git pull --rebase) &&
 du -h --summarize SIM-VICUS-git/  && 
 
 # extract version number
