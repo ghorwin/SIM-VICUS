@@ -35,7 +35,7 @@ namespace VICUS {
 
 /*! Class Polygon3D stores a polygon of 3D points that lies in a plane.
 	The polygon is defined by means of a 2D polyline that is projected onto a plane in space.
-	This plane is defined through m_offset, m_normal and m_xAxis vectors.
+	This plane is defined through offset, normal and xAxis vectors.
 	\note The polygon implements 2D to 3D coordinate calculation using lazy evaluation. Hence, any operation
 		  requiring an update of the 3D vertexes marks the vector as "dirty".
 */
@@ -46,6 +46,9 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
+	/*! Initializing constructor. */
+	Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
+			  const IBKMK::Vector3D & offset);
 
 	VICUS_READWRITE
 	VICUS_COMP(Polygon3D)
@@ -72,6 +75,14 @@ public:
 
 	const Polygon2D & polyline() const { return m_polyline; }
 
+	// *** STATIC PUBLIC MEMBERS ***
+
+	/*! Attempts to construct a polygon from a given set of vertexes.
+		If the vertexes form an invalid polygon (not enough points, not in plane, collinear vectors etc.),
+		an IBK::Exception is thrown. If the function returns regularly, a valid polygon has been created.
+	*/
+	static Polygon3D from3DVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
+
 private:
 	/*! Offset of the polygon. */
 	IBKMK::Vector3D							m_offset;		// XML:E
@@ -86,7 +97,7 @@ private:
 
 	/*! Dirty flag, set to true whenever anything is modified that affects the 3D vertex coordinates. */
 	mutable	bool							m_dirty;
-	/*! Cached 3D vertexes, updated upon access when dirty is true set. */
+	/*! Cached 3D vertexes, updated upon access when dirty is true. */
 	mutable	std::vector<IBKMK::Vector3D>	m_vertexes;
 };
 

@@ -33,9 +33,7 @@
 namespace VICUS {
 
 /*! Class Polygon2D stores a polygon of 2D points.
-	Also provides utility functions for checking and simplifying polygon. The data structure ensures that the
-	polygon itselfs is always consistent, i.e. if isValid() returns true, it is guarantied to be non-winding and without
-	consecutive colinear or identical points. Therefore, the polygon can be triangulated right away.
+	This class merely wraps IBKMK::Polygon2D and provides read/write functionality.
 */
 class Polygon2D : public IBKMK::Polygon2D {
 public:
@@ -52,7 +50,6 @@ public:
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
 
 	VICUS_COMP(Polygon2D)
-
 };
 
 } // namespace VICUS

@@ -27,11 +27,10 @@
 #define VICUS_PlaneGeometryH
 
 #include <IBKMK_Vector3D.h>
+#include <IBKMK_Polygon3D.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Polygon3D.h"
-#include "VICUS_Polygon2D.h"
-
 #include "VICUS_PlaneTriangulationData.h"
 
 namespace VICUS {
@@ -52,7 +51,6 @@ namespace VICUS {
 class PlaneGeometry {
 public:
 
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	/*! Default constructor. */
@@ -61,7 +59,7 @@ public:
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 	*/
-	PlaneGeometry(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
+	PlaneGeometry(IBKMK::Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
 	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
@@ -131,7 +129,7 @@ public:
 	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
 
 	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
-	const Polygon2D & polygon2D() const { return (const Polygon2D &)m_polygon.polyline(); }
+	const Polygon2D & polygon2D() const { return m_polygon.polyline(); }
 
 	/*! Calculates surface area in m2. */
 	double area(int digits = 1) const;

@@ -819,7 +819,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 
 		// set the polygon of the BSD in the surface; the polygon will be checked and the triangulation will be computed,
 		// however, yet without holes
-		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+		VICUS::Polygon3D p = VICUS::Polygon3D::from3DVertexes(bsd.m_polyline);
+		// TODO : Error handling?
+		surf.setPolygon3D( p );
 
 		// we can only import a subsurface, if the surface itself has a valid polygon
 		if (!surf.geometry().isValid() && surf.polygon3D().vertexes().size() > 2) {

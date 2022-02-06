@@ -56,11 +56,6 @@ public:
 
 	void updateParents();
 
-	/*! Heals the geometry via projecting all polygon3D points onto a plane spanned by 3 connecting
-		edge point and taking the plane with the smallest squared deviation.
-		If this is successful it updates the 2D Points and triangulation. */
-	void healGeometry(const std::vector<IBKMK::Vector3D> & poly3D);
-
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 

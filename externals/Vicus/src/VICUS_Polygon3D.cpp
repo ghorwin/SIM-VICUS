@@ -35,6 +35,7 @@
 #include <IBK_messages.h>
 
 #include <IBKMK_3DCalculations.h>
+#include <IBKMK_Polygon3D.h>
 
 #include <NANDRAD_Utilities.h>
 
@@ -45,6 +46,18 @@
 #include <tinyxml.h>
 
 namespace VICUS {
+
+
+Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal,
+					 const IBKMK::Vector3D & localX, const IBKMK::Vector3D & offset) :
+	m_offset(offset), m_polyline(polyline)
+{
+	// guard against invalid polylines
+	if (!polyline.isValid())
+		m_polyline.clear();
+	else
+		setRotation(normal, localX);
+}
 
 
 bool Polygon3D::operator!=(const Polygon3D & other) const {
@@ -138,6 +151,74 @@ const std::vector<IBKMK::Vector3D> & Polygon3D::vertexes() const {
 	}
 	return m_vertexes;
 }
+
+
+Polygon3D Polygon3D::from3DVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
+	FUNCID(Polygon3D::from3DVertexes);
+	IBKMK::Polygon3D p(vertexes);
+	if (!p.isValid())
+		throw IBK::Exception("Invalid vertex vector, cannot construct valid polygon.", FUNC_ID);
+	// a valid polygon has at least 1 vertex and valid normal and localX vectors
+	Polygon3D newPoly = VICUS::Polygon3D((const VICUS::Polygon2D&)p.polyline(), p.normal(), p.localX(), p.vertexes()[0]);
+	return newPoly;
+}
+
+
+#if 0
+void Surface::healGeometry(const std::vector<IBKMK::Vector3D> &poly3D) {
+	// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
+	std::vector<double> deviations (poly3D.size(), 0);
+	// create a vector to hold the projected points for each of the plane variants
+	std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
+
+	// we iterate through all points and construct planes
+	double smallestDeviation = std::numeric_limits<double>::max();
+	unsigned int index = (unsigned int)-1;
+	for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
+
+		const IBKMK::Vector3D & offset = poly3D[i];
+
+		const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
+		const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
+
+		// we find our plane
+		// we now iterate again through all point of the polygon and
+		for (unsigned int j = 0; j<count; ++j ) {
+
+			if ( i == j ) {
+				projectedPoints[i][j] = offset;
+				continue;
+			}
+
+			// we take the current point
+			const IBKMK::Vector3D & vertex = poly3D[j];
+
+			// we find our projected points onto the plane
+			double x, y;
+			IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
+
+			// now we construct our projected points and find the deviation between the original points
+			// and their projection
+			projectedPoints[i][j] = offset + a*x + b*y;
+
+			// add up the distance between original vertex and projected point
+			// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
+			//       the expensive square-root calculation
+			deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+		}
+
+		// determines smallest deviation
+		if (deviations[i] < smallestDeviation) {
+			index = i;
+			smallestDeviation = deviations[i];
+		}
+	}
+
+	// take the best vertex set and use it for the polygon
+	setPolygon3D(projectedPoints[index]);
+}
+
+#endif
 
 
 } // namespace VICUS

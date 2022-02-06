@@ -57,11 +57,15 @@ namespace VICUS {
 
 // *** PlaneGeometry ***
 
-PlaneGeometry::PlaneGeometry(Polygon3D::type_t t,
-							 const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
-	m_polygon(t, a, b, c)
-{
-	triangulate();
+PlaneGeometry::PlaneGeometry(IBKMK::Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) {
+	// use special construction function from IBKMK::Polygon3D
+	IBKMK::Polygon3D p(t, a, b, c);
+	// if polygon is valid, transfer data
+	if (p.isValid()) {
+		// a valid polygon has at least 1 vertex and valid normal and localX vectors
+		m_polygon = VICUS::Polygon3D((const VICUS::Polygon2D&)p.polyline(), p.normal(), p.localX(), p.vertexes()[0]);
+		triangulate();
+	}
 }
 
 
