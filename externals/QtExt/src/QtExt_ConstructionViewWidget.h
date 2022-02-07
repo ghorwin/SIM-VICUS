@@ -69,6 +69,12 @@ public:
 	/*! Set visibility of toolbar widget.*/
 	void setToolbarVisible(bool visible);
 
+	/*! Set the background color for calculating font and line colors.
+		The background color itself will not be changed.
+		Call it before setData().
+	*/
+	void setBackground(const QColor& bkgColor);
+
 	/*! Clear all content and empty the widget.*/
 	void clear();
 

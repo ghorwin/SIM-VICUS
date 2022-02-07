@@ -83,6 +83,13 @@ public:
 			   const QVector<ConstructionLayer>& layers, const QString & leftLabel, const QString & rightLabel,
 			   int visibleItems = VI_All);
 
+	/*! Set the background color for calculating font and line colors.
+		The background color itself will not be changed.
+	*/
+	void setBackground(const QColor& bkgColor) {
+		m_backgroundColor = bkgColor;
+	}
+
 
 signals:
 
@@ -123,6 +130,7 @@ private:
 		\param d Width in [m].
 	*/
 	static QString dimLabel(double d);
+
 
 	/*! Local copy of all input data to be used by the drawing code.
 		We store a local copy of the data so that graphics updates can be
@@ -167,6 +175,7 @@ private:
 	*/
 	double				m_res;
 	QPaintDevice*		m_device;					///< Paintdevice.
+	QColor				m_backgroundColor;
 
 	// Pens
 	InternalPens*			m_internalPens;

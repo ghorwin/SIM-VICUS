@@ -78,6 +78,10 @@ void ConstructionViewWidget::setToolbarVisible(bool visible) {
 	m_toolBar->setVisible(visible);
 }
 
+void ConstructionViewWidget::setBackground(const QColor& bkgColor) {
+	ui->graphicsView->setBackground(bkgColor);
+}
+
 void ConstructionViewWidget::clear() {
 	enableToolBar(false);
 	ui->graphicsView->clear();
