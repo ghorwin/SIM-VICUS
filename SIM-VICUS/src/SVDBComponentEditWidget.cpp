@@ -202,6 +202,10 @@ void SVDBComponentEditWidget::updateInput(int id) {
 		}
 		m_ui->graphicsViewConstruction->m_leftSideLabel = tr("Side A");
 		m_ui->graphicsViewConstruction->m_rightSideLabel = tr("Side B");
+		if(SVSettings::instance().m_theme == SVSettings::TT_White)
+			m_ui->graphicsViewConstruction->setBackground(Qt::white);
+		else
+			m_ui->graphicsViewConstruction->setBackground(Qt::black);
 		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
 												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
 												QtExt::ConstructionGraphicsScene::VI_MaterialNames);

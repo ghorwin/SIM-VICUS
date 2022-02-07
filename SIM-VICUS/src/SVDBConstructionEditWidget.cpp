@@ -333,6 +333,10 @@ void SVDBConstructionEditWidget::updateConstructionView() {
 		layer.m_id = (int)matID;
 		layers.push_back(layer);
 	}
+	if(SVSettings::instance().m_theme == SVSettings::TT_White)
+		m_ui->widgetConstructionView->setBackground(Qt::white);
+	else
+		m_ui->widgetConstructionView->setBackground(Qt::black);
 	m_ui->widgetConstructionView->setData(layers, m_current->m_builtIn, tr("Side A"), tr("Side B"),
 										  QtExt::ConstructionGraphicsScene::VI_All);
 }
