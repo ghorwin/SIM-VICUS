@@ -152,6 +152,9 @@ public:
 
 	virtual void stepCompleted(double /*t*/) {}
 
+	/*! Updates time-dependent spline data (temperatures/heat losses). */
+	virtual int setTime(double /*t*/) {return 0;}
+
 	// Common variables for flow elements
 
 	/*! Temperature of inflowing fluid in [K], regardless where it flows into element (depends on massFlux sign). */

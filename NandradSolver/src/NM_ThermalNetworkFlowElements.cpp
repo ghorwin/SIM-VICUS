@@ -1499,4 +1499,213 @@ void TNHeatPumpOnOff::internalDerivatives(double *ydot) {
 }
 
 
+
+
+
+// *** TNHeatPumpVariable ***
+
+TNHeatPumpWithBuffer::TNHeatPumpWithBuffer(const NANDRAD::HydraulicFluid & fluid,
+									   const NANDRAD::HydraulicNetworkElement & e) :
+	m_flowElement(&e)
+{
+	m_fluidVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
+	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
+	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
+
+	m_heatingBufferSupplyTemperature = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_HeatingBufferSupplyTemperature].value;
+	m_heatingBufferReturnTemperature = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_HeatingBufferReturnTemperature].value;
+	m_DHWBufferSupplyTemperature = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_DHWBufferSupplyTemperature].value;
+	m_DHWBufferReturnTemperature = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_DHWBufferReturnTemperature].value;
+	m_heatingBufferVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_HeatingBufferVolume].value;
+	m_DHWBufferVolume = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_DHWBufferVolume].value;
+	m_heatingPowerB0W35 = e.m_component->m_para[NANDRAD::HydraulicNetworkComponent::P_HeatingPowerB0W35].value;
+
+	m_coeffsQcond = e.m_component->m_polynomCoefficients.m_values.at("QdotCondensator");
+	m_coeffsPel = e.m_component->m_polynomCoefficients.m_values.at("Pel");
+
+	// calculate scaling factor = given heating power at 0/35 divided by heating power from polynom at 0/35
+	double Te = 273.15 + 2;		// mean evaporator temperature 0°C inlet, assuming 4 K deltaT
+	double Tc = 308.15 + 2.5;	// mean condensator temperature 35°C outlet, assuming 5 K deltaT
+	double heatingPowerPolynom = m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
+			m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc;
+	m_scalingFactor = m_heatingPowerB0W35 / heatingPowerPolynom;
+}
+
+
+void TNHeatPumpWithBuffer::stepCompleted(double t){
+	ThermalNetworkAbstractFlowElementWithHeatLoss::stepCompleted(t); // does nothing currently
+
+}
+
+int TNHeatPumpWithBuffer::setTime(double){
+	return 0;
+}
+
+
+void TNHeatPumpWithBuffer::modelQuantities(std::vector<QuantityDescription> & quantities) const{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
+	quantities.push_back(QuantityDescription("COP","---", "Coefficient of performance for heat pump", false));
+	quantities.push_back(QuantityDescription("ElectricalPower", "W", "Electrical power for heat pump", false));
+	quantities.push_back(QuantityDescription("CondenserHeatFlux", "W", "Heat Flux at condenser side of heat pump", false));
+	quantities.push_back(QuantityDescription("EvaporatorHeatFlux", "W", "Heat Flux at evaporator side of heat pump", false));
+	quantities.push_back(QuantityDescription("EvaporatorMeanTemperature", "C", "Mean temperature at evaporator side of heat pump", false));
+	quantities.push_back(QuantityDescription("CondenserMeanTemperature", "C", "Mean temperature at condenser side of heat pump", false));
+	quantities.push_back(QuantityDescription("TemperatureDifference", "K", "Outlet temperature minus inlet temperature", false));
+	quantities.push_back(QuantityDescription("TemperatureHeatingBuffer", "C", "Temperature of heating buffer", false));
+	quantities.push_back(QuantityDescription("TemperatureDHWBuffer", "C", "Temperature of DHW buffer", false));
+}
+
+
+void TNHeatPumpWithBuffer::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
+	valRefs.push_back(&m_COP);
+	valRefs.push_back(&m_electricalPower);
+	valRefs.push_back(&m_condenserHeatFlux);
+	valRefs.push_back(&m_evaporatorHeatFlux);
+	valRefs.push_back(&m_evaporatorMeanTemperature);
+	valRefs.push_back(&m_condenserMeanTemperature);
+	valRefs.push_back(&m_temperatureDifference);
+	valRefs.push_back(&m_heatingBufferTemperature);
+	valRefs.push_back(&m_DHWBufferTemperature);
+}
+
+
+void TNHeatPumpWithBuffer::setInflowTemperature(double Tinflow) {
+
+	ThermalNetworkAbstractFlowElementWithHeatLoss::setInflowTemperature(Tinflow);
+
+	// initialize all results with 0
+	m_evaporatorHeatFlux = 0;
+	m_COP = 0.0;
+	m_heatLoss = 0.0;
+	m_electricalPower  = 0.0;
+	m_evaporatorMeanTemperature = m_meanTemperature;
+	m_temperatureDifference = 0;
+	m_condenserMeanTemperature = 0;
+	m_condenserHeatFlux = 0;
+
+	// check for valid pointer
+	IBK_ASSERT(m_heatingDemandHeatLossRef != nullptr);
+	IBK_ASSERT(m_DHWDemandRef != nullptr);
+
+	// Passive cooling mode:
+	// in case of a negative condenser heat flux, we interpet this as passive cooling, so the heat pump is off
+	// and just acts as a usual heat exchanger by adding the condenser heat flux directly to the fluid
+	if (*m_heatingDemandHeatLossRef <= 0) {
+		m_heatLoss = *m_heatingDemandHeatLossRef;
+	}
+
+	// Normal heat pump mode, possible for positive and negative mass flux
+	else {
+
+		// if heat pump is off (or it is about to turn off heating mode)
+		// AND DHW buffer temperature is too low -> switch to DHW-MODE
+		if ( (m_operationMode == OM_OFF || (m_operationMode == OM_Heating && m_heatingBufferTemperature > m_heatingBufferSupplyTemperature) )
+			 && m_DHWBufferTemperature < m_DHWBufferReturnTemperature)
+			m_operationMode = OM_DHW;
+		// if it is in DHW-MODE and buffer temperature is exceeded: switch OFF
+		else if (m_operationMode == OM_DHW && m_DHWBufferTemperature > m_DHWBufferSupplyTemperature)
+			m_operationMode = OM_OFF;
+
+		// if heat pump is off AND heating buffer temperature is too low -> switch to HEATING-MODE
+		if (m_operationMode == OM_OFF && m_heatingBufferTemperature < m_heatingBufferReturnTemperature)
+			m_operationMode = OM_Heating;
+		// if it is in HEATING-MODE and buffer temperature is exceeded: switch OFF
+		else if (m_operationMode == OM_Heating && m_heatingBufferTemperature > m_heatingBufferSupplyTemperature)
+			m_operationMode = OM_OFF;
+
+
+		// set condenser temperature
+		if (m_operationMode == OM_DHW)
+			m_condenserMeanTemperature = (m_DHWBufferSupplyTemperature + m_DHWBufferReturnTemperature) / 2;
+		else
+			m_condenserMeanTemperature = (m_heatingBufferSupplyTemperature + m_heatingBufferReturnTemperature) / 2;
+
+		// Calculate condenser heat flux, electrical power and COP
+		if (m_operationMode != OM_OFF) {
+
+			// The polynom results are in W and expect mean evaporator and condenser temperatures in K
+			const double &Tc = m_condenserMeanTemperature;
+			const double &Te = m_meanTemperature;
+			m_condenserHeatFlux = m_scalingFactor * (m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
+					m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc);
+			m_electricalPower = m_scalingFactor * (m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
+					m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc);
+
+			m_COP = m_condenserHeatFlux / m_electricalPower;
+			m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
+			m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
+			m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
+		}
+	}
+}
+
+
+void TNHeatPumpWithBuffer::inputReferences(std::vector<InputReference> & inputRefs) const {
+	InputReference ref;
+	ref.m_id = m_flowElement->m_id;
+	ref.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	ref.m_required = true;
+	ref.m_name.m_name = "HeatExchangeHeatingDemandSpaceHeating";
+	inputRefs.push_back(ref);
+	ref.m_name.m_name = "DomesticHotWaterDemandSchedule";
+	inputRefs.push_back(ref);
+}
+
+
+void TNHeatPumpWithBuffer::setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) {
+	// now store the pointer returned for our input ref request and advance the iterator by one
+	m_heatingDemandHeatLossRef = *(resultValueRefs++);
+	m_DHWDemandRef = *(resultValueRefs++);
+}
+
+
+void TNHeatPumpWithBuffer::initialInternalStates(double * y0) {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::initialInternalStates(y0);
+	// set initial energy contents of buffers
+	y0[1] = m_heatingBufferVolume * m_heatCapacityWater * m_densityWater * m_heatingBufferReturnTemperature;
+	y0[2] = m_DHWBufferVolume * m_heatCapacityWater * m_densityWater * m_DHWBufferReturnTemperature;
+}
+
+
+void TNHeatPumpWithBuffer::setInternalStates(const double * y) {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::setInternalStates(y);
+	m_heatingBufferTemperature = y[1] / (m_heatingBufferVolume * m_heatCapacityWater * m_densityWater);
+	m_DHWBufferTemperature = y[2] / (m_DHWBufferVolume * m_heatCapacityWater * m_densityWater);
+}
+
+
+void TNHeatPumpWithBuffer::internalDerivatives(double *ydot) {
+	ThermalNetworkAbstractFlowElementWithHeatLoss::internalDerivatives(ydot); // for volume of heat pump HX
+	IBK_ASSERT(m_heatingDemandHeatLossRef != nullptr);
+	IBK_ASSERT(m_DHWDemandRef != nullptr);
+
+	if (m_operationMode == OM_Heating)
+		ydot[1] = -*m_heatingDemandHeatLossRef + m_condenserHeatFlux;
+	else
+		ydot[1] = -*m_heatingDemandHeatLossRef;
+
+	if (m_operationMode == OM_DHW)
+		ydot[2] = -*m_DHWDemandRef + m_condenserHeatFlux;
+	else
+		ydot[2] = -*m_DHWDemandRef;
+
+}
+
+
+void TNHeatPumpWithBuffer::dependencies(const double * ydot, const double * y, const double * mdot,
+										 const double * TInflowLeft, const double * TInflowRight,
+										 std::vector<std::pair<const double *, const double *> > & resultInputDependencies) const
+{
+	ThermalNetworkAbstractFlowElementWithHeatLoss::dependencies(ydot, y, mdot, TInflowLeft, TInflowRight, resultInputDependencies);
+
+	// add condenser heat flux
+	if (m_heatingDemandHeatLossRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_heatingDemandHeatLossRef));
+	// add evaporator temperature
+	if (m_DHWDemandRef != nullptr)
+		resultInputDependencies.push_back(std::make_pair(&m_heatLoss, m_DHWDemandRef));
+}
+
+
 } // namespace NANDRAD_MODEL

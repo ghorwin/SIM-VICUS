@@ -65,7 +65,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 		}
 
 		// check data table
-		if (m_modelType == MT_HeatPumpOnOffSourceSide) {
+		if (m_modelType == MT_HeatPumpOnOffSourceSide || m_modelType == MT_HeatPumpOnOffSourceSideWithBuffer) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
 				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
 									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
@@ -137,6 +137,7 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 			case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
 			case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
+			case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
 			case MT_HeatExchanger:
 			case MT_PressureLossElement:
 			case MT_ControlledValve:
@@ -174,6 +175,9 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 			case MT_HeatPumpVariableSourceSide:
 			case MT_HeatPumpOnOffSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume};
+			case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
+				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_HeatingBufferSupplyTemperature, P_HeatingBufferReturnTemperature,
+						P_DHWBufferSupplyTemperature, P_DHWBufferReturnTemperature, P_HeatingBufferVolume, P_DHWBufferVolume, P_HeatingPowerB0W35};
 			case MT_DynamicPipe:
 				return {P_PipeMaxDiscretizationWidth};
 			case MT_SimplePipe:
@@ -201,6 +205,8 @@ std::vector<std::string> HydraulicNetworkComponent::requiredScheduleNames(const 
 			return {"SupplyTemperatureSchedule [C]"};
 		case MT_ConstantMassFluxPump :
 			 return {"MassFluxSchedule [kg/s]"};
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
+			return {"DomesticHotWaterDemandSchedule [W]"};
 		case MT_ConstantPressurePump:
 		case MT_ControlledPump:
 		case MT_VariablePressurePump:
@@ -228,7 +234,15 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		case P_MaximumHeatingPower:
 		case P_PipeMaxDiscretizationWidth:
 		case P_DesignMassFlux:
-		case P_DesignPressureHead: {
+		case P_DesignPressureHead:
+		case P_HeatingBufferReturnTemperature:
+		case P_HeatingBufferSupplyTemperature:
+		case P_DHWBufferReturnTemperature:
+		case P_DHWBufferSupplyTemperature:
+		case P_DHWBufferVolume:
+		case P_HeatingBufferVolume:
+		case P_HeatingPowerB0W35:
+		{
 			para.checkedValue(name, unit, unit, 0, false, std::numeric_limits<double>::max(), true, nullptr);
 			break;
 		}

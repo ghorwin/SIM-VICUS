@@ -54,6 +54,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
 	tr("Heat pump with variable heating power based on polynom for COP, installed at source side");
 	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
+	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
@@ -75,6 +76,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum heating power");
 	tr("Pressure loss for valve");
 	tr("Minimum outlet temperature of heat exchanger, used for clipping of heat extraction");
+	tr("HeatingPowerB0W35");
+	tr("Heat pump supply temperature for heating buffer storage");
+	tr("Heat pump return temperature for heating buffer storage");
+	tr("Heat pump supply temperature for DHW buffer storage");
+	tr("Heat pump return temperature for DHW buffer storage");
+	tr("Heat pump heating buffer storage volume");
+	tr("DHWBufferVolume");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
@@ -105,6 +113,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Constant heat loss");
 	tr("Heat loss from spline");
 	tr("Heat loss of condenser in heat pump model");
+	tr("Heating demand for space heating");
 	tr("Temperature for heat exchange");
 	tr("Constant heat flux out of the element (heat loss)");
 	tr("External heat transfer coeffient for the outside boundary");

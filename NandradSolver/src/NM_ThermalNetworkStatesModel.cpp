@@ -147,6 +147,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with SimplePipe components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
@@ -186,6 +187,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSplineEvaporator :
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating :
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with DynamicPipe components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
 
@@ -249,6 +251,7 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
 						case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+						case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating :
 						case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
 							throw IBK::Exception(IBK::FormatString("Heat exchange model %1 cannot be used with HeatExchanger components.")
 												 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", e.m_heatExchange.m_modelType)), FUNC_ID);
@@ -275,6 +278,15 @@ void ThermalNetworkStatesModel::setup(const NANDRAD::HydraulicNetwork & nw,
 					m_p->m_flowElements.push_back(element); // transfer ownership
 					m_p->m_heatLossElements.push_back(element); // no heat loss
 				} break;
+
+
+				case NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer : {
+					// create general model with given heat flux
+					TNHeatPumpWithBuffer * element = new TNHeatPumpWithBuffer(m_network->m_fluid, e);
+					m_p->m_flowElements.push_back(element); // transfer ownership
+					m_p->m_heatLossElements.push_back(element); // copy of pointer
+
+				} break; // NANDRAD::HydraulicNetworkComponent::MT_HeatPumpWithBuffer
 
 
 				case NANDRAD::HydraulicNetworkComponent::MT_ControlledValve:
@@ -384,6 +396,14 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 				resDesc.push_back(desc);
 			} break;
 
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating : {
+				// currently, this result value is not directly used in other models, yet may be useful for FMI exchange
+				QuantityDescription desc("HeatExchangeHeatingDemandSpaceHeating", "W", "Heating demand for space heating", false);
+				desc.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+				desc.m_id = m_network->m_elements[i].m_id;
+				resDesc.push_back(desc);
+			} break;
+
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant :
 			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureSpline : {
 				QuantityDescription desc("HeatExchangeTemperature", "K", "Pre-described external temperature.", false);
@@ -392,7 +412,10 @@ void ThermalNetworkStatesModel::resultDescriptions(std::vector<QuantityDescripti
 				resDesc.push_back(desc);
 			} break;
 
-			default: ;
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureZone:
+			case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer:
+			case NANDRAD::HydraulicNetworkHeatExchange::NUM_T:
+			break;
 		}
 	}
 
@@ -422,7 +445,8 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 
 
 	if (quantityName == std::string("HeatExchangeHeatLoss") ||
-		quantityName == std::string("HeatExchangeHeatLossCondenser") )
+		quantityName == std::string("HeatExchangeHeatLossCondenser") ||
+		quantityName == std::string("HeatExchangeHeatingDemandSpaceHeating"))
 	{
 		for (unsigned int i=0; i<m_elementIds.size(); ++i) {
 			if (quantity.m_id != m_network->m_elements[i].m_id) continue; // not our element
@@ -435,6 +459,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating:
 					return &m_heatExchangeSplineValues[i];
 
 				case NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstant:
@@ -468,6 +493,7 @@ const double * ThermalNetworkStatesModel::resultValueRef(const InputReference & 
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossConstant:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline:
 				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser:
+				case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating:
 				case NANDRAD::HydraulicNetworkHeatExchange::NUM_T: ; // nothing to do, not our quantity
 			}
 
@@ -485,7 +511,8 @@ int ThermalNetworkStatesModel::setTime(double t) {
 	for (unsigned int i=0; i<m_elementIds.size(); ++i) {
 		switch (m_network->m_elements[i].m_heatExchange.m_modelType) {
 			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline :
-			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser : {
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser :
+			case NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating : {
 				m_heatExchangeSplineValues[i] = m_simPara->evaluateTimeSeries(t,
 					m_network->m_elements[i].m_heatExchange.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss]);
 			} break;
@@ -499,6 +526,11 @@ int ThermalNetworkStatesModel::setTime(double t) {
 			default :;
 		}
 	}
+
+	for(ThermalNetworkAbstractFlowElement* fe :m_p->m_flowElements) {
+		fe->setTime(t);
+	}
+
 	return 0;
 }
 

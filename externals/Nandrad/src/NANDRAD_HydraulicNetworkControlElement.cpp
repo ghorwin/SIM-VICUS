@@ -128,6 +128,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide:
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
 		case HydraulicNetworkComponent::MT_IdealHeaterCooler:
 		case HydraulicNetworkComponent::MT_ConstantPressureLossValve:
 		case HydraulicNetworkComponent::MT_PressureLossElement:

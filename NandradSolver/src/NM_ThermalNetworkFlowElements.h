@@ -787,6 +787,140 @@ private:
 
 
 
+
+
+// **** TNHeatPumpWithBuffer ***
+
+class TNHeatPumpWithBuffer : public ThermalNetworkAbstractFlowElementWithHeatLoss { // NO KEYWORDS
+
+public:
+
+	enum operationMode {
+		OM_Heating,
+		OM_DHW,
+		OM_OFF
+	};
+
+	/*! C'tor, takes and caches parameters needed for function evaluation. */
+	TNHeatPumpWithBuffer(const NANDRAD::HydraulicFluid & fluid,
+						  const NANDRAD::HydraulicNetworkElement & e);
+
+	/*! first state is heat pump volume, other two states are buffer volumes for hetaing and DHW */
+	unsigned int nInternalStates() const override {return 3;}
+
+	void initialInternalStates(double * y0) override;
+
+	void setInternalStates(const double * y) override;
+
+	void stepCompleted(double t) override;
+
+	int setTime(double) override;
+
+	/*! Publishes individual model quantities via descriptions. */
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+
+	/*! Publishes individual model quantity value references: same size as quantity descriptions. */
+	void modelQuantityValueRefs(std::vector<const double*> &valRefs) const override;
+
+	/*! Overrides ThermalNetworkAbstractFlowElement::setInflowTemperature(). */
+	void setInflowTemperature(double Tinflow) override;
+
+	/*! Adds flow-element-specific input references (schedules etc.) to the list of input references.
+	*/
+	void inputReferences(std::vector<NANDRAD_MODEL::InputReference> & inputRefs) const override;
+
+	/*! Provides the element with its own requested model inputs.
+		The element must take exactly as many input values from the vector and move the iterator forward.
+		When the function returns, the iterator must point to the first input reference past this element's inputs.
+	*/
+	void setInputValueRefs(std::vector<const double *>::const_iterator & resultValueRefs) override;
+
+	/*! Function for retrieving heat fluxes out of the flow element.*/
+	void internalDerivatives(double *ydot) override;
+
+	/*! Function for registering dependencies between derivatives, internal states and model inputs.*/
+	void dependencies(const double *ydot, const double *y,
+					  const double *mdot, const double* TInflowLeft, const double*TInflowRight,
+					  std::vector<std::pair<const double *, const double *> > &resultInputDependencies ) const override;
+
+private:
+
+	/*! Cached parametrization for heat pump flow element. */
+	const NANDRAD::HydraulicNetworkElement	*m_flowElement = nullptr;
+
+	/*! Value reference to condenser heat flux. From HeatExchange */
+	const double							*m_heatingDemandHeatLossRef = nullptr;
+
+	/*! Value reference to condenser heat flux. From schedule */
+	const double							*m_DHWDemandRef = nullptr;
+
+	/*! Buffer for space heating, supply temperature [C] */
+	double									m_heatingBufferSupplyTemperature = 999;
+	/*! Buffer for space heating, return temperature [C] */
+	double									m_heatingBufferReturnTemperature = 999;
+	/*! Buffer for space heating, volume [m3] */
+	double									m_heatingBufferVolume = 999;
+	/*! Buffer for domestic hot water, supply temperature [C] */
+	double									m_DHWBufferSupplyTemperature = 999;
+	/*! Buffer for domestic hot water, return temperature [C] */
+	double									m_DHWBufferReturnTemperature = 999;
+	/*! Buffer for domestic hot water, volume [m3] */
+	double									m_DHWBufferVolume = 999;
+
+	/*! Heat pump heating power (=condensator heat flux) at 0°C source side and 35°C supply side [W] */
+	double									m_heatingPowerB0W35 = 999;
+
+	/*! Polynom coefficients for condensator heat flux */
+	std::vector<double>						m_coeffsQcond;
+
+	/*! Polynom coefficients for electrical energy demand */
+	std::vector<double>						m_coeffsPel;
+
+	/*! Scaling factor to scale obtained values from polynoms to m_heatingPowerB0W35 */
+	double									m_scalingFactor = 999;
+
+	/*! Mean condenser temperature [K], can also be used as output */
+	double									m_condenserMeanTemperature = 999;
+
+	/*! Mean evaporator temperature [K], can also be used as output */
+	double									m_evaporatorMeanTemperature = 999;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double									m_condenserHeatFlux = 999999;
+
+	/*! Actual heating power of heat pump (condenser) in [W] */
+	double									m_evaporatorHeatFlux = 999999;
+
+	/*! Coefficient of performance for heat pump */
+	double									m_COP = 999;
+
+	/*! Electrical power of the heat pump compressor [W] */
+	double									m_electricalPower = 999;
+
+	/*! Temperature difference across flow element [K]. */
+	double									m_temperatureDifference = 999;
+
+	// *** internally used
+
+	/*! current operation mode */
+	operationMode							m_operationMode = OM_OFF;
+	/*! current space heating buffer temperature  [C] */
+	double									m_heatingBufferTemperature = 999;
+	/*! current domestic hot water buffer temperature  [C] */
+	double									m_DHWBufferTemperature = 999;
+	/*! heat capacity water [J/kg*m3] */
+	const double							m_heatCapacityWater = 4180;
+	/*! density water [kg/m3] */
+	const double							m_densityWater = 1000;
+
+};
+
+
+
+
+
+
+
 // **** Ideal Heater / Cooler Model ***
 
 class TNIdealHeaterCooler : public ThermalNetworkAbstractFlowElement { // NO KEYWORDS

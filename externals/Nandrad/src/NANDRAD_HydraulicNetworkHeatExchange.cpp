@@ -122,7 +122,8 @@ void HydraulicNetworkHeatExchange::checkParameters(const std::map<std::string, I
 			} break;
 
 			case T_HeatLossSpline:
-			case T_HeatLossSplineCondenser: {
+			case T_HeatLossSplineCondenser:
+			case T_HeatingDemandSpaceHeating: {
 				// replace place holders
 				m_splPara[SPL_HeatLoss].m_tsvFile = m_splPara[SPL_HeatLoss].m_tsvFile.withReplacedPlaceholders(placeholders);
 				try {
@@ -187,7 +188,8 @@ std::vector<HydraulicNetworkHeatExchange::ModelType> NANDRAD::HydraulicNetworkHe
 			return {NUM_T, T_TemperatureConstant, T_TemperatureSpline, T_TemperatureZone, T_TemperatureConstructionLayer};
 		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide:
 		case HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide:
-			return {T_HeatLossSplineCondenser};  // must not be adiabatic
+		case HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer:
+			return {T_HeatingDemandSpaceHeating};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide:
 			return {T_TemperatureSplineEvaporator};  // must not be adiabatic
 		case HydraulicNetworkComponent::MT_HeatExchanger:
