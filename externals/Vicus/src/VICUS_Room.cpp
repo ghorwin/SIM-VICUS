@@ -78,7 +78,7 @@ void Room::calculateVolume() {
 
 	}
 
-	vol /= 6; // FIXME: funktioniert bei Dächern nicht!
+	vol /= 6;
 
 	VICUS::KeywordList::setParameter(m_para,"Room::para_t", VICUS::Room::P_Volume, vol);
 
