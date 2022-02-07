@@ -1008,6 +1008,8 @@ QRectF Table::tableRect(QPaintDevice* paintDevice, qreal width) {
 	QRectF result;
 	if( !paintDevice)
 		return result;
+	if(m_VLines.empty() || m_VLines.back().empty())
+		return result;
 
 	if( width <= 0)
 		width = paintDevice->width();
@@ -1016,6 +1018,7 @@ QRectF Table::tableRect(QPaintDevice* paintDevice, qreal width) {
 	if( !m_adjusted) {
 		adjust(paintDevice);
 	}
+
 	qreal localeWidth = m_VLines.back().front().m_line.x1() - m_VLines.front().front().m_line.x1();
 	qreal localeHeight = m_VLines.front().back().m_line.y2() - m_VLines.front().front().m_line.y1();
 	result.setSize(QSizeF(localeWidth, localeHeight));
@@ -1023,6 +1026,9 @@ QRectF Table::tableRect(QPaintDevice* paintDevice, qreal width) {
 }
 
 QSizeF Table::tableSize() const {
+	if(m_VLines.empty() || m_VLines.back().empty())
+		return QSizeF();
+
 	qreal localeWidth = m_VLines.back().front().m_line.x1() - m_VLines.front().front().m_line.x1();
 	qreal localeHeight = m_VLines.front().back().m_line.y2() - m_VLines.front().front().m_line.y1();
 	return QSizeF(localeWidth, localeHeight);
