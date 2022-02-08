@@ -134,35 +134,17 @@ noprefix "false"
 
 \end_inset
 
- erfolgen, wobei das Koordinatensystem genausogut um den Punkt 
-\begin_inset Formula $p_{0}$
-\end_inset
-
- verschoben werden kann, ohne dass sich das Volumen dabei verändert.
- Die einmalige Zeilenumordnung bewirkt nach Determinantenregel eine Umkehrung
- des Vorzeichens.
+ erfolgen.
  
 \begin_inset Formula 
-\begin{eqnarray}
+\begin{eqnarray*}
 V_{Tetraeder,i} & = & \frac{1}{6}\left|\begin{array}{cccc}
 1 & p_{0,x} & p_{0,y} & p_{0,z}\\
 1 & p_{1,x} & p_{1,y} & p_{1,z}\\
 1 & p_{2,x} & p_{2,y} & p_{2,z}\\
 1 & 0 & 0 & 0
-\end{array}\right|\nonumber \\
- & = & \frac{1}{6}\left|\begin{array}{cccc}
-1 & 0 & 0 & 0\\
-1 & p_{1,x}-p_{0,x} & p_{1,y}-p_{0,y} & p_{1,z}-p_{0,z}\\
-1 & p_{2,x}-p_{0,x} & p_{2,y}-p_{0,y} & p_{2,z}-p_{0,z}\\
-1 & -p_{0,x} & -p_{0,y} & -p_{0,z}
-\end{array}\right|\nonumber \\
- & = & \frac{1}{6}\left|\begin{array}{cccc}
-1 & p_{0,x} & p_{0,y} & p_{0,z}\\
-1 & p_{1,x}-p_{0,x} & p_{1,y}-p_{0,y} & p_{1,z}-p_{0,z}\\
-1 & p_{2,x}-p_{0,x} & p_{2,y}-p_{0,y} & p_{2,z}-p_{0,z}\\
-1 & 0 & 0 & 0
-\end{array}\right|\label{eq:Tetdraedervolumen}
-\end{eqnarray}
+\end{array}\right|
+\end{eqnarray*}
 
 \end_inset
 
@@ -182,23 +164,23 @@ noprefix "false"
 \begin{eqnarray}
 V_{Tetraeder,i} & = & \frac{1}{6}\left|\begin{array}{ccc}
 p_{0,x} & p_{0,y} & p_{0,z}\\
-p_{1,x}-p_{0,x} & p_{1,y}-p_{0,y} & p_{1,z}-p_{0,z}\\
-p_{2,x}-p_{0,x} & p_{2,y}-p_{0,y} & p_{2,z}-p_{0,z}
+p_{1,x} & p_{1,y} & p_{1,z}\\
+p_{2,x} & p_{2,y} & p_{2,z}
 \end{array}\right|\nonumber \\
  &  & -\frac{1}{6}\left|\begin{array}{ccc}
 p_{0,x} & p_{0,y} & p_{0,z}\\
-p_{1,x}-p_{0,x} & p_{1,y}-p_{0,y} & p_{1,z}-p_{0,z}\\
+p_{1,x} & p_{1,y} & p_{1,z}\\
 0 & 0 & 0
 \end{array}\right|\nonumber \\
  &  & +\frac{1}{6}\left|\begin{array}{ccc}
 p_{0,x} & p_{0,y} & p_{0,z}\\
 0 & 0 & 0\\
-p_{2,x}-p_{0,x} & p_{2,y}-p_{0,y} & p_{2,z}-p_{0,z}
+p_{2,x} & p_{2,y} & p_{2,z}
 \end{array}\right|\nonumber \\
  &  & -\frac{1}{6}\left|\begin{array}{ccc}
 0 & 0 & 0\\
-p_{1,x}-p_{0,x} & p_{1,y}-p_{0,y} & p_{1,z}-p_{0,z}\\
-p_{2,x}-p_{0,x} & p_{2,y}-p_{0,y} & p_{2,z}-p_{0,z}
+p_{1,x} & p_{1,y} & p_{1,z}\\
+p_{2,x} & p_{2,y} & p_{2,z}
 \end{array}\right|\label{eq:Zwischenschritt01}
 \end{eqnarray}
 
@@ -217,76 +199,9 @@ noprefix "false"
 .
 \begin_inset Formula 
 \begin{eqnarray}
-V_{Tetraeder,i} & = & \frac{1}{6}p_{0,x}\left(\left(p_{1,y}-p_{0,y}\right)\left(p_{2,z}-p_{0,z}\right)-\left(p_{1,z}-p_{0,z}\right)\left(p_{2,y}-p_{0,y}\right)\right)\nonumber \\
- &  & +\frac{1}{6}p_{0,y}\left(\left(p_{1,z}-p_{0,z}\right)\left(p_{2,x}-p_{0,x}\right)-\left(p_{1,x}-p_{0,x}\right)\left(p_{2,z}-p_{0,z}\right)\right)\nonumber \\
- &  & +\frac{1}{6}p_{0,z}\left(\left(p_{1,x}-p_{0,x}\right)\left(p_{2,y}-p_{0,y}\right)-\left(p_{1,y}-p_{0,y}\right)\left(p_{2,x}-p_{0,x}\right)\right)\label{eq:Berechnungsformel}
+V_{Tetraeder,i} & = & \frac{1}{6}\left(p_{0,x}\cdot p_{1,y}\cdot p_{2,z}+p_{2,x}\cdot p_{0,y}\cdot p_{1,z}+p_{1,x}\cdot p_{2,y}\cdot p_{0,z}\right)\nonumber \\
+ &  & -\frac{1}{6}\left(p_{2,x}\cdot p_{1,y}\cdot p_{0,z}+p_{0,x}\cdot p_{2,y}\cdot p_{1,z}+p_{1,x}\cdot p_{0,y}\cdot p_{2,z}\right)\label{eq:Berechnungsformel}
 \end{eqnarray}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Dirks Berechnungen:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{eqnarray*}
-V_{Tetraeder,i} & = & \frac{1}{6}\left|\begin{array}{cccc}
-1 & p_{0,x} & p_{0,y} & p_{0,z}\\
-1 & p_{1,x} & p_{1,y} & p_{1,z}\\
-1 & p_{2,x} & p_{2,y} & p_{2,z}\\
-1 & 0 & 0 & 0
-\end{array}\right|
-\end{eqnarray*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Bezugspunkt für die Auflösung der Determinate ist die erste Spalte mit der
- letzten Zeile.
-\end_layout
-
-\begin_layout Standard
-Daraus bleibt dann:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{eqnarray*}
-V_{Tetraeder,i} & = & \frac{1}{6}\cdot1\left|\begin{array}{ccc}
-p_{0,x} & p_{0,y} & p_{0,z}\\
-p_{1,x} & p_{1,y} & p_{1,z}\\
-p_{2,x} & p_{2,y} & p_{2,z}
-\end{array}\right|
-\end{eqnarray*}
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-Oder sehe ich das falsch?
-\end_layout
-
-\begin_layout Standard
-Damit ergibt sich fürs Volumen dann:
-\end_layout
-
-\begin_layout Standard
-\begin_inset Formula 
-\begin{eqnarray*}
-V & = & \frac{1}{6}\cdot\left(\begin{array}{c}
-p_{0,x}\cdot p_{1,y}\cdot p_{2,z}+p_{2,x}\cdot p_{0,y}\cdot p_{1,z}+p_{1,x}\cdot p_{2,y}\cdot p_{0,z}\\
--p_{2,x}\cdot p_{1,y}\cdot p_{0,z}-p_{0,x}\cdot p_{2,y}\cdot p_{1,z}-p_{1,x}\cdot p_{0,y}\cdot p_{2,z}
-\end{array}\right)
-\end{eqnarray*}
 
 \end_inset
 
