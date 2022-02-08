@@ -41,6 +41,8 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 
 	// Mind: parent of the item delegate must be its widget!
 	m_ui->tableWidgetZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableWidgetZones));
+
+	m_ui->pushButtonAddSurface->setEnabled(false);
 }
 
 
@@ -118,10 +120,10 @@ void SVPropBuildingZoneProperty::updateUi() {
 
 	if(selectedBuildingIndex == -1){
 		for( const VICUS::Building &b : project().m_buildings){
-				// put all rooms in
-				for( const VICUS::BuildingLevel &bl : b.m_buildingLevels)
-					for( const VICUS::Room &r : bl.m_rooms)
-						rooms.push_back(&r);
+			// put all rooms in
+			for( const VICUS::BuildingLevel &bl : b.m_buildingLevels)
+				for( const VICUS::Room &r : bl.m_rooms)
+					rooms.push_back(&r);
 		}
 
 		m_ui->comboBoxBuildingLevelFilter->blockSignals(true);
@@ -221,8 +223,8 @@ void SVPropBuildingZoneProperty::updateUi() {
 	m_ui->tableWidgetZones->selectionModel()->blockSignals(false);
 	m_ui->tableWidgetZones->setSortingEnabled(true);
 
-//	for (const VICUS::Room* r : rooms)
-//		m_selectedRooms.insert(r);
+	//	for (const VICUS::Room* r : rooms)
+	//		m_selectedRooms.insert(r);
 
 	// populate table with all components that are currently selected by filter
 	// we only show assigned components with active layers
@@ -277,7 +279,7 @@ void SVPropBuildingZoneProperty::on_pushButtonRemoveSurfaceHeating_clicked() {
 	for (int row=0; row<m_ui->tableWidgetSurfaceHeating->rowCount(); ++row) {
 		// is any of the two editable cells selected?
 		if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected() ||
-			m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
+				m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
 		{
 			// get unique ID of component instance
 			QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(row, 0);
@@ -503,26 +505,6 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_cellChanged(int row, int co
 	}
 }
 
-
-void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
-	calculatedParameters(true, true);
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
-	calculatedParameters(false, true);
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
-	calculatedParameters(true, false);
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
-	calculatedParameters(false, false);
-}
-
 void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool onlySelected){
 
 	std::vector<unsigned int>	roomIds;
@@ -532,7 +514,6 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 			if(item->column() != 0)
 				continue;
 			roomIds.push_back(item->text().toUInt());
-
 		}
 
 		if(roomIds.empty())
@@ -591,3 +572,90 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 /// weitere sind auch nicht mehr zu markieren
 /// was mach ich falsch?
 
+
+void SVPropBuildingZoneProperty::on_pushButtonFloorArea_clicked() {
+	calculatedParameters(true, m_ui->radioButtonSelected->isChecked());
+}
+
+void SVPropBuildingZoneProperty::on_pushButtonVolume_clicked() {
+	calculatedParameters(false, m_ui->radioButtonSelected->isChecked());
+}
+
+void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
+	Q_ASSERT(m_selectedRoom != nullptr);
+
+	// we get the selected surfaces
+	std::vector<const VICUS::Surface*> surfs;
+	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
+	QString newRoomName, messageBoxText, oldRoomName;
+
+	newRoomName = m_selectedRoom->m_displayName;
+	bool hadAtLeastOneChangedSurface = false;
+
+	// we have to mind plain geometry and already assigned surfaces
+	for(const VICUS::Surface *surf : surfs) {
+
+		// if surface has already a parent we have to delete the surface from the parent
+		// and update its parent
+		VICUS::Room* oldRoom = dynamic_cast<VICUS::Room*>(surf->m_parent);
+		if(oldRoom->m_id == m_selectedRoom->m_id)
+			continue; // skip if surface is already assigned to specified room
+
+		m_selectedRoom->m_surfaces.push_back(*surf);
+		hadAtLeastOneChangedSurface = true;
+
+		if (oldRoom != nullptr) {
+			unsigned int pos = 0;
+			for (unsigned int i=0; i<oldRoom->m_surfaces.size(); ++i) {
+				VICUS::Surface &s = oldRoom->m_surfaces[i];
+				if(s.m_id == surf->m_id) {
+					pos = i;
+					break;
+				}
+			}
+			oldRoom->m_surfaces.erase(oldRoom->m_surfaces.begin()+pos);
+			oldRoomName = oldRoom->m_displayName;
+		}
+		else
+			oldRoomName = "plain Geometry";
+
+		// assign new parent;
+
+
+		const VICUS::Object* obj = dynamic_cast<const VICUS::Object*>(m_selectedRoom);
+		Q_ASSERT(obj != nullptr);
+		const_cast<VICUS::Surface*>(surf)->m_parent = const_cast<VICUS::Object*>(obj);
+
+		messageBoxText.append(QString("%3: %1 --> %2\n").arg(oldRoomName).arg(newRoomName).arg(surf->m_displayName));
+	}
+
+	if(hadAtLeastOneChangedSurface) {
+		// update all pointers
+		const_cast<VICUS::Project&>(project()).updatePointers();
+		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
+	}
+	else {
+		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), QString("All surfaces were already assigned to room '%1'").arg(oldRoomName) );
+	}
+}
+
+void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
+	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetZones->selectedRanges();
+	m_ui->pushButtonAddSurface->setEnabled(true);
+	for (unsigned int i=0; i<range.size(); ++i) {
+		const QTableWidgetSelectionRange &r = range[i];
+
+		if (r.rowCount() > 1 || r.rowCount() == 0) {
+			m_ui->pushButtonAddSurface->setEnabled(false);
+			return;
+		}
+		else{
+			unsigned int id = m_ui->tableWidgetZones->item(r.bottomRow(), 0)->text().toUInt();
+			const VICUS::Room* room = dynamic_cast<const VICUS::Room*>(project().objectById(id));
+
+			Q_ASSERT(room != nullptr);
+
+			m_selectedRoom = const_cast<VICUS::Room*>(room);
+		}
+	}
+}

@@ -36,25 +36,29 @@ private slots:
 
 	void on_tableWidgetZones_cellChanged(int row, int column);
 
-	void on_pushButtonFloorAreaSelectedRooms_clicked();
+	void on_pushButtonFloorArea_clicked();
 
-	void on_pushButtonVolumeSelectedRooms_clicked();
+	void on_pushButtonVolume_clicked();
 
-	void on_pushButtonFloorAreaAllRooms_clicked();
-
-	void on_pushButtonVolumeAllRooms_clicked();
 
 	//void on_tableWidgetZones_itemSelectionChanged();
 
 	//void on_tableWidgetZones_cellPressed(int row, int column);
 
+	void on_pushButtonAddSurface_clicked();
+
+	void on_tableWidgetZones_itemSelectionChanged();
+
 private:
 
 	void calculatedParameters(bool floorAreaCalc = true, bool onlySelected = true);
 
-	Ui::SVPropBuildingZoneProperty *m_ui;
+	Ui::SVPropBuildingZoneProperty	*m_ui;
 
-	std::set<const VICUS::Room*>	m_selectedRooms;
+	/*! Holds selected room for adding surfaces to it.
+		Updated in itemSelectionChanged.
+	*/
+	VICUS::Room*					m_selectedRoom;
 };
 
 #endif // SVPropBuildingZonePropertyH
