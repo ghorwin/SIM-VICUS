@@ -778,8 +778,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		double transSpeed = 0.05;
 		if (keyboardHandler.keyDown(Qt::Key_Shift))
 			transSpeed *= 0.1;
-		if (!pickObject.m_candidates.empty()) {
-			IBKMK::Vector3D moveDist = transSpeed*pickObject.m_candidates.front().m_depth*pickObject.m_lineOfSightDirection;
+
+		bool pickPlane = SVViewStateHandler::instance().viewState().m_snapOptionMask & SVViewState::Snap_GridPlane;
+		const std::vector<PickObject::PickResult> &candidates = pickPlane ? pickObject.m_candidates : pickObject.m_orbitCandidates;
+
+		if (!candidates.empty()) {
+			IBKMK::Vector3D moveDist = transSpeed*candidates.front().m_depth*pickObject.m_lineOfSightDirection;
 			// move camera along line of sight towards selected object
 			m_camera.translate(IBKVector2QVector(wheelDelta*moveDist));
 		}
@@ -2930,25 +2934,28 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 	if (!pickObject.m_pickPerformed)
 		pick(pickObject);
 
+	bool pickPlane = SVViewStateHandler::instance().viewState().m_snapOptionMask & SVViewState::Snap_GridPlane;
+	std::vector<PickObject::PickResult> &candidates = pickPlane ? pickObject.m_candidates : pickObject.m_orbitCandidates;
+
 	// only enter orbit controller mode, if we actually hit something
-	if (pickObject.m_candidates.empty()) {
+	if (candidates.empty()) {
 		// create a virtual pick-point to start panning somewhere in the middle distance
 		PickObject::PickResult r;
 		r.m_depth = m_panObjectDepth;
 		r.m_pickPoint = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*r.m_depth;
-		pickObject.m_candidates.push_back(r);
+		candidates.push_back(r);
 	}
 	else if (reuseDepth) {
 		pickObject.m_candidates.front().m_depth = m_panObjectDepth;
 		pickObject.m_candidates.front().m_pickPoint =
-				pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*pickObject.m_candidates.front().m_depth;
+		pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*pickObject.m_candidates.front().m_depth;
 	}
 
 	// if pick point is very far away, we limit the depth and adjust the pick point
 
 	// we need to store initial camera pos, selected object pos, far point
 	m_panCameraStart = QVector2IBKVector(m_camera.translation());	// Point A
-	m_panObjectStart = pickObject.m_candidates.front().m_pickPoint;			// Point C
+	m_panObjectStart = candidates.front().m_pickPoint;			// Point C
 	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
 	m_panObjectDepth = pickObject.m_candidates.front().m_depth;
 	double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
