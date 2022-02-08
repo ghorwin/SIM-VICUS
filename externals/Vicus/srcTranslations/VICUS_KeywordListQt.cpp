@@ -143,6 +143,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump with variable heating power based on carnot efficiency, installed at supply side");
 	tr("Heat pump with variable heating power based on polynom for COP, installed at source side");
 	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
+	tr("On-off-type heat pump based on polynoms for heating power and el. power, installed at source side");
 	tr("Valve with associated control model");
 	tr("Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain");
 	tr("Valve with constant pressure loss");
@@ -164,6 +165,13 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum heating power");
 	tr("Pressure loss for valve");
 	tr("Minimum outlet temperature of heat exchanger, used for clipping of heat extraction");
+	tr("HeatingPowerB0W35");
+	tr("Heat pump supply temperature for heating buffer storage");
+	tr("Heat pump return temperature for heating buffer storage");
+	tr("Heat pump supply temperature for DHW buffer storage");
+	tr("Heat pump return temperature for DHW buffer storage");
+	tr("Heat pump heating buffer storage volume");
+	tr("DHWBufferVolume");
 	tr("Length of pipe");
 	tr("Number of parallel pipes in ground heat exchanger");
 	tr("Number of parallel elements");

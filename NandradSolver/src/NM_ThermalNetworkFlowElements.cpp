@@ -1527,17 +1527,33 @@ TNHeatPumpWithBuffer::TNHeatPumpWithBuffer(const NANDRAD::HydraulicFluid & fluid
 	double Te = 273.15 + 2;		// mean evaporator temperature 0°C inlet, assuming 4 K deltaT
 	double Tc = 308.15 + 2.5;	// mean condensator temperature 35°C outlet, assuming 5 K deltaT
 	double heatingPowerPolynom = m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
-			m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc;
+								m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc;
 	m_scalingFactor = m_heatingPowerB0W35 / heatingPowerPolynom;
 }
 
 
 void TNHeatPumpWithBuffer::stepCompleted(double t){
 	ThermalNetworkAbstractFlowElementWithHeatLoss::stepCompleted(t); // does nothing currently
-
+	m_operationModeLast = m_operationMode;
 }
 
 int TNHeatPumpWithBuffer::setTime(double){
+	// always start with operation mode from last time step
+	m_operationMode = m_operationModeLast;
+	// Set new operation mode
+	// if heat pump is off and buffer temperature is below lower limit -> switch to DHW mode
+	if (m_operationMode == OM_OFF && m_DHWBufferTemperature < m_DHWBufferReturnTemperature)
+		m_operationMode = OM_DHW;
+	// if it is in DHW-MODE and buffer temperature is exceeded: switch OFF
+	else if (m_operationModeLast == OM_DHW && m_DHWBufferTemperature > m_DHWBufferSupplyTemperature)
+		m_operationMode = OM_OFF;
+
+	// if heat pump is off AND heating buffer temperature is too low -> switch to HEATING-MODE
+	if (m_operationModeLast == OM_OFF && m_heatingBufferTemperature < m_heatingBufferReturnTemperature)
+		m_operationMode = OM_Heating;
+	// if it is in HEATING-MODE and buffer temperature is exceeded: switch OFF
+	else if (m_operationModeLast == OM_Heating && m_heatingBufferTemperature > m_heatingBufferSupplyTemperature)
+		m_operationMode = OM_OFF;
 	return 0;
 }
 
@@ -1588,55 +1604,34 @@ void TNHeatPumpWithBuffer::setInflowTemperature(double Tinflow) {
 	IBK_ASSERT(m_heatingDemandHeatLossRef != nullptr);
 	IBK_ASSERT(m_DHWDemandRef != nullptr);
 
+	// set condenser temperature depending on current mode
+	if (m_operationMode == OM_DHW)
+		m_condenserMeanTemperature = (m_DHWBufferSupplyTemperature + m_DHWBufferReturnTemperature) / 2;
+	else
+		m_condenserMeanTemperature = (m_heatingBufferSupplyTemperature + m_heatingBufferReturnTemperature) / 2;
+
 	// Passive cooling mode:
 	// in case of a negative condenser heat flux, we interpet this as passive cooling, so the heat pump is off
 	// and just acts as a usual heat exchanger by adding the condenser heat flux directly to the fluid
-	if (*m_heatingDemandHeatLossRef <= 0) {
+	if (*m_heatingDemandHeatLossRef < 0) {
 		m_heatLoss = *m_heatingDemandHeatLossRef;
 	}
 
 	// Normal heat pump mode, possible for positive and negative mass flux
-	else {
+	else if (m_operationMode != OM_OFF) {
 
-		// if heat pump is off (or it is about to turn off heating mode)
-		// AND DHW buffer temperature is too low -> switch to DHW-MODE
-		if ( (m_operationMode == OM_OFF || (m_operationMode == OM_Heating && m_heatingBufferTemperature > m_heatingBufferSupplyTemperature) )
-			 && m_DHWBufferTemperature < m_DHWBufferReturnTemperature)
-			m_operationMode = OM_DHW;
-		// if it is in DHW-MODE and buffer temperature is exceeded: switch OFF
-		else if (m_operationMode == OM_DHW && m_DHWBufferTemperature > m_DHWBufferSupplyTemperature)
-			m_operationMode = OM_OFF;
+		// The polynom results are in W and expect mean evaporator and condenser temperatures in K
+		const double &Tc = m_condenserMeanTemperature;
+		const double &Te = m_meanTemperature;
+		m_condenserHeatFlux = m_scalingFactor * (m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
+				m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc);
+		m_electricalPower = m_scalingFactor * (m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
+				m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc);
 
-		// if heat pump is off AND heating buffer temperature is too low -> switch to HEATING-MODE
-		if (m_operationMode == OM_OFF && m_heatingBufferTemperature < m_heatingBufferReturnTemperature)
-			m_operationMode = OM_Heating;
-		// if it is in HEATING-MODE and buffer temperature is exceeded: switch OFF
-		else if (m_operationMode == OM_Heating && m_heatingBufferTemperature > m_heatingBufferSupplyTemperature)
-			m_operationMode = OM_OFF;
-
-
-		// set condenser temperature
-		if (m_operationMode == OM_DHW)
-			m_condenserMeanTemperature = (m_DHWBufferSupplyTemperature + m_DHWBufferReturnTemperature) / 2;
-		else
-			m_condenserMeanTemperature = (m_heatingBufferSupplyTemperature + m_heatingBufferReturnTemperature) / 2;
-
-		// Calculate condenser heat flux, electrical power and COP
-		if (m_operationMode != OM_OFF) {
-
-			// The polynom results are in W and expect mean evaporator and condenser temperatures in K
-			const double &Tc = m_condenserMeanTemperature;
-			const double &Te = m_meanTemperature;
-			m_condenserHeatFlux = m_scalingFactor * (m_coeffsQcond[0] + m_coeffsQcond[1] * Te + m_coeffsQcond[2] * Tc + m_coeffsQcond[3] * Te * Tc +
-					m_coeffsQcond[4] * Te * Te + m_coeffsQcond[5] * Tc * Tc);
-			m_electricalPower = m_scalingFactor * (m_coeffsPel[0] + m_coeffsPel[1] * Te + m_coeffsPel[2] * Tc + m_coeffsPel[3] * Te * Tc +
-					m_coeffsPel[4] * Te * Te + m_coeffsPel[5] * Tc * Tc);
-
-			m_COP = m_condenserHeatFlux / m_electricalPower;
-			m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
-			m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
-			m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
-		}
+		m_COP = m_condenserHeatFlux / m_electricalPower;
+		m_evaporatorHeatFlux = m_condenserHeatFlux * (m_COP - 1) / m_COP;
+		m_heatLoss = m_evaporatorHeatFlux; // energy taken out of fluid medium
+		m_temperatureDifference = m_inflowTemperature - m_meanTemperature;
 	}
 }
 

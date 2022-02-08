@@ -159,25 +159,12 @@ std::vector<unsigned int> NetworkComponent::additionalRequiredParameter(const Ne
 std::vector<unsigned int> NetworkComponent::optionalParameter(const NetworkComponent::ModelType modelType) {
 	// we use switch for maintanance reasons
 	switch (modelType) {
-		case MT_SimplePipe:
-		case MT_DynamicPipe:
-		case MT_ConstantMassFluxPump:
-		case MT_ControlledPump:
-		case MT_HeatPumpVariableIdealCarnotSourceSide:
-		case MT_HeatPumpVariableIdealCarnotSupplySide:
-		case MT_HeatPumpVariableSourceSide:
-		case MT_HeatPumpOnOffSourceSide:
-		case MT_ControlledValve:
-		case MT_IdealHeaterCooler:
-		case MT_ConstantPressureLossValve:
-		case MT_PressureLossElement:
-		case NUM_MT:
-			break;
 		case MT_ConstantPressurePump:
 		case MT_VariablePressurePump:
 			return {P_MaximumPressureHead, P_PumpMaximumElectricalPower, P_FractionOfMotorInefficienciesToFluidStream};
 		case MT_HeatExchanger:
 			return {P_MinimumOutletTemperature};
+		default:;
 	}
 	return {};
 }

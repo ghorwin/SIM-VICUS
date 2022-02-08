@@ -585,6 +585,7 @@ void SVPropNetworkEditWidget::updateHeatExchangeProperties()
 			break;
 		}
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatLossSplineCondenser:
+		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatingDemandSpaceHeating:
 		case NANDRAD::HydraulicNetworkHeatExchange ::T_HeatLossSpline:{
 			m_ui->labelDataFile->setEnabled(true);
 			m_ui->widgetBrowseFileNameTSVFile->setEnabled(true);
@@ -734,7 +735,8 @@ void SVPropNetworkEditWidget::modifyHeatExchangeProperties()
 		IBK::Path tsvFile(m_ui->widgetBrowseFileNameTSVFile->filename().toStdString());
 		tsvFile = SVProjectHandler::instance().replacePathPlaceholders(tsvFile);
 		if (tsvFile.isValid() && (modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSpline ||
-								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser)){
+								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatLossSplineCondenser ||
+								  modelType == NANDRAD::HydraulicNetworkHeatExchange::T_HeatingDemandSpaceHeating)){
 			// get relative file path
 			IBK::Path curr = IBK::Path(SVProjectHandler::instance().projectFile().toStdString()).parentPath();
 			hx.m_splPara[NANDRAD::HydraulicNetworkHeatExchange::SPL_HeatLoss] = NANDRAD::LinearSplineParameter("HeatLoss",

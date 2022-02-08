@@ -904,6 +904,7 @@ private:
 
 	/*! current operation mode */
 	operationMode							m_operationMode = OM_OFF;
+	operationMode							m_operationModeLast = OM_OFF;
 	/*! current space heating buffer temperature  [C] */
 	double									m_heatingBufferTemperature = 999;
 	/*! current domestic hot water buffer temperature  [C] */

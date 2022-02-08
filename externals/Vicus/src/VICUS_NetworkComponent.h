@@ -67,6 +67,7 @@ public:
 		MT_HeatPumpVariableIdealCarnotSupplySide,	// Keyword: HeatPumpVariableIdealCarnotSupplySide	'Heat pump with variable heating power based on carnot efficiency, installed at supply side'
 		MT_HeatPumpVariableSourceSide,		// Keyword: HeatPumpVariableSourceSide		'Heat pump with variable heating power based on polynom for COP, installed at source side'
 		MT_HeatPumpOnOffSourceSide,			// Keyword: HeatPumpOnOffSourceSide			'On-off-type heat pump based on polynoms for heating power and el. power, installed at source side'
+		MT_HeatPumpOnOffSourceSideWithBuffer,	// Keyword: HeatPumpOnOffSourceSideWithBuffer			'On-off-type heat pump based on polynoms for heating power and el. power, installed at source side'
 		MT_ControlledValve,					// Keyword: ControlledValve					'Valve with associated control model'
 		MT_IdealHeaterCooler,				// Keyword: IdealHeaterCooler				'Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain'
 		MT_ConstantPressureLossValve,		// Keyword: ConstantPressureLossValve		'Valve with constant pressure loss'
@@ -94,6 +95,13 @@ public:
 		P_MaximumHeatingPower,					// Keyword: MaximumHeatingPower					[W]		'Maximum heating power'
 		P_PressureLoss,							// Keyword: PressureLoss						[Bar]	'Pressure loss for valve'
 		P_MinimumOutletTemperature,				// Keyword: MinimumOutletTemperature			[C]		'Minimum outlet temperature of heat exchanger, used for clipping of heat extraction'
+		P_HeatingPowerB0W35,					// Keyword: HeatingPowerB0W35					[W]		'Heat pump heating power at B0/W35
+		P_HeatingBufferSupplyTemperature,		// Keyword: HeatingBufferSupplyTemperature		[C]		'Heat pump supply temperature for heating buffer storage'
+		P_HeatingBufferReturnTemperature,		// Keyword: HeatingBufferReturnTemperature		[C]		'Heat pump return temperature for heating buffer storage'
+		P_DHWBufferSupplyTemperature,			// Keyword: DHWBufferSupplyTemperature			[C]		'Heat pump supply temperature for DHW buffer storage'
+		P_DHWBufferReturnTemperature,			// Keyword: DHWBufferReturnTemperature			[C]		'Heat pump return temperature for DHW buffer storage'
+		P_HeatingBufferVolume,					// Keyword: HeatingBufferVolume					[m3]	'Heat pump heating buffer storage volume'
+		P_DHWBufferVolume,						// Keyword: DHWBufferVolume						[m3]	'Heat pump DHW buffer storage volume'		'
 		// additional parameters
 		P_PipeLength,							// Keyword: PipeLength							[m]		'Length of pipe'
 		NUM_P

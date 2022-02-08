@@ -551,11 +551,20 @@ void ThermalNetworkStatesModel::calculateErrorWeightFactors(std::vector<double> 
 			continue;
 		NANDRAD::HydraulicNetworkComponent::ModelType type = m_network->m_elements[n].m_component->m_modelType;
 		IBK_ASSERT(flowElem!=nullptr);
-		// for all elements that are not pipes (ie. heat exchangers/heat pumps etc.)
-		// increase the sensitivity for weights
-		if (type != NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe &&
-			type != NANDRAD::HydraulicNetworkComponent::MT_SimplePipe )
-			weights[i] = 1.;
+
+//		// for all elements that are not pipes (ie. heat exchangers/heat pumps etc.)
+//		// increase the sensitivity for weights
+//		if (type != NANDRAD::HydraulicNetworkComponent::MT_DynamicPipe &&
+//			type != NANDRAD::HydraulicNetworkComponent::MT_SimplePipe )
+//			weights[i] = 1.;
+
+		// for heat pump with buffer storages, it might make sense to increase the weight for higher accuracy of the buffer temperatures
+		// as they are commonly a lot larger than other component volumes
+		// for better performance, we may keep them at 1.
+		if (type == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSideWithBuffer){
+			weights[i+1] = 1.;
+			weights[i+2] = 1.;
+		}
 		// increment counter for number of unknowns
 		i += flowElem->nInternalStates();
 	}
