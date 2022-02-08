@@ -81,37 +81,37 @@
       <item row="4" column="0" colspan="3">
        <widget class="QGroupBox" name="groupBoxSelectedComponent2">
         <property name="title">
-         <string>Automatic calculation:</string>
+         <string>Update Floor Areas / Volumes</string>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelSelectedCIWithActiveLayer">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QRadioButton" name="radioButtonSelected">
              <property name="text">
-              <string>Selected rooms:</string>
+              <string>only for selected rooms</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QPushButton" name="pushButtonFloorAreaSelectedRooms">
+           <item>
+            <widget class="QRadioButton" name="radioButtonAll">
              <property name="text">
-              <string>Floor area</string>
+              <string>for all rooms</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="pushButtonVolumeSelectedRooms">
-             <property name="text">
-              <string>Volume</string>
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -123,35 +123,51 @@
           </widget>
          </item>
          <item>
-          <layout class="QGridLayout" name="gridLayout_2">
-           <item row="0" column="0">
-            <widget class="QLabel" name="labelSelectedCIWithActiveLayer_2">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QPushButton" name="pushButtonFloorArea">
              <property name="text">
-              <string>All rooms:</string>
+              <string>Update Floor area</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QPushButton" name="pushButtonFloorAreaAllRooms">
+           <item>
+            <widget class="QPushButton" name="pushButtonVolume">
              <property name="text">
-              <string>Floor area</string>
+              <string>Update Volume</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="pushButtonVolumeAllRooms">
-             <property name="text">
-              <string>Volume</string>
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-            </widget>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>Other</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QPushButton" name="pushButtonAddSurface">
+           <property name="text">
+            <string>Add selected surfaces to room</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
