@@ -339,6 +339,9 @@ void SVSimulationStartNandrad::updateCmdLine() {
 		m_cmdArgs.push_back("--step-stats");
 	if (m_ui->checkBoxCloseConsoleWindow->isChecked())
 		m_cmdArgs.push_back("-x");
+	double numThreads = m_ui->lineEditNumThreads->value();
+	if (m_ui->lineEditNumThreads->isValidNumber(numThreads))
+		m_cmdArgs.push_back(QString("-p=%1").arg(numThreads));
 
 	m_ui->lineEditCmdLine->setText("\"" + m_solverExecutable + "\" " + m_cmdArgs.join(" ") + "\"" + m_nandradProjectFilePath + "\"");
 	m_ui->lineEditCmdLine->setCursorPosition( m_ui->lineEditCmdLine->text().length() );
