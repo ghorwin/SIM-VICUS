@@ -200,6 +200,12 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 		m_ui->filepathAnnualDataFile->setFilename("");
 		m_ui->labelFileNameReference->setText("");
 		m_ui->pushButtonEditAnnualDataInTexteditor->setEnabled(false);
+
+		m_ui->radioButtonAnnualScheduleLinear->blockSignals(true);
+		m_ui->radioButtonAnnualScheduleLinear->setChecked(true);
+		m_ui->radioButtonAnnualScheduleConstant->setChecked(false);
+		m_ui->radioButtonAnnualScheduleLinear->blockSignals(false);
+
 		// clear list widget
 		m_ui->listWidgetColumnSelection->selectionModel()->blockSignals(true);
 		m_ui->listWidgetColumnSelection->clear();
@@ -216,6 +222,14 @@ void SVDBScheduleEditWidget::updateInput(int id) {
 				// in case we have no project loaded and "Project Directory" is used as placeholder
 			}
 			m_ui->filepathAnnualDataFile->setFilename(QString::fromStdString(annualDataFile.absolutePath().str()) );
+
+			bool useLinearInterpolation = m_current->m_annualSchedule.m_interpolationMethod == NANDRAD::LinearSplineParameter::I_LINEAR ||
+										m_current->m_annualSchedule.m_interpolationMethod == NANDRAD::LinearSplineParameter::NUM_I;
+			m_ui->radioButtonAnnualScheduleLinear->blockSignals(true);
+			m_ui->radioButtonAnnualScheduleLinear->setChecked(useLinearInterpolation);
+			m_ui->radioButtonAnnualScheduleConstant->setChecked(!useLinearInterpolation);
+			m_ui->radioButtonAnnualScheduleLinear->blockSignals(false);
+
 			m_ui->radioButtonRelativeFilePath->blockSignals(true);
 			if (m_current->m_annualSchedule.m_tsvFile.hasPlaceholder()) {
 				m_ui->radioButtonRelativeFilePath->setChecked(true);
@@ -1163,3 +1177,16 @@ void SVDBScheduleEditWidget::on_listWidgetColumnSelection_currentItemChanged(QLi
 	on_radioButtonRelativeFilePath_toggled(m_ui->radioButtonRelativeFilePath->isChecked());
 	updateAnnualDataDiagram();
 }
+
+void SVDBScheduleEditWidget::on_radioButtonAnnualScheduleLinear_toggled(bool checked) {
+	if ( m_current == nullptr )
+		return;
+
+	if (checked)
+		m_current->m_annualSchedule.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_LINEAR;
+	else
+		m_current->m_annualSchedule.m_interpolationMethod = NANDRAD::LinearSplineParameter::I_CONSTANT;
+
+	modelModify();
+}
+
