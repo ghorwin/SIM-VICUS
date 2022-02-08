@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1216</width>
-    <height>604</height>
+    <height>610</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,117 +20,8 @@
       <enum>Qt::Vertical</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="2,1">
-       <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Output definitions</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="checkBoxDefaultBuildingOutputs">
-            <property name="text">
-             <string>Generate default building-related outputs</string>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>458</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="0" rowspan="2">
-           <widget class="QTableWidget" name="tableWidgetOutputDefinitions">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="checkBoxDefaultNetworkOutputs">
-            <property name="text">
-             <string>Generate default network-related outputs</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QToolButton" name="toolButtonRemoveDefinition">
-            <property name="text">
-             <string>...</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../resources/SIM-VICUS.qrc">
-              <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>24</width>
-              <height>24</height>
-             </size>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="font">
-             <font>
-              <weight>75</weight>
-              <bold>true</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>Custom simulation outputs</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Note: Auto-generated outputs always use the first output grid in the list.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>10</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="checkBoxDefaultNetworkSummationModels">
-            <property name="text">
-             <string>Generate default network-related summation models and according outputs</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="1" column="1">
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
           <string>Output grids</string>
@@ -147,6 +38,23 @@
             <attribute name="verticalHeaderVisible">
              <bool>false</bool>
             </attribute>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QToolButton" name="toolButtonEditGrid">
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../resources/SIM-VICUS.qrc">
+              <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>24</width>
+              <height>24</height>
+             </size>
+            </property>
            </widget>
           </item>
           <item row="2" column="1">
@@ -199,20 +107,127 @@
             </property>
            </spacer>
           </item>
-          <item row="1" column="1">
-           <widget class="QToolButton" name="toolButtonEditGrid">
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Output format</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QCheckBox" name="checkBoxBinaryFormat">
+            <property name="text">
+             <string>write in binary format</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0" rowspan="2">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Output definitions</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="5" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="font">
+             <font>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Custom simulation outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>10</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="6" column="1">
+           <widget class="QToolButton" name="toolButtonRemoveDefinition">
             <property name="text">
              <string>...</string>
             </property>
             <property name="icon">
              <iconset resource="../resources/SIM-VICUS.qrc">
-              <normaloff>:/gfx/actions/24x24/edit.png</normaloff>:/gfx/actions/24x24/edit.png</iconset>
+              <normaloff>:/gfx/actions/24x24/minus.png</normaloff>:/gfx/actions/24x24/minus.png</iconset>
             </property>
             <property name="iconSize">
              <size>
               <width>24</width>
               <height>24</height>
              </size>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="checkBoxDefaultNetworkOutputs">
+            <property name="text">
+             <string>Generate default network-related outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="1">
+           <spacer name="verticalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>458</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="checkBoxDefaultNetworkSummationModels">
+            <property name="text">
+             <string>Generate default network-related summation models and according outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0" rowspan="2">
+           <widget class="QTableWidget" name="tableWidgetOutputDefinitions">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="checkBoxDefaultBuildingOutputs">
+            <property name="text">
+             <string>Generate default building-related outputs</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Note: Auto-generated outputs always use the first output grid in the list.</string>
             </property>
            </widget>
           </item>
