@@ -98,7 +98,7 @@ https://ysjournal.com/tetrahedral-shoelace-method-calculating-volume-of-irregula
  Raum ist geschlossen, und die Punkte der Dreeicksflächen sind bezüglich
  der Normalenrichtung korrekt geordnet.
  Dann kommt es zur Addition positiv ausgerichteter und zur Subtraktion negativ
- ausgerichteter Flcähen (bzw.
+ ausgerichteter Flächen (bzw.
  der zugehörigen Tetrederelemente), und in Summe ergibt der sich das Raumvolumen
  aus 'Schnitt'.
 \end_layout
@@ -221,6 +221,72 @@ V_{Tetraeder,i} & = & \frac{1}{6}p_{0,x}\left(\left(p_{1,y}-p_{0,y}\right)\left(
  &  & +\frac{1}{6}p_{0,y}\left(\left(p_{1,z}-p_{0,z}\right)\left(p_{2,x}-p_{0,x}\right)-\left(p_{1,x}-p_{0,x}\right)\left(p_{2,z}-p_{0,z}\right)\right)\nonumber \\
  &  & +\frac{1}{6}p_{0,z}\left(\left(p_{1,x}-p_{0,x}\right)\left(p_{2,y}-p_{0,y}\right)-\left(p_{1,y}-p_{0,y}\right)\left(p_{2,x}-p_{0,x}\right)\right)\label{eq:Berechnungsformel}
 \end{eqnarray}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Dirks Berechnungen:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{Tetraeder,i} & = & \frac{1}{6}\left|\begin{array}{cccc}
+1 & p_{0,x} & p_{0,y} & p_{0,z}\\
+1 & p_{1,x} & p_{1,y} & p_{1,z}\\
+1 & p_{2,x} & p_{2,y} & p_{2,z}\\
+1 & 0 & 0 & 0
+\end{array}\right|
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bezugspunkt für die Auflösung der Determinate ist die erste Spalte mit der
+ letzten Zeile.
+\end_layout
+
+\begin_layout Standard
+Daraus bleibt dann:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+V_{Tetraeder,i} & = & \frac{1}{6}\cdot1\left|\begin{array}{ccc}
+p_{0,x} & p_{0,y} & p_{0,z}\\
+p_{1,x} & p_{1,y} & p_{1,z}\\
+p_{2,x} & p_{2,y} & p_{2,z}
+\end{array}\right|
+\end{eqnarray*}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Oder sehe ich das falsch?
+\end_layout
+
+\begin_layout Standard
+Damit ergibt sich fürs Volumen dann:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{eqnarray*}
+V & = & \frac{1}{6}\cdot\left(\begin{array}{c}
+p_{0,x}\cdot p_{1,y}\cdot p_{2,z}+p_{2,x}\cdot p_{0,y}\cdot p_{1,z}+p_{1,x}\cdot p_{2,y}\cdot p_{0,z}\\
+-p_{2,x}\cdot p_{1,y}\cdot p_{0,z}-p_{0,x}\cdot p_{2,y}\cdot p_{1,z}-p_{1,x}\cdot p_{0,y}\cdot p_{2,z}
+\end{array}\right)
+\end{eqnarray*}
 
 \end_inset
 
