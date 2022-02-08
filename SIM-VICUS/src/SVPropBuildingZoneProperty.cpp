@@ -7,6 +7,7 @@
 #include "SVPropZonePropertyDelegate.h"
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
+#include "SVUndoModifyProject.h"
 #include "SVUndoModifyBuildingLevel.h"
 #include "SVUndoModifyRoom.h"
 #include "SVUndoModifyBuildingTopology.h"
@@ -582,15 +583,22 @@ void SVPropBuildingZoneProperty::on_pushButtonVolume_clicked() {
 }
 
 void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
-	Q_ASSERT(m_selectedRoom != nullptr);
+
+	VICUS::Project vp = project();
+	vp.updatePointers();
+
+	VICUS::Room *selectedRoom = vp.roomByID(m_selectedRoomID);
+	Q_ASSERT(selectedRoom != nullptr);
 
 	// we get the selected surfaces
 	std::vector<const VICUS::Surface*> surfs;
-	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
+	vp.selectedSurfaces(surfs, VICUS::Project::SG_Building);
 	QString newRoomName, messageBoxText, oldRoomName;
 
-	newRoomName = m_selectedRoom->m_displayName;
+	newRoomName = selectedRoom ->m_displayName;
 	bool hadAtLeastOneChangedSurface = false;
+
+	std::map<unsigned int, std::vector<unsigned int>> idTodeleteSurfPositions;
 
 	// we have to mind plain geometry and already assigned surfaces
 	for(const VICUS::Surface *surf : surfs) {
@@ -598,40 +606,54 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 		// if surface has already a parent we have to delete the surface from the parent
 		// and update its parent
 		VICUS::Room* oldRoom = dynamic_cast<VICUS::Room*>(surf->m_parent);
-		if(oldRoom->m_id == m_selectedRoom->m_id)
+		if(oldRoom->m_id == selectedRoom->m_id)
 			continue; // skip if surface is already assigned to specified room
 
-		m_selectedRoom->m_surfaces.push_back(*surf);
+		selectedRoom->m_surfaces.push_back(*surf);
+		selectedRoom->updateParents();
 		hadAtLeastOneChangedSurface = true;
 
 		if (oldRoom != nullptr) {
-			unsigned int pos = 0;
 			for (unsigned int i=0; i<oldRoom->m_surfaces.size(); ++i) {
 				VICUS::Surface &s = oldRoom->m_surfaces[i];
 				if(s.m_id == surf->m_id) {
-					pos = i;
+					idTodeleteSurfPositions[oldRoom->m_id].push_back(i);
 					break;
 				}
 			}
-			oldRoom->m_surfaces.erase(oldRoom->m_surfaces.begin()+pos);
+//			oldRoom->m_surfaces.erase(oldRoom->m_surfaces.begin()+pos);
+//			oldRoom->updateParents();
 			oldRoomName = oldRoom->m_displayName;
 		}
 		else
-			oldRoomName = "plain Geometry";
+			oldRoomName = "Plain Geometry";
 
 		// assign new parent;
-
-
-		const VICUS::Object* obj = dynamic_cast<const VICUS::Object*>(m_selectedRoom);
+		const VICUS::Object* obj = dynamic_cast<const VICUS::Object*>(selectedRoom);
 		Q_ASSERT(obj != nullptr);
-		const_cast<VICUS::Surface*>(surf)->m_parent = const_cast<VICUS::Object*>(obj);
-
+		selectedRoom->m_surfaces.back().m_parent = const_cast<VICUS::Object*>(obj);
 		messageBoxText.append(QString("%3: %1 --> %2\n").arg(oldRoomName).arg(newRoomName).arg(surf->m_displayName));
+	}
+
+	// we delete the old surfaces and update their parents;
+	for(std::map<unsigned int, std::vector<unsigned int>>::iterator it = idTodeleteSurfPositions.begin(); it != idTodeleteSurfPositions.end(); ++it) {
+		VICUS::Room *oldRoom = vp.roomByID(it->first);
+
+		for(unsigned int i=it->second.size(); i>0;--i) {
+			std::vector<VICUS::Surface>::iterator it2 = oldRoom->m_surfaces.begin();
+			std::advance(it2, it->second[i-1]);
+			oldRoom->m_surfaces.erase(it2);
+		}
+
+		oldRoom->updateParents();
 	}
 
 	if(hadAtLeastOneChangedSurface) {
 		// update all pointers
-		const_cast<VICUS::Project&>(project()).updatePointers();
+//		vp.updatePointers();
+		SVUndoModifyProject * undo = new SVUndoModifyProject("Assiging Surfaces to different Room.", vp);
+		undo->push();
+		// SVProjectHandler::instance().setModified(SVProjectHandler::AllModified);
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
 	}
 	else {
@@ -655,7 +677,7 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 
 			Q_ASSERT(room != nullptr);
 
-			m_selectedRoom = const_cast<VICUS::Room*>(room);
+			m_selectedRoomID = const_cast<VICUS::Room*>(room)->m_id;
 		}
 	}
 }

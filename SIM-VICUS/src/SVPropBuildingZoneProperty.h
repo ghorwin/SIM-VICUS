@@ -58,7 +58,7 @@ private:
 	/*! Holds selected room for adding surfaces to it.
 		Updated in itemSelectionChanged.
 	*/
-	VICUS::Room*					m_selectedRoom;
+	unsigned int					m_selectedRoomID;
 };
 
 #endif // SVPropBuildingZonePropertyH
