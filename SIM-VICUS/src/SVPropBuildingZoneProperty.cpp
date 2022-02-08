@@ -38,12 +38,12 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	m_ui->tableWidgetZones->horizontalHeader()->resizeSection(3,100);
 	m_ui->tableWidgetZones->horizontalHeader()->setStretchLastSection(false);
 	m_ui->tableWidgetZones->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	m_ui->tableWidgetZones->setSelectionBehavior(QAbstractItemView::SelectRows);
+	m_ui->tableWidgetZones->setSelectionBehavior(QAbstractItemView::SelectItems); // since we want to edit single cells
 
 	// Mind: parent of the item delegate must be its widget!
 	m_ui->tableWidgetZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableWidgetZones));
 
-	m_ui->pushButtonAddSurface->setEnabled(false);
+	m_ui->pushButtonAssignSurface->setEnabled(false);
 }
 
 
@@ -157,7 +157,8 @@ void SVPropBuildingZoneProperty::updateUi() {
 	m_ui->tableWidgetZones->setSortingEnabled(false);
 	m_ui->tableWidgetZones->setRowCount(0);
 
-	for(const VICUS::Room * r : rooms){
+	for (const VICUS::Room * r : rooms) {
+		Q_ASSERT(r != nullptr); // must be a valid pointer!
 		// add new row
 		int row = m_ui->tableWidgetZones->rowCount();
 		m_ui->tableWidgetZones->setRowCount(row+1);
@@ -167,15 +168,8 @@ void SVPropBuildingZoneProperty::updateUi() {
 		// column 0 - room id
 		QTableWidgetItem * item = new QTableWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if(r == nullptr){
-			// skip
-			/// ToDo Heiko ist das richtig?
-			continue;
-		}
-		else{
-			item->setText(QString::number(r->m_id));
-			item->setData(Qt::UserRole,r->m_id);
-		}
+		item->setText(QString::number(r->m_id));
+		item->setData(Qt::UserRole,r->m_id);
 		m_ui->tableWidgetZones->setItem(row,0, item);
 
 		// column 1 - room name
@@ -199,7 +193,7 @@ void SVPropBuildingZoneProperty::updateUi() {
 			item->setText("---");
 
 		item->setData(Qt::UserRole,r->m_id);
-		item->setTextAlignment(Qt::AlignRight);
+		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_ui->tableWidgetZones->setItem(row,2, item);
 
 		// column 3 - room volume
@@ -216,218 +210,18 @@ void SVPropBuildingZoneProperty::updateUi() {
 			item->setText("---");
 
 		item->setData(Qt::UserRole,r->m_id);
-		item->setTextAlignment(Qt::AlignRight);
+		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
 		m_ui->tableWidgetZones->setItem(row,3, item);
 	}
 
 	m_ui->tableWidgetZones->blockSignals(false);
 	m_ui->tableWidgetZones->selectionModel()->blockSignals(false);
-	m_ui->tableWidgetZones->setSortingEnabled(true);
 
-	//	for (const VICUS::Room* r : rooms)
-	//		m_selectedRooms.insert(r);
-
-	// populate table with all components that are currently selected by filter
-	// we only show assigned components with active layers
-
-	const SVDatabase & db = SVSettings::instance().m_db;
-
-
-
-
-	// enable/disable selection-based buttons
-	//on_tableWidgetSurfaceHeating_itemSelectionChanged();
-
-	// insert all referenced rooms into set
-	std::vector<unsigned int> selectedRoomIds;
-	bool roomsSelected = !selectedRoomIds.empty();
-	for(auto *item : m_ui->tableWidgetZones->selectedItems()){
-		if(item->column() != 0)
-			continue;
-		selectedRoomIds.push_back(item->text().toUInt());
-	}
-	/// ToDo Heiko->Dirk: Wie geht die Aktivierung richtig siehe Frage ganz unten.
-	//m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(roomsSelected);
-	//m_ui->pushButtonVolumeSelectedRooms->setEnabled(roomsSelected);
-
-}
-
-#if 0
-
-void SVPropBuildingZoneProperty::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
-	if (item->column() == 2 || item->column() == 3) {
-		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
-		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
-		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-		for (unsigned int i=0; i<cis.size(); ++i)
-			if (cis[i].m_id == ciID) {
-				if (item->column() == 2)
-					cis[i].m_idSurfaceHeating = item->data(Qt::UserRole).toUInt();
-				else
-					cis[i].m_idSurfaceHeatingControlZone = item->data(Qt::UserRole).toUInt();
-				break;
-			}
-		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
-		undo->push();
-	}
+	// update "Assign surface" button state
+	on_tableWidgetZones_itemSelectionChanged();
 }
 
 
-void SVPropBuildingZoneProperty::on_pushButtonRemoveSurfaceHeating_clicked() {
-	// process all selected elements, modify component instances and issue undo action
-
-	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-	for (int row=0; row<m_ui->tableWidgetSurfaceHeating->rowCount(); ++row) {
-		// is any of the two editable cells selected?
-		if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected() ||
-				m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
-		{
-			// get unique ID of component instance
-			QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(row, 0);
-			unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
-			// find matching component instance | Qt::ItemIsEditable
-			for (unsigned int i=0; i<cis.size(); ++i)
-				if (cis[i].m_id == ciID) {
-					if (m_ui->tableWidgetSurfaceHeating->item(row, 2)->isSelected())
-						cis[i].m_idSurfaceHeating = VICUS::INVALID_ID;
-					if (m_ui->tableWidgetSurfaceHeating->item(row, 3)->isSelected())
-						cis[i].m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
-					break;
-				}
-		}
-	}
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heating assignment"), cis);
-	undo->push();
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonAssignSurfaceHeating_clicked() {
-	// popup surface heating DB dialog and if user selects one, assign it to all selected component instances
-	unsigned int selectedID = SVMainWindow::instance().dbSurfaceHeatingSystemEditDialog()->select(VICUS::INVALID_ID);
-	if (selectedID == VICUS::INVALID_ID)
-		return;
-
-	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-
-	// process all selected components
-	for (VICUS::ComponentInstance & ci : cis) {
-		// check if current ci is in list of selected component instances
-		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-			if ((*ciIt)->m_id == ci.m_id)
-				break;
-		}
-		if (ciIt == m_selectedComponentInstances.end())
-			continue;
-		// if component instance does not have an active layer assigned, skip
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-		if (comp == nullptr)
-			continue;
-		// check if no active layer is present
-		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-			continue;
-		// now get room associated with selected component
-		const VICUS::Surface * s = ci.m_sideASurface;
-		if (s == nullptr)
-			s = ci.m_sideBSurface;
-		Q_ASSERT(s != nullptr);
-		const VICUS::Room * room = dynamic_cast<const VICUS::Room *>(s->m_parent);
-		ci.m_idSurfaceHeating = selectedID;
-		ci.m_idSurfaceHeatingControlZone = room->m_id;
-	}
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
-	undo->push();
-}
-
-void SVPropBuildingZoneProperty::on_tableWidgetSurfaceHeating_currentCellChanged(int /*currentRow*/, int /*currentColumn*/, int previousRow, int previousColumn) {
-	QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(previousRow, previousColumn);
-	if (item != nullptr)
-		m_ui->tableWidgetSurfaceHeating->closePersistentEditor(item);
-}
-
-
-void SVPropBuildingZoneProperty::on_tableWidgetSurfaceHeating_itemSelectionChanged() {
-	// based on selection in surface heating table, enable/disable "Remove button"
-
-	// we can only remove surface heatings that are actually configured
-	// process all selected rows and check if the surface heating association is set
-	// UserRole of column 2 stores ID of surface heating object; VICUS::INVALID_ID if not assigned
-	bool haveSurfaceHeating = false;
-
-	for (QModelIndex idx : m_ui->tableWidgetSurfaceHeating->selectionModel()->selectedRows()) {
-		// construct model index of second column
-		int row = idx.row();
-		// retrieve item and userrole from second column
-		const QTableWidgetItem * item = m_ui->tableWidgetSurfaceHeating->item(row, 2);
-		if (item->data(Qt::UserRole).toUInt() != VICUS::INVALID_ID) {
-			haveSurfaceHeating = true;
-			break;
-		}
-	}
-	m_ui->pushButtonRemoveSurfaceHeating->setEnabled(haveSurfaceHeating);
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonRemoveSelectedSurfaceHeating_clicked() {
-	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-
-	// process all selected components
-	for (VICUS::ComponentInstance & ci : cis) {
-		// check if current ci is in list of selected component instances
-		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-			if ((*ciIt)->m_id == ci.m_id)
-				break;
-		}
-		if (ciIt == m_selectedComponentInstances.end())
-			continue;
-		// clear surface heating
-		ci.m_idSurfaceHeating = VICUS::INVALID_ID;
-		ci.m_idSurfaceHeatingControlZone = VICUS::INVALID_ID;
-	}
-
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Removed surface heatings"), cis);
-	undo->push();
-}
-
-
-void SVPropBuildingZoneProperty::on_pushButtonAssignSurfaceHeatingControlZone_clicked() {
-	// popup dialog with zone selection
-
-	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVZoneSelectionDialog dlg(this);
-
-	// start dialog
-	int res = dlg.exec();
-	if (res != QDialog::Accepted)
-		return; // user canceled the dialog
-
-	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-
-	for (VICUS::ComponentInstance & ci : cis) {
-		// check if current ci is in list of selected component instances
-		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-			if ((*ciIt)->m_id == ci.m_id)
-				break;
-		}
-		if (ciIt == m_selectedComponentInstances.end())
-			continue;
-		// if component instance does not have an active layer assigned, skip
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-		if (comp == nullptr)
-			continue;
-		// check if no active layer is present
-		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-			continue;
-		ci.m_idSurfaceHeatingControlZone = dlg.m_idZone;
-	}
-	// perform an undo action in order to redo/revert current operation
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
-	undo->push();
-}
-
-#endif
 void SVPropBuildingZoneProperty::on_comboBoxBuildingFilter_currentIndexChanged(int /*index*/){
 	updateUi();
 }
@@ -506,6 +300,7 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_cellChanged(int row, int co
 	}
 }
 
+
 void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool onlySelected){
 
 	std::vector<unsigned int>	roomIds;
@@ -558,22 +353,6 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 }
 
 
-//void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
-//	updateUi();
-//}
-
-
-//void SVPropBuildingZoneProperty::on_tableWidgetZones_cellPressed(int row, int column)
-//{
-//	updateUi();
-//}
-
-/// ToDo Heiko->Dirk: wie kann ich abfangen wenn einer eine zelle bzw. mehrere markiert. dann muss der Button freigeschaltet werden
-/// derzeit passiert das zwar mit cellPressed oder itemSelectionChanged aber danach ist dann nicht mehr die Zeile markiert.
-/// weitere sind auch nicht mehr zu markieren
-/// was mach ich falsch?
-
-
 void SVPropBuildingZoneProperty::on_pushButtonFloorArea_clicked() {
 	calculatedParameters(true, m_ui->radioButtonSelected->isChecked());
 }
@@ -582,8 +361,10 @@ void SVPropBuildingZoneProperty::on_pushButtonVolume_clicked() {
 	calculatedParameters(false, m_ui->radioButtonSelected->isChecked());
 }
 
+
 void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 
+	// TODO Stephan: statt der mächtigsten "Copy all" UndoAction, eher die SVUndoModifyBuildingTopology-Action benutzen
 	VICUS::Project vp = project();
 	vp.updatePointers();
 
@@ -651,7 +432,7 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 	if(hadAtLeastOneChangedSurface) {
 		// update all pointers
 //		vp.updatePointers();
-		SVUndoModifyProject * undo = new SVUndoModifyProject("Assiging Surfaces to different Room.", vp);
+		SVUndoModifyProject * undo = new SVUndoModifyProject("Assigning surfaces to different room.", vp);
 		undo->push();
 		// SVProjectHandler::instance().setModified(SVProjectHandler::AllModified);
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
@@ -661,14 +442,21 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 	}
 }
 
+
 void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
+	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
+
+	// TODO Dirk: pushButtonAssignSurface darf nur aktiv sein, wenn:
+	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableWidgetZones->selectionModel()->selectedRows() == 1)
+	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört
+
 	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetZones->selectedRanges();
-	m_ui->pushButtonAddSurface->setEnabled(true);
-	for (unsigned int i=0; i<range.size(); ++i) {
+	m_ui->pushButtonAssignSurface->setEnabled(true);
+	for (int i=0; i<range.size(); ++i) {
 		const QTableWidgetSelectionRange &r = range[i];
 
 		if (r.rowCount() > 1 || r.rowCount() == 0) {
-			m_ui->pushButtonAddSurface->setEnabled(false);
+			m_ui->pushButtonAssignSurface->setEnabled(false);
 			return;
 		}
 		else{
