@@ -848,7 +848,8 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	// generate output grid, if needed
 	std::string refName;
 	if (m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultZoneOutputs].isEnabled() ||
-		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled())
+		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkOutputs].isEnabled() ||
+		m_outputs.m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled() )
 	{
 		// we need at least one hourly grid
 		if (p.m_outputs.m_grids.empty()) {

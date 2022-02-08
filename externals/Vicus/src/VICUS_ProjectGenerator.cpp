@@ -3302,27 +3302,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		for (const NANDRAD::HeatLoadSummationModel &sumModel: p.m_models.m_heatLoadSummationModels)
 			allSumModelIds.push_back(sumModel.m_id);
 
-//		// add summation model for all network pipes
-//		NANDRAD::ObjectList &objList = objectListMap[networkPipeComponent.m_id];
-//		NANDRAD::HeatLoadSummationModel sumModelNetworkPipes;
-//		sumModelNetworkPipes.m_objectList = objList.m_name;
-//		sumModelNetworkPipes.m_displayName = "Sum of " + objList.m_name;
-//		sumModelNetworkPipes.m_id = uniqueIdAdd(allSumModelIds);
-//		networkSumModelIds.insert(sumModelNetworkPipes.m_id);
-//		p.m_models.m_heatLoadSummationModels.push_back(sumModelNetworkPipes);
-
-//		// add summation model for HGHX
-//		if (compIdHGHX != VICUS::INVALID_ID) {
-//			objList = objectListMap[compIdHGHX];
-//			NANDRAD::HeatLoadSummationModel sumModelHGHX;
-//			sumModelHGHX.m_objectList = objList.m_name;
-//			sumModelHGHX.m_displayName = "Sum of " + objList.m_name;
-//			sumModelHGHX.m_id = uniqueIdAdd(allSumModelIds);
-//			networkSumModelIds.insert(sumModelHGHX.m_id);
-//			p.m_models.m_heatLoadSummationModels.push_back(sumModelHGHX);
-//		}
-
-		// add other summation models
+		// add summation model for each component
 		for (auto it=componentElementMap.begin(); it!=componentElementMap.end(); ++it){
 			const NANDRAD::HydraulicNetworkComponent *comp = VICUS::element(nandradNetwork.m_components, it->first);
 			// we are looking for typical models of heat sinks / sources
