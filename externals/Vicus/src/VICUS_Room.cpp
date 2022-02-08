@@ -65,8 +65,8 @@ void Room::calculateVolume() {
 			const IBKMK::Vector3D & p1 = planeTri.m_vertexes[tri.i2];
 			const IBKMK::Vector3D & p2 = planeTri.m_vertexes[tri.i3];
 
-			vol += (( p1.m_y - p0.m_y ) * ( p2.m_z - p0.m_z ) - ( p1.m_z - p0.m_z ) * ( p2.m_y - p0.m_y ))
-					* ( p0.m_x + p1.m_x + p2.m_x );
+			vol += p0.m_x * p1.m_y * p2.m_z + p2.m_x * p0.m_y * p1.m_z + p1.m_x * p2.m_y * p0.m_z
+					- p2.m_x * p1.m_y * p0.m_z - p0.m_x * p2.m_y * p1.m_z - p1.m_x * p0.m_y * p2.m_z;
 
 			// ToDo Anne: Das hier bitte prüfen
 //			std::cout << "\tTeil" << i << ":" << std::endl;
