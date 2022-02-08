@@ -91,15 +91,15 @@ https://ysjournal.com/tetrahedral-shoelace-method-calculating-volume-of-irregula
 
 \end_inset
 
- zeigt, dass ein durch Dreiecksflächen begrenzter Raum (Polyheder) durch
+ zeigt, dass ein durch Dreiecksflächen begrenzter Raum (Polyeder) durch
  Summe mehrerer Tetraedervolumina berechnet werden kann.
  Dafür können werden die begrenzenden Dreiecksflächen verwendet und mit
- dem Nullpunkt zu einem Tetrahedron verbunden werden - vorausgesetzt, der
+ dem Nullpunkt zu einem Tetraeder verbunden werden - vorausgesetzt, der
  Raum ist geschlossen, und die Punkte der Dreeicksflächen sind bezüglich
  der Normalenrichtung korrekt geordnet.
  Dann kommt es zur Addition positiv ausgerichteter und zur Subtraktion negativ
  ausgerichteter Flcähen (bzw.
- der zugehörigen Tetrederelemente), und in SUmme ergibt der sich das Raumvolumen
+ der zugehörigen Tetrederelemente), und in Summe ergibt der sich das Raumvolumen
  aus 'Schnitt'.
 \end_layout
 
@@ -176,7 +176,7 @@ noprefix "false"
 
 \end_inset
 
-, wobei alle Einträge mit Berücksichtigung des Nullpuntes verschwinden.
+, wobei alle Einträge mit Berücksichtigung des Nullpunktes verschwinden.
  
 \begin_inset Formula 
 \begin{eqnarray}
