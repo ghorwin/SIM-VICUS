@@ -657,7 +657,7 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
 	}
 	else {
-		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), QString("All surfaces were already assigned to room '%1'").arg(oldRoomName) );
+		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), QString("All surfaces were already assigned to room '%1'").arg(newRoomName) );
 	}
 }
 
