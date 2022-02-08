@@ -57,7 +57,7 @@ public:
 
 	/*! Flags. */
 	enum flag_t {
-		F_BinaryOutputs,				// Keyword: BinaryOutputs				'If true, output files are written in binary format (the default, if flag is missing).'
+		F_BinaryFormat,				// Keyword: BinaryFormat				'If true, output files are written in binary format (the default, if flag is missing).'
 		F_CreateDefaultZoneOutputs,		// Keyword: CreateDefaultZoneOutputs	'If true, default output definitions for zones are created.'
 		F_CreateDefaultNetworkOutputs,	// Keyword: CreateDefaultNetworkOutputs	'If true, default output definitions for networks are created.'
 		F_CreateDefaultNetworkSummationModels,	// Keyword: CreateDefaultNetworkSummationModels	'If true, default summation models and according output definitions for networks are created.'

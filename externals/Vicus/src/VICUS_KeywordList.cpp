@@ -438,7 +438,7 @@ namespace VICUS {
 			// Outputs::flag_t
 			case 35 :
 			switch (t) {
-				case 0 : return "BinaryOutputs";
+				case 0 : return "BinaryFormat";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
 				case 3 : return "CreateDefaultNetworkSummationModels";
@@ -920,7 +920,7 @@ namespace VICUS {
 			// Outputs::flag_t
 			case 35 :
 			switch (t) {
-				case 0 : return "BinaryOutputs";
+				case 0 : return "BinaryFormat";
 				case 1 : return "CreateDefaultZoneOutputs";
 				case 2 : return "CreateDefaultNetworkOutputs";
 				case 3 : return "CreateDefaultNetworkSummationModels";

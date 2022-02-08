@@ -842,7 +842,7 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	p.m_outputs.m_grids = m_outputs.m_grids;
 
 	// transfer options
-	p.m_outputs.m_binaryFormat = m_outputs.m_flags[VICUS::Outputs::F_BinaryOutputs];
+	p.m_outputs.m_binaryFormat = m_outputs.m_flags[VICUS::Outputs::F_BinaryFormat];
 	p.m_outputs.m_timeUnit = m_outputs.m_timeUnit;
 
 	// generate output grid, if needed

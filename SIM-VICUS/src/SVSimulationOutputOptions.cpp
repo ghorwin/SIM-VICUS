@@ -130,7 +130,7 @@ void SVSimulationOutputOptions::updateUi() {
 				m_outputs->m_flags[VICUS::Outputs::F_CreateDefaultNetworkSummationModels].isEnabled());
 
 	m_ui->checkBoxBinaryFormat->setChecked(
-				m_outputs->m_flags[VICUS::Outputs::F_BinaryOutputs].isEnabled());
+				m_outputs->m_flags[VICUS::Outputs::F_BinaryFormat].isEnabled());
 
 
 	// *** output grids ***
@@ -683,6 +683,6 @@ void SVSimulationOutputOptions::on_checkBoxDefaultBuildingOutputs_clicked(bool c
 }
 
 void SVSimulationOutputOptions::on_checkBoxBinaryFormat_clicked(bool checked) {
-	m_outputs->m_flags[VICUS::Outputs::F_BinaryOutputs].set("BinaryFormat", checked);
+	m_outputs->m_flags[VICUS::Outputs::F_BinaryFormat].set("BinaryFormat", checked);
 }
 
