@@ -165,7 +165,7 @@
          <item>
           <widget class="QPushButton" name="pushButtonAddSurface">
            <property name="text">
-            <string>Add selected surfaces to room</string>
+            <string>Assign selected surfaces to room</string>
            </property>
           </widget>
          </item>
