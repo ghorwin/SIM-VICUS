@@ -38,23 +38,20 @@
         <property name="title">
          <string>Update Floor Areas / Volumes</string>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QRadioButton" name="radioButtonSelected">
+            <widget class="QLabel" name="label">
              <property name="text">
-              <string>only for selected rooms</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QRadioButton" name="radioButtonAll">
-             <property name="text">
-              <string>for all rooms</string>
+              <string>Only selected rooms:</string>
              </property>
             </widget>
            </item>
@@ -71,28 +68,28 @@
              </property>
             </spacer>
            </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QPushButton" name="pushButtonFloorArea">
+            <widget class="QPushButton" name="pushButtonFloorAreaSelectedRooms">
              <property name="text">
               <string>Floor area</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButtonVolume">
+            <widget class="QPushButton" name="pushButtonVolumeSelectedRooms">
              <property name="text">
               <string>Volume</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_2">
+             <property name="text">
+              <string>All rooms:</string>
              </property>
             </widget>
            </item>
@@ -108,6 +105,20 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonFloorAreaAllRooms">
+             <property name="text">
+              <string>Floor area</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButtonVolumeAllRooms">
+             <property name="text">
+              <string>Volume</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
