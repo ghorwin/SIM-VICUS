@@ -45,7 +45,7 @@ private slots:
 
 	//void on_tableWidgetZones_cellPressed(int row, int column);
 
-	void on_pushButtonAddSurface_clicked();
+	void on_pushButtonAssignSurface_clicked();
 
 	void on_tableWidgetZones_itemSelectionChanged();
 

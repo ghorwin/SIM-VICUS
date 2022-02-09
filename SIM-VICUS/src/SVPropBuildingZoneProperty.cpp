@@ -38,7 +38,7 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	m_ui->tableWidgetZones->horizontalHeader()->resizeSection(3,100);
 	m_ui->tableWidgetZones->horizontalHeader()->setStretchLastSection(false);
 	m_ui->tableWidgetZones->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	m_ui->tableWidgetZones->setSelectionBehavior(QAbstractItemView::SelectItems); // since we want to edit single cells
+	m_ui->tableWidgetZones->setSelectionBehavior(QAbstractItemView::SelectRows); // since we want to edit single cells
 
 	// Mind: parent of the item delegate must be its widget!
 	m_ui->tableWidgetZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableWidgetZones));
@@ -362,7 +362,7 @@ void SVPropBuildingZoneProperty::on_pushButtonVolume_clicked() {
 }
 
 
-void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
+void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
 	// TODO Stephan: statt der mächtigsten "Copy all" UndoAction, eher die SVUndoModifyBuildingTopology-Action benutzen
 	VICUS::Project vp = project();
@@ -402,8 +402,6 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 					break;
 				}
 			}
-//			oldRoom->m_surfaces.erase(oldRoom->m_surfaces.begin()+pos);
-//			oldRoom->updateParents();
 			oldRoomName = oldRoom->m_displayName;
 		}
 		else
@@ -425,16 +423,12 @@ void SVPropBuildingZoneProperty::on_pushButtonAddSurface_clicked() {
 			std::advance(it2, it->second[i-1]);
 			oldRoom->m_surfaces.erase(it2);
 		}
-
 		oldRoom->updateParents();
 	}
 
 	if(hadAtLeastOneChangedSurface) {
-		// update all pointers
-//		vp.updatePointers();
-		SVUndoModifyProject * undo = new SVUndoModifyProject("Assigning surfaces to different room.", vp);
+		SVUndoModifyBuildingTopology * undo = new SVUndoModifyBuildingTopology("Assigning surfaces to different room.", vp.m_buildings);
 		undo->push();
-		// SVProjectHandler::instance().setModified(SVProjectHandler::AllModified);
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
 	}
 	else {
@@ -450,22 +444,36 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableWidgetZones->selectionModel()->selectedRows() == 1)
 	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört
 
-	QList<QTableWidgetSelectionRange> range = m_ui->tableWidgetZones->selectedRanges();
+	QModelIndexList selectedRows = m_ui->tableWidgetZones->selectionModel()->selectedRows(1);
 	m_ui->pushButtonAssignSurface->setEnabled(true);
-	for (int i=0; i<range.size(); ++i) {
-		const QTableWidgetSelectionRange &r = range[i];
 
-		if (r.rowCount() > 1 || r.rowCount() == 0) {
-			m_ui->pushButtonAssignSurface->setEnabled(false);
-			return;
-		}
-		else{
-			unsigned int id = m_ui->tableWidgetZones->item(r.bottomRow(), 0)->text().toUInt();
-			const VICUS::Room* room = dynamic_cast<const VICUS::Room*>(project().objectById(id));
+	std::vector<const VICUS::Surface*> surfs;
+	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
 
-			Q_ASSERT(room != nullptr);
-
-			m_selectedRoomID = const_cast<VICUS::Room*>(room)->m_id;
-		}
+	if (selectedRows.size() != 1) {
+		m_ui->pushButtonAssignSurface->setEnabled(false);
+		return;
 	}
+
+	unsigned int id = m_ui->tableWidgetZones->item(selectedRows[0].row(), 0)->text().toUInt();
+
+	bool isPartOfRoom = true;
+	for(const VICUS::Surface *s : surfs) {
+		if (s->m_parent->m_id != id)
+			isPartOfRoom = false;
+	}
+
+	if(isPartOfRoom) {
+		m_selectedRoomID = std::numeric_limits<unsigned int>::max();
+		m_ui->pushButtonAssignSurface->setEnabled(false);
+		return;
+	}
+
+	const VICUS::Room* room = dynamic_cast<const VICUS::Room*>(project().objectById(id));
+
+	Q_ASSERT(room != nullptr);
+
+	m_selectedRoomID = const_cast<VICUS::Room*>(room)->m_id;
+
+
 }
