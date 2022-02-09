@@ -353,15 +353,6 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 }
 
 
-void SVPropBuildingZoneProperty::on_pushButtonFloorArea_clicked() {
-	calculatedParameters(true, m_ui->radioButtonSelected->isChecked());
-}
-
-void SVPropBuildingZoneProperty::on_pushButtonVolume_clicked() {
-	calculatedParameters(false, m_ui->radioButtonSelected->isChecked());
-}
-
-
 void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
 	// TODO Stephan: statt der mächtigsten "Copy all" UndoAction, eher die SVUndoModifyBuildingTopology-Action benutzen
@@ -437,6 +428,26 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 }
 
 
+void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
+	calculatedParameters(true, true);
+}
+
+
+void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
+	calculatedParameters(false, true);
+}
+
+
+void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
+	calculatedParameters(true, false);
+}
+
+
+void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
+	calculatedParameters(false, false);
+}
+
+
 void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
 
@@ -449,6 +460,9 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 
 	std::vector<const VICUS::Surface*> surfs;
 	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
+
+	m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(selectedRows.size() > 0);
+	m_ui->pushButtonVolumeSelectedRooms->setEnabled(selectedRows.size() > 0);
 
 	if (selectedRows.size() != 1) {
 		m_ui->pushButtonAssignSurface->setEnabled(false);

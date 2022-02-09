@@ -36,10 +36,13 @@ private slots:
 
 	void on_tableWidgetZones_cellChanged(int row, int column);
 
-	void on_pushButtonFloorArea_clicked();
+	void on_pushButtonFloorAreaSelectedRooms_clicked();
 
-	void on_pushButtonVolume_clicked();
+	void on_pushButtonVolumeSelectedRooms_clicked();
 
+	void on_pushButtonFloorAreaAllRooms_clicked();
+
+	void on_pushButtonVolumeAllRooms_clicked();
 
 	//void on_tableWidgetZones_itemSelectionChanged();
 
