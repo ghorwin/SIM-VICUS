@@ -3186,11 +3186,16 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 	}
 
+	std::string projectName = IBK::Path(nandradProjectPath).filename().withoutExtension().str();
+	IBK::Path additionalFilesDir(IBK::Path(nandradProjectPath).withoutExtension() + "_networkInfoFiles");
+	if (!additionalFilesDir.exists())
+		IBK::Path::makePath(additionalFilesDir);
+
 	// write mapping file
 	if (vicusNetwork.m_hasHeatExchangeWithGround) {
 		std::ofstream f;
-		std::string file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".mapping";
-		f.open(file, std::ofstream::out | std::ofstream::trunc);
+		IBK::Path filePath = additionalFilesDir / projectName + ".mapping";
+		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
 		f << "soilId" << "\t" << "supplyPipeIds" << "\t" << "returnPipeIds" << std::endl;
 		for (auto it=mapSoil2SupplyPipes.begin(); it!=mapSoil2SupplyPipes.end(); ++it ){
 			unsigned int soilId = it->first;
@@ -3204,12 +3209,12 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 		}
 		f.close();
 
-		vicusNetwork.writeNetworkNodesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkNodes.csv");
-		vicusNetwork.writeNetworkEdgesCSV(IBK::Path(nandradProjectPath).withoutExtension() + "_NetworkEdges.csv");
+		vicusNetwork.writeNetworkNodesCSV(additionalFilesDir / projectName + "_NetworkNodes.csv");
+		vicusNetwork.writeNetworkEdgesCSV(additionalFilesDir / projectName + "_NetworkEdges.csv");
 
 		// write NANDRAD ids for the path of each building
-		file = IBK::Path(nandradProjectPath).withoutExtension().str() + ".paths";
-		f.open(file, std::ofstream::out | std::ofstream::trunc);
+		filePath = additionalFilesDir / projectName + ".paths";
+		f.open(filePath.str(), std::ofstream::out | std::ofstream::trunc);
 		for (auto it = shortestPaths.begin(); it != shortestPaths.end(); ++it){
 			f << vicusNetwork.nodeById(it->first)->m_displayName.toStdString() << std::endl;
 			std::vector<NetworkEdge *> &shortestPath = it->second; // for readability
