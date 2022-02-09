@@ -509,8 +509,12 @@ void Project::updatePointers() {
 
 	for (VICUS::Network & n : m_geometricNetworks) {
 		addAndCheckForUniqueness(&n);
-		for (VICUS::NetworkEdge & e : n.m_edges){
-			e.m_id = nextUnusedID();
+		for (VICUS::NetworkEdge & e : n.m_edges) {
+			// Note: VICUS::NetworkEdge objects do not save their unique IDs in the project file.
+			//       Hence, we need to assign unique IDs on the first time the object is created,
+			//       or, when the object pointer list is first updated.
+			if (e.m_id == VICUS::INVALID_ID)
+				e.m_id = nextUnusedID();
 			addAndCheckForUniqueness(&e);
 		}
 		for (VICUS::NetworkNode & nod : n.m_nodes)

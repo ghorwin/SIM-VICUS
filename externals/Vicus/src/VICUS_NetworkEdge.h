@@ -43,6 +43,9 @@ namespace VICUS {
 	Parameters for generation of the hydraulic element are stored in m_para. Also, the double-parameters needed
 	for the heat exchange models are stored in m_para.
 
+	NOTE: NetworkEdge also uses the unique m_id to identify object and respective navigation tree items and scene
+		  objects. However, the ID is nowhere else used (referenced) in the data model and thus not persistently
+		  saved in the project file. It is generated on first use within VICUS::Project::updatePointers().
 
 	TODO Hauke, Dokumentation der Memberfunktionen!
 */
