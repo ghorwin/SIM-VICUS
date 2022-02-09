@@ -288,8 +288,6 @@ const double * ThermalNetworkBalanceModel::resultValueRef(const InputReference &
 }
 
 
-
-
 int ThermalNetworkBalanceModel::priorityOfModelEvaluation() const {
 	// network balance model is evaluated one step before construction balance model
 	return AbstractStateDependency::priorityOffsetTail+3;

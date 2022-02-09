@@ -61,6 +61,13 @@ const double * NetworkInterfaceAdapterModel::resultValueRef(const InputReference
 }
 
 
+int NetworkInterfaceAdapterModel::priorityOfModelEvaluation() const
+{
+	// adapter model is evaluated one step after summation model
+	return AbstractStateDependency::priorityOffsetTail+5;
+}
+
+
 void NetworkInterfaceAdapterModel::inputReferences(std::vector<InputReference> & inputRefs) const {
 	// we need to construct 3 input references
 	// - heat load from HeatLoadSummationModel

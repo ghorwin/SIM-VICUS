@@ -95,6 +95,9 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
+	/*! Returns model evaluation priority. */
+	int priorityOfModelEvaluation() const override;
+
 	/*! Composes all input references.
 		Here we collect all loads/fluxes into the room and store them such, that we can efficiently compute
 		sums, for example for all heat fluxes from constructions into the room etc.

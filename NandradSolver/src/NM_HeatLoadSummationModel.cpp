@@ -107,6 +107,13 @@ void HeatLoadSummationModel::variableReferenceSubstitutionMap(std::map<std::stri
 }
 
 
+int HeatLoadSummationModel::priorityOfModelEvaluation() const
+{
+	// summation model is evaluated one step after network balance model
+	return AbstractStateDependency::priorityOffsetTail+4;
+}
+
+
 void HeatLoadSummationModel::initInputReferences(const std::vector<AbstractModel *> & /*models*/) {
 	if (m_objectList->m_filterID.m_ids.empty())
 		return; // no valid zones in object list -> nothing to do

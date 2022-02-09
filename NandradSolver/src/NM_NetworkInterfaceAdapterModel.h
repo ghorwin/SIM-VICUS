@@ -85,6 +85,9 @@ public:
 
 	// *** Re-implemented from AbstractStateDependency
 
+	/*! Returns model evaluation priority. */
+	int priorityOfModelEvaluation() const override;
+
 	/*! Returns vector with model input references.
 		Implicit models must generate their own model input references and populate the
 		vector argument.
