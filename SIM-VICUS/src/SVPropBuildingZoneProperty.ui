@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>523</width>
-    <height>595</height>
+    <width>706</width>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -45,6 +45,9 @@
             <widget class="QRadioButton" name="radioButtonSelected">
              <property name="text">
               <string>only for selected rooms</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
