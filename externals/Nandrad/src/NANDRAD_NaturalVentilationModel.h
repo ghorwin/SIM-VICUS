@@ -34,7 +34,14 @@ namespace NANDRAD {
 
 	For variant `ScheduledWithBaseACR` there must be a schedule with name 'VentilationRateSchedule' defined, which marks
 	the base ventilation rate. Also, another schedule name 'VentilationRateIncreaseSchedule' must be defined, which
-	holds the _additional_ ventilation rate to be _added_ to the base ventilation rate, when conditions apply.
+	holds the _additional_ ventilation rate to be _added_ to the base ventilation rate,
+	when (constant parameter) conditions apply.
+
+	For variant `ScheduledWithBaseACRDynamicTLimit` there must be a schedule with name 'VentilationRateSchedule' defined,
+	which marks the base ventilation rate. Also, another schedule name 'VentilationRateIncreaseSchedule' must be defined,
+	which holds the _additional_ ventilation rate to be _added_ to the base ventilation rate,
+	when (scheduled parameter) conditions apply.
+
 */
 class NaturalVentilationModel {
 public:
@@ -45,7 +52,7 @@ public:
 		/*! Ventilation rate is provided as 'VentilationRateSchedule' schedule parameter. */
 		MT_Scheduled,							// Keyword: Scheduled							'Scheduled ventilation rate'
 		/*! Increased ventilation when thermal conditions apply. */
-		MT_ScheduledWithBaseACR,				// Keyword: ScheduledWithBaseACR				'Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met. '
+		MT_ScheduledWithBaseACR,				// Keyword: ScheduledWithBaseACR				'Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the (constant) control conditions are met. '
 		/*! Increased ventilation whith scheduled minimum and maximum temperature. */
 		MT_ScheduledWithBaseACRDynamicTLimit,	// Keyword: ScheduledWithBaseACRDynamicTLimit	'Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits. '
 		NUM_MT
