@@ -326,8 +326,47 @@ void OutputFile::setInputValueRefs(const std::vector<QuantityDescription> & resu
 }
 
 
+// These properties define a unqiue output variable definition; Note: this is pretty much the same as
+// NANDRAD_MODEL::InputReference but with additional time type property.
+struct UniqueOutputVar {
+	UniqueOutputVar() = default;
+	UniqueOutputVar(const NANDRAD_MODEL::InputReference & inref, NANDRAD::OutputDefinition::timeType_t timeType) :
+		m_referenceType(inref.m_referenceType),
+		m_id(inref.m_id),
+		m_name(inref.m_name),
+		m_timeType(timeType)
+	{}
+	/*! Comparison operator. */
+	bool operator==(const UniqueOutputVar & other) const {
+		if (m_referenceType != other.m_referenceType) return false;
+		if (m_id != other.m_id) return false;
+		if (m_name != other.m_name) return false;
+		if (m_timeType != other.m_timeType) return false;
+		return true;
+	}
+
+	NANDRAD::ModelInputReference::referenceType_t	m_referenceType;
+	unsigned int									m_id;
+	QuantityName									m_name;
+	NANDRAD::OutputDefinition::timeType_t			m_timeType;
+};
 
 void OutputFile::createInputReferences() {
+	FUNCID(OutputFile::createInputReferences);
+
+	// Note: when we resolve the object lists below, we may have the situation that the same
+	//       output is defined twice. For example, consider the following two definitions appearing
+	//       in the NANDRAD project file:
+	//
+	//       Output1: hourly values, AirTemperature, Zone-Object-List "All Zones" -> References "Room1" and "Room2"
+	//       Output2: hourly values, AirTemperature, Zone-Object-List "Zone 2"    -> References "Room1"
+	//       Output3: hourly MEAN values, AirTemperature, Zone-Object-List "Zone 2"          -> References "Room1"
+	//
+	//       We end up with two columns for Room1.AirTemperature. We cannot check for this problem earlier, so
+	//       we do it below. Mind that it is possible to have the same quantity with different time types in the same file.
+
+	std::vector<UniqueOutputVar> uniqueOutputVars;
+
 	m_haveIntegrals = false;
 	// process all output definitions
 	for (unsigned int i = 0; i < m_outputDefinitions.size(); ++i) {
@@ -345,7 +384,17 @@ void OutputFile::createInputReferences() {
 			inref.m_required = false;
 			inref.m_name.fromEncodedString(od.m_quantity);
 			inref.m_referenceType = ol->m_referenceType;
+			// check that we haven't added that input reference already
+			UniqueOutputVar uniqueVar(inref, od.m_timeType);
+			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end()) {
+				throw IBK::Exception(IBK::FormatString("Duplicate output definition found for '%1.%2' and file '%3' with time type '%4' as a "
+													   "after resolving object lists (this may be caused by overlapping object lists).")
+						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inref.m_referenceType))
+						.arg(od.m_quantity).arg(m_filename)
+						.arg(NANDRAD::KeywordList::Keyword("OutputDefinition::timeType_t", od.m_timeType)) , FUNC_ID);
+			}
 			m_inputRefs.push_back(inref);
+			uniqueOutputVars.push_back(uniqueVar);
 			m_outputDefMap.push_back( std::make_pair(i, false) );
 			continue;
 		}
@@ -356,7 +405,17 @@ void OutputFile::createInputReferences() {
 			inref.m_required = false;
 			inref.m_name.fromEncodedString(od.m_quantity);
 			inref.m_referenceType = ol->m_referenceType;
+			// check that we haven't added that input reference already
+			UniqueOutputVar uniqueVar(inref, od.m_timeType);
+			if (std::find(uniqueOutputVars.begin(), uniqueOutputVars.end(), uniqueVar) != uniqueOutputVars.end()) {
+				throw IBK::Exception(IBK::FormatString("Duplicate output definition found for '%1[%4].%2' and file '%3' with time type '%5' "
+													   "as a result of resolving object lists (this may be caused by overlapping object lists).")
+						.arg(NANDRAD::KeywordList::Keyword("ModelInputReference::referenceType_t", inref.m_referenceType))
+						.arg(od.m_quantity).arg(m_filename).arg(id)
+						.arg(NANDRAD::KeywordList::Keyword("OutputDefinition::timeType_t", od.m_timeType)) , FUNC_ID);
+			}
 			m_inputRefs.push_back(inref);
+			uniqueOutputVars.push_back(uniqueVar);
 			m_outputDefMap.push_back(std::make_pair(i, ol->m_filterID.m_allIDs) );
 		}
 	}

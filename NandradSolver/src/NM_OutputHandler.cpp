@@ -142,6 +142,9 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 	// We create groups of output definitions, first based on user-defined target file name. These are stored
 	// in map targetFileMap. Outputs without user-specified file name are stored in vector targetFileMap[""].
 
+	// Note: A valid NANDRAD file should define an output only once, i.e. the combination of:
+	// 'output grid, quantity and filename' should only exists once.
+
 	// In this initial loop we also create and store pointer references to output grids and object lists referenced
 	// from output definitions - in case of invalid definitions, we bail out with an error message.
 	std::map<std::string, std::vector<NANDRAD::OutputDefinition> > targetFileMap;
@@ -195,6 +198,15 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 									 .arg(i).arg(od.m_fileName), FUNC_ID);
 			}
 
+			// ensure that users to not re-used reserved output file names
+			std::string basename = IBK::Path(outputFname).withoutExtension().str();
+			for (int j=0; j<NUM_OFN; ++j) {
+				if (NANDRAD_MODEL::KeywordList::Keyword("OutputHandler::OutputFileNames", j) == basename)
+					throw IBK::Exception(IBK::FormatString("Output definition #%1 requests output file '%2', which is a reserved default filename. "
+														   "You must not use reserved file names as custom output file names!")
+										 .arg(i).arg(od.m_fileName), FUNC_ID);
+			}
+
 			// if output filename is not empty, make sure that all output definitions in same file use the
 			// same output grid
 			if (!targetFileMap[outputFname].empty()) {
@@ -204,6 +216,16 @@ void OutputHandler::setup(bool restart, NANDRAD::Project & prj, const IBK::Path 
 										 .arg(i).arg(od.m_fileName).arg(od.m_gridName).arg(targetFileMap[outputFname].back().m_gridName), FUNC_ID);
 				}
 			}
+		}
+
+		// make sure that such an output was not previously added
+		if (std::find(targetFileMap[outputFname].begin(), targetFileMap[outputFname].end(), od) != targetFileMap[outputFname].end()) {
+			if (od.m_fileName.empty())
+				throw IBK::Exception(IBK::FormatString("Output definition #%1 (%2) has been added twice!")
+									 .arg(i).arg(od.m_quantity), FUNC_ID);
+			else
+				throw IBK::Exception(IBK::FormatString("Output definition #%1 (%2) has been added twice with output file '%3'!")
+									 .arg(i).arg(od.m_quantity).arg(od.m_fileName), FUNC_ID);
 		}
 
 		// store object list definition in map; those without filename are stored with key = string() = ""
