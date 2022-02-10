@@ -326,7 +326,7 @@ int NaturalVentilationModel::update() {
 				double varWindVelocity = *m_valueRefs[1+3*zoneCount];
 				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
 				if (varWindVelocity > varWindSpeedACRLimit)
-					break; // wind speed to large, no increase of ventilation possible - keep already determined "rate"
+					break; // wind speed too large, no increase of ventilation possible - keep already determined "rate"
 
 				// get comfort range of temperatures
 				double maxRoomTemp = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_VentilationMaxAirTemperature].value;
@@ -369,7 +369,7 @@ int NaturalVentilationModel::update() {
 				double varWindVelocity = *m_valueRefs[1+5*zoneCount];
 				double varWindSpeedACRLimit = m_ventilationModel->m_para[NANDRAD::NaturalVentilationModel::P_MaxWindSpeed].value;
 				if (varWindVelocity > varWindSpeedACRLimit)
-					break; // wind speed to large, no increase of ventilation possible - keep already determined "rate"
+					break; // wind speed too large, no increase of ventilation possible - keep already determined "rate"
 
 				// get comfort range of temperatures
 				double maxRoomTemp = *m_valueRefs[1+4*zoneCount + i];
