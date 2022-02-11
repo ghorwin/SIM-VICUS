@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mi Feb 9 17:05:19 2022</Created>
-		<LastEdited>Mi Feb 9 17:05:19 2022</LastEdited>
+		<LastEdited>Fr Feb 11 09:00:10 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -13,12 +13,12 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>-58.8562 -10.7616 28.8115</CameraTranslation>
+			<CameraTranslation>-117.882 -70.8817 82.1561</CameraTranslation>
 			<RotationMatrix>
-				<Wp>-0.689564</Wp>
-				<X>-0.433264</X>
-				<Y>0.308715</Y>
-				<Z>0.491368</Z>
+				<Wp>-0.753314</Wp>
+				<X>-0.43906</X>
+				<Y>0.246542</Y>
+				<Z>0.422987</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
@@ -115,7 +115,7 @@
 							</Room>
 							<Room id="23" displayName="BigBox">
 								<IBK:Parameter name="Area" unit="m2">81</IBK:Parameter>
-								<IBK:Parameter name="Volume" unit="m3">729</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">702</IBK:Parameter>
 								<Surfaces>
 									<Surface id="24" displayName="Floor">
 										<DisplayColor>#566094</DisplayColor>
@@ -141,37 +141,35 @@
 										<DisplayColor>#c8c88c</DisplayColor>
 										<Polygon3D>0 29 0, 0 20 0, 0 20 9, 0 29 9</Polygon3D>
 									</Surface>
+									<Surface id="31" displayName="Floor">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>2.5 23.5 1.5, 5.5 23.5 1.5, 5.5 26.5 1.5, 2.5 26.5 1.5</Polygon3D>
+									</Surface>
+									<Surface id="32" displayName="Ceiling">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>2.5 26.5 4.5, 5.5 26.5 4.5, 5.5 23.5 4.5, 2.5 23.5 4.5</Polygon3D>
+									</Surface>
+									<Surface id="33" displayName="Wall 1">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.5 26.5 4.5, 2.5 26.5 4.5, 2.5 26.5 1.5, 5.5 26.5 1.5</Polygon3D>
+									</Surface>
+									<Surface id="34" displayName="Wall 2">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>5.5 23.5 4.5, 5.5 26.5 4.5, 5.5 26.5 1.5, 5.5 23.5 1.5</Polygon3D>
+									</Surface>
+									<Surface id="35" displayName="Wall 3">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>2.5 23.5 4.5, 5.5 23.5 4.5, 5.5 23.5 1.5, 2.5 23.5 1.5</Polygon3D>
+									</Surface>
+									<Surface id="36" displayName="Wall 4">
+										<DisplayColor>#c8c88c</DisplayColor>
+										<Polygon3D>2.5 26.5 4.5, 2.5 23.5 4.5, 2.5 23.5 1.5, 2.5 26.5 1.5</Polygon3D>
+									</Surface>
 								</Surfaces>
 							</Room>
 							<Room id="30" displayName="SmallBox">
 								<IBK:Parameter name="Area" unit="m2">9</IBK:Parameter>
-								<IBK:Parameter name="Volume" unit="m3">27</IBK:Parameter>
-								<Surfaces>
-									<Surface id="31" displayName="Floor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>2.5 26.5 1.5, 5.5 26.5 1.5, 5.5 23.5 1.5, 2.5 23.5 1.5</Polygon3D>
-									</Surface>
-									<Surface id="32" displayName="Ceiling">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.5 23.5 4.5, 5.5 23.5 4.5, 5.5 26.5 4.5, 2.5 26.5 4.5</Polygon3D>
-									</Surface>
-									<Surface id="33" displayName="Wall 1">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.5 26.5 1.5, 2.5 26.5 1.5, 2.5 26.5 4.5, 5.5 26.5 4.5</Polygon3D>
-									</Surface>
-									<Surface id="34" displayName="Wall 2">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.5 23.5 1.5, 5.5 26.5 1.5, 5.5 26.5 4.5, 5.5 23.5 4.5</Polygon3D>
-									</Surface>
-									<Surface id="35" displayName="Wall 3">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>2.5 23.5 1.5, 5.5 23.5 1.5, 5.5 23.5 4.5, 2.5 23.5 4.5</Polygon3D>
-									</Surface>
-									<Surface id="36" displayName="Wall 4">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>2.5 26.5 1.5, 2.5 23.5 1.5, 2.5 23.5 4.5, 2.5 26.5 4.5</Polygon3D>
-									</Surface>
-								</Surfaces>
+								<IBK:Parameter name="Volume" unit="m3">0</IBK:Parameter>
 							</Room>
 							<Room id="37" displayName="Pultdach">
 								<IBK:Parameter name="Area" unit="m2">12</IBK:Parameter>
@@ -263,6 +261,32 @@
 									</Surface>
 								</Surfaces>
 							</Room>
+							<Room id="58" displayName="Roof">
+								<IBK:Parameter name="Area" unit="m2">95</IBK:Parameter>
+								<IBK:Parameter name="Volume" unit="m3">63.33333333</IBK:Parameter>
+								<Surfaces>
+									<Surface id="59" displayName="Floor">
+										<DisplayColor>#963214</DisplayColor>
+										<Polygon3D>2 -6 0, 12 -16 0, -8 -6 0, 0 3 0</Polygon3D>
+									</Surface>
+									<Surface id="60" displayName="Roof surface 1">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>-3 -6 2, -8 -6 0, 12 -16 0</Polygon3D>
+									</Surface>
+									<Surface id="61" displayName="Roof surface 2">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>12 -16 0, 2 -6 0, -3 -6 2</Polygon3D>
+									</Surface>
+									<Surface id="62" displayName="Roof surface 3">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>0 3 0, -8 -6 0, -3 -6 2</Polygon3D>
+									</Surface>
+									<Surface id="63" displayName="Roof surface 4">
+										<DisplayColor>#566094</DisplayColor>
+										<Polygon3D>-3 -6 2, 2 -6 0, 0 3 0</Polygon3D>
+									</Surface>
+								</Surfaces>
+							</Room>
 						</Rooms>
 					</BuildingLevel>
 				</BuildingLevels>
@@ -317,6 +341,11 @@
 			<ComponentInstance id="53" idComponent="1001" idSideASurface="56" />
 			<ComponentInstance id="54" idComponent="1001" idSideASurface="57" />
 			<ComponentInstance id="55" idComponent="1001" idSideASurface="51" />
+			<ComponentInstance id="57" idComponent="1011" idSideASurface="60" />
+			<ComponentInstance id="58" idComponent="1011" idSideASurface="61" />
+			<ComponentInstance id="59" idComponent="1011" idSideASurface="62" />
+			<ComponentInstance id="60" idComponent="1011" idSideASurface="63" />
+			<ComponentInstance id="61" idComponent="1001" idSideASurface="59" />
 		</ComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
