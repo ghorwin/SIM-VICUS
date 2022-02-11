@@ -298,14 +298,35 @@ void SVPropEditGeometry::on_pushButtonAddWindow_clicked() {
 
 
 void SVPropEditGeometry::on_lineEditX_editingFinished() {
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	on_lineEditX_returnPressed();
 }
 
 void SVPropEditGeometry::on_lineEditY_editingFinished() {
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	on_lineEditY_returnPressed();
 }
 
 void SVPropEditGeometry::on_lineEditZ_editingFinished() {
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	on_lineEditZ_returnPressed();
 }
 
@@ -946,17 +967,6 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 
 void SVPropEditGeometry::on_lineEditX_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
-
-	// ==================================================================
-//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-//	// Ignore undesirable signals.
-//	if ( !lineEdit->isModified() )
-//	  return;
-//	lineEdit->setModified( false );
-	// ==================================================================
-
-	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditX->isValid() ) {
 		m_ui->lineEditX->setValue( m_originalValues.m_x );
 		return;
@@ -975,17 +985,6 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 
 void SVPropEditGeometry::on_lineEditY_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
-
-	// ==================================================================
-//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-//	// Ignore undesirable signals.
-//	if ( !lineEdit->isModified() )
-//	  return;
-//	lineEdit->setModified( false );
-	// ==================================================================
-
-	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditY->isValid() ) {
 		m_ui->lineEditX->setValue( m_originalValues.m_y );
 		return;
@@ -1002,17 +1001,6 @@ void SVPropEditGeometry::on_lineEditY_returnPressed() {
 }
 
 void SVPropEditGeometry::on_lineEditZ_returnPressed(){
-	// check if entered value is valid, if not reset it to its default
-
-	// ==================================================================
-//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-//	// Ignore undesirable signals.
-//	if ( !lineEdit->isModified() )
-//	  return;
-//	lineEdit->setModified( false );
-	// ==================================================================
-
 	// check if entered value is valid, if not reset it to its default
 	if ( !m_ui->lineEditZ->isValid() ) {
 		m_ui->lineEditZ->setValue( m_originalValues.m_z );
@@ -1098,7 +1086,6 @@ void SVPropEditGeometry::updateInputs() {
 		case MT_Rotate: {
 			showDeg();
 			showRotation(false);
-
 
 			m_ui->labelX->setText("X");
 			m_ui->labelY->setText("Y");
@@ -1251,10 +1238,15 @@ void SVPropEditGeometry::on_toolButtonScale_clicked() {
 
 
 void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
+	// check if entered value is valid, if not reset it to its default
+	double orientation = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) /IBK::DEG2RAD ;
 	if ( !m_ui->lineEditOrientation->isValid() ) {
-		m_ui->lineEditOrientation->setValue( m_originalValues.m_x );
+		m_ui->lineEditOrientation->setValue( orientation < 0 ? ( orientation + 360 ) : orientation  );
 		return;
 	}
+	if ( std::fabs( orientation < 0 ? ( orientation + 360 ) : orientation - m_ui->lineEditOrientation->value() ) < 1E-3 )
+		return;
+
 
 	rotate();
 }
@@ -1262,7 +1254,7 @@ void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
 void SVPropEditGeometry::on_lineEditInclination_returnPressed() {
 
 	if ( !m_ui->lineEditInclination->isValid() ) {
-		m_ui->lineEditInclination->setValue( m_originalValues.m_y );
+		m_ui->lineEditInclination->setValue( std::acos(m_normal.m_z)/IBK::DEG2RAD );
 		return;
 	}
 
@@ -1271,10 +1263,24 @@ void SVPropEditGeometry::on_lineEditInclination_returnPressed() {
 
 
 void SVPropEditGeometry::on_lineEditOrientation_editingFinished() {
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	on_lineEditOrientation_returnPressed();
 }
 
 void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	on_lineEditInclination_returnPressed();
 }
 
@@ -1534,7 +1540,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 				case MS_Absolute: {
 					// get the rotation angles
 					double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-					double incliRad = m_ui->lineEditInclination->value() * IBK::DEG2RAD;
+					double incliRad = (90-m_ui->lineEditInclination->value()) * IBK::DEG2RAD;
 
 
 					Vic3D::Transform3D rota;
@@ -1542,9 +1548,9 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 					if (m_orientationMode == OM_Global) {
 						switch (m_rotationState) {
 						case SVPropEditGeometry::RS_Normal: {
-							IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::sin( incliRad ),
-														std::cos( oriRad ) * std::sin( incliRad ),
-														std::cos( incliRad ) );
+							IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::cos( incliRad ),
+														std::cos( oriRad ) * std::cos( incliRad ),
+														std::sin( incliRad ) );
 
 							// we only want to rotate if the normal vectors are not the same
 							if ( checkVectors<4>( m_normal, newNormal ) )
