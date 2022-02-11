@@ -948,12 +948,12 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
 
 	// ==================================================================
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-	  return;
-	lineEdit->setModified( false );
+//	// Ignore undesirable signals.
+//	if ( !lineEdit->isModified() )
+//	  return;
+//	lineEdit->setModified( false );
 	// ==================================================================
 
 	// check if entered value is valid, if not reset it to its default
@@ -977,12 +977,12 @@ void SVPropEditGeometry::on_lineEditY_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
 
 	// ==================================================================
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-	  return;
-	lineEdit->setModified( false );
+//	// Ignore undesirable signals.
+//	if ( !lineEdit->isModified() )
+//	  return;
+//	lineEdit->setModified( false );
 	// ==================================================================
 
 	// check if entered value is valid, if not reset it to its default
@@ -1005,12 +1005,12 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 	// check if entered value is valid, if not reset it to its default
 
 	// ==================================================================
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+//	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-	  return;
-	lineEdit->setModified( false );
+//	// Ignore undesirable signals.
+//	if ( !lineEdit->isModified() )
+//	  return;
+//	lineEdit->setModified( false );
 	// ==================================================================
 
 	// check if entered value is valid, if not reset it to its default
