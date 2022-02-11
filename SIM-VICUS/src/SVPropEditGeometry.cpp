@@ -1553,12 +1553,14 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 							// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
 							// rotate to
 							IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
+							qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
 
 							// we now also have to find the angle between both normals
 
 							double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
 
 							rota.rotate(angle, IBKVector2QVector(rotationAxis) );
+							qDebug() << "Roation angle: " << angle << " °";
 						}
 						break;
 						case SVPropEditGeometry::RS_XAxis:

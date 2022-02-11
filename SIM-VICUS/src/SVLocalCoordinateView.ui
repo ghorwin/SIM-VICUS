@@ -24,6 +24,22 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>10</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
     <widget class="QToolButton" name="toolButtonAlignCoordinateSystem">
      <property name="toolTip">
       <string>Toggles mode for aligning local coordinate system to surface orientation (F4)</string>
@@ -77,22 +93,28 @@
    </item>
    <item>
     <widget class="QLabel" name="labelCoordinateSystem">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Local coordinate system:</string>
+      <string>Local CS:</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditXValue">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
@@ -104,14 +126,14 @@
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditYValue">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
@@ -123,14 +145,14 @@
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditZValue">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
@@ -140,39 +162,29 @@
     </widget>
    </item>
    <item>
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Fixed</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>10</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
     <widget class="QLabel" name="labelBoundingBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
-      <string>Bounding Box:</string>
+      <string>BB:</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditBoundingBoxDimensionX">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
@@ -184,14 +196,14 @@
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditBoundingBoxDimensionY">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
@@ -203,14 +215,14 @@
    <item>
     <widget class="QtExt::ValidatingLineEdit" name="lineEditBoundingBoxDimensionZ">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="maximumSize">
       <size>
-       <width>100</width>
+       <width>80</width>
        <height>16777215</height>
       </size>
      </property>
