@@ -256,7 +256,8 @@ SOURCES += \
 	../../src/SVView3DDialog.cpp \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
-	../../src/SVWelcomeScreen.cpp
+	../../src/SVWelcomeScreen.cpp \
+    ../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
@@ -439,7 +440,8 @@ HEADERS  += \
 	../../src/SVWelcomeScreen.h \
 	../../src/plugins/SVCommonPluginInterface.h \
 	../../src/plugins/SVDatabasePluginInterface.h \
-	../../src/plugins/SVImportPluginInterface.h
+	../../src/plugins/SVImportPluginInterface.h \
+    ../../src/actions/SVUndoCopySubSurfaces.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \

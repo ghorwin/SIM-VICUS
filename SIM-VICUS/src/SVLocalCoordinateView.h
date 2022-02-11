@@ -30,6 +30,8 @@
 
 #include <Vic3DTransform3D.h>
 
+#include <IBKMK_Vector3D.h>
+
 namespace Ui {
 class SVLocalCoordinateView;
 }
@@ -43,6 +45,8 @@ public:
 
 	/*! Sets the Coordinates of the Center Point of the local Coordinate System. */
 	void setCoordinates(const Vic3D::Transform3D &t);
+	/*! Sets the Dimension of Bounding Box Dimension. */
+	void setBoundingBoxDimension(const IBKMK::Vector3D& bb);
 
 	/*! Called from GeometryView when view state changes. */
 	void setAlignCoordinateSystemButtonChecked(bool checked);

@@ -33,6 +33,7 @@
 #include <VICUS_Surface.h>
 
 #include <Vic3DTransform3D.h>
+#include <Vic3DCoordinateSystemObject.h>
 
 namespace Vic3D {
 	class Transform3D;
@@ -84,13 +85,28 @@ public:
 	enum ModificationType {
 		MT_Translate,
 		MT_Rotate,
-		MT_Scale
+		MT_Scale,
+		NUM_MT
 	};
 
 	enum ModificationState {
 		MS_Absolute,
 		MS_Relative,
-		MS_Local
+		NUM_MS
+	};
+
+	enum RotationState {
+		RS_Normal,
+		RS_XAxis,
+		RS_YAxis,
+		RS_ZAxis,
+		NUM_RS
+	};
+
+	enum OrientationMode {
+		OM_Local,
+		OM_Global,
+		NUM_OM
 	};
 
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
@@ -122,10 +138,14 @@ public:
 	/*! Checks/unchecks the tool buttons depending on the specified type.
 		Has no side-effects.
 	*/
-	void setToolButton(const ModificationType &type);
+	void setToolButton();
 
-	/*! Sets the items of the comboBox */
-	void setComboBox(const ModificationType &type, const ModificationState &state);
+	/*! Checks/unchecks the tool buttons depending on the specific absolute/local mode
+	*/
+	void setToolButtonAbsMode();
+
+	/*! Checks/unchecks the tool buttons for the specific absolute rotation mode */
+	void setToolButtonsRotationState(bool absOn);
 
 	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
 	void showDeg(const bool &show=true);
@@ -171,7 +191,29 @@ private slots:
 	void on_pushButtonAddRoof_clicked();
 	void on_pushButtonAddWindow_clicked();
 
-	// all line edit specific function
+	void on_pushButtonCopyRooms_clicked();
+	void on_pushButtonCopySurfaces_clicked();
+	void on_pushButtonCopySubSurfaces_clicked();
+
+	void on_pushButtonAdd_clicked();
+	void on_pushButtonEdit_clicked();
+
+	void on_pushButtonThreePointRotation_clicked();
+	void on_pushButtonFlipNormals_clicked();
+
+	/*! all line edit specific functions */
+
+	void on_lineEditX_editingFinished();
+	void on_lineEditY_editingFinished();
+	void on_lineEditZ_editingFinished();
+
+	void on_lineEditX_returnPressed();
+	void on_lineEditY_returnPressed();
+	void on_lineEditZ_returnPressed();
+
+	void on_lineEditX_textChanged(const QString &);
+	void on_lineEditY_textChanged(const QString &);
+	void on_lineEditZ_textChanged(const QString &);
 
 	void on_lineEditOrientation_returnPressed();
 	void on_lineEditInclination_returnPressed();
@@ -186,8 +228,6 @@ private slots:
 	void on_lineEditYCopy_editingFinished();
 	void on_lineEditZCopy_editingFinished();
 
-	/*! ComboBox Functions */
-	void on_comboBox_activated(int index);
 
 	/*! All tool button specific functions */
 	void on_toolButtonTrans_clicked();
@@ -197,29 +237,17 @@ private slots:
 	/*! Triggered when anything changes in one of the line edits X, Y or Z */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
-	void on_pushButtonCopyRooms_clicked();
-	void on_pushButtonCopySurfaces_clicked();
+	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
+	void on_toolButtonAbs_clicked(bool);
+	void on_toolButtonRel_clicked(bool);
 
-	void on_pushButtonAdd_clicked();
+	void on_toolButtonNormal_clicked();
 
-	void on_pushButtonEdit_clicked();
+	void on_toolButtonZ_clicked();
+	void on_toolButtonX_clicked();
+	void on_toolButtonY_clicked();
 
-	void on_pushButtonThreePointRotation_clicked();
-
-	void on_pushButtonFlipNormals_clicked();
-
-
-	void on_lineEditXValue_editingFinished();
-
-	void on_lineEditYValue_editingFinished();
-
-	void on_lineEditZValue_editingFinished();
-
-	void on_lineEditXValue_textChanged(const QString &arg1);
-
-	void on_lineEditYValue_textChanged(const QString &arg1);
-
-	void on_lineEditZValue_textChanged(const QString &arg1);
+	void on_pushButtonCenteHorizontal_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
@@ -230,6 +258,12 @@ private:
 		everything is deselected.
 	*/
 	void updateUi();
+
+	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
+		false: use global coordinate system orientation
+		true: use local coordinate system orientation
+	*/
+	void updateOrientationMode();
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
@@ -249,24 +283,41 @@ private:
 		The value is updated when user changes the combo-box, and when operation is changed,
 		the value is used to update the combo box's current index.
 	*/
-	ModificationState					m_modificationState[MS_Local+1];
+	ModificationState					m_modificationState[NUM_MT];
+
+	/*! Implies whether the copy mode is active. */
+	bool								m_copyMode = false;
+
+	/*! Implies whether local coordinate system rotation should be used
+		OM_Global:	use global coordinate system orientation
+		OM_Local:	use local coordinate system orientation
+	*/
+	OrientationMode						m_orientationMode = OM_Global;
 
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
 
-	/*! This is the dimension of the bounding box (dx, dy, dz). */
-	IBKMK::Vector3D						m_boundingBoxDimension;
+	/*! Pointer to LocalCoordinateSystemObject */
+	Vic3D::CoordinateSystemObject		*m_cso;
 
-	/*! Cached center point of boinding box. */
-	IBKMK::Vector3D						m_boundingBoxCenter;
+	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation. */
+	IBKMK::Vector3D						m_bbDim[NUM_OM];
+
+	/*! Cached center point of boinding box in local/global Orientation. */
+	IBKMK::Vector3D						m_bbCenter[NUM_OM];
+
 
 	/*! Cached normal for absolute rotation */
 	IBKMK::Vector3D						m_normal;
+
+	/*! Cached state of abs roation mode */
+	RotationState						m_rotationState;
 
 	/*! Cached initial values to be used when user had entered invalid values.
 		These values depend on current modification type and state.
 	*/
 	IBKMK::Vector3D						m_originalValues;
+
 
 	/*! Cached Translation vector for copy operations. */
 	IBKMK::Vector3D						m_translation;
