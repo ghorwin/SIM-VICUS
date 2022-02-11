@@ -278,7 +278,13 @@ bool SVProjectHandler::importProject(VICUS::Project * project) {
 	createProject();
 	*m_project = *project; // copy over project
 	// update all internal pointers
-	m_project->updatePointers();
+	try {
+		m_project->updatePointers();
+	}
+	catch (const IBK::Exception& e) {
+		QMessageBox::critical(nullptr, tr("Error while importing ifc file"), e.what());
+		return false;
+	}
 
 	// initialize viewstate
 	SVViewState vs = SVViewStateHandler::instance().viewState();
