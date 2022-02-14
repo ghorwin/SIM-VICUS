@@ -248,7 +248,7 @@ void Report::updateFrames(QPaintDevice* paintDevice) {
 		m_reports[i]->update(paintDevice, m_effectivePageSize.width());
 		double h = m_reports[i]->wholeFrameRect().height();
 
-		if (currentFrame.height() < h) {
+		if (currentFrame.height() < h || m_reports[i]->m_onNewPage) {
 			++currentPage;
 			currentFrame = mainFrame; // reset frame to full content frame
 		}
