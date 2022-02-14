@@ -960,6 +960,12 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 			m_copyMode = true;
 		}
 	}
+	else if ( event->type() == QEvent::FocusOut ) {
+		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
+		qDebug() << "Focus out -> return press event on " << edit;
+		if(edit != nullptr)
+			emit edit->returnPressed();
+	}
 
 	return false;
 }
