@@ -113,13 +113,13 @@ void BrowseFilenameWidget::onToolBtnClicked() {
 	}
 	else {
 		if (m_fileMustExist) {
-			fn = QFileDialog::getExistingDirectory(this, tr("Select filename"), filename(),
-												   m_dontUseNativeFilenameDialog ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+			fn = QFileDialog::getExistingDirectory(this, tr("Select directory"), filename(),
+												   m_dontUseNativeFilenameDialog ? (QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly) : QFileDialog::Options()
 					);
 		}
 		else {
 			fn = QFileDialog::getSaveFileName(this, tr("Select directory"), filename(), QString(), nullptr,
-											  m_dontUseNativeFilenameDialog ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+											  m_dontUseNativeFilenameDialog ? (QFileDialog::DontUseNativeDialog | QFileDialog::ShowDirsOnly) : QFileDialog::Options()
 					);
 		}
 	}
