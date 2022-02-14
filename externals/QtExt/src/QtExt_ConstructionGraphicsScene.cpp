@@ -160,6 +160,7 @@ ConstructionGraphicsScene::ConstructionGraphicsScene(bool onScreen, QPaintDevice
 	m_onScreen(onScreen),
 	m_res(1.0),
 	m_device(device),
+	m_backgroundColor(Qt::white),
 	m_internalPens(new InternalPens(this)),
 	m_internalStringItems(new InternalStringItems(this)),
 	m_visibleDimensions(true),
