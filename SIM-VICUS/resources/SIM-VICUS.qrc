@@ -92,5 +92,7 @@
         <file>gfx/languages/es.png</file>
         <file>gfx/languages/fr.png</file>
         <file>gfx/languages/it.png</file>
+        <file>gfx/actions/Coordinate-System.png</file>
+        <file>gfx/actions/Bounding-Box.png</file>
     </qresource>
 </RCC>

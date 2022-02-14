@@ -82,6 +82,10 @@ void SVLocalCoordinateView::onStyleChanged() {
 	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditXValue);
 	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditYValue);
 	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditZValue);
+
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditBoundingBoxDimensionX);
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditBoundingBoxDimensionY);
+	SVStyle::instance().formatLineEditReadOnly(m_ui->lineEditBoundingBoxDimensionZ);
 }
 
 
