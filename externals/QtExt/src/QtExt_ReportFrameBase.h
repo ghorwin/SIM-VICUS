@@ -93,6 +93,9 @@ public:
 
 	ReportFrameItemBase* item(size_t index);
 
+	/*! If true this frame will always be on a new page.*/
+	bool			m_onNewPage;
+
 	/*! This flag marks if a report shoud be hidden or not in the report manager class. */
 	bool			m_isHidden;
 

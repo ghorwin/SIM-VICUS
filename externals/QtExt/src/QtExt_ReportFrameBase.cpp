@@ -41,6 +41,8 @@
 namespace QtExt {
 
 ReportFrameBase::ReportFrameBase(	Report* report, QTextDocument* textDocument ) :
+	m_onNewPage(false),
+	m_isHidden(false),
 	m_report(report),
 	m_textDocument(textDocument)
 {
