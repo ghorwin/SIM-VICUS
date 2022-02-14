@@ -815,7 +815,7 @@ void SVMainWindow::onImportPluginTriggered() {
 		// if we have no project, yet, create a new project based on our imported data
 		if (!m_projectHandler.isValid()) {
 			// create new project
-			m_projectHandler.importProject(&p); // emits updateActions()
+			success = m_projectHandler.importProjectFromPlugin(&p); // emits updateActions()
 		}
 		else {
 			// ask user about preference
@@ -829,7 +829,7 @@ void SVMainWindow::onImportPluginTriggered() {
 					return;
 
 				// create new project
-				m_projectHandler.importProject(&p); // emits updateActions()
+				success = m_projectHandler.importProjectFromPlugin(&p); // emits updateActions()
 			}
 			else {
 				// The merging of project and referenced data is a bit complicated.
@@ -842,6 +842,9 @@ void SVMainWindow::onImportPluginTriggered() {
 				SVUndoAddProject * undo = new SVUndoAddProject(tr("Adding imported project data"), p);
 				undo->push();
 			}
+		}
+		if(!success) {
+			///< \todo Error handling in case of import error
 		}
 	}
 }

@@ -270,7 +270,7 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 }
 
-bool SVProjectHandler::importProject(VICUS::Project * project) {
+bool SVProjectHandler::importProjectFromPlugin(VICUS::Project * project) {
 	if(project == nullptr) {
 		return newProject(project);
 	}
@@ -301,12 +301,15 @@ bool SVProjectHandler::importProject(VICUS::Project * project) {
 
 	// this will clear the modified flag again (since we just read the project) except if we had made some automatic
 	// fixes above
-	m_modified = have_modified_project;
+	m_modified = true;
 
 	setModified(AllModified);
 
 	// signal UI that we now have a project
 	emit updateActions();
+
+	// issue a call to user-dialog fixes/adjustments
+	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 
 	return true;
 }

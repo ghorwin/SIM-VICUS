@@ -164,7 +164,7 @@ public:
 		Emits updateActions() to signal that view state has changed.
 		\return Returns false if New Project Wizard was aborted by user.
 	*/
-	bool importProject(VICUS::Project * project);
+	bool importProjectFromPlugin(VICUS::Project * project);
 
 	/*! Closes project (discarding modifications) and reopens the project.
 		Project must have a valid filename already.
