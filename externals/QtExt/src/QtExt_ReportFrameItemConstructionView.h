@@ -64,7 +64,7 @@ public:
 	virtual void drawItem(QPainter* painter, QPointF& pos) override;
 
 private:
-	ConstructionGraphicsScene*	m_constructionScene;	QRect						m_rect;
+	ConstructionGraphicsScene*	m_constructionScene;
 };
 
 } // namespace QtExt
