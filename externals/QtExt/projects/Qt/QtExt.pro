@@ -22,7 +22,7 @@ unix|mac {
 LIBS += -lIBK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src 
+		../../../IBK/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
@@ -40,6 +40,7 @@ FORMS += \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.ui
 
 HEADERS += \
+	../../src/QtExt_ReportFrameItemConstructionView.h \
 	../../src/QtExt_ActiveLabel.h \
 	../../src/QtExt_AspectRatioBitmapLabel.h \
 	../../src/QtExt_AutoUpdateDialog.h \
@@ -118,6 +119,7 @@ HEADERS += \
 	../../src/QtExt_varianthelper.h
 
 SOURCES += \
+	../../src/QtExt_ReportFrameItemConstructionView.cpp \
 	../../src/QtExt_ActiveLabel.cpp \
 	../../src/QtExt_AspectRatioBitmapLabel.cpp \
 	../../src/QtExt_AutoUpdateDialog.cpp \
