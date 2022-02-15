@@ -1,6 +1,7 @@
 Entwicklungsroadmap IBK
 =======================
 Dirk Weiß <dirk.weiss@tu-dresden.de>
+Dirk Weiß <stephan.hirth@tu-dresden.de>
 v0.7 (09.01.2022)
 // v0.7 date_on_line_above
 :Author Initials: DW
@@ -29,105 +30,105 @@ v0.7 (09.01.2022)
 ## Einleitung
 
 
-Das Institut für Bauklimatik (IBK) entwickelt seit Jahrzehnten Softwareprodukte. Schwerpunkt bilden Produkte für die (hygro-)thermische Analyse von Baustoffen, Baukonstruktionen sowie Räume, Gebäude und Quartiere. Im Laufe der Zeit sind verschiedenste Gleichungslöser als auch direkte Anwendungsprogramme für Ingenieure entstanden.
+Das Institut für Bauklimatik (IBK) entwickelt seit Jahrzehnten erfolgreich Softwareprodukte. Schwerpunkt bilden hierbei Programme für die (hygro-)thermische Berechnung & Analyse von Bauteilen, -konstruktionen sowie die enegertische Bewertung von Räumen, Gebäuden und Quartieren. Im Laufe der Jahren sind verschiedenste Rechenkerne als auch Programme mit anwenderfreundlichen Oberflächen für Architekten und Ingenieure entstanden.
 
-*Gleichungslöser:*
+*Rechenkerne:*
 
-* DelphinSolver
-* TheraklesSolver
-* NANDRAD-Solver
+* [underline]#DelphinSolver#
+* [underline]#TheraklesSolver#
+* [underline]#NANDRAD-Solver#
 
-*Ingenieursanwendungen:*
+*Ingenieursprogramme:*
 
-* CCM-Editor - Klimadatenauswertung und Modifikation
-* COND - Analyse und Auslegung von Bauteilen mit Innen- und Außendämmung
-* Delphin - Analyse und Auslegung von Bauteilen. Hierbei können verschiedenste Szenarien wie beispielsweise Schlagregenbelastungen, Schimmelpilzwachstum, Wärmebrückenberechnung betrachtet werden. Zusätzlich kann Delphin das Erdreich abbbilden und damit Erdwärmekollektoren analysieren und auslegen.
-* Therakles - Analyse und Bewertung von Raumklimabetrachtungen. Ermittlung von Heiz- bzw. Kühlbedarf, Raumluft- und Oberflächentemperaturen, Raumluftfeuchten, Behaglichkeitskennwerten.
-* PostProc2 - Auswertungswerkzeug für die Be- und Verarbeitung von Ergebnisdaten aus Delphin, Therakles und NANDRAD.
-* MasterSim - Werkzeug zur Kopplung und gemeinsamen Berechnung von verschiedenen Solversystemen. Anwendung findet hier die FMI-Technologie (CoSimulation).
-* SIM-VICUS - 3D-Eingabemaske für den NANDRAD-Solver. (derzeit in Entwicklung)
+* [underline]#CCM-Editor# - Klimadatenauswertung und Modifikation
+* [underline]#COND# - Analyse und Auslegung von Bauteilen mit Innen- und Außendämmung
+* [underline]#Delphin# - Analyse und Auslegung von Bauteilen. Hierbei können verschiedenste Szenarien wie beispielsweise Schlagregenbelastungen, Schimmelpilzwachstum, Wärmebrückenberechnung betrachtet werden. Zusätzlich kann Delphin das Erdreich abbbilden und damit Erdwärmekollektoren analysieren und auslegen.
+* [underline]#Therakles# - Analyse und Bewertung von Raumklimabetrachtungen. Ermittlung von Heiz- bzw. Kühlbedarf, Raumluft- und Oberflächentemperaturen, Raumluftfeuchten, Behaglichkeitskennwerten.
+* [underline]#PostProc2# - Auswertungswerkzeug für die Be- und Verarbeitung von Ergebnisdaten aus Delphin, Therakles und NANDRAD.
+* [underline]#MasterSim# - Werkzeug zur Kopplung und gemeinsamen Berechnung von verschiedenen Solversystemen. Anwendung findet hier die FMI-Technologie (CoSimulation).
+* [underline]#SIM-VICUS# - 3D-Eingabemaske für den NANDRAD-Solver. (derzeit in Entwicklung)
 
-Weiter kleine Programmlösungen sind PV-Tool als auch der Erdkollektordesigner
+Weiterhin sind Programme wie [underline]#PV-Tool# als auch der [underline]#Erdkollektordesigner# in letzter Zeit entstanden.
 
-## Roadmap
+## Roadmap - Strategische Planung für das IBK
 
 ### Prioritäten
 
-Für ein Ranking werden die Arbeitspunkte mit einer Priorität versehen. Dabei steht 10 für die höchste Priorität und 1 für die niedrigste. Diese werden in der Zusammenfassung in Klammern hinter dem Text angegeben. 
+Für eine Wichtung der Aufgaben werden die Aufgabenpunkte mit einer Priorisierung versehen. Dabei steht 10 für die höchste Priorität und 1 für die niedrigste. Die Priorisierung wird direkt hinter dem jeweiligen Arbeitspunkt in Klammern notiert.
 
 ### Datenbanken
 
-Die Datenbanken aller Programme müssen erweitert werden. Speziell bei der Materialdatenbank muss mehr Input vom Labor an die Softwareentwicklungsabteilung hergestellt werden.
+Die Datenbanken aller Programme müssen sukszessive erweitert werden. Speziell bei der Materialdatenbank muss mehr Austausch zwischen Labor und der Softwareentwicklungsabteilung erfolgen. [underline]#SOLLTE SPEZIFISCHER SEIN, DELPHIN DATENBANK?#
 
 ### Bauteilsimulation
 
-Für die Ingenieure ist es essentiell schnell und effektive die an Sie gestellte Aufgaben abzuarbeiten. Daher ist das Aufsetzen von Projekten zu betrachten 
-als auch das Auswerten der Ergebnisse und die Produktion von Berichten.
+Für die Ingenieure ist es für eine wirtschaftliche Bearbeitung essentiell, schnell und effektiv Aufgaben abzuarbeiten. Daher ist das effiziente Aufsetzen/Erstellen von Projekten als auch das schnelle Auswerten der Ergebnissdaten und letztlich die Erstellung von Berichten höchste Priorität.
 
 *COND*
 
-Keine Bedarfe
+Keine Bedarfe in der Entwicklung.
 
-*Delphin*
+*DELPHIN*
 
-Das Aufsetzen von 3D-Projekten ist noch nicht mit einer grafischen Nutzeroberfläche möglich. Das automatisierte Erstellen von Berichten ist ebenfalls wenig ausgebaut. Auch hier könnten Verbesserungen erzielt werden. Dazu müssten die Szenarien aufgestellt werden die in der Ingenieurpraxis auftreten und anschließen ein Bericht programmiert werden. Zusätzlich können ähnlich wie die Berichte auch Vorgabeprojekte über einen Wizard erstellt werden. Dabei wir im Vorfeld eine Analyse/Berechnung ausgewählt und man wird anschließend durch ein Dialogmenü geführt und trägt gewisse Kennwerte ein oder bestätigt diese.
+Das Aufsetzen von 3D-Simulationsdateien ist derzeit nicht mittels einer grafischen Nutzeroberfläche möglich. Das automatisierte Erstellen von Berichten ist ebenfalls wenig oder gar nicht möglich. Um Verbesserungen zu erzielen, müssten die Typszenarien aus der Ingenierupraxis erstellt werden und in automatisierbare Berichte abgeleitet werden. Ebenso sind automatisierbare Templates, die über einen Wizard bestimmte Standardszenarien abbilden und parametrisierbar sidn, notwendig.
+
 
 Zusammenfassung:
 
-* 3D Nutzeroberfläche Delphin (1)
-* Berichterstellung (8)
-* Wizard (8)
+* 3D Nutzeroberfläche DELPHIN (1)
+* Automatisierte Berichterstellung (8)
+* Wizard zur Erstellung von typischen Ingenierprojekten (8)
 * Erweiterung der Innenklimamodelle (10)
-* Schlagregen bei hinterlüfteten Fasssad (10)
+* Schlagregen bei hinterlüfteten Fassaden (10)
 * Tutorials und Nutzerhandbuch (9)
 
-### Raum-, Gebäude und Quartiersimulationsprogramme
+### Raum-, Gebäude und Quertiersimulationsprogramme
 
-*Therakles*
+*THERAKLES*
 
-Für Therakles müssen die Berichte vervollständigt werden.
+Für THERAKLES müssen die Berichte vervollständigt werden.
 
-* Berichterstllung vervollständigen (10)
+* Berichterstellung vervollständigen (10)
 
 
 *NANDRAD2-Solver*
 
-Für die Berechnung von Behaglichkeiten sollte die Raumluftfeuchte mit berechnet werden. Die Ansätze vom NANDRAD 1 können dabei direkt portiert werden. Die Integration von Steuerungssystemen wie Verschattungssteuerung muss entwickelt und umgesetzt werden. Sind später Anlagensysteme zu betrachten müssen Luftnetzwerke ebenso wie die Wassernetzwerke die derzeit von Hauke umgesetzt werden zu entwickeln.
+Für die Abschätzung der Behaglichkeit in Räumen muss die Raumluftfeuchte und deren Speichereffekte in Bauteilen berechnet werden. Die Ansätze von NANDRAD 1.8 können dabei wahrscheinlich direkt portiert werden. Die Integration von Steuerungssystemen, wie die dynamische Verschattungssteuerung, müssen entwickelt und ausprogrammiert werden. Für die Abbildung von TGA-Systemen in Gebäuden müssen Luft- als auch hydraulische Netzwerke abbildbar sein.
 
 Zusammenfassung:
 
-* Raumluftfeuchte
-* Modelle zur Steuerung von Systeme
+* Abbildung der Raumluftfeuchte
+* Steuerungsmodelle 
 
 *SIM-VICUS*
 
-SIM-VICUS hat den größten Entwicklungsbedarf. Dies sollte für die zukünftige Abarbeitung von Projekten im Gebäude- als auch Quartiersbereich unbedingt erweitert werden. Bei der Eingabe müssen der Import der IFC als auch der 2D Import von dwg und/oder dxf angegangen werden. Weiterhin wird die Erstellung und Bearbeitung von Geometriemodellen direkt in SIM-VICUS für Praxisprojekte benötigt. Dazu zählen die Funktionen Transformieren, Skalieren und Rotation, sowie die Verschneidung von Flächen. Für die Anschließende thermische Simulation müssen die Partneroberflächen möglichst automatisiert gefunden und verschnitten werden. Anschließend wird ein manuelles als auch automatisches Verlinken von Oberflächen zu einer _Component_ benötigt. Um diesen Aufbau zu gewährleisten müssen die Polygon zuerst von der derzeitigen 3D Datenstruktur in eine 2D Datenstruktur (VICUS-Format) überführt werden. 
+SIM-VICUS hat unter allen Programmen den größten Entwicklungsbedarf. Dies sollte für die zukünftige Abarbeitung von Projekten im Gebäude- als auch Quartierskontext unbedingt erweitert werden. Bei der Eingabe müssen der Import der IFC-Schnittstelle als auch der Import von Grundrissen im dwg und/oder dxf-Format implementiert werden. Da für zweiteres einige Open-Source-Bibliotheken exisitieren, sollte der Entwicklungsaufwand abschätzbar sein. Weiterhin wird die Erstellung und Bearbeitung von Geometriemodellen direkt in SIM-VICUS für Praxisprojekte benötigt. Dazu zählen die Funktionen Transformieren, Skalieren und Rotation (viele bugfixes durchgeführt, aber lokale Skalierung muss erweitert werden), sowie die Verschneidung von Flächen. Für die thermische Simulation mittels NANDRAD müssen die Partneroberflächen möglichst automatisiert gefunden, verschnitten und gekoppelt werden. Anschließend wird ein manuelles als auch automatisches Verlinken von Oberflächen zu einer sogenannten _Component_ benötigt. Um keine kaputten Polygone zu erzeugen, müssen Polygone zuerst von der derzeitigen 3D Datenstruktur in eine 2D Datenstruktur (VICUS-Format) überführt werden, die allerdings eine kompatible Rückwärtskonvertierung behält.
 
-Weiterhin sind die Modelle zu komplementieren. Hierbei können ebenfalls Wizards und Reports wie beispielsweise Kühllastberechnung nach VDI 2078 bzw Heizlast nach DIN EN ISO 12831 oder der sommerliche Wärmeschutz nach DIN 4108-2 zum Einsatz. Zusätzlich müssen in einem Report alle Eingabedaten zusammengefasst werden.
+Ebenfalls müssen Wizards und Reports wie beispielsweise für die Kühllastberechnung nach VDI 2078 bzw. die Heizlastberechnung nach DIN EN ISO 12831 oder der sommerliche Wärmeschutz nach DIN 4108-2 erstellt werden. Zusätzlich müssen in einem Bericht alle Eingabedaten zusammengefasst werden.
 
-Die Wizards und Reports werden nicht Open-Source gestellt. Dafür ist eine Plugin-Struktur herzustellen. Durch Plugins kann zu einem späteren Zeitpunkt eine Vermarktung von SIM-VICUS erfolgen.
+Die Wizards und Berichte werden dabei nicht Open-Source veröffentlicht. Dafür ist eine Plugin-Struktur herzustellen. Durch Plugins kann zu einem späteren Zeitpunkt eine Vermarktung von SIM-VICUS erfolgen.
 
-* Import IFC (7)
-* Import dxf/dwg(3)
+* IFC-Import (7)
+* DXF/DWG-Import (3)
 * Polygone auf 2D Abstraktion umbauen (10)
 * Verschneidung (9)
 * Verlinkung von Flächen (9)
-* Geometrieoperationen (7)
-* Infrastruktur für Datenbankplugins (5)
-* Export anpassen (5)
-* Bugfixes (6)
-* Wizard/Report DIN EN ISO 12831 - Heizlastberechnung (5)
-* Wizard Report VDI 2078 - Kühllastberechnung (5)
-* Wizard/Report DIN 4108-2 - sommerlicher Wärmeschutz (5)
-* Report der Eingabedaten (5)
+* Geometrieoperationen erweitern (7)
+* Infrastruktur für Datenbank-Plugins (5)
+* Export-Funcktionen anpassen (5)
+* Diverse Bugfixes (6)
+* Wizard/Bericht DIN EN ISO 12831 - Heizlastberechnung (5)
+* Wizard Bericht VDI 2078 - Kühllastberechnung (5)
+* Wizard/Bericht DIN 4108-2 - sommerlicher Wärmeschutz (5)
+* Bericht der Eingabedaten (5)
 
 
 
 ### Weitere Programme
 
-*CCM*
+*CCM-Editor*
 
-Die Anbindung von Datenbanken ist für Ingenieure essentiell. Durch die Anbindung der Datenbanken one-building.org als auch des DWD bekommen Ingenieure sehr leicht zugriff auf verschiedenste Klimata. Diese können von allen Softwareprodukten SIM-VICUS/NANDRAD/Therakles/Delphin genutzt werden und zur Berechnung herangezogen werden.
+Die Anbindung von Wetterdatenbanken ist für Ingenieure wichtig. Die Anbindung der Datenbanken one-building.org als auch die des DWD müssen dabei im Zentrum stehen. Diese Datenbanken können von allen Softwareprodukten SIM-VICUS/NANDRAD/Therakles/Delphin genutzt werden und zur Berechnung verwendet werden.
 
 * One-Building Datenbakimport
 * DWD-Importer
@@ -135,10 +136,10 @@ Die Anbindung von Datenbanken ist für Ingenieure essentiell. Durch die Anbindun
 
 *PostProc2*
 
-Einige Anpassungen für die Auswertungen für Gebäude und Quartiersprojekte sollen noch umgesetzt werden. (1)
+Einige Anpassungen für die Auswertungen für Gebäude und Quartiersprojekte müssen umgesetzt werden. (1)
 
-* Erstellung von Balkendiagramm (2)
-* Erstellung von Polardiagramm (2)
+* Erstellung von Balkendiagrammen (2)
+* Erstellung von Polardiagrammen (2)
 
 *Master-Sim*
 
@@ -150,4 +151,4 @@ Keine Bedarfe
 
 *Erdkollektordesigner*
 
-Ausprogrammieren der 1D Szenarien. Erstellen eines Auslegungsmodells für Bohrungen.
+Ausprogrammieren der 1D-Szenarien. Erstellen eines Auslegungsmodells für Bohrungen.
