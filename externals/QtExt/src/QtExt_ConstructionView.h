@@ -66,6 +66,11 @@ public:
 	/*! Updates the locally cached data.*/
 	void setData(QPaintDevice* paintDevice, const QVector<ConstructionLayer>& layers, double resolution, int visibleItems);
 
+	/*! Set the background color for calculating font and line colors.
+		The background color itself will not be changed.
+	*/
+	void setBackground(const QColor& bkgColor);
+
 	/*! Clears content and scene.*/
 	void clear();
 

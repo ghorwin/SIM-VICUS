@@ -102,6 +102,10 @@ void ConstructionView::setData(QPaintDevice* paintDevice, const QVector<Construc
 	show();
 }
 
+void ConstructionView::setBackground(const QColor& bkgColor) {
+	m_diagramScene->setBackground(bkgColor);
+}
+
 void ConstructionView::clear() {
 	m_inputData.clear();
 	m_diagramScene->clear();
