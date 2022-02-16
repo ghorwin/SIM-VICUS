@@ -47,7 +47,7 @@ ReportFrameItemConstructionView::ReportFrameItemConstructionView(const Construct
 //	width *= constructionViewSetup.m_resolution;
 //	height *= constructionViewSetup.m_resolution;
 	m_currentRect = QRect(0,0,width, height);
-	m_constructionScene->setup(m_currentRect.toRect(), paintDevice, constructionViewSetup.m_resolution,
+	m_constructionScene->setup(m_rect, paintDevice, constructionViewSetup.m_resolution,
 							  constructionViewSetup.m_layers, constructionViewSetup.m_leftLabel, constructionViewSetup.m_rightLabel,
 							  constructionViewSetup.m_visibleItems);
 }
