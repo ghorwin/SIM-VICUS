@@ -3155,24 +3155,26 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			}
 		}
 
-		// ranges cumTempChangeindicator for each soil model
+		// intervalMaxValues cumTempChangeindicator for each soil model
 		unsigned int numSoilModels = vicusNetwork.m_buriedPipeProperties.m_numberOfSoilModels;
-		std::vector<double> ranges(numSoilModels);
+		std::vector<double> intervalMaxValues(numSoilModels);
 		for (unsigned int i=0; i<numSoilModels; ++i){
-			ranges[i] = cumTempChangeindicatorMin  +
+			intervalMaxValues[i] = cumTempChangeindicatorMin  +
 					(i+1) * (cumTempChangeindicatorMax - cumTempChangeindicatorMin) / numSoilModels;
 		}
+		// we manually set the max value to the last interval, this avoids rounding errors which could cause a value slightly below the actual max value
+		intervalMaxValues[numSoilModels-1] = cumTempChangeindicatorMax;
 
 		// assign soil models to edges
 		for (NetworkEdge &edge: vicusNetwork.m_edges){
 			if (edge.m_idSoil != VICUS::INVALID_ID)
 				continue;
-			if (edge.m_cumulativeTempChangeIndicator <= ranges[0]){
+			if (edge.m_cumulativeTempChangeIndicator <= intervalMaxValues[0]){
 				edge.m_idSoil = 1;
 			}
 			else {
 				for (unsigned int i=1; i<numSoilModels; ++i){
-					if (edge.m_cumulativeTempChangeIndicator <= ranges[i]){
+					if (edge.m_cumulativeTempChangeIndicator <= intervalMaxValues[i]){
 						edge.m_idSoil = i+1;
 						break;
 					}
