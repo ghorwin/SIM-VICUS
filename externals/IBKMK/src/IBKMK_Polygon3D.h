@@ -53,33 +53,19 @@ namespace IBKMK {
 class Polygon3D {
 public:
 
-	/*! Different types of the plane described by the polygon. */
-	enum type_t {
-		/*! Triangle defined through three vertices a, b, c. Triangulation is trivial. */
-		T_Triangle,
-		/*! Rectangle/Parallelogram defined through four vertices (a, b, c and d), where c = a + (b-a) + (d-a).
-			Triangulation gives two triangles.
-		*/
-		T_Rectangle,
-		/*! Polygon, generic polygon with n points. */
-		T_Polygon,
-		NUM_T
-	};
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
 	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
-		If t is Polygon3D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
+		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
 		internally.
 	*/
-	Polygon3D(Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
+	Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
 	/*! Returns the type of the polygon (can be used to optimize some algorithms). */
-	type_t type() const { return m_type; }
+	Polygon2D::type_t type() const { return m_type; }
 
 	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
@@ -168,7 +154,7 @@ protected:
 		T_POLYGON is the most generic, yet T_TRIANGLE and T_RECTANGLE offer some specialized handling for
 		intersection calculation and triangulation.
 	*/
-	type_t								m_type = NUM_T;
+	Polygon2D::type_t					m_type = Polygon2D::NUM_T;
 
 	/*! Stores the valid state of the polygon, update in checkPolygon() */
 	bool								m_valid = false;

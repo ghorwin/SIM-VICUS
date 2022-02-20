@@ -57,7 +57,7 @@ namespace VICUS {
 
 // *** PlaneGeometry ***
 
-PlaneGeometry::PlaneGeometry(IBKMK::Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) {
+PlaneGeometry::PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) {
 	// use special construction function from IBKMK::Polygon3D
 	IBKMK::Polygon3D p(t, a, b, c);
 	// if polygon is valid, transfer data

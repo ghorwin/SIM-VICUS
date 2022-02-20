@@ -53,11 +53,11 @@ Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
 }
 
 
-Polygon3D::Polygon3D(Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
+Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
 	m_vertexes({a,b,c}),
 	m_type(t)
 {
-	if (m_type == T_Rectangle) {
+	if (m_type == Polygon2D::T_Rectangle) {
 		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
 		// then compute vertex [c] again
 		m_vertexes.push_back(m_vertexes.back());
@@ -89,7 +89,7 @@ void Polygon3D::removeVertex(unsigned int idx){
 	if (idx >= (unsigned int)m_vertexes.size())
 		throw IBK::Exception(IBK::FormatString("Index %1 out of range (vertex count = %2).").arg(idx).arg(m_vertexes.size()), FUNC_ID);
 	m_vertexes.erase(m_vertexes.begin()+idx);
-	m_type = T_Polygon; // assume the worst
+	m_type = Polygon2D::T_Polygon; // assume the worst
 	checkPolygon(); // if we have a triangle/rectangle, this is detected here
 }
 
@@ -186,9 +186,9 @@ void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValue
 
 
 void Polygon3D::detectType() {
-	m_type = T_Polygon;
+	m_type = Polygon2D::T_Polygon;
 	if (m_vertexes.size() == 3) {
-		m_type = T_Triangle;
+		m_type = Polygon2D::T_Triangle;
 		return;
 	}
 	if (m_vertexes.size() != 4)
@@ -202,7 +202,7 @@ void Polygon3D::detectType() {
 	// we assume we have zero length for an rectangle
 	// TODO : proper rounding error check! should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
 	if (c2.magnitude() < 1e-4)
-		m_type = T_Rectangle;
+		m_type = Polygon2D::T_Rectangle;
 }
 
 

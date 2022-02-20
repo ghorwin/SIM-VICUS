@@ -41,12 +41,7 @@ namespace VICUS {
 
 	Also, it implements intersection tests (for picking).
 
-	Usage:
 
-	Set output polygon with setPolygon()
-	Set subsurfaces/holes with setHoles().
-
-	This will always update the internal triangulation.
 */
 class PlaneGeometry {
 public:
@@ -59,7 +54,7 @@ public:
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 	*/
-	PlaneGeometry(IBKMK::Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
+	PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
 	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
