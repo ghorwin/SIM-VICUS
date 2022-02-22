@@ -11,7 +11,7 @@ We have continuous integration scripts running (build-test of all C/C++ code) an
 
 | Test | Result|
 |-----|-----|
-| CI - Linux 64-bit (Ubuntu 20.04.3 LTS; Qt 12.9) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-Linux-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus/)    |
+| CI - Linux 64-bit (Ubuntu 20.04.3 LTS; Qt 5.12.9) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-Linux-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-Linux-SimVicus/)    |
 | CI - Windows 64-bit (Win10, VC 2019, Qt 5.15.2) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR64-Win-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR64-Win-SimVicus/)   |
 | CI - MacOS 64-bit (10.11 "El Capitan", Qt 5.11.3) | [![Build Status](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=NR-IOS-SimVicus&style=plastic)](https://baukli01.arch.tu-dresden.de/jenkins/job/NR-IOS-SimVicus/) |
 | Solver regression test (correctly simulating test suite) | [![Regression Test](https://baukli01.arch.tu-dresden.de/jenkins/buildStatus/icon?job=Daily-Test-SimVicus_NandradSolver&style=plastic&subject=Testsuite)](https://baukli01.arch.tu-dresden.de/jenkins/job/Daily-Test-SimVicus_NandradSolver/)   |
@@ -76,7 +76,7 @@ NANDRAD Solver and SIM-VICUS use a bunch of common libraries from IBK and extern
 * **IBK** - core utility library, extends c++ standard library by useful functions (so we do not need boost and other heavy libs)
 * **IBKMK** - IBK math kernel lib, low level optimized routines for efficient number crunching
 * **IDFReader** - library for IDF file parsing and data import to VICUS
-* **IntegratorFramework** - library that includes several numerical interation libraries and provides a convenient framework to error-controlled time integration
+* **IntegratorFramework** - library that includes several numerical integration libraries and provides a convenient framework to error-controlled time integration
 * **ITSOL2** - implements ILUT preconditioner (included in IntegratorFramework, this directory contains the original sources)
 * **Nandrad** - the NANDRAD data model library (holds the project data for the NANDRAD solver)
 * **QtExt** - Qt extension library from IBK, lots of utility functions and widgets to assist with UI development
