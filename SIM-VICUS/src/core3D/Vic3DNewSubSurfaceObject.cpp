@@ -175,7 +175,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 			double xMin = std::numeric_limits<double>::max();
 			double yMin = xMin;
-			double xMax = std::numeric_limits<double>::min();
+			double xMax = -std::numeric_limits<double>::min();
 			double yMax = xMax;
 
 			for(unsigned int i=0; i<vertexes2D.size(); ++i){
@@ -387,22 +387,25 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				// now create the windows
 				for (unsigned int i=0; i<count; ++i ){
 					VICUS::Polygon2D poly1;
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + width + i * (dist + width), sillHeight + height));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + width), sillHeight + height));
+					poly1.addVertex(IBK::point2D<double>(dist + i * (dist + width), sillHeight));
+					poly1.addVertex(IBK::point2D<double>((1 + i) * (dist + width), sillHeight));
+					poly1.addVertex(IBK::point2D<double>((1 + i) * (dist + width), sillHeight + height));
+					poly1.addVertex(IBK::point2D<double>(dist + i * (dist + width), sillHeight + height));
 					windows.push_back(poly1);
 				}
 			}
 			else{
 				// now create the windows
-				double dist = inputData.m_baseLineOffset;
-				for (unsigned int i=0; i<inputData.m_maxHoleCount; ++i){
+				double dist = inputData.m_distance;
+
+				unsigned int count = std::min<unsigned int>(inputData.m_maxHoleCount,(int)((wSurf - dist) / (dist + wPre)));
+
+				for (unsigned int i=0; i<count; ++i){
 					VICUS::Polygon2D poly1;
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + wPre + i * (dist + wPre), hPreSill + hPre));
-					poly1.addVertex(IBK::point2D<double>(dist * 0.5 + i * (dist + wPre), hPreSill + hPre));
+					poly1.addVertex(IBK::point2D<double>(dist + i * (dist + wPre), hPreSill));
+					poly1.addVertex(IBK::point2D<double>((1 + i) * (dist + wPre), hPreSill));
+					poly1.addVertex(IBK::point2D<double>((1 + i) * (dist + wPre), hPreSill + hPre));
+					poly1.addVertex(IBK::point2D<double>(dist + i * (dist + wPre), hPreSill + hPre));
 					windows.push_back(poly1);
 				}
 
