@@ -259,6 +259,8 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 	const std::vector<VICUS::PlaneGeometry> & geometries = SVViewStateHandler::instance().m_newSubSurfaceObject->generatedSurfaces();
 	IBK_ASSERT(geometries.size() == m_currentSelection.size());
 
+	unsigned int lastFreeId = project().nextUnusedID();
+
 	for (unsigned int i=0; i<m_currentSelection.size(); ++i) {
 		const VICUS::Surface* s = m_currentSelection[i];
 
@@ -269,7 +271,8 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 		std::vector<VICUS::SubSurface> subs;
 		for (const VICUS::Polygon2D & p : geometries[i].holes()) {
 			VICUS::SubSurface subsurf;
-			subsurf.m_id = subsurf.m_id;
+			subsurf.m_id = lastFreeId++;
+
 			subsurf.m_polygon2D = p;
 			if (m_ui->radioButtonSubSurfaceTypeWindow->isChecked()) {
 				subsurf.m_displayName = tr("Window #%1").arg(subsurf.m_id);
@@ -289,7 +292,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 				m_ui->comboBoxSubSurfaceComponent->currentIndex() != -1)
 			{
 				VICUS::SubSurfaceComponentInstance subInstance;
-				subInstance.m_id = VICUS::uniqueId(subSurfaceComponentInstances);
+				subInstance.m_id = lastFreeId++;
 				subInstance.m_idSubSurfaceComponent = m_ui->comboBoxSubSurfaceComponent->currentData().toUInt();
 				subInstance.m_idSideASurface = subsurf.m_id;
 				subInstance.m_idSideBSurface = VICUS::INVALID_ID; // currently, all our new windows are outside windows
