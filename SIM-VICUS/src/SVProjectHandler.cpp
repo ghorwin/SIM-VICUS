@@ -270,52 +270,6 @@ void SVProjectHandler::loadProject(QWidget * parent, const QString & fileName,	b
 	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
 }
 
-bool SVProjectHandler::importProjectFromPlugin(VICUS::Project * project) {
-	if(project == nullptr) {
-		return newProject(project);
-	}
-
-	createProject();
-	*m_project = *project; // copy over project
-	// update all internal pointers
-	try {
-		m_project->updatePointers();
-	}
-	catch (const IBK::Exception& e) {
-		QMessageBox::critical(nullptr, tr("Error while importing ifc file"), e.what());
-		return false;
-	}
-
-	// initialize viewstate
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	SVViewStateHandler::instance().setViewState(vs);
-
-	// once the project has been read, perform "post-read" actions
-	bool have_modified_project = false;
-
-	// import embedded DB into our user DB
-	have_modified_project = importEmbeddedDB(*m_project); // Note: project may be modified in case IDs were adjusted
-
-	// fix problems in the project; will set have_modified_project to true if fixes were applied
-	fixProject(*m_project, have_modified_project);
-
-	// this will clear the modified flag again (since we just read the project) except if we had made some automatic
-	// fixes above
-	m_modified = true;
-
-	setModified(AllModified);
-
-	// signal UI that we now have a project
-	emit updateActions();
-
-	// issue a call to user-dialog fixes/adjustments
-	QTimer::singleShot(0, this, SIGNAL(fixProjectAfterRead()));
-
-	return true;
-}
-
-
-
 void SVProjectHandler::reloadProject(QWidget * parent) {
 	QString projectFileName = projectFile();
 	m_modified = false; // so that closeProject doesn't ask questions
