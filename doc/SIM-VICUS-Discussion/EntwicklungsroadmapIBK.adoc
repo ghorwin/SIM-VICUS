@@ -1,7 +1,6 @@
 Entwicklungsroadmap IBK
 =======================
-Dirk Weiß <dirk.weiss@tu-dresden.de>
-Stephan Hirth <stephan.hirth@tu-dresden.de>
+Dirk Weiß <dirk.weiss@tu-dresden.de>, Stephan Hirth <stephan.hirth@tu-dresden.de>
 v0.7 (09.01.2022)
 // v0.7 date_on_line_above
 :Author Initials: DW
@@ -58,7 +57,7 @@ Für eine Wichtung der Aufgaben werden die Aufgabenpunkte mit einer Priorisierun
 
 ### Datenbanken
 
-Die Datenbanken aller Programme müssen sukszessive erweitert werden. Speziell bei der Materialdatenbank muss mehr Austausch zwischen Labor und der Softwareentwicklungsabteilung erfolgen. [underline]#SOLLTE SPEZIFISCHER SEIN, DELPHIN DATENBANK?#
+Die Datenbanken aller Programme müssen sukzessive erweitert werden. Speziell bei der Materialdatenbank muss mehr Austausch zwischen Labor und der Softwareentwicklungsabteilung erfolgen. Davon profitieren alle Programme.
 
 > AN: differenzieren zwischen Materialdatenbank (COND, THERAKLES, DELPHIN, SIM-VICUS); Konstruktionsdatenbank (COND?, THERAKLES, SIM-VICUS); Verglasungen/Fenster (THERAKLES, SIM-VICUS); und den restlichen SIM-VICUS DBs
 
@@ -72,10 +71,12 @@ Keine Bedarfe in der Entwicklung.
 
 *DELPHIN*
 
-Das Aufsetzen von 3D-Simulationsdateien ist derzeit nicht mittels einer grafischen Nutzeroberfläche möglich. Das automatisierte Erstellen von Berichten ist ebenfalls wenig oder gar nicht möglich. Um Verbesserungen zu erzielen, müssten die Typszenarien aus der Ingenierupraxis erstellt werden und in automatisierbare Berichte abgeleitet werden. Ebenso sind automatisierbare Templates, die über einen Wizard bestimmte Standardszenarien abbilden und parametrisierbar sidn, notwendig.
+Das Aufsetzen von 3D-Simulationsdateien ist derzeit nicht mittels einer grafischen Nutzeroberfläche möglich. Das automatisierte Erstellen von Berichten ist ebenfalls wenig oder gar nicht möglich. Um Verbesserungen zu erzielen, müssten die Typszenarien aus der Ingenieurpraxis erstellt werden und in automatisierbare Berichte abgeleitet werden. Ebenso sind automatisierbare Templates, die über einen Wizard bestimmte Standardszenarien abbilden und parametrisierbar sind, notwendig.
 
 
 Zusammenfassung:
+
+
 
 * 3D Nutzeroberfläche DELPHIN (1)
 * Automatisierte Berichterstellung (8)
