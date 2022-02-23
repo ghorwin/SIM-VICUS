@@ -117,7 +117,6 @@ public:
 	*/
 	unsigned int nextUnusedID() const;
 
-
 	/*! Searches through all objects in project structure for the object with the object ID.
 		\return Returns nullptr, when object cannot be found.
 	*/
