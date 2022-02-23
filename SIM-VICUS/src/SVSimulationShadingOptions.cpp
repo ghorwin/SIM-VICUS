@@ -338,8 +338,12 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 		if (hasSideAValidId && s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
 			continue; // skip inside constructions
 
+		VICUS::Project p = project();
+		SVSettings::instance().m_db.updateEmbeddedDatabase(p);
+		p.updatePointers();
+
 		// check if this is an surface to outside air and not to ground
-		const VICUS::Component * comp = VICUS::element(project().m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
+		const VICUS::Component * comp = VICUS::element(p.m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
 
 		// find component and boundary condition to check if this is a surface with ground contact
 		if(comp != nullptr){
