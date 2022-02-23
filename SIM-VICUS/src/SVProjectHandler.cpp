@@ -323,7 +323,6 @@ void SVProjectHandler::reloadProject(QWidget * parent) {
 	loadProject(parent, projectFileName, false); // emits updateActions() if project was successfully loaded
 }
 
-
 void SVProjectHandler::importProject(VICUS::Project & other) {
 	// we must have a project loaded
 	IBK_ASSERT(isValid());

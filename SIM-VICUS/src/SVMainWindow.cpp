@@ -811,11 +811,12 @@ void SVMainWindow::onImportPluginTriggered() {
 
 	VICUS::Project p;
 	bool success = importPlugin->import(this, p);
+
 	if (success) {
 		// if we have no project, yet, create a new project based on our imported data
 		if (!m_projectHandler.isValid()) {
 			// create new project
-			success = m_projectHandler.importProjectFromPlugin(&p); // emits updateActions()
+			m_projectHandler.newProject(&p); // emits updateActions()
 		}
 		else {
 			// ask user about preference
@@ -829,14 +830,16 @@ void SVMainWindow::onImportPluginTriggered() {
 					return;
 
 				// create new project
-				success = m_projectHandler.importProjectFromPlugin(&p); // emits updateActions()
+				m_projectHandler.newProject(&p); // emits updateActions()
 			}
 			else {
 				// The merging of project and referenced data is a bit complicated.
 				// First we must import the embedded database from the imported project
 				// Then, we can copy the buildings to our project.
 
-				SVProjectHandler::instance().importEmbeddedDB(p); // this might modify IDs of the imported project
+				m_projectHandler.importEmbeddedDB(p); // this might modify IDs of the imported project
+
+				m_projectHandler.importProject(p);
 
 				// take all imported buildings from project and add as new building to existing data structure via undo-action
 				SVUndoAddProject * undo = new SVUndoAddProject(tr("Adding imported project data"), p);
