@@ -59,6 +59,7 @@ public:
 	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
 	//:inherited	bool				m_visible = true;			// XML:A
+	//:inherited	std::string			m_ifcGUID;					// XML:A
 
 	/*! The nominal elevation [m] of the floor's surface above ground. */
 	double								m_elevation = 0;			// XML:E

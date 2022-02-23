@@ -51,6 +51,8 @@ void BuildingLevel::readXML(const TiXmlElement * element) {
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "ifcGUID")
+				m_ifcGUID = attrib->ValueStr();
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -101,7 +103,9 @@ TiXmlElement * BuildingLevel::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != BuildingLevel().m_visible)
-			e->SetAttribute("visible", "true");
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
+	if (!m_ifcGUID.empty())
+		e->SetAttribute("ifcGUID", m_ifcGUID);
 	TiXmlElement::appendSingleAttributeElement(e, "Elevation", nullptr, std::string(), IBK::val2string<double>(m_elevation));
 	TiXmlElement::appendSingleAttributeElement(e, "Height", nullptr, std::string(), IBK::val2string<double>(m_height));
 

@@ -100,6 +100,8 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "IfcFilePath")
+				m_ifcFilePath = IBK::Path(c->GetText());
 			else if (cName == "SolverParameter")
 				m_solverParameter.readXML(c);
 			else if (cName == "SimulationParameter")
@@ -206,6 +208,8 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 	m_embeddedDB.writeXML(e);
 
 	m_fmiDescription.writeXML(e);
+	if (m_ifcFilePath.isValid())
+		TiXmlElement::appendSingleAttributeElement(e, "IfcFilePath", nullptr, std::string(), m_ifcFilePath.str());
 	return e;
 }
 

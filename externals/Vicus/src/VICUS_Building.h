@@ -62,6 +62,7 @@ public:
 	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
 	//:inherited	QString				m_displayName;				// XML:A
 	//:inherited	bool				m_visible = true;			// XML:A
+	//:inherited	std::string			m_ifcGUID;					// XML:A
 
 	/*! Vector of building levels. */
 	std::vector<BuildingLevel>			m_buildingLevels;			// XML:E

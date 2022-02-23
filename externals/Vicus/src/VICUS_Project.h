@@ -289,6 +289,9 @@ public:
 	/*! Definitions for exporting an FMU from the model. */
 	NANDRAD::FMIDescription								m_fmiDescription;			// XML:E
 
+	/*! Contains a file name for a IFC model in case of import from IFC. */
+	IBK::Path											m_ifcFilePath;				// XML:E
+
 
 private:
 

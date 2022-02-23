@@ -84,6 +84,9 @@ public:
 	/*! The descriptive name of the object. */
 	QString								m_displayName;
 
+	/*! Contains a GUID to a IFC object in case of import from IFC.*/
+	std::string							m_ifcGUID;
+
 protected:
 	/*! List of all children. */
 	std::vector<Object *>				m_children;
