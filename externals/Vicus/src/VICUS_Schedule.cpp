@@ -636,6 +636,9 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::v
 
 				// merge all possible day types
 				std::vector<NANDRAD::Schedule::ScheduledDayType> dts = mergeDayType(dc.m_dayTypes);
+				// make a copy of day types for removing proceed day types
+				std::set<NANDRAD::Schedule::ScheduledDayType> dtsCopy;
+				dtsCopy.insert(dts.begin(), dts.end());
 
 				// loop over all day types of vicus schedule
 				for(NANDRAD::Schedule::ScheduledDayType dt : dts){
@@ -679,6 +682,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::v
 								schedNandrad.m_dailyCycles.push_back(newDcNandrad);
 								valuesAdded = true;
 							}
+							dtsCopy.erase(dt);			// data is added so erase this day type
 						}
 						if(valuesAdded)
 							break;
@@ -699,7 +703,7 @@ void Schedule::insertIntoNandradSchedulegroup(const std::string &varName, std::v
 						//add daily cycle to schedule
 						newNandradSched.m_dailyCycles.push_back(newDcNandrad);
 
-						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dts){
+						for(NANDRAD::Schedule::ScheduledDayType dtNandrad : dtsCopy){
 							newNandradSched.m_type = dtNandrad;
 							//add schedule to schedule group
 							if(!newNandradSched.m_dailyCycles.empty())
