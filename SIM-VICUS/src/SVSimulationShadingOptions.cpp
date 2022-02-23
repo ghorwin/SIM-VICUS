@@ -42,6 +42,7 @@
 
 #include <VICUS_Surface.h>
 #include <VICUS_Project.h>
+#include <VICUS_utilities.h>
 
 #include <SH_StructuralShading.h>
 
@@ -51,6 +52,7 @@
 #include "SVMainWindow.h"
 #include "SVStyle.h"
 #include "SVClimateDataTableModel.h"
+
 
 class ShadingCalculationProgress : public SH::Notification {
 public:
@@ -332,9 +334,37 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we want to take only surface connected to ambient, that means, the associated component instance
 		// must have one zone with ID 0 assigned
-		if (s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID &&
-			s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
+		bool hasSideAInvalidId = s->m_componentInstance->m_idSideASurface != VICUS::INVALID_ID;
+		if (hasSideAInvalidId && s->m_componentInstance->m_idSideBSurface != VICUS::INVALID_ID)
 			continue; // skip inside constructions
+
+		// check if this is an surface to outside air and not to ground
+		const VICUS::Component * comp = VICUS::element(project().m_embeddedDB.m_components, s->m_componentInstance->m_idComponent);
+
+		// find component and boundary condition to check if this is a surface with ground contact
+		if(comp != nullptr){
+			unsigned int bbId = VICUS::INVALID_ID;
+			if(hasSideAInvalidId)
+				bbId = comp->m_idSideBBoundaryCondition;
+			else
+				bbId = comp->m_idSideABoundaryCondition;
+
+			if(bbId != VICUS::INVALID_ID){
+				const VICUS::BoundaryCondition *bb = VICUS::element(project().m_embeddedDB.m_boundaryConditions, bbId);
+				if(bb == nullptr)
+					/// ToDo Stehan ist das hier richtig?
+					continue;
+				if(bb->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard){
+					// now we found a surface contact to ground or other zone type
+					// so we assume this can not be a surface to outside
+					// therefor no sun
+					continue;
+				}
+			}
+		}
+		else
+			/// ToDo Stehan ist das hier richtig?
+			continue;
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
