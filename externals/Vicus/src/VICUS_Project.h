@@ -295,10 +295,18 @@ public:
 
 private:
 
+	/*! Mapping table holds the data for later export. */
+	struct MappingTable{
+		std::map<unsigned int, unsigned int>	m_roomVicusToNandrad;
+		std::map<unsigned int, unsigned int>	m_constructionInstanceVicusToNandrad;	///< Component instance VICUS to NANDRAD construction instance
+	};
+
+
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
 	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
-										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad)const;
+										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+										MappingTable &mapTable)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
@@ -317,6 +325,8 @@ private:
 	bool generateShadingFactorsFile(const std::map<unsigned int, unsigned int> & surfaceIdsVicusToNandrad,
 									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
+	bool exportMappingTable(const IBK::Path & filepath, const MappingTable &mapTable) const;
+
 
 	/*! Adds the given object to the m_objectPtr map but first checks if its ID is already in the map.
 		If there is an ID conflict, the function throws an IBK::Exception.
@@ -327,7 +337,6 @@ private:
 		This map is updated in updatePointers().
 	*/
 	std::map<unsigned int, VICUS::Object*>		m_objectPtr;
-
 };
 
 

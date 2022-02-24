@@ -634,9 +634,33 @@ bool Project::generateShadingFactorsFile(const std::map<unsigned int, unsigned i
 	return true;
 }
 
+bool Project::exportMappingTable(const IBK::Path &filepath, const MappingTable &mapTable) const {
+	FUNCID(Project::exportMappingTable);
+	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
+
+	// write file
+	std::ofstream out;
+	out.open(basePath.str());
+
+	if (!out.is_open()) {
+		IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
+		return false;
+	}
+
+	out << "VICUS room id\tNANDRAD room id" << std::endl;
+	for(const auto &m : mapTable.m_roomVicusToNandrad)
+		out << m.first << "\t" << m.second << std::endl;
+	out << "VICUS component instance id\tNANDRAD construction instance id" << std::endl;
+	for(const auto &m : mapTable.m_constructionInstanceVicusToNandrad)
+		out << m.first << "\t" << m.second << std::endl;
+
+	out.close();
+	return true;
+}
+
 
 void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
-											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad) const{
+											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad, MappingTable &mapTable) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -668,7 +692,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	idSet.insert(2000000); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
 
-	generateNandradZones(zones, idSet, p, errorStack, vicusToNandradIds);
+	generateNandradZones(zones, idSet, p, errorStack, mapTable.m_roomVicusToNandrad);
 
 	if (!errorStack.isEmpty())	return;
 
@@ -679,7 +703,7 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	ConstructionInstanceModelGenerator constrInstaModelGenerator(this);
 	constrInstaModelGenerator.addInputData(p.m_objectLists);
-	constrInstaModelGenerator.generate(m_componentInstances, errorStack, vicusToNandradIds, idSet);
+	constrInstaModelGenerator.generate(m_componentInstances, errorStack, mapTable.m_constructionInstanceVicusToNandrad, idSet);
 	constrInstaModelGenerator.generateMaterials();
 	constrInstaModelGenerator.generateConstructions(errorStack);
 
@@ -758,6 +782,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListsPipe.begin(), idealSurfaceHeatCoolGenerator.m_objListsPipe.end());
 	p.m_objectLists.insert(p.m_objectLists.end(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.begin(), idealSurfaceHeatCoolGenerator.m_objListLinearSpline.end());
 	p.m_schedules.m_annualSchedules.insert(idealSurfaceHeatCoolGenerator.m_constructionIdToNandradSplines.begin(), idealSurfaceHeatCoolGenerator.m_constructionIdToNandradSplines.end());
+
+
 }
 
 
@@ -1976,52 +2002,15 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 															  compInstaVicus.m_idSurfaceHeating, constrInstNandrad.m_id,
 															  area));
 			activeLayerIdx = (int)comp->m_activeLayerIndex;
-//			bool isAdded = false;
-//			for(unsigned int i=0; m_surfaceHeatingData.size(); ++i){
-//				if(m_surfaceHeatingData[i].m_controlledZoneId == compInstaVicus.m_surfaceHeatingControlZoneID){
-//					isAdded = true;
-//					m_surfaceHeatingData[i].m_heatingModelIdToNandradConstructionInstanceIds[compInstaVicus.m_surfaceHeatingID].push_back(constrInstNandrad.m_id);
-//					break;
-//				}
-//			}
-//			if(isAdded){
-//				dsh.m_heatingModelIdToNandradConstructionInstanceIds[compInstaVicus.m_surfaceHeatingID].push_back(constrInstNandrad.m_id);
-//				m_surfaceHeatingData.push_back(dsh);
-//			}
-//			unsigned int zoneId = INVALID_ID;
-
-//			int posDataSH = -1;
-//			for(unsigned int i=0; i<m_surfaceSystems.size(); ++i){
-//				if(m_surfaceSystems[i].m_zoneId == compInstaVicus.m_surfaceHeatingControlZoneID){
-//					//found zone id
-//					posDataSH = (int)i;
-//					zoneId = compInstaVicus.m_surfaceHeatingControlZoneID;
-//					break;
-//				}
-//			}
-
-//			if(zoneId != INVALID_ID){
-//				//add new element
-//				if(posDataSH == -1){
-//					m_surfaceSystems.push_back(DataSurfaceHeating());
-//					posDataSH = m_surfaceSystems.size()-1;
-//					m_surfaceSystems.back().m_zoneId = zoneId;
-//				}
-//				DataSurfaceHeating &dsh = m_surfaceSystems[posDataSH];
-//				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_contructionInstanceIds.push_back(cinst.m_id);
-//				dsh.m_idSurfaceSystemToIds[ci.m_surfaceHeatingID].m_areaToIds[area*10000].push_back(cinst.m_id);
-//			}
-//			else{
-//				//todo errorstack füllen
-//			}
 		}
-
 
 		// store reference to construction type (i.e. to be generated from component)
 		constrInstNandrad.m_constructionTypeId = getNandradConstructionTypeId(comp->m_idConstruction, activeLayerIdx);
 		// add to list of construction instances
 		m_constructionInstances.push_back(constrInstNandrad);
 
+		// add element to mapping table
+		vicusToNandradIds[comp->m_id] = constrInstNandrad.m_id;
 	}
 
 	for(const QString &str : warnings)
