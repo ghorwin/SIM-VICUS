@@ -337,7 +337,7 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
 
 			m_roofPolygon = po->planeGeometry().polygon().vertexes();
-
+			m_currentIdxOfStartpoint = 0;
 			updateRoofGeometry();
 		}
 		break;
@@ -1191,11 +1191,21 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 	roofData.m_flapTileHeight = m_ui->lineEditFlapTileHeight->value(); // in m
 	roofData.m_hasFlapTile = m_ui->checkBoxFlapTile->isChecked();
 	roofData.m_isHeightPredefined = m_ui->radioButtonRoofHeight->isChecked();
-	roofData.m_rotate = m_polygonRotation;
+	roofData.m_rotate = false;
 
-	m_polygonRotation = false; // reset flag until next click
+	//m_polygonRotation = !m_polygonRotation; // reset flag until next click
 
-	po->setRoofGeometry(roofData, m_roofPolygon, this);
+	// Only the first 4 points are used for the roof creation.
+	// The exception is the case COMPLEX. In this case all points are used.
+
+	std::vector<IBKMK::Vector3D>	polyline;
+	if(roofData.m_type == Vic3D::NewGeometryObject::RoofInputData::Complex)
+		polyline = m_roofPolygon;
+	else
+		for(unsigned int i=0; i<4; ++i)
+			polyline.push_back(m_roofPolygon[(i + m_currentIdxOfStartpoint)%4]);
+
+	po->setRoofGeometry(roofData, polyline, this);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
@@ -1203,6 +1213,20 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 
 
 void SVPropVertexListWidget::on_pushButtonRotateFloorPolygon_clicked() {
-	m_polygonRotation = true; // set temporarily to true
+
+	// rotate polygon to get a new roof shape
+	/*
+		Note that four positions are important for a single pitch roof,
+		and only two positions are important for a gable roof.
+		Nevertheless, the baseline can consist of more than four points.
+		This should also not be destroyed, because in the Complex model
+		these are still needed. Therefore, the polyline must be considered
+		only for the first 4 points when rotating.
+		Therefore, the start index must always be updated as well.
+	*/
+
+	m_currentIdxOfStartpoint = (m_currentIdxOfStartpoint + 1)%4;
+
+	//m_polygonRotation = true; // set temporarily to true
 	updateRoofGeometry();
 }

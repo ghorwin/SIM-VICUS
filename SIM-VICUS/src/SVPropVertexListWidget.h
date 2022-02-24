@@ -206,6 +206,8 @@ private:
 	 *   only the first three points are used.*/
 	std::vector<IBKMK::Vector3D>	m_roofPolygon;
 
+	unsigned int					m_currentIdxOfStartpoint = 0;
+
 };
 
 
