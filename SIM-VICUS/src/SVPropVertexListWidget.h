@@ -206,6 +206,7 @@ private:
 	 *   only the first three points are used.*/
 	std::vector<IBKMK::Vector3D>	m_roofPolygon;
 
+	/*! Current starting index for creating roof shapes. It is not used in COMPLEX SHAPE. */
 	unsigned int					m_currentIdxOfStartpoint = 0;
 
 };
