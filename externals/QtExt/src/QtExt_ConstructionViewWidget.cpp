@@ -149,11 +149,19 @@ void ConstructionViewWidget::on_actionRemove_layer_triggered() {
 }
 
 void ConstructionViewWidget::on_actionMove_layer_left_triggered() {
-	emit moveLayer(ui->graphicsView->selectedLayer(), true);
+	int selectedLayerIndex = ui->graphicsView->selectedLayer();
+	emit moveLayer(selectedLayerIndex, true);
+	if(selectedLayerIndex > 0)
+		--selectedLayerIndex;
+	ui->graphicsView->selectLayer(selectedLayerIndex);
 }
 
 void ConstructionViewWidget::on_actionMove_layer_right_triggered() {
+	int selectedLayerIndex = ui->graphicsView->selectedLayer();
 	emit moveLayer(ui->graphicsView->selectedLayer(), false);
+	if(selectedLayerIndex < ui->graphicsView->layers().size())
+		++selectedLayerIndex;
+	ui->graphicsView->selectLayer(selectedLayerIndex);
 }
 
 void ConstructionViewWidget::onLayerSelected(int index) {

@@ -89,6 +89,11 @@ public:
 	/*! Return selected layer.*/
 	int selectedLayer() const { return m_selectedLayer; }
 
+	/*! Return the current layer set.*/
+	const QVector<ConstructionLayer>& layers() const {
+		return m_inputData;
+	}
+
 	QString	m_leftSideLabel;
 	QString	m_rightSideLabel;
 
