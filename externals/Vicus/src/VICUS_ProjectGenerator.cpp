@@ -1638,7 +1638,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 									}
 									emb.m_window.m_frame.m_materialId = winV.m_frame.m_idMaterial;
 									emb.m_window.m_frame.m_thickness.set( "Thickness",
-																		  winV.m_para[WindowFrame::P_Thickness].get_value(),
+																		  winV.m_frame.m_para[WindowFrame::P_Thickness].get_value(),
 																		  IBK::Unit("m"));
 								}
 
