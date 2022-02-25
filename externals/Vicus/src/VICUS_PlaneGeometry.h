@@ -27,7 +27,6 @@
 #define VICUS_PlaneGeometryH
 
 #include <IBKMK_Vector3D.h>
-#include <IBKMK_Polygon3D.h>
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Polygon3D.h"
@@ -104,17 +103,6 @@ public:
 	/*! Returns the triangulation data for each of the holes. */
 	const std::vector<PlaneTriangulationData> & holeTriangulationData() const { return m_holeTriangulationData; }
 
-	/*! Returns the stored polygon. */
-	const Polygon3D & polygon() const { return m_polygon; }
-
-	/*! Sets a new polygon and updates triangulation.
-		Any holes previously set remain in the polygon. However, if the polygon now clips any
-		of the holes, this will be detected in the triangulation and may lead to
-		invalidation of holes.
-		To clear/remove the holes, simply set an empty vector in setHoles().
-	*/
-	void setPolygon(const Polygon3D & polygon3D);
-
 	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */
 	const std::vector<Polygon2D> & holes() const { return m_holes; }
 	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
@@ -143,6 +131,12 @@ private:
 
 
 	// *** PRIVATE MEMBER VARIABLES ***
+
+	/*! This vector of vertexes is only being used during construction of the plane geometry,
+		i.e. when drawing a polygon. It contains all vertexes set by the user, even if these
+		form an invalid polygon.
+	*/
+	std::vector<IBKMK::Vector3D>		m_vertexes;
 
 	/*! Contains the information about the polygon that encloses this surface. */
 	Polygon3D							m_polygon;
