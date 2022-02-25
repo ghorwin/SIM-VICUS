@@ -1606,10 +1606,10 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 							// check for frame
 							double frameArea = 0;
 							if(winV.m_methodFrame == Window::M_Fraction)
-								frameArea = winV.m_frame.m_para[Window::P_FrameFraction].get_value() * windowOpening;
+								frameArea = winV.m_para[Window::P_FrameFraction].get_value() * windowOpening;
 
 							else if(winV.m_methodFrame == Window::M_ConstantWidth){
-								frameArea = winV.m_frame.m_para[Window::P_FrameWidth].get_value() * circumference;
+								frameArea = winV.m_para[Window::P_FrameWidth].get_value() * circumference;
 								if(frameArea >= windowOpening){
 									errorStack << qApp->tr("Window frame area %3 is greater or equal the window area %4"
 														   " of window #%1 '%2' in surface %5 '%6'.")
@@ -1638,7 +1638,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 									}
 									emb.m_window.m_frame.m_materialId = winV.m_frame.m_idMaterial;
 									emb.m_window.m_frame.m_thickness.set( "Thickness",
-																		  winV.m_frame.m_para[Window::M_ConstantWidth].get_value(),
+																		  winV.m_para[WindowFrame::P_Thickness].get_value(),
 																		  IBK::Unit("m"));
 								}
 
@@ -1651,10 +1651,10 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 							// check for divider
 							double dividerArea = 0;
 							if(winV.m_methodDivider == Window::M_Fraction)
-								dividerArea = winV.m_divider.m_para[Window::P_DividerFraction].get_value() * windowOpening;
+								dividerArea = winV.m_para[Window::P_DividerFraction].get_value() * windowOpening;
 
 							else if(winV.m_methodDivider== Window::M_ConstantWidth){
-								dividerArea = winV.m_divider.m_para[Window::P_DividerWidth].get_value() * 1;		///< ToDo Dirk hier muss noch die Länge übergeben werden.
+								dividerArea = winV.m_para[Window::P_DividerWidth].get_value() * 1;		///< ToDo Dirk hier muss noch die Länge übergeben werden.
 								if(dividerArea + frameArea >= windowOpening){
 									errorStack << qApp->tr("Window frame and divider area %3 is greater or equal the window area %4"
 														   " of window #%1 '%2' in surface %5 '%6'.")
@@ -1683,7 +1683,7 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 									}
 									emb.m_window.m_divider.m_materialId = winV.m_divider.m_idMaterial;
 									emb.m_window.m_divider.m_thickness.set( "Thickness",
-																		  winV.m_divider.m_para[Window::M_ConstantWidth].get_value(),
+																		  winV.m_divider.m_para[WindowDivider::P_Thickness].get_value(),
 																		  IBK::Unit("m"));
 								}
 
