@@ -206,6 +206,12 @@ void SVDBComponentEditWidget::updateInput(int id) {
 			m_ui->graphicsViewConstruction->setBackground(Qt::white);
 		else
 			m_ui->graphicsViewConstruction->setBackground(Qt::black);
+
+		if(m_current->m_activeLayerIndex != VICUS::INVALID_ID)
+			m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
+		else
+			m_ui->graphicsViewConstruction->markLayer(-1);
+
 		m_ui->graphicsViewConstruction->setData(this, layers, 1.0,
 												QtExt::ConstructionGraphicsScene::VI_BoundaryLabels |
 												QtExt::ConstructionGraphicsScene::VI_MaterialNames);
@@ -361,10 +367,12 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 	m_ui->labelSurfaceHeatingIndex->setEnabled(checked);
 	if (checked) {
 		m_current->m_activeLayerIndex = (unsigned int)m_ui->spinBoxActiveLayerIndex->value()-1;
+		m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
 		modelModify();
 	}
 	else {
 
+		m_ui->graphicsViewConstruction->markLayer(-1);
 		bool askForDeletion = true;
 		// We have to make a special handling if the component is applied in component instances
 		// Then we also have handle the surface heating ID reset in the specific component instance
@@ -405,10 +413,13 @@ void SVDBComponentEditWidget::on_checkBoxActiveLayerEnabled_toggled(bool checked
 
 		modelModify();
 	}
+	m_ui->graphicsViewConstruction->updateView();
 }
 
 
 void SVDBComponentEditWidget::on_spinBoxActiveLayerIndex_valueChanged(int arg1) {
-	m_current->m_activeLayerIndex = (unsigned int)arg1;
+	m_current->m_activeLayerIndex = (unsigned int)arg1-1;
+	m_ui->graphicsViewConstruction->markLayer(m_current->m_activeLayerIndex);
 	modelModify();
+	m_ui->graphicsViewConstruction->updateView();
 }
