@@ -273,7 +273,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	}
 
 	if (m_current->m_divider.m_id != VICUS::INVALID_ID && dividerIdx > 0) {
-		m_ui->lineEditDividerMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowDivider::P_Thickness].get_value());
+		m_ui->lineEditDividerMaterialThickness->setValue(m_current->m_divider.m_para[VICUS::WindowDivider::P_Thickness].get_value());
 		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_divider.m_idMaterial]);
 		if (mat != nullptr)
 			m_ui->lineEditDividerMaterialName->setText(QtExt::MultiLangString2QString(mat->m_displayName));
