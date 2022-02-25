@@ -55,7 +55,7 @@ public:
 	unsigned int	m_materialId = INVALID_ID;						// XML:A:required
 	/*! Cross section occupied by all frame elements in this window (required when m_materialID is given). */
 	IBK::Parameter	m_area;											// XML:E:required
-	/*! Thickness of frame */
+	/*! Thickness of frame material */
 	IBK::Parameter	m_thickness;									// XML:E:required
 
 	// *** Variables used only during simulation ***
