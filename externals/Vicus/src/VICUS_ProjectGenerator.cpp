@@ -332,7 +332,7 @@ public:
 
 		//ActiveLayer (unsigned int vicusConstructionId, unsigned int )
 
-		unsigned int								m_vicusConstructionId;	//this is the id of the construction (VICUS)
+		unsigned int								m_vicusConstructionId;			//this is the id of the construction (VICUS)
 		std::vector<unsigned int>					m_nandradConstructionTypeId;	//new id is set to get a unique construction type id WITH active layer for NANDRAD
 		//all types of this construction with active layers; -1 -> no active layer otherwise this is the layer index
 		std::vector<int>							m_activeLayers;
@@ -348,7 +348,6 @@ public:
 		std::set<QString>				m_objListNames;					// object list name
 		NANDRAD::ObjectList				m_objList;
 	};
-
 
 	unsigned int getNandradConstructionTypeId(unsigned int vicusConstructionId, int activeLayerIdx = -1){
 		//search if this construction is already included,
@@ -1553,7 +1552,9 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		//get surface are of emb. obj.
 		NANDRAD::KeywordList::setParameter(emb.m_para, "EmbeddedObject::para_t",
 										   NANDRAD::EmbeddedObject::P_Area, ss.m_polygon2D.area());
-		embArea += ss.m_polygon2D.area();
+		double windowOpening = ss.m_polygon2D.area();
+		double circumference = ss.m_polygon2D.circumference();
+		embArea += windowOpening;
 		if(embArea > area){
 			errorStack << qApp->tr("Area of sub surfaces is bigger than area of parent surface #%1, '%2'.").arg(surf->m_id)
 						  .arg(surf->m_displayName);
@@ -1589,20 +1590,116 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 						break;
 					}
 					bool foundWindow =false;
+
 					//search for the window
-					for(const VICUS::Window &winV : m_project->m_embeddedDB.m_windows){
+					for(const Window &winV : m_project->m_embeddedDB.m_windows){
 						if(winV.m_id == ssc.m_idWindow){
-							if(winV.m_idGlazingSystem == VICUS::INVALID_ID){
-								errorStack << qApp->tr("The window with #%1 and name '%2' has no valid glazing system. Sub surface #%3 is not exported.")
-											  .arg(winV.m_id).arg(QString::fromStdString(winV.m_displayName.string())).arg(ss.m_id);
-								break;
+							if(!winV.isValid()){
+								errorStack << qApp->tr("Window #%1 '%2' is not valid.").arg(winV.m_id)
+											  .arg(QString::fromStdString(winV.m_displayName.string()));
+								continue;
 							}
 							//save id for glazing system later
 							emb.m_window.m_glazingSystemId = winV.m_idGlazingSystem;
 							foundWindow = true;
+
+							// check for frame
+							double frameArea = 0;
+							if(winV.m_methodFrame == Window::M_Fraction)
+								frameArea = winV.m_frame.m_para[Window::P_FrameFraction].get_value() * windowOpening;
+
+							else if(winV.m_methodFrame == Window::M_ConstantWidth){
+								frameArea = winV.m_frame.m_para[Window::P_FrameWidth].get_value() * circumference;
+								if(frameArea >= windowOpening){
+									errorStack << qApp->tr("Window frame area %3 is greater or equal the window area %4"
+														   " of window #%1 '%2' in surface %5 '%6'.")
+												  .arg(winV.m_id)
+												  .arg(QString::fromStdString(winV.m_displayName.string()))
+												  .arg(frameArea)
+												  .arg(windowOpening)
+												  .arg(surf->m_id)
+												  .arg(surf->m_displayName);
+									continue;
+								}
+							}
+							if(frameArea > 0){
+								emb.m_window.m_frame.m_area.set( "Area", frameArea, IBK::Unit("m2"));
+
+								bool foundFrameMaterial = false;
+								for(const Material &mat : m_project->m_embeddedDB.m_materials){
+									if(mat.m_id != winV.m_frame.m_idMaterial)
+										continue;
+
+									foundFrameMaterial = true;
+									if(!mat.isValid()){
+										errorStack << qApp->tr("Window frame material #%1 '%2' is not valid.").arg(mat.m_id)
+													  .arg(QString::fromStdString(mat.m_displayName.string()));
+										continue;
+									}
+									emb.m_window.m_frame.m_materialId = winV.m_frame.m_idMaterial;
+									emb.m_window.m_frame.m_thickness.set( "Thickness",
+																		  winV.m_frame.m_para[Window::M_ConstantWidth].get_value(),
+																		  IBK::Unit("m"));
+								}
+
+								if(!foundFrameMaterial){
+									errorStack << qApp->tr("Window frame material #%1 not found in database.").arg(winV.m_frame.m_idMaterial);
+									continue;
+								}
+							}
+
+							// check for divider
+							double dividerArea = 0;
+							if(winV.m_methodDivider == Window::M_Fraction)
+								dividerArea = winV.m_divider.m_para[Window::P_DividerFraction].get_value() * windowOpening;
+
+							else if(winV.m_methodDivider== Window::M_ConstantWidth){
+								dividerArea = winV.m_divider.m_para[Window::P_DividerWidth].get_value() * 1;		///< ToDo Dirk hier muss noch die Länge übergeben werden.
+								if(dividerArea + frameArea >= windowOpening){
+									errorStack << qApp->tr("Window frame and divider area %3 is greater or equal the window area %4"
+														   " of window #%1 '%2' in surface %5 '%6'.")
+												  .arg(winV.m_id)
+												  .arg(QString::fromStdString(winV.m_displayName.string()))
+												  .arg(frameArea+dividerArea)
+												  .arg(windowOpening)
+												  .arg(surf->m_id)
+												  .arg(surf->m_displayName);
+									continue;
+								}
+							}
+							if(dividerArea > 0){
+								emb.m_window.m_divider.m_area.set( "Area", dividerArea, IBK::Unit("m2"));
+
+								bool foundDividerMaterial = false;
+								for(const Material &mat : m_project->m_embeddedDB.m_materials){
+									if(mat.m_id != winV.m_divider.m_idMaterial)
+										continue;
+
+									foundDividerMaterial = true;
+									if(!mat.isValid()){
+										errorStack << qApp->tr("Window Divider material #%1 '%2' is not valid.").arg(mat.m_id)
+													  .arg(QString::fromStdString(mat.m_displayName.string()));
+										continue;
+									}
+									emb.m_window.m_divider.m_materialId = winV.m_divider.m_idMaterial;
+									emb.m_window.m_divider.m_thickness.set( "Thickness",
+																		  winV.m_divider.m_para[Window::M_ConstantWidth].get_value(),
+																		  IBK::Unit("m"));
+								}
+
+								if(!foundDividerMaterial){
+									errorStack << qApp->tr("Window divider material #%1 not found in database.").arg(winV.m_divider.m_idMaterial);
+									continue;
+								}
+							}
+
+
 							break;
 						}
 					}
+					if(!foundWindow)
+						errorStack << qApp->tr("The window object with #%1 was not found in database.")
+									  .arg(ssc.m_idWindow).arg(QString::fromStdString(ssc.m_displayName.string()));
 				}
 				else{
 					errorStack << qApp->tr("The sub surface component with #%1 and name '%2' is not supported by the export.")
@@ -1620,11 +1717,8 @@ void ConstructionInstanceModelGenerator::exportSubSurfaces(QStringList & errorSt
 		//add ids for shading file later
 		// Attention if we have coupled sub surfaces this is not valid
 		surfaceIdsVicusToNandrad[ss.m_id] = emb.m_id;
-
 		//add emb. obj. to nandrad project
 		cinst.m_embeddedObjects.push_back(emb);
-		//TODO Dirk Frame einbauen sobald verfügbar
-		//TODO Dirk Divider einbauen sobald verfügbar
 	}
 }
 
