@@ -66,15 +66,15 @@ bool Window::isValid() const {
 			m_idGlazingSystem == INVALID_ID)
 		return false;
 
-
+	double fractionFrame = 0;
 	switch (m_methodFrame) {
 		case VICUS::Window::M_None:
 
 		break;
 		case VICUS::Window::M_Fraction:{
 			try {
-				m_para[P_FrameFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_FrameFraction),
-													 "---", "---", 0, true, 1, true, nullptr);
+				fractionFrame = m_para[P_FrameFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_FrameFraction),
+													 "---", "---", 0, false, 1, false, nullptr);
 				if(!m_frame.isValid())
 					return false;
 			}  catch (...) {
@@ -104,10 +104,15 @@ bool Window::isValid() const {
 		break;
 		case VICUS::Window::M_Fraction:{
 			try {
+
+				//also check the sum of the area fractions
+				// only possible if we have two fraction parts
+				double maxVal = 1 - fractionFrame;
 				m_para[P_DividerFraction].checkedValue(KeywordList::Keyword("Window::para_t", P_DividerFraction),
-													 "---", "---", 0, true, 1, true, nullptr);
+													 "---", "---", 0, false, maxVal, false, nullptr);
 				if(!m_divider.isValid())
 					return false;
+
 			}  catch (...) {
 				return false;
 			}
@@ -126,8 +131,8 @@ bool Window::isValid() const {
 		break;
 		case VICUS::Window::NUM_M:
 		return false;
-
 	}
+
 
 
 
