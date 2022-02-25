@@ -66,10 +66,19 @@ public:
 	/*! Updates the locally cached data.*/
 	void setData(QPaintDevice* paintDevice, const QVector<ConstructionLayer>& layers, double resolution, int visibleItems);
 
+	/*! Update the view with the current settings.
+		Must be called after changing background color or layer mark.
+	*/
+	void updateView();
+
 	/*! Set the background color for calculating font and line colors.
 		The background color itself will not be changed.
 	*/
 	void setBackground(const QColor& bkgColor);
+
+	/*! Mark a layer with a hatching.
+		\param LayerIndex Index of layer to be marked starting with 0. Set -1 to unmark the construction.*/
+	void markLayer(int layerIndex);
 
 	/*! Clears content and scene.*/
 	void clear();

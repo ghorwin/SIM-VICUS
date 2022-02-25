@@ -86,9 +86,11 @@ public:
 	/*! Set the background color for calculating font and line colors.
 		The background color itself will not be changed.
 	*/
-	void setBackground(const QColor& bkgColor) {
-		m_backgroundColor = bkgColor;
-	}
+	void setBackground(const QColor& bkgColor);
+
+	/*! Mark a layer with a hatching.
+		\param LayerIndex Index of layer to be marked starting with 0. Set -1 to unmark the construction.*/
+	void markLayer(int layerIndex);
 
 
 signals:
@@ -185,6 +187,8 @@ private:
 	bool					m_visibleDimensions;
 	bool					m_visibleMaterialNames;
 	bool					m_visibleBoundaryLabels;
+	int						m_markedLayer;
+	bool					m_externalChange;
 };
 
 } // namespace QtExt

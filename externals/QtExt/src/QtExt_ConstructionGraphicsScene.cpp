@@ -95,6 +95,7 @@ struct ConstructionGraphicsScene::InternalPens {
 	QPen m_dimlinePen;			///< Pen for dimension lines.
 	QPen m_vborderPen;			///< Pen for vertical borders.
 	QPen m_hborderPen;			///< Pen for horizontal borders.
+	QPen m_hatchingPen;			///< Pen for material rect hatching
 	QColor m_backgroundColor;	///< Color of background.
 	double m_brightness;		///< Brightness of background color.
 };
@@ -110,6 +111,9 @@ void ConstructionGraphicsScene::InternalPens::setPens(const QColor& backGround) 
 	// dimension lines
 	m_dimlinePen.setWidthF(std::max(p->m_res * 0.2, 1.0));
 	m_dimlinePen.setColor(p->m_onScreen ? QtExt::contrastColor(backGround, Qt::gray) : QtExt::contrastColor(backGround, Qt::black));
+
+	m_hatchingPen.setWidthF(std::max(p->m_res * 0.1, 1.0));
+	m_hatchingPen.setColor(p->m_onScreen ? QtExt::contrastColor(backGround, Qt::white) : QtExt::contrastColor(backGround, Qt::black));
 
 	// vertical border
 	m_vborderPen.setWidth(p->m_onScreen ? 2 : 0.8 * p->m_res);
@@ -164,7 +168,9 @@ ConstructionGraphicsScene::ConstructionGraphicsScene(bool onScreen, QPaintDevice
 	m_internalStringItems(new InternalStringItems(this)),
 	m_visibleDimensions(true),
 	m_visibleMaterialNames(true),
-	m_visibleBoundaryLabels(true)
+	m_visibleBoundaryLabels(true),
+	m_markedLayer(-1),
+	m_externalChange(false)
 {
 	Q_ASSERT(m_device);
 
@@ -229,7 +235,13 @@ QtExt::GraphicsRectItemWithHatch* ConstructionGraphicsScene::addHatchedRect ( qr
 
 	hatchedRect->setRect(x, y, w, h);
 	if(brush != QBrush()) {
-		hatchedRect->setBrush(brush);
+		QBrush tBrush = brush;
+		if(hatchType != QtExt::HT_NoHatch) {
+			QColor color = tBrush.color();
+			color.setAlphaF(0.5);
+			tBrush.setColor(color);
+		}
+		hatchedRect->setBrush(tBrush);
 	}
 	hatchedRect->setPen(pen);
 	if(hatchPen == QPen()) {
@@ -279,12 +291,15 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 	bool noCalculationNeeded = frame == m_frame;
 	noCalculationNeeded = noCalculationNeeded && layers == m_inputData;
 	noCalculationNeeded = noCalculationNeeded && visibleItems == currentVisibilty;
+	noCalculationNeeded = noCalculationNeeded && !m_externalChange;
 
 	m_leftSideLabel = leftLabel;
 	m_rightSideLabel = rightLabel;
 
 	if( noCalculationNeeded)
 		return;
+
+	m_externalChange = false;
 
 	if (m_onScreen) {
 		m_tickFont = m_fontScreen;
@@ -330,9 +345,22 @@ void ConstructionGraphicsScene::setup(QRect frame, QPaintDevice *device, double 
 		drawDimensions();
 	drawWall();
 
-	// stop if only construction sketch is required
 	setSceneRect(m_frame);
 	emit changed(QList<QRectF>() << frame);
+}
+
+void ConstructionGraphicsScene::setBackground(const QColor& bkgColor) {
+	if(m_backgroundColor != bkgColor) {
+		m_backgroundColor = bkgColor;
+		m_externalChange = true;
+	}
+}
+
+void ConstructionGraphicsScene::markLayer(int layerIndex) {
+	if(m_markedLayer != layerIndex) {
+		m_markedLayer = layerIndex;
+		m_externalChange = true;
+	}
 }
 
 
@@ -579,13 +607,22 @@ void ConstructionGraphicsScene::drawWall() {
 	int rectHeight = yb - yt;
 
 	// Draw material colors
-	const double hatchDist = static_cast<int>(std::min(0.8 * m_res, 5.0));
+	int hatchDist = 0;
+
+	int markedLayer = m_markedLayer >= m_inputData.size() ? -1 : m_markedLayer;
 
 	for (unsigned int i=1; i<m_xpos.size(); ++i) {
 		int left = m_xpos[i-1];
 		int width = m_xpos[i] - left;
 
-		QGraphicsRectItem* rectItem = addHatchedRect(left, yt, width, rectHeight, m_inputData[i-1].m_hatch, hatchDist, m_internalPens->m_dimlinePen,
+		QtExt::HatchingType hatching = m_inputData[i-1].m_hatch;
+		if((i-1) == markedLayer) {
+			hatchDist = std::max(width / 20, 5);
+			hatching = QtExt::HT_LinesObliqueLeftToRight;
+			m_internalPens->m_hatchingPen.setColor(QtExt::contrastColor(m_inputData[i-1].m_color, Qt::black));
+		}
+
+		QGraphicsRectItem* rectItem = addHatchedRect(left, yt, width, rectHeight, hatching, hatchDist, m_internalPens->m_hatchingPen,
 						   QPen(m_inputData[i-1].m_color), QBrush(m_inputData[i-1].m_color));
 		rectItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
 		rectItem->setData(0, i-1);

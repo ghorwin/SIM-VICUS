@@ -74,6 +74,11 @@ void ConstructionViewWidget::setData(const QVector<ConstructionLayer>& layers, b
 	ui->graphicsView->setData(this, layers, 1.0, visibleItems);
 }
 
+
+void ConstructionViewWidget::updateView() {
+	ui->graphicsView->updateView();
+}
+
 void ConstructionViewWidget::setToolbarVisible(bool visible) {
 	m_toolBar->setVisible(visible);
 }
@@ -81,6 +86,12 @@ void ConstructionViewWidget::setToolbarVisible(bool visible) {
 void ConstructionViewWidget::setBackground(const QColor& bkgColor) {
 	ui->graphicsView->setBackground(bkgColor);
 }
+
+
+void ConstructionViewWidget::markLayer(int layerIndex) {
+	ui->graphicsView->markLayer(layerIndex);
+}
+
 void ConstructionViewWidget::clear() {
 	enableToolBar(false);
 	ui->graphicsView->clear();

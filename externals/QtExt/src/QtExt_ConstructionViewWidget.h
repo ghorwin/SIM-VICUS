@@ -66,6 +66,11 @@ public:
 				 QString	rightSideLabel = tr("Inside"),
 				 int visibleItems = ConstructionGraphicsScene::VI_All );
 
+	/*! Update the view with the current settings.
+		Must be called after changing background color or layer mark.
+	*/
+	void updateView();
+
 	/*! Set visibility of toolbar widget.*/
 	void setToolbarVisible(bool visible);
 
@@ -74,6 +79,10 @@ public:
 		Call it before setData().
 	*/
 	void setBackground(const QColor& bkgColor);
+
+	/*! Mark a layer with a hatching.
+		\param LayerIndex Index of layer to be marked starting with 0. Set -1 to unmark the construction.*/
+	void markLayer(int layerIndex);
 
 	/*! Clear all content and empty the widget.*/
 	void clear();

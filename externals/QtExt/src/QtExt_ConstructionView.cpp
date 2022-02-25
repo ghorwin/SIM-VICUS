@@ -95,15 +95,25 @@ void ConstructionView::setData(QPaintDevice* paintDevice, const QVector<Construc
 	m_device = paintDevice;
 	m_visibleItems = visibleItems;
 	Q_ASSERT(m_device);
+//	setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+	updateView();
+}
+
+void ConstructionView::updateView() {
 	int w = width();
 	int h = height();
 	QRect frame(m_margins, m_margins, w - m_margins * 2, h - m_margins * 2);
 	m_diagramScene->setup(frame, m_device, m_resolution, m_inputData, m_leftSideLabel, m_rightSideLabel, m_visibleItems);
 	show();
+//	m_diagramScene->update();
 }
 
 void ConstructionView::setBackground(const QColor& bkgColor) {
 	m_diagramScene->setBackground(bkgColor);
+}
+
+void ConstructionView::markLayer(int layerIndex) {
+	m_diagramScene->markLayer(layerIndex);
 }
 
 void ConstructionView::clear() {
