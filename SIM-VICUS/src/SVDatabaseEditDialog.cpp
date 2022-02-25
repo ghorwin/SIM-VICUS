@@ -228,10 +228,10 @@ unsigned int SVDatabaseEditDialog::select(unsigned int initialId) {
 
 		// return ID
 		return sourceIndex.data(Role_Id).toUInt();
-		}
+	}
 
 	// nothing selected/dialog aborted
-	return VICUS::INVALID_ID;
+	return initialId;
 }
 
 
