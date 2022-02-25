@@ -132,14 +132,29 @@ void SVDBWindowEditWidget::updateInput(int id) {
 			m_ui->lineEditGlazingSystemName->setText(QtExt::MultiLangString2QString(glazSys->m_displayName));
 		}
 	}
-
+	m_ui->lineEditFrameInput->setText("---");
 	// *** frame ***
 	int frameIdx = 0;
 	switch(m_current->m_methodFrame) {
 		case VICUS::Window::M_Fraction:{
-			m_ui->labelFrameInput->setText(tr("Fraction of Window:"));
+			m_ui->labelFrameInput->setText(tr("Fraction of Farme:"));
 			m_ui->labelFrameInputUnit->setText(tr("-"));
-			m_ui->lineEditFrameInput->setup(0,1,tr("Frame fraction of the window"), false, true);
+			m_ui->lineEditFrameInput->setup(0,0.99,tr("Frame fraction of the window"), false, true);
+			double inputVal;
+			try {
+				inputVal = m_current->m_para[VICUS::Window::P_FrameFraction].get_value();
+				if(inputVal <= 0 ||
+						inputVal > 0.99){
+					inputVal = 0.3;
+					VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, inputVal);
+					modelModify();
+				}
+			}  catch (...) {
+				inputVal = 0.3;
+				VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, inputVal);
+				modelModify();
+			}
+			m_ui->lineEditFrameInput->setValue(inputVal);
 			frameIdx = 1;
 		}
 		break;
@@ -147,6 +162,20 @@ void SVDBWindowEditWidget::updateInput(int id) {
 			m_ui->labelFrameInput->setText(tr("Width:"));
 			m_ui->labelFrameInputUnit->setText(tr("m"));
 			m_ui->lineEditFrameInput->setup(0,2,tr("Frame width"), false, true);
+			double inputVal;
+			try {
+				inputVal = m_current->m_para[VICUS::Window::P_FrameWidth].get_value();
+				if(inputVal <= 0){
+					inputVal = 0.06;
+					VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, inputVal);
+					modelModify();
+				}
+			}  catch (...) {
+				inputVal = 0.06;
+				VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, inputVal);
+				modelModify();
+			}
+			m_ui->lineEditFrameInput->setValue(inputVal);
 			frameIdx = 2;
 
 		}
@@ -163,6 +192,7 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	}
 
 	if (m_current->m_frame.m_id != VICUS::INVALID_ID && frameIdx > 0) {
+		m_ui->lineEditFrameMaterialThickness->setup(0,2,tr("Material thichness"), false, true);
 		m_ui->lineEditFrameMaterialThickness->setValue(m_current->m_frame.m_para[VICUS::WindowFrame::P_Thickness].get_value());
 		VICUS::Material *mat = const_cast<VICUS::Material*>(m_db->m_materials[m_current->m_frame.m_idMaterial]);
 		if (mat != nullptr)
@@ -185,9 +215,28 @@ void SVDBWindowEditWidget::updateInput(int id) {
 	int dividerIdx = 0;
 	switch(m_current->m_methodDivider) {
 		case VICUS::Window::M_Fraction:{
-			m_ui->labelDividerInput->setText(tr("Fraction of Window:"));
+			m_ui->labelDividerInput->setText(tr("Fraction of Divider:"));
 			m_ui->labelDividerInputUnit->setText(tr("-"));
-			m_ui->lineEditDividerInput->setup(0,1,tr("Divider fraction of the window"), false, true);
+			double maxVal = 1;
+			if(m_current->m_methodFrame == VICUS::Window::M_Fraction){
+				maxVal = 0.99-m_ui->lineEditFrameInput->value();
+			}
+			m_ui->lineEditDividerInput->setup(0,0.99,tr("Divider fraction of the window"), false, true);
+			double inputVal;
+			try {
+				inputVal = m_current->m_para[VICUS::Window::P_DividerFraction].get_value();
+				if(inputVal <= 0 ||
+						inputVal > maxVal){
+					inputVal = std::min(0.05, maxVal);
+					VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, inputVal);
+					modelModify();
+				}
+			}  catch (...) {
+				inputVal = std::min(0.05, maxVal);
+				VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, inputVal);
+				modelModify();
+			}
+			m_ui->lineEditDividerInput->setValue(inputVal);
 			dividerIdx = 1;
 		}
 		break;
@@ -195,6 +244,20 @@ void SVDBWindowEditWidget::updateInput(int id) {
 			m_ui->labelDividerInput->setText(tr("Width:"));
 			m_ui->labelDividerInputUnit->setText(tr("m"));
 			m_ui->lineEditDividerInput->setup(0,2,tr("Divider width"), false, true);
+			double inputVal;
+			try {
+				inputVal = m_current->m_para[VICUS::Window::P_DividerWidth].get_value();
+				if(inputVal <= 0){
+					inputVal = 0.01;
+					VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, inputVal);
+					modelModify();
+				}
+			}  catch (...) {
+				inputVal = 0.01;
+				VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, inputVal);
+				modelModify();
+			}
+			m_ui->lineEditDividerInput->setValue(inputVal);
 			dividerIdx = 2;
 		}
 		break;
@@ -324,8 +387,13 @@ void SVDBWindowEditWidget::on_lineEditDividerInput_editingFinishedSuccessfully()
 	bool isModi = true;
 	if (m_current->m_methodDivider == VICUS::Window::M_ConstantWidth)
 		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerWidth, m_ui->lineEditDividerInput->value());
-	else if(m_current->m_methodDivider == VICUS::Window::M_Fraction)
-		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, m_ui->lineEditDividerInput->value());
+	else if(m_current->m_methodDivider == VICUS::Window::M_Fraction){
+		double val = m_ui->lineEditDividerInput->value();
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, val);
+		if(m_current->m_methodFrame == VICUS::Window::M_Fraction &&
+				1 - val - m_current->m_para[VICUS::Window::P_FrameFraction].get_value() < 0.01)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, 0.99 - val);
+	}
 	else
 		isModi = false;
 	if (isModi) {
@@ -340,8 +408,14 @@ void SVDBWindowEditWidget::on_lineEditFrameInput_editingFinishedSuccessfully() {
 	bool isModi = true;
 	if (m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
 		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameWidth, m_ui->lineEditFrameInput->value());
-	else if(m_current->m_methodFrame == VICUS::Window::M_Fraction)
-		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, m_ui->lineEditFrameInput->value());
+	else if(m_current->m_methodFrame == VICUS::Window::M_Fraction){
+		double val = m_ui->lineEditFrameInput->value();
+		VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_FrameFraction, val);
+		if(m_current->m_methodDivider == VICUS::Window::M_Fraction &&
+				1 - val - m_current->m_para[VICUS::Window::P_DividerFraction].get_value() < 0.01)
+			VICUS::KeywordList::setParameter(m_current->m_para,"Window::para_t", VICUS::Window::P_DividerFraction, 0.99 - val);
+
+	}
 	else
 		isModi = false;
 	if (isModi) {
@@ -356,9 +430,12 @@ void SVDBWindowEditWidget::on_comboBoxFrameMethod_currentIndexChanged(int index)
 
 	// update database but only if different from original
 	if (index != (int)m_current->m_methodFrame) {
+		m_current->m_frame.m_id = 1;
 		m_current->m_methodFrame = static_cast<VICUS::Window::Method>(index);
-		if (m_current->m_methodFrame == VICUS::Window::M_Fraction || m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
-			m_current->m_frame.m_id = 1;
+		if (m_current->m_methodFrame == VICUS::Window::M_Fraction)
+			m_ui->lineEditFrameInput->setValue(0.3);
+		else if(m_current->m_methodFrame == VICUS::Window::M_ConstantWidth)
+			m_ui->lineEditFrameInput->setValue(0.08);
 		else
 			m_current->m_frame.m_id = VICUS::INVALID_ID;
 		modelModify(); // tell model that we changed the data
