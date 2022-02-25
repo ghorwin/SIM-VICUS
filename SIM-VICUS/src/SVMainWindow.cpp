@@ -1551,7 +1551,7 @@ void SVMainWindow::onUpdateActions() {
 		if (m_ui->toolBar->isVisibleTo(this))
 			availableWidth -= m_ui->toolBar->width();
 		sizes << 250 << availableWidth - 250;
-		m_geometryViewSplitter->setSizes(sizes);
+		//m_geometryViewSplitter->setSizes(sizes);
 	}
 	else {
 		m_ui->toolBar->setVisible(false);

@@ -192,6 +192,7 @@ void SVStyle::formatDatabaseTreeView(QTreeView * v) {
 	v->setSelectionMode(QAbstractItemView::SingleSelection);
 	v->setAlternatingRowColors(true);
 	v->setSortingEnabled(false);
+	v->setIndentation(19);
 //	v->sortByColumn(0, Qt::AscendingOrder);
 #if !defined(Q_OS_WIN)
 	QFont f;
