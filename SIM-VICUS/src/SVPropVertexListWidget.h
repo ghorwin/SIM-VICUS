@@ -122,6 +122,12 @@ private slots:
 	*/
 	void onEditComponents();
 
+	/*! This slot is called from all edit sub surface component tool buttons.
+		It updates all sub surface component combo boxes after DB dialog has finished.
+	*/
+	void onEditSubSurfaceComponents();
+
+
 
 	// page surfaces
 
@@ -155,9 +161,16 @@ private slots:
 
 	void on_pushButtonRotateFloorPolygon_clicked();
 
+	void on_toolButtonEditSubSurfComponents_clicked();
+
+	void on_checkBoxSubSurfaceGeometry_stateChanged(int arg1);
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
+
+	/*! Returns true, if sub surface geometry is being created (i.e. checkbox is visible and checked). */
+	bool createSubSurfaceGeometry() const;
 
 	/*! Updates the enabled/disable states of all labels/combo boxes and tool buttons depending on available data. */
 	void updateButtonStates();
@@ -169,6 +182,9 @@ private:
 		-1 - all
 	*/
 	void updateComponentComboBox(QComboBox * combo, int type);
+
+	/*! Populates the combo box with sub surface components. */
+	void updateSubSurfaceComponentComboBox(QComboBox * combo);
 
 	bool reselectById(QComboBox * combo, int id) const;
 
@@ -187,6 +203,11 @@ private:
 		The current item is kept (identified via unique ID), if it still exists after the update.
 	*/
 	void updateZoneComboBox(QComboBox * combo, const QComboBox * buildingLevelCombo);
+
+	/*! Updates the content of the building levels combo box with data from the project.
+		The current item is kept (identified via unique ID), if it still exists after the update.
+	*/
+	void updateSurfaceComboBox(QComboBox * combo);
 
 	/*! Takes modified input data from widget and transfers it to the new geometry object. */
 	void updateRoofGeometry();
