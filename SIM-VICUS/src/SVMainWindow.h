@@ -189,6 +189,7 @@ public:
 public slots:
 
 	void on_actionDBComponents_triggered();
+	void on_actionDBSubSurfaceComponents_triggered();
 
 protected:
 	/*! Checks if project file has been changed by external application. */
@@ -282,7 +283,7 @@ private slots:
 	void on_actionDBWindows_triggered();
 	void on_actionDBWindowGlazingSystems_triggered();
 	void on_actionDBConstructions_triggered();
-	void on_actionDBSubSurfaceComponents_triggered();
+
 	void on_actionDBBoundaryConditions_triggered();
 	void on_actionDBSchedules_triggered();
 	void on_actionDBInternalLoadsPerson_triggered();
