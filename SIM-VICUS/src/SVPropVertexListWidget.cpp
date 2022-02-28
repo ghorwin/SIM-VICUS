@@ -564,22 +564,17 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 				return;
 			}
 
-			// in case the original surfaces did have already subsurface components assigned, search and remove them
-			std::set<unsigned int> subSurfaceIDsToRemove;
-			for (const VICUS::SubSurface & sub : surf->subSurfaces()) {
-				if (sub.m_subSurfaceComponentInstance != nullptr)
-					subSurfaceIDsToRemove.insert(sub.m_subSurfaceComponentInstance->m_id);
-			}
 
-			// populate a vector with existing and remaining subsurface component instances
-			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
-			for (const VICUS::SubSurfaceComponentInstance & subComp : project().m_subSurfaceComponentInstances) {
-				if (subSurfaceIDsToRemove.find(subComp.m_id) == subSurfaceIDsToRemove.end())
-					subSurfaceComponentInstances.push_back(subComp);
-			}
 
 			// we take a copy of our old subsurfaces
 			std::vector<VICUS::SubSurface> subSurfs = newSurf.subSurfaces();
+
+
+			// populate a vector with existing and remaining subsurface component instances
+			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
+
+			for(const VICUS::SubSurface &ss : surf->subSurfaces())
+				subSurfaceComponentInstances.push_back(*ss.m_subSurfaceComponentInstance);
 
 			const IBKMK::Vector3D &offset = newSurf.geometry().offset();
 			const IBKMK::Vector3D &normal = newSurf.geometry().normal();
@@ -604,14 +599,13 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 			// also create subsurface component instances
 			// but only if we have a valid subsurface component selected
-			if (surf->m_componentInstance != nullptr &&
-				m_ui->comboBoxSubSurfComponent->count() != 0 &&
+			if (m_ui->comboBoxSubSurfComponent->count() != 0 &&
 				m_ui->comboBoxSubSurfComponent->currentIndex() != -1)
 			{
 				VICUS::SubSurfaceComponentInstance subInstance;
 				subInstance.m_id = project().nextUnusedID();
 				subInstance.m_idSubSurfaceComponent = m_ui->comboBoxSubSurfComponent->currentData().toUInt();
-				subInstance.m_idSideASurface = surf->m_id;
+				subInstance.m_idSideASurface = newSurf.m_id;
 				subInstance.m_idSideBSurface = VICUS::INVALID_ID; // currently, all our new windows are outside windows
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
