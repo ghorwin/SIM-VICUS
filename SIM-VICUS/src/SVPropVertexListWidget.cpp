@@ -590,9 +590,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			newSubsurface.m_color = QColor(96,96,255,64);
 
 			// we make new projection
-			for (unsigned int i=0; i<newSurf.geometry().polygon().vertexes().size(); ++i) {
+			for (unsigned int i=0; i<s.geometry().polygon().vertexes().size(); ++i) {
 				IBKMK::Vector3D projectedPoint;
-				const IBKMK::Vector3D &p = newSurf.geometry().polygon().vertexes()[i];
+				const IBKMK::Vector3D &p = s.geometry().polygon().vertexes()[i];
 				// we need to be sure that the point is in our plane
 				IBKMK::pointProjectedOnPlane(offset, normal, p, projectedPoint);
 				// now we take the projected point
