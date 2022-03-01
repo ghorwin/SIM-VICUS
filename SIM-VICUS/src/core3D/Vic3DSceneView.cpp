@@ -626,7 +626,8 @@ void SceneView::checkInput() {
 	// cause the scene to update at monitor refresh rate)
 	if (SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_PlaceVertex ||
 		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem ||
-		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance)
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MeasureDistance ||
+		SVViewStateHandler::instance().viewState().m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem)
 	{
 		m_inputEventReceived = true;
 		renderLater();
