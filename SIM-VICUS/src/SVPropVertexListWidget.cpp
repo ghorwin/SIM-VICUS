@@ -569,12 +569,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			std::vector<VICUS::SubSurface> subSurfs = newSurf.subSurfaces();
 
 			// populate a vector with existing and remaining subsurface component instances
-			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
-
-			for(const VICUS::SubSurface &ss : surf->subSurfaces()){
-				if(ss.m_subSurfaceComponentInstance != nullptr)
-					subSurfaceComponentInstances.push_back(*ss.m_subSurfaceComponentInstance);
-			}
+			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances = project().m_subSurfaceComponentInstances;
 
 			const IBKMK::Vector3D &offset = newSurf.geometry().offset();
 			const IBKMK::Vector3D &normal = newSurf.geometry().normal();
