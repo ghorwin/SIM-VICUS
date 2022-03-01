@@ -173,6 +173,7 @@ void SVSettings::read() {
 	}
 
 	m_fontPointSize = settings.value("FontPointSize", 0).toUInt();
+	m_navigationSplitterSize = settings.value("NavigationSplitterSize", 250).toUInt();
 	m_invertYMouseAxis = settings.value("InvertYMouseAxis", m_invertYMouseAxis).toBool();
 	m_terminalEmulator = (TerminalEmulators)settings.value("TerminalEmulator", TE_XTerm).toInt();
 
@@ -212,6 +213,7 @@ void SVSettings::write(QByteArray geometry, QByteArray state) {
 	settings.setValue("InvertYMouseAxis", m_invertYMouseAxis);
 	settings.setValue("TerminalEmulator", m_terminalEmulator);
 	settings.setValue("UseHighDPIScaling", m_useHighDPIScaling);
+	settings.setValue("NavigationSplitterSize", m_navigationSplitterSize);
 
 	settings.setValue("Theme", m_theme);
 
