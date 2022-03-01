@@ -318,6 +318,7 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			updateComponentComboBoxes(); // update all component combo boxes in surface page
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
+			updateButtonStates();
 			break;
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
@@ -564,11 +565,8 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 				return;
 			}
 
-
-
 			// we take a copy of our old subsurfaces
 			std::vector<VICUS::SubSurface> subSurfs = newSurf.subSurfaces();
-
 
 			// populate a vector with existing and remaining subsurface component instances
 			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
@@ -641,6 +639,11 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			undo->push();
 		}
 	}
+
+	// reset lock axis
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_locks = SVViewState::NUM_L;
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
@@ -804,6 +807,11 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 											 buildingLevelUid,
 											 r, false, &componentInstances);
 	undo->push();
+
+	// reset lock axis
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_locks = SVViewState::NUM_L;
+	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
@@ -1051,19 +1059,18 @@ void SVPropVertexListWidget::updateBuildingComboBox(QComboBox * combo) {
 	combo->blockSignals(true);
 	unsigned int currentUniqueId = combo->currentData().toUInt();
 	combo->clear();
-
 	const VICUS::Project & prj = project();
 	int rowOfCurrent = -1;
 	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
 		const VICUS::Building & b = prj.m_buildings[i];
 		combo->addItem(b.m_displayName, b.m_id);
+		combo->setEnabled(true);
 		if (b.m_id == currentUniqueId)
 			rowOfCurrent = (int)i;
 	}
 
 	if (rowOfCurrent != -1) {
 		combo->setCurrentIndex(rowOfCurrent);
-		combo->setEnabled(true);
 	}
 	else {
 		combo->setCurrentIndex(combo->count()-1); // Note: if no buildings, nothing will be selected
@@ -1086,12 +1093,12 @@ void SVPropVertexListWidget::updateBuildingLevelsComboBox(QComboBox * combo, con
 		for (unsigned int i=0; i<b->m_buildingLevels.size(); ++i) {
 			const VICUS::BuildingLevel & bl = b->m_buildingLevels[i];
 			combo->addItem(bl.m_displayName, bl.m_id);
+			combo->setEnabled(true);
 			if (bl.m_id == currentUniqueId)
 				rowOfCurrent = (int)i;
 		}
 		if (rowOfCurrent != -1) {
 			combo->setCurrentIndex(rowOfCurrent);
-			combo->setEnabled(true);
 		}
 		else {
 			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
@@ -1116,12 +1123,12 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 		for (unsigned int i=0; i<bl->m_rooms.size(); ++i) {
 			const VICUS::Room & r = bl->m_rooms[i];
 			combo->addItem(r.m_displayName, r.m_id);
+			combo->setEnabled(true);
 			if (r.m_id == currentUniqueId)
 				rowOfCurrent = (int)i;
 		}
 		if (rowOfCurrent != -1) {
 			combo->setCurrentIndex(rowOfCurrent);
-			combo->setEnabled(true);
 		}
 		else {
 			combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selected
@@ -1130,21 +1137,22 @@ void SVPropVertexListWidget::updateZoneComboBox(QComboBox * combo, const QComboB
 	combo->blockSignals(false);
 }
 
-void SVPropVertexListWidget::updateSurfaceComboBox(QComboBox * combo) {
+void SVPropVertexListWidget::updateSurfaceComboBox(QComboBox * combo, bool onlySelected) {
 	combo->blockSignals(true);
 
 	std::set<const VICUS::Object*> selectedObjs;
 	// first we get how many surfaces are selected
-	project().selectObjects(selectedObjs, VICUS::Project::SG_All, true, true);
+	project().selectObjects(selectedObjs, VICUS::Project::SG_All, onlySelected, true);
 
 	unsigned int currentUniqueId = combo->currentData().toUInt();
-
+	combo->clear();
 	int rowOfCurrent = -1;
 	for(const VICUS::Object *obj : selectedObjs) {
 		unsigned int i=0;
 		const VICUS::Surface *surf = dynamic_cast<const VICUS::Surface*>(obj);
 		if(surf != nullptr) {
 			combo->addItem(surf->m_displayName, surf->m_id);
+			combo->setEnabled(true);
 			if (surf->m_id == currentUniqueId)
 				rowOfCurrent = (int)i;
 			i++;
@@ -1152,7 +1160,6 @@ void SVPropVertexListWidget::updateSurfaceComboBox(QComboBox * combo) {
 	}
 	if (rowOfCurrent != -1) {
 		combo->setCurrentIndex(rowOfCurrent);
-		combo->setEnabled(true);
 	}
 	else {
 		combo->setCurrentIndex(combo->count()-1); // Note: if none, nothing will be selecte
@@ -1220,6 +1227,8 @@ void SVPropVertexListWidget::updateButtonStates() {
 		m_ui->comboBoxSubSurfComponent->setEnabled(false);
 		m_ui->toolButtonEditSubSurfComponents->setEnabled(false);
 
+		m_ui->checkBoxSelectedSurfaces->setEnabled(false);
+
 	}
 	else {
 		bool subSurf = createSubSurfaceGeometry();
@@ -1246,6 +1255,7 @@ void SVPropVertexListWidget::updateButtonStates() {
 		// sub surface controls
 		// m_ui->checkBoxSubSurfaceGeometry->setChecked(true);
 		m_ui->checkBoxSubSurfaceGeometry->setEnabled(true);
+		m_ui->checkBoxSelectedSurfaces->setEnabled(subSurf);
 
 		m_ui->labelSurface->setEnabled(subSurf);
 		m_ui->comboBoxSurface->setEnabled(subSurf);
@@ -1405,5 +1415,10 @@ void SVPropVertexListWidget::on_toolButtonEditSubSurfComponents_clicked() {
 
 void SVPropVertexListWidget::on_checkBoxSubSurfaceGeometry_stateChanged(int arg1) {
 	updateButtonStates();
+}
+
+
+void SVPropVertexListWidget::on_checkBoxSelectedSurfaces_stateChanged(int arg1) {
+	updateSurfaceComboBox(m_ui->comboBoxSurface, arg1);
 }
 

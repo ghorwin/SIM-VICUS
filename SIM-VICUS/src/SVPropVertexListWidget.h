@@ -165,6 +165,8 @@ private slots:
 
 	void on_checkBoxSubSurfaceGeometry_stateChanged(int arg1);
 
+	void on_checkBoxSelectedSurfaces_stateChanged(int arg1);
+
 private:
 	/*! Returns true, if annonymous geometry is being created (i.e. checkbox is visible and checked). */
 	bool createAnnonymousGeometry() const;
@@ -207,7 +209,7 @@ private:
 	/*! Updates the content of the building levels combo box with data from the project.
 		The current item is kept (identified via unique ID), if it still exists after the update.
 	*/
-	void updateSurfaceComboBox(QComboBox * combo);
+	void updateSurfaceComboBox(QComboBox * combo, bool onlySelected=true);
 
 	/*! Takes modified input data from widget and transfers it to the new geometry object. */
 	void updateRoofGeometry();
