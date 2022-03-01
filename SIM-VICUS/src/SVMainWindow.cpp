@@ -665,6 +665,8 @@ void SVMainWindow::setup() {
 	m_geometryViewSplitter->addWidget(m_navigationTreeWidget);
 	m_geometryViewSplitter->setCollapsible(0, true);
 
+	connect(m_geometryViewSplitter, &QSplitter::splitterMoved, this, &SVMainWindow::onSplitterMoved);
+
 	// *** Geometry view ***
 
 	m_geometryView = new SVGeometryView(this);
@@ -865,6 +867,10 @@ void SVMainWindow::onConfigurePluginTriggered() {
 	else if (updateNeeds & SVCommonPluginInterface::DatabaseUpdate) {
 		// TODO : update property widgets
 	}
+}
+
+void SVMainWindow::onSplitterMoved(int pos, int index){
+	SVSettings::instance().m_navigationSplitterSize = m_geometryViewSplitter->sizes()[0];
 }
 
 
@@ -1542,6 +1548,16 @@ void SVMainWindow::onUpdateActions() {
 		m_geometryViewSplitter->setVisible(true);
 		m_ui->toolBar->setVisible(true);
 		m_ui->toolBar->toggleViewAction()->setEnabled(true);
+
+		QList<int> sizes;
+		int availableWidth = width();
+		if (m_ui->toolBar->isVisibleTo(this))
+			availableWidth -= m_ui->toolBar->width();
+
+		int width = SVSettings::instance().m_navigationSplitterSize;
+		qDebug() << "Navigation Splitter width loaded:" << width;
+		sizes << width << availableWidth - width;
+		m_geometryViewSplitter->setSizes(sizes);
 	}
 	else {
 		m_ui->toolBar->setVisible(false);
