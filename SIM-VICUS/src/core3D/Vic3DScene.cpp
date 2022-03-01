@@ -2290,8 +2290,8 @@ void Scene::pick(PickObject & pickObject) {
 			for (const VICUS::Room & r : bl.m_rooms) {
 				for (const VICUS::Surface & s : r.m_surfaces) {
 					// skip invisible or inactive surfaces
-					if (!s.m_visible)
-						continue;
+//					if (!s.m_visible)
+//						continue;
 					IBKMK::Vector3D intersectionPoint;
 					double dist;
 					// check if we hit the surface - since we show the surface from both sides, we
