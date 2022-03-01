@@ -571,8 +571,10 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			// populate a vector with existing and remaining subsurface component instances
 			std::vector<VICUS::SubSurfaceComponentInstance> subSurfaceComponentInstances;
 
-			for(const VICUS::SubSurface &ss : surf->subSurfaces())
-				subSurfaceComponentInstances.push_back(*ss.m_subSurfaceComponentInstance);
+			for(const VICUS::SubSurface &ss : surf->subSurfaces()){
+				if(ss.m_subSurfaceComponentInstance != nullptr)
+					subSurfaceComponentInstances.push_back(*ss.m_subSurfaceComponentInstance);
+			}
 
 			const IBKMK::Vector3D &offset = newSurf.geometry().offset();
 			const IBKMK::Vector3D &normal = newSurf.geometry().normal();
@@ -603,7 +605,8 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 				VICUS::SubSurfaceComponentInstance subInstance;
 				subInstance.m_id = project().nextUnusedID();
 				subInstance.m_idSubSurfaceComponent = m_ui->comboBoxSubSurfComponent->currentData().toUInt();
-				subInstance.m_idSideASurface = newSurf.m_id;
+				subInstance.m_idSideASurface = newSubsurface.m_id;
+				//subInstance.m_sideASubSurface = &newSubsurface;
 				subInstance.m_idSideBSurface = VICUS::INVALID_ID; // currently, all our new windows are outside windows
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
