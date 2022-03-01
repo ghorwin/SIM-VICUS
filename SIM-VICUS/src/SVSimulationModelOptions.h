@@ -61,6 +61,15 @@ private slots:
 
 	void on_lineEditInitialTemperature_editingFinished();
 
+
+	void on_spinBoxSolarRadiationGainsDirectlyToRoomNode_valueChanged(int arg1);
+
+	void on_spinBoxSolarRadiationToFloor_valueChanged(int arg1);
+
+	void on_spinBoxSolarRadiationToRoofCeiling_valueChanged(int arg1);
+
+	void on_spinBoxSolarRadiationToWalls_valueChanged(int arg1);
+
 private:
 
 	/*! UI pointer. */
