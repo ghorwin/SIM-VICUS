@@ -17,7 +17,7 @@
 #   []
 
 # path export for mac
-export PATH=~/Qt/5.15.2/gcc_64/bin:~/Qt/5.15.2/clang_64/bin:$PATH
+export PATH=~/Qt/5.15.2/gcc_64/bin:~/Qt/5.15.2/clang_64/bin:~/Qt/5.11.3/gcc_64/bin:~/Qt/5.11.3/clang_64/bin:$PATH
 
 # for MacOS, brew install of Qt 5 ("brew install qt5")
 export CMAKE_PREFIX_PATH=/usr/local/opt/qt5/
