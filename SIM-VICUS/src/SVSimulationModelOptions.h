@@ -59,6 +59,8 @@ public:
 private slots:
 	void on_comboBoxSolarDistributionModeltype_currentIndexChanged(int index);
 
+	void on_lineEditInitialTemperature_editingFinished();
+
 private:
 
 	/*! UI pointer. */

@@ -93,3 +93,22 @@ void SVSimulationModelOptions::on_comboBoxSolarDistributionModeltype_currentInde
 		break;
 	}
 }
+
+
+void SVSimulationModelOptions::on_lineEditInitialTemperature_editingFinished() {
+	if(m_ui->lineEditInitialTemperature->isValid()){
+		double val = m_ui->lineEditInitialTemperature->value();
+		NANDRAD::KeywordList::setParameter(m_simParams->m_para,
+										   "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, val);
+	}
+	else{
+		double val = 20;
+		if (!m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].name.empty() &&
+			m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].IO_unit.base_id() == IBK::Unit("K").base_id())
+		{
+			val = m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature].get_value("C");
+		}
+		m_ui->lineEditInitialTemperature->setValue(val);
+	}
+}
+
