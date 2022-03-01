@@ -214,6 +214,7 @@ void SVPropBuildingZoneProperty::updateUi() {
 		m_ui->tableWidgetZones->setItem(row,3, item);
 	}
 
+	m_ui->tableWidgetZones->setSortingEnabled(true);
 	m_ui->tableWidgetZones->blockSignals(false);
 	m_ui->tableWidgetZones->selectionModel()->blockSignals(false);
 
@@ -309,7 +310,7 @@ void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool o
 		for(auto *item : m_ui->tableWidgetZones->selectedItems()){
 			if(item->column() != 0)
 				continue;
-			roomIds.push_back(item->text().toUInt());
+			roomIds.push_back(item->data(Qt::UserRole).toUInt());
 		}
 
 		if(roomIds.empty())
