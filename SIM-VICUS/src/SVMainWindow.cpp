@@ -1542,16 +1542,6 @@ void SVMainWindow::onUpdateActions() {
 		m_geometryViewSplitter->setVisible(true);
 		m_ui->toolBar->setVisible(true);
 		m_ui->toolBar->toggleViewAction()->setEnabled(true);
-
-		// adjust size of navigation view to be about 250 px wide or to a user-saved size
-		// TODO : whenever user resizes the splitter, the new width should be saved in the settings
-		//        and re-applied next time the geometry view is shown
-		QList<int> sizes;
-		int availableWidth = width();
-		if (m_ui->toolBar->isVisibleTo(this))
-			availableWidth -= m_ui->toolBar->width();
-		sizes << 250 << availableWidth - 250;
-		//m_geometryViewSplitter->setSizes(sizes);
 	}
 	else {
 		m_ui->toolBar->setVisible(false);
