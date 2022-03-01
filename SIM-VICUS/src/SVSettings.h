@@ -239,7 +239,7 @@ public:
 	QString						m_monospaceFont;
 
 	/*! Navigation tree splitter size .*/
-	unsigned int				m_navigationSplitterSize;
+	int							m_navigationSplitterSize;
 
 	/*! This struct stores the theme-specific settings that can be customized by the user. */
 	struct ThemeSettings {

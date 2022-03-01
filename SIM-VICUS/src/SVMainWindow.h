@@ -259,10 +259,6 @@ private slots:
 	void onImportPluginTriggered();
 	/*! Triggered, when the menu action for configuring a plugin was triggered. */
 	void onConfigurePluginTriggered();
-	/*! Triggered when splitter between geometry view and navigation tree is moved.
-		Will be saved to SVSettings and upon restart size is reset.
-	*/
-	void onSplitterMoved(int pos, int index);
 
 
 	// all menu action slots below
