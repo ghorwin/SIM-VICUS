@@ -1347,7 +1347,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 						if (lineEdit == m_ui->lineEditX) {
 							translation = (targetPos.x() - newTrans.x()) * m_cso->localXAxis();
 						}
-						else if (lineEdit == m_ui->lineEditX) {
+						else if (lineEdit == m_ui->lineEditY) {
 							translation = (targetPos.y() - newTrans.y()) * m_cso->localYAxis();
 						}
 						else {
