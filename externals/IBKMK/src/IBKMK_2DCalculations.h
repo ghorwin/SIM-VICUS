@@ -65,6 +65,9 @@ int pointInPolygon(const std::vector<Vector2D> & poly, const IBK::point2D<double
 */
 void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double epsilon = 1e-4);
 
+/*! Takes the vector v and enlarges the current bounding box defined through 'minVec' and 'maxVec'. */
+void enlargeBoundingBox(const IBKMK::Vector2D & v, IBKMK::Vector2D & minVec, IBKMK::Vector2D & maxVec);
+
 } // namespace IBKMK
 
 #endif // IBKMK_2DCalculationsH

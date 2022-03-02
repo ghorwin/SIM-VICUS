@@ -169,4 +169,13 @@ void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double eps
 }
 
 
+void enlargeBoundingBox(const Vector2D & v, Vector2D & minVec, Vector2D & maxVec) {
+	minVec.m_x = std::min(minVec.m_x, v.m_x);
+	minVec.m_y = std::min(minVec.m_y, v.m_y);
+
+	maxVec.m_x = std::max(maxVec.m_x, v.m_x);
+	maxVec.m_y = std::max(maxVec.m_y, v.m_y);
+}
+
+
 } // namespace IBKMK

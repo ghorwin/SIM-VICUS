@@ -48,10 +48,6 @@ namespace IBKMK {
 	Also provides utility functions for checking and simplifying polygon. The data structure ensures that the
 	polygon itselfs is always consistent, i.e. if isValid() returns true, it is guarantied to be non-winding and without
 	consecutive colinear or identical points. Therefore, the polygon can be triangulated right away.
-
-	Note that you can use this class to store invalid polygons/polylines, for example by adding points for
-	a self-intersecting polygon. The class will store the invalid data but have an invalid state until
-	its members are fixed.
 */
 class Polygon2D {
 public:
@@ -75,6 +71,9 @@ public:
 	Polygon2D() = default;
 	Polygon2D(const std::vector<IBKMK::Vector2D> & vertexes);
 
+	/*! Comparison operator. */
+	bool operator!=(const Polygon2D &other) const;
+
 	/*! Returns the type of the polygon (can be used to optimize some algorithms). */
 	type_t type() const { return m_type; }
 
@@ -86,17 +85,6 @@ public:
 	/*! Resets the polygon. */
 	void clear() { m_type = NUM_T; m_vertexes.clear(); m_valid = false; }
 
-	/*! Adds a new 2D vertex in the plane of the polygon. Afterwards simplifies polygon. */
-	void addVertex(const IBK::point2D<double> & v);
-
-	/*! Removes the vertex at given location.
-		\warning Throws an exception if index is out of range.
-	*/
-	void removeVertex(unsigned int idx);
-
-	/*! Inverts vertexes so that normal vector is inverted/flipped. */
-	void flip();
-
 	/*! Check for intersection of each edge with the line(p1, p2). Returns true if intersection was found and in this
 		case stores the computed intersection point.
 	*/
@@ -105,22 +93,35 @@ public:
 	/*! Returns 2D coordinates of the polygon. */
 	const std::vector<IBKMK::Vector2D> & vertexes() const { return m_vertexes; }
 
+	/*! Sets vertexes of the polygon.
+		After the vertexes have been transfered, the polygon is checked, and potentially duplicate vertexes are removed.
+		Finally, the type of the polygon is detected and if all is well, the polygon is marked as valid.
+
+		\note Do not rely on the list of vertexes passed to the polygon to be returned unmodified!
+	*/
 	void setVertexes(const std::vector<IBKMK::Vector2D> & vertexes);
 
-	/*! Calculates surface area in m2. */
+	/*! Computes the bounding box from the vertexes.
+		Requires at least one vertex in the polygon.
+	*/
+	void boundingBox(IBKMK::Vector2D & lowerValues, IBKMK::Vector2D & upperValues) const;
+
+	/*! Calculates surface area in m2.
+		\note Throws an exception for invalid polygons, otherwise computes the area.
+	*/
 	double area(int digits = 1) const;
 
-	/*! Calculates surface circumference in m. */
+	/*! Calculates surface circumference in m.
+		\note Throws an exception for invalid polygons, otherwise computes the circumference.
+	*/
 	double circumference() const;
 
 	/*! A simple polygon is a polygon without intersects by itself.
-		return true if no intersections
-		return false if minimum one intersection
+		Returns true if no intersections.
+		Return false if at least one intersection was found.
 	*/
 	bool isSimplePolygon() const;
 
-	/*! Comparison operator. */
-	bool operator!=(const Polygon2D &other) const;
 
 protected:
 
@@ -128,17 +129,22 @@ protected:
 
 	/*! This function checks the polygon for validity. This function is called automatically from readXML() and
 		from addVertex() and removeVertex().
+		\note Does not throw an exception.
 	*/
 	void checkPolygon();
 
 	/*! Detects if a polygon geometry with 4 vertices is actually a Rectangle (if the polygon has exactly 4 vertexes and
 		vertex #3 can be constructed from adding (v2-v1) and (v4-v1) to v1 with some small rounding error tolerance).
 		Polyons with 3 vertexes are Triangles. All others are generic polygons.
+		\note Does not throw an exception.
 	*/
 	void detectType();
 
-	/*! Eleminate colinear points in a polygon and return a new polygon. */
+	/*! Eleminate colinear points in a polygon and return a new polygon.
+		\note Does not throw an exception.
+	*/
 	void eleminateColinearPts();
+
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
