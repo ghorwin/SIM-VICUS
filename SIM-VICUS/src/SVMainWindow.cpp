@@ -718,12 +718,12 @@ void SVMainWindow::setup() {
 		// restore navigation tree width
 		QList<int> sizes;
 		int availableWidth = width();
-		int navSplitterWidth = SVSettings::instance().m_navigationSplitterSize;
+		int navSplitterWidth = SVSettings::instance().m_navigationSplitterSize / SVSettings::instance().m_ratio;
 		// guard against screen resolution changes, for example when SIM-VICUS was opened on an external
 		// 4K screen and splitter size was 1200 of 3800 and now the tool is opened again on laptop fullHD screen
 		// in Window mode where window is only about 1100 wide itself. Then, we rather want to limit the navigation
 		// panel to cover only max 1/3 of the available with
-		if (navSplitterWidth > 0.3*availableWidth)
+		if (navSplitterWidth > 0.6*availableWidth)
 			navSplitterWidth = (int)(0.3*availableWidth);
 		sizes << navSplitterWidth << availableWidth - navSplitterWidth;
 		m_geometryViewSplitter->setSizes(sizes);
