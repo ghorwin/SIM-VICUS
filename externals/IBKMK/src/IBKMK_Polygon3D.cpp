@@ -49,52 +49,8 @@ namespace IBKMK {
 // *** Polygon3D ***
 
 Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
-	setVertexes(vertexes);
-}
+	// we construct a polygon from points by first eliminating collinear points, then checking
 
-
-Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
-	m_vertexes({a,b,c}),
-	m_type(t)
-{
-	if (m_type == Polygon2D::T_Rectangle) {
-		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
-		// then compute vertex [c] again
-		m_vertexes.push_back(m_vertexes.back());
-		// c = a + (b-a) + (d-a) = b + (d - a)
-		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
-	}
-	checkPolygon(); // this also safeguards against a == b or b == c or a == c inputs
-}
-
-
-// Comparison operator !=
-bool Polygon3D::operator!=(const Polygon3D &other) const {
-	if (m_type != other.m_type)
-		return true;
-	if (m_vertexes != other.m_vertexes)
-		return true;
-	return false;
-}
-
-
-void Polygon3D::addVertex(const IBK::point3D<double> & v) {
-	m_vertexes.push_back(v);
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void Polygon3D::removeVertex(unsigned int idx){
-	FUNCID(Polygon3D::removeVertex);
-	if (idx >= (unsigned int)m_vertexes.size())
-		throw IBK::Exception(IBK::FormatString("Index %1 out of range (vertex count = %2).").arg(idx).arg(m_vertexes.size()), FUNC_ID);
-	m_vertexes.erase(m_vertexes.begin()+idx);
-	m_type = Polygon2D::T_Polygon; // assume the worst
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void Polygon3D::checkPolygon() {
 	m_valid = false;
 	m_polyline.clear();
 	if (m_vertexes.size() < 3)
@@ -126,22 +82,62 @@ void Polygon3D::checkPolygon() {
 		// a consistent polygon. Note: if the polyline is valid, we have at least 3 vertexes.
 		update3DVertexesFromPolyline(m_vertexes[0]);
 	}
+
+}
+
+
+Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
+	m_vertexes({a,b,c}),
+	m_type(t)
+{
+	if (m_type == Polygon2D::T_Rectangle) {
+		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
+		// then compute vertex [c] again
+		m_vertexes.push_back(m_vertexes.back());
+		// c = a + (b-a) + (d-a) = b + (d - a)
+		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
+	}
+	checkPolygon(); // this also safeguards against a == b or b == c or a == c inputs
+}
+
+
+Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal,
+					 const IBKMK::Vector3D & localX, const IBKMK::Vector3D & offset) :
+	m_offset(offset), m_polyline(polyline)
+{
+	// guard against invalid polylines
+	if (!polyline.isValid())
+		m_polyline.clear();
+	else
+		setRotation(normal, localX);
+}
+
+
+// Comparison operator !=
+bool Polygon3D::operator!=(const Polygon3D &other) const {
+	if (m_type != other.m_type)
+		return true;
+	if (m_vertexes != other.m_vertexes)
+		return true;
+	return false;
 }
 
 
 void Polygon3D::flip() {
-	std::vector<IBKMK::Vector3D>(m_vertexes.rbegin(), m_vertexes.rend()).swap(m_vertexes);
-
-	// TODO : flip and recalculate also embedded holes
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+	m_normal = -1.0*m_normal; // Note: x and y axis remain the same!
+	m_vertexesDirty = true;
 }
 
 
+const std::vector<Vector3D> & Polygon3D::vertexes() const {
+	if (m_vertexesDirty) {
+		// recompute 3D vertex cache
 
-void Polygon3D::setVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
-	m_vertexes = vertexes;
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+		m_vertexesDirty = false;
+	}
+	return m_vertexes;
 }
+
 
 
 IBKMK::Vector3D Polygon3D::centerPoint() const {
@@ -163,20 +159,26 @@ IBKMK::Vector3D Polygon3D::centerPoint() const {
 
 
 void Polygon3D::boundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
-	if (m_vertexes.empty()) {
-		lowerValues = IBKMK::Vector3D(0,0,0);
-		upperValues = IBKMK::Vector3D(0,0,0);
-		return;
-	}
-	lowerValues = m_vertexes[0];
-	upperValues = m_vertexes[0];
-	for (unsigned int i=1; i<m_vertexes.size(); ++i)
-		IBKMK::enlargeBoundingBox(m_vertexes[i], lowerValues, upperValues);
+	FUNCID("Polygon3D::boundingBox");
+	if (!isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+	// Note: do not access m_vertexes directly, as this array may be dirty
+	const std::vector<Vector3D> & points = vertexes();
+	// initialize bounding box with first point
+	lowerValues = points[0];
+	upperValues = points[0];
+	for (unsigned int i=1; i<points.size(); ++i)
+		IBKMK::enlargeBoundingBox(points[i], lowerValues, upperValues);
 }
 
 
 void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValues) const {
-	for (const IBKMK::Vector3D & v: m_vertexes)
+	FUNCID("Polygon3D::enlargeBoundingBox");
+	if (!isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+	// Note: do not access m_vertexes directly, as this array may be dirty
+	const std::vector<Vector3D> & points = vertexes();
+	for (const IBKMK::Vector3D & v: points)
 		IBKMK::enlargeBoundingBox(v, lowerValues, upperValues);
 }
 
