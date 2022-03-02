@@ -48,6 +48,10 @@ namespace IBKMK {
 	Also provides utility functions for checking and simplifying polygon. The data structure ensures that the
 	polygon itselfs is always consistent, i.e. if isValid() returns true, it is guarantied to be non-winding and without
 	consecutive colinear or identical points. Therefore, the polygon can be triangulated right away.
+
+	Note that you can use this class to store invalid polygons/polylines, for example by adding points for
+	a self-intersecting polygon. The class will store the invalid data but have an invalid state until
+	its members are fixed.
 */
 class Polygon2D {
 public:
