@@ -2299,7 +2299,9 @@ void Scene::pick(PickObject & pickObject) {
 					int holeIndex;
 					if (s.geometry().intersectsLine(nearPoint, direction, intersectionPoint, dist, holeIndex, true)) {
 						// if a hole was clicked on, that is invisible, ignore this click
-						if (holeIndex == -1 || s.subSurfaces()[(unsigned int)holeIndex].m_visible) {
+						bool cond1 = holeIndex == -1 && s.m_visible;
+						bool cond2 = holeIndex != -1 && s.subSurfaces()[(unsigned int)holeIndex].m_visible;
+						if ( cond1 || cond2 ) {
 							PickObject::PickResult r;
 							r.m_snapPointType = PickObject::RT_Object;
 							r.m_depth = dist;
