@@ -182,11 +182,11 @@ int SVSimulationStartNandrad::edit(bool fmiExport) {
 		simParas.m_interval.m_para[ NANDRAD::Interval::P_End].set("End", 1, IBK::Unit("a"));
 	}
 	if (simParas.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].name.empty() ||
-		simParas.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].IO_unit.base_id() != IBK_UNIT_ID_SECONDS)
+		simParas.m_para[NANDRAD::SimulationParameter::P_InitialTemperature].value > 100)
 	{
-		NANDRAD::KeywordList::setParameter(simParas.m_para,
-										   "SimulationParameter::para_t",
-										   NANDRAD::SimulationParameter::P_InitialTemperature, 20);
+//		NANDRAD::KeywordList::setParameter(simParas.m_para,
+//										   "SimulationParameter::para_t",
+//										   NANDRAD::SimulationParameter::P_InitialTemperature, 20);
 	}
 
 	// create default output settings, if nothing has been defined, yet

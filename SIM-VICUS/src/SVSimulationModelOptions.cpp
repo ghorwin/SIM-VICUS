@@ -26,6 +26,9 @@
 #include "SVSimulationModelOptions.h"
 #include "ui_SVSimulationModelOptions.h"
 
+#include <SVProjectHandler.h>
+#include <VICUS_Project.h>
+
 #include <NANDRAD_KeywordList.h>
 #include <NANDRAD_KeywordListQt.h>
 #include <NANDRAD_SimulationParameter.h>
@@ -192,8 +195,8 @@ void SVSimulationModelOptions::on_comboBoxSolarDistributionModeltype_currentInde
 void SVSimulationModelOptions::on_lineEditInitialTemperature_editingFinished() {
 	if(m_ui->lineEditInitialTemperature->isValid()){
 		double val = m_ui->lineEditInitialTemperature->value();
-		NANDRAD::KeywordList::setParameter(m_simParams->m_para,
-										   "SimulationParameter::para_t", NANDRAD::SimulationParameter::P_InitialTemperature, val);
+		// we set the IBK Parameter
+		m_simParams->m_para[NANDRAD::SimulationParameter::P_InitialTemperature] = IBK::Parameter("InitialTemperature", val, IBK::Unit("C"));
 	}
 	else{
 		double val = 20;
@@ -210,32 +213,24 @@ void SVSimulationModelOptions::on_lineEditInitialTemperature_editingFinished() {
 
 void SVSimulationModelOptions::on_spinBoxSolarRadiationGainsDirectlyToRoomNode_valueChanged(int /*arg1*/) {
 	double val = m_ui->spinBoxSolarRadiationGainsDirectlyToRoomNode->value();
-	NANDRAD::KeywordList::setParameter(m_simParams->m_solarLoadsDistributionModel.m_para,
-									   "SolarLoadsDistributionModel::para_t",
-									   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone, val);
+	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionZone] = IBK::Parameter("RadiationLoadFractionZone", val, IBK::Unit("%"));
 }
 
 
 void SVSimulationModelOptions::on_spinBoxSolarRadiationToFloor_valueChanged(int /*arg1*/) {
 	double val = m_ui->spinBoxSolarRadiationToFloor->value();
-	NANDRAD::KeywordList::setParameter(m_simParams->m_solarLoadsDistributionModel.m_para,
-									   "SolarLoadsDistributionModel::para_t",
-									   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor, val);
+	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionFloor] = IBK::Parameter("RadiationLoadFractionFloor", val, IBK::Unit("%"));
 }
 
 
 void SVSimulationModelOptions::on_spinBoxSolarRadiationToRoofCeiling_valueChanged(int /*arg1*/) {
 	double val = m_ui->spinBoxSolarRadiationToRoofCeiling->value();
-	NANDRAD::KeywordList::setParameter(m_simParams->m_solarLoadsDistributionModel.m_para,
-									   "SolarLoadsDistributionModel::para_t",
-									   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling, val);
+	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionCeiling] = IBK::Parameter("RadiationLoadFractionCeiling", val, IBK::Unit("%"));
 }
 
 
 void SVSimulationModelOptions::on_spinBoxSolarRadiationToWalls_valueChanged(int /*arg1*/) {
 	double val = m_ui->spinBoxSolarRadiationToWalls->value();
-	NANDRAD::KeywordList::setParameter(m_simParams->m_solarLoadsDistributionModel.m_para,
-									   "SolarLoadsDistributionModel::para_t",
-									   NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls, val);
+	m_simParams->m_solarLoadsDistributionModel.m_para[NANDRAD::SolarLoadsDistributionModel::P_RadiationLoadFractionWalls] = IBK::Parameter("RadiationLoadFractionWalls", val, IBK::Unit("%"));
 }
 
