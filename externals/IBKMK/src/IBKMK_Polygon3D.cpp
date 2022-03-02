@@ -46,58 +46,15 @@
 
 namespace IBKMK {
 
-// *** Polygon3D ***
-
-Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
-	// we construct a polygon from points by first eliminating collinear points, then checking
-
-	m_valid = false;
-	m_polyline.clear();
-	if (m_vertexes.size() < 3)
-		return;
-
-	eleminateColinearPts();
-
-	// try to simplify polygon to internal rectangle/parallelogram definition
-	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
-	detectType();
-	updateLocalCoordinateSystem();
-	if (m_normal == IBKMK::Vector3D(0,0,0)) {
-//		eleminateColinearPts();
-	}
-	// we need 3 vertexes (not collinear) to continue and a valid normal vector!
-	if (m_vertexes.size() < 3 || m_normal == IBKMK::Vector3D(0,0,0))
-		return;
-
-	update2DPolyline();
-
-	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
-	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
-
-	if (m_valid && m_vertexes.size() != m_polyline.vertexes().size()) {
-		// When computing polyline we correct vertexes that are out of plane
-		// hereby, the corrected vertexes may be closer together than the original vertexes.
-		// When constructing the polyline, these vertexes will be removed.
-		// In these situations we re-compute 3D vertexes from polyline to have again
-		// a consistent polygon. Note: if the polyline is valid, we have at least 3 vertexes.
-		update3DVertexesFromPolyline(m_vertexes[0]);
-	}
-
-}
-
-
-Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
-	m_vertexes({a,b,c}),
-	m_type(t)
-{
-	if (m_type == Polygon2D::T_Rectangle) {
-		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
-		// then compute vertex [c] again
-		m_vertexes.push_back(m_vertexes.back());
-		// c = a + (b-a) + (d-a) = b + (d - a)
-		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
-	}
-	checkPolygon(); // this also safeguards against a == b or b == c or a == c inputs
+Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) {
+//	if (t == Polygon2D::T_Rectangle) {
+//		// third vertex is actually point d of the rectangle, so we first set vertex[3] = vertex[2],
+//		// then compute vertex [c] again
+//		m_vertexes.push_back(m_vertexes.back());
+//		// c = a + (b-a) + (d-a) = b + (d - a)
+//		m_vertexes[2] = m_vertexes[1] + (m_vertexes[3]-m_vertexes[0]);
+//	}
+//	checkPolygon(); // this also safeguards against a == b or b == c or a == c inputs
 }
 
 
@@ -106,38 +63,97 @@ Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal,
 	m_offset(offset), m_polyline(polyline)
 {
 	// guard against invalid polylines
-	if (!polyline.isValid())
-		m_polyline.clear();
-	else
+	if (polyline.isValid())
 		setRotation(normal, localX);
+}
+
+
+Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
+	// we construct a polygon from points by first eliminating collinear points, then checking
+
+	m_valid = false;
+	m_polyline.clear();
+	if (vertexes.size() < 3)
+		return;
+
+	// eliminate colliniear points in temporary vector
+	std::vector<IBKMK::Vector3D> verts(vertexes);
+	IBKMK::eliminateCollinearPoints(verts);
+
+	updateLocalCoordinateSystem(verts);
+	// we need 3 vertexes (not collinear) to continue and a valid normal vector!
+	if (m_vertexes.size() < 3 || m_normal == IBKMK::Vector3D(0,0,0))
+		return;
+
+	update2DPolyline();
+
+//	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
+//	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
+
+//	if (m_valid && m_vertexes.size() != m_polyline.vertexes().size()) {
+//		// When computing polyline we correct vertexes that are out of plane
+//		// hereby, the corrected vertexes may be closer together than the original vertexes.
+//		// When constructing the polyline, these vertexes will be removed.
+//		// In these situations we re-compute 3D vertexes from polyline to have again
+//		// a consistent polygon. Note: if the polyline is valid, we have at least 3 vertexes.
+//		update3DVertexesFromPolyline(m_vertexes[0]);
+//	}
+
 }
 
 
 // Comparison operator !=
 bool Polygon3D::operator!=(const Polygon3D &other) const {
-	if (m_type != other.m_type)
-		return true;
-	if (m_vertexes != other.m_vertexes)
-		return true;
+
+	// TODO
+
 	return false;
 }
 
 
-void Polygon3D::flip() {
-	m_normal = -1.0*m_normal; // Note: x and y axis remain the same!
-	m_vertexesDirty = true;
-}
-
-
 const std::vector<Vector3D> & Polygon3D::vertexes() const {
-	if (m_vertexesDirty) {
+	if (m_dirty) {
 		// recompute 3D vertex cache
 
-		m_vertexesDirty = false;
+		// TODO
+
+		m_dirty = false;
 	}
 	return m_vertexes;
 }
 
+
+// *** Transformation Functions ***
+
+void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) {
+	FUNCID(Polygon3D::setRotation);
+
+	if (!IBK::nearly_equal<6>(normal.magnitudeSquared(), 1.0))
+		throw IBK::Exception("Normal vector does not have unit length!", FUNC_ID);
+	if (!IBK::nearly_equal<6>(xAxis.magnitudeSquared(), 1.0))
+		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
+	// check that the vectors are (nearly) orthogonal
+	double sp = normal.scalarProduct(xAxis);
+	if (!IBK::nearly_equal<6>(sp, 1.0))
+		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
+
+	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
+	m_normal = normal;
+	m_localX = xAxis;
+	normal.crossProduct(xAxis, m_localY); // Y = N x X - right-handed coordinate system
+	m_localY.normalize();
+	m_dirty = true; // mark 3D vertexes as dirty
+}
+
+
+void Polygon3D::flip() {
+	IBK_ASSERT(isValid());
+	m_normal = -1.0*m_normal; // Note: x and y axis remain the same!
+	m_dirty = true;
+}
+
+
+// *** Calculation Functions ***
 
 
 IBKMK::Vector3D Polygon3D::centerPoint() const {
@@ -187,35 +203,12 @@ void Polygon3D::enlargeBoundingBox(Vector3D & lowerValues, Vector3D & upperValue
 // *** PRIVATE MEMBER FUNCTIONS ***
 
 
-void Polygon3D::detectType() {
-	m_type = Polygon2D::T_Polygon;
-	if (m_vertexes.size() == 3) {
-		m_type = Polygon2D::T_Triangle;
-		return;
-	}
-	if (m_vertexes.size() != 4)
-		return;
-	const IBKMK::Vector3D & a = m_vertexes[0];
-	const IBKMK::Vector3D & b = m_vertexes[1];
-	const IBKMK::Vector3D & c = m_vertexes[2];
-	const IBKMK::Vector3D & d = m_vertexes[3];
-	IBKMK::Vector3D c2 = b + (d-a);
-	c2 -= c;
-	// we assume we have zero length for an rectangle
-	// TODO : proper rounding error check! should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
-	if (c2.magnitude() < 1e-4)
-		m_type = Polygon2D::T_Rectangle;
-}
 
+void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts) {
+	// NOTE: DO NOT ACCESS m_vertexes IN THIS FUNCTION!
 
-void Polygon3D::eleminateColinearPts() {
-	IBKMK::eliminateCollinearPoints(m_vertexes);
-}
-
-
-void Polygon3D::updateLocalCoordinateSystem() {
 	m_normal = IBKMK::Vector3D(0,0,0);
-	if (m_vertexes.size() < 3)
+	if (verts.size() < 3)
 		return;
 
 	// We define our normal via the winding order of the polygon.
@@ -228,8 +221,8 @@ void Polygon3D::updateLocalCoordinateSystem() {
 	// and will become our polygon's normal vector.
 
 	// calculate normal with first 3 points
-	m_localX = m_vertexes[1] - m_vertexes[0];
-	IBKMK::Vector3D y = m_vertexes.back() - m_vertexes[0];
+	m_localX = verts[1] - verts[0];
+	IBKMK::Vector3D y = verts.back() - verts[0];
 	IBKMK::Vector3D n;
 	m_localX.crossProduct(y, n);
 	// if we interpret n as area between y and localX vectors, this should
@@ -243,9 +236,9 @@ void Polygon3D::updateLocalCoordinateSystem() {
 	int sameDirectionCount = 0;
 
 	// now process all other points and generate their normal vectors as well
-	for (unsigned int i=1; i<m_vertexes.size(); ++i) {
-		IBKMK::Vector3D vx = m_vertexes[(i+1) % m_vertexes.size()] - m_vertexes[i];
-		IBKMK::Vector3D vy = m_vertexes[i-1] - m_vertexes[i];
+	for (unsigned int i=1; i<verts.size(); ++i) {
+		IBKMK::Vector3D vx = verts[(i+1) % verts.size()] - verts[i];
+		IBKMK::Vector3D vy = verts[i-1] - verts[i];
 		IBKMK::Vector3D vn;
 		vx.crossProduct(vy, vn);
 		// again, we check for not collinear points here (see explanation above)
@@ -277,24 +270,26 @@ void Polygon3D::updateLocalCoordinateSystem() {
 
 
 
-void Polygon3D::update2DPolyline() {
-	IBK_ASSERT(m_vertexes.size() >= 3);
+void Polygon3D::update2DPolyline(const std::vector<Vector3D> & verts) {
+	// NOTE: DO NOT ACCESS m_vertexes IN THIS FUNCTION!
 
-	std::vector<IBKMK::Vector2D>		poly;
-	poly.reserve(m_vertexes.size());
+	IBK_ASSERT(verts.size() >= 3);
+
+	std::vector<IBKMK::Vector2D> poly;
+	poly.reserve(verts.size());
 
 	// first point is v0 = origin
 	poly.push_back( IBKMK::Vector2D(0,0) );
 
 	// now process all other points
-	for (unsigned int i=1; i<m_vertexes.size(); ++i) {
-		const IBKMK::Vector3D & v = m_vertexes[i];
+	for (unsigned int i=1; i<verts.size(); ++i) {
+		const IBKMK::Vector3D & v = verts[i];
 		double x,y;
 		/// TODO: Dirk, improve this - by simply calling planeCoordinates we
 		///       redo the same stuff several times for the same plane.
 		///       We should use a function that passes vX, vY, offset and then
 		///       a vector with v,x,y to process.
-		if (IBKMK::planeCoordinates(m_vertexes[0], m_localX, m_localY, v, x, y)) {
+		if (IBKMK::planeCoordinates(verts[0], m_localX, m_localY, v, x, y)) {
 			poly.push_back( IBKMK::Vector2D(x,y) );
 		}
 		else {
@@ -306,6 +301,7 @@ void Polygon3D::update2DPolyline() {
 
 
 void IBKMK::Polygon3D::update3DVertexesFromPolyline(IBKMK::Vector3D offset) {
+	// TODO : check this logic!
 	const std::vector<IBKMK::Vector2D> &polylineVertexes = m_polyline.vertexes();
 	m_vertexes.resize(polylineVertexes.size());
 	// Mind: we may have the case, that due to collinear points in polyline we have removed vertex (0,0), and

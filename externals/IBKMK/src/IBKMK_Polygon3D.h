@@ -53,12 +53,16 @@ namespace IBKMK {
 	Internally, the 3D polygon is stored as a 2D Polygon that is placed and oriented in space through
 	offset, normal and xAxis vector (the yAxis vector is automatically computed and cached).
 
-	There are several functions for constructing a polygon.
+	There are several functions for constructing a polygon. All have in common that passing invalid arguments may
+	lead to an invalid polygon. Hence, checking the correctness of the polygon after construction is mandatory!
 
-	\note When constructing a polygon with invalid data (polyline, or vectors), the resulting polygon
-		  will be invalid and the polyline empty. You cannot use the polygon to construction incrementally a valid
-		  polygon! This differs somewhat from the Polygon2D functionality, since there you can store
-		  invalid vertex lists (this may be changed in future)!
+	\note When constructing a polygon with invalid data (polyline, or vectors), the 2D polyline might be empty.
+		  You cannot use the polygon to construction incrementally a valid polygon! Always check for validity before
+		  using any query functions.
+
+
+	TODO : Diskutieren, wie definieren wir den Offset-Punkt, wenn beim Entfernen kollinearer
+		   Punkte ggfs. der Referenzpunkt entfernt wird?
 */
 class Polygon3D {
 public:
@@ -66,6 +70,7 @@ public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
+
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
@@ -76,16 +81,29 @@ public:
 	/*! Constructs a polygon from 2D polygon with normal vector, xaxis and offset. */
 	Polygon3D(const Polygon2D & p2d, const IBKMK::Vector3D & offset,
 			  const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis);
-	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways). */
+
+	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways).
+		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
+		from first to second vertex at a suitable (automatically selected) vertex of the polygon.
+
+		\note For L-shaped polygons or otherwise more complex shapes it is not clear beforehand where the offset point will
+			  selected. You may, however, manually translate and rotate the polygon plane afterwards to select
+			  a specific offset point.
+	*/
 	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
+
+	/*! Returns true, if both the polyline itself and the x and normal vectors are valid. */
+	bool isValid() const { return m_valid; }
+
+	/*! Comparison operator != */
+	bool operator!=(const Polygon3D &other) const;
+
+	// Query functions - do not call for invalid polygons, since they may be at best undefined.
 
 	/*! Returns the type of the polygon (can be used to optimize some algorithms).
 		\note Result of this function is undefined for invalid polygons.
 	*/
 	Polygon2D::type_t type() const { return m_polyline.type(); }
-
-	/*! Returns true, if both the polyline itself and the x and normal vectors are valid. */
-	bool isValid() const { return m_valid; }
 
 	/*! Returns 3D vertex coordinates. */
 	const std::vector<IBKMK::Vector3D> & vertexes() const;
@@ -96,8 +114,6 @@ public:
 
 	const Polygon2D & polyline() const { return m_polyline; }
 
-	/*! Comparison operator != */
-	bool operator!=(const Polygon3D &other) const;
 
 	// Transformation functions
 
@@ -117,7 +133,9 @@ public:
 
 	// Calculation functions
 
-	/*! Returns the center point (average of all vertexes of the polygon). */
+	/*! Returns the center point (average of all vertexes of the polygon).
+		\note Throws an exception if polygon is invalid.
+	*/
 	IBKMK::Vector3D centerPoint() const;
 
 	/*! Computes bounding box of polygon.
@@ -125,6 +143,7 @@ public:
 		(check with isValid() beforehand).
 	*/
 	void boundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+
 	/*! Enlarges existing bounding box to hold polygon.
 		An invalid/empty polygon does not have bounding box and an exception will be thrown
 		(check with isValid() beforehand).
@@ -132,51 +151,22 @@ public:
 	void enlargeBoundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
 
 
-
-
-	// Modification functions
-
-	/*! Adds a new 3D vertex in the plane of the polygon. Afterwards simplifies polygon.
-		If adding the point would violate validity rules, the vertex is rejected and the polygon remains unchanged.
-	*/
-	bool addVertex(const IBK::point3D<double> & v);
-
-	/*! Removes the vertex at given location.
-		\warning Throws an exception if index is out of range.
-	*/
-	void removeVertex(unsigned int idx);
-
-
 private:
 
 	// *** PRIVATE MEMBER FUNCTIONS ***
-
-	/*! This function checks the polygon for validity. This function is called automatically from readXML() and
-		from addVertex() and removeVertex().
-	*/
-	void checkPolygon();
-
-	/*! Detects if a polygon geometry with 4 vertices is actually a Rectangle (if the polygon has exactly 4 vertexes and
-		vertex #3 can be constructed from adding (v2-v1) and (v4-v1) to v1 with some small rounding error tolerance).
-		Polyons with 3 vertexes are Triangles. All others are generic polygons.
-	*/
-	void detectType();
-
-	/*! Eleminate colinear points in a polygon and return a new polygon. */
-	void eleminateColinearPts();
 
 	/*! Computes the normal vector of the plane and caches it in m_normal.
 		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
 		normal vector is set to 0,0,0).
 	*/
-	void updateLocalCoordinateSystem();
+	void updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts);
 
 	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the xy-plane of the polygon's local coordinate system). */
-	void update2DPolyline();
+	void update2DPolyline(const std::vector<IBKMK::Vector3D> & verts);
 
 	/*! Assuming a valid polyline, we re-compute the world coordinates from given offset and local coordinate system
 		stored in m_localX and m_localY.
-		\note Since we may call this function with m_vertexes as argument, we must ensure that the offset point
+		\note Since we may call this function with m_vertexes[0] as argument, we must ensure that the offset point
 			  remains unmodified - hence it is passed by value.
 	*/
 	void update3DVertexesFromPolyline(Vector3D offset);
