@@ -310,5 +310,6 @@ void IBKMK::Polygon3D::update3DVertexesFromPolyline(IBKMK::Vector3D offset) {
 		m_vertexes[i] = offset + m_localX * polylineVertexes[i].m_x + m_localY * polylineVertexes[i].m_y;
 }
 
+
 } // namespace IBKMK
 

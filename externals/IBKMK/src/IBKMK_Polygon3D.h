@@ -86,9 +86,8 @@ public:
 		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
 		from first to second vertex at a suitable (automatically selected) vertex of the polygon.
 
-		\note For L-shaped polygons or otherwise more complex shapes it is not clear beforehand where the offset point will
-			  selected. You may, however, manually translate and rotate the polygon plane afterwards to select
-			  a specific offset point.
+		\note Once all collinear points have been removed the offset point will be the first vertex of the polygon. Use offset()
+			to retrieve the offset.
 	*/
 	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
 
@@ -108,6 +107,7 @@ public:
 	/*! Returns 3D vertex coordinates. */
 	const std::vector<IBKMK::Vector3D> & vertexes() const;
 
+	const IBKMK::Vector3D & offset() const { return m_offset; }
 	const IBKMK::Vector3D & normal() const { return m_normal; }
 	const IBKMK::Vector3D & localX() const { return m_localX; }
 	const IBKMK::Vector3D & localY() const { return m_localY; }
@@ -149,6 +149,7 @@ public:
 		(check with isValid() beforehand).
 	*/
 	void enlargeBoundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+
 
 
 private:
