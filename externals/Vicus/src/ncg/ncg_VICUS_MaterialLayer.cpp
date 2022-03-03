@@ -91,7 +91,7 @@ TiXmlElement * MaterialLayer::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("idMaterial", IBK::val2string<unsigned int>(m_idMaterial));
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
-		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value(m_thickness.IO_unit));
 	}
 	return e;
 }

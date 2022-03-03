@@ -133,7 +133,7 @@ TiXmlElement * Material::writeXML(TiXmlElement * parent) const {
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
 		}
 	}
 	NANDRAD::writeVector(e, "IdEpds", m_idEpds);

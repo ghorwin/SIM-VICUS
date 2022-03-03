@@ -27,10 +27,8 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <IBKMK_Vector3D.h>
-#include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_KeywordList.h>
-#include <vector>
 
 #include <tinyxml.h>
 
@@ -85,12 +83,7 @@ void NetworkNode::readXML(const TiXmlElement * element) {
 			const std::string & cName = c->ValueStr();
 			if (cName == "Position") {
 				try {
-					std::vector<double> vals;
-					IBK::string2valueVector(c->GetText(), vals);
-					// must have 3 elements
-					if (vals.size() != 3)
-						throw IBK::Exception("Missing values (expected 3).", FUNC_ID);
-					m_position.set(vals[0], vals[1], vals[2]);
+					m_position = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
 										  .arg("Invalid vector data."), FUNC_ID);
@@ -139,13 +132,10 @@ TiXmlElement * NetworkNode::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("type", KeywordList::Keyword("NetworkNode::NodeType",  m_type));
 	if (m_idSubNetwork != VICUS::INVALID_ID)
 		e->SetAttribute("idSubNetwork", IBK::val2string<unsigned int>(m_idSubNetwork));
-	{
-		std::vector<double> v = { m_position.m_x, m_position.m_y, m_position.m_z};
-		TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), IBK::vector2string<double>(v," "));
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "Position", nullptr, std::string(), m_position.toString());
 	if (!m_maxHeatingDemand.name.empty()) {
 		IBK_ASSERT("MaxHeatingDemand" == m_maxHeatingDemand.name);
-		TiXmlElement::appendIBKParameterElement(e, "MaxHeatingDemand", m_maxHeatingDemand.IO_unit.name(), m_maxHeatingDemand.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "MaxHeatingDemand", m_maxHeatingDemand.IO_unit.name(), m_maxHeatingDemand.get_value(m_maxHeatingDemand.IO_unit));
 	}
 
 	m_heatExchange.writeXML(e);

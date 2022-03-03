@@ -75,8 +75,6 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "Polygon3D")
-				m_polygon3D.readXML(c);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -104,8 +102,6 @@ TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_displayColor.isValid())
 		TiXmlElement::appendSingleAttributeElement(e, "DisplayColor", nullptr, std::string(), m_displayColor.name().toStdString());
-
-	m_polygon3D.writeXML(e);
 
 	if (!m_subSurfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("SubSurfaces");
