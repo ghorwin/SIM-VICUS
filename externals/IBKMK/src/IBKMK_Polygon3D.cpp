@@ -58,13 +58,15 @@ Polygon3D::Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK
 }
 
 
-Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal,
-					 const IBKMK::Vector3D & localX, const IBKMK::Vector3D & offset) :
+Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & offset,
+					 const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX) :
 	m_offset(offset), m_polyline(polyline)
 {
-	// guard against invalid polylines
-	if (polyline.isValid())
+	try {
 		setRotation(normal, localX);
+	} catch (...) {
+	}
+	// mind: polygon might be invalid because of bad polyline, bad normal/localX vectors etc.
 }
 
 
@@ -85,7 +87,7 @@ Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
 	if (m_vertexes.size() < 3 || m_normal == IBKMK::Vector3D(0,0,0))
 		return;
 
-	update2DPolyline();
+//	update2DPolyline();
 
 //	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
 //	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();

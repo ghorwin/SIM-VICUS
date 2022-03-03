@@ -25,62 +25,93 @@
 
 #include "VICUS_Polygon3D.h"
 
-#include <set>
-
-#include <QLineF>
-#include <QPolygonF>
-
-#include <IBK_Line.h>
-#include <IBK_math.h>
-#include <IBK_messages.h>
-
-#include <IBKMK_3DCalculations.h>
-#include <IBKMK_Polygon3D.h>
-
-#include <NANDRAD_Utilities.h>
-
-
 #include <VICUS_Constants.h>
 #include <VICUS_KeywordList.h>
+
+#include <NANDRAD_Utilities.h>
 
 #include <tinyxml.h>
 
 namespace VICUS {
 
-
-Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal,
-					 const IBKMK::Vector3D & localX, const IBKMK::Vector3D & offset) :
-	m_offset(offset), m_polyline(polyline)
-{
-	// guard against invalid polylines
-	if (!polyline.isValid())
-		m_polyline.clear();
-	else
-		setRotation(normal, localX);
-}
-
-
-bool Polygon3D::operator!=(const Polygon3D & other) const {
-	// 3D polygon is equal when polylines match and all three vectors are the same
-	if (m_normal != other.m_normal)
-		return true;
-	if (m_localX != other.m_localX)
-		return true;
-	if (m_offset != other.m_offset)
-		return true;
-
-	if (m_polyline != other.m_polyline)
-		return true;
-	return false;
-}
-
-
 void Polygon3D::readXML(const TiXmlElement * element) {
-	readXMLPrivate(element); // when Polygon2D is read, it will be checked for validity already
+	FUNCID(Polygon3D::readXML);
 
-	// now check the normal vector and xAxis and update the yAxis
-	// also marks the 3D vertexes as "dirty"
-	setRotation(m_normal, m_localX); // Might throw an exception if validity check fails
+	// if element has child "offset", then we have the new format
+	const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "offset");
+	if (attrib != nullptr) {
+		IBKMK::Vector3D offset, normal, localX;
+		try {
+			offset = IBKMK::Vector3D::fromString(attrib->ValueStr());
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Error reading 'offset' vector from 'Polygon3D' tag.", FUNC_ID);
+		}
+
+		attrib = TiXmlAttribute::attributeByName(element, "normal");
+		if (attrib == nullptr)
+			throw IBK::Exception("Missing attribute 'normal' in 'Polygon3D' tag.", FUNC_ID);
+		try {
+			normal = IBKMK::Vector3D::fromString(attrib->ValueStr());
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Error reading 'normal' vector from 'Polygon3D' tag.", FUNC_ID);
+		}
+
+		attrib = TiXmlAttribute::attributeByName(element, "localX");
+		if (attrib == nullptr)
+			throw IBK::Exception("Missing attribute 'localX' in 'Polygon3D' tag.", FUNC_ID);
+		try {
+			localX = IBKMK::Vector3D::fromString(attrib->ValueStr());
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Error reading 'localX' vector from 'Polygon3D' tag.", FUNC_ID);
+		}
+
+		// read vertexes
+		std::string text = element->GetText();
+		text = IBK::replace_string(text, ",", " ");
+		std::vector<IBKMK::Vector2D> verts;
+		try {
+			std::vector<double> vals;
+			IBK::string2valueVector(text, vals);
+			// must have n*2 elements
+			if (vals.size() % 2 != 0)
+				throw IBK::Exception("Mismatching number of values.", FUNC_ID);
+			if (vals.empty())
+				throw IBK::Exception("Missing values.", FUNC_ID);
+			verts.resize(vals.size() / 2);
+			for (unsigned int i=0; i<verts.size(); ++i){
+				verts[i].m_x = vals[i*2];
+				verts[i].m_y = vals[i*2+1];
+			}
+			IBKMK::Polygon2D poly2D(verts);
+			if (!poly2D.isValid())
+				throw IBK::Exception("Invalid polyline.", FUNC_ID);
+
+			// now create the polygon 3D
+			IBKMK::Polygon3D poly3D(verts, offset, normal, localX);
+			if (!poly3D.isValid())
+				throw IBK::Exception("Invalid polygon definition.", FUNC_ID);
+
+			// Note: a VICUS::Polyon3D _is a_ IBKMK::Polygon3D, so we can cast them into each other
+			IBK_ASSERT(dynamic_cast<IBKMK::Polygon3D*>(this) != nullptr);
+			dynamic_cast<IBKMK::Polygon3D&>(*this) = poly3D;
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row())
+								  .arg("Error reading element 'Polygon3D'." ), FUNC_ID);
+		}
+	}
+	else {
+		// try reading in old format, first
+		try {
+			std::vector<IBKMK::Vector3D> verts;
+			NANDRAD::readVector3D(element, "Polygon3D", verts);
+
+			// Note: a VICUS::Polyon3D _is a_ IBKMK::Polygon3D, so we can cast them into each other
+			IBK_ASSERT(dynamic_cast<IBKMK::Polygon3D*>(this) != nullptr);
+			dynamic_cast<IBKMK::Polygon3D&>(*this) = IBKMK::Polygon3D(verts);
+		} catch (IBK::Exception & ex) {
+			throw IBK::Exception(ex, "Error reading 'Polygon3D' tag in old Vicus format.", FUNC_ID);
+		}
+	}
 }
 
 
@@ -88,137 +119,30 @@ TiXmlElement * Polygon3D::writeXML(TiXmlElement * parent) const {
 	if (*this == Polygon3D())
 		return nullptr;
 
-	return writeXMLPrivate(parent);
-}
+	TiXmlElement * e = new TiXmlElement("Polygon3D");
+	parent->LinkEndChild(e);
 
+	// encode vectors
+	e->SetAttribute("offset", offset().toString());
+	e->SetAttribute("normal", normal().toString());
+	e->SetAttribute("localX", localX().toString());
 
-bool Polygon3D::isValid() const {
-	if (m_normal == IBKMK::Vector3D())
-		return false; // never set a valid plane orientation
-	return m_polyline.isValid();
-}
-
-
-void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) {
-	FUNCID(Polygon3D::setRotation);
-
-	if (!IBK::nearly_equal<6>(normal.magnitudeSquared(), 1.0))
-		throw IBK::Exception("Normal vector does not have unit length!", FUNC_ID);
-	if (!IBK::nearly_equal<6>(xAxis.magnitudeSquared(), 1.0))
-		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
-	// check that the vectors are (nearly) orthogonal
-	double sp = normal.scalarProduct(xAxis);
-	if (!IBK::nearly_equal<6>(sp, 1.0))
-		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
-
-	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
-	m_normal = normal;
-	m_localX = xAxis;
-	normal.crossProduct(xAxis, m_localY); // Y = N x X - right-handed coordinate system
-	m_localY.normalize();
-	m_dirty = true; // mark 3D vertexes as dirty
-}
-
-
-IBKMK::Vector3D Polygon3D::centerPoint() const {
-	FUNCID(Polygon3D::centerPoint);
-	if (!isValid())
-		throw IBK::Exception("Invalid polygon.", FUNC_ID);
-
-	size_t counter=0;
-	IBKMK::Vector3D vCenter;
-
-	for (const IBKMK::Vector3D & v : vertexes()) {
-		vCenter += v;
-		++counter;
+	std::stringstream vals;
+	const std::vector<IBKMK::Vector2D> & polyVertexes = polyline().vertexes();
+	for (unsigned int i=0; i<polyVertexes.size(); ++i) {
+		vals << polyVertexes[i].m_x << " " << polyVertexes[i].m_y;
+		if (i<polyVertexes.size()-1)  vals << ", ";
 	}
-	vCenter/=static_cast<double>(counter);
-
-	return vCenter;
+	TiXmlText * text = new TiXmlText( vals.str() );
+	e->LinkEndChild( text );
+	return e;
 }
 
 
-const std::vector<IBKMK::Vector3D> & Polygon3D::vertexes() const {
-	if (m_dirty) {
-		// re-compute 3D vertex coordinates
-		unsigned int vertexCount = m_polyline.vertexes().size();
-		m_vertexes.resize(vertexCount);
-		for (unsigned int i=0; i<vertexCount; ++i) {
-			const IBKMK::Vector2D & v2 = m_polyline.vertexes()[i];
-			m_vertexes[i] = m_offset + v2.m_x*m_localX + v2.m_y*m_localY;
-		}
-		m_dirty = false;
-	}
-	return m_vertexes;
+// Comparison operator !=
+bool Polygon3D::operator!=(const Polygon3D &other) const {
+	return IBKMK::Polygon3D::operator!=(other);
 }
-
-
-Polygon3D Polygon3D::from3DVertexes(const std::vector<IBKMK::Vector3D> & vertexes) {
-	FUNCID(Polygon3D::from3DVertexes);
-	IBKMK::Polygon3D p(vertexes);
-	if (!p.isValid())
-		throw IBK::Exception("Invalid vertex vector, cannot construct valid polygon.", FUNC_ID);
-	// a valid polygon has at least 1 vertex and valid normal and localX vectors
-	Polygon3D newPoly = VICUS::Polygon3D((const VICUS::Polygon2D&)p.polyline(), p.normal(), p.localX(), p.vertexes()[0]);
-	return newPoly;
-}
-
-
-#if 0
-void Surface::healGeometry(const std::vector<IBKMK::Vector3D> &poly3D) {
-	// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
-	std::vector<double> deviations (poly3D.size(), 0);
-	// create a vector to hold the projected points for each of the plane variants
-	std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
-
-	// we iterate through all points and construct planes
-	double smallestDeviation = std::numeric_limits<double>::max();
-	unsigned int index = (unsigned int)-1;
-	for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
-
-		const IBKMK::Vector3D & offset = poly3D[i];
-
-		const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
-		const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
-
-		// we find our plane
-		// we now iterate again through all point of the polygon and
-		for (unsigned int j = 0; j<count; ++j ) {
-
-			if ( i == j ) {
-				projectedPoints[i][j] = offset;
-				continue;
-			}
-
-			// we take the current point
-			const IBKMK::Vector3D & vertex = poly3D[j];
-
-			// we find our projected points onto the plane
-			double x, y;
-			IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
-
-			// now we construct our projected points and find the deviation between the original points
-			// and their projection
-			projectedPoints[i][j] = offset + a*x + b*y;
-
-			// add up the distance between original vertex and projected point
-			// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
-			//       the expensive square-root calculation
-			deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
-		}
-
-		// determines smallest deviation
-		if (deviations[i] < smallestDeviation) {
-			index = i;
-			smallestDeviation = deviations[i];
-		}
-	}
-
-	// take the best vertex set and use it for the polygon
-	setPolygon3D(projectedPoints[index]);
-}
-
-#endif
 
 
 } // namespace VICUS

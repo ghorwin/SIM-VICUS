@@ -103,9 +103,6 @@ public:
 	ComponentInstance					*m_componentInstance = nullptr;
 
 private:
-	/*! The polygon describing this surface. */
-	Polygon3D							m_polygon3D;				// XML:E
-
 	/*! Subsurfaces of the surface. */
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 

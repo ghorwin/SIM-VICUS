@@ -26,79 +26,53 @@
 #ifndef VICUS_Polygon3DH
 #define VICUS_Polygon3DH
 
-#include <IBKMK_Vector3D.h>
+#include <IBKMK_Polygon3D.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Polygon2D.h"
 
 namespace VICUS {
 
-/*! Class Polygon3D stores a polygon of 3D points that lies in a plane.
-	The polygon is defined by means of a 2D polyline that is projected onto a plane in space.
-	This plane is defined through offset, normal and xAxis vectors.
-	\note The polygon implements 2D to 3D coordinate calculation using lazy evaluation. Hence, any operation
-		  requiring an update of the 3D vertexes marks the vector as "dirty".
+/*! Class Polygon3D stores a planar polygon in 3D space.
+	This class merely wraps IBKMK::Polygon3D and provides read/write functionality.
 */
-class Polygon3D {
+class Polygon3D : public IBKMK::Polygon3D {
 	VICUS_READWRITE_PRIVATE
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
-	/*! Initializing constructor. */
-	Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
-			  const IBKMK::Vector3D & offset);
 
-	VICUS_READWRITE
+	/*! Initializing constructor.
+		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
+		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
+		internally.
+	*/
+	Polygon3D(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
+		IBKMK::Polygon3D(t, a, b, c)
+	{}
+
+	/*! Constructs a polygon from 2D polygon with normal vector, xaxis and offset. */
+	Polygon3D(const IBKMK::Polygon2D & p2d, const IBKMK::Vector3D & offset,
+			  const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) :
+		IBKMK::Polygon3D(p2d, offset, normal, xAxis)
+	{}
+
+	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways).
+		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
+		from first to second vertex at a suitable (automatically selected) vertex of the polygon.
+
+		\note Once all collinear points have been removed the offset point will be the first vertex of the polygon. Use offset()
+			to retrieve the offset.
+	*/
+	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) :
+		IBKMK::Polygon3D(vertexes)
+	{}
+
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	VICUS_COMP(Polygon3D)
-
-	/*! Returns true, if both the polyline itself and the x and normal vectors are valid. */
-	bool isValid() const;
-
-	/*! Totates the polygon/plane and updates the y-axis.
-		Throws an exception if either normal or xAxis do not have unit length, or if both vectors are colliniar.
-	*/
-	void setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX);
-	/*! Moves the polygon in 3D space by 'distance'. */
-	void setTranslation(const IBKMK::Vector3D & offset) { m_offset = offset; m_dirty = true; }
-	/*! Moves the polygon in 3D space by 'distance'. */
-	void translate(const IBKMK::Vector3D & distance) { m_offset += distance; m_dirty = true; }
-	/*! Returns the center point (average of all vertexes of the polygon). */
-	IBKMK::Vector3D centerPoint() const;
-
-	const std::vector<IBKMK::Vector3D> & vertexes() const;
-
-	const IBKMK::Vector3D & normal() const { return m_normal; }
-	const IBKMK::Vector3D & localX() const { return m_localX; }
-	const IBKMK::Vector3D & localY() const { return m_localY; }
-
-	const Polygon2D & polyline() const { return m_polyline; }
-
-	// *** STATIC PUBLIC MEMBERS ***
-
-	/*! Attempts to construct a polygon from a given set of vertexes.
-		If the vertexes form an invalid polygon (not enough points, not in plane, collinear vectors etc.),
-		an IBK::Exception is thrown. If the function returns regularly, a valid polygon has been created.
-	*/
-	static Polygon3D from3DVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
-
-private:
-	/*! Offset of the polygon. */
-	IBKMK::Vector3D							m_offset;		// XML:E
-	/*! Normal vector. */
-	IBKMK::Vector3D							m_normal;		// XML:E
-	/*! x-Axis-vector. */
-	IBKMK::Vector3D							m_localX;		// XML:E
-	/*! y-Axis-vector (computed from x and normal, not stored in data model). */
-	IBKMK::Vector3D							m_localY;
-	/*! The 2D polyline. */
-	Polygon2D								m_polyline;		// XML:E
-
-	/*! Dirty flag, set to true whenever anything is modified that affects the 3D vertex coordinates. */
-	mutable	bool							m_dirty;
-	/*! Cached 3D vertexes, updated upon access when dirty is true. */
-	mutable	std::vector<IBKMK::Vector3D>	m_vertexes;
 };
 
 } // namespace VICUS

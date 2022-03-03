@@ -17,7 +17,7 @@ PlaneGeometry kapselt:
 
 ## Vic3D::NewSubSurfaceObject (???)
 
-- PlaneGeometry wird als Ergebnis der Erstellung geliefert  
+- PlaneGeometry wird als Ergebnis der Erstellung geliefert  --> IBKMK::Polygon2D + offset in Surface ebene
 
 ## Vic3D::NewGeometryObject
 
@@ -44,11 +44,11 @@ Algorithmus bei RemovePoint:
 
 - Vertexliste aktualisieren, prüfen ob Polygon noch möglich, falls ja, dieses ablegen und Triangulieren, sonst invalid lassen
 
+
 ## Vic3DGeometryHelpers
 
 PlaneGeometry wird benutzt, um aus einzelnen 3D-Vertexes bequem eine Triangulierung zu machen. D.h. 3D-Vertexe rein, Triangulierte 3D-Plane (mit eingebetteter 2D-Plane) raus
 
-Könnten man auch umsetzen, wenn man IBKMK::Polygon3D::triangleFromPoints() oder so implementiert.
 
 ## SVPropVertexListWidget
 

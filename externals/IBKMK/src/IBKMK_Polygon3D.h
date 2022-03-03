@@ -59,10 +59,6 @@ namespace IBKMK {
 	\note When constructing a polygon with invalid data (polyline, or vectors), the 2D polyline might be empty.
 		  You cannot use the polygon to construction incrementally a valid polygon! Always check for validity before
 		  using any query functions.
-
-
-	TODO : Diskutieren, wie definieren wir den Offset-Punkt, wenn beim Entfernen kollinearer
-		   Punkte ggfs. der Referenzpunkt entfernt wird?
 */
 class Polygon3D {
 public:
@@ -79,8 +75,7 @@ public:
 	Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
 	/*! Constructs a polygon from 2D polygon with normal vector, xaxis and offset. */
-	Polygon3D(const Polygon2D & p2d, const IBKMK::Vector3D & offset,
-			  const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis);
+	Polygon3D(const Polygon2D & p2d, const Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX);
 
 	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways).
 		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
