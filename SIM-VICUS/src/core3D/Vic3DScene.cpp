@@ -96,8 +96,8 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
-												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0),
+												 QColor("white"), 10 ) );
 
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }

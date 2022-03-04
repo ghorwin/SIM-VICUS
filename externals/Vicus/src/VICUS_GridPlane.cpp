@@ -1,4 +1,4 @@
-#include "VICUS_Plane.h"
+#include "VICUS_GridPlane.h"
 
 
 bool VICUS::GridPlane::intersectsLine(const IBKMK::Vector3D & nearPoint, const IBKMK::Vector3D & direction,
