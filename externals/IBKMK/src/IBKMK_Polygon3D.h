@@ -157,15 +157,11 @@ private:
 	*/
 	void updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts);
 
-	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the xy-plane of the polygon's local coordinate system). */
-	void update2DPolyline(const std::vector<IBKMK::Vector3D> & verts);
-
-	/*! Assuming a valid polyline, we re-compute the world coordinates from given offset and local coordinate system
-		stored in m_localX and m_localY.
-		\note Since we may call this function with m_vertexes[0] as argument, we must ensure that the offset point
-			  remains unmodified - hence it is passed by value.
+	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the
+		xy-plane of the polygon's local coordinate system).
+		Requires valid normal, localX, and localY vectors to be stored in members already
 	*/
-	void update3DVertexesFromPolyline(Vector3D offset);
+	void update2DPolyline(const std::vector<IBKMK::Vector3D> & verts);
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
