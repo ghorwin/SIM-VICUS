@@ -30,6 +30,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_Polygon3D.h"
+#include "VICUS_Polygon2D.h"
 #include "VICUS_PlaneTriangulationData.h"
 
 namespace VICUS {
@@ -112,7 +113,7 @@ public:
 	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
 
 	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
-	const Polygon2D & polygon2D() const { return m_polygon.polyline(); }
+	const IBKMK::Polygon2D & polygon2D() const { return m_polygon.polyline(); }
 
 	/*! Calculates surface area in m2. */
 	double area(int digits = 1) const;
