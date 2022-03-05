@@ -2,6 +2,8 @@
 
 #include <IBK_Exception.h>
 
+#include <IBKMK_3DCalculations.h>
+
 namespace VICUS {
 
 bool GridPlane::intersectsLine(const IBKMK::Vector3D & p, const IBKMK::Vector3D & direction,
@@ -24,7 +26,6 @@ bool GridPlane::intersectsLine(const IBKMK::Vector3D & p, const IBKMK::Vector3D 
 	// Condition 1: same direction of normal vectors?
 	// -> does not apply to grid planes
 
-	const IBKMK::Vector3D & planeOffset = m_offset;
 	t = (m_offset - p).scalarProduct(m_normal) / d_dot_normal;
 
 	// Condition 2: outside viewing range?
@@ -43,30 +44,61 @@ bool GridPlane::intersectsLine(const IBKMK::Vector3D & p, const IBKMK::Vector3D 
 
 
 void GridPlane::closestSnapPoint(const IBKMK::Vector3D & intersectionPoint, IBKMK::Vector3D & snapPoint) const {
+	FUNCID(GridPlane::closestSnapPoint);
+	if (m_nGridLines == 0)
+		throw IBK::Exception("GridPlane not properly initialized.", FUNC_ID);
 
-	// Indexes of the grid lines
-	unsigned int i = 0;
-	unsigned int j = 0;
+	// Note: we rely on valid m_localX, m_localY and m_normal vectors, all orthogonal and with magnitude 1
 
-	if (intersectionPoint.m_x > m_maxGrid)
-		i = m_gridLineCount-1;
-	else if (intersectionPoint.m_x > m_minGrid) {
-		double offset = intersectionPoint.m_x - m_minGrid;
-		i = (unsigned int)std::floor(offset/m_step);
-		if (offset - i*m_step > m_step/2.0)
-			++i;
+	IBK_ASSERT(m_nGridLines % 2 == 1); // must be an odd number!
+
+	// Indexes of the grid lines, -(m_nGridLines-1)/2 ... +(m_nGridLines-1)/2
+	int i = 0;
+	int j = 0;
+	int maxGridLineNum = (m_nGridLines-1)/2;
+
+	// we first compute the projected plain coordinates
+	double localX, localY;
+
+	// special handling for horizontal grids (the vast majority of grids will be this way)
+	if (m_normal.m_x == 0.0 && m_normal.m_y == 0.0) {
+		localX = intersectionPoint.m_x;
+		localY = intersectionPoint.m_y;
 	}
-	if (intersectionPoint.m_y > m_maxGrid)
-		j = m_gridLineCount-1;
-	else if (intersectionPoint.m_y > m_minGrid) {
-		double offset = intersectionPoint.m_y - m_minGrid;
-		j = (unsigned int)std::floor(offset/m_step);
-		if (offset - j*m_step > m_step/2.0)
-			++j;
+	else {
+		if (!planeCoordinates(m_offset, m_localX, m_localY,
+							  intersectionPoint, localX, localY))
+		{
+			snapPoint = intersectionPoint;
+			return;
+		}
+	}
+
+	// now we check if we are outside our plane limits and clip the coordinates respectively
+	double minorGridSpacing = m_spacing/10;
+	if (localX < -m_gridExtends) {
+		i = -maxGridLineNum;
+	}
+	else if (localX > m_gridExtends) {
+		i = maxGridLineNum;
+	}
+	else {
+		i = (int)std::floor(intersectionPoint.m_x / minorGridSpacing + 0.5);  // round real (up/down)
+	}
+
+	if (localY < -m_gridExtends) {
+		j = -maxGridLineNum;
+	}
+	else if (localY > m_gridExtends) {
+		j = maxGridLineNum;
+	}
+	else {
+		j = (int)std::floor(intersectionPoint.m_y / minorGridSpacing + 0.5);  // round real (up/down)
 	}
 
 	// recompute snap coordinates
 	snapPoint = m_offset + i*m_localX + j*m_localY;
 }
+
 
 } // namespace VICUS

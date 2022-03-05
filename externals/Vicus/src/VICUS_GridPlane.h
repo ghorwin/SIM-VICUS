@@ -115,7 +115,8 @@ private:
 	IBKMK::Vector3D m_localY;
 	/*! Minimum/Maximum local x/y coordinate of grid. */
 	double			m_gridExtends;
-
+	/*! Number of major grid lines (always an odd number). */
+	unsigned int	m_nGridLines = 0;
 };
 
 } // namespace VICUS
