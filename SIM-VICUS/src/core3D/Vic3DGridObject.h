@@ -35,6 +35,10 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
+namespace VICUS {
+	class GridPlane;
+}
+
 namespace Vic3D {
 
 class ShaderProgram;
@@ -51,7 +55,7 @@ class ShaderProgram;
 class GridObject {
 public:
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
-	void create(ShaderProgram * shaderProgram);
+	void create(ShaderProgram * shaderProgram, std::vector<VICUS::GridPlane> & gridPlanes);
 	void destroy();
 
 	/*! Binds the buffer and paints. */
@@ -94,6 +98,9 @@ public:
 	double						m_maxGrid;
 	/*! Cached grid step size for minor grid (same for x and y). */
 	double						m_step;
+
+	/*! Set to false if no grid is visible - speeds up rendering a little. */
+	bool						m_anyGridVisible = true;
 };
 
 } // namespace Vic3D

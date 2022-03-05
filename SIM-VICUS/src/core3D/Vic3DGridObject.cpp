@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include <VICUS_Project.h>
+#include <VICUS_GridPlane.h>
 #include "SVProjectHandler.h"
 #include "Vic3DShaderProgram.h"
 
@@ -37,7 +37,9 @@
 
 namespace Vic3D {
 
-void GridObject::create(ShaderProgram * shaderProgram) {
+void GridObject::create(ShaderProgram * shaderProgram,
+						std::vector<VICUS::GridPlane> & gridPlanes)
+{
 	m_gridShader = shaderProgram;
 
 	// get grid dimensions from project

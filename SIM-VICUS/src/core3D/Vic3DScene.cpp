@@ -238,7 +238,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
 	if (updateGrid)
-		m_gridObject.create(m_gridShader);
+		m_gridObject.create(m_gridShader, m_gridPlanes);
 
 	if (updateSelection) {
 		// update selected objects
@@ -1056,7 +1056,7 @@ void Scene::render() {
 
 	// *** grid ***
 
-	if (m_gridVisible) {
+	if (m_gridObject.m_anyGridVisible) {
 		m_gridShader->bind();
 		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
 		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
