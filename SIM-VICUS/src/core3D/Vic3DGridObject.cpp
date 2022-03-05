@@ -42,15 +42,41 @@ void GridObject::create(ShaderProgram * shaderProgram,
 {
 	m_gridShader = shaderProgram;
 
-	// get grid dimensions from project
-	const VICUS::Project & prj = project();
+	// retrieve colors for first main grid (the other grid planes only have one color)
+	SVSettings::ThemeType tt = SVSettings::instance().m_theme;
+	const SVSettings::ThemeSettings & s = SVSettings::instance().m_themeSettings[tt];
 
-	const SVSettings::ThemeSettings & s = SVSettings::instance().m_themeSettings[SVSettings::instance().m_theme];
-	// transfer color
-	QColor gridColor(s.m_minorGridColor);
-	m_minorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
-	gridColor = s.m_majorGridColor;
-	m_majorGridColor = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+
+	// resize vectors
+	unsigned int nPlanes = gridPlanes.size();
+	m_gridOffsets.resize(nPlanes);
+	m_gridColors.resize(nPlanes);
+
+	// now generate buffer data for all grids
+
+	for (unsigned int i=0; i<nPlanes; ++i) {
+
+		VICUS::GridPlane & gp = gridPlanes[i];
+
+		// transfer grid colors
+		if (i==0) {
+			// transfer color of main grid
+			QColor gridColor(s.m_minorGridColor);
+			m_gridColors[0] = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+			gridColor = s.m_majorGridColor;
+			m_gridColors[1] = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+		}
+		else {
+			// major grid
+			m_gridColors[i*2 + 1] = QVector3D((float)gp.m_color.redF(), (float)gp.m_color.greenF(), (float)gp.m_color.blueF());
+			// minor grid is always main color but a little brighter/darker depending on theme
+			QColor minorGridCol;
+			if (tt == SVSettings::TT_Dark)
+				minorGridCol = gp.m_color.darker(100);
+			else
+				minorGridCol = gp.m_color.lighter(100);
+			m_gridColors[i*2 + 0] = QVector3D((float)minorGridCol.redF(), (float)minorGridCol.greenF(), (float)minorGridCol.blueF());
+		}
 
 	// transfer grid dimensions
 	float width = (float)prj.m_viewSettings.m_gridWidth;

@@ -481,11 +481,11 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
 				// if we hit the a plane, limit the orbit controller to the extends of the grid
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
-					/// \todo Andreas: add support for several grid planes
-					nearestPoint.m_x = std::min(nearestPoint.m_x, m_gridObject.m_maxGrid);
-					nearestPoint.m_y = std::min(nearestPoint.m_y, m_gridObject.m_maxGrid);
-					nearestPoint.m_x = std::max(nearestPoint.m_x, m_gridObject.m_minGrid);
-					nearestPoint.m_y = std::max(nearestPoint.m_y, m_gridObject.m_minGrid);
+					// which plane did we hit?
+					unsigned int planeIdx = pickObject.m_candidates.front().m_objectID;
+					IBKMK::Vector3D snapPoint;
+					m_gridPlanes[planeIdx].closestSnapPoint(nearestPoint, snapPoint);
+					nearestPoint = snapPoint;
 				}
 
 
