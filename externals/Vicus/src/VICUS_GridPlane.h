@@ -33,19 +33,33 @@
 
 namespace VICUS {
 
-/*! Contains definition of a single grid plane and related functionality. */
+/*! Contains definition of a single grid plane and related functionality.
+
+	A grid plane is defined by the offset (always in the middle), its normal vector and
+	local X vector, that defines the orientation.
+
+	The dimension of the grid plane is defined by width (total width) and the major grid spacing.
+	The width is automatically adjusted to hold an even number number of grid spacings.
+	For example, if the grid is defined with a width of 125 m, and grid spacing is 10 m, than
+	the final grid will extend from -70..70 covering a total of 140 m.
+
+	The minor grid spacing is computed automatically to be 1/10 of the major grid.
+*/
 class GridPlane {
 public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	GridPlane() = default;
+
+	/*! Initializing constructor, generated grid will be visible and active by default. */
 	GridPlane(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
-			  const QColor gridColor, unsigned int gridSpacing) :
+			  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing) :
 		m_offset(offset),
 		m_normal(normal),
 		m_localX(localX),
-		m_gridColor(gridColor),
-		m_gridSpacing(gridSpacing)
+		m_color(majorGridColor),
+		m_width(width),
+		m_spacing(majorGridSpacing)
 	{
 	}
 
@@ -69,7 +83,7 @@ public:
 		\param intersectionPoint Point on the plane
 		\param snapPoint Will hold the snap point on grid nearest to the intersection point
 	*/
-	bool closestSnapPoint(const IBKMK::Vector3D & intersectionPoint, IBKMK::Vector3D & snapPoint) const;
+	void closestSnapPoint(const IBKMK::Vector3D & intersectionPoint, IBKMK::Vector3D & snapPoint) const;
 
 	/*! Some descriptive name of the grid. */
 	QString			m_name;				// XML:A
@@ -83,21 +97,24 @@ public:
 	IBKMK::Vector3D m_normal;			// XML:E
 	/*! Local X vector of grid plane, must be perpendicular to m_normal; indicates the orientation of the grid. */
 	IBKMK::Vector3D m_localX;			// XML:E
-	/*! Major grid color (minor grid color is automatically adjusted) */
-	QColor			m_gridColor;		// XML:E
+	/*! Major grid color (minor grid color is automatically adjusted, either brighter or dimmer depending on current theme) */
+	QColor			m_color;			// XML:E
+	/*! Grid width in [m]. */
+	unsigned int	m_width = 10;		// XML:E
 	/*! Major grid spacing in [m]. */
-	unsigned int	m_gridSpacing = 5;	// XML:E
+	unsigned int	m_spacing = 10;		// XML:E
 
+private:
 
 	// *** RUNTIME VARIABLES ***
 
-	// the variables below are used in the snapping algorithm and are cached to avoid calculation
+	// The variables below are used in the snapping algorithm and are cached to avoid calculation
+	// They are recomputed whenever the grid is prepared for rendering (see Vic3D::GridObject).
 
+	/*! Local Y-axis. */
 	IBKMK::Vector3D m_localY;
-	double m_minGrid;
-	double m_maxGrid;
-	double m_step;
-	unsigned int m_gridLineCount;
+	/*! Minimum/Maximum local x/y coordinate of grid. */
+	double			m_gridExtends;
 
 };
 

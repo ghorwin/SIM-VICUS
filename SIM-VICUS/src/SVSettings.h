@@ -242,7 +242,9 @@ public:
 	struct ThemeSettings {
 		void setDefaults(ThemeType theme);
 		QColor						m_selectedSurfaceColor;
+		/*! Major grid line color for the main grid (custom grids only have one color). */
 		QColor						m_majorGridColor;
+		/*! Minor grid line color for the main grid (custom grids only have one color). */
 		QColor						m_minorGridColor;
 		QColor						m_sceneBackgroundColor;
 	};
