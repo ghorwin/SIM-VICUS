@@ -36,12 +36,16 @@
 namespace VICUS {
 
 /*! Class PlaneGeometry encapsulates the vertex data and plane type of a single plane
-	in the geometrical model. It also includes subsurfaces and handles triangulation of
-	the outer polygon (optionally with holes) and the triangulation of the subsurfaces.
+	in the geometrical model. Its main purpose is the triangulation of
+	the outer polygon (optionally with holes) and the triangulation of the subsurfaces and to provide
+	said data for visualization. Also, it implements intersection tests (for picking).
 
-	Also, it implements intersection tests (for picking).
+	Since triangulation operations may be costly, the class implements lazy evaluation. Anything setting function
+	that affects the computed triangulation just marks the PlaneGeometry as dirty. The triangulation is
+	then computed on demand the triangulation data is accessed.
 
-
+	Note: PlaneGeometry is a runtime-only class and not used in the VICUS::Project data model. Instead,
+		  all data stored in PlaneGeometry is actually held in VICUS::Surface and its member variables.
 */
 class PlaneGeometry {
 public:
@@ -56,6 +60,9 @@ public:
 	*/
 	PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
+	/*! Convenience constructor, initializes plane geometry with Polygon3D. */
+	PlaneGeometry(const IBKMK::Polygon3D & poly3D);
+
 	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
 		it has enough vertexes and can be correctly triangulated (triangles not empty).
 	*/
@@ -67,19 +74,45 @@ public:
 	/*! Return the orientation in Deg. 0° -> North; 90° -> East; 180° -> South; etc. */
 	double orientation(int digits = 1) const;
 
+	// Convenience query functions, using Polygon3D for data delivery
+
+	/*! Returns the offset point (origin of the plane's local coordinate system) */
+	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
 	const IBKMK::Vector3D & localY() const { return m_polygon.localY(); }
-	/*! Returns the offset point (origin of the plane's local coordinate system) */
-	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 
-	/*! Adds a new 3D vertex.
-		Calculates 2D plane coordinates and throws an exception, if vertex is out of plane.
-	*/
-	void addVertex(const IBKMK::Vector3D & v);
+	/*! Calculates surface area in m2. */
+	double area(int digits = 1) const { return m_polygon.polyline().area(digits); }
 
-	/*! Removes the vertex at given location. */
-	void removeVertex(unsigned int idx);
+	/*! Calculates the center point of the surface/polygon */
+	IBKMK::Vector3D centerPoint() const { return m_polygon.centerPoint(); }
+
+	// Getter functions for stored geometry
+
+	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
+	const IBKMK::Polygon2D & polygon2D() const { return m_polygon.polyline(); }
+	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */
+	const std::vector<Polygon2D> & holes() const { return m_holes; }
+
+	// Setter functions for plane geometry
+
+	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
+	void setHoles(const std::vector<Polygon2D> & holes);
+
+	/*! Set outer polygon and holes together (needs only one call to triangulate()). */
+	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
+
+	// Getter functions for triangulation data (lazy evaluation)
+
+	/*! Returns the triangulation data for the opaque surface (excluding holes). */
+	const PlaneTriangulationData & triangulationData() const;
+	/*! Returns the triangulation data for the opaque surface (including holes, as if there were no holes). */
+	const PlaneTriangulationData & triangulationDataWithoutHoles() const;
+	/*! Returns the triangulation data for each of the holes. */
+	const std::vector<PlaneTriangulationData> & holeTriangulationData() const;
+
+	// Utility functions
 
 	/*! Tests if a line (with equation p = p1 + t * d) hits this plane. Returns true if
 		intersection is found, and returns the normalized distance (t) between intersection point
@@ -99,28 +132,6 @@ public:
 						bool hitBackfacingPlanes = false,
 						bool endlessPlane = false) const;
 
-	/*! Returns the triangulation data for the opaque surface. */
-	const PlaneTriangulationData & triangulationData() const { return m_triangulationData; }
-	/*! Returns the triangulation data for each of the holes. */
-	const std::vector<PlaneTriangulationData> & holeTriangulationData() const { return m_holeTriangulationData; }
-
-	/*! Returns the vector of holes (2D polygons in the plane of the polygon). */
-	const std::vector<Polygon2D> & holes() const { return m_holes; }
-	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
-	void setHoles(const std::vector<Polygon2D> & holes);
-
-	/*! Set outer polygon and holes together (needs only one call to triangulate()). */
-	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
-
-	/*! Returns the 2D polygon (only if it exists) in the plane of the polygon. */
-	const IBKMK::Polygon2D & polygon2D() const { return m_polygon.polyline(); }
-
-	/*! Calculates surface area in m2. */
-	double area(int digits = 1) const;
-
-	/*! Calculates the center point of the surface/polygon */
-	IBKMK::Vector3D centerPoint() const { return m_polygon.centerPoint(); }
-
 private:
 
 	// *** PRIVATE MEMBER FUNCTIONS ***
@@ -133,27 +144,29 @@ private:
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
-	/*! This vector of vertexes is only being used during construction of the plane geometry,
-		i.e. when drawing a polygon. It contains all vertexes set by the user, even if these
-		form an invalid polygon.
-	*/
-	std::vector<IBKMK::Vector3D>		m_vertexes;
-
 	/*! Contains the information about the polygon that encloses this surface. */
-	Polygon3D							m_polygon;
+	Polygon3D									m_polygon;
 
 	/*! Polygons with holes/subsurfaces inside the polygon. */
-	std::vector<Polygon2D>				m_holes;
+	std::vector<Polygon2D>						m_holes;
 
 	/*! Contains the vertex indexes for each triangle that the polygon is composed of.
 		Includes only the triangles of the opaque surfaces without any holes
 	*/
-	PlaneTriangulationData				m_triangulationData;
+	mutable PlaneTriangulationData				m_triangulationData;
+
+	/*! Contains the vertex indexes for each triangle that the polygon is composed of.
+		Includes only the triangles of the opaque surfaces without any holes
+	*/
+	mutable PlaneTriangulationData				m_triangulationDataWithoutHoles;
 
 	/*! Contains the triangulation data of each hole.
 		Invalid hole definitions will yield empty triangle vectors.
 	*/
-	std::vector<PlaneTriangulationData>	m_holeTriangulationData;
+	mutable std::vector<PlaneTriangulationData>	m_holeTriangulationData;
+
+	/*! Dirty flag marks the triangulation data as outdated and is set whenever plane geometry data is modified. */
+	mutable bool								m_dirty = true;
 };
 
 } // namespace VICUS
