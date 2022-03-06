@@ -335,7 +335,7 @@ private:
 
 	double					m_panCABARatio;
 	/*! Cached distance of object when staring panning. */
-	double					m_panObjectDepth = 0.0Finished implementation of IBKMK::Polygon3D1;
+	double					m_panObjectDepth = 0.01;
 
 	/*! Cached last scene coloring mode. Updated in onModified() and setViewState(). Used
 		to prevent excessive updates of geometry when unrelated view state properties change.
