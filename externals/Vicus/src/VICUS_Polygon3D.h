@@ -43,6 +43,12 @@ public:
 
 	Polygon3D() = default;
 
+	/*! Conversion constructor */
+	explicit Polygon3D(const IBKMK::Polygon3D & poly3D) :
+		IBKMK::Polygon3D(poly3D)
+	{
+	}
+
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
 		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed

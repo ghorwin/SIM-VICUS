@@ -64,8 +64,13 @@ PlaneGeometry::PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D &
 	if (p.isValid()) {
 		// a valid polygon has at least 1 vertex and valid normal and localX vectors
 		m_polygon = VICUS::Polygon3D((const VICUS::Polygon2D&)p.polyline(), p.normal(), p.localX(), p.vertexes()[0]);
-		triangulate();
+		m_dirty = true;
 	}
+}
+
+PlaneGeometry::PlaneGeometry(const IBKMK::Polygon3D & poly3D) {
+	m_polygon = VICUS::Polygon3D(poly3D);
+	m_dirty = true;
 }
 
 
@@ -89,37 +94,30 @@ double PlaneGeometry::orientation(int digits) const {
 }
 
 
-void PlaneGeometry::addVertex(const IBKMK::Vector3D & v) {
-	m_polygon.addVertex(v);
-	triangulate(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void PlaneGeometry::removeVertex(unsigned int idx) {
-	m_polygon.removeVertex(idx);
-	triangulate(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void PlaneGeometry::triangulate() {
+void PlaneGeometry::triangulate() const {
 	m_triangulationData.clear();
+	m_triangulationDataWithoutHoles.clear();
 	m_holeTriangulationData.clear();
+	m_dirty = false;
 
 	// only continue, if the polygon itself is valid
 	if (!m_polygon.isValid())
 		return;
 
+	// Create a copy of the vertex error of the outer polygon (we are going to add vertexes of the holes later on)
+	// Note: do not access m_vertexes herea as we may regenerate the vertexes.
+	std::vector<IBKMK::Vector3D> vertexes = m_polygon.vertexes();
+
 	// We have special handling for type triangle and rectangle, but only if
 	// we have no holes. This will save some work for quite a lot of planes.
-	std::vector<IBKMK::Vector3D> vertexes = m_polygon.vertexes();
-	if (m_holes.empty() && m_polygon.type() != VICUS::Polygon3D::T_Polygon) {
+	if (m_holes.empty() && m_polygon.type() != VICUS::Polygon2D::T_Polygon) {
 		switch (m_polygon.type()) {
 
-			case Polygon3D::T_Triangle :
+			case Polygon2D::T_Triangle :
 				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(0, 1, 2) );
 				break;
 
-			case Polygon3D::T_Rectangle :
+			case Polygon2D::T_Rectangle :
 				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(0, 1, 2) );
 				m_triangulationData.m_triangles.push_back( IBKMK::Triangulation::triangle_t(2, 3, 0) );
 			break;
@@ -129,9 +127,15 @@ void PlaneGeometry::triangulate() {
 		m_triangulationData.m_vertexes.swap(vertexes);
 		m_triangulationData.m_normal = m_polygon.normal(); // cache normal for easy access
 
+		// no holes, copy data
+		m_triangulationDataWithoutHoles.m_vertexes = m_triangulationData.m_vertexes;
+		m_triangulationDataWithoutHoles.m_normal = m_polygon.normal();
+
 		return; // done
 	}
 
+
+	// TODO : generate triangulation for outer polygon
 
 	// now the generic code
 
@@ -380,11 +384,11 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 	// test if intersection point is inside our plane
 	// we have a specialized variant for triangles and rectangles, but only if there are no holes
-	if (m_holes.empty() && m_polygon.type() != Polygon3D::T_Polygon) {
+	if (m_holes.empty() && m_polygon.type() != Polygon2D::T_Polygon) {
 
 		switch (m_polygon.type()) {
-			case Polygon3D::T_Triangle :
-			case Polygon3D::T_Rectangle : {
+			case Polygon2D::T_Triangle :
+			case Polygon2D::T_Rectangle : {
 
 				// we have three possible ways to get the intersection point, try them all until we succeed
 				const IBKMK::Vector3D & a = m_polygon.vertexes()[1] - m_polygon.vertexes()[0];
@@ -393,12 +397,12 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 				if (!IBKMK::planeCoordinates(planeOffset, a, b, x0, x, y))
 					return false;
 
-				if (m_polygon.type() == Polygon3D::T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
+				if (m_polygon.type() == Polygon2D::T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
 					intersectionPoint = x0;
 					dist = t;
 					return true;
 				}
-				else if (m_polygon.type() == Polygon3D::T_Rectangle && x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+				else if (m_polygon.type() == Polygon2D::T_Rectangle && x >= 0 && x <= 1 && y >= 0 && y <= 1) {
 					intersectionPoint = x0;
 					dist = t;
 					return true;
@@ -444,7 +448,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 void PlaneGeometry::setPolygon(const Polygon3D & polygon3D) {
 	m_polygon = polygon3D;
-	triangulate();
+	m_dirty = true;
 }
 
 
@@ -452,26 +456,36 @@ void PlaneGeometry::setHoles(const std::vector<Polygon2D> & holes) {
 	if (m_holes.empty() && holes.empty())
 		return;
 	m_holes = holes;
-	triangulate();
+	m_dirty = true;
 }
 
 
 void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes) {
 	m_holes = holes;
 	m_polygon = polygon3D;
-	triangulate();
+	m_dirty = true;
 }
 
 
-double PlaneGeometry::area(int digits) const {
-	FUNCID(PlaneGeometry::area);
-	if (!isValid())
-		throw IBK::Exception(IBK::FormatString("Invalid polygon set."), FUNC_ID);
-
-	return polygon2D().area(digits);
+const PlaneTriangulationData & PlaneGeometry::triangulationData() const {
+	if (m_dirty)
+		triangulate();
+	return m_triangulationData;
 }
 
 
+const PlaneTriangulationData & PlaneGeometry::triangulationDataWithoutHoles() const {
+	if (m_dirty)
+		triangulate();
+	return m_triangulationDataWithoutHoles;
+}
+
+
+const std::vector<PlaneTriangulationData> & PlaneGeometry::holeTriangulationData() const {
+	if (m_dirty)
+		triangulate();
+	return m_holeTriangulationData;
+}
 
 
 } // namespace VICUS

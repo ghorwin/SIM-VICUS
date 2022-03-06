@@ -97,6 +97,9 @@ public:
 
 	// Setter functions for plane geometry
 
+	/*! Sets the outer polygon alone. */
+	void setPolygon(const Polygon3D & polygon3D);
+
 	/*! Sets the vector of holes (2D polygons in the plane of the polygon). */
 	void setHoles(const std::vector<Polygon2D> & holes);
 
@@ -138,8 +141,10 @@ private:
 
 	/*! This function triangulates the geometry and populate the m_triangles and m_triangleVertexes vectors.
 		This function is called whenever the polygon or the holes change.
+
+		\note This function is const, because it is called from const functions.
 	*/
-	void triangulate();
+	void triangulate() const;
 
 
 	// *** PRIVATE MEMBER VARIABLES ***
