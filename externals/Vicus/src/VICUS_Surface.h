@@ -60,7 +60,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Gives read-access to the surface's main polygon. */
-//	const Polygon3D &					polygon3D() const {	return m_geometry.polygon3D(); }
+	const IBKMK::Polygon3D &			polygon3D() const {	return m_geometry.polygon3D(); }
 
 	/*! Sets the polygon. */
 	void setPolygon3D(const Polygon3D & polygon3D);
@@ -72,7 +72,7 @@ public:
 	const PlaneGeometry &				geometry() const { return m_geometry; }
 
 	/*! Flip the geometry of the polygon and recompute local coordinates of all embedded (and also flipped) subsurfaces */
-	void flip();
+	void flip() { m_geometry.flip(); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
 

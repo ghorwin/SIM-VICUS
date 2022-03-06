@@ -57,20 +57,25 @@ void Surface::readXML(const TiXmlElement * element) {
 	std::vector<Polygon2D> holes;
 	for (const SubSurface & s : m_subSurfaces)
 		holes.push_back(s.m_polygon2D);
-	m_geometry.setGeometry( m_polygon3D, holes);
 
-	if ( !geometry().isValid() && polygon3D().vertexes().size() > 2 )
-		healGeometry(m_polygon3D.vertexes());
+	// read 3D geometry
+//	m_geometry.setGeometry( m_polygon3D, holes);
+
+//	if ( !geometry().isValid() && polygon3D().vertexes().size() > 2 )
+//		healGeometry(m_polygon3D.vertexes());
 }
 
 
 TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
-	return writeXMLPrivate(parent);
+	TiXmlElement * e = writeXMLPrivate(parent);
+	// now add Polygon3D
+	Q_ASSERT(sizeof(VICUS::Polygon3D) == sizeof(IBKMK::Polygon3D)); // we must ensure both classes are the same
+	m_geometry.polygon3D().writeXML(e);
+	return e;
 }
 
 
 void Surface::setPolygon3D(const Polygon3D & polygon) {
-	m_polygon3D = polygon;
 	m_geometry.setPolygon(polygon);
 }
 
@@ -83,10 +88,6 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 	m_geometry.setHoles(holes);
 }
 
-
-void Surface::flip() {
-	m_polygon3D.setRotation(-1.0*m_polygon3D.normal(), m_polygon3D.localX());
-}
 
 
 } // namespace VICUS

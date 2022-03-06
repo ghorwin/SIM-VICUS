@@ -77,16 +77,20 @@ public:
 	// Convenience query functions, using Polygon3D for data delivery
 
 	/*! Returns the offset point (origin of the plane's local coordinate system) */
-	const IBKMK::Polygon3D & polygon3D() const { return m_polygon; }
+	const VICUS::Polygon3D & polygon3D() const { return m_polygon; }
 	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
 	const IBKMK::Vector3D & localY() const { return m_polygon.localY(); }
 
-	/*! Calculates surface area in m2. */
+	/*! Calculates surface area in m2.
+		Requires valid polygon, otherwise an exception is thrown.
+	*/
 	double area(int digits = 1) const { return m_polygon.polyline().area(digits); }
 
-	/*! Calculates the center point of the surface/polygon */
+	/*! Calculates the center point of the surface/polygon .
+		Requires valid polygon, otherwise an exception is thrown.
+	*/
 	IBKMK::Vector3D centerPoint() const { return m_polygon.centerPoint(); }
 
 	// Getter functions for stored geometry
@@ -106,6 +110,11 @@ public:
 
 	/*! Set outer polygon and holes together (needs only one call to triangulate()). */
 	void setGeometry(const Polygon3D & polygon3D, const std::vector<Polygon2D> & holes);
+
+	/*! Flips the normal vector of the geometry. Does not require update of triangulation.
+		Requires valid polygon, otherwise an exception is thrown.
+	*/
+	void flip() { m_polygon.flip(); }
 
 	// Getter functions for triangulation data (lazy evaluation)
 
