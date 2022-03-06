@@ -25,7 +25,9 @@
 
 #include "VICUS_Surface.h"
 
-#include "IBKMK_3DCalculations.h"
+#include <IBKMK_3DCalculations.h>
+
+#include <tinyxml.h>
 
 namespace VICUS {
 
@@ -52,6 +54,7 @@ void Surface::updateParents() {
 
 
 void Surface::readXML(const TiXmlElement * element) {
+	FUNCID(Surface::readXML);
 	readXMLPrivate(element);
 	// copy polygon to plane geometry
 	std::vector<Polygon2D> holes;
@@ -59,17 +62,28 @@ void Surface::readXML(const TiXmlElement * element) {
 		holes.push_back(s.m_polygon2D);
 
 	// read 3D geometry
-//	m_geometry.setGeometry( m_polygon3D, holes);
-
-//	if ( !geometry().isValid() && polygon3D().vertexes().size() > 2 )
-//		healGeometry(m_polygon3D.vertexes());
+	const TiXmlElement * c = element->FirstChildElement();
+	while (c) {
+		const std::string & cName = c->ValueStr();
+		if (cName == "Polygon3D") {
+			VICUS::Polygon3D poly3D;
+			try {
+				poly3D.readXML(c);
+			} catch (IBK::Exception & ex) {
+				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
+					IBK::FormatString("Error reading Polygon3D tag.") ), FUNC_ID);
+			}
+			m_geometry.setGeometry( poly3D, holes);
+			break;
+		}
+		c = c->NextSiblingElement();
+	}
 }
 
 
 TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 	TiXmlElement * e = writeXMLPrivate(parent);
 	// now add Polygon3D
-	Q_ASSERT(sizeof(VICUS::Polygon3D) == sizeof(IBKMK::Polygon3D)); // we must ensure both classes are the same
 	m_geometry.polygon3D().writeXML(e);
 	return e;
 }
