@@ -68,9 +68,19 @@ PlaneGeometry::PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D &
 	}
 }
 
+
 PlaneGeometry::PlaneGeometry(const IBKMK::Polygon3D & poly3D) {
 	m_polygon = VICUS::Polygon3D(poly3D);
 	m_dirty = true;
+}
+
+
+bool PlaneGeometry::isValid() const {
+	if (!m_polygon.isValid())
+		return false;
+	if (m_dirty)
+		triangulate();
+	return !m_triangulationData.m_triangles.empty();
 }
 
 

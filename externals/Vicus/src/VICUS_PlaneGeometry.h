@@ -63,10 +63,10 @@ public:
 	/*! Convenience constructor, initializes plane geometry with Polygon3D. */
 	PlaneGeometry(const IBKMK::Polygon3D & poly3D);
 
-	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
-		it has enough vertexes and can be correctly triangulated (triangles not empty).
+	/*! A polygon is considered "fully valid" for painting, if it has enough vertexes, a valid polygon and can be
+		correctly triangulated (triangles not empty).
 	*/
-	bool isValid() const { return m_polygon.isValid() && !m_triangulationData.m_triangles.empty(); }
+	bool isValid() const;
 
 	/*! Return the inclination in Deg. 0° -> Roof; 90° -> Wall; 180° -> Floor. */
 	double inclination(int digits = 1) const;
@@ -77,6 +77,7 @@ public:
 	// Convenience query functions, using Polygon3D for data delivery
 
 	/*! Returns the offset point (origin of the plane's local coordinate system) */
+	const IBKMK::Polygon3D & polygon3D() const { return m_polygon; }
 	const IBKMK::Vector3D & offset() const { return m_polygon.vertexes()[0]; }
 	const IBKMK::Vector3D & normal() const { return m_polygon.normal(); }
 	const IBKMK::Vector3D & localX() const { return m_polygon.localX(); }
