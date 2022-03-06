@@ -71,7 +71,9 @@ public:
 	/*! Gives read-access to the surface's geometry. */
 	const PlaneGeometry &				geometry() const { return m_geometry; }
 
-	/*! Flip the geometry of the polygon and recompute local coordinates of all embedded (and also flipped) subsurfaces */
+	/*! Flips the normal vector of polygon without modifying localX and localY axes and without modifying
+		polygon vertexes or triangulation (this is fast!).
+	*/
 	void flip() { m_geometry.flip(); }
 
 	// *** PUBLIC MEMBER VARIABLES ***
