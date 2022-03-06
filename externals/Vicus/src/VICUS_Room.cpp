@@ -31,10 +31,12 @@
 namespace VICUS {
 
 void Room::calculateFloorArea() {
+	// All surfaces with near vertical normal vector (pointing up) are assumed to be part of the
+	// floor area and their polygon areas are summed up.
+	const double cosAlpha = std::cos(5*IBK::DEG2RAD);
 	double floorarea = 0;
-	for (const VICUS::Surface & s : m_surfaces){
+	for (const VICUS::Surface & s : m_surfaces) {
 		// include all surfaces which normal a quiet similar to -Z normal (5 DEG deviation)
-		double cosAlpha = std::cos(5*IBK::DEG2RAD);
 		double scalarProduct = s.geometry().normal().scalarProduct(IBKMK::Vector3D(0,0,-1));
 		if (scalarProduct >= cosAlpha )
 			floorarea += s.geometry().area(2);
@@ -44,22 +46,36 @@ void Room::calculateFloorArea() {
 
 
 void Room::calculateVolume() {
+	// an implementation of Shoelace Formula, see https://ysjournal.com/tetrahedral-shoelace-method-calculating-volume-of-irregular-solids/
+	//
+	// Conditions:
+	//   - requires room to be fully enclosed by surfaces
+	//   - all surfaces must have normal vector pointing _into_ the room
+
 	double vol = 0;
 	// process all surfaces
 	for (const VICUS::Surface & s : m_surfaces) {
 		const PlaneTriangulationData & planeTri = s.geometry().triangulationDataWithoutHoles();
 
-		// all triangles
+		// process all triangles
 		for (unsigned int i=0; i<planeTri.m_triangles.size(); ++i) {
 			const IBKMK::Triangulation::triangle_t &tri = planeTri.m_triangles[i];
-			if (tri.isDegenerated())
-				continue;
+			// Note: plane geometry takes care not to add degenerated triangles to triangulation data,
+			//       but we add an ASSERT to make sure
+			IBK_ASSERT(!tri.isDegenerated());
+
+			// now compute determinant of matrix from points p0, p1, p2 and points [0,0,0]
 			const IBKMK::Vector3D & p0 = planeTri.m_vertexes[tri.i1];
 			const IBKMK::Vector3D & p1 = planeTri.m_vertexes[tri.i2];
 			const IBKMK::Vector3D & p2 = planeTri.m_vertexes[tri.i3];
 
-			vol += (( p1.m_y - p0.m_y ) * ( p2.m_z - p0.m_z ) - ( p1.m_z - p0.m_z ) * ( p2.m_y - p0.m_y ))
-					* ( p0.m_x + p1.m_x + p2.m_x );
+			vol +=	p0.m_x * p1.m_y * p2.m_z +
+					p2.m_x * p0.m_y * p1.m_z +
+					p1.m_x * p2.m_y * p0.m_z
+
+					- p2.m_x * p1.m_y * p0.m_z
+					- p0.m_x * p2.m_y * p1.m_z
+					- p1.m_x * p0.m_y * p2.m_z;
 		}
 	}
 
