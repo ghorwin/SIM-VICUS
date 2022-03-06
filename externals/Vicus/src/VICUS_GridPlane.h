@@ -31,6 +31,10 @@
 
 #include "VICUS_CodeGenMacros.h"
 
+namespace Vic3D {
+	class GridObject;
+}
+
 namespace VICUS {
 
 /*! Contains definition of a single grid plane and related functionality.
@@ -46,6 +50,7 @@ namespace VICUS {
 	The minor grid spacing is computed automatically to be 1/10 of the major grid.
 */
 class GridPlane {
+	VICUS_READWRITE_PRIVATE
 public:
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
@@ -63,8 +68,15 @@ public:
 	{
 	}
 
-	VICUS_READWRITE
+	void readXML(const TiXmlElement * element);
+	TiXmlElement * writeXML(TiXmlElement * parent) const;
+
 	VICUS_COMP(GridPlane)
+
+	/*! This function checks for valid normal and localX vectors and updates the cached localY vector.
+		Throws an exception in case of invalid vectors.
+	*/
+	void updateLocalY();
 
 	/*! Computes intersection point of a line defined by point p and direction with the plane,
 		and also returns the nearest grid snap point.
@@ -109,7 +121,7 @@ private:
 	// *** RUNTIME VARIABLES ***
 
 	// The variables below are used in the snapping algorithm and are cached to avoid calculation
-	// They are recomputed whenever the grid is prepared for rendering (see Vic3D::GridObject).
+	// They are recomputed whenever the grid is prepared for rendering (see Vic3D::GridObject::create()).
 
 	/*! Local Y-axis. */
 	IBKMK::Vector3D m_localY;
@@ -117,6 +129,9 @@ private:
 	double			m_gridExtends;
 	/*! Number of major grid lines (always an odd number). */
 	unsigned int	m_nGridLines = 0;
+
+
+	friend class Vic3D::GridObject;
 };
 
 } // namespace VICUS

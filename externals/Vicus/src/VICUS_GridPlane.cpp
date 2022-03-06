@@ -6,11 +6,40 @@
 
 namespace VICUS {
 
+void GridPlane::readXML(const TiXmlElement * element) {
+	readXMLPrivate(element);
+	updateLocalY();
+}
+
+
+TiXmlElement * GridPlane::writeXML(TiXmlElement * parent) const {
+	return writeXMLPrivate(parent);
+}
+
+
+void GridPlane::updateLocalY() {
+	FUNCID(GridPlane::updateLocalY);
+	// also update localY axis and check for valid vectors
+	if (!IBK::nearly_equal<6>(m_normal.magnitudeSquared(), 1.0))
+		throw IBK::Exception("Normal vector does not have unit length!", FUNC_ID);
+	if (!IBK::nearly_equal<6>(m_localX.magnitudeSquared(), 1.0))
+		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
+	// check that the vectors are (nearly) orthogonal
+	double sp = m_normal.scalarProduct(m_localX);
+	if (!IBK::nearly_equal<6>(sp, 1.0))
+		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
+
+	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
+	m_normal.crossProduct(m_localX, m_localY); // Y = N x X - right-handed coordinate system
+	m_localY.normalize();
+}
+
+
 bool GridPlane::intersectsLine(const IBKMK::Vector3D & p, const IBKMK::Vector3D & direction,
 									  double & t,
 									  IBKMK::Vector3D & intersectionPoint) const
 {
-	if (!m_isActive)
+	if (!m_isActive || !m_isVisible)
 		return false;
 
 	FUNCID(VICUS::GridPlane::intersectsLine);
