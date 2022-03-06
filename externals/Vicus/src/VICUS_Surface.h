@@ -60,7 +60,7 @@ public:
 	VICUS_COMPARE_WITH_ID
 
 	/*! Gives read-access to the surface's main polygon. */
-	const Polygon3D &					polygon3D() const {	return m_polygon3D; }
+//	const Polygon3D &					polygon3D() const {	return m_geometry.polygon3D(); }
 
 	/*! Sets the polygon. */
 	void setPolygon3D(const Polygon3D & polygon3D);

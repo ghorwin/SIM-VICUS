@@ -30,12 +30,14 @@
 #include <vector>
 
 #include <VICUS_GridPlane.h>
-#include "SVProjectHandler.h"
+#include <QtExt_Conversions.h>
+
 #include "Vic3DShaderProgram.h"
 
 #include "SVSettings.h"
 
 namespace Vic3D {
+
 
 void GridObject::create(ShaderProgram * shaderProgram,
 						std::vector<VICUS::GridPlane> & gridPlanes)
@@ -49,40 +51,53 @@ void GridObject::create(ShaderProgram * shaderProgram,
 
 	// resize vectors
 	unsigned int nPlanes = gridPlanes.size();
-	m_gridOffsets.resize(nPlanes);
+
+	// we make space for each plane, even though they may not be used
+	m_gridOffsets.resize(nPlanes+1);
 	m_gridColors.resize(nPlanes);
+	m_gridPlaneVisible.resize(nPlanes);
 
 	// now generate buffer data for all grids
 	std::vector<float>			gridVertexBufferData;
 	// buffer that will contain the x-y coordinates of all grid lines
-	m_gridOffsets.clear();
-	m_gridColors.clear();
 	m_gridOffsets.push_back(0); // first grid starts at index 0
+
+	m_anyGridVisible = false;
+
+	// Process all planes
+	// Note: only data for visible planes is processed, the rest are filtered out
 	for (unsigned int i=0; i<nPlanes; ++i) {
 
 		VICUS::GridPlane & gp = gridPlanes[i];
 		// if invisible, skip
-		if (!gp.m_isVisible)
+		m_gridPlaneVisible[i] = gp.m_isVisible;
+		if (!gp.m_isVisible) {
+			// store offsets for invisible plane
+			GLsizei lastOffset = (GLsizei)gridVertexBufferData.back();
+			m_gridOffsets.push_back(lastOffset); // start of minor grid (vertex count major grid lines 2*N*2)
+			m_gridOffsets.push_back(lastOffset);  // start of next major grid (vertex count _all_ grid lines 2*N_minor*2)
 			continue;
+		}
+
+		m_anyGridVisible = true;
 
 		// transfer grid colors
+
+		// special handling for "main grid" at index 0
 		if (i==0) {
-			// transfer color of main grid
-			QColor gridColor(s.m_minorGridColor);
-			m_gridColors[0] = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
-			gridColor = s.m_majorGridColor;
-			m_gridColors[1] = QVector3D((float)gridColor.redF(), (float)gridColor.greenF(), (float)gridColor.blueF());
+			m_gridColors[0] = QtExt::QVector3DFromQColor(s.m_majorGridColor);
+			m_gridColors[1] = QtExt::QVector3DFromQColor(s.m_minorGridColor);
 		}
 		else {
 			// major grid
-			m_gridColors[i*2 + 1] = QVector3D((float)gp.m_color.redF(), (float)gp.m_color.greenF(), (float)gp.m_color.blueF());
+			m_gridColors[i*2 + 1] = QtExt::QVector3DFromQColor(gp.m_color);
 			// minor grid is always main color but a little brighter/darker depending on theme
 			QColor minorGridCol;
 			if (tt == SVSettings::TT_Dark)
 				minorGridCol = gp.m_color.darker(100);
 			else
 				minorGridCol = gp.m_color.lighter(100);
-			m_gridColors[i*2 + 0] = QVector3D((float)minorGridCol.redF(), (float)minorGridCol.greenF(), (float)minorGridCol.blueF());
+			m_gridColors[i*2 + 0] = QtExt::QVector3DFromQColor(minorGridCol);
 		}
 
 		// transfer grid dimensions
@@ -207,8 +222,9 @@ void GridObject::create(ShaderProgram * shaderProgram,
 		}
 
 		// now copy local grid buffer into global grid buffer
-
+		gridVertexBufferData.insert(gridVertexBufferData.end(), currentGridVertexBufferData.begin(), currentGridVertexBufferData.end());
 	}
+
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {
@@ -242,88 +258,64 @@ void GridObject::destroy() {
 	m_vbo.destroy();
 }
 
-QVector3D qColorToQVector3D(const QColor &c){
-	return QVector3D( c.redF(), c.greenF(), c.blueF() );
-}
 
 
 void GridObject::render() {
 	// grid disabled?
-	if (m_vertexCount == 0)
+	if (!m_anyGridVisible)
 		return;
 
 	m_vao.bind();
 
-	// draw x axis
-	QColor xLine;
-	if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-		xLine = QColor("#b30404");
-	else
-		xLine = QColor("#b30404");
+	// process all planes
+	unsigned int nPlanes = m_gridPlaneVisible.size();
+	for (unsigned int i=0; i<nPlanes; ++i) {
 
-	// draw y axis
-	QColor yLine;
-	if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
-		yLine = QColor("#0d8429");
-	else
-		yLine = QColor("#26a343");
+		// if invisible, skip
+		if (!m_gridPlaneVisible[i])
+			continue;
 
-//  QVector3D xColor(1.0f, 0.2f, 0.2f);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], qColorToQVector3D(xLine) );
-	glDrawArrays(GL_LINES, m_vertexCount-4, 2);
+		// get starting offset for grid
+		GLsizei startOffset = m_gridOffsets[2*i];
+		GLsizei minorGridOffset = m_gridOffsets[2*i+1];
+		GLsizei nextOffset = m_gridOffsets[2*i+2];
 
-	// TODO : Stephan farbe schick machen
-//	QVector3D yColor(0.2f, 1.0f, 0.2f);
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], qColorToQVector3D(yLine));
-	glDrawArrays(GL_LINES, m_vertexCount-2, 2);
+		// draw main x axis
+		QColor xLine;
+		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+			xLine = QColor("#b30404");
+		else
+			xLine = QColor("#b30404");
+		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], QtExt::QVector3DFromQColor(xLine) );
+		// When drawing lines, we need two indexes for one line (start and end point)
+		// The first parameter is the index to start from, the second parameter is the number of indexes
+		// to use for drawing. So, if you want to draw 10 lines, pass 20 as "count" argument.
+		glDrawArrays(GL_LINES, startOffset, 2);
+		startOffset += 2;
 
-	// draw major grid lines
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_majorGridColor);
+		// draw y axis
+		QColor yLine;
+		if ( SVSettings::instance().m_theme == SVSettings::TT_Dark )
+			yLine = QColor("#0d8429");
+		else
+			yLine = QColor("#26a343");
+		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], QtExt::QVector3DFromQColor(yLine) );
+		glDrawArrays(GL_LINES, startOffset, 2);
+		startOffset += 2;
 
-	// When drawing lines, we need two indexes for one line (start and end point)
-	// The first parameter is the index to start from, the second parameter is the number of indexes
-	// to use for drawing. So, if you want to draw 10 lines, pass 20 as "count" argument.
-	//
-	glDrawArrays(GL_LINES, 0, m_minorGridStartVertex-4);
+		// major grid
+		GLsizei vertexcount = minorGridOffset - startOffset;
+		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_gridColors[2*i] );
+		glDrawArrays(GL_LINES, startOffset, vertexcount);
 
-	// draw minor grid lines, if enabled
-	m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_minorGridColor);
-	glDrawArrays(GL_LINES, m_minorGridStartVertex-4, m_vertexCount-m_minorGridStartVertex);
-
+		// minor grid
+		vertexcount = nextOffset - minorGridOffset;
+		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[1], m_gridColors[2*i+1] );
+		glDrawArrays(GL_LINES, minorGridOffset, vertexcount);
+	}
 
 	m_vao.release();
 }
 
-
-bool GridObject::closestSnapPoint(QVector3D worldCoords, QVector3D & snapCoords) const {
-	// z-coordinate should be close to zero for us to snap at the grid
-	if (std::fabs(worldCoords.z()) > 1e-4)
-		return false;
-
-	// Indexes of the grid lines
-	unsigned int i = 0;
-	unsigned int j = 0;
-
-	if (worldCoords.x() > m_maxGrid)
-		i = m_gridLineCount-1;
-	else if (worldCoords.x() > m_minGrid) {
-		double offset = worldCoords.x() - m_minGrid;
-		i = std::floor(offset/m_step);
-		if (offset - i*m_step > m_step/2.0)
-			++i;
-	}
-	if (worldCoords.y() > m_maxGrid)
-		j = m_gridLineCount-1;
-	else if (worldCoords.y() > m_minGrid) {
-		double offset = worldCoords.y() - m_minGrid;
-		j = std::floor(offset/m_step);
-		if (offset - j*m_step > m_step/2.0)
-			++j;
-	}
-
-	// recompute snap coordinates
-	snapCoords = QVector3D(i*m_step + m_minGrid, j*m_step + m_minGrid, 0);
-	return true;
-}
 
 } // namespace Vic3D

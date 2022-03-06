@@ -81,6 +81,10 @@ public:
 
 	/*! Set to false if no grid is visible - speeds up rendering a little. */
 	bool						m_anyGridVisible = true;
+
+private:
+	// local copy of grid planes, needed for rending
+	std::vector<bool>			m_gridPlaneVisible;
 };
 
 } // namespace Vic3D
