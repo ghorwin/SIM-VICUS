@@ -67,11 +67,11 @@ public:
 	/*! Shader program, that the grid is painted with. */
 	ShaderProgram				*m_gridShader = nullptr;
 
-	/*! Vector with grid index start offsets (size = 2*number of grid planes), first index is always
-		start of minor grid lines, second index is start of major grid lines.
+	/*! Vector with grid index start offsets (size = 2*number of grid planes + 1), first index is always
+		start of major grid lines, second index is start of minor grid lines.
 	*/
 	std::vector<GLsizei>		m_gridOffsets;
-	/*! Vector with grid colors (size = 2*number of grid planes). */
+	/*! Vector with grid colors (size = 2*number of grid planes) (first is major color, second minor grid color). */
 	std::vector<QVector3D>		m_gridColors;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */

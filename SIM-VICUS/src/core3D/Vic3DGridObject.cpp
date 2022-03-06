@@ -53,10 +53,17 @@ void GridObject::create(ShaderProgram * shaderProgram,
 	m_gridColors.resize(nPlanes);
 
 	// now generate buffer data for all grids
-
+	std::vector<float>			gridVertexBufferData;
+	// buffer that will contain the x-y coordinates of all grid lines
+	m_gridOffsets.clear();
+	m_gridColors.clear();
+	m_gridOffsets.push_back(0); // first grid starts at index 0
 	for (unsigned int i=0; i<nPlanes; ++i) {
 
 		VICUS::GridPlane & gp = gridPlanes[i];
+		// if invisible, skip
+		if (!gp.m_isVisible)
+			continue;
 
 		// transfer grid colors
 		if (i==0) {
@@ -78,128 +85,130 @@ void GridObject::create(ShaderProgram * shaderProgram,
 			m_gridColors[i*2 + 0] = QVector3D((float)minorGridCol.redF(), (float)minorGridCol.greenF(), (float)minorGridCol.blueF());
 		}
 
-	// transfer grid dimensions
-	float width = (float)prj.m_viewSettings.m_gridWidth;
-	float spacing = (float)prj.m_viewSettings.m_gridSpacing;
-	if (spacing <= 0)
-		spacing = 1;
+		// transfer grid dimensions
+		double width = gp.m_width;
+		double spacing = gp.m_spacing;
+		if (spacing <= 0)
+			spacing = 1;
 
-	if (width == m_width && spacing == m_spacing)
-		return; // nothing to do since grid hasn't changed
+		unsigned int N = (unsigned int)(width/spacing); // number of lines to draw in x and y direction
 
-	unsigned int N = width/spacing; // number of lines to draw in x and y direction
-	// grid is centered around origin, and expands to width/2 in -x, +x, -y and +y direction
-	// so N must be an even number, if not, we just add 1 and adjust the width
-	//
-	// For example, if you set width = 50, with spacing = 10, you get 5 grid cells in x and y direction
-	// The coordinate origin would be in the middle of the third cell, and thus not on a grid line
-	// Hence, we add one to get an even number of grid cells to both sides of the coordinate axes.
-	if (N % 2 != 0) {
+		// grid is centered around origin, and expands to width/2 in -x, +x, -y and +y direction
+		// so N must be an even number, if not, we just add 1 and adjust the width
+		//
+		// For example, if you set width = 50, with spacing = 10, you get 5 grid cells in x and y direction
+		// The coordinate origin would be in the middle of the third cell, and thus not on a grid line
+		// Hence, we add one to get an even number of grid cells to both sides of the coordinate axes.
+		if (N % 2 != 0) {
+			++N;
+			width = spacing*N; // adjust width
+		}
+
+		// N is currently the number of grid cells, i.e. number of "spacing" steps to take from left to right side of grid
+		// Since we want to draw grid lines rather than cells, we increase the number by 1
 		++N;
-		width = spacing*N; // adjust width
-	}
 
-	// N is currently the number of grid cells, i.e. number of "spacing" steps to take from left to right side of grid
-	// Since we want to draw grid lines rather than cells, we increase the number by 1
-	++N;
+		// we have ((N-1)*10 + 1) lines for the entire grid including the minor grid (10 per grid cell + 1 in either direction)
+		unsigned int minorGridFraction = 10;
+		unsigned int N_minor = (N-1)*minorGridFraction + 1;
 
-	// create a temporary buffer that will contain the x-y coordinates of all grid lines
-	std::vector<float>			gridVertexBufferData;
+		// update GridPlane data structure (needed for snapping)
+		gp.m_nGridLines = N_minor;	// total number of grid lines
+		gp.m_gridExtends = width/2;	// local  -x, +x, -y, +y extends of grid
 
+		// we store first the major grid lines in the vertex buffer, than the minor grid lines
+		// we have 2*N lines for the major grid, each line requires 2 vertexes
+		GLsizei lastOffset = (GLsizei)gridVertexBufferData.back();
+		m_gridOffsets.push_back(lastOffset + (GLsizei)N*4); // start of minor grid (vertex count major grid lines 2*N*2)
+		// add offset for minor grid
+		m_gridOffsets.push_back(lastOffset + (GLsizei)N_minor*4);  // start of next major grid (vertex count _all_ grid lines 2*N_minor*2)
 
-	// we have 2*N lines for the major grid, each line requires two vertexes
-	m_minorGridStartVertex = 2*N*2;
-	// we have ((N-1)*10 + 1) lines for the entire grid including the minor grid (10 per grid cell + 1 in either direction)
-	unsigned int minorGridFraction = 10;
-	unsigned int N_minor = (N-1)*minorGridFraction + 1;
-	m_vertexCount = 2*N_minor*2;
+		// create a temporary buffer for the grid line vertexes of current grid plane
+		std::vector<float>			currentGridVertexBufferData;
+		// each vertex requires two floats (x and y coordinates)
+		currentGridVertexBufferData.resize(N_minor*2);
+		float * gridVertexBufferPtr = currentGridVertexBufferData.data();
+		// vertex buffer data mapping:
+		// - x-major grid center line 4 Vertexes                                       <-- m_gridOffsets[i*2 + 0]
+		// - y-major grid center line * 4 Vertexes
+		// - x-major grid lines without center line (N-1) * 4 Vertexes
+		// - y-major grid lines without center line (N-1) * 4 Vertexes
+		// - x-minor grid lines without major grid lines (N_minor - N) * 4 Vertexes    <-- m_gridOffsets[i*2 + 1]
+		// - x-minor grid lines without major grid lines (N_minor - N) * 4 Vertexes
 
-	m_gridLineCount = N_minor;
+		// compute major grid lines first y = const
+		float widthF = (float)width;
+		float x1 = -widthF*0.5f;
+		float x2 = widthF*0.5f;
+		float y1 = -widthF*0.5f;
+		float y2 = widthF*0.5f;
 
-	// each vertex requires two floats (x and y coordinates)
-	gridVertexBufferData.resize(m_vertexCount*2);
-	float * gridVertexBufferPtr = gridVertexBufferData.data();
+		// center lines (have special colors)
 
-	// compute major grid lines first y = const
-	float x1 = -width*0.5f;
-	float x2 = width*0.5f;
-	float y1 = -width*0.5f;
-	float y2 = width*0.5f;
-
-	// cache grid properties (used in snapping algorithm)
-	m_minGrid = x1;
-	m_maxGrid = x2;
-	m_step = width/(N_minor-1);
-
-	// add x coordinate line
-	for (unsigned int i=0; i<N; ++i) {
-		// skip main coordinate line
-		if (i == N/2)
-			continue;
-		float y = width/(N-1)*i-width*0.5f;
+		// x-axis
 		gridVertexBufferPtr[0] = x1;
-		gridVertexBufferPtr[1] = y;
+		gridVertexBufferPtr[1] = 0;
 		gridVertexBufferPtr[2] = x2;
-		gridVertexBufferPtr[3] = y;
+		gridVertexBufferPtr[3] = 0;
 		gridVertexBufferPtr += 4;
-	}
-	// compute grid lines with x = const
-	for (unsigned int i=0; i<N; ++i) {
-		// skip main coordinate line
-		if (i == N/2)
-			continue;
-		float x = width/(N-1)*i-width*0.5f;
-		gridVertexBufferPtr[0] = x;
+
+		// y-axis
+		gridVertexBufferPtr[0] = 0;
 		gridVertexBufferPtr[1] = y1;
-		gridVertexBufferPtr[2] = x;
+		gridVertexBufferPtr[2] = 0;
 		gridVertexBufferPtr[3] = y2;
 		gridVertexBufferPtr += 4;
+
+		// add x coordinate line (major grid)
+		for (unsigned int i=0; i<N; ++i) {
+			// skip main coordinate line
+			if (i == N/2)
+				continue;
+			float y = widthF/(N-1)*i-widthF*0.5f;
+			gridVertexBufferPtr[0] = x1;
+			gridVertexBufferPtr[1] = y;
+			gridVertexBufferPtr[2] = x2;
+			gridVertexBufferPtr[3] = y;
+			gridVertexBufferPtr += 4;
+		}
+		// add y coordinate line (major grid)
+		for (unsigned int i=0; i<N; ++i) {
+			// skip main coordinate line
+			if (i == N/2)
+				continue;
+			float x = widthF/(N-1)*i-widthF*0.5f;
+			gridVertexBufferPtr[0] = x;
+			gridVertexBufferPtr[1] = y1;
+			gridVertexBufferPtr[2] = x;
+			gridVertexBufferPtr[3] = y2;
+			gridVertexBufferPtr += 4;
+		}
+
+		// now add minor grid lines, hereby skip over major grid lines
+		for (unsigned int i=0; i<N_minor; ++i) {
+			// skip grid lines that coincide with major grid lines
+			if (i % minorGridFraction == 0) continue;
+			float y = widthF/(N_minor-1)*i-widthF*0.5f;
+			gridVertexBufferPtr[0] = x1;
+			gridVertexBufferPtr[1] = y;
+			gridVertexBufferPtr[2] = x2;
+			gridVertexBufferPtr[3] = y;
+			gridVertexBufferPtr += 4;
+		}
+		for (unsigned int i=0; i<N_minor; ++i) {
+			// skip grid lines that coincide with major grid lines
+			if (i % minorGridFraction == 0) continue;
+			float x = widthF/(N_minor-1)*i-widthF*0.5f;
+			gridVertexBufferPtr[0] = x;
+			gridVertexBufferPtr[1] = y1;
+			gridVertexBufferPtr[2] = x;
+			gridVertexBufferPtr[3] = y2;
+			gridVertexBufferPtr += 4;
+		}
+
+		// now copy local grid buffer into global grid buffer
+
 	}
-
-	// now add minor grid lines, hereby skip over major grid lines
-	x1 = -width*0.5f;
-	x2 = width*0.5f;
-	for (unsigned int i=0; i<N_minor; ++i) {
-		// skip grid lines that coincide with major grid lines
-		if (i % minorGridFraction == 0) continue;
-		float y = width/(N_minor-1)*i-width*0.5f;
-		gridVertexBufferPtr[0] = x1;
-		gridVertexBufferPtr[1] = y;
-		gridVertexBufferPtr[2] = x2;
-		gridVertexBufferPtr[3] = y;
-		gridVertexBufferPtr += 4;
-	}
-	// compute grid lines with x = const
-	y1 = -width*0.5f;
-	y2 = width*0.5f;
-	for (unsigned int i=0; i<N_minor; ++i) {
-		// skip grid lines that coincide with major grid lines
-		if (i % minorGridFraction == 0) continue;
-		float x = width/(N_minor-1)*i-width*0.5f;
-		gridVertexBufferPtr[0] = x;
-		gridVertexBufferPtr[1] = y1;
-		gridVertexBufferPtr[2] = x;
-		gridVertexBufferPtr[3] = y2;
-		gridVertexBufferPtr += 4;
-	}
-
-	// add main coordinates as last so that they overwrite all others
-
-	// x-axis
-	gridVertexBufferPtr[0] = x1;
-	gridVertexBufferPtr[1] = 0;
-	gridVertexBufferPtr[2] = x2;
-	gridVertexBufferPtr[3] = 0;
-	gridVertexBufferPtr += 4;
-
-	// y-axis
-	gridVertexBufferPtr[0] = 0;
-	gridVertexBufferPtr[1] = y1;
-	gridVertexBufferPtr[2] = 0;
-	gridVertexBufferPtr[3] = y2;
-	gridVertexBufferPtr += 4;
-
-	// insert x and y axis line vertexes into buffer for special handling
 
 	// Create Vertex Array Object and buffers if not done, yet
 	if (!m_vao.isCreated()) {
