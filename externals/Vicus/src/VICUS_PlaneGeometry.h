@@ -114,7 +114,7 @@ public:
 	/*! Flips the normal vector of the geometry. Does not require update of triangulation.
 		Requires valid polygon, otherwise an exception is thrown.
 	*/
-	void flip() { m_polygon.flip(); }
+	void flip();
 
 	// Getter functions for triangulation data (lazy evaluation)
 

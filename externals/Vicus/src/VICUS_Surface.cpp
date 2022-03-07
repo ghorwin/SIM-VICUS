@@ -103,5 +103,13 @@ void Surface::setSubSurfaces(const std::vector<SubSurface> & subSurfaces) {
 }
 
 
+void Surface::flip() {
+	m_geometry.flip(); // the hole polygons have been adjusted here already
+	IBK_ASSERT(m_subSurfaces.size() == m_geometry.holes().size());
+	for (unsigned int i=0, count=m_subSurfaces.size(); i<count; ++i)
+		m_subSurfaces[i].m_polygon2D = m_geometry.holes()[i];
+}
+
+
 
 } // namespace VICUS

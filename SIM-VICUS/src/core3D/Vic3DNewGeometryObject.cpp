@@ -126,14 +126,6 @@ void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m)
 }
 
 
-void NewGeometryObject::flipGeometry() {
-	VICUS::Polygon3D polygon = m_polygonGeometry.polygon();
-	polygon.flip();
-	m_polygonGeometry.setPolygon(polygon); // Note: no holes in this polygon, no need to flip the holes as well
-	updateBuffers(false);
-}
-
-
 void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 	// check that not the same points are added twice
 	if (!m_vertexList.empty() && p==m_vertexList.back()) {
@@ -167,7 +159,8 @@ void NewGeometryObject::appendVertex(const IBKMK::Vector3D & p) {
 				IBKMK::Vector3D b = m_vertexList.back();
 				IBKMK::Vector3D c = QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
-				m_polygonGeometry = VICUS::PlaneGeometry(VICUS::Polygon3D::T_Rectangle, a, b, d);
+				IBKMK::Polygon3D poly3D(VICUS::Polygon2D::T_Rectangle, a, b, d);
+				m_polygonGeometry = VICUS::PlaneGeometry(poly3D);
 				// Note: the vertex list will still only contain 3 points!
 				m_vertexList.push_back(c);
 			}
@@ -282,16 +275,14 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 
 			// if we have already 2 points, we try to compute a valid plane geometry (temporary) from the new point
 			if (m_vertexList.size() == 2) {
-				IBKMK::Polygon3D d;
-				d.setVertexes(m_vertexList);
-				d.addVertex(QVector2IBKVector(p));
+				IBKMK::Polygon3D d(IBKMK::Polygon2D::T_Triangle, m_vertexList[0], m_vertexList[1], QVector2IBKVector(p));
 				if (d.isValid()) {
 					// now compute orthogonal vector to first segment and normal of plane
 					IBKMK::Vector3D first = m_vertexList[0] - m_vertexList[1];
 					IBKMK::Vector3D second;
 					first.crossProduct(d.normal(), second); // second = n x first
 					second.normalize();
-					qDebug() << IBKVector2QVector(first) << IBKVector2QVector(d.normal()) << IBKVector2QVector(second);
+//					qDebug() << IBKVector2QVector(first) << IBKVector2QVector(d.normal()) << IBKVector2QVector(second);
 					// compute projection onto line, starting at m_vertexList[1]
 
 					// vector from new point to starting point
@@ -300,7 +291,7 @@ void NewGeometryObject::updateLocalCoordinateSystemPosition(const QVector3D & p)
 					double scale = v.scalarProduct(second);
 					IBKMK::Vector3D L = second*scale + d.vertexes()[1];
 					newPoint = IBKVector2QVector(L);
-					qDebug() << IBKVector2QVector(v) << scale << IBKVector2QVector(L) << newPoint;
+//					qDebug() << IBKVector2QVector(v) << scale << IBKVector2QVector(L) << newPoint;
 				}
 			}
 
@@ -375,14 +366,10 @@ void NewGeometryObject::setZoneHeight(double height) {
 	IBKMK::Vector3D offset = m_zoneHeight*planeGeometry().normal();
 
 	// generate extruded ceiling plane
-	VICUS::PlaneGeometry pg(planeGeometry());
-	// now offset all the coordinates
-	std::vector<IBKMK::Vector3D> vertexes(pg.polygon().vertexes());
-	for (IBKMK::Vector3D & v : vertexes)
-		v += offset;
-	pg.setPolygon( VICUS::Polygon3D(vertexes) );
+	IBKMK::Polygon3D poly = m_polygonGeometry.polygon3D();
+	poly.translate(offset);
 	m_generatedGeometry.clear();
-	m_generatedGeometry.push_back(pg);
+	m_generatedGeometry.push_back(VICUS::PlaneGeometry(poly));
 	updateBuffers(false);
 }
 
@@ -427,8 +414,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 
 		//create floor polygon
 		{
-			VICUS::Polygon3D poly3d;
-			poly3d.setVertexes(polyline);
+			VICUS::Polygon3D poly3d(polyline);
 			if(poly3d.normal().m_z > 0)
 				poly3d.flip();
 			m_polygonGeometry.setPolygon(poly3d);

@@ -477,6 +477,19 @@ void PlaneGeometry::setGeometry(const Polygon3D & polygon3D, const std::vector<P
 }
 
 
+void PlaneGeometry::flip() {
+	// flip the polygon first
+	m_polygon.flip();
+	// since localX and localY axes have been swapped, we need to swap all hole coordinates as well
+	for (Polygon2D & p : m_holes) {
+		std::vector<IBKMK::Vector2D>		vertexes2D = p.vertexes();
+		for (IBKMK::Vector2D & v : vertexes2D)
+			std::swap(v.m_x, v.m_y);
+		p.setVertexes(vertexes2D);
+	}
+}
+
+
 const PlaneTriangulationData & PlaneGeometry::triangulationData() const {
 	if (m_dirty)
 		triangulate();

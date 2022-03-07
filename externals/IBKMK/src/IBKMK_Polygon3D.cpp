@@ -161,7 +161,15 @@ void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3
 
 void Polygon3D::flip() {
 	IBK_ASSERT(isValid());
-	m_normal = -1.0*m_normal; // Note: x and y axis remain the same!
+	m_normal = -1.0*m_normal;
+	// we need to swap x and y axes to keep right-handed coordinate system
+	std::swap(m_localX, m_localY);
+
+	// we also need to swap x and y coordinates of all polygon2D points
+	std::vector<IBKMK::Vector2D>		vertexes2D = m_polyline.vertexes();
+	for (IBKMK::Vector2D & v : vertexes2D)
+		std::swap(v.m_x, v.m_y);
+	m_polyline.setVertexes(vertexes2D);
 	m_dirty = true;
 }
 
