@@ -59,6 +59,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 				// and then update the geometry object
 				VICUS::Surface * oldS = const_cast<VICUS::Surface *>(sOld);
 
+#ifdef POLYGON2D
 				// TODO : This is slow! Not only polygon memory is copied around, but also the triangulation
 				//        is done with every setXXX call, so 4 times in total. While this code is safe and ensures
 				//        consistency, it might scale badly for large geometries.
@@ -69,6 +70,7 @@ void SVUndoModifySurfaceGeometry::undo() {
 				oldS->setSubSurfaces(sNew.subSurfaces());
 				sNew.setSubSurfaces(oldSubSurfaces);
 				break;
+#endif // POLYGON2D
 			}
 		}
 	}
