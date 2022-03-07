@@ -96,8 +96,9 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0),
-												 QColor("white"), 10 ) );
+	// add default main grid plain (z=0)
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
 
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
@@ -2251,8 +2252,7 @@ void Scene::pick(PickObject & pickObject) {
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-		int holeIndex;
-		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_GridPlane;
@@ -2512,19 +2512,17 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// do we snap to grid?
 				if (snapOptions & SVViewState::Snap_GridPlane) {
 					// now determine which grid line is closest
-					QVector3D closestPoint;
-					/// \todo Andreas: add support for several grid objects, or one grid object with several planes
-					///		  r.m_uniqueObjectID -> index of plane that we hit.
-					if (m_gridObject.closestSnapPoint(IBKVector2QVector(r.m_pickPoint), closestPoint)) {
-						// this is in world coordinates, use this as transformation vector for the
-						// coordinate system
-						float dist = (closestPoint - pickPoint).lengthSquared();
-						// close enough?
-						if (dist < SNAP_DISTANCES_THRESHHOLD) {
-							// got a snap point, store it
-							snapPoint = QVector2IBKVector(closestPoint);
-							snapInfo = "snap to grid point";
-						}
+					IBKMK::Vector3D closestPoint;
+					Q_ASSERT(r.m_objectID < m_gridPlanes.size());
+					m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
+					// this is in world coordinates, use this as transformation vector for the
+					// coordinate system
+					float dist = (IBKVector2QVector(closestPoint) - pickPoint).lengthSquared();
+					// close enough?
+					if (dist < SNAP_DISTANCES_THRESHHOLD) {
+						// got a snap point, store it
+						snapPoint = closestPoint;
+						snapInfo = "snap to grid point";
 					}
 				}
 			}

@@ -639,20 +639,19 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 		// create floor polygon
 		double zHeight = polyline.front().m_z;
 		{
-			VICUS::Polygon3D poly3d;
-			poly3d.setVertexes(polyline);
-			if(poly3d.normal().m_z == 0)
+			VICUS::Polygon3D poly3d(polyline); // TODO : Dirk, error checking
+			if (poly3d.normal().m_z == 0)
 			{
 				/// TODO Dirk Fehler abfangen wenn das Polygon senkrecht zur x-y-Ebene aufgebaut wird
 				return;
 			}
 			// transform all coordinates to x-y-plane
-			for(IBKMK::Vector3D &p : polyline)
+			for (IBKMK::Vector3D &p : polyline)
 				p.m_z = zHeight;
 
-			poly3d.setVertexes(polyline);
+			poly3d = VICUS::Polygon3D(polyline);
 
-			if(poly3d.normal().m_z > 0)
+			if (poly3d.normal().m_z > 0)
 				poly3d.flip();
 			m_polygonGeometry.setPolygon(poly3d);
 		}
