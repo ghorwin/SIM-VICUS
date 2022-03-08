@@ -54,7 +54,7 @@ void GridObject::create(ShaderProgram * shaderProgram,
 
 	// we make space for each plane, even though they may not be used
 	m_gridOffsets.clear();
-	m_gridColors.resize(nPlanes);
+	m_gridColors.resize(2*nPlanes);
 	m_gridPlaneVisible.resize(nPlanes);
 
 	// now generate buffer data for all grids
@@ -90,14 +90,14 @@ void GridObject::create(ShaderProgram * shaderProgram,
 		}
 		else {
 			// major grid
-			m_gridColors[i*2 + 1] = QtExt::QVector3DFromQColor(gp.m_color);
+			m_gridColors[i*2 + 0] = QtExt::QVector3DFromQColor(gp.m_color);
 			// minor grid is always main color but a little brighter/darker depending on theme
 			QColor minorGridCol;
 			if (tt == SVSettings::TT_Dark)
-				minorGridCol = gp.m_color.darker(100);
+				minorGridCol = gp.m_color.darker(200);
 			else
-				minorGridCol = gp.m_color.lighter(100);
-			m_gridColors[i*2 + 0] = QtExt::QVector3DFromQColor(minorGridCol);
+				minorGridCol = gp.m_color.lighter(200);
+			m_gridColors[i*2 + 1] = QtExt::QVector3DFromQColor(minorGridCol);
 		}
 
 		// transfer grid dimensions

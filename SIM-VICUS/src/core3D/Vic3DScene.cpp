@@ -98,8 +98,12 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 
 	// add default main grid plain (z=0)
 	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
-											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
-
+											 IBKMK::Vector3D(1,0,0), QColor("white"), 20, 10 ) );
+	m_gridPlanes[0].m_isVisible = false;
+#if 1
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(10,0,-2), IBKMK::Vector3D(0,0,1),
+											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 20, 10 ) );
+#endif
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
