@@ -263,7 +263,7 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 		const VICUS::Surface* s = m_currentSelection[i];
 
 		VICUS::Surface newSurf(*s);
-		newSurf.setPolygon3D( geometries[i].polygon() ); // update polygon (is this really necessary?)
+		newSurf.setPolygon3D( geometries[i].polygon3D() ); // update polygon (is this really necessary?)
 
 		// now add subsurface objects for each hole in the polygon
 		std::vector<VICUS::SubSurface> subs;

@@ -375,6 +375,7 @@ void NewGeometryObject::setZoneHeight(double height) {
 
 
 void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon, QWidget *parent) {
+#if 0
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
 	// generate roof geometry
@@ -895,6 +896,7 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 		m_generatedGeometry.push_back(pg);
 	}
 	updateBuffers(false);
+#endif
 }
 
 
@@ -921,7 +923,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 
 	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
 	// can draw a line from the last vertex to the current coordinate system's location
-	if (m_polygonGeometry.polygon().vertexes().empty())
+	if (!m_polygonGeometry.isValid() || (
+			m_polygonGeometry.triangulationData().m_vertexes.empty() && m_vertexList.empty()))
 		return;
 
 	unsigned int currentVertexIndex = 0;
@@ -954,7 +957,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				IBKMK::Vector3D b = m_vertexList.back();
 				IBKMK::Vector3D c = QVector2IBKVector(m_localCoordinateSystemPosition);
 				IBKMK::Vector3D d = a + (c-b);
-				VICUS::PlaneGeometry pg(VICUS::Polygon3D::T_Rectangle, a, b, d);
+				VICUS::PlaneGeometry pg(VICUS::Polygon3D(IBKMK::Polygon2D::T_Rectangle, a, b, d));
 				addPlane(pg.triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 
@@ -1037,8 +1040,8 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 				addPlane(m_generatedGeometry[0].triangulationData(), currentVertexIndex, currentElementIndex,
 						 m_vertexBufferData, m_indexBufferData);
 
-				const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon().vertexes();
-				const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon().vertexes();
+				const std::vector<IBKMK::Vector3D> & floorPolygonVertexes = m_polygonGeometry.polygon3D().vertexes();
+				const std::vector<IBKMK::Vector3D> & ceilingPolygonVertexes = m_generatedGeometry[0].polygon3D().vertexes();
 
 				// now add a line strip for the bottom polygon
 				for (unsigned int i=0; i<=floorPolygonVertexes.size(); ++i)

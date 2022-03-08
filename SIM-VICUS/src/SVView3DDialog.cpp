@@ -46,6 +46,7 @@
 #include <fstream>
 
 void SVView3DDialog::exportView3d() {
+#ifdef POLYGON2D
 	FUNCID(SVView3DDialog::exportView3d);
 
 	// TODO : Stephan, revise error handling concept any error occurring in this function should result
@@ -378,4 +379,5 @@ void SVView3DDialog::readView3dResults(IBK::Path fname, view3dRoom &v3dRoom) {
 			}
 		}
 	}
+#endif
 }

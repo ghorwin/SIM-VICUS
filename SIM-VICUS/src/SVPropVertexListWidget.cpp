@@ -325,7 +325,7 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			m_ui->stackedWidget->setCurrentIndex(3);
 			updateComponentComboBoxes(); // update all component combo boxes in roof page
 			const VICUS::PlaneGeometry & pg = po->planeGeometry();
-			if (pg.polygon().type() != IBKMK::Polygon3D::T_Rectangle)
+			if (pg.polygon3D().type() != IBKMK::Polygon2D::T_Rectangle)
 				m_ui->comboBoxRoofType->setCurrentIndex(4); // not a rectangle, select complex roof
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
@@ -333,10 +333,10 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			// get floor polyline from roof and save this for later
 			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 
-			if (po->planeGeometry().polygon().vertexes().empty())
+			if (po->planeGeometry().polygon3D().vertexes().empty())
 				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
 
-			m_roofPolygon = po->planeGeometry().polygon().vertexes();
+			m_roofPolygon = po->planeGeometry().polygon3D().vertexes();
 
 			updateRoofGeometry();
 		}
@@ -515,7 +515,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 	VICUS::Surface s;
 	s.m_id = project().nextUnusedID();
 	s.m_displayName = m_ui->lineEditName->text().trimmed();
-	s.setPolygon3D( po->planeGeometry().polygon() );
+	s.setPolygon3D( po->planeGeometry().polygon3D() );
 
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
@@ -610,9 +610,9 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 
 	// take the polygon
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	VICUS::Polygon3D floor = po->planeGeometry().polygon();
+	VICUS::Polygon3D floor(po->planeGeometry().polygon3D());
 	IBK_ASSERT(po->generatedGeometry().size() == 1);
-	VICUS::Polygon3D ceiling = po->generatedGeometry()[0].polygon();
+	VICUS::Polygon3D ceiling(po->generatedGeometry()[0].polygon3D());
 	// Note: both polygons still have the same normal vector!
 
 	// compute offset vector
@@ -684,7 +684,7 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		VICUS::Surface sWall;
 		sWall.m_id = ++nextID;
 		sWall.m_displayName = tr("Wall %1").arg(i+1);
-		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
+		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon2D::T_Rectangle, p0, p1, p2) );
 		sWall.initializeColorBasedOnInclination();
 		// wall surface is attached to "Side A"
 		componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
@@ -772,7 +772,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 
 	// get floor polygon from geometry object
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	const VICUS::Polygon3D & floor = po->planeGeometry().polygon();
+	const VICUS::Polygon3D & floor = po->planeGeometry().polygon3D();
 
 	// generate floor surface (no component assigned!)
 	unsigned int nextID = project().nextUnusedID();
@@ -798,7 +798,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 		VICUS::Surface sRoof;
 		sRoof.m_id = ++nextID;
 		sRoof.m_displayName = tr("Wall surface");//.arg(++roofSurfaceCount);
-		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
+		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon3D());
 		sRoof.m_displayColor = QColor(200,200,140,255);	//for walls
 
 		unsigned int componentID = VICUS::INVALID_ID;

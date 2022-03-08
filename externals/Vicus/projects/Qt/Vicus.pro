@@ -156,6 +156,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
+	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \

@@ -329,6 +329,7 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 
 
 void SVGeometryView::coordinateInputFinished() {
+#ifdef POLYGON2D
 	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
 	// (if possible)
 
@@ -411,6 +412,7 @@ void SVGeometryView::coordinateInputFinished() {
 
 	// if successful, clear the input widget
 	m_lineEditCoordinateInput->clear();
+#endif
 }
 
 
