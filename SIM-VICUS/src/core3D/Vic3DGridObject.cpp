@@ -53,7 +53,7 @@ void GridObject::create(ShaderProgram * shaderProgram,
 	unsigned int nPlanes = gridPlanes.size();
 
 	// we make space for each plane, even though they may not be used
-	m_gridOffsets.resize(nPlanes+1);
+	m_gridOffsets.clear();
 	m_gridColors.resize(nPlanes);
 	m_gridPlaneVisible.resize(nPlanes);
 
@@ -73,7 +73,7 @@ void GridObject::create(ShaderProgram * shaderProgram,
 		m_gridPlaneVisible[i] = gp.m_isVisible;
 		if (!gp.m_isVisible) {
 			// store offsets for invisible plane
-			GLsizei lastOffset = (GLsizei)gridVertexBufferData.back();
+			GLsizei lastOffset = (GLsizei)m_gridOffsets.back();
 			m_gridOffsets.push_back(lastOffset); // start of minor grid (vertex count major grid lines 2*N*2)
 			m_gridOffsets.push_back(lastOffset);  // start of next major grid (vertex count _all_ grid lines 2*N_minor*2)
 			continue;
@@ -131,25 +131,25 @@ void GridObject::create(ShaderProgram * shaderProgram,
 		gp.m_nGridLines = N_minor;	// total number of grid lines
 		gp.m_gridExtends = width/2;	// local  -x, +x, -y, +y extends of grid
 
-		// we store first the major grid lines in the vertex buffer, than the minor grid lines
-		// we have 2*N lines for the major grid, each line requires 2 vertexes
-		GLsizei lastOffset = (GLsizei)gridVertexBufferData.back();
-		m_gridOffsets.push_back(lastOffset + (GLsizei)N*4); // start of minor grid (vertex count major grid lines 2*N*2)
-		// add offset for minor grid
-		m_gridOffsets.push_back(lastOffset + (GLsizei)N_minor*4);  // start of next major grid (vertex count _all_ grid lines 2*N_minor*2)
-
 		// create a temporary buffer for the grid line vertexes of current grid plane
 		std::vector<float>			currentGridVertexBufferData;
-		// each vertex requires two floats (x and y coordinates)
-		currentGridVertexBufferData.resize(N_minor*2);
+		currentGridVertexBufferData.resize(N_minor*4*2);
 		float * gridVertexBufferPtr = currentGridVertexBufferData.data();
 		// vertex buffer data mapping:
 		// - x-major grid center line 4 Vertexes                                       <-- m_gridOffsets[i*2 + 0]
-		// - y-major grid center line * 4 Vertexes
+		// - y-major grid center line 4 Vertexes
 		// - x-major grid lines without center line (N-1) * 4 Vertexes
 		// - y-major grid lines without center line (N-1) * 4 Vertexes
 		// - x-minor grid lines without major grid lines (N_minor - N) * 4 Vertexes    <-- m_gridOffsets[i*2 + 1]
 		// - x-minor grid lines without major grid lines (N_minor - N) * 4 Vertexes
+
+		// we store first the major grid lines in the vertex buffer, than the minor grid lines
+		// we have 2*N lines for the major grid, each line requires 2 vertexes
+		// Mind: the offsets are stored using "line indexes", not vertex indexes!
+		GLsizei lastOffset = (GLsizei)m_gridOffsets.back();
+		m_gridOffsets.push_back(lastOffset + (GLsizei)N*4); // start of minor grid (vertex count major grid lines 2*N*2)
+		// add offset for start of next grid
+		m_gridOffsets.push_back(lastOffset + (GLsizei)N_minor*4);  // start of next major grid (vertex count _all_ grid lines 2*N_minor*2)
 
 		// compute major grid lines first y = const
 		float widthF = (float)width;
