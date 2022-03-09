@@ -30,9 +30,10 @@
 #include <vector>
 
 #include <VICUS_GridPlane.h>
-#include <QtExt_Conversions.h>
+#include "SV_Conversions.h"
 
 #include "Vic3DShaderProgram.h"
+#include "Vic3DTransform3D.h"
 
 #include "SVSettings.h"
 
@@ -81,6 +82,14 @@ void GridObject::create(ShaderProgram * shaderProgram,
 		}
 
 		m_anyGridVisible = true;
+
+		// generate plane transformation matrix
+		Transform3D trans;
+		trans.setTranslation(IBKVector2QVector(gp.m_offset));
+		trans.setRotation( QQuaternion::fromAxes(IBKVector2QVector(gp.m_localX),
+												 IBKVector2QVector(gp.m_localY),
+												 IBKVector2QVector(gp.m_normal) ));
+		m_planeTransformationMatrix[i] = trans.toMatrix();
 
 		// transfer grid colors
 
