@@ -67,8 +67,9 @@ public:
 	/*! Shader program, that the grid is painted with. */
 	ShaderProgram				*m_gridShader = nullptr;
 
-	/*! Vector with grid index start offsets (size = 2*number of grid planes + 1), first index is always
-		start of major grid lines, second index is start of minor grid lines.
+	/*! Vector with grid _line_ index start offsets
+		(size = 2*number of grid planes + 1),
+		first index is always start of major grid lines, second index is start of minor grid lines.
 	*/
 	std::vector<GLsizei>		m_gridOffsets;
 	/*! Vector with grid colors (size = 2*number of grid planes) (first is major color, second minor grid color). */
@@ -85,6 +86,7 @@ public:
 private:
 	// local copy of grid planes, needed for rending
 	std::vector<bool>			m_gridPlaneVisible;
+	std::vector<QMatrix4x4>		m_planeTransformationMatrix;
 };
 
 } // namespace Vic3D

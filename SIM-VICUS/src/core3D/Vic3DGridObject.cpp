@@ -56,6 +56,7 @@ void GridObject::create(ShaderProgram * shaderProgram,
 	m_gridOffsets.clear();
 	m_gridColors.resize(2*nPlanes);
 	m_gridPlaneVisible.resize(nPlanes);
+	m_planeTransformationMatrix.resize(nPlanes);
 
 	// now generate buffer data for all grids
 	std::vector<float>			gridVertexBufferData;
@@ -279,6 +280,8 @@ void GridObject::render() {
 		GLsizei startOffset = m_gridOffsets[2*i];
 		GLsizei minorGridOffset = m_gridOffsets[2*i+1];
 		GLsizei nextOffset = m_gridOffsets[2*i+2];
+
+		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[4], m_planeTransformationMatrix[i]);
 
 		// draw main x axis
 		QColor xLine;
