@@ -99,7 +99,7 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// add default main grid plain (z=0)
 	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
 											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
-#if 1
+#if 0
 	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,-2), IBKMK::Vector3D(0,0,1),
 											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
 	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
@@ -486,15 +486,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// only enter orbit controller mode, if we actually hit something
 			if (!pickObject.m_candidates.empty()) {
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
-				// if we hit the a plane, limit the orbit controller to the extends of the grid
-				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
-					// which plane did we hit?
-					unsigned int planeIdx = pickObject.m_candidates.front().m_objectID;
-					IBKMK::Vector3D snapPoint;
-					m_gridPlanes[planeIdx].closestSnapPoint(nearestPoint, snapPoint);
-					nearestPoint = snapPoint;
-				}
-
 
 				// *** enter translation mode? ***
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_CoordinateSystemCenter) {
@@ -2252,7 +2243,7 @@ void Scene::pick(PickObject & pickObject) {
 #endif
 
 
-	// *** intersection with global xy plane ***
+	// *** intersection with grid plane ***
 
 	IBKMK::Vector3D intersectionPoint;
 	double t;
