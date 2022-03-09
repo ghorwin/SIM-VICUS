@@ -147,7 +147,7 @@ void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3
 		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
 	// check that the vectors are (nearly) orthogonal
 	double sp = normal.scalarProduct(xAxis);
-	if (!IBK::nearly_equal<6>(sp, 1.0))
+	if (!IBK::nearly_equal<6>(sp, 0.0))
 		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
 
 	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
