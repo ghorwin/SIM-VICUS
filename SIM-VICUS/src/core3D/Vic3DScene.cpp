@@ -104,7 +104,6 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
 	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
 											 IBKMK::Vector3D(1,0,0), QColor("#e09040"), 50, 10 ) );
-	m_gridPlanes.back().updateLocalY();
 #endif
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }

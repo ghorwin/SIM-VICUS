@@ -26,10 +26,28 @@
 #include "VICUS_GridPlane.h"
 
 #include <IBK_Exception.h>
+#include <IBK_messages.h>
 
 #include <IBKMK_3DCalculations.h>
 
 namespace VICUS {
+
+GridPlane::GridPlane(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
+		  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing) :
+	m_offset(offset),
+	m_normal(normal),
+	m_localX(localX),
+	m_color(majorGridColor),
+	m_width(width),
+	m_spacing(majorGridSpacing)
+{
+	FUNCID(GridPlane::GridPlane);
+	try {
+		updateLocalY();
+	} catch (...) {
+		IBK::IBK_Message("Invalid localX and/or normal vectors.", IBK::MSG_ERROR, FUNC_ID);
+	}
+}
 
 void GridPlane::readXML(const TiXmlElement * element) {
 	readXMLPrivate(element);

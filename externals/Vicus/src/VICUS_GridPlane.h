@@ -58,15 +58,7 @@ public:
 
 	/*! Initializing constructor, generated grid will be visible and active by default. */
 	GridPlane(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
-			  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing) :
-		m_offset(offset),
-		m_normal(normal),
-		m_localX(localX),
-		m_color(majorGridColor),
-		m_width(width),
-		m_spacing(majorGridSpacing)
-	{
-	}
+			  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing);
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
