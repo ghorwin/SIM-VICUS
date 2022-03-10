@@ -376,9 +376,17 @@ equals(TEMPLATE,app) {
 	UI_DIR = ui
 
 	win32-msvc* {
+		# disable warning for unsafe functions if using MS compiler
 		QMAKE_CXXFLAGS += /wd4996
 		QMAKE_CFLAGS += /wd4996
+		DEFINES += NOMINMAX
 		DEFINES += _CRT_SECURE_NO_WARNINGS
+
+		# In Debug mode add warnings for access to uninitialized variables
+		# and out-of-bounds access for static arrays (and vectors)
+		CONFIG(debug, debug|release) {
+			QMAKE_CXXFLAGS += /GS /RTC1
+		}
 	}
 	else {
 		QMAKE_CXXFLAGS += -std=c++11
@@ -416,7 +424,12 @@ equals(TEMPLATE,lib) {
 	win32-msvc* {
 		CONFIG += static
 		DEFINES += NOMINMAX
+		# disable warning for unsafe functions if using MS compiler
+		QMAKE_CXXFLAGS += /wd4996
+		QMAKE_CFLAGS += /wd4996
 		DEFINES += _CRT_SECURE_NO_WARNINGS
+		# In Debug mode add warnings for access to uninitialized variables
+		# and out-of-bounds access for static arrays (and vectors)
 		CONFIG(debug, debug|release) {
 			QMAKE_CXXFLAGS += /GS /RTC1
 		}
@@ -424,14 +437,6 @@ equals(TEMPLATE,lib) {
 	else {
 		# on Unix/MacOS we always build our libraries as dynamic libs
 		CONFIG += shared
-	}
-
-	# disable warning for unsafe functions if using MS compiler
-	win32-msvc* {
-		QMAKE_CXXFLAGS += /wd4996
-		QMAKE_CFLAGS += /wd4996
-	}
-	else {
 		QMAKE_CXXFLAGS += -std=c++11
 	}
 
