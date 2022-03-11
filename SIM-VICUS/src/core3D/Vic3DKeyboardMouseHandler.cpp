@@ -25,6 +25,8 @@
 
 #include "Vic3DKeyboardMouseHandler.h"
 
+#include <cstdlib>
+
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
