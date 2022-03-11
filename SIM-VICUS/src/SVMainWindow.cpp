@@ -858,9 +858,10 @@ void SVMainWindow::onImportPluginTriggered() {
 				m_projectHandler.importProject(p);
 			}
 		}
-		if(!success) {
-			///< \todo Error handling in case of import error
-		}
+	}
+	// call of import plugin not successful
+	else {
+		///< \todo Error handling in case of import error
 	}
 }
 
