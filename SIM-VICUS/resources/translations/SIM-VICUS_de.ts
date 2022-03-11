@@ -60,26 +60,26 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="38"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="171"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="180"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="60"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="98"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="190"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="198"/>
         <source>Dry density of the material.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="39"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="172"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="181"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="99"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="191"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="199"/>
         <source>Specific heat capacity of the material.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="40"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="173"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="182"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="100"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="192"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="200"/>
         <source>Thermal conductivity of the dry material.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -174,1318 +174,1367 @@
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="56"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="145"/>
-        <source>On-off-type heat pump based on polynoms for heating power and el. power, installed at source side</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="57"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="145"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="146"/>
-        <source>Valve with associated control model</source>
+        <source>On-off-type heat pump based on polynoms for heating power and el. power, installed at source side</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="58"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="147"/>
-        <source>Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain</source>
+        <source>Valve with associated control model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="59"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="148"/>
-        <source>Valve with constant pressure loss</source>
+        <source>Ideal heat exchange model that provides a defined supply temperature to the network and calculates the heat loss/gain</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="60"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="149"/>
-        <source>Adiabatic element with pressure loss defined by zeta-value</source>
+        <source>Valve with constant pressure loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="61"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="150"/>
-        <source>Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)</source>
+        <source>Adiabatic element with pressure loss defined by zeta-value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="62"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="151"/>
-        <source>Pressure loss coefficient for the component (zeta-value)</source>
+        <source>Only used for pressure loss calculation with PressureLossCoefficient (NOT for pipes)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="63"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="152"/>
-        <source>Pump predefined pressure head</source>
+        <source>Pressure loss coefficient for the component (zeta-value)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="64"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="153"/>
-        <source>Pump predefined mass flux</source>
+        <source>Pump predefined pressure head</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="65"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="154"/>
-        <source>Pump efficiency</source>
+        <source>Pump predefined mass flux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="66"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="155"/>
-        <source>Fraction of pump heat loss due to inefficiency that heats up the fluid</source>
+        <source>Pump efficiency</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="67"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="156"/>
-        <source>Pump maximum pressure head at point of minimal mass flow of pump</source>
+        <source>Fraction of pump heat loss due to inefficiency that heats up the fluid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="68"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="157"/>
-        <source>Pump maximum electrical power at point of optimal operation</source>
+        <source>Pump maximum pressure head at point of minimal mass flow of pump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="69"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="158"/>
-        <source>Design pressure head of VariablePressureHeadPump</source>
+        <source>Pump maximum electrical power at point of optimal operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="70"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="159"/>
-        <source>Design mass flux of VariablePressureHeadPump</source>
+        <source>Design pressure head of VariablePressureHeadPump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="71"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="160"/>
-        <source>Factor to reduce pressure head of VariablePressureHeadPump</source>
+        <source>Design mass flux of VariablePressureHeadPump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="72"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="161"/>
-        <source>Water or air volume of the component</source>
+        <source>Factor to reduce pressure head of VariablePressureHeadPump</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="73"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="162"/>
-        <source>Maximum width/length of discretized volumes in pipe</source>
+        <source>Water or air volume of the component</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="74"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="163"/>
-        <source>Carnot efficiency eta</source>
+        <source>Maximum width/length of discretized volumes in pipe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="75"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="164"/>
-        <source>Maximum heating power</source>
+        <source>Carnot efficiency eta</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="76"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="165"/>
-        <source>Pressure loss for valve</source>
+        <source>Maximum heating power</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="77"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="166"/>
-        <source>Minimum outlet temperature of heat exchanger, used for clipping of heat extraction</source>
+        <source>Pressure loss for valve</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="78"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="170"/>
-        <source>Set points are given as constant parameters</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="167"/>
+        <source>Minimum outlet temperature of heat exchanger, used for clipping of heat extraction</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="79"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="171"/>
-        <source>Scheduled set point values</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="168"/>
+        <source>HeatingPowerB0W35</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="80"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="172"/>
-        <source>Control temperature difference of this element</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="169"/>
+        <source>Heat pump supply temperature for heating buffer storage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="81"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="173"/>
-        <source>Control temperature difference of the following element</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="170"/>
+        <source>Heat pump return temperature for heating buffer storage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="82"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="174"/>
-        <source>Control zone thermostat values</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="171"/>
+        <source>Heat pump supply temperature for DHW buffer storage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="83"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="175"/>
-        <source>Control mass flux</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="172"/>
+        <source>Heat pump return temperature for DHW buffer storage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="84"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="176"/>
-        <source>Control pump operation depending on following element</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="173"/>
+        <source>Heat pump heating buffer storage volume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="85"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="177"/>
-        <source>PController</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="174"/>
+        <source>DHWBufferVolume</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="86"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="178"/>
-        <source>PIController</source>
+        <source>Set points are given as constant parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="87"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="179"/>
-        <source>PIDController</source>
+        <source>Scheduled set point values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="88"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="180"/>
-        <source>OnOffController</source>
+        <source>Control temperature difference of this element</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="89"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="123"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="181"/>
-        <source>Kp-parameter</source>
+        <source>Control temperature difference of the following element</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="90"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="124"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="182"/>
-        <source>Ki-parameter</source>
+        <source>Control zone thermostat values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="91"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="183"/>
-        <source>Kd-parameter</source>
+        <source>Control mass flux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="92"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="184"/>
-        <source>Target temperature difference</source>
+        <source>Control pump operation depending on following element</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="93"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="185"/>
-        <source>Target mass flux</source>
+        <source>PController</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="94"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="186"/>
-        <source>Threshold value for PumpOperation property when OnOffController is used</source>
+        <source>PIController</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="95"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="187"/>
-        <source>Integral part will be set to zero if controller error is above this value</source>
+        <source>PIDController</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="96"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="188"/>
-        <source>ID of zone containing thermostat</source>
+        <source>OnOffController</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="97"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="129"/>
-        <source>Pipe length</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="132"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="189"/>
+        <source>Kp-parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="98"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="132"/>
-        <source>Number of parallel pipes</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="133"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="190"/>
+        <source>Ki-parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="99"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="169"/>
-        <source>Number of parallel elements</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="191"/>
+        <source>Kd-parameter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="100"/>
-        <source>Constant temperature</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="192"/>
+        <source>Target temperature difference</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="101"/>
-        <source>Time-dependent temperature from spline</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="193"/>
+        <source>Target mass flux</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="102"/>
-        <source>Evaporator medium temperature for heat pump</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="194"/>
+        <source>Threshold value for PumpOperation property when OnOffController is used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="103"/>
-        <source>Zone air temperature</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="195"/>
+        <source>Integral part will be set to zero if controller error is above this value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="104"/>
-        <source>Active construction layer (floor heating)</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="196"/>
+        <source>ID of zone containing thermostat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="105"/>
-        <source>Constant heat loss</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="138"/>
+        <source>Pipe length</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="106"/>
-        <source>Heat loss from spline</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="141"/>
+        <source>Number of parallel pipes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="107"/>
-        <source>Heat loss of condenser in heat pump model</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="177"/>
+        <source>Number of parallel elements</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="108"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="111"/>
-        <source>Temperature for heat exchange</source>
+        <source>Constant temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="109"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="112"/>
-        <source>Constant heat flux out of the element (heat loss)</source>
+        <source>Time-dependent temperature from spline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="110"/>
-        <source>External heat transfer coeffient for the outside boundary</source>
+        <source>Evaporator medium temperature for heat pump</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="111"/>
+        <source>Zone air temperature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="112"/>
+        <source>Active construction layer (floor heating)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="113"/>
-        <source>ID of coupled zone for thermal exchange</source>
+        <source>Constant heat loss</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="114"/>
-        <source>ID of coupled construction instance for thermal exchange</source>
+        <source>Heat loss from spline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="115"/>
-        <source>Roughness of pipe material</source>
+        <source>Heat loss of condenser in heat pump model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="116"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="130"/>
-        <source>Inner diameter of pipe</source>
+        <source>Heating demand for space heating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="117"/>
-        <source>Outer diameter of pipe</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="120"/>
+        <source>Temperature for heat exchange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="118"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="131"/>
-        <source>Length-specific U-Value of pipe wall incl. insulation</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="121"/>
+        <source>Constant heat flux out of the element (heat loss)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="119"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="200"/>
-        <source>Specific heat capaciy of pipe wall</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="120"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="201"/>
-        <source>Density of pipe wall</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="121"/>
-        <source>Maximum heating power per floor area</source>
+        <source>External heat transfer coeffient for the outside boundary</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="122"/>
-        <source>Maximum cooling power per floor area</source>
+        <source>ID of coupled zone for thermal exchange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="123"/>
+        <source>ID of coupled construction instance for thermal exchange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="124"/>
+        <source>Roughness of pipe material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="125"/>
-        <source>Constant supply temperature</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="139"/>
+        <source>Inner diameter of pipe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="126"/>
-        <source>Scheduled supply temperature</source>
+        <source>Outer diameter of pipe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="127"/>
-        <source>Medium supply temperature</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="140"/>
+        <source>Length-specific U-Value of pipe wall incl. insulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="128"/>
-        <source>Maximum mass flux through the pipe</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="208"/>
+        <source>Specific heat capaciy of pipe wall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="133"/>
-        <source>Maximum heating power per surface area</source>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="129"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="209"/>
+        <source>Density of pipe wall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="130"/>
+        <source>Maximum heating power per floor area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="131"/>
+        <source>Maximum cooling power per floor area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="134"/>
-        <source>Maximum cooling power per surface area</source>
+        <source>Constant supply temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="135"/>
-        <source>Pressure coeffient.</source>
+        <source>Scheduled supply temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="136"/>
-        <source>Use results from external wind flow calculation.</source>
+        <source>Medium supply temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="137"/>
+        <source>Maximum mass flux through the pipe</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="142"/>
+        <source>Maximum heating power per surface area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="143"/>
+        <source>Maximum cooling power per surface area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="144"/>
+        <source>Pressure coeffient.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="145"/>
+        <source>Use results from external wind flow calculation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="146"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="72"/>
         <source>Constant heat exchange coefficient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="138"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="147"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="73"/>
         <source>No convective heat exchange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="139"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="148"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="77"/>
         <source>Convective heat transfer coefficient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="140"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="143"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="149"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="152"/>
         <source>Constant model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="141"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="150"/>
         <source>No long wave radiation exchange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="142"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="151"/>
         <source>Long wave emissivity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="144"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="153"/>
         <source>No short wave radiation exchange</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="145"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="154"/>
         <source>Solar absorption coefficient</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="146"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="155"/>
         <source>Vapor Transfer Coefficient.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="147"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="156"/>
         <source>Constant model.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="148"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="157"/>
         <source>Constant internal loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="149"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="158"/>
         <source>Scheduled internal loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="150"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="159"/>
         <source>Percentage of equipment load that is radiant emitted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="151"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="160"/>
         <source>Percentage of person load that is radiant emitted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="152"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="161"/>
         <source>Percentage of lighting load that is radiant emitted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="153"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="162"/>
         <source>Complete equipment load per zone floor area.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="154"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="163"/>
         <source>Complete person load per zone floor area.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="155"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="164"/>
         <source>Complete lighting load per zone floor area.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="156"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="165"/>
         <source>Start time point.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="157"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="166"/>
         <source>End time point.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="158"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="167"/>
         <source>StepSize.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="159"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="168"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="96"/>
         <source>Some temperatures</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="160"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="169"/>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="97"/>
         <source>Some mass</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="161"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="170"/>
         <source>constant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="162"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="171"/>
         <source>linear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="163"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="172"/>
         <source>Continuous data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="164"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="173"/>
         <source>Annual cycle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="165"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="174"/>
         <source>Latitude.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="166"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="175"/>
         <source>Longitude.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="167"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="176"/>
         <source>Albedo value [0..100 %].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="168"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="177"/>
         <source>Altitude of building as height above NN [m].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="169"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="178"/>
         <source>Use diffuse radiation model for anisotropic radiation (Perez)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="170"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="179"/>
         <source>If true, shading factors for exterior shading are stored for continuous time points (no cyclic use)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="174"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="183"/>
         <source>Model references of climate/location models.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="175"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="184"/>
         <source>Model references inside a room.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="176"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="185"/>
         <source>Model references a wall.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="177"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="186"/>
         <source>Model references an embedded object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="178"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="187"/>
         <source>Model references generic scheduled data that is not associated with a specific object type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="179"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="188"/>
         <source>Model references of a model object.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="180"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="189"/>
         <source>Model references of a hydraulic network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="181"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="190"/>
         <source>Model references of flow elements of a hydraulic network.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="182"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="191"/>
         <source>Constant ventilation rate (also can used as infiltration)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="183"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="192"/>
         <source>Scheduled ventilation rate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="184"/>
-        <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the control conditions are met.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="185"/>
-        <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="186"/>
-        <source>Ventilation rate for Constant model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="187"/>
-        <source>Upper limit of comfort range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="188"/>
-        <source>Lower limit of comfort range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="189"/>
-        <source>Maximum wind speed to allow ventilation increase</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="190"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="204"/>
-        <source>Write values as calculated at output times.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="191"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="205"/>
-        <source>Average values in time (mean value in output step).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="192"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="206"/>
-        <source>Integrate values in time.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="193"/>
-        <source>All days (Weekend days and Weekdays).</source>
+        <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange (ventilation) if the (constant) control conditions are met.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="194"/>
-        <source>Weekday schedule.</source>
+        <source>Scheduled basic air exchange (infiltration) with an additional increased air exchange and scheduled minimum/maximum temperature limits.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="195"/>
-        <source>Weekend schedule.</source>
+        <source>Ventilation rate for Constant model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="196"/>
-        <source>Special Weekday schedule: Monday.</source>
+        <source>Upper limit of comfort range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="197"/>
-        <source>Special Weekday schedule: Tuesday.</source>
+        <source>Lower limit of comfort range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="198"/>
-        <source>Special Weekday schedule: Wednesday.</source>
+        <source>Maximum wind speed to allow ventilation increase</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="199"/>
-        <source>Special Weekday schedule: Thursday.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="212"/>
+        <source>Write values as calculated at output times.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="200"/>
-        <source>Special Weekday schedule: Friday.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="213"/>
+        <source>Average values in time (mean value in output step).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="201"/>
-        <source>Special Weekday schedule: Saturday.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="214"/>
+        <source>Integrate values in time.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="202"/>
-        <source>Special Weekday schedule: Sunday.</source>
+        <source>All days (Weekend days and Weekdays).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="203"/>
-        <source>Holiday schedule.</source>
+        <source>Weekday schedule.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="204"/>
-        <source>Monday.</source>
+        <source>Weekend schedule.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="205"/>
-        <source>Tuesday.</source>
+        <source>Special Weekday schedule: Monday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="206"/>
-        <source>Wednesday.</source>
+        <source>Special Weekday schedule: Tuesday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="207"/>
-        <source>Thursday.</source>
+        <source>Special Weekday schedule: Wednesday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="208"/>
-        <source>Friday.</source>
+        <source>Special Weekday schedule: Thursday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="209"/>
-        <source>Saturday.</source>
+        <source>Special Weekday schedule: Friday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="210"/>
-        <source>Sunday.</source>
+        <source>Special Weekday schedule: Saturday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="211"/>
-        <source>If enabled, schedules are treated as annually repeating schedules.</source>
+        <source>Special Weekday schedule: Sunday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="212"/>
-        <source>X1</source>
+        <source>Holiday schedule.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="213"/>
-        <source>X2</source>
+        <source>Monday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="214"/>
-        <source>I1</source>
+        <source>Tuesday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="215"/>
-        <source>I2</source>
+        <source>Wednesday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="216"/>
-        <source>ParameterSet1</source>
+        <source>Thursday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="217"/>
-        <source>ParameterSet2</source>
+        <source>Friday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="218"/>
-        <source>SomeStove</source>
+        <source>Saturday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="219"/>
-        <source>SomeOven</source>
+        <source>Sunday.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="220"/>
-        <source>SomeHeater</source>
+        <source>If enabled, schedules are treated as annually repeating schedules.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="221"/>
-        <source>SomeFurnace</source>
+        <source>X1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="222"/>
-        <source>Maximum intensity allowed before shading is closed.</source>
+        <source>X2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="223"/>
-        <source>Intensity level below which shading is opened.</source>
+        <source>I1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="224"/>
-        <source>Global initial temperature [C].</source>
+        <source>I2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="225"/>
-        <source>Global initial relative humidity [%].</source>
+        <source>ParameterSet1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="226"/>
-        <source>Percentage of sensitive heat from domestic water istributed towrads the room.</source>
+        <source>ParameterSet2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="227"/>
-        <source>Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.</source>
+        <source>SomeStove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="228"/>
-        <source>Shielding coefficient for a given location and envelope type.</source>
+        <source>SomeOven</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="229"/>
-        <source>Ambient temperature for a design day. Parameter that is needed for FMU export.</source>
+        <source>SomeHeater</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="230"/>
-        <source>Start year of the simulation.</source>
+        <source>SomeFurnace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="231"/>
-        <source>Flag activating moisture balance calculation if enabled.</source>
+        <source>Maximum intensity allowed before shading is closed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="232"/>
-        <source>Flag activating CO2 balance calculation if enabled.</source>
+        <source>Intensity level below which shading is opened.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="233"/>
-        <source>Flag activating ventilation through joints and openings.</source>
+        <source>Global initial temperature [C].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="234"/>
-        <source>Flag activating FMU export of climate data.</source>
+        <source>Global initial relative humidity [%].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="235"/>
-        <source>Distribution based on surface area</source>
+        <source>Percentage of sensitive heat from domestic water istributed towrads the room.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="236"/>
-        <source>Distribution based on surface type</source>
+        <source>Air exchange rate resulting from a pressure difference of 50 Pa between inside and outside.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="237"/>
-        <source>Distribution based on zone-specific view factors</source>
+        <source>Shielding coefficient for a given location and envelope type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="238"/>
-        <source>Percentage of solar radiation gains attributed direcly to room [%]</source>
+        <source>Ambient temperature for a design day. Parameter that is needed for FMU export.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="239"/>
-        <source>Percentage of surface solar radiation attributed to floor [%]</source>
+        <source>Start year of the simulation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="240"/>
-        <source>Percentage of surface solar radiation attributed to roof/ceiling[%]</source>
+        <source>Flag activating moisture balance calculation if enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="241"/>
-        <source>Percentage of surface solar radiation attributed to walls [%]</source>
+        <source>Flag activating CO2 balance calculation if enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="242"/>
-        <source>Relative tolerance for solver error check.</source>
+        <source>Flag activating ventilation through joints and openings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="243"/>
-        <source>Absolute tolerance for solver error check.</source>
+        <source>Flag activating FMU export of climate data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="244"/>
-        <source>Maximum permitted time step for integration.</source>
+        <source>Distribution based on surface area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="245"/>
-        <source>Minimum accepted time step, before solver aborts with error.</source>
+        <source>Distribution based on surface type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="246"/>
-        <source>Initial time step size (or constant step size for ExplicitEuler integrator).</source>
+        <source>Distribution based on zone-specific view factors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="247"/>
-        <source>Coefficient reducing nonlinear equation solver convergence limit.</source>
+        <source>Percentage of solar radiation gains attributed direcly to room [%]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="248"/>
-        <source>Coefficient reducing iterative equation solver convergence limit.</source>
+        <source>Percentage of surface solar radiation attributed to floor [%]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="249"/>
-        <source>Minimum element width for wall discretization.</source>
+        <source>Percentage of surface solar radiation attributed to roof/ceiling[%]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="250"/>
-        <source>Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).</source>
+        <source>Percentage of surface solar radiation attributed to walls [%]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="251"/>
-        <source>Maximum dimension of a tile for calculation of view factors.</source>
+        <source>Relative tolerance for solver error check.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="252"/>
-        <source>Number of surface discretization elements of a wall in each direction.</source>
+        <source>Absolute tolerance for solver error check.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="253"/>
-        <source>Temperature tolerance for ideal heating or cooling.</source>
+        <source>Maximum permitted time step for integration.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="254"/>
-        <source>Relative tolerance for Kinsol solver.</source>
+        <source>Minimum accepted time step, before solver aborts with error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="255"/>
-        <source>Absolute tolerance for Kinsol solver.</source>
+        <source>Initial time step size (or constant step size for ExplicitEuler integrator).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="256"/>
-        <source>Maximum level of fill-in to be used for ILU preconditioner.</source>
+        <source>Coefficient reducing nonlinear equation solver convergence limit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="257"/>
-        <source>Maximum dimension of Krylov subspace.</source>
+        <source>Coefficient reducing iterative equation solver convergence limit.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="258"/>
-        <source>Maximum number of nonlinear iterations.</source>
+        <source>Minimum element width for wall discretization.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="259"/>
-        <source>Maximum order allowed for multi-step solver.</source>
+        <source>Stretch factor for variable wall discretizations (0-no disc, 1-equidistance, larger than 1 - variable).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="260"/>
-        <source>Maximum nonlinear iterations for Kinsol solver.</source>
+        <source>Maximum dimension of a tile for calculation of view factors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="261"/>
-        <source>Maximum number of elements per layer.</source>
+        <source>Number of surface discretization elements of a wall in each direction.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="262"/>
-        <source>Check schedules to determine minimum distances between steps and adjust MaxTimeStep.</source>
+        <source>Temperature tolerance for ideal heating or cooling.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="263"/>
-        <source>Disable line search for steady state cycles.</source>
+        <source>Relative tolerance for Kinsol solver.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="264"/>
-        <source>Enable strict Newton for steady state cycles.</source>
+        <source>Absolute tolerance for Kinsol solver.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="265"/>
-        <source>CVODE based solver</source>
+        <source>Maximum level of fill-in to be used for ILU preconditioner.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="266"/>
-        <source>Explicit Euler solver</source>
+        <source>Maximum dimension of Krylov subspace.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="267"/>
-        <source>Implicit Euler solver</source>
+        <source>Maximum number of nonlinear iterations.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="268"/>
-        <source>Automatic selection of integrator</source>
+        <source>Maximum order allowed for multi-step solver.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="269"/>
-        <source>Dense solver</source>
+        <source>Maximum nonlinear iterations for Kinsol solver.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="270"/>
-        <source>KLU sparse solver</source>
+        <source>Maximum number of elements per layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="271"/>
-        <source>GMRES iterative solver</source>
+        <source>Check schedules to determine minimum distances between steps and adjust MaxTimeStep.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="272"/>
-        <source>BICGSTAB iterative solver</source>
+        <source>Disable line search for steady state cycles.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="273"/>
-        <source>Automatic selection of linear equation system solver</source>
+        <source>Enable strict Newton for steady state cycles.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="274"/>
-        <source>Incomplete LU preconditioner</source>
+        <source>CVODE based solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="275"/>
-        <source>Automatic selection of preconditioner</source>
+        <source>Explicit Euler solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="276"/>
-        <source>Constant set points</source>
+        <source>Implicit Euler solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="277"/>
-        <source>Scheduled set points</source>
+        <source>Automatic selection of integrator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="278"/>
-        <source>Heating set point</source>
+        <source>Dense solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="279"/>
-        <source>Cooling set point</source>
+        <source>KLU sparse solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="280"/>
-        <source>Control tolerance for temperatures</source>
+        <source>GMRES iterative solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="281"/>
-        <source>Offset of lower and upper hysteresis band from set points</source>
+        <source>BICGSTAB iterative solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="282"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="251"/>
-        <source>Air temperature</source>
+        <source>Automatic selection of linear equation system solver</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="283"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="252"/>
-        <source>Operative temperature</source>
+        <source>Incomplete LU preconditioner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="284"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="253"/>
-        <source>Analog</source>
+        <source>Automatic selection of preconditioner</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="285"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="254"/>
-        <source>Digital</source>
+        <source>Constant set points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="286"/>
-        <source>Gas layer</source>
+        <source>Scheduled set points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="287"/>
-        <source>Glass layer</source>
+        <source>Heating set point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="288"/>
-        <source>Thickness of the window layer.</source>
+        <source>Cooling set point</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="289"/>
-        <source>Thermal conductivity of the window layer.</source>
+        <source>Control tolerance for temperatures</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="290"/>
-        <source>Mass density of the fill-in gas.</source>
+        <source>Offset of lower and upper hysteresis band from set points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="291"/>
-        <source>Height of the detailed window.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="259"/>
+        <source>Air temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="292"/>
-        <source>Width of the detailed window.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="260"/>
+        <source>Operative temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="293"/>
-        <source>Emissivity of surface facing outside.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="261"/>
+        <source>Analog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="294"/>
-        <source>Emissivity of surface facing inside.</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="262"/>
+        <source>Digital</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="295"/>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="304"/>
-        <source>Short wave transmittance at outside directed surface.</source>
+        <source>Gas layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="296"/>
-        <source>Short wave reflectance of surface facing outside.</source>
+        <source>Glass layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="297"/>
-        <source>Short wave reflectance of surface facing inside.</source>
+        <source>Thickness of the window layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="298"/>
-        <source>Thermal conductivity of the gas layer.</source>
+        <source>Thermal conductivity of the window layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="299"/>
-        <source>Dynamic viscosity of the gas layer.</source>
+        <source>Mass density of the fill-in gas.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="300"/>
-        <source>Specific heat capacity of the gas layer.</source>
+        <source>Height of the detailed window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="301"/>
-        <source>Standard globbed-layers model.</source>
+        <source>Width of the detailed window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="302"/>
-        <source>Detailed window model with layers.</source>
+        <source>Emissivity of surface facing outside.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="303"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="235"/>
-        <source>Thermal transmittance</source>
+        <source>Emissivity of surface facing inside.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="304"/>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="313"/>
+        <source>Short wave transmittance at outside directed surface.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="305"/>
-        <source>Constant reduction factor.</source>
+        <source>Short wave reflectance of surface facing outside.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="306"/>
-        <source>Precomputed reduction factor.</source>
+        <source>Short wave reflectance of surface facing inside.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="307"/>
-        <source>Reduction factor is computed based on control model</source>
+        <source>Thermal conductivity of the gas layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="308"/>
-        <source>Reduction factor (remaining percentage of solar gains if shading is closed).</source>
+        <source>Dynamic viscosity of the gas layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="309"/>
-        <source>Zone with constant temperature</source>
+        <source>Specific heat capacity of the gas layer.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="310"/>
-        <source>Zone with schedule defined temperature</source>
+        <source>Standard globbed-layers model.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="311"/>
-        <source>Zone with energy balance equation</source>
+        <source>Detailed window model with layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="312"/>
-        <source>Ground zone (calculates temperature based on heat loss to ground model)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="313"/>
-        <source>Temperature of the zone if set constant</source>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="243"/>
+        <source>Thermal transmittance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="314"/>
-        <source>Relative humidity of the zone if set constant</source>
+        <source>Constant reduction factor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="315"/>
-        <source>CO2 concentration of the zone if set constant</source>
+        <source>Precomputed reduction factor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="316"/>
-        <source>Net usage area of the ground floor (for area-related outputs and loads)</source>
+        <source>Reduction factor is computed based on control model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="317"/>
-        <source>Zone air volume</source>
+        <source>Reduction factor (remaining percentage of solar gains if shading is closed).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="318"/>
+        <source>Zone with constant temperature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="319"/>
+        <source>Zone with schedule defined temperature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="320"/>
+        <source>Zone with energy balance equation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="321"/>
+        <source>Ground zone (calculates temperature based on heat loss to ground model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="322"/>
+        <source>Temperature of the zone if set constant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="323"/>
+        <source>Relative humidity of the zone if set constant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="324"/>
+        <source>CO2 concentration of the zone if set constant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="325"/>
+        <source>Net usage area of the ground floor (for area-related outputs and loads)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="326"/>
+        <source>Zone air volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../../externals/Nandrad/srcTranslations/NANDRAD_KeywordListQt.cpp" line="327"/>
         <source>Extra heat capacity</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1554,7 +1603,7 @@
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="38"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="215"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="223"/>
         <source>Some other component type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1658,7 +1707,7 @@
     </message>
     <message>
         <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="68"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="223"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="231"/>
         <source>Air change rate</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1911,318 +1960,318 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="167"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="175"/>
         <source>Length of pipe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="168"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="176"/>
         <source>Number of parallel pipes in ground heat exchanger</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="189"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="197"/>
         <source>ID of schedule</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="193"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="201"/>
         <source>Building</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="194"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="202"/>
         <source>Mixer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="195"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="203"/>
         <source>Source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="196"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="204"/>
         <source>Outer diameter (not including optional insulation)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="197"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="205"/>
         <source>Pipe wall thickness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="198"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="206"/>
         <source>Pipe wall surface roughness</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="199"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="207"/>
         <source>Thermal conductivity of pipe wall</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="202"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="210"/>
         <source>Thickness of insulation around pipe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="203"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="211"/>
         <source>Thermal conductivity of insulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="207"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="215"/>
         <source>If true, output files are written in binary format (the default, if flag is missing).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="208"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="216"/>
         <source>If true, default output definitions for zones are created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="209"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="217"/>
         <source>If true, default output definitions for networks are created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="210"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="218"/>
         <source>If true, default summation models and according output definitions for networks are created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="211"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="219"/>
         <source>Floor usable area of the zone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="212"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="220"/>
         <source>Volume of the zone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="213"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="221"/>
         <source>A window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="214"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="222"/>
         <source>A door</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="216"/>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="255"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="224"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="263"/>
         <source>Heating limit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="217"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="225"/>
         <source>Cooling limit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="218"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="226"/>
         <source>Pipe spacing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="219"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="227"/>
         <source>Maximum fluid velocity</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="220"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="228"/>
         <source>Temperature difference between supply and return fluid temperature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="221"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="229"/>
         <source>Ideal surface conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="222"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="230"/>
         <source>Water-based surface conditioning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="224"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="232"/>
         <source>Grid is visible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="225"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="233"/>
         <source>None</source>
         <translation type="unfinished">Keine</translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="226"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="234"/>
         <source>Fraction of area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="227"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="235"/>
         <source>Constant width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="228"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="236"/>
         <source>Frame width of the window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="229"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="237"/>
         <source>Frame area fraction of the window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="230"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="238"/>
         <source>Divider width of the window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="231"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="239"/>
         <source>Divider area fraction of the window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="232"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="240"/>
         <source>Divider material thickness.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="233"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="241"/>
         <source>Frame material thickness.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="234"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="242"/>
         <source>Standard globbed-layers model</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="236"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="244"/>
         <source>Incidence-angle dependent short wave transmittance across glazing system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="237"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="245"/>
         <source>Maximum air change rate for natural ventilation to reach comfort conditions (if possible).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="238"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="246"/>
         <source>Upper limit for room air temperature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="239"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="247"/>
         <source>Lower limit for room air temperature.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="240"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="248"/>
         <source>Limit for wind speed .</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="241"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="249"/>
         <source>Global horizontal (upper) sensor setpoint value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="242"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="250"/>
         <source>Global north (upper) sensor setpoint value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="243"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="251"/>
         <source>Global east (upper) sensor setpoint value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="244"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="252"/>
         <source>Global south (upper) sensor setpoint value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="245"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="253"/>
         <source>Global west (upper) sensor setpoint value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="246"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="254"/>
         <source>Dead band value for all sensors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="247"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="255"/>
         <source>One global horizontal sensor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="248"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="256"/>
         <source>One global horizontal and for each direction (N, E, S, W) a vertical sensor.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="249"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="257"/>
         <source>Thermostat tolerance heating and cooling mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="250"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="258"/>
         <source>Thermostat dead band (for digital controllers)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="256"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="264"/>
         <source>Cooling limit (positive)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="257"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="265"/>
         <source>Person loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="258"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="266"/>
         <source>Equipment loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="259"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="267"/>
         <source>Lighting loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="260"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="268"/>
         <source>Other internal loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="261"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="269"/>
         <source>Thermostat control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="262"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="270"/>
         <source>Natural ventilation control</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="263"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="271"/>
         <source>Infiltration loads</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="264"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="272"/>
         <source>NaturalVentilation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="265"/>
+        <location filename="../../../externals/Vicus/srcTranslations/VICUS_KeywordListQt.cpp" line="273"/>
         <source>Heating/cooling loads</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2232,42 +2281,42 @@
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="137"/>
         <source>Continent/Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontinent/Region</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="139"/>
         <source>Country</source>
-        <translation type="unfinished"></translation>
+        <translation>Land</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="141"/>
         <source>State/Province/...</source>
-        <translation type="unfinished"></translation>
+        <translation>Staat/Provinz/...</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="143"/>
         <source>City/Station</source>
-        <translation type="unfinished"></translation>
+        <translation>Stadt/Station</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="145"/>
         <source>Longitude [deg]</source>
-        <translation type="unfinished"></translation>
+        <translation>Längengrad [deg]</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="147"/>
         <source>Latitude [deg]</source>
-        <translation type="unfinished"></translation>
+        <translation>Breitengrad [deg]</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="149"/>
         <source>Time zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeitzone</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateDataTableModel.cpp" line="151"/>
         <source>Elevation [m]</source>
-        <translation type="unfinished"></translation>
+        <translation>Höhe [m]</translation>
     </message>
 </context>
 <context>
@@ -2275,12 +2324,12 @@
     <message>
         <location filename="../../src/SVClimateFileInfo.cpp" line="92"/>
         <source>One year, cyclic use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Jahr, zyklisch verwendbar.</translation>
     </message>
     <message>
         <location filename="../../src/SVClimateFileInfo.cpp" line="94"/>
         <source>%1 years, non-cyclic use.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Jahre, nicht zyklisch verwendbar.</translation>
     </message>
 </context>
 <context>
@@ -2347,47 +2396,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1346"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1419"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1426"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1347"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1420"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1427"/>
         <source>Generated %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1400"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1401"/>
         <source>An error occurred during NANDRAD project generation (see details below).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1401"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1402"/>
         <source>NANDRAD Project Generation Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1454"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1463"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1492"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1455"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1464"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1506"/>
         <source>Error starting external application</source>
         <translation type="unfinished">Fehler beim Start der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1454"/>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1463"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1455"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1464"/>
         <source>MASTERSIM path &apos;%1&apos; could not be found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1477"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1478"/>
         <source>Setup external tool</source>
         <translation type="unfinished">Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1477"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1478"/>
         <source>Please select first the path to MASTERSIM in the preferences dialog!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1492"/>
+        <location filename="../../src/SVCoSimCO2VentilationDialog.cpp" line="1506"/>
         <source>MASTERSIM &apos;%1&apos; could not be started.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2488,12 +2537,12 @@
     <message>
         <location filename="../../src/SVDBBoundaryConditionTableModel.cpp" line="129"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../../src/SVDBBoundaryConditionTableModel.cpp" line="130"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
 </context>
 <context>
@@ -2501,12 +2550,12 @@
     <message>
         <location filename="../../src/SVDBComponentEditWidget.ui" line="34"/>
         <source>Name:</source>
-        <translation type="unfinished">Name:</translation>
+        <translation>Name:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentEditWidget.ui" line="54"/>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ:</translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentEditWidget.ui" line="71"/>
@@ -2603,21 +2652,21 @@
     </message>
     <message>
         <location filename="../../src/SVDBComponentEditWidget.cpp" line="203"/>
-        <source>Sida A</source>
+        <source>Side A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentEditWidget.cpp" line="204"/>
-        <source>Sida B</source>
+        <source>Side B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBComponentEditWidget.cpp" line="380"/>
+        <location filename="../../src/SVDBComponentEditWidget.cpp" line="392"/>
         <source>Delete surface heating</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBComponentEditWidget.cpp" line="380"/>
+        <location filename="../../src/SVDBComponentEditWidget.cpp" line="392"/>
         <source>Do you want to delete surface heating in component instances?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2627,17 +2676,17 @@
     <message>
         <location filename="../../src/SVDBComponentTableModel.cpp" line="127"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentTableModel.cpp" line="128"/>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
     <message>
         <location filename="../../src/SVDBComponentTableModel.cpp" line="129"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
 </context>
 <context>
@@ -2729,7 +2778,7 @@
     </message>
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.cpp" line="222"/>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="336"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="340"/>
         <source>Side A</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2741,17 +2790,17 @@
     </message>
     <message>
         <location filename="../../src/SVDBConstructionEditWidget.cpp" line="297"/>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="336"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="340"/>
         <source>Side B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="419"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="423"/>
         <source>Invalid number format, please enter a valid decimal number!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="425"/>
+        <location filename="../../src/SVDBConstructionEditWidget.cpp" line="429"/>
         <source>Layer widths must be larger than 1 mm. Ignore smaller layers, they will not affect the thermal storage mass!</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2804,18 +2853,18 @@
     <message>
         <location filename="../../src/SVDBDailyCycleInputWidget.cpp" line="256"/>
         <source> 0:00</source>
-        <translation type="unfinished"></translation>
+        <translation> 0:00</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDailyCycleInputWidget.cpp" line="266"/>
         <source>%1:00</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:00</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDailyCycleInputWidget.cpp" line="294"/>
         <location filename="../../src/SVDBDailyCycleInputWidget.cpp" line="298"/>
         <source>%L1</source>
-        <translation type="unfinished">%L1</translation>
+        <translation>%L1</translation>
     </message>
 </context>
 <context>
@@ -2823,7 +2872,7 @@
     <message>
         <location filename="../../src/SVDBDialogAddDependentElements.ui" line="14"/>
         <source>Add elements to user database</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Elemente zu Nutzerdatenbank zu</translation>
     </message>
     <message>
         <location filename="../../src/SVDBDialogAddDependentElements.ui" line="20"/>
@@ -4186,16 +4235,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="167"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="465"/>
         <source>Interpolation:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="174"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="472"/>
         <source>linear</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/SVDBScheduleEditWidget.ui" line="184"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="485"/>
         <source>constant</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4260,52 +4312,52 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="465"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="514"/>
         <source>Copied data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="471"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="520"/>
         <source>Paste from clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="482"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="531"/>
         <source>From TSV file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="490"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="539"/>
         <source>Data file:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="497"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="546"/>
         <source>Reference:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="510"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="559"/>
         <source>TextLabel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="517"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="566"/>
         <source>Edit...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="524"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="573"/>
         <source>Reference with file path relative to project file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="534"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="583"/>
         <source>Reference with absolute file path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.ui" line="584"/>
+        <location filename="../../src/SVDBScheduleEditWidget.ui" line="633"/>
         <source>Select column in data file:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4346,124 +4398,124 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="240"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="254"/>
         <source>Time [%1]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="241"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="255"/>
         <source>Values [%1]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="283"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="459"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="507"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="675"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="297"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="473"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="521"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="689"/>
         <source>dd.MM.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="436"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="450"/>
         <source>Daily schedule %1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="458"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="506"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="472"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="520"/>
         <source>Select start date of period</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="459"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="507"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="675"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="473"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="521"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="689"/>
         <source>Enter start date (dd.MM.):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="471"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="485"/>
         <source>A period with this start day already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="531"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="545"/>
         <source>-copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="626"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="640"/>
         <source>Delete currently selected daily cycle?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="674"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="688"/>
         <source>Modify start date of period</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="878"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="891"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="899"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="904"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="910"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="927"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="892"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="905"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="913"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="918"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="924"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="941"/>
         <source>Cannot paste schedule data</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="878"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="892"/>
         <source>No data on clipboard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="891"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="905"/>
         <source>Expected exactly 2 columns of data.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="899"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="913"/>
         <source>Invalid format of header data (possibly units are wrong/missing?).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="904"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="918"/>
         <source>Missing data after header row.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="910"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="924"/>
         <source>Expected time unit in first column.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="927"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="941"/>
         <source>Invalid spline data in table.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="993"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1007"/>
         <source>Invalid filename</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="993"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1007"/>
         <source>Cannot edit file, file does not exist, yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1060"/>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1122"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1074"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1136"/>
         <source>Error reading data file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1132"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1146"/>
         <source>No data, yet.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1149"/>
+        <location filename="../../src/SVDBScheduleEditWidget.cpp" line="1163"/>
         <source>Invalid/missing unit in column header of data file.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4901,7 +4953,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBWindowEditWidget.ui" line="96"/>
         <location filename="../../src/SVDBWindowEditWidget.cpp" line="141"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="189"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="219"/>
         <source>-</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4931,8 +4983,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVDBWindowEditWidget.ui" line="147"/>
         <location filename="../../src/SVDBWindowEditWidget.ui" line="224"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="147"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="195"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="162"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="244"/>
         <source>Width:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4941,8 +4993,8 @@ p, li { white-space: pre-wrap; }
         <location filename="../../src/SVDBWindowEditWidget.ui" line="195"/>
         <location filename="../../src/SVDBWindowEditWidget.ui" line="234"/>
         <location filename="../../src/SVDBWindowEditWidget.ui" line="272"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="148"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="196"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="163"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="245"/>
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4970,8 +5022,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVDBWindowEditWidget.cpp" line="140"/>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="188"/>
-        <source>Fraction of Window:</source>
+        <source>Fraction of Farme:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4980,17 +5031,27 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="149"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="164"/>
         <source>Frame width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="190"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="195"/>
+        <source>Material thichness</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="218"/>
+        <source>Fraction of Divider:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="224"/>
         <source>Divider fraction of the window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVDBWindowEditWidget.cpp" line="197"/>
+        <location filename="../../src/SVDBWindowEditWidget.cpp" line="246"/>
         <source>Divider width</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6027,62 +6088,62 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVGeometryView</name>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="337"/>
+        <location filename="../../src/SVGeometryView.cpp" line="341"/>
         <source>Invalid polygon (must be planar and not winding).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="354"/>
+        <location filename="../../src/SVGeometryView.cpp" line="358"/>
         <source>Invalid number format. Cannot parse coordinate inputs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="365"/>
+        <location filename="../../src/SVGeometryView.cpp" line="369"/>
         <source>Invalid coordinate input, expected only one coordinate for the locked axis.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="396"/>
+        <location filename="../../src/SVGeometryView.cpp" line="400"/>
         <source>Adding this vertex would invalidate the polygon.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="473"/>
+        <location filename="../../src/SVGeometryView.cpp" line="477"/>
         <source>Snap</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="475"/>
+        <location filename="../../src/SVGeometryView.cpp" line="479"/>
         <source>Toggles object snap on/off (F3)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="482"/>
+        <location filename="../../src/SVGeometryView.cpp" line="486"/>
         <source>Measure</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="484"/>
+        <location filename="../../src/SVGeometryView.cpp" line="488"/>
         <source>Toggles distance measurement mode on/off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="491"/>
+        <location filename="../../src/SVGeometryView.cpp" line="495"/>
         <source>X</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="496"/>
+        <location filename="../../src/SVGeometryView.cpp" line="500"/>
         <source>Y</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="501"/>
+        <location filename="../../src/SVGeometryView.cpp" line="505"/>
         <source>Z</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVGeometryView.cpp" line="510"/>
+        <location filename="../../src/SVGeometryView.cpp" line="514"/>
         <source>Without axis lock, enter coordinates in format &lt;x&gt; &lt;y&gt; &lt;z&gt;. With axis lock enter only the offset in the respective axis direction.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6136,58 +6197,58 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="216"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="219"/>
         <source>Imported IDF Building Geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="220"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="223"/>
         <source>Default building level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="230"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="233"/>
         <source>Importing IDF project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="230"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="233"/>
         <source>Abort</source>
         <translation type="unfinished">Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="616"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="624"/>
         <source>Inside surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="650"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="659"/>
         <source>Ground surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="686"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="696"/>
         <source>Adiabatic surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="719"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="730"/>
         <source>Outside surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1399"/>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1406"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1430"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1437"/>
         <source>IDF Import</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1400"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1431"/>
         <source>IDF data imported, successfully. Please review the import log for warnings!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVImportIDFDialog.cpp" line="1406"/>
+        <location filename="../../src/SVImportIDFDialog.cpp" line="1437"/>
         <source>There were critical errors during the import (invalid IDF file), see log for details.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6195,24 +6256,19 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVLocalCoordinateView</name>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.ui" line="29"/>
+        <location filename="../../src/SVLocalCoordinateView.ui" line="35"/>
         <source>Toggles mode for aligning local coordinate system to surface orientation (F4)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.ui" line="32"/>
-        <location filename="../../src/SVLocalCoordinateView.ui" line="58"/>
+        <location filename="../../src/SVLocalCoordinateView.ui" line="38"/>
+        <location filename="../../src/SVLocalCoordinateView.ui" line="64"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVLocalCoordinateView.ui" line="55"/>
+        <location filename="../../src/SVLocalCoordinateView.ui" line="61"/>
         <source>Toggles mode for moving local coordinate system (F5)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVLocalCoordinateView.ui" line="81"/>
-        <source>Local coordinate system:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6912,13 +6968,13 @@ p, li { white-space: pre-wrap; }
         <translation>F2</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1371"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1393"/>
         <source>About Qt...</source>
         <translation>Über Qt...</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="952"/>
-        <location filename="../../src/SVMainWindow.cpp" line="957"/>
+        <location filename="../../src/SVMainWindow.cpp" line="974"/>
+        <location filename="../../src/SVMainWindow.cpp" line="979"/>
         <source>Reload project</source>
         <translation>Projekt neu laden</translation>
     </message>
@@ -6928,263 +6984,258 @@ p, li { white-space: pre-wrap; }
         <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="683"/>
+        <location filename="../../src/SVMainWindow.cpp" line="687"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="686"/>
+        <location filename="../../src/SVMainWindow.cpp" line="690"/>
         <source>Redo</source>
         <translation>Wiederholen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="181"/>
+        <location filename="../../src/SVMainWindow.cpp" line="183"/>
         <source>Export directory &apos;%1&apos; exists already. Overwrite?</source>
         <translation>Exportverzeichnis &apos;%1&apos; existiert bereits. Überschreiben?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="903"/>
-        <location filename="../../src/SVMainWindow.cpp" line="987"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1607"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1626"/>
+        <location filename="../../src/SVMainWindow.cpp" line="925"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1009"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1619"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1638"/>
         <source>File not found</source>
         <translation>Datei nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="904"/>
-        <location filename="../../src/SVMainWindow.cpp" line="988"/>
+        <location filename="../../src/SVMainWindow.cpp" line="926"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1010"/>
         <source>The file &apos;%1&apos; does not exist or cannot be accessed.</source>
         <translation>Die Datei &apos;%1&apos; existiert nicht oder es kann nicht darauf zugegriffen werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1026"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1048"/>
         <source>Please save the project file first!</source>
         <translation>Bitte speichern Sie zuerst das Projekt!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="820"/>
+        <location filename="../../src/SVMainWindow.cpp" line="839"/>
         <source>Replace or merge projects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="820"/>
+        <location filename="../../src/SVMainWindow.cpp" line="839"/>
         <source>Would you like to replace the current project with the imported project, or would you like to combine both projects into one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="822"/>
+        <location filename="../../src/SVMainWindow.cpp" line="841"/>
         <source>Replace</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="822"/>
+        <location filename="../../src/SVMainWindow.cpp" line="841"/>
         <source>Combine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="839"/>
-        <source>Adding imported project data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVMainWindow.cpp" line="890"/>
+        <location filename="../../src/SVMainWindow.cpp" line="912"/>
         <source>Select SIM-VICUS project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="892"/>
+        <location filename="../../src/SVMainWindow.cpp" line="914"/>
         <source>SIM-VICUS projects and project packages (*%1 *%2);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="975"/>
+        <location filename="../../src/SVMainWindow.cpp" line="997"/>
         <source>Select IDF file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="977"/>
+        <location filename="../../src/SVMainWindow.cpp" line="999"/>
         <source>EnergyPlus IDF files (*.idf);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1053"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1075"/>
         <source>Specify SIM-VICUS project package</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1055"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1077"/>
         <source>SIM-VICUS project packages (*.vicpac);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1163"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1184"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1185"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1206"/>
         <source>The project must be saved, first!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1175"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1197"/>
         <source>Updated simulation parameters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1314"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1336"/>
         <source>Postproc session files</source>
         <translation>PostProc Sitzungsdateien</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1326"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1333"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1343"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1348"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1355"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1365"/>
         <source>Error running PostProc</source>
         <translation>Fehler bei Starten von PostProc</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1327"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1344"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1349"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1366"/>
         <source>Could not start executable &apos;%1&apos;.</source>
         <translation>Kann ausführbare Datei &apos;%1&apos; nicht starten.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1334"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1356"/>
         <source>Process already running.</source>
         <translation>Prozess läuft bereits.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1356"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1378"/>
         <source>Please select first the path to the external climate editor in the preferences dialog!</source>
         <translation>Bitte setzen sie zuerst den Pfad zum externen Klimaeditor im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1364"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1386"/>
         <source>Climate editor &apos;%1&apos; could not be started.</source>
         <translation>Klimaeditor &apos;%1&apos; kann nicht gestartet werden.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1751"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1763"/>
         <source>Remove/merge duplicates in database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1752"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1764"/>
         <source>The database contains now some duplicate definitions. Do you want to review them and remove unnecessary duplicates (you can also do this later via Databases|Remove duplicates...)?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1841"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1874"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1853"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1886"/>
         <source>Configure %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1890"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1902"/>
         <source>unnamed%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2009"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2021"/>
         <source>Specify SIM-VICUS project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2011"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2023"/>
         <source>SIM-VICUS project files (%1);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2023"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2035"/>
         <source>Select target directory to extract project package into</source>
         <translation>Wähle das Zielverzeichnis, in das das Projektpaket entpackt werden soll</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2035"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2047"/>
         <source>Project package does not contain a SIM-VICUS project file (%1-file).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2043"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2055"/>
         <source>Cannot remove existing project file (maybe missing permissions?).</source>
         <translation>Kann die existierende Projektdatei nicht löschen (fehlen möglicherweise Zugriffsrechte, oder wird die Datei wird noch benutzt?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="2050"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2062"/>
         <source>Cannot rename project file to target file (invalid file name?).</source>
         <translation>Kann die Projektdatei nicht in den Zieldateinamen umbenennen (ungültiger Dateiname?).</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1908"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2034"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1920"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2046"/>
         <source>Import error</source>
         <translation>Importfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="952"/>
+        <location filename="../../src/SVMainWindow.cpp" line="974"/>
         <source>The project has not yet been saved.</source>
         <translation>Das Projekt wurde noch nicht gespeichert.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="957"/>
+        <location filename="../../src/SVMainWindow.cpp" line="979"/>
         <source>The project has been modified. Discard those changes?</source>
         <translation>Das Projekt wurde geändert. Diese Änderungen verwerfen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1074"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1096"/>
         <source>Export project package</source>
         <translation>Exportiere Projektpaket</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="189"/>
+        <location filename="../../src/SVMainWindow.cpp" line="191"/>
         <source>Export directory cannot be removed (are files within directory still being used?). Please remove directory manually and try again!</source>
         <translation>Das Exportverzeichnis kann nicht entfernt werden (werden Dateien im Verzeichnis noch verwendet?). Bitte entfernen Sie das Verzeichnis manuell und versuchen Sie den Export erneut!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="502"/>
+        <location filename="../../src/SVMainWindow.cpp" line="504"/>
         <source>Removing database duplicates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="503"/>
+        <location filename="../../src/SVMainWindow.cpp" line="505"/>
         <source>When removing duplicate database elements that are used in the currently open project, the resulting change to the project data cannot be undone (and none of the earlier changes, either).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="540"/>
+        <location filename="../../src/SVMainWindow.cpp" line="542"/>
         <source>The project file has been modified by an external application. When reloading this project file all unsaved changes will be lost. Reload modified project file?</source>
         <translation>Die Projektdatei wurde von einem externen Programm verändert. Beim erneuten Öffnen dieser Projektdatei gehen alle ungespeicherten Änderungen verloren. Projektdatei neu öffnen?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1069"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1091"/>
         <source>Invalid file name</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1069"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1091"/>
         <source>Please enter a valid file name!</source>
         <translation>Bitte geben Sie einen gültigen Dateinamen an!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1110"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1132"/>
         <source>Removed unused definitions</source>
         <translation>Nicht zugewiesene Definitionen entfernt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1452"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1474"/>
         <source>Languange changed</source>
         <translation>Sprache geändert</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1452"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1474"/>
         <source>Please restart the software to activate the new language!</source>
         <translation>Bitte starten Sie die Software neu, um die neue Sprache zu aktivieren!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1774"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1786"/>
         <source>Application Log</source>
         <translation>Anwendungsmeldungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1607"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1626"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1619"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1638"/>
         <source>The file &apos;%1&apos; cannot be found or does not exist.</source>
         <translation>Die Datei &apos;%1&apos; kann nicht gefunden werden oder existiert nicht.</translation>
     </message>
@@ -7194,62 +7245,62 @@ p, li { white-space: pre-wrap; }
         <translation>Zeitpläne</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="180"/>
-        <location filename="../../src/SVMainWindow.cpp" line="188"/>
-        <location filename="../../src/SVMainWindow.cpp" line="216"/>
+        <location filename="../../src/SVMainWindow.cpp" line="182"/>
+        <location filename="../../src/SVMainWindow.cpp" line="190"/>
+        <location filename="../../src/SVMainWindow.cpp" line="218"/>
         <source>Export error</source>
         <translation>Exportfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="217"/>
+        <location filename="../../src/SVMainWindow.cpp" line="219"/>
         <source>Cannot create project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket nicht erstellen &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="539"/>
+        <location filename="../../src/SVMainWindow.cpp" line="541"/>
         <source>Reload project file</source>
         <translation>Projektdatei neu laden</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1074"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1096"/>
         <source>Export of project package &apos;%1&apos; complete.</source>
         <translation>Export des Projektpakets &apos;%1&apos; fertig.</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1295"/>
-        <location filename="../../src/SVMainWindow.cpp" line="1356"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1317"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1378"/>
         <source>Setup external tool</source>
         <translation>Externes Programm einrichten</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1295"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1317"/>
         <source>Please select first the path to the external post processing in the preferences dialog!</source>
         <translation>Bitte wählen Sie zunächst den Pfad zum externen Postprozessing im Einstellungsdialog!</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1364"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1386"/>
         <source>Error starting external application</source>
         <translation>Fehler beim Starten der externen Anwendung</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1634"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1646"/>
         <source>Select directory to copy example project into</source>
         <translation>Wähle Zielverzeichnis für das Beispielprojekt</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1646"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2043"/>
-        <location filename="../../src/SVMainWindow.cpp" line="2050"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1658"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2055"/>
+        <location filename="../../src/SVMainWindow.cpp" line="2062"/>
         <source>Write error</source>
         <translation>Schreibfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1646"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1658"/>
         <source>Cannot copy example, maybe missing permissions?</source>
         <translation>Kann das Beispiel nicht kopieren, eventuell fehlen Zugriffsrechte?</translation>
     </message>
     <message>
-        <location filename="../../src/SVMainWindow.cpp" line="1909"/>
+        <location filename="../../src/SVMainWindow.cpp" line="1921"/>
         <source>Cannot extract project package &apos;%1&apos;.</source>
         <translation>Kann Projektpaket &apos;%1&apos; nicht extrahieren.</translation>
     </message>
@@ -7267,22 +7318,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMeasurementWidget.ui" line="51"/>
+        <location filename="../../src/SVMeasurementWidget.ui" line="60"/>
         <source>End point (X/Y/Z):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMeasurementWidget.ui" line="86"/>
+        <location filename="../../src/SVMeasurementWidget.ui" line="104"/>
         <source>Distance [m]:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMeasurementWidget.ui" line="100"/>
+        <location filename="../../src/SVMeasurementWidget.ui" line="121"/>
         <source>Offsets (ΔX/ΔY/ΔZ) [m]:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVMeasurementWidget.ui" line="137"/>
+        <location filename="../../src/SVMeasurementWidget.ui" line="167"/>
         <source>Copy Information</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7596,6 +7647,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>SVNotesDialog</name>
+    <message>
+        <location filename="../../src/SVNotesDialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialog</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNotesDialog.ui" line="20"/>
+        <source>Notizen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNotesDialog.ui" line="42"/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVNotesDialog.ui" line="49"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SVOutputGridEditDialog</name>
     <message>
         <location filename="../../src/SVOutputGridEditDialog.ui" line="14"/>
@@ -7717,22 +7791,22 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVPreferencesDialog</name>
     <message>
-        <location filename="../../src/SVPreferencesDialog.ui" line="14"/>
+        <location filename="../../src/SVPreferencesDialog.ui" line="17"/>
         <source>Preferences</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="53"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="58"/>
         <source>External tools</source>
         <translation type="unfinished">Externe Anwendungen</translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="54"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="59"/>
         <source>Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPreferencesDialog.cpp" line="55"/>
+        <location filename="../../src/SVPreferencesDialog.cpp" line="60"/>
         <source>Miscellaneous</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7871,7 +7945,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPreferencesPageTools.ui" line="111"/>
-        <source>MasterSim</source>
+        <source>MasterSim:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7896,63 +7970,73 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVProjectHandler</name>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="125"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="101"/>
+        <source>Building</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVProjectHandler.cpp" line="104"/>
+        <source>Ground floor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVProjectHandler.cpp" line="135"/>
         <source>Save project before closing</source>
         <translation type="unfinished">Speichere Projekt vorm Schließen</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="126"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="136"/>
         <source>Would you like to save the project before closing it?</source>
         <translation type="unfinished">Möchten Sie das Projekt speichern, bevor es geschlossen wird?</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="188"/>
-        <location filename="../../src/SVProjectHandler.cpp" line="232"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="198"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="242"/>
         <source>Error loading project</source>
         <translation type="unfinished">Fehler beim Laden des Projekts</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="189"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="199"/>
         <source>Error loading project file &apos;%1&apos;, see error log file &apos;%2&apos; for details.</source>
         <translation type="unfinished">Fehler beim Laden der Projektdatei &apos;%1&apos;, Details finden sich auch in der Fehler-Logdatei &apos;%2&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="233"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="243"/>
         <source>Data in project was missing/invalid, see error log &apos;%1&apos; for details.</source>
         <translation type="unfinished">Daten im Projekt fehlen oder sind ungültig, Details finden sich auch in der Fehler-Logdatei &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="360"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="368"/>
         <source>Merged imported project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="373"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="381"/>
         <source>Specify SIM-VICUS project file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="375"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="383"/>
         <source>SIM-VICUS project files (*%1);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="385"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="393"/>
         <source>Invalid file name</source>
         <translation type="unfinished">Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="385"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="393"/>
         <source>Please enter a valid file name!</source>
         <translation type="unfinished">Bitte wählen Sie einen gültigen Dateinamen!</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="421"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="429"/>
         <source>Saving failed</source>
         <translation type="unfinished">Fehler beim Speichern</translation>
     </message>
     <message>
-        <location filename="../../src/SVProjectHandler.cpp" line="422"/>
+        <location filename="../../src/SVProjectHandler.cpp" line="430"/>
         <source>Error while saving project file, see error log file &apos;%1&apos; for details.</source>
         <translation type="unfinished">Beim Speichern der Projektdatei sind Fehler aufgetreten, Details finden sich auch in der Fehler-Logdatei &apos;%1&apos;.</translation>
     </message>
@@ -8080,17 +8164,17 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="275"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="278"/>
         <source>Window #%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="279"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="282"/>
         <source>Door #%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropAddWindowWidget.cpp" line="303"/>
+        <location filename="../../src/SVPropAddWindowWidget.cpp" line="306"/>
         <source>Added sub-surfaces/windows</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8776,6 +8860,121 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>SVPropBuildingZoneProperty</name>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished">Form</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="20"/>
+        <source>Room Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="26"/>
+        <source>Building:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="39"/>
+        <source>Update Floor Areas / Volumes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="54"/>
+        <source>Only selected rooms:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="74"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="112"/>
+        <source>Floor area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="81"/>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="119"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="92"/>
+        <source>All rooms:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="144"/>
+        <source>Building level:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="151"/>
+        <source>Other</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="157"/>
+        <source>Assign selected surfaces to room</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.ui" line="167"/>
+        <source>Rooms/Zones:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="28"/>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="28"/>
+        <source>Name</source>
+        <translation type="unfinished">Name</translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="28"/>
+        <source>Area [m2]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="28"/>
+        <source>Volume [m3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="74"/>
+        <source>All buildings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="89"/>
+        <source>All building levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="256"/>
+        <source>Only numbers are allowed. Input is not a number.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="262"/>
+        <source>Value must greater zero. Value is smaller or equal zero.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="282"/>
+        <source>Modified floor area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropBuildingZoneProperty.cpp" line="287"/>
+        <source>Modified volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>SVPropBuildingZoneTemplatesWidget</name>
     <message>
         <location filename="../../src/SVPropBuildingZoneTemplatesWidget.ui" line="14"/>
@@ -8962,255 +9161,241 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="183"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="167"/>
         <source>Window/Door</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="203"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="194"/>
         <source>Zone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="210"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="187"/>
         <source>Roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="237"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="264"/>
+        <source>use Local Coordinate System Orientation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.ui" line="277"/>
         <source>Modify selected surfaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="245"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="291"/>
         <source>Translation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="248"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="274"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="297"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="294"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="326"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="355"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="398"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="420"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="271"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="323"/>
         <source>Rotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="294"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="352"/>
         <source>Scaling/Resizing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="338"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="584"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="448"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="640"/>
         <source>ΔX</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="364"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="400"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="436"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="473"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="497"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="474"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="510"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="546"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="589"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="606"/>
         <source>°</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="377"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="616"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="487"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="672"/>
         <source>ΔY</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="413"/>
-        <location filename="../../src/SVPropEditGeometry.ui" line="645"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="523"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="701"/>
         <source>ΔZ</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="449"/>
-        <source>TextLabel</source>
+        <location filename="../../src/SVPropEditGeometry.ui" line="807"/>
+        <source>Center Objects horizontally</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="459"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="814"/>
+        <source>Center Objects vertically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.ui" line="575"/>
         <source>Orientation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="483"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="599"/>
         <source>Inclination</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="507"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="616"/>
         <source>Three-Point-Rotation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="540"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="784"/>
+        <source>Sub Surfaces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.ui" line="794"/>
+        <source>Other Functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.ui" line="800"/>
         <source>Flip surface normals</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="570"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="626"/>
         <source>Copy selected objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="672"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="771"/>
         <source>Surfaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="679"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="758"/>
         <source>Rooms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="686"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="745"/>
         <source>Building levels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.ui" line="693"/>
+        <location filename="../../src/SVPropEditGeometry.ui" line="732"/>
         <source>Buildings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="105"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="110"/>
         <source>X Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="106"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="111"/>
         <source>Y Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="107"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="112"/>
         <source>Z Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="323"/>
-        <source>Translated geometry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="375"/>
-        <source>Scaled geometry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="458"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="684"/>
         <source>Rotated geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="542"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="562"/>
-        <source>Normal:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="546"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="566"/>
-        <source>z-Axis:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="832"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1175"/>
         <source>Move to world coordinates</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="833"/>
-        <source>Relative translation using global coordinate system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="834"/>
-        <source>Relative translation using local coordinate system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="837"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1179"/>
         <source>Align surface to angles</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="838"/>
-        <source>Relative rotation using global coordinate system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="839"/>
-        <source>Relative rotation using local coordinate system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="842"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1183"/>
         <source>Resize surfaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="843"/>
-        <source>Relative scaling using global coordinate system</source>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="435"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="2354"/>
+        <source>Translated surface geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="844"/>
-        <source>Relative scaling using local coordinate system</source>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="599"/>
+        <source>Scaled surface geometry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1253"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1176"/>
+        <source>Relative translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1180"/>
+        <source>Relative rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1184"/>
+        <source>Relative scaling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1698"/>
         <source>Method for copying surfaces</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1254"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1699"/>
         <source>Some of the surfaces have un-selected sub-surfaces. Copy them anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1255"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1425"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1700"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1864"/>
         <source>Copy all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1256"/>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1426"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1701"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1865"/>
         <source>Copy only selected and visible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1423"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1862"/>
         <source>Method for copying rooms</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1424"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="1863"/>
         <source>Some of the rooms have un-selected surfaces or sub-surfaces. Copy them anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1618"/>
-        <source>Copy all subsurfaces.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1619"/>
-        <source>Copy only visible and selected subsurfaces.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../../src/SVPropEditGeometry.cpp" line="1733"/>
+        <location filename="../../src/SVPropEditGeometry.cpp" line="2070"/>
         <source>Flipped normal vectors</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9468,6 +9653,11 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../../src/SVPropModeSelectionWidget.cpp" line="53"/>
         <source>Surface heating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropModeSelectionWidget.cpp" line="54"/>
+        <source>Room properties</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9837,63 +10027,63 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="778"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="943"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="962"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="981"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="993"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1006"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1047"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1072"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1094"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1152"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1178"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1234"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1269"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1324"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1341"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="780"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="945"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="964"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="983"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="995"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1007"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1051"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1074"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1096"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1154"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1180"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1236"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1271"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1326"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1343"/>
         <source>Network modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="797"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="799"/>
         <source>Network sizing parameters modified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="863"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="873"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="865"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="875"/>
         <source>Network visualization properties updated</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1023"/>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1057"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1024"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1059"/>
         <source>modified network</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1161"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1163"/>
         <source>Network deleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1203"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1205"/>
         <source>Select edges with pipe &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1205"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1207"/>
         <source>Select edges with invalid/missing pipe.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1293"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1295"/>
         <source>Select nodes with sub network &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1295"/>
+        <location filename="../../src/SVPropNetworkEditWidget.cpp" line="1297"/>
         <source>Select nodes with invalid/missing sub network.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9967,350 +10157,382 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../../src/SVPropVertexListWidget.ui" line="118"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="246"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="313"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="555"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="149"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="387"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="629"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="129"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="169"/>
         <source>Surface properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="148"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="358"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="758"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="291"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="432"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="832"/>
         <source>Name:</source>
         <translation type="unfinished">Name:</translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="160"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="403"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="726"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="324"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="477"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="800"/>
         <source>Building level:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="167"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="282"/>
         <source>Zone:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="174"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="239"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="275"/>
         <source>Component:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="181"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="346"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="393"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="460"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="581"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="667"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="703"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="189"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="249"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="420"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="467"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="534"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="655"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="741"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="777"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="191"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="378"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="588"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="306"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="452"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="662"/>
         <source>Building:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="201"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="214"/>
         <source>Annonymous background geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="266"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="129"/>
         <source>Create surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="293"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="175"/>
+        <source>Surface in which sub surface is added:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="182"/>
+        <source>Sub surface geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="347"/>
+        <source>show only selected surfaces</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="367"/>
         <source>Create zone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="333"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="407"/>
         <source>Zone properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="339"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="598"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="605"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="413"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="672"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="679"/>
         <source>m</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="426"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="500"/>
         <source>Ceiling/roof component:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="433"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="507"/>
         <source>Pick zone height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="443"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="790"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="517"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="864"/>
         <source>Wall component:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="453"/>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="749"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="527"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="823"/>
         <source>Floor component:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="473"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="547"/>
         <source>2,7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="486"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="560"/>
         <source>Zone height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="535"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="609"/>
         <source>Create roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="575"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="649"/>
         <source>Roof properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="618"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="692"/>
         <source>45</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="628"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="702"/>
         <source>Roof component:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="641"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="715"/>
         <source>0.6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="657"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="731"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="675"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="749"/>
         <source>Single pitch roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="680"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="754"/>
         <source>Double pitch roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="685"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="759"/>
         <source>Mansard roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="690"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="764"/>
         <source>Hip roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="695"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="769"/>
         <source>Complex shape</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="736"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="810"/>
         <source>Roof inclination:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="773"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="847"/>
         <source>Roof height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="783"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="857"/>
         <source>Flap tile height:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="797"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="871"/>
         <source>Deg</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="804"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="878"/>
         <source>Roof type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.ui" line="861"/>
+        <location filename="../../src/SVPropVertexListWidget.ui" line="935"/>
         <source>Rotate floor polygon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="68"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="71"/>
         <source>Zone height in [m].</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="294"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="319"/>
         <source>Surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="306"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="438"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="332"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="471"/>
         <source>Room</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="316"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="342"/>
         <source>Roof</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="363"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="396"/>
         <source>Building</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="364"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="397"/>
         <source>Add building</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="364"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="397"/>
         <source>New building name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="370"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="403"/>
         <source>Adding building &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="413"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="446"/>
         <source>Level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="414"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="447"/>
         <source>Add building level</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="414"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="447"/>
         <source>New building level/floor name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="421"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="454"/>
         <source>Adding building level &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="439"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="472"/>
         <source>Add room/zone</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="439"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="472"/>
         <source>New room/zone name:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="446"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="479"/>
         <source>Adding building zone &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="487"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="520"/>
         <source>Please enter a descriptive name!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="509"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="533"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="542"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="636"/>
         <source>Added surface &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="515"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="553"/>
+        <source>First select a surface in which the sub surface is added!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="564"/>
+        <source>Surface ID is not valid!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="613"/>
+        <source>Added sub-surfaces/windows</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="621"/>
         <source>First select a zone to add the surface to!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="588"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="697"/>
         <source>First select a building level to add the zone/room to!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="625"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="770"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="736"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="887"/>
         <source>Floor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="628"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="739"/>
         <source>Ceiling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="673"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="783"/>
         <source>Wall %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="694"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="804"/>
         <source>Adding new zone &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="756"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="871"/>
         <source>First select a building level to add the roof zone to!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="785"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="902"/>
         <source>Wall surface</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="800"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="819"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="838"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="857"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="876"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="916"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="935"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="954"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="973"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="992"/>
         <source>Roof surface %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="808"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="827"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="846"/>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="865"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="924"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="943"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="962"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="981"/>
         <source>Wall surface %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVPropVertexListWidget.cpp" line="927"/>
+        <location filename="../../src/SVPropVertexListWidget.cpp" line="1042"/>
         <source>Adding roof zone &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10331,24 +10553,24 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVSettings</name>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="504"/>
-        <location filename="../../src/SVSettings.cpp" line="510"/>
-        <location filename="../../src/SVSettings.cpp" line="589"/>
+        <location filename="../../src/SVSettings.cpp" line="506"/>
+        <location filename="../../src/SVSettings.cpp" line="512"/>
+        <location filename="../../src/SVSettings.cpp" line="591"/>
         <source>Update Desktop Integration</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="504"/>
+        <location filename="../../src/SVSettings.cpp" line="506"/>
         <source>Should the existing desktop integration and %2-file type association be updated?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="510"/>
+        <location filename="../../src/SVSettings.cpp" line="512"/>
         <source>Should %1 set up the desktop integration and associate %2-file types with %1?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSettings.cpp" line="589"/>
+        <location filename="../../src/SVSettings.cpp" line="591"/>
         <source>Created application shortcut and registered file association. Changes will take effect after next login.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10589,12 +10811,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationModelOptions.cpp" line="48"/>
+        <location filename="../../src/SVSimulationModelOptions.cpp" line="51"/>
         <source>%1 [%2]</source>
         <translation type="unfinished">%1 [%2]</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationModelOptions.cpp" line="54"/>
+        <location filename="../../src/SVSimulationModelOptions.cpp" line="57"/>
         <source>Initial temperature to be used for zones/constructions etc.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10675,86 +10897,96 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Form</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="27"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="132"/>
         <source>Output definitions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="33"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="223"/>
         <source>Generate default building-related outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="66"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="183"/>
         <source>Generate default network-related outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="73"/>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="155"/>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="172"/>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="205"/>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="399"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="46"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="63"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="80"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="166"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="414"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="96"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="143"/>
         <source>Custom simulation outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="103"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="230"/>
         <source>Note: Auto-generated outputs always use the first output grid in the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="126"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="206"/>
         <source>Generate default network-related summation models and according outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="136"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="27"/>
         <source>Output grids</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="232"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="116"/>
+        <source>Output format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="122"/>
+        <source>write in binary format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="247"/>
         <source>Available outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="240"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="255"/>
         <source>Update output list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="290"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="305"/>
         <source>The output definition list is outdated, you should update the output list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="314"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="329"/>
         <source>NANDRAD-generated outputs from outputs_reference_list.txt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="338"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="353"/>
         <source>Objects</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="358"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="373"/>
         <source>Vector indexes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="379"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="394"/>
         <source>Object type filter:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.ui" line="389"/>
+        <location filename="../../src/SVSimulationOutputOptions.ui" line="404"/>
         <source>Quantity filter:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10809,12 +11041,12 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.cpp" line="165"/>
+        <location filename="../../src/SVSimulationOutputOptions.cpp" line="168"/>
         <source>End of simulation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationOutputOptions.cpp" line="441"/>
+        <location filename="../../src/SVSimulationOutputOptions.cpp" line="491"/>
         <source>New output grid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11070,57 +11302,57 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="87"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="89"/>
         <source>Half-angle of sun cone must be &gt; 0 Deg!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="88"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="90"/>
         <source>Grid size must be &gt; 0 m!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="89"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="91"/>
         <source>Steps per hour must be between 1 and 60!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="134"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="136"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Simulation time interval is not properly configured. Please set a valid simulation time interval and compute shading afterwards!&lt;/span&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="157"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="159"/>
         <source>&lt;span style=&quot;color:%1&quot;&gt;Location data is not correctly defined. Please open the location data dialog and specify a valid climate data file and/or building location.&lt;/span&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="214"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="216"/>
         <source>The calculation was aborted or an error has occurred during the calculation of shading factors.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="282"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="284"/>
         <source>Error reading climate data file &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="396"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="431"/>
         <source>Calculate shading factors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="396"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="431"/>
         <source>Abort</source>
         <translation type="unfinished">Abbrechen</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="409"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="444"/>
         <source>Calculation of shading factors was aborted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationShadingOptions.cpp" line="443"/>
+        <location filename="../../src/SVSimulationShadingOptions.cpp" line="478"/>
         <source>Calculated shading factors have been saved to &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11239,52 +11471,52 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="334"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="333"/>
         <source>Start simulation</source>
         <translation type="unfinished">Startet die Simulation</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="361"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="359"/>
         <source>Export FMU...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="387"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="385"/>
         <source>Location and climate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="392"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="390"/>
         <source>Outputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="397"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="395"/>
         <source>Simulation/Model settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="402"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="400"/>
         <source>Performance options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="407"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="405"/>
         <source>Shading calculation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="412"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="410"/>
         <source>Network Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="422"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="420"/>
         <source>Show log file...</source>
         <translation type="unfinished">Zeige Logdatei...</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.ui" line="442"/>
+        <location filename="../../src/SVSimulationStartNandrad.ui" line="440"/>
         <source>Store input data and close dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11340,48 +11572,48 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="403"/>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="433"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="406"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="436"/>
         <source>Solver error</source>
         <translation type="unfinished">Solverfehler</translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="404"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="407"/>
         <source>There is already a file with the name of the output directory to be created &apos;%1&apos;. Please remove this file or save the project with a new name!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="434"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="437"/>
         <source>Cannot remove result directory &apos;%1&apos;, maybe files are still being used?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="450"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="453"/>
         <source>Running test-init on NANDRAD project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="450"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="453"/>
         <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="459"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="462"/>
         <source>Could not run solver &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="494"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="497"/>
         <source>An error occurred during NANDRAD project generation (see details below).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="495"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="498"/>
         <source>NANDRAD Project Generation Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/SVSimulationStartNandrad.cpp" line="533"/>
+        <location filename="../../src/SVSimulationStartNandrad.cpp" line="536"/>
         <source>Could not run FMU Generator &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11639,7 +11871,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>SVZoneListModel</name>
     <message>
-        <location filename="../../src/SVZoneSelectionDialog.cpp" line="130"/>
+        <location filename="../../src/SVZoneSelectionDialog.cpp" line="117"/>
         <source>%1.%2.%3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11660,28 +11892,28 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>Scene</name>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="1970"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="1976"/>
         <source>All objects selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2031"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2037"/>
         <source>Selected cleared</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2047"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2053"/>
         <source>Removing selected geometry</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2065"/>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2083"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2071"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2089"/>
         <source>Visibility changed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../../src/core3D/Vic3DScene.cpp" line="2857"/>
+        <location filename="../../src/core3D/Vic3DScene.cpp" line="2881"/>
         <source>Selection changed</source>
         <translation type="unfinished"></translation>
     </message>
