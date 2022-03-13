@@ -55,29 +55,33 @@ void Surface::updateParents() {
 
 void Surface::readXML(const TiXmlElement * element) {
 	FUNCID(Surface::readXML);
-	readXMLPrivate(element);
-	// copy polygon to plane geometry
-	std::vector<Polygon2D> holes;
-	for (const SubSurface & s : m_subSurfaces)
-		holes.push_back(s.m_polygon2D);
-
 	// read 3D geometry
+	VICUS::Polygon3D poly3D;
 	const TiXmlElement * c = element->FirstChildElement();
 	while (c) {
 		const std::string & cName = c->ValueStr();
 		if (cName == "Polygon3D") {
-			VICUS::Polygon3D poly3D;
 			try {
 				poly3D.readXML(c);
 			} catch (IBK::Exception & ex) {
 				throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 					IBK::FormatString("Error reading Polygon3D tag.") ), FUNC_ID);
 			}
-			m_geometry.setGeometry( poly3D, holes);
+			// remove Polygon3D element from parent, to avoid getting spammed with "unknown Polygon3D" warning
+			const_cast<TiXmlElement *>(element)->RemoveChild(const_cast<TiXmlElement *>(c));
 			break;
 		}
 		c = c->NextSiblingElement();
 	}
+
+	readXMLPrivate(element);
+	// copy polygon to plane geometry
+	std::vector<Polygon2D> holes;
+	for (const SubSurface & s : m_subSurfaces)
+		holes.push_back(s.m_polygon2D);
+
+	// if we didn't get a Polygon3D element, the next call will throw an exception
+	m_geometry.setGeometry( poly3D, holes);
 }
 
 
