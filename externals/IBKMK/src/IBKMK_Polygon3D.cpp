@@ -68,10 +68,14 @@ Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & offset,
 	m_offset(offset), m_polyline(polyline)
 {
 	try {
+		m_valid = true; // assume polygon is valid
 		setRotation(normal, localX); // also sets the m_dirty flag
 	} catch (...) {
+		m_valid = false;
 	}
 	// mind: polygon might be invalid because of bad polyline, bad normal/localX vectors etc.
+	if (!m_polyline.isValid())
+		m_valid = false;
 }
 
 
