@@ -287,6 +287,8 @@ void Polygon3D::updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> &
 	// normalize localX and localY
 	m_localX.normalize();
 	m_localY.normalize();
+	// store first point as offset
+	m_offset = verts[0];
 }
 
 
