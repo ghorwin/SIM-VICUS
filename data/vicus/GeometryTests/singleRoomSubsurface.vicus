@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.2">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mo. Jan. 4 22:04:35 2021</Created>
-		<LastEdited>Mo. Juni 28 07:32:15 2021</LastEdited>
+		<LastEdited>So. März 13 20:23:43 2022</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
-		<Placeholder name="Database">/home/dirk/git/SIM-VICUS/data</Placeholder>
+		<Placeholder name="Database">/home/ghorwin/git/SIM-VICUS/data</Placeholder>
 	</DirectoryPlaceholders>
 	<Project>
 		<SolverParameter>
@@ -49,19 +49,19 @@
 		<ViewSettings>
 			<GridSpacing>10</GridSpacing>
 			<GridWidth>100</GridWidth>
-			<CameraTranslation>40.3556 2.17251 31.1413</CameraTranslation>
+			<CameraTranslation>10.2337 -12.7673 8.25609</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.976733</Wp>
-				<X>0.103979</X>
-				<Y>0.047191</Y>
-				<Z>0.181435</Z>
+				<Wp>0.816821</Wp>
+				<X>0.531257</X>
+				<Y>0.122963</Y>
+				<Z>0.188172</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
 		<Buildings>
 			<Building id="1" displayName="Building">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="Level">
+					<BuildingLevel id="2" displayName="Level">
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
@@ -69,31 +69,30 @@
 								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">45</IBK:Parameter>
 								<Surfaces>
-									<Surface id="11" displayName="New zone-floor">
-										<Polygon3D>0 5 0, 3 5 0, 3 0 0, 0 0 0</Polygon3D>
+									<Surface id="11" displayName="New zone-floor" displayColor="#566094">
+										<Polygon3D offset="0 5 0" normal="0 0 -1" localX="1 0 0">0 0, 3 0, 3 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="12" displayName="New zone-ceiling">
-										<Polygon3D>0 0 3, 3 0 3, 3 5 3, 0 5 3</Polygon3D>
+									<Surface id="12" displayName="New zone-ceiling" displayColor="#963214">
+										<Polygon3D offset="0 0 3" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="13" displayName="Wall 1">
-										<Polygon3D>0 0 0, 3 0 0, 3 0 3, 0 0 3</Polygon3D>
+									<Surface id="13" displayName="Wall 1" displayColor="#c8c88c">
+										<Polygon3D offset="0 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="14" displayName="Wall 2">
-										<Polygon3D>3 0 0, 3 5 0, 3 5 3, 3 0 3</Polygon3D>
+									<Surface id="14" displayName="Wall 2" displayColor="#c8c88c">
 										<SubSurfaces>
-											<SubSurface id="101" displayName="Tür">
+											<SubSurface id="2101" displayName="Tür">
 												<Polygon2D>0.5 0.5, 1 0.5, 1 1, 0.5 1</Polygon2D>
 											</SubSurface>
-											<SubSurface id="102" displayName="Fenster">
+											<SubSurface id="2102" displayName="Fenster">
 												<Polygon2D>1.5 0.5, 3.8 0.5, 3.8 2.8, 1.5 2.8</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="3 0 0" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="15" displayName="Wall 3">
-										<Polygon3D>3 5 0, 0 5 0, 0 5 3, 3 5 3</Polygon3D>
+									<Surface id="15" displayName="Wall 3" displayColor="#c8c88c">
+										<Polygon3D offset="3 5 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="16" displayName="Wall 4">
-										<Polygon3D>0 5 0, 0 0 0, 0 0 3, 0 5 3</Polygon3D>
+									<Surface id="16" displayName="Wall 4" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="19" displayName="Window #">
 												<Polygon2D>0.151515 0.4, 2.19697 0.4, 2.19697 2.6, 0.151515 2.6</Polygon2D>
@@ -102,6 +101,7 @@
 												<Polygon2D>2.5 0.4, 4.54545 0.4, 4.54545 2.6, 2.5 2.6</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="0 5 0" normal="-1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -109,20 +109,20 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="66" displayName="Roof floor">
-										<Polygon3D>7 0 0, 10 0 0, 10 6 0, 7 6 0</Polygon3D>
+									<Surface id="66" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="7 0 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="67" displayName="Roof surface 1">
-										<Polygon3D>7 0 0, 10 0 3, 10 6 3, 7 6 0</Polygon3D>
+									<Surface id="67" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="7 0 0" normal="-0.707107 0 0.707107" localX="0.707107 0 0.707107">0 0, 4.24264 0, 4.24264 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="68" displayName="Roof surface 2">
-										<Polygon3D>7 0 0, 10 0 0, 10 0 3</Polygon3D>
+									<Surface id="68" displayName="Roof surface 2" displayColor="#c8c88c">
+										<Polygon3D offset="7 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 3</Polygon3D>
 									</Surface>
-									<Surface id="69" displayName="Roof surface 3">
-										<Polygon3D>10 0 0, 10 6 0, 10 6 3, 10 0 3</Polygon3D>
+									<Surface id="69" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="10 0 0" normal="1 0 0" localX="0 1 0">0 0, 6 0, 6 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="70" displayName="Roof surface 4">
-										<Polygon3D>10 6 0, 7 6 0, 10 6 3</Polygon3D>
+									<Surface id="70" displayName="Roof surface 4" displayColor="#c8c88c">
+										<Polygon3D offset="10 6 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -130,20 +130,20 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="72" displayName="Roof floor">
-										<Polygon3D>13 0 0, 16 0 0, 16 6 0, 13 6 0</Polygon3D>
+									<Surface id="72" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="13 0 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="73" displayName="Roof surface 1">
-										<Polygon3D>13 0 0, 14.5 0 3, 14.5 6 3, 13 6 0</Polygon3D>
+									<Surface id="73" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="13 0 0" normal="-0.894427 0 0.447214" localX="0.447214 0 0.894427">0 0, 3.3541 0, 3.3541 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="74" displayName="Roof surface 2">
-										<Polygon3D>16 0 0, 16 6 0, 14.5 6 3, 14.5 0 3</Polygon3D>
+									<Surface id="74" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="16 0 0" normal="0.894427 -0 0.447214" localX="0 1 0">0 0, 6 0, 6 3.3541, 0 3.3541</Polygon3D>
 									</Surface>
-									<Surface id="75" displayName="Roof surface 3">
-										<Polygon3D>13 0 0, 16 0 0, 14.5 0 3</Polygon3D>
+									<Surface id="75" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="13 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 1.5 3</Polygon3D>
 									</Surface>
-									<Surface id="76" displayName="Roof surface 4">
-										<Polygon3D>16 6 0, 13 6 0, 14.5 6 3</Polygon3D>
+									<Surface id="76" displayName="Roof surface 4" displayColor="#c8c88c">
+										<Polygon3D offset="16 6 0" normal="0 1 0" localX="-1 0 0">0 0, 3 0, 1.5 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -151,26 +151,26 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="78" displayName="Roof floor">
-										<Polygon3D>19 0 0, 22 0 0, 22 6 0, 19 6 0</Polygon3D>
+									<Surface id="78" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="19 0 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="79" displayName="Roof surface 1">
-										<Polygon3D>19 0 0, 19.3 0 1.5, 19.3 6 1.5, 19 6 0</Polygon3D>
+									<Surface id="79" displayName="Roof surface 1" displayColor="#c8c88c">
+										<Polygon3D offset="19 0 0" normal="-0.980581 0 0.196116" localX="0.196116 0 0.980581">0 0, 1.52971 0, 1.52971 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="80" displayName="Roof surface 2">
-										<Polygon3D>19.3 0 1.5, 20.5 0 3, 20.5 6 3, 19.3 6 1.5</Polygon3D>
+									<Surface id="80" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="19.3 0 1.5" normal="-0.780869 0 0.624695" localX="0.624695 0 0.780869">0 0, 1.92094 0, 1.92094 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="81" displayName="Roof surface 3">
-										<Polygon3D>22 0 0, 22 6 0, 21.7 6 1.5, 21.7 0 1.5</Polygon3D>
+									<Surface id="81" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="22 0 0" normal="0.980581 -0 0.196116" localX="0 1 0">0 0, 6 0, 6 1.52971, 0 1.52971</Polygon3D>
 									</Surface>
-									<Surface id="82" displayName="Roof surface 4">
-										<Polygon3D>21.7 0 1.5, 21.7 6 1.5, 20.5 6 3, 20.5 0 3</Polygon3D>
+									<Surface id="82" displayName="Roof surface 4" displayColor="#963214">
+										<Polygon3D offset="21.7 0 1.5" normal="0.780869 -0 0.624695" localX="0 1 0">0 0, 6 0, 6 1.92094, 0 1.92094</Polygon3D>
 									</Surface>
-									<Surface id="83" displayName="Roof surface 5">
-										<Polygon3D>19 0 0, 22 0 0, 21.7 0 1.5, 20.5 0 3, 19.3 0 1.5</Polygon3D>
+									<Surface id="83" displayName="Roof surface 5" displayColor="#c8c88c">
+										<Polygon3D offset="19 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 2.7 1.5, 1.5 3, 0.3 1.5</Polygon3D>
 									</Surface>
-									<Surface id="84" displayName="Roof surface 6">
-										<Polygon3D>22 6 0, 19 6 0, 19.3 6 1.5, 20.5 6 3, 21.7 6 1.5</Polygon3D>
+									<Surface id="84" displayName="Roof surface 6" displayColor="#c8c88c">
+										<Polygon3D offset="22 6 0" normal="0 1 0" localX="-1 0 0">0 0, 3 0, 2.7 1.5, 1.5 3, 0.3 1.5</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -178,20 +178,20 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="86" displayName="Roof floor">
-										<Polygon3D>25 0 0, 28 0 0, 28 6 0, 25 6 0</Polygon3D>
+									<Surface id="86" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="25 0 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="87" displayName="Roof surface 1">
-										<Polygon3D>25 6 0, 25 0 0, 26.5 1 3, 26.5 5 3</Polygon3D>
+									<Surface id="87" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="25 6 0" normal="-0.894427 0 0.447214" localX="0 -1 0">0 0, 6 0, 5 3.3541, 1 3.3541</Polygon3D>
 									</Surface>
-									<Surface id="88" displayName="Roof surface 2">
-										<Polygon3D>28 0 0, 28 6 0, 26.5 5 3, 26.5 1 3</Polygon3D>
+									<Surface id="88" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="28 0 0" normal="0.894427 -0 0.447214" localX="0 1 0">0 0, 6 0, 5 3.3541, 1 3.3541</Polygon3D>
 									</Surface>
-									<Surface id="89" displayName="Roof surface 3">
-										<Polygon3D>25 0 0, 28 0 0, 26.5 1 3</Polygon3D>
+									<Surface id="89" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="25 0 0" normal="0 -0.948683 0.316228" localX="1 0 0">0 0, 3 0, 1.5 3.16228</Polygon3D>
 									</Surface>
-									<Surface id="90" displayName="Roof surface 4">
-										<Polygon3D>28 6 0, 25 6 0, 26.5 5 3</Polygon3D>
+									<Surface id="90" displayName="Roof surface 4" displayColor="#c8c88c">
+										<Polygon3D offset="28 6 0" normal="0 0.948683 0.316228" localX="-1 0 0">0 0, 3 0, 1.5 3.16228</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -199,23 +199,23 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="92" displayName="Roof floor">
-										<Polygon3D>7 10 0, 10 10 0, 10 16 0, 7 16 0</Polygon3D>
+									<Surface id="92" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="7 10 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="93" displayName="Roof surface 1">
-										<Polygon3D>7 10 2, 10 10 4, 10 16 4, 7 16 2</Polygon3D>
+									<Surface id="93" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="7 10 2" normal="-0.5547 0 0.83205" localX="0.83205 0 0.5547">0 0, 3.60555 0, 3.60555 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="94" displayName="Flap tile 1">
-										<Polygon3D>7 10 2, 7 10 0, 10 10 0, 10 10 4</Polygon3D>
+									<Surface id="94" displayName="Flap tile 1" displayColor="#c8c88c">
+										<Polygon3D offset="7 10 2" normal="0 -1 0" localX="0 0 -1">0 0, 2 0, 2 3, -2 3</Polygon3D>
 									</Surface>
-									<Surface id="95" displayName="Roof surface 3">
-										<Polygon3D>10 10 0, 10 16 0, 10 16 4, 10 10 4</Polygon3D>
+									<Surface id="95" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="10 10 0" normal="1 0 0" localX="0 1 0">0 0, 6 0, 6 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="96" displayName="Roof surface 4">
-										<Polygon3D>10 16 0, 7 16 0, 7 16 2, 10 16 4</Polygon3D>
+									<Surface id="96" displayName="Roof surface 4" displayColor="#c8c88c">
+										<Polygon3D offset="10 16 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="97" displayName="Roof surface 5">
-										<Polygon3D>7 16 0, 7 10 0, 7 10 2, 7 16 2</Polygon3D>
+									<Surface id="97" displayName="Roof surface 5" displayColor="#c8c88c">
+										<Polygon3D offset="7 16 0" normal="-1 0 0" localX="0 -1 0">0 0, 6 0, 6 2, 0 2</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -223,26 +223,26 @@
 								<IBK:Parameter name="Area" unit="m2">21</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="99" displayName="Roof floor">
-										<Polygon3D>13 10 0, 16 10 0, 16 17 0, 13 17 0</Polygon3D>
+									<Surface id="99" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="13 10 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 7, 0 7</Polygon3D>
 									</Surface>
-									<Surface id="100" displayName="Roof surface 1">
-										<Polygon3D>13 10 2, 14.5 10 4, 14.5 17 4, 13 17 2</Polygon3D>
+									<Surface id="100" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="13 10 2" normal="-0.8 0 0.6" localX="0.6 0 0.8">0 0, 2.5 0, 2.5 7, 0 7</Polygon3D>
 									</Surface>
-									<Surface id="101" displayName="Roof surface 2">
-										<Polygon3D>16 10 2, 16 17 2, 14.5 17 4, 14.5 10 4</Polygon3D>
+									<Surface id="101" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="16 10 2" normal="0.8 -0 0.6" localX="0 1 0">0 0, 7 0, 7 2.5, 0 2.5</Polygon3D>
 									</Surface>
-									<Surface id="102" displayName="Roof surface 3">
-										<Polygon3D>13 10 0, 16 10 0, 16 10 2, 14.5 10 4, 13 10 2</Polygon3D>
+									<Surface id="102" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="13 10 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2, 1.5 4, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="103" displayName="Roof surface 4">
-										<Polygon3D>16 17 0, 13 17 0, 13 17 2, 14.5 17 4, 16 17 2</Polygon3D>
+									<Surface id="103" displayName="Roof surface 4" displayColor="#c8c88c">
+										<Polygon3D offset="16 17 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2, 1.5 4, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="104" displayName="Roof surface 5">
-										<Polygon3D>13 17 0, 13 10 0, 13 10 2, 13 17 2</Polygon3D>
+									<Surface id="104" displayName="Roof surface 5" displayColor="#c8c88c">
+										<Polygon3D offset="13 17 0" normal="-1 0 0" localX="0 -1 0">0 0, 7 0, 7 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="105" displayName="Roof surface 6">
-										<Polygon3D>16 10 0, 16 17 0, 16 17 2, 16 10 2</Polygon3D>
+									<Surface id="105" displayName="Roof surface 6" displayColor="#c8c88c">
+										<Polygon3D offset="16 10 0" normal="1 0 0" localX="0 1 0">0 0, 7 0, 7 2, 0 2</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -250,32 +250,32 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="107" displayName="Roof floor">
-										<Polygon3D>19 10 0, 22 10 0, 22 16 0, 19 16 0</Polygon3D>
+									<Surface id="107" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="19 10 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="108" displayName="Roof surface 1">
-										<Polygon3D>19 10 2, 19.3 10 3, 19.3 16 3, 19 16 2</Polygon3D>
+									<Surface id="108" displayName="Roof surface 1" displayColor="#c8c88c">
+										<Polygon3D offset="19 10 2" normal="-0.957826 0 0.287348" localX="0.287348 0 0.957826">0 0, 1.04403 0, 1.04403 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="109" displayName="Roof surface 2">
-										<Polygon3D>19.3 10 3, 20.5 10 4, 20.5 16 4, 19.3 16 3</Polygon3D>
+									<Surface id="109" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="19.3 10 3" normal="-0.640184 0 0.768221" localX="0.768221 0 0.640184">0 0, 1.56205 0, 1.56205 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="110" displayName="Roof surface 3">
-										<Polygon3D>22 10 2, 22 16 2, 21.7 16 3, 21.7 10 3</Polygon3D>
+									<Surface id="110" displayName="Roof surface 3" displayColor="#c8c88c">
+										<Polygon3D offset="22 10 2" normal="0.957826 -0 0.287348" localX="0 1 0">0 0, 6 0, 6 1.04403, 0 1.04403</Polygon3D>
 									</Surface>
-									<Surface id="111" displayName="Roof surface 4">
-										<Polygon3D>21.7 10 3, 21.7 16 3, 20.5 16 4, 20.5 10 4</Polygon3D>
+									<Surface id="111" displayName="Roof surface 4" displayColor="#963214">
+										<Polygon3D offset="21.7 10 3" normal="0.640184 -0 0.768221" localX="0 1 0">0 0, 6 0, 6 1.56205, 0 1.56205</Polygon3D>
 									</Surface>
-									<Surface id="112" displayName="Roof surface 5">
-										<Polygon3D>19 10 0, 22 10 0, 22 10 2, 21.7 10 3, 20.5 10 4, 19.3 10 3, 19 10 2</Polygon3D>
+									<Surface id="112" displayName="Roof surface 5" displayColor="#c8c88c">
+										<Polygon3D offset="19 10 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2, 2.7 3, 1.5 4, 0.3 3, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="113" displayName="Roof surface 6">
-										<Polygon3D>22 16 0, 19 16 0, 19 16 2, 19.3 16 3, 20.5 16 4, 21.7 16 3, 22 16 2</Polygon3D>
+									<Surface id="113" displayName="Roof surface 6" displayColor="#c8c88c">
+										<Polygon3D offset="22 16 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2, 2.7 3, 1.5 4, 0.3 3, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="114" displayName="Roof surface 7">
-										<Polygon3D>19 16 0, 19 10 0, 19 10 2, 19 16 2</Polygon3D>
+									<Surface id="114" displayName="Roof surface 7" displayColor="#c8c88c">
+										<Polygon3D offset="19 16 0" normal="-1 0 0" localX="0 -1 0">0 0, 6 0, 6 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="115" displayName="Roof surface 8">
-										<Polygon3D>22 10 0, 22 16 0, 22 16 2, 22 10 2</Polygon3D>
+									<Surface id="115" displayName="Roof surface 8" displayColor="#c8c88c">
+										<Polygon3D offset="22 10 0" normal="1 0 0" localX="0 1 0">0 0, 6 0, 6 2, 0 2</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -283,32 +283,32 @@
 								<IBK:Parameter name="Area" unit="m2">18</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="117" displayName="Roof floor">
-										<Polygon3D>25 10 0, 28 10 0, 28 16 0, 25 16 0</Polygon3D>
+									<Surface id="117" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="25 10 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 6, 0 6</Polygon3D>
 									</Surface>
-									<Surface id="118" displayName="Roof surface 1">
-										<Polygon3D>25 16 2, 25 10 2, 26.5 11 4, 26.5 15 4</Polygon3D>
+									<Surface id="118" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="25 16 2" normal="-0.8 0 0.6" localX="0 -1 0">0 0, 6 0, 5 2.5, 1 2.5</Polygon3D>
 									</Surface>
-									<Surface id="119" displayName="Roof surface 2">
-										<Polygon3D>28 10 2, 28 16 2, 26.5 15 4, 26.5 11 4</Polygon3D>
+									<Surface id="119" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="28 10 2" normal="0.8 -0 0.6" localX="0 1 0">0 0, 6 0, 5 2.5, 1 2.5</Polygon3D>
 									</Surface>
-									<Surface id="120" displayName="Roof surface 3">
-										<Polygon3D>25 10 2, 28 10 2, 26.5 11 4</Polygon3D>
+									<Surface id="120" displayName="Roof surface 3" displayColor="#963214">
+										<Polygon3D offset="25 10 2" normal="0 -0.894427 0.447214" localX="1 0 0">0 0, 3 0, 1.5 2.23607</Polygon3D>
 									</Surface>
-									<Surface id="121" displayName="Roof surface 4">
-										<Polygon3D>28 16 2, 25 16 2, 26.5 15 4</Polygon3D>
+									<Surface id="121" displayName="Roof surface 4" displayColor="#963214">
+										<Polygon3D offset="28 16 2" normal="0 0.894427 0.447214" localX="-1 0 0">0 0, 3 0, 1.5 2.23607</Polygon3D>
 									</Surface>
-									<Surface id="122" displayName="Roof surface 5">
-										<Polygon3D>25 10 0, 28 10 0, 28 10 2, 25 10 2</Polygon3D>
+									<Surface id="122" displayName="Roof surface 5" displayColor="#c8c88c">
+										<Polygon3D offset="25 10 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="123" displayName="Roof surface 6">
-										<Polygon3D>28 10 0, 28 16 0, 28 16 2, 28 10 2</Polygon3D>
+									<Surface id="123" displayName="Roof surface 6" displayColor="#c8c88c">
+										<Polygon3D offset="28 10 0" normal="1 0 0" localX="0 1 0">0 0, 6 0, 6 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="124" displayName="Roof surface 7">
-										<Polygon3D>28 16 0, 25 16 0, 25 16 2, 28 16 2</Polygon3D>
+									<Surface id="124" displayName="Roof surface 7" displayColor="#c8c88c">
+										<Polygon3D offset="28 16 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 2, 0 2</Polygon3D>
 									</Surface>
-									<Surface id="125" displayName="Roof surface 8">
-										<Polygon3D>25 16 0, 25 10 0, 25 10 2, 25 16 2</Polygon3D>
+									<Surface id="125" displayName="Roof surface 8" displayColor="#c8c88c">
+										<Polygon3D offset="25 16 0" normal="-1 0 0" localX="0 -1 0">0 0, 6 0, 6 2, 0 2</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -316,20 +316,20 @@
 								<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">10</IBK:Parameter>
 								<Surfaces>
-									<Surface id="127" displayName="Roof floor">
-										<Polygon3D>33 0 0, 36 0 0, 36 5 0, 33 5 0</Polygon3D>
+									<Surface id="127" displayName="Roof floor" displayColor="#963214">
+										<Polygon3D offset="33 0 0" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 5, 0 5</Polygon3D>
 									</Surface>
-									<Surface id="128" displayName="Roof surface 1">
-										<Polygon3D>34.5 2.5 2, 33 0 0, 36 0 0</Polygon3D>
+									<Surface id="128" displayName="Roof surface 1" displayColor="#963214">
+										<Polygon3D offset="34.5 2.5 2" normal="0 -0.624695 0.780869" localX="-0.424264 -0.707107 -0.565685">0 0, 3.53553 -2.22045e-16, 2.26274 2.71662</Polygon3D>
 									</Surface>
-									<Surface id="129" displayName="Roof surface 2">
-										<Polygon3D>36 0 0, 36 5 0, 34.5 2.5 2</Polygon3D>
+									<Surface id="129" displayName="Roof surface 2" displayColor="#963214">
+										<Polygon3D offset="36 0 0" normal="0.8 -0 0.6" localX="0 1 0">0 0, 5 0, 2.5 2.5</Polygon3D>
 									</Surface>
-									<Surface id="130" displayName="Roof surface 3">
-										<Polygon3D>33 5 0, 33 0 0, 34.5 2.5 2</Polygon3D>
+									<Surface id="130" displayName="Roof surface 3" displayColor="#963214">
+										<Polygon3D offset="33 5 0" normal="-0.8 0 0.6" localX="0 -1 0">0 0, 5 0, 2.5 2.5</Polygon3D>
 									</Surface>
-									<Surface id="131" displayName="Roof surface 4">
-										<Polygon3D>34.5 2.5 2, 36 5 0, 33 5 0</Polygon3D>
+									<Surface id="131" displayName="Roof surface 4" displayColor="#963214">
+										<Polygon3D offset="34.5 2.5 2" normal="0 0.624695 0.780869" localX="0.424264 0.707107 -0.565685">0 0, 3.53553 -2.22045e-16, 2.26274 2.71662</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -342,25 +342,25 @@
 			<ComponentInstance id="1" idComponent="1001" idSideASurface="14" />
 			<ComponentInstance id="2" idComponent="1002" idSideASurface="13" />
 			<ComponentInstance id="3" idComponent="1002" idSideASurface="15" />
-			<ComponentInstance id="4" idComponent="1003" idSideASurface="16" />
-			<ComponentInstance id="5" idComponent="1008" idSideASurface="12" />
+			<ComponentInstance id="4" idComponent="1004" idSideASurface="16" />
+			<ComponentInstance id="5" idComponent="1004" idSideASurface="12" />
 			<ComponentInstance id="6" idComponent="1011" idSideASurface="11" />
 		</ComponentInstances>
 		<SubSurfaceComponentInstances>
-			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="10001" idSideASurface="102" />
+			<SubSurfaceComponentInstance id="1" idSubSurfaceComponent="10001" idSideASurface="2102" />
 			<SubSurfaceComponentInstance id="2" idSubSurfaceComponent="10001" idSideASurface="19" />
 			<SubSurfaceComponentInstance id="3" idSubSurfaceComponent="10001" idSideASurface="20" />
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
-				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
-					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
+				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
+					<Notes>en:Contrete/Stone to be used in SimQuality test cases|de:Beton/Stein zur Verwendung in SimQuality</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
+					<Category>Cementitious</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
 				</Material>
 				<Material id="10001" displayName="de:[SimQuality] Putz|en:[SimQuality] Plaster" color="#bbbbcf">
 					<Notes>en:Plaster to be used in SimQuality test cases.|de:Putz zur Verwendung in SimQuality.</Notes>
@@ -371,23 +371,23 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.14</IBK:Parameter>
 				</Material>
-				<Material id="10000" displayName="de:[SimQuality] Beton|en:[SimQuality] Concrete" color="#a29f2f">
-					<Notes>en:Contrete to be used in SimQuality test cases.|de:Beton zur Verwendung in SimQuality.</Notes>
+				<Material id="10002" displayName="de:[SimQuality] Dämmung|en:[SimQuality] Insulation" color="#f3dba0">
+					<Notes>en:Insulation to be used in SimQuality test cases.|de:Dämmstoff zur Verwendung in SimQuality.</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>Cementitious</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">50</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
-				<Material id="10003" displayName="de: [SimQuality] Stein |en: [SimQuality] Stone" color="#8f5902">
-					<Notes>en:Used in SimQuality test cases (TF8).|de:Verwendung in SimQuality (TF8).</Notes>
+				<Material id="10003" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#a2b84b">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
 					<Manufacturer>generic</Manufacturer>
 					<DataSource>SimQuality</DataSource>
-					<Category>NaturalStones</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">2000</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">1.2</IBK:Parameter>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
 				<Material id="10007" displayName="de:[SimQuality] Gipsputz|en:[SimQuality] Gypsum plaster" color="#cbb4b4">
 					<Notes>en:Plaster to be used in SimQuality test cases (TF12).|de:Putz zur Verwendung in SimQuality (TF12).</Notes>
@@ -425,22 +425,43 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
 				</Material>
-				<Material id="10013" displayName="de:[SimQuality] PUR|en:[SimQuality] PUR" color="#a2b84b">
-					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
-					<Manufacturer>generic</Manufacturer>
-					<DataSource>SimQuality</DataSource>
-					<Category>Insulations</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">20</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
+				<Material id="5500000" displayName="de:Dummy-Material|en:Dummy material">
+					<DataSource>de:Dummy Database Plugin|en:Dummy Database Plugin</DataSource>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+					<IBK:Parameter name="Mu" unit="-">81</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
+				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
 				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
 					<UsageType>OutsideWall</UsageType>
 					<MaterialLayers>
 						<MaterialLayer idMaterial="10002">
 							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+					</MaterialLayers>
+				</Construction>
+				<Construction id="1004" displayName="DE: [SimQuality] TF03 Konstruktionstyp 4 (Außendämmung) |EN: [SimQuality] TF03 Construction 4 (outside insulated wall)">
+					<UsageType>OutsideWall</UsageType>
+					<MaterialLayers>
+						<MaterialLayer idMaterial="10000">
+							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10002">
+							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
+						</MaterialLayer>
+						<MaterialLayer idMaterial="10001">
+							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
@@ -453,7 +474,7 @@
 						<MaterialLayer idMaterial="10009">
 							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
 						</MaterialLayer>
-						<MaterialLayer idMaterial="10013">
+						<MaterialLayer idMaterial="10003">
 							<IBK:Parameter name="Thickness" unit="m">0.04</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10010">
@@ -464,47 +485,9 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1003" displayName="DE: [SimQuality] TF03 Konstruktionstyp 3 (Innendämmung) |EN: [SimQuality] TF03 Construction 3 (inside insulated wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer idMaterial="10002">
-							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer idMaterial="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
-					<UsageType>OutsideWall</UsageType>
-					<InsulationKind>OutsideInsulation</InsulationKind>
-					<MaterialKind>NaturalStoneMasonry</MaterialKind>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10003">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer idMaterial="10002">
-							<IBK:Parameter name="Thickness" unit="m">0.1</IBK:Parameter>
-						</MaterialLayer>
-						<MaterialLayer idMaterial="10001">
-							<IBK:Parameter name="Thickness" unit="m">0.005</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
-				<Construction id="1001" displayName="DE: [SimQuality] TF03 Konstruktionstyp 1 (Betonwand) |EN: [SimQuality] TF03 Construction 1 (concrete wall)">
-					<UsageType>OutsideWall</UsageType>
-					<MaterialLayers>
-						<MaterialLayer idMaterial="10000">
-							<IBK:Parameter name="Thickness" unit="m">0.2</IBK:Parameter>
-						</MaterialLayer>
-					</MaterialLayers>
-				</Construction>
 			</Constructions>
 			<Windows>
-				<Window id="3001" displayName="DE: Standardfenster" idGlazingSystem="3001" color="#99ff9a" methodFrame="None" methodDivider="None" />
+				<Window id="3001" displayName="DE: Standardfenster" color="#99ff9a" idGlazingSystem="3001" methodFrame="None" methodDivider="None" />
 			</Windows>
 			<WindowGlazingSystems>
 				<WindowGlazingSystem id="3001" displayName="DE: Doppelscheibenverglasung |EN: Double-layer glazing" color="#66f4ff" modelType="Simple">
@@ -516,35 +499,35 @@
 				</WindowGlazingSystem>
 			</WindowGlazingSystems>
 			<BoundaryConditions>
-				<BoundaryCondition id="1002" displayName="DE: [SimQuality] TF03 Inside conditions (only heat conduction) |EN: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)">
-					<Color>#cc0000</Color>
+				<BoundaryCondition id="1001" displayName="EN: [SimQuality] TF03 Outside conditions (only heat conduction) |DE: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)" color="#0055ff">
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
-				<BoundaryCondition id="1001" displayName="DE: [SimQuality] TF03 Outside conditions (only heat conduction) |EN: [SimQuality] TF03 Außenbedingungen (nur Wärmeleitung)">
-					<Color>#204a87</Color>
+				<BoundaryCondition id="1002" displayName="EN: [SimQuality] TF03 Inside conditions (only heat conduction) |DE: [SimQuality] TF03 Innenbedingungen (nur Wärmeleitung)" color="#ff4000">
 					<InterfaceHeatConduction modelType="Constant">
-						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">8</IBK:Parameter>
+						<OtherZoneType>Standard</OtherZoneType>
+						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
 					</InterfaceHeatConduction>
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1002</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
-				</Component>
 				<Component id="1001" displayName="DE: [SimQuality] Komponente für TF03.1 |EN: [SimQuality] Component for TF03.1" color="#f57900">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1001</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
-				<Component id="1008" displayName="DE: [SimQuality] Komponente für TF08 |EN: [SimQuality] component for TF08" color="#ac66ff">
+				<Component id="1002" displayName="DE: [SimQuality] Komponente für TF03.2 |EN: [SimQuality] Component for TF03.2" color="#a40000">
 					<Type>OutsideWall</Type>
-					<IdConstruction>1005</IdConstruction>
+					<IdConstruction>1002</IdConstruction>
+					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
+					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
+				</Component>
+				<Component id="1004" displayName="DE: [SimQuality] Komponente für TF03.4 |EN: [SimQuality] Component for TF03.4" color="#1672fd">
+					<Type>OutsideWall</Type>
+					<IdConstruction>1004</IdConstruction>
 					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
@@ -553,12 +536,6 @@
 					<IdConstruction>1009</IdConstruction>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>
 					<IdSideBBoundaryCondition>1002</IdSideBBoundaryCondition>
-				</Component>
-				<Component id="1003" displayName="DE: [SimQuality] Komponente für TF03.3 |EN: [SimQuality] Component for TF03.3" color="#73d216">
-					<Type>OutsideWall</Type>
-					<IdConstruction>1003</IdConstruction>
-					<IdSideABoundaryCondition>1002</IdSideABoundaryCondition>
-					<IdSideBBoundaryCondition>1001</IdSideBBoundaryCondition>
 				</Component>
 			</Components>
 			<SubSurfaceComponents>

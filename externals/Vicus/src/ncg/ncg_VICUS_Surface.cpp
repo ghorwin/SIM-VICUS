@@ -51,6 +51,8 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "visible")
 				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "displayColor")
+				m_displayColor.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -61,9 +63,7 @@ void Surface::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "DisplayColor")
-				m_displayColor.setNamedColor(QString::fromStdString(c->GetText()));
-			else if (cName == "SubSurfaces") {
+			if (cName == "SubSurfaces") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -101,7 +101,7 @@ TiXmlElement * Surface::writeXMLPrivate(TiXmlElement * parent) const {
 	if (m_visible != Surface().m_visible)
 		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_displayColor.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "DisplayColor", nullptr, std::string(), m_displayColor.name().toStdString());
+		e->SetAttribute("displayColor", m_displayColor.name().toStdString());
 
 	if (!m_subSurfaces.empty()) {
 		TiXmlElement * child = new TiXmlElement("SubSurfaces");
