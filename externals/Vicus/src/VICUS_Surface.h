@@ -86,7 +86,7 @@ public:
 	/*! The color to be used when rendering the surface in regular mode (not in false-color mode).
 		Important also for daylight calculation.
 	*/
-	QColor								m_displayColor;				// XML:E
+	QColor								m_displayColor;				// XML:A
 
 	// *** Runtime Variables ***
 
