@@ -25,7 +25,7 @@
 		<Buildings>
 			<Building id="1" displayName="Building">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="Level">
+					<BuildingLevel id="2" displayName="Level">
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>

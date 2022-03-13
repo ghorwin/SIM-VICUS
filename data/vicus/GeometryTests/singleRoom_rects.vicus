@@ -19,11 +19,11 @@
 			<FarDistance>10000</FarDistance>
 		</ViewSettings>
 		<Buildings>
-			<Building id="0" displayName="BuildingName">
+			<Building id="200" displayName="BuildingName">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="E0">
+					<BuildingLevel id="100" displayName="E0">
 						<Rooms>
-							<Room id="1" displayName="SingleRoom">
+							<Room id="300" displayName="SingleRoom">
 								<Surfaces>
 									<Surface id="1" displayName="South_1">
 										<Polygon3D type="Rectangle">0 0 0, 2 0 0, 0 0 3</Polygon3D>
