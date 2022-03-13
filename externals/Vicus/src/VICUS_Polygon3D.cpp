@@ -102,12 +102,34 @@ void Polygon3D::readXML(const TiXmlElement * element) {
 	else {
 		// try reading in old format, first
 		try {
+			// we may have a type attribute
+			IBKMK::Polygon2D::type_t t = IBKMK::Polygon2D::T_Polygon;
+			const TiXmlAttribute * attrib = TiXmlAttribute::attributeByName(element, "type");
+			if (attrib != nullptr) {
+				if (attrib->ValueStr() == "Rectangle")
+					t = IBKMK::Polygon2D::T_Rectangle;
+				else if (attrib->ValueStr() == "Triangle")
+					t = IBKMK::Polygon2D::T_Triangle;
+			}
+
 			std::vector<IBKMK::Vector3D> verts;
 			NANDRAD::readVector3D(element, "Polygon3D", verts);
 
 			// Note: a VICUS::Polyon3D _is a_ IBKMK::Polygon3D, so we can cast them into each other
 			IBK_ASSERT(dynamic_cast<IBKMK::Polygon3D*>(this) != nullptr);
-			dynamic_cast<IBKMK::Polygon3D&>(*this) = IBKMK::Polygon3D(verts);
+			switch (t) {
+				case IBKMK::Polygon2D::T_Triangle:
+				case IBKMK::Polygon2D::T_Rectangle:
+					if (verts.size() != 3)
+						throw IBK::Exception("Invalid number of vertexes.", FUNC_ID);
+					dynamic_cast<IBKMK::Polygon3D&>(*this) = IBKMK::Polygon3D(t, verts[0], verts[1], verts[2]);
+				break;
+				case IBKMK::Polygon2D::T_Polygon:
+					dynamic_cast<IBKMK::Polygon3D&>(*this) = IBKMK::Polygon3D(verts);
+				break;
+				case IBKMK::Polygon2D::NUM_T: ; // just to make compiler happy
+			}
+
 		} catch (IBK::Exception & ex) {
 			throw IBK::Exception(ex, "Error reading 'Polygon3D' tag in old Vicus format.", FUNC_ID);
 		}
