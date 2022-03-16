@@ -549,16 +549,15 @@ int StateModelGroup::update() {
 				// signal error
 				return 1;
 			}
-			else {
-				// set states to new solution
-				updateStates();
-				// transfer initial solution for kinsol run
-				std::memcpy(&m_yPrev[0], &m_y[0], n() * sizeof(double));
-				// signal success
-				return 0;
-			}
+			// set states to new solution
+			updateStates();
+			// transfer initial solution for kinsol run
+			std::memcpy(&m_yPrev[0], &m_y[0], n() * sizeof(double));
+			// signal success
+			return 0;
 		}
 	}
+	return 0;
 }
 
 
