@@ -51,8 +51,7 @@ double string2val<double>(const std::string& str) {
 #else
 	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
 	if (answer.ec != std::errc())
-		throw std::runtime_error((std::string("Could not convert " + str +
-			std::string(" into value."))).c_str());
+		throw std::runtime_error("Could not convert " + str + " into value.");
 #endif
 	return val;
 }
@@ -64,7 +63,7 @@ bool string2val<bool>(const std::string & str) {
 		return true;
 	else if (str == "false" || str == "0")
 		return false;
-	throw std::runtime_error((std::string("Could not convert '") + str + std::string("' into bool.")).c_str());
+	throw std::runtime_error("Could not convert '" + str + "' into bool.");
 }
 
 
@@ -84,8 +83,7 @@ double string2valDef<double>(const std::string& str, const double & def) {
 			throw std::exception();
 	}
 	catch (...) {
-		throw std::runtime_error((std::string("Could not convert " + str +
-			std::string(" into value."))).c_str());
+		throw std::runtime_error("Could not convert " + str + " into value.");
 	}
 #else
 	auto answer = fast_float::from_chars(str.data(), str.data()+str.size(), val);
@@ -271,6 +269,6 @@ void convertToBaseUnit(double &val, std::string &baseUnit, std::string unit) {
 		return;
 	}
 
-	throw std::runtime_error((std::string("Unknown unit '") + unit + std::string("'.")).c_str());
+	throw std::runtime_error("Unknown unit '" + unit + "'.");
 }
 

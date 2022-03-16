@@ -104,8 +104,8 @@ void CO2ComfortVentilation::init() {
 					m_co2LoadPerZoneFloorAreasSplines[scheduleName] = spline;
 				}
 				catch (std::runtime_error &ex) {
-					throw std::runtime_error(std::string("Error reading schedule from file '")
-						+ tsvPath.str() + std::string("': ") + ex.what() + std::string("."));
+					throw std::runtime_error("Error reading schedule from file '"
+						+ tsvPath.str() +"': " + ex.what() + ".");
 				}
 
 			}
@@ -121,8 +121,8 @@ void CO2ComfortVentilation::init() {
 				m_ambientCO2ConcentrationSpline = spline;
 			}
 			catch (std::runtime_error &ex) {
-				throw std::runtime_error(std::string("Error reading schedule from file '")
-					+ tsvBasePathAmbientCO2.str() + std::string("': ") + ex.what() + std::string("."));
+				throw std::runtime_error("Error reading schedule from file '"
+					+ tsvBasePathAmbientCO2.str() + "': " + ex.what() + ".");
 			}
 
 			// initialize result quantities, input output variables
@@ -507,7 +507,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 		std::ifstream in(fpath.c_str());
 #endif
 		if (!in)
-			throw std::runtime_error(std::string("File '") + fpath.str() + std::string("' doesn't exist or cannot open/access file."));
+			throw std::runtime_error("File '" + fpath.str() + "' doesn't exist or cannot open/access file.");
 
 		std::string line;
 		// values and definitions are divided by assignment '='
@@ -525,7 +525,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 
 			// we expect 2 tokens
 			if (values.size() != 2)
-				throw std::runtime_error((std::string("Malformed line '") + line + std::string(". Expected format '<attribute> = <value>'.")).c_str());
+				throw std::runtime_error("Malformed line '" + line + ". Expected format '<attribute> = <value>'.");
 
 			// extract attribute
 			std::string attribute = values[0];
@@ -561,15 +561,15 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				for (std::string idStr : values) {
 					unsigned int id = string2val<unsigned int>(idStr);
 					if (zoneIds.find(id) != zoneIds.end())
-						throw std::runtime_error(std::string("Duplicate zone id ") + idStr + std::string("."));
+						throw std::runtime_error("Duplicate zone id " + idStr + ".");
 
 					// temporarilly store zone ids
 					zoneIds.insert(id);
 				}
 			}
 			catch (std::runtime_error &ex) {
-				throw std::runtime_error((std::string("Malformed value '") + value + std::string("in '")
-					+ attribute + std::string("' attribute: ") + ex.what()).c_str());
+				throw std::runtime_error(("Malformed value '" + value + "in '"
+					+ attribute + "' attribute: " + ex.what()).c_str());
 			}
 			// break loop
 			break;
@@ -589,7 +589,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 
 			// we expect 2 tokens
 			if (values.size() != 2)
-				throw std::runtime_error((std::string("Malformed line '") + line + std::string(". Expected format '<attribute> = <value>'.")).c_str());
+				throw std::runtime_error("Malformed line '" + line + ". Expected format '<attribute> = <value>'.");
 
 			// extract attribute
 			std::string attribute = values[0];
@@ -618,8 +618,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			if (attribute == "zoneScheduleNames") {
 				// indexes are requested
 				if (index.empty()) {
-					throw std::runtime_error((std::string("Missing index notation in attribute ')") +
-						attribute + std::string("'.")).c_str());
+					throw std::runtime_error("Missing index notation in attribute ')" +
+						attribute + "'.");
 				}
 				// zoneIds are requested
 				if (zoneIds.empty())
@@ -631,20 +631,20 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 					id = string2val<unsigned int>(index);
 				}
 				catch (std::runtime_error &ex) {
-					throw std::runtime_error((std::string("Malformed value '") + value + std::string("in '")
-						+ attribute + std::string("' attribute: ") + ex.what()).c_str());
+					throw std::runtime_error("Malformed value '" + value + "in '"
+						+ attribute + "' attribute: " + ex.what());
 				}
 				// id must be contained inside zone ids container
 				if (zoneIds.find(id) == zoneIds.end()) {
-					throw std::runtime_error((std::string("Index in attribute '") +
-						attribute + std::string("' must be listed inside zoneIds vector.")).c_str());
+					throw std::runtime_error("Index in attribute '" +
+						attribute + "' must be listed inside zoneIds vector.");
 				}
 				// trim value
 				trim(value, "\"");
 				// value is already set
 				if (m_zoneScheduleNames.find(id) != m_zoneScheduleNames.end()) {
-					throw std::runtime_error((std::string("Duplicate id ") + index + std::string(" in attribute '") +
-						attribute + std::string(".")).c_str());
+					throw std::runtime_error("Duplicate id " + index + " in attribute '" +
+						attribute + ".");
 				}
 				// store value
 				m_zoneScheduleNames[id] = value;
@@ -666,15 +666,15 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				else if (attribute == "temperatureToleranceBand")
 					targetUnit = "K";
 				else {
-					throw std::runtime_error((std::string("Unknown attribute '") + attribute + std::string("'.")).c_str());
+					throw std::runtime_error("Unknown attribute '" + attribute + "'.");
 				}
 
 				// filter value and unit
 				explode(value, values, " ");
 				if (values.size() != 2)
 				{
-					throw std::runtime_error((std::string("Malformed value '") + value + std::string("in '")
-						+ attribute + std::string("' attribute. Expected '<value> <unit>'.")).c_str());
+					throw std::runtime_error("Malformed value '" + value + "in '"
+						+ attribute + "' attribute. Expected '<value> <unit>'.");
 				}
 				// check unit
 				std::string unit = values[1];
@@ -685,16 +685,16 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 					val = string2val<double>(value);
 				}
 				catch (std::runtime_error &ex) {
-					throw std::runtime_error((std::string("Malformed value '") + value + std::string("in '")
-						+ attribute + std::string("' attribute: ") + ex.what()).c_str());
+					throw std::runtime_error("Malformed value '" + value + "in '"
+						+ attribute + "' attribute: " + ex.what());
 				}
 				// convert to base unit
 				std::string baseUnit;
 				convertToBaseUnit(val, baseUnit, unit);
 				// check unit
 				if (baseUnit != targetUnit) {
-					throw std::runtime_error((std::string("Wong unit value '") + unit + std::string("in '")
-						+ attribute + std::string("' attribute. Expected 'm2'.")).c_str());
+					throw std::runtime_error("Wong unit value '" + unit + "in '"
+						+ attribute + "' attribute. Expected 'm2'.");
 				}
 
 				// now perform special treatment:
@@ -702,8 +702,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				if (attribute == "zoneFloorAreas" || attribute == "zoneVolumes") {
 					// indexes are requested
 					if (index.empty()) {
-						throw std::runtime_error((std::string("Missing index notation in attribute ')") +
-							attribute + std::string("'.")).c_str());
+						throw std::runtime_error("Missing index notation in attribute ')" +
+							attribute + "'.");
 					}
 
 					unsigned int id = 0;
@@ -712,21 +712,21 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 						id = string2val<unsigned int>(index);
 					}
 					catch (std::runtime_error &ex) {
-						throw std::runtime_error((std::string("Malformed value '") + value + std::string("in '")
-							+ attribute + std::string("' attribute: ") + ex.what()).c_str());
+						throw std::runtime_error("Malformed value '" + value + "in '"
+							+ attribute + "' attribute: " + ex.what());
 					}
 					// id must be contained inside zone ids container
 					if (zoneIds.find(id) == zoneIds.end()) {
-						throw std::runtime_error((std::string("Index in attribute '") +
-							attribute + std::string("' must be listed inside zoneIds vector.")).c_str());
+						throw std::runtime_error("Index in attribute '" +
+							attribute + "' must be listed inside zoneIds vector.");
 					}
 
 					// duplicate definition
 					if (   (attribute == "zoneFloorAreas" && m_zoneFloorAreas.find(id) != m_zoneFloorAreas.end() )
 						|| ( attribute == "zoneVolumes" && m_zoneVolumes.find(id) != m_zoneVolumes.end()) )
 					{
-						throw std::runtime_error((std::string("Duplicate id ") + index + std::string(" in attribute '") +
-							attribute + std::string(".")).c_str());
+						throw std::runtime_error("Duplicate id " + index + " in attribute '" +
+							attribute + ".");
 					}
 					// all right, store value
 					if (attribute == "zoneFloorAreas")
@@ -738,8 +738,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				else {
 					// no indexes are allowed
 					if (!index.empty()) {
-						throw std::runtime_error((std::string("Invalid index notation in attribute ')") +
-							attribute + std::string("'.")).c_str());
+						throw std::runtime_error("Invalid index notation in attribute ')" +
+							attribute + "'.");
 					}
 
 					if (attribute == "startCO2Concentration")
@@ -782,8 +782,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				missingIdsStr += std::string(",") + val2string<unsigned int>(*it);
 			}
 			// create a meaningful error message
-			throw std::runtime_error((std::string("Missing ids ") + missingIdsStr +
-				std::string("in attribute 'zoneFloorAreas'")).c_str());
+			throw std::runtime_error("Missing ids " + missingIdsStr +
+				"in attribute 'zoneFloorAreas'");
 		}
 		if (m_zoneVolumes.size() != zoneIds.size()) {
 			// find missing quantities
@@ -801,8 +801,8 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 				missingIdsStr += std::string(",") + val2string<unsigned int>(*it);
 			}
 			// create a meaningful error message
-			throw std::runtime_error((std::string("Missing ids ") + missingIdsStr +
-				std::string("in attribute 'zoneVolumes'")).c_str());
+			throw std::runtime_error("Missing ids " + missingIdsStr +
+				"in attribute 'zoneVolumes'");
 		}
 		// check obligatory parameters
 		if ((int)m_startCO2Concentration == -999)
@@ -811,7 +811,7 @@ void CO2ComfortVentilation::read(const Path &fpath) {
 			throw std::runtime_error("Missing attribute 'startAirTemperature'.");
 	}
 	catch (std::runtime_error & ex) {
-		throw std::runtime_error((std::string("Error reading file ") + fpath.str() + std::string(": ") + ex.what()).c_str());
+		throw std::runtime_error("Error reading file " + fpath.str() + ": " + ex.what());
 	}
 }
 
