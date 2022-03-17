@@ -2959,7 +2959,7 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 	m_panCameraStart = QVector2IBKVector(m_camera.translation());	// Point A
 	m_panObjectStart = candidates.front().m_pickPoint;			// Point C
 	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
-	m_panObjectDepth = pickObject.m_candidates.front().m_depth;
+	m_panObjectDepth = pickObject.m_candidates.front().m_depth;				/// ToDo Dirk->Andreas: hier hab ich ein SegFault bekommen da m_candidates leer war.
 	double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
 	double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
 	m_panCABARatio = CADistance/BADistance;
