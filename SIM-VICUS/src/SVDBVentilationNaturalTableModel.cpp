@@ -142,7 +142,7 @@ void SVDBVentilationNaturalTableModel::resetModel() {
 
 QModelIndex SVDBVentilationNaturalTableModel::addNewItem() {
 	VICUS::VentilationNatural venti;
-	venti.m_displayName.setEncodedString("en:<new zone control thermostat model>");
+	venti.m_displayName.setEncodedString("en:<new natural ventilation model>");
 
 	// set default parameters
 
