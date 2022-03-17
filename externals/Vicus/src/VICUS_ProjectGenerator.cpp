@@ -6,6 +6,7 @@
 #include <IBK_physics.h>
 #include <IBK_CSVReader.h>
 #include <IBK_UnitVector.h>
+#include <IBK_StringUtils.h>
 
 #include <DataIO>
 
@@ -637,9 +638,13 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const MappingTable &
 	FUNCID(Project::exportMappingTable);
 	IBK::Path basePath(filepath.withoutExtension() + "_mappingTable.txt");
 
-	// write file
 	std::ofstream out;
+	// write file
+#if defined(_WIN32)
+	out.open(IBK::WstringToANSI(basePath.wstr()));
+#else
 	out.open(basePath.str());
+#endif
 
 	if (!out.is_open()) {
 		IBK::IBK_Message(IBK::FormatString("Error writing shading file '%1'.").arg(basePath), IBK::MSG_ERROR, FUNC_ID);
