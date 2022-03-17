@@ -2936,6 +2936,7 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 	if (!pickObject.m_pickPerformed)
 		pick(pickObject);
 
+	// TODO : m_orbitCandidates rausschmeißen und die Snap-Regeln sauber abbilden
 	bool pickPlane = SVViewStateHandler::instance().viewState().m_snapOptionMask & SVViewState::Snap_GridPlane;
 	std::vector<PickObject::PickResult> &candidates = pickPlane ? pickObject.m_candidates : pickObject.m_orbitCandidates;
 
@@ -2947,10 +2948,11 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 		r.m_pickPoint = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*r.m_depth;
 		candidates.push_back(r);
 	}
+	// TODO : check this, should reuse-depth also be applied for default added point above in ...empty() clause?
 	else if (reuseDepth) {
-		pickObject.m_candidates.front().m_depth = m_panObjectDepth;
-		pickObject.m_candidates.front().m_pickPoint =
-		pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*pickObject.m_candidates.front().m_depth;
+		candidates.front().m_depth = m_panObjectDepth;
+		candidates.front().m_pickPoint =
+		pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection*candidates.front().m_depth;
 	}
 
 	// if pick point is very far away, we limit the depth and adjust the pick point
@@ -2959,7 +2961,7 @@ void Scene::panStart(const QPoint & localMousePos, PickObject & pickObject, bool
 	m_panCameraStart = QVector2IBKVector(m_camera.translation());	// Point A
 	m_panObjectStart = candidates.front().m_pickPoint;			// Point C
 	m_panFarPointStart = pickObject.m_lineOfSightOffset + pickObject.m_lineOfSightDirection;	// Point B
-	m_panObjectDepth = pickObject.m_candidates.front().m_depth;				/// ToDo Dirk->Andreas: hier hab ich ein SegFault bekommen da m_candidates leer war.
+	m_panObjectDepth = candidates.front().m_depth;
 	double BADistance = (m_panFarPointStart - m_panCameraStart).magnitude(); // Same as far distance?
 	double CADistance = (m_panObjectStart - m_panCameraStart).magnitude();
 	m_panCABARatio = CADistance/BADistance;
