@@ -343,11 +343,14 @@
           </item>
           <item row="13" column="2">
            <widget class="QCheckBox" name="checkBoxSelectedSurfaces">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
             <property name="text">
              <string>show only selected surfaces</string>
             </property>
             <property name="checked">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -355,9 +358,6 @@
         </widget>
        </item>
       </layout>
-      <zorder>pushButtonCreateSurface</zorder>
-      <zorder>pushButtonCancel2</zorder>
-      <zorder>groupBoxObjectProperties</zorder>
      </widget>
      <widget class="QWidget" name="pageZone">
       <layout class="QGridLayout" name="gridLayout_3">

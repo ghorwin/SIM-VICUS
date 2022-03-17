@@ -1142,6 +1142,14 @@ void SVPropVertexListWidget::updateSurfaceComboBox(QComboBox * combo, bool onlyS
 	// first we get how many surfaces are selected
 	project().selectObjects(selectedObjs, VICUS::Project::SG_All, onlySelected, true);
 
+	// if no surfaces are selected
+	bool noSelectedSurfaces = selectedObjs.empty();
+	m_ui->checkBoxSelectedSurfaces->setEnabled(!noSelectedSurfaces);
+	if(noSelectedSurfaces) {
+		m_ui->checkBoxSelectedSurfaces->setChecked(false);
+		project().selectObjects(selectedObjs, VICUS::Project::SG_All, false, true);
+	}
+
 	unsigned int currentUniqueId = combo->currentData().toUInt();
 	combo->clear();
 	int rowOfCurrent = -1;
@@ -1252,8 +1260,15 @@ void SVPropVertexListWidget::updateButtonStates() {
 
 		// sub surface controls
 		// m_ui->checkBoxSubSurfaceGeometry->setChecked(true);
+		// if no surfaces are selected
+		std::set<const VICUS::Object*> selectedObjs;
+		// first we get how many surfaces are selected
+		project().selectObjects(selectedObjs, VICUS::Project::SG_All, true, true);
+		bool noSelectedSurfaces = selectedObjs.empty();
+		m_ui->checkBoxSelectedSurfaces->setEnabled(subSurf && !noSelectedSurfaces);
+		m_ui->checkBoxSelectedSurfaces->setChecked(subSurf && !noSelectedSurfaces);
+
 		m_ui->checkBoxSubSurfaceGeometry->setEnabled(true);
-		m_ui->checkBoxSelectedSurfaces->setEnabled(subSurf);
 
 		m_ui->labelSurface->setEnabled(subSurf);
 		m_ui->comboBoxSurface->setEnabled(subSurf);
