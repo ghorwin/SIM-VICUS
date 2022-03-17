@@ -121,8 +121,8 @@ void SVPropFloorManagerWidget::onModified(int modificationType, ModificationInfo
 		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels) {
 			QStringList columns;
 			columns << bl.m_displayName;
-			columns << QString("%L1").arg(bl.m_elevation, 0, 'g', 2);
-			columns << QString("%L1").arg(bl.m_height, 0, 'g', 2);
+			columns << QString("%L1").arg(bl.m_elevation, 0, 'f', 2);
+			columns << QString("%L1").arg(bl.m_height, 0, 'f', 2);
 			QTreeWidgetItem * levelItem = new QTreeWidgetItem(columns);
 			levelItem->setData(0, Qt::UserRole, bl.m_id);
 			levelItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable);
