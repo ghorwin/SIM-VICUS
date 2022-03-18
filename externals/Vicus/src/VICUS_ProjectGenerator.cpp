@@ -158,8 +158,8 @@ public:
 	std::vector<std::string>						m_objListNames;
 
 	// store VICUS schedules for similarity check of a new schedule
-	std::vector< const Schedule* >
-													m_generatingSchedules;
+	// 4 Schedule see scheduleType above
+	std::vector< std::vector<Schedule>>				m_generatingSchedules;
 	// Object list name = schedule group name is not stored, since it matches the respective object list
 	// name in m_objLists
 	std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
@@ -1339,7 +1339,7 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	// *** schedules ***
 	//
 	// 1. create basic schedule for ventilation rate (name?)
-	Schedule vicusScheds[NUM_ST];
+	std::vector<Schedule> vicusScheds(NUM_ST);
 	VICUS::Schedule ventilationSchedule;
 
 	// for control model with constant infiltration we create a constant schedule
@@ -1402,9 +1402,10 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	// 2. create basic schedules for controlled ventilation
 	// we only support modelType 'ScheduledWithBaseACRDynamicTLimit' and therefore
 	// convert minimum and maximum air temperatures into schedules, as well as ventilation increase
-	Schedule ventilationIncreaseSchedule;
-	Schedule minAirTempSchedule;
-	Schedule maxAirTempSchedule;
+	// register all other schedules
+	Schedule &ventilationIncreaseSchedule = vicusScheds[ST_VentilationRateIncrease];
+	Schedule &minAirTempSchedule = vicusScheds[ST_VentilationMinAirTemperature];
+	Schedule &maxAirTempSchedule = vicusScheds[ST_VentilationMaxAirTemperature];
 
 	if(ctrlVentilation != nullptr) {
 		double maxVentilationRate = ctrlVentilation->m_para[VICUS::ZoneControlNaturalVentilation::P_MaximumAirChangeRateComfort].get_value("1/h");
@@ -1450,13 +1451,6 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	if (!errorStack.isEmpty())
 		return;
 
-	// register generating schedules
-	vicusScheds[ST_VentilationRateIncrease] = ventilationIncreaseSchedule;
-	// register generating schedule
-	vicusScheds[ST_VentilationMinAirTemperature] = minAirTempSchedule;
-	// register generating schedule
-	vicusScheds[ST_VentilationMaxAirTemperature] = maxAirTempSchedule;
-
 	// now we have a valid schedule group, yet without object list name
 
 	// Now we check if we have already an natural ventilation model object with exactly the same parameters (except ID and name, object list).
@@ -1468,8 +1462,8 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 	for (unsigned int i=0; i<m_natVentObjects.size(); ++i) {
 		if (m_natVentObjects[i].equal(natVentMod) ) {
 			// check similarity of schedules
-			const Schedule *others =m_generatingSchedules[i];
-
+			const std::vector<Schedule> others =m_generatingSchedules[i];
+			bool allSchedulesAreEqual = true;
 			for(unsigned int j = 0; j < NUM_ST; ++j) {
 				// skip empty schedules
 				if(vicusScheds[j].m_periods.empty())
@@ -1477,9 +1471,13 @@ void VentilationModelGenerator::generate(const Room *r,std::vector<unsigned int>
 
 				IBK_ASSERT(!others[j].m_periods.empty());
 				// schedules are not similar
-				if(!others[j].isSimilar(vicusScheds[j]))
+				if(!others[j].isSimilar(vicusScheds[j])){
+					allSchedulesAreEqual = false;
 					break;
+				}
 			}
+			if(!allSchedulesAreEqual)
+				continue;
 			// insert our zone ID in object list
 			m_objLists[i].m_filterID.m_ids.insert(r->m_id);
 			foundModel = true;
