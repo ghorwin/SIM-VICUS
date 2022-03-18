@@ -36,38 +36,37 @@
 
 */
 
-#ifndef IBKMK_2DCalculationsH
-#define IBKMK_2DCalculationsH
+#include "IBKMK_Vector3D.h"
 
-#include "IBKMK_Vector2D.h"
+#include <sstream>
 
 namespace IBKMK {
 
-/*! Check for intersection of each edge of the polygon with the line(p1, p2). Returns true if intersection was found and in this
-	case stores the computed intersection point.
-*/
-bool intersectsLine2D(const std::vector<Vector2D> & polygon,
-		const IBK::point2D<double> &p1, const IBK::point2D<double> &p2, IBK::point2D<double> & intersectionPoint);
+/*! Converts a vector to a string in format "x y z". */
+std::string Vector3D::toString() const {
+	std::stringstream strm;
+	strm << m_x << " " << m_y << " " << m_z;
+	return strm.str();
+}
 
-/*! Point in Polygon function. Result:
-	-1 point not in polyline
-	0 point on polyline
-	1 point in polyline
+/*! Converts a vector from a string in format "x y z". Throws an exception if parsing of numbers fails. */
+Vector3D Vector3D::fromString(const std::string & vecString) {
+	FUNCID(Vector3D::fromString);
 
-	\param	point test point
-	Source https://de.wikipedia.org/wiki/Punkt-in-Polygon-Test_nach_Jordan
-
-*/
-int pointInPolygon(const std::vector<Vector2D> & poly, const IBK::point2D<double> &p);
-
-/*! Eliminates collinear points in a polygon.
-	All points that are closer together than the provided epsilon will be merged.
-*/
-void eliminateCollinearPoints(std::vector<IBKMK::Vector2D> & polygon, double epsilon = 1e-4);
-
-/*! Takes the vector v and enlarges the current bounding box defined through 'minVec' and 'maxVec'. */
-void enlargeBoundingBox(const IBKMK::Vector2D & v, IBKMK::Vector2D & minVec, IBKMK::Vector2D & maxVec);
+	std::vector<double> vec;
+	try {
+		IBK::string2valueVector(vecString, vec);
+	} catch (IBK::Exception & ex) {
+		throw IBK::Exception(ex, "Error parsing 3D vector from string '"+ vecString + "'", FUNC_ID);
+	}
+	if (vec.size() != 3)
+		throw IBK::Exception("Size mismatch, expected 3 numbers.", FUNC_ID);
+	Vector3D res;
+	res.m_x = vec[0];
+	res.m_y = vec[1];
+	res.m_z = vec[2];
+	return res;
+}
 
 } // namespace IBKMK
 
-#endif // IBKMK_2DCalculationsH

@@ -605,6 +605,7 @@ void SVPropEditGeometry::scale() {
 }
 
 void SVPropEditGeometry::rotate() {
+#ifdef POLYGON2D
 	FUNCID("SVPropEditGeometry::rotate");
 
 	// we now apply the already specified transformation
@@ -687,6 +688,7 @@ void SVPropEditGeometry::rotate() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	m_cso->setTranslation(transLCSO);
 	blockSignals(false);
+#endif
 }
 
 
@@ -2051,7 +2053,9 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 
 			else{
 				// heal by stephan
-				modS.healGeometry(modS.geometry().polygon().vertexes());
+#ifdef POLYGON2D
+				modS.healGeometry(modS.geometry().polygon3D().vertexes());
+#endif
 				if (!modS.geometry().isValid() )
 					IBK::IBK_Message(IBK::FormatString("Surface %1 could not be flipped.").arg(modS.m_displayName.toStdString()),
 								 IBK::MSG_WARNING, "Surface::flip", IBK::VL_STANDARD);

@@ -185,6 +185,10 @@ public:
 		return IBK::point2D<double>(m_x, m_y);
 	}
 
+	/*! Converts a vector to a string in format "x y z". */
+	std::string toString() const;
+	/*! Converts a vector from a string in format "x y z". Throws an exception if parsing of numbers fails. */
+	static Vector3D fromString(const std::string & vecString);
 };
 
 /*! Scales all components of the vector with the scalar \a scalar. */

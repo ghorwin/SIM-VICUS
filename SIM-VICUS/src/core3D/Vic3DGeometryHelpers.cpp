@@ -92,7 +92,11 @@ void addPlaneAsStrip(const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const
 					 unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 					 std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
 {
-	VICUS::PlaneGeometry g(VICUS::Polygon3D::T_Rectangle, a, b, d);
+	FUNCID(addPlaneAsStrip);
+	IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, a, b, d);
+	if (!p.isValid())
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
+	VICUS::PlaneGeometry g(p);
 
 	// add vertex data to buffers
 	unsigned int nVertexes = g.triangulationData().m_vertexes.size();
@@ -658,17 +662,22 @@ void addBox(const std::vector<IBKMK::Vector3D> & v, const QColor & c,
 			unsigned int & currentVertexIndex, unsigned int & currentElementIndex,
 			std::vector<Vertex> & vertexBufferData, std::vector<ColorRGBA> & colorBufferData, std::vector<GLuint> & indexBufferData)
 {
+	FUNCID(addBox);
 	// Box geometry is given by 0,1,2,3 and 4,5,6,7 vertexes
 
 	// as long as this is not performance-critical, we use the convenient way and just reuse VICUS::PlaneGeometry
 
 	// floor and ceiling polygons are always planes
 	{
-		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[0], v[3], v[1]);
+		IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, v[0], v[3], v[1]);
+		if (!p.isValid())
+			throw IBK::Exception("Invalid polygon.", FUNC_ID);
+		VICUS::PlaneGeometry g1(p);
 		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	}
 	{
-		VICUS::PlaneGeometry g1(VICUS::Polygon3D::T_Rectangle, v[4], v[5], v[7]);
+		IBKMK::Polygon3D p(VICUS::Polygon2D::T_Rectangle, v[4], v[5], v[7]);
+		VICUS::PlaneGeometry g1(p);
 		addPlane(g1.triangulationData(), c, currentVertexIndex, currentElementIndex, vertexBufferData, colorBufferData, indexBufferData, false);
 	}
 

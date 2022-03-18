@@ -1,0 +1,97 @@
+# Verwendung von PlaneGeometry im Quelltext
+
+## Surface
+
+PlaneGeometry kapselt:
+
+- Polygonzug definiert äußeres Polygon
+- Liste von Löchern als Polygonzug
+- Trangulierung des äußeren Polygonzugs _ohne_ Löcher 
+- Trangulierung des äußeren Polygonzugs, dabei werden Löcher ignoriert (NEU)
+- Triangulierung der Löcher
+
+
+## Vic3DScene-GridPlanes
+
+- werden derzeit auch als PlaneGeometry abgelegt, was aber Overkill ist, da nur die 3D-Ebeneninfo benötigt wird
+
+## Vic3D::NewSubSurfaceObject (???)
+
+- PlaneGeometry wird als Ergebnis der Erstellung geliefert  --> IBKMK::Polygon2D + offset in Surface ebene
+
+## Vic3D::NewGeometryObject
+
+Benötigt für's Rendern:
+
+- sobald Polygon valide -> Triangulationsdaten (Vertexliste und Triangles) für die Puffer
+- solange Polygon invalide -> Liste eingegebener Vertexe; diese können auch lokal im NewGeometryObject gehalten werden
+
+Benötigt für's Hinzufügen von Punkten:
+
+- benötigt Funktionalität um auf gültigen Polygonzug zu testen
+- benötigt (sobald Polygonzug gültig ist) Funktion, um neue Vertexe auf Polygonebene zu projezieren
+
+Algorithmus bei AddPoint:
+
+Wenn Polygon valide:
+- neuen Punkt in Ebene projezieren und korrigierten Punkt hinzufügen (automatische Rundungskorrektur, da nur als 2D abgelegt)
+- Polygon und seine Triangulierung aktualisieren
+
+Wenn Polygon invalide:
+- neuen Punkt anfügen, prüfen ob gültiges Polygon möglich ist, falls ja, dieses ablegen und Triangulieren, sonst invalid lassen
+
+Algorithmus bei RemovePoint:
+
+- Vertexliste aktualisieren, prüfen ob Polygon noch möglich, falls ja, dieses ablegen und Triangulieren, sonst invalid lassen
+
+
+## Vic3DGeometryHelpers
+
+PlaneGeometry wird benutzt, um aus einzelnen 3D-Vertexes bequem eine Triangulierung zu machen. D.h. 3D-Vertexe rein, Triangulierte 3D-Plane (mit eingebetteter 2D-Plane) raus
+
+
+## SVPropVertexListWidget
+
+Hier wird nur der Typ des Grundflächenpolygons benötigt
+
+## SVGeometryView::coordinateInputFinished()
+
+Hier wird geprüft, ob ein 3D Punkt zur Ebene hinzugefügt werden kann, oder ob er außerhalb liegt.
+
+
+
+
+# Implementierungsstrategie
+
+- alle Verwendungen von PlaneGeometry auskommentieren - im Git-Log bleibt das Sichtbar
+- beginnen mit den Anforderungen des Zeichnens von triangulierten Fläche
+- Konstruktion von Polygonen
+- Lesen/Schreiben von PlaneGeometry-Objekte und Import der alten Definition
+- Ersetzen der GridPlanes
+
+
+Vererbungshierarchie:
+
+IBKMK::Polygon3D:
+
+- Polygontyp (Dreieck, Parallelogramm, Allgemein); für Intersection-Calculation notwendig
+- Polygon2D
+- NormalenVektor
+- XAxisVektor
+- YAxisVektor
+- Offset
+
+Convenience-Funktionen zum Thema 3D-Polygone:
+- Projektion eines 3D Punkts in die Ebene (Abstand zwischen gegebenen Punkt und Projektionspunkt bestimmen)
+- Schnittpunkt mit Sichtstrahl
+- Transformationsoperationen
+
+
+PlaneGeometry : public IBKMK::Polygon3D
+
++ serialisierung
++ triangulierung
++ holes
++ hole-triangulation
+
+

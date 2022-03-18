@@ -56,16 +56,11 @@ public:
 
 	void updateParents();
 
-	/*! Heals the geometry via projecting all polygon3D points onto a plane spanned by 3 connecting
-		edge point and taking the plane with the smallest squared deviation.
-		If this is successful it updates the 2D Points and triangulation. */
-	void healGeometry(const std::vector<IBKMK::Vector3D> & poly3D);
-
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Gives read-access to the surface's main polygon. */
-	const Polygon3D &					polygon3D() const {	return m_polygon3D; }
+	const IBKMK::Polygon3D &			polygon3D() const {	return m_geometry.polygon3D(); }
 
 	/*! Sets the polygon. */
 	void setPolygon3D(const Polygon3D & polygon3D);
@@ -76,7 +71,10 @@ public:
 	/*! Gives read-access to the surface's geometry. */
 	const PlaneGeometry &				geometry() const { return m_geometry; }
 
-	/*! Flip the geometry of the polygon and recompute local coordinates of all embedded (and also flipped) subsurfaces */
+	/*! Flips the normal vector of polygon.
+		This also swaps local X and localY axes, so we need to swap x and y coordinates of our sub-surface
+		polygons as well.
+	*/
 	void flip();
 
 	// *** PUBLIC MEMBER VARIABLES ***
@@ -88,7 +86,7 @@ public:
 	/*! The color to be used when rendering the surface in regular mode (not in false-color mode).
 		Important also for daylight calculation.
 	*/
-	QColor								m_displayColor;				// XML:E
+	QColor								m_displayColor;				// XML:A
 
 	// *** Runtime Variables ***
 
@@ -108,9 +106,6 @@ public:
 	ComponentInstance					*m_componentInstance = nullptr;
 
 private:
-	/*! The polygon describing this surface. */
-	Polygon3D							m_polygon3D;				// XML:E
-
 	/*! Subsurfaces of the surface. */
 	std::vector<SubSurface>				m_subSurfaces;				// XML:E
 

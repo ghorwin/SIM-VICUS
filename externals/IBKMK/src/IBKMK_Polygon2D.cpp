@@ -48,60 +48,22 @@
 
 namespace IBKMK {
 
+// this might also be a relative erro, for example based on the bounding box of the polygon.
+// However, for use in SIM-VICUS we are happy with 0.1 mm accuracy?
+const double TOLERANCE = 1e-4; // 0.1 mm should be fine enough
+
+
 Polygon2D::Polygon2D(const std::vector<IBKMK::Vector2D> & vertexes) {
 	setVertexes(vertexes);
 }
 
 
-
-
-// Comparison operator !=
 bool Polygon2D::operator!=(const Polygon2D &other) const {
 	if (m_type != other.m_type)
 		return true;
 	if (m_vertexes != other.m_vertexes)
 		return true;
 	return false;
-}
-
-
-void Polygon2D::addVertex(const IBK::point2D<double> & v) {
-	m_vertexes.push_back(v);
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void Polygon2D::removeVertex(unsigned int idx){
-	FUNCID(Polygon2D::removeVertex);
-	if (idx >= (unsigned int)m_vertexes.size())
-		throw IBK::Exception(IBK::FormatString("Index %1 out of range (vertex count = %2).").arg(idx).arg(m_vertexes.size()), FUNC_ID);
-	m_vertexes.erase(m_vertexes.begin()+idx);
-	m_type = T_Polygon; // assume the worst
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
-}
-
-
-void Polygon2D::checkPolygon() {
-	m_valid = false;
-	if (m_vertexes.size() < 3)
-		return;
-
-	eleminateColinearPts();
-
-	// try to simplify polygon to internal rectangle/parallelogram definition
-	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
-	detectType();
-	// we need 3 vertexes (not collinear) to continue
-	if (m_vertexes.size() < 3)
-		return;
-
-	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
-	m_valid = isSimplePolygon();
-}
-
-
-void Polygon2D::flip() {
-	std::vector<IBKMK::Vector2D>(m_vertexes.rbegin(), m_vertexes.rend()).swap(m_vertexes);
 }
 
 
@@ -113,11 +75,26 @@ bool Polygon2D::intersectsLine2D(const IBK::point2D<double> &p1, const IBK::poin
 
 void Polygon2D::setVertexes(const std::vector<IBKMK::Vector2D> & vertexes) {
 	m_vertexes = vertexes;
-	checkPolygon(); // if we have a triangle/rectangle, this is detected here
+	checkPolygon(); // if we have a triangle/rectangle, this is detected here; does not throw
+}
+
+
+void Polygon2D::boundingBox(Vector2D & lowerValues, Vector2D & upperValues) const {
+	FUNCID("Polygon2D::boundingBox");
+	if (m_vertexes.empty())
+		throw IBK::Exception("Require at least one vertex in the polyline.", FUNC_ID);
+	// initialize bounding box with first point
+	lowerValues = m_vertexes[0];
+	upperValues = m_vertexes[0];
+	for (unsigned int i=1; i<m_vertexes.size(); ++i)
+		IBKMK::enlargeBoundingBox(m_vertexes[i], lowerValues, upperValues);
 }
 
 
 double Polygon2D::area(int digits) const {
+	FUNCID(Polygon2D::area);
+	if (!m_valid)
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
 	double surfArea=0;
 	unsigned int sizeV = m_vertexes.size();
 	for (unsigned int i=0; i<sizeV; ++i){
@@ -136,6 +113,9 @@ double Polygon2D::area(int digits) const {
 
 
 double Polygon2D::circumference() const {
+	FUNCID(Polygon2D::circumference);
+	if (!m_valid)
+		throw IBK::Exception("Invalid polygon.", FUNC_ID);
 	double circumference=0;
 	unsigned int sizeV = m_vertexes.size();
 	for (unsigned int i=0; i<sizeV; ++i){
@@ -144,26 +124,6 @@ double Polygon2D::circumference() const {
 		circumference += (p1-p0).magnitude();
 	}
 	return circumference;
-}
-
-
-void Polygon2D::detectType() {
-	m_type = T_Polygon;
-	if (m_vertexes.size() == 3) {
-		m_type = T_Triangle;
-		return;
-	}
-	if (m_vertexes.size() != 4)
-		return;
-	const IBKMK::Vector2D & a = m_vertexes[0];
-	const IBKMK::Vector2D & b = m_vertexes[1];
-	const IBKMK::Vector2D & c = m_vertexes[2];
-	const IBKMK::Vector2D & d = m_vertexes[3];
-	IBKMK::Vector2D c2 = b + (d-a);
-	c2 -= c;
-	// we assume we have zero length for an rectangle
-	if (c2.magnitude() < 1e-4)  // TODO : should this be a relative error? suppose we have a polygon of size 1 mm x 1 mm, then any polygon will be a rectangle
-		m_type = T_Rectangle;
 }
 
 
@@ -201,11 +161,53 @@ bool Polygon2D::isSimplePolygon() const {
 	return true;
 }
 
-void Polygon2D::eleminateColinearPts() {
-	IBKMK::eliminateCollinearPoints(m_vertexes);
+
+
+// *** PRIVATE MEMBER FUNCTIONS ***
+
+void Polygon2D::checkPolygon() {
+	m_valid = false;
+	if (m_vertexes.size() < 3)
+		return;
+
+	eleminateColinearPts();
+
+	// we need 3 vertexes (not collinear) to continue
+	if (m_vertexes.size() < 3)
+		return;
+
+	// try to simplify polygon to internal rectangle/parallelogram definition
+	// this may change m_type to Rectangle or Triangle and subsequently speed up operations
+	detectType();
+
+	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
+	m_valid = isSimplePolygon();
 }
 
 
+void Polygon2D::detectType() {
+	m_type = T_Polygon;
+	if (m_vertexes.size() == 3) {
+		m_type = T_Triangle;
+		return;
+	}
+	if (m_vertexes.size() != 4)
+		return;
+	const IBKMK::Vector2D & a = m_vertexes[0];
+	const IBKMK::Vector2D & b = m_vertexes[1];
+	const IBKMK::Vector2D & c = m_vertexes[2];
+	const IBKMK::Vector2D & d = m_vertexes[3];
+	IBKMK::Vector2D c2 = b + (d-a);
+	c2 -= c;
+	// both points must within our acceptable tolerance
+	if (c2.magnitude() < TOLERANCE)
+		m_type = T_Rectangle;
+}
+
+
+void Polygon2D::eleminateColinearPts() {
+	IBKMK::eliminateCollinearPoints(m_vertexes, TOLERANCE);
+}
 
 
 } // namespace IBKMK

@@ -99,11 +99,11 @@ TiXmlElement * Sensor::writeXMLPrivate(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "Quantity", nullptr, std::string(), m_quantity);
 	if (!m_orientation.name.empty()) {
 		IBK_ASSERT("Orientation" == m_orientation.name);
-		TiXmlElement::appendIBKParameterElement(e, "Orientation", m_orientation.IO_unit.name(), m_orientation.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "Orientation", m_orientation.IO_unit.name(), m_orientation.get_value(m_orientation.IO_unit));
 	}
 	if (!m_inclination.name.empty()) {
 		IBK_ASSERT("Inclination" == m_inclination.name);
-		TiXmlElement::appendIBKParameterElement(e, "Inclination", m_inclination.IO_unit.name(), m_inclination.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "Inclination", m_inclination.IO_unit.name(), m_inclination.get_value(m_inclination.IO_unit));
 	}
 	return e;
 }

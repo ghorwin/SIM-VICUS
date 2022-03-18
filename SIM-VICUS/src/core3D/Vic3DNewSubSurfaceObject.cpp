@@ -136,7 +136,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 {
 	FUNCID(NewSubSurfaceObject::generateSubSurfaces);
 	// populate PlaneGeometry-objects
-
+#ifdef POLYGON2D
 	qDebug() << "Generating windows for" << sel.size() << " surfaces.";
 	m_generatedSurfaces.clear();
 
@@ -427,6 +427,7 @@ void NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 		m_generatedSurfaces.clear();
 	}
 	updateBuffers();
+#endif
 }
 
 

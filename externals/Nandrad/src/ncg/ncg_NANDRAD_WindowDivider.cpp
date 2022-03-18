@@ -94,11 +94,11 @@ TiXmlElement * WindowDivider::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("materialId", IBK::val2string<unsigned int>(m_materialId));
 	if (!m_area.name.empty()) {
 		IBK_ASSERT("Area" == m_area.name);
-		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "Area", m_area.IO_unit.name(), m_area.get_value(m_area.IO_unit));
 	}
 	if (!m_thickness.name.empty()) {
 		IBK_ASSERT("Thickness" == m_thickness.name);
-		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "Thickness", m_thickness.IO_unit.name(), m_thickness.get_value(m_thickness.IO_unit));
 	}
 	return e;
 }

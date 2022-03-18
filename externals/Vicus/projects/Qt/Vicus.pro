@@ -48,6 +48,7 @@ HEADERS += \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
+	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InterfaceHeatConduction.h \
 	../../src/VICUS_InternalLoad.h \
@@ -105,6 +106,7 @@ SOURCES += \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
+	../../src/VICUS_GridPlane.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
 	../../src/VICUS_InternalLoad.cpp \
@@ -154,6 +156,7 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
+	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
 	../../src/ncg/ncg_VICUS_InternalLoad.cpp \

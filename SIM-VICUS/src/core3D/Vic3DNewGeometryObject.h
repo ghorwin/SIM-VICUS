@@ -156,11 +156,6 @@ public:
 	/*! For two-stage geometry construction, you can here switch from one mode to another. */
 	void setNewGeometryMode(NewGeometryMode m);
 
-	/*! Reverses the current polygon in the geometry object, hereby effectively flipping the object so that
-		the normal vector points into the opposite direction.
-	*/
-	void flipGeometry();
-
 	/*! Appends a vertex to the geometry.
 		This function is used to manually add a vertex, for example when entering a vertex
 		by keyboard.

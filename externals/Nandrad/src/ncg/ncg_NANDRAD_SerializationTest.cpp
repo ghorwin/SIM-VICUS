@@ -327,7 +327,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 	}
 	if (!m_singlePara.name.empty()) {
 		IBK_ASSERT("SinglePara" == m_singlePara.name);
-		TiXmlElement::appendIBKParameterElement(e, "SinglePara", m_singlePara.IO_unit.name(), m_singlePara.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "SinglePara", m_singlePara.IO_unit.name(), m_singlePara.get_value(m_singlePara.IO_unit));
 	}
 	if (!m_singleIntegerPara.name.empty()) {
 		IBK_ASSERT("SingleIntegerPara" == m_singleIntegerPara.name);
@@ -336,7 +336,7 @@ TiXmlElement * SerializationTest::writeXML(TiXmlElement * parent) const {
 
 	for (unsigned int i=0; i<NUM_test; ++i) {
 		if (!m_para[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
 		}
 	}
 

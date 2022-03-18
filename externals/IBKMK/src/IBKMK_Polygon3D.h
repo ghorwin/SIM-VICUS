@@ -39,7 +39,6 @@
 #ifndef IBKMK_Polygon3DH
 #define IBKMK_Polygon3DH
 
-#include <vector>
 #include "IBKMK_Vector3D.h"
 #include "IBKMK_Polygon2D.h"
 
@@ -47,143 +46,143 @@ namespace IBKMK {
 
 /*! Class Polygon3D stores a polygon of 3D points that lies in a plane.
 	Also provides utility functions for checking and simplifying polygon. The data structure ensures that the
-	polygon itselfs is always consistent. If isValid() returns true, it is guarantied to be in a plane, non-winding and without
-	consecutive colinear or identical points. Therefore, the polygon can be triangulated right away.
+	polygon itselfs is always consistent. If isValid() returns true, it is guarantied to be in a plane,
+	non-winding and without consecutive colinear or identical points. Therefore, the polygon can be
+	triangulated right away.
+
+	Internally, the 3D polygon is stored as a 2D Polygon that is placed and oriented in space through
+	offset, normal and xAxis vector (the yAxis vector is automatically computed and cached).
+
+	There are several functions for constructing a polygon. All have in common that passing invalid arguments may
+	lead to an invalid polygon. Hence, checking the correctness of the polygon after construction is mandatory!
+
+	\note When constructing a polygon with invalid data (polyline, or vectors), the 2D polyline might be empty.
+		  You cannot use the polygon to construction incrementally a valid polygon! Always check for validity before
+		  using any query functions.
 */
 class Polygon3D {
 public:
 
-	/*! Different types of the plane described by the polygon. */
-	enum type_t {
-		/*! Triangle defined through three vertices a, b, c. Triangulation is trivial. */
-		T_Triangle,
-		/*! Rectangle/Parallelogram defined through four vertices (a, b, c and d), where c = a + (b-a) + (d-a).
-			Triangulation gives two triangles.
-		*/
-		T_Rectangle,
-		/*! Polygon, generic polygon with n points. */
-		T_Polygon,
-		NUM_T
-	};
-
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
-	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
+
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
-		If t is Polygon3D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
+		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
 		internally.
 	*/
-	Polygon3D(Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
+	Polygon3D(Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c);
 
-	/*! Returns the type of the polygon (can be used to optimize some algorithms). */
-	type_t type() const { return m_type; }
+	/*! Constructs a polygon from 2D polygon with normal vector, xaxis and offset. */
+	Polygon3D(const Polygon2D & p2d, const Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX);
 
-	/*! A polygon is considered "fully valid" for painting and additing to the data structure, if
-		it has enough vertexes and can be correctly triangulated (triangles not empty).
+	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways).
+		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
+		from first to second vertex at a suitable (automatically selected) vertex of the polygon.
+
+		\note Once all collinear points have been removed the offset point will be the first vertex of the polygon. Use offset()
+			to retrieve the offset.
 	*/
+	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
+
+	/*! Returns true, if both the polyline itself and the x and normal vectors are valid. */
 	bool isValid() const { return m_valid; }
-
-	/*! Adds a new 3D vertex in the plane of the polygon. Afterwards simplifies polygon. */
-	void addVertex(const IBK::point3D<double> & v);
-
-	/*! Removes the vertex at given location.
-		\warning Throws an exception if index is out of range.
-	*/
-	void removeVertex(unsigned int idx);
-
-	/*! Inverts vertexes so that normal vector is inverted/flipped. */
-	void flip();
-
-	/*! Returns 3D vertex coordinates. */
-	const std::vector<IBKMK::Vector3D> & vertexes() const { return m_vertexes; }
-
-	/*! Sets all vertexes. */
-	void setVertexes(const std::vector<IBKMK::Vector3D> & vertexes);
-
-	/*! Returns the center point (average of all vertexes of the polygon). */
-	IBKMK::Vector3D centerPoint() const;
-
-	/*! Computes bounding box of polygon. */
-	void boundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
-	/*! Enlarges existing bounding box to hold polygon. */
-	void enlargeBoundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
-
-	/*! Returns the normal vector of the polygon (only defined if polygon is valid).
-		Normal vector is defined based on winding order of polygon.
-	*/
-	const IBKMK::Vector3D & normal() const { return m_normal; }
-
-	const IBKMK::Vector3D & localX() const { return m_localX; }
-	const IBKMK::Vector3D & localY() const { return m_localY; }
-
-	/*! Returns the points of the polygon within the local coordinate system of the plane. */
-	const Polygon2D & polyline() const { return m_polyline; }
 
 	/*! Comparison operator != */
 	bool operator!=(const Polygon3D &other) const;
 
-protected:
+	// Query functions - do not call for invalid polygons, since they may be at best undefined.
+
+	/*! Returns the type of the polygon (can be used to optimize some algorithms).
+		\note Result of this function is undefined for invalid polygons.
+	*/
+	Polygon2D::type_t type() const { return m_polyline.type(); }
+
+	/*! Returns 3D vertex coordinates. */
+	const std::vector<IBKMK::Vector3D> & vertexes() const;
+
+	const IBKMK::Vector3D & offset() const { return m_offset; }
+	const IBKMK::Vector3D & normal() const { return m_normal; }
+	const IBKMK::Vector3D & localX() const { return m_localX; }
+	const IBKMK::Vector3D & localY() const { return m_localY; }
+
+	const Polygon2D & polyline() const { return m_polyline; }
+
+
+	// Transformation functions
+
+	/*! Totates the polygon/plane and updates the y-axis.
+		Throws an exception if either normal or xAxis do not have unit length, or if both vectors are colliniar.
+	*/
+	void setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX);
+	/*! Moves the polygon in 3D space by 'distance'. */
+	void setTranslation(const IBKMK::Vector3D & offset) { m_offset = offset; m_dirty = true; }
+	/*! Moves the polygon in 3D space by 'distance'. */
+	void translate(const IBKMK::Vector3D & distance) { m_offset += distance; m_dirty = true; }
+	/*! Inverts normal vector (this is a convenience function for setting a new orientation
+		with negated normal vector.
+	*/
+	void flip();
+
+
+	// Calculation functions
+
+	/*! Returns the center point (average of all vertexes of the polygon).
+		\note Throws an exception if polygon is invalid.
+	*/
+	IBKMK::Vector3D centerPoint() const;
+
+	/*! Computes bounding box of polygon.
+		An invalid/empty polygon does not have bounding box and an exception will be thrown
+		(check with isValid() beforehand).
+	*/
+	void boundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+
+	/*! Enlarges existing bounding box to hold polygon.
+		An invalid/empty polygon does not have bounding box and an exception will be thrown
+		(check with isValid() beforehand).
+	*/
+	void enlargeBoundingBox(IBKMK::Vector3D & lowerValues, IBKMK::Vector3D & upperValues) const;
+
+
+
+private:
 
 	// *** PRIVATE MEMBER FUNCTIONS ***
-
-	/*! This function checks the polygon for validity. This function is called automatically from readXML() and
-		from addVertex() and removeVertex().
-	*/
-	void checkPolygon();
-
-	/*! Detects if a polygon geometry with 4 vertices is actually a Rectangle (if the polygon has exactly 4 vertexes and
-		vertex #3 can be constructed from adding (v2-v1) and (v4-v1) to v1 with some small rounding error tolerance).
-		Polyons with 3 vertexes are Triangles. All others are generic polygons.
-	*/
-	void detectType();
-
-	/*! Eleminate colinear points in a polygon and return a new polygon. */
-	void eleminateColinearPts();
 
 	/*! Computes the normal vector of the plane and caches it in m_normal.
 		If calculation is not possible (collinear vectors, vectors have zero lengths etc.), the
 		normal vector is set to 0,0,0).
 	*/
-	void updateLocalCoordinateSystem();
+	void updateLocalCoordinateSystem(const std::vector<IBKMK::Vector3D> & verts);
 
-	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the xy-plane of the polygon's local coordinate system). */
-	void update2DPolyline();
-
-	/*! Assuming a valid polyline, we re-compute the world coordinates from given offset and local coordinate system
-		stored in m_localX and m_localY.
-		\note Since we may call this function with m_vertexes as argument, we must ensure that the offset point
-			  remains unmodified - hence it is passed by value.
+	/*! Computes the 2D polyline (polygon's vertex coordinates projected onto the
+		xy-plane of the polygon's local coordinate system).
+		Requires valid normal, localX, and localY vectors to be stored in members already
 	*/
-	void update3DVertexesFromPolyline(Vector3D offset);
+	void update2DPolyline(const std::vector<IBKMK::Vector3D> & verts);
 
 	// *** PRIVATE MEMBER VARIABLES ***
 
-	/*! Stores the vertexes in 3D of the polygon. */
-	std::vector<IBKMK::Vector3D>		m_vertexes;
-
-	/*! Type of the plane.
-		T_POLYGON is the most generic, yet T_TRIANGLE and T_RECTANGLE offer some specialized handling for
-		intersection calculation and triangulation.
-	*/
-	type_t								m_type = NUM_T;
-
 	/*! Stores the valid state of the polygon, update in checkPolygon() */
-	bool								m_valid = false;
+	bool									m_valid = false;
 
-	/*! Polyline in 2D-coordinates. */
-	Polygon2D							m_polyline;
+	/*! Offset of the polygon. */
+	IBKMK::Vector3D							m_offset;
+	/*! Normal vector. */
+	IBKMK::Vector3D							m_normal;
+	/*! x-Axis-vector. */
+	IBKMK::Vector3D							m_localX;
+	/*! y-Axis-vector (computed from x and normal, not stored in data model). */
+	IBKMK::Vector3D							m_localY;
+	/*! The 2D polyline. */
+	Polygon2D								m_polyline;
 
-	/*! Normal vector of plane, updated in updateLocalCoordinateSystem(). */
-	IBKMK::Vector3D						m_normal = IBKMK::Vector3D(0,0,0);
-
-	/*! Local X-vector, updated in updateLocalCoordinateSystem(). */
-	IBKMK::Vector3D						m_localX;
-	/*! Local Y-vector, updated in updateLocalCoordinateSystem(). */
-	IBKMK::Vector3D						m_localY;
-
+	/*! Dirty flag, set to true whenever anything is modified that affects the 3D vertex coordinates. */
+	mutable	bool							m_dirty;
+	/*! Cached 3D vertexes, updated upon access when dirty is true. */
+	mutable	std::vector<IBKMK::Vector3D>	m_vertexes;
 };
 
 } // namespace IBKMK

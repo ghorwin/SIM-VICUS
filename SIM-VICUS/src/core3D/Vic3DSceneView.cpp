@@ -72,6 +72,7 @@ SceneView::SceneView() :
 	grid.m_uniformNames.append("gridColor"); // vec3
 	grid.m_uniformNames.append("backColor"); // vec3
 	grid.m_uniformNames.append("farplane"); // float
+	grid.m_uniformNames.append("modelToWorld"); // mat4
 	m_shaderPrograms[SHADER_GRID] = grid;
 
 	// Shaderprogram : regular geometry (opaque geometry with lighting)

@@ -27,9 +27,7 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <IBKMK_Vector3D.h>
-#include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
-#include <vector>
 
 #include <tinyxml.h>
 
@@ -62,12 +60,7 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 			}
 			else if (cName == "CameraTranslation") {
 				try {
-					std::vector<double> vals;
-					IBK::string2valueVector(c->GetText(), vals);
-					// must have 3 elements
-					if (vals.size() != 3)
-						throw IBK::Exception("Missing values (expected 3).", FUNC_ID);
-					m_cameraTranslation.set(vals[0], vals[1], vals[2]);
+					m_cameraTranslation = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
 										  .arg("Invalid vector data."), FUNC_ID);
@@ -103,10 +96,7 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 			TiXmlElement::appendSingleAttributeElement(e, "IBK:Flag", "name", m_flags[i].name(), m_flags[i].isEnabled() ? "true" : "false");
 		}
 	}
-	{
-		std::vector<double> v = { m_cameraTranslation.m_x, m_cameraTranslation.m_y, m_cameraTranslation.m_z};
-		TiXmlElement::appendSingleAttributeElement(e, "CameraTranslation", nullptr, std::string(), IBK::vector2string<double>(v," "));
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "CameraTranslation", nullptr, std::string(), m_cameraTranslation.toString());
 
 	m_cameraRotation.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "FarDistance", nullptr, std::string(), IBK::val2string<double>(m_farDistance));

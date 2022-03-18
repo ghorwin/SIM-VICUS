@@ -321,7 +321,7 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 	for (const VICUS::Surface *s: m_selObstacles)
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
 																true) );
 
 	// *** compose vector with selected surfaces
@@ -373,14 +373,14 @@ void SVSimulationShadingOptions::calculateShadingFactors() {
 
 		// we compute shading factors for this surface
 		selSurf.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
 																s->m_parent == nullptr) );
 		surfaceIDs.push_back(s->m_id);
 		surfaceDisplayNames.push_back(s->m_displayName.toStdString());
 
 		// Mind: surface planes may also shade other surfaces
 		selObst.push_back( SH::StructuralShading::ShadingObject(s->m_id,
-																IBKMK::Polygon3D(s->geometry().polygon().vertexes() ),
+																IBKMK::Polygon3D(s->geometry().polygon3D().vertexes() ),
 																s->m_parent == nullptr) );
 	}
 

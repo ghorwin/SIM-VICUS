@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.6">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mo. Jan. 4 22:04:35 2021</Created>
-		<LastEdited>Fr. Dez. 17 19:18:54 2021</LastEdited>
+		<LastEdited>So. März 13 20:17:35 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter />
@@ -25,7 +25,7 @@
 		<Buildings>
 			<Building id="1" displayName="Building">
 				<BuildingLevels>
-					<BuildingLevel id="1" displayName="Level">
+					<BuildingLevel id="2" displayName="Level">
 						<Elevation>0</Elevation>
 						<Height>2.7</Height>
 						<Rooms>
@@ -35,27 +35,27 @@
 								<Surfaces>
 									<Surface id="11" displayName="New zone-floor">
 										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>0 5 0, 3 5 0, 3 0 0, 0 0 0</Polygon3D>
+										<Polygon3D offset="0 5 0" normal="0 0 -1" localX="1 0 0">0 0, 3 0, 3 5, 0 5</Polygon3D>
 									</Surface>
 									<Surface id="12" displayName="New zone-ceiling">
 										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>0 0 3, 3 0 3, 3 5 3, 0 5 3</Polygon3D>
+										<Polygon3D offset="0 0 3" normal="0 0 1" localX="1 0 0">0 0, 3 0, 3 5, 0 5</Polygon3D>
 									</Surface>
 									<Surface id="13" displayName="Wall 1">
 										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0 0 0, 3 0 0, 3 0 3, 0 0 3</Polygon3D>
+										<Polygon3D offset="0 0 0" normal="0 -1 0" localX="1 0 0">0 0, 3 0, 3 3, 0 3</Polygon3D>
 									</Surface>
 									<Surface id="14" displayName="Wall 2">
 										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3 0 0, 3 5 0, 3 5 3, 3 0 3</Polygon3D>
+										<Polygon3D offset="3 0 0" normal="1 0 0" localX="0 1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
 									<Surface id="15" displayName="Wall 3">
 										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3 5 0, 0 5 0, 0 5 3, 3 5 3</Polygon3D>
+										<Polygon3D offset="3 5 0" normal="0 1 -0" localX="-1 0 0">0 0, 3 0, 3 3, 0 3</Polygon3D>
 									</Surface>
 									<Surface id="16" displayName="Wall 4">
 										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0 5 0, 0 0 0, 0 0 3, 0 5 3</Polygon3D>
+										<Polygon3D offset="0 5 0" normal="-1 0 0" localX="0 -1 0">0 0, 5 0, 5 3, 0 3</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -101,6 +101,14 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.04</IBK:Parameter>
 				</Material>
+				<Material id="5500000" displayName="de:Dummy-Material|en:Dummy material">
+					<DataSource>de:Dummy Database Plugin|en:Dummy Database Plugin</DataSource>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+					<IBK:Parameter name="Mu" unit="-">81</IBK:Parameter>
+				</Material>
 			</Materials>
 			<Constructions>
 				<Construction id="1002" displayName="DE: [SimQuality] TF03 Konstruktionstyp 2 (Dämmung) |EN: [SimQuality] TF03 Construction 2 (insulation)">
@@ -125,10 +133,8 @@
 						</MaterialLayer>
 					</MaterialLayers>
 				</Construction>
-				<Construction id="1005" displayName="DE: [SimQuality] TF08 |EN: [SimQuality] TF08 ">
+				<Construction id="1005" displayName="DE: [SimQuality] TF08 Betonschicht mit Flächenheizung |EN: [SimQuality] TF08 Concrete layer with surface heating">
 					<UsageType>OutsideWall</UsageType>
-					<InsulationKind>OutsideInsulation</InsulationKind>
-					<MaterialKind>NaturalStoneMasonry</MaterialKind>
 					<MaterialLayers>
 						<MaterialLayer idMaterial="10000">
 							<IBK:Parameter name="Thickness" unit="m">0.05</IBK:Parameter>
@@ -172,7 +178,7 @@
 				</BoundaryCondition>
 			</BoundaryConditions>
 			<Components>
-				<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#4e9a06">
+				<Component id="1005" displayName="DE: [SimQuality] Komponente für TF04.3 Raum A |EN: [SimQuality] Component for TF04.3 Room A" color="#00aa00">
 					<Type>OutsideWall</Type>
 					<IdConstruction>1003</IdConstruction>
 					<IdSideABoundaryCondition>1001</IdSideABoundaryCondition>

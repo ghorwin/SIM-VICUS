@@ -27,10 +27,8 @@
 #include <IBK_StringUtils.h>
 #include <VICUS_Constants.h>
 #include <IBKMK_Vector3D.h>
-#include <IBK_StringUtils.h>
 #include <NANDRAD_Utilities.h>
 #include <VICUS_KeywordList.h>
-#include <vector>
 
 #include <tinyxml.h>
 
@@ -103,12 +101,7 @@ void Network::readXML(const TiXmlElement * element) {
 				NANDRAD::readVector(c, "AvailablePipes", m_availablePipes);
 			else if (cName == "Origin") {
 				try {
-					std::vector<double> vals;
-					IBK::string2valueVector(c->GetText(), vals);
-					// must have 3 elements
-					if (vals.size() != 3)
-						throw IBK::Exception("Missing values (expected 3).", FUNC_ID);
-					m_origin.set(vals[0], vals[1], vals[2]);
+					m_origin = IBKMK::Vector3D::fromString(c->GetText());
 				} catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())
 										  .arg("Invalid vector data."), FUNC_ID);
@@ -209,17 +202,14 @@ TiXmlElement * Network::writeXML(TiXmlElement * parent) const {
 	}
 
 	NANDRAD::writeVector(e, "AvailablePipes", m_availablePipes);
-	{
-		std::vector<double> v = { m_origin.m_x, m_origin.m_y, m_origin.m_z};
-		TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), IBK::vector2string<double>(v," "));
-	}
+	TiXmlElement::appendSingleAttributeElement(e, "Origin", nullptr, std::string(), m_origin.toString());
 
 	if (m_type != NUM_NET)
 		TiXmlElement::appendSingleAttributeElement(e, "Type", nullptr, std::string(), KeywordList::Keyword("Network::NetworkType",  m_type));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {
-			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value());
+			TiXmlElement::appendIBKParameterElement(e, m_para[i].name, m_para[i].IO_unit.name(), m_para[i].get_value(m_para[i].IO_unit));
 		}
 	}
 	TiXmlElement::appendSingleAttributeElement(e, "ScaleNodes", nullptr, std::string(), IBK::val2string<double>(m_scaleNodes));

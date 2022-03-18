@@ -49,6 +49,7 @@ SOURCES += \
 	../../src/IBKMKC_vector_operations.c \
 	../../src/IBKMK_DenseMatrix.cpp \
 	../../src/IBKMK_IndexGenerator.cpp \
+	../../src/IBKMK_Vector3D.cpp \
 	../../src/IBKMK_numerics.cpp \
 	../../src/IBKMK_Polygon2D.cpp \
 	../../src/IBKMK_Polygon3D.cpp \

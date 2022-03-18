@@ -35,14 +35,18 @@ QT_BEGIN_NAMESPACE
 class QOpenGLShaderProgram;
 QT_END_NAMESPACE
 
+namespace VICUS {
+	class GridPlane;
+}
+
 namespace Vic3D {
 
 class ShaderProgram;
 
-/*! This class holds all data needed to draw a grid on the screen.
+/*! This class holds all data needed to draw grids on the screen.
 	We have only a coordinate buffer, which holds tightly packed 2 * vec2 (start and end points of lines, xz coords)
 	with y=0 implied.
-	Grid colors are uniforms, as is background color.
+	Grid colors are uniforms per grid, as is background color.
 
 	The grid is drawn with the grid shader program, which is passed to the create() function.
 
@@ -50,50 +54,39 @@ class ShaderProgram;
 */
 class GridObject {
 public:
-	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
-	void create(ShaderProgram * shaderProgram);
+	/*! The function is called during OpenGL initialization, where the OpenGL context is current.
+		Note: we store temporary values in the GridPlane objects themselves, instead of this object, since some
+			  of the properties are needed for snapping as well.
+	*/
+	void create(ShaderProgram * shaderProgram, std::vector<VICUS::GridPlane> & gridPlanes);
 	void destroy();
 
 	/*! Binds the buffer and paints. */
 	void render();
 
-	/*! Determines the closest grid snap point (depending on snap-to-grid properties). */
-	bool closestSnapPoint(QVector3D worldCoords, QVector3D & snapCoords) const;
-
 	/*! Shader program, that the grid is painted with. */
 	ShaderProgram				*m_gridShader = nullptr;
 
-	/*! Color for major grid lines. */
-	QVector3D					m_majorGridColor;
-	/*! Color for minor grid lines. */
-	QVector3D					m_minorGridColor;
-
-	/*! Holds the number of vertices (2 for each line), updated in create(), used in render().
-		If zero, grid is disabled.
+	/*! Vector with grid _line_ index start offsets
+		(size = 2*number of grid planes + 1),
+		first index is always start of major grid lines, second index is start of minor grid lines.
 	*/
-	GLsizei						m_vertexCount;
-
-	/*! Index, where minor grid starts. If same as m_vertexCount, minor grid is disabled. */
-	GLsizei						m_minorGridStartVertex;
+	std::vector<GLsizei>		m_gridOffsets;
+	/*! Vector with grid colors (size = 2*number of grid planes) (first is major color, second minor grid color). */
+	std::vector<QVector3D>		m_gridColors;
 
 	/*! Wraps an OpenGL VertexArrayObject, that references the vertex coordinates. */
 	QOpenGLVertexArrayObject	m_vao;
 	/*! Holds positions of grid lines. */
 	QOpenGLBuffer				m_vbo;
 
-	/*! Cached grid width. */
-	float						m_width		= 999;
-	/*! Cached grid spacing. */
-	float						m_spacing	= 999;
+	/*! Set to false if no grid is visible - speeds up rendering a little. */
+	bool						m_anyGridVisible = true;
 
-	/*! Cached grid line count (both directions). */
-	unsigned int				m_gridLineCount;
-	/*! Cached min grid coordinate (same for x and y). */
-	double						m_minGrid;
-	/*! Cached max grid coordinate (same for x and y). */
-	double						m_maxGrid;
-	/*! Cached grid step size for minor grid (same for x and y). */
-	double						m_step;
+private:
+	// local copy of grid planes, needed for rending
+	std::vector<bool>			m_gridPlaneVisible;
+	std::vector<QMatrix4x4>		m_planeTransformationMatrix;
 };
 
 } // namespace Vic3D

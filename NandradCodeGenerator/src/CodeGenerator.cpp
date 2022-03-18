@@ -477,13 +477,8 @@ void CodeGenerator::generateReadWriteCode() {
 				}
 				else if (xmlInfo.typeStr == "IBKMK::Vector3D") {
 					includes.insert("IBKMK_Vector3D.h");
-					includes.insert("IBK_StringUtils.h");
-					includes.insert("vector");
 					elements +=
-							"	{\n"
-							"		std::vector<double> v = { m_"+varName+".m_x, m_"+varName+".m_y, m_"+varName+".m_z};\n"
-							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), IBK::vector2string<double>(v,\" \"));\n"
-							"	}\n";
+							"	TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".toString());\n";
 				}
 				else if (xmlInfo.typeStr == "IBK::Unit") {
 					elements +=
@@ -519,7 +514,7 @@ void CodeGenerator::generateReadWriteCode() {
 							"	for (unsigned int i=0; i<"+numType+"; ++i) {\n"
 							"		if (!m_"+varName+"[i].name.empty()) {\n"
 //							"			IBK_ASSERT(KeywordList::Keyword(\"ConstructionInstance::para_t\", (int)i) == m_"+varName+"[i].name);\n"
-							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, m_"+varName+"[i].IO_unit.name(), m_"+varName+"[i].get_value());\n"
+							"			TiXmlElement::appendIBKParameterElement(e, m_"+varName+"[i].name, m_"+varName+"[i].IO_unit.name(), m_"+varName+"[i].get_value(m_"+varName+"[i].IO_unit));\n"
 							"		}\n"
 							"	}\n";
 					}
@@ -527,7 +522,7 @@ void CodeGenerator::generateReadWriteCode() {
 						elements +=
 							"	if (!m_"+varName+".name.empty()) {\n"
 							"		IBK_ASSERT(\""+tagName+"\" == m_"+varName+".name);\n"
-							"		TiXmlElement::appendIBKParameterElement(e, \""+tagName+"\", m_"+varName+".IO_unit.name(), m_"+varName+".get_value());\n"
+							"		TiXmlElement::appendIBKParameterElement(e, \""+tagName+"\", m_"+varName+".IO_unit.name(), m_"+varName+".get_value(m_"+varName+".IO_unit));\n"
 							"	}\n";
 					}
 				}
@@ -1074,17 +1069,10 @@ void CodeGenerator::generateReadWriteCode() {
 					}
 					else if (xmlInfo.typeStr == "IBKMK::Vector3D") {
 						includes.insert("IBKMK_Vector3D.h");
-						includes.insert("IBK_StringUtils.h");
-						includes.insert("vector");
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\") {\n"
 							"				try {\n"
-							"					std::vector<double> vals;\n"
-							"					IBK::string2valueVector(c->GetText(), vals);\n"
-							"					// must have 3 elements\n"
-							"					if (vals.size() != 3)\n"
-							"						throw IBK::Exception(\"Missing values (expected 3).\", FUNC_ID);\n"
-							"					m_"+varName+".set(vals[0], vals[1], vals[2]);\n"
+							"					m_"+varName+" = IBKMK::Vector3D::fromString(c->GetText());\n"
 							"				} catch (IBK::Exception & ex) {\n"
 							"					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(c->Row())\n"
 							"										  .arg(\"Invalid vector data.\"), FUNC_ID);\n"

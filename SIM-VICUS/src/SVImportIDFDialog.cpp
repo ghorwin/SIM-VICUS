@@ -819,7 +819,9 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 
 		// set the polygon of the BSD in the surface; the polygon will be checked and the triangulation will be computed,
 		// however, yet without holes
-		surf.setPolygon3D( VICUS::Polygon3D( bsd.m_polyline ) );
+		VICUS::Polygon3D p(bsd.m_polyline);
+		// TODO : Error handling?
+		surf.setPolygon3D( p );
 
 		// we can only import a subsurface, if the surface itself has a valid polygon
 		if (!surf.geometry().isValid() && surf.polygon3D().vertexes().size() > 2) {
@@ -845,10 +847,11 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 			// two points of the polygon that yield a plane where the majority of the vertexes have the least deviation.
 			// We do this by checking all plane variants that could possibly be created from the polygon.
 
+#ifdef POLYGON2D
 			surf.healGeometry(poly3D);
-
+#endif
 			// we can only import a subsurface, if the surface itself has a valid polygon
-			if ( surf.geometry().polygon().vertexes().size() != bsd.m_polyline.size() ||  !surf.geometry().isValid()) {
+			if ( surf.geometry().polygon3D().vertexes().size() != bsd.m_polyline.size() ||  !surf.geometry().isValid()) {
 				IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2] : Geometry of Surface is still broken. Import skipped!\n")
 								 .arg(surf.m_displayName.toStdString())
 								 .arg(surf.m_id)
@@ -1386,7 +1389,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 	// now translate entire geometry to the center of the scene
 	IBKMK::Vector3D trans(-centerX, -centerY, 0);
 	for (VICUS::Surface & s : vp.m_plainGeometry) {
-		std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon().vertexes();
+		std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon3D().vertexes();
 		for (IBKMK::Vector3D & v : vertexes)
 			v += trans;
 		s.setPolygon3D(VICUS::Polygon3D(vertexes));
@@ -1396,7 +1399,7 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 		for (VICUS::BuildingLevel & bl : b.m_buildingLevels)
 			for (VICUS::Room & r : bl.m_rooms)
 				for (VICUS::Surface & s : r.m_surfaces) {
-					std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon().vertexes();
+					std::vector<IBKMK::Vector3D> vertexes = s.geometry().polygon3D().vertexes();
 					for (IBKMK::Vector3D & v : vertexes)
 						v += trans;
 					s.setPolygon3D(VICUS::Polygon3D(vertexes));

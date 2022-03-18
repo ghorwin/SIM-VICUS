@@ -32,6 +32,8 @@
 #include <QVector3D>
 #include <QCoreApplication>
 
+#include <VICUS_GridPlane.h>
+
 #include "Vic3DCamera.h"
 #include "Vic3DGridObject.h"
 #include "Vic3DOpaqueGeometryObject.h"
@@ -343,7 +345,7 @@ private:
 	unsigned int					m_lastColorObjectID = VICUS::INVALID_ID;
 
 	// vector with drawing helping planes
-	std::vector<VICUS::PlaneGeometry>	m_gridPlanes;
+	std::vector<VICUS::GridPlane>	m_gridPlanes;
 
 };
 

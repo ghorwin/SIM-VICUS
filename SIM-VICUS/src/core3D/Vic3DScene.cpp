@@ -96,9 +96,15 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	m_gridPlanes.push_back( VICUS::PlaneGeometry(VICUS::Polygon3D::T_Triangle,
-												 IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(1,0,0), IBKMK::Vector3D(0,1,0)) );
-
+	// add default main grid plain (z=0)
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
+#if 0
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,-2), IBKMK::Vector3D(0,0,1),
+											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
+	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
+											 IBKMK::Vector3D(1,0,0), QColor("#e09040"), 50, 10 ) );
+#endif
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
@@ -238,7 +244,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
 	if (updateGrid)
-		m_gridObject.create(m_gridShader);
+		m_gridObject.create(m_gridShader, m_gridPlanes);
 
 	if (updateSelection) {
 		// update selected objects
@@ -479,15 +485,6 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			// only enter orbit controller mode, if we actually hit something
 			if (!pickObject.m_candidates.empty()) {
 				IBKMK::Vector3D nearestPoint = pickObject.m_candidates.front().m_pickPoint;
-				// if we hit the a plane, limit the orbit controller to the extends of the grid
-				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_GridPlane) {
-					/// \todo Andreas: add support for several grid planes
-					nearestPoint.m_x = std::min(nearestPoint.m_x, m_gridObject.m_maxGrid);
-					nearestPoint.m_y = std::min(nearestPoint.m_y, m_gridObject.m_maxGrid);
-					nearestPoint.m_x = std::max(nearestPoint.m_x, m_gridObject.m_minGrid);
-					nearestPoint.m_y = std::max(nearestPoint.m_y, m_gridObject.m_minGrid);
-				}
-
 
 				// *** enter translation mode? ***
 				if (pickObject.m_candidates.front().m_snapPointType == PickObject::RT_CoordinateSystemCenter) {
@@ -1062,7 +1059,7 @@ void Scene::render() {
 
 	// *** grid ***
 
-	if (m_gridVisible) {
+	if (m_gridObject.m_anyGridVisible) {
 		m_gridShader->bind();
 		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[0], m_worldToView);
 		m_gridShader->shaderProgram()->setUniformValue(m_gridShader->m_uniformIDs[2], backgroundColor);
@@ -2255,14 +2252,13 @@ void Scene::pick(PickObject & pickObject) {
 #endif
 
 
-	// *** intersection with global xy plane ***
+	// *** intersection with grid plane ***
 
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
 	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-		int holeIndex;
-		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, intersectionPoint, t, holeIndex, true, true)) {
+		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_snapPointType = PickObject::RT_GridPlane;
@@ -2536,19 +2532,17 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				// do we snap to grid?
 				if (snapOptions & SVViewState::Snap_GridPlane) {
 					// now determine which grid line is closest
-					QVector3D closestPoint;
-					/// \todo Andreas: add support for several grid objects, or one grid object with several planes
-					///		  r.m_uniqueObjectID -> index of plane that we hit.
-					if (m_gridObject.closestSnapPoint(IBKVector2QVector(r.m_pickPoint), closestPoint)) {
-						// this is in world coordinates, use this as transformation vector for the
-						// coordinate system
-						float dist = (closestPoint - pickPoint).lengthSquared();
-						// close enough?
-						if (dist < SNAP_DISTANCES_THRESHHOLD) {
-							// got a snap point, store it
-							snapPoint = QVector2IBKVector(closestPoint);
-							snapInfo = "snap to grid point";
-						}
+					IBKMK::Vector3D closestPoint;
+					Q_ASSERT(r.m_objectID < m_gridPlanes.size());
+					m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
+					// this is in world coordinates, use this as transformation vector for the
+					// coordinate system
+					float dist = (IBKVector2QVector(closestPoint) - pickPoint).lengthSquared();
+					// close enough?
+					if (dist < SNAP_DISTANCES_THRESHHOLD) {
+						// got a snap point, store it
+						snapPoint = closestPoint;
+						snapInfo = "snap to grid point";
 					}
 				}
 			}

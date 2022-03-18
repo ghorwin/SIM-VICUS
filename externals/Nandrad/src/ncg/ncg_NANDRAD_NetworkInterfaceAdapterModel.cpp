@@ -104,7 +104,7 @@ TiXmlElement * NetworkInterfaceAdapterModel::writeXML(TiXmlElement * parent) con
 		e->SetAttribute("summationModelId", IBK::val2string<unsigned int>(m_summationModelId));
 	if (!m_fluidHeatCapacity.name.empty()) {
 		IBK_ASSERT("FluidHeatCapacity" == m_fluidHeatCapacity.name);
-		TiXmlElement::appendIBKParameterElement(e, "FluidHeatCapacity", m_fluidHeatCapacity.IO_unit.name(), m_fluidHeatCapacity.get_value());
+		TiXmlElement::appendIBKParameterElement(e, "FluidHeatCapacity", m_fluidHeatCapacity.IO_unit.name(), m_fluidHeatCapacity.get_value(m_fluidHeatCapacity.IO_unit));
 	}
 	return e;
 }

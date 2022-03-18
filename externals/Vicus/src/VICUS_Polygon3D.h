@@ -32,29 +32,48 @@
 
 namespace VICUS {
 
-/*! Class Polygon3D stores a polygon of 3D points that lies in a plane.
-	Also provides utility functions for checking and simplifying polygon. The data structure ensures that the
-	polygon itselfs is always consistent. If isValid() returns true, it is guarantied to be in a plane, non-winding and without
-	consecutive colinear or identical points. Therefore, the polygon can be triangulated right away.
+/*! Class Polygon3D stores a planar polygon in 3D space.
+	This class merely wraps IBKMK::Polygon3D and provides read/write functionality.
 */
 class Polygon3D : public IBKMK::Polygon3D {
+	VICUS_READWRITE_PRIVATE
 public:
 
 	// *** PUBLIC MEMBER FUNCTIONS ***
 
 	Polygon3D() = default;
-	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) :
-		IBKMK::Polygon3D(vertexes)
+
+	/*! Conversion constructor */
+	explicit Polygon3D(const IBKMK::Polygon3D & poly3D) :
+		IBKMK::Polygon3D(poly3D)
 	{
 	}
 
 	/*! Initializing constructor.
 		Vertexes a, b and c must be given in counter-clockwise order, so that (b-a) x (c-a) yields the normal vector of the plane.
+		If t is Polygon2D::T_Rectangle, vertex c actually corresponds to vertex d of the rectangle, and vertex c is computed
+		internally.
 	*/
-	Polygon3D(IBKMK::Polygon3D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
+	Polygon3D(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) :
 		IBKMK::Polygon3D(t, a, b, c)
-	{
-	}
+	{}
+
+	/*! Constructs a polygon from 2D polygon with normal vector, xaxis and offset. */
+	Polygon3D(const IBKMK::Polygon2D & p2d, const IBKMK::Vector3D & offset,
+			  const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) :
+		IBKMK::Polygon3D(p2d, offset, normal, xAxis)
+	{}
+
+	/*! Constructs a polygon from a 3D polyline (which might be invalid in any number of ways).
+		The normal vector will be deduced from rotation direction of the polygon, and the x-axis vector will be the vector
+		from first to second vertex at a suitable (automatically selected) vertex of the polygon.
+
+		\note Once all collinear points have been removed the offset point will be the first vertex of the polygon. Use offset()
+			to retrieve the offset.
+	*/
+	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) :
+		IBKMK::Polygon3D(vertexes)
+	{}
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;

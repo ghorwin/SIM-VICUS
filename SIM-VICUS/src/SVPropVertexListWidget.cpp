@@ -138,13 +138,13 @@ void SVPropVertexListWidget::setup(int newGeometryType) {
 	switch ((Vic3D::NewGeometryObject::NewGeometryMode)newGeometryType) {
 		case Vic3D::NewGeometryObject::NGM_Rect :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Rect);
-			break;
+		break;
 
 		case Vic3D::NewGeometryObject::NGM_Polygon :
 		case Vic3D::NewGeometryObject::NGM_Zone :
 		case Vic3D::NewGeometryObject::NGM_Roof :
 			SVViewStateHandler::instance().m_newGeometryObject->startNewGeometry(Vic3D::NewGeometryObject::NGM_Polygon);
-			break;
+		break;
 
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
@@ -221,7 +221,7 @@ bool SVPropVertexListWidget::completePolygonIfPossible() {
 				m_ui->pushButtonCompletePolygon->click();
 				return true;
 			}
-			break;
+		break;
 
 		case 1 :
 			m_ui->pushButtonCreateSurface->click();
@@ -260,7 +260,7 @@ void SVPropVertexListWidget::onModified(int modificationType, ModificationInfo *
 			updateBuildingLevelsComboBox(m_ui->comboBoxBuildingLevel3, m_ui->comboBoxBuilding3);
 
 			updateSurfaceComboBox(m_ui->comboBoxSurface);
-			break;
+		break;
 		default: ;// nothing to be done here
 	}
 
@@ -319,7 +319,7 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			m_ui->lineEditName->setText(tr("Surface"));
 			po->m_passiveMode = true; // disallow changes to surface geometry
 			updateButtonStates();
-			break;
+		break;
 
 		case Vic3D::NewGeometryObject::NGM_Zone:
 			m_ui->stackedWidget->setCurrentIndex(2);
@@ -330,13 +330,13 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
 			m_ui->lineEditNameZone->setText(tr("Room"));
-			break;
+		break;
 
 		case Vic3D::NewGeometryObject::NGM_Roof: {
 			m_ui->stackedWidget->setCurrentIndex(3);
 			updateComponentComboBoxes(); // update all component combo boxes in roof page
 			const VICUS::PlaneGeometry & pg = po->planeGeometry();
-			if (pg.polygon().type() != IBKMK::Polygon3D::T_Rectangle)
+			if (pg.polygon3D().type() != IBKMK::Polygon2D::T_Rectangle)
 				m_ui->comboBoxRoofType->setCurrentIndex(4); // not a rectangle, select complex roof
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
@@ -344,14 +344,14 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			// get floor polyline from roof and save this for later
 			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 
-			if (po->planeGeometry().polygon().vertexes().empty())
+			if (po->planeGeometry().polygon3D().vertexes().empty())
 				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
 
-			m_roofPolygon = po->planeGeometry().polygon().vertexes();
+			m_roofPolygon = po->planeGeometry().polygon3D().vertexes();
 			m_currentIdxOfStartpoint = 0;
 			updateRoofGeometry();
 		}
-			break;
+		break;
 		case Vic3D::NewGeometryObject::NUM_NGM: ; // just for the compiler
 	}
 }
@@ -533,7 +533,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 	VICUS::Surface s;
 	s.m_id = project().nextUnusedID();
 	s.m_displayName = m_ui->lineEditName->text().trimmed();
-	s.setPolygon3D( po->planeGeometry().polygon() );
+	s.setPolygon3D( po->planeGeometry().polygon3D() );
 
 	// we need all properties, unless we create annonymous geometry
 	if (m_ui->checkBoxAnnonymousGeometry->isChecked()) {
@@ -707,9 +707,9 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 
 	// take the polygon
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	VICUS::Polygon3D floor = po->planeGeometry().polygon();
+	VICUS::Polygon3D floor(po->planeGeometry().polygon3D());
 	IBK_ASSERT(po->generatedGeometry().size() == 1);
-	VICUS::Polygon3D ceiling = po->generatedGeometry()[0].polygon();
+	VICUS::Polygon3D ceiling(po->generatedGeometry()[0].polygon3D());
 	// Note: both polygons still have the same normal vector!
 
 	// compute offset vector
@@ -753,12 +753,12 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	unsigned int conInstID = VICUS::largestUniqueId(project().m_componentInstances);
 	// Note: surface is attached to "Side A"
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-														  m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
+		 m_ui->comboBoxComponentFloor->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
 
 	sCeiling.initializeColorBasedOnInclination();
 	// Note: surface is attached to "Side A"
 	componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-														  m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
+		 m_ui->comboBoxComponentCeiling->currentData().toUInt(), sCeiling.m_id, VICUS::INVALID_ID));
 
 	r.m_surfaces.push_back(sFloor);
 	r.m_surfaces.push_back(sCeiling);
@@ -781,11 +781,11 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 		VICUS::Surface sWall;
 		sWall.m_id = ++nextID;
 		sWall.m_displayName = tr("Wall %1").arg(i+1);
-		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon3D::T_Rectangle, p0, p1, p2) );
+		sWall.setPolygon3D( VICUS::Polygon3D(VICUS::Polygon2D::T_Rectangle, p0, p1, p2) );
 		sWall.initializeColorBasedOnInclination();
 		// wall surface is attached to "Side A"
 		componentInstances.push_back(VICUS::ComponentInstance(++conInstID,
-															  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
+													  wallComponentID, sWall.m_id, VICUS::INVALID_ID));
 
 		r.m_surfaces.push_back(sWall);
 	}
@@ -874,7 +874,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 
 	// get floor polygon from geometry object
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-	const VICUS::Polygon3D & floor = po->planeGeometry().polygon();
+	const VICUS::Polygon3D & floor = po->planeGeometry().polygon3D();
 
 	// generate floor surface (no component assigned!)
 	unsigned int nextID = project().nextUnusedID();
@@ -900,7 +900,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 		VICUS::Surface sRoof;
 		sRoof.m_id = ++nextID;
 		sRoof.m_displayName = tr("Wall surface");//.arg(++roofSurfaceCount);
-		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon());
+		sRoof.setPolygon3D(po->generatedGeometry()[i].polygon3D());
 		sRoof.m_displayColor = QColor(200,200,140,255);	//for walls
 
 		unsigned int componentID = VICUS::INVALID_ID;
@@ -928,7 +928,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
 				}
 			}
-				break;
+			break;
 			case Vic3D::NewGeometryObject::RoofInputData::DoublePitchRoof:{
 				unsigned int roofElements = 2;
 				if (i< roofElements) {
@@ -947,7 +947,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
 				}
 			}
-				break;
+			break;
 			case Vic3D::NewGeometryObject::RoofInputData::MansardRoof:{
 				unsigned int roofElements = 4;
 				if (i< roofElements) {
@@ -966,7 +966,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
 				}
 			}
-				break;
+			break;
 			case Vic3D::NewGeometryObject::RoofInputData::HipRoof:{
 				unsigned int roofElements = 4;
 				if (i< roofElements) {
@@ -985,7 +985,7 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
 				}
 			}
-				break;
+			break;
 			case Vic3D::NewGeometryObject::RoofInputData::Complex:{
 				//TODO: Dirk später noch den Kniestock beachten
 				if (true) {
@@ -996,15 +996,15 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 						componentID = m_ui->comboBoxComponentRoof3->currentData().toUInt();
 					sRoof.m_displayColor = QColor("#566094");	//for roofs
 				}
-				//				else if(i>0){
-				//					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
-				//					if (m_ui->comboBoxComponentWall3->count() == 0)
-				//						componentID = VICUS::INVALID_ID;
-				//					else
-				//						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
-				//				}
+//				else if(i>0){
+//					sRoof.m_displayName =  tr("Wall surface %1").arg(++wallCount);
+//					if (m_ui->comboBoxComponentWall3->count() == 0)
+//						componentID = VICUS::INVALID_ID;
+//					else
+//						componentID = m_ui->comboBoxComponentWall3->currentData().toUInt();
+//				}
 			}
-				break;
+			break;
 		}
 		//}
 
@@ -1021,10 +1021,10 @@ void SVPropVertexListWidget::on_pushButtonCreateRoof_clicked() {
 	//TODO Dirk hier muss noch die Floor Schaltfläche rein sobald Andreas die nachgerüstet hat
 	if (m_ui->comboBoxComponentWall3->count() == 0)
 		componentInstances.push_back(
-					VICUS::ComponentInstance(++compInstID, VICUS::INVALID_ID, sFloor.m_id, VICUS::INVALID_ID));
+				VICUS::ComponentInstance(++compInstID, VICUS::INVALID_ID, sFloor.m_id, VICUS::INVALID_ID));
 	else
 		componentInstances.push_back(
-					VICUS::ComponentInstance(++compInstID, m_ui->comboBoxComponentWall3->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
+				VICUS::ComponentInstance(++compInstID, m_ui->comboBoxComponentWall3->currentData().toUInt(), sFloor.m_id, VICUS::INVALID_ID));
 
 	double area = sFloor.geometry().area();
 	VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, area);
@@ -1057,6 +1057,7 @@ void SVPropVertexListWidget::updateBuildingComboBox(QComboBox * combo) {
 	combo->blockSignals(true);
 	unsigned int currentUniqueId = combo->currentData().toUInt();
 	combo->clear();
+
 	const VICUS::Project & prj = project();
 	int rowOfCurrent = -1;
 	for (unsigned int i=0; i<prj.m_buildings.size(); ++i) {
@@ -1318,14 +1319,14 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 			case VICUS::Component::CT_InsideWall :
 				if (type == -1 || type == 0)
 					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
-				break;
+			break;
 
 			case VICUS::Component::CT_FloorToCellar :
 			case VICUS::Component::CT_FloorToAir :
 			case VICUS::Component::CT_FloorToGround :
 				if (type == -1 || type == 1)
 					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
-				break;
+			break;
 
 			case VICUS::Component::CT_Ceiling :
 			case VICUS::Component::CT_SlopedRoof :
@@ -1334,12 +1335,12 @@ void SVPropVertexListWidget::updateComponentComboBox(QComboBox * combo, int type
 			case VICUS::Component::CT_WarmRoof :
 				if (type == -1 || type == 2)
 					combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
-				break;
+			break;
 
 			case VICUS::Component::CT_Miscellaneous :
 			case VICUS::Component::NUM_CT:
 				combo->addItem( QtExt::MultiLangString2QString(c.second.m_displayName), c.first);
-				break;
+			break;
 		}
 	}
 
