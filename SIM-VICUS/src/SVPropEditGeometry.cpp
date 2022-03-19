@@ -355,9 +355,6 @@ void SVPropEditGeometry::translate() {
 			VICUS::Surface modS(*s);
 			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
 
-			if(!modS.geometry().isValid())
-				modS.healGeometry(vertexes);
-
 			modifiedSurfaces.push_back(modS);
 		}
 		// TODO : Netzwerk zeugs
@@ -470,9 +467,6 @@ void SVPropEditGeometry::scale() {
 			VICUS::Surface modS(*s);
 
 			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-			if(!modS.geometry().isValid())
-				modS.healGeometry(vertexes);
 
 			// we cache our poldon data
 			IBKMK::Vector3D offset3dOld = s->geometry().offset();
@@ -2087,6 +2081,7 @@ void SVPropEditGeometry::on_toolButtonLocalCoordinateOrientation_clicked(bool ch
 
 void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
 
+#ifdef POLYGON2D
 	// now create a vector for the new surfaces
 	std::vector<VICUS::SubSurface> newSubSurfaces;
 	std::set<unsigned int> deselectedSubSurfaceUniqueIDs;
@@ -2183,6 +2178,7 @@ void SVPropEditGeometry::on_pushButtonCopySubSurfaces_clicked() {
 
 	SVUndoCopySubSurfaces *undo = new SVUndoCopySubSurfaces("Copied Sub Surfaces.", newSubSurfaces, deselectedSubSurfaceUniqueIDs, newSubSurfaceComponentInstances);
 	undo->push();
+#endif
 }
 
 
@@ -2276,9 +2272,6 @@ void SVPropEditGeometry::on_pushButtonCenteHorizontal_clicked(){
 		}
 		VICUS::Surface modS(*surf);
 		modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-		if(!modS.geometry().isValid())
-			modS.healGeometry(vertexes);
 
 		modifiedSurfaces.push_back(modS);
 	}

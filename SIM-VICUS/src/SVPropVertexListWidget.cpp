@@ -516,6 +516,8 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 
 
 void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
+
+#ifdef POLYGON2D
 	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
 		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
 		m_ui->lineEditName->selectAll();
@@ -642,6 +644,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_locks = SVViewState::NUM_L;
 	SVViewStateHandler::instance().setViewState(vs);
+
+#endif // POLYGON2D
+
 }
 
 
