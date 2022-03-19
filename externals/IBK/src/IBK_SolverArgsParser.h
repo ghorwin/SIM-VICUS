@@ -73,6 +73,7 @@ public:
 		GO_TEST_INIT,
 		GO_OUTPUT_DIR,
 		GO_PARALLEL_THREADS,
+		GO_RESTART_REALTIME_DT,
 		NUM_GenericOptions
 	};
 
@@ -171,16 +172,19 @@ public:
 	IBK::Path		m_projectFile;
 
 	/*! True if any form of restart was requested. */
-	bool			m_restart;
+	bool			m_restart = false;
 
 	/*! True if restart of the solver from some specified time was requested. */
-	bool			m_restartFrom;
+	bool			m_restartFrom = false;
 
 	/*! Time point in [s] to restart the simulation from if m_restartFrom is true. */
-	double			m_restartTime;
+	double			m_restartTime = -1;
+
+	/*! Time period in [s] for writing restart file.*/
+	double			m_restartRealtimeDt = 5*60;
 
 	/*! Parallel thread count. */
-	int				m_numParallelThreads;
+	int				m_numParallelThreads = 1;
 
 
 	/*! Holds LES solver name without optional parenthesis.*/

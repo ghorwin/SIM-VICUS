@@ -57,12 +57,7 @@ using namespace std;
 
 namespace IBK {
 
-SolverArgsParser::SolverArgsParser() :
-	m_restart(false),
-	m_restartFrom(false),
-	m_restartTime(-1),
-	m_numParallelThreads(1)
-{
+SolverArgsParser::SolverArgsParser() {
 	// automatically add flags and options based on defined keywords
 	for (int i=0; i<NUM_OverrideOptions; ++i) {
 		addOption(keywordChar(i),
@@ -127,6 +122,16 @@ void SolverArgsParser::parse(int argc, const char * const argv[]) {
 			catch (IBK::Exception & ex) {
 				throw IBK::Exception(ex,  IBK::FormatString("Invalid value to '--%1' option.").arg(keyword(GO_RESTART_FROM)), FUNC_ID);
 			}
+		}
+	}
+
+	if (findOption(0, "restart-realtime-dt") != m_knownOptions.size() && hasOption(GO_RESTART_REALTIME_DT)) {
+		// parse argument
+		std::stringstream strm(option(GO_RESTART_REALTIME_DT));
+		// extract value
+		double val;
+		if (strm >> val) {
+			m_restartRealtimeDt = val;
 		}
 	}
 
@@ -355,6 +360,7 @@ std::string SolverArgsParser::keyword( int index ) const {
 		case GO_TEST_INIT					: return "test-init";
 		case GO_OUTPUT_DIR					: return "output-dir";
 		case GO_PARALLEL_THREADS			: return "parallel-threads";
+		case GO_RESTART_REALTIME_DT			: return "restart-realtime-dt";
 		case OO_INTEGRATOR					: return "integrator";
 		case OO_LES_SOLVER					: return "les-solver";
 		case OO_PRECONDITIONER				: return "precond";
@@ -364,6 +370,7 @@ std::string SolverArgsParser::keyword( int index ) const {
 
 
 std::string SolverArgsParser::description( int index ) const {
+	FUNCID(SolverArgsParser::description);
 	switch( index ) {
 		case DO_VERSION						: return "Show solver version info.";
 		case DO_STEP_STATS					: return "Enable statistics outputs after each completed solver step.";
@@ -377,18 +384,20 @@ std::string SolverArgsParser::description( int index ) const {
 		case GO_TEST_INIT					: return "Run the solver initialization and stop.";
 		case GO_OUTPUT_DIR					: return "Writes solver output to different base directory.";
 		case GO_PARALLEL_THREADS			: return "Number of threads to use by the solver, 0 means use of OMP_NUM_THREADS environment variable.";
+		case GO_RESTART_REALTIME_DT			: return "Time interval in seconds for writing restart file.";
 		// specific solver implementations should provide overloads for this function and provide a more
 		// detailed description of the next two arguments.
 		case OO_INTEGRATOR					: return "Specify an alternative integrator engine.";
 		case OO_LES_SOLVER					: return "Specify an alternative linear equation system solver.";
 		case OO_PRECONDITIONER				: return "Specify an alternative preconditioner for iterative solver.";
 		default :
-			throw IBK::Exception("Missing implementation.", "[SolverArgsParser::description]");
+			throw IBK::Exception("Missing implementation.", FUNC_ID);
 	}
 }
 
 
 std::string SolverArgsParser::descriptionValue( int index ) const {
+	FUNCID(SolverArgsParser::descriptionValue);
 	switch( index ) {
 		case DO_VERSION						: return "true|false";
 		case DO_STEP_STATS					: return "true|false";
@@ -402,16 +411,18 @@ std::string SolverArgsParser::descriptionValue( int index ) const {
 		case GO_TEST_INIT					: return "true|false";
 		case GO_OUTPUT_DIR					: return "directory";
 		case GO_PARALLEL_THREADS			: return "0...MaxNumThreads";
+		case GO_RESTART_REALTIME_DT			: return "value";
 		case OO_LES_SOLVER					: return "auto|BTridiag|Band|GMRES|BiCGStab|TFQMR";
 		case OO_PRECONDITIONER				: return "auto|Band|ILU";
 		case OO_INTEGRATOR					: return "auto|CVode|ImplicitEuler";
 		default :
-			throw IBK::Exception("Missing implementation.", "[SolverArgsParser::descriptionValue]");
+			throw IBK::Exception("Missing implementation.", FUNC_ID);
 	}
 }
 
 
 std::string SolverArgsParser::defaultValue( int index ) const {
+	FUNCID(SolverArgsParser::defaultValue);
 	// an empty default value means user must provide a value when command-line argument is specified
 	switch( index ) {
 		case DO_VERSION						: return "false";
@@ -426,11 +437,12 @@ std::string SolverArgsParser::defaultValue( int index ) const {
 		case GO_TEST_INIT					: return "false";
 		case GO_OUTPUT_DIR					: return "";
 		case GO_PARALLEL_THREADS			: return "1"; // by default sequential run
+		case GO_RESTART_REALTIME_DT			: return "300"; // 5 mins
 		case OO_INTEGRATOR					: return "auto";
 		case OO_LES_SOLVER					: return "auto";
 		case OO_PRECONDITIONER				: return "auto";
 		default :
-			throw IBK::Exception("Missing implementation.", "[SolverArgsParser::defaultValue]");
+			throw IBK::Exception("Missing implementation.", FUNC_ID);
 	}
 }
 
@@ -480,8 +492,6 @@ std::vector< std::string > SolverArgsParser::options( int index ) const {
 			vec.push_back( std::string("ILU") );
 		break;
 
-		default :
-		break;
 	}
 
 	return vec;
