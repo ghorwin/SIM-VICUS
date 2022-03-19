@@ -87,6 +87,8 @@ Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
 
 
 bool Polygon3D::setVertexes(const std::vector<Vector3D> & vertexes, bool heal) {
+	FUNCID(Polygon3D::setVertexes);
+
 	// we construct a polygon from points by first eliminating collinear points, then checking
 
 	m_valid = false;
@@ -112,61 +114,78 @@ bool Polygon3D::setVertexes(const std::vector<Vector3D> & vertexes, bool heal) {
 
 	// if our polyline is not valid and we are requested to attempt healing, do this now
 	if (heal && !m_polyline.isValid()) {
+		IBK::IBK_Message("Attempting healing of polygon 3D.", IBK::MSG_DEBUG, FUNC_ID, IBK::VL_INFO);
 
-#ifdef POLYGON2D
 		// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
-		std::vector<double> deviations (poly3D.size(), 0);
+		std::vector<double> deviations (verts.size(), 0);
 		// create a vector to hold the projected points for each of the plane variants
-		std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
+		std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( verts.size(), std::vector<IBKMK::Vector3D> ( verts.size(), IBKMK::Vector3D (0,0,0) ) );
 
 		// we iterate through all points and construct planes
 		double smallestDeviation = std::numeric_limits<double>::max();
-		unsigned int index = (unsigned int)-1;
-		for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
+		unsigned int bestPlaneIndex = (unsigned int)-1;
+		for (unsigned int i = 0, count = verts.size(); i<count; ++i ) {
 
-			const IBKMK::Vector3D & offset = poly3D[i];
+			// select point i  as offset
+			const IBKMK::Vector3D & offset = verts[i];
 
-			const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
-			const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
+			// define plane through vectors a and b
+			const IBKMK::Vector3D & a = verts[(i + 1)         % count] - offset;
+			const IBKMK::Vector3D & b = verts[(i - 1 + count) % count] - offset;
 
-			// we find our plane
-			// we now iterate again through all point of the polygon and
+			// we now iterate again through all points of the polygon and
+			// sum up the distances of all points to their projection point
 			for (unsigned int j = 0; j<count; ++j ) {
 
+				// offset point?
 				if ( i == j ) {
 					projectedPoints[i][j] = offset;
 					continue;
 				}
 
 				// we take the current point
-				const IBKMK::Vector3D & vertex = poly3D[j];
+				const IBKMK::Vector3D & vertex = verts[j];
 
 				// we find our projected points onto the plane
 				double x, y;
-				IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
+				// allow a fairly large tolerance here
+				if (IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2)) {
 
-				// now we construct our projected points and find the deviation between the original points
-				// and their projection
-				projectedPoints[i][j] = offset + a*x + b*y;
+					// now we construct our projected points and find the deviation between the original points
+					// and their projection
+					projectedPoints[i][j] = offset + a*x + b*y;
 
-				// add up the distance between original vertex and projected point
-				// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
-				//       the expensive square-root calculation
-				deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+					// add up the distance between original vertex and projected point
+					// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
+					//       the expensive square-root calculation
+					deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+				}
+				else {
+					// if we cannot find a valid project point for any reason, store the original point and set
+					// a very large distance
+					projectedPoints[i][j] = vertex;
+					deviations[i] += 100; // this will effectively eliminate this plane as option
+				}
 			}
 
-			// determines smallest deviation
+			// remember plane index if new deviation is smallest
 			if (deviations[i] < smallestDeviation) {
-				index = i;
+				bestPlaneIndex = i;
 				smallestDeviation = deviations[i];
 			}
 		}
 
+		// if one of the points is soo far out of the polygon, that fixing is not even possible, we note that as error
+		if (smallestDeviation > 100) {
+			std::stringstream strm;
+			for (unsigned int i = 0, count = verts.size(); i<count; ++i )
+				strm << verts[i].toString() << (i+1<count ? ", " : "");
+			IBK::IBK_Message("Cannot fix polygon: " + strm.str(), IBK::MSG_DEBUG, FUNC_ID, IBK::VL_INFO);
+			return false; // polygon remains invalid
+		}
+
 		// take the best vertex set and use it for the polygon
-		setPolygon3D(projectedPoints[index]);
-
-#endif // POLYGON2D
-
+		setVertexes(projectedPoints[bestPlaneIndex], false); // Mind: we call our function again, but this time without healing to avoid looping
 	}
 	return m_valid;
 }
