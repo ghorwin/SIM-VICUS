@@ -847,9 +847,13 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 			// two points of the polygon that yield a plane where the majority of the vertexes have the least deviation.
 			// We do this by checking all plane variants that could possibly be created from the polygon.
 
-#ifdef POLYGON2D
-			surf.healGeometry(poly3D);
-#endif
+			VICUS::Polygon3D polygon;
+			polygon.setVertexes(poly3D, true); // we expect the poly3D vertexes to be flawed with rounding errors, so let's try some fixing here
+			surf.setPolygon3D(polygon);
+
+			// TODO Stephan+Dirk : bitte nach nachdenken, ob man Polygone mit kolliniearen Segmenten (also bei denen Vertexe entfernt werden)
+			//                     trotzdem importieren kann, wenn das resultierende Polygon gültig ist
+
 			// we can only import a subsurface, if the surface itself has a valid polygon
 			if ( surf.geometry().polygon3D().vertexes().size() != bsd.m_polyline.size() ||  !surf.geometry().isValid()) {
 				IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2] : Geometry of Surface is still broken. Import skipped!\n")
@@ -858,14 +862,14 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 								 .arg(bl.m_rooms[idx].m_displayName.toStdString()), IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
 				brokenBSD.insert(bsd.m_name);
 				continue;
-			} else {
+			}
+			else {
 				IBK::IBK_Message(IBK::FormatString("  %3.%1 [#%2] : Geometry healed and reconstructing points with their projection onto the plane.\n")
 								 .arg(surf.m_displayName.toStdString())
 								 .arg(surf.m_id)
 								 .arg(bl.m_rooms[idx].m_displayName.toStdString()), IBK::MSG_PROGRESS, FUNC_ID, IBK::VL_STANDARD );
 			}
 		}
-
 
 		surf.polygon3D().enlargeBoundingBox(minCoords, maxCoords);
 

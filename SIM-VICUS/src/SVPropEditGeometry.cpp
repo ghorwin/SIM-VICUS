@@ -2031,6 +2031,7 @@ void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
 	// TODO Stephan
 }
 
+
 void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface> modifiedSurfaces;
@@ -2042,23 +2043,9 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 		if (s != nullptr) {
 			VICUS::Surface modS(*s);
 			modS.flip();
-			if (modS.geometry().isValid() )
-				modifiedSurfaces.push_back(modS);
-
-			else{
-				// heal by stephan
-#ifdef POLYGON2D
-				modS.healGeometry(modS.geometry().polygon3D().vertexes());
-#endif
-				if (!modS.geometry().isValid() )
-					IBK::IBK_Message(IBK::FormatString("Surface %1 could not be flipped.").arg(modS.m_displayName.toStdString()),
-								 IBK::MSG_WARNING, "Surface::flip", IBK::VL_STANDARD);
-				else
-					modifiedSurfaces.push_back(modS);
-			}
+			modifiedSurfaces.push_back(modS);
 		}
 	}
-
 
 	// in case operation was executed without any selected objects - should be prevented
 	if (modifiedSurfaces.empty())
@@ -2070,6 +2057,7 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 }
+
 
 void SVPropEditGeometry::on_toolButtonLocalCoordinateOrientation_clicked(bool checked) {
 	// we set the state of our local coordinate system
