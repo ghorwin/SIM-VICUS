@@ -80,12 +80,19 @@ Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & offset,
 
 
 Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
+	setVertexes(vertexes, false); // no automatic healing here! We want to know if vertexes are bad.
+	// mark 3D vertexes as dirty
+	m_dirty = true;
+}
+
+
+bool Polygon3D::setVertexes(const std::vector<Vector3D> & vertexes, bool heal) {
 	// we construct a polygon from points by first eliminating collinear points, then checking
 
 	m_valid = false;
 	m_polyline.clear();
 	if (vertexes.size() < 3)
-		return;
+		return false;
 
 	// eliminate colliniear points in temporary vector
 	std::vector<IBKMK::Vector3D> verts(vertexes);
@@ -94,7 +101,7 @@ Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
 	updateLocalCoordinateSystem(verts);
 	// we need 3 vertexes (not collinear) to continue and a valid normal vector!
 	if (verts.size() < 3 || m_normal == IBKMK::Vector3D(0,0,0))
-		return;
+		return false;
 
 	// we now have a valid local coordinate sytstem, set our original to the first vertex of the remaining
 	// vertexes, so that the polygon has always 0,0 as first point
@@ -103,8 +110,65 @@ Polygon3D::Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes) {
 	// polygon must not be winding into itself, otherwise triangulation would not be meaningful
 	m_valid = m_polyline.isValid() && m_polyline.isSimplePolygon();
 
-	// mark 3D vertexes as dirty
-	m_dirty = true;
+	// if our polyline is not valid and we are requested to attempt healing, do this now
+	if (heal && !m_polyline.isValid()) {
+
+#ifdef POLYGON2D
+		// we take a vector to hold our deviations, i.e. the sum of the vertical deviations from the plane.
+		std::vector<double> deviations (poly3D.size(), 0);
+		// create a vector to hold the projected points for each of the plane variants
+		std::vector<std::vector<IBKMK::Vector3D> > projectedPoints ( poly3D.size(), std::vector<IBKMK::Vector3D> ( poly3D.size(), IBKMK::Vector3D (0,0,0) ) );
+
+		// we iterate through all points and construct planes
+		double smallestDeviation = std::numeric_limits<double>::max();
+		unsigned int index = (unsigned int)-1;
+		for (unsigned int i = 0, count = poly3D.size(); i<count; ++i ) {
+
+			const IBKMK::Vector3D & offset = poly3D[i];
+
+			const IBKMK::Vector3D & a = poly3D[(i + 1)         % count] - offset;
+			const IBKMK::Vector3D & b = poly3D[(i - 1 + count) % count] - offset;
+
+			// we find our plane
+			// we now iterate again through all point of the polygon and
+			for (unsigned int j = 0; j<count; ++j ) {
+
+				if ( i == j ) {
+					projectedPoints[i][j] = offset;
+					continue;
+				}
+
+				// we take the current point
+				const IBKMK::Vector3D & vertex = poly3D[j];
+
+				// we find our projected points onto the plane
+				double x, y;
+				IBKMK::planeCoordinates(offset, a, b, vertex, x, y, 1e-2);
+
+				// now we construct our projected points and find the deviation between the original points
+				// and their projection
+				projectedPoints[i][j] = offset + a*x + b*y;
+
+				// add up the distance between original vertex and projected point
+				// Note: if we add the square of the distances, we still get the maximum deviation, but avoid
+				//       the expensive square-root calculation
+				deviations[i] += (projectedPoints[i][j] - vertex).magnitudeSquared();
+			}
+
+			// determines smallest deviation
+			if (deviations[i] < smallestDeviation) {
+				index = i;
+				smallestDeviation = deviations[i];
+			}
+		}
+
+		// take the best vertex set and use it for the polygon
+		setPolygon3D(projectedPoints[index]);
+
+#endif // POLYGON2D
+
+	}
+	return m_valid;
 }
 
 

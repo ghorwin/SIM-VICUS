@@ -86,6 +86,11 @@ public:
 	*/
 	Polygon3D(const std::vector<IBKMK::Vector3D> & vertexes);
 
+	/*! This function works pretty much like the constructor taking a vector of vertexes.
+		However, when heal=true some fixing is attempted when a vertex is too far out of plane (mostly due to rounding errors).
+	*/
+	bool setVertexes(const std::vector<IBKMK::Vector3D> & vertexes, bool heal = true);
+
 	/*! Returns true, if both the polyline itself and the x and normal vectors are valid. */
 	bool isValid() const { return m_valid; }
 
