@@ -63,6 +63,7 @@ PlaneGeometry::PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D &
 	// if polygon is valid, transfer data
 	if (p.isValid()) {
 		// a valid polygon has at least 1 vertex and valid normal and localX vectors
+		// TODO : since VICUS::Polygon3D _IS A_ IBKMK::Polygon3D we could just use assignment with a cast here.
 		m_polygon = VICUS::Polygon3D((const VICUS::Polygon2D&)p.polyline(), p.normal(), p.localX(), p.vertexes()[0]);
 		m_dirty = true;
 	}
