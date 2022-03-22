@@ -67,15 +67,23 @@ Polygon3D::Polygon3D(const Polygon2D & polyline, const IBKMK::Vector3D & offset,
 					 const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX) :
 	m_offset(offset), m_polyline(polyline)
 {
+	FUNCID(Polygon3D::Polygon3D);
+	// first point must be 0,0
+	if (!polyline.isValid()) {
+		m_valid = false;
+		return;
+	}
+	if (polyline.vertexes()[0] != IBKMK::Vector2D(0,0)) {
+		IBK_Message("First point of polyline must be 0,0!", IBK::MSG_ERROR, FUNC_ID);
+		m_valid = false;
+		return;
+	}
 	try {
 		m_valid = true; // assume polygon is valid
 		setRotation(normal, localX); // also sets the m_dirty flag
 	} catch (...) {
 		m_valid = false;
 	}
-	// mind: polygon might be invalid because of bad polyline, bad normal/localX vectors etc.
-	if (!m_polyline.isValid())
-		m_valid = false;
 }
 
 
