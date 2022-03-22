@@ -641,7 +641,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const MappingTable &
 	std::ofstream out;
 	// write file
 #if defined(_WIN32)
-	out.open(IBK::WstringToANSI(basePath.wstr()));
+	out.open(IBK::WstringToANSI(basePath.wstr(), false));
 #else
 	out.open(basePath.str());
 #endif
