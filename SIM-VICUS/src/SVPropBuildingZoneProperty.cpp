@@ -34,10 +34,10 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	SVStyle::formatDatabaseTableView(m_ui->tableViewZones);
 	m_ui->tableViewZones->sortByColumn(1, Qt::SortOrder::AscendingOrder);
 	m_ui->tableViewZones->setSortingEnabled(true);
-	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
+//	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+//	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+//	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
+//	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(0,100);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(2,100);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(3,100);
@@ -226,74 +226,70 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
 void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 
-	std::vector<unsigned int> roomIds;
-	// calculate area only for an id selection
-	for(QModelIndex index: m_ui->tableViewZones->selectionModel()->selection().indexes()){
-		if(index.column() != 0)
-			continue;
-		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
-	}
-
-	if(roomIds.empty())
+	// translate proxy selection into table model selection
+	QItemSelection selection = m_ui->tableViewZones->selectionModel()->selection();
+	// empty selection
+	if(selection.empty())
 		return;
 
+	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
+	Q_ASSERT(!indexes.empty());
+
 	// perform calculation of room floor areas inside table model
-	m_zonePropertiesTableModel->calulateFloorArea(roomIds);
+	m_zonePropertiesTableModel->calulateFloorArea(indexes);
 	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
 
-	std::vector<unsigned int> roomIds;
-	// calculate volume only for an id selection
-	for(QModelIndex index: m_ui->tableViewZones->selectionModel()->selection().indexes()){
-		if(index.column() != 0)
-			continue;
-		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
-	}
-
-	if(roomIds.empty())
+	// translate proxy selection into table model selection
+	QItemSelection selection = m_ui->tableViewZones->selectionModel()->selection();
+	// empty selection
+	if(selection.empty())
 		return;
 
+	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
+	Q_ASSERT(!indexes.empty());
+
 	// perform calculation of room volumes inside table model
-	m_zonePropertiesTableModel->calulateVolume(roomIds);
+	m_zonePropertiesTableModel->calulateVolume(indexes);
 	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
 
+	QModelIndexList indexes;
 	// choose all rooms in proxy model
-	std::vector<unsigned int> roomIds;
 	for(int row=0; row<m_zonePropertiesProxyModel->rowCount(); ++row) {
 		QModelIndex index = m_zonePropertiesProxyModel->index(row,0);
-		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+		indexes.push_back(m_zonePropertiesProxyModel->mapToSource(index));
 	}
-
-	if(roomIds.empty())
+	// empty
+	if(indexes.empty())
 		return;
 
 	// perform calculation of room floor areas inside table model
-	m_zonePropertiesTableModel->calulateFloorArea(roomIds);
+	m_zonePropertiesTableModel->calulateFloorArea(indexes);
 	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 
+	QModelIndexList indexes;
 	// choose all rooms in proxy model
-	std::vector<unsigned int> roomIds;
 	for(int row=0; row<m_zonePropertiesProxyModel->rowCount(); ++row) {
 		QModelIndex index = m_zonePropertiesProxyModel->index(row,0);
-		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+		indexes.push_back(m_zonePropertiesProxyModel->mapToSource(index));
 	}
-
-	if(roomIds.empty())
+	// empty
+	if(indexes.empty())
 		return;
 
 	// perform calculation of room volumes inside table model
-	m_zonePropertiesTableModel->calulateVolume(roomIds);
+	m_zonePropertiesTableModel->calulateVolume(indexes);
 	updateUi();
 }
 

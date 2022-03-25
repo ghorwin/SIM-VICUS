@@ -15,6 +15,8 @@
 SVPropBuildingZonePropertyTableModel::SVPropBuildingZonePropertyTableModel(QObject * parent) :
 	QAbstractTableModel(parent)
 {
+	// get access to all rooms
+	updateBuildingLevelIndex(-1,-1);
 }
 
 int SVPropBuildingZonePropertyTableModel::rowCount(const QModelIndex & /*parent*/) const {
@@ -57,7 +59,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 					return QVariant();
 			}
 
-		case Qt::EditRole :
+		case Qt::EditRole : {
 			Q_ASSERT(index.column() == 2 || index.column() == 3);
 			switch (index.column()) {
 				// column 2 - room floor area
@@ -73,6 +75,7 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 						return room.m_para[VICUS::Room::P_Volume].get_value("m3");
 					return QVariant();
 			}
+		}
 
 		case Qt::FontRole : {
 			//      with valid value -> black, bold
@@ -178,7 +181,7 @@ void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int building
 	m_rooms.clear();
 	m_roomLocations.clear();
 
-	if(buildingIndex == -1){
+	if(buildingIndex <= 0){
 		// put all rooms of this building into vector
 		for(unsigned int i=0; i<buildings.size(); ++i){
 			const VICUS::Building & b = buildings[i];
@@ -192,9 +195,9 @@ void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int building
 		}
 	}
 	else{
-		if(buildingLevelIndex == -1){
+		if(buildingLevelIndex <= 0){
 			// filter all rooms of a given building
-			unsigned int i = (unsigned int) buildingIndex;
+			unsigned int i = (unsigned int) buildingIndex - 1;
 			const VICUS::Building & b = buildings[i];
 			for(unsigned j=0; j<b.m_buildingLevels.size(); ++j){
 				const VICUS::BuildingLevel &bl = b.m_buildingLevels[j];
@@ -206,8 +209,8 @@ void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int building
 		}
 		else {
 			// put only rooms of current building level into vector
-			unsigned int i = (unsigned int) buildingIndex;
-			unsigned int j = (unsigned int) buildingLevelIndex;
+			unsigned int i = (unsigned int) buildingIndex - 1;
+			unsigned int j = (unsigned int) buildingLevelIndex - 1;
 			const VICUS::BuildingLevel &bl = project().m_buildings[i].
 					m_buildingLevels[j];
 			for(unsigned k=0; k<bl.m_rooms.size(); ++k) {
@@ -219,22 +222,23 @@ void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int building
 }
 
 
-void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const std::vector<unsigned int> &roomIds)
+void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const QModelIndexList &indexes)
 {
 	// make a copy of buildings data structure
-	std::vector<VICUS::Building> buildings = project().m_buildings;
+	std::vector<VICUS::Building>	buildings = project().m_buildings;
 
-	for(VICUS::Building & building : buildings){
-		for(VICUS::BuildingLevel &bl : building.m_buildingLevels){
-			for(VICUS::Room &room : bl.m_rooms) {
-				for(unsigned int id : roomIds){
-					// change room floor area in builing copy
-					if(id == room.m_id){
-						room.calculateFloorArea();
-					}
-				}
-			}
-		}
+	// loop through all indexes, retrieve room and perform reacalulation on a copy of building
+	for(const QModelIndex &index : indexes) {
+		// retrieve room location
+		const roomLocation &location = m_roomLocations[(size_t)index.row()];
+		unsigned int i = location.m_buildingIndex;
+		unsigned int j = location.m_buildingLevelIndex;
+		unsigned int k = location.m_roomIndex;
+
+		// change room floor area in builing copy
+		VICUS::Room &room = buildings[i].m_buildingLevels[j].m_rooms[k];
+		// make calculation here
+		room.calculateFloorArea();
 	}
 	QString text = "Floor area calculation";
 
@@ -243,23 +247,22 @@ void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const std::vector<u
 }
 
 
-void SVPropBuildingZonePropertyTableModel::calulateVolume(const std::vector<unsigned int> &roomIds)
+void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList & indexes)
 {
-	// make a copy of buildings data structure
-	std::vector<VICUS::Building> buildings = project().m_buildings;
+	std::vector<VICUS::Building>	buildings = project().m_buildings;
 
 	// loop through all indexes, retrieve room and perform reacalulation on a copy of building
-	for(VICUS::Building & building : buildings){
-		for(VICUS::BuildingLevel &bl : building.m_buildingLevels){
-			for(VICUS::Room &room : bl.m_rooms) {
-				for(unsigned int id : roomIds){
-					// change room volume in builing copy
-					if(id == room.m_id){
-						room.calculateVolume();
-					}
-				}
-			}
-		}
+	for(const QModelIndex &index : indexes) {
+		// retrieve room location
+		const roomLocation &location = m_roomLocations[(size_t)index.row()];
+		unsigned int i = location.m_buildingIndex;
+		unsigned int j = location.m_buildingLevelIndex;
+		unsigned int k = location.m_roomIndex;
+
+		// change room volume in builing copy
+		VICUS::Room &room = buildings[i].m_buildingLevels[j].m_rooms[k];
+		// make calculation here
+		room.calculateVolume();
 	}
 	QString text = "Volume calculation";
 

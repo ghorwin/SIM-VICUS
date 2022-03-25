@@ -44,9 +44,9 @@ public:
 	// changes the selection of rooms for a given building index and building level index
 	void updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex);
 	// automatically calculates zone floor area for an item selection
-	void calulateFloorArea(const std::vector<unsigned int> &roomIds);
+	void calulateFloorArea(const QModelIndexList &indexes);
 	// automatically calculates zone volume for an item selection
-	void calulateVolume(const std::vector<unsigned int> &roomIds);
+	void calulateVolume(const QModelIndexList &indexes);
 
 	QFont	m_itemFont;
 
