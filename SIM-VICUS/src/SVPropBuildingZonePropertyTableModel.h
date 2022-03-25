@@ -18,7 +18,21 @@ class SVPropBuildingZonePropertyTableModel : public QAbstractTableModel {
 	Q_OBJECT
 public:
 
-	SVPropBuildingZonePropertyTableModel(QObject *parent, bool inputVariableTable);
+	// struct specifiing position of each room  in building list, buzilding level list and
+	// local room list
+	struct roomLocation {
+		roomLocation(unsigned int i, unsigned int j, unsigned int k) :
+			m_buildingIndex(i),
+			m_buildingLevelIndex(j),
+			m_roomIndex(k)
+		{ }
+
+		unsigned int m_buildingIndex;
+		unsigned int m_buildingLevelIndex;
+		unsigned int m_roomIndex;
+	};
+
+	SVPropBuildingZonePropertyTableModel(QObject *parent);
 
 	int rowCount(const QModelIndex & parent) const override;
 	int columnCount(const QModelIndex & parent) const override;
@@ -29,11 +43,17 @@ public:
 
 	// changes the selection of rooms for a given building index and building level index
 	void updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex);
+	// automatically calculates zone floor area for an item selection
+	void calulateFloorArea(const std::vector<unsigned int> &roomIds);
+	// automatically calculates zone volume for an item selection
+	void calulateVolume(const std::vector<unsigned int> &roomIds);
 
 	QFont	m_itemFont;
 
-	// get list of all rooms by filter selection
-	std::vector<VICUS::Room>		m_rooms;
+	// list of all rooms by filter selection (for constant fast access)
+	std::vector<const VICUS::Room*>		m_rooms;
+	// corresponding room locations for each room in list
+	std::vector<roomLocation>			m_roomLocations;
 };
 
 

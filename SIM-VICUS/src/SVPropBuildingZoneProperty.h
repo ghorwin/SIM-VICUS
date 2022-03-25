@@ -1,10 +1,14 @@
 #ifndef SVPropBuildingZonePropertyH
 #define SVPropBuildingZonePropertyH
 
+
+#include "SVPropBuildingZonePropertyTableModel.h"
+
 #include <QWidget>
 
 #include <set>
 
+class QSortFilterProxyModel;
 class QTableWidgetItem;
 
 namespace Ui {
@@ -32,9 +36,7 @@ private slots:
 
 	void on_comboBoxBuildingLevelFilter_currentIndexChanged(int index);
 
-	void on_tableWidgetZones_itemDoubleClicked(QTableWidgetItem *item);
-
-	void on_tableWidgetZones_cellChanged(int row, int column);
+	void on_tableViewZones_doubleClicked(const QModelIndex &index);
 
 	void on_pushButtonFloorAreaSelectedRooms_clicked();
 
@@ -44,24 +46,27 @@ private slots:
 
 	void on_pushButtonVolumeAllRooms_clicked();
 
-	//void on_tableWidgetZones_itemSelectionChanged();
+	//void on_tableViewZones_itemSelectionChanged();
 
-	//void on_tableWidgetZones_cellPressed(int row, int column);
+	//void on_tableViewZones_cellPressed(int row, int column);
 
 	void on_pushButtonAssignSurface_clicked();
 
-	void on_tableWidgetZones_itemSelectionChanged();
+	void on_tableViewZones_selectionChanged();
 
 private:
 
-	void calculatedParameters(bool floorAreaCalc = true, bool onlySelected = true);
+	Ui::SVPropBuildingZoneProperty			*m_ui;
 
-	Ui::SVPropBuildingZoneProperty	*m_ui;
+	/*! Table model ifor zone properties. */
+	SVPropBuildingZonePropertyTableModel	*m_zonePropertiesTableModel = nullptr;
+
+	QSortFilterProxyModel					*m_zonePropertiesProxyModel = nullptr;
 
 	/*! Holds selected room for adding surfaces to it.
 		Updated in itemSelectionChanged.
 	*/
-	unsigned int					m_selectedRoomID;
+	unsigned int							m_selectedRoomID;
 };
 
 #endif // SVPropBuildingZonePropertyH

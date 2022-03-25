@@ -1,6 +1,7 @@
 #include "SVPropBuildingZonePropertyTableModel.h"
 
 #include "SVProjectHandler.h"
+#include "SVUndoModifyBuildingTopology.h"
 #include "SVUndoModifyRoom.h"
 
 #include <VICUS_Building.h>
@@ -11,7 +12,7 @@
 #include <QColor>
 #include <QMessageBox>
 
-SVPropBuildingZonePropertyTableModel::SVPropBuildingZonePropertyTableModel(QObject * parent, bool inputVariableTable) :
+SVPropBuildingZonePropertyTableModel::SVPropBuildingZonePropertyTableModel(QObject * parent) :
 	QAbstractTableModel(parent)
 {
 }
@@ -30,7 +31,9 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 	if (!index.isValid())
 		return QVariant();
 
-	const VICUS::Room &room = m_rooms[(size_t)index.row()];
+	// constant access to selected room
+	const VICUS::Room &room = *m_rooms[(size_t)index.row()];
+
 	switch (role) {
 		case Qt::DisplayRole :
 			switch (index.column()) {
@@ -132,7 +135,15 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 		return false;
 
 	QString text;
-	VICUS::Room &room = m_rooms[(size_t)index.row()];
+	// retreive room location
+	const roomLocation &location = m_roomLocations[(size_t)index.row()];
+	unsigned int i = location.m_buildingIndex;
+	unsigned int j = location.m_buildingLevelIndex;
+	unsigned int k = location.m_roomIndex;
+
+	// retrieve a copy of room
+	VICUS::Room room = *m_rooms[(size_t)index.row()];
+
 	switch (index.column()) {
 		// column 2 - room floor area
 		case 2 :
@@ -149,31 +160,10 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 		default: break;
 	}
 
-	std::vector<VICUS::Building> buildings = project().m_buildings;
-
-	// first find the room
-	bool foundRoom = false;
-	for(unsigned int i=0; i<buildings.size(); ++i){
-		const VICUS::Building & b = buildings[i];
-		for(unsigned j=0; j<b.m_buildingLevels.size(); ++j){
-			VICUS::BuildingLevel bl = b.m_buildingLevels[j];
-			for(unsigned k=0; k<bl.m_rooms.size(); ++k){
-				VICUS::Room & r = bl.m_rooms[k];
-				if(r.m_id == room.m_id){
-
-					SVUndoModifyRoom * undo = new SVUndoModifyRoom(text, room, i, j, k);
-					undo->push();
-
-					foundRoom = true;
-					break;
-				}
-			}
-			if(foundRoom)
-				break;
-		}
-		if(foundRoom)
-			break;
-	}
+	// create undo action for room parameter change
+	SVUndoModifyRoom * undo = new SVUndoModifyRoom(text, room, i, j, k);
+	// copy new room parametrization into VICUS data structure
+	undo->push();
 
 	emit dataChanged(index, index);
 	return true;
@@ -183,29 +173,97 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex)
 {
 
+	const std::vector<VICUS::Building> &buildings = project().m_buildings;
+
+	m_rooms.clear();
+	m_roomLocations.clear();
+
 	if(buildingIndex == -1){
-		m_rooms.clear();
-		for( const VICUS::Building &b : project().m_buildings){
-			// put all rooms in
-			for( const VICUS::BuildingLevel &bl : b.m_buildingLevels)
-				for( const VICUS::Room &r : bl.m_rooms)
-					m_rooms.push_back(r);
+		// put all rooms of this building into vector
+		for(unsigned int i=0; i<buildings.size(); ++i){
+			const VICUS::Building & b = buildings[i];
+			for(unsigned j=0; j<b.m_buildingLevels.size(); ++j){
+				const VICUS::BuildingLevel &bl = b.m_buildingLevels[j];
+				for(unsigned k=0; k<bl.m_rooms.size(); ++k) {
+					m_rooms.push_back(&bl.m_rooms[k]);
+					m_roomLocations.push_back(roomLocation(i,j,k));
+				}
+			}
 		}
 	}
 	else{
-		m_rooms.clear();
 		if(buildingLevelIndex == -1){
-			// put all rooms of this building in
-			for( const VICUS::BuildingLevel &bl : project().m_buildings[(unsigned int) buildingIndex].m_buildingLevels)
-				for( const VICUS::Room &r : bl.m_rooms)
-					m_rooms.push_back(r);
+			// filter all rooms of a given building
+			unsigned int i = (unsigned int) buildingIndex;
+			const VICUS::Building & b = buildings[i];
+			for(unsigned j=0; j<b.m_buildingLevels.size(); ++j){
+				const VICUS::BuildingLevel &bl = b.m_buildingLevels[j];
+				for(unsigned k=0; k<bl.m_rooms.size(); ++k) {
+					m_rooms.push_back(&bl.m_rooms[k]);
+					m_roomLocations.push_back(roomLocation(i,j,k));
+				}
+			}
 		}
-		else{
-			// put only rooms of this building level in
-			const VICUS::BuildingLevel &bl = project().m_buildings[(unsigned int) buildingIndex].
-					m_buildingLevels[(unsigned int) buildingLevelIndex];
-			m_rooms = bl.m_rooms;
+		else {
+			// put only rooms of current building level into vector
+			unsigned int i = (unsigned int) buildingIndex;
+			unsigned int j = (unsigned int) buildingLevelIndex;
+			const VICUS::BuildingLevel &bl = project().m_buildings[i].
+					m_buildingLevels[j];
+			for(unsigned k=0; k<bl.m_rooms.size(); ++k) {
+				m_rooms.push_back(&bl.m_rooms[k]);
+				m_roomLocations.push_back(roomLocation(i,j,k));
+			}
 		}
 	}
+}
+
+
+void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const std::vector<unsigned int> &roomIds)
+{
+	// make a copy of buildings data structure
+	std::vector<VICUS::Building> buildings = project().m_buildings;
+
+	for(VICUS::Building & building : buildings){
+		for(VICUS::BuildingLevel &bl : building.m_buildingLevels){
+			for(VICUS::Room &room : bl.m_rooms) {
+				for(unsigned int id : roomIds){
+					// change room floor area in builing copy
+					if(id == room.m_id){
+						room.calculateFloorArea();
+					}
+				}
+			}
+		}
+	}
+	QString text = "Floor area calculation";
+
+	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
+	undo->push();
+}
+
+
+void SVPropBuildingZonePropertyTableModel::calulateVolume(const std::vector<unsigned int> &roomIds)
+{
+	// make a copy of buildings data structure
+	std::vector<VICUS::Building> buildings = project().m_buildings;
+
+	// loop through all indexes, retrieve room and perform reacalulation on a copy of building
+	for(VICUS::Building & building : buildings){
+		for(VICUS::BuildingLevel &bl : building.m_buildingLevels){
+			for(VICUS::Room &room : bl.m_rooms) {
+				for(unsigned int id : roomIds){
+					// change room volume in builing copy
+					if(id == room.m_id){
+						room.calculateVolume();
+					}
+				}
+			}
+		}
+	}
+	QString text = "Volume calculation";
+
+	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
+	undo->push();
 }
 

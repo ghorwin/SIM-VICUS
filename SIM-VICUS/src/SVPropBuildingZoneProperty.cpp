@@ -15,33 +15,40 @@
 #include "SVDatabaseEditDialog.h"
 #include "SVZoneSelectionDialog.h"
 
+#include <QSortFilterProxyModel>
 
 SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	QWidget(parent),
-	m_ui(new Ui::SVPropBuildingZoneProperty)
+	m_ui(new Ui::SVPropBuildingZoneProperty),
+	m_zonePropertiesTableModel(new SVPropBuildingZonePropertyTableModel(this))
 {
 
 	m_ui->setupUi(this);
 	//m_ui->groupBox_7->setMargin(0);
 
-	m_ui->tableWidgetZones->setColumnCount(4);
-	m_ui->tableWidgetZones->setHorizontalHeaderLabels(QStringList() << tr("Id") << tr("Name") << tr("Area [m2]") << tr("Volume [m3]"));
-	SVStyle::formatDatabaseTableView(m_ui->tableWidgetZones);
-	m_ui->tableWidgetZones->sortByColumn(1, Qt::SortOrder::AscendingOrder);
-	m_ui->tableWidgetZones->setSortingEnabled(true);
-	m_ui->tableWidgetZones->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
-	m_ui->tableWidgetZones->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-	m_ui->tableWidgetZones->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
-	m_ui->tableWidgetZones->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
-	m_ui->tableWidgetZones->horizontalHeader()->resizeSection(0,100);
-	m_ui->tableWidgetZones->horizontalHeader()->resizeSection(2,100);
-	m_ui->tableWidgetZones->horizontalHeader()->resizeSection(3,100);
-	m_ui->tableWidgetZones->horizontalHeader()->setStretchLastSection(false);
-	m_ui->tableWidgetZones->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	m_ui->tableWidgetZones->setSelectionBehavior(QAbstractItemView::SelectRows); // since we want to edit single cells
+	// create proxy model and link with table model and view
+	m_zonePropertiesProxyModel = new QSortFilterProxyModel(this);
+	m_zonePropertiesProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	m_zonePropertiesProxyModel->setSourceModel(m_zonePropertiesTableModel);
+
+	SVStyle::formatDatabaseTableView(m_ui->tableViewZones);
+	m_ui->tableViewZones->sortByColumn(1, Qt::SortOrder::AscendingOrder);
+	m_ui->tableViewZones->setSortingEnabled(true);
+	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
+	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
+	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
+	m_ui->tableViewZones->horizontalHeader()->resizeSection(0,100);
+	m_ui->tableViewZones->horizontalHeader()->resizeSection(2,100);
+	m_ui->tableViewZones->horizontalHeader()->resizeSection(3,100);
+	m_ui->tableViewZones->horizontalHeader()->setStretchLastSection(false);
+	m_ui->tableViewZones->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	m_ui->tableViewZones->setSelectionBehavior(QAbstractItemView::SelectRows); // since we want to edit single cells
+
+	m_ui->tableViewZones->setModel(m_zonePropertiesProxyModel);
 
 	// Mind: parent of the item delegate must be its widget!
-	m_ui->tableWidgetZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableWidgetZones));
+	m_ui->tableViewZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableViewZones));
 
 	m_ui->pushButtonAssignSurface->setEnabled(false);
 }
@@ -115,111 +122,14 @@ void SVPropBuildingZoneProperty::updateUi() {
 	m_ui->comboBoxBuildingLevelFilter->blockSignals(false);
 	m_ui->comboBoxBuildingFilter->blockSignals(false);
 
+	// set rooms selection in table model
+	m_zonePropertiesTableModel->updateBuildingLevelIndex(selectedBuildingIndex, selectedBuildingLevelIndex);
 
-	// get list of all rooms by filter selection
-	std::vector<const VICUS::Room*> rooms;
-
-	if(selectedBuildingIndex == -1){
-		for( const VICUS::Building &b : project().m_buildings){
-			// put all rooms in
-			for( const VICUS::BuildingLevel &bl : b.m_buildingLevels)
-				for( const VICUS::Room &r : bl.m_rooms)
-					rooms.push_back(&r);
-		}
-
-		m_ui->comboBoxBuildingLevelFilter->blockSignals(true);
-		m_ui->comboBoxBuildingLevelFilter->setCurrentIndex(0);
-		m_ui->comboBoxBuildingLevelFilter->blockSignals(false);
-		m_ui->comboBoxBuildingLevelFilter->setEnabled(false);
-	}
-	else{
-		if(selectedBuildingLevelIndex == -1){
-			// put all rooms of this building in
-			for( const VICUS::BuildingLevel &bl : project().m_buildings[currentBuildingVectorIdx].m_buildingLevels)
-				for( const VICUS::Room &r : bl.m_rooms)
-					rooms.push_back(&r);
-		}
-		else{
-			// put only rooms of this building level in
-			const VICUS::BuildingLevel &bl = project().m_buildings[currentBuildingVectorIdx].
-					m_buildingLevels[currentBuildingLevelVectorIdx];
-			for( const VICUS::Room &r : bl.m_rooms)
-				rooms.push_back(&r);
-
-		}
+	if(selectedBuildingIndex != -1)
 		m_ui->comboBoxBuildingLevelFilter->setEnabled(true);
-	}
-
-	// process all rooms
-	// and fill table
-	m_ui->tableWidgetZones->blockSignals(true);
-	m_ui->tableWidgetZones->selectionModel()->blockSignals(true);
-	m_ui->tableWidgetZones->setSortingEnabled(false);
-	m_ui->tableWidgetZones->setRowCount(0);
-
-	for (const VICUS::Room * r : rooms) {
-		Q_ASSERT(r != nullptr); // must be a valid pointer!
-		// add new row
-		int row = m_ui->tableWidgetZones->rowCount();
-		m_ui->tableWidgetZones->setRowCount(row+1);
-
-		// fill table
-
-		// column 0 - room id
-		QTableWidgetItem * item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(QString::number(r->m_id));
-		item->setData(Qt::UserRole,r->m_id);
-		m_ui->tableWidgetZones->setItem(row,0, item);
-
-		// column 1 - room name
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(r->m_displayName);
-		item->setData(Qt::UserRole,r->m_id);
-		m_ui->tableWidgetZones->setItem(row,1, item);
-
-		// column 2 - room floor area
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-		//get parameter
-		bool isValid = !r->m_para[VICUS::Room::P_Area].empty();
-		double floorarea = 0;
-		if(isValid){
-			floorarea = r->m_para[VICUS::Room::P_Area].get_value("m2");
-			item->setText(QString::number(floorarea,'f', 2));
-		}
-		else
-			item->setText("---");
-
-		item->setData(Qt::UserRole,r->m_id);
-		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_ui->tableWidgetZones->setItem(row,2, item);
-
-		// column 3 - room volume
-		item = new QTableWidgetItem;
-		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-		//get parameter
-		isValid = !r->m_para[VICUS::Room::P_Volume].empty();
-		double volume = 0;
-		if(isValid){
-			volume = r->m_para[VICUS::Room::P_Volume].get_value("m3");
-			item->setText(QString::number(volume,'f', 2));
-		}
-		else
-			item->setText("---");
-
-		item->setData(Qt::UserRole,r->m_id);
-		item->setTextAlignment(Qt::AlignRight | Qt::AlignVCenter);
-		m_ui->tableWidgetZones->setItem(row,3, item);
-	}
-
-	m_ui->tableWidgetZones->setSortingEnabled(true);
-	m_ui->tableWidgetZones->blockSignals(false);
-	m_ui->tableWidgetZones->selectionModel()->blockSignals(false);
 
 	// update "Assign surface" button state
-	on_tableWidgetZones_itemSelectionChanged();
+	on_tableViewZones_selectionChanged();
 }
 
 
@@ -233,124 +143,9 @@ void SVPropBuildingZoneProperty::on_comboBoxBuildingLevelFilter_currentIndexChan
 	updateUi();
 }
 
-void SVPropBuildingZoneProperty::on_tableWidgetZones_itemDoubleClicked(QTableWidgetItem *item) {
-	if (item != nullptr)
-		m_ui->tableWidgetZones->closePersistentEditor(item);
-}
-
-void SVPropBuildingZoneProperty::on_tableWidgetZones_cellChanged(int row, int column){
-
-
-	if(column<2)
-		return;
-
-	QTableWidgetItem *current = m_ui->tableWidgetZones->item(row, column);
-	// change floor area
-	unsigned int roomId = m_ui->tableWidgetZones->item(row, 0)->data(Qt::UserRole).toUInt();
-
-	//get value
-	bool valueOk;
-	double val = current->text().toDouble(&valueOk);
-
-	if(!valueOk){
-		QMessageBox::warning(this, QString(), tr("Only numbers are allowed. Input is not a number."));
-		updateUi();
-		return;
-	}
-
-	if(val<=0){
-		QMessageBox::warning(this, QString(), tr("Value must greater zero. Value is smaller or equal zero."));
-		updateUi();
-		return;
-	}
-
-	std::vector<VICUS::Building> buildings = project().m_buildings;
-
-	// first find the room
-	bool foundRoom = false;
-	for(unsigned int i=0; i<buildings.size(); ++i){
-		const VICUS::Building & b = buildings[i];
-		for(unsigned j=0; j<b.m_buildingLevels.size(); ++j){
-			VICUS::BuildingLevel bl = b.m_buildingLevels[j];
-			for(unsigned k=0; k<bl.m_rooms.size(); ++k){
-				VICUS::Room & r = bl.m_rooms[k];
-				if(r.m_id == roomId){
-					QString text;
-
-					if(current->column() == 2){
-						VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Area, val);
-						text = tr("Modified floor area");
-					}
-					// change volume
-					else if(current->column() == 3){
-						VICUS::KeywordList::setParameter(r.m_para, "Room::para_t", VICUS::Room::P_Volume, val);
-						text = tr("Modified volume");
-					}
-					SVUndoModifyRoom * undo = new SVUndoModifyRoom(text, r, i, j, k);
-					undo->push();
-
-					foundRoom = true;
-					break;
-				}
-			}
-			if(foundRoom)
-				break;
-		}
-		if(foundRoom)
-			break;
-	}
-}
-
-
-void SVPropBuildingZoneProperty::calculatedParameters(bool floorAreaCalc, bool onlySelected){
-
-	std::vector<unsigned int>	roomIds;
-	if(onlySelected){
-
-		for(auto *item : m_ui->tableWidgetZones->selectedItems()){
-			if(item->column() != 0)
-				continue;
-			roomIds.push_back(item->data(Qt::UserRole).toUInt());
-		}
-
-		if(roomIds.empty())
-			return;
-	}
-	else{
-		for(int row=0; row<m_ui->tableWidgetZones->rowCount(); ++row)
-			roomIds.push_back(m_ui->tableWidgetZones->item(row,0)->text().toUInt());
-
-		if(roomIds.empty())
-			return;
-	}
-
-	// make a copy of buildings data structure
-	std::vector<VICUS::Building>	buildings = project().m_buildings;
-
-	for(unsigned int idxBuilding=0; idxBuilding<buildings.size(); ++idxBuilding){
-		for(unsigned int idxBuildingLevel=0; idxBuildingLevel<buildings[idxBuilding].m_buildingLevels.size(); ++idxBuildingLevel){
-			for(unsigned int idxRoom=0; idxRoom<buildings[idxBuilding].m_buildingLevels[idxBuildingLevel].m_rooms.size(); ++idxRoom){
-				VICUS::Room &r = buildings[idxBuilding].m_buildingLevels[idxBuildingLevel].m_rooms[idxRoom];
-				for(unsigned int id : roomIds){
-					if(id == r.m_id){
-						// make calculation here
-						if(floorAreaCalc)
-							r.calculateFloorArea();
-						else
-							r.calculateVolume();
-						break;
-					}
-				}
-			}
-		}
-	}
-	QString text = "Floor area calculation";
-	if(!floorAreaCalc)
-		text = "Volume calculation";
-
-	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
-	undo->push();
-	updateUi();
+void SVPropBuildingZoneProperty::on_tableViewZones_doubleClicked(const QModelIndex &index) {
+	if (index.isValid())
+		m_ui->tableViewZones->closePersistentEditor(index);
 }
 
 
@@ -430,33 +225,87 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
 
 void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
-	calculatedParameters(true, true);
+
+	std::vector<unsigned int> roomIds;
+	// calculate area only for an id selection
+	for(QModelIndex index: m_ui->tableViewZones->selectionModel()->selection().indexes()){
+		if(index.column() != 0)
+			continue;
+		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+	}
+
+	if(roomIds.empty())
+		return;
+
+	// perform calculation of room floor areas inside table model
+	m_zonePropertiesTableModel->calulateFloorArea(roomIds);
+	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
-	calculatedParameters(false, true);
+
+	std::vector<unsigned int> roomIds;
+	// calculate volume only for an id selection
+	for(QModelIndex index: m_ui->tableViewZones->selectionModel()->selection().indexes()){
+		if(index.column() != 0)
+			continue;
+		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+	}
+
+	if(roomIds.empty())
+		return;
+
+	// perform calculation of room volumes inside table model
+	m_zonePropertiesTableModel->calulateVolume(roomIds);
+	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
-	calculatedParameters(true, false);
+
+	// choose all rooms in proxy model
+	std::vector<unsigned int> roomIds;
+	for(int row=0; row<m_zonePropertiesProxyModel->rowCount(); ++row) {
+		QModelIndex index = m_zonePropertiesProxyModel->index(row,0);
+		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+	}
+
+	if(roomIds.empty())
+		return;
+
+	// perform calculation of room floor areas inside table model
+	m_zonePropertiesTableModel->calulateFloorArea(roomIds);
+	updateUi();
 }
 
 
 void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
-	calculatedParameters(false, false);
+
+	// choose all rooms in proxy model
+	std::vector<unsigned int> roomIds;
+	for(int row=0; row<m_zonePropertiesProxyModel->rowCount(); ++row) {
+		QModelIndex index = m_zonePropertiesProxyModel->index(row,0);
+		roomIds.push_back(m_zonePropertiesProxyModel->data(index, Qt::UserRole).toUInt());
+	}
+
+	if(roomIds.empty())
+		return;
+
+	// perform calculation of room volumes inside table model
+	m_zonePropertiesTableModel->calulateVolume(roomIds);
+	updateUi();
 }
 
 
-void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
+void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
 	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
 
 	// TODO Dirk: pushButtonAssignSurface darf nur aktiv sein, wenn:
-	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableWidgetZones->selectionModel()->selectedRows() == 1)
+	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableViewZones->selectionModel()->selectedRows() == 1)
 	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört
 
-	QModelIndexList selectedRows = m_ui->tableWidgetZones->selectionModel()->selectedRows(1);
+	QModelIndexList selectedRows = m_ui->tableViewZones->selectionModel()->selectedRows(1);
 	m_ui->pushButtonAssignSurface->setEnabled(true);
 
 	std::vector<const VICUS::Surface*> surfs;
@@ -470,7 +319,7 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 		return;
 	}
 
-	unsigned int id = m_ui->tableWidgetZones->item(selectedRows[0].row(), 0)->text().toUInt();
+	unsigned int id = (unsigned int) m_zonePropertiesProxyModel->data(selectedRows[0], Qt::UserRole).toInt();
 
 	bool isPartOfRoom = true;
 	for(const VICUS::Surface *s : surfs) {
@@ -489,6 +338,4 @@ void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
 	Q_ASSERT(room != nullptr);
 
 	m_selectedRoomID = const_cast<VICUS::Room*>(room)->m_id;
-
-
 }
