@@ -904,27 +904,24 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 	// create geometry
 
 	// memory layout:
-	//   with valid polygon:          vertexBuffer = |polygon_vertexes|coordinate system vertex|
-	//   without valid polygon:       vertexBuffer = |last_polygon_vertex|coordinate system vertex|
 
-	// index buffer is only filled if valid polygon exists
+	// Vertex buffer layout:
+//		vertexes plane geometry (only for valid polygon)
+//		vertexes polyline (m_vertexList)
+//		vertexe coordinate system
+
+	// Index buffer is only filled if valid polygon exists
 
 	// first copy polygon from PlaneGeometry, if at least 3 vertexes are inserted
 	// then add vertex to last
 
-	/* Vertex buffer layout:
-		vertexes plane geometry (only for valid polygon)
-		vertexes polyline (m_vertexList)
-		vertexe coordinate system
-	*/
-
 	m_vertexBufferData.clear();
 	m_indexBufferData.clear();
 
-	// no vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
-	// can draw a line from the last vertex to the current coordinate system's location
-	if (!m_polygonGeometry.isValid() || (
-			m_polygonGeometry.triangulationData().m_vertexes.empty() && m_vertexList.empty()))
+	// No vertexes, nothing to draw - we need at least one vertex in the geometry, so that we
+	// can draw a line from the last vertex to the current coordinate system's location.
+	// If we have a valid polygon geometry, we also have valid vertexes.
+	if (!m_polygonGeometry.isValid() && m_vertexList.empty())
 		return;
 
 	unsigned int currentVertexIndex = 0;
@@ -937,7 +934,7 @@ void NewGeometryObject::updateBuffers(bool onlyLocalCSMoved) {
 			// Buffer layout:
 			// - if we have 1 vertex: VC (first vertex) | VC (local coordinate system)
 			// - if we have 2 vertexes: VC (first vertex) | VC (second vertex) | VC (local coordinate system) | VC (computed 4th vertex) | VC (first vertex)
-			// - if we have a valid polygon: 4 * VC
+			// - if we have a valid polygon: 4 * VC | first vertex again (no LCS, since no further drawing possible)
 
 			if (m_polygonGeometry.isValid()) {
 				addPlane(m_polygonGeometry.triangulationData(), currentVertexIndex, currentElementIndex,
