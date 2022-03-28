@@ -151,71 +151,14 @@ void SVPropBuildingZoneProperty::on_tableViewZones_doubleClicked(const QModelInd
 
 void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
-	// TODO Stephan: statt der mächtigsten "Copy all" UndoAction, eher die SVUndoModifyBuildingTopology-Action benutzen
-	VICUS::Project vp = project();
-	vp.updatePointers();
+	QString messageBoxText;
+	bool success = m_zonePropertiesTableModel->assignSurfaces(m_firstSelectedIndex, messageBoxText);
 
-	VICUS::Room *selectedRoom = vp.roomByID(m_selectedRoomID);
-	Q_ASSERT(selectedRoom != nullptr);
+	// retrieve name from column 2
+	QModelIndex index = m_zonePropertiesProxyModel->index(m_firstSelectedIndex.row(), 2);
+	QString newRoomName = m_zonePropertiesProxyModel->data(index, Qt::DisplayRole).toString();
 
-	// we get the selected surfaces
-	std::vector<const VICUS::Surface*> surfs;
-	vp.selectedSurfaces(surfs, VICUS::Project::SG_Building);
-	QString newRoomName, messageBoxText, oldRoomName;
-
-	newRoomName = selectedRoom ->m_displayName;
-	bool hadAtLeastOneChangedSurface = false;
-
-	std::map<unsigned int, std::vector<unsigned int>> idTodeleteSurfPositions;
-
-	// we have to mind plain geometry and already assigned surfaces
-	for(const VICUS::Surface *surf : surfs) {
-
-		// if surface has already a parent we have to delete the surface from the parent
-		// and update its parent
-		VICUS::Room* oldRoom = dynamic_cast<VICUS::Room*>(surf->m_parent);
-		if(oldRoom->m_id == selectedRoom->m_id)
-			continue; // skip if surface is already assigned to specified room
-
-		selectedRoom->m_surfaces.push_back(*surf);
-		selectedRoom->updateParents();
-		hadAtLeastOneChangedSurface = true;
-
-		if (oldRoom != nullptr) {
-			for (unsigned int i=0; i<oldRoom->m_surfaces.size(); ++i) {
-				VICUS::Surface &s = oldRoom->m_surfaces[i];
-				if(s.m_id == surf->m_id) {
-					idTodeleteSurfPositions[oldRoom->m_id].push_back(i);
-					break;
-				}
-			}
-			oldRoomName = oldRoom->m_displayName;
-		}
-		else
-			oldRoomName = "Plain Geometry";
-
-		// assign new parent;
-		const VICUS::Object* obj = dynamic_cast<const VICUS::Object*>(selectedRoom);
-		Q_ASSERT(obj != nullptr);
-		selectedRoom->m_surfaces.back().m_parent = const_cast<VICUS::Object*>(obj);
-		messageBoxText.append(QString("%3: %1 --> %2\n").arg(oldRoomName).arg(newRoomName).arg(surf->m_displayName));
-	}
-
-	// we delete the old surfaces and update their parents;
-	for(std::map<unsigned int, std::vector<unsigned int>>::iterator it = idTodeleteSurfPositions.begin(); it != idTodeleteSurfPositions.end(); ++it) {
-		VICUS::Room *oldRoom = vp.roomByID(it->first);
-
-		for(unsigned int i=it->second.size(); i>0;--i) {
-			std::vector<VICUS::Surface>::iterator it2 = oldRoom->m_surfaces.begin();
-			std::advance(it2, it->second[i-1]);
-			oldRoom->m_surfaces.erase(it2);
-		}
-		oldRoom->updateParents();
-	}
-
-	if(hadAtLeastOneChangedSurface) {
-		SVUndoModifyBuildingTopology * undo = new SVUndoModifyBuildingTopology("Assigning surfaces to different room.", vp.m_buildings);
-		undo->push();
+	if(success) {
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
 	}
 	else {
@@ -324,14 +267,13 @@ void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
 	}
 
 	if(isPartOfRoom) {
-		m_selectedRoomID = std::numeric_limits<unsigned int>::max();
+		// set an invalid index
+		m_firstSelectedIndex = QModelIndex();
 		m_ui->pushButtonAssignSurface->setEnabled(false);
 		return;
 	}
 
-	const VICUS::Room* room = dynamic_cast<const VICUS::Room*>(project().objectById(id));
+	Q_ASSERT(dynamic_cast<const VICUS::Room*>(project().objectById(id)) != nullptr);
 
-	Q_ASSERT(room != nullptr);
-
-	m_selectedRoomID = const_cast<VICUS::Room*>(room)->m_id;
+	m_firstSelectedIndex = selectedRows[0];
 }

@@ -47,6 +47,8 @@ public:
 	void calulateFloorArea(const QModelIndexList &indexes);
 	// automatically calculates zone volume for an item selection
 	void calulateVolume(const QModelIndexList &indexes);
+	// assignes surfaces to a chosen room and returns true if succeeded (false otherwise)
+	bool assignSurfaces(const QModelIndex &index, QString &msg);
 
 	QFont	m_itemFont;
 

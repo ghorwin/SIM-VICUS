@@ -66,7 +66,7 @@ private:
 	/*! Holds selected room for adding surfaces to it.
 		Updated in itemSelectionChanged.
 	*/
-	unsigned int							m_selectedRoomID;
+	QModelIndex								m_firstSelectedIndex;
 };
 
 #endif // SVPropBuildingZonePropertyH

@@ -33,6 +33,9 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 	if (!index.isValid())
 		return QVariant();
 
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
+	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
+
 	// constant access to selected room
 	const VICUS::Room &room = *m_rooms[(size_t)index.row()];
 
@@ -110,6 +113,7 @@ QVariant SVPropBuildingZonePropertyTableModel::headerData(int section, Qt::Orien
 
 
 Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & index) const {
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
 	// column 0 - room id
 	if (index.column() == 0)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -129,6 +133,8 @@ Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & in
 bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, const QVariant & value, int /*role*/) {
 	Q_ASSERT(index.isValid());
 	Q_ASSERT(index.column() == 2 || index.column() == 3);
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
+	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
 
 	//get value
 	bool valueOk;
@@ -229,6 +235,7 @@ void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const QModelIndexLi
 
 	// loop through all indexes, retrieve room and perform reacalulation on a copy of building
 	for(const QModelIndex &index : indexes) {
+		Q_ASSERT((size_t)index.row() < m_rooms.size());
 		// retrieve room location
 		const roomLocation &location = m_roomLocations[(size_t)index.row()];
 		unsigned int i = location.m_buildingIndex;
@@ -253,6 +260,8 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 
 	// loop through all indexes, retrieve room and perform reacalulation on a copy of building
 	for(const QModelIndex &index : indexes) {
+		Q_ASSERT((size_t)index.row() < m_rooms.size());
+
 		// retrieve room location
 		const roomLocation &location = m_roomLocations[(size_t)index.row()];
 		unsigned int i = location.m_buildingIndex;
@@ -268,5 +277,84 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
+}
+
+
+bool SVPropBuildingZonePropertyTableModel::assignSurfaces(const QModelIndex & index, QString &msg)
+{
+	// udate a project copy
+	VICUS::Project vp = project();
+	vp.updatePointers();
+
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
+	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
+
+	// retieve a copy of the selected room
+	VICUS::Room room = *m_rooms[(size_t)index.row()];
+
+	// we get the selected surfaces
+	std::vector<const VICUS::Surface*> surfs;
+	vp.selectedSurfaces(surfs, VICUS::Project::SG_Building);
+	QString newRoomName, oldRoomName;
+
+	newRoomName = room.m_displayName;
+	bool hadAtLeastOneChangedSurface = false;
+
+	std::map<unsigned int, std::vector<unsigned int>> idTodeleteSurfPositions;
+
+	// we have to mind plain geometry and already assigned surfaces
+	for(const VICUS::Surface *surf : surfs) {
+
+		// if surface has already a parent we have to delete the surface from the parent
+		// and update its parent
+		VICUS::Room* oldRoom = dynamic_cast<VICUS::Room*>(surf->m_parent);
+		if(oldRoom->m_id == room.m_id)
+			continue; // skip if surface is already assigned to specified room
+
+		room.m_surfaces.push_back(*surf);
+		room.updateParents();
+		hadAtLeastOneChangedSurface = true;
+
+		if (oldRoom != nullptr) {
+			for (unsigned int i=0; i<oldRoom->m_surfaces.size(); ++i) {
+				VICUS::Surface &s = oldRoom->m_surfaces[i];
+				if(s.m_id == surf->m_id) {
+					idTodeleteSurfPositions[oldRoom->m_id].push_back(i);
+					break;
+				}
+			}
+			oldRoomName = oldRoom->m_displayName;
+		}
+		else
+			oldRoomName = "Plain Geometry";
+
+		// assign new parent;
+		const VICUS::Object* obj = dynamic_cast<const VICUS::Object*>(&room);
+		Q_ASSERT(obj != nullptr);
+		room.m_surfaces.back().m_parent = const_cast<VICUS::Object*>(obj);
+		msg.append(QString("%3: %1 --> %2\n").arg(oldRoomName).arg(newRoomName).arg(surf->m_displayName));
+	}
+
+	// we delete the old surfaces and update their parents;
+	for(std::map<unsigned int, std::vector<unsigned int>>::iterator it = idTodeleteSurfPositions.begin(); it != idTodeleteSurfPositions.end(); ++it) {
+		VICUS::Room *oldRoom = vp.roomByID(it->first);
+
+		for(unsigned int i=it->second.size(); i>0;--i) {
+			std::vector<VICUS::Surface>::iterator it2 = oldRoom->m_surfaces.begin();
+			std::advance(it2, it->second[i-1]);
+			oldRoom->m_surfaces.erase(it2);
+		}
+		oldRoom->updateParents();
+	}
+
+	if(hadAtLeastOneChangedSurface) {
+		SVUndoModifyBuildingTopology * undo = new SVUndoModifyBuildingTopology("Assigning surfaces to different room.", vp.m_buildings);
+		undo->push();
+		return true;
+	}
+	else {
+		return false;
+	}
+
 }
 
