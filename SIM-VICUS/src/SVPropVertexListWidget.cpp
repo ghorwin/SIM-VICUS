@@ -517,7 +517,6 @@ void SVPropVertexListWidget::on_comboBoxBuildingLevel_currentIndexChanged(int /*
 
 void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
-#ifdef POLYGON2D
 	if (m_ui->lineEditName->text().trimmed().isEmpty()) {
 		QMessageBox::critical(this, QString(), tr("Please enter a descriptive name!"));
 		m_ui->lineEditName->selectAll();
@@ -580,7 +579,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			newSubsurface.m_id = project().nextUnusedID();
 			newSubsurface.m_displayName = m_ui->lineEditName->text().trimmed();
 			newSubsurface.m_color = QColor(96,96,255,64);
-
+#if POLYGON2D
 			// we make new projection
 			for (unsigned int i=0; i<s.geometry().polygon().vertexes().size(); ++i) {
 				IBKMK::Vector3D projectedPoint;
@@ -615,6 +614,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
 				modSurfaces, &subSurfaceComponentInstances);
 			undo->push();
+#endif
 		}
 		else {
 
@@ -644,9 +644,6 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_locks = SVViewState::NUM_L;
 	SVViewStateHandler::instance().setViewState(vs);
-
-#endif // POLYGON2D
-
 }
 
 
