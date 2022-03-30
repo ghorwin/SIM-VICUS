@@ -374,11 +374,17 @@ void NewGeometryObject::setZoneHeight(double height) {
 }
 
 
-void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon, QWidget *parent) {
-#if 0
+void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const std::vector<IBKMK::Vector3D> &floorPolygon) {
+	FUNCID(NewGeometryObject::setRoofGeometry);
+
 	Q_ASSERT(m_newGeometryMode == NGM_Roof);
 	Q_ASSERT(m_polygonGeometry.isValid());
+
 	// generate roof geometry
+	m_generatedGeometry.clear();
+
+	// Note: if anything critical fails in this function, we bail out without any created geometry. At least we
+	//       wont show garbage on screen. Error message handling is currently done via IBK::IBK_Message
 
 	// we need all the time a local coordinate system where all points have a z-value of 0
 
@@ -399,9 +405,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 
 	// for all but complex shape
 	if (roofData.m_type != RoofInputData::Complex) {
-
-		/// TODO Dirk->Andreas was ist der Parent in diesem Fall hier?
-		//SVSettings::instance().showDoNotShowAgainMessage(this, "CreateNoComplexRoofType", qApp->tr("Roof creation."), qApp->tr("Square floor plans can be used for this type of roof."));
 
 		// If there are only 3 points and the roof shape is not COMPLEX then a 4th point is always added.
 		// If there are more than 3 points, all further points are discarded. This ensures that there is always a rectangle.
@@ -590,9 +593,9 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 				IBKMK::Vector3D middleBA= (polyline[1]-polyline[0])*0.5;
 				IBKMK::Vector3D h1(0,0,height);
 				IBKMK::Vector3D d1(0,0,0);
-				double wid = polyline[2].distanceTo(polyline[1]);
+//				double wid = polyline[2].distanceTo(polyline[1]);
 				double len = polyline[1].distanceTo(polyline[0]);
-				if(len != 0)
+				if(len != 0.0)
 					d1 = (polyline[2]-polyline[1]) * 0.1;
 
 				//roof 1
@@ -640,10 +643,10 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 		// create floor polygon
 		double zHeight = polyline.front().m_z;
 		{
-			VICUS::Polygon3D poly3d(polyline); // TODO : Dirk, error checking
-			if (poly3d.normal().m_z == 0)
-			{
-				/// TODO Dirk Fehler abfangen wenn das Polygon senkrecht zur x-y-Ebene aufgebaut wird
+			VICUS::Polygon3D poly3d(polyline);
+			if (poly3d.normal().m_z == 0.0) {
+				IBK::IBK_Message("Cannot generate roof geometry when constructing roof on vertical floor polygon.",
+								 IBK::MSG_ERROR, FUNC_ID);
 				return;
 			}
 			// transform all coordinates to x-y-plane
@@ -670,10 +673,18 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 
 			//create 3x roof
 			for(unsigned int i=0; i<3; ++i){
-				VICUS::Polygon3D poly3d;
-				poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight));
-				poly3d.addVertex(IBKMK::Vector3D(polyline[i].m_x, polyline[i].m_y,  zHeight));
-				poly3d.addVertex(IBKMK::Vector3D(polyline[(i+1)%3].m_x, polyline[(i+1)%3].m_y,  + zHeight));
+				std::vector<IBKMK::Vector3D> verts;
+				verts.push_back(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight));
+				verts.push_back(IBKMK::Vector3D(polyline[i].m_x, polyline[i].m_y,  zHeight));
+				verts.push_back(IBKMK::Vector3D(polyline[(i+1)%3].m_x, polyline[(i+1)%3].m_y,  + zHeight));
+				VICUS::Polygon3D poly3d(verts); // Note: this might lead to an invalid polygon, so we check this
+
+				if (!poly3d.isValid()) {
+					IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+									 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+									 IBK::MSG_ERROR, FUNC_ID);
+					return;
+				}
 				polys.push_back(poly3d);
 			}
 		}
@@ -771,11 +782,13 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 
 						IBKMK::Vector2D mid2D = p1+ (p2 - p1)*0.5;
 
-						VICUS::Polygon3D poly3d;
 						//first poly
-						poly3d.addVertex(IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight));
-						poly3d.addVertex(IBKMK::Vector3D(p1.m_x, p1.m_y,  zHeight));
-						poly3d.addVertex(IBKMK::Vector3D(p3.m_x, p3.m_y,  zHeight));
+						VICUS::Polygon3D poly3d;
+						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+											   IBKMK::Vector3D(mid2D.m_x, mid2D.m_y, roofData.m_height + zHeight),
+											   IBKMK::Vector3D(p1.m_x, p1.m_y,  zHeight),
+											   IBKMK::Vector3D(p3.m_x, p3.m_y,  zHeight)
+										   });
 						polys.push_back(poly3d);
 
 						//second poly
@@ -813,30 +826,52 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 						}
 						p2 = commonPoint == pts2DVec[2] ? pts2DVec[3] : pts2DVec[2];
 
+						std::vector<IBKMK::Vector3D> verts;
 						VICUS::Polygon3D poly3d;
 						//create first triangle with the two mid points and the common point
-						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
-											   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height + zHeight),
-											   IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, zHeight)
-										   });
+						verts = std::vector<IBKMK::Vector3D>{
+								IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
+								IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height + zHeight),
+								IBKMK::Vector3D(commonPoint.m_x, commonPoint.m_y, zHeight)
+							};
+						poly3d.setVertexes(verts);
+						if (!poly3d.isValid()) {
+							IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+											 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+											 IBK::MSG_ERROR, FUNC_ID);
+							return;
+						}
 						polys.push_back(poly3d);
 
 						//create second triangle with the one mid point and the two other points
-						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
-											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
-											   IBKMK::Vector3D(p1.m_x, p1.m_y, zHeight),
-											   IBKMK::Vector3D(p2.m_x, p2.m_y, zHeight)
-										   });
+						verts = std::vector<IBKMK::Vector3D>{
+																	   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
+																	   IBKMK::Vector3D(p1.m_x, p1.m_y, zHeight),
+																	   IBKMK::Vector3D(p2.m_x, p2.m_y, zHeight)
+															};
+						poly3d.setVertexes(verts);
+						if (!poly3d.isValid()) {
+							IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+											 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+											 IBK::MSG_ERROR, FUNC_ID);
+							return;
+						}
 						polys.push_back(poly3d);
 
 						//create third triangle with the two mid points and the one other point
-						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+						verts = std::vector<IBKMK::Vector3D>{
 											   IBKMK::Vector3D(mid2Da.m_x, mid2Da.m_y, roofData.m_height + zHeight),
 											   IBKMK::Vector3D(mid2Db.m_x, mid2Db.m_y, roofData.m_height + zHeight),
 											   commonPoint == pts2DVec[2] ? IBKMK::Vector3D(pts2DVec[3].m_x, pts2DVec[3].m_y, zHeight) :
 											   IBKMK::Vector3D(pts2DVec[2].m_x, pts2DVec[2].m_y, zHeight)
-										   });
+										   };
+						poly3d.setVertexes(verts);
+						if (!poly3d.isValid()) {
+							IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+											 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+											 IBK::MSG_ERROR, FUNC_ID);
+							return;
+						}
 						polys.push_back(poly3d);
 
 					}
@@ -856,26 +891,39 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 						}
 
 						VICUS::Polygon3D poly3d;
+						std::vector<IBKMK::Vector3D> verts;
 						//create first triangle --> all mid points
-						poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+						verts = std::vector<IBKMK::Vector3D>{
 											   IBKMK::Vector3D(midPts2DVec[0].m_x, midPts2DVec[0].m_y, roofData.m_height + zHeight),
 											   IBKMK::Vector3D(midPts2DVec[1].m_x, midPts2DVec[1].m_y, roofData.m_height + zHeight),
 											   IBKMK::Vector3D(midPts2DVec[2].m_x, midPts2DVec[2].m_y, roofData.m_height + zHeight)
-										   });
+										   };
+						poly3d.setVertexes(verts);
+						if (!poly3d.isValid()) {
+							IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+											 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+											 IBK::MSG_ERROR, FUNC_ID);
+							return;
+						}
 						polys.push_back(poly3d);
 
 						//create three more triangles
 						//each has two mid points and a other point
 						for(unsigned int i3=0; i3<3; ++i3){
 							//find the other point which belongs to the two mid points
-							poly3d.setVertexes(std::vector<IBKMK::Vector3D>{
+							verts = std::vector<IBKMK::Vector3D>{
 												   IBKMK::Vector3D(midPts2DVec[i3].m_x, midPts2DVec[i3].m_y, roofData.m_height + zHeight),
 												   IBKMK::Vector3D(midPts2DVec[(i3+1)%3].m_x, midPts2DVec[(i3+1)%3].m_y, roofData.m_height + zHeight),
 												   IBKMK::Vector3D(pts2DVec[(i3+1)%3].m_x, pts2DVec[(i3+1)%3].m_y, zHeight)
-											   });
+											   };
+							poly3d.setVertexes(verts);
+							if (!poly3d.isValid()) {
+								IBK::IBK_Message(IBK::FormatString("Cannot generate a polygon from vertexes (%1), (%2) and (%3).")
+												 .arg(verts[0].toString()).arg(verts[1].toString()).arg(verts[2].toString()),
+												 IBK::MSG_ERROR, FUNC_ID);
+								return;
+							}
 							polys.push_back(poly3d);
-
-
 						}
 					}
 					break;
@@ -885,7 +933,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 
 	}
 
-	m_generatedGeometry.clear();
 	for(unsigned int i=0; i<polys.size(); ++i){
 		//flip polygon because wrong direction of normal
 		if(polys[i].normal().m_z < 0 )
@@ -896,7 +943,6 @@ void NewGeometryObject::setRoofGeometry(const RoofInputData & roofData, const st
 		m_generatedGeometry.push_back(pg);
 	}
 	updateBuffers(false);
-#endif
 }
 
 

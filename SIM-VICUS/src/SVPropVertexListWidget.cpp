@@ -1398,7 +1398,7 @@ void SVPropVertexListWidget::updateRoofGeometry() {
 		for(unsigned int i=0; i<4; ++i)
 			polyline.push_back(m_roofPolygon[(i + m_currentIdxOfStartpoint)%4]);
 
-	po->setRoofGeometry(roofData, polyline, this);
+	po->setRoofGeometry(roofData, polyline);
 
 	// we need to trigger a redraw here
 	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
