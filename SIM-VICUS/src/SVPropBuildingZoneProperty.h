@@ -66,7 +66,7 @@ private:
 	/*! Holds selected room for adding surfaces to it.
 		Updated in itemSelectionChanged.
 	*/
-	QModelIndex								m_firstSelectedIndex;
+	QModelIndex								m_selectedProxyIndex;
 };
 
 #endif // SVPropBuildingZonePropertyH

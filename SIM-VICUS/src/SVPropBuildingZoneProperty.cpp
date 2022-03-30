@@ -151,11 +151,20 @@ void SVPropBuildingZoneProperty::on_tableViewZones_doubleClicked(const QModelInd
 
 void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
-	QString messageBoxText;
-	bool success = m_zonePropertiesTableModel->assignSurfaces(m_firstSelectedIndex, messageBoxText);
+	// no valid index is chosen
+	if(!m_selectedProxyIndex.isValid())
+		return;
 
 	// retrieve name from column 2
-	QModelIndex index = m_zonePropertiesProxyModel->index(m_firstSelectedIndex.row(), 2);
+	QModelIndex proxyIndex = m_zonePropertiesProxyModel->index(m_selectedProxyIndex.row(), 2);
+	// error in table model creation
+	Q_ASSERT(proxyIndex.isValid());
+
+	QModelIndex index = m_zonePropertiesProxyModel->mapToSource(proxyIndex);
+
+	QString messageBoxText;
+	bool success = m_zonePropertiesTableModel->assignSurfaces(index, messageBoxText);
+
 	QString newRoomName = m_zonePropertiesProxyModel->data(index, Qt::DisplayRole).toString();
 
 	if(success) {
@@ -240,6 +249,7 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
 	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
 
+	m_selectedProxyIndex = QModelIndex();
 	// TODO Dirk: pushButtonAssignSurface darf nur aktiv sein, wenn:
 	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableViewZones->selectionModel()->selectedRows() == 1)
 	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört
@@ -268,12 +278,11 @@ void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
 
 	if(isPartOfRoom) {
 		// set an invalid index
-		m_firstSelectedIndex = QModelIndex();
 		m_ui->pushButtonAssignSurface->setEnabled(false);
 		return;
 	}
 
 	Q_ASSERT(dynamic_cast<const VICUS::Room*>(project().objectById(id)) != nullptr);
 
-	m_firstSelectedIndex = selectedRows[0];
+	m_selectedProxyIndex = selectedRows[0];
 }

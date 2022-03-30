@@ -282,6 +282,8 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 
 bool SVPropBuildingZonePropertyTableModel::assignSurfaces(const QModelIndex & index, QString &msg)
 {
+	Q_ASSERT(index.isValid());
+
 	// udate a project copy
 	VICUS::Project vp = project();
 	vp.updatePointers();
