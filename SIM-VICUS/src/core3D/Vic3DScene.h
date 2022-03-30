@@ -158,6 +158,7 @@ private:
 
 	/*! Mouse pick handler: collects all pickable objects/surfaces/planes along the line-of-sight and stores all possible
 		pick candidates in pickObject.
+		\note There is always at least one pick candidate in the list of intersection candidates, which is the intersection with the far plane.
 	*/
 	void pick(PickObject & pickObject);
 

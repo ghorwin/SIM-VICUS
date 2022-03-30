@@ -28,5 +28,22 @@
 
 namespace Vic3D {
 
+const PickObject::PickResult & PickObject::pickResultNotOf(const std::set<PickObject::ResultType> & maskedTypes) const {
+	// search through pick candidates until a suitable candidate was found
+	unsigned int i=0;
+	for (; i<m_candidates.size(); ++i) {
+		// pick candidate filtered out?
+		if (maskedTypes.find(m_candidates[i].m_resultType) != maskedTypes.end())
+			continue;
+		break; // found a candidate
+	}
+	// if we did not hit anything, fall back to the last point, which is the farpoint
+	if (i == m_candidates.size())
+		--i;
+	IBK_ASSERT(i>=0);
+
+	return m_candidates[i];
+}
+
 
 } // namespace Vic3D

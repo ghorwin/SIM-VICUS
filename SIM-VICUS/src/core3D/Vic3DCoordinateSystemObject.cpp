@@ -298,7 +298,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 													);
 			// check distance against radius of sphere
 			if (hit) {
-				r.m_snapPointType = PickObject::RT_CoordinateSystemCenter;
+				r.m_resultType = PickObject::RT_CoordinateSystemCenter;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
 				r.m_objectID = 0; // not needed, since type is already expressive enough
@@ -316,7 +316,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 													);
 			// check distance against radius of sphere
 			if (hit) {
-				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_resultType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
 				r.m_objectID = 0; // indicates x axis, i.e. rotation around z
@@ -331,7 +331,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 													);
 			// check distance against radius of sphere
 			if (hit) {
-				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_resultType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
 				r.m_objectID = 1; // indicates y axis
@@ -346,7 +346,7 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 													);
 			// check distance against radius of sphere
 			if (hit) {
-				r.m_snapPointType = PickObject::RT_AxisEndMarker;
+				r.m_resultType = PickObject::RT_AxisEndMarker;
 				r.m_depth = lineFactor;
 				r.m_pickPoint = nearPoint + lineFactor*direction;
 				r.m_objectID = 2; // indicates z axis

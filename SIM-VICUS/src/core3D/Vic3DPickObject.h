@@ -71,7 +71,7 @@ struct PickObject {
 			return m_depth < other.m_depth;
 		}
 
-		ResultType		m_snapPointType;
+		ResultType		m_resultType;
 		/*! Distance from observer/near plane point. */
 		double			m_depth;
 
@@ -92,6 +92,12 @@ struct PickObject {
 	{
 	}
 
+	/*! Searches through the pick candidates from front to back until we find one
+		that has a type not in the maskedTypes set.
+		If none is found, we always return the last point, which is _always_ the intersection point with the far plane.
+	*/
+	const PickResult & pickResultNotOf(const std::set<ResultType> & maskedTypes) const;
+
 	/*! Set to true, if picking was already performed. */
 	bool					m_pickPerformed = false;
 
@@ -102,11 +108,6 @@ struct PickObject {
 		Added will be only those, whose depths is between 0 and 1 (line-of-sight factor).
 	*/
 	std::vector<PickResult>	m_candidates;
-
-	/*! Here we store all possible orbit pick candidates.
-		Added will be only those, whose depths is between 0 and 1 (line-of-sight factor).
-	*/
-	std::vector<PickResult>	m_orbitCandidates;
 
 	IBKMK::Vector3D			m_lineOfSightOffset;
 	IBKMK::Vector3D			m_lineOfSightDirection;
