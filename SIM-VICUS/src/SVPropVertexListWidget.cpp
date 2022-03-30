@@ -325,7 +325,10 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			m_ui->stackedWidget->setCurrentIndex(2);
 
 			updateComponentComboBoxes(); // update all component combo boxes in zone page
+
+			// switch to zone construction mode - this also orients the polygon to have a normal pointing upwards
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Zone);
+
 			// transfer zone height into line edit, if we have already a building level defined
 			on_comboBoxBuildingLevel2_currentIndexChanged(0); // index argument does not matter, not used
 			on_lineEditZoneHeight_editingFinishedSuccessfully();
@@ -338,14 +341,10 @@ void SVPropVertexListWidget::on_pushButtonCompletePolygon_clicked() {
 			const VICUS::PlaneGeometry & pg = po->planeGeometry();
 			if (pg.polygon3D().type() != IBKMK::Polygon2D::T_Rectangle)
 				m_ui->comboBoxRoofType->setCurrentIndex(4); // not a rectangle, select complex roof
+
+			// switch to roof construction mode - this also orients the polygon to have a normal pointing upwards
 			po->setNewGeometryMode(Vic3D::NewGeometryObject::NGM_Roof);
 			m_ui->lineEditNameRoof->setText(tr("Roof"));
-
-			// get floor polyline from roof and save this for later
-			Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
-
-			if (po->planeGeometry().polygon3D().vertexes().empty())
-				return; // TODO Dirk, error handling? can this actually happen? If not, make it an assert
 
 			m_roofPolygon = po->planeGeometry().polygon3D().vertexes();
 			m_currentIdxOfStartpoint = 0;

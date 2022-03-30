@@ -122,6 +122,12 @@ void NewGeometryObject::destroy() {
 
 void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m) {
 	m_newGeometryMode = m;
+	// if we construct more complex geometry based on the initial polygon,
+	// first orient it upwards
+	if (m == NGM_Zone || m == NGM_Roof) {
+		if (m_polygonGeometry.normal().m_z < 0)
+			m_polygonGeometry.flip();
+	}
 	updateBuffers(false);
 }
 
