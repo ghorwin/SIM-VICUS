@@ -83,7 +83,8 @@ bool planeCoordinates(const Vector3D & offset, const Vector3D & a, const Vector3
 	IBKMK::Vector3D v2 = v - dist*n;
 	IBKMK::Vector3D v2offset = v2 - v;
 	if (v2offset.magnitude() > tolerance) {
-		IBK::IBK_Message(IBK::FormatString("Distance between point and projection point = %1 is too large!").arg(v2offset.magnitude()),
+		IBK::IBK_Message(IBK::FormatString("Distance between point (%1) and projection point (%2) is too large (distance = %3)!")
+						 .arg(v.toString()).arg(v2.toString()).arg(v2offset.magnitude()),
 						 IBK::MSG_WARNING, FUNC_ID);
 	}
 

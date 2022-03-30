@@ -53,8 +53,6 @@
 
 namespace VICUS {
 
-
-
 // *** PlaneGeometry ***
 
 PlaneGeometry::PlaneGeometry(IBKMK::Polygon2D::type_t t, const IBKMK::Vector3D & a, const IBKMK::Vector3D & b, const IBKMK::Vector3D & c) {
@@ -145,8 +143,6 @@ void PlaneGeometry::triangulate() const {
 		return; // done
 	}
 
-
-	// TODO : generate triangulation for outer polygon
 
 	// now the generic code
 
@@ -405,7 +401,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 				const IBKMK::Vector3D & a = m_polygon.vertexes()[1] - m_polygon.vertexes()[0];
 				const IBKMK::Vector3D & b = m_polygon.vertexes().back() - m_polygon.vertexes()[0];
 				double x,y;
-				if (!IBKMK::planeCoordinates(planeOffset, a, b, x0, x, y))
+				if (!IBKMK::planeCoordinates(planeOffset, a, b, x0, x, y, VICUS_PLANE_PROJECTION_TOLERANCE))
 					return false;
 
 				if (m_polygon.type() == Polygon2D::T_Triangle && x >= 0 && x+y <= 1 && y >= 0) {
@@ -427,7 +423,7 @@ bool PlaneGeometry::intersectsLine(const IBKMK::Vector3D & p1, const IBKMK::Vect
 
 	// compute 2D coordinates in local plane - if that fails, bail out (can happen when line is parallel to plane)
 	double x,y;
-	if (!IBKMK::planeCoordinates(planeOffset, localX(), localY(), x0, x, y))
+	if (!IBKMK::planeCoordinates(planeOffset, localX(), localY(), x0, x, y, VICUS_PLANE_PROJECTION_TOLERANCE))
 		return false;
 
 	IBK::point2D<double> intersectionPoint2D(x,y);
