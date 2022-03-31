@@ -30,7 +30,8 @@ public:
 
 	/*! Updates user interface. */
 	void updateUi();
-	/*! Updates table view only. */
+	/*! Updates table view only.
+		Connected to signal 'selectionChanged' of selection model and 'layoutChanged' of proxy model.*/
 	void updateTableView();
 
 
@@ -68,9 +69,13 @@ private:
 	SVPropBuildingZonePropertyTableProxyModel	*m_zonePropertiesProxyModel = nullptr;
 
 	/*! Holds selected room for adding surfaces to it.
-		Updated in itemSelectionChanged.
+		Updated in 'updateTableView'.
 	*/
 	QModelIndex									m_selectedProxyIndex;
+	/*! Holds selected rooms for floor area and volume calculation.
+		Updated in 'updateTableView'.
+	*/
+	QModelIndexList								m_selectedProxyIndexes;
 };
 
 #endif // SVPropBuildingZonePropertyH

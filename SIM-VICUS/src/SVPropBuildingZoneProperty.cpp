@@ -182,11 +182,12 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 
 void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 
-	// translate proxy selection into table model selection
-	QItemSelection selection = m_ui->tableViewZones->selectionModel()->selection();
 	// empty selection
-	if(selection.empty())
+	if(m_selectedProxyIndexes.empty())
 		return;
+
+	// translate proxy selection into table model selection
+	QItemSelection selection(m_selectedProxyIndexes.first(), m_selectedProxyIndexes.last());
 
 	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
 	Q_ASSERT(!indexes.empty());
@@ -199,11 +200,12 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 
 void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
 
-	// translate proxy selection into table model selection
-	QItemSelection selection = m_ui->tableViewZones->selectionModel()->selection();
 	// empty selection
-	if(selection.empty())
+	if(m_selectedProxyIndexes.empty())
 		return;
+
+	// translate proxy selection into table model selection
+	QItemSelection selection(m_selectedProxyIndexes.first(), m_selectedProxyIndexes.last());
 
 	QModelIndexList indexes = m_zonePropertiesProxyModel->mapSelectionToSource(selection).indexes();
 	Q_ASSERT(!indexes.empty());
@@ -258,21 +260,35 @@ void SVPropBuildingZoneProperty::updateTableView() {
 	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableViewZones->selectionModel()->selectedRows() == 1)
 	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört
 
-	QModelIndexList selectedRows = m_ui->tableViewZones->selectionModel()->selectedRows(1);
+	m_selectedProxyIndexes = m_ui->tableViewZones->selectionModel()->selectedRows(1);
 	m_ui->pushButtonAssignSurface->setEnabled(true);
 
 	std::vector<const VICUS::Surface*> surfs;
 	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
 
-	m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(selectedRows.size() > 0);
-	m_ui->pushButtonVolumeSelectedRooms->setEnabled(selectedRows.size() > 0);
+	m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(m_selectedProxyIndexes.size() > 0);
+	m_ui->pushButtonVolumeSelectedRooms->setEnabled(m_selectedProxyIndexes.size() > 0);
 
-	if (selectedRows.size() != 1) {
+	if (m_selectedProxyIndexes.empty()) {
+		// no selection for calculating volume and floor area
+		m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(false);
+		m_ui->pushButtonVolumeSelectedRooms->setEnabled(false);
 		m_ui->pushButtonAssignSurface->setEnabled(false);
 		return;
 	}
 
-	unsigned int id = (unsigned int) m_zonePropertiesProxyModel->data(selectedRows[0], Qt::UserRole).toInt();
+	// we have a valid selection for calculation of zone floor areas and volumes
+	m_ui->pushButtonFloorAreaSelectedRooms->setEnabled(true);
+	m_ui->pushButtonVolumeSelectedRooms->setEnabled(true);
+
+	// for surface assignment only a single selection is allowed
+	if (m_selectedProxyIndexes.size() != 1) {
+		m_ui->pushButtonAssignSurface->setEnabled(false);
+		return;
+	}
+
+	// get id of single selection
+	unsigned int id = (unsigned int) m_zonePropertiesProxyModel->data(m_selectedProxyIndexes[0], Qt::UserRole).toInt();
 
 	bool isPartOfRoom = true;
 	for(const VICUS::Surface *s : surfs) {
@@ -288,7 +304,10 @@ void SVPropBuildingZoneProperty::updateTableView() {
 
 	Q_ASSERT(dynamic_cast<const VICUS::Room*>(project().objectById(id)) != nullptr);
 
-	m_selectedProxyIndex = selectedRows[0];
+	// allow surface assignment
+	m_ui->pushButtonAssignSurface->setEnabled(true);
+
+	m_selectedProxyIndex = m_selectedProxyIndexes[0];
 }
 
 
