@@ -3,6 +3,7 @@
 
 
 #include "SVPropBuildingZonePropertyTableModel.h"
+#include "SVPropBuildingZonePropertyTableProxyModel.h"
 
 #include <QWidget>
 
@@ -29,6 +30,9 @@ public:
 
 	/*! Updates user interface. */
 	void updateUi();
+	/*! Updates table view only. */
+	void updateTableView();
+
 
 private slots:
 
@@ -52,21 +56,21 @@ private slots:
 
 	void on_pushButtonAssignSurface_clicked();
 
-	void on_tableViewZones_selectionChanged();
+	void on_lineEditNameFilter_textChanged(const QString &arg1);
 
 private:
 
-	Ui::SVPropBuildingZoneProperty			*m_ui;
+	Ui::SVPropBuildingZoneProperty				*m_ui;
 
 	/*! Table model ifor zone properties. */
-	SVPropBuildingZonePropertyTableModel	*m_zonePropertiesTableModel = nullptr;
+	SVPropBuildingZonePropertyTableModel		*m_zonePropertiesTableModel = nullptr;
 
-	QSortFilterProxyModel					*m_zonePropertiesProxyModel = nullptr;
+	SVPropBuildingZonePropertyTableProxyModel	*m_zonePropertiesProxyModel = nullptr;
 
 	/*! Holds selected room for adding surfaces to it.
 		Updated in itemSelectionChanged.
 	*/
-	QModelIndex								m_selectedProxyIndex;
+	QModelIndex									m_selectedProxyIndex;
 };
 
 #endif // SVPropBuildingZonePropertyH

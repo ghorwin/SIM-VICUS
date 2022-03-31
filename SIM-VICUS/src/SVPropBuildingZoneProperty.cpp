@@ -27,7 +27,7 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	//m_ui->groupBox_7->setMargin(0);
 
 	// create proxy model and link with table model and view
-	m_zonePropertiesProxyModel = new QSortFilterProxyModel(this);
+	m_zonePropertiesProxyModel = new SVPropBuildingZonePropertyTableProxyModel(this);
 	m_zonePropertiesProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	m_zonePropertiesProxyModel->setSourceModel(m_zonePropertiesTableModel);
 
@@ -51,6 +51,12 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 	m_ui->tableViewZones->setItemDelegate(new SVPropZonePropertyDelegate(m_ui->tableViewZones));
 
 	m_ui->pushButtonAssignSurface->setEnabled(false);
+
+	// connections
+	connect(m_ui->tableViewZones->selectionModel(), &QItemSelectionModel::selectionChanged,
+			this, &SVPropBuildingZoneProperty::updateTableView);
+	connect(m_ui->tableViewZones->model(), &QAbstractItemModel::layoutChanged,
+			this, &SVPropBuildingZoneProperty::updateTableView);
 }
 
 
@@ -72,7 +78,6 @@ void SVPropBuildingZoneProperty::updateUi() {
 	int selectedBuildingIndex = -1 ;
 	int selectedBuildingLevelIndex = -1 ;
 	unsigned int currentBuildingVectorIdx = VICUS::INVALID_ID;
-	unsigned int currentBuildingLevelVectorIdx = VICUS::INVALID_ID;
 
 	m_ui->comboBoxBuildingFilter->clear();
 	m_ui->comboBoxBuildingLevelFilter->clear();
@@ -108,7 +113,6 @@ void SVPropBuildingZoneProperty::updateUi() {
 			const VICUS::BuildingLevel & bl = project().m_buildings[currentBuildingVectorIdx].m_buildingLevels[i];
 			if(currentBuildingLevel == bl.m_id){
 				selectedBuildingLevelIndex = m_ui->comboBoxBuildingLevelFilter->count();
-				currentBuildingLevelVectorIdx = i;
 			}
 			m_ui->comboBoxBuildingLevelFilter->addItem(bl.m_displayName, bl.m_id);
 		}
@@ -129,7 +133,7 @@ void SVPropBuildingZoneProperty::updateUi() {
 		m_ui->comboBoxBuildingLevelFilter->setEnabled(true);
 
 	// update "Assign surface" button state
-	on_tableViewZones_selectionChanged();
+	updateTableView();
 }
 
 
@@ -156,7 +160,7 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 		return;
 
 	// retrieve name from column 2
-	QModelIndex proxyIndex = m_zonePropertiesProxyModel->index(m_selectedProxyIndex.row(), 2);
+	QModelIndex proxyIndex = m_zonePropertiesProxyModel->index(m_selectedProxyIndex.row(), 1);
 	// error in table model creation
 	Q_ASSERT(proxyIndex.isValid());
 
@@ -165,7 +169,7 @@ void SVPropBuildingZoneProperty::on_pushButtonAssignSurface_clicked() {
 	QString messageBoxText;
 	bool success = m_zonePropertiesTableModel->assignSurfaces(index, messageBoxText);
 
-	QString newRoomName = m_zonePropertiesProxyModel->data(index, Qt::DisplayRole).toString();
+	QString newRoomName = m_zonePropertiesTableModel->data(index, Qt::DisplayRole).toString();
 
 	if(success) {
 		QMessageBox::information(this, QString("Assigning surfaces to room '%1'").arg(newRoomName), messageBoxText );
@@ -246,7 +250,7 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 }
 
 
-void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
+void SVPropBuildingZoneProperty::updateTableView() {
 	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
 
 	m_selectedProxyIndex = QModelIndex();
@@ -285,4 +289,9 @@ void SVPropBuildingZoneProperty::on_tableViewZones_selectionChanged() {
 	Q_ASSERT(dynamic_cast<const VICUS::Room*>(project().objectById(id)) != nullptr);
 
 	m_selectedProxyIndex = selectedRows[0];
+}
+
+
+void SVPropBuildingZoneProperty::on_lineEditNameFilter_textChanged(const QString &name) {
+	m_zonePropertiesProxyModel->setNameFilter(name);
 }
