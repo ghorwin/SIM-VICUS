@@ -153,6 +153,23 @@ Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:
 ----
 ====
 
+.Ausgabe der Globalstrahlung auf eine Fläche eines bestimmten Sensor 'id=2000000' von der Location in der Objektliste 'Location' und unter Verwendung des Ausgaberasters 'hourly' sowie einer separaten Ausgabedatei 'Sensordata.tsv'
+====
+[source,xml]
+----
+<Definitions>
+    <OutputDefinition>
+    	<Quantity>GlobalSWRadOnPlane[2000000]</Quantity>
+    	<ObjectListName>Loaction</ObjectListName>
+    	<GridName>hourly</GridName>
+    	<!-- die Gobalstrahlungsdaten werden in der Datei Sensordata.tsv separat abgelegt -->
+    	<FileName>Sensordata<FileName> 
+    </OutputDefinition>
+    ... <!-- weitere Definitionen -->
+</Definitions>
+----
+====
+
 Das Beispiel zeigt die obligatorischen Elemente des XML-tags `OutputDefinition`. Im Folgenden finden Sie eine Liste aller unterstützten Elemente:
 
 [options="header",cols="15%, 70%,^ 15%",width="100%"]
