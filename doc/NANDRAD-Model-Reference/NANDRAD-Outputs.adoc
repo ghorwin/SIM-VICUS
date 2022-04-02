@@ -162,7 +162,7 @@ Nachfolgend finden Sie ein Beispiel für eine Ausgabedefinition:
     	<Quantity>GlobalSWRadOnPlane[2000000]</Quantity>
     	<ObjectListName>Loaction</ObjectListName>
     	<GridName>hourly</GridName>
-    	<!-- die Gobalstrahlungsdaten werden in der Datei Sensordata.tsv separat abgelegt -->
+    	<!-- die Globalstrahlungsdaten werden in der Datei Sensordata.tsv separat abgelegt -->
     	<FileName>Sensordata<FileName> 
     </OutputDefinition>
     ... <!-- weitere Definitionen -->
