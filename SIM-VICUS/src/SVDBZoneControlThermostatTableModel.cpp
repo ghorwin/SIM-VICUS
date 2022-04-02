@@ -147,7 +147,7 @@ QModelIndex SVDBZoneControlThermostatTableModel::addNewItem() {
 	// set default parameters
 	ctrl.m_controllerType = VICUS::ZoneControlThermostat::CT_Analog;
 	ctrl.m_controlValue = VICUS::ZoneControlThermostat::CV_AirTemperature;
-	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_Tolerance, 0.0);
+	VICUS::KeywordList::setParameter(ctrl.m_para, "ZoneControlThermostat::para_t", VICUS::ZoneControlThermostat::P_Tolerance, 0.1);
 
 	ctrl.m_color = SVStyle::randomColor();
 
