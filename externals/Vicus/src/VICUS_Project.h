@@ -301,6 +301,7 @@ private:
 	struct MappingTable{
 		std::map<unsigned int, unsigned int>	m_roomVicusToNandrad;
 		std::map<unsigned int, unsigned int>	m_constructionInstanceVicusToNandrad;	///< Component instance VICUS to NANDRAD construction instance
+		std::map<unsigned int, std::string>		m_idRoomNandradToVicusZonetemplateName;
 	};
 
 
@@ -308,11 +309,13 @@ private:
 
 	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
 										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										MappingTable &mapTable)const;
+										MappingTable &mapTable,
+										std::map<unsigned int, std::vector<unsigned int>> &idZonetemplateToIdRoom)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
-							  std::map<unsigned int, unsigned int> &vicusToNandradIds)const;
+							  std::map<unsigned int, unsigned int> &vicusToNandradIds, std::map<unsigned int,
+							  std::vector<unsigned int> > &idZonetemplateToIdRoom)const;
 
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,

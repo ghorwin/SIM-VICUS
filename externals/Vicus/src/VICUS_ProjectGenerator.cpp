@@ -652,8 +652,13 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const MappingTable &
 	}
 
 	out << "VICUS room id\tNANDRAD room id" << std::endl;
-	for(const auto &m : mapTable.m_roomVicusToNandrad)
-		out << m.first << "\t" << m.second << std::endl;
+	for(const auto &m : mapTable.m_roomVicusToNandrad){
+		out << m.first << "\t" << m.second << "\t";
+		if(mapTable.m_idRoomNandradToVicusZonetemplateName.find(m.second) != mapTable.m_idRoomNandradToVicusZonetemplateName.end())
+			out << mapTable.m_idRoomNandradToVicusZonetemplateName.at(m.second);
+		out << std::endl;
+	}
+
 	out << "VICUS component instance id\tNANDRAD construction instance id" << std::endl;
 	for(const auto &m : mapTable.m_constructionInstanceVicusToNandrad)
 		out << m.first << "\t" << m.second << std::endl;
@@ -664,7 +669,9 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const MappingTable &
 
 
 void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
-											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad, MappingTable &mapTable) const{
+											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
+											 MappingTable &mapTable,
+											 std::map<unsigned int, std::vector<unsigned int>> &idZonetemplateToIdRoom) const{
 
 	// First mandatory input data checks.
 	// We rely on unique IDs being used in the VICUS model
@@ -688,7 +695,6 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	}
 	if (!errorStack.isEmpty())	return;
 
-
 	// *** Zones ***
 	std::vector<unsigned int> usedModelIds;
 	std::set<unsigned int> idSet;
@@ -696,7 +702,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 
 	idSet.insert(2000000); // TODO Dirk derzeitige sensor id entfernen wenn der Sensor Dialog fertig ist
 
-	generateNandradZones(zones, idSet, p, errorStack, mapTable.m_roomVicusToNandrad);
+	generateNandradZones(zones, idSet, p, errorStack, mapTable.m_roomVicusToNandrad,
+						 idZonetemplateToIdRoom);
 
 	if (!errorStack.isEmpty())	return;
 
@@ -794,7 +801,8 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 								   std::set<unsigned int> & idSet,
 								   NANDRAD::Project & p, QStringList & errorStack,
-								   std::map<unsigned int, unsigned int> &vicusToNandradIds)const
+								   std::map<unsigned int, unsigned int> &vicusToNandradIds,
+								   std::map<unsigned int, std::vector<unsigned int>> &idZonetemplateToIdRoom)const
 {
 	// collect a list of zone references for further processing
 	// also create a new zone name 'buildingName'.'buildingLevelName'.'roomName'
@@ -807,6 +815,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 				zones.push_back(&r);
 				QString name = buildingName + "." + buildingLevelName + "." + r.m_displayName;
 				roomIdsToRoomNames[r.m_id] = name.toStdString();
+				idZonetemplateToIdRoom[r.m_idZoneTemplate].push_back(r.m_id);
 			}
 		}
 	}

@@ -856,12 +856,31 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 
 	// Map of VICUS surface/sub-surface ids to NANDRAD construction instance/embedded object ids.
 	// These ids are kept in the header of the shading file for later replacement of the ids.
-	std::map<unsigned int, unsigned int> surfaceIdsVicusToNandrad;
+	std::map<unsigned int, unsigned int>				surfaceIdsVicusToNandrad;
+	std::map<unsigned int, std::vector<unsigned int>>	idZonetemplateToIdRooms;
 	MappingTable mapTable;
+	std::map<unsigned int, std::string>	&idRoomNandradToZonetemplateName =mapTable.m_idRoomNandradToVicusZonetemplateName;
 
-	generateBuildingProjectDataNeu(p, errorStack, surfaceIdsVicusToNandrad, mapTable);
+	generateBuildingProjectDataNeu(p, errorStack, surfaceIdsVicusToNandrad, mapTable, idZonetemplateToIdRooms);
+
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during building data generation.", FUNC_ID);
+
+	// get zone templates names for mapping table
+	for(unsigned int i=0; i<m_embeddedDB.m_zoneTemplates.size(); ++i){
+		const ZoneTemplate &zt = m_embeddedDB.m_zoneTemplates[i];
+		unsigned int idZoneTemp = zt.m_id;
+		if(idZoneTemp == INVALID_ID ||
+				idZonetemplateToIdRooms.find(idZoneTemp) == idZonetemplateToIdRooms.end())
+			continue;
+
+		std::string ztName = zt.m_displayName.string();
+
+		for(unsigned int idNandradRoom : idZonetemplateToIdRooms[idZoneTemp]){
+			idRoomNandradToZonetemplateName[idNandradRoom] = ztName;
+		}
+	}
+
 
 	if(!exportMappingTable(IBK::Path(nandradProjectPath), mapTable)){
 		errorStack.push_back(tr("Mapping table export failed!"));
@@ -882,7 +901,6 @@ void Project::generateNandradProject(NANDRAD::Project & p, QStringList & errorSt
 	generateNetworkProjectData(p, errorStack, nandradProjectPath);
 	if (!errorStack.isEmpty())
 		throw IBK::Exception("Error during network data conversion.", FUNC_ID);
-
 
 	// *** outputs ***
 
