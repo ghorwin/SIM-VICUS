@@ -524,6 +524,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					// store original translation matrix
 					IBK::IBK_Message(IBK::FormatString("%1 %2 %3").arg(m_rotationAxis.m_x).arg(m_rotationAxis.m_y).arg(m_rotationAxis.m_z));
 					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					m_translateOrigin = m_coordinateSystemObject.translation();
 
 					// compute and store bounding box
 					std::vector<const VICUS::Surface*> selSurfaces;
@@ -684,12 +685,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( IBKVector2QVector(m_boundingBoxCenterPoint) ) );
+								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( m_translateOrigin ) );
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
 								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(m_boundingBoxCenterPoint-newCenter) );
+								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(QVector2IBKVector(m_translateOrigin)-newCenter) );
 							}
 						}
 
