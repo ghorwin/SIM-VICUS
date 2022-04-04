@@ -354,6 +354,54 @@ bool CoordinateSystemObject::pick(const IBKMK::Vector3D & nearPoint, const IBKMK
 			}
 		} break;
 
+		case Vic3D::CoordinateSystemObject::TM_ScaleMask : {
+			// x-axis
+			IBKMK::Vector3D sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(AXIS_LENGTH, 0, 0) );
+			bool hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_resultType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_objectID = 0; // indicates x axis, i.e. rotation around z
+				return true;
+			}
+			// y-axis
+			sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, AXIS_LENGTH, 0) );
+			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_resultType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_objectID = 1; // indicates y axis
+				return true;
+			}
+			// z-axis
+			sphereCenter = QVector2IBKVector( m_transform.toMatrix() * QVector3D(0, 0, AXIS_LENGTH) );
+			hit = IBKMK::lineShereIntersection(nearPoint, direction,  // line of sight
+													sphereCenter, ROTATION_MARKER_SPHERE_FACTOR, // sphere
+													lineFactor, // lineFactor (lineFactor*d = distance to intersection point with sphere)
+													lotPoint // closest point on line-of-sight to sphere center
+													);
+			// check distance against radius of sphere
+			if (hit) {
+				r.m_resultType = PickObject::RT_AxisEndMarker;
+				r.m_depth = lineFactor;
+				r.m_pickPoint = nearPoint + lineFactor*direction;
+				r.m_objectID = 2; // indicates z axis
+				return true;
+			}
+		} break;
+
 		default : return false; // in all other modes we have nothing to pick
 	}
 	return false;

@@ -183,7 +183,7 @@ public:
 	};
 
 	/*! Snapping/navigation locks, apply to movement of the
-		local coordinate system when in "place vertex" mode.
+		local coordinate system.
 	*/
 	enum Locks {
 		/*! Only movement along local X axis is allowed. */

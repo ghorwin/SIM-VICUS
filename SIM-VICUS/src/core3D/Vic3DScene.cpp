@@ -521,19 +521,38 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						break;
 					}
 
-					// store original translation matrix
-					IBK::IBK_Message(IBK::FormatString("%1 %2 %3").arg(m_rotationAxis.m_x).arg(m_rotationAxis.m_y).arg(m_rotationAxis.m_z));
+					// store original rotation matrix
 					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					// store rotation offset point
 					m_translateOrigin = m_coordinateSystemObject.translation();
 
-					// compute and store bounding box
-					std::vector<const VICUS::Surface*> selSurfaces;
-					std::vector<const VICUS::SubSurface*> selSubSurfaces;
+//					// compute and store bounding box
+//					std::vector<const VICUS::Surface*> selSurfaces;
+//					std::vector<const VICUS::SubSurface*> selSubSurfaces;
 
-					project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
-					project().boundingBox(selSurfaces, selSubSurfaces, m_boundingBoxCenterPoint);
+//					project().selectedSurfaces(selSurfaces, VICUS::Project::SG_All);
+//					project().boundingBox(selSurfaces, selSubSurfaces, m_boundingBoxCenterPoint);
 
 					qDebug() << "Entering interactive rotation mode";
+				}
+				else if (m_coordinateSystemObject.m_geometryTransformMode == Vic3D::CoordinateSystemObject::TM_ScaleMask) {
+					m_navigationMode = NM_InteractiveScaling;
+					// which axis?
+					switch (pickObject.m_candidates.front().m_objectID) {
+						case 0 : m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleX; break;
+						case 1 : m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleY; break;
+						case 2 : m_coordinateSystemObject.m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleZ; break;
+					}
+
+					// store LCS rotation matrix
+					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					// store scale offset point
+					m_translateOrigin = m_coordinateSystemObject.translation();
+					// store 100% magnitude for scaling
+					m_nominalScalingDistance = (pickObject.m_candidates.front().m_pickPoint - QVector2IBKVector(m_translateOrigin)).magnitude();
+					// This is normally the distance of the axis cylinder from the origin: AXIS_LENGTH = 2 m
+
+					qDebug() << "Entering interactive scaling mode";
 				}
 			}
 			else {
@@ -695,6 +714,51 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						}
 
 					} break;// interactive translation active
+
+
+					case NM_InteractiveScaling: {
+						// pick a point and snap to some point in the scene
+						if (!pickObject.m_pickPerformed)
+							pick(pickObject);
+
+						// now we handle the snapping rules and also the locking
+						snapLocalCoordinateSystem(pickObject); // snap to axis
+
+						double scalingDistance = (QVector2IBKVector(m_coordinateSystemObject.translation()) - QVector2IBKVector(m_translateOrigin)).magnitude();
+						// now that we have the scaling distance, we reset the local coordinates location
+						m_coordinateSystemObject.setTranslation(m_translateOrigin);
+
+						// scale factor
+						double scaleFactor = scalingDistance/m_nominalScalingDistance;
+
+						// create scaling matrix
+						Vic3D::Transform3D trans;
+						QVector3D scaleVector;
+						switch (m_coordinateSystemObject.m_geometryTransformMode) {
+							case Vic3D::CoordinateSystemObject::TM_ScaleX : scaleVector.setX((float)scaleFactor); break;
+							case Vic3D::CoordinateSystemObject::TM_ScaleY : scaleVector.setY((float)scaleFactor); break;
+							case Vic3D::CoordinateSystemObject::TM_ScaleZ : scaleVector.setZ((float)scaleFactor); break;
+						}
+
+						// rotate scaling matrix
+						QVector3D scaleRotated = m_originalRotation*scaleVector;
+
+						Transform3D scaleTransform;
+						scaleTransform.setScale(scaleRotated);
+
+						qDebug() << "scaleFactor=" << scaleFactor;
+						qDebug() << "scaleRotated=" << scaleRotated;
+						QVector3D newPoint = scaleTransform.toMatrix()*m_translateOrigin;
+						qDebug() << "newPoint - m_translateOrigin:" << newPoint << "-" << m_translateOrigin;
+
+						// vector offset from starting point to current location
+						QVector3D translationVector = newPoint - m_translateOrigin;
+						qDebug() << "translationVector=" << translationVector;
+						// now set this in the wireframe object as translation
+//						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+//						m_selectedGeometryObject.m_transform.setScale(scaleRotated);
+					} break;// interactive translation active
+
 				} // switch
 			} // mouse dragged
 		}
@@ -724,6 +788,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			qDebug() << "Leaving interactive rotation mode";
 			SVViewStateHandler::instance().m_propEditGeometryWidget->rotate();
 			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Rotate, SVPropEditGeometry::MS_Absolute);
+			needRepaint = true;
+		}
+		if (m_navigationMode == NM_InteractiveScaling) {
+			qDebug() << "Leaving interactive scaling mode";
+			SVViewStateHandler::instance().m_propEditGeometryWidget->scale();
+			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Scale, SVPropEditGeometry::MS_Absolute);
 			needRepaint = true;
 		}
 		// clear orbit controller flag
@@ -2436,18 +2506,47 @@ struct SnapCandidate {
 void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 
-	const float SNAP_DISTANCES_THRESHHOLD = 2; // 1 m should be enough, right?
+	const float SNAP_DISTANCES_THRESHHOLD = 2; // in m, should be enough, right?
+
+
+	SVViewState::Locks actualLockOption = vs.m_locks;
+	SVViewState::Locks axisLoc = SVViewState::NUM_L; // initialization just to silence compiler warning
 
 	// if we have axis lock, determine offset and direction
-	IBKMK::Vector3D axisLockOffset = referencePoint();
-	IBKMK::Vector3D direction;
+	IBKMK::Vector3D axisLockOffset;
+	if (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex) {
+
+		// for now, return the position of the last added vertex, if any
+		if (m_newGeometryObject.vertexList().empty())
+			axisLockOffset = IBKMK::Vector3D();
+		else
+			axisLockOffset = m_newGeometryObject.vertexList().back();
+	}
+	else if (vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry) {
+		if (m_coordinateSystemObject.m_geometryTransformMode == Vic3D::CoordinateSystemObject::TM_Translate ||
+			(m_coordinateSystemObject.m_geometryTransformMode & Vic3D::CoordinateSystemObject::TM_ScaleMask) != 0)
+		{
+			switch (m_coordinateSystemObject.m_geometryTransformMode) {
+				case Vic3D::CoordinateSystemObject::TM_ScaleX : axisLoc = SVViewState::L_LocalX; break;
+				case Vic3D::CoordinateSystemObject::TM_ScaleY : axisLoc = SVViewState::L_LocalX; break;
+				case Vic3D::CoordinateSystemObject::TM_ScaleZ : axisLoc = SVViewState::L_LocalY; break;
+			}
+			axisLockOffset = QVector2IBKVector(m_translateOrigin);
+		}
+	}
+	// override user-selected axis lock for scaling operation
+	if (axisLoc != SVViewState::NUM_L)
+		actualLockOption = axisLoc;
+
 	// get direction in case of axis lock
-	switch (vs.m_locks) {
+	IBKMK::Vector3D direction;
+	switch (actualLockOption) {
 		case SVViewState::L_LocalX : direction = QVector2IBKVector(m_coordinateSystemObject.localXAxis()); break;
 		case SVViewState::L_LocalY : direction = QVector2IBKVector(m_coordinateSystemObject.localYAxis()); break;
 		case SVViewState::L_LocalZ : direction = QVector2IBKVector(m_coordinateSystemObject.localZAxis()); break;
 		case SVViewState::NUM_L: ; // no lock
 	}
+
 
 	// compute closest point between line-of-sight and locked axis
 	double lineOfSightDist, lockedAxisDist;
@@ -2468,7 +2567,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		snapPoint = pickObject.m_candidates.front().m_pickPoint;
 		// if we have a locked axis, and the "closest point to axis" is actually closer than the pick point candidate,
 		// we take the closest point instead
-		if (vs.m_locks != SVViewState::NUM_L && lineOfSightDist < pickObject.m_candidates.front().m_depth) {
+		if (actualLockOption != SVViewState::NUM_L && lineOfSightDist < pickObject.m_candidates.front().m_depth) {
 			snapPoint = closestPointOnAxis;
 			snapInfo = "closest point on locked axis";
 		}
@@ -2485,7 +2584,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	else {
 
 		// by default, we snap to the closest point on a locked axis, if one is locked
-		if (vs.m_locks != SVViewState::NUM_L) {
+		if (actualLockOption != SVViewState::NUM_L) {
 			snapPoint = closestPointOnAxis;
 			snapInfo = "closest point on locked axis";
 		}
@@ -2502,7 +2601,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		if (r.m_resultType == PickObject::RT_GridPlane) {
 			// use the intersection point with the grid as default snap point (in case no grid point is close enough)
 			// but only, if there is no axis lock enabled
-			if (vs.m_locks == SVViewState::NUM_L) {
+			if (actualLockOption == SVViewState::NUM_L) {
 				snapPoint = r.m_pickPoint;
 				snapInfo = "intersection point with plane (fall-back if no grid-point is in snap distance)";
 			}
@@ -2696,7 +2795,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 	// if we also have line snap on, calculate the projection of this intersection point with the line
 
 	// compute projection of current snapPoint onto line defined by refPoint and direction
-	if (vs.m_locks != SVViewState::NUM_L) {
+	if (actualLockOption != SVViewState::NUM_L) {
 		double lineFactor;
 		IBKMK::Vector3D projectedPoint;
 		IBKMK::lineToPointDistance(axisLockOffset, direction, snapPoint, lineFactor, projectedPoint);
@@ -2860,15 +2959,6 @@ void Scene::handleSelection(const KeyboardMouseHandler & keyboardHandler, PickOb
 
 		return;
 	}
-}
-
-
-IBKMK::Vector3D Scene::referencePoint() const {
-	// for now, return the position of the last added vertex, if any
-	if (m_newGeometryObject.vertexList().empty())
-		return IBKMK::Vector3D();
-	else
-		return m_newGeometryObject.vertexList().back();
 }
 
 

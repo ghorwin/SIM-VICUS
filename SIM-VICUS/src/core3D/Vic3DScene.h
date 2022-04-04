@@ -164,6 +164,12 @@ private:
 
 	/*! Takes the picked objects and applies the snapping rules.
 		Once a snap point has been selected, the local coordinate system is translated to the snap point.
+
+		Snap-to-axis requires an offset point and this depends on the current operation:
+
+		- when drawing, we use the last placed vertex - or the origin, if no vertex has been placed
+		- in interactive translation or scaling mode, we use the original coordinate system location when
+		  the interactive operation started (stored in m_translateOrigin).
 	*/
 	void snapLocalCoordinateSystem(const PickObject & pickObject);
 
@@ -178,14 +184,6 @@ private:
 
 	/*! Selects/deselects objects. */
 	void handleSelection(const KeyboardMouseHandler & keyboardHandler, PickObject & o);
-
-	/*! Returns the current reference point for relative movement of the local coordinate system.
-		In PlaceVertex-mode, the reference point is the last placed vertex.
-		In ObjectTranslation-mode, the reference point is the last fixed position of the local coordinate system
-		(which is usually first set when selection changes, and changed lateron when the local coordinate system is
-		manually translated).
-	*/
-	IBKMK::Vector3D referencePoint() const;
 
 	IBKMK::Vector3D calculateFarPoint(const QPoint & mousPos, const QMatrix4x4 & projectionMatrixInverted);
 
@@ -284,6 +282,7 @@ private:
 		NM_FirstPerson,
 		NM_InteractiveTranslation,
 		NM_InteractiveRotation, // this is set for any axis rotation - which rotation is rotated about is set in the local coordinate system TM_xx bit
+		NM_InteractiveScaling, // this is set for any axis - which axis is scaled is set in the local coordinate system TM_xx bit
 		NUM_NM
 	};
 
@@ -308,9 +307,10 @@ private:
 	QQuaternion				m_originalRotation;
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
+	/*! Reference vector (local Y of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorY;
-	/*! Center point of originally selected geometry. */
-	IBKMK::Vector3D			m_boundingBoxCenterPoint;
+	/*! Relative distance between coordinate center and axis end marker - used as 100% distance for scaling. */
+	double					m_nominalScalingDistance;
 
 	/*! Holds coordinates of the snap marker, for interactive three-point-rotation it holds the two points
 		already defined for rotation.

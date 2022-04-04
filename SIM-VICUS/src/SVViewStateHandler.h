@@ -69,6 +69,11 @@ public:
 	*/
 	void setViewState(const SVViewState & newViewState);
 
+	/*! This toggles just the axis lock, but does not trigger any other side effects. */
+	void setLock(SVViewState::Locks newLock) { m_viewState.m_locks = newLock; }
+	/*! This toggles/changes snap options, but does not trigger any other side effects. */
+	void setSnap(int snapOptionMask) { m_viewState.m_snapOptionMask = snapOptionMask; }
+
 	/*! Pointer to geometry view object - so that we can give focus to the scene view when we start a drawing operation. */
 	SVGeometryView						*m_geometryView		= nullptr;
 

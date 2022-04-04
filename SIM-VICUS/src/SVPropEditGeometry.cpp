@@ -844,8 +844,8 @@ void SVPropEditGeometry::updateUi() {
 	Vic3D::Transform3D t;
 	t.setTranslation(IBKVector2QVector(m_bbCenter[m_orientationMode]) );
 	setCoordinates( t ); // calls updateInputs() internally
-
 }
+
 
 void SVPropEditGeometry::updateOrientationMode() {
 	// we update the button state
@@ -865,6 +865,7 @@ void SVPropEditGeometry::updateOrientationMode() {
 	updateInputs();
 }
 
+
 void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit) {
 	if (!lineEdit->isValid())
 		return; // invalid input, do nothing
@@ -873,6 +874,7 @@ void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit 
 	lineEdit->setValue(val); // this does not trigger any signals, so we need to send change info manually
 	onLineEditTextChanged(lineEdit);
 }
+
 
 void SVPropEditGeometry::initializeCopy() {
 	// initialize the translation vector
@@ -883,6 +885,7 @@ void SVPropEditGeometry::initializeCopy() {
 	m_ui->lineEditYCopy->setValue( m_translation.m_y);
 	m_ui->lineEditZCopy->setValue( m_translation.m_z);
 }
+
 
 void SVPropEditGeometry::updateCoordinateSystemLook() {
 	if (SVViewStateHandler::instance().m_geometryView == nullptr)
@@ -898,29 +901,32 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 	else {
 		// put local coordinate system back into correct transform mode
 		switch (m_modificationType) {
-			case SVPropEditGeometry::MT_Translate:
+			case MT_Translate:
 				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
 					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
 
-			case SVPropEditGeometry::MT_Rotate:
+			case MT_Rotate:
 				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
 					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
 
-			case SVPropEditGeometry::MT_Scale:
+			case MT_Scale:
 				if (m_cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
 					m_cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
 					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 				}
 			break;
+
+			case NUM_MT : ; // just to make compiler happy
 		}
 	}
 }
+
 
 bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 
@@ -940,6 +946,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 				case MT_Translate				:
 				case MT_Scale					: delta = 0.01; break;
 				case MT_Rotate					: delta = 1; break;
+				case NUM_MT : ; // just to make compiler happy
 			}
 
 			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
