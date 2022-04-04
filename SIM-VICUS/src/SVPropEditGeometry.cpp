@@ -1888,7 +1888,7 @@ void SVPropEditGeometry::on_pushButtonCopyRooms_clicked() {
 
 		// if we copy only selected, remove all sub-surfaces that are not selected
 		std::vector<VICUS::Surface> surfs;
-		for (const VICUS::Surface & surf : newRoom.m_surfaces) {
+		for (const VICUS::Surface & surf : r->m_surfaces) {
 			// skip if neither selected and not "Copy All" mode
 			if (copyAllSurfaces != 2 && !surf.m_selected) continue;
 
