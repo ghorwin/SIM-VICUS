@@ -815,6 +815,7 @@ void Project::generateNandradZones(std::vector<const VICUS::Room *> & zones,
 
 				MappingElement mapEle;
 				mapEle.m_idRoomVicus = r.m_id;
+				mapEle.m_idRoomNandrad = r.m_id;		// attention NANDRAD id is set in next loop but is the same
 				mapEle.m_idZoneTemplateVicus = INVALID_ID;
 				mapEle.m_nameRoomNandrad = name.toStdString();
 				mapEle.m_nameRoomVicus = r.m_displayName.toStdString();
