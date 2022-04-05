@@ -733,7 +733,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 						// create scaling matrix
 						Vic3D::Transform3D trans;
-						QVector3D scaleVector;
+						QVector3D scaleVector(1,1,1);
 						switch (m_coordinateSystemObject.m_geometryTransformMode) {
 							case Vic3D::CoordinateSystemObject::TM_ScaleX : scaleVector.setX((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleY : scaleVector.setY((float)scaleFactor); break;
@@ -748,15 +748,16 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 						qDebug() << "scaleFactor=" << scaleFactor;
 						qDebug() << "scaleRotated=" << scaleRotated;
+						qDebug() << scaleTransform.toMatrix();
 						QVector3D newPoint = scaleTransform.toMatrix()*m_translateOrigin;
-						qDebug() << "newPoint - m_translateOrigin:" << newPoint << "-" << m_translateOrigin;
+						qDebug() << "m_translateOrigin - newPoint:" << m_translateOrigin << "-" << newPoint;
 
 						// vector offset from starting point to current location
-						QVector3D translationVector = newPoint - m_translateOrigin;
+						QVector3D translationVector = m_translateOrigin - newPoint;
 						qDebug() << "translationVector=" << translationVector;
 						// now set this in the wireframe object as translation
-//						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
-//						m_selectedGeometryObject.m_transform.setScale(scaleRotated);
+						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+						m_selectedGeometryObject.m_transform.setScale(scaleRotated);
 					} break;// interactive translation active
 
 				} // switch
