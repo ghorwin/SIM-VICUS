@@ -297,11 +297,14 @@ public:
 
 private:
 
-	/*! Mapping table holds the data for later export. */
-	struct MappingTable{
-		std::map<unsigned int, unsigned int>	m_roomVicusToNandrad;
-		std::map<unsigned int, unsigned int>	m_constructionInstanceVicusToNandrad;	///< Component instance VICUS to NANDRAD construction instance
-		std::map<unsigned int, std::string>		m_idRoomNandradToVicusZonetemplateName;
+	/*! Mapping element holds the data for later export. */
+	struct MappingElement {
+		unsigned int							m_idRoomVicus;
+		unsigned int							m_idRoomNandrad;
+		unsigned int							m_idZoneTemplateVicus;
+		std::string								m_nameRoomVicus;
+		std::string								m_nameRoomNandrad;
+		std::string								m_zonetemplateName;
 	};
 
 
@@ -309,13 +312,11 @@ private:
 
 	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
 										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
-										MappingTable &mapTable,
-										std::map<unsigned int, std::vector<unsigned int>> &idZonetemplateToIdRoom)const;
+										std::vector<MappingElement> &mappings)const;
 
 	void generateNandradZones(std::vector<const VICUS::Room *> & zones, std::set<unsigned int> & idSet,
 							  NANDRAD::Project & p, QStringList & errorStack,
-							  std::map<unsigned int, unsigned int> &vicusToNandradIds, std::map<unsigned int,
-							  std::vector<unsigned int> > &idZonetemplateToIdRoom)const;
+							  std::vector<MappingElement> &mappings)const;
 
 	/*! Adds a vicus schedule to nandrad project. */
 	void addVicusScheduleToNandradProject(const VICUS::Schedule &schedVic, const std::string &scheduleQuantityName,
@@ -330,7 +331,7 @@ private:
 	bool generateShadingFactorsFile(const std::map<unsigned int, unsigned int> & surfaceIdsVicusToNandrad,
 									const IBK::Path &projectFilePath, IBK::Path & shadingFactorFilePath) const;
 
-	bool exportMappingTable(const IBK::Path & filepath, const MappingTable &mapTable) const;
+	bool exportMappingTable(const IBK::Path & filepath, const std::vector<MappingElement> &mappings) const;
 
 
 	/*! Adds the given object to the m_objectPtr map but first checks if its ID is already in the map.
