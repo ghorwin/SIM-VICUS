@@ -41,6 +41,7 @@
 #include <VICUS_utilities.h>
 
 #include <QMessageBox>
+#include <QQuaternion>
 
 #include <SV_Conversions.h>
 
@@ -615,85 +616,99 @@ void SVPropEditGeometry::rotate() {
 		return;
 
 	// compose vector of modified surface geometries
-	std::vector<VICUS::Surface> modifiedSurfaces;
+	std::vector<VICUS::Surface>			modifiedSurfaces;
+	std::set<const VICUS::Surface*>		handledSurfaces;
 	QVector3D transLCSO = m_cso->translation();
 
 	// process all selected objects
 	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s == nullptr) continue; // skip all others
-		VICUS::Surface modS(*s);
-		IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
-		// TODO : Stephan, can we fix already broken polygons?
-		if (!poly.isValid())
-			continue; // skip invalid polygons
+		if (s != nullptr) {
+			VICUS::Surface modS(*s);
+			IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
+			// TODO : Stephan, can we fix already broken polygons?
+			if (!poly.isValid())
+				continue; // skip invalid polygons
 
-		// we copy the surface's local, normal and offset
-		IBKMK::Vector3D localX = poly.localX();
-		IBKMK::Vector3D normal = poly.normal();
-		IBKMK::Vector3D offset = poly.offset();
+			// we copy the surface's local, normal and offset
+			IBKMK::Vector3D localX = poly.localX();
+			IBKMK::Vector3D normal = poly.normal();
+			IBKMK::Vector3D offset = poly.offset();
 
-		// we rotate our axis and offset
-		rotate.rotateVector(localX);
-		rotate.rotateVector(normal);
-		rotate.rotateVector(offset);
+			// we rotate our axis and offset
+			rotate.rotateVector(localX);
+			rotate.rotateVector(normal);
+			rotate.rotateVector(offset);
 
-		// we need to calculate our new rotation
-		try {
-			// we set our rotated axises
-			poly.setRotation(normal, localX);
-			// we have to mind the we rotate around our
-			// local coordinate system center point
-			poly.translate(offset-poly.offset()+trans);
-		} catch (IBK::Exception &ex) {
-			throw IBK::Exception(IBK::FormatString("%2.\nPolygon '%1' could not be rotated").arg(s->m_displayName.toStdString()).arg(ex.what()), FUNC_ID);
-			continue;
-		}
+			// we need to calculate our new rotation
+			try {
+				// we set our rotated axises
+				poly.setRotation(normal, localX);
+				// we have to mind the we rotate around our
+				// local coordinate system center point
+				poly.translate(offset-poly.offset()+trans);
+			} catch (IBK::Exception &ex) {
+				throw IBK::Exception(IBK::FormatString("%2.\nPolygon '%1' could not be rotated").arg(s->m_displayName.toStdString()).arg(ex.what()), FUNC_ID);
+				continue;
+			}
 
-		modifiedSurfaces.push_back(modS);
-#if 0
-		// original 3D vertexes
-		const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
-		// vertexes of the 2D polygon
-		const std::vector<IBKMK::Vector2D> &polylineVertexes = poly.polyline().vertexes();
-
-		// create vector for modified vertexes, already resized correctly
-		std::vector<IBKMK::Vector3D> newVertexes(vertexes.size());
-
-		// rotate o copy of polyline vector
-		IBKMK::Vector3D rotaLocalX = poly.localX();
-		IBKMK::Vector3D rotaLocalY = poly.localY();
-		rotate.rotateVector(rotaLocalX);
-		rotate.rotateVector(rotaLocalY);
-
-		// rotate vertexes and store in new vector
-		newVertexes[0] = vertexes[0];
-		rotate.rotateVector(newVertexes[0]);
-
-		// transform the other vertexes
-		// we take our polyline and rotated local axes to construct our rotated polygon3D
-		// this operation is faster than rotating the individual vertexes and also less prone to rounding errors
-		for (unsigned int i=1; i<vertexes.size(); ++i) {
-			newVertexes[i] = newVertexes[0] + rotaLocalX * polylineVertexes[i].m_x + rotaLocalY * polylineVertexes[i].m_y;
-		}
-
-		// we also want to translate all points back to its original center
-		for ( IBKMK::Vector3D & v : newVertexes )
-			v += trans;
-
-		// create a copy of our modified surface
-		VICUS::Surface modS = *s;
-		modS.setPolygon3D( newVertexes );
-		// TODO : Stephan, if the surface didn't "survive" the rotation, this will rip the building geometry apart...
-		//        can't we fix this somehow? Or at least check, why it is broken?
-		if (modS.polygon3D().isValid() )
 			modifiedSurfaces.push_back(modS);
-		else
-			IBK::IBK_Message(IBK::FormatString("Geometry of surface %1 is broken after rotation.")
-							 .arg(modS .m_displayName.toStdString()),
-							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
-#endif
+		}
+		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
+		if (ss != nullptr) {
+			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
+			if (parentSurf != nullptr && ss->m_parent->m_selected && ss->m_parent->m_visible)
+				continue; // already handled by surface scaling
+
+			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
+				continue; // surface already handled
+
+			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
+			VICUS::Surface modS(*parentSurf);
+
+			// we cache our poldon data
+			IBKMK::Vector3D offset3d = modS.geometry().offset();
+			const IBKMK::Vector3D &localX = modS.geometry().localX();
+			const IBKMK::Vector3D &localY = modS.geometry().localY();
+
+			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
+			// now we also have to scale the sub surfaces
+			for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
+
+				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
+				newSubSurfs[i] = modS.subSurfaces()[i];
+
+				if (!modS.subSurfaces()[i].m_selected || !modS.subSurfaces()[i].m_visible)
+					continue;
+
+				// we only modify our selected sub surface
+				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
+				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
+
+
+				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
+					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
+
+					// we now calculate the 3D points of the sub surface
+					IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
+					rotate.rotateVector(v3D);
+					v3D = v3D + trans;
+
+					// and we calculate back the projection on the plane
+					// we have to take the offset of our new scaled polygon
+					IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
+				}
+
+				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
+			}
+			handledSurfaces.insert(parentSurf);
+
+			// we update the 2D polyline
+			modS.setSubSurfaces(newSubSurfs);
+			modifiedSurfaces.push_back(modS);
+
+		}
 		// TODO : Netzwerk zeugs
 	}
 
