@@ -25,7 +25,7 @@ int SVPropBuildingZonePropertyTableModel::rowCount(const QModelIndex & /*parent*
 
 
 int SVPropBuildingZonePropertyTableModel::columnCount(const QModelIndex & /*parent*/) const {
-	return 4;
+	return 5;
 }
 
 
@@ -48,14 +48,21 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				// column 1 - room name
 				case 1 :
 					return room.m_displayName;
+				// column 1 - room name
+				case 2 : {
+					VICUS::BuildingLevel *bl = dynamic_cast<VICUS::BuildingLevel*>(room.m_parent);
+					if(bl == nullptr)
+						return QVariant();
+					return bl->m_displayName;
+				}
 				// column 2 - room floor area
-				case 2 :
+				case 3 :
 					//get parameter
 					if(!room.m_para[VICUS::Room::P_Area].empty())
 						return room.m_para[VICUS::Room::P_Area].get_value("m2");
 					return QVariant();
 				// column 3 - room volume
-				case 3 :
+				case 4 :
 					//get parameter
 					if(!room.m_para[VICUS::Room::P_Volume].empty())
 						return room.m_para[VICUS::Room::P_Volume].get_value("m3");
@@ -99,6 +106,7 @@ QVariant SVPropBuildingZonePropertyTableModel::headerData(int section, Qt::Orien
 	static QStringList headers = QStringList()
 		<< tr("Id")
 		<< tr("Name")
+		<< tr("Level")
 		<< tr("Area [m2]")
 		<< tr("Volume [m3]");
 
@@ -113,18 +121,22 @@ QVariant SVPropBuildingZonePropertyTableModel::headerData(int section, Qt::Orien
 
 
 Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & index) const {
-	Q_ASSERT((size_t)index.row() < m_rooms.size());
+	size_t row = index.row();
+	// Q_ASSERT((size_t)index.row() < m_rooms.size());
 	// column 0 - room id
 	if (index.column() == 0)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	// column 1 - room name
 	if (index.column() == 1)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	// column 2 - room floor area
+	// column 1 - building level
 	if (index.column() == 2)
+		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+	// column 2 - room floor area
+	if (index.column() == 3)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	// column 3 - room volume
-	if (index.column() == 3)
+	if (index.column() == 4)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return QAbstractTableModel::flags(index); // call base class implementation
 }
@@ -178,6 +190,10 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 	return true;
 }
 
+void SVPropBuildingZonePropertyTableModel::reset() {
+	beginResetModel();
+	endResetModel();
+}
 
 void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex)
 {
@@ -225,6 +241,7 @@ void SVPropBuildingZonePropertyTableModel::updateBuildingLevelIndex(int building
 			}
 		}
 	}
+	reset();
 }
 
 
