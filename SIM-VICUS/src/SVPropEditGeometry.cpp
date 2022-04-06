@@ -601,8 +601,8 @@ void SVPropEditGeometry::scale() {
 }
 
 void SVPropEditGeometry::rotate() {
-#ifdef POLYGON2D
-	FUNCID("SVPropEditGeometry::rotate");
+
+	FUNCID(SVPropEditGeometry::rotate);
 
 	// we now apply the already specified transformation
 	// get rotation and scale vector from selected geometry object
@@ -623,12 +623,36 @@ void SVPropEditGeometry::rotate() {
 		// handle surfaces
 		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
 		if (s == nullptr) continue; // skip all others
-
-		const VICUS::Polygon3D &poly = s->polygon3D();
+		VICUS::Surface modS(*s);
+		IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
 		// TODO : Stephan, can we fix already broken polygons?
 		if (!poly.isValid())
 			continue; // skip invalid polygons
 
+		// we copy the surface's local, normal and offset
+		IBKMK::Vector3D localX = poly.localX();
+		IBKMK::Vector3D normal = poly.normal();
+		IBKMK::Vector3D offset = poly.offset();
+
+		// we rotate our axis and offset
+		rotate.rotateVector(localX);
+		rotate.rotateVector(normal);
+		rotate.rotateVector(offset);
+
+		// we need to calculate our new rotation
+		try {
+			// we set our rotated axises
+			poly.setRotation(normal, localX);
+			// we have to mind the we rotate around our
+			// local coordinate system center point
+			poly.translate(offset-poly.offset()+trans);
+		} catch (IBK::Exception &ex) {
+			throw IBK::Exception(IBK::FormatString("%2.\nPolygon '%1' could not be rotated").arg(s->m_displayName.toStdString()).arg(ex.what()), FUNC_ID);
+			continue;
+		}
+
+		modifiedSurfaces.push_back(modS);
+#if 0
 		// original 3D vertexes
 		const std::vector<IBKMK::Vector3D> &vertexes = poly.vertexes();
 		// vertexes of the 2D polygon
@@ -669,7 +693,7 @@ void SVPropEditGeometry::rotate() {
 			IBK::IBK_Message(IBK::FormatString("Geometry of surface %1 is broken after rotation.")
 							 .arg(modS .m_displayName.toStdString()),
 							 IBK::MSG_ERROR, FUNC_ID, IBK::VL_STANDARD);
-
+#endif
 		// TODO : Netzwerk zeugs
 	}
 
@@ -684,7 +708,7 @@ void SVPropEditGeometry::rotate() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	m_cso->setTranslation(transLCSO);
 	blockSignals(false);
-#endif
+
 }
 
 
@@ -1672,7 +1696,7 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			centerRota.rotateVector(newCenter);
 
 			// we also have to find the center point after rotation and translate our center back to its origin
-			rota.setTranslation(IBKVector2QVector(m_bbCenter[m_orientationMode] - newCenter) );
+			rota.setTranslation(IBKVector2QVector(QVector2IBKVector(m_cso->translation() ) - newCenter) );
 
 			SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rota;
 			const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
