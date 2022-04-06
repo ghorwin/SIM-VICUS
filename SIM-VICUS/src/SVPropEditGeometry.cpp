@@ -301,7 +301,7 @@ void SVPropEditGeometry::on_lineEditX_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
 	// Ignore undesirable signals.
-	if ( lineEdit->isModified() )
+	if ( !lineEdit->isModified() )
 		return;
 	lineEdit->setModified( false );
 
@@ -312,7 +312,7 @@ void SVPropEditGeometry::on_lineEditY_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
 	// Ignore undesirable signals.
-	if ( lineEdit->isModified() )
+	if ( !lineEdit->isModified() )
 		return;
 	lineEdit->setModified( false );
 
@@ -323,7 +323,7 @@ void SVPropEditGeometry::on_lineEditZ_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
 	// Ignore undesirable signals.
-	if ( lineEdit->isModified() )
+	if ( !lineEdit->isModified() )
 		return;
 	lineEdit->setModified( false );
 
@@ -965,6 +965,7 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 	}
 	else if ( event->type() == QEvent::FocusOut ) {
 		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
+
 		qDebug() << "Focus out -> return press event on " << edit;
 		if(edit != nullptr)
 			emit edit->returnPressed();
@@ -983,6 +984,12 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 	if ( std::fabs( m_originalValues.m_x - m_ui->lineEditX->value() ) < 1E-3 )
 		return;
 
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
 
 	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
@@ -990,6 +997,7 @@ void SVPropEditGeometry::on_lineEditX_returnPressed() {
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
 	}
+	lineEdit->setModified(false);
 }
 
 void SVPropEditGeometry::on_lineEditY_returnPressed() {
@@ -1001,12 +1009,20 @@ void SVPropEditGeometry::on_lineEditY_returnPressed() {
 	if ( std::fabs( m_originalValues.m_y - m_ui->lineEditY->value() ) < 1E-3 )
 		return;
 
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
+
 	//	double tempXValue = m_ui->lineEditX->value();
 	switch ( m_modificationType ) {
 		case MT_Translate: translate(); break;
 		case MT_Scale: scale(); break;
 		case MT_Rotate: rotate(); break;
 	}
+	lineEdit->setModified(false);
 }
 
 void SVPropEditGeometry::on_lineEditZ_returnPressed(){
@@ -1017,6 +1033,13 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 	}
 	if ( std::fabs( m_originalValues.m_z - m_ui->lineEditZ->value() ) < 1E-3 )
 		return;
+
+	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
+
+	// Ignore undesirable signals.
+	if ( !lineEdit->isModified() )
+		return;
+	lineEdit->setModified( false );
 
 	switch ( m_modificationType ) {
 		case MT_Translate: translate(); break;
@@ -1275,7 +1298,7 @@ void SVPropEditGeometry::on_lineEditOrientation_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
 	// Ignore undesirable signals.
-	if ( lineEdit->isModified() )
+	if ( !lineEdit->isModified() )
 		return;
 	lineEdit->setModified( false );
 
@@ -1286,7 +1309,7 @@ void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
 
 	// Ignore undesirable signals.
-	if ( lineEdit->isModified() )
+	if ( !lineEdit->isModified() )
 		return;
 	lineEdit->setModified( false );
 
@@ -1321,6 +1344,8 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 
 	if (!lineEdit->isValid())
 		return;
+
+	lineEdit->setModified(true);
 
 	ModificationState state = m_modificationState[m_modificationType];
 	ModificationType type = m_modificationType;
