@@ -38,10 +38,13 @@ SVPropBuildingZoneProperty::SVPropBuildingZoneProperty(QWidget *parent) :
 //	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
 //	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Fixed);
 //	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Fixed);
+//	m_ui->tableViewZones->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Fixed);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(0,100);
+	m_ui->tableViewZones->horizontalHeader()->resizeSection(1,150);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(2,100);
 	m_ui->tableViewZones->horizontalHeader()->resizeSection(3,100);
-	m_ui->tableViewZones->horizontalHeader()->setStretchLastSection(false);
+	m_ui->tableViewZones->horizontalHeader()->resizeSection(4,100);
+	m_ui->tableViewZones->horizontalHeader()->setStretchLastSection(true);
 	m_ui->tableViewZones->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	m_ui->tableViewZones->setSelectionBehavior(QAbstractItemView::SelectRows); // since we want to edit single cells
 
@@ -82,6 +85,8 @@ void SVPropBuildingZoneProperty::updateUi() {
 	m_ui->comboBoxBuildingFilter->clear();
 	m_ui->comboBoxBuildingLevelFilter->clear();
 
+	m_zonePropertiesTableModel->reset();
+
 	// set all building in combo box building
 	m_ui->comboBoxBuildingFilter->addItem(tr("All buildings"), VICUS::INVALID_ID);
 	for(unsigned int i=0; i<project().m_buildings.size(); ++i){
@@ -93,8 +98,10 @@ void SVPropBuildingZoneProperty::updateUi() {
 		m_ui->comboBoxBuildingFilter->addItem(b.m_displayName, b.m_id);
 	}
 
-	if (selectedBuildingIndex == -1)
+	if (selectedBuildingIndex == -1) {
+		m_ui->comboBoxBuildingLevelFilter->setCurrentIndex(0);
 		m_ui->comboBoxBuildingFilter->setCurrentIndex(0);
+	}
 	else
 		m_ui->comboBoxBuildingFilter->setCurrentIndex(selectedBuildingIndex);
 
@@ -129,8 +136,7 @@ void SVPropBuildingZoneProperty::updateUi() {
 	// set rooms selection in table model
 	m_zonePropertiesTableModel->updateBuildingLevelIndex(selectedBuildingIndex, selectedBuildingLevelIndex);
 
-	if(selectedBuildingIndex != -1)
-		m_ui->comboBoxBuildingLevelFilter->setEnabled(true);
+	m_ui->comboBoxBuildingLevelFilter->setEnabled(selectedBuildingIndex != -1);
 
 	// update "Assign surface" button state
 	updateTableView();

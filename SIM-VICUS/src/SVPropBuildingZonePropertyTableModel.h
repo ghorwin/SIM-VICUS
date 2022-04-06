@@ -41,6 +41,9 @@ public:
 	Qt::ItemFlags flags(const QModelIndex & index) const override;
 	bool setData(const QModelIndex & index, const QVariant & value, int role) override;
 
+	/*! Performs a model reset. */
+	void reset();
+
 	// changes the selection of rooms for a given building index and building level index
 	void updateBuildingLevelIndex(int buildingIndex, int buildingLevelIndex);
 	// automatically calculates zone floor area for an item selection
