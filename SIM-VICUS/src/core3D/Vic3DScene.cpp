@@ -553,6 +553,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					// This is normally the distance of the axis cylinder from the origin: AXIS_LENGTH = 2 m
 
 					qDebug() << "Entering interactive scaling mode";
+//					qDebug() << "1,0,0 -> rotated = " << m_originalRotation.rotatedVector(QVector3D(1,0,0));
 				}
 			}
 			else {
@@ -731,33 +732,38 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// scale factor
 						double scaleFactor = scalingDistance/m_nominalScalingDistance;
 
-						// create scaling matrix
-						Vic3D::Transform3D trans;
-						QVector3D scaleVector(1,1,1);
+						// compose local scale vector based on which local axis was selected
+						QVector3D scaleVector(0,0,0);
 						switch (m_coordinateSystemObject.m_geometryTransformMode) {
 							case Vic3D::CoordinateSystemObject::TM_ScaleX : scaleVector.setX((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleY : scaleVector.setY((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleZ : scaleVector.setZ((float)scaleFactor); break;
 						}
 
-						// rotate scaling matrix
-						QVector3D scaleRotated = m_originalRotation*scaleVector;
+						// transform to global coordinates
 
-						Transform3D scaleTransform;
-						scaleTransform.setScale(scaleRotated);
+						// rotate local scaling matrix (vector) to global coordinate system
+						QVector3D scaleRotated = m_originalRotation.rotatedVector(scaleVector);
+						// this now is the line in global coordinates, along which we scale the entire selected geometry
 
-						qDebug() << "scaleFactor=" << scaleFactor;
-						qDebug() << "scaleRotated=" << scaleRotated;
-						qDebug() << scaleTransform.toMatrix();
-						QVector3D newPoint = scaleTransform.toMatrix()*m_translateOrigin;
-						qDebug() << "m_translateOrigin - newPoint:" << m_translateOrigin << "-" << newPoint;
+						// compute final scaling matrix
+						QVector3D finalScaleFactors = QVector3D(1,1,1) + float(scaleFactor-1)*scaleRotated;
 
-						// vector offset from starting point to current location
+						// generate a scaling matrix
+						QMatrix4x4 scaleMatrix;
+						scaleMatrix.setToIdentity();
+						scaleMatrix.scale(finalScaleFactors);
+
+						// compute now location of our scale-fix-point
+						QVector3D newPoint = scaleMatrix*m_translateOrigin;
+
+						// vector offset from starting point to new point
 						QVector3D translationVector = m_translateOrigin - newPoint;
-						qDebug() << "translationVector=" << translationVector;
+
 						// now set this in the wireframe object as translation
 						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
-						m_selectedGeometryObject.m_transform.setScale(scaleRotated);
+						// and set our scale factors
+						m_selectedGeometryObject.m_transform.setScale(finalScaleFactors);
 					} break;// interactive translation active
 
 				} // switch
@@ -2529,8 +2535,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 		{
 			switch (m_coordinateSystemObject.m_geometryTransformMode) {
 				case Vic3D::CoordinateSystemObject::TM_ScaleX : axisLoc = SVViewState::L_LocalX; break;
-				case Vic3D::CoordinateSystemObject::TM_ScaleY : axisLoc = SVViewState::L_LocalX; break;
-				case Vic3D::CoordinateSystemObject::TM_ScaleZ : axisLoc = SVViewState::L_LocalY; break;
+				case Vic3D::CoordinateSystemObject::TM_ScaleY : axisLoc = SVViewState::L_LocalY; break;
+				case Vic3D::CoordinateSystemObject::TM_ScaleZ : axisLoc = SVViewState::L_LocalZ; break;
 			}
 			axisLockOffset = QVector2IBKVector(m_translateOrigin);
 		}
