@@ -13,6 +13,7 @@ namespace Ui {
 
 namespace VICUS {
 	class ComponentInstance;
+	class Network;
 }
 
 /*! A property widget to assign and edit surface heatings. */
@@ -26,6 +27,13 @@ public:
 	/*! Updates user interface. */
 	void updateUi();
 
+	/*! Public access to generic network map. */
+	std::map<unsigned int, const VICUS::Network*> genericNetworks() const
+			{ return m_genericNetworks;}
+
+	void generateGenericNetwork();
+	void editGenericNetwork(unsigned int networkId);
+
 private slots:
 	void on_comboBoxSurfaceHeatingComponentFilter_currentIndexChanged(int index);
 	void on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item);
@@ -35,11 +43,15 @@ private slots:
 	void on_tableWidgetSurfaceHeating_itemSelectionChanged();
 	void on_pushButtonRemoveSelectedSurfaceHeating_clicked();
 	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
+	void on_pushButtonAssignSurfaceHeatingNetwork_clicked();
 
 private:
 	Ui::SVPropBuildingSurfaceHeatingWidget *m_ui;
 
 	std::set<const VICUS::ComponentInstance*>	m_selectedComponentInstances;
+
+	// additional pointer to all networks that are generated generically
+	std::map<unsigned int, const VICUS::Network*> m_genericNetworks;
 };
 
 #endif // SVPropBuildingSurfaceHeatingWidgetH

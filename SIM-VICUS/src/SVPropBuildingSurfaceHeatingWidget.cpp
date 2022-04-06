@@ -3,13 +3,19 @@
 
 #include <SV_Conversions.h>
 
+#include <VICUS_Project.h>
+#include <VICUS_utilities.h>
+
 #include "SVStyle.h"
 #include "SVPropSurfaceHeatingDelegate.h"
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
 #include "SVUndoModifyComponentInstances.h"
+#include "SVUndoModifyProject.h"
+#include "SVUndoModifyNetwork.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVNetworkSelectionDialog.h"
 #include "SVZoneSelectionDialog.h"
 
 SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *parent) :
@@ -211,6 +217,7 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 
 		// other buttons are only active if a configured surface heating component instances is selected
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(!selectedSurfaceHeatingCI.empty());
+
 		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
@@ -394,4 +401,162 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 	// perform an undo action in order to redo/revert current operation
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
 	undo->push();
+}
+
+
+void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwork_clicked()
+{
+	// popup dialog with network selection
+
+	// create dialog - only locally, this ensures that in constructor the zone is is updated
+	SVNetworkSelectionDialog dlg(this);
+
+	// start dialog
+	int res = dlg.exec();
+	if (res != QDialog::Accepted)
+		return; // user canceled the dialog
+
+	unsigned int networkId = dlg.m_idNetwork;
+
+
+
+//		VICUS::Network newNetwork = *networkPtr;
+//		// add node to network
+
+//		const std::vector<VICUS::ComponentInstance> &cis = project().m_componentInstances;
+//		// process all selected components
+//		for (const VICUS::ComponentInstance & ci : cis) {
+//			// check if current ci is in list of selected component instances
+//			std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+//			for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+//				if ((*ciIt)->m_id == ci.m_id)
+//					break;
+//			}
+//			if (ciIt == m_selectedComponentInstances.end())
+//				continue;
+
+//			// if component instance does not have an active layer assigned, skip
+//			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+//			if (comp == nullptr)
+//				continue;
+//			// check if no active layer is present
+//			if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+//				continue;
+
+//			// now get room associated with selected component
+//			const VICUS::Surface * s = ci.m_sideASurface;
+//			if (s == nullptr)
+//				s = ci.m_sideBSurface;
+
+//			// get mid point of current surface
+//			const IBKMK::Vector3D &center = s->polygon3D().centerPoint();
+
+//			bool nodeIsRegistered = false;
+//			// check whether node is part of current network already
+//			// remove node from old network
+//			for(VICUS::Network network: project().m_geometricNetworks) {
+//				// check if node is included in another network
+//				for(VICUS::NetworkNode &node : network.m_nodes) {
+//					if(IBK::near_equal(node.m_position.m_x, center.m_x) &&
+//						IBK::near_equal(node.m_position.m_y, center.m_y) &&
+//						IBK::near_equal(node.m_position.m_z, center.m_z)) {
+//						// node is already registered in correct network
+//						if(network.m_id == networkId) {
+//							nodeIsRegistered = true;
+//							continue;
+//						}
+//						// remove from network
+//					}
+//				}
+//			}
+
+
+//			// add node to network
+//			newNetwork.addNodeExt(center, VICUS::NetworkNode::NT_Building);
+//		}
+//	}
+//	else {
+//		// create dialog with network properties
+//	}
+
+//	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+//	for (VICUS::ComponentInstance & ci : cis) {
+//		// check if current ci is in list of selected component instances
+//		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+//		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+//			if ((*ciIt)->m_id == ci.m_id)
+//				break;
+//		}
+//		if (ciIt == m_selectedComponentInstances.end())
+//			continue;
+//		// if component instance does not have an active layer assigned, skip
+//		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+//		if (comp == nullptr)
+//			continue;
+//		// check if no active layer is present
+//		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+//			continue;
+//		ci.m_idSurfaceHeatingControlZone = dlg.m_idZone;
+//	}
+//	// perform an undo action in order to redo/revert current operation
+//	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+	//	undo->push();
+}
+
+
+void SVPropBuildingSurfaceHeatingWidget::generateGenericNetwork() {
+
+	// create a new id
+	unsigned int networkId = VICUS::uniqueId(project().m_geometricNetworks);
+
+	// create a new network
+	VICUS::Network network;
+	network.m_id = networkId;
+
+	// add to project copy
+	VICUS::Project prj = project();
+	prj.m_geometricNetworks.push_back(network);
+
+	// create an undo action
+	SVUndoModifyProject  * undo = new SVUndoModifyProject(tr("Added generic network with id %1").arg(networkId), prj);
+	undo->push();
+	// and transfer modified data into VICUS data structure
+	undo->undo();
+
+	// get access to generic network pointer (we only filter generic networks)
+	const VICUS::Network *networkPtr = dynamic_cast<const VICUS::Network *> (project().objectById(networkId));
+
+	Q_ASSERT(networkPtr != nullptr);
+
+	// store copy of network
+	m_genericNetworks[networkId] = networkPtr;
+}
+
+
+void SVPropBuildingSurfaceHeatingWidget::editGenericNetwork(unsigned int networkId) {
+
+	// direct access to constant reference
+	std::map<unsigned int, const VICUS::Network*>::const_iterator networkIt =
+			m_genericNetworks.find(networkId);
+	Q_ASSERT(networkIt != m_genericNetworks.end());
+
+	// editing
+	VICUS::Network network = *networkIt->second;
+
+	// find network index
+	unsigned int idx = 0;
+	for( ;idx < project().m_geometricNetworks.size(); ++idx)  {
+		if(project().m_geometricNetworks[idx].m_id == networkId)
+			break;
+	}
+
+	Q_ASSERT((size_t) idx < project().m_geometricNetworks.size());
+
+	// create an undo action
+	SVUndoModifyNetwork *undo = new SVUndoModifyNetwork(tr("Edited generic network with id %1").arg(networkId),
+														idx, network);
+	undo->push();
+	// and transfer modified data into VICUS data structure
+	undo->undo();
 }

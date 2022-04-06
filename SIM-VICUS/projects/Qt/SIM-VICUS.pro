@@ -92,6 +92,7 @@ SOURCES += \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
 	../../src/SVMeasurementWidget.cpp \
+	../../src/SVNetworkSelectionDialog.cpp \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
@@ -270,6 +271,7 @@ HEADERS  += \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
 	../../src/SVMeasurementWidget.h \
+	../../src/SVNetworkSelectionDialog.h \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
 	../../src/SVPreferencesPageMisc.h \
@@ -490,6 +492,7 @@ FORMS    += \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkImportDialog.ui \
+	../../src/SVNetworkSelectionDialog.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPreferencesDialog.ui \
