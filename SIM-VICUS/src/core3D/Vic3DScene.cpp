@@ -1245,8 +1245,7 @@ void Scene::setViewState(const SVViewState & vs) {
 	// "Parameter edit" mode, reset the new polygon object
 	bool colorUpdateNeeded = false;
 	if (vs.m_viewMode == SVViewState::VM_PropertyEditMode) {
-		if(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance)
-			leaveMeasurementMode();
+		leaveMeasurementMode(false);
 		m_newGeometryObject.clear();
 		// update scene coloring if in property edit mode
 		if (m_lastColorMode != vs.m_objectColorMode ||
@@ -2238,14 +2237,15 @@ void Scene::enterMeasurementMode() {
 }
 
 
-void Scene::leaveMeasurementMode() {
+void Scene::leaveMeasurementMode(bool setViewState) {
 	// restore original local coordinate system
 	m_coordinateSystemObject.setTransform(m_oldCoordinateSystemTransform);
 	m_measurementObject.reset();
 	qDebug() << "Leaving 'Measurement' mode";
 
 	// switch back to previous view state
-	SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
+	if (setViewState)
+		SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 
 	m_measurementWidget->hide();
 	m_measurementWidget->reset();

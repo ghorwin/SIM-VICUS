@@ -139,7 +139,7 @@ public:
 	/*! Toggles "measurement" mode on. */
 	void enterMeasurementMode();
 	/*! Leaves the "measurement" mode and returns to previous mode. */
-	void leaveMeasurementMode();
+	void leaveMeasurementMode(bool setViewState = true);
 
 	bool m_smallCoordinateSystemObjectVisible = true;
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
