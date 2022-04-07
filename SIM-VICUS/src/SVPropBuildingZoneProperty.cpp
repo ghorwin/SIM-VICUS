@@ -107,13 +107,14 @@ void SVPropBuildingZoneProperty::updateUi() {
 
 	m_ui->comboBoxBuildingLevelFilter->addItem(tr("All building levels"), VICUS::INVALID_ID);
 	if(selectedBuildingIndex == -1){
-		for(const VICUS::Building & b : project().m_buildings){
-			for(const VICUS::BuildingLevel & bl : b.m_buildingLevels){
-				if(currentBuildingLevel == bl.m_id)
-					selectedBuildingLevelIndex = m_ui->comboBoxBuildingLevelFilter->count();
-				m_ui->comboBoxBuildingLevelFilter->addItem(bl.m_displayName, bl.m_id);
-			}
-		}
+//		for(const VICUS::Building & b : project().m_buildings){
+//			for(const VICUS::BuildingLevel & bl : b.m_buildingLevels){
+//				if(currentBuildingLevel == bl.m_id)
+//					selectedBuildingLevelIndex = m_ui->comboBoxBuildingLevelFilter->count();
+//				m_ui->comboBoxBuildingLevelFilter->addItem(bl.m_displayName, bl.m_id);
+//			}
+//		}
+		selectedBuildingLevelIndex = 0; // I guess that is better since we want to have an hierarchical selection
 	}
 	else{
 		for(unsigned int i=0; i<project().m_buildings[currentBuildingVectorIdx].m_buildingLevels.size(); ++i){
@@ -200,7 +201,6 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaSelectedRooms_clicked() {
 
 	// perform calculation of room floor areas inside table model
 	m_zonePropertiesTableModel->calulateFloorArea(indexes);
-	updateUi();
 }
 
 
@@ -218,7 +218,6 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeSelectedRooms_clicked() {
 
 	// perform calculation of room volumes inside table model
 	m_zonePropertiesTableModel->calulateVolume(indexes);
-	updateUi();
 }
 
 
@@ -236,7 +235,6 @@ void SVPropBuildingZoneProperty::on_pushButtonFloorAreaAllRooms_clicked() {
 
 	// perform calculation of room floor areas inside table model
 	m_zonePropertiesTableModel->calulateFloorArea(indexes);
-	updateUi();
 }
 
 
@@ -254,7 +252,6 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 
 	// perform calculation of room volumes inside table model
 	m_zonePropertiesTableModel->calulateVolume(indexes);
-	updateUi();
 }
 
 
