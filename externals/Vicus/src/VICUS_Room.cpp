@@ -55,7 +55,8 @@ void Room::calculateVolume() {
 	double vol = 0;
 	// process all surfaces
 	for (const VICUS::Surface & s : m_surfaces) {
-		const PlaneTriangulationData & planeTri = s.geometry().triangulationDataWithoutHoles();
+		// TODO Dirk: Calculate Triangulation Data without holes
+		 const PlaneTriangulationData & planeTri = s.geometry().triangulationDataWithoutHoles();
 
 		// process all triangles
 		for (unsigned int i=0; i<planeTri.m_triangles.size(); ++i) {

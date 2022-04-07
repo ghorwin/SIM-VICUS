@@ -52,13 +52,13 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				case 2 :
 					//get parameter
 					if(!room.m_para[VICUS::Room::P_Area].empty())
-						return room.m_para[VICUS::Room::P_Area].get_value("m2");
+						return (int)(room.m_para[VICUS::Room::P_Area].get_value("m2")*100)/100.0;
 					return QVariant();
 				// column 3 - room volume
 				case 3 :
 					//get parameter
 					if(!room.m_para[VICUS::Room::P_Volume].empty())
-						return room.m_para[VICUS::Room::P_Volume].get_value("m3");
+						return (int)(room.m_para[VICUS::Room::P_Volume].get_value("m3")*100)/100.0;
 					return QVariant();
 			}
 
