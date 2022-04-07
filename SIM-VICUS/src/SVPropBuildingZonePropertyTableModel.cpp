@@ -144,7 +144,7 @@ Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & in
 
 bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, const QVariant & value, int /*role*/) {
 	Q_ASSERT(index.isValid());
-	Q_ASSERT(index.column() == 2 || index.column() == 3);
+	Q_ASSERT(index.column() == 3 || index.column() == 4);
 	Q_ASSERT((size_t)index.row() < m_rooms.size());
 	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
 
@@ -167,13 +167,13 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 
 	switch (index.column()) {
 		// column 2 - room floor area
-		case 2 :
+		case 3 :
 			//set parameter in base unit 'm2'
 			VICUS::KeywordList::setParameter(room.m_para, "Room::para_t", VICUS::Room::P_Area, val);
 			text = tr("Modified floor area");
 		break;
 		// column 3 - room volume
-		case 3 :
+		case 4 :
 			//set parameter in base unit 'm3'
 			VICUS::KeywordList::setParameter(room.m_para, "Room::para_t", VICUS::Room::P_Volume, val);
 			text = tr("Modified volume");
