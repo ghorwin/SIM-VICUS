@@ -268,6 +268,8 @@ void SVPropBuildingZonePropertyTableModel::calulateFloorArea(const QModelIndexLi
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
+
+	reset();
 }
 
 
@@ -294,6 +296,8 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
+
+	reset();
 }
 
 
