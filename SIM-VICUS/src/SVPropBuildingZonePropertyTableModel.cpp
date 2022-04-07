@@ -278,7 +278,6 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 		// change room volume in builing copy
 		VICUS::Room &room = buildings[i].m_buildingLevels[j].m_rooms[k];
 		// make calculation here
-		room.calculateFloorArea();
 		room.calculateVolume();
 	}
 		QString text = "Volume calculation";
