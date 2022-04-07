@@ -25,7 +25,7 @@ int SVPropBuildingZonePropertyTableModel::rowCount(const QModelIndex & /*parent*
 
 
 int SVPropBuildingZonePropertyTableModel::columnCount(const QModelIndex & /*parent*/) const {
-	return 5;
+	return 4;
 }
 
 
@@ -48,30 +48,6 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 				// column 1 - room name
 				case 1 :
 					return room.m_displayName;
-				// column 1 - room name
-				case 2 : {
-					VICUS::BuildingLevel *bl = dynamic_cast<VICUS::BuildingLevel*>(room.m_parent);
-					if(bl == nullptr)
-						return QVariant();
-					return bl->m_displayName;
-				}
-				// column 2 - room floor area
-				case 3 :
-					//get parameter
-					if(!room.m_para[VICUS::Room::P_Area].empty())
-						return room.m_para[VICUS::Room::P_Area].get_value("m2");
-					return QVariant();
-				// column 3 - room volume
-				case 4 :
-					//get parameter
-					if(!room.m_para[VICUS::Room::P_Volume].empty())
-						return room.m_para[VICUS::Room::P_Volume].get_value("m3");
-					return QVariant();
-			}
-
-		case Qt::EditRole : {
-			Q_ASSERT(index.column() == 2 || index.column() == 3);
-			switch (index.column()) {
 				// column 2 - room floor area
 				case 2 :
 					//get parameter
@@ -79,6 +55,23 @@ QVariant SVPropBuildingZonePropertyTableModel::data(const QModelIndex & index, i
 						return room.m_para[VICUS::Room::P_Area].get_value("m2");
 					return QVariant();
 				// column 3 - room volume
+				case 3 :
+					//get parameter
+					if(!room.m_para[VICUS::Room::P_Volume].empty())
+						return room.m_para[VICUS::Room::P_Volume].get_value("m3");
+					return QVariant();
+			}
+
+		case Qt::EditRole : {
+			Q_ASSERT(index.column() == 3 || index.column() == 4);
+			switch (index.column()) {
+				// column 3 - room floor area
+				case 2 :
+					//get parameter
+					if(!room.m_para[VICUS::Room::P_Area].empty())
+						return room.m_para[VICUS::Room::P_Area].get_value("m2");
+					return QVariant();
+				// column 4 - room volume
 				case 3 :
 					//get parameter
 					if(!room.m_para[VICUS::Room::P_Volume].empty())
@@ -106,7 +99,6 @@ QVariant SVPropBuildingZonePropertyTableModel::headerData(int section, Qt::Orien
 	static QStringList headers = QStringList()
 		<< tr("Id")
 		<< tr("Name")
-		<< tr("Level")
 		<< tr("Area [m2]")
 		<< tr("Volume [m3]");
 
@@ -121,22 +113,18 @@ QVariant SVPropBuildingZonePropertyTableModel::headerData(int section, Qt::Orien
 
 
 Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & index) const {
-	size_t row = index.row();
-	// Q_ASSERT((size_t)index.row() < m_rooms.size());
+	Q_ASSERT((size_t)index.row() < m_rooms.size());
 	// column 0 - room id
 	if (index.column() == 0)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	// column 1 - room name
 	if (index.column() == 1)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-	// column 1 - building level
-	if (index.column() == 2)
-		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	// column 2 - room floor area
-	if (index.column() == 3)
+	if (index.column() == 2)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	// column 3 - room volume
-	if (index.column() == 4)
+	if (index.column() == 3)
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 	return QAbstractTableModel::flags(index); // call base class implementation
 }
@@ -144,7 +132,7 @@ Qt::ItemFlags SVPropBuildingZonePropertyTableModel::flags(const QModelIndex & in
 
 bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, const QVariant & value, int /*role*/) {
 	Q_ASSERT(index.isValid());
-	Q_ASSERT(index.column() == 3 || index.column() == 4);
+	Q_ASSERT(index.column() == 2 || index.column() == 3);
 	Q_ASSERT((size_t)index.row() < m_rooms.size());
 	Q_ASSERT(m_rooms[(size_t)index.row()] != nullptr);
 
@@ -166,14 +154,14 @@ bool SVPropBuildingZonePropertyTableModel::setData(const QModelIndex & index, co
 	VICUS::Room room = *m_rooms[(size_t)index.row()];
 
 	switch (index.column()) {
-		// column 2 - room floor area
-		case 3 :
+		// column 3 - room floor area
+		case 2 :
 			//set parameter in base unit 'm2'
 			VICUS::KeywordList::setParameter(room.m_para, "Room::para_t", VICUS::Room::P_Area, val);
 			text = tr("Modified floor area");
 		break;
-		// column 3 - room volume
-		case 4 :
+		// column 4 - room volume
+		case 3 :
 			//set parameter in base unit 'm3'
 			VICUS::KeywordList::setParameter(room.m_para, "Room::para_t", VICUS::Room::P_Volume, val);
 			text = tr("Modified volume");
@@ -290,9 +278,10 @@ void SVPropBuildingZonePropertyTableModel::calulateVolume(const QModelIndexList 
 		// change room volume in builing copy
 		VICUS::Room &room = buildings[i].m_buildingLevels[j].m_rooms[k];
 		// make calculation here
+		room.calculateFloorArea();
 		room.calculateVolume();
 	}
-	QString text = "Volume calculation";
+		QString text = "Volume calculation";
 
 	SVUndoModifyBuildingTopology *undo = new SVUndoModifyBuildingTopology(text, buildings);
 	undo->push();
