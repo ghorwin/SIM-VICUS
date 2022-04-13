@@ -1,4 +1,4 @@
-﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -154,6 +154,11 @@ SVPropEditGeometry::~SVPropEditGeometry() {
 void SVPropEditGeometry::enableTransformation() {
 	m_ui->pushButtonApply->setEnabled(true);
 	m_ui->pushButtonCancel->setEnabled(true);
+}
+
+
+void SVPropEditGeometry::setModificationType(ModificationType modType) {
+	m_ui->stackedWidget->setCurrentIndex(modType);
 }
 
 

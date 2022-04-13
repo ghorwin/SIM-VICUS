@@ -44,6 +44,7 @@
 #include "Vic3DSceneView.h"
 #include "SVPropertyWidget.h"
 #include "SVPropVertexListWidget.h"
+#include "SVPropEditGeometry.h"
 #include "SVViewStateHandler.h"
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
@@ -102,6 +103,8 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVGeometryView::onViewStateChanged);
+	connect(&SVProjectHandler::instance(), &SVProjectHandler::modified,
+			this, &SVGeometryView::onModified);
 
 	SVViewStateHandler::instance().m_geometryView = this;
 	onViewStateChanged();
@@ -231,6 +234,37 @@ void SVGeometryView::switch2GeometryMode() {
 
 void SVGeometryView::switch2ParametrizationMode() {
 	m_ui->actionToggleParametrizationMode->trigger();
+}
+
+
+void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
+	SVProjectHandler::ModificationTypes modType((SVProjectHandler::ModificationTypes)modificationType);
+	switch (modType) {
+		case SVProjectHandler::AllModified:
+		case SVProjectHandler::BuildingGeometryChanged:
+		case SVProjectHandler::NodeStateModified: {
+			// update our selection lists
+			std::set<const VICUS::Object*> sel;
+
+			// first we get how many surfaces are selected
+			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+			bool haveSurface = false;
+			for (const VICUS::Object* o : sel) {
+				if (dynamic_cast<const VICUS::Surface*>(o) != nullptr ||
+					dynamic_cast<const VICUS::SubSurface*>(o) != nullptr)
+				{
+					haveSurface = true;
+					break;
+				}
+			}
+			m_ui->actionTranslateGeometry->setEnabled(haveSurface);
+			m_ui->actionRotateGeometry->setEnabled(haveSurface);
+			m_ui->actionScaleGeometry->setEnabled(haveSurface);
+			m_ui->actionAlignGeometry->setEnabled(haveSurface);
+		} break;
+
+		default: ; // just to make compiler happy
+	} // switch
 }
 
 
@@ -508,6 +542,90 @@ void SVGeometryView::on_actionToggleParametrizationMode_triggered() {
 }
 
 
+void SVGeometryView::on_actionAddGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_AddGeometry ||
+		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+}
+
+
+void SVGeometryView::on_actionTranslateGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
+		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Translate);
+}
+
+
+void SVGeometryView::on_actionRotateGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
+		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Rotate);
+}
+
+
+void SVGeometryView::on_actionScaleGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
+		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Scale);
+}
+
+
+void SVGeometryView::on_actionAlignGeometry_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to geometry mode, show addGeometry property widget
+	if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry ||
+		vs.m_viewMode != SVViewState::VM_GeometryEditMode)
+	{
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+		SVViewStateHandler::instance().setViewState(vs);
+	}
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+	SVViewStateHandler::instance().m_propEditGeometryWidget->setModificationType(SVPropEditGeometry::MT_Align);
+}
+
+
+// *** Protected Functions ***
+
+
+void SVGeometryView::resizeEvent(QResizeEvent *event) {
+	QWidget::resizeEvent(event); // call parent's class implementation
+	moveMeasurementWidget(); // adjust position of measurement widget
+}
+
+
+// *** Private Functions ***
+
 void SVGeometryView::setupToolBar() {
 
 	// *** Geometry Tool Bar ***
@@ -541,9 +659,4 @@ void SVGeometryView::setupToolBar() {
 	m_ui->actionToggleParametrizationMode->blockSignals(false);
 }
 
-
-void SVGeometryView::resizeEvent(QResizeEvent *event) {
-	QWidget::resizeEvent(event); // call parent's class implementation
-	moveMeasurementWidget(); // adjust position of measurement widget
-}
 

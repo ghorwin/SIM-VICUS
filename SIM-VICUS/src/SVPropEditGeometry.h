@@ -113,6 +113,9 @@ public:
 	*/
 	void enableTransformation();
 
+	/*! Switches to the respective transformation page on the widget. */
+	void setModificationType(ModificationType modType);
+
 	/*! Sets the Coordinates of the Center of the local Coordinate System
 		(called directly from the local coordinate system when its position changes).
 	*/

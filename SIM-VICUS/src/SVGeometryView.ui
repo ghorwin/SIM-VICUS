@@ -10,6 +10,12 @@
     <height>525</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
@@ -19,7 +25,7 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <layout class="QVBoxLayout" name="sceneVBoxLayout">
@@ -113,6 +119,12 @@
          <addaction name="actionToggleGeometryMode"/>
          <addaction name="actionToggleParametrizationMode"/>
          <addaction name="separator"/>
+         <addaction name="actionAddGeometry"/>
+         <addaction name="separator"/>
+         <addaction name="actionTranslateGeometry"/>
+         <addaction name="actionRotateGeometry"/>
+         <addaction name="actionScaleGeometry"/>
+         <addaction name="actionAlignGeometry"/>
         </widget>
        </item>
       </layout>
@@ -191,6 +203,66 @@
    </property>
    <property name="toolTip">
     <string>Turns on parametrization edit mode</string>
+   </property>
+  </action>
+  <action name="actionAddGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/Add.png</normaloff>:/gfx/actions/Add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Add geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionTranslateGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/move.png</normaloff>:/gfx/actions/move.png</iconset>
+   </property>
+   <property name="text">
+    <string>Translate geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Move geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionRotateGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/rotating.png</normaloff>:/gfx/actions/rotating.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Rotate geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionScaleGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/resize.png</normaloff>:/gfx/actions/resize.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Scale geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionAlignGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/Coordinate-System.png</normaloff>:/gfx/actions/Coordinate-System.png</iconset>
+   </property>
+   <property name="text">
+    <string>Rotate geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Align geometry&quot; property view</string>
    </property>
   </action>
  </widget>

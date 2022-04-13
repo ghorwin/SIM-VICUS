@@ -41,6 +41,7 @@ class QToolBar;
 class QAction;
 class QLineEdit;
 class QDockWidget;
+class ModificationInfo;
 
 namespace Ui {
 	class SVGeometryView;
@@ -108,6 +109,9 @@ public:
 	void switch2ParametrizationMode();
 
 public slots:
+	/*! Handles selection changes and enables/disables button states. */
+	void onModified(int modificationType, ModificationInfo *);
+
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
 		visibility of the local coordinate system.
 	*/
@@ -130,6 +134,12 @@ private slots:
 
 	void on_actionToggleGeometryMode_triggered();
 	void on_actionToggleParametrizationMode_triggered();
+
+	void on_actionAddGeometry_triggered();
+	void on_actionTranslateGeometry_triggered();
+	void on_actionRotateGeometry_triggered();
+	void on_actionScaleGeometry_triggered();
+	void on_actionAlignGeometry_triggered();
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
