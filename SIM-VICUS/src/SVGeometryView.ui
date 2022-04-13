@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SVGeometryView</class>
+ <widget class="QWidget" name="SVGeometryView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1008</width>
+    <height>525</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QSplitter" name="splitter">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <widget class="QWidget" name="">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="sceneVBoxLayout">
+         <item>
+          <widget class="QWidget" name="widgetSceneViewDummy" native="true">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>500</width>
+             <height>0</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolBar" name="geometryToolBar">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>10</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>32</height>
+            </size>
+           </property>
+           <property name="movable">
+            <bool>false</bool>
+           </property>
+           <property name="floatable">
+            <bool>false</bool>
+           </property>
+           <addaction name="actionSnap"/>
+           <addaction name="actionMeasure"/>
+           <addaction name="actionXLock"/>
+           <addaction name="actionYLock"/>
+           <addaction name="actionZLock"/>
+           <addaction name="separator"/>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QToolBar" name="modeSelectionToolBar">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>48</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="movable">
+          <bool>false</bool>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="floatable">
+          <bool>false</bool>
+         </property>
+         <addaction name="actionToggleGeometryMode"/>
+         <addaction name="actionToggleParametrizationMode"/>
+         <addaction name="separator"/>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="SVPropertyWidget" name="propertyWidget" native="true"/>
+    </widget>
+   </item>
+  </layout>
+  <action name="actionSnap">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/Object-Snap.png</normaloff>:/gfx/actions/Object-Snap.png</iconset>
+   </property>
+   <property name="text">
+    <string>Snap</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles object snap on/off (F3)</string>
+   </property>
+  </action>
+  <action name="actionMeasure">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/Measurement.png</normaloff>:/gfx/actions/Measurement.png</iconset>
+   </property>
+   <property name="text">
+    <string>Measure</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggles distance measurement mode on/off</string>
+   </property>
+  </action>
+  <action name="actionXLock">
+   <property name="text">
+    <string>X</string>
+   </property>
+  </action>
+  <action name="actionYLock">
+   <property name="text">
+    <string>Y</string>
+   </property>
+  </action>
+  <action name="actionZLock">
+   <property name="text">
+    <string>Z</string>
+   </property>
+   <property name="toolTip">
+    <string>Z</string>
+   </property>
+  </action>
+  <action name="actionToggleGeometryMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/3d-cube.png</normaloff>:/gfx/actions/3d-cube.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit Geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Turns on geometry edit mode</string>
+   </property>
+  </action>
+  <action name="actionToggleParametrizationMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/layers.png</normaloff>:/gfx/actions/layers.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit properties</string>
+   </property>
+   <property name="toolTip">
+    <string>Turns on parametrization edit mode</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SVPropertyWidget</class>
+   <extends>QWidget</extends>
+   <header>SVPropertyWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../resources/SIM-VICUS.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -24,6 +24,7 @@
 */
 
 #include "SVGeometryView.h"
+#include "ui_SVGeometryView.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -38,16 +39,21 @@
 
 #include <IBK_StringUtils.h>
 
+#include <VICUS_Project.h>
+
 #include "Vic3DSceneView.h"
 #include "SVPropertyWidget.h"
 #include "SVPropVertexListWidget.h"
 #include "SVViewStateHandler.h"
 #include "SVLocalCoordinateView.h"
 #include "Vic3DNewGeometryObject.h"
+#include "SVProjectHandler.h"
 
 SVGeometryView::SVGeometryView(QWidget *parent) :
-	QWidget(parent)
+	QWidget(parent),
+	m_ui(new Ui::SVGeometryView)
 {
+	m_ui->setupUi(this);
 
 	// *** create OpenGL window
 
@@ -70,53 +76,25 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::TabFocus);
 	m_sceneViewContainerWidget->setMinimumSize(QSize(640,400));
 
-	// *** create toolbar and place it below the scene
+	// replace dummy widget with scene view container widget
+	m_ui->sceneVBoxLayout->insertWidget(0, m_sceneViewContainerWidget);
+	delete m_ui->widgetSceneViewDummy;
 
-	m_geometryToolBar = new QToolBar(this);
-	m_geometryToolBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_geometryToolBar->setMaximumHeight(32);
-	m_geometryToolBar->layout()->setMargin(0);
+	// Layouting
+	m_ui->sceneVBoxLayout->setMargin(0);
+	m_ui->sceneVBoxLayout->setSpacing(0);
+	m_ui->horizontalLayout->setSpacing(0);
+	m_ui->splitter->setCollapsible(0, true);
+	m_ui->splitter->setCollapsible(1, true);
+	m_ui->splitter->setStretchFactor(0,1);
+	m_ui->splitter->setStretchFactor(1,0);
 
-//	m_dockWidget = new QWidget(this);
-//	m_dockWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-//	m_dockWidget->setMaximumHeight(120);
-
-	QVBoxLayout * vbLay = new QVBoxLayout;
-	vbLay->addWidget(m_sceneViewContainerWidget);
-	vbLay->addWidget(m_geometryToolBar);
-	vbLay->setMargin(0);
-	vbLay->setSpacing(0);
-
-	QWidget* w = new QWidget(this);
-	w->setLayout(vbLay);
-
-	// *** create property widget and toggle button
-
-	m_propertyWidget = new SVPropertyWidget(this);
-
-	// *** create splitter and put view and property widget into splitter
-
-	m_splitter = new QSplitter(this);
-
-	m_splitter->addWidget(w);
-	m_splitter->addWidget(m_propertyWidget);
-
-	// *** create the layout and insert splitter
-	QHBoxLayout * hlay = new QHBoxLayout;
-	hlay->setMargin(0);
-	hlay->setSpacing(0);
-	hlay->addWidget(m_splitter);
-	m_splitter->setCollapsible(0, true);
-	m_splitter->setCollapsible(1, true);
-	m_splitter->setStretchFactor(0,1);
-	m_splitter->setStretchFactor(1,0);
-
-	setLayout(hlay);
 
 	setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 	m_sceneViewContainerWidget->setFocusPolicy(Qt::StrongFocus); // we want to get all keyboard/mouse events
 
+	// add special widgets to tool bars (things we cannot do in Qt Creator)
 	setupToolBar();
 
 	// *** create Measurement Widget
@@ -180,21 +158,21 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 		break;
 
 		case Qt::Key_X :
-			if (!m_xLockAction->isVisible())
+			if (!m_ui->actionXLock->isVisible())
 				return false;
-			m_xLockAction->trigger();
+			m_ui->actionXLock->trigger();
 		break;
 
 		case Qt::Key_Y :
-			if (!m_yLockAction->isVisible())
+			if (!m_ui->actionYLock->isVisible())
 				return false;
-			m_yLockAction->trigger();
+			m_ui->actionYLock->trigger();
 		break;
 
 		case Qt::Key_Z :
-			if (!m_zLockAction->isVisible())
+			if (!m_ui->actionZLock->isVisible())
 				return false;
-			m_zLockAction->trigger();
+			m_ui->actionZLock->trigger();
 		break;
 
 		// *** F3 - toggle "snap mode" mode ****
@@ -225,6 +203,14 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 				m_sceneView->toggleTranslateCoordinateSystem();
 		break;
 
+		// *** C - toggle parametrization and geometry mode ***
+		case Qt::Key_C :
+			if (m_ui->actionToggleGeometryMode->isChecked())
+				switch2ParametrizationMode();
+			else
+				switch2GeometryMode();
+		break;
+
 		default:
 			return false; // not our key
 	}
@@ -238,36 +224,46 @@ void SVGeometryView::moveMeasurementWidget() {
 }
 
 
+void SVGeometryView::switch2GeometryMode() {
+	m_ui->actionToggleGeometryMode->trigger();
+}
+
+
+void SVGeometryView::switch2ParametrizationMode() {
+	m_ui->actionToggleParametrizationMode->trigger();
+}
+
+
 void SVGeometryView::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
-	m_snapAction->blockSignals(true);
-	m_snapAction->setChecked(vs.m_snapEnabled);
-	m_snapAction->blockSignals(false);
+	m_ui->actionSnap->blockSignals(true);
+	m_ui->actionSnap->setChecked(vs.m_snapEnabled);
+	m_ui->actionSnap->blockSignals(false);
 
-	m_measureAction->blockSignals(true);
-	m_measureAction->setChecked(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance);
-	m_measureAction->blockSignals(false);
+	m_ui->actionMeasure->blockSignals(true);
+	m_ui->actionMeasure->setChecked(vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance);
+	m_ui->actionMeasure->blockSignals(false);
 
-	m_xLockAction->blockSignals(true);
-	m_xLockAction->setChecked(vs.m_locks == SVViewState::L_LocalX);
-	m_xLockAction->blockSignals(false);
+	m_ui->actionXLock->blockSignals(true);
+	m_ui->actionXLock->setChecked(vs.m_locks == SVViewState::L_LocalX);
+	m_ui->actionXLock->blockSignals(false);
 
-	m_yLockAction->blockSignals(true);
-	m_yLockAction->setChecked(vs.m_locks == SVViewState::L_LocalY);
-	m_yLockAction->blockSignals(false);
+	m_ui->actionYLock->blockSignals(true);
+	m_ui->actionYLock->setChecked(vs.m_locks == SVViewState::L_LocalY);
+	m_ui->actionYLock->blockSignals(false);
 
-	m_zLockAction->blockSignals(true);
-	m_zLockAction->setChecked(vs.m_locks == SVViewState::L_LocalZ);
-	m_zLockAction->blockSignals(false);
+	m_ui->actionZLock->blockSignals(true);
+	m_ui->actionZLock->setChecked(vs.m_locks == SVViewState::L_LocalZ);
+	m_ui->actionZLock->blockSignals(false);
 
 	bool lockVisible = (vs.m_sceneOperationMode == SVViewState::OM_PlaceVertex);
-	m_xLockAction->setVisible(lockVisible);
-	m_yLockAction->setVisible(lockVisible);
-	m_zLockAction->setVisible(lockVisible);
+	m_ui->actionXLock->setVisible(lockVisible);
+	m_ui->actionYLock->setVisible(lockVisible);
+	m_ui->actionZLock->setVisible(lockVisible);
 
 	bool geometryModeActive = (vs.m_viewMode == SVViewState::VM_GeometryEditMode);
-	m_geometryToolBar->setVisible(geometryModeActive);
-	m_measureAction->setEnabled(geometryModeActive); // to disable short-cut as well
+	m_ui->geometryToolBar->setEnabled(geometryModeActive);
+	m_ui->actionMeasure->setEnabled(geometryModeActive); // to disable short-cut as well
 
 	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
 	//       the associated actions.
@@ -474,47 +470,53 @@ void SVGeometryView::on_actionZLock_toggled(bool on) {
 }
 
 
+void SVGeometryView::on_actionToggleGeometryMode_triggered() {
+	// switch view state to geometry edit mode
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	std::set<const VICUS::Object *> sel;
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
+	if (sel.empty())
+		vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	else
+		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+	vs.m_objectColorMode = SVViewState::OCM_None;
+	SVViewStateHandler::instance().setViewState(vs);
+	m_ui->actionToggleGeometryMode->setChecked(true);
+	m_ui->actionToggleParametrizationMode->setChecked(false);
+	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
+	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
+	// system; since update() is private, we trick the widget into believing a selection has changed
+	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
+//	FIXME : m_ui->propertyWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
+}
+
+
+void SVGeometryView::on_actionToggleParametrizationMode_triggered() {
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	// switch to property edit mode
+	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
+	// turn off any special scene modes
+	vs.m_sceneOperationMode = SVViewState::NUM_OM;
+	// select property mode based on what's being selected in the mode selection
+	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
+//	FIXME : SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
+	SVViewStateHandler::instance().setViewState(vs);
+
+	m_ui->actionToggleParametrizationMode->setChecked(true);
+	m_ui->actionToggleGeometryMode->setChecked(false);
+}
+
+
 void SVGeometryView::setupToolBar() {
 
-	m_snapAction = new QAction(tr("Snap"), this);
-	m_snapAction->setCheckable(true);
-	m_snapAction->setToolTip(tr("Toggles object snap on/off (F3)"));
-	m_snapAction->setIcon(QIcon(":/gfx/actions/Object-Snap.png") );
-
-	m_geometryToolBar->addAction(m_snapAction);
-	m_geometryToolBar->setIconSize(QSize(24,24) );
-	connect(m_snapAction, &QAction::toggled, this, &SVGeometryView::on_actionSnap_toggled);
-
-	m_measureAction = new QAction(tr("Measure"), this);
-	m_measureAction->setCheckable(true);
-	m_measureAction->setToolTip(tr("Toggles distance measurement mode on/off"));
-	m_measureAction->setIcon(QIcon(":/gfx/actions/Measurement.png") );
-
-	m_geometryToolBar->addAction(m_measureAction);
-	m_geometryToolBar->setIconSize(QSize(24,24) );
-	connect(m_measureAction, &QAction::toggled, this, &SVGeometryView::on_actionMeasure_toggled);
-
-	m_xLockAction = new QAction(tr("X"), this);
-	m_xLockAction->setCheckable(true);
-	m_geometryToolBar->addAction(m_xLockAction);
-	connect(m_xLockAction, &QAction::toggled, this, &SVGeometryView::on_actionXLock_toggled);
-
-	m_yLockAction = new QAction(tr("Y"), this);
-	m_yLockAction->setCheckable(true);
-	m_geometryToolBar->addAction(m_yLockAction);
-	connect(m_yLockAction, &QAction::toggled, this, &SVGeometryView::on_actionYLock_toggled);
-
-	m_zLockAction = new QAction(tr("Z"), this);
-	m_zLockAction->setCheckable(true);
-	m_geometryToolBar->addAction(m_zLockAction);
-	connect(m_zLockAction, &QAction::toggled, this, &SVGeometryView::on_actionZLock_toggled);
-
-	m_geometryToolBar->addSeparator();
+	// *** Geometry Tool Bar ***
 
 	// the line edit for entering vertex coordinates
-	m_lineEditCoordinateInput = new QLineEdit(m_geometryToolBar);
+	m_lineEditCoordinateInput = new QLineEdit(m_ui->geometryToolBar);
 	m_lineEditCoordinateInput->setToolTip(tr("Without axis lock, enter coordinates in format <x> <y> <z>. With axis lock enter only the offset in the respective axis direction."));
-	m_actionCoordinateInput = m_geometryToolBar->addWidget(m_lineEditCoordinateInput);
+	m_actionCoordinateInput = m_ui->geometryToolBar->insertWidget(m_ui->actionZLock, m_lineEditCoordinateInput);
 	connect(m_lineEditCoordinateInput, &QLineEdit::returnPressed,
 			this, &SVGeometryView::coordinateInputFinished);
 	m_lineEditCoordinateInput->setMaximumWidth(400);
@@ -522,11 +524,22 @@ void SVGeometryView::setupToolBar() {
 	// stretcher
 	QWidget * spacerWidget = new QWidget;
 	spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-	m_geometryToolBar->addWidget(spacerWidget);
+	m_ui->geometryToolBar->addWidget(spacerWidget);
 
 	// the local coordinate system info
 	m_localCoordinateSystemView = new SVLocalCoordinateView(this);
-	m_actionlocalCoordinateSystemCoordinates = m_geometryToolBar->addWidget(m_localCoordinateSystemView);
+	m_actionlocalCoordinateSystemCoordinates = m_ui->geometryToolBar->addWidget(m_localCoordinateSystemView);
+
+
+	// *** Mode Switching Tool Bar ***
+
+	// initialize view mode buttons
+	m_ui->actionToggleGeometryMode->blockSignals(true);
+	m_ui->actionToggleGeometryMode->setChecked(true);
+	m_ui->actionToggleGeometryMode->blockSignals(false);
+	m_ui->actionToggleParametrizationMode->blockSignals(true);
+	m_ui->actionToggleParametrizationMode->setChecked(false);
+	m_ui->actionToggleParametrizationMode->blockSignals(false);
 }
 
 

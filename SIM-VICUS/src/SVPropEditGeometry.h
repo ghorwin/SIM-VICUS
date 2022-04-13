@@ -297,9 +297,6 @@ private:
 	/*! Contains position and rotation of local coordinate system object. */
 	Vic3D::Transform3D					m_localCoordinatePosition;
 
-	/*! Pointer to LocalCoordinateSystemObject */
-	Vic3D::CoordinateSystemObject		*m_cso;
-
 	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation. */
 	IBKMK::Vector3D						m_bbDim[NUM_OM];
 

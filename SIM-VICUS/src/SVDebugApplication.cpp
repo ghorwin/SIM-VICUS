@@ -63,10 +63,6 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPress((Qt::Key)ke->key()))
 						return true;
 				}
-				if (m_mainWindow != nullptr) {
-					if (m_mainWindow->handleGlobalKeyPress((Qt::Key)ke->key(), ke->modifiers()) )
-						return true;
-				}
 //				if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
 //					qDebug () << "GlobalKeypressEvent - not handled";
 			}
