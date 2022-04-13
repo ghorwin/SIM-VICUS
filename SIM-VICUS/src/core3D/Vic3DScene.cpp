@@ -788,19 +788,17 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		}
 		if (m_navigationMode == NM_InteractiveTranslation) {
 			qDebug() << "Leaving interactive translation mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->translate();
+			SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveRotation) {
 			qDebug() << "Leaving interactive rotation mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->rotate();
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Rotate, SVPropEditGeometry::MS_Absolute);
+			SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveScaling) {
 			qDebug() << "Leaving interactive scaling mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->scale();
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Scale, SVPropEditGeometry::MS_Absolute);
+			SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		// clear orbit controller flag

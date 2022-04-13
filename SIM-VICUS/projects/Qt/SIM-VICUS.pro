@@ -95,6 +95,7 @@ SOURCES += \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
+	../../src/SVPropAddGeometry.cpp \
 	../../src/SVPropBuildingBoundaryConditionsWidget.cpp \
 	../../src/SVPropBuildingComponentOrientationWidget.cpp \
 	../../src/SVPropBuildingComponentsWidget.cpp \
@@ -272,6 +273,7 @@ HEADERS  += \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
 	../../src/SVPreferencesPageMisc.h \
+	../../src/SVPropAddGeometry.h \
 	../../src/SVPropBuildingBoundaryConditionsWidget.h \
 	../../src/SVPropBuildingComponentOrientationWidget.h \
 	../../src/SVPropBuildingComponentsWidget.h \
@@ -494,6 +496,7 @@ FORMS    += \
 	../../src/SVPreferencesPageMisc.ui \
 	../../src/SVPreferencesPageStyle.ui \
 	../../src/SVPreferencesPageTools.ui \
+	../../src/SVPropAddGeometry.ui \
 	../../src/SVPropAddWindowWidget.ui \
 	../../src/SVPropBuildingBoundaryConditionsWidget.ui \
 	../../src/SVPropBuildingComponentOrientationWidget.ui \
