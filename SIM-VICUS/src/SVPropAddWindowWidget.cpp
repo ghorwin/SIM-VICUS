@@ -308,6 +308,6 @@ void SVPropAddWindowWidget::on_pushButtonCreate_clicked() {
 	undo->push();
 
 	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+	vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 	SVViewStateHandler::instance().setViewState(vs);
 }

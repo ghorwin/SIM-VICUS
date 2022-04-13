@@ -537,7 +537,7 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 					// signal, that we are no longer in "add vertex" mode
 					SVViewState vs = SVViewStateHandler::instance().viewState();
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 					// now tell all UI components to toggle their view state
 					SVViewStateHandler::instance().setViewState(vs);
 				} break;

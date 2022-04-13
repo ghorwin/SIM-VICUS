@@ -115,8 +115,10 @@ public:
 		PM_AddSubSurfaceGeometry = we add windows, the rest is just selection stuff.
 	*/
 	enum PropertyWidgetMode {
-		/*! Shows the "Add/edit geometry" widget and tool page. */
-		PM_AddEditGeometry,
+		/*! Shows the "Add geometry" widget and tool page. */
+		PM_AddGeometry,
+		/*! Shows the "Edit geometry" widget and tool page (requires selection). */
+		PM_EditGeometry,
 		/*! Shows the "Widget with list of newly placed vertexes" */
 		PM_VertexList,
 		/*! Shows the widget with global site (and view) properties. */
@@ -209,7 +211,7 @@ public:
 
 	ViewMode				m_viewMode				= VM_GeometryEditMode;
 	SceneOperationMode		m_sceneOperationMode	= NUM_OM;
-	PropertyWidgetMode		m_propertyWidgetMode	= PM_AddEditGeometry;
+	PropertyWidgetMode		m_propertyWidgetMode	= PM_AddGeometry;
 	/*! Indicates which color mode shall be used to color opaque geometry. */
 	ObjectColorMode			m_objectColorMode		= OCM_None;
 	/*! Some color modes require an additional ID property. */

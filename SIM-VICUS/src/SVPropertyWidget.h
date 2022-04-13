@@ -56,7 +56,8 @@ public:
 		These usually correspond to view states.
 	*/
 	enum PropertyWidgets {
-		M_Geometry,
+		M_AddGeometry,
+		M_EditGeometry,
 		M_VertexListWidget,
 		M_SiteProperties,
 		M_NetworkProperties,

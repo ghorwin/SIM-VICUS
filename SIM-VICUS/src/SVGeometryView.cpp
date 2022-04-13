@@ -474,22 +474,22 @@ void SVGeometryView::on_actionToggleGeometryMode_triggered() {
 	// switch view state to geometry edit mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
 	std::set<const VICUS::Object *> sel;
 	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-	if (sel.empty())
+	// we choose the operation based on the selection state
+	if (sel.empty()) {
 		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	else
+		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+	}
+	else {
 		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
+		vs.m_propertyWidgetMode = SVViewState::PM_EditGeometry;
+	}
 	vs.m_objectColorMode = SVViewState::OCM_None;
 	SVViewStateHandler::instance().setViewState(vs);
+
 	m_ui->actionToggleGeometryMode->setChecked(true);
 	m_ui->actionToggleParametrizationMode->setChecked(false);
-	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
-	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
-	// system; since update() is private, we trick the widget into believing a selection has changed
-	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
-//	FIXME : m_ui->propertyWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
 }
 
 
@@ -501,7 +501,6 @@ void SVGeometryView::on_actionToggleParametrizationMode_triggered() {
 	vs.m_sceneOperationMode = SVViewState::NUM_OM;
 	// select property mode based on what's being selected in the mode selection
 	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
-//	FIXME : SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
 	SVViewStateHandler::instance().setViewState(vs);
 
 	m_ui->actionToggleParametrizationMode->setChecked(true);
