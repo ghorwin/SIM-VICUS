@@ -159,6 +159,7 @@ void SVPropEditGeometry::enableTransformation() {
 
 void SVPropEditGeometry::setModificationType(ModificationType modType) {
 	m_ui->stackedWidget->setCurrentIndex(modType);
+	updateUi(); // update all inputs
 }
 
 
@@ -736,6 +737,7 @@ void SVPropEditGeometry::updateUi() {
 		}
 	}
 
+
 #if 0
 	// handling if surfaces are selected
 	if (!m_selSurfaces.empty()) {
@@ -769,11 +771,8 @@ void SVPropEditGeometry::updateUi() {
 			}
 		}
 
-		// enable "add subsurface" button
-		m_ui->pushButtonAddWindow->setEnabled(true);
 	}
 	else {
-		m_ui->pushButtonAddWindow->setEnabled(false);
 
 		// handling if only sub-surfaces are selected
 		if (!m_selSubSurfaces.empty()) {
@@ -791,7 +790,7 @@ void SVPropEditGeometry::updateUi() {
 			}
 		}
 	}
-
+#endif
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
 	m_bbDim[OM_Local] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 											  QVector2IBKVector(cso->translation() ),
@@ -800,15 +799,11 @@ void SVPropEditGeometry::updateUi() {
 											  QVector2IBKVector(cso->localZAxis() ) );
 	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
-	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[m_orientationMode]);
-	// position local coordinate system, but only if we are showing the edit page
-	cso->setTranslation(IBKVector2QVector(m_bbCenter[m_orientationMode]) );
-
-	// update local coordinates
-	Vic3D::Transform3D t;
-	t.setTranslation(IBKVector2QVector(m_bbCenter[m_orientationMode]) );
-	setCoordinates( t ); // calls updateInputs() internally
-#endif
+	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[OM_Global]);
+	// position local coordinate system
+	cso->setTranslation(IBKVector2QVector(m_bbCenter[OM_Global]) );
+	// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
+	//       and indirectly also updateInputs()
 }
 
 #if 0
@@ -1037,53 +1032,39 @@ void SVPropEditGeometry::setState(const SVPropEditGeometry::ModificationType & t
 #endif
 
 void SVPropEditGeometry::updateInputs() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-#if 0
-	ModificationState state = m_modificationState[m_modificationType];
+//	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+//	ModificationState state = m_modificationState[m_modificationType];
 
-	switch (m_modificationType) {
-	case MT_Translate : {
-		showDeg(false);
-		showRotation(false);
+	switch (m_ui->stackedWidget->currentIndex()) {
 
-		switch (state) {
-		case MS_Absolute: {
+		// *** Translation page ***
+		case MT_Translate : {
+			if (m_ui->toolButtonTranslateAbsolute->isChecked()) {
 
-			m_ui->labelX->setText("X");
-			m_ui->labelY->setText("Y");
-			m_ui->labelZ->setText("Z");
+				m_ui->labelTranslateX->setText("X [m]:");
+				m_ui->labelTranslateY->setText("Y [m]:");
+				m_ui->labelTranslateZ->setText("Z [m]:");
 
-			// cache current local coordinate systems position as fall-back values
-			m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
+//				// cache current local coordinate systems position as fall-back values
+//				m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
 
-			QVector3D translation(m_lcsTransform.translation());
-
-			if (m_orientationMode == OM_Local) {
-				QVector3D newTrans( translation.x()*cso->localXAxis().x() + translation.y()*cso->localXAxis().y() + translation.z()*cso->localXAxis().z(),
-									translation.x()*cso->localYAxis().x() + translation.y()*cso->localYAxis().y() + translation.z()*cso->localYAxis().z(),
-									translation.x()*cso->localZAxis().x() + translation.y()*cso->localZAxis().y() + translation.z()*cso->localZAxis().z() );
-				translation = newTrans;
+				QVector3D translation(m_lcsTransform.translation());
+				m_ui->lineEditTranslateX->setValue( translation.x() );
+				m_ui->lineEditTranslateY->setValue( translation.y() );
+				m_ui->lineEditTranslateZ->setValue( translation.z() );
+			}
+			else {
+				m_ui->labelTranslateX->setText("ΔX [m]:");
+				m_ui->labelTranslateY->setText("ΔY [m]:");
+				m_ui->labelTranslateZ->setText("ΔZ [m]:");
+				m_ui->lineEditTranslateX->setValue(0);
+				m_ui->lineEditTranslateY->setValue(0);
+				m_ui->lineEditTranslateZ->setValue(0);
 			}
 
-			m_ui->lineEditX->setValue(translation.x());
-			m_ui->lineEditY->setValue(translation.y());
-			m_ui->lineEditZ->setValue(translation.z());
 		} break;
 
-		default:
-			m_ui->labelX->setText("ΔX");
-			m_ui->labelY->setText("ΔY");
-			m_ui->labelZ->setText("ΔZ");
-
-			m_originalValues = IBKMK::Vector3D();
-
-			m_ui->lineEditX->setValue(0);
-			m_ui->lineEditY->setValue(0);
-			m_ui->lineEditZ->setValue(0);
-		} // switch
-
-	} break;
-
+#if 0
 
 	case MT_Rotate: {
 		showDeg();
@@ -1145,8 +1126,9 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->lineEditZ->setValue(m_originalValues.m_z );
 		}
 	} break;
-	} // switch modification type
 #endif
+	} // switch modification type
+
 }
 #if 0
 void SVPropEditGeometry::setToolButton() {
