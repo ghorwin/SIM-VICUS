@@ -58,19 +58,17 @@ void SVNetworkSelectionDialog::updateUi()
 	// block all signals
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(true);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(true);
-	m_ui->networkEdit->blockSignals(true);
-	m_ui->networkGenerate->blockSignals(true);
 	m_ui->listWidget->blockSignals(true);
 	m_ui->listWidget->selectionModel()->blockSignals(false);
 	m_ui->listWidget->setSortingEnabled(false);
 	m_ui->listWidget->clear();
 
 	// select network
-	std::map<unsigned int, const VICUS::Network*> networks = dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>
+	std::map<unsigned int, const VICUS::GenericNetwork*> networks = dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>
 			(parent()) ->genericNetworks();
 
 	// add all networks to dialog
-	for (std::map<unsigned int, const VICUS::Network*>::const_iterator
+	for (std::map<unsigned int, const VICUS::GenericNetwork*>::const_iterator
 		 networkIt = networks.begin();
 		 networkIt != networks.end(); ++networkIt) {
 		// add new network
@@ -83,8 +81,6 @@ void SVNetworkSelectionDialog::updateUi()
 
 	m_ui->listWidget->setSortingEnabled(true);
 	m_ui->listWidget->blockSignals(false);
-	m_ui->networkEdit->blockSignals(false);
-	m_ui->networkGenerate->blockSignals(false);
 	m_ui->listWidget->selectionModel()->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(false);
@@ -98,11 +94,9 @@ void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
 
 	if (selection.isEmpty()) {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
-		m_ui->networkEdit->setEnabled(false);
 	}
 	else {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-		m_ui->networkEdit->setEnabled(true);
 		// store ID of selected zone
 		const QModelIndex &index = selection.indexes().front();
 
@@ -120,17 +114,3 @@ void SVNetworkSelectionDialog::on_listWidget_itemDoubleClicked(QListWidgetItem *
 }
 
 
-void SVNetworkSelectionDialog::on_networkGenerate_clicked() {
-	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(parent())->generateGenericNetwork();
-	// generate current view
-	updateUi();
-}
-
-
-void SVNetworkSelectionDialog::on_networkEdit_clicked()	{
-	Q_ASSERT(m_idNetwork != NANDRAD::INVALID_ID);
-
-	dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>(parent())->editGenericNetwork(m_idNetwork);
-	// generate current view
-	updateUi();
-}

@@ -56,10 +56,6 @@ private slots:
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
-	void on_networkGenerate_clicked();
-
-	void on_networkEdit_clicked();
-
 private:
 	Ui::SVNetworkSelectionDialog	*m_ui;
 };

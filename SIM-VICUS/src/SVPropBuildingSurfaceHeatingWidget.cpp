@@ -6,6 +6,7 @@
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>
 
+#include "SVGenericNetworkEditDialog.h"
 #include "SVStyle.h"
 #include "SVPropSurfaceHeatingDelegate.h"
 #include "SVSettings.h"
@@ -505,58 +506,3 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 }
 
 
-void SVPropBuildingSurfaceHeatingWidget::generateGenericNetwork() {
-
-	// create a new id
-	unsigned int networkId = VICUS::uniqueId(project().m_geometricNetworks);
-
-	// create a new network
-	VICUS::Network network;
-	network.m_id = networkId;
-
-	// add to project copy
-	VICUS::Project prj = project();
-	prj.m_geometricNetworks.push_back(network);
-
-	// create an undo action
-	SVUndoModifyProject  * undo = new SVUndoModifyProject(tr("Added generic network with id %1").arg(networkId), prj);
-	undo->push();
-	// and transfer modified data into VICUS data structure
-	undo->undo();
-
-	// get access to generic network pointer (we only filter generic networks)
-	const VICUS::Network *networkPtr = dynamic_cast<const VICUS::Network *> (project().objectById(networkId));
-
-	Q_ASSERT(networkPtr != nullptr);
-
-	// store copy of network
-	m_genericNetworks[networkId] = networkPtr;
-}
-
-
-void SVPropBuildingSurfaceHeatingWidget::editGenericNetwork(unsigned int networkId) {
-
-	// direct access to constant reference
-	std::map<unsigned int, const VICUS::Network*>::const_iterator networkIt =
-			m_genericNetworks.find(networkId);
-	Q_ASSERT(networkIt != m_genericNetworks.end());
-
-	// editing
-	VICUS::Network network = *networkIt->second;
-
-	// find network index
-	unsigned int idx = 0;
-	for( ;idx < project().m_geometricNetworks.size(); ++idx)  {
-		if(project().m_geometricNetworks[idx].m_id == networkId)
-			break;
-	}
-
-	Q_ASSERT((size_t) idx < project().m_geometricNetworks.size());
-
-	// create an undo action
-	SVUndoModifyNetwork *undo = new SVUndoModifyNetwork(tr("Edited generic network with id %1").arg(networkId),
-														idx, network);
-	undo->push();
-	// and transfer modified data into VICUS data structure
-	undo->undo();
-}

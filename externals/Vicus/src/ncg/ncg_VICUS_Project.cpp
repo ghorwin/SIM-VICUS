@@ -52,6 +52,18 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "GenericNetworks") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "GenericNetwork")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					GenericNetwork obj;
+					obj.readXML(c2);
+					m_genericNetworks.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "Buildings") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -151,6 +163,18 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<Network>::const_iterator it = m_geometricNetworks.begin();
 			it != m_geometricNetworks.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_genericNetworks.empty()) {
+		TiXmlElement * child = new TiXmlElement("GenericNetworks");
+		e->LinkEndChild(child);
+
+		for (std::vector<GenericNetwork>::const_iterator it = m_genericNetworks.begin();
+			it != m_genericNetworks.end(); ++it)
 		{
 			it->writeXML(child);
 		}
