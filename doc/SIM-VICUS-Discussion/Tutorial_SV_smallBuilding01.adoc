@@ -1,0 +1,790 @@
+Tutorial SIM-VICUS - Erstellen eines kleinen Gebäudes
+=====================================================
+Dirk Weiss <dirk.weiss@tu-dresden.de>
+//v0.7 (09.01.2022)
+//v0.7 date_on_line_above
+:Author Initials: DW
+:toc: left
+:toclevels: 3
+:toc-title: Inhaltsverzeichnis
+:icons: font
+:imagesdir: ./bearbeitet
+:numbered:
+:website: https://wwww.tu-dresden.de/bauklimatik
+:source-highlighter: rouge
+:rouge-style: custom
+:title-page:
+:stylesdir: ../adoc_utils/css
+:stylesheet: roboto_ubuntu.css
+:tabsize: 2
+:title-page:
+
+:caution-caption: Achtung
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:section-refsig: Abschnitt
+
+
+
+## Einleitung
+
+Für eine Energiebedarfsabschätzung soll ein kleines Wohngebäude modelliert werden. Dieses Gebäude wird vereinfacht aus drei Zonen aufgebaut. Diese bestehen aus einem Erdgeschoss (EG), Obergeschoss (OG) und Dachgeschoss (DG). Die Bausubstanz ist aus den 50iger Jahren. Dementsprechend wird ein hoher Energiebedarf erwartet. Die Nutzung entspricht einer reinen Wohnnutzung für das EG und OG. Das DG wird als Kaltdach modelliert. Zuerst wird auf allgemeine Bedienkonzepte eingegangen.
+
+## Neues Projekt
+
+Um ein neues Projekt zu erstellen wird auf den grünen <<PlusButton,Plus-Button>> (Projekt erstellen) gedrückt. 
+
+[[PlusButton]]
+.Erstellen eines neuen Projekts über den Startbildschirm
+image::p01.png[align="center"]
+
+## Beschreibung der Oberfläche
+
+Anschließend erhält man einen <<newProject,dreigeteilten Bildschirm>>.
+
+[[newProject]]
+.Bildschirm nachdem Anlegen einen neuen Projekts
+image::p02.png[align="center"]
+
+[[ToolbarLeftSide]]
+### Toolbar
+
+An der linken Seite ist eine Toolbar dargestellt. Dabei kann man über die Buttons folgende Aktionen von oben nach unten durchführen.
+
+* Neues Projekt
+* Projekt öffnen
+* Projekt speichern
+* Geometrie-Modus
+* Parametrie-Modus
+* Aktion rückgängig
+* Aktion wiederholen
+
+[[NavigationWindow]]
+### Navigationsfenster
+
+Direkt neben der Toolbar ist das Navigationsfenster angelegt. Darin werden die immer die "Site" angezeigt. An diese werden alle weiteren Objekte gebunden. Derzeit enthält die Site nur die Unterobjekte Gebäude und Obstacles in beliebiger Anzahl. Beim Start ist bereits ein Gebäude mit dem Name 'Building' angelegt. Ein Gebäude kann beliebig viele Geschoss beinhalten. Diese wiederum enthalten Räume. In diesen werden die Hüllflächen wie beispielsweise Wände, Decken und Böden zusammengefasst. Eine Hüllfläche kann derzeit Unterobjekte wie beispielsweise Fenster enthalten. Damit ergeben sich maximal vier Unterebenen von der 'Site'.
+
+Alle Objekte enthalten eine Checkbox und eine Lampe vor dem Name. Die Checkbox zeigt den Selektionsstatus der <<3D-Szene,Szene>> an. Leuchtet die Lampe so werden die Objekte in der Szene dargestellt. Anderenfalls werden diese unsichtbar geschalten. Der Name jedes Objekts, bis auf die Site, kann durch einen Doppelklick editiert werden.
+
+#### Buttons des Navigationsfensters
+
+* Minus-Button: Löschen aller selektierten Objekte. Shortcut: *Entf*
+* Lampe aus: Selektierte Objekte werden unsichtbar geschalten. Shortcut: *F6*
+* Lampe an: Selektierte Objekte werden sichtbar geschalten. Shortcut: *F7*
+* selektierte Checkbox: Alle Objekte werden selektiert. Shortcut: *Ctrl+A*
+* transparent selektierte Checkbox: Selektion der Objekte wird umgekehrt. Damit werden alle selektierten Objekte deselektiert und alle deselektierten Objekte selektiert.
+* Mauszeiger: Dies öffnet den Smart-Select-Dialog.
+
+[CAUTION]
+====
+
+Um Änderungen an Objekte durchzuführen müssen diese selektiert und sichtbar sein.
+
+====
+
+#### Smart-Select-Dialog
+
+Über diesen Dialog können schnell verschiedenste Gruppen von Hüllflächen ausgewählt werden. Die Auswahl erfolgt durch Kriterien wie beispielsweise Hüllflächenart (Wand, Decke, etc.).
+
+### 3D-Szene
+
+In der 3D-Szene werden alle sichtbaren 3D-Objekte wie Hüllflächen dargestellt. Die Interaktion mit der Szene ist folgendermaßen möglich.
+
+* Mausbewegung:
+** Translation: Durch Gedrückthalten des Mausrads und gleichzeitiges Verschieben der Maus wird die Kameraposition verschoben. Durch die Tasten *W*, *S*, *A*, *D*, *R*, *F* können ebenfalls Translationen durchgeführt werden.
+** Rotation:
+*** Orbit-Rotation: Durch Gedrückthalten der rechten Maustaste und Bewegung der Maus wird die aktuelle Kamera und die derzeitige Kameraposition bewegt.
+*** Punkt-Rotation: Ein Drehpunkt wird in der Szene durch Gedrückthalten der linken Maustaste abgesetzt. Nach Bewegung der Maus wird um den gesetzten Drehpunkt die Kamera rotiert.
+* (De-)Selektion: Durch anklicken mit der Objekte mit der linken Maustaste werden unselektierte Objekte selektiert und selektierte Objekte deselektiert. Mit der *ESC* Taste werden alle selektierten Objekte deselektiert. Mit *Ctrl+A* werden alle Objekte selektiert. Weiterhin wird durch *Ctrl+li. Maus* das Elternobjekt und alle abhängigen Objekte vom Elternobjekt selektiert. Damit kann durch ein Klick auf eine Wand der gesamte Raum mit seinen Hüllflächen selektiert werden. Ebenso funktioniert die Deselektion.
+
+Am unteren Ende der Szene sind weitere Buttons vorhanden. Diese werden später erläutert.
+
+[CAUTION]
+====
+
+Ein Raumname kann nur über das Navigationsfenster oder *Ctrl+li. Maus* selektiert werden. Der Raumname steht für die Abbildung der Raumluft und entspricht physikalisch deren Speichermasse. Gebäude und Geschoss können nur über das Navigationsfenster selektiert werden oder über *Ctrl+A*.
+
+====
+
+// ToDo Toolbuttons unterhalb der Szene erläutern
+
+[[ToolWidget]]
+### Tool-Widget
+
+An der rechten Seite werden je nach Modus (Geometrie, Parametrierung) verschiedenste Buttons und Einstellungen dargestellt.
+
+#### Geometrie-Modus
+
+Im Geometriemodus können Objekte erstellt und editiert werden. Der Erstellen-Modus wird durch aktiven Plus-Button dargestellt. Der Editier-Modus wird über den aktiven Buch-Button dargestellt.
+
+##### Erstellen der Geometrie
+
+Bei der Geometrieerstellung kann zwischen einer Fläche und eines Raumes unterschieden werden. Die Flächen unterteilen sich in Rechteckflächen und beliebige Polygon. Bei der Raumerstellung kann zwischen einem quaderförmigen Raum und einem Raum mit vorgegeben Dachformen unterschieden werden.
+
+// ToDo 
+
+* Erstellung eines Rechtecks 
+* Erstellung eines Polygons
+* Erstellung eines <<GroundFloor,quaderförmigen Raumes>>
+* Erstellung eines Dachraumes
+
+[[GeometricModeEdit]]
+##### Editieren der Geometrie
+
+Die Flächen und den daraus entstehenden Volumenkörpern können editiert werden. Das sind folgende Aktionen möglich:
+
+* Translation (Verschieben) von Objekten
+* Skalierung von Objekten
+* Rotation von Objekten
+* Kopie von Objekten
+** Buildings - dabei werden alle Untergruppen Geschoss, Raum, Hüllfläche, etc. ebenfalls mit kopiert.
+** Building levels - dabei werden alle Untergruppen Raum, Hüllfläche, etc. ebenfalls mit kopiert.
+** Rooms - dabei werden alle Untergruppen Hüllfläche und SubSurfaces ebenfalls mit kopiert.
+** Surfaces - dabei wird die Untergruppen SubSurfaces mit kopiert.
+** Sub surfaces
+
+[CAUTION]
+====
+
+Bei den Aktionen Translation, Skalierung und Rotation ist zu beachten, dass die Grundeinstellung für den Koordinatenbezug korrekt gesetzt sind. Hierbei kann beispielsweise zwischen lokalen und globalen Koordinatensystem unterschieden werden. Ebenso sind absolute und relative Bezüge möglich.
+
+====
+
+[[Scaling]]
+###### Skalierung
+
+Bei der Skalierung werden die Skalierungsfaktoren in die dafür zuständigen Textboxen eingetragen. 
+
+[[ScalingDialog]]
+.Skalierungsdialog
+image::p14.png[align="center"]
+
+[CAUTION]
+====
+
+Bei der Skalierung spielt die Position des lokalen Koordinatensystems eine Rolle. Von diesem Punkt aus werden alle Punkte aller selektierten Objekte skaliert. Durch Setzen des lokalen Koordinatensystems an eine Kante kann ein Objekt nur in eine gewünschte Richtung skaliert werden.
+
+====
+
+[[CopyObjects]]
+###### Kopieren von Objekten
+
+Wie <<GeometricModeEdit,oben>> bereits dargestellt unterteilt sich das Kopieren in verschiedenste Modi. Der Ablauf jedes Kopierens folgt aber den gleichen Bedingungen. Es werden die Objekte selektiert. Nach Eingabe der Translation in die Eingabefelder für x, y und z Verschiebung wird der gewünschte Kopier-Button betätigt. Das Objekt befindet sich als Duplikat an der gewünschten Stelle.
+
+
+
+#### Datenbanken
+
+[[Component]]
+##### Komponenten
+
+Die Komponenten werden opaken Flächen zugewiesen und inkludieren Konstruktion und Randbedingungen. Weiterhin gibt es Metainformationen. Darunter zählen Bezugsquelle, Hersteller, etc.
+
+Zur Erstellung von Komponenten wird die Datenbank der Komponenten geöffnet. Dieser Dialog ist zweigeteilt. Im linken Teil sind die bereits verfügbaren Komponenten gelistet und können angewählt werden. Im rechten Teil werden weiterführende Informationen sowie Verlinkungen angezeigt.
+
+[[ComponentDatabase]]
+.Komponentendatenbankdialog
+image::p23.png[align="center"]
+
+[[OverviewMenue]]
+###### Übersichtsmenü - linker Teil des Datenbankdialogs
+
+Die Komponenten werden dort je nach Sortiereinstellung aufgelistet. Dabei wird zwischen verschiedenen Zuständen unterschieden. *Fett* geschrieben Komponentennamen sind dem derzeigtigen Modell bereits zugewiesen. Die Hintergrundfarbe zeigt drei weitere Zustände an:
+
+* Gelbtöne - Komponenten sind Teil der statischen Datenbank und können nur genutzt aber nicht verändert werden. Diese werden im Installationszustand mitgeliefert.
+* Blautöne - Komponenten sind Teil der Nutzerdatenbank und können projektübergreifend genutzt werden.
+* Grautöne - Komponenten sind Teil der Projektdatenbank. Diese können nur in diesem Projekt genutzt werden.
+
+Ein Transfer von der Projektdatenbank in die Nutzerdatenbank ist jederzeit möglich.
+
+###### Parameterierungsdaten - rechter Teil des Datenbankdialogs
+
+Ist eine Komponente ausgewählt stehen folgende Parameter zur Verfügung:
+
+* Name (mehrsprachig)
+* Farbe
+* Typ
+* U-Wert mit Einbeziehung der Übergangskoeffizienten aus den Randbedingungen
+* <<Construction,zugewiesene Konstruktion>> (Verlinkung)
+* zugewiesene Randbedingung auf der Seite A (Verlinkung)
+* zugewiesene Randbedingung auf der Seite B (Verlinkung)
+
+Der Name, die ID, die vom Programm selbst vergeben wird, und der Typ werden im <<OverviewMenue,Übersichtsmenü>> dargestellt.
+
+[[Construction]]
+##### Konstruktionen
+
+[[ConstructionDatabase]]
+.Konstruktionsdatenbankdialog
+image::p24.png[align="center"]
+
+Die <<ConstructionDatabase,Konstruktionen>> bilden den Schichtenaufbau mit Materialien von Komponenten ab. Diese enthalten folgende Parameter:
+
+* Name
+* Konstruktionsnutzung (Filteroption)
+* Dämmtyp (Filteroption)
+* Hauptmaterial (Filteroption)
+* Schichtenanzahl
+* je Schicht die Schichtdicke und die Verlinkung zum Material
+* U-Wert (wird mit Standardübergangskoeffizienten berechnet und kann vom U-Wert der <<Component,Komponente>> abweichen)
+
+Die Konstruktionsdatenbank verhält sich sonst wie die <<Component,Komponentendatenbank>>, nur die Aufteilung ist leicht anders.
+
+[[Material]]
+##### Materialien
+
+[[MaterialDatabase]]
+.Materialdatenbankdialog
+image::p25.png[align="center"]
+
+Die opaken Materialien werden in der <<MaterialDatabase,Materialdatenbank>> verwaltet. Ein Material beinhaltet folgende Parametrierung:
+
+* Name
+* Farbe
+* Kategorie (Filteroption)
+* Wärmeleitfähigkeit
+* Dichte
+* Wärmekapazität
+* Herstellerinformation
+* Datenquelleninformation
+* Anmerkungen
+
+[[SubSurfaceComponent]]
+##### Sub Surface Komponenten
+
+Ähnlich wie bei den <<Component,Komponenten>> verhält es sich mit den Sub Surface Komponenten. Diese stellen Fenster und Türen sowie andere Komponenten dar. Somit kann beispielsweise ein zugemauertes Fenster auch über eine Sub Surface Komponente abgebildet werden.
+
+[[SubSurfaceComponentDatabase]]
+.SubSurface Komponentendatenbankdialog
+image::p26.png[align="center"]
+
+Die folgenden Parameter sind in einer <<SubSurfaceComponentDatabase,Sub Surface Komponente>> enthalten:
+
+* Name 
+* Farbe
+* Typ (derzeit nur Fenster möglich=
+* U-Wert (berechnet mit den Übergangskoeffizienten der Randbedingungen)
+* <<Window,Fensterkonstruktion>> (Verlinkung)
+** SHGC (g-Wert senkrecht, nur bei Fenstern vorhanden)
+* Randbedingung Seite A (Verlinkung)
+* Randbedingung Seite B (Verlinkung)
+
+[[Window]]
+##### Fenster
+
+[[WindowDatabase]]
+.Fensterdatenbankdialog
+image::p27.png[align="center"]
+
+Die <<WindowDatabase,Fensterdatenbank>> enthält folgende Parameter:
+
+* Name
+* Farbe
+* U-Wert (Information)
+* SHGC (g-Wert senkrecht, Information)
+* <<GlazingSystem,Verglasungssystem>> (Verlinkung)
+* Rahmen
+** Methode
+*** anteilig
+*** konstante Rahmenbreite
+** Rahmenanteil (bei Methode 'anteilig')
+** Rahmenbreite (bei Methode 'konstante Rahmenbreite')
+** Rahmenmaterial
+** Materialdicke
+* Sprossen und Riegel
+** Methode
+*** anteilig
+*** konstante Breite
+** Anteil (bei Methode 'anteilig')
+** Breite (bei Methode 'konstante Breite')
+** Material
+** Materialdicke
+
+Rahmen sowie Sprossen und Riegel können optional angegeben werden.
+
+[[GlazingSystem]]
+##### Verglasungssystem
+
+Das <<GalzingSystemDatabase,Verglasungssystem>> stellt das Scheibenpaket dar. Je nach Type wird das Verglasungssystem auf unterschiedliche Weise beschrieben. Die Parametrierung ist folgendermaßen:
+
+* Name
+* Typ (derzeit nur 'simple' verfügbar)
+* U-Wert
+* SHGC (g-Wert senkrecht)
+* Kurve für die winkelabhängigkeit des SHGC-Wertes
+
+[[GalzingSystemDatabase]]
+.Verglasungssystemdatenbankdialog
+image::p28.png[align="center"]
+
+[[BoundaryCondition]]
+##### Randbedingungen
+
+Eine Randbedingung beschriebt die Modelle, dei an einer Oberfläche aktiv werden. Derzeit können verschieden Randbedingungen erstellt werden. Darunter zählen folgende Wärmeübergangsprozesse:
+
+* konvektive
+** konstanter Wärmeübergangskoeffizient
+* kurzwellige Strahlung
+** kurzwelliger Absorptionskennwert
+* langwellige Strahlung
+** langwelliger Emissionskennwert
+
+Der kombinierte Wärmeübergangskoeffizient beträgt nach DIN EN ISO 6946 für alle Bauteile, wo unklar ist in welcher Richtung der Wärmestrom geht 8 W/m^2^K auf der Innenseite. Auf der Außenseite beträgt der kombinierte Wert 25 W/m^2^K.
+
+Werden  Strahlungskoeffizienten angesetzt kann man den Wert außen auf 17 W/m^2^K und den Wert innen auf 2 W/m^2^K gesetzt werden. 
+
+#### Parametrierungsmodus
+
+Der Parametrierungsmodus stellt unterschiedliche Parametrierungen visuell dar. Dies dient vor allem der Prüfbarkeit des Modells durch den Anwender. Der Parametrierungsmodus wird durch das <<ParametricModeSymbol,Symbol>> aktiviert.
+
+[[ParametricModeSymbol]]
+.Symbol des Parametierungsmodus
+image::symbolParameterization.png[align="center"]
+
+Im Modus können drei Gruppen unterschieden werden:
+
+* Building - Parameter für Gebäude
+* Network - Parameter für das Nah- oder Fernwärmenetz
+* Site - Parameter für die Baustelle
+
+Es wird in diesem Tutorial nur auf den Building-Modus eingegangen.
+
+Nach Aktivierung von 'Building' erscheint ein Auswahlbox mit 'Object properties'. Darin werden folgende Einstellungen unterschieden:
+
+* Component - Bauteile
+* Subs-Surfaces - Fenster
+* <<ConstructionOrientation,Construction orientation>> - Bauteilausrichtung
+* <<ParametricModeBC,Boundary conditions>> - Randbedingungen
+* Surface connections/component instances - Flächenverknüpfungen
+* Building levels - Geschossmanager
+* Zone templates - Nutzungsprofile
+* Surface heatings - Fußbodenkonditionierung (Heizen/Kühlen)
+* Room properties - Raumeigenschaften (Grundfläche und Volumen)
+
+In jedem Modus wird im darunter liegendem Tabellenfeld die derzeit verfügbaren (sichtbaren) Objekte aus der Szene dargestellt und aufgelistet. Sobald alle Elemente einer Art ausgeblendet sind verschwindet ebenso das Objekt in der Liste. Ausnahmen sind hierbei die 'Building levels' und die 'Room properties'. 
+
+##### Verknüpfungslogik
+
+'Componenten' können verschiedenartige Randbedingungen haben. Ebenso gibt es unterschiedliche <<SurfaceConnections,Verknüpfungsoptionen>>. Dies wird mit folgenden Beispielen demonstriert:
+
+[[SurfaceConnections]]
+.Hüllflächenverbindungen
+image::SurfaceConnections.png[align="center"]
+
+Die Bauteile Dach (rot), Außenwand (gelb) und Fußboden gegen Außenluft (lila) sind von den Bedingungen alle gleich. Dabei haben alle eine Innenrandbedingungen und eine Außenrandbedingungen. Diese können sich unterscheiden. Bei den Konstruktion gibt es meistens Unterschiede zwischen Dach, Fußboden und Wand. Nicht verknüpfte Bauteil haben automatische eine Verknüpfung zur Außenluft, außer es wird eine Temperaturrandbedingung in der außenliegenden Randbedingung definiert.
+
+Das erdberührte Bauteil wird in braun dargestellt. Hier verhält es sich ähnlich wie zuvor es ist eine Innenrandbedingung und eine Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem Widerstand nahe 0 m2K/W definiert und einer Temperaturvorgabe die konstant oder zeitplangesteuert definiert werden kann. 
+
+Die grünen Bauteile (Innenwände) und die hellroten (Bauteile Geschossdecken) haben auf beiden Seiten eine Innenrandbedingung. Zudem müssen für die physikalische Berechnung des Wärmedurchgangs die gegenüberliegenden Flächen miteinander verknüpft werden. Dies kann beim Zuweisen der Komponente vorgenommen werden. Dabei wird der 'Component' in der Auswahlbox 'Object properties' eingestellt. Anschließend werden die zwei gegenüberliegenden Flächen selektiert. Mit Bestätigung des Buttons 'Connect surfaces with component...' werden die Flächen verknüpft. Für symmetrische Innenwände spielt dabei die Konstruktionsausrichtung keine Rolle. Für eine Decke mit einem beispielhaften Aufbau von Beton, Dämmung, Estrich spielt es sehr wohl eine Rolle ob man auf Beton oder Estrich läuft. Da der Wärmestrom in Gebäudesimulationen nur eindimensional berechnet wird, können die Bauteile entstehen die keine gegenüberliegende Randbedingung haben. Im <<SurfaceConnections,Bild>> wird das durch die Kreise 'A' und 'B' dargestellt. Die ungestörte Konstruktion (hellrot) wird durch zwei Innenrandbedingungen aufgebaut. Die Konstruktion wird wie folgt definiert:
+
+* Seite A
+* Beton
+* Dämmung
+* Estrich
+* Seite B
+
+Daher sollte beim hellroten Bauteil zwischen Raum 1 und 3 die Seite 'A' dem Raum 3 zugeordnet werden und die Seite 'B' dem Raum 1. Somit läuft man auf dem Estrich. Für das hellbraun markierte Stück mit dem roten Kreis 'A' gibt es auf der Seite B (oben) keine Randbedingung, da das Bauteil an ein anderes Bauteil grenzt. Durch die oben erfolgte Definition der eindimensionalen Wärmetransporte kann vom diesem Bauteil keine Wärme in ein anderes Bauteil übertragen werden. Daher hat das hellbraune Bauteil nur eine Randbedingung auf der Seite 'A', da der Beton an Raum 3 grenzt. Bei Raum 2 und dem Kreis 'B' stellt sich das anders herum dar. Man läuft auf dem Estrich und muss dem schwarzen Bauteil nur einen Innenrandbedingung an der Seite 'B' zuordnen. Würde dem hellroten oder schwarzen Bauteil eine gegenüberliegenden Randbedingung definiert, werden die Bauteile automatisch zu Außenbauteilen (siehe Definition oben).
+
+[[ConstructionOrientation]]
+##### Construction orientation
+
+Die Ausrichtung eines Bauteils ist sehr entscheidend. Zum einen sind die Randbedingungen in einer Komponente meistens richtungsabhängig zugewiesen wie beispielsweise bei einer Außenwand. Zum anderen ist es wichtig ob die Speichermasse direkt an die Raumluft grenzt. Dies wird beispielsweise interessant bei einer Konstruktion mit Mauerwerk und Dämmung, je nach Ausrichtung ist es einmal eine Innendämmung und einmal eine Außendämmung. In der Komponente gibt es daher eine Seite 'A' und eine Seite' B'. Dargestellt wird immer die Seite die man sehen würde wenn man im Raum steht und auf die Hüllfläche blickt.
+
+[[ParametricModeBC]]
+##### Boundary conditions
+
+Bei den Randbedingungen ist sehr ähnlich wie bei den <<ConstructionOrientation,Construction orientation>>. Da immer aus der Sicht des Betrachters im Raum geschaut wird, müssen am Ende nur Innenrandbedingungen sichtbar sein. Ansonsten ist die Randbedingung auf der falschen Seite.
+
+
+
+
+
+### Allgemeine Darstellungen
+
+[[CoordSystem]]
+#### Koordinatensystem
+
+Das Koordinatensystem (KS) ist in farblich hervorgehoben. Die _rote_ Achse entspricht der X-Achse und zeig beim globalen Koordinatensystem nach Osten. Die _grüne_ Achse stellt die Y-Achse dar und zeigt im globalen Koordinatensystem nach Norden. Die Z-Achse wird _blau_ visualisiert. Das lokale KS kann vom globalen KS abweichen.
+
+#### Gitternetz
+
+Das Gitternetz ist standardmäßig in 1 m Schritten dargestellt und hat alle 10 m eine Hauptachse zur Orientierung. Abweichend davon sind nur die Achse X und Y. Diese werden in ihren <<CoordSystem,Farben>> dargestellt.
+
+[[Snap]]
+#### Snap
+
+Ist der Snap-Modus aktiv können mit der Maus an beliebige Punkte gefangen werden. Der Shortcut zum Ein- und Ausschalten ist *F3*. Andererseits kann dies auch über das Magnetsymbol in der Toolbar unterhalb der Szene erfolgen.
+
+#### Messwerkzeug
+
+[[ButtonMeasureLength]]
+.Button für die Längenmessung
+image::symbolMeasure.png[align="center"]
+
+Mit dem <<ButtonMeasureLength,Button>> wird die Längenmessung aktiviert. Nach Aktivierung erscheint im Ursprung des lokalen Koordinatensystems eine gelbe Kugel. Zudem erscheint ein Dialog für die Messung. Durch abklicken von beliebigen Punkte wird eine Linie erzeugt, deren Länge im Dialog dargestellt wird. Im Messdialog werden die Längen entlang der globalen Achsen sowie die direkte Länge zwischen den zwei Punkten dargestellt.
+
+[[ToggleLocalCoordSys]]
+#### Positionierung des lokalen Koordinatensystems
+
+Nach Selektion von Objekten ist der Ursprung des Koordinatensystems immer im Flächenschwerpunkt. Zum Verschieben von Objekten oder bei anderen Aktionen ist das nicht immer sinnvoll. Daher kann das lokale Koordinatensystem versetzt werden. Hierfür dient der <<ButtonToggleModeLocalCoordinateSystems,Button>> oder der Shortcut *F4*.
+
+Nach drücken des Buttons oder des Shortcuts muss einfach das Koordinatensystem durch einen einfachen Linksklick neu positioniert werden.
+
+[[ButtonToggleModeLocalCoordinateSystems]]
+.Button für das Neusetzen des lokalen Koordinatensystems
+image::symbolSetLocalCoord.png[align="center"]
+
+// ToDo link zur unteren Toolbar noch erzeugen
+
+## Erstellen eines Gebäudes
+
+Das Gebäude ist in Realität ein Mehrfamilienhaus. Es wird auf drei Raumzonen vereinfacht. Dabei bildet jedes Geschoss ein Raum ab. Daher werden das EG und das OG gleichartig gestaltet. Das Dachgeschoss ist ein Spitzdach ohne Kniestock. Zuerst wird das Erdgeschoss erstellt.
+
+[[GroundFloor]]
+### Erstellen des Erdgeschosses
+
+// Eingabeparameter RaumEG Länge=21 Breite=9 Höhe=2.7
+
+Um den Raum zu erstellen wird der <<ToolbarLeftSide,Geometriemodus>> aktiv geschalten. Danach wird der Plus-Button im <<ToolWidget,Tool-Widget>> aktiviert. Anschließend wird der Button _Zone_ gedrückt. Jetzt ändert das Tool-Widget die Eigenschaften zur Eingabe der ersten Fläche. Von dieser Fläche wird der Raum anschließend extrudiert. In den meisten Fällen wird die Bodenfläche dazu verwendet. Der Raum soll eine Länge von 21 m und eine Breite von 9 m aufweisen. In der Szene ist jetzt an der Maus ein lokales Koordinatensystem angehängt. 
+
+Der <<firstPointRoom,erste Punkt>> wird mit der linken Maustaste auf den Schnittpunk der X und Y Achse gesetzt. Diese Schnittpunkt stellt den Punkt (0|0|0) dar. Nachdem der Punkt abgesetzt wurde, erfolgen zwei Aktionen. Ersten wird der Punkt in die Punktliste rechts mit den Koordinaten eingetragen. Weiterhin erschein eine blau Linie zum letzten abgesetzten Punkt zur Maus. Die Punkte in der Punktliste können über die Buttons _delete last_ und _delete selected_ gelöscht werden.
+
+[[firstPointRoom]]
+.Erstellen einer Grundfläche für einen Raum
+image::p04.png[align="center"]
+
+Eine zweite Möglichkeit Punkte zu setzen biete die Eingabe von Koordinaten. Dies kann durch zwei Aktionen geschehen. Ersten können die relativen Abstände bezogen auf das lokale Koordinatensystem für den nächsten Punkt eingegeben werden. Werden die Abstände von Y und Z nicht eingegeben werden die mit null angenommen.
+
+*Beispiele:*
+    
+    Bsp. 1:
+    Aktueller Punkt P0 (0|0|0)
+    Eingabe 10 Enter
+    Ergebnis: Vom aktuellen Punkt werden 10 Einheiten in X-Richtung abgetragen. Der neue Punkt ergibt sich zu P1 (10|0|0)
+    
+    Bsp. 2:
+    Aktueller Punkt P0 (10|0|0)
+    Eingabe 0 20 Enter
+    Ergebnis: Vom aktuellen Punkt werden 20 Einheiten in Y-Richtung abgetragen. Der neue Punkt ergibt sich zu P1 (10|20|0)
+    
+    Bsp. 3:
+    Aktueller Punkt P0 (10|0|0)
+    Eingabe 0 0 20 Enter
+    Ergebnis: Vom aktuellen Punkt werden 20 Einheiten in Z-Richtung abgetragen. Der neue Punkt ergibt sich zu P1 (10|0|20)
+    
+    Bsp. 4:
+    Aktueller Punkt P0 (10|0|0)
+    Eingabe 1 2 3 Enter
+    Ergebnis: Vom aktuellen Punkt werden 1 Einheit in X-Richtung, 2 Einheiten in Y-Richtung und 3 Einheiten in Z-Richtung abgetragen. Der neue Punkt ergibt sich zu P1 (11|2|3)
+
+Alle weiteren Punkte werden beliebig über Mausklick oder Punkteingabe abgesetzt, so dass ein Rechteck mit den Punkten P0 (0|0|0), P1 (9|0|0), P2 (9|21|0), P3 (0|21|0) entsteht. 
+
+Sobald mehr als drei Punkte, die nicht kolinear sind, abgesetzt sind, ergibt sich eine ausgefüllte <<threePointsRoom,rote Fläche>>.
+
+[[threePointsRoom]]
+.Grundfläche (rot) mit drei Punkten
+image::p05.png[align="center"]
+
+<<twistedPolygon,Verwundene Polygone>> sind nicht erlaubt und werden mit einer roten Umrandungslinie dargestellt. Weiterhin wird die Flächen dann nicht mehr rot ausgefüllt.
+
+[[twistedPolygon]]
+.Invalides Polygon (Verwindung)
+image::p06.png[align="center"]
+
+Das Resultat sollte dieser <<fourPointPolygon,Grundfläche>> gleichen. Mit der Bestätigung durch den Button _Complete polygon_ wird die Fläche abgeschlossen. Es müssen nur vier Punkte erstellt werden. Die Polygone werden automatisch geschlossen, d.h. der erste und der letzte Punkt der Polygonpunkte müssen nicht gleich sein.
+
+[[fourPointPolygon]]
+.Fertige Grundfläche
+image::p07.png[align="center"]
+
+Nach dem Bestätigen ändert sich das Tool-Widget. Nun werden die <<ToolWidgetCreateZone,Raumeigenschaften>> gesetzt. Dabei müssen Parameter wie Name, Zugehörigkeit zu Gebäude und Geschoss, Bauteile sowie lichte Raumhöhe eingegeben werden. Im vorliegenden Fall wird nur der Name auf _RaumEG_ gesetzt. Alle anderen Parameter müssen nicht geändert werden.
+
+[[ToolWidgetCreateZone]]
+.Tool-Widget mit dem Parametern für die Raumerstellung
+image::p08.png[align="center"]
+
+Zusätzlich wird in der Szene die Grundfläche extrudiert. Die Extrusion kann über die Eingabe der lichten Raumhöhe im Eingabefeld oder mit der Maus erfolgen. Hilfreich kann hierbei der <<Snap>> sein.
+
+Im nächsten Schritt wird die Raumerstellung mit dem Button _Create zone_ abgeschloßen. In der Szene wird der Raum erstellt und je nach Art der Neigung werden die Flächen eingefärbt. Zusätzlich entsteht im Navigationsfenster ein Raum mit Hüllflächen.
+
+[[CreateZone]]
+.Nach Abschluss der Raumerstellung
+image::p09.png[align="center"]
+
+Im weiteren Verlauf werden nun die Fenster implementiert. Dabei sind folgende Fensterabmessung zu beachten:
+
+* Fenster 1 (Höhe 1.4 m, Breite 1.5) - Abstand zur Außenkante 2.1 m - Brüstungshöhe 0.7 m
+* Fenster 2 (Höhe 2.1 m, Breite 1.9) - Abstand zur Außenkante 2.1 m - Brüstungshöhe 0.01 m
+* Fenster 3 (Höhe 1.4 m, Breite 0.7) - Abstand zur Außenkante 5.0 m - Brüstungshöhe 0.7 m
+* Fenster 4 (Höhe 1.4 m, Breite 1.2) - Abstand zum Fenster 3 bzw 4 0.7 m - Brüstungshöhe 0.7 m
+
+Bei der Erstellung von Fenstern gibt es zwei grundsätzliche Methoden zum einen über den Fensterflächenanteil zum anderen über genaue Abmaße und der Fensteranzahl. Bei der Fensterflächenmethode können problemlos mehrere Hüllflächen ausgewählt werden, die mit Fenster modelliert werden sollen. Bei der anderen Methode ist das auch möglich aber meist nur bedingt sinnvoll.
+
+Zuerst werden Fenster in der Giebelwand eingebaut. Dazu wird die <<GableWall,Giebelfläche>> selektiert.
+
+[[GableWall]]
+.Selektion der Giebelfläche
+image::p10.png[align="center"]
+
+Anschließend wird der Button _Window/Door_ gedrückt. Im <<ToolWidget,Tool-Widget>> ändern sich die Einstellungen - der <<WindowMode,Fenstermodus>> wird aktiviert. 
+
+[[WindowMode]]
+.Tool-Widget im Fenstermodus
+image::p12.png[align="center"]
+
+Es stehen vier priosierte Eingaben (Breite, Höhe, Brüstungshöhe und Abstand) zur Verfügung. Im Modus Fensterflächenanteil _Percentage distribution_ wird versucht diese Vorgaben zu erfüllen. Das Modell berechnet anhand des eingegebenen Fensterflächenanteils die Maße aber selbst. Im Modus _Geometric placement_ wird die Anzahl der Fenster vorgegeben. Die Maßen der priorisierten Eingaben werden dabei genau umgesetzt. Eine Anpassungsrechnung findet nicht statt. Zuerst werden die Fenstermaße eingegeben. Der Offset zur Wandkante beträgt 2.1 m. Die Fensteranzahl wird mit 2 angegeben.
+
+Nach Eingabe der Parameter wird die Aktion mit dem Button _Create_ bestätigt. Anschließend werden der <<GableWallWithTwoNewWindows,Wand zwei Fenster>> hinzugefügt. Diese sind auch im <<NavigationWindow,Navigationsfenster>> dargestellt.
+
+Da die Positionen und Größen teils nicht mit den Vorgaben übereinstimmen, werden diese im <<GeometricModeEdit,Editmodus>> nun verändert.
+
+[[GableWallWithTwoNewWindows]]
+.Giebelwand mit den zwei erstellten Fenstern
+image::p13.png[align="center"]
+
+Zuerst wird das rechte Fenster selektiert. Der Editiermodus benötigt zwingend mindestens ein selektiertes Objekt.
+Um den Editiermodus zu aktivieren wird der Button mit dem <<EditModeIcon,Buch und Stift>> im Tool-Widget gedrückt.
+
+[[EditModeIcon]]
+.Symbol für den Editiermodus
+image::symbolEditMode.png[align="center"]
+
+Anschließend wird das lokale Koordinatensystem an die rechte untere Ecke gesetzt. Im <<ToggleLocalCoordSys,Abschnitt Positionierung des lokalen Koordinatensystems>> wird erläutert wie dies durchgeführt wird. Da das Fenster vom Rand nun 2.1 m entfernt gesetzt werden soll muss das Fenster verschoben werden. Der Zielpunkt wäre (6.9|y-Koordinate lok. KS|z-Koordinate lok. KS). 
+
+    Berechnung Zielpunkt und Verschiebung
+    
+    Der Ausgangspunkt in diesem Fall ist (6.1|0|0.7).
+    Die Wandkante liegt bei 9 m.
+    Der Abstand zur Wandkante soll 2.1 m betragen.
+    Daher muss ergibt sich der neue Punkt mit (6.9|0|0.7)
+    
+    In diesem Fall wird eine Verschiebung um 0.8 in X-Richtung benötigt
+
+Die Verschiebung von 0.8 m wird im Dateneingabefeld &#916;X eingetragen. Nach Bestätigung mit der ENTER-Taste wird die Aktion durchgeführt und das Fenster rutscht an die gewünschte Stelle.
+
+[CAUTION]
+====
+
+Beim Verschieben ist auf die Aktivierung der Nutzung des lokalen Koordinatensystems und relative Abstände zu achten.
+
+====
+
+
+Im nächsten Schritt soll aus dem Fenster eine Terrassentür entstehen. Daher muss das Fenster in der Höhe angepasst werden. Im <<Scaling,Abschnitt Skalierung>> wird darauf eingegangen wie dies durchgeführt wird. Die Fensterhöhe soll nach Skalierung 2.1 m betragen. Die Brüstungshöhe wird mit 1 cm angegeben. Im nachfolgenden Bild ist das Ergebnis der Verschiebung und Skalierung zu sehen.
+
+[[GableWallWithCorrectWindows]]
+.Giebelwand mit korrekt eingesetzten Fenstern
+image::p16.png[align="center"]
+
+Die Ostwand wird ebenfalls mit drei Fenster des Typs 1 und einer Terrassentür Typ2 ausgeführt. Die Maßkette stellt sich wie folgt dar:
+
+    Fensterhöhe           1.5           1.5          
+    Abstände   |- 2.5 -|- 1.5 -|- 2 -|- 1.5 -|- 5 -|- ...
+    Fensterhöhe        1.5             2.1
+    Abstände   ... -|- 1.5 -|- 2.6 -|- 1.9 -|- 2.5 -|
+
+Der erfolgreiche Einbau der Fenster ist im <<EastWallWithCorrectWindows,nachfolgenden Bild>> zu sehen.
+
+[[EastWallWithCorrectWindows]]
+.Ostwand mit korrekt eingesetzten Fenstern
+image::p17.png[align="center"]
+
+Die Maßkette der Nordwand wird wie folgt angegeben:
+
+    Fensterhöhe           1.5             1.5           
+    Abstände   |- 2.1 -|- 1.5 -|- 1.8 -|- 1.5 -|- 2.1 -|
+
+Das Ergebniss kann in <<NorthWallWithCorrectWindows,nachfolgenden Bild>> betrachtet werden.
+
+[[NorthWallWithCorrectWindows]]
+.Nordwand mit korrekt eingesetzten Fenstern
+image::p18.png[align="center"]
+
+Die Westwand wird mit folgenden Fensterparametrierungen ausgeführt:
+
+    Fensterhöhe         1.5             1.5             1.5             
+    Abstände   |- 3 -|- 0.7 -|- 0.2 -|- 1.2 -|- 0.2 -|- 1.2 -|- 0.2 -|- ...
+    Fensterhöhe        1.5             2.1             1.5
+    Abstände   ... -|- 1.2 -|- 0.6 -|- 1.2 -|- 0.6 -|- 1.2 -|- 0.2 -|- ...
+    Fensterhöhe        1.5             1.5             1.5
+    Abstände   ... -|- 1.2 -|- 0.6 -|- 1.2 -|- 0.2 -|- 0.7 -|- 3 -|
+
+
+[[WestWallWithCorrectWindows]]
+.Westwand mit korrekt eingesetzten Fenstern
+image::p19.png[align="center"]
+
+[[FirstFloor]]
+### Erstellen des Obergeschosses
+
+Das Obergeschoss wird einfach durch Kopieren des Erdgeschoss (z-Translation beim Kopieren 3 m) ausgeführt. Anschließend werden die Umbenennungen durchgeführt.
+Das Gebäude bekommt den Namen 'Wohnhaus', das Erdgeschoss wird mit 'EG' und das Obergeschoss mit 'OG' bezeichnet. Der Raum im EG wird mit 'RaumEG' und der Raum im OG mit 'RaumOG' benannt. Das Ergebnis ist in der <<HouseWith2Levels,nachfolgenden Abbildung>> zu sehen.
+
+[[HouseWith2Levels]]
+.Nach Kopieren des EG's und Umbenennung zum OG
+image::p20.png[align="center"]
+
+
+[[Attic]]
+### Erstellen des Dachgeschosses
+
+Das Dachgeschoss wird wieder über das Hinzufügen hergestellt. Dazu wird der Button _Roof_ verwendet. Dazu werden bei der <<RoofPolygon,Grundfläche>> mindestens 3 Punkte vom Obergeschoss abgeklickt. Danach entsteht die grüne Linie. Das Grundflächenpolygon wird bestätigt. Das <<ToolWidget,Tool-Widget>> ändert die Parametrierung zum Dachbau.
+
+[[RoofPolygon]]
+.Erstellen des Grundflächenpolygons für das Dach
+image::p21.png[align="center"]
+
+Es wird ein Geschoss mit dem Name 'DG' im Menüpunkt _Building Level_ über den Plus-Button hinzugefügt. Der Dachtyp wird auf Satteldach _Double pitch roof_ gestellt. Die Dachhöhe beträgt 2.7 m. Sollte das Dach eine falsche Ausrichtung besitzen kann über den Button _Rotate floor polygon_ das Dach rotiert werden. Weitere Einstellungen sind nicht nötig. Im nächsten Schritt wird das Dach um 30 cm angehoben um die Deckendicke zu berücksichtigen. Das Resultat ist im <<CompleteHouse,folgenden Bild>> zu sehen. 
+
+[[CompleteHouse]]
+.Fertige Geometrie mit drei Geschossen
+image::p22.png[align="center"]  
+
+### Parametrierung des Gebäude
+
+Das Gebäude benötigt neben der Geometrie weitere Eigenschaften. Darunter zählen:
+
+* <<Component,Komponente>>
+* <<Construction,Konstruktionen>>
+* <<Material,Materialien>>
+* <<SubSurfaceComponent,Fensterkomponenten>>
+* <<Window,Fenstermaterialien>>
+* Randbedingungen
+* Nutzungsprofile
+
+Zuerst werden die <<ProjectComponents,Bauteile>> angelegt. Dabei sollten die Farben der Komponenten möglichst unterschiedlich sein. Damit wird später eine besser Prüfbarkeit gewährleistet. 
+
+[[ProjectComponents]]
+#### Bauteile
+
+Die <<OutsideWall,Wände>> sind als Mauerwerk ausgeführt. Die <<Ceiling,Decken>> werden mit Dielung und Sandschüttung als Kappendecke ausgeführt. Das <<Roof,Dach>> ist ein Kaltdach.
+
+[[OutsideWall]]
+.Konstruktionsaufbau Außenwand von innen nach außen
+[width="100%",cols="<,^,^,^" options="header"]
+|====================
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
+| Innenputz | 1 | 0.7 | 0.014
+| Vollziegel | 30 | 0.79 | 0.380
+| Außenputz | 1 | 0.7 | 0.014
+|====================
+
+[[Ceiling]]
+.Konstruktionsaufbau Decke von innen nach außen
+[width="100%",cols="<,^,^,^" options="header"]
+|====================
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
+| Dielung | 2.5 | 0.21 | 0.119
+| Sandschüttung | 6 | 0.58 | 0.103
+| Kappendecke aus Beton | 12 | 2.04 | 0.059
+|====================
+
+[[Roof]]
+.Konstruktionsaufbau Dach von innen nach außen
+[width="100%",cols="<,^,^,^" options="header"]
+|====================
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
+| Kalkputz | 1 | 0.7 | 0.014
+| Holzwolle-Leichtbauplatten | 2.5 | 0.09 | 0.278
+|====================
+
+Die Konstruktion sowie die benötigten Materialien können mit den oben dargestellten Aufbauten modelliert werden. Zur Hilfe können die Abschnitte <<Construction, Konstruktion>> und <<Material,Material>> genutzt werden.
+
+Es werden drei Randbedingungen <<OutsideBC,Außenrandbedingung>>, <<InsideBC,Innenrandbedingung>> und <<CellarBC,Innenrandbedingung mit vordefiniert Kellertemperatur>> definiert.
+
+[[OutsideBC]]
+.Außenrandbedingung
+[width="100%",cols="<,^" ]
+|====================
+| Übergangskoeffizient [W/m2K] | 17
+| Kurzwellige Absorption [-] | 0.6
+| Langwellige Emission [-] | 0.9
+|====================
+
+[[InsideBC]]
+.Innenrandbedingung
+[width="100%",cols="<,^" ]
+|====================
+| Übergangskoeffizient [W/m2K] | 8
+|====================
+
+[[CellarBC]]
+.Innenrandbedingung zum Keller
+[width="100%",cols="<,^" ]
+|====================
+| Übergangskoeffizient [W/m2K] | 1000
+| Temperatur des Kellerraumes [C] | 8
+|====================
+
+Die Außenwand bekommt die Prüffarbe gelb in der Bauteilkomponente. Das Dach wird mit der Prüffarbe rot definiert und die Geschossdecke (Innenbezug) wird die Prüffarbe grün zugewiesen. Für die Geschossdecke mit Bezug zur Kellerdecke wird die Prüffarbe braun definiert. 
+
+Für die Verknüpfung der Geschossdecken werden eine Bodenfläche und eine Deckenfläche von zwei Räumen angewählt. Anschließend wird der Button 'Connect surfaces with component...' genutzt. Das wird zwischen Erd- und Obergeschoss sowie zwischen Obergeschoss und Dachgeschoss durchgeführt.
+
+Anschließend muss das <<ComponentColors,Gebäude mit den Prüffarben>> wie folgt aussehen:
+
+[[ComponentColors]]
+.Prüffarbendarstellung der Komponenten, Außenwand (gelb), Dach (rot), Geschossdecke intern (grün) und Geschossdecke zum Keller (braun)
+image::p29.png[align="center"]
+
+[[ProjectSubSurfaceComponents]]
+#### Transparente Bauteile - Fenster
+
+Die Fenster erhalten ein Verglasungssystem mit einem U-Wert von 2 W/m^2^K und einem SHGC (g-Wert) von 0.8. Die Prüffarbe wird blau gesetzt. Um den U-Wert mit den Randbedingungen zu realisieren muss der U-Wert des Verglasungssystems 3.163 W/m^2^K betragen. In der nachfolgenden Abbildung sind die <<SubSurfaceComponentsColors,Fenster mit der Prüffarbe>> dargestellt.
+
+[[SubSurfaceComponentsColors]]
+.Prüffarbendarstellung der Sub-Surface Komponenten, Fenster (blau)
+image::p30.png[align="center"]
+
+[[ProjectZoneTemplates]]
+#### Nutzungsprofile
+
+Die Nutzung der Räume 'RaumEG' und 'RaumOG' wird als Wohnnutzung definiert. Dazu wird der Ansatz der DIN V 18599 gewählt. Diese definiert für Wohngebäude eine Raumheizsolltemperatur von 20 °C und eine Wärmelast durch Personen, Geräte und Licht von 90 Wh/m^2^d. Der Luftwechsel wird aufgrund der Baustandard mit 0.8 1/h angesetzt. Im Dachraum wird nur ein Luftwechsel von 2 1/h definiert.
+
+Für die Raumluftsolltemperatur wird das Sub-Template Thermostat benötigt. Dort wird eine konstanter Sollwert von 20 °C (Zeitplan) für Heizen definiert. Die Steuerung erfolgt nach der Raumlufttemperatur. Der Kühlsollwert wird nicht gesetzt. Die Abweichung vom Sollwert darf 0.1  K nicht übersteigen. Damit die Heizung funktioniert muss noch ein 'Ideal Heating/Cooling'-System definiert werden. Dabei wird als maximale Heizleistung 300 W/m^2^ definiert.
+
+Die inneren Lasten werden zusammengefasst und in 'Electric Equipment' definiert. Dabei wird die Methode auf Flächenbezug gesetzt. Die Flächenlast beträgt 3.75 W/m^2^. Der benötigte Zeitplan wird konstant mit dem Wert 1 beschrieben.
+
+Die  Luftwechselrate wird im Ventilation definiert. Dies hat den Vorteil bei späteren Variation schnell ein Austausch zu haben.
+
+Das Profil Wohnnutzung wird mit der Prüffarbe grün belegt, das Profil unbeheizt wird mit der Prüffarbe gelb belegt.
+
+Anschließend muss das <<ZoneTemplateColors,Gebäude mit den Prüffarben für Zonen-Templates>> wie folgt aussehen:
+
+[[ZoneTemplateColors]]
+.Prüffarbendarstellung der Zonentemplates, Wohnnutzung (grün), unbeheizt (gelb)
+image::p31.png[align="center"]
+
+#### Klimadaten
+
+Für die Berechnung ist ein Klimadatensatz erforderlich. Dieser kann im epw- oder im c6b-Format vorliegen. Der deutsche Wetterdienst (DWD).footnote:[www.dwd.de] stellt verschiedenste Klimadaten wie beispielsweise Messdaten (Temperatur, Luftfeuchte, Wind un Strahlungsdaten) zu konkreten Orten zur Verfügung. Diese können mit dem Programm CCM-Editor.footnote:[www.bauklimatik-dresden.de] gelesen und in ein epw- oder c6b-Format konvertiert werden. 
+
+Die Klimadaten werden im Simulationsdialog mit eingestellt. Dieser ist mit dem Shortcut *F9* schnell zu öffnen. Im Reiter 'Location and climate' wird dann das Klima über den Auswahlbutton 'Custom file path' eingestellt.
+
+### Ausgaben
+
+Beim Gebäude werden die Raumtemperaturen und der Heizenergiebedarf gesucht. Daher werden diese Ausgaben definiert. Da dies Standardausgaben sind muss lediglich geprüft werden, ob der Haken in 'Outputs' bei der Checkbox 'Generate default building-related outputs' gesetzt ist.
+
+## Simulation
+
+Zum Durchführen der Simulation wird im Simulationsdialog unter dem Reiter 'Simulation' der Button 'Startet die Simulation' gedrückt. Anschließend sieht man in einem Konsolenfenster die Fortschritte der Simulation. Je nach Projekt kann die Simulationsdauer von einigen Sekunden bis zu mehreren Tagen andauern. Das Beispielprojekt sollte in weniger als 60 s berechnet sein.
+
+## Auswertung
+
+Die Auswertung erfolgt mit dem Programm PostProc2.footnote:[www.bauklimatik-dresden.de]. 
+
+### Temperaturen 
+
+[[RoomTemperatures]]
+.Raumlufttemperaturen von RaumEG (rot), RaumOG (blau) und RaumDG (schwarz) sowie vom Keller (grün) und der Außenluft (gelb)
+image::Raumlufttemperaturen.png[align="center"]
+
+Die <<RoomTemperatures,Temperaturen>> können aufgrund der Heizleistung immer auf den Sollwert (Heizfall) gehalten werden. Im Sommer steigen die Raumlufttemperaturen auf sehr hohe Werte (Maximalwerte bis 36 °C). Durch die Vereinfachungen fehlen Speichermassen und die Lüftung wurde auch sehr vereinfacht. Für realitätsnahe Temperaturen müssen detailliertere Räume sowie Lüftungsmodelle inkludiert werden.
+
+### Heizlast und Heizenergiebedarf
+
+[[RoomEnergy]]
+.Heizlast von RaumEG (rot), RaumOG (blau) und RaumDG (schwarz)
+image::Heizlast.png[align="center"]
+
+Die <<RoomEnergy,Heizlast>> ist durch die schlechte Gebäudehülle als auch die hohe Luftwechselrate sehr hoch. Der Heizenergiebedarf für das Gebäude beträgt 89 MWh/a für das Gebäude. Dies entspricht einem flächenbezogenen Heizenergiebedarf von 235 kWh/m^2^a.
