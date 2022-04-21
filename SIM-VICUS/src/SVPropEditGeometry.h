@@ -84,19 +84,13 @@ public:
 		NUM_MT
 	};
 
-	enum ModificationState {
-		MS_Absolute,
-		MS_Relative,
-		NUM_MS
-	};
-
-	enum RotationState {
-		RS_Normal,
-		RS_XAxis,
-		RS_YAxis,
-		RS_ZAxis,
-		NUM_RS
-	};
+//	enum RotationState {
+//		RS_Normal,
+//		RS_XAxis,
+//		RS_YAxis,
+//		RS_ZAxis,
+//		NUM_RS
+//	};
 
 	enum OrientationMode {
 		OM_Local,
@@ -113,7 +107,9 @@ public:
 	*/
 	void enableTransformation();
 
-	/*! Switches to the respective transformation page on the widget. */
+	/*! Switches to the respective transformation page on the widget.
+		Calls updateUi() afterwards.
+	*/
 	void setModificationType(ModificationType modType);
 
 	/*! Sets the Coordinates of the Center of the local Coordinate System
@@ -123,42 +119,6 @@ public:
 
 	/*! Sets the Rotation and Inclination based on given normal vector (in global coordinates). */
 	void setRotation(const IBKMK::Vector3D &normal);
-
-	/*! Sets all states of tool buttons and updates comboBox, also calls updateInputs().
-		\param type - specifies the type of which is toggled
-		\param state - specifies the modification state
-	*/
-	void setState(const ModificationType &type, const ModificationState &state);
-
-
-#if 0
-	/*! Checks/unchecks the tool buttons depending on the specified type.
-		Has no side-effects.
-	*/
-	void setToolButton();
-
-	/*! Checks/unchecks the tool buttons depending on the specific absolute/local mode
-	*/
-	void setToolButtonAbsMode();
-
-	/*! Checks/unchecks the tool buttons for the specific absolute rotation mode */
-	void setToolButtonsRotationState(bool absOn);
-
-	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
-	void showDeg(const bool &show=true);
-
-	/*! Show the specified rotation/orientation of the selected surfaces */
-	void showRotation(const bool &abs=true);
-
-	/*! Applies current translation (from selected geometry object) into project. */
-	void translate();
-
-	/*! Applies current scaling (from selected geometry object) into project. */
-	void scale();
-
-	/*! Applies current rotation (from selected geometry object) into project. */
-	void rotate();
-#endif
 
 
 public slots:
@@ -177,10 +137,12 @@ protected:
 
 private slots:
 
-
-
 	// *** Translation page ***
 
+	void on_radioButtonTranslationAbsolute_toggled(bool checked);
+	void on_lineEditTranslateX_editingFinishedSuccessfully();
+	void on_lineEditTranslateY_editingFinishedSuccessfully();
+	void on_lineEditTranslateZ_editingFinishedSuccessfully();
 
 	// *** Rotation page ***
 
@@ -189,9 +151,7 @@ private slots:
 
 	// *** Scale page ***
 
-	/*! all line edit specific functions */
 	void on_radioButtonScaleResize_toggled(bool checked);
-
 	void on_lineEditScaleX_editingFinishedSuccessfully();
 	void on_lineEditScaleY_editingFinishedSuccessfully();
 	void on_lineEditScaleZ_editingFinishedSuccessfully();
@@ -199,6 +159,8 @@ private slots:
 //	// *** Alignment page ***
 
 //	void on_pushButtonFlipNormals_clicked();
+
+
 
 
 
@@ -219,8 +181,17 @@ private:
 	*/
 	void updateInputs();
 
+	/*! Updates the transformation matrix for translating geometry. */
+	void updateTranslationPreview();
+
 	/*! Updates the transformation matrix for local scaling. */
 	void updateScalePreview();
+
+	/*! Increases/decreases value in line edit depending on scroll wheel. */
+	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
+
+	/*! Called from onWheelTurned(), relays a change event to the respective editingFinishedSuccessfully() slot. */
+	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
 #if 0
 	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
@@ -228,16 +199,28 @@ private:
 		true: use local coordinate system orientation
 	*/
 	void updateOrientationMode();
-
-	/*! Increases/decreases value in line edit depending on scroll wheel. */
-	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
-
-	/*! Initilizes the Copy Group Box */
-	void initializeCopy();
 #endif
 
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
+
+#if 0
+	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
+	void showDeg(const bool &show=true);
+
+	/*! Show the specified rotation/orientation of the selected surfaces */
+	void showRotation(const bool &abs=true);
+#endif
+
+	/*! Applies current translation (from selected geometry object) into project. */
+	void translate();
+
+	/*! Applies current scaling (from selected geometry object) into project. */
+	void scale();
+
+	/*! Applies current rotation (from selected geometry object) into project. */
+	void rotate();
+
 
 	/*! Contains position and rotation of local coordinate system (lcs) object. */
 	Vic3D::Transform3D					m_lcsTransform;
