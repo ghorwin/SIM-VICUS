@@ -38,31 +38,56 @@
 
 const unsigned int USER_ID_SPACE_START = 10000;
 
+/*
+- Materialien: 1010000-1020000
+- Constructions: 1020000-1030000
+- Components: 1000001-1010000
+- BC: 1030000-1031000
+- WindowGlazingSystems: 1031000-1035000
+- Windows: 1035000-1040000
+- SubSurfaceComponents: 1040000-1042000
+- SurfaceHeatings: 1050000-1050500
+- Schedules: 1060000-1065000
+- InternalLoads: 1065000-1067500
+- ZoneControlThermostat: 1067500-1070000
+- ZoneControlShading: 1070000-1072500
+- ZoneControlVentilation: 1072500-1075000
+- ZoneIdealHeatingCooling: 1075000-1077500
+- VentilationNatural: 1077500-1080000
+- Infiltration: 1080000-1082500
+- ZoneTemplates: 1082500-1085000
+ToDo Hauke prüfen bitte Network würde ich dann bei ID-Space 1100000 anfangen lassen
+- Pipes: 1100000-1102500
+- Fluids: 1102500-1105000
+- NetworkComponents: 1105000-1107500
+- NetworkControllers: 1107500-1110000
+- SubNetworks: 1110000-1112500
+*/
 
 SVDatabase::SVDatabase() :
-	m_materials(USER_ID_SPACE_START),
-	m_constructions(2*USER_ID_SPACE_START),
-	m_windows(3*USER_ID_SPACE_START),
-	m_windowGlazingSystems(30*USER_ID_SPACE_START),
-	m_boundaryConditions(4*USER_ID_SPACE_START),
-	m_components(5*USER_ID_SPACE_START),
-	m_subSurfaceComponents(16*USER_ID_SPACE_START),
-	m_surfaceHeatings(35*USER_ID_SPACE_START),
-	m_pipes(USER_ID_SPACE_START*100),
-	m_fluids(USER_ID_SPACE_START*1001),
-	m_networkComponents(USER_ID_SPACE_START*1002),
-	m_networkControllers(USER_ID_SPACE_START*1003),
-	m_subNetworks(USER_ID_SPACE_START*1004),
+	m_materials(1010000),
+	m_constructions(1020000),
+	m_windows(1035000),
+	m_windowGlazingSystems(1031000),
+	m_boundaryConditions(1030000),
+	m_components(1000001),
+	m_subSurfaceComponents(1040000),
+	m_surfaceHeatings(1050000),
+	m_pipes(1100000),
+	m_fluids(1102500),
+	m_networkComponents(1105000),
+	m_networkControllers(1107500),
+	m_subNetworks(1110000),
 //	m_EPDElements(USER_ID_SPACE_START),
-	m_schedules(6*USER_ID_SPACE_START),
-	m_internalLoads(7*USER_ID_SPACE_START),
-	m_zoneControlThermostat(11*USER_ID_SPACE_START),
-	m_zoneControlShading(13*USER_ID_SPACE_START),
-	m_zoneControlVentilationNatural(12*USER_ID_SPACE_START),
-	m_zoneIdealHeatingCooling(20*USER_ID_SPACE_START),
-	m_ventilationNatural(15*USER_ID_SPACE_START),
-	m_infiltration(14*USER_ID_SPACE_START),
-	m_zoneTemplates(8*USER_ID_SPACE_START)
+	m_schedules(1060000),
+	m_internalLoads(1065000),
+	m_zoneControlThermostat(1067500),
+	m_zoneControlShading(1070000),
+	m_zoneControlVentilationNatural(1072500),
+	m_zoneIdealHeatingCooling(1075000),
+	m_ventilationNatural(1077500),
+	m_infiltration(1080000),
+	m_zoneTemplates(1082500)
 {
 }
 
