@@ -111,6 +111,24 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditTranslateY->setFormatter(new LineEditFormater);
 	m_ui->lineEditTranslateZ->setFormatter(new LineEditFormater);
 
+	m_ui->lineEditTranslateX->installEventFilter(this);
+	m_ui->lineEditTranslateY->installEventFilter(this);
+	m_ui->lineEditTranslateZ->installEventFilter(this);
+
+
+	m_ui->lineEditRotateOrientation->setFormatter(new LineEditFormater);
+	m_ui->lineEditRotateInclination->setFormatter(new LineEditFormater);
+	m_ui->lineEditRotateX->setFormatter(new LineEditFormater);
+	m_ui->lineEditRotateY->setFormatter(new LineEditFormater);
+	m_ui->lineEditRotateZ->setFormatter(new LineEditFormater);
+
+	m_ui->lineEditRotateOrientation->installEventFilter(this);
+	m_ui->lineEditRotateInclination->installEventFilter(this);
+	m_ui->lineEditRotateX->installEventFilter(this);
+	m_ui->lineEditRotateY->installEventFilter(this);
+	m_ui->lineEditRotateZ->installEventFilter(this);
+
+
 	m_ui->lineEditScaleX->setup(0, 1E5, tr("A positive value is required here."), false, true);
 	m_ui->lineEditScaleY->setup(0, 1E5, tr("A positive value is required here."), false, true);
 	m_ui->lineEditScaleZ->setup(0, 1E5, tr("A positive value is required here."), false, true);
@@ -122,12 +140,6 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditScaleX->installEventFilter(this);
 	m_ui->lineEditScaleY->installEventFilter(this);
 	m_ui->lineEditScaleZ->installEventFilter(this);
-
-
-#if 0
-	m_ui->lineEditInclination->installEventFilter(this);
-	m_ui->lineEditOrientation->installEventFilter(this);
-#endif
 }
 
 
@@ -193,11 +205,6 @@ void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
 		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	}
-	else {
-//		m_ui->widgetEdit->setEnabled(true);
-//		//m_ui->pushButtonEdit->setEnabled(true);
-//		updateCoordinateSystemLook();
 	}
 }
 
@@ -269,7 +276,6 @@ void SVPropEditGeometry::on_lineEditTranslateZ_editingFinishedSuccessfully() {
 void SVPropEditGeometry::on_radioButtonRotationAlignToAngles_toggled(bool) {
 	updateInputs();
 }
-
 
 void SVPropEditGeometry::on_lineEditOrientation_editingFinishedSuccessfully() {
 	updateRotationPreview();
@@ -442,6 +448,7 @@ void SVPropEditGeometry::updateUi() {
 	cso->setTranslation(IBKVector2QVector(m_bbCenter[OM_Global]) );
 	// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
 	//       and indirectly also updateInputs()
+	updateCoordinateSystemLook();
 }
 
 
@@ -453,10 +460,8 @@ void SVPropEditGeometry::updateTranslationPreview() {
 	if (m_ui->radioButtonTranslationAbsolute->isChecked()) {
 		// obtain new absolute position of local coordinate system
 		// subtract original lcs position
-		Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-		Q_ASSERT(cso != nullptr);
 		// obtain offset and rotation of local coordinate system
-		QVector3D offset = cso->translation();
+		QVector3D offset = m_lcsTransform.translation();
 		translation -= offset;
 	}
 
@@ -473,8 +478,31 @@ void SVPropEditGeometry::updateTranslationPreview() {
 
 void SVPropEditGeometry::updateRotationPreview() {
 
-	QQuaternion rot;
+	Vic3D::Transform3D rot;
 	if (m_ui->radioButtonRotationAlignToAngles->isChecked()) {
+		// get the rotation angles in [Rad]
+		double oriRad = m_ui->lineEditRotateOrientation->value() * IBK::DEG2RAD;
+		double incliRad = (90-m_ui->lineEditRotateInclination->value()) * IBK::DEG2RAD;
+		IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::cos( incliRad ),
+									std::cos( oriRad ) * std::cos( incliRad ),
+									std::sin( incliRad ) );
+
+		// we only want to rotate if the normal vectors are not the same - in this case we may not be able
+		// to compute the rotation axis
+		if ( checkVectors<4>( m_normal, newNormal ) )
+			return; // do nothing
+
+		// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+		// rotate to
+		IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
+//		qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
+
+		// we now also have to find the angle between both normals
+
+		double angle = angleBetweenVectorsDeg(m_normal, newNormal);
+
+		rot.rotate((float)angle, IBKVector2QVector(rotationAxis) );
+//		qDebug() << "Roation angle: " << angle << " °";
 
 	}
 	else {
@@ -482,8 +510,7 @@ void SVPropEditGeometry::updateRotationPreview() {
 	}
 
 	// adjust wireframe object transform
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setRotation(rot);
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rot;
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
@@ -516,13 +543,10 @@ void SVPropEditGeometry::updateScalePreview() {
 		scaleFactors.setX( (float)m_ui->lineEditScaleX->value());
 		scaleFactors.setY( (float)m_ui->lineEditScaleY->value());
 		scaleFactors.setZ( (float)m_ui->lineEditScaleZ->value());
-
 	}
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	Q_ASSERT(cso != nullptr);
 	// obtain offset and rotation of local coordinate system
-	QVector3D offset = cso->translation();
-	QQuaternion rot = cso->transform().rotation();
+	QVector3D offset = m_lcsTransform.translation();
+	QQuaternion rot = m_lcsTransform.rotation();
 
 	// adjust wireframe object transform
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setLocalScaling(offset, rot, scaleFactors);
@@ -534,28 +558,6 @@ void SVPropEditGeometry::updateScalePreview() {
 }
 
 
-#if 0
-void SVPropEditGeometry::updateOrientationMode() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	// we update the button state
-	m_ui->toolButtonLocalCoordinateOrientation->setChecked(m_orientationMode == OM_Local);
-
-	// we have to update our bounding box dimensions in our specific coordinate system
-	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
-	m_bbDim[OM_Local] = project().boundingBox( m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
-											   QVector2IBKVector(cso->translation() ),
-											   QVector2IBKVector(cso->localXAxis() ),
-											   QVector2IBKVector(cso->localYAxis() ),
-											   QVector2IBKVector(cso->localZAxis() ) );
-	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
-
-	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[m_orientationMode]);
-	// we also update all the line edits and boxes
-	updateInputs();
-}
-#endif
-
-
 void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit) {
 	if (!lineEdit->isValid())
 		return; // invalid input, do nothing
@@ -564,9 +566,6 @@ void SVPropEditGeometry::onWheelTurned(double offset, QtExt::ValidatingLineEdit 
 	lineEdit->setValue(val); // this does not trigger any signals, so we need to send change info manually
 	onLineEditTextChanged(lineEdit);
 }
-
-
-
 
 
 void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit) {
@@ -819,9 +818,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 		switch (state) {
 
 		case MS_Absolute: {
-			// get the rotation angles
-			double oriRad = m_ui->lineEditOrientation->value() * IBK::DEG2RAD;
-			double incliRad = (90-m_ui->lineEditInclination->value()) * IBK::DEG2RAD;
 
 
 			Vic3D::Transform3D rota;
@@ -829,25 +825,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 			if (m_orientationMode == OM_Global) {
 				switch (m_rotationState) {
 				case SVPropEditGeometry::RS_Normal: {
-					IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::cos( incliRad ),
-												std::cos( oriRad ) * std::cos( incliRad ),
-												std::sin( incliRad ) );
-
-					// we only want to rotate if the normal vectors are not the same
-					if ( checkVectors<4>( m_normal, newNormal ) )
-						return; // do nothing
-
-					// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-					// rotate to
-					IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
-					qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
-
-					// we now also have to find the angle between both normals
-
-					double angle = (float)angleBetweenVectorsDeg(m_normal, newNormal);
-
-					rota.rotate(angle, IBKVector2QVector(rotationAxis) );
-					qDebug() << "Roation angle: " << angle << " °";
 				}
 					break;
 				case SVPropEditGeometry::RS_XAxis:
@@ -1066,7 +1043,7 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->lineEditRotateZ->setValue(0);
 
 			if (align2Angles) {
-//				m_normal = normal.normalized();
+				QVector3D normal = m_lcsTransform. normal().normalized();
 
 //			m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
 //			// positive y Richtung = Norden = Orientation 0°
