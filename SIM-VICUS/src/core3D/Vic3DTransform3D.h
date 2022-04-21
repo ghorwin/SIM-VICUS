@@ -66,6 +66,15 @@ public:
 	void setRotation(float angle, const QVector3D &axis);
 	void setRotation(float angle, float ax, float ay, float az);
 
+	/*! Sets a transformation matrix that scales a translated and rotated object along its local
+		coordinate axes.
+		\param offset The translation vector from global coordinate system to local coordinate system.
+		\param toLocal The rotation matrix from global coordinate system to local coordinate system.
+		\param localScaleFactors The scale factors for all local axes.
+	*/
+	void setLocalScaling(const QVector3D & offset,
+						 const QQuaternion & toLocal, const QVector3D & localScaleFactors);
+
 	// Accessors
 	const QVector3D& translation() const;
 	const QVector3D& scale() const;

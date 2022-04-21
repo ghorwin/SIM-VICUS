@@ -106,14 +106,17 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropEditGeometry::onViewStateChanged);
-#if 0
-	m_ui->lineEditX->setup(-1E5,1E5,tr("X Value"),true, true);
-	m_ui->lineEditY->setup(-1E5,1E5,tr("Y Value"),true, true);
-	m_ui->lineEditZ->setup(-1E5,1E5,tr("Z Value"),true, true);
 
-	m_ui->lineEditX->setFormatter(new LineEditFormater);
-	m_ui->lineEditY->setFormatter(new LineEditFormater);
-	m_ui->lineEditZ->setFormatter(new LineEditFormater);
+	m_ui->lineEditScaleX->setup(0, 1E5, tr("A positive value is required here."), false, true);
+	m_ui->lineEditScaleY->setup(0, 1E5, tr("A positive value is required here."), false, true);
+	m_ui->lineEditScaleZ->setup(0, 1E5, tr("A positive value is required here."), false, true);
+
+	m_ui->lineEditScaleX->setFormatter(new LineEditFormater);
+	m_ui->lineEditScaleY->setFormatter(new LineEditFormater);
+	m_ui->lineEditScaleZ->setFormatter(new LineEditFormater);
+
+
+#if 0
 	m_ui->lineEditInclination->setFormatter(new LineEditFormater);
 	m_ui->lineEditOrientation->setFormatter(new LineEditFormater);
 
@@ -225,7 +228,30 @@ void SVPropEditGeometry::onViewStateChanged() {
 	}
 }
 
-// *** slots ***
+
+// *** SLOTS***
+
+void SVPropEditGeometry::on_radioButtonScaleResize_toggled(bool) {
+	updateInputs();
+}
+
+
+void SVPropEditGeometry::on_lineEditScaleX_editingFinishedSuccessfully() {
+	// we only allow positive values
+	updateScalePreview();
+}
+
+void SVPropEditGeometry::on_lineEditScaleY_editingFinishedSuccessfully() {
+	updateScalePreview();
+}
+
+void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
+	updateScalePreview();
+}
+
+
+
+
 #if 0
 void SVPropEditGeometry::on_lineEditX_editingFinished() {
 	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
@@ -679,7 +705,59 @@ int SVPropEditGeometry::requestCopyOperation(QWidget * parent, const QString & t
 }
 #endif
 
-// *** private functions ***
+
+// *** PROTECTED FUNCTIONS ***
+
+bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
+
+#if 0
+	if ( event->type() == QEvent::Wheel ) {
+		// we listen to scroll wheel turns only for some line edits
+		if (target == m_ui->lineEditX ||
+				target == m_ui->lineEditY ||
+				target == m_ui->lineEditZ ||
+				target == m_ui->lineEditInclination ||
+				target == m_ui->lineEditOrientation ||
+				target == m_ui->lineEditXCopy ||
+				target == m_ui->lineEditYCopy||
+				target == m_ui->lineEditZCopy )
+		{
+			double delta = 0.1; // for copy operation
+
+			switch (m_modificationType) {
+			case MT_Translate				:
+			case MT_Scale					: delta = 0.01; break;
+			case MT_Rotate					: delta = 1; break;
+			case NUM_MT : ; // just to make compiler happy
+			}
+
+			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
+			// offset are changed in 0.01 steps
+			double offset = (wheelEvent->delta()>0) ? delta : -delta;
+			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
+		}
+	}
+	else if ( event->type() == QEvent::KeyPress ) {
+		QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+		if (keyEvent->matches(QKeySequence::Copy)) {
+			// we enter translation mode
+			m_modificationType = MT_Translate;
+			m_copyMode = true;
+		}
+	}
+	else if ( event->type() == QEvent::FocusOut ) {
+		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
+
+		qDebug() << "Focus out -> return press event on " << edit;
+		if(edit != nullptr)
+			emit edit->returnPressed();
+	}
+#endif
+	return false;
+}
+
+
+// *** PRIVATE FUNCTIONS ***
 
 void SVPropEditGeometry::updateUi() {
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
@@ -806,6 +884,7 @@ void SVPropEditGeometry::updateUi() {
 	//       and indirectly also updateInputs()
 }
 
+
 #if 0
 void SVPropEditGeometry::updateOrientationMode() {
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
@@ -848,93 +927,8 @@ void SVPropEditGeometry::initializeCopy() {
 }
 
 
-void SVPropEditGeometry::updateCoordinateSystemLook() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	if (SVViewStateHandler::instance().m_geometryView == nullptr)
-		return; // do nothing while initializing
-	// adjust appearance of local coordinate system
-	if (m_ui->stackedWidget->currentIndex() == 0) {
-		// put local coordinate system back into "plain" mode
-		if (cso->m_geometryTransformMode != 0) {
-			cso->m_geometryTransformMode = 0;
-			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-		}
-	}
-	else {
-		// put local coordinate system back into correct transform mode
-		switch (m_modificationType) {
-		case MT_Translate:
-			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
-				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
-				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-			}
-			break;
-
-		case MT_Rotate:
-			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
-				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
-				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-			}
-			break;
-
-		case MT_Scale:
-			if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
-				cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
-				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-			}
-			break;
-
-		case NUM_MT : ; // just to make compiler happy
-		}
-	}
-}
 
 
-bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
-
-	if ( event->type() == QEvent::Wheel ) {
-		// we listen to scroll wheel turns only for some line edits
-		if (target == m_ui->lineEditX ||
-				target == m_ui->lineEditY ||
-				target == m_ui->lineEditZ ||
-				target == m_ui->lineEditInclination ||
-				target == m_ui->lineEditOrientation ||
-				target == m_ui->lineEditXCopy ||
-				target == m_ui->lineEditYCopy||
-				target == m_ui->lineEditZCopy )
-		{	double delta = 0.1; // for copy operation
-
-			switch (m_modificationType) {
-			case MT_Translate				:
-			case MT_Scale					: delta = 0.01; break;
-			case MT_Rotate					: delta = 1; break;
-			case NUM_MT : ; // just to make compiler happy
-			}
-
-			QWheelEvent *wheelEvent = static_cast<QWheelEvent*>(event);
-			// offset are changed in 0.01 steps
-			double offset = (wheelEvent->delta()>0) ? delta : -delta;
-			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
-		}
-	}
-	else if ( event->type() == QEvent::KeyPress ) {
-		QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
-		if (keyEvent->matches(QKeySequence::Copy)) {
-			// we enter translation mode
-			m_modificationType = MT_Translate;
-			m_copyMode = true;
-		}
-	}
-	else if ( event->type() == QEvent::FocusOut ) {
-		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
-
-		qDebug() << "Focus out -> return press event on " << edit;
-		if(edit != nullptr)
-			emit edit->returnPressed();
-	}
-
-	return false;
-}
 
 
 void SVPropEditGeometry::on_lineEditX_returnPressed() {
@@ -1031,8 +1025,8 @@ void SVPropEditGeometry::setState(const SVPropEditGeometry::ModificationType & t
 
 #endif
 
+
 void SVPropEditGeometry::updateInputs() {
-//	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 //	ModificationState state = m_modificationState[m_modificationType];
 
 	switch (m_ui->stackedWidget->currentIndex()) {
@@ -1045,91 +1039,128 @@ void SVPropEditGeometry::updateInputs() {
 				m_ui->labelTranslateY->setText("Y [m]:");
 				m_ui->labelTranslateZ->setText("Z [m]:");
 
-//				// cache current local coordinate systems position as fall-back values
-//				m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
-
-				QVector3D translation(m_lcsTransform.translation());
-				m_ui->lineEditTranslateX->setValue( translation.x() );
-				m_ui->lineEditTranslateY->setValue( translation.y() );
-				m_ui->lineEditTranslateZ->setValue( translation.z() );
+				// cache current local coordinate systems position as fall-back values
+				m_originalValues = QVector2IBKVector(m_lcsTransform.translation());
 			}
 			else {
 				m_ui->labelTranslateX->setText("ΔX [m]:");
 				m_ui->labelTranslateY->setText("ΔY [m]:");
 				m_ui->labelTranslateZ->setText("ΔZ [m]:");
-				m_ui->lineEditTranslateX->setValue(0);
-				m_ui->lineEditTranslateY->setValue(0);
-				m_ui->lineEditTranslateZ->setValue(0);
-			}
 
+				m_originalValues.set(0,0,0);
+			}
+			m_ui->lineEditTranslateX->setValue( m_originalValues.m_x );
+			m_ui->lineEditTranslateY->setValue( m_originalValues.m_y );
+			m_ui->lineEditTranslateZ->setValue( m_originalValues.m_z );
 		} break;
 
 #if 0
 
-	case MT_Rotate: {
-		showDeg();
-		showRotation(false);
+		case MT_Rotate: {
+			showDeg();
+			showRotation(false);
 
-		m_ui->labelX->setText("X");
-		m_ui->labelY->setText("Y");
-		m_ui->labelZ->setText("Z");
-
-		switch (state) {
-		case MS_Absolute: {
-			showRotation();
-			showDeg(false);
-
-			m_ui->lineEditX->setValue(0);
-			m_ui->lineEditY->setValue(0);
-			m_ui->lineEditZ->setValue(0);
-		}
-			break;
-
-		default:
-			m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-			m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-			m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-		}
-
-	} break;
-
-
-	case MT_Scale: {
-
-		showDeg(false);
-		showRotation(false);
-
-		switch (state) {
-		case MS_Absolute: {
-
-			m_ui->labelX->setText("L<sub>X</sub>");
-			m_ui->labelY->setText("W<sub>Y</sub>");
-			m_ui->labelZ->setText("H<sub>Z</sub>");
-
-			m_originalValues = m_bbCenter[m_orientationMode];
-
-			m_ui->lineEditX->setValue(m_bbDim[m_orientationMode].m_x);
-			m_ui->lineEditY->setValue(m_bbDim[m_orientationMode].m_y);
-			m_ui->lineEditZ->setValue(m_bbDim[m_orientationMode].m_z);
-
-			break;
-		}
-		default:
 			m_ui->labelX->setText("X");
 			m_ui->labelY->setText("Y");
 			m_ui->labelZ->setText("Z");
 
-			m_originalValues = IBKMK::Vector3D( 1,1,1 );
+			switch (state) {
+			case MS_Absolute: {
+				showRotation();
+				showDeg(false);
 
-			m_ui->lineEditX->setValue(m_originalValues.m_x );
-			m_ui->lineEditY->setValue(m_originalValues.m_y );
-			m_ui->lineEditZ->setValue(m_originalValues.m_z );
-		}
-	} break;
+				m_ui->lineEditX->setValue(0);
+				m_ui->lineEditY->setValue(0);
+				m_ui->lineEditZ->setValue(0);
+			}
+				break;
+
+			default:
+				m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+				m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+				m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+			}
+
+		} break;
+
 #endif
+
+		case MT_Scale: {
+
+			if (m_ui->radioButtonScaleResize->isChecked()) {
+				m_ui->labelScaleX->setText("L<sub>X</sub> [m]:");
+				m_ui->labelScaleY->setText("W<sub>Y</sub> [m]:");
+				m_ui->labelScaleZ->setText("H<sub>Z</sub> [m]:");
+
+				// always local bounding box
+				m_originalValues = m_bbDim[OM_Local];
+
+			}
+			else {
+				m_ui->labelScaleX->setText("s<sub>X</sub>:");
+				m_ui->labelScaleY->setText("s<sub>Y</sub>:");
+				m_ui->labelScaleZ->setText("s<sub>Z</sub>:");
+
+				m_originalValues = IBKMK::Vector3D( 1,1,1 );
+
+			}
+			m_ui->lineEditScaleX->setValue(m_originalValues.m_x );
+			m_ui->lineEditScaleY->setValue(m_originalValues.m_y );
+			m_ui->lineEditScaleZ->setValue(m_originalValues.m_z );
+		} break;
+
 	} // switch modification type
 
+	// reset wireframe transform
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+
+	// disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
 }
+
+
+void SVPropEditGeometry::updateScalePreview() {
+	QVector3D scaleFactors;
+	if (m_ui->radioButtonScaleResize->isChecked()) {
+		// compute scale factors
+		double newX = m_ui->lineEditScaleX->value();
+		double newY = m_ui->lineEditScaleY->value();
+		double newZ = m_ui->lineEditScaleZ->value();
+		// Mind: dimension in x, y, z might be zero, for example, if only a single
+		//       surface had been selected. In this case the scale factor must be always exactly 1
+		//       regardless of the user input
+
+		if (IBK::near_equal(m_bbDim[OM_Local].m_x,0.0,1e-6))			scaleFactors.setX(1);
+		else															scaleFactors.setX(float(newX/m_bbDim[OM_Local].m_x));
+
+		if (IBK::near_equal(m_bbDim[OM_Local].m_y,0.0,1e-6))			scaleFactors.setY(1);
+		else															scaleFactors.setY(float(newY/m_bbDim[OM_Local].m_y));
+
+		if (IBK::near_equal(m_bbDim[OM_Local].m_z,0.0,1e-6))			scaleFactors.setZ(1);
+		else															scaleFactors.setZ(float(newZ/m_bbDim[OM_Local].m_z));
+	}
+	else {
+		scaleFactors.setX( (float)m_ui->lineEditScaleX->value());
+		scaleFactors.setY( (float)m_ui->lineEditScaleY->value());
+		scaleFactors.setZ( (float)m_ui->lineEditScaleZ->value());
+
+	}
+	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+	Q_ASSERT(cso != nullptr);
+	// obtain offset and rotation of local coordinate system
+	QVector3D offset = cso->translation();
+	QQuaternion rot = cso->transform().rotation();
+
+	// adjust wireframe object transform
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setLocalScaling(offset, rot, scaleFactors);
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+}
+
+
 #if 0
 void SVPropEditGeometry::setToolButton() {
 
@@ -2331,3 +2362,50 @@ void SVPropEditGeometry::on_pushButtonCenteHorizontal_clicked(){
 }
 
 #endif
+
+
+
+
+// **** PRIVATE FUNCTIONS ***
+
+
+void SVPropEditGeometry::updateCoordinateSystemLook() {
+	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+	if (SVViewStateHandler::instance().m_geometryView == nullptr)
+		return; // do nothing while initializing
+	// adjust appearance of local coordinate system
+	if (m_ui->stackedWidget->currentIndex() == MT_Align) {
+		// put local coordinate system back into "plain" mode
+		if (cso->m_geometryTransformMode != 0) {
+			cso->m_geometryTransformMode = 0;
+			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+		}
+	}
+	else {
+		// put local coordinate system back into correct transform mode
+		switch (m_ui->stackedWidget->currentIndex()) {
+			case MT_Translate:
+				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_Translate) {
+					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_Translate;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
+				break;
+
+			case MT_Rotate:
+				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_RotateMask) {
+					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_RotateMask;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
+				break;
+
+			case MT_Scale:
+				if (cso->m_geometryTransformMode != Vic3D::CoordinateSystemObject::TM_ScaleMask) {
+					cso->m_geometryTransformMode = Vic3D::CoordinateSystemObject::TM_ScaleMask;
+					SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+				}
+				break;
+
+			case NUM_MT : ; // just to make compiler happy
+		}
+	}
+}

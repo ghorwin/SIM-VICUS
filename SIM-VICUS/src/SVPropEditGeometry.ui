@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pageTranslation">
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -424,45 +424,18 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QToolButton" name="toolButtonScaleBoundingBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
+             <widget class="QRadioButton" name="radioButtonScaleResize">
               <property name="text">
                <string>Resize geometry</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QToolButton" name="toolButtonScaleFactor">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
+             <widget class="QRadioButton" name="radioButtonScaleFactor">
               <property name="text">
                <string>Scale by factor</string>
               </property>
-              <property name="checkable">
+              <property name="checked">
                <bool>true</bool>
               </property>
              </widget>

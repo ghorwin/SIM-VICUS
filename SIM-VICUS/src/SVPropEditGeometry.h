@@ -130,8 +130,6 @@ public:
 	*/
 	void setState(const ModificationType &type, const ModificationState &state);
 
-	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly. */
-	void updateInputs();
 
 #if 0
 	/*! Checks/unchecks the tool buttons depending on the specified type.
@@ -173,10 +171,12 @@ public slots:
 	*/
 	void onViewStateChanged();
 
+protected:
+	/*! Event Filter: Needed for all scrolling specific inputs */
+	bool eventFilter(QObject *target, QEvent *event) override;
+
 private slots:
 
-	/*! Event Filter: Needed for all scrolling specific inputs */
-//	bool eventFilter(QObject *target, QEvent *event) override;
 
 
 	// *** Translation page ***
@@ -187,54 +187,21 @@ private slots:
 //	void on_pushButtonThreePointRotation_clicked();
 
 
+	// *** Scale page ***
+
+	/*! all line edit specific functions */
+	void on_radioButtonScaleResize_toggled(bool checked);
+
+	void on_lineEditScaleX_editingFinishedSuccessfully();
+	void on_lineEditScaleY_editingFinishedSuccessfully();
+	void on_lineEditScaleZ_editingFinishedSuccessfully();
+
 //	// *** Alignment page ***
 
 //	void on_pushButtonFlipNormals_clicked();
 
 
-	/*! all line edit specific functions */
-#if 0
-	void on_lineEditX_editingFinished();
-	void on_lineEditY_editingFinished();
-	void on_lineEditZ_editingFinished();
 
-	void on_lineEditX_returnPressed();
-	void on_lineEditY_returnPressed();
-	void on_lineEditZ_returnPressed();
-
-	void on_lineEditX_textChanged(const QString &);
-	void on_lineEditY_textChanged(const QString &);
-	void on_lineEditZ_textChanged(const QString &);
-
-	void on_lineEditOrientation_returnPressed();
-	void on_lineEditInclination_returnPressed();
-
-	void on_lineEditOrientation_textChanged(const QString &);
-	void on_lineEditInclination_textChanged(const QString &);
-
-	void on_lineEditOrientation_editingFinished();
-	void on_lineEditInclination_editingFinished();
-
-	void on_lineEditXCopy_editingFinished();
-	void on_lineEditYCopy_editingFinished();
-	void on_lineEditZCopy_editingFinished();
-
-
-	/*! Triggered when anything changes in one of the line edits X, Y or Z */
-	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
-
-	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
-	void on_toolButtonTranslateAbsolute_clicked();
-	void on_toolButtonRel_clicked(bool);
-
-	void on_toolButtonNormal_clicked();
-
-	void on_toolButtonZ_clicked();
-	void on_toolButtonX_clicked();
-	void on_toolButtonY_clicked();
-
-	void on_pushButtonCenteHorizontal_clicked();
-#endif
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -244,6 +211,17 @@ private:
 		everything is deselected.
 	*/
 	void updateUi();
+
+	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly.
+		This function is called whenever the user switches between transformation operations and options, and hereby
+		resets any previous input to the original values. Also, this resets the current preview of the wire-frame
+		object to show the unmodified geometry.
+	*/
+	void updateInputs();
+
+	/*! Updates the transformation matrix for local scaling. */
+	void updateScalePreview();
+
 #if 0
 	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
 		false: use global coordinate system orientation
@@ -256,10 +234,10 @@ private:
 
 	/*! Initilizes the Copy Group Box */
 	void initializeCopy();
+#endif
 
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
-#endif
 
 	/*! Contains position and rotation of local coordinate system (lcs) object. */
 	Vic3D::Transform3D					m_lcsTransform;
@@ -280,14 +258,11 @@ private:
 //	/*! Cached state of abs roation mode */
 //	RotationState						m_rotationState;
 
-	//	/*! Cached initial values to be used when user had entered invalid values.
-//		These values depend on current modification type and state.
-//	*/
-//	IBKMK::Vector3D						m_originalValues;
-
-
-//	/*! Cached Translation vector for copy operations. */
-//	IBKMK::Vector3D						m_translation;
+	/*! Cached initial values to be used when user had entered invalid values.
+		These values depend on current modification type and state and are set initially in
+		updateInputs(), and updated whenever a line edit has been edited successfully.
+	*/
+	IBKMK::Vector3D						m_originalValues;
 
 	std::vector<const VICUS::Building*>			m_selBuildings;
 	std::vector<const VICUS::BuildingLevel*>	m_selBuildingLevels;
