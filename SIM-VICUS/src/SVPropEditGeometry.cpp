@@ -288,14 +288,20 @@ void SVPropEditGeometry::on_lineEditRotateInclination_editingFinishedSuccessfull
 }
 
 void SVPropEditGeometry::on_lineEditRotateX_editingFinishedSuccessfully() {
+	m_ui->lineEditRotateY->setValue(0);
+	m_ui->lineEditRotateZ->setValue(0);
 	updateRotationPreview();
 }
 
 void SVPropEditGeometry::on_lineEditRotateY_editingFinishedSuccessfully() {
+	m_ui->lineEditRotateX->setValue(0);
+	m_ui->lineEditRotateZ->setValue(0);
 	updateRotationPreview();
 }
 
 void SVPropEditGeometry::on_lineEditRotateZ_editingFinishedSuccessfully() {
+	m_ui->lineEditRotateX->setValue(0);
+	m_ui->lineEditRotateY->setValue(0);
 	updateRotationPreview();
 }
 
