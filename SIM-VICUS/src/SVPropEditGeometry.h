@@ -117,9 +117,6 @@ public:
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
-	/*! Sets the Rotation and Inclination based on given normal vector (in global coordinates). */
-	void setRotation(const IBKMK::Vector3D &normal);
-
 
 public slots:
 

@@ -167,17 +167,6 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 }
 
 
-void SVPropEditGeometry::setRotation(const IBKMK::Vector3D &normal) {
-	m_normal = normal.normalized();
-
-	m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
-	// positive y Richtung = Norden = Orientation 0°
-	// positive x Richtung = Osten = Orientation 90°
-
-	double orientation = std::atan2(normal.m_x, ( normal.m_y == 0. ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
-	m_ui->lineEditOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
-}
-
 
 // *** PUBLIC SLOTS ***
 
@@ -223,8 +212,11 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 		if (target == m_ui->lineEditTranslateX ||
 				target == m_ui->lineEditTranslateY ||
 				target == m_ui->lineEditTranslateZ ||
-				target == m_ui->lineEditInclination ||
-				target == m_ui->lineEditOrientation ||
+				target == m_ui->lineEditRotateInclination ||
+				target == m_ui->lineEditRotateOrientation ||
+				target == m_ui->lineEditRotateX ||
+				target == m_ui->lineEditRotateY ||
+				target == m_ui->lineEditRotateZ ||
 				target == m_ui->lineEditScaleX ||
 				target == m_ui->lineEditScaleY ||
 				target == m_ui->lineEditScaleZ )
@@ -1030,8 +1022,6 @@ void SVPropEditGeometry::on_lineEditZ_returnPressed(){
 #endif
 
 void SVPropEditGeometry::updateInputs() {
-//	ModificationState state = m_modificationState[m_modificationType];
-
 	switch (m_ui->stackedWidget->currentIndex()) {
 
 		// *** Translation page ***
@@ -1057,36 +1047,41 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->lineEditTranslateZ->setValue( m_originalValues.m_z );
 		} break;
 
-#if 0
 
 		case MT_Rotate: {
-			showDeg();
-			showRotation(false);
+			bool align2Angles = m_ui->radioButtonRotationAlignToAngles->isChecked();
+			m_ui->labelRotateInclinationAbs->setEnabled(align2Angles);
+			m_ui->labelRotateOrientationAbs->setEnabled(align2Angles);
+			m_ui->labelRotationX->setEnabled(!align2Angles);
+			m_ui->labelRotationY->setEnabled(!align2Angles);
+			m_ui->labelRotationZ->setEnabled(!align2Angles);
+			m_ui->lineEditRotateInclination->setEnabled(align2Angles);
+			m_ui->lineEditRotateOrientation->setEnabled(align2Angles);
+			m_ui->lineEditRotateX->setEnabled(!align2Angles);
+			m_ui->lineEditRotateY->setEnabled(!align2Angles);
+			m_ui->lineEditRotateZ->setEnabled(!align2Angles);
 
-			m_ui->labelX->setText("X");
-			m_ui->labelY->setText("Y");
-			m_ui->labelZ->setText("Z");
+			m_ui->lineEditRotateX->setValue(0);
+			m_ui->lineEditRotateY->setValue(0);
+			m_ui->lineEditRotateZ->setValue(0);
 
-			switch (state) {
-			case MS_Absolute: {
-				showRotation();
-				showDeg(false);
+			if (align2Angles) {
+//				m_normal = normal.normalized();
 
-				m_ui->lineEditX->setValue(0);
-				m_ui->lineEditY->setValue(0);
-				m_ui->lineEditZ->setValue(0);
+//			m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
+//			// positive y Richtung = Norden = Orientation 0°
+//			// positive x Richtung = Osten = Orientation 90°
+
+//			double orientation = std::atan2(normal.m_x, ( normal.m_y == 0. ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
+//			m_ui->lineEditOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
+
 			}
-				break;
-
-			default:
-				m_ui->lineEditX->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-				m_ui->lineEditY->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
-				m_ui->lineEditZ->setText( QString("%L1").arg( 0.0,0, 'f', 3 ) );
+			else {
+				m_ui->lineEditRotateInclination->setValue(0);
+				m_ui->lineEditRotateOrientation->setValue(0);
 			}
 
 		} break;
-
-#endif
 
 		case MT_Scale: {
 
@@ -1134,97 +1129,6 @@ void SVPropEditGeometry::updateInputs() {
 
 
 #if 0
-void SVPropEditGeometry::setToolButton() {
-
-
-	m_ui->toolButtonTrans->setChecked(false);
-	m_ui->toolButtonRotate->setChecked(false);
-	m_ui->toolButtonScale->setChecked(false);
-
-	switch (m_modificationType) {
-	case MT_Translate:		m_ui->toolButtonTrans->setChecked(true);			break;
-	case MT_Rotate:			m_ui->toolButtonRotate->setChecked(true);			break;
-	case MT_Scale:			m_ui->toolButtonScale->setChecked(true);			break;
-	}
-}
-
-void SVPropEditGeometry::setToolButtonAbsMode() {
-	m_ui->toolButtonRel->blockSignals(true);
-	m_ui->toolButtonAbs->blockSignals(true);
-
-	switch (m_modificationType) {
-	case MT_Translate:
-		m_ui->toolButtonAbs->setText( tr("Move to world coordinates") );
-		m_ui->toolButtonRel->setText( tr("Relative translation") );
-		break;
-	case MT_Rotate:
-		m_ui->toolButtonAbs->setText( tr("Align surface to angles") );
-		m_ui->toolButtonRel->setText( tr("Relative rotation") );
-		break;
-	case MT_Scale:
-		m_ui->toolButtonAbs->setText( tr("Resize surfaces") );
-		m_ui->toolButtonRel->setText( tr("Relative scaling") );
-		break;
-	}
-
-	bool checkAbsState = m_modificationState[m_modificationType] == ModificationState::MS_Absolute;
-
-	m_ui->toolButtonAbs->setChecked(checkAbsState);
-	m_ui->toolButtonRel->setChecked(!checkAbsState);
-
-	m_ui->toolButtonAbs->blockSignals(false);
-	m_ui->toolButtonRel->blockSignals(false);
-
-}
-
-void SVPropEditGeometry::setToolButtonsRotationState(bool absOn) {
-	m_ui->toolButtonAbs->setEnabled(absOn);
-	m_ui->toolButtonRel->setChecked(!absOn);
-}
-
-void SVPropEditGeometry::showDeg(const bool & show) {
-	if ( show ) {
-		m_ui->labelXDeg->show();
-		m_ui->labelYDeg->show();
-		m_ui->labelZDeg->show();
-	}
-	else {
-		m_ui->labelXDeg->hide();
-		m_ui->labelYDeg->hide();
-		m_ui->labelZDeg->hide();
-	}
-}
-
-void SVPropEditGeometry::showRotation(const bool & abs) {
-	// we show all that is necessary for absolute Rotation Mode
-	m_ui->lineEditOrientation->blockSignals(true);
-	m_ui->lineEditInclination->blockSignals(true);
-	if ( abs ) {
-		m_ui->widgetXYZ->hide();
-		m_ui->widgetRota->show();
-	}
-	else {
-		m_ui->widgetXYZ->show();
-		m_ui->widgetRota->hide();
-	}
-	m_ui->lineEditOrientation->blockSignals(false);
-	m_ui->lineEditInclination->blockSignals(false);
-}
-
-
-void SVPropEditGeometry::on_toolButtonTrans_clicked() {
-	setState(MT_Translate, m_modificationState[MT_Translate]);
-}
-
-void SVPropEditGeometry::on_toolButtonRotate_clicked() {
-	setState(MT_Rotate, m_modificationState[MT_Rotate]);
-}
-
-void SVPropEditGeometry::on_toolButtonScale_clicked() {
-	setState(MT_Scale, m_modificationState[MT_Scale]);
-}
-
-
 void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
 	// check if entered value is valid, if not reset it to its default
 	double orientation = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) /IBK::DEG2RAD ;
@@ -1581,7 +1485,7 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 
 void SVPropEditGeometry::translate() {
 	// get translation vector from selected geometry object
-	IBKMK::Vector3D translation = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
+	IBKMK::Vector3D translation = QVector2IBKVector(m_lcsTransform.translation());
 
 	if (translation == IBKMK::Vector3D())
 		return;
@@ -1696,7 +1600,7 @@ void SVPropEditGeometry::scale() {
 
 	if (scale == IBKMK::Vector3D() || scale == IBKMK::Vector3D(1,1,1) )
 		return;
-	QVector3D transLCSO = cso->translation();
+	QVector3D transLCSO = m_lcsTransform.translation();
 
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
