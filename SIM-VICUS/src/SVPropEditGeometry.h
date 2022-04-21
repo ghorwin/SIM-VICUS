@@ -144,8 +144,8 @@ private slots:
 	// *** Rotation page ***
 
 	void on_radioButtonRotationAlignToAngles_toggled(bool checked);
-	void on_lineEditOrientation_editingFinishedSuccessfully();
-	void on_lineEditInclination_editingFinishedSuccessfully();
+	void on_lineEditRotateOrientation_editingFinishedSuccessfully();
+	void on_lineEditRotateInclination_editingFinishedSuccessfully();
 	void on_lineEditRotateX_editingFinishedSuccessfully();
 	void on_lineEditRotateY_editingFinishedSuccessfully();
 	void on_lineEditRotateZ_editingFinishedSuccessfully();
@@ -225,7 +225,7 @@ private:
 	*/
 	IBKMK::Vector3D						m_bbCenter[NUM_OM];
 
-	/*! Cached normal for absolute rotation */
+	/*! Cached normal for align2axis rotation, this is updated in setCoordinates(). */
 	IBKMK::Vector3D						m_normal;
 
 	/*! Cached initial values to be used when user had entered invalid values.
