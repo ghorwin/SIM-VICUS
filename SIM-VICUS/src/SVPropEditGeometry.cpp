@@ -1043,15 +1043,14 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->lineEditRotateZ->setValue(0);
 
 			if (align2Angles) {
-				QVector3D normal = m_lcsTransform. normal().normalized();
+				QVector3D normal = m_lcsTransform.rotation().rotatedVector(QVector3D(0,0,1));
 
-//			m_ui->lineEditInclination->setText( QString("%L1").arg(std::acos(normal.m_z)/IBK::DEG2RAD, 0, 'f', 3) );
-//			// positive y Richtung = Norden = Orientation 0°
-//			// positive x Richtung = Osten = Orientation 90°
+				m_ui->lineEditRotateInclination->setText( QString("%L1").arg(std::acos(normal.z())/IBK::DEG2RAD, 0, 'f', 3) );
+				// positive y Richtung = Norden = Orientation 0°
+				// positive x Richtung = Osten = Orientation 90°
 
-//			double orientation = std::atan2(normal.m_x, ( normal.m_y == 0. ? 1E-8 : normal.m_y ) ) /IBK::DEG2RAD ;
-//			m_ui->lineEditOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
-
+				double orientation = std::atan2(normal.x(), ( normal.y() == 0. ? 1E-8 : normal.y() ) ) /IBK::DEG2RAD ;
+				m_ui->lineEditRotateOrientation->setText( QString("%L1").arg(orientation < 0 ? ( orientation + 360 ) : orientation, 0, 'f', 3 ) );
 			}
 			else {
 				m_ui->lineEditRotateInclination->setValue(0);
