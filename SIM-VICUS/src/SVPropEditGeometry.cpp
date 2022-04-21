@@ -274,6 +274,37 @@ void SVPropEditGeometry::on_lineEditTranslateZ_editingFinishedSuccessfully() {
 
 
 
+void SVPropEditGeometry::on_radioButtonRotationAlignToAngles_toggled(bool) {
+	updateInputs();
+}
+
+
+void SVPropEditGeometry::on_lineEditOrientation_editingFinishedSuccessfully() {
+	updateRotationPreview();
+}
+
+void SVPropEditGeometry::on_lineEditInclination_editingFinishedSuccessfully() {
+	updateRotationPreview();
+}
+
+void SVPropEditGeometry::on_lineEditRotateX_editingFinishedSuccessfully() {
+	updateRotationPreview();
+}
+
+void SVPropEditGeometry::on_lineEditRotateY_editingFinishedSuccessfully() {
+	updateRotationPreview();
+}
+
+void SVPropEditGeometry::on_lineEditRotateZ_editingFinishedSuccessfully() {
+	updateRotationPreview();
+}
+
+void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
+	// when clicked, we set the scene into three-point-rotation mode
+	// TODO Stephan
+}
+
+
 void SVPropEditGeometry::on_radioButtonScaleResize_toggled(bool) {
 	updateInputs();
 }
@@ -440,6 +471,27 @@ void SVPropEditGeometry::updateTranslationPreview() {
 	// adjust wireframe object transform
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(translation);
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+
+	// also enable the apply/cancel buttons
+	enableTransformation();
+}
+
+
+void SVPropEditGeometry::updateRotationPreview() {
+
+	QQuaternion rot;
+	if (m_ui->radioButtonRotationAlignToAngles->isChecked()) {
+
+	}
+	else {
+
+	}
+
+	// adjust wireframe object transform
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setRotation(rot);
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
@@ -1264,11 +1316,6 @@ void SVPropEditGeometry::on_lineEditInclination_textChanged(const QString &) {
 	onLineEditTextChanged(m_ui->lineEditInclination);
 }
 
-
-void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
-	// when clicked, we set the scene into three-point-rotation mode
-	// TODO Stephan
-}
 
 
 void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {

@@ -146,8 +146,13 @@ private slots:
 
 	// *** Rotation page ***
 
-//	void on_pushButtonThreePointRotation_clicked();
-
+	void on_radioButtonRotationAlignToAngles_toggled(bool checked);
+	void on_lineEditOrientation_editingFinishedSuccessfully();
+	void on_lineEditInclination_editingFinishedSuccessfully();
+	void on_lineEditRotateX_editingFinishedSuccessfully();
+	void on_lineEditRotateY_editingFinishedSuccessfully();
+	void on_lineEditRotateZ_editingFinishedSuccessfully();
+	void on_pushButtonThreePointRotation_clicked();
 
 	// *** Scale page ***
 
@@ -159,6 +164,7 @@ private slots:
 //	// *** Alignment page ***
 
 //	void on_pushButtonFlipNormals_clicked();
+
 
 
 
@@ -184,6 +190,9 @@ private:
 	/*! Updates the transformation matrix for translating geometry. */
 	void updateTranslationPreview();
 
+	/*! Updates the transformation matrix for rotating geometry. */
+	void updateRotationPreview();
+
 	/*! Updates the transformation matrix for local scaling. */
 	void updateScalePreview();
 
@@ -193,24 +202,8 @@ private:
 	/*! Called from onWheelTurned(), relays a change event to the respective editingFinishedSuccessfully() slot. */
 	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
-#if 0
-	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
-		false: use global coordinate system orientation
-		true: use local coordinate system orientation
-	*/
-	void updateOrientationMode();
-#endif
-
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
-
-#if 0
-	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
-	void showDeg(const bool &show=true);
-
-	/*! Show the specified rotation/orientation of the selected surfaces */
-	void showRotation(const bool &abs=true);
-#endif
 
 	/*! Applies current translation (from selected geometry object) into project. */
 	void translate();
@@ -238,9 +231,6 @@ private:
 	/*! Cached normal for absolute rotation */
 	IBKMK::Vector3D						m_normal;
 
-//	/*! Cached state of abs roation mode */
-//	RotationState						m_rotationState;
-
 	/*! Cached initial values to be used when user had entered invalid values.
 		These values depend on current modification type and state and are set initially in
 		updateInputs(), and updated whenever a line edit has been edited successfully.
@@ -253,7 +243,7 @@ private:
 	std::vector<const VICUS::Surface*>			m_selSurfaces;
 	std::vector<const VICUS::SubSurface*>		m_selSubSurfaces;
 
-	/*! We take all selected names. */
+
 	std::set<QString>					m_subSurfNames;
 	std::set<QString>					m_surfNames;
 	std::set<QString>					m_roomNames;
