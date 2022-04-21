@@ -20,7 +20,7 @@
       <number>3</number>
      </property>
      <widget class="QWidget" name="pageTranslation">
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayoutTrans">
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
@@ -164,7 +164,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageRotation">
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="verticalLayoutRot">
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
@@ -361,7 +361,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageScaling">
-      <layout class="QVBoxLayout" name="verticalLayout_7">
+      <layout class="QVBoxLayout" name="verticalLayoutScale">
        <item>
         <widget class="QGroupBox" name="groupBox_6">
          <property name="title">
@@ -505,7 +505,7 @@
       </layout>
      </widget>
      <widget class="QWidget" name="pageAlignment">
-      <layout class="QVBoxLayout" name="verticalLayout_10">
+      <layout class="QVBoxLayout" name="verticalLayoutAlign">
        <item>
         <widget class="QGroupBox" name="groupBox_7">
          <property name="title">

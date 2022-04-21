@@ -140,6 +140,9 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditScaleX->installEventFilter(this);
 	m_ui->lineEditScaleY->installEventFilter(this);
 	m_ui->lineEditScaleZ->installEventFilter(this);
+
+	for (int i=0; i<4; ++i)
+		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
 }
 
 
