@@ -1095,6 +1095,10 @@ void SVPropEditGeometry::updateInputs() {
 				// always local bounding box
 				m_originalValues = m_bbDim[OM_Local];
 
+				m_ui->lineEditScaleX->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_x,0.0,1e-6));
+				m_ui->lineEditScaleY->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_y,0.0,1e-6));
+				m_ui->lineEditScaleZ->setEnabled(!IBK::near_equal(m_bbDim[OM_Local].m_z,0.0,1e-6));
+
 			}
 			else {
 				m_ui->labelScaleX->setText("s<sub>X</sub>:");
@@ -1103,6 +1107,9 @@ void SVPropEditGeometry::updateInputs() {
 
 				m_originalValues = IBKMK::Vector3D( 1,1,1 );
 
+				m_ui->lineEditScaleX->setEnabled(true);
+				m_ui->lineEditScaleY->setEnabled(true);
+				m_ui->lineEditScaleZ->setEnabled(true);
 			}
 			m_ui->lineEditScaleX->setValue(m_originalValues.m_x );
 			m_ui->lineEditScaleY->setValue(m_originalValues.m_y );
@@ -1158,6 +1165,10 @@ void SVPropEditGeometry::updateScalePreview() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setLocalScaling(offset, rot, scaleFactors);
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+
+	// also enable the apply/cancel buttons
+	m_ui->pushButtonApply->setEnabled(true);
+	m_ui->pushButtonCancel->setEnabled(true);
 }
 
 
