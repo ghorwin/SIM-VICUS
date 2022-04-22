@@ -69,7 +69,7 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 
 	// create edit geometry widget - this is needed since other widgets like the coordinate system widget send
 	// coordinate changes to the widget
-//	showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
+	showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 	onViewStateChanged();
 }
 

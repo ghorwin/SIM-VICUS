@@ -69,7 +69,7 @@
 
 /*! helper function to compare two IBKMK vectors */
 template <int digits>
-bool checkVectors(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
+bool vectorsParallel(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
 	return ( IBK::nearly_equal<digits>(v1.m_x, v2.m_x) &&
 			 IBK::nearly_equal<digits>(v1.m_y, v2.m_y) &&
 			 IBK::nearly_equal<digits>(v1.m_z, v2.m_z) );
@@ -118,6 +118,7 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 
 	m_ui->lineEditRotateOrientation->setFormatter(new LineEditFormater);
 	m_ui->lineEditRotateInclination->setFormatter(new LineEditFormater);
+	m_ui->lineEditRotateInclination->setup(-90, 90, tr("Inclination must be between -90..90°."), true, true);
 	m_ui->lineEditRotateX->setFormatter(new LineEditFormater);
 	m_ui->lineEditRotateY->setFormatter(new LineEditFormater);
 	m_ui->lineEditRotateZ->setFormatter(new LineEditFormater);
@@ -159,7 +160,13 @@ void SVPropEditGeometry::enableTransformation() {
 
 void SVPropEditGeometry::setModificationType(ModificationType modType) {
 	m_ui->stackedWidget->setCurrentIndex(modType);
-	updateUi(); // update all inputs
+	updateInputs(); // update all inputs
+	// only adjust local coordinate system, if this widget is visible
+	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {
+		// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
+		//       and indirectly also updateInputs()
+		updateCoordinateSystemLook();
+	}
 }
 
 
@@ -195,9 +202,6 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 	case SVProjectHandler::NodeStateModified:
 		// When the building geometry has changed, we need to update the geometrical info
 		// in the widget based on the current selection.
-
-		// Also, if the selection has changed, we need to distinguish between no selection and selection
-		// and update the buttons accordingly.
 		updateUi();
 		break;
 
@@ -337,6 +341,11 @@ void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
 // *** PRIVATE FUNCTIONS ***
 
 void SVPropEditGeometry::updateUi() {
+	// TODO : Andreas, move code to update selection and local coordinate system position
+	//        to Scene, since it needs to be done for several different property widgets.
+	//        Also, switching from "add" to "edit" geometry and back should not move the
+	//        local coordinate system, but rather only adjust the appearance of the local coordinate system
+
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	Q_ASSERT(cso != nullptr);
 
@@ -455,12 +464,17 @@ void SVPropEditGeometry::updateUi() {
 											  QVector2IBKVector(cso->localZAxis() ) );
 	m_bbDim[OM_Global] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Global]);
 
+	// NOTE: this function is being called even if edit geometry property widget is not
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setBoundingBoxDimension(m_bbDim[OM_Global]);
 	// position local coordinate system
 	cso->setTranslation(IBKVector2QVector(m_bbCenter[OM_Global]) );
-	// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
-	//       and indirectly also updateInputs()
-	updateCoordinateSystemLook();
+
+	// only adjust local coordinate system, if this widget is visible
+	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {
+		// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
+		//       and indirectly also updateInputs()
+		updateCoordinateSystemLook();
+	}
 }
 
 
@@ -493,28 +507,50 @@ void SVPropEditGeometry::updateRotationPreview() {
 	Vic3D::Transform3D rot;
 	if (m_ui->radioButtonRotationAlignToAngles->isChecked()) {
 		// get the rotation angles in [Rad]
-		double oriRad = m_ui->lineEditRotateOrientation->value() * IBK::DEG2RAD;
+		double oriDeg = m_ui->lineEditRotateOrientation->value();
+		// inclination is 90-inc...
 		double incliRad = (90-m_ui->lineEditRotateInclination->value()) * IBK::DEG2RAD;
-		IBKMK::Vector3D newNormal(	std::sin( oriRad ) * std::cos( incliRad ),
-									std::cos( oriRad ) * std::cos( incliRad ),
+		double oldOrientationDeg = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) / IBK::DEG2RAD;
+		if (oldOrientationDeg < 0)
+			oldOrientationDeg += 360;
+		qDebug() << "Old orientation deg = " << oldOrientationDeg;
+		qDebug() << "New orientation deg = " << oriDeg;
+		qDebug() << "New 90-inclination deg = " << incliRad / IBK::DEG2RAD;
+
+		// we need to do two different rotations, one along the same orientation, but to different
+		// inclination - hereby the rotation axis is computed from old normal vector and new normal vector
+		// and
+
+		IBKMK::Vector3D newNormal(	std::sin( oldOrientationDeg * IBK::DEG2RAD) * std::cos( incliRad ),
+									std::cos( oldOrientationDeg * IBK::DEG2RAD) * std::cos( incliRad ),
 									std::sin( incliRad ) );
+
+		QQuaternion rotationInc;
 
 		// we only want to rotate if the normal vectors are not the same - in this case we may not be able
 		// to compute the rotation axis
-		if ( checkVectors<4>( m_normal, newNormal ) )
-			return; // do nothing
+		if (!vectorsParallel<4>( m_normal, newNormal ) ) {
 
-		// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
-		// rotate to
-		IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
-//		qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
+			// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
+			// rotate to
+			IBKMK::Vector3D rotationAxis ( m_normal.crossProduct(newNormal).normalized() );
+	//		qDebug() << "Rotation axis: " << rotationAxis.m_x << "\t" << rotationAxis.m_y << "\t" << rotationAxis.m_z;
 
-		// we now also have to find the angle between both normals
+			// we now also have to find the angle between both normals
 
-		double angle = angleBetweenVectorsDeg(m_normal, newNormal);
+			double angle = angleBetweenVectorsDeg(m_normal, newNormal);
 
-		rot.rotate((float)angle, IBKVector2QVector(rotationAxis) );
-//		qDebug() << "Roation angle: " << angle << " °";
+			rotationInc = QQuaternion::fromAxisAndAngle(IBKVector2QVector(rotationAxis), (float)angle);
+	//		qDebug() << "Roation angle: " << angle << " °";
+		}
+
+		QQuaternion rotationOrientation;
+
+		// we only rotate around global z if angles differ
+		if (!IBK::near_equal(oriDeg, oldOrientationDeg, 1e-4)) {
+			rotationOrientation = QQuaternion::fromAxisAndAngle(QVector3D(0,0,1), (float)(oriDeg - oldOrientationDeg));
+		}
+		rot.setRotation(rotationOrientation*rotationInc);
 
 	}
 	else {

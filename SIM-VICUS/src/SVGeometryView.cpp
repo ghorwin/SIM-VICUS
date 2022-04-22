@@ -551,6 +551,14 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		SVViewStateHandler::instance().setViewState(vs);
+		// reset local coordinate system appearance
+		Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+		Q_ASSERT(cso != nullptr);
+		// put local coordinate system back into "plain" mode
+		if (cso->m_geometryTransformMode != 0) {
+			cso->m_geometryTransformMode = 0;
+			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+		}
 	}
 }
 

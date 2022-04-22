@@ -34,6 +34,7 @@
 #include "SVPropVertexListWidget.h"
 #include "Vic3DNewGeometryObject.h"
 #include "SVPropAddWindowWidget.h"
+#include "Vic3DCoordinateSystemObject.h"
 
 SVPropAddGeometry::SVPropAddGeometry(QWidget *parent) :
 	QWidget(parent),

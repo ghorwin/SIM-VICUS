@@ -10,9 +10,6 @@
     <height>592</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QVBoxLayout" name="verticalLayoutMaster">
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
