@@ -733,39 +733,18 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 						// scale factor
 						double scaleFactor = scalingDistance/m_nominalScalingDistance;
+//						qDebug() << "scaleFactor = " << scaleFactor;
 
 						// compose local scale vector based on which local axis was selected
-						QVector3D scaleVector(0,0,0);
+						QVector3D scaleVector(1,1,1);
 						switch (m_coordinateSystemObject.m_geometryTransformMode) {
 							case Vic3D::CoordinateSystemObject::TM_ScaleX : scaleVector.setX((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleY : scaleVector.setY((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleZ : scaleVector.setZ((float)scaleFactor); break;
 						}
 
-						// transform to global coordinates
-
-						// rotate local scaling matrix (vector) to global coordinate system
-						QVector3D scaleRotated = m_originalRotation.rotatedVector(scaleVector);
-						// this now is the line in global coordinates, along which we scale the entire selected geometry
-
-						// compute final scaling matrix
-						QVector3D finalScaleFactors = QVector3D(1,1,1) + float(scaleFactor-1)*scaleRotated;
-
-						// generate a scaling matrix
-						QMatrix4x4 scaleMatrix;
-						scaleMatrix.setToIdentity();
-						scaleMatrix.scale(finalScaleFactors);
-
-						// compute now location of our scale-fix-point
-						QVector3D newPoint = scaleMatrix*m_translateOrigin;
-
-						// vector offset from starting point to new point
-						QVector3D translationVector = m_translateOrigin - newPoint;
-
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
-						// and set our scale factors
-						m_selectedGeometryObject.m_transform.setScale(finalScaleFactors);
+						m_selectedGeometryObject.m_transform.setLocalScaling(m_translateOrigin, m_originalRotation, scaleVector);
 					} break;// interactive translation active
 
 				} // switch
