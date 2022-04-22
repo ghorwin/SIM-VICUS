@@ -69,7 +69,7 @@
 
 /*! helper function to compare two IBKMK vectors */
 template <int digits>
-bool vectorsParallel(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
+bool vectors_equal(const IBKMK::Vector3D &v1, const IBKMK::Vector3D &v2 ) {
 	return ( IBK::nearly_equal<digits>(v1.m_x, v2.m_x) &&
 			 IBK::nearly_equal<digits>(v1.m_y, v2.m_y) &&
 			 IBK::nearly_equal<digits>(v1.m_z, v2.m_z) );
@@ -166,6 +166,7 @@ void SVPropEditGeometry::setModificationType(ModificationType modType) {
 		// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
 		//       and indirectly also updateInputs()
 		updateCoordinateSystemLook();
+		adjustLocalCoordinateSystemForRotateToAngle();
 	}
 }
 
@@ -471,6 +472,9 @@ void SVPropEditGeometry::updateUi() {
 
 	// only adjust local coordinate system, if this widget is visible
 	if (this->isVisibleTo(qobject_cast<QWidget*>(parent())) ) {
+		// adjust local coordinate system based on selection
+		adjustLocalCoordinateSystemForRotateToAngle();
+
 		// Note: setting new coordinates to the local coordinate system object will in turn call setCoordinates()
 		//       and indirectly also updateInputs()
 		updateCoordinateSystemLook();
@@ -513,9 +517,9 @@ void SVPropEditGeometry::updateRotationPreview() {
 		double oldOrientationDeg = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) / IBK::DEG2RAD;
 		if (oldOrientationDeg < 0)
 			oldOrientationDeg += 360;
-		qDebug() << "Old orientation deg = " << oldOrientationDeg;
-		qDebug() << "New orientation deg = " << oriDeg;
-		qDebug() << "New 90-inclination deg = " << incliRad / IBK::DEG2RAD;
+//		qDebug() << "Old orientation deg = " << oldOrientationDeg;
+//		qDebug() << "New orientation deg = " << oriDeg;
+//		qDebug() << "New 90-inclination deg = " << incliRad / IBK::DEG2RAD;
 
 		// we need to do two different rotations, one along the same orientation, but to different
 		// inclination - hereby the rotation axis is computed from old normal vector and new normal vector
@@ -529,7 +533,7 @@ void SVPropEditGeometry::updateRotationPreview() {
 
 		// we only want to rotate if the normal vectors are not the same - in this case we may not be able
 		// to compute the rotation axis
-		if (!vectorsParallel<4>( m_normal, newNormal ) ) {
+		if (!vectors_equal<4>( m_normal, newNormal ) ) {
 
 			// we find the rotation axis by taking the cross product of the normal vector and the normal vector we want to
 			// rotate to
@@ -660,97 +664,6 @@ void SVPropEditGeometry::onLineEditTextChanged(QtExt::ValidatingLineEdit * lineE
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-
-
-void SVPropEditGeometry::on_lineEditX_returnPressed() {
-	// check if entered value is valid, if not reset it to its default
-	if ( !m_ui->lineEditX->isValid() ) {
-		m_ui->lineEditX->setValue( m_originalValues.m_x );
-		return;
-	}
-	if ( std::fabs( m_originalValues.m_x - m_ui->lineEditX->value() ) < 1E-3 )
-		return;
-
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-		return;
-	lineEdit->setModified( false );
-
-	//	double tempXValue = m_ui->lineEditX->value();
-	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
-	}
-	lineEdit->setModified(false);
-}
-
-void SVPropEditGeometry::on_lineEditY_returnPressed() {
-	// check if entered value is valid, if not reset it to its default
-	if ( !m_ui->lineEditY->isValid() ) {
-		m_ui->lineEditX->setValue( m_originalValues.m_y );
-		return;
-	}
-	if ( std::fabs( m_originalValues.m_y - m_ui->lineEditY->value() ) < 1E-3 )
-		return;
-
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-		return;
-	lineEdit->setModified( false );
-
-	//	double tempXValue = m_ui->lineEditX->value();
-	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
-	}
-	lineEdit->setModified(false);
-}
-
-void SVPropEditGeometry::on_lineEditZ_returnPressed(){
-	// check if entered value is valid, if not reset it to its default
-	if ( !m_ui->lineEditZ->isValid() ) {
-		m_ui->lineEditZ->setValue( m_originalValues.m_z );
-		return;
-	}
-	if ( std::fabs( m_originalValues.m_z - m_ui->lineEditZ->value() ) < 1E-3 )
-		return;
-
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-		return;
-	lineEdit->setModified( false );
-
-	switch ( m_modificationType ) {
-	case MT_Translate: translate(); break;
-	case MT_Scale: scale(); break;
-	case MT_Rotate: rotate(); break;
-	}
-}
-
-#endif
-
 void SVPropEditGeometry::updateInputs() {
 	switch (m_ui->stackedWidget->currentIndex()) {
 
@@ -851,6 +764,40 @@ void SVPropEditGeometry::updateInputs() {
 	// disable apply and cancel buttons
 	m_ui->pushButtonApply->setEnabled(false);
 	m_ui->pushButtonCancel->setEnabled(false);
+}
+
+
+void SVPropEditGeometry::adjustLocalCoordinateSystemForRotateToAngle() {
+	if (!this->isVisibleTo(qobject_cast<QWidget*>(parent())) )
+		return;
+	// special handling when rotation mode with "orient to angle" is selected
+	if (m_ui->stackedWidget->currentIndex() == MT_Rotate &&
+		m_ui->radioButtonRotationAlignToAngles->isChecked() &&
+		!m_selSurfaces.empty())
+	{
+		// check all selected surfaces and obtain their orientation/inclination
+		IBKMK::Vector3D normal;
+		bool allTheSame = true;
+		for (const VICUS::Surface* surf : m_selSurfaces) {
+			if (normal.magnitudeSquared() == 0.0)
+				normal = surf->geometry().normal();
+			else {
+				if (!vectors_equal<4>(normal, surf->geometry().normal())) {
+					allTheSame = false;
+					break;
+				}
+			}
+		}
+		// all surfaces have same orientation/inclinatin - set this in the local coordinate system object
+		if (allTheSame) {
+			Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+			const VICUS::PlaneGeometry & geo = m_selSurfaces.front()->geometry();
+			QQuaternion q2 = QQuaternion::fromAxes(IBKVector2QVector(geo.localX().normalized()),
+												   IBKVector2QVector(geo.localY().normalized()),
+												   IBKVector2QVector(geo.normal().normalized()));
+			cso->setRotation(q2);
+		}
+	}
 }
 
 

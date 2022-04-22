@@ -184,6 +184,13 @@ private:
 	*/
 	void updateInputs();
 
+	/*! This function implements a convenience functionality that aligns the local coordinate system automatically
+		with the selected surfaces, as long as all surfaces have the same inclination and orientation and
+		the rotation mode with "orient to angles" is selected.
+		Call this function only when the widget is visible.
+	*/
+	void adjustLocalCoordinateSystemForRotateToAngle();
+
 	/*! Updates the transformation matrix for translating geometry. */
 	void updateTranslationPreview();
 
