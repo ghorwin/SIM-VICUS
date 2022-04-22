@@ -317,6 +317,20 @@ void SVGeometryView::onViewStateChanged() {
 		m_actionlocalCoordinateSystemCoordinates->setVisible(true);
 		m_localCoordinateSystemView->setAlignCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_AlignLocalCoordinateSystem);
 		m_localCoordinateSystemView->setMoveCoordinateSystemButtonChecked(vs.m_sceneOperationMode == SVViewState::OM_MoveLocalCoordinateSystem);
+		// reset local coordinate system appearance
+		Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
+		Q_ASSERT(cso != nullptr);
+		if (vs.m_propertyWidgetMode != SVViewState::PM_EditGeometry) {
+			// put local coordinate system back into "plain" mode
+			if (cso->m_geometryTransformMode != 0) {
+				cso->m_geometryTransformMode = 0;
+				// and clear transformation in wireframe object
+				Vic3D::WireFrameObject * selectionObject = SVViewStateHandler::instance().m_selectedGeometryObject;
+				Q_ASSERT(selectionObject != nullptr);
+				selectionObject->m_transform = Vic3D::Transform3D();
+				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
+			}
+		}
 	}
 	else {
 		m_actionlocalCoordinateSystemCoordinates->setVisible(false);
@@ -551,14 +565,6 @@ void SVGeometryView::on_actionAddGeometry_triggered() {
 		vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 		vs.m_viewMode = SVViewState::VM_GeometryEditMode;
 		SVViewStateHandler::instance().setViewState(vs);
-		// reset local coordinate system appearance
-		Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-		Q_ASSERT(cso != nullptr);
-		// put local coordinate system back into "plain" mode
-		if (cso->m_geometryTransformMode != 0) {
-			cso->m_geometryTransformMode = 0;
-			SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-		}
 	}
 }
 

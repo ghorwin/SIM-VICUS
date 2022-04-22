@@ -285,6 +285,7 @@ void SVPropEditGeometry::on_lineEditTranslateZ_editingFinishedSuccessfully() {
 
 void SVPropEditGeometry::on_radioButtonRotationAlignToAngles_toggled(bool) {
 	updateInputs();
+	adjustLocalCoordinateSystemForRotateToAngle();
 }
 
 void SVPropEditGeometry::on_lineEditRotateOrientation_editingFinishedSuccessfully() {
@@ -342,11 +343,6 @@ void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
 // *** PRIVATE FUNCTIONS ***
 
 void SVPropEditGeometry::updateUi() {
-	// TODO : Andreas, move code to update selection and local coordinate system position
-	//        to Scene, since it needs to be done for several different property widgets.
-	//        Also, switching from "add" to "edit" geometry and back should not move the
-	//        local coordinate system, but rather only adjust the appearance of the local coordinate system
-
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	Q_ASSERT(cso != nullptr);
 
@@ -796,6 +792,9 @@ void SVPropEditGeometry::adjustLocalCoordinateSystemForRotateToAngle() {
 												   IBKVector2QVector(geo.localY().normalized()),
 												   IBKVector2QVector(geo.normal().normalized()));
 			cso->setRotation(q2);
+			m_normal = geo.normal();
+			// also update line edits
+			updateInputs();
 		}
 	}
 }
