@@ -6,7 +6,6 @@
 #include <VICUS_Project.h>
 #include <VICUS_utilities.h>
 
-#include "SVGenericNetworkEditDialog.h"
 #include "SVStyle.h"
 #include "SVPropSurfaceHeatingDelegate.h"
 #include "SVSettings.h"

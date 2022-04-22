@@ -34,6 +34,7 @@
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 
+#include <VICUS_KeywordListQt.h>
 #include <VICUS_Project.h>
 
 
@@ -44,6 +45,20 @@ SVNetworkSelectionDialog::SVNetworkSelectionDialog(QWidget *parent) :
 	m_ui->setupUi(this);
 
 	SVStyle::formatListView(m_ui->listWidget);
+
+	// fill combo box
+	m_ui->comboBoxSupplyType->blockSignals(true);
+	for (unsigned int i=0; i < VICUS::GenericNetwork::NUM_ST; ++i)
+		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
+								  .arg(VICUS::KeywordListQt::Description("GenericNetwork::supplyType_t", (int)i))
+								  .arg(VICUS::KeywordListQt::Keyword("GenericNetwork::supplyType_t", (int)i)), i);
+	m_ui->comboBoxSupplyType->addItem(QString("None"));
+	// set invalid supply type
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+	m_ui->comboBoxSupplyType->blockSignals(false);
+	// and deactivate box
+	m_ui->comboBoxSupplyType->setEnabled(false);
+
 	// update dialog
 	updateUi();
 }
@@ -59,7 +74,8 @@ void SVNetworkSelectionDialog::updateUi()
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(true);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(true);
 	m_ui->listWidget->blockSignals(true);
-	m_ui->listWidget->selectionModel()->blockSignals(false);
+	m_ui->listWidget->selectionModel()->blockSignals(true);
+	m_ui->comboBoxSupplyType->blockSignals(true);
 	m_ui->listWidget->setSortingEnabled(false);
 	m_ui->listWidget->clear();
 
@@ -80,10 +96,16 @@ void SVNetworkSelectionDialog::updateUi()
 	}
 
 	m_ui->listWidget->setSortingEnabled(true);
+	// set invalid supply type
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+	// and deactivate box
+	m_ui->comboBoxSupplyType->setEnabled(false);
+
 	m_ui->listWidget->blockSignals(false);
 	m_ui->listWidget->selectionModel()->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(false);
+	m_ui->comboBoxSupplyType->blockSignals(false);
 }
 
 
@@ -94,6 +116,9 @@ void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
 
 	if (selection.isEmpty()) {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+		// set invalid supply type
+		m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+		m_ui->comboBoxSupplyType->setEnabled(false);
 	}
 	else {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
@@ -101,7 +126,13 @@ void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
 		const QModelIndex &index = selection.indexes().front();
 
 		// select network
-		m_idNetwork = (unsigned int) m_ui->listWidget->item(index.row())->data(Qt::UserRole).toInt();
+		unsigned int idNetwork = (unsigned int) m_ui->listWidget->item(index.row())->data(Qt::UserRole).toInt();
+		// find network
+		m_current = dynamic_cast<const VICUS::GenericNetwork *> (project().objectById(idNetwork));
+		Q_ASSERT(m_current != nullptr);
+
+		m_ui->comboBoxSupplyType->setEnabled(true);
+		m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
 	}
 }
 
@@ -109,8 +140,42 @@ void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
 void SVNetworkSelectionDialog::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
 	// store ID of selected network
-	m_idNetwork = (unsigned int) item->data(Qt::UserRole).toInt();
+	unsigned int idNetwork = (unsigned int) item->data(Qt::UserRole).toInt();
+	m_current = dynamic_cast<const VICUS::GenericNetwork *>	(project().objectById(idNetwork));
+	Q_ASSERT(m_current != nullptr);
+
+	// update combo box
+	m_ui->comboBoxSupplyType->setEnabled(true);
+	m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
+
 	accept();
 }
 
 
+
+void SVNetworkSelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
+	// set generic network supply type
+
+
+	//	Q_ASSERT(m_current != nullptr);
+	//	// update database but only if different from original
+	//	if (index != (int)m_current->m_heatConduction.m_modelType) {
+	//		m_current->m_heatConduction.m_modelType = static_cast<VICUS::InterfaceHeatConduction::modelType_t>(index);
+	//		if (m_current->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::NUM_MT)
+	//			m_current->m_heatConduction = VICUS::InterfaceHeatConduction(); // reset entire object
+	//		modelModify();
+	//	}
+	//	// by default disable all inputs
+	//	m_ui->labelHeatTransferCoefficient->setEnabled(false);
+	//	m_ui->lineEditHeatTransferCoefficient->setEnabled(false);
+	//	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
+	//	if (m_ui->groupBoxHeatTransfer->isEnabled()) {
+	//		switch (m_current->m_heatConduction.m_modelType) {
+	//			case VICUS::InterfaceHeatConduction::MT_Constant:
+	//				m_ui->labelHeatTransferCoefficient->setEnabled(true);
+	//				m_ui->lineEditHeatTransferCoefficient->setEnabled(true);
+	//			break;
+	//			case VICUS::InterfaceHeatConduction::NUM_MT: break;
+	//		}
+	//	}
+}

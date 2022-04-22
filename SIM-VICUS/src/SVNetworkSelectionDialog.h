@@ -32,6 +32,10 @@ namespace Ui {
 class SVNetworkSelectionDialog;
 }
 
+namespace VICUS {
+class GenericNetwork;
+}
+
 class QListWidgetItem;
 
 /*! A dialog with a list of network names,
@@ -56,8 +60,16 @@ private slots:
 
 	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
 
+	void on_comboBoxSupplyType_currentIndexChanged(int index);
+
 private:
 	Ui::SVNetworkSelectionDialog	*m_ui;
+
+	/*! Pointer to currently edited boundary condition.
+		The pointer is updated whenever updateInput() is called.
+		A nullptr pointer means that there is no material to edit.
+	*/
+	const VICUS::GenericNetwork		*m_current = nullptr;
 };
 
 #endif // SVNetworkSelectionDialogH
