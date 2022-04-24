@@ -738,13 +738,6 @@ void SVMainWindow::setup() {
 	// TODO : other dock widgets
 	m_dockWidgetVisibility[m_logDockWidget] = SVSettings::instance().m_visibleDockWidgets.contains("Log");
 
-	// initialize view mode buttons
-	m_ui->actionViewToggleGeometryMode->blockSignals(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->blockSignals(false);
-	m_ui->actionViewToggleParametrizationMode->blockSignals(true);
-	m_ui->actionViewToggleParametrizationMode->setChecked(false);
-	m_ui->actionViewToggleParametrizationMode->blockSignals(false);
 
 	// *** Populate language menu ***
 	addLanguageAction("en", "English");
@@ -895,7 +888,7 @@ void SVMainWindow::on_actionFileNew_triggered() {
 	// create new project
 	m_projectHandler.newProject(); // emits updateActions()
 	if (SVViewStateHandler::instance().viewState().m_viewMode == SVViewState::VM_PropertyEditMode)
-		m_ui->actionViewToggleGeometryMode->trigger();
+		SVViewStateHandler::instance().m_geometryView->switch2GeometryMode();
 }
 
 
@@ -1146,8 +1139,7 @@ void SVMainWindow::on_actionBuildingFloorManager_triggered() {
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_FloorManager);
 	SVViewStateHandler::instance().setViewState(vs);
 
-	m_ui->actionViewToggleParametrizationMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(false);
+	SVViewStateHandler::instance().m_geometryView->switch2ParametrizationMode();
 }
 
 
@@ -1162,8 +1154,7 @@ void SVMainWindow::on_actionBuildingSurfaceHeatings_triggered() {
 	SVViewStateHandler::instance().m_propModeSelectionWidget->setBuildingPropertyType(BT_SurfaceHeating);
 	SVViewStateHandler::instance().setViewState(vs);
 
-	m_ui->actionViewToggleParametrizationMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(false);
+	SVViewStateHandler::instance().m_geometryView->switch2ParametrizationMode();
 }
 
 
@@ -1218,45 +1209,6 @@ void SVMainWindow::on_actionSimulationCO2Balance_triggered() {
 	if (m_coSimCO2VentilationDialog == nullptr)
 		m_coSimCO2VentilationDialog = new SVCoSimCO2VentilationDialog(this);
 	m_coSimCO2VentilationDialog->exec();
-}
-
-
-void SVMainWindow::on_actionViewToggleGeometryMode_triggered() {
-	// switch view state to geometry edit mode
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_viewMode = SVViewState::VM_GeometryEditMode;
-	vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
-	std::set<const VICUS::Object *> sel;
-	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-	if (sel.empty())
-		vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	else
-		vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
-	vs.m_objectColorMode = SVViewState::OCM_None;
-	SVViewStateHandler::instance().setViewState(vs);
-	m_ui->actionViewToggleGeometryMode->setChecked(true);
-	m_ui->actionViewToggleParametrizationMode->setChecked(false);
-	// switch to add geometry mode, if we do not have a selection, otherwise use edit geometry widget
-	// let this change do the SVPropEditGeometry widget, which at the same time can update the local coordinate
-	// system; since update() is private, we trick the widget into believing a selection has changed
-	Q_ASSERT(SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr);
-	SVViewStateHandler::instance().m_propEditGeometryWidget->onModified(SVProjectHandler::NodeStateModified, nullptr);
-}
-
-
-void SVMainWindow::on_actionViewToggleParametrizationMode_triggered() {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	// switch to property edit mode
-	vs.m_viewMode = SVViewState::VM_PropertyEditMode;
-	// turn off any special scene modes
-	vs.m_sceneOperationMode = SVViewState::NUM_OM;
-	// select property mode based on what's being selected in the mode selection
-	// property widget (this sets m_propertyWidgetMode and m_objectColorMode)
-	SVViewStateHandler::instance().m_propModeSelectionWidget->viewStateProperties(vs);
-	SVViewStateHandler::instance().setViewState(vs);
-
-	m_ui->actionViewToggleParametrizationMode->setChecked(true);
-	m_ui->actionViewToggleGeometryMode->setChecked(false);
 }
 
 
@@ -1501,7 +1453,6 @@ void SVMainWindow::onUpdateActions() {
 	m_ui->actionNetworkImport->setEnabled(have_project);
 	m_ui->actionNetworkEdit->setEnabled(have_project);
 
-	m_ui->actionViewToggleGeometryMode->setEnabled(have_project);
 	m_ui->actionViewFindSelectedGeometry->setEnabled(have_project);
 	m_ui->actionViewResetView->setEnabled(have_project);
 	m_ui->actionViewShowSurfaceNormals->setEnabled(have_project);
@@ -2105,19 +2056,6 @@ SVPreferencesDialog * SVMainWindow::preferencesDialog() {
 	}
 	return m_preferencesDialog;
 }
-
-bool SVMainWindow::handleGlobalKeyPress(Qt::Key k, Qt::KeyboardModifiers modifiers) {
-	// only use Key_C presses
-	if (k == Qt::Key_C && modifiers == Qt::NoModifier) {
-		if (SVViewStateHandler::instance().viewState().m_viewMode == SVViewState::VM_GeometryEditMode)
-			m_ui->actionViewToggleParametrizationMode->trigger();
-		else
-			m_ui->actionViewToggleGeometryMode->trigger();
-		return true;
-	}
-	return false;
-}
-
 
 
 //https://qt.gitorious.org/qt-creator/qt-creator/source/1a37da73abb60ad06b7e33983ca51b266be5910e:src/app/main.cpp#L13-189

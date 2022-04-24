@@ -48,6 +48,12 @@ void GridPlane::readXMLPrivate(const TiXmlElement * element) {
 				m_isVisible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "isActive")
 				m_isActive = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
+			else if (attribName == "width")
+				m_width = NANDRAD::readPODAttributeValue<double>(element, attrib);
+			else if (attribName == "spacing")
+				m_spacing = NANDRAD::readPODAttributeValue<double>(element, attrib);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ATTRIBUTE).arg(attribName).arg(element->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -82,12 +88,6 @@ void GridPlane::readXMLPrivate(const TiXmlElement * element) {
 										  .arg("Invalid vector data."), FUNC_ID);
 				}
 			}
-			else if (cName == "Color")
-				m_color.setNamedColor(QString::fromStdString(c->GetText()));
-			else if (cName == "Width")
-				m_width = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "Spacing")
-				m_spacing = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -112,15 +112,13 @@ TiXmlElement * GridPlane::writeXMLPrivate(TiXmlElement * parent) const {
 		e->SetAttribute("isVisible", IBK::val2string<bool>(m_isVisible));
 	if (m_isActive != GridPlane().m_isActive)
 		e->SetAttribute("isActive", IBK::val2string<bool>(m_isActive));
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
+	e->SetAttribute("width", IBK::val2string<double>(m_width));
+	e->SetAttribute("spacing", IBK::val2string<double>(m_spacing));
 	TiXmlElement::appendSingleAttributeElement(e, "Offset", nullptr, std::string(), m_offset.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "Normal", nullptr, std::string(), m_normal.toString());
 	TiXmlElement::appendSingleAttributeElement(e, "LocalX", nullptr, std::string(), m_localX.toString());
-	if (m_color.isValid())
-		TiXmlElement::appendSingleAttributeElement(e, "Color", nullptr, std::string(), m_color.name().toStdString());
-	if (m_width != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "Width", nullptr, std::string(), IBK::val2string<unsigned int>(m_width));
-	if (m_spacing != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "Spacing", nullptr, std::string(), IBK::val2string<unsigned int>(m_spacing));
 	return e;
 }
 

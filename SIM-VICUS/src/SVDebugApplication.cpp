@@ -42,12 +42,12 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 	FUNCID(SVDebugApplication::notify);
 
 	try {
-		// if we get a key event, and the currently focused widget is not a line edit, call the global key handler
-		// function in GeometryView
 		if (e->type() == QEvent::KeyPress) {
+			// if we get a key event, and the currently focused widget is not a line edit, call the global key handler
+			// function in GeometryView
 			QWidget * w = focusWidget();
 			if (qobject_cast<QLineEdit*>(w) == nullptr) {
-//				qDebug () << "GlobalKeypressEvent - handled";
+	//				qDebug () << "GlobalKeypressEvent - handled";
 				// are we in "place vertex mode" and have the vertex list property widget open?
 				// if so, execute "complete polygon" if possible
 				SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -63,15 +63,11 @@ bool SVDebugApplication::notify( QObject *recv, QEvent *e ) {
 					if (SVViewStateHandler::instance().m_geometryView->handleGlobalKeyPress((Qt::Key)ke->key()))
 						return true;
 				}
-				if (m_mainWindow != nullptr) {
-					if (m_mainWindow->handleGlobalKeyPress((Qt::Key)ke->key(), ke->modifiers()) )
-						return true;
-				}
-//				if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
-//					qDebug () << "GlobalKeypressEvent - not handled";
+	//				if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
+	//					qDebug () << "GlobalKeypressEvent - not handled";
 			}
 			else {
-//				qDebug () << "GlobalKeypressEvent - focus in line edit - ignored";
+	//				qDebug () << "GlobalKeypressEvent - focus in line edit - ignored";
 			}
 		}
 		return QApplication::notify( recv, e );

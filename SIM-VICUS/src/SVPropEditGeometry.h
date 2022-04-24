@@ -30,19 +30,16 @@
 
 #include <IBKMK_Vector3D.h>
 
-#include <VICUS_Surface.h>
+//#include <VICUS_Surface.h>
 
 #include <Vic3DTransform3D.h>
-#include <Vic3DCoordinateSystemObject.h>
-
-namespace Vic3D {
-	class Transform3D;
-}
+//#include <Vic3DCoordinateSystemObject.h>
 
 namespace VICUS {
 	class Project;
 	class Room;
 	class Surface;
+	class SubSurface;
 	class Building;
 	class BuildingLevel;
 }
@@ -62,46 +59,38 @@ class SVUndoModifySurfaceGeometry;
 class ModificationInfo;
 
 
-/*! This widget is shown when the scene is put into geometry editing mode.
+/*! This widget is shown when the scene is put into geometry "editing" mode.
 
-	This widget handles quite a lot of operations, mainly
+	This widget handles all operationes that modify existing geometry.
+	Modifying geometry requires a valid selection - hence, this widget is only available when
+	there is a valid selection.
 
-	a) adding geometry,
-	b) modifying geometry,
-	c) adding existing geometry again with geometric transformations applied (copy)
+	## Interactive Transformations ##
 
-	Adding new geometry is done in a separate tab.
-	Modifying geometry requires a valid selection - hence, the tab is disabled when there is no selection
+	Whenever an interactive transformation finishes (i.e. user releases mouse button after a drag-operation
+	on the local coordinate system), the slow "enableTransformation()" is called. This in turn activates the
+	buttons to apply/reject the transformation.
+
 */
 class SVPropEditGeometry : public QWidget {
 	Q_OBJECT
 
 public:
-	enum Operation {
-		O_AddGeometry,
-		O_EditGeometry
-	};
-
 	enum ModificationType {
 		MT_Translate,
 		MT_Rotate,
 		MT_Scale,
+		MT_Align,
 		NUM_MT
 	};
 
-	enum ModificationState {
-		MS_Absolute,
-		MS_Relative,
-		NUM_MS
-	};
-
-	enum RotationState {
-		RS_Normal,
-		RS_XAxis,
-		RS_YAxis,
-		RS_ZAxis,
-		NUM_RS
-	};
+//	enum RotationState {
+//		RS_Normal,
+//		RS_XAxis,
+//		RS_YAxis,
+//		RS_ZAxis,
+//		NUM_RS
+//	};
 
 	enum OrientationMode {
 		OM_Local,
@@ -112,61 +101,27 @@ public:
 	explicit SVPropEditGeometry(QWidget *parent = nullptr);
 	~SVPropEditGeometry() override;
 
-	/*! Sets the current tab index to the TabState specified */
-	void setCurrentPage(const Operation & op);
+	/*! Enables the "Apply transformation" and "Cancel transformation" buttons.
+		This function is called whenever an interactive transformation operation has finished, or when the
+		transformation matrix of the wire-frame/selection object has been modified as result of user input.
+	*/
+	void enableTransformation();
+
+	/*! Switches to the respective transformation page on the widget.
+		Calls updateUi() afterwards.
+	*/
+	void setModificationType(ModificationType modType);
 
 	/*! Sets the Coordinates of the Center of the local Coordinate System
-		(called directly from the local coordinate system when its position changes)
+		(called directly from the local coordinate system when its position changes).
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
-	/*! Sets the Rotation and Inclination of the selected surfaces
-		if more then one surface is selected it takes the z-value of the local coordinate system
-		as normal
+	/*! Called from SVGeometryView, may react on a global keypress (when focus is in scene or elsewhere).
+		Function returns true if keypress was accepted.
 	*/
-	void setRotation(const IBKMK::Vector3D &normal);
+	bool handleGlobalKeyPress(Qt::Key k);
 
-	/*! Sets all states of tool buttons and updates comboBox, also calls updateInputs().
-		\param type - specifies the type of which is toggled
-		\param state - specifies the modification state
-	*/
-	void setState(const ModificationType &type, const ModificationState &state);
-
-	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly. */
-	void updateInputs();
-
-	/*! Checks/unchecks the tool buttons depending on the specified type.
-		Has no side-effects.
-	*/
-	void setToolButton();
-
-	/*! Checks/unchecks the tool buttons depending on the specific absolute/local mode
-	*/
-	void setToolButtonAbsMode();
-
-	/*! Checks/unchecks the tool buttons for the specific absolute rotation mode */
-	void setToolButtonsRotationState(bool absOn);
-
-	/*! Shows all lineEdit/Label fiels that are necessary to sho absolute rotation */
-	void showDeg(const bool &show=true);
-
-	/*! Show the specified rotation/orientation of the selected surfaces */
-	void showRotation(const bool &abs=true);
-
-	/*! Applies current translation (from selected geometry object) into project. */
-	void translate();
-
-	/*! Applies current scaling (from selected geometry object) into project. */
-	void scale();
-
-	/*! Applies current rotation (from selected geometry object) into project. */
-	void rotate();
-
-	/*! Pops up a question dialog and asks user to choose one of two opertions or cancel.
-		Function returns 1 for button1, 2 for button 2 and -1 if dialog was canceled.
-	*/
-	static int requestCopyOperation(QWidget * parent, const QString & title, const QString & text,
-									const QString & button1, const QString & button2);
 
 public slots:
 
@@ -178,76 +133,46 @@ public slots:
 	*/
 	void onViewStateChanged();
 
-private slots:
-
+protected:
 	/*! Event Filter: Needed for all scrolling specific inputs */
 	bool eventFilter(QObject *target, QEvent *event) override;
 
-	// All push buttons specific functions
+private slots:
 
-	void on_pushButtonAddPolygon_clicked();
-	void on_pushButtonAddRect_clicked();
-	void on_pushButtonAddZone_clicked();
-	void on_pushButtonAddRoof_clicked();
-	void on_pushButtonAddWindow_clicked();
+	// *** Translation page ***
 
-	void on_pushButtonCopyRooms_clicked();
-	void on_pushButtonCopySurfaces_clicked();
-	void on_pushButtonCopySubSurfaces_clicked();
+	void on_radioButtonTranslationAbsolute_toggled(bool checked);
+	void on_lineEditTranslateX_editingFinishedSuccessfully();
+	void on_lineEditTranslateY_editingFinishedSuccessfully();
+	void on_lineEditTranslateZ_editingFinishedSuccessfully();
 
-	void on_pushButtonAdd_clicked();
-	void on_pushButtonEdit_clicked();
+	// *** Rotation page ***
 
+	void on_radioButtonRotationAlignToAngles_toggled(bool checked);
+	void on_lineEditRotateOrientation_editingFinishedSuccessfully();
+	void on_lineEditRotateInclination_editingFinishedSuccessfully();
+	void on_lineEditRotateX_editingFinishedSuccessfully();
+	void on_lineEditRotateY_editingFinishedSuccessfully();
+	void on_lineEditRotateZ_editingFinishedSuccessfully();
 	void on_pushButtonThreePointRotation_clicked();
-	void on_pushButtonFlipNormals_clicked();
 
-	/*! all line edit specific functions */
+	// *** Scale page ***
 
-	void on_lineEditX_editingFinished();
-	void on_lineEditY_editingFinished();
-	void on_lineEditZ_editingFinished();
+	void on_radioButtonScaleResize_toggled(bool checked);
+	void on_lineEditScaleX_editingFinishedSuccessfully();
+	void on_lineEditScaleY_editingFinishedSuccessfully();
+	void on_lineEditScaleZ_editingFinishedSuccessfully();
 
-	void on_lineEditX_returnPressed();
-	void on_lineEditY_returnPressed();
-	void on_lineEditZ_returnPressed();
+//	// *** Alignment page ***
 
-	void on_lineEditX_textChanged(const QString &);
-	void on_lineEditY_textChanged(const QString &);
-	void on_lineEditZ_textChanged(const QString &);
-
-	void on_lineEditOrientation_returnPressed();
-	void on_lineEditInclination_returnPressed();
-
-	void on_lineEditOrientation_textChanged(const QString &);
-	void on_lineEditInclination_textChanged(const QString &);
-
-	void on_lineEditOrientation_editingFinished();
-	void on_lineEditInclination_editingFinished();
-
-	void on_lineEditXCopy_editingFinished();
-	void on_lineEditYCopy_editingFinished();
-	void on_lineEditZCopy_editingFinished();
+//	void on_pushButtonFlipNormals_clicked();
 
 
-	/*! All tool button specific functions */
-	void on_toolButtonTrans_clicked();
-	void on_toolButtonRotate_clicked();
-	void on_toolButtonScale_clicked();
 
-	/*! Triggered when anything changes in one of the line edits X, Y or Z */
-	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
-	void on_toolButtonLocalCoordinateOrientation_clicked(bool checked);
-	void on_toolButtonAbs_clicked(bool);
-	void on_toolButtonRel_clicked(bool);
+	void on_pushButtonCancel_clicked();
 
-	void on_toolButtonNormal_clicked();
-
-	void on_toolButtonZ_clicked();
-	void on_toolButtonX_clicked();
-	void on_toolButtonY_clicked();
-
-	void on_pushButtonCenteHorizontal_clicked();
+	void on_pushButtonApply_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.
@@ -259,68 +184,69 @@ private:
 	*/
 	void updateUi();
 
-	/*! Updates every specific to the orientation mode stored in m_useLocalCoordOrientation
-		false: use global coordinate system orientation
-		true: use local coordinate system orientation
+	/*! Depending on currently selected modification type and state, the line edits and labels are updated accordingly.
+		This function is called whenever the user switches between transformation operations and options, and hereby
+		resets any previous input to the original values. Also, this resets the current preview of the wire-frame
+		object to show the unmodified geometry.
 	*/
-	void updateOrientationMode();
+	void updateInputs();
+
+	/*! This function implements a convenience functionality that aligns the local coordinate system automatically
+		with the selected surfaces, as long as all surfaces have the same inclination and orientation and
+		the rotation mode with "orient to angles" is selected.
+		Call this function only when the widget is visible.
+	*/
+	void adjustLocalCoordinateSystemForRotateToAngle();
+
+	/*! Updates the transformation matrix for translating geometry. */
+	void updateTranslationPreview();
+
+	/*! Updates the transformation matrix for rotating geometry. */
+	void updateRotationPreview();
+
+	/*! Updates the transformation matrix for local scaling. */
+	void updateScalePreview();
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
 
-	/*! Initilizes the Copy Group Box */
-	void initializeCopy();
+	/*! Called from onWheelTurned(), relays a change event to the respective editingFinishedSuccessfully() slot. */
+	void onLineEditTextChanged(QtExt::ValidatingLineEdit * lineEdit);
 
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
 
-	/*! Identifies which transformation operation is currently selected and is updated,
-		whenever an operation button is toggled.
+	/*! Applies current translation (from selected geometry object) into project. */
+	void translate();
+
+	/*! Applies current scaling (from selected geometry object) into project. */
+	void scale();
+
+	/*! Applies current rotation (from selected geometry object) into project. */
+	void rotate();
+
+
+	/*! Contains position and rotation of local coordinate system (lcs) object. */
+	Vic3D::Transform3D					m_lcsTransform;
+
+	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation,
+		updated in updateUi() whenever the selection changes.
 	*/
-	ModificationType					m_modificationType = MT_Translate;
-
-	/*! For each transformation operation we cache the current mode choice from the combo box.
-		The value is updated when user changes the combo-box, and when operation is changed,
-		the value is used to update the combo box's current index.
-	*/
-	ModificationState					m_modificationState[NUM_MT];
-
-	/*! Implies whether the copy mode is active. */
-	bool								m_copyMode = false;
-
-	/*! Implies whether local coordinate system rotation should be used
-		OM_Global:	use global coordinate system orientation
-		OM_Local:	use local coordinate system orientation
-	*/
-	OrientationMode						m_orientationMode = OM_Global;
-
-	/*! Contains position and rotation of local coordinate system object. */
-	Vic3D::Transform3D					m_localCoordinatePosition;
-
-	/*! Pointer to LocalCoordinateSystemObject */
-	Vic3D::CoordinateSystemObject		*m_cso;
-
-	/*! This is the dimension of the bounding box (dx, dy, dz) in local/global coordinate system orientation. */
 	IBKMK::Vector3D						m_bbDim[NUM_OM];
 
-	/*! Cached center point of boinding box in local/global Orientation. */
+	/*! Cached center point of bounding box in local/global Orientation,
+		updated in updateUi() whenever the selection changes.
+	*/
 	IBKMK::Vector3D						m_bbCenter[NUM_OM];
 
-
-	/*! Cached normal for absolute rotation */
+	/*! Cached normal for align2axis rotation, this is updated in setCoordinates(). */
 	IBKMK::Vector3D						m_normal;
 
-	/*! Cached state of abs roation mode */
-	RotationState						m_rotationState;
-
 	/*! Cached initial values to be used when user had entered invalid values.
-		These values depend on current modification type and state.
+		These values depend on current modification type and state and are set initially in
+		updateInputs(), and updated whenever a line edit has been edited successfully.
 	*/
 	IBKMK::Vector3D						m_originalValues;
-
-
-	/*! Cached Translation vector for copy operations. */
-	IBKMK::Vector3D						m_translation;
 
 	std::vector<const VICUS::Building*>			m_selBuildings;
 	std::vector<const VICUS::BuildingLevel*>	m_selBuildingLevels;
@@ -328,12 +254,13 @@ private:
 	std::vector<const VICUS::Surface*>			m_selSurfaces;
 	std::vector<const VICUS::SubSurface*>		m_selSubSurfaces;
 
-	/*! We take all selected names. */
+
 	std::set<QString>					m_subSurfNames;
 	std::set<QString>					m_surfNames;
 	std::set<QString>					m_roomNames;
 	std::set<QString>					m_buildingLevelNames;
 	std::set<QString>					m_buildingNames;
+
 
 	/*! Pointer to UI */
 	Ui::SVPropEditGeometry				*m_ui;

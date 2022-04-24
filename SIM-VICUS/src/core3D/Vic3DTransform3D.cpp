@@ -65,6 +65,16 @@ void Transform3D::setRotation(const QQuaternion &r) {
 	m_rotation = r;
 }
 
+void Transform3D::setLocalScaling(const QVector3D & offset, const QQuaternion & toLocal, const QVector3D & localScaleFactors) {
+	m_world.setToIdentity();
+	m_world.translate(offset);
+	m_world.rotate(toLocal);
+	m_world.scale(localScaleFactors);
+	m_world.rotate(toLocal.inverted());
+	m_world.translate(-offset);
+	m_dirty = false;
+}
+
 // Accessors
 const QMatrix4x4 &Transform3D::toMatrix() const {
 	if (m_dirty) {

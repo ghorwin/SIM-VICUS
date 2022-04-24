@@ -42,11 +42,7 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 		const TiXmlElement * c = element->FirstChildElement();
 		while (c) {
 			const std::string & cName = c->ValueStr();
-			if (cName == "GridSpacing")
-				m_gridSpacing = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "GridWidth")
-				m_gridWidth = NANDRAD::readPODElement<double>(c, cName);
-			else if (cName == "IBK:Flag") {
+			if (cName == "IBK:Flag") {
 				IBK::Flag f;
 				NANDRAD::readFlagElement(c, f);
 				bool success = false;
@@ -68,6 +64,18 @@ void ViewSettings::readXMLPrivate(const TiXmlElement * element) {
 			}
 			else if (cName == "FarDistance")
 				m_farDistance = NANDRAD::readPODElement<double>(c, cName);
+			else if (cName == "GridPlanes") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "GridPlane")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::GridPlane obj;
+					obj.readXML(c2);
+					m_gridPlanes.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "RotationMatrix")
 				m_cameraRotation.readXML(c);
 			else {
@@ -88,8 +96,6 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 	TiXmlElement * e = new TiXmlElement("ViewSettings");
 	parent->LinkEndChild(e);
 
-	TiXmlElement::appendSingleAttributeElement(e, "GridSpacing", nullptr, std::string(), IBK::val2string<double>(m_gridSpacing));
-	TiXmlElement::appendSingleAttributeElement(e, "GridWidth", nullptr, std::string(), IBK::val2string<double>(m_gridWidth));
 
 	for (int i=0; i<NUM_F; ++i) {
 		if (!m_flags[i].name().empty()) {
@@ -100,6 +106,18 @@ TiXmlElement * ViewSettings::writeXMLPrivate(TiXmlElement * parent) const {
 
 	m_cameraRotation.writeXML(e);
 	TiXmlElement::appendSingleAttributeElement(e, "FarDistance", nullptr, std::string(), IBK::val2string<double>(m_farDistance));
+
+	if (!m_gridPlanes.empty()) {
+		TiXmlElement * child = new TiXmlElement("GridPlanes");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::GridPlane>::const_iterator it = m_gridPlanes.begin();
+			it != m_gridPlanes.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
 	return e;
 }
 

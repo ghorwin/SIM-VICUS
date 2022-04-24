@@ -32,9 +32,8 @@ SVUndoAddNetwork::SVUndoAddNetwork(	const QString & label,
 	m_addedNetwork(addedNetwork)
 {
 	setText( label );
-	m_gridWidth = std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
-	m_gridSpacing = 100; // 100 m major grid
-	m_farDistance = 2*m_gridWidth;
+	double gridWidth = std::max(addedNetwork.m_extends.width(), addedNetwork.m_extends.height());
+	m_farDistance = 2*gridWidth;
 }
 
 
@@ -51,8 +50,7 @@ void SVUndoAddNetwork::undo() {
 	theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
 	theProject().updatePointers();
 
-	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
-	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
+	std::swap(theProject().m_viewSettings.m_gridPlanes, m_gridPlanes);
 	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 
 	// tell project that the network has changed
@@ -66,8 +64,7 @@ void SVUndoAddNetwork::redo() {
 
 	theProject().m_geometricNetworks.push_back(m_addedNetwork);
 	theProject().updatePointers();
-	std::swap(theProject().m_viewSettings.m_gridWidth, m_gridWidth);
-	std::swap(theProject().m_viewSettings.m_gridSpacing, m_gridSpacing);
+	std::swap(theProject().m_viewSettings.m_gridPlanes, m_gridPlanes);
 	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 
 	// tell project that the network has changed

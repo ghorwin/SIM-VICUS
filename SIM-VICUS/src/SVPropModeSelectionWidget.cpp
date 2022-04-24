@@ -249,15 +249,19 @@ void SVPropModeSelectionWidget::setDefaultViewState() {
 	}
 
 	switch (vs.m_propertyWidgetMode) {
-		case SVViewState::PM_AddEditGeometry:
+		case SVViewState::PM_AddGeometry:
+		case SVViewState::PM_EditGeometry:
 		case SVViewState::PM_SiteProperties:
 		case SVViewState::PM_BuildingProperties:
 		case SVViewState::PM_NetworkProperties: {
 			// do we have any selected geometries
 			std::set<const VICUS::Object *> sel;
 			project().selectObjects(sel, VICUS::Project::SG_All, true, true);
-			if (sel.empty())
+			if (sel.empty()) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
+				if (vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
+			}
 			else
 				vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
 			SVViewStateHandler::instance().setViewState(vs);

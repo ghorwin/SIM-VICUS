@@ -264,7 +264,8 @@ void CoordinateSystemObject::renderTransparent() {
 void CoordinateSystemObject::setTranslation(const QVector3D & translation) {
 	m_transform.setTranslation(translation);
 	// tell the property widget for editing geometry our new position/rotation
-	SVViewStateHandler::instance().m_propEditGeometryWidget->setCoordinates(m_transform);
+	if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
+		SVViewStateHandler::instance().m_propEditGeometryWidget->setCoordinates(m_transform);
 	SVViewStateHandler::instance().m_localCoordinateViewWidget->setCoordinates(m_transform);
 	updateInverse();
 }

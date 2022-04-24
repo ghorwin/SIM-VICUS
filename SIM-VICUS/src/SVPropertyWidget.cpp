@@ -35,6 +35,7 @@
 #include "SVConstants.h"
 
 #include "SVPropVertexListWidget.h"
+#include "SVPropAddGeometry.h"
 #include "SVPropEditGeometry.h"
 #include "SVPropSiteWidget.h"
 #include "SVPropNetworkEditWidget.h"
@@ -66,6 +67,9 @@ SVPropertyWidget::SVPropertyWidget(QWidget * parent) :
 	connect(&SVViewStateHandler::instance(), &SVViewStateHandler::viewStateChanged,
 			this, &SVPropertyWidget::onViewStateChanged);
 
+	// create edit geometry widget - this is needed since other widgets like the coordinate system widget send
+	// coordinate changes to the widget
+	showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 	onViewStateChanged();
 }
 
@@ -94,8 +98,12 @@ void SVPropertyWidget::onViewStateChanged() {
 	// now show the respective property widget
 	SVViewState::PropertyWidgetMode m = vs.m_propertyWidgetMode;
 	switch (m) {
-		case SVViewState::PM_AddEditGeometry :
-			showPropertyWidget<SVPropEditGeometry>(M_Geometry);
+		case SVViewState::PM_AddGeometry :
+			showPropertyWidget<SVPropAddGeometry>(M_AddGeometry);
+		break;
+
+		case SVViewState::PM_EditGeometry :
+			showPropertyWidget<SVPropEditGeometry>(M_EditGeometry);
 		break;
 
 		case SVViewState::PM_VertexList:

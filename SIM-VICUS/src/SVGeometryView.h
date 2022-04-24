@@ -41,14 +41,23 @@ class QToolBar;
 class QAction;
 class QLineEdit;
 class QDockWidget;
+class ModificationInfo;
+
+namespace Ui {
+	class SVGeometryView;
+}
 
 /*! The main geometry view.
 	The 3D scene view is embedded into this widget.
+
+	The geometry view has two toolbars - one at the right where users can quickly switch between
+	different property widget modes, and one at the bottom that is only shown when the
+	local coordinate system is active.
 */
 class SVGeometryView : public QWidget {
 	Q_OBJECT
 public:
-
+	/*! C'tor. */
 	explicit SVGeometryView(QWidget *parent = nullptr);
 
 	void saveScreenShot(const QString & imgFilePath);
@@ -94,7 +103,15 @@ public:
 	/*! Moves the measurement Widget to the bottom right of the scene view. */
 	void moveMeasurementWidget();
 
+	/*! Triggers actionToggleGeometryMode. */
+	void switch2GeometryMode();
+	/*! Triggers actionToggleParamtrizationMode. */
+	void switch2ParametrizationMode();
+
 public slots:
+	/*! Handles selection changes and enables/disables button states. */
+	void onModified(int modificationType, ModificationInfo *);
+
 	/*! Connected to view state handler - turns local coordinate system view on/off, depending on
 		visibility of the local coordinate system.
 	*/
@@ -115,6 +132,15 @@ private slots:
 	void on_actionYLock_toggled(bool);
 	void on_actionZLock_toggled(bool);
 
+	void on_actionToggleGeometryMode_triggered();
+	void on_actionToggleParametrizationMode_triggered();
+
+	void on_actionAddGeometry_triggered();
+	void on_actionTranslateGeometry_triggered();
+	void on_actionRotateGeometry_triggered();
+	void on_actionScaleGeometry_triggered();
+	void on_actionAlignGeometry_triggered();
+
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
 		without changing scene size (by moving left splitter).
@@ -122,27 +148,17 @@ protected:
 	void resizeEvent(QResizeEvent *event);
 
 private:
+	Ui::SVGeometryView			*m_ui;
+
 	void setupToolBar();
 
 	/*! The scene view, that shows our world and allows navigation */
 	Vic3D::SceneView			*m_sceneView								= nullptr;
 	QWidget						*m_sceneViewContainerWidget					= nullptr;
-	/*! The property widget is located to the right of the view and is layouted in a splitter. */
-	SVPropertyWidget			*m_propertyWidget							= nullptr;
-	/*! Splitter that contains the scene view and the property widget. */
-	QSplitter					*m_splitter									= nullptr;
-
-	/*! This tool bar contains buttons/widgets used only in geometry editing mode. */
-	QToolBar					*m_geometryToolBar							= nullptr;
 
 	/*! Pointer to measurement widget */
 	SVMeasurementWidget			*m_measurementWidget = nullptr;
 
-	QAction						*m_snapAction								= nullptr;
-	QAction						*m_measureAction							= nullptr;
-	QAction						*m_xLockAction								= nullptr;
-	QAction						*m_yLockAction								= nullptr;
-	QAction						*m_zLockAction								= nullptr;
 
 	QLineEdit					*m_lineEditCoordinateInput					= nullptr;
 	QAction						*m_actionCoordinateInput					= nullptr;

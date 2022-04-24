@@ -86,8 +86,6 @@ equals(TEMPLATE,lib) {
 		DLLDESTDIR = ../../../../bin/release$${DIR_PREFIX}
 	}
 
-	QMAKE_CXXFLAGS += -std=c++11
-
 	# using of shared libs only for non MC compiler
 	# MS compiler needs explicite export statements in case of shared libs
 	win32-msvc* {
@@ -97,6 +95,10 @@ equals(TEMPLATE,lib) {
 			QMAKE_CXXFLAGS += /GS /RTC1
 		}
 	}
+	else {
+		QMAKE_CXXFLAGS += -std=c++11
+	}
+
 
 	# we need to link against our libs
 	QMAKE_LIBDIR += ../../../../externals/lib$${DIR_PREFIX}

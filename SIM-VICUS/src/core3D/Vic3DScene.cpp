@@ -96,15 +96,6 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	// add default main grid plain (z=0)
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
-											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
-#if 0
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,-2), IBKMK::Vector3D(0,0,1),
-											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
-											 IBKMK::Vector3D(1,0,0), QColor("#e09040"), 50, 10 ) );
-#endif
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
@@ -135,7 +126,8 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 				vs.m_sceneOperationMode = SVViewState::NUM_OM;
-				vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+				// we have no selection, switch to "add geometry" mode
+				vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 			}
 
 			// clear selection object, to avoid accessing invalidated pointers
@@ -150,7 +142,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 		case SVProjectHandler::BuildingGeometryChanged : {
 			updateBuilding = true;
 			updateSelection = true;
-			// we might have just deleted all selected items, in this case switch back to
+			// we might have just deleted all selected items, in this case switch back to AddGeometry
 
 			std::set<const VICUS::Object*> selectedObjects;
 
@@ -160,7 +152,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 				if (selectedObjects.empty()) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
@@ -212,12 +204,13 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 			if (selectedObjects != m_selectedGeometryObject.m_selectedObjects)
 				updateSelection = true;
 
-			// if we have a selection, switch scene operation mode to OM_SelectedGeometry
+			// If we have a selection, switch scene operation mode to OM_SelectedGeometry.
+			// If we no longer have a selection, and we are in geometry mode+edit mode -> switch back to "AddGeometry"
 			SVViewState vs = SVViewStateHandler::instance().viewState();
 			if (vs.m_viewMode == SVViewState::VM_GeometryEditMode) {
 				if (selectedObjects.empty()) {
 					vs.m_sceneOperationMode = SVViewState::NUM_OM;
-					vs.m_propertyWidgetMode = SVViewState::PM_AddEditGeometry;
+					vs.m_propertyWidgetMode = SVViewState::PM_AddGeometry;
 				}
 				else {
 					vs.m_sceneOperationMode = SVViewState::OM_SelectedGeometry;
@@ -244,7 +237,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
 	if (updateGrid)
-		m_gridObject.create(m_gridShader, m_gridPlanes);
+		m_gridObject.create(m_gridShader, project().m_viewSettings.m_gridPlanes);
 
 	if (updateSelection) {
 		// update selected objects
@@ -487,7 +480,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			if (pickObject.m_candidates.front().m_resultType == PickObject::RT_CoordinateSystemCenter) {
 				m_navigationMode = NM_InteractiveTranslation;
 				// Store origin of translation
-				m_translateOrigin = m_coordinateSystemObject.translation();
+				m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 				qDebug() << "Entering interactive translation mode";
 			}
 
@@ -522,9 +515,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					}
 
 					// store original rotation matrix
-					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					m_coordinateSystemObject.m_originalRotation = m_coordinateSystemObject.transform().rotation();
 					// store rotation offset point
-					m_translateOrigin = m_coordinateSystemObject.translation();
+					m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 
 //					// compute and store bounding box
 //					std::vector<const VICUS::Surface*> selSurfaces;
@@ -545,15 +538,15 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					}
 
 					// store LCS rotation matrix
-					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					m_coordinateSystemObject.m_originalRotation = m_coordinateSystemObject.transform().rotation();
 					// store scale offset point
-					m_translateOrigin = m_coordinateSystemObject.translation();
+					m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 					// store 100% magnitude for scaling
-					m_nominalScalingDistance = (pickObject.m_candidates.front().m_pickPoint - QVector2IBKVector(m_translateOrigin)).magnitude();
+					m_nominalScalingDistance = (pickObject.m_candidates.front().m_pickPoint - QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)).magnitude();
 					// This is normally the distance of the axis cylinder from the origin: AXIS_LENGTH = 2 m
 
 					qDebug() << "Entering interactive scaling mode";
-//					qDebug() << "1,0,0 -> rotated = " << m_originalRotation.rotatedVector(QVector3D(1,0,0));
+//					qDebug() << "1,0,0 -> rotated = " << m_coordinateSystemObject.m_originalRotation.rotatedVector(QVector3D(1,0,0));
 				}
 			}
 			else {
@@ -654,9 +647,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// determine vector to snapped mouse position
 						QVector3D newPoint = m_coordinateSystemObject.translation();
 						// vector offset from starting point to current location
-						QVector3D translationVector = newPoint - m_translateOrigin;
+						QVector3D translationVector = newPoint - m_coordinateSystemObject.m_originalTranslation;
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+						m_selectedGeometryObject.translate(translationVector);
 					} break;// interactive translation active
 
 
@@ -699,18 +692,17 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 								// compute rotation for local coordinate system
 								QQuaternion q = QQuaternion::fromAxisAndAngle( IBKVector2QVector(m_rotationAxis), (float)angle);
-								QQuaternion coordinateSystemRotation = q*m_originalRotation;
+								QQuaternion coordinateSystemRotation = q*m_coordinateSystemObject.m_originalRotation;
 
 								// rotate local coordinate system (translation isn't needed)
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( m_translateOrigin ) );
+								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( m_coordinateSystemObject.m_originalTranslation ) );
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
-								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(QVector2IBKVector(m_translateOrigin)-newCenter) );
+								m_selectedGeometryObject.rotate(q, IBKVector2QVector(QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)-newCenter) );
 							}
 						}
 
@@ -725,45 +717,24 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// now we handle the snapping rules and also the locking
 						snapLocalCoordinateSystem(pickObject); // snap to axis
 
-						double scalingDistance = (QVector2IBKVector(m_coordinateSystemObject.translation()) - QVector2IBKVector(m_translateOrigin)).magnitude();
+						double scalingDistance = (QVector2IBKVector(m_coordinateSystemObject.translation()) - QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)).magnitude();
 						// now that we have the scaling distance, we reset the local coordinates location
-						m_coordinateSystemObject.setTranslation(m_translateOrigin);
+						m_coordinateSystemObject.setTranslation(m_coordinateSystemObject.m_originalTranslation);
 
 						// scale factor
 						double scaleFactor = scalingDistance/m_nominalScalingDistance;
+//						qDebug() << "scaleFactor = " << scaleFactor;
 
 						// compose local scale vector based on which local axis was selected
-						QVector3D scaleVector(0,0,0);
+						QVector3D scaleVector(1,1,1);
 						switch (m_coordinateSystemObject.m_geometryTransformMode) {
 							case Vic3D::CoordinateSystemObject::TM_ScaleX : scaleVector.setX((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleY : scaleVector.setY((float)scaleFactor); break;
 							case Vic3D::CoordinateSystemObject::TM_ScaleZ : scaleVector.setZ((float)scaleFactor); break;
 						}
 
-						// transform to global coordinates
-
-						// rotate local scaling matrix (vector) to global coordinate system
-						QVector3D scaleRotated = m_originalRotation.rotatedVector(scaleVector);
-						// this now is the line in global coordinates, along which we scale the entire selected geometry
-
-						// compute final scaling matrix
-						QVector3D finalScaleFactors = QVector3D(1,1,1) + float(scaleFactor-1)*scaleRotated;
-
-						// generate a scaling matrix
-						QMatrix4x4 scaleMatrix;
-						scaleMatrix.setToIdentity();
-						scaleMatrix.scale(finalScaleFactors);
-
-						// compute now location of our scale-fix-point
-						QVector3D newPoint = scaleMatrix*m_translateOrigin;
-
-						// vector offset from starting point to new point
-						QVector3D translationVector = m_translateOrigin - newPoint;
-
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
-						// and set our scale factors
-						m_selectedGeometryObject.m_transform.setScale(finalScaleFactors);
+						m_selectedGeometryObject.localScaling(m_coordinateSystemObject.m_originalTranslation, m_coordinateSystemObject.m_originalRotation, scaleVector);
 					} break;// interactive translation active
 
 				} // switch
@@ -788,19 +759,20 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		}
 		if (m_navigationMode == NM_InteractiveTranslation) {
 			qDebug() << "Leaving interactive translation mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->translate();
+			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
+				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveRotation) {
 			qDebug() << "Leaving interactive rotation mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->rotate();
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Rotate, SVPropEditGeometry::MS_Absolute);
+			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
+				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		if (m_navigationMode == NM_InteractiveScaling) {
 			qDebug() << "Leaving interactive scaling mode";
-			SVViewStateHandler::instance().m_propEditGeometryWidget->scale();
-			SVViewStateHandler::instance().m_propEditGeometryWidget->setState(SVPropEditGeometry::MT_Scale, SVPropEditGeometry::MS_Absolute);
+			if (SVViewStateHandler::instance().m_propEditGeometryWidget != nullptr)
+				SVViewStateHandler::instance().m_propEditGeometryWidget->enableTransformation();
 			needRepaint = true;
 		}
 		// clear orbit controller flag
@@ -2326,8 +2298,8 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
-	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
+	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
+		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
@@ -2538,7 +2510,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				case Vic3D::CoordinateSystemObject::TM_ScaleY : axisLoc = SVViewState::L_LocalY; break;
 				case Vic3D::CoordinateSystemObject::TM_ScaleZ : axisLoc = SVViewState::L_LocalZ; break;
 			}
-			axisLockOffset = QVector2IBKVector(m_translateOrigin);
+			axisLockOffset = QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation);
 		}
 	}
 	// override user-selected axis lock for scaling operation
@@ -2616,8 +2588,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			if (snapOptions & SVViewState::Snap_GridPlane) {
 				// now determine which grid line is closest
 				IBKMK::Vector3D closestPoint;
-				Q_ASSERT(r.m_objectID < m_gridPlanes.size());
-				m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
+				Q_ASSERT(r.m_objectID < project().m_viewSettings.m_gridPlanes.size());
+				project().m_viewSettings.m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
 				// this is in world coordinates, use this as transformation vector for the
 				// coordinate system
 				float dist = (IBKVector2QVector(closestPoint) - pickPoint).lengthSquared();

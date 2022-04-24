@@ -56,8 +56,8 @@ void SVPropSiteWidget::onModified(int modificationType, ModificationInfo * /*dat
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::GridModified :
 			// transfer data to user interface elements
-			m_ui->lineEditMaxDimensions->setText(QString("%L1").arg(project().m_viewSettings.m_gridWidth));
-			m_ui->lineEditGridLineSpacing->setText(QString("%L1").arg(project().m_viewSettings.m_gridSpacing));
+			m_ui->lineEditMaxDimensions->setText(QString("%L1").arg(project().m_viewSettings.m_gridPlanes[0].m_width));
+			m_ui->lineEditGridLineSpacing->setText(QString("%L1").arg(project().m_viewSettings.m_gridPlanes[0].m_spacing));
 			m_ui->lineEditViewDepth->setText(QString("%L1").arg(project().m_viewSettings.m_farDistance));
 		break;
 
@@ -72,9 +72,10 @@ void SVPropSiteWidget::on_lineEditMaxDimensions_editingFinished() {
 	bool ok;
 	double d = QLocale().toDouble(m_ui->lineEditMaxDimensions->text(), &ok);
 	if (ok && d > 10) {
+		std::vector<VICUS::GridPlane> gridPlanes(project().m_viewSettings.m_gridPlanes);
+		gridPlanes[0].m_width = d;
 		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
-																 d,
-																 project().m_viewSettings.m_gridSpacing,
+																 gridPlanes,
 																 project().m_viewSettings.m_farDistance);
 		undo->push();
 	}
@@ -86,9 +87,10 @@ void SVPropSiteWidget::on_lineEditGridLineSpacing_editingFinished() {
 	bool ok;
 	double d = QLocale().toDouble(m_ui->lineEditGridLineSpacing->text(), &ok);
 	if (ok && d > 0.1) {
+		std::vector<VICUS::GridPlane> gridPlanes(project().m_viewSettings.m_gridPlanes);
+		gridPlanes[0].m_spacing = d;
 		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
-																 project().m_viewSettings.m_gridWidth,
-																 d,
+															   gridPlanes,
 																 project().m_viewSettings.m_farDistance);
 		undo->push();
 	}
@@ -101,9 +103,8 @@ void SVPropSiteWidget::on_lineEditViewDepth_editingFinished() {
 	double d = QLocale().toDouble(m_ui->lineEditViewDepth->text(), &ok);
 	if (ok && d > 100) {
 		SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Grid property changed"),
-																 project().m_viewSettings.m_gridWidth,
-																 project().m_viewSettings.m_gridSpacing,
-																 d);
+															   project().m_viewSettings.m_gridPlanes,
+															   d);
 		undo->push();
 	}
 

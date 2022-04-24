@@ -85,8 +85,26 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
-	/*! The transformation from model coordinates to (current) world coordinates. */
-	Transform3D					m_transform;
+	/*! Returns transform object. */
+	const Transform3D & transform() const { return m_transform; }
+
+	/*! Resets transformation and clears all transform vectors. */
+	void resetTransformation();
+
+	/*! Returns components of current transformation.
+		If scaleFactors is not (0,0,0), we have a local scaling operation.
+		If scaleFactors is (0,0,0) and rotation is QQuaternion(), than we only have translation, otherwise
+		rotation with translation.
+	*/
+	void currentTransformation(QVector3D & translation, QQuaternion & rotation, QVector3D & scalefactors) {
+		translation = m_translation;
+		rotation = m_rotation;
+		scalefactors = m_scaling;
+	}
+
+	void translate(const QVector3D & translation);
+	void rotate(const QQuaternion & rotation, const QVector3D & offset);
+	void localScaling(const QVector3D & offset, const QQuaternion & toLocal, const QVector3D & localScaleFactors);
 
 	/*! This set caches the list of current selected objects.
 		This set is processed in updateBuffers() to fill the coordinate buffers.
@@ -110,6 +128,20 @@ public:
 	QOpenGLBuffer						m_vertexBufferObject;
 	/*! Handle for index buffer on GPU memory */
 	QOpenGLBuffer						m_indexBufferObject;
+
+private:
+	/*! The transformation from model coordinates to (current) world coordinates. */
+	Transform3D							m_transform;
+
+
+	// *** Variables below cache the manual transformation made to the selection/wireframe object. */
+
+	/*! Caches the translation vector. */
+	QVector3D							m_translation;
+	/*! Caches the scaling vector - if not 0,0,0 the "local scaling operation" is used. */
+	QVector3D							m_scaling;
+	/*! Caches the rotation matrix. */
+	QQuaternion							m_rotation;
 };
 
 } // namespace Vic3D

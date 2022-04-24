@@ -136,12 +136,17 @@ public:
 	*/
 	void updateCoordinateSystemSize();
 
+	void setOrbColor(const QColor &newOrbColor);
+
 	/*! A bitmask that indicates the current transform modes for the coordinate system and ultimately
 		defines how the local coordinate system shall be drawn. See renderOpaque() for a description of the rules.
 	*/
 	int m_geometryTransformMode = 0;
 
-	void setOrbColor(const QColor &newOrbColor);
+	/*! Holds the original translation at begin of an interactive transformation operation. */
+	QVector3D				m_originalTranslation;
+	/*! Holds the original rotation at begin of an interactive transformation operation. */
+	QQuaternion				m_originalRotation;
 
 private:
 	/*! Updates the inverse matrix. */

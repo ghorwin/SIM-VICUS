@@ -27,6 +27,7 @@
 #define SVUndoAddNetworkH
 
 #include <VICUS_Network.h>
+#include <VICUS_GridPlane.h>
 
 #include "SVUndoCommandBase.h"
 
@@ -43,9 +44,8 @@ private:
 	/*! Cache for added network. */
 	VICUS::Network	m_addedNetwork;
 
-	double			m_gridWidth;
-	double			m_gridSpacing;
-	double			m_farDistance;
+	std::vector<VICUS::GridPlane>		m_gridPlanes;
+	double								m_farDistance;
 };
 
 

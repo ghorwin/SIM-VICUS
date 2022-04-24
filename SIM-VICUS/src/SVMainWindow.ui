@@ -225,8 +225,6 @@
    <addaction name="actionFileOpen"/>
    <addaction name="actionFileSave"/>
    <addaction name="separator"/>
-   <addaction name="actionViewToggleGeometryMode"/>
-   <addaction name="actionViewToggleParametrizationMode"/>
   </widget>
   <action name="actionFileNew">
    <property name="icon">
@@ -387,36 +385,6 @@
    </property>
    <property name="toolTip">
     <string>Launches external climate editor (CCMEditor)</string>
-   </property>
-  </action>
-  <action name="actionViewToggleGeometryMode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/3d-cube.png</normaloff>:/gfx/actions/3d-cube.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit Geometry</string>
-   </property>
-   <property name="toolTip">
-    <string>Turns on geometry edit mode</string>
-   </property>
-  </action>
-  <action name="actionViewToggleParametrizationMode">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../resources/SIM-VICUS.qrc">
-     <normaloff>:/gfx/actions/layers.png</normaloff>:/gfx/actions/layers.png</iconset>
-   </property>
-   <property name="text">
-    <string>Edit properties</string>
-   </property>
-   <property name="toolTip">
-    <string>Turns on parametrization edit mode</string>
    </property>
   </action>
   <action name="actionDBMaterials">

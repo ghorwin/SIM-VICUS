@@ -87,7 +87,7 @@ TiXmlElement * SubSurface::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_visible != SubSurface().m_visible)
-			e->SetAttribute("visible", "true");
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 
 	m_polygon2D.writeXML(e);
 	return e;

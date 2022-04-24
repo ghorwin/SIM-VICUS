@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mo. Jan. 4 22:04:35 2021</Created>
-		<LastEdited>So. März 13 20:23:43 2022</LastEdited>
+		<LastEdited>So. Apr. 24 20:40:16 2022</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -47,16 +47,21 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<GridSpacing>10</GridSpacing>
-			<GridWidth>100</GridWidth>
-			<CameraTranslation>10.2337 -12.7673 8.25609</CameraTranslation>
+			<CameraTranslation>-24.1834 -4.70977 28.3747</CameraTranslation>
 			<RotationMatrix>
-				<Wp>0.816821</Wp>
-				<X>0.531257</X>
-				<Y>0.122963</Y>
-				<Z>0.188172</Z>
+				<Wp>0.692722</Wp>
+				<X>0.360899</X>
+				<Y>-0.287847</Y>
+				<Z>-0.55406</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane width="80" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
 		</ViewSettings>
 		<Buildings>
 			<Building id="1" displayName="Building">

@@ -270,6 +270,9 @@ void Project::readXML(const IBK::Path & filename) {
 	// we read our subsections from this handle
 	TiXmlHandle xmlRoot = TiXmlHandle(xmlElem);
 
+	// clear existing grid planes
+	m_viewSettings.m_gridPlanes.clear();
+
 	try {
 		xmlElem = xmlRoot.FirstChild("ProjectInfo").Element();
 		if (xmlElem) {

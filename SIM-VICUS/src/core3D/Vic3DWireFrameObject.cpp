@@ -225,4 +225,40 @@ void WireFrameObject::render() {
 }
 
 
+void WireFrameObject::resetTransformation() {
+	m_transform = Vic3D::Transform3D();
+	m_translation = QVector3D(0,0,0);
+	m_scaling = QVector3D(0,0,0);
+	m_rotation  = QQuaternion();
+}
+
+
+void WireFrameObject::translate(const QVector3D & translation) {
+	m_translation = translation;
+	m_rotation = QQuaternion();
+	m_scaling = QVector3D(0,0,0);
+	m_transform = Vic3D::Transform3D();
+	m_transform.setTranslation(translation);
+
+}
+
+
+void WireFrameObject::rotate(const QQuaternion & rotation, const QVector3D & offset) {
+	m_translation = offset;
+	m_rotation = rotation;
+	m_scaling = QVector3D(0,0,0);
+	m_transform = Vic3D::Transform3D();
+	m_transform.setTranslation(offset);
+	m_transform.setRotation(rotation);
+}
+
+
+void WireFrameObject::localScaling(const QVector3D & offset, const QQuaternion & toLocal, const QVector3D & localScaleFactors) {
+	m_translation = offset;
+	m_rotation = toLocal;
+	m_scaling = localScaleFactors;
+	m_transform.setLocalScaling(offset, toLocal, localScaleFactors);
+}
+
+
 } // namespace Vic3D

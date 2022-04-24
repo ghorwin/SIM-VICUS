@@ -33,7 +33,7 @@
 namespace VICUS {
 
 GridPlane::GridPlane(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
-		  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing) :
+		  const QColor majorGridColor, double width, double majorGridSpacing) :
 	m_offset(offset),
 	m_normal(normal),
 	m_localX(localX),
@@ -57,6 +57,20 @@ void GridPlane::readXML(const TiXmlElement * element) {
 
 TiXmlElement * GridPlane::writeXML(TiXmlElement * parent) const {
 	return writeXMLPrivate(parent);
+}
+
+
+bool GridPlane::operator!=(const GridPlane & other) const {
+	if (m_isVisible != other.m_isVisible) return true;
+	if (m_isActive != other.m_isActive) return true;
+	if (m_color != other.m_color) return true;
+	if (m_width != other.m_width) return true;
+	if (m_spacing != other.m_spacing) return true;
+	if (m_offset != other.m_offset) return true;
+	if (m_normal != other.m_normal) return true;
+	if (m_localX != other.m_localX) return true;
+	if (m_name != other.m_name) return true;
+	return false;
 }
 
 

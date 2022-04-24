@@ -300,11 +300,8 @@ private:
 
 	// *** Interactive translation/rotation/scale stuff **
 
-	QVector3D				m_translateOrigin;
-
 	/*! Reference vector (coordinate system will be rotated around this vector). */
 	IBKMK::Vector3D			m_rotationAxis;
-	QQuaternion				m_originalRotation;
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
 	/*! Reference vector (local Y of rotation system). "z-axis" is always rotation axis */
@@ -344,10 +341,6 @@ private:
 	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
 	/*! INVALID_ID means no color filter. */
 	unsigned int					m_lastColorObjectID = VICUS::INVALID_ID;
-
-	// vector with drawing helping planes
-	std::vector<VICUS::GridPlane>	m_gridPlanes;
-
 };
 
 } // namespace Vic3D

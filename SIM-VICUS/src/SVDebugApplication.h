@@ -43,13 +43,15 @@ public:
 	}
 
 	/*! We just reimplement QApplication::notify() to catch all exceptions and allow setting a breakpoint here. */
-	bool notify( QObject *recv, QEvent *e );
+	bool notify( QObject *recv, QEvent *e ) override;
 
 	/*! Set to true in case of a critical exception */
 	bool m_aboutToTerminate = false;
 
 	/*! Pointer to the main window, needed to relay global key presses to window, when the scene has focus. */
 	SVMainWindow * m_mainWindow = nullptr;
+
 };
+
 
 #endif // SVDebugApplicationH

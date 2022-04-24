@@ -58,7 +58,7 @@ public:
 		Note: we store temporary values in the GridPlane objects themselves, instead of this object, since some
 			  of the properties are needed for snapping as well.
 	*/
-	void create(ShaderProgram * shaderProgram, std::vector<VICUS::GridPlane> & gridPlanes);
+	void create(ShaderProgram * shaderProgram, const std::vector<VICUS::GridPlane> & gridPlanes);
 	void destroy();
 
 	/*! Binds the buffer and paints. */
