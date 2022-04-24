@@ -1141,45 +1141,89 @@ void SVPropEditGeometry::rotate() {
 	if (rotate == IBKMK::Quaternion())
 		return;
 
+
+#endif
+}
+
+
+void SVPropEditGeometry::on_pushButtonCancel_clicked() {
+	// TODO
+	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
+	// for now we just reset the LCS based on the current selection - but actually, the state before starting the transform
+	// includes the (modified) location/orientation of the LCS _after_ the selection had been made
+//	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
+//	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
+	// also disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
+	// and update our inputs again
+	updateUi();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+}
+
+
+void SVPropEditGeometry::on_pushButtonApply_clicked() {
+	// retrieve current transformation from selection object
+	QVector3D translation, scaling;
+	QQuaternion rotation;
+	SVViewStateHandler::instance().m_selectedGeometryObject->currentTransformation(translation, rotation, scaling);
+
+
+	// distinguish operations
+	// we have a local scaling operation, which we need to do in a special way
+	bool haveScaling = (scaling != QVector3D(0,0,0));
+
 	// compose vector of modified surface geometries
 	std::vector<VICUS::Surface>			modifiedSurfaces;
 	std::set<const VICUS::Surface*>		handledSurfaces;
-	QVector3D transLCSO = cso->translation();
 
-	// process all selected objects
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
-		// handle surfaces
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
-			// TODO : Stephan, can we fix already broken polygons?
-			if (!poly.isValid())
-				continue; // skip invalid polygons
+	// process all selected surfaces
+	for (const VICUS::Surface* s : m_selSurfaces) {
+		// create a copy of the surface
+		VICUS::Surface modS(*s);
+		IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
+
+		if (haveScaling) {
+			// local scaling involves translation, rotation _and_ changes to the local polyome... hence we better work
+			// on 3D polygon coordinates
+
+			// get the transformation matrix
+			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
+
+		}
+		else {
+			// we have translation and/or rotation
 
 			// we copy the surface's local, normal and offset
 			IBKMK::Vector3D localX = poly.localX();
 			IBKMK::Vector3D normal = poly.normal();
 			IBKMK::Vector3D offset = poly.offset();
+			IBKMK::Vector3D trans = QVector2IBKVector( translation );
 
-			// we rotate our axis and offset
-			rotate.rotateVector(localX);
-			rotate.rotateVector(normal);
-			rotate.rotateVector(offset);
-
-			// we need to calculate our new rotation
-			try {
-				// we set our rotated axises
-				poly.setRotation(normal, localX);
-				// we have to mind the we rotate around our
-				// local coordinate system center point
-				poly.translate(offset-poly.offset()+trans);
-			} catch (IBK::Exception &ex) {
-				throw IBK::Exception(IBK::FormatString("%2.\nPolygon '%1' could not be rotated").arg(s->m_displayName.toStdString()).arg(ex.what()), FUNC_ID);
+			if (rotation != QQuaternion()) {
+				// we rotate our axis and offset
+//				IBKMK::Quaternion rotate(rotation.x(), rotation.y(), rotation.z(), rotation.scalar());
+//				rotate.rotateVector(localX);
+//				rotate.rotateVector(normal);
+//				rotate.rotateVector(offset);
+				localX = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.localX()) ) );
+				normal = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.normal()) ) );
+				offset = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.offset()) ) );
 			}
+
+			trans = QVector2IBKVector(translation);
+
+			// we set our rotated axises
+			poly.setRotation(normal, localX);
+			// we have to mind the we rotate around our
+			// local coordinate system center point
+			poly.translate(offset-poly.offset()+trans);
 
 			modifiedSurfaces.push_back(modS);
 		}
+
+#if 0
 		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (ss != nullptr) {
 			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
@@ -1231,9 +1275,8 @@ void SVPropEditGeometry::rotate() {
 
 			// we update the 2D polyline
 			modS.setSubSurfaces(newSubSurfs);
-			modifiedSurfaces.push_back(modS);
-
 		}
+#endif
 		// TODO : Netzwerk zeugs
 	}
 
@@ -1241,35 +1284,13 @@ void SVPropEditGeometry::rotate() {
 	if (modifiedSurfaces.empty())
 		return;
 
-	blockSignals(true);
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Rotated geometry"), modifiedSurfaces );
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Geometry modified"), modifiedSurfaces );
 	undo->push();
-	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	cso->setTranslation(transLCSO);
-	blockSignals(false);
-#endif
-}
 
-
-void SVPropEditGeometry::on_pushButtonCancel_clicked() {
-	// TODO
-	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
-	// for now we just reset the LCS based on the current selection - but actually, the state before starting the transform
-	// includes the (modified) location/orientation of the LCS _after_ the selection had been made
-//	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
-//	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
-	updateUi();
-	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 	// also disable apply and cancel buttons
 	m_ui->pushButtonApply->setEnabled(false);
 	m_ui->pushButtonCancel->setEnabled(false);
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	// and update our inputs again
-	updateInputs();
-}
-
-
-void SVPropEditGeometry::on_pushButtonApply_clicked() {
-
+	updateUi();
 }

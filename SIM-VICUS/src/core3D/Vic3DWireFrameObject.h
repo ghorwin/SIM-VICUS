@@ -85,8 +85,22 @@ public:
 	/*! Binds the vertex array object and renders the geometry. */
 	void render();
 
+	/*! Returns transform object. */
+	const Transform3D & transform() const { return m_transform; }
+
 	/*! Resets transformation and clears all transform vectors. */
 	void resetTransformation();
+
+	/*! Returns components of current transformation.
+		If scaleFactors is not (0,0,0), we have a local scaling operation.
+		If scaleFactors is (0,0,0) and rotation is QQuaternion(), than we only have translation, otherwise
+		rotation with translation.
+	*/
+	void currentTransformation(QVector3D & translation, QQuaternion & rotation, QVector3D & scalefactors) {
+		translation = m_translation;
+		rotation = m_rotation;
+		scalefactors = m_scaling;
+	}
 
 	void translate(const QVector3D & translation);
 	void rotate(const QQuaternion & rotation, const QVector3D & offset);
