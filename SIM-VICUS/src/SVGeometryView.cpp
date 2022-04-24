@@ -327,7 +327,7 @@ void SVGeometryView::onViewStateChanged() {
 				// and clear transformation in wireframe object
 				Vic3D::WireFrameObject * selectionObject = SVViewStateHandler::instance().m_selectedGeometryObject;
 				Q_ASSERT(selectionObject != nullptr);
-				selectionObject->m_transform = Vic3D::Transform3D();
+				selectionObject->resetTransformation();
 				SVViewStateHandler::instance().m_geometryView->refreshSceneView();
 			}
 		}

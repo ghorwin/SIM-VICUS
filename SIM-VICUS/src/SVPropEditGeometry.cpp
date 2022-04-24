@@ -229,7 +229,7 @@ void SVPropEditGeometry::onModified(int modificationType, ModificationInfo * ) {
 void SVPropEditGeometry::onViewStateChanged() {
 	const SVViewState & vs = SVViewStateHandler::instance().viewState();
 	if (vs.m_sceneOperationMode == SVViewState::NUM_OM) {
-		SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+		SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	}
 }
 
@@ -507,9 +507,7 @@ void SVPropEditGeometry::updateTranslationPreview() {
 	}
 
 	// adjust wireframe object transform
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setTranslation(translation);
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	SVViewStateHandler::instance().m_selectedGeometryObject->translate(translation);
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
 	// also enable the apply/cancel buttons
@@ -586,9 +584,7 @@ void SVPropEditGeometry::updateRotationPreview() {
 	QVector3D newLCSOrigin = rot.rotation().rotatedVector(m_lcsTransform.translation());
 	QVector3D trans = m_lcsTransform.translation() - newLCSOrigin;
 
-	rot.setTranslation(trans);
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = rot;
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	SVViewStateHandler::instance().m_selectedGeometryObject->rotate(rot.rotation(), trans);
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
 	// also enable the apply/cancel buttons
@@ -626,8 +622,7 @@ void SVPropEditGeometry::updateScalePreview() {
 	QQuaternion rot = m_lcsTransform.rotation();
 
 	// adjust wireframe object transform
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.setLocalScaling(offset, rot, scaleFactors);
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderNow();
+	SVViewStateHandler::instance().m_selectedGeometryObject->localScaling(offset, rot, scaleFactors);
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
 	// also enable the apply/cancel buttons
@@ -768,7 +763,7 @@ void SVPropEditGeometry::updateInputs() {
 	} // switch modification type
 
 	// reset wireframe transform
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 
 	// disable apply and cancel buttons
@@ -961,11 +956,12 @@ void SVPropEditGeometry::translate() {
 	undoSurf->push();
 
 	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 }
 
 
 void SVPropEditGeometry::scale() {
+#if 0
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	// we now apply the already specified transformation
 	// get translation and scale vector from selected geometry object
@@ -1126,10 +1122,12 @@ void SVPropEditGeometry::scale() {
 	// reset local transformation matrix
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	cso->setTranslation(transLCSO);
+#endif
 }
 
 
 void SVPropEditGeometry::rotate() {
+#if 0
 	FUNCID(SVPropEditGeometry::rotate);
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 
@@ -1250,21 +1248,28 @@ void SVPropEditGeometry::rotate() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	cso->setTranslation(transLCSO);
 	blockSignals(false);
+#endif
 }
 
 
 void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	// TODO
 	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
-	// we could always move the LCS back
+	// for now we just reset the LCS based on the current selection - but actually, the state before starting the transform
+	// includes the (modified) location/orientation of the LCS _after_ the selection had been made
 //	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
 //	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
 	updateUi();
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 	// also disable apply and cancel buttons
 	m_ui->pushButtonApply->setEnabled(false);
 	m_ui->pushButtonCancel->setEnabled(false);
 	// and update our inputs again
 	updateInputs();
+}
+
+
+void SVPropEditGeometry::on_pushButtonApply_clicked() {
+
 }

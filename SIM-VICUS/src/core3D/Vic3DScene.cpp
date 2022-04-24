@@ -658,7 +658,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// vector offset from starting point to current location
 						QVector3D translationVector = newPoint - m_coordinateSystemObject.m_originalTranslation;
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
+						m_selectedGeometryObject.translate(translationVector);
 					} break;// interactive translation active
 
 
@@ -711,8 +711,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
-								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)-newCenter) );
+								m_selectedGeometryObject.rotate(q, IBKVector2QVector(QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)-newCenter) );
 							}
 						}
 
@@ -744,7 +743,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						}
 
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setLocalScaling(m_coordinateSystemObject.m_originalTranslation, m_coordinateSystemObject.m_originalRotation, scaleVector);
+						m_selectedGeometryObject.localScaling(m_coordinateSystemObject.m_originalTranslation, m_coordinateSystemObject.m_originalRotation, scaleVector);
 					} break;// interactive translation active
 
 				} // switch
