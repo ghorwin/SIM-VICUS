@@ -41,7 +41,7 @@ namespace Vic3D {
 
 
 void GridObject::create(ShaderProgram * shaderProgram,
-						std::vector<VICUS::GridPlane> & gridPlanes)
+						const std::vector<VICUS::GridPlane> & gridPlanes)
 {
 	m_gridShader = shaderProgram;
 
@@ -70,7 +70,8 @@ void GridObject::create(ShaderProgram * shaderProgram,
 	// Note: only data for visible planes is processed, the rest are filtered out
 	for (unsigned int i=0; i<nPlanes; ++i) {
 
-		VICUS::GridPlane & gp = gridPlanes[i];
+		// we only modify runtime variables, so the const-cast is ok here
+		VICUS::GridPlane & gp = const_cast<VICUS::GridPlane &>(gridPlanes[i]);
 		// if invisible, skip
 		m_gridPlaneVisible[i] = gp.m_isVisible;
 		if (!gp.m_isVisible) {

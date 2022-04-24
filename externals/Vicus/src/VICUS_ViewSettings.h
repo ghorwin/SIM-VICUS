@@ -35,6 +35,7 @@
 
 #include "VICUS_CodeGenMacros.h"
 #include "VICUS_RotationMatrix.h"
+#include "VICUS_GridPlane.h"
 
 namespace VICUS {
 
@@ -55,17 +56,20 @@ public:
 		m_cameraTranslation(0, -100, 50),
 		m_cameraRotation(QQuaternion::fromAxisAndAngle(QVector3D(1.0f,0.f, 0.f), 60))
 	{
+		m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+												 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
+#if 0
+		m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,-2), IBKMK::Vector3D(0,0,1),
+												 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
+		m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
+												 IBKMK::Vector3D(1,0,0), QColor("#e09040"), 50, 10 ) );
+#endif
 	}
 
 	VICUS_READWRITE_IFNOTEMPTY(ViewSettings)
 	VICUS_COMP(ViewSettings)
 
 	// *** PUBLIC MEMBER VARIABLES ***
-
-	/*! Holds grid spacing in [m] */
-	double								m_gridSpacing	= 10;			// XML:E
-	/*! Holds width dimension of grid in [m] */
-	double								m_gridWidth		= 100;			// XML:E
 
 	IBK::Flag							m_flags[NUM_F];					// XML:E
 
@@ -77,17 +81,21 @@ public:
 
 	/*! Visibility of scene in [m]. */
 	double								m_farDistance = 10000;			// XML:E
+
+	/*! Vector with grid planes.
+		This vector always has at least one main grid.
+	*/
+	std::vector<VICUS::GridPlane>		m_gridPlanes;					// XML:E
 };
 
 
 inline bool ViewSettings::operator!=(const ViewSettings & other) const {
-	if (m_gridSpacing != other.m_gridSpacing) return true;
-	if (m_gridWidth != other.m_gridWidth) return true;
 	for (unsigned int i=0; i<NUM_F; ++i)
 		if (m_flags[i] != other.m_flags[i]) return true;
-	if (m_cameraRotation != other.m_cameraRotation) return true;
 	if (m_cameraTranslation != other.m_cameraTranslation) return true;
-
+	if (m_cameraRotation != other.m_cameraRotation) return true;
+	if (m_farDistance != other.m_farDistance) return true;
+	if (m_gridPlanes != other.m_gridPlanes) return true;
 	return false;
 }
 

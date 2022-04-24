@@ -1366,25 +1366,30 @@ void SVImportIDFDialog::transferData(const EP::Project & prj, unsigned int start
 	maxDist = std::max(maxDist, maxCoords.m_y - minCoords.m_y);
 	maxDist = std::max(maxDist, maxCoords.m_z - minCoords.m_z);
 	vp.m_viewSettings.m_farDistance = 10000;
-	vp.m_viewSettings.m_gridWidth = maxDist*2;
+	double gridWidth = maxDist*2;
+	double gridSpacing = 10;
 	if (maxDist < 10) {
-		vp.m_viewSettings.m_gridSpacing = 0.1;
-		vp.m_viewSettings.m_gridWidth = 20;
+		gridSpacing = 0.1;
+		gridWidth = 20;
 	}
 	else if (maxDist < 100) {
-		vp.m_viewSettings.m_gridSpacing = 1;
-		vp.m_viewSettings.m_gridWidth = 200;
+		gridSpacing = 1;
+		gridWidth = 200;
 	}
 	else if (maxDist < 500) {
-		vp.m_viewSettings.m_gridSpacing = 10;
-		vp.m_viewSettings.m_gridWidth = 1000;
+		gridSpacing = 10;
+		gridWidth = 1000;
 	}
 	else if (maxDist < 1000) {
-		vp.m_viewSettings.m_gridSpacing = 50;
-		vp.m_viewSettings.m_gridWidth = 2000;
+		gridSpacing = 50;
+		gridWidth = 2000;
 	}
 	else
-		vp.m_viewSettings.m_gridSpacing = 100;
+		gridSpacing = 100;
+
+	vp.m_viewSettings.m_gridPlanes[0] = VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+														 IBKMK::Vector3D(1,0,0), QColor("white"), gridWidth, gridSpacing );
+
 
 	// now that we have the center of the building, we can compute the horizontal transformation
 	double centerX = 0.5*(maxCoords.m_x + minCoords.m_x);

@@ -96,15 +96,6 @@ void Scene::create(SceneView * parent, std::vector<ShaderProgram> & shaderProgra
 	// create surface normals object already, though we update vertex buffer object later when we actually have geometry
 	m_surfaceNormalsObject.create(m_surfaceNormalsShader);
 
-	// add default main grid plain (z=0)
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
-											 IBKMK::Vector3D(1,0,0), QColor("white"), 500, 10 ) );
-#if 0
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,-2), IBKMK::Vector3D(0,0,1),
-											 IBKMK::Vector3D(1,0,0), QColor("#3030a0"), 100, 10 ) );
-	m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,6), IBKMK::Vector3D(0,0.2,0.8).normalized(),
-											 IBKMK::Vector3D(1,0,0), QColor("#e09040"), 50, 10 ) );
-#endif
 	m_measurementWidget = SVViewStateHandler::instance().m_measurementWidget;
 }
 
@@ -246,7 +237,7 @@ void Scene::onModified(int modificationType, ModificationInfo * /*data*/) {
 	// since grid object is very small, this function also regenerates the grid line buffers and
 	// uploads the data to the GPU
 	if (updateGrid)
-		m_gridObject.create(m_gridShader, m_gridPlanes);
+		m_gridObject.create(m_gridShader, project().m_viewSettings.m_gridPlanes);
 
 	if (updateSelection) {
 		// update selected objects
@@ -2307,8 +2298,8 @@ void Scene::pick(PickObject & pickObject) {
 	IBKMK::Vector3D intersectionPoint;
 	double t;
 	// process all grid planes - being transparent, these are picked from both sides
-	for (unsigned int i=0; i< m_gridPlanes.size(); ++i) {
-		if (m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
+	for (unsigned int i=0; i< project().m_viewSettings.m_gridPlanes.size(); ++i) {
+		if (project().m_viewSettings.m_gridPlanes[i].intersectsLine(nearPoint, direction, t, intersectionPoint)) {
 			// got an intersection point, store it
 			PickObject::PickResult r;
 			r.m_resultType = PickObject::RT_GridPlane;
@@ -2597,8 +2588,8 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 			if (snapOptions & SVViewState::Snap_GridPlane) {
 				// now determine which grid line is closest
 				IBKMK::Vector3D closestPoint;
-				Q_ASSERT(r.m_objectID < m_gridPlanes.size());
-				m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
+				Q_ASSERT(r.m_objectID < project().m_viewSettings.m_gridPlanes.size());
+				project().m_viewSettings.m_gridPlanes[r.m_objectID].closestSnapPoint(r.m_pickPoint, closestPoint);
 				// this is in world coordinates, use this as transformation vector for the
 				// coordinate system
 				float dist = (IBKVector2QVector(closestPoint) - pickPoint).lengthSquared();

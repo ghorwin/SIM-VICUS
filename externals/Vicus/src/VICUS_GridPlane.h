@@ -58,7 +58,7 @@ public:
 
 	/*! Initializing constructor, generated grid will be visible and active by default. */
 	GridPlane(const IBKMK::Vector3D & offset, const IBKMK::Vector3D & normal, const IBKMK::Vector3D & localX,
-			  const QColor majorGridColor, unsigned int width, unsigned int majorGridSpacing);
+			  const QColor majorGridColor, double width, double majorGridSpacing);
 
 	void readXML(const TiXmlElement * element);
 	TiXmlElement * writeXML(TiXmlElement * parent) const;
@@ -102,11 +102,11 @@ public:
 	/*! Local X vector of grid plane, must be perpendicular to m_normal; indicates the orientation of the grid. */
 	IBKMK::Vector3D m_localX;			// XML:E
 	/*! Major grid color (minor grid color is automatically adjusted, either brighter or dimmer depending on current theme) */
-	QColor			m_color;			// XML:E
+	QColor			m_color;			// XML:A
 	/*! Grid width in [m]. */
-	unsigned int	m_width = 10;		// XML:E
+	double			m_width = 100;		// XML:A
 	/*! Major grid spacing in [m]. */
-	unsigned int	m_spacing = 10;		// XML:E
+	double			m_spacing = 10;		// XML:A
 
 private:
 

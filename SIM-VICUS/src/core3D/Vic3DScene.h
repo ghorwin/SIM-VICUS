@@ -341,10 +341,6 @@ private:
 	SVViewState::ObjectColorMode	m_lastColorMode = SVViewState::OCM_None;
 	/*! INVALID_ID means no color filter. */
 	unsigned int					m_lastColorObjectID = VICUS::INVALID_ID;
-
-	// vector with drawing helping planes
-	std::vector<VICUS::GridPlane>	m_gridPlanes;
-
 };
 
 } // namespace Vic3D

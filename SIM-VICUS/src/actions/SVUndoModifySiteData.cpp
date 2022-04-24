@@ -26,10 +26,9 @@
 #include "SVUndoModifySiteData.h"
 #include "SVProjectHandler.h"
 
-SVUndoModifySiteData::SVUndoModifySiteData(	const QString & label,
-								double gridWidth, double gridSpacing, double farDistance) :
-	m_gridWidth(gridWidth),
-	m_gridSpacing(gridSpacing),
+SVUndoModifySiteData::SVUndoModifySiteData(const QString & label,
+								const std::vector<VICUS::GridPlane> & gridPlanes, double farDistance) :
+	m_gridPlanes(gridPlanes),
 	m_farDistance(farDistance)
 {
 	setText( label );
@@ -39,8 +38,7 @@ SVUndoModifySiteData::SVUndoModifySiteData(	const QString & label,
 void SVUndoModifySiteData::undo() {
 
 	// exchange Project
-	std::swap( theProject().m_viewSettings.m_gridWidth, m_gridWidth );
-	std::swap( theProject().m_viewSettings.m_gridSpacing, m_gridSpacing );
+	std::swap( theProject().m_viewSettings.m_gridPlanes, m_gridPlanes );
 	std::swap( theProject().m_viewSettings.m_farDistance, m_farDistance );
 
 	// tell project that the grid has changed
