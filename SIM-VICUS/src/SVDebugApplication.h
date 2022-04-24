@@ -50,6 +50,10 @@ public:
 
 	/*! Pointer to the main window, needed to relay global key presses to window, when the scene has focus. */
 	SVMainWindow * m_mainWindow = nullptr;
+
+	// QObject interface
+	bool event(QEvent * event) override;
 };
+
 
 #endif // SVDebugApplicationH
