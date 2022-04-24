@@ -300,11 +300,8 @@ private:
 
 	// *** Interactive translation/rotation/scale stuff **
 
-	QVector3D				m_translateOrigin;
-
 	/*! Reference vector (coordinate system will be rotated around this vector). */
 	IBKMK::Vector3D			m_rotationAxis;
-	QQuaternion				m_originalRotation;
 	/*! Reference vector (local X of rotation system). "z-axis" is always rotation axis */
 	IBKMK::Vector3D			m_rotationVectorX;
 	/*! Reference vector (local Y of rotation system). "z-axis" is always rotation axis */

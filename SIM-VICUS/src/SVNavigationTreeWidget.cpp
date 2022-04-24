@@ -39,6 +39,7 @@
 #include "SVUndoModifyObjectName.h"
 #include "SVViewStateHandler.h"
 #include "SVSmartSelectDialog.h"
+#include "SVPropEditGeometry.h"
 
 SVNavigationTreeWidget::SVNavigationTreeWidget(QWidget *parent) :
 	QWidget(parent),
@@ -327,6 +328,18 @@ void SVNavigationTreeWidget::on_actionSelect_all_triggered() {
 }
 
 void SVNavigationTreeWidget::on_actionDeselect_all_triggered() {
+	// This slot is triggered first - as top level action - when user presses Escape. However, depending on context,
+	// we have different possible actions, for example, when editing geometry, Escape should cancel the current transformation.
+
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (vs.m_viewMode == SVViewState::VM_GeometryEditMode &&
+		vs.m_sceneOperationMode == SVViewState::OM_SelectedGeometry &&
+		vs.m_propertyWidgetMode == SVViewState::PM_EditGeometry)
+	{
+		if (SVViewStateHandler::instance().m_propEditGeometryWidget->handleGlobalKeyPress(Qt::Key_Escape))
+			return;
+	}
+
 	emit deselectAll();
 }
 

@@ -192,6 +192,21 @@ void SVPropEditGeometry::setCoordinates(const Vic3D::Transform3D &t) {
 }
 
 
+bool SVPropEditGeometry::handleGlobalKeyPress(Qt::Key k) {
+	switch (k) {
+		case Qt::Key_Escape :
+			if (!m_ui->pushButtonCancel->isEnabled())
+				return false;
+			m_ui->pushButtonCancel->click();
+		break;
+
+		default:
+			return false;
+	}
+	return true;
+}
+
+
 
 // *** PUBLIC SLOTS ***
 
@@ -800,319 +815,6 @@ void SVPropEditGeometry::adjustLocalCoordinateSystemForRotateToAngle() {
 
 
 
-#if 0
-void SVPropEditGeometry::on_lineEditOrientation_returnPressed() {
-	// check if entered value is valid, if not reset it to its default
-	double orientation = std::atan2(m_normal.m_x, ( m_normal.m_y == 0. ? 1E-8 : m_normal.m_y ) ) /IBK::DEG2RAD ;
-	if ( !m_ui->lineEditOrientation->isValid() ) {
-		m_ui->lineEditOrientation->setValue( orientation < 0 ? ( orientation + 360 ) : orientation  );
-		return;
-	}
-	if ( std::fabs( orientation < 0 ? ( orientation + 360 ) : orientation - m_ui->lineEditOrientation->value() ) < 1E-3 )
-		return;
-
-
-	rotate();
-}
-
-void SVPropEditGeometry::on_lineEditInclination_returnPressed() {
-
-	if ( !m_ui->lineEditInclination->isValid() ) {
-		m_ui->lineEditInclination->setValue( std::acos(m_normal.m_z)/IBK::DEG2RAD );
-		return;
-	}
-
-	rotate();
-}
-
-
-void SVPropEditGeometry::on_lineEditOrientation_editingFinished() {
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-		return;
-	lineEdit->setModified( false );
-
-	on_lineEditOrientation_returnPressed();
-}
-
-void SVPropEditGeometry::on_lineEditInclination_editingFinished() {
-	QLineEdit * lineEdit = qobject_cast<QLineEdit *>( QObject::sender() );
-
-	// Ignore undesirable signals.
-	if ( !lineEdit->isModified() )
-		return;
-	lineEdit->setModified( false );
-
-	on_lineEditInclination_returnPressed();
-}
-
-
-void SVPropEditGeometry::on_lineEditXCopy_editingFinished() {
-	if ( m_ui->lineEditXCopy->isValid() )
-		m_translation.m_x = m_ui->lineEditXCopy->value();
-
-	m_ui->lineEditXCopy->setValue(m_translation.m_x );
-}
-
-void SVPropEditGeometry::on_lineEditYCopy_editingFinished() {
-	if ( m_ui->lineEditYCopy->isValid() )
-		m_translation.m_y = m_ui->lineEditYCopy->value();
-
-	m_ui->lineEditYCopy->setValue(m_translation.m_y );
-}
-
-void SVPropEditGeometry::on_lineEditZCopy_editingFinished() {
-	if ( m_ui->lineEditZCopy->isValid() )
-		m_translation.m_z = m_ui->lineEditZCopy->value();
-
-	m_ui->lineEditZCopy->setValue(m_translation.m_z );
-}
-
-
-void SVPropEditGeometry::on_lineEditX_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditX);
-}
-
-void SVPropEditGeometry::on_lineEditY_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditY);
-}
-
-void SVPropEditGeometry::on_lineEditZ_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditZ);
-}
-
-
-void SVPropEditGeometry::on_lineEditOrientation_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditOrientation);
-}
-
-void SVPropEditGeometry::on_lineEditInclination_textChanged(const QString &) {
-	onLineEditTextChanged(m_ui->lineEditInclination);
-}
-
-
-
-void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
-	// compose vector of modified surface geometries
-	std::vector<VICUS::Surface> modifiedSurfaces;
-
-	// flip all plane geometries
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
-		// handle surfaces
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			modS.flip();
-			modifiedSurfaces.push_back(modS);
-		}
-	}
-
-	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
-		return;
-
-	// create undo-action
-	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Flipped normal vectors"), modifiedSurfaces );
-	undo->push();
-	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-}
-
-
-void SVPropEditGeometry::on_toolButtonLocalCoordinateOrientation_clicked(bool checked) {
-	// we set the state of our local coordinate system
-	m_orientationMode = checked ? OM_Local : OM_Global;
-
-	// we update all the specific parameters
-	updateOrientationMode();
-}
-
-
-
-void SVPropEditGeometry::on_toolButtonAbs_clicked(bool /*checked*/) {
-
-	// set new state
-	m_modificationState[m_modificationType] = ModificationState::MS_Absolute;
-	// update tool buttons
-	setToolButtonAbsMode();
-	// now update inputs
-	updateInputs();
-}
-
-void SVPropEditGeometry::on_toolButtonRel_clicked(bool /*checked*/) {
-
-	m_ui->toolButtonAbs->setChecked(false);
-	// set new state
-	m_modificationState[m_modificationType] = ModificationState::MS_Relative;
-	// update tool buttons
-	setToolButtonAbsMode();
-	// now update inputs
-	updateInputs();
-}
-
-void SVPropEditGeometry::on_toolButtonNormal_clicked() {
-	m_rotationState = RS_Normal;
-	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
-}
-
-
-void SVPropEditGeometry::on_toolButtonX_clicked() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	m_rotationState = RS_XAxis;
-	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
-	if (m_orientationMode == OM_Local)
-		setRotation( QVector2IBKVector(cso->localXAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(1,0,0));
-}
-
-void SVPropEditGeometry::on_toolButtonY_clicked() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	m_rotationState = RS_YAxis;
-	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
-	if (m_orientationMode == OM_Local)
-		setRotation( QVector2IBKVector(cso->localYAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(0,1,0));
-}
-
-void SVPropEditGeometry::on_toolButtonZ_clicked() {
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	m_rotationState = RS_ZAxis;
-	setToolButtonsRotationState(m_modificationState[m_modificationType] == MS_Absolute);
-
-	if (m_orientationMode == OM_Local)
-		setRotation( QVector2IBKVector(cso->localZAxis() ) );
-	else
-		setRotation( IBKMK::Vector3D(0,0,1));
-}
-
-void SVPropEditGeometry::on_pushButtonCenteHorizontal_clicked(){
-
-	/// first we take the selection of all objects and let the bounding box calculate
-	/// our new center point for all objects. Alternative would be the center point
-	/// of all individual bounding boxes. but we might do this later
-	///
-	/// Then we take all selected objects and we calculate the local difference between
-	/// the new center point (only z-value) and the old z-value. This is our local
-	/// z-value for the translation. We then translate all vertexes of the surface
-	///
-	/// We have to differentiate between surfaces and sub surfaces
-	IBKMK::Vector3D center, oldCenter;
-	IBKMK::Vector3D bb = project().boundingBox(m_selSurfaces, m_selSubSurfaces, center);
-
-	std::vector<VICUS::Surface>			modifiedSurfaces;
-	std::set<const VICUS::Surface*>		handledSurfaces;
-
-	std::vector<const VICUS::Surface*>		emptySurfs;
-	std::vector<const VICUS::SubSurface*>	emptySubSurfs;
-
-	for(const VICUS::Surface *surf : m_selSurfaces) {
-		std::vector<const VICUS::Surface*> surfs;
-		surfs.push_back(surf);
-		IBKMK::Vector3D bbOld = project().boundingBox(surfs, emptySubSurfs, oldCenter);
-
-		IBKMK::Vector3D translation (0,0,center.m_z - oldCenter.m_z);
-
-		// we have now our translation
-		std::vector<IBKMK::Vector3D> vertexes = surf->polygon3D().vertexes();
-		for ( IBKMK::Vector3D & v : vertexes ) {
-			// use just this instead of making a QVetor3D
-			v += translation;
-		}
-		VICUS::Surface modS(*surf);
-		modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-		modifiedSurfaces.push_back(modS);
-	}
-	for(const VICUS::SubSurface *subSurf : m_selSubSurfaces) {
-
-		// we keep our original surface
-		VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(subSurf->m_parent);
-		if (parentSurf != nullptr && parentSurf->m_selected && parentSurf->m_visible)
-			continue; //
-
-		if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
-			continue; // surface already handled
-
-		// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
-		VICUS::Surface modS(*parentSurf);
-
-		// we cache our poldon data
-		IBKMK::Vector3D offset3d = modS.geometry().offset();
-		const IBKMK::Vector3D &localX = modS.geometry().localX();
-		const IBKMK::Vector3D &localY = modS.geometry().localY();
-
-		std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
-		// now we also have to scale the sub surfaces
-		for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
-
-			if (!modS.subSurfaces()[i].m_selected || !modS.subSurfaces()[i].m_visible)
-				continue; // skip deselected surfaces
-
-			VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
-			std::vector<const VICUS::SubSurface*> subSurfs;
-			subSurfs.push_back(&subS);
-			IBKMK::Vector3D bbOld = project().boundingBox(emptySurfs, subSurfs, oldCenter);
-
-			IBKMK::Vector3D translation (0,0,center.m_z - oldCenter.m_z);
-
-			qDebug() << "0\t0\t" << translation.m_z;
-
-			Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
-			newSubSurfs[i] = modS.subSurfaces()[i];
-
-			// we only modify our selected sub surface
-			std::vector<IBKMK::Vector2D> newSubSurfVertexes (subS.m_polygon2D.vertexes().size());
-
-			for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
-				IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
-
-				// we now calculate the 3D points of the sub surface
-				// afterwards we scale up the surface
-				IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
-
-				Vic3D::Transform3D t;
-				t.translate(IBKVector2QVector(translation) );
-				t.setTranslation(t.toMatrix()*IBKVector2QVector(v3D) );
-				v3D = QVector2IBKVector(t.translation() );
-
-				// and we calculate back the projection on the plane
-				// we have to take the offset of our new scaled polygon
-				IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
-
-			}
-			newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-		}
-		// we cache that we already handled all selected sub surfaces of the surface
-		// handledSurfaces.insert(parentSurf);
-
-		// we update the 2D polyline
-		modS.setSubSurfaces(newSubSurfs);
-		handledSurfaces.insert(parentSurf);
-
-		modifiedSurfaces.push_back(modS);
-	}
-
-	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
-		return;
-
-	SVUndoModifySurfaceGeometry * undoSurf = new SVUndoModifySurfaceGeometry(tr("Translated surface geometry"), modifiedSurfaces );
-	undoSurf->push();
-
-}
-
-#endif
-
-
-
-
-
-
-
 void SVPropEditGeometry::updateCoordinateSystemLook() {
 	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
 	if (SVViewStateHandler::instance().m_geometryView == nullptr)
@@ -1476,7 +1178,6 @@ void SVPropEditGeometry::rotate() {
 				poly.translate(offset-poly.offset()+trans);
 			} catch (IBK::Exception &ex) {
 				throw IBK::Exception(IBK::FormatString("%2.\nPolygon '%1' could not be rotated").arg(s->m_displayName.toStdString()).arg(ex.what()), FUNC_ID);
-				continue;
 			}
 
 			modifiedSurfaces.push_back(modS);
@@ -1549,6 +1250,21 @@ void SVPropEditGeometry::rotate() {
 	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
 	cso->setTranslation(transLCSO);
 	blockSignals(false);
-
 }
 
+
+void SVPropEditGeometry::on_pushButtonCancel_clicked() {
+	// TODO
+	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
+	// we could always move the LCS back
+//	SVViewStateHandler::instance().m_coordinateSystemObject->setTranslation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalTranslation);
+//	SVViewStateHandler::instance().m_coordinateSystemObject->setRotation(SVViewStateHandler::instance().m_coordinateSystemObject->m_originalRotation);
+	updateUi();
+	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
+	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
+	// also disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
+	// and update our inputs again
+	updateInputs();
+}

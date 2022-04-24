@@ -489,7 +489,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 			if (pickObject.m_candidates.front().m_resultType == PickObject::RT_CoordinateSystemCenter) {
 				m_navigationMode = NM_InteractiveTranslation;
 				// Store origin of translation
-				m_translateOrigin = m_coordinateSystemObject.translation();
+				m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 				qDebug() << "Entering interactive translation mode";
 			}
 
@@ -524,9 +524,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					}
 
 					// store original rotation matrix
-					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					m_coordinateSystemObject.m_originalRotation = m_coordinateSystemObject.transform().rotation();
 					// store rotation offset point
-					m_translateOrigin = m_coordinateSystemObject.translation();
+					m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 
 //					// compute and store bounding box
 //					std::vector<const VICUS::Surface*> selSurfaces;
@@ -547,15 +547,15 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 					}
 
 					// store LCS rotation matrix
-					m_originalRotation = m_coordinateSystemObject.transform().rotation();
+					m_coordinateSystemObject.m_originalRotation = m_coordinateSystemObject.transform().rotation();
 					// store scale offset point
-					m_translateOrigin = m_coordinateSystemObject.translation();
+					m_coordinateSystemObject.m_originalTranslation = m_coordinateSystemObject.translation();
 					// store 100% magnitude for scaling
-					m_nominalScalingDistance = (pickObject.m_candidates.front().m_pickPoint - QVector2IBKVector(m_translateOrigin)).magnitude();
+					m_nominalScalingDistance = (pickObject.m_candidates.front().m_pickPoint - QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)).magnitude();
 					// This is normally the distance of the axis cylinder from the origin: AXIS_LENGTH = 2 m
 
 					qDebug() << "Entering interactive scaling mode";
-//					qDebug() << "1,0,0 -> rotated = " << m_originalRotation.rotatedVector(QVector3D(1,0,0));
+//					qDebug() << "1,0,0 -> rotated = " << m_coordinateSystemObject.m_originalRotation.rotatedVector(QVector3D(1,0,0));
 				}
 			}
 			else {
@@ -656,7 +656,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// determine vector to snapped mouse position
 						QVector3D newPoint = m_coordinateSystemObject.translation();
 						// vector offset from starting point to current location
-						QVector3D translationVector = newPoint - m_translateOrigin;
+						QVector3D translationVector = newPoint - m_coordinateSystemObject.m_originalTranslation;
 						// now set this in the wireframe object as translation
 						m_selectedGeometryObject.m_transform.setTranslation(translationVector);
 					} break;// interactive translation active
@@ -701,18 +701,18 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 
 								// compute rotation for local coordinate system
 								QQuaternion q = QQuaternion::fromAxisAndAngle( IBKVector2QVector(m_rotationAxis), (float)angle);
-								QQuaternion coordinateSystemRotation = q*m_originalRotation;
+								QQuaternion coordinateSystemRotation = q*m_coordinateSystemObject.m_originalRotation;
 
 								// rotate local coordinate system (translation isn't needed)
 								m_coordinateSystemObject.setRotation(coordinateSystemRotation);
 
 								// determine new center point if selected geometry were rotated around origin
-								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( m_translateOrigin ) );
+								IBKMK::Vector3D newCenter = QVector2IBKVector( q.rotatedVector( m_coordinateSystemObject.m_originalTranslation ) );
 								// now rotate selected geometry and move it back into original center
 
 								// now set this in the wireframe object as translation
 								m_selectedGeometryObject.m_transform.setRotation(q);
-								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(QVector2IBKVector(m_translateOrigin)-newCenter) );
+								m_selectedGeometryObject.m_transform.setTranslation(IBKVector2QVector(QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)-newCenter) );
 							}
 						}
 
@@ -727,9 +727,9 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						// now we handle the snapping rules and also the locking
 						snapLocalCoordinateSystem(pickObject); // snap to axis
 
-						double scalingDistance = (QVector2IBKVector(m_coordinateSystemObject.translation()) - QVector2IBKVector(m_translateOrigin)).magnitude();
+						double scalingDistance = (QVector2IBKVector(m_coordinateSystemObject.translation()) - QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation)).magnitude();
 						// now that we have the scaling distance, we reset the local coordinates location
-						m_coordinateSystemObject.setTranslation(m_translateOrigin);
+						m_coordinateSystemObject.setTranslation(m_coordinateSystemObject.m_originalTranslation);
 
 						// scale factor
 						double scaleFactor = scalingDistance/m_nominalScalingDistance;
@@ -744,7 +744,7 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 						}
 
 						// now set this in the wireframe object as translation
-						m_selectedGeometryObject.m_transform.setLocalScaling(m_translateOrigin, m_originalRotation, scaleVector);
+						m_selectedGeometryObject.m_transform.setLocalScaling(m_coordinateSystemObject.m_originalTranslation, m_coordinateSystemObject.m_originalRotation, scaleVector);
 					} break;// interactive translation active
 
 				} // switch
@@ -2520,7 +2520,7 @@ void Scene::snapLocalCoordinateSystem(const PickObject & pickObject) {
 				case Vic3D::CoordinateSystemObject::TM_ScaleY : axisLoc = SVViewState::L_LocalY; break;
 				case Vic3D::CoordinateSystemObject::TM_ScaleZ : axisLoc = SVViewState::L_LocalZ; break;
 			}
-			axisLockOffset = QVector2IBKVector(m_translateOrigin);
+			axisLockOffset = QVector2IBKVector(m_coordinateSystemObject.m_originalTranslation);
 		}
 	}
 	// override user-selected axis lock for scaling operation

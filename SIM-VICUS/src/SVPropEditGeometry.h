@@ -117,6 +117,11 @@ public:
 	*/
 	void setCoordinates(const Vic3D::Transform3D &t);
 
+	/*! Called from SVGeometryView, may react on a global keypress (when focus is in scene or elsewhere).
+		Function returns true if keypress was accepted.
+	*/
+	bool handleGlobalKeyPress(Qt::Key k);
+
 
 public slots:
 
@@ -165,7 +170,7 @@ private slots:
 
 
 
-
+	void on_pushButtonCancel_clicked();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

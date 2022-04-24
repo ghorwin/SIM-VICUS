@@ -551,9 +551,8 @@ void SceneView::keyReleaseEvent(QKeyEvent *event) {
 				case SVViewState::OM_MeasureDistance :
 					m_mainScene.leaveMeasurementMode();
 				break;
-				default:
-					// default mode - Escape clears selection
-					m_mainScene.deselectAll();
+
+				// TODO : handle other special modes like OM_ThreePointRotation
 			}
 		} break;
 
