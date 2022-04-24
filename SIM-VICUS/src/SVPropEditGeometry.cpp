@@ -1164,6 +1164,8 @@ void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonApply_clicked() {
+	FUNCID(SVPropEditGeometry::on_pushButtonApply_clicked);
+
 	// retrieve current transformation from selection object
 	QVector3D translation, scaling;
 	QQuaternion rotation;
@@ -1182,18 +1184,33 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	for (const VICUS::Surface* s : m_selSurfaces) {
 		// create a copy of the surface
 		VICUS::Surface modS(*s);
-		IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
 
 		if (haveScaling) {
 			// local scaling involves translation, rotation _and_ changes to the local polyome... hence we better work
 			// on 3D polygon coordinates
+			IBKMK::Polygon3D poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
 
 			// get the transformation matrix
 			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
+			std::vector<IBKMK::Vector3D> verts = poly.vertexes();
+			for (IBKMK::Vector3D & v : verts) {
+				v = QVector2IBKVector( transMat*IBKVector2QVector(v) );
+			}
+			// reconstruct the polygon with new vertexes
+			if (!poly.setVertexes(verts)) {
+				IBK::IBK_Message("Error scaling polygon of surface.", IBK::MSG_WARNING, FUNC_ID);
+				continue;
+			}
 
+			// we need to update the triangulation
+			modS.setPolygon3D((VICUS::Polygon3D)poly); // this updates the triangulation
+			modifiedSurfaces.push_back(modS);
 		}
 		else {
 			// we have translation and/or rotation
+			// since we only manipulate the local coordinate system, we can just use in-place modifications
+			// also, we do not redo the triangulation, which speeds up things a bit
+			IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
 
 			// we copy the surface's local, normal and offset
 			IBKMK::Vector3D localX = poly.localX();
