@@ -195,6 +195,7 @@ bool Polygon3D::setVertexes(const std::vector<Vector3D> & vertexes, bool heal) {
 		// take the best vertex set and use it for the polygon
 		setVertexes(projectedPoints[bestPlaneIndex], false); // Mind: we call our function again, but this time without healing to avoid looping
 	}
+	m_dirty = true;
 	return m_valid;
 }
 
