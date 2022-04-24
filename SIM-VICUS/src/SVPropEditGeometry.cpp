@@ -1158,7 +1158,7 @@ void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	m_ui->pushButtonApply->setEnabled(false);
 	m_ui->pushButtonCancel->setEnabled(false);
 	// and update our inputs again
-	updateUi();
+	updateUi(); // NOTE: this updates the position of the LCS again, but not its orientation!
 	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->renderLater();
 }
 
@@ -1203,13 +1203,10 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 			if (rotation != QQuaternion()) {
 				// we rotate our axis and offset
-//				IBKMK::Quaternion rotate(rotation.x(), rotation.y(), rotation.z(), rotation.scalar());
-//				rotate.rotateVector(localX);
-//				rotate.rotateVector(normal);
-//				rotate.rotateVector(offset);
-				localX = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.localX()) ) );
-				normal = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.normal()) ) );
-				offset = QVector2IBKVector( rotation.rotatedVector( IBKVector2QVector(poly.offset()) ) );
+				IBKMK::Quaternion rotate = QQuaternion2IBKQuaternion(rotation);
+				rotate.rotateVector(localX);
+				rotate.rotateVector(normal);
+				rotate.rotateVector(offset);
 			}
 
 			trans = QVector2IBKVector(translation);

@@ -2,7 +2,11 @@
 #define SV_ConversionsH
 
 #include <QtExt_Conversions.h>
+
+#include <QQuaternion>
+
 #include <IBKMK_Vector3D.h>
+#include <IBKMK_Quaternion.h>
 
 /*! IBKMK::Vector3D to QVector3D conversion macro. */
 inline QVector3D IBKVector2QVector(const IBKMK::Vector3D & v) {
@@ -12,6 +16,11 @@ inline QVector3D IBKVector2QVector(const IBKMK::Vector3D & v) {
 /*! QVector3D to IBKMK::Vector3D to conversion macro. */
 inline IBKMK::Vector3D QVector2IBKVector(const QVector3D & v) {
 	return IBKMK::Vector3D((double)v.x(), (double)v.y(), (double)v.z());
+}
+
+
+inline IBKMK::Quaternion QQuaternion2IBKQuaternion(const QQuaternion & q) {
+	return IBKMK::Quaternion((double)q.scalar(), (double)q.x(), (double)q.y(), (double)q.z());
 }
 
 inline QString IBKVector2String(const IBKMK::Vector3D & v) {
