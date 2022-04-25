@@ -1,4 +1,4 @@
-﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -126,7 +126,7 @@ void SVPropAddGeometry::on_pushButtonAddRoof_clicked() {
 	vs.m_propertyWidgetMode = SVViewState::PM_VertexList;
 	// now tell all UI components to toggle their view state
 	SVViewStateHandler::instance().setViewState(vs);
-	// clear vertex list in property widget
+	// reset the property list widget
 	SVViewStateHandler::instance().m_propVertexListWidget->setup(Vic3D::NewGeometryObject::NGM_Roof);
 	SVViewStateHandler::instance().m_geometryView->focusSceneView();
 }
@@ -136,8 +136,7 @@ void SVPropAddGeometry::on_pushButtonAddWindow_clicked() {
 	// set property widget into "add window/door" mode
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	vs.m_propertyWidgetMode = SVViewState::PM_AddSubSurfaceGeometry;
-	SVViewStateHandler::instance().setViewState(vs);
-	// clear vertex list in property widget
+	SVViewStateHandler::instance().setViewState(vs); // this will create the SVPropAddWindowWidget widget
 	SVViewStateHandler::instance().m_propAddWindowWidget->setup();
 }
 
@@ -147,7 +146,7 @@ void SVPropAddGeometry::updateUi() {
 	std::set<const VICUS::Object*> sel;
 
 	// first we get how many surfaces are selected
-	project().selectObjects(sel, VICUS::Project::SG_All, false, false);
+	project().selectObjects(sel, VICUS::Project::SG_All, true, true);
 
 	// check if we have any surfaces selected?
 
