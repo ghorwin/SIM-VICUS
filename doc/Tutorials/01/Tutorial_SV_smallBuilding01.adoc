@@ -21,10 +21,10 @@ Dirk Weiss <dirk.weiss@tu-dresden.de>
 
 :caution-caption: Achtung
 :example-caption: Beispiel
-:figure-caption: Abbildung
+:figure-caption: Abb.
 :table-caption: Tabelle
 :section-refsig: Abschnitt
-
+:xrefstyle: short
 
 
 ## Einleitung
@@ -41,11 +41,20 @@ image::p01.png[align="center"]
 
 ## Beschreibung der Oberfläche
 
-Anschließend erhält man einen <<newProject,dreigeteilten Bildschirm>>.
+Anschließend erhält man einen dreigeteilten Bildschirm (<<newProject>>).
 
 [[newProject]]
 .Bildschirm nachdem Anlegen einen neuen Projekts
-image::p02.png[align="center"]
+image::UserInterface.png[align="center", pdfwidth=12cm]
+
+Die Oberfläche gliedert sich in folgende Komponenten:
+
+1. Toolbar (<<ToolbarLeftSide>>)
+2. Navigationsfenster (<<NavigationWindow>>)
+3. Modellierungsfenster/3D-Geometrie (<<ModelView>>)
+4. Schaltflächen des Modellierungsfensters
+5. Eigenschaftsfenster (<<ToolWidget>>)
+6. Meldungsfenster für Programminfos, Warnungen und Fehlermeldungen
 
 [[ToolbarLeftSide]]
 ### Toolbar
@@ -87,6 +96,7 @@ Um Änderungen an Objekte durchzuführen müssen diese selektiert und sichtbar s
 
 Über diesen Dialog können schnell verschiedenste Gruppen von Hüllflächen ausgewählt werden. Die Auswahl erfolgt durch Kriterien wie beispielsweise Hüllflächenart (Wand, Decke, etc.).
 
+[[ModelView]]
 ### 3D-Szene
 
 In der 3D-Szene werden alle sichtbaren 3D-Objekte wie Hüllflächen dargestellt. Die Interaktion mit der Szene ist folgendermaßen möglich.
