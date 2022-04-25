@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_GenericNetwork.h>
+#include <VICUS_ExternalSupply.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void GenericNetwork::readXML(const TiXmlElement * element) {
-	FUNCID(GenericNetwork::readXML);
+void ExternalSupply::readXML(const TiXmlElement * element) {
+	FUNCID(ExternalSupply::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -60,7 +60,7 @@ void GenericNetwork::readXML(const TiXmlElement * element) {
 				m_displayName = QString::fromStdString(attrib->ValueStr());
 			else if (attribName == "supplyType")
 				try {
-					m_supplyType = (supplyType_t)KeywordList::Enumeration("GenericNetwork::supplyType_t", attrib->ValueStr());
+					m_supplyType = (supplyType_t)KeywordList::Enumeration("ExternalSupply::supplyType_t", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -82,7 +82,7 @@ void GenericNetwork::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("GenericNetwork::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("ExternalSupply::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -100,16 +100,16 @@ void GenericNetwork::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'GenericNetwork' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ExternalSupply' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'GenericNetwork' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ExternalSupply' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * GenericNetwork::writeXML(TiXmlElement * parent) const {
+TiXmlElement * ExternalSupply::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("GenericNetwork");
+	TiXmlElement * e = new TiXmlElement("ExternalSupply");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
@@ -117,7 +117,7 @@ TiXmlElement * GenericNetwork::writeXML(TiXmlElement * parent) const {
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
 	if (m_supplyType != NUM_ST)
-		e->SetAttribute("supplyType", KeywordList::Keyword("GenericNetwork::supplyType_t",  m_supplyType));
+		e->SetAttribute("supplyType", KeywordList::Keyword("ExternalSupply::supplyType_t",  m_supplyType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

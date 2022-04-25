@@ -1,5 +1,5 @@
-#ifndef GENERICNETWORK_H
-#define GENERICNETWORK_H
+#ifndef ExternalSupply_H
+#define ExternalSupply_H
 
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
@@ -15,7 +15,7 @@ namespace VICUS {
 	all heatings by a hydraulically balanced network and support FMI-coupling
 	at a single demand network branch.
 */
-class GenericNetwork {
+class ExternalSupply {
 public:
 
 	/*! Supplier supported by the generic network model. */
@@ -67,4 +67,4 @@ public:
 } // Namespace VICUS
 
 
-#endif // GenericNetwork_H
+#endif // ExternalSupply_H

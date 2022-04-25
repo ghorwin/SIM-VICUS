@@ -91,8 +91,8 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
+	../../src/SVExternalSupplySelectionDialog.cpp \
 	../../src/SVMeasurementWidget.cpp \
-	../../src/SVNetworkSelectionDialog.cpp \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
 	../../src/SVPreferencesPageMisc.cpp \
@@ -270,8 +270,8 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
+	../../src/SVExternalSupplySelectionDialog.h \
 	../../src/SVMeasurementWidget.h \
-	../../src/SVNetworkSelectionDialog.h \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
 	../../src/SVPreferencesPageMisc.h \
@@ -484,6 +484,7 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVGeometryView.ui \
+	../../src/SVExternalSupplySelectionDialog.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \
@@ -492,7 +493,6 @@ FORMS    += \
 	../../src/SVNavigationTreeWidget.ui \
 	../../src/SVNetworkDialogSelectPipes.ui \
 	../../src/SVNetworkImportDialog.ui \
-	../../src/SVNetworkSelectionDialog.ui \
 	../../src/SVNotesDialog.ui \
 	../../src/SVOutputGridEditDialog.ui \
 	../../src/SVPreferencesDialog.ui \

@@ -15,7 +15,7 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-#include "SVNetworkSelectionDialog.h"
+#include "SVExternalSupplySelectionDialog.h"
 #include "SVZoneSelectionDialog.h"
 
 SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *parent) :
@@ -136,7 +136,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		// look-up surface heating system
 		const VICUS::SurfaceHeating * surfHeat = db.m_surfaceHeatings[ci.m_idSurfaceHeating];
 
-
 		// column 0 - valid icon, also stores unique ID of this component instance
 
 		QTableWidgetItem * item = new QTableWidgetItem;
@@ -194,9 +193,18 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
 
-		// column 5 - associated network
-
-
+		// column 5 - associated supply network
+		item = new QTableWidgetItem(surfaceNames);
+		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		if (surfHeat == nullptr || ci.m_externalSupply == nullptr) {
+			item->setText("---");
+			item->setData(Qt::UserRole, VICUS::INVALID_ID);
+		}
+		else {
+			item->setText(ci.m_externalSupply->m_displayName);
+			item->setData(Qt::UserRole, ci.m_idExternalSupply);
+		}
+		m_ui->tableWidgetSurfaceHeating->setItem(row, 5, item);
 	}
 	m_ui->tableWidgetSurfaceHeating->blockSignals(false);
 	m_ui->tableWidgetSurfaceHeating->selectionModel()->blockSignals(false);
@@ -231,7 +239,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_comboBoxSurfaceHeatingComponentFilte
 
 
 void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemChanged(QTableWidgetItem *item) {
-	if (item->column() == 2 || item->column() == 3) {
+	if (item->column() == 2 || item->column() == 3 || item->column() == 5) {
 		QTableWidgetItem * firstItem = m_ui->tableWidgetSurfaceHeating->item(item->row(), 0);
 		unsigned int ciID = firstItem->data(Qt::UserRole).toUInt();
 		std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
@@ -239,8 +247,10 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemChange
 			if (cis[i].m_id == ciID) {
 				if (item->column() == 2)
 					cis[i].m_idSurfaceHeating = item->data(Qt::UserRole).toUInt();
-				else
+				else if(item->column() == 3)
 					cis[i].m_idSurfaceHeatingControlZone = item->data(Qt::UserRole).toUInt();
+				else
+					cis[i].m_idExternalSupply = item->data(Qt::UserRole).toUInt();
 				break;
 			}
 		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
@@ -409,99 +419,42 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 	// popup dialog with network selection
 
 	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVNetworkSelectionDialog dlg(this);
+	SVExternalSupplySelectionDialog dlg(this);
 
 	// start dialog
 	int res = dlg.exec();
 	if (res != QDialog::Accepted)
 		return; // user canceled the dialog
 
-	unsigned int networkId = dlg.m_idNetwork;
+	unsigned int supplyId = dlg.externalSupplyId();
 
+	// assign supply id to selected surface heatings
 
+	VICUS::Project prj = project();
+	std::vector<VICUS::ComponentInstance> &cis = prj.m_componentInstances;
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, skip
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+		if (comp == nullptr)
+			continue;
+		// check if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
 
-//		VICUS::Network newNetwork = *networkPtr;
-//		// add node to network
-
-//		const std::vector<VICUS::ComponentInstance> &cis = project().m_componentInstances;
-//		// process all selected components
-//		for (const VICUS::ComponentInstance & ci : cis) {
-//			// check if current ci is in list of selected component instances
-//			std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-//			for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-//				if ((*ciIt)->m_id == ci.m_id)
-//					break;
-//			}
-//			if (ciIt == m_selectedComponentInstances.end())
-//				continue;
-
-//			// if component instance does not have an active layer assigned, skip
-//			const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-//			if (comp == nullptr)
-//				continue;
-//			// check if no active layer is present
-//			if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-//				continue;
-
-//			// now get room associated with selected component
-//			const VICUS::Surface * s = ci.m_sideASurface;
-//			if (s == nullptr)
-//				s = ci.m_sideBSurface;
-
-//			// get mid point of current surface
-//			const IBKMK::Vector3D &center = s->polygon3D().centerPoint();
-
-//			bool nodeIsRegistered = false;
-//			// check whether node is part of current network already
-//			// remove node from old network
-//			for(VICUS::Network network: project().m_geometricNetworks) {
-//				// check if node is included in another network
-//				for(VICUS::NetworkNode &node : network.m_nodes) {
-//					if(IBK::near_equal(node.m_position.m_x, center.m_x) &&
-//						IBK::near_equal(node.m_position.m_y, center.m_y) &&
-//						IBK::near_equal(node.m_position.m_z, center.m_z)) {
-//						// node is already registered in correct network
-//						if(network.m_id == networkId) {
-//							nodeIsRegistered = true;
-//							continue;
-//						}
-//						// remove from network
-//					}
-//				}
-//			}
-
-
-//			// add node to network
-//			newNetwork.addNodeExt(center, VICUS::NetworkNode::NT_Building);
-//		}
-//	}
-//	else {
-//		// create dialog with network properties
-//	}
-
-//	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-
-//	for (VICUS::ComponentInstance & ci : cis) {
-//		// check if current ci is in list of selected component instances
-//		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-//		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-//			if ((*ciIt)->m_id == ci.m_id)
-//				break;
-//		}
-//		if (ciIt == m_selectedComponentInstances.end())
-//			continue;
-//		// if component instance does not have an active layer assigned, skip
-//		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-//		if (comp == nullptr)
-//			continue;
-//		// check if no active layer is present
-//		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-//			continue;
-//		ci.m_idSurfaceHeatingControlZone = dlg.m_idZone;
-//	}
-//	// perform an undo action in order to redo/revert current operation
-//	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
-	//	undo->push();
+		ci.m_idExternalSupply = supplyId;
+		ci.m_externalSupply = dynamic_cast<VICUS::ExternalSupply*> (prj.objectById(supplyId));
+	}
+	// perform an undo action in order to redo/revert current operation
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+	undo->push();
 }
 
 

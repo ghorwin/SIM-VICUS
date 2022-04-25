@@ -484,6 +484,11 @@ void Project::updatePointers() {
 						if (r.m_id == ci.m_idSurfaceHeatingControlZone)
 							ci.m_surfaceHeatingControlZone = &r;
 		}
+		if (ci.m_idExternalSupply != VICUS::INVALID_ID) {
+			for (VICUS::ExternalSupply & e : m_externalSupplies)
+				if (e.m_id == ci.m_idExternalSupply)
+					ci.m_externalSupply = &e;
+		}
 	}
 
 	// update pointers in subsurfaces
