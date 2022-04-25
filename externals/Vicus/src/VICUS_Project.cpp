@@ -290,6 +290,12 @@ void Project::readXML(const IBK::Path & filename) {
 			readXML(xmlElem);
 		}
 
+		// if we do not have a default grid, create it
+		if (m_viewSettings.m_gridPlanes.empty()) {
+			m_viewSettings.m_gridPlanes.push_back( VICUS::GridPlane(IBKMK::Vector3D(0,0,0), IBKMK::Vector3D(0,0,1),
+																	IBKMK::Vector3D(1,0,0), QColor("white"), 200, 10 ) );
+		}
+
 		// update internal pointer-based links
 		updatePointers();
 
