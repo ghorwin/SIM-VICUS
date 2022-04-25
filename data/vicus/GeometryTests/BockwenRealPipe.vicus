@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<VicusProject fileVersion="0.5">
+<VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mo. Juli 19 14:39:08 2021</Created>
-		<LastEdited>Mi Aug 11 13:23:17 2021</LastEdited>
+		<LastEdited>Mo Apr 25 15:47:06 2022</LastEdited>
 	</ProjectInfo>
 	<Project>
 		<SolverParameter>
@@ -43,8 +43,6 @@
 			<IBK:Flag name="CreateDefaultZoneOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<GridSpacing>10</GridSpacing>
-			<GridWidth>100</GridWidth>
 			<CameraTranslation>0.538469 34.7621 27.9017</CameraTranslation>
 			<RotationMatrix>
 				<Wp>-0.0787149</Wp>
@@ -53,6 +51,13 @@
 				<Z>0.902321</Z>
 			</RotationMatrix>
 			<FarDistance>10000</FarDistance>
+			<GridPlanes>
+				<GridPlane color="#ffffff" width="200" spacing="10">
+					<Offset>0 0 0</Offset>
+					<Normal>0 0 1</Normal>
+					<LocalX>1 0 0</LocalX>
+				</GridPlane>
+			</GridPlanes>
 		</ViewSettings>
 		<Buildings>
 			<Building id="8" displayName="Imported IDF Building Geometry">
@@ -66,42 +71,34 @@
 								<IBK:Parameter name="Area" unit="m2">15.5</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">39.83</IBK:Parameter>
 								<Surfaces>
-									<Surface id="23" displayName="Wall">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 0 0, -0.07999 0 2.56999, -0.07999 3.09999 2.56999, -0.07999 3.09999 0</Polygon3D>
+									<Surface id="23" displayName="Wall" displayColor="#c8c88c">
+										<Polygon3D offset="-0.07999 0 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="24" displayName="Wall_3">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 0 0, 4.92 0 2.56999, -0.07999 0 2.56999, -0.07999 0 0</Polygon3D>
+									<Surface id="24" displayName="Wall_3" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="205" displayName="Window_2">
 												<Polygon2D>2.11 1.24, 2.11 3.24, 0.82 3.24, 0.82 1.24</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="4.92 0 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4.99999, 0 4.99999</Polygon3D>
 									</Surface>
-									<Surface id="25" displayName="Wall_63">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 3.09999 0, -0.07999 3.09999 2.56999, 4.92 3.09999 2.56999, 4.92 3.09999 0</Polygon3D>
+									<Surface id="25" displayName="Wall_63" displayColor="#c8c88c">
+										<Polygon3D offset="-0.07999 3.09999 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4.99999, 0 4.99999</Polygon3D>
 									</Surface>
-									<Surface id="26" displayName="Wall_89">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 3.09999 0, 4.92 3.09999 2.56999, 4.92 0 2.56999, 4.92 0 0</Polygon3D>
+									<Surface id="26" displayName="Wall_89" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 3.09999 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="27" displayName="Roof_13">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.89499 3.09999 2.56999, 3.78 3.09999 2.56999, 3.78 0 2.56999, 3.89499 0 2.56999</Polygon3D>
+									<Surface id="27" displayName="Roof_13" displayColor="#963214">
+										<Polygon3D offset="3.89499 3.09999 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 0.11499 0, 0.11499 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="28" displayName="Roof_14">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.92 0 2.56999, 4.92 3.09999 2.56999, 3.89499 3.09999 2.56999, 3.89499 0 2.56999</Polygon3D>
+									<Surface id="28" displayName="Roof_14" displayColor="#963214">
+										<Polygon3D offset="4.92 0 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 3.09999 0, 3.09999 1.02501, 0 1.02501</Polygon3D>
 									</Surface>
-									<Surface id="29" displayName="Roof_15">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.78 3.09999 2.56999, -0.07999 3.09999 2.56999, -0.07999 0 2.56999, 3.78 0 2.56999</Polygon3D>
+									<Surface id="29" displayName="Roof_15" displayColor="#963214">
+										<Polygon3D offset="3.78 3.09999 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 3.85999 0, 3.85999 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="30" displayName="GroundFloor">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>-0.08 0 0, -0.08 3.1 0, 4.92 3.1 0, 4.92 0 0</Polygon3D>
+									<Surface id="30" displayName="GroundFloor" displayColor="#566094">
+										<Polygon3D offset="-0.08 0 0" normal="0 0 -1" localX="0 1 0">0 0, 3.1 0, 3.1 5, 0 5</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -110,58 +107,46 @@
 								<IBK:Parameter name="Area" unit="m2">18.31</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">47.05</IBK:Parameter>
 								<Surfaces>
-									<Surface id="31" displayName="Wall_7">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.015 0 0, 8.015 0 2.56999, 5.095 0 2.56999, 5.095 0 0</Polygon3D>
+									<Surface id="31" displayName="Wall_7" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="206" displayName="Window_16">
 												<Polygon2D>2.16 0.147999, 2.16 1.773, 0.0499998 1.773, 0.0499998 0.147999</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="8.015 0 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.92, 0 2.92</Polygon3D>
 									</Surface>
-									<Surface id="32" displayName="GroundFloor_1">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>5.095 6.26999 0, 8.015 6.26999 0, 8.015 0 0, 5.095 0 0</Polygon3D>
+									<Surface id="32" displayName="GroundFloor_1" displayColor="#566094">
+										<Polygon3D offset="5.095 6.26999 0" normal="0 0 -1" localX="1 0 0">0 0, 2.92 0, 2.92 6.26999, 0 6.26999</Polygon3D>
 									</Surface>
-									<Surface id="33" displayName="Wall_90">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 3.09999 0, 5.095 3.09999 2.56999, 5.095 3.21499 2.56999, 5.095 3.21499 0</Polygon3D>
+									<Surface id="33" displayName="Wall_90" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 3.09999 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="34" displayName="Wall_93">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 3.21499 0, 5.095 3.21499 2.56999, 5.095 6.26999 2.56999, 5.095 6.26999 0</Polygon3D>
+									<Surface id="34" displayName="Wall_93" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 3.21499 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.055, 0 3.055</Polygon3D>
 									</Surface>
-									<Surface id="35" displayName="Wall_94">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 0 0, 5.095 0 2.56999, 5.095 3.09999 2.56999, 5.095 3.09999 0</Polygon3D>
+									<Surface id="35" displayName="Wall_94" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 0 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="36" displayName="Wall_98">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 6.26999 0, 5.095 6.26999 2.56999, 8.015 6.26999 2.56999, 8.015 6.26999 0</Polygon3D>
+									<Surface id="36" displayName="Wall_98" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 6.26999 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.92, 0 2.92</Polygon3D>
 									</Surface>
-									<Surface id="37" displayName="Wall_102">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.015 3.76999 0, 8.015 3.76999 2.56999, 8.015 3.65499 2.56999, 8.015 3.65499 0</Polygon3D>
+									<Surface id="37" displayName="Wall_102" displayColor="#c8c88c">
+										<Polygon3D offset="8.015 3.76999 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="38" displayName="Wall_103">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.015 6.26999 0, 8.015 6.26999 2.56999, 8.015 3.76999 2.56999, 8.015 3.76999 0</Polygon3D>
+									<Surface id="38" displayName="Wall_103" displayColor="#c8c88c">
+										<Polygon3D offset="8.015 6.26999 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.5, 0 2.5</Polygon3D>
 									</Surface>
-									<Surface id="39" displayName="Wall_104">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.015 3.65499 0, 8.015 3.65499 2.56999, 8.015 0 2.56999, 8.015 0 0</Polygon3D>
+									<Surface id="39" displayName="Wall_104" displayColor="#c8c88c">
+										<Polygon3D offset="8.015 3.65499 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.65499, 0 3.65499</Polygon3D>
 									</Surface>
-									<Surface id="40" displayName="Roof_16">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>6.26 3.17499 2.57, 6.26 0 2.57, 6.375 0 2.57, 6.375 3.05999 2.57, 8.01499 3.05999 2.57, 8.01499 3.17499 2.57</Polygon3D>
+									<Surface id="40" displayName="Roof_16" displayColor="#963214">
+										<Polygon3D offset="6.26 3.17499 2.57" normal="-0 0 1" localX="0 -1 0">0 0, 3.17499 0, 3.17499 0.115, 0.115 0.115, 0.115 1.75499, 0 1.75499</Polygon3D>
 									</Surface>
-									<Surface id="41" displayName="Roof_17">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.015 6.26999 2.56999, 5.095 6.26999 2.56999, 5.095 0 2.56999, 6.26 0 2.56999, 6.26 3.17499 2.56999, 8.015 3.17499 2.56999</Polygon3D>
+									<Surface id="41" displayName="Roof_17" displayColor="#963214">
+										<Polygon3D offset="8.015 6.26999 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 2.92 0, 2.92 6.26999, 1.755 6.26999, 1.755 3.095, 0 3.095</Polygon3D>
 									</Surface>
-									<Surface id="42" displayName="Roof_18">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.015 3.05999 2.56999, 6.375 3.05999 2.56999, 6.375 0 2.56999, 8.015 0 2.56999</Polygon3D>
+									<Surface id="42" displayName="Roof_18" displayColor="#963214">
+										<Polygon3D offset="8.015 3.05999 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 1.64 0, 1.64 3.05999, 0 3.05999</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -170,47 +155,39 @@
 								<IBK:Parameter name="Area" unit="m2">14.62</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">37.57</IBK:Parameter>
 								<Surfaces>
-									<Surface id="43" displayName="Wall_10">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 3.655 0, 12.19 3.655 2.56999, 12.19 0 2.56999, 12.19 0 0</Polygon3D>
+									<Surface id="43" displayName="Wall_10" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="207" displayName="Window_4">
 												<Polygon2D>2.11 1.395, 2.11 2.395, 0.819999 2.395, 0.819999 1.395</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 3.655 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.655, 0 3.655</Polygon3D>
 									</Surface>
-									<Surface id="44" displayName="Wall_11">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 0 0, 12.19 0 2.56999, 8.19 0 2.56999, 8.19 0 0</Polygon3D>
+									<Surface id="44" displayName="Wall_11" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="208" displayName="Window_3">
 												<Polygon2D>2.11 1.135, 2.11 2.635, 0.82 2.635, 0.82 1.135</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 0 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="45" displayName="GroundFloor_2">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 3.65499 0, 12.19 3.65499 0, 12.19 0 0, 8.19 0 0</Polygon3D>
+									<Surface id="45" displayName="GroundFloor_2" displayColor="#566094">
+										<Polygon3D offset="8.19 3.65499 0" normal="0 0 -1" localX="1 0 0">0 0, 4 0, 4 3.65499, 0 3.65499</Polygon3D>
 									</Surface>
-									<Surface id="46" displayName="Wall_105">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.19 0 0, 8.19 0 2.56999, 8.19 3.65499 2.56999, 8.19 3.65499 0</Polygon3D>
+									<Surface id="46" displayName="Wall_105" displayColor="#c8c88c">
+										<Polygon3D offset="8.19 0 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.65499, 0 3.65499</Polygon3D>
 									</Surface>
-									<Surface id="47" displayName="Wall_107">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.19 3.655 0, 8.19 3.655 2.56999, 12.19 3.655 2.56999, 12.19 3.655 0</Polygon3D>
+									<Surface id="47" displayName="Wall_107" displayColor="#c8c88c">
+										<Polygon3D offset="8.19 3.655 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="48" displayName="Roof_19">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 3.05999 2.56999, 12.19 3.17499 2.56999, 8.19 3.17499 2.56999, 8.19 3.05999 2.56999</Polygon3D>
+									<Surface id="48" displayName="Roof_19" displayColor="#963214">
+										<Polygon3D offset="12.19 3.05999 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 0.115 0, 0.115 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="49" displayName="Roof_21">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 3.17499 2.56999, 12.19 3.65499 2.56999, 8.19 3.65499 2.56999, 8.19 3.17499 2.56999</Polygon3D>
+									<Surface id="49" displayName="Roof_21" displayColor="#963214">
+										<Polygon3D offset="12.19 3.17499 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 0.48 0, 0.48 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="50" displayName="Roof_22">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 0 2.56999, 12.19 3.05999 2.56999, 8.19 3.05999 2.56999, 8.19 0 2.56999</Polygon3D>
+									<Surface id="50" displayName="Roof_22" displayColor="#963214">
+										<Polygon3D offset="12.19 0 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 3.05999 0, 3.05999 4, 0 4</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -219,38 +196,31 @@
 								<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">25.7</IBK:Parameter>
 								<Surfaces>
-									<Surface id="51" displayName="Wall_14">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 6.27 0, 12.19 6.27 2.56999, 12.19 3.77 2.56999, 12.19 3.77 0</Polygon3D>
+									<Surface id="51" displayName="Wall_14" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="209" displayName="Window_5">
 												<Polygon2D>2.11 1.26, 2.11 2.26, 0.819999 2.26, 0.819999 1.26</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 6.27 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.5, 0 2.5</Polygon3D>
 									</Surface>
-									<Surface id="52" displayName="GroundFloor_3">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 3.76999 0, 8.19 6.26999 0, 12.19 6.26999 0, 12.19 3.76999 0</Polygon3D>
+									<Surface id="52" displayName="GroundFloor_3" displayColor="#566094">
+										<Polygon3D offset="8.19 3.76999 0" normal="0 0 -1" localX="0 1 0">0 0, 2.5 0, 2.5 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="53" displayName="Wall_106">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.19 3.76999 0, 8.19 3.76999 2.56999, 8.19 6.26999 2.56999, 8.19 6.26999 0</Polygon3D>
+									<Surface id="53" displayName="Wall_106" displayColor="#c8c88c">
+										<Polygon3D offset="8.19 3.76999 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.5, 0 2.5</Polygon3D>
 									</Surface>
-									<Surface id="54" displayName="Wall_108">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 3.77 0, 12.19 3.77 2.56999, 8.19 3.77 2.56999, 8.19 3.77 0</Polygon3D>
+									<Surface id="54" displayName="Wall_108" displayColor="#c8c88c">
+										<Polygon3D offset="12.19 3.77 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="55" displayName="Wall_109">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.19 6.27 0, 9.19 6.27 2.56999, 12.19 6.27 2.56999, 12.19 6.27 0</Polygon3D>
+									<Surface id="55" displayName="Wall_109" displayColor="#c8c88c">
+										<Polygon3D offset="9.19 6.27 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3, 0 3</Polygon3D>
 									</Surface>
-									<Surface id="56" displayName="Wall_110">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.19 6.26999 2.56999, 9.18999 6.26999 2.56999, 9.18999 6.26999 0, 8.19 6.26999 0</Polygon3D>
+									<Surface id="56" displayName="Wall_110" displayColor="#c8c88c">
+										<Polygon3D offset="8.19 6.26999 2.56999" normal="-0 1 0" localX="1 0 0">0 0, 0.99999 0, 0.99999 2.56999, 0 2.56999</Polygon3D>
 									</Surface>
-									<Surface id="57" displayName="Roof_23">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 3.76999 2.56999, 12.19 6.26999 2.56999, 8.19 6.26999 2.56999, 8.19 3.76999 2.56999</Polygon3D>
+									<Surface id="57" displayName="Roof_23" displayColor="#963214">
+										<Polygon3D offset="12.19 3.76999 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 2.5 0, 2.5 4, 0 4</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -259,62 +229,49 @@
 								<IBK:Parameter name="Area" unit="m2">18.57</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">47.74</IBK:Parameter>
 								<Surfaces>
-									<Surface id="58" displayName="Wall_17">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 6.26999 2.56999, 0.92 7.09499 2.56999, 0.92 7.09499 0, 0.92 6.26999 0</Polygon3D>
+									<Surface id="58" displayName="Wall_17" displayColor="#c8c88c">
+										<Polygon3D offset="0.92 6.26999 2.56999" normal="-1 0 0" localX="0 1 0">0 0, 0.825 0, 0.825 2.56999, 0 2.56999</Polygon3D>
 									</Surface>
-									<Surface id="59" displayName="Wall_18">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 6.26999 0, -0.07999 6.26999 2.56999, 0.92 6.26999 2.56999, 0.92 6.26999 0</Polygon3D>
+									<Surface id="59" displayName="Wall_18" displayColor="#c8c88c">
+										<Polygon3D offset="-0.07999 6.26999 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.99999, 0 0.99999</Polygon3D>
 									</Surface>
-									<Surface id="60" displayName="GroundFloor_4">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>4.92 7.09499 0, 4.92 3.21499 0, -0.07999 3.21499 0, -0.07999 6.26999 0, 0.92 6.26999 0, 0.92 7.09499 0</Polygon3D>
+									<Surface id="60" displayName="GroundFloor_4" displayColor="#566094">
+										<Polygon3D offset="4.92 7.09499 0" normal="-0 -0 -1" localX="0 -1 0">0 0, 3.88 0, 3.88 4.99999, 0.825 4.99999, 0.825 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="61" displayName="Wall_79">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 3.21499 0, 4.92 3.21499 2.56999, -0.07999 3.21499 2.56999, -0.07999 3.21499 0</Polygon3D>
+									<Surface id="61" displayName="Wall_79" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 3.21499 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4.99999, 0 4.99999</Polygon3D>
 									</Surface>
-									<Surface id="62" displayName="Wall_95">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 6.445 0, 4.92 6.445 2.56999, 4.92 6.26999 2.56999, 4.92 6.26999 0</Polygon3D>
+									<Surface id="62" displayName="Wall_95" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 6.445 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.17501, 0 0.17501</Polygon3D>
 									</Surface>
-									<Surface id="63" displayName="Wall_96">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 7.09499 2.56999, 4.92 6.445 2.56999, 4.92 6.445 0, 4.92 7.09499 0</Polygon3D>
+									<Surface id="63" displayName="Wall_96" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 7.09499 2.56999" normal="1 0 0" localX="0 -1 0">0 0, 0.64999 0, 0.64999 2.56999, 0 2.56999</Polygon3D>
 									</Surface>
-									<Surface id="64" displayName="Wall_97">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 6.26999 0, 4.92 6.26999 2.56999, 4.92 3.21499 2.56999, 4.92 3.21499 0</Polygon3D>
+									<Surface id="64" displayName="Wall_97" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 6.26999 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.055, 0 3.055</Polygon3D>
 									</Surface>
-									<Surface id="65" displayName="Wall_111">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 7.09499 0, 0.92 7.09499 2.56999, 4.92 7.09499 2.56999, 4.92 7.09499 0</Polygon3D>
+									<Surface id="65" displayName="Wall_111" displayColor="#c8c88c">
+										<Polygon3D offset="0.92 7.09499 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="66" displayName="Roof_24">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.92 6.445 2.56999, 0.92 6.445 2.57, 0.92 6.26999 2.57, 3.12 6.26999 2.57, 3.12 4.51999 2.56999, 3.78 4.51999 2.56999, 3.78 3.21499 2.56999, 3.89499 3.21499 2.56999, 3.89499 4.635 2.56999, 3.235 4.635 2.56999, 3.235 6.26999 2.57, 4.92 6.26999 2.56999</Polygon3D>
+									<Surface id="66" displayName="Roof_24" displayColor="#963214">
+										<Polygon3D offset="4.92 6.445 2.56999" normal="2.5e-06 0 1" localX="-1 0 2.5e-06">0 0, 4 0, 4 0.17501, 1.8 0.17501, 1.8 1.92501, 1.14 1.92501, 1.14 3.23001, 1.02501 3.23001, 1.02501 1.81, 1.685 1.81, 1.685 0.17501, 0 0.17501</Polygon3D>
 									</Surface>
-									<Surface id="67" displayName="Roof_25">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.92 6.445 2.56999, 4.92 7.09499 2.56999, 0.92 7.09499 2.56999, 0.92 6.445 2.56999</Polygon3D>
+									<Surface id="67" displayName="Roof_25" displayColor="#963214">
+										<Polygon3D offset="4.92 6.445 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 0.64999 0, 0.64999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="68" displayName="Roof_26">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.92 3.21499 2.56999, 4.92 6.26999 2.56999, 3.235 6.26999 2.56999, 3.235 4.635 2.56999, 3.89499 4.635 2.56999, 3.89499 3.21499 2.56999</Polygon3D>
+									<Surface id="68" displayName="Roof_26" displayColor="#963214">
+										<Polygon3D offset="4.92 3.21499 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 3.055 0, 3.055 1.685, 1.42001 1.685, 1.42001 1.02501, 0 1.02501</Polygon3D>
 									</Surface>
-									<Surface id="69" displayName="Roof_27">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>-0.07999 6.26999 2.56999, -0.07999 3.21499 2.56999, 3.78 3.21499 2.56999, 3.78 4.51999 2.56999, 3.12 4.51999 2.56999, 3.12 6.26999 2.56999</Polygon3D>
+									<Surface id="69" displayName="Roof_27" displayColor="#963214">
+										<Polygon3D offset="-0.07999 6.26999 2.56999" normal="-0 0 1" localX="0 -1 0">0 0, 3.055 0, 3.055 3.85999, 1.75 3.85999, 1.75 3.19999, 0 3.19999</Polygon3D>
 									</Surface>
-									<Surface id="70" displayName="Wall_16">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 3.21499 0, -0.07999 3.21499 2.56999, -0.07999 6.26999 2.56999, -0.07999 6.26999 0</Polygon3D>
+									<Surface id="70" displayName="Wall_16" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="210" displayName="Window">
 												<Polygon2D>2.11 0.67001, 2.11 2.67001, 0.945 2.67001, 0.945 0.67001</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="-0.07999 3.21499 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 3.055, 0 3.055</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -323,18 +280,15 @@
 								<IBK:Parameter name="Area" unit="m2">36.46</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">93.7</IBK:Parameter>
 								<Surfaces>
-									<Surface id="71" displayName="Wall_22">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 7.26999 0, 0.92 7.26999 2.56999, 0.92 11.27 2.56999, 0.92 11.27 0</Polygon3D>
+									<Surface id="71" displayName="Wall_22" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="211" displayName="Window_1">
 												<Polygon2D>2.11 0.99001, 2.11 2.99001, 0.945 2.99001, 0.945 0.99001</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="0.92 7.26999 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4.00001, 0 4.00001</Polygon3D>
 									</Surface>
-									<Surface id="72" displayName="Wall_24">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 11.27 0, 0.92 11.27 2.56999, 9.18999 11.27 2.56999, 9.18999 11.27 0</Polygon3D>
+									<Surface id="72" displayName="Wall_24" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="212" displayName="Window_6">
 												<Polygon2D>2.16 5.385, 2.16 7.135, 0.05 7.135, 0.05 5.385</Polygon2D>
@@ -343,54 +297,43 @@
 												<Polygon2D>2.16 1.135, 2.16 2.885, 0.05 2.885, 0.05 1.135</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="0.92 11.27 0" normal="0 1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 8.26999, 0 8.26999</Polygon3D>
 									</Surface>
-									<Surface id="73" displayName="Wall_25">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.18999 11.27 0, 9.18999 11.27 2.56999, 9.18999 6.445 2.56999, 9.18999 6.445 0</Polygon3D>
+									<Surface id="73" displayName="Wall_25" displayColor="#c8c88c">
+										<Polygon3D offset="9.18999 11.27 0" normal="1 0 -0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="74" displayName="GroundFloor_5">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>0.92 11.27 0, 9.18999 11.27 0, 9.18999 6.445 0, 5.095 6.445 0, 5.095 7.26999 0, 0.92 7.26999 0</Polygon3D>
+									<Surface id="74" displayName="GroundFloor_5" displayColor="#566094">
+										<Polygon3D offset="0.92 11.27 0" normal="0 0 -1" localX="1 0 0">0 0, 8.26999 0, 8.26999 4.825, 4.175 4.825, 4.175 4.00001, 0 4.00001</Polygon3D>
 									</Surface>
-									<Surface id="75" displayName="Wall_99">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.19 6.445 0, 8.19 6.445 2.56999, 8.015 6.445 2.56999, 8.015 6.445 0</Polygon3D>
+									<Surface id="75" displayName="Wall_99" displayColor="#c8c88c">
+										<Polygon3D offset="8.19 6.445 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="76" displayName="Wall_100">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.18999 6.445 2.56999, 8.19 6.445 2.56999, 8.19 6.445 0, 9.18999 6.445 0</Polygon3D>
+									<Surface id="76" displayName="Wall_100" displayColor="#c8c88c">
+										<Polygon3D offset="9.18999 6.445 2.56999" normal="-0 -1 -0" localX="-1 0 0">0 0, 0.99999 0, 0.99999 2.56999, 0 2.56999</Polygon3D>
 									</Surface>
-									<Surface id="77" displayName="Wall_101">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.015 6.445 0, 8.015 6.445 2.56999, 5.095 6.445 2.56999, 5.095 6.445 0</Polygon3D>
+									<Surface id="77" displayName="Wall_101" displayColor="#c8c88c">
+										<Polygon3D offset="8.015 6.445 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 2.92, 0 2.92</Polygon3D>
 									</Surface>
-									<Surface id="78" displayName="Wall_112">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 7.26999 0, 5.095 7.26999 2.56999, 4.92 7.26999 2.56999, 4.92 7.26999 0</Polygon3D>
+									<Surface id="78" displayName="Wall_112" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 7.26999 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="79" displayName="Wall_113">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.92 7.26999 0, 4.92 7.26999 2.56999, 0.92 7.26999 2.56999, 0.92 7.26999 0</Polygon3D>
+									<Surface id="79" displayName="Wall_113" displayColor="#c8c88c">
+										<Polygon3D offset="4.92 7.26999 0" normal="0 -1 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="80" displayName="Wall_114">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 7.09499 0, 5.095 7.09499 2.56999, 5.095 7.26999 2.56999, 5.095 7.26999 0</Polygon3D>
+									<Surface id="80" displayName="Wall_114" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 7.09499 0" normal="-1 0 0" localX="0 0 1">0 0, 2.56999 0, 2.56999 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="81" displayName="Wall_115">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.095 6.445 2.56999, 5.095 7.09499 2.56999, 5.095 7.09499 0, 5.095 6.445 0</Polygon3D>
+									<Surface id="81" displayName="Wall_115" displayColor="#c8c88c">
+										<Polygon3D offset="5.095 6.445 2.56999" normal="-1 0 0" localX="0 1 0">0 0, 0.64999 0, 0.64999 2.56999, 0 2.56999</Polygon3D>
 									</Surface>
-									<Surface id="82" displayName="Roof_28">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>5.11199 11.27 2.56999, 4.997 11.27 2.56999, 4.997 7.26999 2.56999, 5.095 7.26999 2.56999, 5.095 6.445 2.56999, 5.11199 6.445 2.56999</Polygon3D>
+									<Surface id="82" displayName="Roof_28" displayColor="#963214">
+										<Polygon3D offset="5.11199 11.27 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 0.11499 0, 0.11499 4.00001, 0.01699 4.00001, 0.01699 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="83" displayName="Roof_29">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>9.18999 6.445 2.56999, 9.18999 11.27 2.56999, 5.11199 11.27 2.56999, 5.11199 6.445 2.56999</Polygon3D>
+									<Surface id="83" displayName="Roof_29" displayColor="#963214">
+										<Polygon3D offset="9.18999 6.445 2.56999" normal="0 -0 1" localX="0 1 0">0 0, 4.825 0, 4.825 4.078, 0 4.078</Polygon3D>
 									</Surface>
-									<Surface id="84" displayName="Roof_30">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.997 11.27 2.56999, 0.92 11.27 2.56999, 0.92 7.26999 2.56999, 4.997 7.26999 2.56999</Polygon3D>
+									<Surface id="84" displayName="Roof_30" displayColor="#963214">
+										<Polygon3D offset="4.997 11.27 2.56999" normal="0 0 1" localX="-1 0 0">0 0, 4.077 0, 4.077 4.00001, 0 4.00001</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -399,9 +342,7 @@
 								<IBK:Parameter name="Area" unit="m2">23.05</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">57.39</IBK:Parameter>
 								<Surfaces>
-									<Surface id="85" displayName="Wall_28">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 6.26999 2.89, -0.07999 0 2.89, -0.07999 0 4.57499, -0.07999 0.925 5.5, -0.07999 5.345 5.5, -0.07999 6.26999 4.57499</Polygon3D>
+									<Surface id="85" displayName="Wall_28" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="214" displayName="Window_12">
 												<Polygon2D>2.63499 2.15, 1.63499 2.15, 1.63499 0.86, 2.63499 0.86</Polygon2D>
@@ -410,94 +351,73 @@
 												<Polygon2D>4.63499 2.15, 3.63499 2.15, 3.63499 0.86, 4.63499 0.86</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="-0.07999 6.26999 2.89" normal="-1 0 0" localX="0 -1 0">0 0, 6.26999 0, 6.26999 1.68499, 5.34499 2.61, 0.92499 2.61, 0 1.68499</Polygon3D>
 									</Surface>
-									<Surface id="86" displayName="Wall_33">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.77999 0 2.89, 3.77999 0 4.57499, -0.07999 0 4.57499, -0.07999 0 2.89</Polygon3D>
+									<Surface id="86" displayName="Wall_33" displayColor="#c8c88c">
+										<Polygon3D offset="3.77999 0 2.89" normal="0 -1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 3.85998, 0 3.85998</Polygon3D>
 									</Surface>
-									<Surface id="87" displayName="Roof_4">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.78 0 4.57499, 3.78 0.92499 5.5, -0.08 0.92499 5.5, -0.08 0 4.57499</Polygon3D>
+									<Surface id="87" displayName="Roof_4" displayColor="#963214">
+										<Polygon3D offset="3.78 0 4.57499" normal="0 -0.707114 0.707099" localX="0 0.707099 0.707114">0 0, 1.30815 0, 1.30815 3.86, 0 3.86</Polygon3D>
 									</Surface>
-									<Surface id="88" displayName="Roof_7">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.82999 5.345 5.5, 2.82999 6.26999 5.5, 1.905 6.26999 4.57499</Polygon3D>
+									<Surface id="88" displayName="Roof_7" displayColor="#963214">
+										<Polygon3D offset="2.82999 5.345 5.5" normal="-0.707114 0 0.707099" localX="0 1 0">0 0, 0.92499 0, 0.92499 1.30815</Polygon3D>
 									</Surface>
-									<Surface id="89" displayName="Roof_10">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.82999 5.34499 5.49999, 1.905 6.26999 4.57499, -0.07999 6.26999 4.57499, -0.07999 5.34499 5.49999</Polygon3D>
+									<Surface id="89" displayName="Roof_10" displayColor="#963214">
+										<Polygon3D offset="2.82999 5.34499 5.49999" normal="0 0.707107 0.707107" localX="-0.577346 0.577352 -0.577352">0 0, 1.60214 0, 2.74817 1.62074, 1.68007 2.376</Polygon3D>
 									</Surface>
-									<Surface id="90" displayName="Floor_11">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>-0.07999 3.21499 2.88999, 3.78 3.21499 2.88999, 3.78 3.09999 2.88999, -0.07999 3.09999 2.88999</Polygon3D>
+									<Surface id="90" displayName="Floor_11" displayColor="#566094">
+										<Polygon3D offset="-0.07999 3.21499 2.88999" normal="0 0 -1" localX="1 0 0">0 0, 3.85999 0, 3.85999 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="91" displayName="Floor_12">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>-0.08 3.21499 2.88999, -0.07999 6.26999 2.88999, 3.12 6.26999 2.88999, 3.12 4.51999 2.88999, 3.78 4.51999 2.88999, 3.78 3.21499 2.88999</Polygon3D>
+									<Surface id="91" displayName="Floor_12" displayColor="#566094">
+										<Polygon3D offset="-0.08 3.21499 2.88999" normal="0 0 -1" localX="3.27332e-06 1 0">0 0, 3.055 0, 3.05501 3.19999, 1.30501 3.2, 1.30501 3.86, 1.2635e-05 3.86</Polygon3D>
 									</Surface>
-									<Surface id="92" displayName="Floor_13">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>-0.07999 3.09999 2.88999, 3.78 3.09999 2.88999, 3.78 0 2.88999, -0.07999 0 2.88999</Polygon3D>
+									<Surface id="92" displayName="Floor_13" displayColor="#566094">
+										<Polygon3D offset="-0.07999 3.09999 2.88999" normal="0 0 -1" localX="1 0 0">0 0, 3.85999 0, 3.85999 3.09999, 0 3.09999</Polygon3D>
 									</Surface>
-									<Surface id="93" displayName="Roof_31">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.83 1.105 5.5, 2.83 0.925 5.5, 3.77999 0.925 5.5, 3.77999 1.105 5.5</Polygon3D>
+									<Surface id="93" displayName="Roof_31" displayColor="#963214">
+										<Polygon3D offset="2.83 1.105 5.5" normal="-0 0 1" localX="0 -1 0">0 0, 0.18 0, 0.18 0.94999, 0 0.94999</Polygon3D>
 									</Surface>
-									<Surface id="94" displayName="Roof_32">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.01 6.26999 5.5, 2.83 6.26999 5.5, 2.83 5.16499 5.5, 3.01 5.16499 5.5</Polygon3D>
+									<Surface id="94" displayName="Roof_32" displayColor="#963214">
+										<Polygon3D offset="3.01 6.26999 5.5" normal="0 0 1" localX="-1 0 0">0 0, 0.18 0, 0.18 1.105, 0 1.105</Polygon3D>
 									</Surface>
-									<Surface id="95" displayName="Roof_33">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.83 1.105 5.5, 3.77999 1.105 5.5, 3.77999 4.51999 5.5, 3.12 4.51999 5.5, 3.12 6.26999 5.5, 3.01 6.26999 5.5, 3.01 5.16499 5.5, 2.83 5.16499 5.5</Polygon3D>
+									<Surface id="95" displayName="Roof_33" displayColor="#963214">
+										<Polygon3D offset="2.83 1.105 5.5" normal="0 0 1" localX="1 0 0">0 0, 0.94999 0, 0.94999 3.41499, 0.29 3.41499, 0.29 5.16499, 0.18 5.16499, 0.18 4.05999, 0 4.05999</Polygon3D>
 									</Surface>
-									<Surface id="96" displayName="Roof_45">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>-0.07999 1.105 5.5, -0.07999 0.925 5.5, 2.82999 0.925 5.5, 2.82999 1.105 5.5</Polygon3D>
+									<Surface id="96" displayName="Roof_45" displayColor="#963214">
+										<Polygon3D offset="-0.07999 1.105 5.5" normal="-0 0 1" localX="0 -1 0">0 0, 0.18 0, 0.18 2.90998, 0 2.90998</Polygon3D>
 									</Surface>
-									<Surface id="97" displayName="Roof_46">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.82999 5.16499 5.5, 2.82999 5.345 5.5, -0.07999 5.345 5.5, -0.07999 5.16499 5.5</Polygon3D>
+									<Surface id="97" displayName="Roof_46" displayColor="#963214">
+										<Polygon3D offset="2.82999 5.16499 5.5" normal="0 -0 1" localX="0 1 0">0 0, 0.18001 0, 0.18001 2.90998, 0 2.90998</Polygon3D>
 									</Surface>
-									<Surface id="98" displayName="Roof_47">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.82999 5.16499 5.5, -0.07999 5.16499 5.5, -0.07999 1.105 5.5, 2.82999 1.105 5.5</Polygon3D>
+									<Surface id="98" displayName="Roof_47" displayColor="#963214">
+										<Polygon3D offset="2.82999 5.16499 5.5" normal="0 0 1" localX="-1 0 0">0 0, 2.90998 0, 2.90998 4.05999, 0 4.05999</Polygon3D>
 									</Surface>
-									<Surface id="99" displayName="Wall_116">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.12 4.51999 2.89, 3.12 4.51999 5.5, 3.235 4.51999 5.5, 3.235 4.51999 2.89</Polygon3D>
+									<Surface id="99" displayName="Wall_116" displayColor="#c8c88c">
+										<Polygon3D offset="3.12 4.51999 2.89" normal="0 1 0" localX="0 0 1">0 0, 2.61 0, 2.61 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="100" displayName="Wall_117">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.235 4.51999 2.89, 3.235 4.51999 5.5, 3.77999 4.51999 5.5, 3.77999 4.51999 2.89</Polygon3D>
+									<Surface id="100" displayName="Wall_117" displayColor="#c8c88c">
+										<Polygon3D offset="3.235 4.51999 2.89" normal="0 1 0" localX="0 0 1">0 0, 2.61 0, 2.61 0.54499, 0 0.54499</Polygon3D>
 									</Surface>
-									<Surface id="101" displayName="Wall_127">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.77999 0 2.89, 3.77999 4.51999 2.89, 3.77999 4.51999 5.5, 3.77999 0.925 5.5, 3.77999 0 4.57499</Polygon3D>
+									<Surface id="101" displayName="Wall_127" displayColor="#c8c88c">
+										<Polygon3D offset="3.77999 0 2.89" normal="1 0 0" localX="0 1 0">0 0, 4.51999 0, 4.51999 2.61, 0.925 2.61, 0 1.68499</Polygon3D>
 									</Surface>
-									<Surface id="102" displayName="Wall_144">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.12 4.635 5.5, 3.12 4.51999 5.5, 3.12 4.51999 2.89, 3.12 4.635 2.89</Polygon3D>
+									<Surface id="102" displayName="Wall_144" displayColor="#c8c88c">
+										<Polygon3D offset="3.12 4.635 5.5" normal="1 0 0" localX="0 -1 0">0 0, 0.11501 0, 0.11501 2.61, 0 2.61</Polygon3D>
 									</Surface>
-									<Surface id="103" displayName="Wall_145">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.11999 6.26999 2.89, 3.11999 6.26999 5.5, 3.12 4.635 5.5, 3.12 4.635 2.89</Polygon3D>
+									<Surface id="103" displayName="Wall_145" displayColor="#c8c88c">
+										<Polygon3D offset="3.11999 6.26999 2.89" normal="1 6.11625e-06 -0" localX="0 0 1">0 0, 2.61 0, 2.61 1.63499, 0 1.63499</Polygon3D>
 									</Surface>
-									<Surface id="104" displayName="Wall_156">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 6.26999 3.58999, 1.905 6.26999 4.575, 3.12 6.26999 4.575, 3.12 6.26999 2.88999, 0.92 6.26999 2.88999</Polygon3D>
+									<Surface id="104" displayName="Wall_156" displayColor="#c8c88c">
+										<Polygon3D offset="0.92 6.26999 3.58999" normal="-0 1 0" localX="0.707103 0 0.70711">0 0, 1.39301 0, 2.25214 0.859139, 1.06065 2.05062, -0.494977 0.494972</Polygon3D>
 									</Surface>
-									<Surface id="105" displayName="Wall_158">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>1.905 6.27 4.575, 0.22 6.26999 2.89, -0.07999 6.26999 2.89, -0.07999 6.27 4.575</Polygon3D>
+									<Surface id="105" displayName="Wall_158" displayColor="#c8c88c">
+										<Polygon3D offset="1.905 6.27 4.575" normal="0 1 -5.93472e-06" localX="-0.707107 -4.19648e-06 -0.707107">0 0, 2.38295 0, 2.59507 0.212125, 1.4036 1.4036</Polygon3D>
 									</Surface>
-									<Surface id="106" displayName="Wall_159">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 6.26999 3.58999, 0.92 6.26999 2.89, 0.22 6.26999 2.88999</Polygon3D>
+									<Surface id="106" displayName="Wall_159" displayColor="#c8c88c">
+										<Polygon3D offset="0.92 6.26999 3.58999" normal="0 1 0" localX="0 0 -1">0 0, 0.69999 0, 0.7 0.7</Polygon3D>
 									</Surface>
-									<Surface id="107" displayName="Wall_160">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>1.905 6.26999 4.575, 2.83 6.26999 5.5, 3.12 6.26999 5.5, 3.12 6.26999 4.575</Polygon3D>
+									<Surface id="107" displayName="Wall_160" displayColor="#c8c88c">
+										<Polygon3D offset="1.905 6.26999 4.575" normal="0 1 0" localX="0.707107 0 0.707107">0 0, 1.30815 -1.11022e-16, 1.51321 0.205061, 0.859135 0.859135</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -506,22 +426,18 @@
 								<IBK:Parameter name="Area" unit="m2">17.79</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">43.95</IBK:Parameter>
 								<Surfaces>
-									<Surface id="108" displayName="Wall_34">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 0 2.89, 12.19 0 4.57499, 6.375 0 4.57499, 6.375 0 2.89</Polygon3D>
+									<Surface id="108" displayName="Wall_34" displayColor="#c8c88c">
+										<Polygon3D offset="12.19 0 2.89" normal="0 -1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 5.815, 0 5.815</Polygon3D>
 									</Surface>
-									<Surface id="109" displayName="Wall_37">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 3.05999 2.89, 12.19 3.05999 5.5, 12.19 0.925 5.5, 12.19 0 4.57499, 12.19 0 2.89</Polygon3D>
+									<Surface id="109" displayName="Wall_37" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="216" displayName="Window_14">
 												<Polygon2D>2.15 0.29499, 2.15 1.79499, 0.86 1.79499, 0.86 0.29499</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 3.05999 2.89" normal="1 0 -0" localX="0 0 1">0 0, 2.61 0, 2.61 2.13499, 1.68499 3.05999, 0 3.05999</Polygon3D>
 									</Surface>
-									<Surface id="110" displayName="Roof_5">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 0 4.57499, 12.19 0.92499 5.49999, 6.37499 0.92499 5.49999, 6.37499 0 4.57499</Polygon3D>
+									<Surface id="110" displayName="Roof_5" displayColor="#963214">
 										<SubSurfaces>
 											<SubSurface id="217" displayName="Window_17">
 												<Polygon2D>0.830001 4.075, 0.830001 4.615, 0.0499965 4.615, 0.0499965 4.075</Polygon2D>
@@ -530,42 +446,34 @@
 												<Polygon2D>0.830001 1.275, 0.830001 1.815, 0.0499965 1.815, 0.0499965 1.275</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 0 4.57499" normal="0 -0.707111 0.707103" localX="0 0.707103 0.707111">0 0, 1.30814 0, 1.30814 5.81501, 0 5.81501</Polygon3D>
 									</Surface>
-									<Surface id="111" displayName="Floor_19">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.015 3.05999 2.89, 8.19 3.05999 2.89, 8.19 0 2.89, 8.015 0 2.89</Polygon3D>
+									<Surface id="111" displayName="Floor_19" displayColor="#566094">
+										<Polygon3D offset="8.015 3.05999 2.89" normal="0 0 -1" localX="1 0 0">0 0, 0.175 0, 0.175 3.05999, 0 3.05999</Polygon3D>
 									</Surface>
-									<Surface id="112" displayName="Floor_20">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 0 2.89, 8.19 3.05999 2.89, 12.19 3.05999 2.89, 12.19 0 2.89</Polygon3D>
+									<Surface id="112" displayName="Floor_20" displayColor="#566094">
+										<Polygon3D offset="8.19 0 2.89" normal="0 0 -1" localX="0 1 0">0 0, 3.05999 0, 3.05999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="113" displayName="Floor_21">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>6.375 3.05999 2.89, 8.015 3.05999 2.89, 8.015 0 2.89, 6.375 0 2.89</Polygon3D>
+									<Surface id="113" displayName="Floor_21" displayColor="#566094">
+										<Polygon3D offset="6.375 3.05999 2.89" normal="0 0 -1" localX="1 0 0">0 0, 1.64 0, 1.64 3.05999, 0 3.05999</Polygon3D>
 									</Surface>
-									<Surface id="114" displayName="Roof_34">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 1.105 5.49999, 6.375 1.105 5.49999, 6.375 0.925 5.49999, 12.19 0.925 5.49999</Polygon3D>
+									<Surface id="114" displayName="Roof_34" displayColor="#963214">
+										<Polygon3D offset="12.19 1.105 5.49999" normal="0 0 1" localX="-1 0 0">0 0, 5.815 0, 5.815 0.18, 0 0.18</Polygon3D>
 									</Surface>
-									<Surface id="115" displayName="Roof_35">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 1.105 5.49999, 12.19 3.06 5.49999, 6.375 3.06 5.49999, 6.375 1.105 5.49999</Polygon3D>
+									<Surface id="115" displayName="Roof_35" displayColor="#963214">
+										<Polygon3D offset="12.19 1.105 5.49999" normal="0 -0 1" localX="0 1 0">0 0, 1.955 0, 1.955 5.815, 0 5.815</Polygon3D>
 									</Surface>
-									<Surface id="116" displayName="Wall_130">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.375 0.925 5.5, 6.375 3.05999 5.5, 6.375 3.05999 2.89, 6.375 0 2.89, 6.375 0 4.57499</Polygon3D>
+									<Surface id="116" displayName="Wall_130" displayColor="#c8c88c">
+										<Polygon3D offset="6.375 0.925 5.5" normal="-1 0 -0" localX="0 1 0">0 0, 2.13499 0, 2.13499 2.61, -0.925 2.61, -0.925 0.92501</Polygon3D>
 									</Surface>
-									<Surface id="117" displayName="Wall_133">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 3.05999 5.5, 8.15999 3.05999 5.5, 8.15999 3.05999 2.89, 8.045 3.05999 2.89</Polygon3D>
+									<Surface id="117" displayName="Wall_133" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 3.05999 5.5" normal="-0 1 0" localX="1 0 0">0 0, 0.11499 0, 0.11499 2.61, 0 2.61</Polygon3D>
 									</Surface>
-									<Surface id="118" displayName="Wall_134">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.375 3.05999 2.89, 6.375 3.05999 5.5, 8.045 3.05999 5.5, 8.045 3.05999 2.89</Polygon3D>
+									<Surface id="118" displayName="Wall_134" displayColor="#c8c88c">
+										<Polygon3D offset="6.375 3.05999 2.89" normal="0 1 0" localX="0 0 1">0 0, 2.61 0, 2.61 1.67, 0 1.67</Polygon3D>
 									</Surface>
-									<Surface id="119" displayName="Wall_135">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.15999 3.05999 2.89, 8.15999 3.05999 5.5, 12.19 3.05999 5.5, 12.19 3.05999 2.89</Polygon3D>
+									<Surface id="119" displayName="Wall_135" displayColor="#c8c88c">
+										<Polygon3D offset="8.15999 3.05999 2.89" normal="0 1 0" localX="0 0 1">0 0, 2.61 0, 2.61 4.03001, 0 4.03001</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -574,58 +482,46 @@
 								<IBK:Parameter name="Area" unit="m2">12.47</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">30.83</IBK:Parameter>
 								<Surfaces>
-									<Surface id="120" displayName="Wall_41">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 5.345 5.5, 12.19 3.17499 5.5, 12.19 3.17499 2.89, 12.19 6.26999 2.89, 12.19 6.26999 4.57499</Polygon3D>
+									<Surface id="120" displayName="Wall_41" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="219" displayName="Window_15">
 												<Polygon2D>0.33 0.46, 1.83 0.46, 1.83 1.75, 0.33 1.75</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="12.19 5.345 5.5" normal="1 0 0" localX="0 -1 0">0 0, 2.17001 0, 2.17001 2.61, -0.92499 2.61, -0.92499 0.92501</Polygon3D>
 									</Surface>
-									<Surface id="121" displayName="Roof_8">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.15999 6.26999 4.57499, 8.15999 5.34499 5.49999, 12.19 5.34499 5.49999, 12.19 6.26999 4.57499</Polygon3D>
+									<Surface id="121" displayName="Roof_8" displayColor="#963214">
+										<Polygon3D offset="8.15999 6.26999 4.57499" normal="-0 0.707107 0.707107" localX="0 -0.707107 0.707107">0 0, 1.30815 0, 1.30815 4.03001, 0 4.03001</Polygon3D>
 									</Surface>
-									<Surface id="122" displayName="Floor_22">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 3.76999 2.89, 12.19 3.76999 2.89, 12.19 3.65499 2.89, 8.19 3.65499 2.89, 8.19 3.17499 2.89, 8.15999 3.17499 2.89, 8.15999 6.26999 2.89, 8.19 6.26999 2.89</Polygon3D>
+									<Surface id="122" displayName="Floor_22" displayColor="#566094">
+										<Polygon3D offset="8.19 3.76999 2.89" normal="-0 -0 -1" localX="1 0 0">0 0, 4 0, 4 0.115, 0 0.115, 0 0.595, -0.03001 0.595, -0.03001 -2.5, 0 -2.5</Polygon3D>
 									</Surface>
-									<Surface id="123" displayName="Floor_23">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 3.76999 2.89, 8.19 6.26999 2.89, 12.19 6.26999 2.89, 12.19 3.76999 2.89</Polygon3D>
+									<Surface id="123" displayName="Floor_23" displayColor="#566094">
+										<Polygon3D offset="8.19 3.76999 2.89" normal="0 0 -1" localX="0 1 0">0 0, 2.5 0, 2.5 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="124" displayName="Floor_24">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.19 3.17499 2.89, 8.19 3.65499 2.89, 12.19 3.65499 2.89, 12.19 3.17499 2.89</Polygon3D>
+									<Surface id="124" displayName="Floor_24" displayColor="#566094">
+										<Polygon3D offset="8.19 3.17499 2.89" normal="0 0 -1" localX="0 1 0">0 0, 0.48 0, 0.48 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="125" displayName="Roof_39">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.16 5.16555 5.49999, 12.19 5.165 5.49999, 12.19 5.345 5.49999, 8.16 5.345 5.49999</Polygon3D>
+									<Surface id="125" displayName="Roof_39" displayColor="#963214">
+										<Polygon3D offset="8.16 5.16555 5.49999" normal="-0 0 1" localX="1 -0.000136476 0">0 0, 4.03 1.0842e-19, 4.02998 0.18, -2.44907e-05 0.17945</Polygon3D>
 									</Surface>
-									<Surface id="126" displayName="Roof_40">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.16 5.16555 5.5, 8.16 3.175 5.5, 12.19 3.175 5.5, 12.19 5.165 5.5</Polygon3D>
+									<Surface id="126" displayName="Roof_40" displayColor="#963214">
+										<Polygon3D offset="8.16 5.16555 5.5" normal="0 0 1" localX="0 -1 0">0 0, 1.99055 0, 1.99055 4.03, 0.00055 4.03</Polygon3D>
 									</Surface>
-									<Surface id="127" displayName="Wall_136">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 3.17499 2.89, 12.19 3.17499 5.5, 8.15999 3.17499 5.5, 8.15999 3.17499 2.89</Polygon3D>
+									<Surface id="127" displayName="Wall_136" displayColor="#c8c88c">
+										<Polygon3D offset="12.19 3.17499 2.89" normal="0 -1 0" localX="0 0 1">0 0, 2.61 0, 2.61 4.03001, 0 4.03001</Polygon3D>
 									</Surface>
-									<Surface id="128" displayName="Wall_141">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.89 6.26999 2.88999, 8.205 6.26999 4.57499, 12.19 6.26999 4.57499, 12.19 6.26999 2.88999</Polygon3D>
+									<Surface id="128" displayName="Wall_141" displayColor="#c8c88c">
+										<Polygon3D offset="9.89 6.26999 2.88999" normal="0 1 -0" localX="-0.707107 0 0.707107">0 0, 2.38295 0, -0.434871 2.81782, -1.62635 1.62635</Polygon3D>
 									</Surface>
-									<Surface id="129" displayName="Wall_142">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.205 6.26999 4.575, 9.19 6.26999 3.59, 9.19 6.26999 2.89, 8.15999 6.26999 2.89, 8.15999 6.26999 4.57499</Polygon3D>
+									<Surface id="129" displayName="Wall_142" displayColor="#c8c88c">
+										<Polygon3D offset="8.205 6.26999 4.575" normal="0 1 0" localX="0.707107 0 -0.707107">0 0, 1.393 -1.11022e-16, 1.88798 0.494975, 1.15965 1.2233, -0.0318198 0.0318339</Polygon3D>
 									</Surface>
-									<Surface id="130" displayName="Wall_147">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.15999 3.17499 2.89, 8.15999 3.17499 5.5, 8.15999 5.345 5.5, 8.15999 6.26999 4.57499, 8.15999 6.26999 2.89</Polygon3D>
+									<Surface id="130" displayName="Wall_147" displayColor="#c8c88c">
+										<Polygon3D offset="8.15999 3.17499 2.89" normal="-1 0 0" localX="0 0 1">0 0, 2.61 0, 2.61 2.17001, 1.68499 3.095, 0 3.095</Polygon3D>
 									</Surface>
-									<Surface id="131" displayName="Wall_148">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.19 6.26999 2.89, 9.19 6.26999 3.59, 9.89 6.26999 2.89</Polygon3D>
+									<Surface id="131" displayName="Wall_148" displayColor="#c8c88c">
+										<Polygon3D offset="9.19 6.26999 2.89" normal="0 1 0" localX="0 0 1">0 0, 0.7 0, 0 0.7</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -634,126 +530,97 @@
 								<IBK:Parameter name="Area" unit="m2">21.43</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">54.71</IBK:Parameter>
 								<Surfaces>
-									<Surface id="132" displayName="Wall_45">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.26 0 2.89, 6.26 0 4.57499, 3.89499 0 4.57499, 3.89499 0 2.89</Polygon3D>
+									<Surface id="132" displayName="Wall_45" displayColor="#c8c88c">
+										<Polygon3D offset="6.26 0 2.89" normal="0 -1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 2.36501, 0 2.36501</Polygon3D>
 									</Surface>
-									<Surface id="133" displayName="Roof_6">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>6.26 0 4.57499, 6.26 0.925 5.5, 3.89499 0.925 5.5, 3.89499 0 4.57499</Polygon3D>
+									<Surface id="133" displayName="Roof_6" displayColor="#963214">
 										<SubSurfaces>
 											<SubSurface id="220" displayName="Window_19">
 												<Polygon2D>0.830001 1, 0.830001 1.54, 0.0499965 1.54, 0.0499965 1</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="6.26 0 4.57499" normal="0 -0.707111 0.707103" localX="0 0.707103 0.707111">0 0, 1.30815 0, 1.30815 2.36501, 0 2.36501</Polygon3D>
 									</Surface>
-									<Surface id="134" displayName="Roof_11">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>8.045 5.34499 5.5, 8.045 6.26999 4.57499, 7.28 5.34499 5.5</Polygon3D>
+									<Surface id="134" displayName="Roof_11" displayColor="#963214">
+										<Polygon3D offset="8.045 5.34499 5.5" normal="0 0.707111 0.707103" localX="0 0.707103 -0.707111">0 0, 1.30815 0, 0 0.765</Polygon3D>
 									</Surface>
-									<Surface id="135" displayName="Roof_12">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 6.26999 4.57499, 7.28 6.26999 5.5, 7.28 5.345 5.5</Polygon3D>
+									<Surface id="135" displayName="Roof_12" displayColor="#963214">
+										<Polygon3D offset="8.045 6.26999 4.57499" normal="0.770609 0 0.637308" localX="-0.637308 0 0.770609">0 0, 1.20036 0, 1.20036 0.92499</Polygon3D>
 									</Surface>
-									<Surface id="136" displayName="Floor_14">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>5.095 6.26999 2.88999, 5.095 0 2.88999, 4.92 0 2.89, 4.92 3.09999 2.89, 3.895 3.09999 2.89, 3.895 3.21499 2.89, 4.92 3.21499 2.89, 4.92 6.26999 2.89</Polygon3D>
+									<Surface id="136" displayName="Floor_14" displayColor="#566094">
+										<Polygon3D offset="5.095 6.26999 2.88999" normal="-5.71429e-05 -0 -1" localX="0 -1 0">0 0, 6.26999 0, 6.26999 0.175, 3.17 0.175, 3.17 1.2, 3.055 1.2, 3.055 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="137" displayName="Floor_15">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>4.92 6.26999 2.89, 4.92 3.21499 2.89, 3.89499 3.21499 2.89, 3.89499 4.635 2.89, 3.235 4.635 2.89, 3.235 6.26999 2.89</Polygon3D>
+									<Surface id="137" displayName="Floor_15" displayColor="#566094">
+										<Polygon3D offset="4.92 6.26999 2.89" normal="-0 -0 -1" localX="0 -1 0">0 0, 3.055 0, 3.055 1.02501, 1.63499 1.02501, 1.63499 1.685, 0 1.685</Polygon3D>
 									</Surface>
-									<Surface id="138" displayName="Floor_16">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.015 6.26999 2.89, 8.045 6.26999 2.89, 8.045 3.17499 2.89, 8.015 3.17499 2.89</Polygon3D>
+									<Surface id="138" displayName="Floor_16" displayColor="#566094">
+										<Polygon3D offset="8.015 6.26999 2.89" normal="0 0 -1" localX="1 0 0">0 0, 0.03 0, 0.03 3.095, 0 3.095</Polygon3D>
 									</Surface>
-									<Surface id="139" displayName="Floor_17">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>5.095 6.26999 2.89, 8.015 6.26999 2.89, 8.015 3.17499 2.89, 6.26 3.17499 2.89, 6.26 0 2.89, 5.095 0 2.89</Polygon3D>
+									<Surface id="139" displayName="Floor_17" displayColor="#566094">
+										<Polygon3D offset="5.095 6.26999 2.89" normal="0 0 -1" localX="1 0 0">0 0, 2.92 0, 2.92 3.095, 1.165 3.095, 1.165 6.26999, 0 6.26999</Polygon3D>
 									</Surface>
-									<Surface id="140" displayName="Floor_18">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>3.89499 0 2.89, 3.89499 3.09999 2.89, 4.92 3.09999 2.89, 4.92 0 2.89</Polygon3D>
+									<Surface id="140" displayName="Floor_18" displayColor="#566094">
+										<Polygon3D offset="3.89499 0 2.89" normal="0 0 -1" localX="0 1 0">0 0, 3.09999 0, 3.09999 1.02501, 0 1.02501</Polygon3D>
 									</Surface>
-									<Surface id="141" displayName="Roof_36">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.89499 1.105 5.5, 3.89499 0.925 5.5, 6.26 0.925 5.5, 6.26 1.105 5.5</Polygon3D>
+									<Surface id="141" displayName="Roof_36" displayColor="#963214">
+										<Polygon3D offset="3.89499 1.105 5.5" normal="-0 0 1" localX="0 -1 0">0 0, 0.18 0, 0.18 2.36501, 0 2.36501</Polygon3D>
 									</Surface>
-									<Surface id="142" displayName="Roof_37">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.09999 5.16569 5.5, 8.045 5.16556 5.5, 8.045 5.345 5.5, 7.09999 5.345 5.5</Polygon3D>
+									<Surface id="142" displayName="Roof_37" displayColor="#963214">
+										<Polygon3D offset="7.09999 5.16569 5.5" normal="-0 0 1" localX="1 -0.000137565 0">0 0, 0.94501 -2.71051e-20, 0.944985 0.17944, -2.46667e-05 0.17931</Polygon3D>
 									</Surface>
-									<Surface id="143" displayName="Roof_48">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.28 6.27 5.5, 7.09999 6.27 5.5, 7.09999 5.345 5.5, 7.28 5.345 5.5</Polygon3D>
+									<Surface id="143" displayName="Roof_48" displayColor="#963214">
+										<Polygon3D offset="7.28 6.27 5.5" normal="0 0 1" localX="-1 0 0">0 0, 0.18001 0, 0.18001 0.925, 0 0.925</Polygon3D>
 									</Surface>
-									<Surface id="144" displayName="Wall_118">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.89499 4.635 2.89, 3.89499 4.635 5.5, 3.77999 4.635 5.5, 3.77999 4.635 2.89</Polygon3D>
+									<Surface id="144" displayName="Wall_118" displayColor="#c8c88c">
+										<Polygon3D offset="3.89499 4.635 2.89" normal="0 -1 0" localX="0 0 1">0 0, 2.61 0, 2.61 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="145" displayName="Wall_119">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.77999 4.635 2.89, 3.77999 4.635 5.5, 3.235 4.635 5.5, 3.235 4.635 2.89</Polygon3D>
+									<Surface id="145" displayName="Wall_119" displayColor="#c8c88c">
+										<Polygon3D offset="3.77999 4.635 2.89" normal="0 -1 0" localX="0 0 1">0 0, 2.61 0, 2.61 0.54499, 0 0.54499</Polygon3D>
 									</Surface>
-									<Surface id="146" displayName="Wall_121">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.11199 6.26999 2.89, 5.11199 6.26999 4.57499, 8.045 6.26999 4.57499, 8.045 6.26999 2.89</Polygon3D>
+									<Surface id="146" displayName="Wall_121" displayColor="#c8c88c">
+										<Polygon3D offset="5.11199 6.26999 2.89" normal="0 1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 2.93301, 0 2.93301</Polygon3D>
 									</Surface>
-									<Surface id="147" displayName="Wall_123">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.235 6.26999 2.89, 3.235 6.26999 4.57499, 4.997 6.26999 4.57499, 4.997 6.26999 2.89</Polygon3D>
+									<Surface id="147" displayName="Wall_123" displayColor="#c8c88c">
+										<Polygon3D offset="3.235 6.26999 2.89" normal="0 1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 1.762, 0 1.762</Polygon3D>
 									</Surface>
-									<Surface id="148" displayName="Wall_124">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>7.28 6.27 5.5, 8.045 6.27 4.57499, 5.11199 6.27 4.57499, 5.11199 6.27 5.5</Polygon3D>
+									<Surface id="148" displayName="Wall_124" displayColor="#c8c88c">
+										<Polygon3D offset="7.28 6.27 5.5" normal="0 1 0" localX="0.637308 0 -0.770609">0 0, 1.20036 -1.11022e-16, -0.668868 2.2602, -1.38169 1.67069</Polygon3D>
 									</Surface>
-									<Surface id="149" displayName="Wall_125">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.99699 6.26999 5.49999, 5.11199 6.26999 5.49999, 5.11199 6.26999 2.89, 4.99699 6.26999 2.89</Polygon3D>
+									<Surface id="149" displayName="Wall_125" displayColor="#c8c88c">
+										<Polygon3D offset="4.99699 6.26999 5.49999" normal="-0 1 0" localX="1 0 0">0 0, 0.115 0, 0.115 2.60999, 0 2.60999</Polygon3D>
 									</Surface>
-									<Surface id="150" displayName="Wall_126">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.235 6.27 4.57499, 3.235 6.27 5.5, 4.997 6.27 5.5, 4.997 6.27 4.57499</Polygon3D>
+									<Surface id="150" displayName="Wall_126" displayColor="#c8c88c">
+										<Polygon3D offset="3.235 6.27 4.57499" normal="0 1 0" localX="0 0 1">0 0, 0.92501 0, 0.92501 1.762, 0 1.762</Polygon3D>
 									</Surface>
-									<Surface id="151" displayName="Wall_128">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.89499 4.51999 5.5, 3.89499 4.635 5.5, 3.89499 4.635 2.89, 3.89499 4.51999 2.89</Polygon3D>
+									<Surface id="151" displayName="Wall_128" displayColor="#c8c88c">
+										<Polygon3D offset="3.89499 4.51999 5.5" normal="-1 0 0" localX="0 1 0">0 0, 0.11501 0, 0.11501 2.61, 0 2.61</Polygon3D>
 									</Surface>
-									<Surface id="152" displayName="Wall_129">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.89499 4.51999 2.89, 3.89499 0 2.89, 3.89499 0 4.57499, 3.89499 0.925 5.5, 3.89499 4.51999 5.5</Polygon3D>
+									<Surface id="152" displayName="Wall_129" displayColor="#c8c88c">
+										<Polygon3D offset="3.89499 4.51999 2.89" normal="-1 0 0" localX="0 -1 0">0 0, 4.51999 0, 4.51999 1.68499, 3.59499 2.61, 0 2.61</Polygon3D>
 									</Surface>
-									<Surface id="153" displayName="Wall_131">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.26 3.17499 2.89, 6.26 3.17499 5.5, 6.26 3.05999 5.5, 6.26 3.05999 2.89</Polygon3D>
+									<Surface id="153" displayName="Wall_131" displayColor="#c8c88c">
+										<Polygon3D offset="6.26 3.17499 2.89" normal="1 0 -0" localX="0 0 1">0 0, 2.61 0, 2.61 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="154" displayName="Wall_132">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.25999 3.05999 2.89, 6.25999 3.05999 5.5, 6.25999 0.925 5.5, 6.25999 0 4.57499, 6.25999 0 2.89</Polygon3D>
+									<Surface id="154" displayName="Wall_132" displayColor="#c8c88c">
+										<Polygon3D offset="6.25999 3.05999 2.89" normal="1 0 -0" localX="0 0 1">0 0, 2.61 0, 2.61 2.13499, 1.68499 3.05999, 0 3.05999</Polygon3D>
 									</Surface>
-									<Surface id="155" displayName="Wall_137">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>6.375 3.17499 5.5, 6.26 3.17499 5.5, 6.26 3.17499 2.89, 6.375 3.17499 2.89</Polygon3D>
+									<Surface id="155" displayName="Wall_137" displayColor="#c8c88c">
+										<Polygon3D offset="6.375 3.17499 5.5" normal="-0 -1 -0" localX="-1 0 0">0 0, 0.115 0, 0.115 2.61, 0 2.61</Polygon3D>
 									</Surface>
-									<Surface id="156" displayName="Wall_138">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 3.17499 2.89, 8.045 3.17499 5.5, 6.375 3.17499 5.5, 6.375 3.17499 2.89</Polygon3D>
+									<Surface id="156" displayName="Wall_138" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 3.17499 2.89" normal="0 -1 0" localX="0 0 1">0 0, 2.61 0, 2.61 1.67, 0 1.67</Polygon3D>
 									</Surface>
-									<Surface id="157" displayName="Wall_143">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.23499 6.26999 5.5, 3.23499 6.26999 2.89, 3.235 4.635 2.89, 3.235 4.635 5.5</Polygon3D>
+									<Surface id="157" displayName="Wall_143" displayColor="#c8c88c">
+										<Polygon3D offset="3.23499 6.26999 5.5" normal="-1 -6.11625e-06 -0" localX="0 0 -1">0 0, 2.61 0, 2.61 1.63499, 0 1.63499</Polygon3D>
 									</Surface>
-									<Surface id="158" displayName="Wall_146">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 5.345 5.5, 8.045 3.17499 5.5, 8.045 3.17499 2.89, 8.045 6.26999 2.89, 8.045 6.26999 4.57499</Polygon3D>
+									<Surface id="158" displayName="Wall_146" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 5.345 5.5" normal="1 0 0" localX="0 -1 0">0 0, 2.17001 0, 2.17001 2.61, -0.92499 2.61, -0.92499 0.92501</Polygon3D>
 									</Surface>
-									<Surface id="159" displayName="Roof_38">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.89499 4.635 5.5, 3.89499 1.105 5.5, 6.26 1.105 5.5, 6.26 3.17499 5.5, 8.045 3.17499 5.5, 8.045 5.16556 5.5, 7.09999 5.16569 5.5, 7.09999 5.34499 5.5, 3.23499 5.34499 5.5, 3.23499 4.635 5.5</Polygon3D>
+									<Surface id="159" displayName="Roof_38" displayColor="#963214">
+										<Polygon3D offset="3.89499 4.635 5.5" normal="0 0 1" localX="0 -1 0">0 0, 3.53 0, 3.53 2.36501, 1.46001 2.36501, 1.46001 4.15001, -0.53056 4.15001, -0.53069 3.205, -0.70999 3.205, -0.70999 -0.66, 0 -0.66</Polygon3D>
 									</Surface>
-									<Surface id="160" displayName="Roof_49">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.09999 5.345 5.5, 7.09999 6.27 5.5, 3.23499 6.26999 5.5, 3.23499 5.34499 5.5</Polygon3D>
+									<Surface id="160" displayName="Roof_49" displayColor="#963214">
+										<Polygon3D offset="7.09999 5.345 5.5" normal="0 -0 1" localX="0 1 0">0 0, 0.925 0, 0.92499 3.865, -1e-05 3.865</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -762,13 +629,10 @@
 								<IBK:Parameter name="Area" unit="m2">19.67</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">42.54</IBK:Parameter>
 								<Surfaces>
-									<Surface id="161" displayName="Wall_50">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 6.445 2.89, 0.92 6.445 3.58999, 0.92 11.27 3.58999, 0.92 11.27 2.89</Polygon3D>
+									<Surface id="161" displayName="Wall_50" displayColor="#c8c88c">
+										<Polygon3D offset="0.92 6.445 2.89" normal="-1 0 0" localX="0 0 1">0 0, 0.69999 0, 0.69999 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="162" displayName="Wall_51">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>0.92 11.27 3.58999, 2.82999 11.27 5.5, 4.997 11.27 5.5, 4.997 11.27 2.89, 0.92 11.27 2.89</Polygon3D>
+									<Surface id="162" displayName="Wall_51" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="221" displayName="Window_9">
 												<Polygon2D>2.57034 0.449019, 3.10067 0.979352, 1.58038 2.49962, 1.05005 1.96929</Polygon2D>
@@ -777,54 +641,43 @@
 												<Polygon2D>3.13602 1.01471, 3.66635 1.54504, 2.75418 2.4572, 2.22385 1.92687</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="0.92 11.27 3.58999" normal="-0 1 0" localX="0.707103 0 0.70711">0 0, 2.70115 -2.22045e-16, 4.23345 1.53232, 2.38789 3.37785, -0.49497 0.494965</Polygon3D>
 									</Surface>
-									<Surface id="163" displayName="Roof">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.83 6.44499 5.5, 2.83 11.27 5.5, 0.92 11.27 3.58999, 0.92 6.44499 3.58999</Polygon3D>
+									<Surface id="163" displayName="Roof" displayColor="#963214">
+										<Polygon3D offset="2.83 6.44499 5.5" normal="-0.707109 0 0.707105" localX="0 1 0">0 0, 4.82501 0, 4.82501 2.70115, 0 2.70115</Polygon3D>
 									</Surface>
-									<Surface id="164" displayName="Floor_25">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>0.92 7.26999 2.88999, 4.997 7.26999 2.88999, 4.997 6.445 2.88999, 4.92 6.445 2.88999, 4.92 7.09499 2.88999, 0.92 7.09499 2.88999</Polygon3D>
+									<Surface id="164" displayName="Floor_25" displayColor="#566094">
+										<Polygon3D offset="0.92 7.26999 2.88999" normal="0 0 -1" localX="1 0 0">0 0, 4.077 0, 4.077 0.82499, 4 0.82499, 4 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="165" displayName="Floor_26">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>0.92 11.27 2.89, 4.997 11.27 2.89, 4.997 7.26999 2.89, 0.92 7.26999 2.89</Polygon3D>
+									<Surface id="165" displayName="Floor_26" displayColor="#566094">
+										<Polygon3D offset="0.92 11.27 2.89" normal="0 0 -1" localX="1 0 0">0 0, 4.077 0, 4.077 4.00001, 0 4.00001</Polygon3D>
 									</Surface>
-									<Surface id="166" displayName="Floor_27">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>0.92 6.445 2.89, 0.92 7.09499 2.89, 4.92 7.09499 2.89, 4.92 6.445 2.89</Polygon3D>
+									<Surface id="166" displayName="Floor_27" displayColor="#566094">
+										<Polygon3D offset="0.92 6.445 2.89" normal="0 0 -1" localX="0 1 0">0 0, 0.64999 0, 0.64999 4, 0 4</Polygon3D>
 									</Surface>
-									<Surface id="167" displayName="Roof_41">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>2.83 11.27 5.5, 2.82999 6.445 5.5, 3.01 6.445 5.5, 3.01 11.27 5.5</Polygon3D>
+									<Surface id="167" displayName="Roof_41" displayColor="#963214">
+										<Polygon3D offset="2.83 11.27 5.5" normal="-0 0 1" localX="-2.07254e-06 -1 0">0 0, 4.825 0, 4.825 0.18001, -3.73057e-07 0.18</Polygon3D>
 									</Surface>
-									<Surface id="168" displayName="Roof_42">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>4.997 11.27 5.5, 3.01 11.27 5.5, 3.01 6.445 5.5, 4.997 6.445 5.5</Polygon3D>
+									<Surface id="168" displayName="Roof_42" displayColor="#963214">
+										<Polygon3D offset="4.997 11.27 5.5" normal="0 0 1" localX="-1 0 0">0 0, 1.987 0, 1.987 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="169" displayName="Wall_150">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.997 11.27 2.89, 4.997 11.27 5.5, 4.997 6.445 5.5, 4.997 6.445 2.89</Polygon3D>
+									<Surface id="169" displayName="Wall_150" displayColor="#c8c88c">
+										<Polygon3D offset="4.997 11.27 2.89" normal="1 0 -0" localX="0 0 1">0 0, 2.61 0, 2.61 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="170" displayName="Wall_152">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>3.12 6.445 5.5, 3.12 6.445 2.88999, 3.235 6.445 2.89, 3.235 6.445 5.5</Polygon3D>
+									<Surface id="170" displayName="Wall_152" displayColor="#c8c88c">
+										<Polygon3D offset="3.12 6.445 5.5" normal="0 -1 0" localX="0 0 -1">0 0, 2.61001 0, 2.61 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="171" displayName="Wall_153">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>2.83 6.44499 5.5, 1.905 6.44499 4.575, 3.12 6.44499 4.575, 3.12 6.44499 5.5</Polygon3D>
+									<Surface id="171" displayName="Wall_153" displayColor="#c8c88c">
+										<Polygon3D offset="2.83 6.44499 5.5" normal="0 -1 -0" localX="-0.707107 0 -0.707107">0 0, 1.30815 1.11022e-16, 0.449013 0.859135, -0.205061 0.205061</Polygon3D>
 									</Surface>
-									<Surface id="172" displayName="Wall_154">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.997 6.445 4.57499, 4.997 6.445 5.5, 3.235 6.445 5.5, 3.235 6.445 4.57499</Polygon3D>
+									<Surface id="172" displayName="Wall_154" displayColor="#c8c88c">
+										<Polygon3D offset="4.997 6.445 4.57499" normal="0 -1 0" localX="0 0 1">0 0, 0.92501 0, 0.92501 1.762, 0 1.762</Polygon3D>
 									</Surface>
-									<Surface id="173" displayName="Wall_155">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>4.997 6.445 2.89, 4.997 6.445 4.57499, 3.235 6.445 4.57499, 3.235 6.445 2.89</Polygon3D>
+									<Surface id="173" displayName="Wall_155" displayColor="#c8c88c">
+										<Polygon3D offset="4.997 6.445 2.89" normal="0 -1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 1.762, 0 1.762</Polygon3D>
 									</Surface>
-									<Surface id="174" displayName="Wall_157">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>1.905 6.445 4.575, 0.92 6.445 3.58999, 0.92 6.445 2.89, 3.12 6.445 2.89, 3.12 6.445 4.575</Polygon3D>
+									<Surface id="174" displayName="Wall_157" displayColor="#c8c88c">
+										<Polygon3D offset="1.905 6.445 4.575" normal="0 -1 -0" localX="-0.707103 0 -0.70711">0 0, 1.39301 0, 1.88798 0.494965, 0.332351 2.05061, -0.85913 0.859139</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -833,9 +686,7 @@
 								<IBK:Parameter name="Area" unit="m2">19.68</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">42.55</IBK:Parameter>
 								<Surfaces>
-									<Surface id="175" displayName="Wall_55">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>7.28 11.27 5.5, 9.19 11.27 3.59, 9.19 11.27 2.89, 5.11199 11.27 2.89, 5.11199 11.27 5.5</Polygon3D>
+									<Surface id="175" displayName="Wall_55" displayColor="#c8c88c">
 										<SubSurfaces>
 											<SubSurface id="223" displayName="Window_8">
 												<Polygon2D>-0.399515 0.979342, 0.130815 0.449012, 1.65109 1.96929, 1.12076 2.49962</Polygon2D>
@@ -844,46 +695,37 @@
 												<Polygon2D>-0.965201 1.54503, -0.434871 1.0147, 0.477297 1.92687, -0.053033 2.4572</Polygon2D>
 											</SubSurface>
 										</SubSurfaces>
+										<Polygon3D offset="7.28 11.27 5.5" normal="0 1 0" localX="0.707107 0 -0.707107">0 0, 2.70115 0, 3.19612 0.494975, 0.312534 3.37856, -1.53301 1.53301</Polygon3D>
 									</Surface>
-									<Surface id="176" displayName="Wall_56">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.19 6.445 3.59, 9.19 6.445 2.89, 9.19 11.27 2.89, 9.19 11.27 3.59</Polygon3D>
+									<Surface id="176" displayName="Wall_56" displayColor="#c8c88c">
+										<Polygon3D offset="9.19 6.445 3.59" normal="1 -0 0" localX="0 0 -1">0 0, 0.7 0, 0.7 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="177" displayName="Roof_2">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.28 11.27 5.5, 7.28 6.445 5.5, 9.18999 6.445 3.59, 9.19 11.27 3.59</Polygon3D>
+									<Surface id="177" displayName="Roof_2" displayColor="#963214">
+										<Polygon3D offset="7.28 11.27 5.5" normal="0.707107 0 0.707107" localX="0 -1 0">0 0, 4.825 0, 4.825 2.70114, 0 2.70115</Polygon3D>
 									</Surface>
-									<Surface id="178" displayName="Floor_28">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>5.11199 6.445 2.89, 5.11199 11.27 2.89, 9.19 11.27 2.89, 9.19 6.445 2.89</Polygon3D>
+									<Surface id="178" displayName="Floor_28" displayColor="#566094">
+										<Polygon3D offset="5.11199 6.445 2.89" normal="0 0 -1" localX="0 1 0">0 0, 4.825 0, 4.825 4.07801, 0 4.07801</Polygon3D>
 									</Surface>
-									<Surface id="179" displayName="Roof_43">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.28 6.445 5.5, 7.28 11.27 5.5, 7.09999 11.27 5.5, 7.09999 6.445 5.5</Polygon3D>
+									<Surface id="179" displayName="Roof_43" displayColor="#963214">
+										<Polygon3D offset="7.28 6.445 5.5" normal="0 -0 1" localX="0 1 0">0 0, 4.825 0, 4.825 0.18001, 0 0.18001</Polygon3D>
 									</Surface>
-									<Surface id="180" displayName="Roof_44">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>7.09999 6.445 5.5, 7.09999 11.27 5.5, 5.11199 11.27 5.5, 5.11199 6.445 5.5</Polygon3D>
+									<Surface id="180" displayName="Roof_44" displayColor="#963214">
+										<Polygon3D offset="7.09999 6.445 5.5" normal="0 -0 1" localX="0 1 0">0 0, 4.825 0, 4.825 1.988, 0 1.988</Polygon3D>
 									</Surface>
-									<Surface id="181" displayName="Wall_120">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 6.44499 4.57499, 7.28 6.44499 5.5, 5.11199 6.44499 5.5, 5.11199 6.44499 4.57499</Polygon3D>
+									<Surface id="181" displayName="Wall_120" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 6.44499 4.57499" normal="0 -1 0" localX="-0.637308 0 0.770609">0 0, 1.20036 1.11022e-16, 2.58205 1.67069, 1.86923 2.2602</Polygon3D>
 									</Surface>
-									<Surface id="182" displayName="Wall_139">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 6.445 4.57499, 8.045 6.44501 2.89, 8.15999 6.44501 2.89, 8.15999 6.445 4.57499, 8.205 6.445 4.575, 7.28 6.44499 5.5</Polygon3D>
+									<Surface id="182" displayName="Wall_139" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 6.445 4.57499" normal="5.89581e-06 -1 -5.93475e-06" localX="0 5.93475e-06 -1">0 0, 1.68499 1.29247e-26, 1.68499 0.11499, -7.15922e-17 0.11499, -1e-05 0.16, -0.92501 -0.765</Polygon3D>
 									</Surface>
-									<Surface id="183" displayName="Wall_140">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>8.045 6.445 2.89, 8.045 6.445 4.57499, 5.11199 6.445 4.57499, 5.11199 6.445 2.89</Polygon3D>
+									<Surface id="183" displayName="Wall_140" displayColor="#c8c88c">
+										<Polygon3D offset="8.045 6.445 2.89" normal="0 -1 0" localX="0 0 1">0 0, 1.68499 0, 1.68499 2.93301, 0 2.93301</Polygon3D>
 									</Surface>
-									<Surface id="184" displayName="Wall_149">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>9.19 6.445 3.59, 8.205 6.445 4.575, 8.15999 6.445 4.57499, 8.15999 6.445 2.89, 9.19 6.445 2.89</Polygon3D>
+									<Surface id="184" displayName="Wall_149" displayColor="#c8c88c">
+										<Polygon3D offset="9.19 6.445 3.59" normal="-0 -1 -0" localX="-0.707107 0 0.707107">0 0, 1.393 1.11022e-16, 1.42482 0.0318339, 0.233352 1.2233, -0.494975 0.494975</Polygon3D>
 									</Surface>
-									<Surface id="185" displayName="Wall_151">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>5.11199 6.445 2.89, 5.11199 6.445 5.5, 5.11199 11.27 5.5, 5.11199 11.27 2.89</Polygon3D>
+									<Surface id="185" displayName="Wall_151" displayColor="#c8c88c">
+										<Polygon3D offset="5.11199 6.445 2.89" normal="-1 0 0" localX="0 0 1">0 0, 2.61 0, 2.61 4.825, 0 4.825</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -892,81 +734,62 @@
 								<IBK:Parameter name="Area" unit="m2">74.79</IBK:Parameter>
 								<IBK:Parameter name="Volume" unit="m3">78.72</IBK:Parameter>
 								<Surfaces>
-									<Surface id="186" displayName="PV_SO">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>12.19 1.105 5.67999, 12.19 3.13499 7.70999, -0.07999 3.13499 7.70999, -0.07999 1.105 5.67999</Polygon3D>
+									<Surface id="186" displayName="PV_SO" displayColor="#963214">
+										<Polygon3D offset="12.19 1.105 5.67999" normal="0 -0.707109 0.707105" localX="0 0.707105 0.707109">0 0, 2.87085 0, 2.87085 12.27, 0 12.27</Polygon3D>
 									</Surface>
-									<Surface id="187" displayName="Wall_91">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>-0.07999 3.135 7.71, -0.07999 5.165 5.68, -0.07999 1.105 5.67999</Polygon3D>
+									<Surface id="187" displayName="Wall_91" displayColor="#c8c88c">
+										<Polygon3D offset="-0.07999 3.135 7.71" normal="-1 0 -0" localX="0 0.707107 -0.707107">0 0, 2.87085 0, 7.07107e-06 2.87086</Polygon3D>
 									</Surface>
-									<Surface id="188" displayName="Wall_92">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>12.19 5.165 5.67999, 12.19 3.135 7.71, 12.19 1.105 5.67999</Polygon3D>
+									<Surface id="188" displayName="Wall_92" displayColor="#c8c88c">
+										<Polygon3D offset="12.19 5.165 5.67999" normal="1 0 0" localX="0 -0.707105 0.707109">0 0, 2.87086 2.22045e-16, 2.87085 2.87086</Polygon3D>
 									</Surface>
-									<Surface id="189" displayName="Roof_20">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>5.055 3.13464 7.70999, 3.01 5.16499 5.67999, -0.07999 5.16499 5.67999, -0.07999 3.13464 7.70999</Polygon3D>
+									<Surface id="189" displayName="Roof_20" displayColor="#963214">
+										<Polygon3D offset="5.055 3.13464 7.70999" normal="0 0.707046 0.707168" localX="-0.580151 0.575995 -0.575895">0 0, 3.52495 0, 5.31761 2.51683, 2.97907 4.1825</Polygon3D>
 									</Surface>
-									<Surface id="190" displayName="Wall_84">
-										<DisplayColor>#c8c88c</DisplayColor>
-										<Polygon3D>7.09999 11.27 5.68001, 3.01 11.27 5.67999, 5.055 11.27 7.70999</Polygon3D>
+									<Surface id="190" displayName="Wall_84" displayColor="#c8c88c">
+										<Polygon3D offset="7.09999 11.27 5.68001" normal="0 1 0" localX="-1 0 -4.88999e-06">0 0, 4.08999 0, 2.04498 2.02999</Polygon3D>
 									</Surface>
-									<Surface id="191" displayName="Roof_9">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.01 5.165 5.67999, 5.055 3.13535 7.70999, 5.055 5.46 7.70999, 3.01 5.46 5.67999</Polygon3D>
+									<Surface id="191" displayName="Roof_9" displayColor="#963214">
+										<Polygon3D offset="3.01 5.165 5.67999" normal="-0.704499 0 0.709705" localX="0.580217 -0.575862 0.575961">0 0, 3.52454 1.11022e-16, 2.18587 1.90051, -0.169879 0.241176</Polygon3D>
 									</Surface>
-									<Surface id="192" displayName="Roof_3">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>5.055 3.13535 7.70999, 7.1 5.16569 5.67999, 7.1 11.27 5.67999, 5.055 11.27 7.70999</Polygon3D>
+									<Surface id="192" displayName="Roof_3" displayColor="#963214">
+										<Polygon3D offset="5.055 3.13535 7.70999" normal="0.704499 -0 0.709705" localX="0.580152 0.575993 -0.575896">0 0, 3.52494 -3.33067e-16, 7.04098 4.99, 4.6855 6.64971</Polygon3D>
 									</Surface>
-									<Surface id="193" displayName="Roof_1">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>5.055 3.13535 7.71, 12.19 3.13459 7.70994, 12.19 5.165 5.68, 7.1 5.16564 5.67994</Polygon3D>
+									<Surface id="193" displayName="Roof_1" displayColor="#963214">
+										<Polygon3D offset="5.055 3.13535 7.71" normal="8.12573e-05 0.707026 0.707188" localX="1 -0.000106517 -8.40925e-06">0 0, 7.135 6.77626e-20, 7.1348 2.8711, 2.0448 2.87124</Polygon3D>
 									</Surface>
-									<Surface id="194" displayName="Floor_29">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>12.19 3.06 5.67999, 6.375 3.06 5.67999, 6.375 1.105 5.67999, 6.26 1.105 5.67999, 6.26 3.175 5.67999, 8.045 3.175 5.67999, 8.045 5.16557 5.67999, 8.16 5.16555 5.67999, 8.16 3.175 5.67999, 12.19 3.175 5.67999</Polygon3D>
+									<Surface id="194" displayName="Floor_29" displayColor="#566094">
+										<Polygon3D offset="12.19 3.06 5.67999" normal="0 0 -1" localX="-1 0 0">0 0, 5.815 0, 5.815 -1.955, 5.93 -1.955, 5.93 0.115, 4.145 0.115, 4.145 2.10557, 4.03 2.10555, 4.03 0.115, 0 0.115</Polygon3D>
 									</Surface>
-									<Surface id="195" displayName="Floor_30">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>8.16 3.175 5.67999, 8.16 5.16555 5.67999, 12.19 5.165 5.67999, 12.19 3.175 5.67999</Polygon3D>
+									<Surface id="195" displayName="Floor_30" displayColor="#566094">
+										<Polygon3D offset="8.16 3.175 5.67999" normal="0 0 -1" localX="0 1 0">0 0, 1.99055 0, 1.99 4.03, 0 4.03</Polygon3D>
 									</Surface>
-									<Surface id="196" displayName="Floor_31">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>7.1 6.27 5.67999, 3.235 6.27 5.67999, 3.235 4.635 5.67999, 3.895 4.635 5.67999, 3.895 1.105 5.67999, 3.78 1.105 5.67999, 3.78 4.52 5.67999, 3.12 4.52 5.67999, 3.12 6.27 5.67999, 3.01 6.27 5.67999, 3.01 6.445 5.67999, 4.997 6.445 5.67999, 4.997 11.27 5.67999, 5.112 11.27 5.67999, 5.112 6.445 5.67999, 7.1 6.445 5.67999</Polygon3D>
+									<Surface id="196" displayName="Floor_31" displayColor="#566094">
+										<Polygon3D offset="7.1 6.27 5.67999" normal="0 0 -1" localX="-1 0 0">0 0, 3.865 0, 3.865 -1.635, 3.205 -1.635, 3.205 -5.165, 3.32 -5.165, 3.32 -1.75, 3.98 -1.75, 3.98 0, 4.09 0, 4.09 0.175, 2.103 0.175, 2.103 5, 1.988 5, 1.988 0.175, 0 0.175</Polygon3D>
 									</Surface>
-									<Surface id="197" displayName="Floor_32">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>7.1 6.27 5.67999, 7.1 5.34499 5.67999, 3.235 5.34499 5.67999, 3.235 6.27 5.67999</Polygon3D>
+									<Surface id="197" displayName="Floor_32" displayColor="#566094">
+										<Polygon3D offset="7.1 6.27 5.67999" normal="-0 -0 -1" localX="0 -1 0">0 0, 0.92501 0, 0.92501 3.865, 0 3.865</Polygon3D>
 									</Surface>
-									<Surface id="198" displayName="Floor_33">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>5.112 6.445 5.67999, 5.112 11.27 5.67999, 7.1 11.27 5.67999, 7.1 6.445 5.67999</Polygon3D>
+									<Surface id="198" displayName="Floor_33" displayColor="#566094">
+										<Polygon3D offset="5.112 6.445 5.67999" normal="0 0 -1" localX="0 1 0">0 0, 4.825 0, 4.825 1.988, 0 1.988</Polygon3D>
 									</Surface>
-									<Surface id="199" displayName="Floor_34">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>3.01 11.27 5.67999, 4.997 11.27 5.67999, 4.997 6.445 5.67999, 3.01 6.445 5.67999</Polygon3D>
+									<Surface id="199" displayName="Floor_34" displayColor="#566094">
+										<Polygon3D offset="3.01 11.27 5.67999" normal="0 0 -1" localX="1 0 0">0 0, 1.987 0, 1.987 4.825, 0 4.825</Polygon3D>
 									</Surface>
-									<Surface id="200" displayName="Floor_35">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>3.895 1.105 5.67999, 3.895 4.635 5.67999, 3.235 4.635 5.67999, 3.235 5.34499 5.67999, 7.1 5.34499 5.67999, 7.1 5.1657 5.67999, 8.045 5.16557 5.67999, 8.045 3.175 5.67999, 6.26 3.175 5.67999, 6.26 1.105 5.67999</Polygon3D>
+									<Surface id="200" displayName="Floor_35" displayColor="#566094">
+										<Polygon3D offset="3.895 1.105 5.67999" normal="0 0 -1" localX="0 1 0">0 0, 3.53 0, 3.53 -0.66, 4.23999 -0.66, 4.23999 3.205, 4.0607 3.205, 4.06057 4.15, 2.07 4.15, 2.07 2.365, 0 2.365</Polygon3D>
 									</Surface>
-									<Surface id="201" displayName="Floor_36">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>6.375 1.105 5.67999, 6.375 3.06 5.67999, 12.19 3.06 5.67999, 12.19 1.105 5.67999</Polygon3D>
+									<Surface id="201" displayName="Floor_36" displayColor="#566094">
+										<Polygon3D offset="6.375 1.105 5.67999" normal="0 0 -1" localX="0 1 0">0 0, 1.955 0, 1.955 5.815, 0 5.815</Polygon3D>
 									</Surface>
-									<Surface id="202" displayName="Floor_37">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>-0.07999 5.165 5.67999, 2.83 5.165 5.67999, 2.83 1.105 5.67999, -0.07999 1.105 5.67999</Polygon3D>
+									<Surface id="202" displayName="Floor_37" displayColor="#566094">
+										<Polygon3D offset="-0.07999 5.165 5.67999" normal="0 0 -1" localX="1 0 0">0 0, 2.90999 0, 2.90999 4.06, 0 4.06</Polygon3D>
 									</Surface>
-									<Surface id="203" displayName="Floor_38">
-										<DisplayColor>#566094</DisplayColor>
-										<Polygon3D>3.78 1.105 5.67999, 2.83 1.105 5.67999, 2.83 5.165 5.67999, 3.01 5.165 5.67999, 3.01 6.27 5.67999, 3.12 6.27 5.67999, 3.12 4.52 5.67999, 3.78 4.52 5.67999</Polygon3D>
+									<Surface id="203" displayName="Floor_38" displayColor="#566094">
+										<Polygon3D offset="3.78 1.105 5.67999" normal="0 0 -1" localX="-1 0 0">0 0, 0.95 0, 0.95 4.06, 0.77 4.06, 0.77 5.165, 0.66 5.165, 0.66 3.415, 0 3.415</Polygon3D>
 									</Surface>
-									<Surface id="204" displayName="PV_SW">
-										<DisplayColor>#963214</DisplayColor>
-										<Polygon3D>3.01 5.46 5.67999, 5.055 5.46 7.70999, 5.055 11.27 7.70999, 3.01 11.27 5.67999</Polygon3D>
+									<Surface id="204" displayName="PV_SW" displayColor="#963214">
+										<Polygon3D offset="3.01 5.46 5.67999" normal="-0.704499 0 0.709705" localX="0.709705 0 0.704499">0 0, 2.88148 0, 2.88148 5.81, 0 5.81</Polygon3D>
 									</Surface>
 								</Surfaces>
 							</Room>
@@ -1188,6 +1011,15 @@
 		</SubSurfaceComponentInstances>
 		<EmbeddedDatabase>
 			<Materials>
+				<Material id="10012" displayName="de:[SimQuality] Teppichboden|en:[SimQuality] Carpeting" color="#bf6e40">
+					<Notes>en:Insulation to be used in SimQuality test cases (TF12).|de:Dämmstoff zur Verwendung in SimQuality (TF12).</Notes>
+					<Manufacturer>generic</Manufacturer>
+					<DataSource>SimQuality</DataSource>
+					<Category>Insulations</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
+				</Material>
 				<Material id="10029" displayName="DE: Liaplan Ultra 09 |EN: &lt;new material&gt;" color="#cc0000">
 					<DataSource>DE: Bockwen EFH</DataSource>
 					<Category>Bricks</Category>
@@ -1230,13 +1062,6 @@
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1500</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">2.3</IBK:Parameter>
 				</Material>
-				<Material id="10035" displayName="DE: Teppich |EN: &lt;new material&gt;" color="#ad7fa8">
-					<DataSource>DE: Bockwen EFH</DataSource>
-					<Category>Coating</Category>
-					<IBK:Parameter name="Density" unit="kg/m3">200</IBK:Parameter>
-					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1300</IBK:Parameter>
-					<IBK:Parameter name="Conductivity" unit="W/mK">0.06</IBK:Parameter>
-				</Material>
 				<Material id="10036" displayName="DE: XPS |EN: &lt;new material&gt;" color="#5affde">
 					<DataSource>DE: Bockwen EFH</DataSource>
 					<Category>Insulations</Category>
@@ -1257,6 +1082,14 @@
 					<IBK:Parameter name="Density" unit="kg/m3">700</IBK:Parameter>
 					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
 					<IBK:Parameter name="Conductivity" unit="W/mK">0.16</IBK:Parameter>
+				</Material>
+				<Material id="5500000" displayName="de:Dummy-Material|en:Dummy material">
+					<DataSource>de:Dummy Database Plugin|en:Dummy Database Plugin</DataSource>
+					<Category>Miscellaneous</Category>
+					<IBK:Parameter name="Density" unit="kg/m3">2150</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">1000</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">2.7</IBK:Parameter>
+					<IBK:Parameter name="Mu" unit="-">81</IBK:Parameter>
 				</Material>
 			</Materials>
 			<Constructions>
@@ -1320,7 +1153,7 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>Concrete</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer idMaterial="10035">
+						<MaterialLayer idMaterial="10012">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10037">
@@ -1371,7 +1204,7 @@
 					<InsulationKind>OutsideInsulation</InsulationKind>
 					<MaterialKind>Concrete</MaterialKind>
 					<MaterialLayers>
-						<MaterialLayer idMaterial="10035">
+						<MaterialLayer idMaterial="10012">
 							<IBK:Parameter name="Thickness" unit="m">0.01</IBK:Parameter>
 						</MaterialLayer>
 						<MaterialLayer idMaterial="10037">
@@ -1548,6 +1381,7 @@
 				<InternalLoad id="70004" displayName="DE: Internal Load -&gt; 2 W/m2 |EN: &lt;new internal load model&gt;" color="#5ac5ff">
 					<Category>ElectricEquiment</Category>
 					<PowerMethod>PowerPerArea</PowerMethod>
+					<ActivateCO2Production>false</ActivateCO2Production>
 					<IBK:Parameter name="Power" unit="W">2</IBK:Parameter>
 					<IBK:Parameter name="PowerPerArea" unit="W/m2">2</IBK:Parameter>
 					<IBK:Parameter name="ConvectiveHeatFactor" unit="---">1</IBK:Parameter>

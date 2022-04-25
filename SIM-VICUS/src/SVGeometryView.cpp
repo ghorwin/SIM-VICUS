@@ -379,14 +379,14 @@ void SVGeometryView::onNumberKeyPressed(Qt::Key k) {
 
 
 void SVGeometryView::coordinateInputFinished() {
-#ifdef POLYGON2D
-	// either, the line edit coordinate input is empty, in which case the polygon object may be completed
-	// (if possible)
+
+	// either, the line edit coordinate input is empty, in which case the polygon object may be completed (if possible)
 
 	Vic3D::NewGeometryObject * po = SVViewStateHandler::instance().m_newGeometryObject;
 	if (m_lineEditCoordinateInput->text().trimmed().isEmpty()) {
 		if (po->planeGeometry().isValid()) {
-//			SVViewStateHandler::instance().m_propVertexListWidget->on_pushButtonCompletePolygon_clicked();
+			if (!SVViewStateHandler::instance().m_propVertexListWidget->completePolygonIfPossible())
+				QMessageBox::critical(this, QString(), tr("Invalid polygon (must be planar and not winding)."));
 		}
 		else
 			QMessageBox::critical(this, QString(), tr("Invalid polygon (must be planar and not winding)."));
@@ -438,31 +438,9 @@ void SVGeometryView::coordinateInputFinished() {
 			offset.m_z = vec[2];
 	}
 
-	// add last vertex, if existing
-	if (po->planeGeometry().polygon().vertexes().size() > 0) {
-		offset += po->planeGeometry().polygon().vertexes().back();
-	}
-
-	// check if adding the vertex would invalidate the polygon
-	VICUS::PlaneGeometry p = po->planeGeometry();
-	p.addVertex(offset);
-	// two vertexes are always valid, so we do not check for valid vertexes then
-	if (p.polygon().vertexes().size() > 2 && !p.isValid()) {
-		QMessageBox::critical(this, QString(), tr("Adding this vertex would invalidate the polygon."));
-		m_lineEditCoordinateInput->setFocus();
-		m_lineEditCoordinateInput->selectAll();
-		return;
-	}
-
-	// now add vertex
-	po->appendVertex(offset);
-
-	SVViewStateHandler::instance().m_geometryView->refreshSceneView();
-	SVViewStateHandler::instance().m_geometryView->focusSceneView();
-
-	// if successful, clear the input widget
+	po->appendVertexOffset(offset);
+	// finally clear the coordinate input - next enter press will complete the polygon, if possible
 	m_lineEditCoordinateInput->clear();
-#endif
 }
 
 

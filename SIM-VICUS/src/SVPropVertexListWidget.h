@@ -104,6 +104,7 @@ public slots:
 	*/
 	void onModified( int modificationType, ModificationInfo * data );
 
+
 private slots:
 
 	// page vertexes
