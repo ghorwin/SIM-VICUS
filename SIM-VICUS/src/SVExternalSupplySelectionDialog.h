@@ -23,17 +23,17 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVNetworkSelectionDialogH
-#define SVNetworkSelectionDialogH
+#ifndef SVExternalSupplySelectionDialogH
+#define SVExternalSupplySelectionDialogH
 
 #include <QDialog>
 
 namespace Ui {
-class SVNetworkSelectionDialog;
+class SVExternalSupplySelectionDialog;
 }
 
 namespace VICUS {
-class GenericNetwork;
+class ExternalSupply;
 }
 
 class QListWidgetItem;
@@ -42,34 +42,32 @@ class QListWidgetItem;
 	with optional filter functionality.
 	User selects a network and accepts the dialog.
 */
-class SVNetworkSelectionDialog : public QDialog {
+class SVExternalSupplySelectionDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit SVNetworkSelectionDialog(QWidget *parent = nullptr);
-	~SVNetworkSelectionDialog();
+	explicit SVExternalSupplySelectionDialog(QWidget *parent = nullptr);
+	~SVExternalSupplySelectionDialog();
 
 	/*! Updates user interface. */
 	void updateUi();
 
-	/*! Here the ID of the selected zone is stored, when the dialog is accepted. */
-	unsigned int	m_idNetwork;
+	/*! Returns external supply object id, if an object is chosen, INVALID_ID otherwise. */
+	unsigned int externalSupplyId();
 
 private slots:
-	void on_listWidget_itemSelectionChanged();
+	void on_listWidgetSupply_itemSelectionChanged();
 
-	void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+	void on_listWidgetSupply_itemDoubleClicked(QListWidgetItem *item);
 
 	void on_comboBoxSupplyType_currentIndexChanged(int index);
 
 private:
-	Ui::SVNetworkSelectionDialog	*m_ui;
+	Ui::SVExternalSupplySelectionDialog	*m_ui;
 
-	/*! Pointer to currently edited boundary condition.
-		The pointer is updated whenever updateInput() is called.
-		A nullptr pointer means that there is no material to edit.
+	/*! Pointer to currently edited supply description stucture.
 	*/
-	const VICUS::GenericNetwork		*m_current = nullptr;
+	const VICUS::ExternalSupply		*m_current = nullptr;
 };
 
-#endif // SVNetworkSelectionDialogH
+#endif // SVExternalSupplySelectionDialogH

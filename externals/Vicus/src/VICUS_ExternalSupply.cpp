@@ -1,4 +1,4 @@
-#include "VICUS_GenericNetwork.h"
+#include "VICUS_ExternalSupply.h"
 
 #include "VICUS_Project.h"
 #include "VICUS_utilities.h"
@@ -8,9 +8,9 @@
 
 namespace VICUS {
 
-bool GenericNetwork::isValid() const
+bool ExternalSupply::isValid() const
 {
-	FUNCID(GenericNetwork::isValid);
+	FUNCID(ExternalSupply::isValid);
 	try {
 
 		// check parameters for stand alone mode

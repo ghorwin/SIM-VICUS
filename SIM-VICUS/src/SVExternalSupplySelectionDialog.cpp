@@ -23,9 +23,9 @@
 	GNU General Public License for more details.
 */
 
-#include "SVNetworkSelectionDialog.h"
-#include "SVPropBuildingSurfaceHeatingWidget.h"
-#include "ui_SVNetworkSelectionDialog.h"
+#include "SVExternalSupplySelectionDialog.h"
+//#include "SVPropBuildingSurfaceHeatingWidget.h"
+#include "ui_SVExternalSupplySelectionDialog.h"
 
 #include <QItemSelectionModel>
 #include <QListWidgetItem>
@@ -38,23 +38,23 @@
 #include <VICUS_Project.h>
 
 
-SVNetworkSelectionDialog::SVNetworkSelectionDialog(QWidget *parent) :
+SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVNetworkSelectionDialog)
+	m_ui(new Ui::SVExternalSupplySelectionDialog)
 {
 	m_ui->setupUi(this);
 
-	SVStyle::formatListView(m_ui->listWidget);
+	SVStyle::formatListView(m_ui->listWidgetSupply);
 
 	// fill combo box
 	m_ui->comboBoxSupplyType->blockSignals(true);
-	for (unsigned int i=0; i < VICUS::GenericNetwork::NUM_ST; ++i)
+	for (unsigned int i=0; i < VICUS::ExternalSupply::NUM_ST; ++i)
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
-								  .arg(VICUS::KeywordListQt::Description("GenericNetwork::supplyType_t", (int)i))
-								  .arg(VICUS::KeywordListQt::Keyword("GenericNetwork::supplyType_t", (int)i)), i);
+								  .arg(VICUS::KeywordListQt::Description("ExternalSupply::supplyType_t", (int)i))
+								  .arg(VICUS::KeywordListQt::Keyword("ExternalSupply::supplyType_t", (int)i)), i);
 	m_ui->comboBoxSupplyType->addItem(QString("None"));
 	// set invalid supply type
-	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
@@ -64,71 +64,86 @@ SVNetworkSelectionDialog::SVNetworkSelectionDialog(QWidget *parent) :
 }
 
 
-SVNetworkSelectionDialog::~SVNetworkSelectionDialog() {
+SVExternalSupplySelectionDialog::~SVExternalSupplySelectionDialog() {
 	delete m_ui;
 }
 
-void SVNetworkSelectionDialog::updateUi()
+void SVExternalSupplySelectionDialog::updateUi()
 {
 	// block all signals
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(true);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(true);
-	m_ui->listWidget->blockSignals(true);
-	m_ui->listWidget->selectionModel()->blockSignals(true);
+	m_ui->listWidgetSupply->blockSignals(true);
+	m_ui->listWidgetSupply->selectionModel()->blockSignals(true);
 	m_ui->comboBoxSupplyType->blockSignals(true);
-	m_ui->listWidget->setSortingEnabled(false);
-	m_ui->listWidget->clear();
+	m_ui->listWidgetSupply->setSortingEnabled(false);
+	m_ui->listWidgetSupply->clear();
 
 	// select network
-	std::map<unsigned int, const VICUS::GenericNetwork*> networks = dynamic_cast<SVPropBuildingSurfaceHeatingWidget*>
-			(parent()) ->genericNetworks();
+	const std::vector<VICUS::ExternalSupply> &supplies = project().m_externalSupplies;
 
 	// add all networks to dialog
-	for (std::map<unsigned int, const VICUS::GenericNetwork*>::const_iterator
-		 networkIt = networks.begin();
-		 networkIt != networks.end(); ++networkIt) {
+	for (const VICUS::ExternalSupply &supply : supplies) {
 		// add new network
 		QListWidgetItem * item = new QListWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(networkIt->second->m_displayName);
-		item->setData(Qt::UserRole,networkIt->first);
-		m_ui->listWidget->addItem(item);
+		item->setText(supply.m_displayName);
+		item->setData(Qt::UserRole,supply.m_id);
+		m_ui->listWidgetSupply->addItem(item);
 	}
 
-	m_ui->listWidget->setSortingEnabled(true);
+	m_ui->listWidgetSupply->setSortingEnabled(true);
 	// set invalid supply type
-	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
 
-	m_ui->listWidget->blockSignals(false);
-	m_ui->listWidget->selectionModel()->blockSignals(false);
+	m_ui->listWidgetSupply->blockSignals(false);
+	m_ui->listWidgetSupply->selectionModel()->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(false);
 	m_ui->comboBoxSupplyType->blockSignals(false);
 }
 
 
-void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
+unsigned int SVExternalSupplySelectionDialog::externalSupplyId()
+{
+	if(m_current == nullptr)
+		return VICUS::INVALID_ID;
+
+	return m_current->m_id;
+}
+
+
+void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 {
 	// disable ok button if selection is empty
-	const QItemSelection &selection = m_ui->listWidget->selectionModel()->selection();
+	const QItemSelection &selection = m_ui->listWidgetSupply->selectionModel()->selection();
 
 	if (selection.isEmpty()) {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 		// set invalid supply type
-		m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::GenericNetwork::NUM_ST);
+		m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 		m_ui->comboBoxSupplyType->setEnabled(false);
+		// set current null ptr
+		m_current = nullptr;
 	}
 	else {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 		// store ID of selected zone
-		const QModelIndex &index = selection.indexes().front();
+		const QModelIndexList &indexList = selection.indexes();
+		const QModelIndex &index = indexList.front();
 
 		// select network
-		unsigned int idNetwork = (unsigned int) m_ui->listWidget->item(index.row())->data(Qt::UserRole).toInt();
-		// find network
-		m_current = dynamic_cast<const VICUS::GenericNetwork *> (project().objectById(idNetwork));
+		unsigned int idSupply = (unsigned int) m_ui->listWidgetSupply->item(index.row())->data(Qt::UserRole).toInt();
+		// find selected external supply object
+		m_current = nullptr;
+		for(const VICUS::ExternalSupply &supplyObj : project().m_externalSupplies) {
+			if(supplyObj.m_id == idSupply) {
+				m_current = &supplyObj;
+				break;
+			}
+		}
 		Q_ASSERT(m_current != nullptr);
 
 		m_ui->comboBoxSupplyType->setEnabled(true);
@@ -137,11 +152,19 @@ void SVNetworkSelectionDialog::on_listWidget_itemSelectionChanged()
 }
 
 
-void SVNetworkSelectionDialog::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QListWidgetItem *item)
 {
 	// store ID of selected network
-	unsigned int idNetwork = (unsigned int) item->data(Qt::UserRole).toInt();
-	m_current = dynamic_cast<const VICUS::GenericNetwork *>	(project().objectById(idNetwork));
+	unsigned int idSupply = (unsigned int) item->data(Qt::UserRole).toInt();
+
+	// find selected external supplöy object
+	m_current = nullptr;
+	for(const VICUS::ExternalSupply &supplyObj : project().m_externalSupplies) {
+		if(supplyObj.m_id == idSupply) {
+			m_current = &supplyObj;
+			break;
+		}
+	}
 	Q_ASSERT(m_current != nullptr);
 
 	// update combo box
@@ -153,8 +176,8 @@ void SVNetworkSelectionDialog::on_listWidget_itemDoubleClicked(QListWidgetItem *
 
 
 
-void SVNetworkSelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
-	// set generic network supply type
+void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
+	// set supply type
 
 
 	//	Q_ASSERT(m_current != nullptr);

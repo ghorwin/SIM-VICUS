@@ -40,8 +40,8 @@ namespace VICUS {
 		"Construction::InsulationKind",
 		"Construction::MaterialKind",
 		"EPDDataset::para_t",
-		"GenericNetwork::supplyType_t",
-		"GenericNetwork::para_t",
+		"ExternalSupply::supplyType_t",
+		"ExternalSupply::para_t",
 		"Infiltration::para_t",
 		"Infiltration::AirChangeType",
 		"InterfaceHeatConduction::modelType_t",
@@ -170,14 +170,14 @@ namespace VICUS {
 				case 6 : return "PENRT";
 				case 7 : return "PERT";
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return "StandAlone";
 				case 1 : return "DatabaseFMU";
 				case 2 : return "UserDefinedFMU";
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "MaximumMassFlux";
@@ -667,14 +667,14 @@ namespace VICUS {
 				case 6 : return "PENRT";
 				case 7 : return "PERT";
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return "StandAlone";
 				case 1 : return "DatabaseFMU";
 				case 2 : return "UserDefinedFMU";
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "MaximumMassFlux";
@@ -1165,14 +1165,14 @@ namespace VICUS {
 				case 6 : return "Total use of non-renewable primary energy resources.";
 				case 7 : return "Total use of renewable primary energy resources .";
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return "Stand-alone mode with given mass flux and suppply temperature";
 				case 1 : return "Supply FMU loaded from a database and parametrized by the user";
 				case 2 : return "User defined supply FMU";
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "Maximum mass flux into the network, needed for pump control";
@@ -1662,14 +1662,14 @@ namespace VICUS {
 				case 6 : return "W/mK";
 				case 7 : return "W/mK";
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return "";
 				case 1 : return "";
 				case 2 : return "";
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "kg/s";
@@ -2159,14 +2159,14 @@ namespace VICUS {
 				case 6 : return "#FFFFFF";
 				case 7 : return "#FFFFFF";
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
 				case 1 : return "#FFFFFF";
 				case 2 : return "#FFFFFF";
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return "#FFFFFF";
@@ -2656,14 +2656,14 @@ namespace VICUS {
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
 				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
 				case 1 : return std::numeric_limits<double>::quiet_NaN();
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 :
 			switch (t) {
 				case 0 : return std::numeric_limits<double>::quiet_NaN();
@@ -3103,9 +3103,9 @@ namespace VICUS {
 			case 3 : return 7;
 			// EPDDataset::para_t
 			case 4 : return 8;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 : return 3;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 : return 4;
 			// Infiltration::para_t
 			case 7 : return 2;
@@ -3229,9 +3229,9 @@ namespace VICUS {
 			case 3 : return 6;
 			// EPDDataset::para_t
 			case 4 : return 7;
-			// GenericNetwork::supplyType_t
+			// ExternalSupply::supplyType_t
 			case 5 : return 2;
-			// GenericNetwork::para_t
+			// ExternalSupply::para_t
 			case 6 : return 3;
 			// Infiltration::para_t
 			case 7 : return 1;

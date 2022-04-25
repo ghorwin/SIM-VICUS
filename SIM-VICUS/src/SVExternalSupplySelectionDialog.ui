@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SVNetworkSelectionDialog</class>
- <widget class="QDialog" name="SVNetworkSelectionDialog">
+ <class>SVExternalSupplySelectionDialog</class>
+ <widget class="QDialog" name="SVExternalSupplySelectionDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select network</string>
+   <string>Select supply</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
@@ -40,7 +40,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QListWidget" name="listWidget"/>
+     <widget class="QListWidget" name="listWidgetSupply"/>
     </item>
     <item row="0" column="1">
      <widget class="QGroupBox" name="groupBox">
@@ -51,7 +51,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Network properties</string>
+       <string>Supply properties</string>
       </property>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
@@ -85,7 +85,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>SVNetworkSelectionDialog</receiver>
+   <receiver>SVExternalSupplySelectionDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -101,7 +101,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>SVNetworkSelectionDialog</receiver>
+   <receiver>SVExternalSupplySelectionDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
