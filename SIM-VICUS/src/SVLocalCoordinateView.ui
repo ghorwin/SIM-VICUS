@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>739</width>
-    <height>58</height>
+    <width>527</width>
+    <height>40</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,11 +24,26 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
+    <width>600</width>
     <height>16777215</height>
    </size>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>5</number>
+   </property>
+   <property name="leftMargin">
+    <number>4</number>
+   </property>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>4</number>
+   </property>
+   <property name="bottomMargin">
+    <number>4</number>
+   </property>
    <item>
     <widget class="QToolButton" name="toolButtonAlignCoordinateSystem">
      <property name="toolTip">
@@ -98,8 +113,8 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
@@ -187,8 +202,8 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>32</width>
-       <height>32</height>
+       <width>24</width>
+       <height>24</height>
       </size>
      </property>
      <property name="text">
