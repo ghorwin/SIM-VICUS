@@ -1,0 +1,2 @@
+VICUS room id	NANDRAD room id	VICUS room name	NANDRAD room name	zone template id	zone template name
+VICUS component instance id	NANDRAD construction instance id
