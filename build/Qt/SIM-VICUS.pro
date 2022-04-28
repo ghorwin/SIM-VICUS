@@ -59,7 +59,7 @@ DummyImportPlugin.file = ../../plugins/DummyImportPlugin/projects/Qt/DummyImport
 NandradSolver.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradSolverFMI.depends = NandradModel DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 NandradCodeGenerator.depends = IBK Nandrad QtExt TiCPP
-SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader
+SIM-VICUS.depends = QuaZIP qwt Vicus Nandrad IBK TiCPP CCM QtExt Zeppelin IDFReader Shading DataIO
 NandradFMUGenerator.depends = IBK Nandrad QtExt QuaZIP TiCPP
 
 CCM.depends = IBK TiCPP
@@ -73,7 +73,7 @@ IntegratorFramework.depends = IBK IBKMK sundials SuiteSparse
 sundials.depends = SuiteSparse
 Nandrad.depends = IBK TiCPP IBKMK
 Zeppelin.depends = IBK
-Vicus.depends = IBK TiCPP Nandrad IBKMK
+Vicus.depends = IBK TiCPP Nandrad IBKMK CCM
 NandradModel.depends = DataIO CCM TiCPP IBK IntegratorFramework Nandrad IBKMK
 DummyDatabasePlugin.depends = Vicus
 DummyImportPlugin.depends = Vicus
