@@ -182,8 +182,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "MaximumMassFlux";
 				case 1 : return "SupplyTemperature";
-				case 2 : return "MaximumMassFlux";
-				case 3 : return "MaximumHeatingPower";
+				case 2 : return "MaximumMassFluxFMU";
+				case 3 : return "HeatingPowerFMU";
 			} break;
 			// Infiltration::para_t
 			case 7 :
@@ -679,8 +679,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "MaximumMassFlux";
 				case 1 : return "SupplyTemperature";
-				case 2 : return "MaximumMassFlux";
-				case 3 : return "MaximumHeatingPower";
+				case 2 : return "MaximumMassFluxFMU";
+				case 3 : return "HeatingPowerFMU";
 			} break;
 			// Infiltration::para_t
 			case 7 :
@@ -1177,8 +1177,8 @@ namespace VICUS {
 			switch (t) {
 				case 0 : return "Maximum mass flux into the network, needed for pump control";
 				case 1 : return "Constant supply temeprature";
-				case 2 : return "Maximum mass flux towards the boiler.";
-				case 3 : return "Maximum heating power";
+				case 2 : return "Maximum mass flux towards the building.";
+				case 3 : return "Procuder heating power";
 			} break;
 			// Infiltration::para_t
 			case 7 :

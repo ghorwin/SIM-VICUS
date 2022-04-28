@@ -27,12 +27,14 @@
 //#include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "ui_SVExternalSupplySelectionDialog.h"
 
+#include <QFileDialog>
 #include <QItemSelectionModel>
 #include <QListWidgetItem>
 #include <QPushButton>
 
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
+#include "SVUndoModifyExternalSupply.h"
 
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Project.h>
@@ -58,6 +60,14 @@ SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
+	// simply deactivate staggered widget
+	m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
+
+	// set all minimum and maximum value
+	m_ui->doubleSpinBoxMaxMassFlux->setMinimum(0.0);
+	m_ui->doubleSpinBoxSupplyTemp->setMinimum(0.0);
+	m_ui->doubleSpinBoxMaxMassFluxFMU->setMinimum(0.0);
+	m_ui->doubleSpinBoxHeatingPowerFMU->setMinimum(0.0);
 
 	// update dialog
 	updateUi();
@@ -95,14 +105,87 @@ void SVExternalSupplySelectionDialog::updateUi()
 	m_ui->listWidgetSupply->setSortingEnabled(true);
 	// set invalid supply type
 	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
-	// and deactivate box
+	// and activate supply type box
 	m_ui->comboBoxSupplyType->setEnabled(false);
+	// deactivate stacked widget
+	m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
 
+	// activate list widget for choice
 	m_ui->listWidgetSupply->blockSignals(false);
 	m_ui->listWidgetSupply->selectionModel()->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(false);
 	m_ui->buttonBox->button(QDialogButtonBox::Cancel)->blockSignals(false);
 	m_ui->comboBoxSupplyType->blockSignals(false);
+}
+
+
+void SVExternalSupplySelectionDialog::updateCurrent()
+{
+	Q_ASSERT(m_current != nullptr);
+
+	m_ui->comboBoxSupplyType->setEnabled(true);
+	m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
+
+
+	// enable stagged widget
+	m_ui->stackedWidgetSupply->blockSignals(true);
+
+	// choose page in staggered widget for suitable parametrization
+	switch(m_current->m_supplyType) {
+		case VICUS::ExternalSupply::ST_StandAlone:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageStandAlone);
+		break;
+		case VICUS::ExternalSupply::ST_DatabaseFMU:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageDatabaseFMU);
+		break;
+		case VICUS::ExternalSupply::ST_UserDefinedFMU:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageUserDefinedFMU);
+		break;
+		default: break;
+	}
+
+	// set FMU file path
+	if(m_current->m_supplyFMUPath.isEmpty()) {
+		m_ui->lineEditSupplyFMUName->clear();
+	}
+	else {
+		QFileInfo supplyFMUInfo(m_current->m_supplyFMUPath);
+		m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
+	}
+
+	// set all defined parameters (0 otherwise):
+	// maximum mass flux
+	if(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].name.empty()) {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+	}
+	else {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].value);
+	}
+	// supply temperature
+	if(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].name.empty()) {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+	}
+	else {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].value);
+	}
+	// FMU maximum mass flux
+	if(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].name.empty()) {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+	}
+	else {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].value);
+	}
+	// FMU heating power
+	if(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].name.empty()) {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+	}
+	else {
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].value);
+	}
+
+	// enable stagged widget
+	m_ui->stackedWidgetSupply->setEnabled(true);
+	m_ui->stackedWidgetSupply->blockSignals(false);
 }
 
 
@@ -123,7 +206,8 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 	if (selection.isEmpty()) {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 		// set invalid supply type
-		m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
+		on_comboBoxSupplyType_currentIndexChanged(VICUS::ExternalSupply::NUM_ST);
+		// deactivate supply type widget
 		m_ui->comboBoxSupplyType->setEnabled(false);
 		// set current null ptr
 		m_current = nullptr;
@@ -146,8 +230,8 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 		}
 		Q_ASSERT(m_current != nullptr);
 
-		m_ui->comboBoxSupplyType->setEnabled(true);
-		m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
+		// update all views
+		updateCurrent();
 	}
 }
 
@@ -171,6 +255,9 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QLis
 	m_ui->comboBoxSupplyType->setEnabled(true);
 	m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
 
+	// change staggered widget
+	on_comboBoxSupplyType_currentIndexChanged(m_current->m_supplyType);
+
 	accept();
 }
 
@@ -178,27 +265,218 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QLis
 
 void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
 	// set supply type
+	Q_ASSERT(m_current != nullptr);
+
+	// invalid type
+	if(index == VICUS::ExternalSupply::NUM_ST) {
+		// simply deactivate staggered widget
+		m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
+		return;
+	}
+
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set supply type
+	supply.m_supplyType = (VICUS::ExternalSupply::supplyType_t) index;
+
+	switch(supply.m_supplyType) {
+		case VICUS::ExternalSupply::ST_StandAlone:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageStandAlone);
+		break;
+		case VICUS::ExternalSupply::ST_DatabaseFMU:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageDatabaseFMU);
+		break;
+		case VICUS::ExternalSupply::ST_UserDefinedFMU:
+			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageUserDefinedFMU);
+		break;
+		default: break;
+	}
+
+	// find external supply index in project
+	unsigned int idx = 0;
+	for(; idx < project().m_externalSupplies.size(); ++idx) {
+		if(project().m_externalSupplies[idx].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(idx < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), idx, supply);
+	undo->push();
+}
 
 
-	//	Q_ASSERT(m_current != nullptr);
-	//	// update database but only if different from original
-	//	if (index != (int)m_current->m_heatConduction.m_modelType) {
-	//		m_current->m_heatConduction.m_modelType = static_cast<VICUS::InterfaceHeatConduction::modelType_t>(index);
-	//		if (m_current->m_heatConduction.m_modelType == VICUS::InterfaceHeatConduction::NUM_MT)
-	//			m_current->m_heatConduction = VICUS::InterfaceHeatConduction(); // reset entire object
-	//		modelModify();
-	//	}
-	//	// by default disable all inputs
-	//	m_ui->labelHeatTransferCoefficient->setEnabled(false);
-	//	m_ui->lineEditHeatTransferCoefficient->setEnabled(false);
-	//	// enable/disable inputs based on selected model type, but only if our groupbox itself is enabled
-	//	if (m_ui->groupBoxHeatTransfer->isEnabled()) {
-	//		switch (m_current->m_heatConduction.m_modelType) {
-	//			case VICUS::InterfaceHeatConduction::MT_Constant:
-	//				m_ui->labelHeatTransferCoefficient->setEnabled(true);
-	//				m_ui->lineEditHeatTransferCoefficient->setEnabled(true);
-	//			break;
-	//			case VICUS::InterfaceHeatConduction::NUM_MT: break;
-	//		}
-	//	}
+void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFlux_valueChanged(double val)
+{
+	Q_ASSERT(m_current != nullptr);
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set values
+	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFlux];
+	IBK::Unit unit("kg/s");
+	if(para.name.empty()) {
+		std::string errmsg;
+		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFlux),
+				 val, unit);
+	}
+	else {
+		para.set(val, unit);
+	}
+
+	// find external supply index in project
+	unsigned int index = 0;
+	for(; index < project().m_externalSupplies.size(); ++index) {
+		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(index < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	undo->push();
+}
+
+
+void SVExternalSupplySelectionDialog::on_doubleSpinBoxSupplyTemp_valueChanged(double val)
+{
+	Q_ASSERT(m_current != nullptr);
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set values
+	IBK::Unit unit("C");
+
+	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_SupplyTemperature];
+	if(para.name.empty()) {
+		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_SupplyTemperature),
+				 val, unit);
+	}
+	else {
+		para.set(val, unit);
+	}
+
+	// find external supply index in project
+	unsigned int index = 0;
+	for(; index < project().m_externalSupplies.size(); ++index) {
+		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(index < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	undo->push();
+}
+
+
+void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
+{
+	Q_ASSERT(m_current != nullptr);
+	// move input focus away from any input fields (to allow editingFinished() events to fire)
+	setFocus();
+
+	// request file name
+	QString filename = QFileDialog::getOpenFileName(
+							this,
+							tr("Select supply FMU path"),
+							nullptr,
+							tr("Functional mockup interface (*.fmu)"), nullptr,
+							SVSettings::instance().m_dontUseNativeDialogs ? QFileDialog::DontUseNativeDialog : QFileDialog::Options()
+						);
+
+	if (filename.isEmpty()) return;
+
+	QFile f1(filename);
+	if (!f1.exists()) {
+		QMessageBox::critical(
+					this,
+					tr("FMU path not found"),
+					tr("The FMU path '%1' does not exist or cannot be accessed.").arg(filename)
+			);
+		return;
+	}
+
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set fmu path
+	supply.m_supplyFMUPath = filename;
+
+	// find external supply index in project
+	unsigned int index = 0;
+	for(; index < project().m_externalSupplies.size(); ++index) {
+		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(index < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	undo->push();
+}
+
+
+void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFluxFMU_valueChanged(double val)
+{
+	Q_ASSERT(m_current != nullptr);
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set values
+	IBK::Unit unit("C");
+
+	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU];
+	if(para.name.empty()) {
+		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFluxFMU),
+				 val, unit);
+	}
+	else {
+		para.set(val, unit);
+	}
+
+	// find external supply index in project
+	unsigned int index = 0;
+	for(; index < project().m_externalSupplies.size(); ++index) {
+		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(index < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed FMU maximum mass flux towards building"), index, supply);
+	undo->push();
+}
+
+
+void SVExternalSupplySelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChanged(double val)
+{
+	Q_ASSERT(m_current != nullptr);
+	// retrieve a copy of current data
+	VICUS::ExternalSupply supply = *m_current;
+	// set values
+	IBK::Unit unit("kW");
+
+	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_HeatingPowerFMU];
+	if(para.name.empty()) {
+		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_HeatingPowerFMU),
+				 val, unit);
+	}
+	else {
+		para.set(val, unit);
+	}
+
+	// find external supply index in project
+	unsigned int index = 0;
+	for(; index < project().m_externalSupplies.size(); ++index) {
+		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+			break;
+	}
+
+	Q_ASSERT(index < project().m_externalSupplies.size());
+
+	// undo action
+	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed FMU heating power"), index, supply);
+	undo->push();
 }

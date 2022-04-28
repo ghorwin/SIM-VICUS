@@ -70,8 +70,8 @@ KeywordListQt::KeywordListQt() {
 	tr("User defined supply FMU");
 	tr("Maximum mass flux into the network, needed for pump control");
 	tr("Constant supply temeprature");
-	tr("Maximum mass flux towards the boiler.");
-	tr("Maximum heating power");
+	tr("Maximum mass flux towards the building.");
+	tr("Procuder heating power");
 	tr("Air change rate");
 	tr("Shielding coefficient for n50 value");
 	tr("normal");

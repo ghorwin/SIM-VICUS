@@ -31,8 +31,8 @@ public:
 	enum para_t {
 		P_MaximumMassFlux,			// Keyword: MaximumMassFlux			[kg/s]	'Maximum mass flux into the network, needed for pump control'
 		P_SupplyTemperature,		// Keyword: SupplyTemperature		[C]		'Constant supply temeprature'
-		P_MaximumMassFluxFMU,		// Keyword: MaximumMassFlux			[kg/s]	'Maximum mass flux towards the boiler.'
-		P_MaximumHeatingPowerFMU,	// Keyword: MaximumHeatingPower		[W]		'Maximum heating power'
+		P_MaximumMassFluxFMU,		// Keyword: MaximumMassFluxFMU		[kg/s]	'Maximum mass flux towards the building.'
+		P_HeatingPowerFMU,			// Keyword: HeatingPowerFMU			[W]		'Procuder heating power'
 		NUM_P
 	};
 	/*! FMU parameters.
