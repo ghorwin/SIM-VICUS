@@ -49,8 +49,11 @@ public:
 	explicit SVExternalSupplySelectionDialog(QWidget *parent = nullptr);
 	~SVExternalSupplySelectionDialog();
 
-	/*! Updates user interface. */
+	/*! Updates complete dialog. */
 	void updateUi();
+
+	/*! Updates current supply. */
+	void updateCurrent();
 
 	/*! Returns external supply object id, if an object is chosen, INVALID_ID otherwise. */
 	unsigned int externalSupplyId();
@@ -61,6 +64,16 @@ private slots:
 	void on_listWidgetSupply_itemDoubleClicked(QListWidgetItem *item);
 
 	void on_comboBoxSupplyType_currentIndexChanged(int index);
+
+	void on_doubleSpinBoxMaxMassFlux_valueChanged(double arg1);
+
+	void on_doubleSpinBoxSupplyTemp_valueChanged(double arg1);
+
+	void on_pushButtonFMUPath_clicked();
+
+	void on_doubleSpinBoxMaxMassFluxFMU_valueChanged(double arg1);
+
+	void on_doubleSpinBoxHeatingPowerFMU_valueChanged(double arg1);
 
 private:
 	Ui::SVExternalSupplySelectionDialog	*m_ui;
