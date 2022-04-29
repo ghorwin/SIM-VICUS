@@ -146,21 +146,22 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 	double widthWinPre		= inputData.m_width;
 	double heightSill		= inputData.m_windowSillHeight;
 
+	// tests only for "by percentage"
 	if (inputData.m_byPercentage) {
 		if (wallWindowRatio > 1 || wallWindowRatio <=0 ) {
 			errorMsg = tr("Percentage value is out of range!");
 			return false;
 		}
 	}
-	else {
-		if (heightWinPre < 0 || widthWinPre < 0 || heightSill < 0) {
-			errorMsg = tr("Only positive values for parameters allowed!");
-			return false;
-		}
-		if (heightWinPre <= 0.01 || widthWinPre <= 0.01) {
-			errorMsg = tr("Height and width must be both > 0.01 m!");
-			return false;
-		}
+
+	// tests for all generation variants
+	if (heightWinPre < 0 || widthWinPre < 0 || heightSill < 0) {
+		errorMsg = tr("Only positive values for parameters allowed!");
+		return false;
+	}
+	if (heightWinPre <= 0.01 || widthWinPre <= 0.01) {
+		errorMsg = tr("Height and width must be both > 0.01 m!");
+		return false;
 	}
 
 	// process all selected surfaces
@@ -172,8 +173,6 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			IBK::IBK_Message(IBK::FormatString("Invalid geometry of surface #%1").arg(s->m_id), IBK::MSG_WARNING, FUNC_ID);
 			continue;
 		}
-
-		m_generatedSurfaces.push_back(surfacePoly);
 
 		// get normal
 		IBKMK::Vector3D n = surfacePoly.normal();
@@ -268,45 +267,48 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			double areaSurface		= surfacePoly.area();
 #endif
 
-
 			double areaWindow = areaSurface * wallWindowRatio;	// in m2
 
-			// input checks
-			if (widthSurface <= 0.02 || heightSurface <= 0.02) {
-				IBK::IBK_Message(IBK::FormatString("Surface dimensions too small (%1 x %2), skipped.")
-								 .arg(widthSurface).arg(heightSurface), IBK::MSG_WARNING, FUNC_ID);
-				continue;
-			}
-
 			// some constant variables
-			double dMin = 0.01;			// minimum distance between one window edge and another window or surface edge
-			double heightWinMax1 = heightSurface - 2 * dMin;
-			double widthWinMax = widthSurface - 2 * dMin;
+			// Note: we checked for heightSurface > 2*minDistance etc. before
+			double heightWinMax1 = heightSurface - 2 * minDistance;
+			double widthWinMax = widthSurface - 2 * minDistance;
 
-			int count = std::max<int>(1, std::floor((widthSurface - dMin) / (widthWinPre + dMin)));
-			widthWinMax = (widthSurface - dMin *( count + 1 )) / count;
+			// compute the number of windows based on given window width
+			// TODO : Dirk - why split only horizontally? For very tall walls with prio "height = 1", this gives stupid results...
+
+			// we split the wall into | gap | window | gap | window | gap |, where
+			// 'gap = minDistance' and 'window = widthWinPre'
+			unsigned int count = std::max<unsigned int>(1, (unsigned int)std::floor((widthSurface - minDistance) / (widthWinPre + minDistance)));
+			// since we have rounded down, we recompute the window's width from equation:
+			//
+			//   totalWidth = (count+1)*gap + count*window
+			//
+			widthWinMax = (widthSurface - (count + 1)*minDistance) / count;
 
 			// result variables
 			double heightWin, widthWin;
 
 			// only for information
-			double wwrError = 0;
+			double wwrError;
 
 			// checks
-			if( heightWinPre > heightWinMax1 )	heightWinPre = heightWinMax1;
-			if( widthWinPre > widthWinMax )		widthWinPre = widthWinMax;
+			/// TODO : Dirk, are these really necessary -> see checks hMax and wMax above!
+			///        introduce meaningful variables (using a sketch) and define variables only once
+			if (heightWinPre > heightWinMax1 )	heightWinPre = heightWinMax1;
+			if (widthWinPre > widthWinMax )		widthWinPre = widthWinMax;
 
-			switch(prio){
-				case Height:{
-
+			// we keep precomputed count, but adjust geometry based on prio
+			switch (prio){
+				case Height: {
 					heightWin = std::min(heightWinPre, heightWinMax1);
-					double areaSurfaceMax = (widthSurface - 2 * dMin) * heightWin;
+					double areaSurfaceMax = (widthSurface - 2 * minDistance) * heightWin;
 
-					if(areaSurfaceMax > areaWindow){
+					if (areaSurfaceMax > areaWindow){
 						widthWin = areaWindow / ( heightWin * count);
 					}
-					else{
-						widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+					else {
+						widthWin = ( widthSurface - (count + 1) * minDistance ) / count;
 						heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
 					}
 				}
@@ -328,24 +330,23 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 				break;
 				case SillHeight:{
 					// Priority 1 sill height
-					if(inputData.m_priorities[2] < inputData.m_priorities[1] &&
-							inputData.m_priorities[2] < inputData.m_priorities[0]){
+					if (inputData.m_priorities[2] < inputData.m_priorities[1] && inputData.m_priorities[2] < inputData.m_priorities[0]) {
 						// Priority 2 window height
-						double heightWinMax2 = heightSurface - dMin - heightSill;
+						double heightWinMax2 = heightSurface - minDistance - heightSill;
 						// This area is calculated from the width and height minus the sill height
-						double areaSurfaceSill = (widthSurface - 2 * dMin) * heightWinMax2;
+						double areaSurfaceSill = (widthSurface - 2 * minDistance) * heightWinMax2;
 
 						// height is next prio
 						if(inputData.m_priorities[0] > inputData.m_priorities[1] ){
 							/// TODO Dirk das wäre die ganz normale Berechnung für die
 							/// Höhe als oberste Priorität
 							heightWin = std::min(heightWinPre, heightWinMax2);
-							areaSurfaceSill = (widthSurface - 2 * dMin) * heightWin;
+							areaSurfaceSill = (widthSurface - 2 * minDistance) * heightWin;
 							if(areaSurfaceSill > areaWindow){
 								widthWin = areaWindow / ( heightWin * count);
 							}
 							else{
-								widthWin = ( widthSurface - (count + 1) * dMin ) / count;
+								widthWin = ( widthSurface - (count + 1) * minDistance ) / count;
 								heightWin = std::min(heightWinMax1, areaWindow / ( widthWin * count));
 							}
 						}
@@ -384,6 +385,10 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 								}
 							}
 						}
+					}
+					else {
+						/// TODO : Dirk, else case is missing
+						continue;
 					}
 				}
 				break;
@@ -434,6 +439,15 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 			}
 */
 		}
+
+		// no windows generated? skip surface
+		if (windows.empty())
+			continue;
+
+		// successfully generated windows
+
+		// add surface
+		m_generatedSurfaces.push_back(surfacePoly);
 
 		// add the windows to the surface as subsurfaces
 		// Mind: each of the generated window surfaces may result in an invalid subsurface, because it may lie
