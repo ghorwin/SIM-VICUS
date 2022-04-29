@@ -31,7 +31,6 @@
         <file>gfx/actions/64x64/Wavy_checkered_flag.svg</file>
         <file>gfx/actions/32x32/CCMEditor_32.png</file>
         <file>gfx/actions/64x64/projectProperties.png</file>
-        <file>gfx/splashscreen/SIM-VICUS.jpg</file>
         <file>gfx/actions/48x48/geometry.png</file>
         <file>gfx/actions/16x16/help-hint.png</file>
         <file>gfx/actions/16x16/help-hint_gray.png</file>
@@ -66,7 +65,6 @@
         <file>gfx/actions/24x24/alignCoordinateSystem.png</file>
         <file>gfx/actions/24x24/left.png</file>
         <file>gfx/actions/24x24/right.png</file>
-        <file>gfx/splashscreen/SIM-VICUS-Logo-Draft.png</file>
         <file>gfx/actions/layers.png</file>
         <file>gfx/actions/3d-cube.png</file>
         <file>gfx/actions/resize.png</file>
