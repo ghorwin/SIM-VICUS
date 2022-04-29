@@ -216,16 +216,6 @@ private:
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
 
-	/*! Applies current translation (from selected geometry object) into project. */
-	void translate();
-
-	/*! Applies current scaling (from selected geometry object) into project. */
-	void scale();
-
-	/*! Applies current rotation (from selected geometry object) into project. */
-	void rotate();
-
-
 	/*! Contains position and rotation of local coordinate system (lcs) object. */
 	Vic3D::Transform3D					m_lcsTransform;
 

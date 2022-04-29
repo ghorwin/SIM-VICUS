@@ -852,300 +852,6 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 }
 
 
-void SVPropEditGeometry::translate() {
-	// get translation vector from selected geometry object
-	IBKMK::Vector3D translation = QVector2IBKVector(m_lcsTransform.translation());
-
-	if (translation == IBKMK::Vector3D())
-		return;
-
-	// compose vector of modified surface geometries
-	std::vector<VICUS::Surface>			modifiedSurfaces;
-	std::set<VICUS::Surface*>			handledSurfaces;
-
-	// process all selected objects
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
-		// ======= SURFACE IS TRANSLATED =======
-		// handle surfaces
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s != nullptr) {
-			VICUS::Surface modS(*s);
-			const_cast<VICUS::Polygon3D&>(modS.geometry().polygon3D()).translate(translation);
-			modifiedSurfaces.push_back(modS);
-		}
-
-		// TODO : Netzwerk-Transformationen
-
-		// ======= SUB SURFACE IS TRANSLATED =======
-		// handle only selected sub surfaces where parent is not selected
-		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
-		if (ss != nullptr) {
-
-			// we keep our original surface
-			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
-			if (parentSurf != nullptr && parentSurf->m_selected && parentSurf->m_visible)
-				continue; // no parent exits, should not really happen
-
-			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
-				continue; // surface already handled
-
-			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
-			VICUS::Surface modS(*parentSurf);
-
-			// we cache our polygon data for easier access
-			IBKMK::Vector3D offset3d = modS.geometry().offset();
-			const IBKMK::Vector3D &localX = modS.geometry().localX();
-			const IBKMK::Vector3D &localY = modS.geometry().localY();
-
-			// holds our newly translated subsurfaces
-			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
-
-			// now we also have to scale the sub surfaces
-			for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
-
-				// sub surfaces and holes have to have the same sice!
-				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
-				newSubSurfs[i] = modS.subSurfaces()[i];
-
-				// skip deselected and invisible surfaces
-				if (!modS.subSurfaces()[i].m_selected || !modS.subSurfaces()[i].m_visible)
-					continue;
-
-				// we only modify our selected sub surface
-				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
-				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
-
-				// now we handle all our sub surfaces
-				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
-					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
-
-					// we now calculate the 3D points of the sub surface
-					// afterwards we scale up the surface
-					IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
-
-					Vic3D::Transform3D t;
-					t.translate(IBKVector2QVector(translation) );
-					// we translate the point in 3D space
-					t.setTranslation(t.toMatrix()*IBKVector2QVector(v3D) );
-					v3D = QVector2IBKVector(t.translation() );
-
-					// and we calculate back the projection on the plane
-					// we have to take the offset of our new scaled polygon
-					IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
-
-				}
-
-				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-			}
-			// we cache that we already handled all selected sub surfaces of the surface
-			handledSurfaces.insert(parentSurf);
-
-			// we update the 2D polyline
-			modS.setSubSurfaces(newSubSurfs);
-
-
-			modifiedSurfaces.push_back(modS);
-		}
-	}
-
-	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
-	return;
-
-	SVUndoModifySurfaceGeometry * undoSurf = new SVUndoModifySurfaceGeometry(tr("Translated surface geometry"), modifiedSurfaces );
-	undoSurf->push();
-
-	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
-}
-
-
-void SVPropEditGeometry::scale() {
-#if 0
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-	// we now apply the already specified transformation
-	// get translation and scale vector from selected geometry object
-	IBKMK::Vector3D scale = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.scale());
-	IBKMK::Vector3D trans = QVector2IBKVector(SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation());
-
-	if (scale == IBKMK::Vector3D() || scale == IBKMK::Vector3D(1,1,1) )
-		return;
-	QVector3D transLCSO = m_lcsTransform.translation();
-
-	// compose vector of modified surface geometries
-	std::vector<VICUS::Surface>			modifiedSurfaces;
-	std::set<const VICUS::Surface*>		handledSurfaces;
-
-	// process all selected objects
-	for (const VICUS::Object * o : SVViewStateHandler::instance().m_selectedGeometryObject->m_selectedObjects) {
-		// handle surfaces
-		const VICUS::Surface * s = dynamic_cast<const VICUS::Surface *>(o);
-		if (s != nullptr) {
-			std::vector<IBKMK::Vector3D> vertexes = s->polygon3D().vertexes();
-			for ( IBKMK::Vector3D & v : vertexes ) {
-				// use just this instead of making a QVetor3D
-				Vic3D::Transform3D t;
-				t.scale(IBKVector2QVector(scale) );
-				t.translate(IBKVector2QVector(trans) );
-				t.setTranslation(t.toMatrix()*IBKVector2QVector(v) );
-				v = QVector2IBKVector(t.translation());
-			}
-			VICUS::Surface modS(*s);
-
-			modS.setPolygon3D( VICUS::Polygon3D(vertexes) );
-
-			// we cache our poldon data
-			IBKMK::Vector3D offset3dOld = s->geometry().offset();
-			IBKMK::Vector3D offset3dNew = modS.geometry().offset();
-
-			const IBKMK::Vector3D &localXOld = s->geometry().localX();
-			const IBKMK::Vector3D &localYOld = s->geometry().localY();
-
-			const IBKMK::Vector3D &localXNew = modS.geometry().localX();
-			const IBKMK::Vector3D &localYNew = modS.geometry().localY();
-
-			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
-			// now we also have to scale the sub surfaces
-			for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
-
-				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
-
-				newSubSurfs[i] = modS.subSurfaces()[i];
-				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(s->subSurfaces()[i]);
-				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
-
-				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
-					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
-
-					// we now calculate the 3D points of the sub surface
-					// afterwards we scale up the surface
-					IBKMK::Vector3D v3D = offset3dOld + localXOld * v2D.m_x + localYOld * v2D.m_y;
-
-					Vic3D::Transform3D t;
-					if (s->subSurfaces()[i].m_selected && s->subSurfaces()[i].m_visible) {
-						t.scale(IBKVector2QVector(scale) );
-						t.translate(IBKVector2QVector(trans) );
-						t.setTranslation(t.toMatrix()*IBKVector2QVector(v3D) );
-						v3D = QVector2IBKVector(t.translation() );
-					}
-					// and we calculate back the projection on the plane
-					// we have to take the offset of our new scaled polygon
-					IBKMK::planeCoordinates(offset3dNew, localXNew, localYNew, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
-
-				}
-
-				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-			}
-			// we update the 2D polyline
-			modS.setSubSurfaces(newSubSurfs);
-
-			// We update the floor area
-			if (modS.m_parent != nullptr && modS.geometry().normal().m_z < -0.707)
-				VICUS::KeywordList::setParameter(dynamic_cast<VICUS::Room*>(modS.m_parent)->m_para, "Room::para_t", VICUS::Room::P_Area, modS.geometry().area() );
-
-			modifiedSurfaces.push_back(modS);
-		}
-
-		// handle only selected sub surfaces where parent is not selected
-		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
-		if (ss != nullptr) {
-
-			VICUS::Surface *parentSurf = dynamic_cast<VICUS::Surface*>(ss->m_parent);
-			if (parentSurf != nullptr && ss->m_parent->m_selected && ss->m_parent->m_visible)
-				continue; // already handled by surface scaling
-
-			if(handledSurfaces.find(parentSurf) != handledSurfaces.end())
-				continue; // surface already handled
-
-			// parentSurf->m_selected = true; // !!!! only for now till we adjust the function !!!
-			VICUS::Surface modS(*parentSurf);
-
-			// we cache our poldon data
-			IBKMK::Vector3D offset3d = modS.geometry().offset();
-			const IBKMK::Vector3D &localX = modS.geometry().localX();
-			const IBKMK::Vector3D &localY = modS.geometry().localY();
-
-			std::vector<VICUS::SubSurface> newSubSurfs(modS.subSurfaces().size() );
-			// now we also have to scale the sub surfaces
-			for ( unsigned int i = 0; i<modS.subSurfaces().size(); ++i ) {
-
-				Q_ASSERT(modS.subSurfaces().size() == modS.geometry().holes().size());
-				newSubSurfs[i] = modS.subSurfaces()[i];
-
-				if (!modS.subSurfaces()[i].m_selected || !modS.subSurfaces()[i].m_visible)
-					continue;
-
-				// we only modify our selected sub surface
-				VICUS::SubSurface &subS = const_cast<VICUS::SubSurface &>(modS.subSurfaces()[i]);
-				std::vector<IBKMK::Vector2D> newSubSurfVertexes(subS.m_polygon2D.vertexes().size());
-
-
-				for ( unsigned int j=0; j<subS.m_polygon2D.vertexes().size(); ++j ) {
-					IBKMK::Vector2D v2D = subS.m_polygon2D.vertexes()[j];
-
-					// we now calculate the 3D points of the sub surface
-					// afterwards we scale up the surface
-					IBKMK::Vector3D v3D = offset3d + localX * v2D.m_x + localY * v2D.m_y;
-
-					Vic3D::Transform3D t;
-					t.scale(IBKVector2QVector(scale) );
-					t.translate(IBKVector2QVector(trans) );
-					t.setTranslation(t.toMatrix()*IBKVector2QVector(v3D) );
-					v3D = QVector2IBKVector(t.translation() );
-
-					// and we calculate back the projection on the plane
-					// we have to take the offset of our new scaled polygon
-					IBKMK::planeCoordinates(modS.geometry().offset(), localX, localY, v3D, newSubSurfVertexes[j].m_x, newSubSurfVertexes[j].m_y);
-				}
-
-				newSubSurfs[i].m_polygon2D = newSubSurfVertexes;
-			}
-			handledSurfaces.insert(parentSurf);
-
-			// we update the 2D polyline
-			modS.setSubSurfaces(newSubSurfs);
-			modifiedSurfaces.push_back(modS);
-		}
-
-		// TODO : Netzwerk zeugs
-	}
-
-	// ToDO Update Volumen
-
-	// in case operation was executed without any selected objects - should be prevented
-	if (modifiedSurfaces.empty())
-		return;
-
-	SVUndoModifySurfaceGeometry * undoSurf = new SVUndoModifySurfaceGeometry(tr("Scaled surface geometry."), modifiedSurfaces );
-	undoSurf->push();
-
-	// reset local transformation matrix
-	SVViewStateHandler::instance().m_selectedGeometryObject->m_transform = Vic3D::Transform3D();
-	cso->setTranslation(transLCSO);
-#endif
-}
-
-
-void SVPropEditGeometry::rotate() {
-#if 0
-	FUNCID(SVPropEditGeometry::rotate);
-	Vic3D::CoordinateSystemObject *cso = SVViewStateHandler::instance().m_coordinateSystemObject;
-
-	// we now apply the already specified transformation
-	// get rotation and scale vector from selected geometry object
-	QVector4D qrotate = SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.rotation().toVector4D();
-	// use IBKMK class to permorm rotation with IBKMK Vector3D
-	IBKMK::Quaternion rotate((double) qrotate.w(),(double) qrotate.x(),(double) qrotate.y(),(double) qrotate.z());
-	IBKMK::Vector3D trans = QVector2IBKVector( SVViewStateHandler::instance().m_selectedGeometryObject->m_transform.translation() );
-
-	if (rotate == IBKMK::Quaternion())
-		return;
-
-
-#endif
-}
-
-
 void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	// TODO
 	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
@@ -1184,6 +890,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	for (const VICUS::Surface* s : m_selSurfaces) {
 		// create a copy of the surface
 		VICUS::Surface modS(*s);
+		IBKMK::Polygon3D origPoly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
 
 		if (haveScaling) {
 			// local scaling involves translation, rotation _and_ changes to the local polyome... hence we better work
@@ -1201,9 +908,33 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 				IBK::IBK_Message("Error scaling polygon of surface.", IBK::MSG_WARNING, FUNC_ID);
 				continue;
 			}
+			// now also scale all windows within the polygon
+			// If the localX and localY vectors would not be normalized, we would already be finished.
+			// But since we normalize the localX and localY vectors, we need to scale the local subsurface polygon coordinates
 
-			// we need to update the triangulation
-			modS.setPolygon3D((VICUS::Polygon3D)poly); // this updates the triangulation
+			// simplest way is to get the bounding box (in local coordinates) before the scaling and afterwards
+			IBKMK::Vector2D lowerValuesOrig, upperValuesOrig;
+			IBKMK::Vector2D lowerValuesNew, upperValuesNew;
+			origPoly.polyline().boundingBox(lowerValuesOrig, upperValuesOrig);
+			poly.polyline().boundingBox(lowerValuesNew, upperValuesNew);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_x) > 1e-4);
+			IBK_ASSERT(std::fabs(upperValuesOrig.m_y) > 1e-4);
+			double scaleX = upperValuesNew.m_x/upperValuesOrig.m_x;
+			double scaleY = upperValuesNew.m_y/upperValuesOrig.m_y;
+
+			std::vector<VICUS::SubSurface> modSubs = modS.subSurfaces();
+			for (VICUS::SubSurface & sub : modSubs) {
+				std::vector<IBKMK::Vector2D> polyVerts = sub.m_polygon2D.vertexes();
+				for (unsigned int i=0; i<polyVerts.size(); ++i) {
+					polyVerts[i].m_x *= scaleX;
+					polyVerts[i].m_y *= scaleY;
+				}
+				// now set the new subsurface polygon
+				sub.m_polygon2D.setVertexes(polyVerts);
+			}
+
+			modS.setPolygon3D((VICUS::Polygon3D)poly);
+			modS.setSubSurfaces(modSubs);
 			modifiedSurfaces.push_back(modS);
 		}
 		else {
