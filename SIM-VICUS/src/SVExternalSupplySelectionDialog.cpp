@@ -60,8 +60,14 @@ SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
+	// add all options to staggered widget: reorder
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_StandAlone, m_ui->pageStandAlone);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_DatabaseFMU, m_ui->pageDatabaseFMU);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_UserDefinedFMU, m_ui->pageUserDefinedFMU);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::NUM_ST, m_ui->pageEmpty);
+
 	// simply deactivate staggered widget
-	m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
+	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 
 	// set all minimum and maximum value
 	m_ui->doubleSpinBoxMaxMassFlux->setMinimum(0.0);
@@ -108,7 +114,7 @@ void SVExternalSupplySelectionDialog::updateUi()
 	// and activate supply type box
 	m_ui->comboBoxSupplyType->setEnabled(false);
 	// deactivate stacked widget
-	m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
+	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 
 	// activate list widget for choice
 	m_ui->listWidgetSupply->blockSignals(false);
@@ -129,20 +135,8 @@ void SVExternalSupplySelectionDialog::updateCurrent()
 
 	// enable stagged widget
 	m_ui->stackedWidgetSupply->blockSignals(true);
-
 	// choose page in staggered widget for suitable parametrization
-	switch(m_current->m_supplyType) {
-		case VICUS::ExternalSupply::ST_StandAlone:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageStandAlone);
-		break;
-		case VICUS::ExternalSupply::ST_DatabaseFMU:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageDatabaseFMU);
-		break;
-		case VICUS::ExternalSupply::ST_UserDefinedFMU:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageUserDefinedFMU);
-		break;
-		default: break;
-	}
+	m_ui->stackedWidgetSupply->setCurrentIndex(m_current->m_supplyType);
 
 	// set FMU file path
 	if(m_current->m_supplyFMUPath.isEmpty()) {
@@ -267,30 +261,17 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
+	m_ui->stackedWidgetSupply->setCurrentIndex(index);
+
 	// invalid type
-	if(index == VICUS::ExternalSupply::NUM_ST) {
-		// simply deactivate staggered widget
-		m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageEmpty);
+	if(index == VICUS::ExternalSupply::NUM_ST)
 		return;
-	}
 
 	// retrieve a copy of current data
 	VICUS::ExternalSupply supply = *m_current;
 	// set supply type
 	supply.m_supplyType = (VICUS::ExternalSupply::supplyType_t) index;
-
-	switch(supply.m_supplyType) {
-		case VICUS::ExternalSupply::ST_StandAlone:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageStandAlone);
-		break;
-		case VICUS::ExternalSupply::ST_DatabaseFMU:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageDatabaseFMU);
-		break;
-		case VICUS::ExternalSupply::ST_UserDefinedFMU:
-			m_ui->stackedWidgetSupply->setCurrentWidget(m_ui->pageUserDefinedFMU);
-		break;
-		default: break;
-	}
+	m_ui->stackedWidgetSupply->setCurrentIndex(index);
 
 	// find external supply index in project
 	unsigned int idx = 0;
@@ -402,6 +383,10 @@ void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
 	VICUS::ExternalSupply supply = *m_current;
 	// set fmu path
 	supply.m_supplyFMUPath = filename;
+
+	// visualize FMU file name
+	QFileInfo supplyFMUInfo(filename);
+	m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
 
 	// find external supply index in project
 	unsigned int index = 0;
