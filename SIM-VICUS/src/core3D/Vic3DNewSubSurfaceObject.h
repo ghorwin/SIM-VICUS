@@ -28,6 +28,7 @@
 
 #include <QOpenGLBuffer>
 #include <QOpenGLVertexArrayObject>
+#include <QCoreApplication>
 
 #include "Vic3DVertex.h"
 
@@ -61,6 +62,7 @@ namespace Vic3D {
 	- line indexes for m_nLines lines (drawn in renderOpaque())
 */
 class NewSubSurfaceObject {
+	Q_DECLARE_TR_FUNCTIONS(NewSubSurfaceObject)
 public:
 
 	/*! Encapsulates all data needed for window generation. */
@@ -94,14 +96,16 @@ public:
 
 	// Functions related to modifying the stored geometry
 
-	void clear() { generateSubSurfaces(std::vector<const VICUS::Surface*>(), WindowComputationData());  }
+	/*! Clears the preview object. */
+	void clear() { m_generatedSurfaces.clear(); updateBuffers(); }
 
 	/*! This function pupulates/updates m_surfaceGeometries based on the currently selected surfaces and
-		parametrization data.
-		Note: is is expected, that 'inputData' contains only valid parameters. Still, because of the arbitrary
-			shape of the selected surface polygons, it may be impossible to create windows in a polygon.
+		parametrization data. 'inputData' is checked for valid parameters.
+
+		\return Returns true, if window generation was possible, otherwise false. In case of error, the string
+			errorMsg contains a (translated) error message.
 	*/
-	void generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData);
+	bool generateSubSurfaces(const std::vector<const VICUS::Surface*> & sel, const WindowComputationData & inputData, QString & errorMsg);
 
 	/*! Renders opaque parts of geometry. */
 	void renderOpaque();
