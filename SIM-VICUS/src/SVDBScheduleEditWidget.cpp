@@ -302,9 +302,9 @@ void SVDBScheduleEditWidget::updatePeriodTable(unsigned int activeRow) {
 		item = new QTableWidgetItem();
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (intervalData.isValid())
-			item->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+			item->setData(Qt::DecorationRole, QIcon(":/gfx/actions/16x16/ok.png"));
 		else
-			item->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+			item->setData(Qt::DecorationRole, QIcon(":/gfx/actions/16x16/error.png"));
 		m_ui->tableWidgetPeriods->setItem(i,1, item);
 
 		item = new QTableWidgetItem(QtExt::MultiLangString2QString(intervalData.m_displayName));
@@ -862,9 +862,9 @@ void SVDBScheduleEditWidget::onValidityInfoUpdated() {
 	Q_ASSERT(currentIdx != -1);
 	m_ui->tableWidgetPeriods->blockSignals(true);
 	if (m_current->m_periods[(unsigned int)currentIdx].isValid())
-		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/ok.png"));
+		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon(":/gfx/actions/16x16/ok.png"));
 	else
-		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon("://gfx/actions/16x16/error.png"));
+		m_ui->tableWidgetPeriods->item(currentIdx,1)->setData(Qt::DecorationRole, QIcon(":/gfx/actions/16x16/error.png"));
 	m_ui->tableWidgetPeriods->blockSignals(false);
 
 	// since this function is called whenever the data was added, we also need to inform the model about our modification

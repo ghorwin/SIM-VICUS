@@ -75,9 +75,9 @@ QVariant SVDBZoneControlShadingTableModel::data ( const QModelIndex & index, int
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
 				if (it->second.isValid()) // for now just check for validity
-					return QIcon("://gfx/actions/16x16/ok.png");
+					return QIcon(":/gfx/actions/16x16/ok.png");
 				else
-					return QIcon("://gfx/actions/16x16/error.png");
+					return QIcon(":/gfx/actions/16x16/error.png");
 			}
 		} break;
 

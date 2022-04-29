@@ -76,9 +76,9 @@ QVariant SVDBWindowTableModel::data ( const QModelIndex & index, int role) const
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
 				if (it->second.isValid())
-					return QIcon("://gfx/actions/16x16/ok.png");
+					return QIcon(":/gfx/actions/16x16/ok.png");
 				else
-					return QIcon("://gfx/actions/16x16/error.png");
+					return QIcon(":/gfx/actions/16x16/error.png");
 			}
 		} break;
 

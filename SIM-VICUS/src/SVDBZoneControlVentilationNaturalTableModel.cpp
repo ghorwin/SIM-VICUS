@@ -80,9 +80,9 @@ QVariant SVDBZoneControlVentilationNaturalTableModel::data ( const QModelIndex &
 		case Qt::DecorationRole : {
 			if (index.column() == ColCheck) {
 				if (it->second.isValid(m_db->m_schedules)) // for now just check for validity
-					return QIcon("://gfx/actions/16x16/ok.png");
+					return QIcon(":/gfx/actions/16x16/ok.png");
 				else
-					return QIcon("://gfx/actions/16x16/error.png");
+					return QIcon(":/gfx/actions/16x16/error.png");
 			}
 		} break;
 

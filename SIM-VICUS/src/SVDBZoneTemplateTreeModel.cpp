@@ -84,9 +84,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 				if (index.column() == ColCheck) {
 					if (it->second.isValid(m_db->m_internalLoads, m_db->m_zoneControlThermostat,m_db->m_schedules,
 										   m_db->m_infiltration, m_db->m_ventilationNatural, m_db->m_zoneIdealHeatingCooling))
-						return QIcon("://gfx/actions/16x16/ok.png");
+						return QIcon(":/gfx/actions/16x16/ok.png");
 					else
-						return QIcon("://gfx/actions/16x16/error.png");
+						return QIcon(":/gfx/actions/16x16/error.png");
 				}
 			} break;
 
@@ -173,9 +173,9 @@ QVariant SVDBZoneTemplateTreeModel::data ( const QModelIndex & index, int role) 
 							case VICUS::ZoneTemplate::NUM_ST: ; // just to make compiler happy
 						}
 						if (valid)
-							return QIcon("://gfx/actions/16x16/ok.png");
+							return QIcon(":/gfx/actions/16x16/ok.png");
 						else
-							return QIcon("://gfx/actions/16x16/error.png");
+							return QIcon(":/gfx/actions/16x16/error.png");
 					}
 				}
 			} break;

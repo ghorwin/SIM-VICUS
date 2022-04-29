@@ -116,21 +116,21 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 
 		// we already now that both sides are connected
 
-		//QIcon("://gfx/actions/16x16/error.png");
+		//QIcon(":/gfx/actions/16x16/error.png");
 		item = new QTableWidgetItem();
-		item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
+		item->setIcon(QIcon(":/gfx/actions/16x16/ok.png"));
 
 		// we collect all relevent information as text in the tooltip
 		QString toolTip;
 
 		// check that neither of the two surfaces was previously used in another component instance
 		if (referencedSurfaces.find(ci.m_sideASurface) != referencedSurfaces.end()) {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 			toolTip += "Component references surface at side A that was already previously referenced somewhere else.";
 			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
 		}
 		if (referencedSurfaces.find(ci.m_sideBSurface) != referencedSurfaces.end()) {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Component references surface at side B that was already previously referenced somewhere else.";
 			m_ui->tableWidgetInterlinkedSurfaces->item(row, 3)->setForeground(Qt::red);
@@ -144,7 +144,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 		if (comp != nullptr) {
 			const VICUS::BoundaryCondition * bcLeft = db.m_boundaryConditions[comp->m_idSideABoundaryCondition];
 			if (bcLeft == nullptr) {
-				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+				item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 				toolTip += "Component has no valid boundary condition at surface side A.";
 
@@ -153,7 +153,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 			else {
 				// check that bc does not reference constant zone
 				if (bcLeft->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
-					item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+					item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 					toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 					toolTip += "Boundary condition at surface side A is associated with constant/scheduled zone.";
 
@@ -162,7 +162,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 			}
 		}
 		else {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Invalid/unassigned component";
 			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);
@@ -172,7 +172,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 		if (comp != nullptr) {
 			const VICUS::BoundaryCondition * bcRight = db.m_boundaryConditions[comp->m_idSideBBoundaryCondition];
 			if (bcRight == nullptr) {
-				item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+				item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 				toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 				toolTip += "Component has no valid boundary condition at surface side B.";
 
@@ -181,7 +181,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 			else {
 				// check that bc does not reference constant zone
 				if (bcRight->m_heatConduction.m_otherZoneType != VICUS::InterfaceHeatConduction::OZ_Standard) {
-					item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+					item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 					toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 					toolTip += "Boundary condition at surface side B is associated with constant/scheduled zone.";
 
@@ -192,7 +192,7 @@ void SVPropBuildingSurfaceConnectionWidget::updateUi() {
 
 		// must not reference the same surface on both sides
 		if (ci.m_sideASurface == ci.m_sideBSurface) {
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 			toolTip.size() > 0 ? toolTip += "\n" : toolTip = "";
 			toolTip += "Same surface referenced on both sides.";
 			m_ui->tableWidgetInterlinkedSurfaces->item(row, 2)->setForeground(Qt::red);

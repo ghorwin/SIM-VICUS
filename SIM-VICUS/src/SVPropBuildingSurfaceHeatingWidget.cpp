@@ -137,9 +137,9 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		item->setFlags(Qt::ItemIsEnabled);
 		item->setData(Qt::UserRole, ci.m_id);
 		if (comp->isValid(db.m_materials, db.m_constructions, db.m_boundaryConditions, db.m_schedules))
-			item->setIcon(QIcon("://gfx/actions/16x16/ok.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/ok.png"));
 		else
-			item->setIcon(QIcon("://gfx/actions/16x16/error.png"));
+			item->setIcon(QIcon(":/gfx/actions/16x16/error.png"));
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 0, item);
 
 		// column 1 - color of heating
