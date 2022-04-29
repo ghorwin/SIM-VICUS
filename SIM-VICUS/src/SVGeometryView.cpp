@@ -692,4 +692,3 @@ void SVGeometryView::setupToolBar() {
 	m_ui->actionToggleParametrizationMode->blockSignals(false);
 }
 
-
