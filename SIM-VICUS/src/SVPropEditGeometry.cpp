@@ -352,6 +352,32 @@ void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
 }
 
 
+void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
+	// process all selected surfaces (not subsurfaces) and flip their normal vectors
+	// this is done directly, without use of apply/cancel buttons
+	std::vector<VICUS::Surface>			modifiedSurfaces;
+	for (const VICUS::Surface* s : m_selSurfaces) {
+		// create a copy of the surface
+		VICUS::Surface modS(*s);
+		modS.flip();
+		modifiedSurfaces.push_back(modS);
+	}
+	// in case operation was executed without any selected objects - should be prevented
+	if (modifiedSurfaces.empty())
+		return;
+
+	SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Surface normal flipped"), modifiedSurfaces );
+	undo->push();
+
+	// also disable apply and cancel buttons
+	m_ui->pushButtonApply->setEnabled(false);
+	m_ui->pushButtonCancel->setEnabled(false);
+	SVViewStateHandler::instance().m_selectedGeometryObject->resetTransformation();
+	// and update our inputs again
+	updateUi();
+}
+
+
 
 
 

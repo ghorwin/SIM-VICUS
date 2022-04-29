@@ -165,7 +165,7 @@ private slots:
 
 //	// *** Alignment page ***
 
-//	void on_pushButtonFlipNormals_clicked();
+	void on_pushButtonFlipNormals_clicked();
 
 
 
