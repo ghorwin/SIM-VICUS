@@ -421,23 +421,22 @@ bool NewSubSurfaceObject::generateSubSurfaces(const std::vector<const VICUS::Sur
 
 			// *** Generate via given geometry ***
 
-			/*
-			// TODO : Dirk
-
 			// now create the windows
 			double dist = inputData.m_distance;
 
 			unsigned int count = std::min<unsigned int>(inputData.m_maxHoleCount,(int)((widthSurface - dist) / (dist + widthWinPre)));
 
+			// We assume the coordinate system to be place at the bottom-left of the geometry, with the normal vector facing
+			// towards us....
+			// TODO : Dirk, there is no way the user knows about this assumption!
 			for (unsigned int i=0; i<count; ++i){
 				std::vector<IBKMK::Vector2D > verts;
-				verts.push_back(IBKMK::Vector2D(dist + i * (dist + wPre), heightPreSill));
-				verts.push_back((IBKMK::Vector2D((1 + i) * (dist + wPre), hPreSill));
-				verts.push_back((IBKMK::Vector2D((1 + i) * (dist + wPre), hPreSill + hPre));
-				verts.push_back((IBKMK::Vector2D(dist + i * (dist + wPre), hPreSill + hPre));
-				windows.push_back(VICUS::Polygon2D(verts)));
+				verts.push_back(IBKMK::Vector2D(dist + i * (dist + widthWinPre), heightSill));
+				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + widthWinPre), heightSill));
+				verts.push_back(IBKMK::Vector2D((1 + i) * (dist + widthWinPre), heightSill + heightWinPre));
+				verts.push_back(IBKMK::Vector2D(dist + i * (dist + widthWinPre), heightSill + heightWinPre));
+				windows.push_back(VICUS::Polygon2D(verts));
 			}
-*/
 		}
 
 		// no windows generated? skip surface
