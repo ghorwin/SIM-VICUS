@@ -414,60 +414,6 @@ void SVPropEditGeometry::updateUi() {
 		}
 	}
 
-
-#if 0
-	// handling if surfaces are selected
-	if (!m_selSurfaces.empty()) {
-
-		if ( m_selSurfaces.size() == 1 ) {
-			const VICUS::Surface *s = m_selSurfaces[0];
-			m_rotationState = RS_Normal;
-			m_ui->toolButtonAbs->setEnabled(true);
-			setRotation(s->geometry().normal() );
-		}
-		else {
-
-			switch (m_rotationState) {
-			case SVPropEditGeometry::RS_XAxis:
-				setRotation( QVector2IBKVector(cso->localXAxis() ) );
-				break;
-			case SVPropEditGeometry::RS_YAxis:
-				setRotation( QVector2IBKVector(cso->localYAxis() ) );
-				break;
-			case SVPropEditGeometry::RS_Normal:
-			case SVPropEditGeometry::RS_ZAxis:
-				m_rotationState = RS_ZAxis;
-				setRotation( QVector2IBKVector(cso->localZAxis() ) );
-				break;
-			case SVPropEditGeometry::NUM_RS:
-				break;
-
-			}
-			if(m_modificationType == ModificationType::MT_Rotate) {
-				setToolButtonsRotationState(false);
-			}
-		}
-
-	}
-	else {
-
-		// handling if only sub-surfaces are selected
-		if (!m_selSubSurfaces.empty()) {
-			if ( m_selSubSurfaces.size() == 1 ) {
-				const VICUS::SubSurface *sub = m_selSubSurfaces[0];
-				const VICUS::Surface *s = dynamic_cast<const VICUS::Surface*>(sub->m_parent);
-				setRotation(s->geometry().normal() );
-				m_ui->toolButtonAbs->setEnabled(true);
-			}
-			else {
-				if(m_modificationType == ModificationType::MT_Rotate) {
-					setToolButtonsRotationState(false);
-				}
-				setRotation( QVector2IBKVector(cso->localZAxis() ) );
-			}
-		}
-	}
-#endif
 	// compute dimensions of bounding box (dx, dy, dz) and center point of all selected surfaces
 	m_bbDim[OM_Local] = project().boundingBox(m_selSurfaces, m_selSubSurfaces, m_bbCenter[OM_Local],
 											  QVector2IBKVector(cso->translation() ),
@@ -968,6 +914,20 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			modifiedSurfaces.push_back(modS);
 		}
 
+		// TODO : Stephan, scaling of subsurfaces _without_ their parent
+		//
+		// Note: m_selSubSurfaces may contain subsurfs whose parent surfaces are also selected - these
+		//       need to be ignored since they are implicitely handled already.
+		//
+		// For isolated selected subsurface, we need to identify the parent surface and do:
+		// - generate 3D vertexes for subsurface
+		// - apply transformation to 3D vertexes
+		// - compute projection of 3D vertexes onto local plane of parent subsurface and update polylines accordingly
+		//
+		// Mind: it is possible that due to the transformation the new subsurface geometry lies outside the original
+		//       surface - this may easily happen if, for example, a subsurface is translated out of its parent surface.
+		//       In this case the subsurface will still exist, but won't be a hole in the parent's surface geometry.
+		//       TODO : such invalid subsurfaces should be visualized somehow.... ???? -> TODO : Andreas
 #if 0
 		const VICUS::SubSurface * ss = dynamic_cast<const VICUS::SubSurface *>(o);
 		if (ss != nullptr) {
