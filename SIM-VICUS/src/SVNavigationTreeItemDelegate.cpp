@@ -37,10 +37,10 @@
 SVNavigationTreeItemDelegate::SVNavigationTreeItemDelegate(QWidget * parent) :
 	QStyledItemDelegate(parent)
 {
-	m_lightBulbOn = QImage("://gfx/actions/16x16/help-hint.png");
-	m_lightBulbOff = QImage("://gfx/actions/16x16/help-hint_gray.png");
-	m_selectedOn = QImage("://gfx/actions/16x16/checkbox-full.png");
-	m_selectedOff = QImage("://gfx/actions/16x16/checkbox-empty.png");
+	m_lightBulbOn = QImage(":/gfx/actions/16x16/help-hint.png");
+	m_lightBulbOff = QImage(":/gfx/actions/16x16/help-hint_gray.png");
+	m_selectedOn = QImage(":/gfx/actions/16x16/checkbox-full.png");
+	m_selectedOff = QImage(":/gfx/actions/16x16/checkbox-empty.png");
 }
 
 
