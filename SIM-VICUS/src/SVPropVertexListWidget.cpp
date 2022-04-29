@@ -771,6 +771,16 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	unsigned int wallComponentID = m_ui->comboBoxComponentWalls->currentData().toUInt();
 	for (unsigned int i=0; i<nVert; ++i) {
 		// mind the winding order
+
+		// if user has drawn floor polygon anti-clockwise, we have:
+		// - flipped the floor polygon, which means localX and localY are swapped
+		// - ceiling polygon goes anti-clockwise
+		// otherwise if user has drawn clock-wise, we have:
+		// - flipped the ceiling polygon
+		// - floor polygon goes clock-wise
+
+		// TODO : Andreas, fixme fast!
+
 		// when looked from above, floor vertexes go clock-wise,
 		// and ceiling vertices go anti-clockwise
 		unsigned int vIdx2 = (i+1) % nVert;
