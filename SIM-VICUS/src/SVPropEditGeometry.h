@@ -81,16 +81,9 @@ public:
 		MT_Rotate,
 		MT_Scale,
 		MT_Align,
+		MT_Copy,
 		NUM_MT
 	};
-
-//	enum RotationState {
-//		RS_Normal,
-//		RS_XAxis,
-//		RS_YAxis,
-//		RS_ZAxis,
-//		NUM_RS
-//	};
 
 	enum OrientationMode {
 		OM_Local,
@@ -163,16 +156,18 @@ private slots:
 	void on_lineEditScaleY_editingFinishedSuccessfully();
 	void on_lineEditScaleZ_editingFinishedSuccessfully();
 
-//	// *** Alignment page ***
+	// *** Alignment page ***
 
+	void on_pushButtonCenterHorizontally_clicked();
+	void on_pushButtonCenterVertically_clicked();
 	void on_pushButtonFlipNormals_clicked();
 
 
-
+	// *** Apply + Cancel ***
 
 	void on_pushButtonCancel_clicked();
-
 	void on_pushButtonApply_clicked();
+
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

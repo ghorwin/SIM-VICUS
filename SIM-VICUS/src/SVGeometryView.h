@@ -140,6 +140,7 @@ private slots:
 	void on_actionRotateGeometry_triggered();
 	void on_actionScaleGeometry_triggered();
 	void on_actionAlignGeometry_triggered();
+	void on_actionCopyGeometry_triggered();
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized

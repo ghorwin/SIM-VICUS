@@ -125,6 +125,7 @@
          <addaction name="actionRotateGeometry"/>
          <addaction name="actionScaleGeometry"/>
          <addaction name="actionAlignGeometry"/>
+         <addaction name="actionCopyGeometry"/>
         </widget>
        </item>
       </layout>
@@ -259,10 +260,22 @@
      <normaloff>:/gfx/actions/Coordinate-System.png</normaloff>:/gfx/actions/Coordinate-System.png</iconset>
    </property>
    <property name="text">
-    <string>Rotate geometry</string>
+    <string>Align geometry</string>
    </property>
    <property name="toolTip">
     <string>Switches to &quot;Align geometry&quot; property view</string>
+   </property>
+  </action>
+  <action name="actionCopyGeometry">
+   <property name="icon">
+    <iconset resource="../resources/SIM-VICUS.qrc">
+     <normaloff>:/gfx/actions/24x24/editcopy.png</normaloff>:/gfx/actions/24x24/editcopy.png</iconset>
+   </property>
+   <property name="text">
+    <string>Copy geometry</string>
+   </property>
+   <property name="toolTip">
+    <string>Switches to &quot;Copy geometry&quot; property view</string>
    </property>
   </action>
  </widget>

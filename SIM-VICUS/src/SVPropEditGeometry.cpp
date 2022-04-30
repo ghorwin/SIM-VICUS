@@ -352,6 +352,16 @@ void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
 }
 
 
+void SVPropEditGeometry::on_pushButtonCenterHorizontally_clicked() {
+	QMessageBox::critical(this, QString(), tr("Not implemented, yet."));
+}
+
+
+void SVPropEditGeometry::on_pushButtonCenterVertically_clicked() {
+	QMessageBox::critical(this, QString(), tr("Not implemented, yet."));
+}
+
+
 void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 	// process all selected surfaces (not subsurfaces) and flip their normal vectors
 	// this is done directly, without use of apply/cancel buttons
@@ -1025,3 +1035,6 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 	// and update our inputs again
 	updateUi();
 }
+
+
+
