@@ -711,7 +711,8 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	VICUS::Polygon3D floor(po->planeGeometry().polygon3D());
 	IBK_ASSERT(po->generatedGeometry().size() == 1);
 	VICUS::Polygon3D ceiling(po->generatedGeometry()[0].polygon3D());
-	// Note: both polygons still have the same normal vector!
+	// Note: both polygons still have the same normal vector which _always_ points upwards.
+	//       Also, floor and ceiling polygons use always anti-clockwise winding order
 
 	// compute offset vector
 	IBKMK::Vector3D offset = ceiling.vertexes()[0] - floor.vertexes()[0];
@@ -772,22 +773,12 @@ void SVPropVertexListWidget::on_pushButtonCreateZone_clicked() {
 	for (unsigned int i=0; i<nVert; ++i) {
 		// mind the winding order
 
-		// if user has drawn floor polygon anti-clockwise, we have:
-		// - flipped the floor polygon, which means localX and localY are swapped
-		// - ceiling polygon goes anti-clockwise
-		// otherwise if user has drawn clock-wise, we have:
-		// - flipped the ceiling polygon
-		// - floor polygon goes clock-wise
+		// when looked from above, both floor and ceiling vertexes go anti-clock-wise,
+		unsigned int nextI = (i+1) % nVert;  // i = 0,1,2,3; nextI = 1,2,3,0
 
-		// TODO : Andreas, fixme fast!
-
-		// when looked from above, floor vertexes go clock-wise,
-		// and ceiling vertices go anti-clockwise
-		unsigned int vIdx2 = (i+1) % nVert;
-
-		IBKMK::Vector3D p0 = floor.vertexes()[ vIdx2 ];
-		IBKMK::Vector3D p1 = floor.vertexes()[ i ];
-		IBKMK::Vector3D p2 = floor.vertexes()[ vIdx2 ] + offset;	//take offset as last point for rectangle; rounding errors by vector-sum?
+		IBKMK::Vector3D p0 = floor.vertexes()[ i ];
+		IBKMK::Vector3D p1 = floor.vertexes()[ nextI ];
+		IBKMK::Vector3D p2 = floor.vertexes()[ i ] + offset;	// take offset as last point for rectangle; rounding errors by vector-sum?
 
 		VICUS::Surface sWall;
 		sWall.m_id = ++nextID;

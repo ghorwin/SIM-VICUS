@@ -125,8 +125,16 @@ void NewGeometryObject::setNewGeometryMode(NewGeometryObject::NewGeometryMode m)
 	// if we construct more complex geometry based on the initial polygon,
 	// first orient it upwards
 	if (m == NGM_Zone || m == NGM_Roof) {
-		if (m_polygonGeometry.normal().m_z < 0)
-			m_polygonGeometry.flip();
+		// negative normal vector indicates clock-wise drawing/winding order - we reverse the polygons coordinates
+		if (m_polygonGeometry.normal().m_z < 0) {
+			// revert both floor and ceiling polygons
+			std::vector<IBKMK::Vector3D> floorVerts = m_polygonGeometry.polygon3D().vertexes();
+			std::reverse(floorVerts.begin(), floorVerts.end());
+			// move offset point back to front
+			floorVerts.insert(floorVerts.begin(), floorVerts.back());
+			floorVerts.resize(floorVerts.size()-1);
+			m_polygonGeometry.setPolygon(VICUS::Polygon3D(floorVerts)); // this also inverts the normal vector
+		}
 	}
 	updateBuffers(false);
 }
