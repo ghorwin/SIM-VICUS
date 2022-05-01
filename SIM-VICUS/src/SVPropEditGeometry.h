@@ -162,6 +162,18 @@ private slots:
 	void on_pushButtonCenterVertically_clicked();
 	void on_pushButtonFlipNormals_clicked();
 
+	// *** Copy page ***
+
+	void on_pushButtonCopySurface_clicked();
+	void on_pushButtonCopySubsurface_clicked();
+	void on_pushButtonCopyRoom_clicked();
+	void on_pushButtonCopyBuildingLevel_clicked();
+	void on_pushButtonCopyBuilding_clicked();
+
+	void on_lineEditCopyX_editingFinishedSuccessfully();
+	void on_lineEditCopyY_editingFinishedSuccessfully();
+	void on_lineEditCopyZ_editingFinishedSuccessfully();
+
 
 	// *** Apply + Cancel ***
 
@@ -169,21 +181,6 @@ private slots:
 	void on_pushButtonApply_clicked();
 
 
-	void on_pushButtonCopySurface_clicked();
-
-	void on_pushButtonCopySubsurface_clicked();
-
-	void on_pushButtonCopyRoom_clicked();
-
-	void on_pushButtonCopyBuildingLevel_clicked();
-
-	void on_pushButtonCopyBuilding_clicked();
-
-	void on_lineEditCopyX_editingFinishedSuccessfully();
-
-	void on_lineEditCopyY_editingFinishedSuccessfully();
-
-	void on_lineEditCopyZ_editingFinishedSuccessfully();
 
 private:
 	/*! Updates the property widget regarding to all geometry data.

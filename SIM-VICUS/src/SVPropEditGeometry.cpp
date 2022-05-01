@@ -50,9 +50,7 @@
 #include "SVUndoModifySurfaceGeometry.h"
 #include "SVUndoAddSurface.h"
 #include "SVUndoAddZone.h"
-#include "SVUndoCopyZones.h"
-#include "SVUndoCopySurfaces.h"
-#include "SVUndoCopySubSurfaces.h"
+#include "SVUndoCopyBuildingGeometry.h"
 #include "SVPropVertexListWidget.h"
 #include "SVGeometryView.h"
 #include "SVPropAddWindowWidget.h"
@@ -1059,7 +1057,9 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonCopySurface_clicked() {
-
+	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
+				m_selSurfaces, m_copyTranslationVector);
+	undo->push();
 }
 
 
@@ -1069,50 +1069,22 @@ void SVPropEditGeometry::on_pushButtonCopySubsurface_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonCopyRoom_clicked() {
-	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
+	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyRooms(
+				m_selRooms, m_copyTranslationVector);
+	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopyBuildingLevel_clicked() {
-	// get translation offset
-
-	// we take all selected building levels and copy them as new children of their building
-	std::vector<VICUS::Building>	newBuildings(project().m_buildings);
-	// NOTE: copy keeps all IDs of original, but pointers in copy are invalidated!
-
-
-
-	unsigned int newID = project().nextUnusedID();
-	for (const VICUS::BuildingLevel * bl : m_selBuildingLevels) {
-		// we copy *everything* in the entire building level
-		VICUS::BuildingLevel newBl(*bl);
-		// now modify *all* ID s
-		newBl.m_id = newID;
-		for (unsigned int i=0; i<newBl.m_rooms.size(); ++i) {
-			VICUS::Room & r = newBl.m_rooms[i];
-			r.m_id = ++newID;
-			for (unsigned int j=0; j<r.m_surfaces.size(); ++i) {
-				VICUS::Surface & s = r.m_surfaces[j];
-				s.m_id = ++newID;
-				for (unsigned int k=0; k<s.subSurfaces().size(); ++k) {
-					VICUS::SubSurface & sub = const_cast<VICUS::SubSurface &>(s.subSurfaces()[j]);
-					sub.m_id = ++newID;
-				}
-			}
-		}
-		// now insert into vector with building levels
-		// lookup parent building id in unmodified, original data structure
-		unsigned int parentBuildingID = bl->m_parent->m_id;
-//		for (int i=0; i<newBuildings.)
-
-//		newBuildings.m_buildingLevels.push_back(newBl);
-	};
-
+	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyBuildingLevels(
+				m_selBuildingLevels, m_copyTranslationVector);
+	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
-	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
-
+	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyBuildings(
+				m_selBuildings, m_copyTranslationVector);
+	undo->push();
 }
 
