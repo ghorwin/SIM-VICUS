@@ -59,7 +59,9 @@ public:
 	/*! Same as function above, const version. */
 	const Object * findChild(unsigned int ID) const;
 
-	/*! Recursively selected all unique IDs of children. */
+	/*! Recursively selected all unique IDs of children, includes the object's ID itself as well.
+		\note IDs are _added_ to the container which is not cleared initially!
+	*/
 	void collectChildIDs(std::set<unsigned int> & nodeContainer) const;
 
 	/*! Returns a short descriptive string usable for error messages that identifies the object type. */

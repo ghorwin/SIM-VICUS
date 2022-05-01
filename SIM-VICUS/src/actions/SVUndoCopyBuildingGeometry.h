@@ -46,7 +46,8 @@ public:
 	SVUndoCopyBuildingGeometry(const QString & label,
 							 const std::vector<VICUS::Building> & modifiedBuilding,
 							 const std::vector<VICUS::ComponentInstance> & modifiedComponentInstances,
-							 const std::vector<VICUS::SubSurfaceComponentInstance> & modifiedSubSurfaceComponentInstances);
+							 const std::vector<VICUS::SubSurfaceComponentInstance> & modifiedSubSurfaceComponentInstances,
+							 const std::vector<unsigned int> & deselectedNodeIDs);
 
 	/*! Convenience function to generate the undo-action for copying of subsurfaces.
 		Function takes list of selected objects and a translation vector and generates the respective
@@ -101,6 +102,10 @@ private:
 
 	/*! If not empty, this vector contains sub surface component instances that are created alongside the room's surfaces. */
 	std::vector<VICUS::SubSurfaceComponentInstance>	m_modifiedSubSurfaceComponentInstances;
+
+	/*! Holds IDs of all nodes that have been modified. */
+	std::vector<unsigned int>						m_deselectedNodeIDs;
+
 };
 
 

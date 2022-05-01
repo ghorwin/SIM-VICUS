@@ -90,7 +90,7 @@ LineEditFormater::~LineEditFormater() {}
 
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	QWidget(parent),
-	m_copyTranslationVector(10,10,0),
+	m_copyTranslationVector(0,0,3),
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
@@ -140,6 +140,14 @@ SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	m_ui->lineEditScaleX->installEventFilter(this);
 	m_ui->lineEditScaleY->installEventFilter(this);
 	m_ui->lineEditScaleZ->installEventFilter(this);
+
+	m_ui->lineEditCopyX->setText( QString("%L1").arg(m_copyTranslationVector.m_x,0,'f',3));
+	m_ui->lineEditCopyY->setText( QString("%L1").arg(m_copyTranslationVector.m_y,0,'f',3));
+	m_ui->lineEditCopyZ->setText( QString("%L1").arg(m_copyTranslationVector.m_z,0,'f',3));
+
+	m_ui->lineEditCopyX->setFormatter(new LineEditFormater);
+	m_ui->lineEditCopyY->setFormatter(new LineEditFormater);
+	m_ui->lineEditCopyZ->setFormatter(new LineEditFormater);
 
 	for (int i=0; i<4; ++i)
 		m_ui->stackedWidget->widget(i)->layout()->setMargin(0);
@@ -756,9 +764,7 @@ void SVPropEditGeometry::updateInputs() {
 		} break;
 
 		case MT_Copy: {
-			m_ui->lineEditCopyX->setText( QString("%L1").arg(0.0,0,'f',3));
-			m_ui->lineEditCopyY->setText( QString("%L1").arg(0.0,0,'f',3));
-			m_ui->lineEditCopyZ->setText( QString("%L1").arg(0.0,0,'f',3));
+			// Nothing for now?
 		} break;
 
 	} // switch modification type
