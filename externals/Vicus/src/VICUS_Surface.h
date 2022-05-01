@@ -63,7 +63,7 @@ public:
 	const IBKMK::Polygon3D &			polygon3D() const {	return m_geometry.polygon3D(); }
 
 	/*! Sets the polygon. */
-	void setPolygon3D(const Polygon3D & polygon3D);
+	void setPolygon3D(const IBKMK::Polygon3D & polygon3D);
 
 	const std::vector<SubSurface> &		subSurfaces() const { return m_subSurfaces; }
 	void setSubSurfaces(const std::vector<SubSurface> & subSurfaces);
@@ -72,8 +72,8 @@ public:
 	const PlaneGeometry &				geometry() const { return m_geometry; }
 
 	/*! Flips the normal vector of polygon.
-		This also swaps local X and localY axes, so we need to swap x and y coordinates of our sub-surface
-		polygons as well.
+		This also swaps local X and localY axes, so the x and y coordinates of our sub-surface
+		polygons are swapped as well.
 	*/
 	void flip();
 

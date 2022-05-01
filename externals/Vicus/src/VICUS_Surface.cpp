@@ -93,8 +93,8 @@ TiXmlElement * Surface::writeXML(TiXmlElement * parent) const {
 }
 
 
-void Surface::setPolygon3D(const Polygon3D & polygon) {
-	m_geometry.setPolygon(polygon);
+void Surface::setPolygon3D(const IBKMK::Polygon3D & polygon) {
+	m_geometry.setPolygon((VICUS::Polygon3D)polygon);
 }
 
 
