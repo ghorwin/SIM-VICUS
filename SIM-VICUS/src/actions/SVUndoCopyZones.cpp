@@ -29,10 +29,10 @@
 #include <VICUS_Project.h>
 
 SVUndoCopyZones::SVUndoCopyZones(const QString & label,
-								const std::vector<VICUS::Room> copiedRooms,
-								const std::set<unsigned int> deselectedRoomUniqueIDs,
-								const std::vector<VICUS::ComponentInstance> componentInstances,
-								const std::vector<VICUS::SubSurfaceComponentInstance> subSurfacecomponentInstances) :
+								const std::vector<VICUS::Room> & copiedRooms,
+								const std::set<unsigned int> & deselectedRoomUniqueIDs,
+								const std::vector<VICUS::ComponentInstance> & componentInstances,
+								const std::vector<VICUS::SubSurfaceComponentInstance> & subSurfacecomponentInstances) :
 	m_copiedRooms(copiedRooms),
 	m_deselectedUniqueIDs(deselectedRoomUniqueIDs),
 	m_newComponentInstances(componentInstances),

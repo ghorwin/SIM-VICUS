@@ -92,6 +92,7 @@ LineEditFormater::~LineEditFormater() {}
 
 SVPropEditGeometry::SVPropEditGeometry(QWidget *parent) :
 	QWidget(parent),
+	m_copyTranslationVector(10,10,0),
 	m_ui(new Ui::SVPropEditGeometry)
 {
 	m_ui->setupUi(this);
@@ -251,7 +252,10 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 				target == m_ui->lineEditRotateZ ||
 				target == m_ui->lineEditScaleX ||
 				target == m_ui->lineEditScaleY ||
-				target == m_ui->lineEditScaleZ )
+				target == m_ui->lineEditScaleZ ||
+				target == m_ui->lineEditCopyX ||
+				target == m_ui->lineEditCopyY ||
+				target == m_ui->lineEditCopyZ )
 		{
 			double delta = 0.1; // default
 			switch (m_ui->stackedWidget->currentIndex()) {
@@ -267,13 +271,6 @@ bool SVPropEditGeometry::eventFilter(QObject * target, QEvent * event) {
 			onWheelTurned(offset, qobject_cast<QtExt::ValidatingLineEdit*>(target)); // we know that target points to a ValidatingLineEdit
 		}
 	}
-//	else if ( event->type() == QEvent::FocusOut ) {
-//		QLineEdit *edit = dynamic_cast<QLineEdit*>(target);
-
-//		qDebug() << "Focus out -> return press event on " << edit;
-//		if(edit != nullptr)
-//			emit edit->returnPressed();
-//	}
 	return false;
 }
 
@@ -388,6 +385,17 @@ void SVPropEditGeometry::on_pushButtonFlipNormals_clicked() {
 }
 
 
+void SVPropEditGeometry::on_lineEditCopyX_editingFinishedSuccessfully() {
+	m_copyTranslationVector.m_x = m_ui->lineEditCopyX->value();
+}
+
+void SVPropEditGeometry::on_lineEditCopyY_editingFinishedSuccessfully() {
+	m_copyTranslationVector.m_y = m_ui->lineEditCopyY->value();
+}
+
+void SVPropEditGeometry::on_lineEditCopyZ_editingFinishedSuccessfully() {
+	m_copyTranslationVector.m_z = m_ui->lineEditCopyZ->value();
+}
 
 
 
@@ -472,6 +480,13 @@ void SVPropEditGeometry::updateUi() {
 		//       and indirectly also updateInputs()
 		updateCoordinateSystemLook();
 	}
+
+	// enable buttons based on selections
+	m_ui->pushButtonCopySurface->setEnabled(!m_selSurfaces.empty());
+	m_ui->pushButtonCopySubsurface->setEnabled(!m_selSubSurfaces.empty());
+	m_ui->pushButtonCopyRoom->setEnabled(!m_selRooms.empty());
+	m_ui->pushButtonCopyBuildingLevel->setEnabled(!m_selBuildingLevels.empty());
+	m_ui->pushButtonCopyBuilding->setEnabled(!m_selBuildings.empty());
 }
 
 
@@ -740,6 +755,12 @@ void SVPropEditGeometry::updateInputs() {
 			m_ui->lineEditScaleX->setValue(m_originalValues.m_x );
 			m_ui->lineEditScaleY->setValue(m_originalValues.m_y );
 			m_ui->lineEditScaleZ->setValue(m_originalValues.m_z );
+		} break;
+
+		case MT_Copy: {
+			m_ui->lineEditCopyX->setText( QString("%L1").arg(0.0,0,'f',3));
+			m_ui->lineEditCopyY->setText( QString("%L1").arg(0.0,0,'f',3));
+			m_ui->lineEditCopyZ->setText( QString("%L1").arg(0.0,0,'f',3));
 		} break;
 
 	} // switch modification type
@@ -1037,4 +1058,61 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 }
 
 
+void SVPropEditGeometry::on_pushButtonCopySurface_clicked() {
+
+}
+
+
+void SVPropEditGeometry::on_pushButtonCopySubsurface_clicked() {
+	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
+}
+
+
+void SVPropEditGeometry::on_pushButtonCopyRoom_clicked() {
+	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
+}
+
+
+void SVPropEditGeometry::on_pushButtonCopyBuildingLevel_clicked() {
+	// get translation offset
+
+	// we take all selected building levels and copy them as new children of their building
+	std::vector<VICUS::Building>	newBuildings(project().m_buildings);
+	// NOTE: copy keeps all IDs of original, but pointers in copy are invalidated!
+
+
+
+	unsigned int newID = project().nextUnusedID();
+	for (const VICUS::BuildingLevel * bl : m_selBuildingLevels) {
+		// we copy *everything* in the entire building level
+		VICUS::BuildingLevel newBl(*bl);
+		// now modify *all* ID s
+		newBl.m_id = newID;
+		for (unsigned int i=0; i<newBl.m_rooms.size(); ++i) {
+			VICUS::Room & r = newBl.m_rooms[i];
+			r.m_id = ++newID;
+			for (unsigned int j=0; j<r.m_surfaces.size(); ++i) {
+				VICUS::Surface & s = r.m_surfaces[j];
+				s.m_id = ++newID;
+				for (unsigned int k=0; k<s.subSurfaces().size(); ++k) {
+					VICUS::SubSurface & sub = const_cast<VICUS::SubSurface &>(s.subSurfaces()[j]);
+					sub.m_id = ++newID;
+				}
+			}
+		}
+		// now insert into vector with building levels
+		// lookup parent building id in unmodified, original data structure
+		unsigned int parentBuildingID = bl->m_parent->m_id;
+//		for (int i=0; i<newBuildings.)
+
+//		newBuildings.m_buildingLevels.push_back(newBl);
+	};
+
+}
+
+
+void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
+	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
+
+}
 

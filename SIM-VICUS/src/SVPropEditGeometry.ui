@@ -760,6 +760,39 @@
    </slots>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioButtonTranslationAbsolute</tabstop>
+  <tabstop>radioButtonTranslationRelative</tabstop>
+  <tabstop>lineEditTranslateX</tabstop>
+  <tabstop>lineEditTranslateY</tabstop>
+  <tabstop>lineEditTranslateZ</tabstop>
+  <tabstop>radioButtonRotationAlignToAngles</tabstop>
+  <tabstop>radioButtonRotationRelative</tabstop>
+  <tabstop>lineEditRotateOrientation</tabstop>
+  <tabstop>lineEditRotateInclination</tabstop>
+  <tabstop>lineEditRotateX</tabstop>
+  <tabstop>lineEditRotateY</tabstop>
+  <tabstop>lineEditRotateZ</tabstop>
+  <tabstop>pushButtonThreePointRotation</tabstop>
+  <tabstop>radioButtonScaleResize</tabstop>
+  <tabstop>radioButtonScaleFactor</tabstop>
+  <tabstop>lineEditScaleX</tabstop>
+  <tabstop>lineEditScaleY</tabstop>
+  <tabstop>lineEditScaleZ</tabstop>
+  <tabstop>pushButtonCenterHorizontally</tabstop>
+  <tabstop>pushButtonCenterVertically</tabstop>
+  <tabstop>pushButtonFlipNormals</tabstop>
+  <tabstop>lineEditCopyX</tabstop>
+  <tabstop>lineEditCopyY</tabstop>
+  <tabstop>lineEditCopyZ</tabstop>
+  <tabstop>pushButtonCopySurface</tabstop>
+  <tabstop>pushButtonCopySubsurface</tabstop>
+  <tabstop>pushButtonCopyRoom</tabstop>
+  <tabstop>pushButtonCopyBuildingLevel</tabstop>
+  <tabstop>pushButtonCopyBuilding</tabstop>
+  <tabstop>pushButtonApply</tabstop>
+  <tabstop>pushButtonCancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -169,6 +169,22 @@ private slots:
 	void on_pushButtonApply_clicked();
 
 
+	void on_pushButtonCopySurface_clicked();
+
+	void on_pushButtonCopySubsurface_clicked();
+
+	void on_pushButtonCopyRoom_clicked();
+
+	void on_pushButtonCopyBuildingLevel_clicked();
+
+	void on_pushButtonCopyBuilding_clicked();
+
+	void on_lineEditCopyX_editingFinishedSuccessfully();
+
+	void on_lineEditCopyY_editingFinishedSuccessfully();
+
+	void on_lineEditCopyZ_editingFinishedSuccessfully();
+
 private:
 	/*! Updates the property widget regarding to all geometry data.
 		This function is called whenever the selection has changed, and when surface geometry (of selected surfaces)
@@ -232,6 +248,11 @@ private:
 		updateInputs(), and updated whenever a line edit has been edited successfully.
 	*/
 	IBKMK::Vector3D						m_originalValues;
+
+	/*! Holds the translation components for copy operations.
+		This vector is modified when user enters/changes values in the CopyXXX line edits.
+	*/
+	IBKMK::Vector3D						m_copyTranslationVector;
 
 	std::vector<const VICUS::Building*>			m_selBuildings;
 	std::vector<const VICUS::BuildingLevel*>	m_selBuildingLevels;

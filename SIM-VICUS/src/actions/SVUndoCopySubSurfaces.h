@@ -31,20 +31,17 @@
 
 #include "SVUndoCommandBase.h"
 
-/*! Action for copying a sub surface, either to a surface. */
+/*! Action for copying a sub surface, either to a surface.
+	Several selected subsurfaces from different parent surfaces can be copied at the same time.
+	If these surfaces shall be assigned to a different surface
+*/
 class SVUndoCopySubSurfaces : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoCopySubSurfaces)
 public:
-	/*! Constructor, allowing different ways for copying a surface:
-		1. annonymous surface (actually just a polygon) without associated room or component.
-		2. surface belonging to a room
-		3. surface belonging to a room, and getting a component instance association.
-
-		\param compInstance If not nullptr, the component instance is being added to the project. No ownership transfer!
-	*/
-	SVUndoCopySubSurfaces(const QString & label, const std::vector<VICUS::SubSurface> & copiedSubSurfaces,
-							const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
-							const std::vector<VICUS::SubSurfaceComponentInstance> & subSurfCompInstances);
+	SVUndoCopySubSurfaces(const QString & label,
+						  const std::vector<VICUS::SubSurface> & copiedSubSurfaces,
+						  const std::set<unsigned int> & deselectedSurfaceUniqueIDs,
+						  const std::vector<VICUS::SubSurfaceComponentInstance> & subSurfCompInstances);
 
 	virtual void undo();
 	virtual void redo();
