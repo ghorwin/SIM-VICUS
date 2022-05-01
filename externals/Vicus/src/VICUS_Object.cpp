@@ -67,12 +67,4 @@ QString Object::info() const {
 }
 
 
-void Object::deselectWithChildren() {
-	m_selected = false;
-	for (Object * o : m_children)
-		o->deselectWithChildren();
-}
-
-
-
 } // namespace VICUS

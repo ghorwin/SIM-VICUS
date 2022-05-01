@@ -70,9 +70,6 @@ public:
 	/*! Returns a descriptive string with object type, ID and optionally displayname that helps identifying this object. */
 	QString info() const;
 
-	/*! Sets selected flag to false for this object and all its children. */
-	void deselectWithChildren();
-
 	/*! Parent pointer, do not modify. */
 	Object	*m_parent = nullptr;
 
