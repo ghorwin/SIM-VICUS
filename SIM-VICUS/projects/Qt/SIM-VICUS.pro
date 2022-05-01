@@ -121,7 +121,6 @@ SOURCES += \
 	../../src/actions/SVUndoCommandBase.cpp \
 	../../src/actions/SVUndoCopyBuildingGeometry.cpp \
 	../../src/actions/SVUndoCopySurfaces.cpp \
-	../../src/actions/SVUndoCopyZones.cpp \
 	../../src/actions/SVUndoDeleteBuilding.cpp \
 	../../src/actions/SVUndoDeleteBuildingLevel.cpp \
 	../../src/actions/SVUndoDeleteNetwork.cpp \
@@ -302,7 +301,6 @@ HEADERS  += \
 	../../src/actions/SVUndoCommandBase.h \
 	../../src/actions/SVUndoCopyBuildingGeometry.h \
 	../../src/actions/SVUndoCopySurfaces.h \
-	../../src/actions/SVUndoCopyZones.h \
 	../../src/actions/SVUndoDeleteBuilding.h \
 	../../src/actions/SVUndoDeleteBuildingLevel.h \
 	../../src/actions/SVUndoDeleteNetwork.h \
