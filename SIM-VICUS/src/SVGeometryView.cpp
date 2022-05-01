@@ -257,24 +257,24 @@ void SVGeometryView::onModified(int modificationType, ModificationInfo *) {
 			for (const VICUS::Object* o : sel) {
 				if (dynamic_cast<const VICUS::Surface*>(o) != nullptr) {
 					haveSurface = true;
-					break;
+					continue;
 				}
 				if (dynamic_cast<const VICUS::SubSurface*>(o) != nullptr) {
 					haveSubSurface = true;
 					haveSurface = true;
-					break;
+					continue;
 				}
 				if (dynamic_cast<const VICUS::Room*>(o) != nullptr) {
 					haveRoom = true;
-					break;
+					continue;
 				}
 				if (dynamic_cast<const VICUS::BuildingLevel*>(o) != nullptr) {
 					haveBuildingLevel = true;
-					break;
+					continue;
 				}
 				if (dynamic_cast<const VICUS::Building*>(o) != nullptr) {
 					haveBuilding = true;
-					break;
+					continue;
 				}
 			}
 			m_ui->actionTranslateGeometry->setEnabled(haveSurface);
