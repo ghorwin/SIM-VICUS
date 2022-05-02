@@ -56,6 +56,7 @@ void SVPropSiteWidget::onModified(int modificationType, ModificationInfo * /*dat
 		case SVProjectHandler::AllModified :
 		case SVProjectHandler::GridModified :
 			// transfer data to user interface elements
+			Q_ASSERT(project().m_viewSettings.m_gridPlanes.size()>0);
 			m_ui->lineEditMaxDimensions->setText(QString("%L1").arg(project().m_viewSettings.m_gridPlanes[0].m_width));
 			m_ui->lineEditGridLineSpacing->setText(QString("%L1").arg(project().m_viewSettings.m_gridPlanes[0].m_spacing));
 			m_ui->lineEditViewDepth->setText(QString("%L1").arg(project().m_viewSettings.m_farDistance));

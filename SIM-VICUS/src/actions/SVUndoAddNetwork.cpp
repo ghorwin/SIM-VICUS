@@ -50,7 +50,6 @@ void SVUndoAddNetwork::undo() {
 	theProject().m_geometricNetworks.back().updateVisualizationRadius(db.m_pipes);
 	theProject().updatePointers();
 
-	std::swap(theProject().m_viewSettings.m_gridPlanes, m_gridPlanes);
 	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 
 	// tell project that the network has changed
@@ -64,7 +63,6 @@ void SVUndoAddNetwork::redo() {
 
 	theProject().m_geometricNetworks.push_back(m_addedNetwork);
 	theProject().updatePointers();
-	std::swap(theProject().m_viewSettings.m_gridPlanes, m_gridPlanes);
 	std::swap(theProject().m_viewSettings.m_farDistance, m_farDistance);
 
 	// tell project that the network has changed

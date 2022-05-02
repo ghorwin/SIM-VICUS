@@ -44,8 +44,7 @@ private:
 	/*! Cache for added network. */
 	VICUS::Network	m_addedNetwork;
 
-	std::vector<VICUS::GridPlane>		m_gridPlanes;
-	double								m_farDistance;
+	double			m_farDistance;
 };
 
 
