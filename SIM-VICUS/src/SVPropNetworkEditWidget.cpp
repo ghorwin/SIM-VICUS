@@ -952,7 +952,7 @@ void SVPropNetworkEditWidget::on_pushButtonGenerateIntersections_clicked()
 	if (!setNetwork())
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.generateIntersections();
+	m_currentNetwork.generateIntersections(project().nextUnusedID());
 
 	// set all selected
 	for (VICUS::NetworkNode &node: m_currentNetwork.m_nodes)
@@ -971,7 +971,7 @@ void SVPropNetworkEditWidget::on_pushButtonConnectBuildings_clicked()
 	if (!setNetwork())
 		return;
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.connectBuildings(false);
+	m_currentNetwork.connectBuildings(project().nextUnusedID(), false);
 
 	// set all selected
 	for (VICUS::NetworkNode &node: m_currentNetwork.m_nodes)
@@ -1017,7 +1017,7 @@ void SVPropNetworkEditWidget::on_pushButtonReduceRedundantNodes_clicked() {
 
 	// algorithm
 	m_currentNetwork.updateNodeEdgeConnectionPointers();
-	m_currentNetwork.cleanRedundantEdges(newNetwork);
+	m_currentNetwork.cleanRedundantEdges(project().nextUnusedID(), newNetwork);
 	newNetwork.updateNodeEdgeConnectionPointers();
 	newNetwork.updateExtends();
 

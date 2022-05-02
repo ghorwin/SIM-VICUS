@@ -40,9 +40,9 @@
 #include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
+#include "VICUS_Network.h"
 #include "VICUS_NetworkFluid.h"
 #include "VICUS_NetworkPipe.h"
 #include "VICUS_Outputs.h"

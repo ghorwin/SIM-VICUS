@@ -45,6 +45,7 @@
 #include "VICUS_Constants.h"
 #include "VICUS_utilities.h"
 
+
 #define PI				3.141592653589793238
 
 
@@ -518,14 +519,6 @@ void Project::updatePointers() {
 
 	for (VICUS::Network & n : m_geometricNetworks) {
 		addAndCheckForUniqueness(&n);
-		for (VICUS::NetworkEdge & e : n.m_edges) {
-			// Note: VICUS::NetworkEdge objects do not save their unique IDs in the project file.
-			//       Hence, we need to assign unique IDs on the first time the object is created,
-			//       or, when the object pointer list is first updated.
-			if (e.m_id == VICUS::INVALID_ID)
-				e.m_id = nextUnusedID();
-			addAndCheckForUniqueness(&e);
-		}
 		for (VICUS::NetworkNode & nod : n.m_nodes)
 			addAndCheckForUniqueness(&nod);
 
@@ -536,6 +529,23 @@ void Project::updatePointers() {
 
 	for (VICUS::Surface & s : m_plainGeometry)
 		addAndCheckForUniqueness(&s);
+
+
+	// network edges
+
+	// Note: VICUS::NetworkEdge objects do not save their unique IDs in the project file.
+	//       Hence, we need to assign unique IDs on the first time the object is created,
+	//       or, when the object pointer list is first updated.
+	// CAUTION: This should always be the last step in this function, otherwise we may assign object ids here,
+	// which are used by other objects that have not been added yet.
+	for (VICUS::Network & n : m_geometricNetworks) {
+		for (VICUS::NetworkEdge & e : n.m_edges) {
+			if (e.m_id == VICUS::INVALID_ID)
+				e.m_id = nextUnusedID();
+			addAndCheckForUniqueness(&e);
+		}
+		n.updateNodeEdgeConnectionPointers();
+	}
 }
 
 

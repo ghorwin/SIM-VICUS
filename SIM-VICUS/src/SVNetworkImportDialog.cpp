@@ -43,6 +43,7 @@
 #include "SVSettings.h"
 #include "SVProjectHandler.h"
 
+
 SVNetworkImportDialog::SVNetworkImportDialog(QWidget *parent) :
 	QDialog(parent),
 	m_ui(new Ui::SVNetworkImportDialog)
@@ -78,36 +79,7 @@ bool SVNetworkImportDialog::edit() {
 		m_ui->comboBoxNetworkSelectionBox->addItems(QStringList(m_existingNetworksMap.keys()));
 	}
 
-
-	if (exec() != QDialog::Accepted)
-		return false;
-
-	// if it is a new network, allow to specify the origin
-	if (m_ui->radioButtonNewNetwork->isChecked()){
-		double x = QLocale().toDouble(m_ui->lineEditXOrigin->text());
-		double y = QLocale().toDouble(m_ui->lineEditYOrigin->text());
-
-		// set origin and normalize existing positions
-		m_network.setOrigin(IBKMK::Vector3D(x, y, 0));
-
-		// generate id, set name
-		m_network.m_id = VICUS::uniqueId(p.m_geometricNetworks);
-		m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
-
-		m_network.updateExtends();
-
-		SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
-		undo->push(); // modifies project and updates views
-
-	}
-	else{
-		m_network.updateExtends();
-		unsigned int networkIndex = m_ui->comboBoxNetworkSelectionBox->currentIndex();
-		SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_network);
-		undo->push(); // modifies project and updates views
-	}
-
-	return true;
+	return exec();
 }
 
 
@@ -122,29 +94,44 @@ void SVNetworkImportDialog::on_pushButtonGISNetwork_clicked() {
 	if (fname.isEmpty())
 		return;
 
+	// make sure we have updated ids
+	const VICUS::Project &p = project();
+
 	// try to read network
 	IBK::Path networkFile(fname.toStdString());
 	try {
 		// read new network
 		if (m_ui->radioButtonNewNetwork->isChecked()){
 			m_network = VICUS::Network ();
-			readNetworkData(networkFile, m_network);
+			m_network.m_id = p.nextUnusedID();
+			readNetworkData(networkFile, m_network, ++m_network.m_id);
 
-			m_ui->lineEditXOrigin->setText( QString("%L1").arg(0.5*(m_network.m_extends.left + m_network.m_extends.right)));
-			m_ui->lineEditYOrigin->setText( QString("%L1").arg(0.5*(m_network.m_extends.top + m_network.m_extends.bottom)));
+			double xOrigin = 0.5*(m_network.m_extends.left + m_network.m_extends.right);
+			double yOrigin = 0.5*(m_network.m_extends.top + m_network.m_extends.bottom);
+			m_ui->lineEditXOrigin->setText( QString("%L1").arg(xOrigin));
+			m_ui->lineEditYOrigin->setText( QString("%L1").arg(yOrigin));
+			m_network.setOrigin(IBKMK::Vector3D(xOrigin, yOrigin, 0));
+
+			m_network.m_displayName = uniqueName(m_ui->lineEditNetworkName->text());
+
+			SVUndoAddNetwork * undo = new SVUndoAddNetwork(tr("Added network"), m_network);
+			undo->push(); // modifies project and updates views
 		}
+
 		// add to existing network
 		else {
 			unsigned int id = m_existingNetworksMap.value(m_ui->comboBoxNetworkSelectionBox->currentText());
 			m_network = *VICUS::element(project().m_geometricNetworks, id);
-			readNetworkData(networkFile, m_network);
+			readNetworkData(networkFile, m_network, p.nextUnusedID());
 
 			m_ui->lineEditXOrigin->setText( QString("%L1").arg(m_network.m_origin.m_x));
 			m_ui->lineEditYOrigin->setText( QString("%L1").arg(m_network.m_origin.m_y));
-		}
 
-		// dont allow changing network anymore
-		m_ui->groupBoxSelectNetwork->setEnabled(false);
+			m_network.updateExtends();
+			unsigned int networkIndex = (unsigned int) m_ui->comboBoxNetworkSelectionBox->currentIndex();
+			SVUndoModifyNetwork * undo = new SVUndoModifyNetwork(tr("Network modified"), networkIndex, m_network);
+			undo->push(); // modifies project and updates views
+		}
 
 	}
 	catch (IBK::Exception & ex) {
@@ -167,13 +154,13 @@ void SVNetworkImportDialog::toggleReadExistingNetwork(bool readExisting)
 	m_ui->lineEditNetworkName->setEnabled(!readExisting);
 }
 
-void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Network &network) const
-{
+void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId) const {
+
 	if (m_ui->radioButtonEdges->isChecked()){
-		network.readGridFromCSV(fname);
+		network.readGridFromCSV(fname, nextId);
 	}
 	else{
-		network.readBuildingsFromCSV(fname, QLocale().toDouble(m_ui->lineEditHeatingDemand->text()));
+		network.readBuildingsFromCSV(fname, QLocale().toDouble(m_ui->lineEditHeatingDemand->text()), nextId);
 	}
 	network.updateExtends();
 
@@ -181,19 +168,6 @@ void SVNetworkImportDialog::readNetworkData(const IBK::Path &fname, VICUS::Netwo
 	m_ui->labelNodeCount->setText(QString("%1").arg(m_network.m_nodes.size()));
 	m_ui->labelCoordinateRange->setText( QString("[%L1,%L2]...[%L3,%L4]").arg(m_network.m_extends.left)
 										 .arg(m_network.m_extends.top).arg(m_network.m_extends.right).arg(m_network.m_extends.bottom));
-}
-
-
-unsigned SVNetworkImportDialog::generateId()
-{
-	unsigned id=0;
-	for (auto it = project().m_geometricNetworks.begin(); it!=project().m_geometricNetworks.end(); ++it){
-		if (id == it->m_id)
-			++id;
-		else
-			return id;
-	}
-	return id;
 }
 
 

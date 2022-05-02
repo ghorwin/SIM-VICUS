@@ -72,9 +72,7 @@ private:
 
 	QMap<QString, unsigned> m_existingNetworksMap;
 
-	void readNetworkData(const IBK::Path &fname, VICUS::Network &network) const;
-
-	unsigned generateId();
+	void readNetworkData(const IBK::Path &fname, VICUS::Network &network, unsigned int nextId) const;
 
 	QString uniqueName(const QString & name);
 };

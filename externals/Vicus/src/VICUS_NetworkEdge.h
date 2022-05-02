@@ -60,13 +60,15 @@ public:
 
 	NetworkEdge() = default;
 
-	NetworkEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
+	NetworkEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply, const double &length, const unsigned pipeId):
 		m_supply(supply),
 		m_idPipe(pipeId),
 		m_idNode1(nodeId1),
 		m_idNode2(nodeId2),
 		m_length(length)
-	{}
+	{
+		m_id = id;
+	}
 
 	void collectConnectedNodes(std::set<const NetworkNode*> & connectedNodes,
 								std::set<const NetworkEdge*> & connectedEdge) const;

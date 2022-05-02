@@ -78,7 +78,7 @@ Network Network::copyWithBaseParameters(unsigned int newID) {
 }
 
 
-unsigned int Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
+unsigned int Network::addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool consistentCoordinates) {
 
 	// if there is an existing node with identical coordinates, return its id and dont add a new one
 	if (consistentCoordinates){
@@ -87,25 +87,22 @@ unsigned int Network::addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeT
 				return n.m_id;
 		}
 	}
-
 	// else add new node
-	unsigned id = 1; // TODO : Hauke, uniqueID handling!
-	m_nodes.push_back(NetworkNode(id, type, v));
+	m_nodes.push_back(NetworkNode(preferedId, type, v));
 	updateNodeEdgeConnectionPointers();
-
-	return id;
+	return preferedId;
 }
 
 
-unsigned int Network::addNode(const NetworkNode &node, const bool considerCoordinates) {
-	unsigned id = addNode(node.m_position, node.m_type, considerCoordinates);
+unsigned int Network::addNode(unsigned int preferedId, const NetworkNode &node, const bool considerCoordinates) {
+	unsigned id = addNode(preferedId, node.m_position, node.m_type, considerCoordinates);
 	nodeById(id)->m_maxHeatingDemand = node.m_maxHeatingDemand;
 	return id;
 }
 
 
-void Network::addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
-	NetworkEdge e(nodeId1, nodeId2, supply, 0, INVALID_ID);
+void Network::addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply) {
+	NetworkEdge e(id, nodeId1, nodeId2, supply, 0, INVALID_ID);
 	m_edges.push_back(e);
 	updateNodeEdgeConnectionPointers();
 	m_edges.back().setLengthFromCoordinates();
@@ -287,7 +284,7 @@ bool Network::checkConnectedGraph() const {
 }
 
 
-void Network::readGridFromCSV(const IBK::Path &filePath){
+void Network::readGridFromCSV(const IBK::Path &filePath, unsigned int nextId){
 	std::vector<std::string> cont;
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
@@ -312,15 +309,15 @@ void Network::readGridFromCSV(const IBK::Path &filePath){
 			polyLine.push_back({x, y});
 		}
 		for (unsigned i=0; i<polyLine.size()-1; ++i){
-			unsigned n1 = addNodeExt(IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0), NetworkNode::NT_Mixer);
-			unsigned n2 = addNodeExt(IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0), NetworkNode::NT_Mixer);
-			addEdge(n1, n2, true);
+			unsigned n1 = addNode(++nextId, IBKMK::Vector3D(polyLine[i][0], polyLine[i][1], 0) - m_origin, NetworkNode::NT_Mixer);
+			unsigned n2 = addNode(++nextId, IBKMK::Vector3D(polyLine[i+1][0], polyLine[i+1][1], 0) - m_origin, NetworkNode::NT_Mixer);
+			addEdge(++nextId, n1, n2, true);
 		}
 	}
 }
 
 
-void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand) {
+void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heatDemand, unsigned int nextId) {
 	std::vector<std::string> cont;
 	IBK::FileReader::readAll(filePath, cont, std::vector<std::string>());
 
@@ -338,35 +335,19 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 		if (xyStr.size()!=2)
 			continue;
 		// add node
-		unsigned id = addNodeExt(IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0),
+		unsigned id = addNode(++nextId, IBKMK::Vector3D(IBK::string2val<double>(xyStr[0]), IBK::string2val<double>(xyStr[1]), 0) - m_origin,
 				NetworkNode::NT_Building);
 		nodeById(id)->m_maxHeatingDemand = IBK::Parameter("MaxHeatingDemand", heatDemand, "W");
 	}
 }
 
 
-//void Network::assignSourceNode(const IBKMK::Vector3D &v) {
-//	IBK_ASSERT(!m_nodes.empty());
-//	NetworkNode * nMin = nullptr;
-//	double distMin = std::numeric_limits<double>::max();
-//	for (NetworkNode &n: m_nodes){
-//		double dist = n.m_position.distanceTo(v - m_origin);
-//		if (dist < distMin){
-//			distMin = dist;
-//			nMin = &n;
-//		}
-//	}
-
-//	nMin->m_type = NetworkNode::NT_Source;
-//}
-
-
-void Network::generateIntersections(){
-	while (findAndAddIntersection()) {}
+void Network::generateIntersections(unsigned int nextUnusedId){
+	while (findAndAddIntersection(nextUnusedId)) {}
 }
 
 
-bool Network::findAndAddIntersection() {
+bool Network::findAndAddIntersection(unsigned int nextUnusedId) {
 
 	for (unsigned i1=0; i1<m_edges.size(); ++i1) {
 		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
@@ -379,9 +360,9 @@ bool Network::findAndAddIntersection() {
 
 			// if it is within both lines: add node and edges, adapt exisiting nodes
 			if (l1.containsPoint(ps) && l2.containsPoint(ps)){
-				unsigned nInter = addNode(IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
-				addEdge(nInter, m_edges[i1].nodeId1(), true);
-				addEdge(nInter, m_edges[i2].nodeId1(), true);
+				unsigned nInter = addNode(++nextUnusedId, IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
+				addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true);
+				addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true);
 				m_edges[i1].changeNode1(nodeById(nInter));
 				m_edges[i2].changeNode1(nodeById(nInter));
 				updateNodeEdgeConnectionPointers();
@@ -393,13 +374,13 @@ bool Network::findAndAddIntersection() {
 }
 
 
-void Network::connectBuildings(const bool extendSupplyPipes) {
+void Network::connectBuildings(unsigned int nextUnusedId, const bool extendSupplyPipes) {
 
-	int idNext = nextUnconnectedBuilding();
+	int idNextBuilding = nextUnconnectedBuilding();
 
-	while (idNext >= 0) {
+	while (idNextBuilding >= 0) {
 
-		unsigned int idBuilding = (unsigned int)idNext;
+		unsigned int idBuilding = (unsigned int)idNextBuilding;
 
 		// find closest supply edge
 		double distMin = std::numeric_limits<double>::max();
@@ -421,8 +402,8 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 		lMin.projectionFromPoint(nodeById(idBuilding)->m_position.point2D(), pBranch);
 		// branch node is inside edge: split edge
 		if (lMin.containsPoint(pBranch)){
-			idBranch = addNode(IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
-			addEdge(m_edges[idEdgeMin].nodeId1(), idBranch, true);
+			idBranch = addNode(++nextUnusedId, IBKMK::Vector3D(pBranch), NetworkNode::NT_Mixer);
+			addEdge(++nextUnusedId, m_edges[idEdgeMin].nodeId1(), idBranch, true);
 			m_edges[idEdgeMin].changeNode1(nodeById(idBranch));
 			updateNodeEdgeConnectionPointers();
 		}
@@ -439,9 +420,9 @@ void Network::connectBuildings(const bool extendSupplyPipes) {
 			}
 		}
 		// connect building to branch node
-		addEdge(idBranch, idBuilding, false);
+		addEdge(++nextUnusedId, idBranch, idBuilding, false);
 
-		idNext = nextUnconnectedBuilding();
+		idNextBuilding = nextUnconnectedBuilding();
 	}
 }
 
@@ -475,7 +456,7 @@ void Network::cleanDeadEnds(){
 
 
 // TODO : no copy needed anymore with new data structure ?
-void Network::cleanRedundantEdges(Network & cleanNetwork) const{
+void Network::cleanRedundantEdges(unsigned int nextUnusedId, Network & cleanNetwork) const{
 
 	IBK_ASSERT(m_edges.size()>0);
 	std::set<unsigned> proccessedNodes;
@@ -500,14 +481,14 @@ void Network::cleanRedundantEdges(Network & cleanNetwork) const{
 				proccessedNodes.insert(nId);
 
 			// add nodes and reduced edge to new network
-			unsigned id1 = cleanNetwork.addNode(*previousNode);
-			unsigned id2 = cleanNetwork.addNode(*nextNode);
-			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, totalLength, edge.m_idPipe));
+			unsigned id1 = cleanNetwork.addNode(++nextUnusedId, *previousNode);
+			unsigned id2 = cleanNetwork.addNode(++nextUnusedId, *nextNode);
+			cleanNetwork.addEdge(NetworkEdge(++nextUnusedId, id1, id2, edge.m_supply, totalLength, edge.m_idPipe));
 		}
 		else{
-			unsigned id1 = cleanNetwork.addNode(*edge.m_node1);
-			unsigned id2 = cleanNetwork.addNode(*edge.m_node2);
-			cleanNetwork.addEdge(NetworkEdge(id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
+			unsigned id1 = cleanNetwork.addNode(++nextUnusedId, *edge.m_node1);
+			unsigned id2 = cleanNetwork.addNode(++nextUnusedId, *edge.m_node2);
+			cleanNetwork.addEdge(NetworkEdge(++nextUnusedId, id1, id2, edge.m_supply, edge.length(), edge.m_idPipe));
 		}
 	}
 }

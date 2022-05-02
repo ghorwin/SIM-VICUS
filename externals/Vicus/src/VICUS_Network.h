@@ -44,12 +44,14 @@
 #include "VICUS_Object.h"
 #include "VICUS_NetworkBuriedPipeProperties.h"
 
+
 namespace IBK {
 	class Path;
 }
 
 namespace VICUS {
 
+class Project;
 class NetworkFluid;
 
 class Network : public Object {
@@ -103,14 +105,8 @@ public:
 	*/
 	Network copyWithBaseParameters(unsigned int newID);
 
-	/*! call private addNode and set position relative to orign.
-	 * ALWAYS use this funtion If you add nodes in original coordinates to a network where m_origin may has been already set */
-	unsigned addNodeExt(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true){
-		return addNode(v - m_origin, type, considerCoordinates);
-	}
-
 	/*! add Edge based on node ids */
-	void addEdge(const unsigned nodeId1, const unsigned nodeId2, const bool supply);
+	void addEdge(const unsigned id, const unsigned nodeId1, const unsigned nodeId2, const bool supply);
 
 	/*! add Edge using edge constructor */
 	void addEdge(const NetworkEdge &edge);
@@ -118,19 +114,19 @@ public:
 	/*! reads csv-files from QGIS with multiple rows, containing "MULTILINESTRING"s and adds according nodes/edges to the network.
 		Lines that share a common node (identical coordinates) are automatically connected.
 	*/
-	void readGridFromCSV(const IBK::Path & filePath);
+	void readGridFromCSV(const IBK::Path & filePath, unsigned int nextId);
 
 	/*! reads csv-files from QGIS with multiple rows, containing "POINT"s and adds according nodes of type NT_BUILDING to the network.
 	*/
-	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand);
+	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand, unsigned int nextId);
 
 	/*! generate all intersections in the network (runs in a loop as long as findAndAddIntersection() is true.) */
-	void generateIntersections();
+	void generateIntersections(unsigned int nextUnusedId);
 
 	/*! Process all edges vs. all other edges. If an intersection was found, set the according
 	 * edges and the intersection point are set and return true. If there are no intersection points, return false.
 	*/
-	bool findAndAddIntersection();
+	bool findAndAddIntersection(unsigned int nextUnusedId);
 
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();
@@ -139,7 +135,7 @@ public:
 	bool checkConnectedGraph() const;
 
 	/*! iterates through all building nodes, finds closest supply edge and connects the building node to the network */
-	void connectBuildings(const bool extendSupplyPipes);
+	void connectBuildings(unsigned int nextUnusedId, const bool extendSupplyPipes);
 
 	/*! returns the first id in m_nodes, which is an unconnected building */
 	int nextUnconnectedBuilding() const;
@@ -149,7 +145,7 @@ public:
 	void cleanDeadEnds();
 
 	/*! stores a copy of the network without any redundant edges */
-	void cleanRedundantEdges(Network & cleanNetwork) const;
+	void cleanRedundantEdges(unsigned int nextUnusedId, Network & cleanNetwork) const;
 
 	/*! iteratively removes edges which have a length below thresholdLength in [m] */
 	void removeShortEdges(const double &thresholdLength);
@@ -308,11 +304,11 @@ private:
 	/*! add node to network based on coordinates and type and return the node id.
 	 * When considerCoordinates==true and the given coordinates exist already in the network: return the id of this existing node
 		ALWAYS use this function if you add nodes with coordinates that where calculated based on already existing coordinates */
-	unsigned int addNode(const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
+	unsigned int addNode(unsigned int preferedId, const IBKMK::Vector3D &v, const NetworkNode::NodeType type, const bool considerCoordinates=true);
 
 	/*! addNode using Node constructor for convenience,
 	 * does only copy position, type and maxHeatingDemand */
-	unsigned int addNode(const NetworkNode & nodeById, const bool considerCoordinates=true);
+	unsigned int addNode(unsigned int preferedId, const NetworkNode & nodeById, const bool considerCoordinates=true);
 
 };
 
