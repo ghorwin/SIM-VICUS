@@ -521,7 +521,6 @@ void Project::updatePointers() {
 		addAndCheckForUniqueness(&n);
 		for (VICUS::NetworkNode & nod : n.m_nodes)
 			addAndCheckForUniqueness(&nod);
-
 		n.updateNodeEdgeConnectionPointers();
 	}
 

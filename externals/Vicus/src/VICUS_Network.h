@@ -120,13 +120,8 @@ public:
 	*/
 	void readBuildingsFromCSV(const IBK::Path & filePath, const double & heatDemand, unsigned int nextId);
 
-	/*! generate all intersections in the network (runs in a loop as long as findAndAddIntersection() is true.) */
+	/*! generate all intersections between edges in the network, hence connects all edges which intersect each other */
 	void generateIntersections(unsigned int nextUnusedId);
-
-	/*! Process all edges vs. all other edges. If an intersection was found, set the according
-	 * edges and the intersection point are set and return true. If there are no intersection points, return false.
-	*/
-	bool findAndAddIntersection(unsigned int nextUnusedId);
 
 	/*! Should be called whenever m_nodes or m_edges has been modified. */
 	void updateNodeEdgeConnectionPointers();

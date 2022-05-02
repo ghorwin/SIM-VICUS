@@ -343,34 +343,38 @@ void Network::readBuildingsFromCSV(const IBK::Path &filePath, const double &heat
 
 
 void Network::generateIntersections(unsigned int nextUnusedId){
-	while (findAndAddIntersection(nextUnusedId)) {}
-}
 
+	bool foundIntersection = true;
 
-bool Network::findAndAddIntersection(unsigned int nextUnusedId) {
+	while (foundIntersection) {
+		foundIntersection = false;
+		for (unsigned i1=0; i1<m_edges.size(); ++i1) {
+			for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
 
-	for (unsigned i1=0; i1<m_edges.size(); ++i1) {
-		for (unsigned i2=i1+1; i2<m_edges.size(); ++i2) {
+				// calculate intersection
+				NetworkLine l1 = NetworkLine(m_edges[i1]);
+				NetworkLine l2 = NetworkLine(m_edges[i2]);
+				IBK::point2D<double> ps;
+				l1.intersection(l2, ps);
 
-			// calculate intersection
-			NetworkLine l1 = NetworkLine(m_edges[i1]);
-			NetworkLine l2 = NetworkLine(m_edges[i2]);
-			IBK::point2D<double> ps;
-			l1.intersection(l2, ps);
-
-			// if it is within both lines: add node and edges, adapt exisiting nodes
-			if (l1.containsPoint(ps) && l2.containsPoint(ps)){
-				unsigned nInter = addNode(++nextUnusedId, IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
-				addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true);
-				addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true);
-				m_edges[i1].changeNode1(nodeById(nInter));
-				m_edges[i2].changeNode1(nodeById(nInter));
-				updateNodeEdgeConnectionPointers();
-				return true;
+				// if it is within both lines: add node and edges, adapt exisiting nodes
+				if (l1.containsPoint(ps) && l2.containsPoint(ps)){
+					unsigned nInter = addNode(++nextUnusedId, IBKMK::Vector3D(ps), NetworkNode::NT_Mixer);
+					addEdge(++nextUnusedId, nInter, m_edges[i1].nodeId1(), true);
+					addEdge(++nextUnusedId, nInter, m_edges[i2].nodeId1(), true);
+					m_edges[i1].changeNode1(nodeById(nInter));
+					m_edges[i2].changeNode1(nodeById(nInter));
+					updateNodeEdgeConnectionPointers();
+					// after we have found and add an intersection: leave both for loops and start again
+					foundIntersection = true;
+					continue;
+				}
 			}
+
+			if (foundIntersection)
+				continue;
 		}
 	}
-	return false;
 }
 
 
