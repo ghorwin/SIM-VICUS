@@ -686,6 +686,51 @@ bool Project::selectedRooms(std::vector<const Room *> & rooms) const {
 	return !rooms.empty();
 }
 
+QString Project::newUniqueBuildingName(const QString & baseName) const	{
+	std::set<QString> names;
+	for (const VICUS::Building & b : m_buildings)
+		names.insert(b.m_displayName);
+	return uniqueName(baseName, names);
+}
+
+QString Project::newUniqueBuildingLevelName(const QString & baseName) const {
+	std::set<QString> names;
+	for (const VICUS::Building & b : m_buildings)
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			names.insert(bl.m_displayName);
+	return uniqueName(baseName, names);
+}
+
+QString Project::newUniqueRoomName(const QString & baseName) const {
+	std::set<QString> names;
+	for (const VICUS::Building & b : m_buildings)
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (const VICUS::Room & r : bl.m_rooms)
+				names.insert(r.m_displayName);
+	return uniqueName(baseName, names);
+}
+
+QString Project::newUniqueSurfaceName(const QString & baseName) const {
+	std::set<QString> names;
+	for (const VICUS::Building & b : m_buildings)
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (const VICUS::Room & r : bl.m_rooms)
+				for (const VICUS::Surface & s : r.m_surfaces)
+					names.insert(s.m_displayName);
+	return uniqueName(baseName, names);
+}
+
+QString Project::newUniqueSubSurfaceName(const QString & baseName) const {
+	std::set<QString> names;
+	for (const VICUS::Building & b : m_buildings)
+		for (const VICUS::BuildingLevel & bl : b.m_buildingLevels)
+			for (const VICUS::Room & r : bl.m_rooms)
+				for (const VICUS::Surface & s : r.m_surfaces)
+					for (const VICUS::SubSurface & sub : s.subSurfaces())
+						names.insert(sub.m_displayName);
+	return uniqueName(baseName, names);
+}
+
 
 IBKMK::Vector3D Project::boundingBox(std::vector<const Surface*> &surfaces,
 									 std::vector<const SubSurface*> &subsurfaces,

@@ -194,6 +194,11 @@ public:
 	*/
 	bool selectedRooms(std::vector<const Room*> & rooms) const;
 
+	QString newUniqueBuildingName(const QString & baseName) const;
+	QString newUniqueBuildingLevelName(const QString & baseName) const;
+	QString newUniqueRoomName(const QString & baseName) const;
+	QString newUniqueSurfaceName(const QString & baseName) const;
+	QString newUniqueSubSurfaceName(const QString & baseName) const;
 
 	// *** PROJECT CONVERSION RELATED FUNCTIONS ***
 

@@ -154,10 +154,17 @@ unsigned int largestUniqueId(const std::vector<T>& vec) {
 	return largest+1; // Mind: plus one, to get past the largest _existing_ ID
 }
 
-/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
+/*! Generates a new unique name in format "basename" or "basename (<nr>)" with increasing numbers until
 	the name no longer exists in set existingNames.
+	NOTE: we cannot use [<nr>] because when generating output variable names, this interferes with the
+		unit specification.
+
+	NOTE: basename is always trimmed.
+
+	\param baseName Contains the original name, which may include already "(<nr>)"
 */
 QString uniqueName(const QString & baseName, const std::set<QString> & existingNames);
+
 
 /*! Test function that checks that all objects in the given vector have unique m_id parameters.
 	The set passed as second argument is used for comparison. Pass an empty set if only the elements

@@ -2,36 +2,38 @@
 
 namespace VICUS {
 
-/*! Generates a new unique name in format "basename" or "basename [<nr>]" with increasing numbers until
-	the name no longer exists in set existingNames.
-*/
+// Generates a new unique name in format "basename" or "basename (<nr>)" with increasing numbers until
+//	the name no longer exists in set existingNames.
 QString uniqueName(const QString & baseName, const std::set<QString> & existingNames) {
 	// generate new unique object/surface name
-	unsigned int count = 1;
-	QString name = baseName;
-	QString tempBaseName = baseName;
-	unsigned int index = 0;
+	QString name = baseName.trimmed();
+	unsigned int index = 1; // default starting index for counting up
 
-	if ( baseName.trimmed().endsWith(")") ) {
-		unsigned int start = baseName.lastIndexOf("(");
-		unsigned int end = baseName.indexOf(")", start+1);
+	// remove potentially existing (num) suffix
+	if (name.trimmed().endsWith(")") ) {
+		unsigned int start = name.lastIndexOf("(");
+		unsigned int end = name.indexOf(")", start+1);
 
-		tempBaseName = baseName.left(start-1).trimmed();
+		QString numString = name.mid(start+1, end-start-1);
+		name = name.left(start-1).trimmed();
+
 		bool isNumber;
-		QString numString = baseName.mid(start+1, end-start-1);
-		unsigned int tempNum = baseName.mid(start+1, end-1).toUInt(&isNumber);
-
-		if(isNumber)
-			index = tempNum;
+		unsigned int tempNum = numString.toUInt(&isNumber);
+		if (isNumber)
+			index = tempNum; // use this as starting index
 	}
+	// name is now the name without number and trimmed
+	QString trialName = name;
+	for (;;++index) {
+		// if we did already have an index in the name, already generate the name with index suffix
+		if (index != 1)
+			trialName = QString("%1 (%2)").arg(name).arg(index);
 
-	for (;;) {
-		// process all surfaces and check if we have already a new surface with our current name
-		if (existingNames.find(name) == existingNames.end())
+		// process all existing names and check if we have generated a name not yet in the set
+		if (existingNames.find(trialName) == existingNames.end())
 			break;
-		name = QString("%1 (%2)").arg(tempBaseName).arg(/*index +*/ ++count);
 	}
-	return name;
+	return trialName;
 }
 
 } // namespace VICUS
