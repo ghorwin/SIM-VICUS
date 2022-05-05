@@ -1839,7 +1839,7 @@ void ClimateDataLoader::setTime(int year, double secondsOfYear) {
 		if (t >= SECONDS_PER_YEAR - 1800)
 			tShift = t - SECONDS_PER_YEAR;
 		if (tShift < 1800) {
-			alphaMean = 1 - (t+1800)/3600;
+			alphaMean = 1 - (tShift+1800)/3600;
 			hourIndex1Mean = 8759; // hour 8760 = hour 0
 			hourIndex2Mean = 0; // hour 1
 		}
