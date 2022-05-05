@@ -72,6 +72,7 @@
             <bool>false</bool>
            </property>
            <addaction name="actionSnap"/>
+           <addaction name="separator"/>
            <addaction name="actionMeasure"/>
            <addaction name="actionXLock"/>
            <addaction name="actionYLock"/>

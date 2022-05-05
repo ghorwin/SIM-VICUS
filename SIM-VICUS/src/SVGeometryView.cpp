@@ -464,25 +464,6 @@ void SVGeometryView::coordinateInputFinished() {
 }
 
 
-void SVGeometryView::on_actionSnap_toggled(bool on) {
-	// switch toggle view state
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	vs.m_snapEnabled = on;
-	SVViewStateHandler::instance().setViewState(vs);
-	focusSceneView();
-}
-
-
-void SVGeometryView::on_actionMeasure_toggled(bool on) {
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-	if (on && vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
-		qDebug() << "Measurement mode is already on, yet button is off...";
-		return;
-	}
-	m_sceneView->toggleMeasurementMode();
-}
-
-
 void SVGeometryView::on_actionXLock_toggled(bool on) {
 	// switch toggle view state
 	SVViewState vs = SVViewStateHandler::instance().viewState();
@@ -734,4 +715,25 @@ void SVGeometryView::setupToolBar() {
 	m_ui->actionToggleParametrizationMode->blockSignals(false);
 }
 
+void SVGeometryView::on_actionMeasure_triggered(bool on) {
+	///TODO: Andreas
+	///		Why toggled is not working?
+	m_ui->actionMeasure->setChecked(on);
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	if (on && vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
+		qDebug() << "Measurement mode is already on, yet button is off...";
+		return;
+	}
+	m_sceneView->toggleMeasurementMode();
+}
 
+void SVGeometryView::on_actionSnap_triggered(bool on) {
+	///TODO: Andreas
+	///		 Why toggled is not working?
+	// switch toggle view state
+	m_ui->actionSnap->setChecked(on);
+	SVViewState vs = SVViewStateHandler::instance().viewState();
+	vs.m_snapEnabled = on;
+	SVViewStateHandler::instance().setViewState(vs);
+	focusSceneView();
+}

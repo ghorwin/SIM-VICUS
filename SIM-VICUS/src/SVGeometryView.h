@@ -126,8 +126,7 @@ private slots:
 	*/
 	void coordinateInputFinished();
 
-	void on_actionSnap_toggled(bool);
-	void on_actionMeasure_toggled(bool);
+
 	void on_actionXLock_toggled(bool);
 	void on_actionYLock_toggled(bool);
 	void on_actionZLock_toggled(bool);
@@ -141,6 +140,9 @@ private slots:
 	void on_actionScaleGeometry_triggered();
 	void on_actionAlignGeometry_triggered();
 	void on_actionCopyGeometry_triggered();
+
+	void on_actionMeasure_triggered(bool checked);
+	void on_actionSnap_triggered(bool on);
 
 protected:
 	/*! Resize event adjusts the position of the measurements widget, needed when geometry view is resized
