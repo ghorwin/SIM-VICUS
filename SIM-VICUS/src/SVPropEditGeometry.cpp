@@ -1072,7 +1072,6 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonCopySurface_clicked() {
-	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
 				m_selSurfaces, localCopyTranslationVector());
 	undo->push();

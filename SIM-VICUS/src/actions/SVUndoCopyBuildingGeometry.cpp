@@ -48,10 +48,117 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySubSurfac
 	return new SVUndoCopyBuildingGeometry(QString(), project().m_buildings, project().m_componentInstances, project().m_subSurfaceComponentInstances, std::vector<unsigned int>());
 }
 
-SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation)
-{
-	return new SVUndoCopyBuildingGeometry(QString(), project().m_buildings, project().m_componentInstances, project().m_subSurfaceComponentInstances, std::vector<unsigned int>());
+
+SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopySurfaces(const std::vector<const VICUS::Surface *> & selectedSurfaces, const IBKMK::Vector3D & translation) {
+	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
+	std::vector<VICUS::ComponentInstance>			newCI(project().m_componentInstances);
+	std::vector<VICUS::SubSurfaceComponentInstance> newSubCI(project().m_subSurfaceComponentInstances);
+	std::vector<unsigned int>						deselectedObjectIDs;
+	// NOTE: copy keeps all IDs of original, but pointers in copy are invalidated!
+
+	// we take all selected rooms and copy them as new children of their building levels
+	unsigned int newID = project().nextUnusedID();
+	for (const VICUS::Surface * s : selectedSurfaces) {
+		// we copy *everything* in the entire surface
+		VICUS::Surface newSurf(*s);
+		// now modify *all* ID s
+		unsigned int originalID = s->m_id;
+		newSurf.m_id = newID;
+		// apply transformation
+		IBKMK::Polygon3D poly = newSurf.polygon3D();
+		poly.translate(translation);
+		newSurf.setPolygon3D(poly);
+		// lookup potentially existing surface component instance and duplicate it
+		for (const VICUS::ComponentInstance & CI : project().m_componentInstances) {
+			if (CI.m_idSideASurface == originalID || CI.m_idSideBSurface == originalID) {
+				newCI.push_back(CI);
+				newCI.back().m_id = ++newID;
+				if (CI.m_idSideASurface == originalID) {
+					newCI.back().m_idSideASurface = s->m_id;
+					newCI.back().m_idSideBSurface = VICUS::INVALID_ID; // make this a single-sided CI
+				}
+				else {
+					newCI.back().m_idSideBSurface = s->m_id;
+					newCI.back().m_idSideASurface = VICUS::INVALID_ID; // make this a single-sided CI
+				}
+				break;
+			}
+		}
+
+		// copy sub-surfaces
+		for (unsigned int k=0; k<newSurf.subSurfaces().size(); ++k) {
+			VICUS::SubSurface & sub = const_cast<VICUS::SubSurface &>(newSurf.subSurfaces()[k]);
+			unsigned int originalID = sub.m_id;
+			sub.m_id = ++newID;
+			// NOTE: we only duplicate component instances (and subsurface component instances)
+
+			// lookup potentially existing, single-sided subsurface component instance and duplicate it as well
+			for (const VICUS::SubSurfaceComponentInstance & subCI : project().m_subSurfaceComponentInstances) {
+				if (subCI.m_idSideASurface == originalID || subCI.m_idSideBSurface == originalID) {
+					newSubCI.push_back(subCI);
+					newSubCI.back().m_id = ++newID;
+					if (subCI.m_idSideASurface == originalID) {
+						newSubCI.back().m_idSideASurface = sub.m_id;
+						newSubCI.back().m_idSideBSurface = VICUS::INVALID_ID; // make this a single-sided CI
+					}
+					else {
+						newSubCI.back().m_idSideBSurface = sub.m_id;
+						newSubCI.back().m_idSideASurface = VICUS::INVALID_ID; // make this a single-sided CI
+					}
+					break;
+				}
+			}
+		}
+
+		// lookup parent room id in unmodified, original data structure
+		unsigned int parentRoomID = s->m_parent->m_id;
+		// now insert into original room
+		bool found = false;
+		for (unsigned int i=0; !found && i<newBuildings.size(); ++i) {
+			for (unsigned int j=0; j<newBuildings[i].m_buildingLevels.size(); ++j) {
+				std::vector<VICUS::Room> & rooms = newBuildings[i].m_buildingLevels[j].m_rooms;
+				for (unsigned int k=0; k<rooms.size(); ++k) {
+					if (rooms[k].m_id == parentRoomID) {
+						rooms[k].m_surfaces.push_back(newSurf);
+						found = true;
+						break;
+					}
+				}
+			}
+		}
+		Q_ASSERT(found);
+
+		// finally de-select original surface and its subsurfaces
+		found = false;
+		for (VICUS::Building & modB : newBuildings) {
+			for (VICUS::BuildingLevel & modBl : modB.m_buildingLevels) {
+				for (VICUS::Room & modR : modBl.m_rooms) {
+					for (VICUS::Surface & modS : modR.m_surfaces) {
+						// originally selected room?
+						if (modS.m_id == s->m_id) {
+							found = true;
+
+							// go through data structure and deselect all children and collect their IDs
+							deselectedObjectIDs.push_back(modS.m_id);
+							modS.m_selected = false;
+							for (const VICUS::SubSurface & sub : modS.subSurfaces()) {
+								deselectedObjectIDs.push_back(sub.m_id);
+								const_cast<VICUS::SubSurface&>(sub).m_selected = false;
+							}
+							break;
+						}
+					}
+					if (found) break; // break room loop
+				}
+				if (found) break; // break building level loop
+			}
+			if (found) break; // break building loop
+		}
+	}
+	// new create the undo-action
+	return new SVUndoCopyBuildingGeometry(tr("Copied surfaces with their subsurfaces"), newBuildings, newCI, newSubCI, deselectedObjectIDs);
 }
+
 
 SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(const std::vector<const VICUS::Room *> & selectedRooms, const IBKMK::Vector3D & translation) {
 	std::vector<VICUS::Building>					newBuildings(project().m_buildings);
@@ -60,7 +167,7 @@ SVUndoCopyBuildingGeometry * SVUndoCopyBuildingGeometry::createUndoCopyRooms(con
 	std::vector<unsigned int>						deselectedObjectIDs;
 	// NOTE: copy keeps all IDs of original, but pointers in copy are invalidated!
 
-	// we take all selected building levels and copy them as new children of their building
+	// we take all selected rooms and copy them as new children of their building levels
 	unsigned int newID = project().nextUnusedID();
 	for (const VICUS::Room * r : selectedRooms) {
 		// we copy *everything* in the entire room
