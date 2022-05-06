@@ -237,13 +237,13 @@ const std::vector<Vector3D> & Polygon3D::vertexes() const {
 void Polygon3D::setRotation(const IBKMK::Vector3D & normal, const IBKMK::Vector3D & xAxis) {
 	FUNCID(Polygon3D::setRotation);
 
-	if (!IBK::nearly_equal<6>(normal.magnitudeSquared(), 1.0))
+	if (!IBK::nearly_equal<4>(normal.magnitudeSquared(), 1.0))
 		throw IBK::Exception("Normal vector does not have unit length!", FUNC_ID);
-	if (!IBK::nearly_equal<6>(xAxis.magnitudeSquared(), 1.0))
+	if (!IBK::nearly_equal<4>(xAxis.magnitudeSquared(), 1.0))
 		throw IBK::Exception("xAxis vector does not have unit length!", FUNC_ID);
 	// check that the vectors are (nearly) orthogonal
 	double sp = normal.scalarProduct(xAxis);
-	if (!IBK::nearly_equal<6>(sp, 0.0))
+	if (!IBK::nearly_equal<4>(sp, 0.0))
 		throw IBK::Exception("Normal and xAxis vectors must be orthogonal!", FUNC_ID);
 
 	// we only modify our vectors if all input data is correct - hence we ensure validity of the polygon
