@@ -145,9 +145,6 @@ public:
 	/*! If true, the surface normals (lines) are shown for each visible surface. */
 	bool m_surfaceNormalsVisible = false;
 
-	/*! If true, the grid will be drawn and is active for snapping. */
-	bool m_gridVisible = true;
-
 private:
 	void generateBuildingGeometry();
 	void generateTransparentBuildingGeometry();

@@ -73,9 +73,6 @@ public:
 	*/
 	void resetCamera(int position);
 
-	/*! Used to toggle the main grid (the one, that always exists). */
-	void setMainGridVisible(bool visible);
-
 public slots:
 
 	/*! Connected to SVProjectHandler::modified() */

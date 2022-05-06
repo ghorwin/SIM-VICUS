@@ -102,6 +102,7 @@
 #include "SVUndoAddNetwork.h"
 #include "SVUndoAddBuilding.h"
 #include "SVUndoAddProject.h"
+#include "SVUndoModifySiteData.h"
 
 #include "plugins/SVDatabasePluginInterface.h"
 #include "plugins/SVImportPluginInterface.h"
@@ -1206,7 +1207,12 @@ void SVMainWindow::on_actionViewShowSurfaceNormals_toggled(bool visible) {
 
 void SVMainWindow::on_actionViewShowGrid_toggled(bool visible) {
 	// set corresponding flag in View
-	const_cast<Vic3D::SceneView*>(SVViewStateHandler::instance().m_geometryView->sceneView())->setMainGridVisible(visible);
+	std::vector<VICUS::GridPlane> gridPlanes(project().m_viewSettings.m_gridPlanes);
+	gridPlanes[0].m_isVisible = visible;
+	SVUndoModifySiteData * undo = new SVUndoModifySiteData(tr("Main grid visibility changed"),
+														   gridPlanes,
+														   project().m_viewSettings.m_farDistance);
+	undo->push();
 }
 
 

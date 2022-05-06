@@ -1,4 +1,4 @@
-﻿/*	SIM-VICUS - Building and District Energy Simulation Tool.
+/*	SIM-VICUS - Building and District Energy Simulation Tool.
 
 	Copyright (c) 2020-today, Institut für Bauklimatik, TU Dresden, Germany
 
@@ -287,21 +287,6 @@ void SceneView::resetCamera(int position) {
 	}
 	// trick scene into updating
 	onModified(SVProjectHandler::GridModified, nullptr);
-}
-
-
-void SceneView::setMainGridVisible(bool visible) {
-	m_mainScene.m_gridVisible = visible;
-	renderLater();
-
-	SVViewState vs = SVViewStateHandler::instance().viewState();
-
-	if(visible)
-		vs.m_snapOptionMask = SVViewState::Snap_GridPlane | SVViewState::Snap_ObjectCenter | SVViewState::Snap_ObjectEdgeCenter | SVViewState::Snap_ObjectVertex;
-	else
-		vs.m_snapOptionMask = SVViewState::Snap_ObjectCenter | SVViewState::Snap_ObjectEdgeCenter | SVViewState::Snap_ObjectVertex;
-
-	SVViewStateHandler::instance().setViewState(vs);
 }
 
 
