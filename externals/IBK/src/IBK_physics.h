@@ -84,14 +84,17 @@ extern const double SIGMA_W;						///< Surface tension of water (0 degC) in [N/m
 
 /*! Calculates the saturation pressure in [Pa] for a temperature T in [K] using the DIN function. */
 inline double f_psat_DIN1(double T) {
+	IBK_ASSERT_X((T-273.15)>=0,"f_psat_DIN1");
 	if (T<273.15)   return 4.689*IBK::f_pow(1.486 + 0.01*(T-273.15), 12.3);
 	else            return 288.68*IBK::f_pow(1.098 + 0.01*(T-273.15), 8.02);
 }
 
 /*! Calculates the dew point temperature in K for a temperature T in K and a relative humidity in [---] using the DIN function. */
 inline double f_dew_DIN1(double T, double phi) {
-	if (T<273.15)
+	IBK_ASSERT_X(phi>=0,"f_dew_DIN1");
+	if (T<273.15) {
 		return IBK::f_pow(phi, 1.0/12.3) * (T - 124.55) + 124.55;
+	}
 
 	// function is only valid result is > 273.15;
 	return IBK::f_pow(phi, 1.0/8.02) * (T - 163.35) + 163.35;
@@ -108,8 +111,16 @@ inline double f_relhum_Tdew(double T, double Tdew) {
 
 /*! Calculates the saturation pressure in [Pa] for a temperature T in [K] using the DIN function (reformulated equation). */
 inline double f_psat_DIN2(double T) {
-	if (T<272.94529){ if (T<130) return(1.35000E-15); else return(  4.689 * IBK::f_pow(T/100-1.2455,12.300)); }
-	else            { if (T>373) return(1.09347E+05); else return(288.680 * IBK::f_pow(T/100-1.6335, 8.020)); }
+	if (T<272.94529){
+		if (T<130)
+			return(1.35000E-15);
+		else
+			return(  4.689 * IBK::f_pow(T/100-1.2455,12.300)); }
+	else            {
+		if (T>373)
+			return(1.09347E+05);
+		else
+			return(288.680 * IBK::f_pow(T/100-1.6335, 8.020)); }
 }
 
 /*! Calculates the saturation pressure in [Pa] for a temperature T in [K] . */
