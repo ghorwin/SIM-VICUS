@@ -224,6 +224,9 @@ private:
 	/*! Depending on the selected operation, we change the look of the local coordinate system object. */
 	void updateCoordinateSystemLook();
 
+	/*! Computes the local translation vector from current LCS rotation and m_copyTranslationVector. */
+	IBKMK::Vector3D localCopyTranslationVector() const;
+
 	/*! Contains position and rotation of local coordinate system (lcs) object. */
 	Vic3D::Transform3D					m_lcsTransform;
 

@@ -859,6 +859,15 @@ void SVPropEditGeometry::updateCoordinateSystemLook() {
 }
 
 
+IBKMK::Vector3D SVPropEditGeometry::localCopyTranslationVector() const {
+	QQuaternion q = SVViewStateHandler::instance().m_coordinateSystemObject->transform().rotation();
+	IBKMK::Quaternion qm = QQuaternion2IBKQuaternion(q);
+	IBKMK::Vector3D localCopyTranslationVector(m_copyTranslationVector);
+	qm.rotateVector(localCopyTranslationVector);
+	return localCopyTranslationVector;
+}
+
+
 void SVPropEditGeometry::on_pushButtonCancel_clicked() {
 	// TODO
 	// reset LCS when it had been moved as part of an interactive transformation, reset its original position
@@ -1063,34 +1072,38 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 
 
 void SVPropEditGeometry::on_pushButtonCopySurface_clicked() {
+	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopySurfaces(
-				m_selSurfaces, m_copyTranslationVector);
+				m_selSurfaces, localCopyTranslationVector());
 	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopySubsurface_clicked() {
 	QMessageBox::information(this, QString(), tr("Not implemented, yet."));
+	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopySubSurfaces(
+				m_selSubSurfaces, localCopyTranslationVector());
+	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopyRoom_clicked() {
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyRooms(
-				m_selRooms, m_copyTranslationVector);
+				m_selRooms, localCopyTranslationVector());
 	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopyBuildingLevel_clicked() {
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyBuildingLevels(
-				m_selBuildingLevels, m_copyTranslationVector);
+				m_selBuildingLevels, localCopyTranslationVector());
 	undo->push();
 }
 
 
 void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 	SVUndoCopyBuildingGeometry * undo = SVUndoCopyBuildingGeometry::createUndoCopyBuildings(
-				m_selBuildings, m_copyTranslationVector);
+				m_selBuildings, localCopyTranslationVector());
 	undo->push();
 }
 
