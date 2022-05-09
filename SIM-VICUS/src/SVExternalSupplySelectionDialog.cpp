@@ -178,7 +178,6 @@ void SVExternalSupplySelectionDialog::updateCurrent()
 	}
 
 	// enable stagged widget
-	m_ui->stackedWidgetSupply->setEnabled(true);
 	m_ui->stackedWidgetSupply->blockSignals(false);
 }
 
@@ -245,11 +244,12 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QLis
 	}
 	Q_ASSERT(m_current != nullptr);
 
+	// update view
 	// update combo box
 	m_ui->comboBoxSupplyType->setEnabled(true);
 	m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
 
-	// change staggered widget
+	// update staggered widget
 	on_comboBoxSupplyType_currentIndexChanged(m_current->m_supplyType);
 
 	accept();
@@ -261,7 +261,6 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
-	m_ui->stackedWidgetSupply->setCurrentIndex(index);
 
 	// invalid type
 	if(index == VICUS::ExternalSupply::NUM_ST)
@@ -271,7 +270,6 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 	VICUS::ExternalSupply supply = *m_current;
 	// set supply type
 	supply.m_supplyType = (VICUS::ExternalSupply::supplyType_t) index;
-	m_ui->stackedWidgetSupply->setCurrentIndex(index);
 
 	// find external supply index in project
 	unsigned int idx = 0;
@@ -285,6 +283,9 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 	// undo action
 	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), idx, supply);
 	undo->push();
+
+	// update view
+	m_ui->stackedWidgetSupply->setCurrentIndex(index);
 }
 
 
@@ -384,10 +385,6 @@ void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
 	// set fmu path
 	supply.m_supplyFMUPath = filename;
 
-	// visualize FMU file name
-	QFileInfo supplyFMUInfo(filename);
-	m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
-
 	// find external supply index in project
 	unsigned int index = 0;
 	for(; index < project().m_externalSupplies.size(); ++index) {
@@ -400,6 +397,11 @@ void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
 	// undo action
 	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
 	undo->push();
+
+	// udpate view:
+	// visualize FMU file name
+	QFileInfo supplyFMUInfo(filename);
+	m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
 }
 
 

@@ -42,10 +42,6 @@ void ExternalSupply::readXML(const TiXmlElement * element) {
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'id' attribute.") ), FUNC_ID);
 
-		if (!TiXmlAttribute::attributeByName(element, "displayName"))
-			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
-				IBK::FormatString("Missing required 'displayName' attribute.") ), FUNC_ID);
-
 		if (!TiXmlAttribute::attributeByName(element, "supplyType"))
 			throw IBK::Exception( IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
 				IBK::FormatString("Missing required 'supplyType' attribute.") ), FUNC_ID);
@@ -58,6 +54,8 @@ void ExternalSupply::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName = QString::fromStdString(attrib->ValueStr());
+			else if (attribName == "visible")
+				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
 			else if (attribName == "supplyType")
 				try {
 					m_supplyType = (supplyType_t)KeywordList::Enumeration("ExternalSupply::supplyType_t", attrib->ValueStr());
@@ -116,6 +114,8 @@ TiXmlElement * ExternalSupply::writeXML(TiXmlElement * parent) const {
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
 	if (!m_displayName.isEmpty())
 		e->SetAttribute("displayName", m_displayName.toStdString());
+	if (m_visible != ExternalSupply().m_visible)
+		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_supplyType != NUM_ST)
 		e->SetAttribute("supplyType", KeywordList::Keyword("ExternalSupply::supplyType_t",  m_supplyType));
 

@@ -3,6 +3,7 @@
 
 #include "VICUS_Constants.h"
 #include "VICUS_CodeGenMacros.h"
+#include "VICUS_Object.h"
 
 #include <IBK_Parameter.h>
 
@@ -15,7 +16,7 @@ namespace VICUS {
 	all heatings by a hydraulically balanced network and support FMI-coupling
 	at a single demand network branch.
 */
-class ExternalSupply {
+class ExternalSupply : public Object {
 public:
 
 	/*! Supplier supported by the generic network model. */
@@ -48,10 +49,12 @@ public:
 	/*! Checks if the network definition is valid. */
 	bool isValid() const;
 
-	/*! Unique id. We use the namespace of all networks. */
-	unsigned int			m_id = INVALID_ID;					// XML:A:required
-	/*! Network display name. */
-	QString					m_displayName;						// XML:A:required
+	// *** PUBLIC MEMBER VARIABLES ***
+
+	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
+	//:inherited	QString				m_displayName;				// XML:A
+	//:inherited	bool				m_visible = true;			// XML:A
+
 	/*! Network supply type. */
 	supplyType_t			m_supplyType = NUM_ST;				// XML:A:required
 	/*! Parameters for stand alone mode. */

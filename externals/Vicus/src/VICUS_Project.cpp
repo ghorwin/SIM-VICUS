@@ -510,6 +510,11 @@ void Project::updatePointers() {
 
 	}
 
+	// external supplies
+	for (VICUS::ExternalSupply &e : m_externalSupplies) {
+		addAndCheckForUniqueness(&e);
+	}
+
 	// networks
 
 	for (VICUS::Network & n : m_geometricNetworks) {

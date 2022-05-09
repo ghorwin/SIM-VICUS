@@ -234,7 +234,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Maximum fluid velocity");
 	tr("Temperature difference between supply and return fluid temperature");
 	tr("Ideal surface conditioning");
-	tr("Water-based surface conditioning");
+	tr("Water-based surface conditioning: either ideal or part of a hydraulic network");
 	tr("Air change rate");
 	tr("Grid is visible");
 	tr("None");
