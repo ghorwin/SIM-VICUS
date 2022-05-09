@@ -48,7 +48,7 @@ bool SurfaceHeating::isValid(const Database<NetworkPipe> & pipeDB) const {
 			}
 		}
 		break;
-		case VICUS::SurfaceHeating::T_IdealPipeRegister:{
+		case VICUS::SurfaceHeating::T_PipeRegister:{
 			try {
 				m_para[P_TemperatureDifferenceSupplyReturn].checkedValue(VICUS::KeywordList::Keyword("SurfaceHeating::para_t", P_TemperatureDifferenceSupplyReturn),
 																				"K", "K", 1, true, 80, true, nullptr);
@@ -101,7 +101,7 @@ AbstractDBElement::ComparisonResult SurfaceHeating::equal(const AbstractDBElemen
 				m_para[P_CoolingLimit] != surfHeat->m_para[P_CoolingLimit])
 			return Different;
 	}
-	else if(m_type == T_IdealPipeRegister){
+	else if(m_type == T_PipeRegister){
 		if(m_idPipe != surfHeat->m_idPipe)
 			return Different;
 		if(m_para[P_TemperatureDifferenceSupplyReturn] != surfHeat->m_para[P_TemperatureDifferenceSupplyReturn] ||

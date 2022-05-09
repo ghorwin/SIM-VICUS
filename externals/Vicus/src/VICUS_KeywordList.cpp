@@ -471,7 +471,7 @@ namespace VICUS {
 			case 39 :
 			switch (t) {
 				case 0 : return "Ideal";
-				case 1 : return "IdealPipeRegister";
+				case 1 : return "PipeRegister";
 			} break;
 			// VentilationNatural::para_t
 			case 40 :
@@ -955,7 +955,7 @@ namespace VICUS {
 			case 39 :
 			switch (t) {
 				case 0 : return "Ideal";
-				case 1 : return "IdealPipeRegister";
+				case 1 : return "PipeRegister";
 			} break;
 			// VentilationNatural::para_t
 			case 40 :
@@ -1440,7 +1440,7 @@ namespace VICUS {
 			case 39 :
 			switch (t) {
 				case 0 : return "Ideal surface conditioning";
-				case 1 : return "Water-based surface conditioning";
+				case 1 : return "Water-based surface conditioning: either ideal or part of a hydraulic network";
 			} break;
 			// VentilationNatural::para_t
 			case 40 :

@@ -63,8 +63,8 @@ public:
 
 	/*! Surface Heating Types. */
 	enum Type {
-		T_Ideal,				// Keyword: Ideal												'Ideal surface conditioning'
-		T_IdealPipeRegister,	// Keyword: IdealPipeRegister									'Water-based surface conditioning'
+		T_Ideal,			// Keyword: Ideal							'Ideal surface conditioning'
+		T_PipeRegister,		// Keyword: PipeRegister					'Water-based surface conditioning: either ideal or part of a hydraulic network'
 		NUM_T
 	};
 
