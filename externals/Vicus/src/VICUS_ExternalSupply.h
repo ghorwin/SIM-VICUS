@@ -42,6 +42,9 @@ public:
 		NUM_SP
 	};
 
+	/*! Type-info string. */
+	const char * typeinfo() const override { return "ExternalSupply"; }
+
 	// *** PUBLIC MEMBER FUNCTIONS ***
 	VICUS_READWRITE
 	VICUS_COMPARE_WITH_ID
