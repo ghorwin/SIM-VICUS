@@ -2668,6 +2668,9 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	// add to component vector
 	network.m_components.push_back(nandradPump);
 
+	// set pump as reference
+	network.m_referenceElementId = 1;
+
 	// create a supply/return pipe for each network
 	NANDRAD::HydraulicNetworkComponent nandradPipe;
 	nandradPipe.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_SimplePipe;
@@ -2714,6 +2717,8 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	}
 
 	double defaultFluidTemperature = 20. + 273.15;
+	NANDRAD::KeywordList::setParameter(network.m_para, "HydraulicNetwork::para_t",
+						   NANDRAD::HydraulicNetwork::P_InitialFluidTemperature, 20.);
 
 	//standard fluid model
 	NANDRAD::HydraulicFluid fluid;
@@ -2778,7 +2783,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 		// calculate pipe pressure loss
 		double density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 		double diameter = pipe->diameterInside();
-		double maxVelocity = maxMassFlux/(density * area);
+		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter);
 		double viskosity = fluid.m_kinematicViscosity.m_values.value(defaultFluidTemperature);
 		double reynolds = std::abs(maxVelocity) * diameter / viskosity;
 		double roughness = pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value;
@@ -2793,8 +2798,10 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 
 	// create network
+	unsigned int mixerNodeId = 2 * dataSurfaceHeating.size() + 1;
+	unsigned int lastNodeId = mixerNodeId + 1;
+	unsigned int splitterNodeId = 1;
 
-	unsigned int nodeId = 0;
 	unsigned int controllerId = 0;
 	unsigned int elemId = 0;
 	// create first element: pump
@@ -2802,7 +2809,9 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	pumpElem.m_id = ++elemId;
 	pumpElem.m_componentId = 1;
 	pumpElem.m_displayName = "Mass flux controlled pump";
-	pumpElem.m_outletNodeId = ++nodeId;
+	// last node is inlet node
+	pumpElem.m_inletNodeId = lastNodeId;
+	pumpElem.m_outletNodeId = splitterNodeId;
 	// create a control element: first control element is for mass flux
 	pumpElem.m_controlElementId = ++controllerId;
 
@@ -2820,6 +2829,10 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 									   NANDRAD::HydraulicNetworkControlElement::P_Kp, 100000000.);
 	massFluxControl.m_maximumControllerResultValue = 50000;
 
+
+	network.m_controlElements.push_back(massFluxControl);
+
+	unsigned int nodeId = splitterNodeId;
 	//fill the map for quick work
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
 		// calculte lenght of supply pipe for pressure equailzation
@@ -2837,7 +2850,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 			pipeElem.m_pipePropertiesId = pipeIds[i];
 			// connect to component 'Supply pipe'
 			pipeElem.m_componentId = 2;
-			pipeElem.m_inletNodeId = 1;
+			pipeElem.m_inletNodeId = splitterNodeId;
 			pipeElem.m_outletNodeId = ++nodeId;
 
 			NANDRAD::KeywordList::setParameter(pipeElem.m_para, "HydraulicNetworkElement::para_t",
@@ -2863,8 +2876,9 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 		if(hasSupplyPipe)
 			heaterElem.m_inletNodeId = nodeId;
 		else
-			heaterElem.m_inletNodeId = 1;
-		heaterElem.m_outletNodeId = ++nodeId;
+			heaterElem.m_inletNodeId = splitterNodeId;
+
+		heaterElem.m_outletNodeId = mixerNodeId;
 
 		NANDRAD::KeywordList::setIntPara(heaterElem.m_intPara, "HydraulicNetworkElement::intPara_t",
 										 NANDRAD::HydraulicNetworkElement::IP_NumberParallelPipes, numberOfPipes);
@@ -2912,24 +2926,13 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	}
 
 	// connect to ideal heating
-	NANDRAD::HydraulicNetworkElement heaterElem;
-	heaterElem.m_inletNodeId = nodeId;
-	heaterElem.m_outletNodeId = ++nodeId;
-	heaterElem.m_componentId = 4;
+	NANDRAD::HydraulicNetworkElement idealHeaterElem;
+	idealHeaterElem.m_id = ++elemId;
+	idealHeaterElem.m_inletNodeId = mixerNodeId;
+	idealHeaterElem.m_outletNodeId = lastNodeId;
+	idealHeaterElem.m_componentId = 4;
 
-	network.m_elements.push_back(heaterElem);
-
-	// reconnect to pump
-	network.m_elements.front().m_inletNodeId = nodeId;
-
-
-
-	// create a controller for all heaters
-	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
-	}
-
-	network.m_controlElements.push_back(massFluxControl);
-
+	network.m_elements.push_back(idealHeaterElem);
 
 
 	// create pipe properties
