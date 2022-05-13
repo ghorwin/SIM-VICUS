@@ -280,7 +280,10 @@
   </action>
   <action name="actionFileClose">
    <property name="text">
-    <string>C&amp;lose</string>
+    <string>C&amp;lose (Ctrl+W)</string>
+   </property>
+   <property name="toolTip">
+    <string>Closes current project</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
