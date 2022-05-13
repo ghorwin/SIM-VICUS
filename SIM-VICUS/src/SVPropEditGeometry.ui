@@ -14,7 +14,7 @@
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="pageTranslation">
       <layout class="QVBoxLayout" name="verticalLayoutTrans">
@@ -391,6 +391,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="checkBoxKeepAspectRatio">
+            <property name="text">
+             <string>Keep aspect ratio</string>
+            </property>
+           </widget>
           </item>
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">

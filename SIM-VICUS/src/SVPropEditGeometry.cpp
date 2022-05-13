@@ -351,20 +351,36 @@ void SVPropEditGeometry::on_pushButtonThreePointRotation_clicked() {
 }
 
 
+void SVPropEditGeometry::on_checkBoxKeepAspectRatio_toggled(bool checked) {
+	if (checked) {
+		// TODO : act like we have entered just a value in x
+	}
+}
+
 void SVPropEditGeometry::on_radioButtonScaleResize_toggled(bool) {
 	updateInputs();
 }
 
 void SVPropEditGeometry::on_lineEditScaleX_editingFinishedSuccessfully() {
-	updateScalePreview();
+	// if we have "aspect ratio" on, we need to adjust the sizes of the other line edits as well
+	if (m_ui->checkBoxKeepAspectRatio->isChecked())
+		updateScalePreview(0);
+	else
+		updateScalePreview(-1);
 }
 
 void SVPropEditGeometry::on_lineEditScaleY_editingFinishedSuccessfully() {
-	updateScalePreview();
+	if (m_ui->checkBoxKeepAspectRatio->isChecked())
+		updateScalePreview(1);
+	else
+		updateScalePreview(-1);
 }
 
 void SVPropEditGeometry::on_lineEditScaleZ_editingFinishedSuccessfully() {
-	updateScalePreview();
+	if (m_ui->checkBoxKeepAspectRatio->isChecked())
+		updateScalePreview(2);
+	else
+		updateScalePreview(-1);
 }
 
 
@@ -613,7 +629,7 @@ void SVPropEditGeometry::updateRotationPreview() {
 }
 
 
-void SVPropEditGeometry::updateScalePreview() {
+void SVPropEditGeometry::updateScalePreview(int aspectRatioSourceEdit) {
 	QVector3D scaleFactors;
 	if (m_ui->radioButtonScaleResize->isChecked()) {
 		// compute scale factors
@@ -632,11 +648,58 @@ void SVPropEditGeometry::updateScalePreview() {
 
 		if (IBK::near_equal(m_bbDim[OM_Local].m_z,0.0,1e-6))			scaleFactors.setZ(1);
 		else															scaleFactors.setZ(float(newZ/m_bbDim[OM_Local].m_z));
+
+		switch (aspectRatioSourceEdit) {
+			case 0 : {
+				double scale = scaleFactors.x();
+				scaleFactors.setY(scale);
+				scaleFactors.setZ(scale);
+				m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
+				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
+			} break;
+			case 1 : {
+				double scale = scaleFactors.y();
+				scaleFactors.setX(scale);
+				scaleFactors.setZ(scale);
+				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
+				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
+			} break;
+			case 2 : {
+				double scale = scaleFactors.z();
+				scaleFactors.setX(scale);
+				scaleFactors.setY(scale);
+				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
+				m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
+			} break;
+		}
 	}
 	else {
 		scaleFactors.setX( (float)m_ui->lineEditScaleX->value());
 		scaleFactors.setY( (float)m_ui->lineEditScaleY->value());
 		scaleFactors.setZ( (float)m_ui->lineEditScaleZ->value());
+		switch (aspectRatioSourceEdit) {
+			case 0 : {
+				float scale = scaleFactors.x();
+				scaleFactors.setY(scale);
+				scaleFactors.setZ(scale);
+				m_ui->lineEditScaleY->setValue((double)scale);
+				m_ui->lineEditScaleZ->setValue((double)scale);
+			} break;
+			case 1 : {
+				float scale = scaleFactors.y();
+				scaleFactors.setX(scale);
+				scaleFactors.setZ(scale);
+				m_ui->lineEditScaleX->setValue((double)scale);
+				m_ui->lineEditScaleZ->setValue((double)scale);
+			} break;
+			case 2 : {
+				float scale = scaleFactors.z();
+				scaleFactors.setX(scale);
+				scaleFactors.setY(scale);
+				m_ui->lineEditScaleX->setValue((double)scale);
+				m_ui->lineEditScaleY->setValue((double)scale);
+			} break;
+		}
 	}
 	// obtain offset and rotation of local coordinate system
 	QVector3D offset = m_lcsTransform.translation();

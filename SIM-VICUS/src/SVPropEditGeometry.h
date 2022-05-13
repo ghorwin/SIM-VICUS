@@ -154,6 +154,7 @@ private slots:
 
 	// *** Scale page ***
 
+	void on_checkBoxKeepAspectRatio_toggled(bool checked);
 	void on_radioButtonScaleResize_toggled(bool checked);
 	void on_lineEditScaleX_editingFinishedSuccessfully();
 	void on_lineEditScaleY_editingFinishedSuccessfully();
@@ -182,6 +183,7 @@ private slots:
 
 	void on_pushButtonCancel_clicked();
 	void on_pushButtonApply_clicked();
+
 
 
 private:
@@ -214,8 +216,11 @@ private:
 	/*! Updates the transformation matrix for rotating geometry. */
 	void updateRotationPreview();
 
-	/*! Updates the transformation matrix for local scaling. */
-	void updateScalePreview();
+	/*! Updates the transformation matrix for local scaling.
+		The parameter aspectRatioSourceEdit, if not -1, indicates which
+		input shall be taken as base for aspect ratio setting (0-x, 1-y, 2-z).
+	*/
+	void updateScalePreview(int aspectRatioSourceEdit);
 
 	/*! Increases/decreases value in line edit depending on scroll wheel. */
 	void onWheelTurned(double offset, QtExt::ValidatingLineEdit * lineEdit);
