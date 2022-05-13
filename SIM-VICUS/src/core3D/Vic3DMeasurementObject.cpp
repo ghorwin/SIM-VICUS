@@ -35,6 +35,7 @@
 #include "Vic3DVertex.h"
 #include "Vic3DSceneView.h"
 #include "Vic3DScene.h"
+#include "Vic3DConstants.h"
 
 #include "SVSettings.h"
 #include "SVGeometryView.h"
@@ -42,6 +43,13 @@
 #include "SVMeasurementWidget.h"
 
 namespace Vic3D {
+
+MeasurementObject::MeasurementObject() :
+	m_startPoint(INVALID_POINT),
+	m_endPoint(INVALID_POINT)
+{
+}
+
 
 void MeasurementObject::create(ShaderProgram * shaderProgram) {
 	m_measurementShader = shaderProgram;
@@ -54,8 +62,8 @@ void MeasurementObject::destroy() {
 }
 
 void MeasurementObject::reset() {
-	m_startPoint = QVector3D();
-	m_endPoint = QVector3D();
+	m_startPoint = INVALID_POINT;
+	m_endPoint = INVALID_POINT;
 
 	destroy();
 
@@ -66,7 +74,7 @@ void MeasurementObject::setMeasureLine(const QVector3D & end, const QVector3D & 
 	// create a temporary buffer that will contain the x-y coordinates of all grid lines
 	std::vector<VertexC>			measurementVertexBufferData;
 
-	Q_ASSERT(m_startPoint != QVector3D() ); // start point always has to be set
+	Q_ASSERT(m_startPoint != INVALID_POINT ); // start point always has to be set
 
 	// start point
 	measurementVertexBufferData.push_back(VertexC(m_startPoint));

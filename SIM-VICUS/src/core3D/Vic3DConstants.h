@@ -103,6 +103,7 @@ enum Shaders {
 
 #define VIC3D_STRIP_STOP_INDEX 0xFFFFFFFF
 
+#define INVALID_POINT QVector3D(-1e19f,-1e19f,-1e19f)
 
 } // namespace Vic3D
 

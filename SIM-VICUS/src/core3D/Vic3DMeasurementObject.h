@@ -47,6 +47,8 @@ class ShaderProgram;
 */
 class MeasurementObject {
 public:
+	MeasurementObject();
+
 	/*! The function is called during OpenGL initialization, where the OpenGL context is current. */
 	void create(ShaderProgram * shaderProgram);
 	void destroy();

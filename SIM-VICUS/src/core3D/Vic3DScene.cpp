@@ -866,12 +866,12 @@ bool Scene::inputEvent(const KeyboardMouseHandler & keyboardHandler, const QPoin
 		// now we handle the snapping rules and also the locking; updates local coordinate system location
 		snapLocalCoordinateSystem(pickObject);
 		// initially, we have not start point so we show the local coordinate system's position
-		if (m_measurementObject.m_startPoint == QVector3D() ) {
+		if (m_measurementObject.m_startPoint == INVALID_POINT ) {
 			m_measurementWidget->showStartPoint(m_coordinateSystemObject.translation() );
 		}
 		// while measuring, endPoint is QVector3D() and we update LCS position as end point
 		// otherwise measurement has ended and we do no longer update any coordinates
-		else if (m_measurementObject.m_endPoint == QVector3D() ) {
+		else if (m_measurementObject.m_endPoint == INVALID_POINT ) {
 			// end point is the same as camera position
 			m_measurementObject.setMeasureLine(m_coordinateSystemObject.translation(), m_camera.forward() );
 			// update end point's coordinates and show distance in widget
@@ -1189,7 +1189,7 @@ void Scene::render() {
 	}
 
 	// in measurement mode we always draw the line, except for the initial state where we are waiting for the first click
-	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != QVector3D()) {
+	if (vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance && m_measurementObject.m_startPoint != INVALID_POINT) {
 
 		// measurement line's coordinates are adjusted in inputEvent()
 		m_measurementShader->bind();
@@ -2838,14 +2838,14 @@ void Scene::handleLeftMouseClick(const KeyboardMouseHandler & keyboardHandler, P
 		// b) last measurement is complete, i.e. both start and end point are set
 
 		// new starting point for measurement selected
-		if (m_measurementObject.m_startPoint == QVector3D())
+		if (m_measurementObject.m_startPoint == INVALID_POINT)
 		{
 			// if we start from "initial mode", show the distance widget
 			// store new start point
 			m_measurementObject.m_startPoint = m_coordinateSystemObject.translation();
 			m_measurementWidget->showStartPoint(m_measurementObject.m_startPoint);
 		}
-		else if (m_measurementObject.m_startPoint != QVector3D() && m_measurementObject.m_endPoint != QVector3D()) {
+		else if (m_measurementObject.m_startPoint != INVALID_POINT && m_measurementObject.m_endPoint != INVALID_POINT) {
 			// first reset object and widget
 			m_measurementObject.reset();
 			m_measurementWidget->reset();
