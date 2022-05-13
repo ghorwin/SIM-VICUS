@@ -287,6 +287,19 @@ void SVPropEditGeometry::on_radioButtonTranslationAbsolute_toggled(bool) {
 	updateInputs();
 }
 
+void SVPropEditGeometry::on_radioButtonTranslationRelative_toggled(bool) {
+	updateInputs();
+}
+
+void SVPropEditGeometry::on_radioButtonTranslationAbsoluteLCS_toggled(bool) {
+	updateInputs();
+}
+
+void SVPropEditGeometry::on_radioButtonTranslationRelativeLCS_toggled(bool) {
+	updateInputs();
+}
+
+
 void SVPropEditGeometry::on_lineEditTranslateX_editingFinishedSuccessfully() {
 	updateTranslationPreview();
 }
@@ -506,7 +519,12 @@ void SVPropEditGeometry::updateTranslationPreview() {
 		// subtract original lcs position
 		// obtain offset and rotation of local coordinate system
 		QVector3D offset = m_lcsTransform.translation();
+		// apply offset using global coordinate system
 		translation -= offset;
+	}
+	else if (m_ui->radioButtonTranslationRelativeLCS->isChecked()) {
+		// rotate translation vector with current LCS transformation matrix
+		translation = m_lcsTransform.rotation().rotatedVector(translation);
 	}
 
 	// adjust wireframe object transform
@@ -1104,4 +1122,5 @@ void SVPropEditGeometry::on_pushButtonCopyBuilding_clicked() {
 				m_selBuildings, localCopyTranslationVector());
 	undo->push();
 }
+
 
