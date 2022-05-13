@@ -190,6 +190,7 @@ bool SVGeometryView::handleGlobalKeyPress(Qt::Key k) {
 				vs.m_snapEnabled = true;
 				qDebug() << "Snap turned on";
 			}
+			m_ui->actionSnap->setChecked(vs.m_snapEnabled);
 			SVViewStateHandler::instance().setViewState(vs);
 			// Nothing further to be done - the coordinate system position is adjusted below for
 			// all view modes that require snapping
@@ -737,8 +738,6 @@ void SVGeometryView::on_actionMeasure_triggered(bool on) {
 
 
 void SVGeometryView::on_actionSnap_triggered(bool on) {
-	///TODO: Andreas
-	///		 Why toggled is not working?
 	// switch toggle view state
 	m_ui->actionSnap->setChecked(on);
 	SVViewState vs = SVViewStateHandler::instance().viewState();

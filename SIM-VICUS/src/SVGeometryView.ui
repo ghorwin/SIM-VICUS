@@ -136,6 +136,9 @@
    </item>
   </layout>
   <action name="actionSnap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/Object-Snap.png</normaloff>:/gfx/actions/Object-Snap.png</iconset>
