@@ -148,6 +148,9 @@
    </property>
   </action>
   <action name="actionMeasure">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../resources/SIM-VICUS.qrc">
      <normaloff>:/gfx/actions/Measurement.png</normaloff>:/gfx/actions/Measurement.png</iconset>

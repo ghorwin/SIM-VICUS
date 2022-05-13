@@ -2219,8 +2219,7 @@ void Scene::leaveMeasurementMode(bool setViewState) {
 	if (setViewState)
 		SVViewStateHandler::instance().m_propModeSelectionWidget->setDefaultViewState();
 
-	m_measurementWidget->hide();
-	m_measurementWidget->reset();
+	SVViewStateHandler::instance().m_geometryView->hideMeasurementWidget();
 
 	SVViewStateHandler::instance().m_coordinateSystemObject->setOrbColor(QColor("burlywood"));
 }

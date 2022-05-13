@@ -228,6 +228,13 @@ void SVGeometryView::moveMeasurementWidget() {
 }
 
 
+void SVGeometryView::hideMeasurementWidget() {
+	m_measurementWidget->hide();
+	m_measurementWidget->reset();
+	m_ui->actionMeasure->setChecked(false);
+}
+
+
 void SVGeometryView::switch2GeometryMode() {
 	m_ui->actionToggleGeometryMode->trigger();
 }
@@ -324,7 +331,6 @@ void SVGeometryView::onViewStateChanged() {
 	m_ui->actionToggleGeometryMode->setChecked(geometryModeActive);
 	m_ui->actionToggleParametrizationMode->setChecked(!geometryModeActive);
 
-
 	// NOTE: you cannot simply hide widgets added to a toolbar. Instead, you must change visibility of
 	//       the associated actions.
 
@@ -361,6 +367,10 @@ void SVGeometryView::onViewStateChanged() {
 	else {
 		m_actionlocalCoordinateSystemCoordinates->setVisible(false);
 	}
+
+	// hide measurement widget when no longer needed
+	if (vs.m_sceneOperationMode != SVViewState::OM_MeasureDistance)
+		hideMeasurementWidget();
 }
 
 
@@ -716,8 +726,6 @@ void SVGeometryView::setupToolBar() {
 }
 
 void SVGeometryView::on_actionMeasure_triggered(bool on) {
-	///TODO: Andreas
-	///		Why toggled is not working?
 	m_ui->actionMeasure->setChecked(on);
 	SVViewState vs = SVViewStateHandler::instance().viewState();
 	if (on && vs.m_sceneOperationMode == SVViewState::OM_MeasureDistance) {
@@ -726,6 +734,7 @@ void SVGeometryView::on_actionMeasure_triggered(bool on) {
 	}
 	m_sceneView->toggleMeasurementMode();
 }
+
 
 void SVGeometryView::on_actionSnap_triggered(bool on) {
 	///TODO: Andreas

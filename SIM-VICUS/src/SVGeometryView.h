@@ -102,11 +102,14 @@ public:
 
 	/*! Moves the measurement Widget to the bottom right of the scene view. */
 	void moveMeasurementWidget();
+	/*! Hides measurement widget and untoggles the button. */
+	void hideMeasurementWidget();
 
 	/*! Triggers actionToggleGeometryMode. */
 	void switch2GeometryMode();
 	/*! Triggers actionToggleParamtrizationMode. */
 	void switch2ParametrizationMode();
+
 
 public slots:
 	/*! Handles selection changes and enables/disables button states. */
