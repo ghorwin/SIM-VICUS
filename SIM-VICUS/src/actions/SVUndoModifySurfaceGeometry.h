@@ -30,7 +30,11 @@
 
 #include "SVUndoCommandBase.h"
 
-/*! Action for modifying a surface. */
+/*! Action for modifying a surface.
+	This action is also used for adding/removing sub-surfaces.
+
+	\warning IDs of modified surfaces MUST NOT change!
+*/
 class SVUndoModifySurfaceGeometry : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifySurfaceGeometry)
 public:
@@ -45,7 +49,7 @@ private:
 	/*! Object copies of modified surfaces. */
 	std::vector<VICUS::Surface>								m_surfaces;
 
-	/*! True, if we also modify the sub-surface component instances (i.e. we add windows). */
+	/*! True, if we also modify the sub-surface component instances (i.e. we add/remove windows). */
 	bool													m_modifySubSurfaceComponentInstances = false;
 	/*! Copies of modified sub-surface component instances. */
 	std::vector<VICUS::SubSurfaceComponentInstance>			m_subSurfaceComponentInstances;

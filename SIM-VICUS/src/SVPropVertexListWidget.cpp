@@ -526,7 +526,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 
 	// compose a surface object based on the current content of the new polygon object
 	VICUS::Surface s;
-	s.m_id = project().nextUnusedID();
+
+	unsigned int nextId = project().nextUnusedID();
+	s.m_id = nextId;
 	s.m_displayName = m_ui->lineEditName->text().trimmed();
 	s.setPolygon3D( po->planeGeometry().polygon3D() );
 
@@ -555,7 +557,7 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			// we make a surface copy
 			VICUS::Surface newSurf(*surf);
 
-			if(surf == nullptr){
+			if (surf == nullptr){
 				QMessageBox::critical(this, QString(), tr("Surface ID is not valid!"));
 				return;
 			}
@@ -569,22 +571,30 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			const IBKMK::Vector3D &offset = newSurf.geometry().offset();
 			const IBKMK::Vector3D &normal = newSurf.geometry().normal();
 
+
 			VICUS::SubSurface newSubsurface;
-			newSubsurface.m_id = project().nextUnusedID();
+			newSubsurface.m_id = s.m_id;
 			newSubsurface.m_displayName = m_ui->lineEditName->text().trimmed();
 			newSubsurface.m_color = QColor(96,96,255,64);
-#if POLYGON2D
+
 			// we make new projection
-			for (unsigned int i=0; i<s.geometry().polygon().vertexes().size(); ++i) {
+			std::vector<IBKMK::Vector2D> subVertexes;
+			for (unsigned int i=0; i<s.polygon3D().vertexes().size(); ++i) {
 				IBKMK::Vector3D projectedPoint;
-				const IBKMK::Vector3D &p = s.geometry().polygon().vertexes()[i];
+				const IBKMK::Vector3D &p = s.polygon3D().vertexes()[i];
 				// we need to be sure that the point is in our plane
 				IBKMK::pointProjectedOnPlane(offset, normal, p, projectedPoint);
 				// now we take the projected point
 				IBKMK::Vector2D::point2D subSurfPoint;
 				IBKMK::planeCoordinates(offset, newSurf.geometry().localX(), newSurf.geometry().localY(), projectedPoint, subSurfPoint.m_x, subSurfPoint.m_y);
 
-				newSubsurface.m_polygon2D.addVertex(subSurfPoint);
+				subVertexes.push_back(subSurfPoint);
+			}
+			// ensure that we have a correct polygon
+			newSubsurface.m_polygon2D.setVertexes(subVertexes);
+			if (!newSubsurface.m_polygon2D.isValid()) {
+				QMessageBox::critical(this, QString(), tr("Polygon cannot be projected to selected surface!"));
+				return;
 			}
 
 			// also create subsurface component instances
@@ -593,10 +603,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 				m_ui->comboBoxSubSurfComponent->currentIndex() != -1)
 			{
 				VICUS::SubSurfaceComponentInstance subInstance;
-				subInstance.m_id = project().nextUnusedID();
+				subInstance.m_id = ++nextId;
 				subInstance.m_idSubSurfaceComponent = m_ui->comboBoxSubSurfComponent->currentData().toUInt();
 				subInstance.m_idSideASurface = newSubsurface.m_id;
-				//subInstance.m_sideASubSurface = &newSubsurface;
 				subInstance.m_idSideBSurface = VICUS::INVALID_ID; // currently, all our new windows are outside windows
 				subSurfaceComponentInstances.push_back(subInstance);
 			}
@@ -605,10 +614,9 @@ void SVPropVertexListWidget::on_pushButtonCreateSurface_clicked() {
 			newSurf.setSubSurfaces(subSurfs);
 			modSurfaces.push_back(newSurf);
 
-			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surfaces/windows"),
+			SVUndoModifySurfaceGeometry * undo = new SVUndoModifySurfaceGeometry(tr("Added sub-surface/window"),
 				modSurfaces, &subSurfaceComponentInstances);
 			undo->push();
-#endif
 		}
 		else {
 
@@ -1423,7 +1431,7 @@ void SVPropVertexListWidget::on_toolButtonEditSubSurfComponents_clicked() {
 }
 
 
-void SVPropVertexListWidget::on_checkBoxSubSurfaceGeometry_stateChanged(int arg1) {
+void SVPropVertexListWidget::on_checkBoxSubSurfaceGeometry_stateChanged(int) {
 	updateButtonStates();
 }
 

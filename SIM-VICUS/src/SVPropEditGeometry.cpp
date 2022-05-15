@@ -651,21 +651,21 @@ void SVPropEditGeometry::updateScalePreview(int aspectRatioSourceEdit) {
 
 		switch (aspectRatioSourceEdit) {
 			case 0 : {
-				double scale = scaleFactors.x();
+				float scale = scaleFactors.x();
 				scaleFactors.setY(scale);
 				scaleFactors.setZ(scale);
 				m_ui->lineEditScaleY->setValue((double)scale*m_bbDim[OM_Local].m_y);
 				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
 			} break;
 			case 1 : {
-				double scale = scaleFactors.y();
+				float scale = scaleFactors.y();
 				scaleFactors.setX(scale);
 				scaleFactors.setZ(scale);
 				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
 				m_ui->lineEditScaleZ->setValue((double)scale*m_bbDim[OM_Local].m_z);
 			} break;
 			case 2 : {
-				double scale = scaleFactors.z();
+				float scale = scaleFactors.z();
 				scaleFactors.setX(scale);
 				scaleFactors.setY(scale);
 				m_ui->lineEditScaleX->setValue((double)scale*m_bbDim[OM_Local].m_x);
