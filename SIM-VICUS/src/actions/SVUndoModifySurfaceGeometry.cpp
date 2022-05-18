@@ -47,36 +47,16 @@ SVUndoModifySurfaceGeometry::SVUndoModifySurfaceGeometry(const QString & label,
 
 
 void SVUndoModifySurfaceGeometry::undo() {
-#if 0
-	// process all of our stored surfaces in the project
 
+	// process all of our stored surfaces in the project
 	for (unsigned int i=0; i<m_surfaces.size(); ++i) {
 		// find surface by ID in current project
 		VICUS::Object * o = theProject().objectById(m_surfaces[i].m_id);
 		IBK_ASSERT(o != nullptr);
-		// check out if the parent surface is already in our vector with modified surfaces
-		if (std::find(surfacesProject.begin(), surfacesProject.end(), parentSurf) == surfacesProject.end())
-			surfacesProject.push_back(parentSurf);
-	}
-
-	for (const VICUS::Surface *sOld : surfacesProject ) {
-		for ( VICUS::Surface &sNew : m_surfaces ) {
-			if ( sOld->m_id == sNew.m_id ) {
-				// we swap the surface's polygon and the subsurfaces polygons
-				VICUS::Surface * oldS = const_cast<VICUS::Surface *>(sOld);
-
-				IBKMK::Polygon3D oldPolygon = oldS->polygon3D();
-				oldS->setPolygon3D(VICUS::Polygon3D(sNew.polygon3D()));
-				sNew.setPolygon3D(VICUS::Polygon3D(oldPolygon));
-
-				std::vector<VICUS::SubSurface> oldSubSurfaces = oldS->subSurfaces();
-				oldS->setSubSurfaces(sNew.subSurfaces());
-				sNew.setSubSurfaces(oldSubSurfaces);
-
-				// Note: triangulation is only updated once requested
-				break;
-			}
-		}
+		VICUS::Surface * s = dynamic_cast<VICUS::Surface *>(o);
+		Q_ASSERT(s != nullptr);
+		// exchange data between surfaces
+		std::swap(m_surfaces[i], *s);
 	}
 
 	// also modified sub-surface components, if needed
@@ -89,7 +69,6 @@ void SVUndoModifySurfaceGeometry::undo() {
 	// tell project that geometry has changed
 	// NOTE: this may be slow for larger geometries...
 	SVProjectHandler::instance().setModified( SVProjectHandler::BuildingGeometryChanged );
-#endif
 }
 
 

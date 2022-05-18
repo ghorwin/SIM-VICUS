@@ -38,6 +38,9 @@
 class SVUndoModifySurfaceGeometry : public SVUndoCommandBase {
 	Q_DECLARE_TR_FUNCTIONS(SVUndoModifySurfaceGeometry)
 public:
+	/*! Creates the undo-action.
+		Mind: surfaces must be triangulated already, if they contain new sub-surfaces.
+	*/
 	SVUndoModifySurfaceGeometry(const QString & label, const std::vector<VICUS::Surface> & surfaces,
 								const std::vector<VICUS::SubSurfaceComponentInstance> * subSurfaceComponentInstances = nullptr);
 
