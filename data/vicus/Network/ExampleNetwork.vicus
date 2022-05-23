@@ -2,7 +2,7 @@
 <VicusProject fileVersion="0.7">
 	<ProjectInfo>
 		<Created>Mi Okt 6 08:47:35 2021</Created>
-		<LastEdited>Mi Apr 27 10:13:44 2022</LastEdited>
+		<LastEdited>Di Mai 10 20:10:16 2022</LastEdited>
 	</ProjectInfo>
 	<!--DirectoryPlaceholders section defines strings to be substituted with directories-->
 	<DirectoryPlaceholders>
@@ -48,7 +48,7 @@
 			<IBK:Flag name="CreateDefaultNetworkOutputs">true</IBK:Flag>
 		</Outputs>
 		<ViewSettings>
-			<CameraTranslation>-573.489 -578.467 739.214</CameraTranslation>
+			<CameraTranslation>-538.151 -634.042 723.59</CameraTranslation>
 			<RotationMatrix>
 				<Wp>0.811369</Wp>
 				<X>0.420904</X>
@@ -310,7 +310,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -319,7 +319,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_100_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -328,7 +328,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_101_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -337,7 +337,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_102_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -346,7 +346,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_103_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -355,7 +355,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_104_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -364,7 +364,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_105_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -373,7 +373,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_106_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -382,7 +382,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_107_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -391,7 +391,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_108_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -400,7 +400,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_109_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -409,7 +409,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_10_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -418,7 +418,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_110_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -427,7 +427,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_111_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -436,7 +436,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_112_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -445,7 +445,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_113_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -454,7 +454,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_114_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -463,7 +463,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_115_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -472,7 +472,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_116_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -481,7 +481,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_117_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -490,7 +490,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_118_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -499,7 +499,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_119_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -508,7 +508,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_11_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -517,7 +517,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_120_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -526,7 +526,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_121_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -535,7 +535,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_122_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -544,7 +544,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_123_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -553,7 +553,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_124_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -562,7 +562,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_125_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -571,7 +571,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_126_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -580,7 +580,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_127_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -589,7 +589,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_128_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -598,7 +598,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_129_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -607,7 +607,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_12_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -616,7 +616,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_130_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -625,7 +625,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_13_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -634,7 +634,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_14_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -643,7 +643,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_15_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -652,7 +652,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_16_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -661,7 +661,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_17_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -670,7 +670,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_18_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -679,7 +679,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_19_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -688,7 +688,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_1_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -697,7 +697,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_20_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -706,7 +706,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_21_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -715,7 +715,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_22_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -724,7 +724,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_23_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -733,7 +733,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_24_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -742,7 +742,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_25_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -751,7 +751,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_26_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -760,7 +760,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_27_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -769,7 +769,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_28_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -778,7 +778,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_29_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -787,7 +787,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_2_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -796,7 +796,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_30_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -805,7 +805,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_31_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -814,7 +814,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_32_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -823,7 +823,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_33_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -832,7 +832,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_34_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -841,7 +841,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_35_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -850,7 +850,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_36_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -859,7 +859,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_37_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -868,7 +868,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_38_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -877,7 +877,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_39_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -886,7 +886,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_3_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -895,7 +895,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_40_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -904,7 +904,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_41_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -913,7 +913,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_42_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -922,7 +922,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_43_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -931,7 +931,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_44_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -940,7 +940,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_45_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -949,7 +949,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_46_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -958,7 +958,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_47_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -967,7 +967,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_48_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -976,7 +976,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_49_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -985,7 +985,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_4_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -994,7 +994,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_50_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1003,7 +1003,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_51_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1012,7 +1012,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_52_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1021,7 +1021,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_53_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1030,7 +1030,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_54_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1039,7 +1039,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_55_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1048,7 +1048,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_56_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1057,7 +1057,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_57_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1066,7 +1066,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_58_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1075,7 +1075,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_59_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1084,7 +1084,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_5_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1093,7 +1093,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_60_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1102,7 +1102,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_61_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1111,7 +1111,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_62_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1120,7 +1120,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_63_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1129,7 +1129,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_64_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1138,7 +1138,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_65_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1147,7 +1147,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_66_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1156,7 +1156,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_67_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1165,7 +1165,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_68_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1174,7 +1174,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_69_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1183,7 +1183,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_6_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1192,7 +1192,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_70_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1201,7 +1201,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_71_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1210,7 +1210,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_72_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1219,7 +1219,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_73_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1228,7 +1228,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_74_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1237,7 +1237,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_75_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1246,7 +1246,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_76_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1255,7 +1255,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_77_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1264,7 +1264,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_78_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1273,7 +1273,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_79_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1282,7 +1282,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_7_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1291,7 +1291,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_80_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1300,7 +1300,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_81_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1309,7 +1309,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_82_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1318,7 +1318,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_83_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1327,7 +1327,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_84_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1336,7 +1336,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_85_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1345,7 +1345,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_86_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1354,7 +1354,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_87_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1363,7 +1363,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_88_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1372,7 +1372,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_89_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1381,7 +1381,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_8_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1390,7 +1390,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_91_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1399,7 +1399,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_92_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1408,7 +1408,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_93_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1417,7 +1417,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_94_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1426,7 +1426,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_95_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1435,7 +1435,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_96_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1444,7 +1444,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_97_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1453,7 +1453,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_98_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1462,7 +1462,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_99_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1471,7 +1471,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">4800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/EFH_9_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1480,7 +1480,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_0_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1489,7 +1489,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_1_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1498,7 +1498,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_2_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1507,7 +1507,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_3_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1516,7 +1516,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_4_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1525,7 +1525,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_6_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1534,7 +1534,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_7_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1543,7 +1543,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">6000</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/ZFH_8_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1552,7 +1552,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_0_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1561,7 +1561,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_10_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1570,7 +1570,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_11_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1579,7 +1579,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_12_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1588,7 +1588,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_13_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1597,7 +1597,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_14_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1606,7 +1606,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_15_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1615,7 +1615,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_16_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1624,7 +1624,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_17_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1633,7 +1633,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_18_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1642,7 +1642,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_1_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1651,7 +1651,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_2_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1660,7 +1660,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_3_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1669,7 +1669,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_4_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1678,7 +1678,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_5_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1687,7 +1687,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_6_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1696,7 +1696,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_7_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1705,7 +1705,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_8_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1714,7 +1714,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">3600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/RDH_9_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1723,7 +1723,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_0_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1732,7 +1732,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_10_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1741,7 +1741,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_11_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1750,7 +1750,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_12_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1759,7 +1759,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_13_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1768,7 +1768,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_14_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1777,7 +1777,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_1_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1786,7 +1786,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_3_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1795,7 +1795,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_4_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1804,7 +1804,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_5_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1813,7 +1813,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_6_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1822,7 +1822,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_7_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1831,7 +1831,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_8_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1840,7 +1840,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">21600</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH3_9_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1849,7 +1849,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_15_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1858,7 +1858,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_16_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1867,7 +1867,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_17_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1876,7 +1876,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_18_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1885,7 +1885,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_19_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1894,7 +1894,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_20_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1903,7 +1903,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_21_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1912,7 +1912,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_22_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1921,7 +1921,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_23_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>
@@ -1930,7 +1930,7 @@
 						<IBK:Parameter name="MaxHeatingDemand" unit="W">28800</IBK:Parameter>
 						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">
 							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear" wrapMethod="cyclic">
-								<TSVFile>${Project Directory}/Var02WRGNatVent75_sum_Qevap_cycles_with_cooling/MFH4_2_TWW_cool_Qevap.tsv</TSVFile>
+								<TSVFile>${Project Directory}/EFH_0_TWW_cool_Qevap.tsv</TSVFile>
 							</LinearSplineParameter>
 						</HydraulicNetworkHeatExchange>
 					</NetworkNode>

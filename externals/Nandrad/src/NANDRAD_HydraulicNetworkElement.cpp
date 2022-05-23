@@ -236,6 +236,15 @@ void HydraulicNetworkElement::checkParameters(const HydraulicNetwork & nw, const
 										 .arg(NANDRAD::KeywordList::Keyword("HydraulicNetworkHeatExchange::ModelType", m_heatExchange.m_modelType)), FUNC_ID);
 			}
 		}
+
+		else if (ctit->m_controlledProperty == HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint) {
+			if (m_observedPressureDiffElementIds.m_values.empty())
+				throw IBK::Exception(IBK::FormatString("HydraulicNetworkElement with id #%1 has controller with type '%2' but empty ObservedPressureDiffElementIds. "
+													   "You need to provide ObservedPressureDiffElementIds!")
+													   .arg(m_id)
+													   .arg(KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty", m_controlElement->m_controlledProperty))
+														, FUNC_ID);
+		}
 	}
 
 }

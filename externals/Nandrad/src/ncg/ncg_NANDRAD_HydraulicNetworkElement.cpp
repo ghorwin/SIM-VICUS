@@ -106,6 +106,8 @@ void HydraulicNetworkElement::readXML(const TiXmlElement * element) {
 				if (!success)
 					IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_NAME).arg(p.name).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
+			else if (cName == "ObservedPressureDiffElementIds")
+				m_observedPressureDiffElementIds.setEncodedString(c->GetText());
 			else if (cName == "HydraulicNetworkHeatExchange")
 				m_heatExchange.readXML(c);
 			else {
@@ -155,6 +157,8 @@ TiXmlElement * HydraulicNetworkElement::writeXML(TiXmlElement * parent) const {
 	}
 
 	m_heatExchange.writeXML(e);
+	if (!m_observedPressureDiffElementIds.m_values.empty())
+		TiXmlElement::appendSingleAttributeElement(e, "ObservedPressureDiffElementIds", nullptr, std::string(), m_observedPressureDiffElementIds.encodedString());
 	return e;
 }
 

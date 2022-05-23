@@ -63,7 +63,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pump predefined pressure head");
 	tr("Pump predefined mass flux");
-	tr("Pump efficiency");
+	tr("Pump efficiency in optimal operation point");
 	tr("Fraction of pump heat loss due to inefficiency that heats up the fluid");
 	tr("Pump maximum pressure head at point of minimal mass flow of pump");
 	tr("Pump maximum electrical power at point of optimal operation");
@@ -82,7 +82,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump supply temperature for DHW buffer storage");
 	tr("Heat pump return temperature for DHW buffer storage");
 	tr("Heat pump heating buffer storage volume");
-	tr("DHWBufferVolume");
+	tr("Heat pump DHW buffer storage volume");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");
@@ -90,6 +90,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Control zone thermostat values");
 	tr("Control mass flux");
 	tr("Control pump operation depending on following element");
+	tr("Control pressure difference at worst point in the network");
 	tr("PController");
 	tr("PIController");
 	tr("PIDController");
@@ -101,6 +102,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Target mass flux");
 	tr("Threshold value for PumpOperation property when OnOffController is used");
 	tr("Integral part will be set to zero if controller error is above this value");
+	tr("Setpoint of pressure difference for worstpoint controller");
 	tr("ID of zone containing thermostat");
 	tr("Pipe length");
 	tr("Number of parallel pipes");

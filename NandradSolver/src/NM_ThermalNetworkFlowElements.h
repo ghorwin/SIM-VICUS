@@ -555,14 +555,11 @@ private:
 	/*! Value reference to pressure head [Pa] */
 	const double					*m_pressureHeadRef = nullptr;
 
-	/*! Pump efficiency [0...1] */
-	double							m_pumpEfficiency = -999;
+	/*! Pump efficiency [0...1]. This is the maximum efficiency, the actual efficiency is calculated by the hydraulic model!  */
+	double							m_pumpMaxEfficiency = -999;
 
 	/*! FractionOfMotorInefficienciesToFluidStream [0...1] */
 	double							m_fractionOfMotorInefficienciesToFluidStream = -999;
-
-	/*! Requested electrical power for current working point [W] */
-	double							m_electricalPower = -999;
 
 	/*! Mechanical power for current working point [W] */
 	double							m_mechanicalPower = -999;

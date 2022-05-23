@@ -26,6 +26,8 @@
 
 #include <NANDRAD_Constants.h>
 
+#include <map>
+
 
 namespace NANDRAD {
 	class HydraulicNetworkElement;
@@ -247,23 +249,31 @@ private:
 */
 class HNAbstractPowerLimitedPumpModel {
 public:
-	HNAbstractPowerLimitedPumpModel(const double & density, const double & efficiency,
-									const double & maxElectricalPower, const double & maxPressureHeadAtZeroFlow);
+	HNAbstractPowerLimitedPumpModel(const double & density, const NANDRAD::HydraulicNetworkComponent &component);
+
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const;
+
+	void modelQuantityValueRefs(std::vector<const double *> &valRefs) const;
+
 
 protected:
 	/*! Fluid density in kg/m3 */
 	double							m_density = -999;
 	/*! Efficiency of pump in - */
-	double							m_efficiency = -999;
+	double							m_maxEfficiency = -999;
 	/*! Maximum electrical power at point of best operation in W */
 	double							m_maxElectricalPower = -999;
 	/*! Maximum pressure head at point of minimal mass flow in Pa */
 	double							m_maxPressureHeadAtZeroFlow = -999;
-	/*! Maximum flow at zero pressure head (fitting parameter for pump characteristic curve, calculated in constructor). */
-	double							m_maxVolumeFlowAtZeroPressureHead = -999;
+
+	std::vector<double>				m_coefficientsPelMax;
+	std::vector<double>				m_coefficientsDpMax;
 
 	/*! Calculates actual maximum pressure head [Pa] which linear decreases with mass flux */
 	double maximumPressureHead(const double &mdot) const;
+	/*! Calculates actual efficiency */
+	double efficiency(const double &mdot, const double & dp) const;
+	double electricalPower(const double &mdot, const double & dp, const double & eta) const;
 
 }; // HNAbstractPowerLimitedPumpModel
 
@@ -285,6 +295,9 @@ public:
 				  double & df_dmdot, double & df_dp_inlet, double & df_dp_outlet) const override;
 	void inputReferences(std::vector<InputReference> &) const override;
 	void setInputValueRefs(std::vector<const double *>::const_iterator &resultValueRefIt) override;
+	void modelQuantities(std::vector<QuantityDescription> &quantities) const override;
+	void modelQuantityValueRefs(std::vector<const double *> &valRefs) const override;
+	void updateResults(double mdot, double p_inlet, double p_outlet) override;
 
 	/*! We update our nonlinear heat flux dependent control signal here. Thus, we avoid CVODE's Newton method to iterate over
 		mass flux dependent heat fluxes. */
@@ -303,6 +316,10 @@ private:
 	const double										* m_followingElementHeatLossRef = nullptr;
 	/*! Determines wether pump is currently in operation (used for on/off controlling) */
 	bool												m_pumpIsOn = true;
+	/*! The electrical power demand in current operation point in W */
+	double							m_electricalPower = -999;
+	/*! The efficiency in current operation point - */
+	double							m_efficiency = -999;
 
 }; // HNConstantPressurePump
 
@@ -384,9 +401,9 @@ class HNControlledPump: public HydraulicNetworkAbstractFlowElement,		// NO KEYWO
 						public HNAbstractPowerLimitedPumpModel {
 public:
 	/*! C'tor, takes and caches parameters needed for function evaluation. */
-	HNControlledPump(unsigned int id, const NANDRAD::HydraulicNetworkComponent & component,
-					 const NANDRAD::HydraulicNetworkControlElement *controlElement,
-					 const NANDRAD::HydraulicFluid & fluid);
+	HNControlledPump(const NANDRAD::HydraulicNetworkElement & e,
+					 const NANDRAD::HydraulicFluid & fluid, const std::vector<unsigned int> * networkElementIds,
+					 const std::vector<double> * networkPressureDifferences);
 
 	/*! Destructor, memory cleanup. */
 	~HNControlledPump() override;
@@ -433,13 +450,17 @@ public:
 	void stepCompleted(double t) override;
 
 	/*! Id number of flow element. */
-	unsigned int					m_followingflowElementId = NANDRAD::INVALID_ID;
+	unsigned int							m_followingflowElementId = NANDRAD::INVALID_ID;
 
 private:
 	/*! Computes the controlled pressure head if a control-model is implemented.
 		Otherwise returns 0.
 	*/
 	double pressureHeadControlled(double mdot) const;
+
+	/*! Computes the minimum of all observed pressure differences, also provides the node id (meant to be VICUS node ID),
+	 *  according to the map m_controlElement.m_values */
+	double pressureDifferenceAtWorstPoint(double & worstPointNodeId) const;
 
 
 	/*! Reference to the controller parametrization object.*/
@@ -459,8 +480,27 @@ private:
 	const double					*m_massFluxSetpointRef = nullptr;
 	/*! Value reference to temperature difference set point. */
 	const double					*m_temperatureDifferenceSetpointRef = nullptr;
-	/*! the calculated temperature difference */
+	/*! Value reference to pressuer difference set point. */
+	const double					*m_pressureDifferenceSetpointRef = nullptr;
+	/*! The calculated temperature difference */
 	double							m_temperatureDifference = -999;
+	/*! Reference to observed pressured differences for WorstpointController*/
+	std::vector<std::vector<const double *> >		m_observedPressureDifferenceRefs;
+	/*! Element id map of observed elements for Worstpoint controller */
+	std::map<std::string, std::vector<double> >		m_observedPressureDiffElementIdMap;
+	/*! Reference to all element ids of network (m_elementIds), needed for worstpoint controller */
+	const std::vector<unsigned int>		*m_networkElementIds;
+	/*! Reference to all pressure differences of network (m_p->m_pressureDifferences), needed for worstpoint controller */
+	const std::vector<double>			*m_networkPressureDifferences;
+	/*! Minimum of observed pressure differences (worst point), used as output only */
+	double							m_pressureDifferenceWorstpoint = -999;
+	/*! Id of point with minimum pressure difference (worst point), meant to be VICUS nodeId, used as output only */
+	double							m_nodeIdWorstpoint = 0;
+
+	/*! The electrical power demand in current operation point in W */
+	double							m_electricalPower = -999;
+	/*! The efficiency in current operation point - */
+	double							m_efficiency = -999;
 
 }; // HNControlledPump
 
@@ -507,7 +547,14 @@ private:
 	double							m_designMassFlux = -999;
 	/*! pressure head at zero flow in [Pa] */
 	double							m_minimumPressureHead = -999;
+
+	/*! The electrical power demand in current operation point in W */
+	double							m_electricalPower = -999;
+	/*! The efficiency in current operation point - */
+	double							m_efficiency = -999;
+
 }; // HNVariablePressureHeadPump
+
 
 
 

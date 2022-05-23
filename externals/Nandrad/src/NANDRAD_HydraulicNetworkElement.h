@@ -114,6 +114,10 @@ public:
 	/*! Optional definition of heat exchange calculation model (if missing, flow element is adiabat). */
 	HydraulicNetworkHeatExchange	m_heatExchange;											// XML:E
 
+	/*! Stores ids of hydraulic network elements that shall be observed for worst-point controller
+	 *  (only used if controlElement has option CP_PressureDifferenceWorstpoint) */
+	DataTable						m_observedPressureDiffElementIds;				// XML:E
+
 
 	// *** Variables used only during simulation ***
 

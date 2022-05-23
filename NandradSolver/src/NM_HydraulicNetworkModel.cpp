@@ -135,10 +135,10 @@ void HydraulicNetworkModel::setup() {
 					throw IBK::Exception("Flow element component of type 'ControlledPump' requires mass flow controller.", FUNC_ID);
 
 				// create pump model
-				HNControlledPump * pumpElement = new HNControlledPump(e.m_id, *e.m_component, e.m_controlElement,
-																	  m_hydraulicNetwork->m_fluid);
+				HNControlledPump * pumpElement = new HNControlledPump(e, m_hydraulicNetwork->m_fluid, &m_elementIds, &m_p->m_pressureDifferences);
 				// setup ID of following element, if such a controller is defined
 				setFollowingElementId(pumpElement, e);
+
 				// add to flow elements
 				m_p->m_flowElements.push_back(pumpElement); // transfer ownership
 				m_pumpElements.push_back(pumpElement);
@@ -571,6 +571,7 @@ void HydraulicNetworkModel::setFollowingElementId(HydraulicNetworkAbstractFlowEl
 }
 
 
+
 // *** HydraulicNetworkModelImpl members ***
 
 // constants that control Jacobian matrix generation
@@ -910,21 +911,13 @@ int HydraulicNetworkModelImpl::solve() {
 //			std::cout << "  " << i << "   " << rhs[i]  << std::endl;
 
 		// TODO : add alternative convergence criterion based on rhs norm
-	}
+
+	} // end of Newton iteration
+
 
 #ifdef NANDRAD_NETWORK_DEBUG_OUTPUTS
 	printVars();
 #endif // NANDRAD_NETWORK_DEBUG_OUTPUTS
-
-	// update nodal values
-	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
-		const Element &e = m_network.m_elements[i];
-		double inletNodePressure = m_nodalPressures[e.m_nodeIndexInlet];
-		double outletNodePressure = m_nodalPressures[e.m_nodeIndexOutlet];
-		m_inletNodePressures[i] = inletNodePressure;
-		m_outletNodePressures[i] = outletNodePressure;
-		m_pressureDifferences[i] = inletNodePressure - outletNodePressure;
-	}
 
 
 	if (iterations > 0) {
@@ -1352,6 +1345,16 @@ void HydraulicNetworkModelImpl::updateG() {
 		// store in system function vector
 		m_G[i + m_elementCount] = massSum*MASS_FLUX_SCALE; // we'll apply scaling here
 
+	}
+
+	// update nodal values
+	for(unsigned int i = 0; i < m_network.m_elements.size(); ++i) {
+		const Element &e = m_network.m_elements[i];
+		double inletNodePressure = m_nodalPressures[e.m_nodeIndexInlet];
+		double outletNodePressure = m_nodalPressures[e.m_nodeIndexOutlet];
+		m_inletNodePressures[i] = inletNodePressure;
+		m_outletNodePressures[i] = outletNodePressure;
+		m_pressureDifferences[i] = inletNodePressure - outletNodePressure;
 	}
 
 	// nodal constraint to reference node

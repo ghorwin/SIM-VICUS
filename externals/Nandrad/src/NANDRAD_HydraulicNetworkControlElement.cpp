@@ -62,6 +62,11 @@ void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & z
 						 0, false, std::numeric_limits<double>::max(), false, nullptr);
 			} break;
 
+			case CP_PressureDifferenceWorstpoint : {
+					m_para[P_PressureDifferenceSetpoint].checkedValue("PressureDifferenceSetpoint", "Pa", "Pa",
+						 0, false, std::numeric_limits<double>::max(), false, nullptr);
+			} break;
+
 			case NUM_CP:
 				throw IBK::Exception("Missing or invalid attribute 'controlledProperty'.", FUNC_ID);
 		}
@@ -119,7 +124,7 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::MT_ControlledValve:
 			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
 		case HydraulicNetworkComponent::MT_ControlledPump:
-			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement};
+			return {CP_MassFlux, CP_TemperatureDifferenceOfFollowingElement, CP_PressureDifferenceWorstpoint};
 		case HydraulicNetworkComponent::MT_ConstantPressurePump:
 			return {CP_PumpOperation};
 		case HydraulicNetworkComponent::MT_ConstantMassFluxPump :

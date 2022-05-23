@@ -129,6 +129,16 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold].value);
 			break;
 		}
+		case VICUS::NetworkController::CP_PressureDifferenceWorstpoint :{
+			m_ui->radioButtonFixedSetPoint->setText(tr("Pressure Difference at worst point [Pa]"));
+			m_ui->radioButtonSchedule->setText("");
+			m_ui->radioButtonSchedule->setEnabled(false);
+			m_ui->lineEditSchedule->setEnabled(false);
+			m_ui->toolButtonSchedule->setEnabled(false);
+			m_ui->groupBoxMaximumOutput->setEnabled(false);
+			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::P_PressureDifferenceSetpoint].value);
+			break;
+		}
 		case VICUS::NetworkController::CP_ThermostatValue:
 		case VICUS::NetworkController::NUM_CP:
 			break;
@@ -203,6 +213,12 @@ void SVDBNetworkControllerEditWidget::on_lineEditSetpoint_editingFinished()
 		case VICUS::NetworkController::CP_PumpOperation:{
 			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
 											   VICUS::NetworkController::P_HeatLossOfFollowingElementThreshold,
+											   m_ui->lineEditSetpoint->value());
+		} break;
+
+		case VICUS::NetworkController::CP_PressureDifferenceWorstpoint:{
+			VICUS::KeywordList::setParameter(m_current->m_para, "NetworkController::para_t",
+											   VICUS::NetworkController::P_PressureDifferenceSetpoint,
 											   m_ui->lineEditSetpoint->value());
 		} break;
 

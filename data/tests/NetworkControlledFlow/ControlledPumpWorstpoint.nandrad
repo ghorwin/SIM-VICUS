@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<NandradProject fileVersion="1.999">
+	<Project>
+		<ProjectInfo>
+			<Comment>Minimalistic hydraulic network example.
+			</Comment>
+		</ProjectInfo>
+		<Location>
+			<IBK:Parameter name="Latitude" unit="Deg">53</IBK:Parameter>
+			<IBK:Parameter name="Longitude" unit="Deg">13</IBK:Parameter>
+			<IBK:Parameter name="Albedo" unit="%">20</IBK:Parameter>
+			<TimeZone>13</TimeZone>
+			<ClimateFilePath>${Project Directory}/../climate/Konstantopol_20C.c6b</ClimateFilePath>
+		</Location>
+		<SimulationParameter>
+			<IBK:Parameter name="InitialTemperature" unit="C">20</IBK:Parameter>
+			<Interval>
+				<IBK:Parameter name="End" unit="d">2</IBK:Parameter>
+			</Interval>
+		</SimulationParameter>
+		<SolverParameter>
+			<IBK:Parameter name="RelTol" unit="---">1e-7</IBK:Parameter>
+			<!-- The P-controller with temperature difference set point tends to lead to
+				 oscillations. With method order 1 these are dampened out much more quickly. -->
+			<IBK:IntPara name="MaxOrder">1</IBK:IntPara>
+  		</SolverParameter>
+		<Zones>
+			<Zone id="1" displayName="dummy" type="Active">
+				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
+				<IBK:Parameter name="Volume" unit="m3">100</IBK:Parameter>
+			</Zone>
+		</Zones>
+		<HydraulicNetworks>
+			<HydraulicNetwork id="1" displayName="simple test" modelType="ThermalHydraulicNetwork" referenceElementId="11">
+				<IBK:Parameter name="InitialFluidTemperature" unit="C">20</IBK:Parameter>
+				<IBK:Parameter name="ReferencePressure" unit="Pa">0</IBK:Parameter>
+				<HydraulicFluid displayName="Water">
+					<IBK:Parameter name="Density" unit="kg/m3">998</IBK:Parameter>
+					<IBK:Parameter name="HeatCapacity" unit="J/kgK">4180</IBK:Parameter>
+					<IBK:Parameter name="Conductivity" unit="W/mK">0.6</IBK:Parameter>
+					<LinearSplineParameter name="KinematicViscosity" interpolationMethod="linear">
+						<X unit="C">0 10 20 30 40 50 60 70 80 90 </X>
+						<Y unit="m2/s">1.793e-06 1.307e-06 1.004e-06 8.01e-07 6.58e-07 5.54e-07 4.75e-07 4.13e-07 3.65e-07 3.26e-07 </Y>
+					</LinearSplineParameter>
+				</HydraulicFluid>
+				<PipeProperties>
+					<HydraulicNetworkPipeProperties id="1">
+						<IBK:Parameter name="PipeRoughness" unit="mm">0.7</IBK:Parameter>
+						<IBK:Parameter name="PipeInnerDiameter" unit="mm">40</IBK:Parameter>
+						<IBK:Parameter name="PipeOuterDiameter" unit="mm">50</IBK:Parameter>
+						<IBK:Parameter name="UValueWall" unit="W/mK">100</IBK:Parameter>
+						<IBK:Parameter name="HeatCapacityWall" unit="J/kgK">1900</IBK:Parameter>
+						<IBK:Parameter name="DensityWall" unit="kg/m3">960</IBK:Parameter>
+					</HydraulicNetworkPipeProperties>
+				</PipeProperties>
+				<Components>
+				
+				<!-- The controlled pump has a maximum electrical power and maximum pressure head. These are used to calculate the actual 
+				max_pressure_head = f ( mdot) function -->
+				
+					<HydraulicNetworkComponent id="2" modelType="ControlledPump">
+						<IBK:Parameter name="PumpEfficiency" unit="---">0.7</IBK:Parameter>						
+						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+						<IBK:Parameter name="MaximumPressureHead" unit="Pa">300000</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">10000</IBK:Parameter>
+					</HydraulicNetworkComponent>				
+					
+					<HydraulicNetworkComponent id="3" modelType="HeatExchanger">
+						<IBK:Parameter name="HydraulicDiameter" unit="mm">40</IBK:Parameter>
+						<IBK:Parameter name="PressureLossCoefficient" unit="---">160</IBK:Parameter>
+						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
+					</HydraulicNetworkComponent>					
+					
+					<HydraulicNetworkComponent id="4" modelType="SimplePipe"/>
+				</Components>
+
+				<!-- This controller is selects the "worst point" in the network and controls the pressure difference according to the given set point. 
+					Works only with PI-controller !	-->
+				
+				<ControlElements>
+					<HydraulicNetworkControlElement id="1" controlledProperty="PressureDifferenceWorstpoint"  modelType="Constant" controllerType="PIController" >						
+						<IBK:Parameter name="Kp" unit="---">0.001</IBK:Parameter>
+						<IBK:Parameter name="Ki" unit="---">0.1</IBK:Parameter>						
+						<IBK:Parameter name="PressureDifferenceSetpoint" unit="Pa">20000</IBK:Parameter>
+					</HydraulicNetworkControlElement>
+				</ControlElements>
+
+				<Elements>
+				
+					<!-- the "worst" point is hx3 because pipe3 is the longest  -->
+				
+					<!-- -> pump -> pipe1 -> 	hx1 -> 			-> pump -->
+									 <!-- -> pipe2 -> hx2 -> -->
+									 <!-- -> pipe3 -> hx3 -> -->
+									 
+				
+					<HydraulicNetworkElement id="11" inletNodeId="1" outletNodeId="3" componentId="4" pipePropertiesId="1" displayName="Pipe1" >
+						<IBK:Parameter name="Length" unit="m">100</IBK:Parameter>
+						<HydraulicNetworkHeatExchange modelType="TemperatureConstant">
+							<IBK:Parameter name="ExternalHeatTransferCoefficient" unit="W/m2K">1000</IBK:Parameter>
+							<IBK:Parameter name="Temperature" unit="C">5</IBK:Parameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+					
+					<HydraulicNetworkElement id="401" inletNodeId="3" outletNodeId="7" componentId="3" displayName="hx1">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">										
+							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+								<X unit="h">0 6 24 </X>
+								<Y unit="W">1000 1000 1000 </Y>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+					<HydraulicNetworkElement id="111" inletNodeId="3" outletNodeId="4" componentId="4" pipePropertiesId="1" displayName="Pipe2" >
+						<IBK:Parameter name="Length" unit="m">10</IBK:Parameter>
+					</HydraulicNetworkElement>
+					
+					<HydraulicNetworkElement id="501" inletNodeId="4" outletNodeId="7" componentId="3" displayName="hx2">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">										
+							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+								<X unit="h">0 6 24 </X>
+								<Y unit="W">500 500 500 </Y>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+					<HydraulicNetworkElement id="1111" inletNodeId="3" outletNodeId="5" componentId="4" pipePropertiesId="1" displayName="Pipe3" >
+						<IBK:Parameter name="Length" unit="m">50</IBK:Parameter>
+					</HydraulicNetworkElement>
+					
+					<HydraulicNetworkElement id="601" inletNodeId="5" outletNodeId="7" componentId="3" displayName="hx3">
+						<HydraulicNetworkHeatExchange modelType="HeatLossSpline">										
+							<LinearSplineParameter name="HeatLoss" interpolationMethod="linear">
+								<X unit="h">0 6 24 </X>
+								<Y unit="W">500 500 500 </Y>
+							</LinearSplineParameter>
+						</HydraulicNetworkHeatExchange>
+					</HydraulicNetworkElement>
+					
+					<!-- This is pump is controlled by the worst point controller	-->
+					
+					<HydraulicNetworkElement id="301" inletNodeId="7" outletNodeId="1" componentId="2" controlElementId="1" displayName="Controlled pump">
+						<ObservedPressureDiffElementIds>;401:401;501:501;601:601</ObservedPressureDiffElementIds>
+					</HydraulicNetworkElement>
+					
+					
+				</Elements>
+				
+				
+			</HydraulicNetwork>
+		</HydraulicNetworks>
+		
+		
+		<Schedules>
+		</Schedules>
+		
+		<Outputs>
+			<Definitions>
+				<OutputDefinition>
+					<Quantity>OutletNodeTemperature</Quantity>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+						<Quantity>FluidMassFlux</Quantity>
+						<ObjectListName>All flow elements</ObjectListName>
+						<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>FlowElementHeatLoss</Quantity>
+					<ObjectListName>Heat exchanger</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>ControllerResultValue</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Flow controller</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				<OutputDefinition>
+					<Quantity>TemperatureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>Heat exchanger</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>				
+				<OutputDefinition>
+					<Quantity>PressureDifference</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>	
+				
+				<OutputDefinition>
+					<Quantity>PressureDifferenceAtWorstpoint</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+				<OutputDefinition>
+					<Quantity>WorstpointNodeId</Quantity>
+					<TimeType>None</TimeType>
+					<ObjectListName>All flow elements</ObjectListName>
+					<GridName>hourly</GridName>
+				</OutputDefinition>
+				
+			</Definitions>
+			<Grids>
+				<OutputGrid name="hourly">
+					<Intervals>
+						<Interval>
+							<IBK:Parameter name="StepSize" unit="min">1</IBK:Parameter>
+						</Interval>
+					</Intervals>
+				</OutputGrid>
+			</Grids>
+		</Outputs>
+		<ObjectLists>
+			<ObjectList name="All flow elements">
+				<FilterID>*</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>
+			<ObjectList name="Flow controller">
+				<FilterID>301</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>			
+			<ObjectList name="Heat exchanger">
+				<FilterID>401,501,601</FilterID>
+				<ReferenceType>NetworkElement</ReferenceType>
+			</ObjectList>			
+		</ObjectLists>
+		
+	</Project>
+</NandradProject>

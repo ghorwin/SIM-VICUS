@@ -909,7 +909,7 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFlu
 {
 	// copy component properties
 	m_fluidVolume = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_Volume].value;
-	m_pumpEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].value;
+	m_pumpMaxEfficiency = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency].value;
 	m_fractionOfMotorInefficienciesToFluidStream = comp.m_para[NANDRAD::HydraulicNetworkComponent::P_FractionOfMotorInefficienciesToFluidStream].value;
 	// copy fluid properties
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
@@ -921,14 +921,12 @@ TNPumpWithPerformanceLoss::TNPumpWithPerformanceLoss(const NANDRAD::HydraulicFlu
 
 void TNPumpWithPerformanceLoss::modelQuantities(std::vector<QuantityDescription> & quantities) const{
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantities(quantities);
-	quantities.push_back(QuantityDescription("ElectricalPower","W","Requested electrical power for current working point", false));
 	quantities.push_back(QuantityDescription("MechanicalPower","W","Mechanical power for current working point", false));
 }
 
 
 void TNPumpWithPerformanceLoss::modelQuantityValueRefs(std::vector<const double *> & valRefs) const {
 	ThermalNetworkAbstractFlowElementWithHeatLoss::modelQuantityValueRefs(valRefs);
-	valRefs.push_back(&m_electricalPower);
 	valRefs.push_back(&m_mechanicalPower);
 }
 
@@ -942,12 +940,9 @@ void TNPumpWithPerformanceLoss::setInflowTemperature(double Tinflow) {
 	// mechanical power = volume flow * pressure head
 	m_mechanicalPower = std::fabs(m_massFlux/m_fluidDensity * *m_pressureHeadRef); // positive value!
 
-	// efficiency is defined as portion of total electrical power used for mechanical
-	// Pelectrical * m_pumpEfficiency = Pmechanical
-	m_electricalPower = m_mechanicalPower/m_pumpEfficiency;
-
 	// energy balance of pump: mechanical power + heating power = electrical power
-	double heatingPower = m_electricalPower - m_mechanicalPower; // always a positive value!
+	// the maxEfficiency is accurate enough for this purpose
+	double heatingPower = m_mechanicalPower/m_pumpMaxEfficiency - m_mechanicalPower; // always a positive value!
 
 	// compute fraction of heat that is supplied to the fluid
 	m_heatLoss = - m_fractionOfMotorInefficienciesToFluidStream * heatingPower; // negative, because we heat up the fluid
@@ -1275,17 +1270,11 @@ void TNHeatPumpVariable::calculateCOP() {
 	const double MIN_TEMPERATURE_DIFFERENCE_CONDENSER = 4; // K
 	m_COP = 0.;
 
-	// generally, we do not want to go below -30 C.
-	if (m_evaporatorMeanTemperature < 273.15 - 30) {
-		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature < -30 C, turning of "
-															"HeatPumpIdealCarnot, flow element with id '%1'\n").arg(m_flowElement->m_id),
-											IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
-	}
-	// there must also be a minimum temperature difference
-	else if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
-		IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
+	// there must be a minimum temperature difference
+	if (m_condenserMeanTemperature - m_evaporatorMeanTemperature < MIN_TEMPERATURE_DIFFERENCE_CONDENSER) {
+		IBK_FastMessage(IBK::VL_ALL)(IBK::FormatString("Evaporator temperature must be at least %1 K lower than condenser temperature (%2 C)\n")
 										  .arg(MIN_TEMPERATURE_DIFFERENCE_CONDENSER).arg(m_condenserMeanTemperature - 273.15),
-											IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+											IBK::MSG_WARNING, FUNC_ID, IBK::VL_ALL);
 	}
 	// now calculate COP depending on model and check if it is valid
 	else {
@@ -1308,9 +1297,9 @@ void TNHeatPumpVariable::calculateCOP() {
 		// clipping in case of invalid COP
 		if (m_COP <= 1) {
 			m_COP = 0;
-			IBK_FastMessage(IBK::VL_DETAILED)(IBK::FormatString("COP is <= 1 in HeatPumpVariable, "
+			IBK_FastMessage(IBK::VL_ALL)(IBK::FormatString("COP is <= 1 in HeatPumpVariable, "
 																"flow element with id '%1'\n").arg(m_flowElement->m_id),
-																IBK::MSG_WARNING, FUNC_ID, IBK::VL_DETAILED);
+																IBK::MSG_WARNING, FUNC_ID, IBK::VL_ALL);
 		}
 	}
 }
@@ -1377,7 +1366,7 @@ TNHeatPumpOnOff::TNHeatPumpOnOff(const NANDRAD::HydraulicFluid &fluid, const NAN
 	m_fluidDensity = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 	m_fluidHeatCapacity = fluid.m_para[NANDRAD::HydraulicFluid::P_HeatCapacity].value;
 	m_coeffsQcond = e.m_component->m_polynomCoefficients.m_values.at("QdotCondensator");
-	m_coeffsPel = e.m_component->m_polynomCoefficients.m_values.at("Pel");
+	m_coeffsPel = e.m_component->m_polynomCoefficients.m_values.at("ElectricalPower");
 }
 
 

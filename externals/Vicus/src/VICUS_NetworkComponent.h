@@ -55,7 +55,6 @@ public:
 
 	/*! The various types (equations) of the hydraulic component. */
 	enum ModelType {
-		// from NANDRAD::HydraulicNetworkComponent
 		MT_SimplePipe,						// Keyword: SimplePipe						'Pipe with a single fluid volume and with heat exchange'
 		MT_DynamicPipe,						// Keyword: DynamicPipe						'Pipe with a discretized fluid volume and heat exchange'
 		MT_ConstantPressurePump,			// Keyword: ConstantPressurePump			'Pump with constant/externally defined pressure'
@@ -82,7 +81,7 @@ public:
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
 		P_PressureHead,							// Keyword: PressureHead						[Bar]	'Pump predefined pressure head'
 		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
-		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_PumpMaximumEfficiency,				// Keyword: PumpMaximumEfficiency				[---]	'Pump efficiency in optimal operation point'
 		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Bar]	'Pump maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Pump maximum electrical power at point of optimal operation'

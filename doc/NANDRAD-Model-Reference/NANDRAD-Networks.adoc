@@ -761,8 +761,8 @@ Die tatsächlichen Strömungselemente des Netzwerks werden innerhalb des XML-tag
 | `inletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `outletNodeId` |  ID des Einlassknotens  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
 | `componentId` |  ID des referenzierten  `HydraulicNetworkComponent`  | {nbsp}>{nbsp}0{nbsp}  | _benötigt_
-| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional
-(_benötigt für Rohre_)
+| `pipePropertiesId` |  ID des referenzierten `HydraulicNetworkPipeProperties` | {nbsp}>{nbsp}0{nbsp}  | optional (_benötigt für Rohre_)
+| `ObservedPressureDiffElementIds` |  Datatable mit IDs der Strömungselemente, welche mit WorstpointController überwacht werden | {nbsp}>{nbsp}0{nbsp}  | optional (_benötigt nur wenn ein `HydraulicNetworkControlElement` mit Option WorstpointController referenziert wird _)
 |====================
 
 [IMPORTANT]
@@ -1087,6 +1087,61 @@ Dieser Regler wurde speziell implementiert um die dezentrale Umwälzpumpe in ein
 ====
 
 
+### Regler: PressureDifferenceWorstpoint
+
+Mit dem Regler `PressureDifferenceWorstpoint` kann eine Schlechtpunktregelung mit einer `ControlledPump` implementiert werden. Die Schlechtpunktregelung wählt automatisch ein `Strömungselement` bzw. eine Gruppe von `Strömungselementen` aus welche den niedrigsten Druckverlust haben. Dieser Druckverlust wird dann nach dem Sollwert `PressureDifferenceSetpoint` geregelt.
+Dabei werden alle `Strömungselementen` berücksichtigt welche in dem `DataTable` `ObservedPressureDiffElementIds` angegeben wurden. Dieser `DataTable` muss in der Definition des Strömungselements der Pumpe angegeben werden.
+Ein Beispiel einer Implementierung zeigt <<ex_worstpoint_controller>>.
+
+[IMPORTANT]
+====
+Bei Verwendung dieses Reglers sollte unbedingt ein PI-Regler mit niedrigem P-Anteil verwendet werden, andernfalls treten numerische Probleme auf
+====
+
+[[ex_worstpoint_controller]]
+.Beispiel einer Implementiertung eines Schlechtpunktreglers
+====
+[source,xml]
+----
+<ControlElements>
+	<HydraulicNetworkControlElement id="1" controlledProperty="PressureDifferenceWorstpoint"  modelType="Constant" controllerType="PIController" >						
+		<IBK:Parameter name="Kp" unit="---">0.001</IBK:Parameter>
+		<IBK:Parameter name="Ki" unit="---">0.1</IBK:Parameter>
+		<IBK:Parameter name="PressureDifferenceSetpoint" unit="Pa">20000</IBK:Parameter>
+	</HydraulicNetworkControlElement>
+</ControlElements>
+
+...
+
+<HydraulicNetworkElement id="301" inletNodeId="7" outletNodeId="1" componentId="2" controlElementId="1" displayName="Controlled pump">
+	<ObservedPressureDiffElementIds>;1:401;2:501;3:601</ObservedPressureDiffElementIds>
+</HydraulicNetworkElement>
+
+<HydraulicNetworkElement id="401" inletNodeId="4" outletNodeId="7" componentId="3" displayName="hx1">
+...
+</HydraulicNetworkElement>
+
+<HydraulicNetworkElement id="501" inletNodeId="4" outletNodeId="7" componentId="3" displayName="hx2">
+...
+</HydraulicNetworkElement>
+
+<HydraulicNetworkElement id="601" inletNodeId="5" outletNodeId="7" componentId="3" displayName="hx3">
+...
+</HydraulicNetworkElement>
+----
+====
+
+Der DataTable `ObservedPressureDiffElementIds` hat die Struktur <NODE_ID1>:<ELEMENT_ID1>,<ELEMENT_ID2>; <NODE_ID>:<ELEMENT_ID1>,<ELEMENT_ID2>; ...;
+Dabei sind die ELEMENT_IDs ids der `Strömungselemente` und NODE_IDs sind frei wählbare IDs welche z.B. einen geometrischen Punkt definieren (z.B. eine VICUS NodeId). 
+
+Im Beispiel <<ex_worstpoint_controller>> wird zu jedem Zeitpunkt der  Wärmetauscher (aus hx1, hx2, hx3) ausgewählt, welcher den niedrigsten Druckverlust hat. Dieser Druckverlust wird dann auf den Sollwert `PressureDifferenceSetpoint` geregelt. 
+
+[TIP]
+====
+Als zusätzliche Ausgaben sind `PressureDifferenceAtWorstpoint` und `WorstpointNodeId` verfügbar. Dabei gibt `WorstpointNodeId` immer die NODE_ID aus welche zum Strömungselement mit dem niedrigstem Druckverlust gehört (entsprechend des DataTable `ObservedPressureDiffElementIds`).
+====
+
+
 
 ### Parameter für die Regler-Logik
 
@@ -1098,7 +1153,9 @@ Reglersollwerte
 
 | `TemperatureDifferenceSetpoint` | C | Sollwert der Temperaturdifferenz |  `TemperatureDifference`, `TemperatureDifferenceOfFollowingElement`
 | `MassFluxSetpoint` | kg/s | Sollwert des Massenstroms |  `MassFlux` 
-| `HeatLossOfFollowingElementThreshold` | W | Grenzwert des Wärmestroms des folgenden Elements |  `PumpOperation` 
+| `HeatLossOfFollowingElementThreshold` | W | Grenzwert des Wärmestroms des folgenden Elements |  `PumpOperation`
+| `PressureDifferenceSetpoint` | Pa | Sollwert des Schlechtpunktreglers |  `PressureDifferenceWorstpoint`
+
 |====================
 
 Reglerparameter

@@ -334,7 +334,7 @@ namespace VICUS {
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
 				case 3 : return "MassFlux";
-				case 4 : return "PumpEfficiency";
+				case 4 : return "PumpMaximumEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
 				case 6 : return "MaximumPressureHead";
 				case 7 : return "PumpMaximumElectricalPower";
@@ -376,6 +376,7 @@ namespace VICUS {
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
 				case 4 : return "PumpOperation";
+				case 5 : return "PressureDifferenceWorstpoint";
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -395,6 +396,7 @@ namespace VICUS {
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
 				case 6 : return "RelControllerErrorForIntegratorReset";
+				case 7 : return "PressureDifferenceSetpoint";
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -816,7 +818,7 @@ namespace VICUS {
 				case 1 : return "PressureLossCoefficient";
 				case 2 : return "PressureHead";
 				case 3 : return "MassFlux";
-				case 4 : return "PumpEfficiency";
+				case 4 : return "PumpMaximumEfficiency";
 				case 5 : return "FractionOfMotorInefficienciesToFluidStream";
 				case 6 : return "MaximumPressureHead";
 				case 7 : return "PumpMaximumElectricalPower";
@@ -858,6 +860,7 @@ namespace VICUS {
 				case 2 : return "ThermostatValue";
 				case 3 : return "MassFlux";
 				case 4 : return "PumpOperation";
+				case 5 : return "PressureDifferenceWorstpoint";
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -877,6 +880,7 @@ namespace VICUS {
 				case 4 : return "MassFluxSetpoint";
 				case 5 : return "HeatLossOfFollowingElementThreshold";
 				case 6 : return "RelControllerErrorForIntegratorReset";
+				case 7 : return "PressureDifferenceSetpoint";
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -1299,7 +1303,7 @@ namespace VICUS {
 				case 1 : return "Pressure loss coefficient for the component (zeta-value)";
 				case 2 : return "Pump predefined pressure head";
 				case 3 : return "Pump predefined mass flux";
-				case 4 : return "Pump efficiency";
+				case 4 : return "Pump efficiency in optimal operation point";
 				case 5 : return "Fraction of pump heat loss due to inefficiency that heats up the fluid";
 				case 6 : return "Pump maximum pressure head at point of minimal mass flow of pump";
 				case 7 : return "Pump maximum electrical power at point of optimal operation";
@@ -1341,6 +1345,7 @@ namespace VICUS {
 				case 2 : return "Control zone thermostat values";
 				case 3 : return "Control mass flux";
 				case 4 : return "Control pump operation depending on following element";
+				case 5 : return "Control pressure difference at worst point in the network";
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -1360,6 +1365,7 @@ namespace VICUS {
 				case 4 : return "Target mass flux";
 				case 5 : return "Threshold value for PumpOperation property when OnOffController is used";
 				case 6 : return "Integral part will be set to zero if controller error is above this value";
+				case 7 : return "Setpoint of pressure difference for worstpoint controller";
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -1823,6 +1829,7 @@ namespace VICUS {
 				case 2 : return "";
 				case 3 : return "";
 				case 4 : return "";
+				case 5 : return "";
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -1842,6 +1849,7 @@ namespace VICUS {
 				case 4 : return "kg/s";
 				case 5 : return "W";
 				case 6 : return "---";
+				case 7 : return "Pa";
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -2305,6 +2313,7 @@ namespace VICUS {
 				case 2 : return "#FFFFFF";
 				case 3 : return "#FFFFFF";
 				case 4 : return "#FFFFFF";
+				case 5 : return "#FFFFFF";
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -2324,6 +2333,7 @@ namespace VICUS {
 				case 4 : return "#FFFFFF";
 				case 5 : return "#FFFFFF";
 				case 6 : return "#FFFFFF";
+				case 7 : return "#FFFFFF";
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -2787,6 +2797,7 @@ namespace VICUS {
 				case 2 : return std::numeric_limits<double>::quiet_NaN();
 				case 3 : return std::numeric_limits<double>::quiet_NaN();
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
+				case 5 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::ControllerType
 			case 28 :
@@ -2806,6 +2817,7 @@ namespace VICUS {
 				case 4 : return std::numeric_limits<double>::quiet_NaN();
 				case 5 : return std::numeric_limits<double>::quiet_NaN();
 				case 6 : return std::numeric_limits<double>::quiet_NaN();
+				case 7 : return std::numeric_limits<double>::quiet_NaN();
 			} break;
 			// NetworkController::References
 			case 30 :
@@ -3056,11 +3068,11 @@ namespace VICUS {
 			// NetworkController::ModelType
 			case 26 : return 2;
 			// NetworkController::ControlledProperty
-			case 27 : return 5;
+			case 27 : return 6;
 			// NetworkController::ControllerType
 			case 28 : return 4;
 			// NetworkController::para_t
-			case 29 : return 7;
+			case 29 : return 8;
 			// NetworkController::References
 			case 30 : return 2;
 			// NetworkFluid::para_t
@@ -3178,11 +3190,11 @@ namespace VICUS {
 			// NetworkController::ModelType
 			case 26 : return 1;
 			// NetworkController::ControlledProperty
-			case 27 : return 4;
+			case 27 : return 5;
 			// NetworkController::ControllerType
 			case 28 : return 3;
 			// NetworkController::para_t
-			case 29 : return 6;
+			case 29 : return 7;
 			// NetworkController::References
 			case 30 : return 1;
 			// NetworkFluid::para_t

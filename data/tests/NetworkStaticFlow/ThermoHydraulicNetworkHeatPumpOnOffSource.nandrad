@@ -63,7 +63,7 @@
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<PolynomCoefficients>
 							QdotCondensator: -2.39461360e+04 -2.62085728e+02  2.83610229e+02 -1.64340182e+00 1.82863445e+00  1.89987100e-01;
-							Pel: 2.53859559e+04  9.26237012e+01 -2.74451964e+02  9.77255316e-02 -2.20526410e-01  4.61200937e-01
+							ElectricalPower: 2.53859559e+04  9.26237012e+01 -2.74451964e+02  9.77255316e-02 -2.20526410e-01  4.61200937e-01
 						</PolynomCoefficients>
 					</HydraulicNetworkComponent>
 				</Components>

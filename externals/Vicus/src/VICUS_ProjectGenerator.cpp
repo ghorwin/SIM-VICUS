@@ -2922,6 +2922,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	std::vector<unsigned int> allElementIds = {};		// stores all element ids of the network
 	std::map<unsigned int, unsigned int> supplyNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD inlet node
 	std::map<unsigned int, unsigned int> returnNodeIdMap; // a map that stores for each VICUS geometric node the NANDRAD outlet node
+	std::map<unsigned int, std::vector<unsigned int> > nodeElementsMap; // a map that stores for each VICUS geometric node the NANDRAD element ids (which are part of the according subnetwork)
 
 	// iterate over all geometric network nodes
 	for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes) {
@@ -2996,7 +2997,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			// 3. get component name in display name
 			const VICUS::NetworkComponent *comp = VICUS::element(m_embeddedDB.m_networkComponents, newElement.m_componentId);
 			Q_ASSERT(comp!=nullptr);
-			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(elem.m_id);
+			QString name = QString("%1(%2)_#%3").arg(node.m_displayName).arg(elem.m_displayName).arg(id);
 			newElement.m_displayName = IBK::replace_string(name.toStdString(), " ", "_");
 
 			// 4. if this is a source node: set the respective reference element id of the network (for pressure calculation)
@@ -3062,11 +3063,40 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 
 			// 9. we store the element ids for each component, with this info we can create the schedules and object lists
 			componentElementMap[elem.m_componentId].push_back(newElement.m_id);
+
+			// 10. we store the element id for each geometric node
+			nodeElementsMap[node.m_id].push_back(newElement.m_id);
 		}
 
 	}  // end of iteration over network nodes
 	if(!errorStack.empty())
 		return;
+
+
+	// Only for WorstpointControlledPump: store all element ids for each node of type Building
+	// make sure there is only one ControlledPump with that option
+	bool foundPump = false;
+	for (auto it=nandradNetwork.m_elements.begin(); it!=nandradNetwork.m_elements.end(); ++it) {
+		const NANDRAD::HydraulicNetworkControlElement *ctrElem = VICUS::element(nandradNetwork.m_controlElements, it->m_controlElementId);
+		if (ctrElem != nullptr &&
+			ctrElem->m_controlledProperty == NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint) {
+			if (foundPump) {
+				throw IBK::Exception(IBK::FormatString("Found multiple ControlledPumps with option '%1'. There should be only one!").arg(
+										 NANDRAD::KeywordList::Keyword("HydraulicNetworkControlElement::ControlledProperty",
+											NANDRAD::HydraulicNetworkControlElement::CP_PressureDifferenceWorstpoint)), FUNC_ID);
+			}
+			foundPump = true;
+			// now store the Nandrad element ids for all buildings in the pump element
+			for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
+				if (node.m_type == VICUS::NetworkNode::NT_Building){
+					// Note: the reason we use a DataTable to store ids here (which is a pain in the a.) is the code generator
+					std::vector<double> doubleVec(nodeElementsMap.at(node.m_id).begin(), nodeElementsMap.at(node.m_id).end());
+					it->m_observedPressureDiffElementIds.m_values[IBK::FormatString("%1").arg(node.m_id).str()] = doubleVec;
+				}
+			}
+		}
+	}
+
 
 
 	// *** Transfer EDGES / PIPE ELEMENTS from Vicus to Nandrad
@@ -3427,7 +3457,7 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSourceSide ||
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableIdealCarnotSupplySide ||
 				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpVariableSourceSide ||
-				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide ) {
+				comp->m_modelType == NANDRAD::HydraulicNetworkComponent::MT_HeatPumpOnOffSourceSide) {
 				// create summation model
 				const NANDRAD::ObjectList &objList = objectListMap[comp->m_id];
 				NANDRAD::HeatLoadSummationModel sumModel;

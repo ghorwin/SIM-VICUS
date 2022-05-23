@@ -64,13 +64,13 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			checkModelParameter(m_para[i], i);
 		}
 
-		// check data table
+		// check data table heat pumps
 		if (m_modelType == MT_HeatPumpOnOffSourceSide || m_modelType == MT_HeatPumpOnOffSourceSideWithBuffer) {
 			if (m_polynomCoefficients.m_values["QdotCondensator"].size() != 6)
 				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'QdotCondensator' with exactly 6 values.")
 									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
-			if (m_polynomCoefficients.m_values["Pel"].size() != 6)
-				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'Pel' with exactly 6 values.")
+			if (m_polynomCoefficients.m_values["ElectricalPower"].size() != 6)
+				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'ElectricalPower' with exactly 6 values.")
 									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
 		if (m_modelType == MT_HeatPumpVariableSourceSide) {
@@ -78,6 +78,26 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 				throw IBK::Exception(IBK::FormatString("'%1' requires polynom coefficient parameter 'COP' with exactly 6 values.")
 									 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
 		}
+
+		// check data table pumps:
+		// if there is a data table, it should have correct entries
+		// if correct entries exist, they should have correct number of parameters
+		if (m_modelType == MT_ConstantPressurePump || m_modelType == MT_ControlledPump || m_modelType == MT_VariablePressurePump) {
+			if (!m_polynomCoefficients.m_values.empty()) {
+				if (m_polynomCoefficients.m_values.find("MaximumElectricalPower") == m_polynomCoefficients.m_values.end() ||
+					m_polynomCoefficients.m_values.find("MaximumPressureHead") == m_polynomCoefficients.m_values.end() )
+					throw IBK::Exception(IBK::FormatString("'%1' data table should contain entries 'MaximumElectricalPower' and 'MaximumPressureHead'.")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+				// data table should have correct number of parameters
+				if (m_polynomCoefficients.m_values.at("MaximumElectricalPower").empty() && m_polynomCoefficients.m_values.at("MaximumElectricalPower").size() != 3 )
+					throw IBK::Exception(IBK::FormatString("'%1' polynom coefficient parameter 'MaximumElectricalPower' should have exactly 3 values (quadratic polynom).")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+				if (m_polynomCoefficients.m_values.at("MaximumPressureHead").empty() && m_polynomCoefficients.m_values.at("MaximumPressureHead").size() != 3 )
+					throw IBK::Exception(IBK::FormatString("'%1' polynom coefficient parameter 'MaximumPressureHead' should have exactly 3 values (quadratic polynom).")
+										 .arg(KeywordList::Keyword("HydraulicNetworkComponent::ModelType", m_modelType)), FUNC_ID);
+			}
+		}
+
 
 		// check optional parameters, if given
 		if (!m_para[P_FractionOfMotorInefficienciesToFluidStream].name.empty())
@@ -105,7 +125,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 			if(networkModelType == HydraulicNetwork::MT_HydraulicNetwork) {
 				// special case hydraulic network: pumpm efficiency is not requested per default
 				if(!m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].name.empty() &&
-						m_para[NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency].empty())
+						m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency].empty())
 					throw IBK::Exception("Missing paramneter 'PumpEfficiency'!", FUNC_ID);
 			}
 		}
@@ -157,15 +177,15 @@ std::vector<unsigned int> HydraulicNetworkComponent::requiredParameter(const Hyd
 	else {
 		switch (modelType) {
 			case MT_ConstantPressurePump:
-				return {P_PressureHead, P_PumpEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
+				return {P_PressureHead, P_PumpMaximumEfficiency, P_Volume}; // Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
 			case MT_VariablePressurePump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_DesignPressureHead, P_DesignMassFlux, P_PressureHeadReductionFactor};
+				return {P_PumpMaximumEfficiency, P_Volume, P_DesignPressureHead, P_DesignMassFlux, P_PressureHeadReductionFactor};
 			case MT_ConstantMassFluxPump :
-				return {P_MassFlux, P_PumpEfficiency, P_Volume};
+				return {P_MassFlux, P_PumpMaximumEfficiency, P_Volume};
 			case MT_ControlledPump:
 				// Note: P_FractionOfMotorInefficienciesToFluidStream is optional and defaults to 1
-				return {P_PumpEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
+				return {P_PumpMaximumEfficiency, P_Volume, P_PumpMaximumElectricalPower, P_MaximumPressureHead};
 			case MT_HeatPumpVariableIdealCarnotSupplySide:
 			case MT_HeatPumpVariableIdealCarnotSourceSide:
 				return {P_PressureLossCoefficient, P_HydraulicDiameter, P_Volume, P_CarnotEfficiency, P_MaximumHeatingPower};
@@ -257,7 +277,7 @@ void HydraulicNetworkComponent::checkModelParameter(const IBK::Parameter &para, 
 		}
 		// value must be >0 and <=1
 		case P_CarnotEfficiency:
-		case P_PumpEfficiency:
+		case P_PumpMaximumEfficiency:
 		case P_PressureHeadReductionFactor:
 		case P_FractionOfMotorInefficienciesToFluidStream: {
 			para.checkedValue(name, unit, unit, 0, false, 1.0, true, nullptr);

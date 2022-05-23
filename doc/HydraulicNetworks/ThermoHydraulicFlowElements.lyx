@@ -1052,7 +1052,7 @@ The best operation point is commonly at 50 % of the maximum volume flow
 \begin_layout Standard
 \begin_inset Formula 
 \[
-P_{el,max}=\frac{\Delta p_{opt}\dot{V}_{opt}}{\eta_{opt}}
+P_{el,opt}=\frac{\Delta p_{opt}\dot{V}_{opt}}{\eta_{opt}}=\frac{\dot{V}_{max,0}\,\Delta p_{max,0}}{4\,\eta_{opt}}
 \]
 
 \end_inset
@@ -1062,13 +1062,13 @@ P_{el,max}=\frac{\Delta p_{opt}\dot{V}_{opt}}{\eta_{opt}}
 
 \begin_layout Standard
 Using the equations above we can determine the maximum mass flow rate at
- zero pressure head
+ zero pressure head, which is usually not known
 \end_layout
 
 \begin_layout Standard
 \begin_inset Formula 
 \[
-\dot{V}_{max,0}=\frac{4\;\eta_{opt}\;P_{el,max}}{\Delta p_{max,0}}
+\dot{V}_{max,0}=\frac{4\;\eta_{opt}\;P_{el,opt}}{\Delta p_{max,0}}
 \]
 
 \end_inset
@@ -1077,9 +1077,9 @@ Using the equations above we can determine the maximum mass flow rate at
 \end_layout
 
 \begin_layout Standard
-Assuming a linear relation of pressure head and volume flow rate, which
- matches most commonly existing pumps sufficiently, we can describe the
- maximum pressure head as a function of volume flow rate
+Now we can describe the maximum pressure head as a function of volume flow
+ rate, assuming a linear relation, which matches most commonly existing
+ pumps sufficiently: 
 \end_layout
 
 \begin_layout Standard

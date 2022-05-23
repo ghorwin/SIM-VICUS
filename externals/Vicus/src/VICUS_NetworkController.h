@@ -52,6 +52,8 @@ public:
 		CP_MassFlux,									// Keyword: MassFlux									'Control mass flux'
 		/*! Switch pump on or off depending on heat flux of following element */
 		CP_PumpOperation,								// Keyword: PumpOperation								'Control pump operation depending on following element'
+		/*! Controlles pressure difference at point (element group / subnetwork) with lowest pressure difference, considering m_observedPressureDiffElementIds */
+		CP_PressureDifferenceWorstpoint,				// Keyword: PressureDifferenceWorstpoint				'Control pressure difference at worst point in the network'
 		NUM_CP
 	};
 
@@ -73,6 +75,7 @@ public:
 		P_MassFluxSetpoint,					// Keyword: MassFluxSetpoint				[kg/s]	'Target mass flux'
 		P_HeatLossOfFollowingElementThreshold,	// Keyword: HeatLossOfFollowingElementThreshold		[W]		'Threshold value for PumpOperation property when OnOffController is used'
 		P_RelControllerErrorForIntegratorReset,	// Keyword: RelControllerErrorForIntegratorReset	[---]	'Integral part will be set to zero if controller error is above this value'
+		P_PressureDifferenceSetpoint,			// Keyword: PressureDifferenceSetpoint				[Pa]	'Setpoint of pressure difference for worstpoint controller'
 		NUM_P
 	};
 
