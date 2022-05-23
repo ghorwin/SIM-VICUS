@@ -63,7 +63,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Pressure loss coefficient for the component (zeta-value)");
 	tr("Pump predefined pressure head");
 	tr("Pump predefined mass flux");
-	tr("Pump efficiency in optimal operation point");
+	tr("Pump maximum efficiency");
 	tr("Fraction of pump heat loss due to inefficiency that heats up the fluid");
 	tr("Pump maximum pressure head at point of minimal mass flow of pump");
 	tr("Pump maximum electrical power at point of optimal operation");
@@ -82,7 +82,7 @@ KeywordListQt::KeywordListQt() {
 	tr("Heat pump supply temperature for DHW buffer storage");
 	tr("Heat pump return temperature for DHW buffer storage");
 	tr("Heat pump heating buffer storage volume");
-	tr("Heat pump DHW buffer storage volume");
+	tr("DHWBufferVolume");
 	tr("Set points are given as constant parameters");
 	tr("Scheduled set point values");
 	tr("Control temperature difference of this element");

@@ -63,7 +63,7 @@ public:
 		P_PressureLossCoefficient,				// Keyword: PressureLossCoefficient				[---]	'Pressure loss coefficient for the component (zeta-value)'
 		P_PressureHead,							// Keyword: PressureHead						[Bar]	'Pump predefined pressure head'
 		P_MassFlux,								// Keyword: MassFlux							[kg/s]	'Pump predefined mass flux'
-		P_PumpEfficiency,						// Keyword: PumpEfficiency						[---]	'Pump efficiency'
+		P_PumpMaximumEfficiency,				// Keyword: PumpMaximumEfficiency				[---]	'Pump maximum efficiency'
 		P_FractionOfMotorInefficienciesToFluidStream,	// Keyword: FractionOfMotorInefficienciesToFluidStream	[---]	'Fraction of pump heat loss due to inefficiency that heats up the fluid'
 		P_MaximumPressureHead,					// Keyword: MaximumPressureHead					[Bar]	'Pump maximum pressure head at point of minimal mass flow of pump'
 		P_PumpMaximumElectricalPower,			// Keyword: PumpMaximumElectricalPower			[W]		'Pump maximum electrical power at point of optimal operation'
