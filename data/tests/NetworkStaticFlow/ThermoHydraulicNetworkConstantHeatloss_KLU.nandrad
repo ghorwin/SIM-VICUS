@@ -59,7 +59,7 @@
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">1000</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Heat exchanger with imposed flux as heat exchange" modelType="HeatExchanger">

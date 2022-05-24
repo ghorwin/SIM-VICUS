@@ -50,7 +50,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="pump" modelType="VariablePressurePump">						
-						<IBK:Parameter name="PumpEfficiency" unit="---">0.7</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.7</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">20</IBK:Parameter>
 						<IBK:Parameter name="MaximumPressureHead" unit="Pa">20000</IBK:Parameter>

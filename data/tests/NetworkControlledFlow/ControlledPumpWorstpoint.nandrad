@@ -59,7 +59,7 @@
 				max_pressure_head = f ( mdot) function -->
 				
 					<HydraulicNetworkComponent id="2" modelType="ControlledPump">
-						<IBK:Parameter name="PumpEfficiency" unit="---">0.7</IBK:Parameter>						
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">0.7</IBK:Parameter>						
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
 						<IBK:Parameter name="MaximumPressureHead" unit="Pa">300000</IBK:Parameter>
 						<IBK:Parameter name="PumpMaximumElectricalPower" unit="W">10000</IBK:Parameter>

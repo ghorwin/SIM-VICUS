@@ -52,7 +52,7 @@
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">10000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="3" modelType="DynamicPipe">
 						<IBK:Parameter name="PipeMaxDiscretizationWidth" unit="m">5</IBK:Parameter>

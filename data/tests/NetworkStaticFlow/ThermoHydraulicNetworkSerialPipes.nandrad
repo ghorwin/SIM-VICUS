@@ -62,7 +62,7 @@
 					<HydraulicNetworkComponent id="1" displayName="Pump 0815 (constant pressure)" modelType="ConstantPressurePump">
 						<!-- Pump with 10 Bar -> Reynolds number ~ 700 (pipe 101), 350 (pipe 102), velocity ~ 0.048 (pipe 101), 0.01 (pipe 102) -->
 						<IBK:Parameter name="PressureHead" unit="Pa">1e5</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Heat exchanger without heat exchange" modelType="HeatExchanger">

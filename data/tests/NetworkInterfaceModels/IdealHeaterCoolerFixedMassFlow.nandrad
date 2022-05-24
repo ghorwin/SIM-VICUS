@@ -108,7 +108,7 @@
 				</PipeProperties>
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ControlledPump">
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 						<!-- Maximale Druckhöhe (Pressure Head) in Pa -->
 						<IBK:Parameter name="MaximumPressureHead" unit="Pa">10000</IBK:Parameter>

@@ -42,7 +42,7 @@
 					<HydraulicNetworkComponent id="1" modelType="ConstantMassFluxPump">
 						<IBK:Parameter name="MassFlux" unit="kg/s">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.001</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="PressureLossElement">
 						<IBK:Parameter name="HydraulicDiameter" unit="mm">50</IBK:Parameter>

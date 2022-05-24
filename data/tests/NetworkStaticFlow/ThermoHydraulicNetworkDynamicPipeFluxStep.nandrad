@@ -51,7 +51,7 @@
 					<HydraulicNetworkComponent id="1" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="Pa">4000</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" modelType="DynamicPipe">
 						<!-- 100 m with 0.5 m segments = 200 pipe segments -->

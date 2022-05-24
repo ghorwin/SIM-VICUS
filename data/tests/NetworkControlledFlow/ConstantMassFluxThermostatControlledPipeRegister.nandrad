@@ -117,7 +117,7 @@
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ConstantMassFluxPump">
 						<IBK:Parameter name="MassFlux" unit="kg/s">0.02</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 					<HydraulicNetworkComponent id="2" displayName="Pipe" modelType="SimplePipe"/>

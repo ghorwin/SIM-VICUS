@@ -110,7 +110,7 @@
 				<Components>
 					<HydraulicNetworkComponent id="1" displayName="Pump" modelType="ConstantPressurePump">
 						<IBK:Parameter name="PressureHead" unit="kPa">3</IBK:Parameter>
-						<IBK:Parameter name="PumpEfficiency" unit="---">1</IBK:Parameter>
+						<IBK:Parameter name="PumpMaximumEfficiency" unit="---">1</IBK:Parameter>
 						<IBK:Parameter name="Volume" unit="m3">0.01</IBK:Parameter>
 					</HydraulicNetworkComponent>
 
