@@ -265,9 +265,12 @@ protected:
 	double							m_maxElectricalPower = -999;
 	/*! Maximum pressure head at point of minimal mass flow in Pa */
 	double							m_maxPressureHeadAtZeroFlow = -999;
-
+	/*! Coefficients of quadratic polynom for el. power, always in SI units, always 3 coefficients */
 	std::vector<double>				m_coefficientsPelMax;
+	/*! Coefficients of quadratic polynom for maximum pressure head, always in SI units, always 3 coefficients */
 	std::vector<double>				m_coefficientsDpMax;
+	/*! Determines wether pump has power limit, if not just a constant efficiency is given */
+	bool							m_isPowerLimited = true;
 
 	/*! Calculates actual maximum pressure head [Pa] which linear decreases with mass flux */
 	double maximumPressureHead(const double &mdot) const;

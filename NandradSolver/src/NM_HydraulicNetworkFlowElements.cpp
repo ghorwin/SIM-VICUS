@@ -646,16 +646,24 @@ HNAbstractPowerLimitedPumpModel::HNAbstractPowerLimitedPumpModel(const double & 
 		m_coefficientsDpMax = component.m_polynomCoefficients.m_values.at("MaximumPressureHead");
 		m_coefficientsPelMax = component.m_polynomCoefficients.m_values.at("MaximumElectricalPower");
 	}
-	else {
+	else if (component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value > 0) {
 		m_maxEfficiency = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency].value;
 		m_maxElectricalPower = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].value;
 		m_maxPressureHeadAtZeroFlow = component.m_para[NANDRAD::HydraulicNetworkComponent::P_MaximumPressureHead].value;
 	}
-
+	// In this case, only the efficiency is given, which is assumed to be constant. No power limitation is modeled
+	else {
+		m_isPowerLimited = false;
+		m_maxEfficiency = component.m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency].value;
+	}
 }
 
 
 double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot) const {
+
+	if (!m_isPowerLimited)
+		return std::numeric_limits<double>::max();
+
 	double Vdot = mdot/m_density;
 
 	// polynomial for dp_max
@@ -678,7 +686,12 @@ double HNAbstractPowerLimitedPumpModel::maximumPressureHead(const double & mdot)
 
 }
 
+
 double HNAbstractPowerLimitedPumpModel::efficiency(const double & mdot, const double & dp) const {
+
+	// 0. if no power limitation is used, the efficiency is constant
+	if (!m_isPowerLimited)
+		return m_maxEfficiency;
 
 	// 1. Calculate cross point of eta=const curve and dpMax curve, the result is Vdot_star
 	double Vdot = mdot/m_density;
@@ -704,8 +717,10 @@ double HNAbstractPowerLimitedPumpModel::efficiency(const double & mdot, const do
 		PelMax = m_coefficientsPelMax[0] * Vdot * Vdot + m_coefficientsPelMax[1] * Vdot + m_coefficientsPelMax[2];
 	else
 		PelMax = m_maxElectricalPower;
+
 	return maximumPressureHead(Vdot_star * m_density) * Vdot_star / PelMax;
 }
+
 
 double HNAbstractPowerLimitedPumpModel::electricalPower(const double & mdot, const double & dp, const double & eta) const{
 	double Pel = 0;
