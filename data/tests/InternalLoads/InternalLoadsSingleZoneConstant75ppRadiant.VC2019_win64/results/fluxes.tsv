@@ -1,0 +1,4 @@
+Time [h]	Room.ConvectiveEquipmentHeatLoad [W]	Room.ConvectivePersonHeatLoad [W]	Room.ConvectiveLightingHeatLoad [W]	Model(id=401).ConvectiveEquipmentHeatLoad(id=1) [W]	Model(id=401).ConvectivePersonHeatLoad(id=1) [W]	Model(id=401).ConvectiveLightingHeatLoad(id=1) [W]	Model(id=401).RadiantEquipmentHeatLoad(id=1) [W]	Model(id=401).RadiantPersonHeatLoad(id=1) [W]	Model(id=401).RadiantLightingHeatLoad(id=1) [W]
+0	375	200	150	375	200	150	1125	600	450
+0.08333333333	375	200	150	375	200	150	1125	600	450
+0.1666666667	375	200	150	375	200	150	1125	600	450

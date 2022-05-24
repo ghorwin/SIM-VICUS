@@ -1,0 +1,4 @@
+Time [h]	Room.AirTemperature [C]	Room.AirTemperature [C]	ConstructionInstance(id=101).SurfaceTemperatureA [C]	ConstructionInstance(id=102).SurfaceTemperatureA [C]	ConstructionInstance(id=101).SurfaceTemperatureB [C]	ConstructionInstance(id=102).SurfaceTemperatureB [C]
+0	20	20	20	20	20	20
+0.08333333333	22.9592	24.0253	73.2536	20	20	25.2434
+0.1666666667	26.5397	28.0242	90.2255	20	20	27.5424

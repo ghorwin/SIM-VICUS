@@ -1,4 +1,0 @@
-Time [h]	Zone(id=1).ConvectiveEquipmentHeatLoad [W]	Zone(id=1).ConvectivePersonHeatLoad [W]	Zone(id=1).ConvectiveLightingHeatLoad [W]	Model(id=401).ConvectiveEquipmentHeatLoad(id=1) [W]	Model(id=401).ConvectivePersonHeatLoad(id=1) [W]	Model(id=401).ConvectiveLightingHeatLoad(id=1) [W]	Model(id=401).RadiantEquipmentHeatLoad(id=1) [W]	Model(id=401).RadiantPersonHeatLoad(id=1) [W]	Model(id=401).RadiantLightingHeatLoad(id=1) [W]
-0	1500	800	600	1500	800	600	0	0	0
-0.0833333	1500	800	600	1500	800	600	0	0	0
-0.166667	1500	800	600	1500	800	600	0	0	0

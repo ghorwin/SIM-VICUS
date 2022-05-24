@@ -33,3 +33,4 @@
 /HydraulicNetworkPressureLossElement/
 /ThermoHydraulicNetworkHeatPumpOnOffSource/
 /ThermoHydraulicNetworkHeatPumpVariableSource/
+/HydraulicNetworkConstPressurePumpLimitedPolynom/
