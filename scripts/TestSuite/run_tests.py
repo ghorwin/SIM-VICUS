@@ -251,7 +251,7 @@ if currentOS   == "Linux" :
 	compilerID = "gcc_linux"
 
 elif currentOS == "Windows" :
-	compilerID = "VC14_win64"
+	compilerID = "VC2019_win64"
 
 elif currentOS == "Darwin" :
 	compilerID = "gcc_mac"
