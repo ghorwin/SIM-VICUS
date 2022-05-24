@@ -126,7 +126,7 @@ void HydraulicNetworkComponent::checkParameters(int networkModelType) {
 				// special case hydraulic network: pumpm efficiency is not requested per default
 				if(!m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumElectricalPower].name.empty() &&
 						m_para[NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency].empty())
-					throw IBK::Exception("Missing paramneter 'PumpEfficiency'!", FUNC_ID);
+					throw IBK::Exception("Missing paramneter 'PumpMaximumEfficiency'!", FUNC_ID);
 			}
 		}
 	}
