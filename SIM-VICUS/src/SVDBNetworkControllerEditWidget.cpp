@@ -24,11 +24,6 @@ SVDBNetworkControllerEditWidget::SVDBNetworkControllerEditWidget(QWidget *parent
 		m_ui->comboBoxProperty->addItem(QString("%1")
 											 .arg(VICUS::KeywordList::Description("NetworkController::ControlledProperty", i)),
 											 i);
-	m_ui->comboBoxControllerType->clear();
-	for (int i=0; i<VICUS::NetworkController::NUM_CT; ++i)
-		m_ui->comboBoxControllerType->addItem(QString("%1")
-											 .arg(VICUS::KeywordList::Description("NetworkController::ControllerType", i)),
-											 i);
 
 	// setup line edits
 	m_ui->lineEditKi->setup(0, std::numeric_limits<double>::max(), "Integration Constant", false, true);
@@ -140,9 +135,25 @@ void SVDBNetworkControllerEditWidget::updateInput(int id) {
 			break;
 		}
 		case VICUS::NetworkController::CP_ThermostatValue:
+			m_ui->radioButtonFixedSetPoint->setText(tr("Thermostat Value [-]"));
+			m_ui->radioButtonSchedule->setText("");
+			m_ui->radioButtonSchedule->setEnabled(false);
+			m_ui->lineEditSchedule->setEnabled(false);
+			m_ui->toolButtonSchedule->setEnabled(false);
+			m_ui->groupBoxMaximumOutput->setEnabled(false);
+			m_ui->lineEditSetpoint->setValue(m_current->m_para[VICUS::NetworkController::CP_ThermostatValue].value);
+			break;
 		case VICUS::NetworkController::NUM_CP:
 			break;
 	}
+
+	// setup combobox controller type
+	m_ui->comboBoxControllerType->clear();
+	std::vector<NANDRAD::HydraulicNetworkControlElement::ControllerType> availableCtrTypes =
+			NANDRAD::HydraulicNetworkControlElement::availableControllerTypes(
+				NANDRAD::HydraulicNetworkControlElement::ControlledProperty(m_current->m_controlledProperty));
+	for (int i: availableCtrTypes)
+		m_ui->comboBoxControllerType->addItem(QString("%1").arg(VICUS::KeywordList::Description("NetworkController::ControllerType", i)), i);
 
 	// controller type and parameters
 	int typeIdx = m_ui->comboBoxControllerType->findData(m_current->m_controllerType);
