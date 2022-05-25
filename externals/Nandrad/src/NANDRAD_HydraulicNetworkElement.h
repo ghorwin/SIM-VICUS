@@ -27,6 +27,8 @@
 #include "NANDRAD_CodeGenMacros.h"
 #include "NANDRAD_Constants.h"
 #include "NANDRAD_HydraulicNetworkHeatExchange.h"
+#include "NANDRAD_IDVectorMap.h"
+
 
 namespace NANDRAD {
 
@@ -116,7 +118,7 @@ public:
 
 	/*! Stores ids of hydraulic network elements that shall be observed for worst-point controller
 	 *  (only used if controlElement has option CP_PressureDifferenceWorstpoint) */
-	DataTable						m_observedPressureDiffElementIds;				// XML:E
+	IDVectorMap						m_observedPressureDiffElementIds;				// XML:E
 
 
 	// *** Variables used only during simulation ***

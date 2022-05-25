@@ -3088,11 +3088,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 			foundPump = true;
 			// now store the Nandrad element ids for all buildings in the pump element
 			for (const VICUS::NetworkNode &node: vicusNetwork.m_nodes){
-				if (node.m_type == VICUS::NetworkNode::NT_Building){
-					// Note: the reason we use a DataTable to store ids here (which is a pain in the a.) is the code generator
-					std::vector<double> doubleVec(nodeElementsMap.at(node.m_id).begin(), nodeElementsMap.at(node.m_id).end());
-					it->m_observedPressureDiffElementIds.m_values[IBK::FormatString("%1").arg(node.m_id).str()] = doubleVec;
-				}
+				if (node.m_type == VICUS::NetworkNode::NT_Building)
+					it->m_observedPressureDiffElementIds.m_values[node.m_id] = nodeElementsMap.at(node.m_id);
 			}
 		}
 	}

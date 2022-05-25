@@ -440,6 +440,7 @@ void CodeGenerator::generateReadWriteCode() {
 				//   - std::vector<double|int|unsigned int>
 				//   - std::vector<IBKMK::Vector3D>
 				// - DataTable
+				// - IDVectorMap
 				// - LinearSplineParameter[NUM_xxx]
 				// - enumTypes (using keyword list)
 
@@ -693,6 +694,11 @@ void CodeGenerator::generateReadWriteCode() {
 							"	if (!m_" + varName + ".m_values.empty())\n"
 							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
 				}
+				else if (xmlInfo.typeStr == "IDVectorMap") {
+					elements +=
+							"	if (!m_" + varName + ".m_values.empty())\n"
+							"		TiXmlElement::appendSingleAttributeElement(e, \""+tagName+"\", nullptr, std::string(), m_"+varName+".encodedString());\n";
+				}
 				else {
 					bool hadEnumType = false;
 					for (const ClassInfo::EnumInfo & einfo : ci.m_enumInfo) {
@@ -932,6 +938,7 @@ void CodeGenerator::generateReadWriteCode() {
 								"IBK::Time",
 								"IBK::Path",
 								"DataTable",
+								"IDVectorMap",
 								"std::vector<unsigned int>"
 							};
 							if (knownTagNames.find(xmlInfo.typeStr) == knownTagNames.end()) {
@@ -1101,6 +1108,12 @@ void CodeGenerator::generateReadWriteCode() {
 						handledVariables.insert(varName);
 					}
 					else if (xmlInfo.typeStr == "DataTable") {
+						elements +=
+							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
+							"				m_"+varName+".setEncodedString(c->GetText());\n";
+						handledVariables.insert(varName);
+					}
+					else if (xmlInfo.typeStr == "IDVectorMap") {
 						elements +=
 							"			"+elseStr+"if (cName == \""+tagName+"\")\n"
 							"				m_"+varName+".setEncodedString(c->GetText());\n";

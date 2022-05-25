@@ -14,6 +14,7 @@ HydraulicNetworkControlElement::HydraulicNetworkControlElement() {
 void HydraulicNetworkControlElement::checkParameters(const std::vector<Zone> & zones) const {
 	FUNCID(HydraulicNetworkControlElement::checkParameters);
 
+	// check for correct controller type
 	if (m_controlledProperty == CP_PumpOperation){
 		if (m_controllerType != CT_OnOffController)
 			throw IBK::Exception("Controlled property 'PumpOperation' can only be used with 'OnOffController'.", FUNC_ID);
@@ -140,6 +141,22 @@ std::vector<HydraulicNetworkControlElement::ControlledProperty> HydraulicNetwork
 		case HydraulicNetworkComponent::NUM_MT: ;		// just for compiler
 	}
 	return {};
+}
+
+
+std::vector<HydraulicNetworkControlElement::ControllerType> HydraulicNetworkControlElement::availableControllerTypes(const ControlledProperty controlledProperty) {
+	switch (controlledProperty) {
+		case CP_PumpOperation:
+			return {CT_OnOffController};
+		case CP_TemperatureDifference:
+		case CP_TemperatureDifferenceOfFollowingElement:
+		case CP_MassFlux:
+		case CP_PressureDifferenceWorstpoint:
+		case CP_ThermostatValue:
+			return {CT_PController, CT_PIController, CT_PIDController};
+		case NUM_CP:
+			return {};
+	}
 }
 
 

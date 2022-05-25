@@ -90,6 +90,9 @@ public:
 	/*! Function that provides a list of possible controlled properties depending on the given model type. */
 	static std::vector<ControlledProperty> availableControlledProperties(const HydraulicNetworkComponent::ModelType modelType);
 
+	/*! Function that provides a list of possible controller types depending on the given controlled property. */
+	static std::vector<ControllerType> availableControllerTypes(const ControlledProperty controlledProperty);
+
 
 	IDType							m_id = NANDRAD::INVALID_ID;						// XML:A:required
 

@@ -490,7 +490,7 @@ private:
 	/*! Reference to observed pressured differences for WorstpointController*/
 	std::vector<std::vector<const double *> >		m_observedPressureDifferenceRefs;
 	/*! Element id map of observed elements for Worstpoint controller */
-	std::map<std::string, std::vector<double> >		m_observedPressureDiffElementIdMap;
+	std::map<unsigned int, std::vector<unsigned int> >		m_observedPressureDiffElementIdMap;
 	/*! Reference to all element ids of network (m_elementIds), needed for worstpoint controller */
 	const std::vector<unsigned int>		*m_networkElementIds;
 	/*! Reference to all pressure differences of network (m_p->m_pressureDifferences), needed for worstpoint controller */

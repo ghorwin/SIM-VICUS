@@ -1062,7 +1062,7 @@ void HNControlledPump::setInputValueRefs(std::vector<const double*>::const_itera
 			for (auto it=m_observedPressureDiffElementIdMap.begin(); it!=m_observedPressureDiffElementIdMap.end(); ++it) {
 
 				// for each element of that group / sub network: add pointer to pressure difference
-				const std::vector<unsigned int> ids(it->second.begin(), it->second.end());
+				const std::vector<unsigned int> &ids = it->second;
 				for (unsigned int i=0; i<ids.size(); ++i) {
 					std::vector<unsigned int>::const_iterator fIt = std::find(m_networkElementIds->begin(), m_networkElementIds->end(), ids[i]);
 					// invalid ID?
@@ -1207,7 +1207,7 @@ double HNControlledPump::pressureDifferenceAtWorstPoint(double & worstPointNodeI
 	auto it = m_observedPressureDiffElementIdMap.begin();
 	std::advance(it, minPressureDifferenceIndex);
 	try {
-		worstPointNodeId = IBK::string2val<double>(it->first);
+		worstPointNodeId = (double)it->first;
 	}  catch (...) {
 		worstPointNodeId = NANDRAD::INVALID_ID;
 	}
