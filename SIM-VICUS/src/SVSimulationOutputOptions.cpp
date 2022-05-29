@@ -580,7 +580,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		QTableWidgetItem * item = new QTableWidgetItem(QString::fromStdString(of.m_quantity));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,0, item);
@@ -589,7 +589,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item = new QTableWidgetItem(QString::fromStdString(of.m_sourceObjectType));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,1, item);
@@ -599,7 +599,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item = new QTableWidgetItem(QString::fromStdString(ids));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,2, item);
@@ -609,7 +609,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item = new QTableWidgetItem(QString::fromStdString(ids));
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 		if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,3, item);
@@ -622,7 +622,7 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item = new QTableWidgetItem(ttypekw);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,4, item);
@@ -631,11 +631,11 @@ void SVSimulationOutputOptions::updateOutputDefinitionTable() {
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 		// check if referenced output grid name exists
 		if (std::find(m_outputs->m_grids.begin(), m_outputs->m_grids.end(), of.m_gridName) == m_outputs->m_grids.end()) {
-			item->setTextColor(Qt::darkRed);
+			item->setForeground(Qt::darkRed);
 			item->setFont(f);
 		}
 		else if (!correct) {
-			item->setTextColor(badColor);
+			item->setForeground(badColor);
 			item->setFont(f);
 		}
 		m_ui->tableWidgetOutputDefinitions->setItem((int)i,5, item);

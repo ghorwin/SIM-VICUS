@@ -121,10 +121,6 @@ void SVSettings::setDefaults() {
 //		}
 //	}
 
-
-
-	// initialize random number generator
-	qsrand(time(nullptr));
 }
 
 
