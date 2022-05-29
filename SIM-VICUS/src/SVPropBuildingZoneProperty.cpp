@@ -450,8 +450,6 @@ void SVPropBuildingZoneProperty::on_pushButtonVolumeAllRooms_clicked() {
 
 
 void SVPropBuildingZoneProperty::on_tableWidgetZones_itemSelectionChanged() {
-	qDebug() << "bei jedem Klick in die Tabelle mit Änderung der Selection sollte das hier ausgegeben werden, sonst ist irgendwo blockSignals() noch aktiv";
-
 	// TODO Dirk: pushButtonAssignSurface darf nur aktiv sein, wenn:
 	//            - exakt ein Raum/eine Zeile ausgewählt ist   (m_ui->tableWidgetZones->selectionModel()->selectedRows() == 1)
 	//            - mindestens eine Fläche ausgewählt ist, die *nicht* bereits dem gewählten Raum gehört

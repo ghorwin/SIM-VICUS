@@ -56,6 +56,7 @@ SVGeometryView::SVGeometryView(QWidget *parent) :
 	m_ui(new Ui::SVGeometryView)
 {
 	m_ui->setupUi(this);
+	m_ui->mainLayout->setMargin(0);
 
 	// *** create OpenGL window
 
