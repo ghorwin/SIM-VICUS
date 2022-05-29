@@ -60,6 +60,7 @@
 
 #include <QtExt_AutoUpdater.h>
 #include <QtExt_Directories.h>
+#include <QtExt_LanguageHandler.h>
 
 #include <NANDRAD_Project.h>
 
@@ -1372,9 +1373,16 @@ void SVMainWindow::on_actionHelpKeyboardAndMouseControls_triggered() {
 	w->setReadOnly(true);
 	lay->addWidget(w);
 	dlg.setLayout(lay);
-	QFile manual_en(":/doc/KeyboardMouseControls.html");
-	manual_en.open(QFile::ReadOnly);
-	QString manual = manual_en.readAll();
+	QString shortRefFile;
+	if (QtExt::LanguageHandler::instance().langId() == "de") {
+		shortRefFile = ":/doc/KeyboardMouseControls.html.de";
+	}
+	else {
+		shortRefFile = ":/doc/KeyboardMouseControls.html";
+	}
+	QFile manualFile(shortRefFile);
+	manualFile.open(QFile::ReadOnly);
+	QString manual = manualFile.readAll();
 	w->setHtml(manual);
 	dlg.resize(1400,800);
 	dlg.exec();

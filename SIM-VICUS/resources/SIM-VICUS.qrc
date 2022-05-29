@@ -92,5 +92,6 @@
         <file>gfx/languages/it.png</file>
         <file>gfx/actions/Coordinate-System.png</file>
         <file>gfx/actions/Bounding-Box.png</file>
+        <file>doc/KeyboardMouseControls.html.de</file>
     </qresource>
 </RCC>
