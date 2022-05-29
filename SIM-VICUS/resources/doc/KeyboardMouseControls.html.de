@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<body dir="ltr" style="max-width:21.001cm;margin-top:2cm; margin-bottom:2cm; margin-left:2cm; margin-right:2cm; ">
+	<p style="font-weight:bold;font-size:14pt">Tastatur und Mauskontrolle</p>
+	<p> </p>
+	<p style="font-weight:bold">Normale Navigation im Konstruktionsfenster</p>
+	<p></p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+		<tr>  <td> <p>Linken Mausknopf gedrückt halten </p></td>  <td> <p>Orbital-Controller (Kamera rotiert um den Punkt, an dem der Mausknopf gedrückt wurde)</p> </td> </tr>
+		<tr> <td> <p>Rechten Mausknopf gedrückt halten</p> </td> <td> <p>First-Person-Controller (die Maus rotiert die Kamera um die Kameraposition)</p> </td> </tr>
+		<tr> <td> <p>Mittleren Mausknopf gedrückt halten</p> </td> <td> <p>Maus verschiebt die Kamera</p> </td> </tr>
+		<tr> <td> <p>Mausrad</p> </td> <td> <p>verschiebt die Kamera vorwärts/rückwärts (<b>Umschalt-Taste halten</b>: Geschwindigkeit verlangsamen)</p> </td> </tr>
+		<tr> <td> <p> </p> </td> <td> <p> </p> </td> </tr>
+		<tr> <td> <p>W, S</p> </td> <td> <p>verschiebe Kamera vorwärts/rückwärts (<b>Umschalt-Taste halten</b>: Geschwindigkeit verlangsamen)</p> </td> </tr>
+		<tr> <td> <p>A, D</p> </td> <td> <p>verschiebe Kamera links/rechts (<b>Umschalt-Taste halten</b>: Geschwindigkeit verlangsamen)</p> </td> </tr>
+		<tr> <td> <p>R, F</p> </td> <td> <p>verschiebe Kamera hoch/runter (<b>Umschalt-Taste halten</b>: Geschwindigkeit verlangsamen)</p> </td> </tr>
+		<tr> <td> <p>Q, E</p> </td> <td> <p>Drehe Kamera um globale z-Achse (<b>Umschalt-Taste halten</b>: Geschwindigkeit verlangsamen)</p> </td> </tr>
+		<tr> <td> <p> </p> </td> <td> <p> </p> </td> </tr>
+		<tr> <td> <p>Ctrl + 2,6,8,4 or 5</p> </td> <td> <p>Kameraposition zurücksetzen, um aus Norden, Osten, Süden, Westen oder von oben auf den Koordinatenursprung zu schauen (am Besten Zahlenblock verwenden!)</p> </td> </tr>
+	</table>
+
+	<p style="font-weight:bold">Auswahl von Objekten</p>
+	<p></p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+
+		<tr> <td> <p>Linke Maustaste klicken</p> </td> <td> <p>Wählt Flächen und darin befindliche Fenster/Türen aus 
+		(<b>Umschalt-Taste halten:</b>: Wähle auch Eltern und Geschwister (also Raum und Nachbarflächen im Raum), <b>Alt-Taste halten</b>: wähle nur die Fläche selbst aus, aber nicht die darin befindlichen Teilflächen)</p> </td> </tr>
+		<tr><td><p>Escape</p></td> <td><p>Wählt alle gewählten Objekte ab</p> </td>
+		<tr><td><p>Ctrl+F</p></td> <td><p>Sucht ach der ausgewählten Geometrie und positioniert die Kamera in der Nähe. Nützlich, wenn man ein Objekt im Baum auswählt und dieses im Modell finden möchte.</p> </td> </tr>
+		<tr><td><p>Ctrl+.</p></td> <td><p>Öffnet den "Intelligente-Auswahl"-Dialog.</p> </td> </tr>
+		<tr><td><p>Delete</p></td> <td><p>Entfernt die aktuell ausgewählten Objekte, aber nur, wenn sie sichtbar sind.</p> </td> </tr>
+	</table>
+	
+	<p style="font-weight:bold">Während des Geometrie-Zeichnens</p>
+	<p>Kontrolle funktioniert wie bei der normalen Konstruktionsnavigation, mit folgenden Änderungen:
+	</p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+		<tr> <td><p>Linke Maustaste drücken</p> </td> <td> 	<p>Platziere den Cursor am geklickten Ort.</p> </td> </tr>
+		<tr> <td><p>Escape</p> </td> <td> 	<p>Bricht die Zeichenoperation ab und wechselt zurück in den normalen Navigationsmodus.</p> </td> </tr>
+		<tr> <td><p>Enter</p></td> <td> <p>Sobald eine gültige Geometrie erstellt wurde (und angezeigt wird), wird diese zum Projekt hinzugefügt und die Zeichenoperation ist beendet.</p> </td> </tr>
+	</table>
+
+
+	<p style="font-weight:bold">Globale Tastenkürzel</p>
+	<p>Diese Tastenkürzel funktionieren global, aber einige nur in einigen Eingabemodis, z.B. wenn das lokale Koordinatensystem (LKS) sichtbar ist.
+	</p>
+	<table border="0" cellspacing="4" cellpadding="2">
+		<colgroup> <col width="206"/> <col width="538"/>
+		</colgroup>
+
+		<tr><td><p>F1</p></td> <td> <p>Öffnet diese Kurzreferenz.</p> </td> </tr>
+		<tr><td><p>F2</p></td> <td> <p>Öffnet das aktuelle Projekt im Texteditor.</p> </td> </tr>
+		<tr><td><p>F3</p></td> <td> <p>Schalte das Einrasten ein/aus.</p> </td> </tr>
+		<tr><td><p>F4</p></td> <td> <p>Bringt die Szene in den "Lokales Koordinatensystem ausrichten"-Modus (nur wenn LKS sichtbar ist).</p> </td> </tr>
+		<tr><td><p>F5</p></td> <td> <p>Bringt die Szene in den "Lokales Koordinatensystem platzieren"-Modus (nur wenn LKS sichtbar ist).</p> </td> </tr>
+		<tr><td><p>F6</p></td> <td> <p>Blende ausgewählte Objekte aus.</p> </td> </tr>
+		<tr><td><p>F7</p></td> <td> <p>Zeige ausgewählte Objekte.</p></td> </tr>
+		<tr><td><p>F8</p></td> <td> <p>Öffne das Verzeichnis der aktuellen Projektdatei im Dateimanager.</p> </td> </tr>
+		<tr><td><p>F9</p></td> <td> <p>Wechsel zum Simulationsstartfenster.</p> </td> </tr>
+		<tr><td><p>c</p></td> <td> <p>Schalte um zwischen Geometriebearbeitungs- und Eigenschaftsmodus.</p> </td> </tr>
+		<tr><td><p>x,y,z</p></td> <td> <p>Während des Geometriezeichnens: Erzwinge Bewegung entlang der ausgewählten Achse.</p> </td> </tr>
+		<tr><td><p>0...9 and -</p></td> <td> <p>Während des Geometriezeichnens: öffne ein Eingabefeld und erlaube die Eingabe von Koordinaten-Abständen.</p> </td> </tr>
+		<tr> <td> <p> </p> </td> <td> <p> </p> </td> </tr>
+		<tr><td><p>Ctrl+O</p></td> <td> <p>Öffne ein Projekt.</p> </td> </tr>
+		<tr><td><p>Ctrl+S</p></td> <td> <p>Speichert das Projekt.</p> </td> </tr>
+		<tr><td><p>Ctrl+Shift+S</p></td> <td> <p>Speichert das Projekt unter einem neuen Dateinamen.</p> </td> </tr>
+		<tr><td><p>Ctrl+W</p></td> <td> <p>Schließt das Projekt und wechselt zurück zum Willkommensbildschirm.</p> </td> </tr>
+		<tr><td><p>Ctrl+Z and Ctrl+Shift+Z</p></td> <td> <p>Rückgängig/Wiederholen.</p> </td> </tr>
+	</table>
+
+</body>
+</html>
