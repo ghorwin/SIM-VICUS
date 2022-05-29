@@ -55,19 +55,45 @@ void Room::calculateVolume() {
 	double vol = 0;
 	// process all surfaces
 	for (const VICUS::Surface & s : m_surfaces) {
-		const PlaneTriangulationData & planeTri = s.geometry().triangulationDataWithoutHoles();
 
-		// process all triangles
-		for (unsigned int i=0; i<planeTri.m_triangles.size(); ++i) {
-			const IBKMK::Triangulation::triangle_t &tri = planeTri.m_triangles[i];
+		const PlaneTriangulationData &planeTri1 = s.geometry().triangulationData();
+		const std::vector<PlaneTriangulationData> &holes = s.geometry().holeTriangulationData();
+
+		// process all triangles of all holes
+		for(const PlaneTriangulationData &hole : holes){
+
+			for (unsigned int i=0; i<hole.m_triangles.size(); ++i){
+				const IBKMK::Triangulation::triangle_t &tri = hole.m_triangles[i];
+				// Note: plane geometry takes care not to add degenerated triangles to triangulation data,
+				//       but we add an ASSERT to make sure
+				IBK_ASSERT(!tri.isDegenerated());
+
+				// now compute determinant of matrix from points p0, p1, p2 and points [0,0,0]
+				const IBKMK::Vector3D & p0 = hole.m_vertexes[tri.i1];
+				const IBKMK::Vector3D & p1 = hole.m_vertexes[tri.i2];
+				const IBKMK::Vector3D & p2 = hole.m_vertexes[tri.i3];
+
+				vol +=	p0.m_x * p1.m_y * p2.m_z +
+						p2.m_x * p0.m_y * p1.m_z +
+						p1.m_x * p2.m_y * p0.m_z
+
+						- p2.m_x * p1.m_y * p0.m_z
+						- p0.m_x * p2.m_y * p1.m_z
+						- p1.m_x * p0.m_y * p2.m_z;
+			}
+		}
+
+		// process all triangles outer bound
+		for (unsigned int i=0; i<planeTri1.m_triangles.size(); ++i) {
+			const IBKMK::Triangulation::triangle_t &tri = planeTri1.m_triangles[i];
 			// Note: plane geometry takes care not to add degenerated triangles to triangulation data,
 			//       but we add an ASSERT to make sure
 			IBK_ASSERT(!tri.isDegenerated());
 
 			// now compute determinant of matrix from points p0, p1, p2 and points [0,0,0]
-			const IBKMK::Vector3D & p0 = planeTri.m_vertexes[tri.i1];
-			const IBKMK::Vector3D & p1 = planeTri.m_vertexes[tri.i2];
-			const IBKMK::Vector3D & p2 = planeTri.m_vertexes[tri.i3];
+			const IBKMK::Vector3D & p0 = planeTri1.m_vertexes[tri.i1];
+			const IBKMK::Vector3D & p1 = planeTri1.m_vertexes[tri.i2];
+			const IBKMK::Vector3D & p2 = planeTri1.m_vertexes[tri.i3];
 
 			vol +=	p0.m_x * p1.m_y * p2.m_z +
 					p2.m_x * p0.m_y * p1.m_z +
