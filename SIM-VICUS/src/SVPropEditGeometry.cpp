@@ -992,7 +992,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 		if (haveScaling) {
 			// local scaling involves translation, rotation _and_ changes to the local polyome... hence we better work
 			// on 3D polygon coordinates
-			IBKMK::Polygon3D poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
+			IBKMK::Polygon3D poly = modS.polygon3D();
 
 			// get the transformation matrix
 			QMatrix4x4 transMat = SVViewStateHandler::instance().m_selectedGeometryObject->transform().toMatrix();
@@ -1038,7 +1038,7 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			// we have translation and/or rotation
 			// since we only manipulate the local coordinate system, we can just use in-place modifications
 			// also, we do not redo the triangulation, which speeds up things a bit
-			IBKMK::Polygon3D &poly = const_cast<IBKMK::Polygon3D&>(modS.polygon3D());
+			IBKMK::Polygon3D poly = modS.polygon3D();
 
 			// we copy the surface's local, normal and offset
 			IBKMK::Vector3D localX = poly.localX();
@@ -1062,6 +1062,8 @@ void SVPropEditGeometry::on_pushButtonApply_clicked() {
 			// local coordinate system center point
 			poly.translate(offset-poly.offset()+trans);
 
+			// Polygon3D is dirty, but geometry is not
+			modS.setPolygon3D((VICUS::Polygon3D)poly); // now geometry is also marked as dirty
 			modifiedSurfaces.push_back(modS);
 		}
 
