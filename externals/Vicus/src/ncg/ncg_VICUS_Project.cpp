@@ -52,7 +52,7 @@ void Project::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
-			else if (cName == "ExternalSupplys") {
+			else if (cName == "ExternalSupplies") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
 					const std::string & c2Name = c2->ValueStr();
@@ -170,7 +170,7 @@ TiXmlElement * Project::writeXML(TiXmlElement * parent) const {
 
 
 	if (!m_externalSupplies.empty()) {
-		TiXmlElement * child = new TiXmlElement("ExternalSupplys");
+		TiXmlElement * child = new TiXmlElement("ExternalSupplies");
 		e->LinkEndChild(child);
 
 		for (std::vector<ExternalSupply>::const_iterator it = m_externalSupplies.begin();

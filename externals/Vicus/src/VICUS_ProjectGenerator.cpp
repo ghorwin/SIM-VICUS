@@ -2655,7 +2655,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	nandradPump.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_ControlledPump;
 	nandradPump.m_displayName = "Mass flux controlled pump";
 	NANDRAD::KeywordList::setParameter(nandradPump.m_para, "HydraulicNetworkComponent::para_t",
-									   NANDRAD::HydraulicNetworkComponent::P_PumpEfficiency, 1.0);
+									   NANDRAD::HydraulicNetworkComponent::P_PumpMaximumEfficiency, 1.0);
 	NANDRAD::KeywordList::setParameter(nandradPump.m_para, "HydraulicNetworkComponent::para_t",
 									   NANDRAD::HydraulicNetworkComponent::P_Volume, 0.01);
 	NANDRAD::KeywordList::setParameter(nandradPump.m_para, "HydraulicNetworkComponent::para_t",
@@ -2695,7 +2695,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	NANDRAD::HydraulicNetworkComponent nandradSupply;
 	nandradHeater.m_modelType = NANDRAD::HydraulicNetworkComponent::MT_IdealHeaterCooler;
 	nandradHeater.m_displayName = "Ideal heater";
-	// set id 3 as first element
+	// set id 4 as first element
 	nandradHeater.m_id = 4;
 
 	// add to component vector
