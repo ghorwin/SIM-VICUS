@@ -2528,48 +2528,6 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 													   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, uValue);
 
 
-					std::vector<double> supplyTemperatureVec;
-					calculateSupplyTemperature(surfSys->m_heatingCoolingCurvePoints.m_values.at("Tsupply"),
-													 surfSys->m_heatingCoolingCurvePoints.m_values.at("Tout"),
-													 outdoorTemp.y(), supplyTemperatureVec);
-
-					//TODO Dirk->Andreas wie geht das anzuhängen ans NANDRAD projekt?
-					//kann sein das ich das erst speichern muss ... gucken ...
-					NANDRAD::LinearSplineParameter tSupply("SupplyTemperatureSchedule",NANDRAD::LinearSplineParameter::I_LINEAR,
-														   outdoorTemp.x(), supplyTemperatureVec,
-														   IBK::Unit("h"),IBK::Unit("C"));
-
-					//m_linearSplinePara.push_back(tSupply);
-
-					NANDRAD::LinearSplineParameter massFlux("MaxMassFluxSchedule", NANDRAD::LinearSplineParameter::I_LINEAR,
-															std::vector<double>{0,8760}, std::vector<double>{maxMassFlux, maxMassFlux},
-															IBK::Unit("h"),IBK::Unit("kg/s"));
-					//m_linearSplinePara.push_back(massFlux);
-
-					// ideal pipe register without network connection
-
-					NANDRAD::IdealPipeRegisterModel nandradSys;
-					nandradSys.m_thermostatZoneId = dsh.m_controlledZoneId;
-					//always schedule in gui
-					nandradSys.m_modelType = NANDRAD::IdealPipeRegisterModel::MT_Scheduled;
-					nandradSys.m_fluid = fluid;
-
-					NANDRAD::KeywordList::setIntPara(nandradSys.m_intPara, "IdealPipeRegisterModel::intPara_t",
-													 NANDRAD::IdealPipeRegisterModel::IP_NumberParallelPipes, numberPipes);
-
-					NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
-													   NANDRAD::IdealPipeRegisterModel::P_PipeLength, length);
-
-					NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
-													   NANDRAD::IdealPipeRegisterModel::P_MaxMassFlux, maxMassFlux);
-
-					NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
-													   NANDRAD::IdealPipeRegisterModel::P_PipeInnerDiameter, insideDiameter * 1000); //Attention this value is in mm
-
-					NANDRAD::KeywordList::setParameter(nandradSys.m_para, "IdealPipeRegisterModel::para_t",
-													   NANDRAD::IdealPipeRegisterModel::P_UValuePipeWall, uValue);
-
-
 					nandradSys.m_displayName = "Underfloor heating";
 					nandradSys.m_id = dsh.m_nandradConstructionInstanceId;
 
