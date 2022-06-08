@@ -1,6 +1,7 @@
 #include "VICUS_Project.h"
 
 #include <NANDRAD_Project.h>
+#include <NANDRAD_Schedule.h>
 
 #include <IBK_algorithm.h>
 #include <IBK_math.h>
@@ -330,18 +331,14 @@ public:
 	// All definition lists below have the same size and share the same index
 
 	std::vector<NANDRAD::HydraulicNetwork>					m_hydraulicNetworks;
-
-	//std::vector<NANDRAD::LinearSplineParameter>				m_linearSplinePara;
-	//std::map<std::string, std::vector<unsigned int>>		m_objListLinearSpline;
 	std::vector<NANDRAD::ObjectList>						m_objListLinearSpline;
-	std::vector<std::string>								m_objListNamesLinearSplines;
-	std::map<std::string, std::vector<NANDRAD::LinearSplineParameter>>	m_constructionIdToNandradSplines;
+	std::map<std::string, std::vector<NANDRAD::Schedule>>	m_objListNamesToNandradSchedules;
 
 	std::map< std::string, IBK::Path>						m_placeholders;
 
-	// Object list name = schedule group name is not stored, since it matches the respective object list
-	// name in m_objLists
-	//std::vector< std::vector<NANDRAD::Schedule> >	m_schedules;
+	// FMU descriptions for connection of an external supply
+	std::vector<NANDRAD::FMIVariableDefinition>				m_inputVariables;
+	std::vector<NANDRAD::FMIVariableDefinition>				m_outputVariables;
 };
 
 class ConstructionInstanceModelGenerator : public ModelGeneratorBase {
@@ -700,7 +697,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ma
 }
 
 
-void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::Project & p, QStringList & errorStack,
 											 std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 											 std::vector<MappingElement> &mappings) const{
 
@@ -851,6 +848,20 @@ void Project::generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList &
 	p.m_hydraulicNetworks.insert(p.m_hydraulicNetworks.end(),
 								 externalSupplyNetworkModelGenerator.m_hydraulicNetworks.begin(),
 								 externalSupplyNetworkModelGenerator.m_hydraulicNetworks.end());
+	p.m_objectLists.insert(p.m_objectLists.end(), externalSupplyNetworkModelGenerator.m_objListLinearSpline.begin(), externalSupplyNetworkModelGenerator.m_objListLinearSpline.end());
+	p.m_schedules.m_scheduleGroups.insert(externalSupplyNetworkModelGenerator.m_objListNamesToNandradSchedules.begin(), externalSupplyNetworkModelGenerator.m_objListNamesToNandradSchedules.end());
+
+	// *** FMI Descriptions ***
+	if(!externalSupplyNetworkModelGenerator.m_inputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+		if(p.m_fmiDescription.m_modelName.empty())
+			p.m_fmiDescription.m_modelName = modelName.toStdString();
+		p.m_fmiDescription.m_inputVariables.insert(p.m_fmiDescription.m_inputVariables.end(), externalSupplyNetworkModelGenerator.m_inputVariables.begin(), externalSupplyNetworkModelGenerator.m_inputVariables.end());
+	}
+	if(!externalSupplyNetworkModelGenerator.m_outputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+		if(p.m_fmiDescription.m_modelName.empty())
+			p.m_fmiDescription.m_modelName = modelName.toStdString();
+		p.m_fmiDescription.m_outputVariables.insert(p.m_fmiDescription.m_outputVariables.end(), externalSupplyNetworkModelGenerator.m_outputVariables.begin(), externalSupplyNetworkModelGenerator.m_outputVariables.end());
+	}
 }
 
 
@@ -2796,8 +2807,6 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 		maxPressureLoss = std::max(maxPressureLoss,pressureLoss);
 	}
 
-
-	// create network
 	unsigned int mixerNodeId = 2 * dataSurfaceHeating.size() + 1;
 	unsigned int lastNodeId = mixerNodeId + 1;
 	unsigned int splitterNodeId = 1;
@@ -2831,6 +2840,12 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 
 	network.m_controlElements.push_back(massFluxControl);
+
+	// create a pump object list
+	NANDRAD::ObjectList pumpObjectList;
+	pumpObjectList.m_name = std::string("Pump ") + supply.m_displayName.toStdString();
+	pumpObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	pumpObjectList.m_filterID.m_ids.insert(pumpElem.m_id);
 
 	unsigned int nodeId = splitterNodeId;
 	//fill the map for quick work
@@ -2886,6 +2901,14 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 		NANDRAD::KeywordList::setParameter(heaterElem.m_para, "HydraulicNetworkElement::para_t",
 										   NANDRAD::HydraulicNetworkElement::P_Length, length);
 
+		// add heat exchange type
+		NANDRAD::HydraulicNetworkHeatExchange heatExchange;
+		heatExchange.m_modelType = NANDRAD::HydraulicNetworkHeatExchange::T_TemperatureConstructionLayer;
+		heatExchange.m_idReferences[NANDRAD::HydraulicNetworkHeatExchange::ID_ConstructionInstanceId] =
+				dataSurfaceHeating[i].m_nandradConstructionInstanceId;
+
+		heaterElem.m_heatExchange = heatExchange;
+
 		// add element to hydraulic network
 		network.m_elements.push_back(heaterElem);
 
@@ -2905,24 +2928,6 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 		// add to control elements
 		network.m_controlElements.push_back(thermostatControl);
-
-//		std::vector<double> supplyTemperatureVec;
-//		calculateSupplyTemperature(surfSys->m_heatingCoolingCurvePoints.m_values.at("Tsupply"),
-//										 surfSys->m_heatingCoolingCurvePoints.m_values.at("Tout"),
-//										 outdoorTemp.y(), supplyTemperatureVec);
-
-//		//TODO Dirk->Andreas wie geht das anzuhängen ans NANDRAD projekt?
-//		//kann sein das ich das erst speichern muss ... gucken ...
-//		NANDRAD::LinearSplineParameter tSupply("SupplyTemperatureSchedule",NANDRAD::LinearSplineParameter::I_LINEAR,
-//											   outdoorTemp.x(), supplyTemperatureVec,
-//											   IBK::Unit("h"),IBK::Unit("C"));
-
-//		//m_linearSplinePara.push_back(tSupply);
-
-//		NANDRAD::LinearSplineParameter massFlux("MaxMassFluxSchedule", NANDRAD::LinearSplineParameter::I_LINEAR,
-//												std::vector<double>{0,8760}, std::vector<double>{maxMassFlux, maxMassFlux},
-//												IBK::Unit("h"),IBK::Unit("kg/s"));
-		//m_linearSplinePara.push_back(massFlux);
 	}
 
 	// connect to ideal heating
@@ -2933,6 +2938,12 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	idealHeaterElem.m_componentId = 4;
 
 	network.m_elements.push_back(idealHeaterElem);
+
+	// create a ideal heater object list
+	NANDRAD::ObjectList idealHeaterObjectList;
+	idealHeaterObjectList.m_name = std::string("Ideal heater ") + supply.m_displayName.toStdString();
+	idealHeaterObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
+	idealHeaterObjectList.m_filterID.m_ids.insert(idealHeaterElem.m_id);
 
 
 	// create pipe properties
@@ -2983,7 +2994,98 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 	// add to network vector
 	m_hydraulicNetworks.push_back(network);
+
+	// create schedule parameter
+
+	std::vector<double> maxMassFluxVals(1, 0.0);
+	std::vector<double> supplyTempVals(1, 20.);
+
+	if(supply.m_supplyType == VICUS::ExternalSupply::ST_StandAlone) {
+		maxMassFluxVals[0] = supply.m_para[ExternalSupply::P_MaximumMassFlux].value;
+		supplyTempVals[0] = supply.m_para[ExternalSupply::P_SupplyTemperature].get_value("C");
+	}
+	else {
+		maxMassFluxVals[0] = supply.m_para[ExternalSupply::P_MaximumMassFluxFMU].value;
+	}
+
+	// create schedules
+	NANDRAD::DailyCycle maxMassFluxDailyCycle;
+	maxMassFluxDailyCycle.m_timePoints.push_back(0);
+	maxMassFluxDailyCycle.m_values.m_values["MassFluxSetpointSchedule [kg/s]"] = maxMassFluxVals;
+
+	NANDRAD::Schedule maxMassFluxSchedule;
+	maxMassFluxSchedule.m_type = NANDRAD::Schedule::ST_ALLDAYS;
+	maxMassFluxSchedule.m_dailyCycles.push_back(maxMassFluxDailyCycle);
+
+	NANDRAD::DailyCycle supplyTempDailyCycle;
+	supplyTempDailyCycle.m_timePoints.push_back(0);
+	supplyTempDailyCycle.m_values.m_values["SupplyTemperatureSchedule [C]"] = supplyTempVals;
+
+	NANDRAD::Schedule supplyTempSchedule;
+	supplyTempSchedule.m_type = NANDRAD::Schedule::ST_ALLDAYS;
+	supplyTempSchedule.m_dailyCycles.push_back(supplyTempDailyCycle);
+
+
+	// add new schedule and object list
+	m_objListLinearSpline.push_back(pumpObjectList);
+	m_objListNamesToNandradSchedules[pumpObjectList.m_name].push_back(maxMassFluxSchedule);
+	m_objListLinearSpline.push_back(idealHeaterObjectList);
+	m_objListNamesToNandradSchedules[idealHeaterObjectList.m_name].push_back(supplyTempSchedule);
+
+
+	// create FMI description
+
+	switch(supply.m_supplyType) {
+		case VICUS::ExternalSupply::ST_DatabaseFMU:
+		case VICUS::ExternalSupply::ST_UserDefinedFMU: {
+
+			unsigned int id = 3 * (m_hydraulicNetworks.size() - 1);
+
+			// add an fmu description for mass flux
+			NANDRAD::FMIVariableDefinition inputMassFlux;
+			inputMassFlux.m_varName = "MassFluxSetpointSchedule";
+			inputMassFlux.m_objectId = pumpElem.m_id;
+			inputMassFlux.m_fmiVarName = "MassFlow";
+			inputMassFlux.m_fmiVarDescription = "Demand network mass flow.";
+			inputMassFlux.m_unit = "kg/s";
+			inputMassFlux.m_fmiTypeName = "input";
+			inputMassFlux.m_fmiStartValue = 0.0;
+			inputMassFlux.m_fmiValueRef = ++id;
+
+			m_inputVariables.push_back(inputMassFlux);
+
+			// add an fmu description for supply temperature
+			NANDRAD::FMIVariableDefinition inputSupplyTemp;
+			inputSupplyTemp.m_varName = "SupplyTemperatureSchedule";
+			inputSupplyTemp.m_objectId = idealHeaterElem.m_id;
+			inputSupplyTemp.m_fmiVarName = "FlowTemperature";
+			inputSupplyTemp.m_unit = "K";
+			inputSupplyTemp.m_fmiVarDescription = "Demand network flow temperature.";
+			inputSupplyTemp.m_fmiTypeName = "input";
+			inputSupplyTemp.m_fmiStartValue = defaultFluidTemperature;
+			inputSupplyTemp.m_fmiValueRef = ++id;
+
+			m_inputVariables.push_back(inputSupplyTemp);
+
+			// add an fmu description for return temperature
+			NANDRAD::FMIVariableDefinition outputReturnTemp;
+			outputReturnTemp.m_varName = "ReturnTemperature";
+			outputReturnTemp.m_objectId = idealHeaterElem.m_id;
+			outputReturnTemp.m_fmiVarName = "ReturnTemperature";
+			outputReturnTemp.m_unit = "K";
+			outputReturnTemp.m_fmiVarDescription = "Demand network return temperature.";
+			outputReturnTemp.m_fmiTypeName = "output";
+			outputReturnTemp.m_fmiStartValue = defaultFluidTemperature;
+			outputReturnTemp.m_fmiValueRef = ++id;
+
+			m_outputVariables.push_back(outputReturnTemp);
+
+		} break;
+		default: break;
+	}
+
 }
+
 
 void IdealHeatingCoolingModelGenerator::generate(const Room * r,std::vector<unsigned int> &usedModelIds,  QStringList & errorStack) {
 

@@ -285,7 +285,7 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 	undo->push();
 
 	// update view
-	m_ui->stackedWidgetSupply->setCurrentIndex(index);
+	updateCurrent();
 }
 
 
@@ -299,7 +299,7 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFlux_valueChanged(d
 	IBK::Unit unit("kg/s");
 	if(para.name.empty()) {
 		std::string errmsg;
-		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFlux),
+		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFlux),
 				 val, unit);
 	}
 	else {
@@ -331,7 +331,7 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxSupplyTemp_valueChanged(do
 
 	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_SupplyTemperature];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_SupplyTemperature),
+		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_SupplyTemperature),
 				 val, unit);
 	}
 	else {
@@ -411,11 +411,11 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFluxFMU_valueChange
 	// retrieve a copy of current data
 	VICUS::ExternalSupply supply = *m_current;
 	// set values
-	IBK::Unit unit("C");
+	IBK::Unit unit("kg/s");
 
 	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFluxFMU),
+		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFluxFMU),
 				 val, unit);
 	}
 	else {
@@ -447,7 +447,7 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChang
 
 	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_HeatingPowerFMU];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("VICUS::ExternalSupply::para_t", VICUS::ExternalSupply::P_HeatingPowerFMU),
+		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_HeatingPowerFMU),
 				 val, unit);
 	}
 	else {

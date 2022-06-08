@@ -318,7 +318,8 @@ private:
 
 	// Functions below are implemented in VICUS_ProjectGenerator.cpp
 
-	void generateBuildingProjectDataNeu(NANDRAD::Project & p, QStringList & errorStack,
+	void generateBuildingProjectDataNeu(const QString &modelName,
+										NANDRAD::Project & p, QStringList & errorStack,
 										std::map<unsigned int, unsigned int> &surfaceIdsVicusToNandrad,
 										std::vector<MappingElement> &mappings)const;
 

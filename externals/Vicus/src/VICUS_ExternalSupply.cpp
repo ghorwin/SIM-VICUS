@@ -30,6 +30,13 @@ bool ExternalSupply::isValid() const
 			if(m_supplyFMUId == VICUS::INVALID_ID) {
 				throw IBK::Exception("Database FMU is not set!", FUNC_ID);
 			}
+
+			m_para[P_MaximumMassFluxFMU].checkedValue("MaximumMassFluxFMU", "kg/s", "kg/s", 0.0, false,
+												   std::numeric_limits<double>::max(), false,
+												   "Maximum mass flux must be > 0");
+			m_para[P_HeatingPowerFMU].checkedValue("HeatingPowerFMU", "kW", "kW", 0.0, false,
+												   std::numeric_limits<double>::max(), false,
+												   "Maximum heating power flux must be > 0");
 		}
 
 		// check parameters for user defined mode
@@ -43,6 +50,13 @@ bool ExternalSupply::isValid() const
 				throw IBK::Exception(QString("Invalid path %1 to user defined FMU!").arg(m_supplyFMUPath).toStdString(),
 									 FUNC_ID);
 			}
+
+			m_para[P_MaximumMassFluxFMU].checkedValue("P_MaximumMassFluxFMU", "kg/s", "kg/s", 0.0, false,
+												   std::numeric_limits<double>::max(), false,
+												   "Maximum mass flux must be > 0");
+			m_para[P_HeatingPowerFMU].checkedValue("HeatingPowerFMU", "kW", "kW", 0.0, false,
+												   std::numeric_limits<double>::max(), false,
+												   "Maximum heating power flux must be > 0");
 			return true;
 		}
 		return false;
