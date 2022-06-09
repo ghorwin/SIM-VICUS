@@ -75,6 +75,8 @@ private slots:
 
 	void on_doubleSpinBoxHeatingPowerFMU_valueChanged(double arg1);
 
+	void on_pushButtonCreateNew_clicked();
+
 private:
 	Ui::SVExternalSupplySelectionDialog	*m_ui;
 

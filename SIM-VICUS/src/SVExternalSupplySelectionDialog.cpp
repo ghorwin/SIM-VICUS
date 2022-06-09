@@ -28,6 +28,7 @@
 #include "ui_SVExternalSupplySelectionDialog.h"
 
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QItemSelectionModel>
 #include <QListWidgetItem>
 #include <QPushButton>
@@ -35,6 +36,7 @@
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
 #include "SVUndoModifyExternalSupply.h"
+#include "SVUndoModifyProject.h"
 
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Project.h>
@@ -54,7 +56,6 @@ SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
 								  .arg(VICUS::KeywordListQt::Description("ExternalSupply::supplyType_t", (int)i))
 								  .arg(VICUS::KeywordListQt::Keyword("ExternalSupply::supplyType_t", (int)i)), i);
-	m_ui->comboBoxSupplyType->addItem(QString("None"));
 	// set invalid supply type
 	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
 	m_ui->comboBoxSupplyType->blockSignals(false);
@@ -153,28 +154,28 @@ void SVExternalSupplySelectionDialog::updateCurrent()
 		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].value);
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].get_value("kg/s"));
 	}
 	// supply temperature
 	if(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].name.empty()) {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+		m_ui->doubleSpinBoxSupplyTemp->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].value);
+		m_ui->doubleSpinBoxSupplyTemp->setValue(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].get_value("C"));
 	}
 	// FMU maximum mass flux
 	if(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].name.empty()) {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+		m_ui->doubleSpinBoxMaxMassFluxFMU->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].value);
+		m_ui->doubleSpinBoxMaxMassFluxFMU->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].get_value("kg/s"));
 	}
 	// FMU heating power
 	if(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].name.empty()) {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
+		m_ui->doubleSpinBoxHeatingPowerFMU->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].value);
+		m_ui->doubleSpinBoxHeatingPowerFMU->setValue(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].get_value("kW"));
 	}
 
 	// enable stagged widget
@@ -245,12 +246,7 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QLis
 	Q_ASSERT(m_current != nullptr);
 
 	// update view
-	// update combo box
-	m_ui->comboBoxSupplyType->setEnabled(true);
-	m_ui->comboBoxSupplyType->setCurrentIndex(m_ui->comboBoxSupplyType->findData(m_current->m_supplyType));
-
-	// update staggered widget
-	on_comboBoxSupplyType_currentIndexChanged(m_current->m_supplyType);
+	updateCurrent();
 
 	accept();
 }
@@ -466,4 +462,39 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChang
 	// undo action
 	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed FMU heating power"), index, supply);
 	undo->push();
+}
+
+
+void SVExternalSupplySelectionDialog::on_pushButtonCreateNew_clicked()
+{
+	// add an external supply option
+	VICUS::ExternalSupply newSupply;
+
+	QInputDialog dlg(this);
+	dlg.setLabelText("Enter name");
+	if(dlg.exec() == QDialog::Rejected)
+		return;
+
+	newSupply.m_displayName = dlg.textValue();
+	// set id
+	newSupply.m_id = project().nextUnusedID();
+	// set supply type to invalid
+	newSupply.m_supplyType = VICUS::ExternalSupply::NUM_ST;
+
+	// add supply to project copy
+	VICUS::Project prj = project();
+
+	// add supply at the beginning of list
+	prj.m_externalSupplies.insert(prj.m_externalSupplies.begin(), newSupply);
+	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Added new external supply"), prj);
+	undo->push();
+
+	// update list
+	updateUi();
+
+	// set selection to new supply element
+	m_current = &project().m_externalSupplies[0];
+	m_ui->listWidgetSupply->setCurrentRow(0);
+
+	updateCurrent();
 }

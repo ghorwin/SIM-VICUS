@@ -1,4 +1,4 @@
-#include "SVPropBuildingSurfaceHeatingWidget.h"
+﻿#include "SVPropBuildingSurfaceHeatingWidget.h"
 #include "ui_SVPropBuildingSurfaceHeatingWidget.h"
 
 #include <SV_Conversions.h>
@@ -229,6 +229,11 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
+
+	if(project().m_externalSupplies.empty())
+		m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(false);
+	else
+		m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(true);
 }
 
 
@@ -458,3 +463,16 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 }
 
 
+
+void SVPropBuildingSurfaceHeatingWidget::on_pushButtonEditSurfaceHeatingNetworks_clicked()
+{
+	// popup dialog with network selection
+
+	// create dialog - only locally, this ensures that in constructor the zone is is updated
+	SVExternalSupplySelectionDialog dlg(this);
+
+	// start dialog
+	int res = dlg.exec();
+	if (res != QDialog::Accepted)
+		return; // user canceled the dialog
+}
