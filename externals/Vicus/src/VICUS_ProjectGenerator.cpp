@@ -2794,7 +2794,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 		// calculate pipe pressure loss
 		double density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 		double diameter = pipe->diameterInside();
-		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter);
+		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter * numberPipes);
 		double viskosity = fluid.m_kinematicViscosity.m_values.value(defaultFluidTemperature);
 		double reynolds = std::abs(maxVelocity) * diameter / viskosity;
 		double roughness = pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value;
@@ -2870,6 +2870,9 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 			NANDRAD::KeywordList::setParameter(pipeElem.m_para, "HydraulicNetworkElement::para_t",
 											   NANDRAD::HydraulicNetworkElement::P_Length, lengthSupply);
+			// add element to hydraulic network
+			network.m_elements.push_back(pipeElem);
+
 			hasSupplyPipe = true;
 		}
 
