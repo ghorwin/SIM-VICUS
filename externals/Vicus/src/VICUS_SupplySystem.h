@@ -50,11 +50,6 @@ class SupplySystem : public AbstractDBElement {
 	Q_DECLARE_TR_FUNCTIONS(SupplySystem)
 public:
 
-	// *** PUBLIC MEMBER FUNCTIONS ***
-
-	VICUS_READWRITE_OVERRIDE
-	VICUS_COMPARE_WITH_ID
-
 	/*! Supplier supported by the generic network model. */
 	enum supplyType_t {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
@@ -79,6 +74,12 @@ public:
 		NUM_SP
 	};
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	void readXML(const TiXmlElement * element) override;
+	TiXmlElement * writeXML(TiXmlElement * parent) const override;
+
+	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if the network definition is valid. */
 	bool isValid() const;

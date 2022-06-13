@@ -81,7 +81,6 @@ HEADERS += \
 	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
 	../../src/VICUS_SupplySystem.h \
-	../../src/VICUS_SupplySystem.h \
 	../../src/VICUS_SurfaceHeating.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -139,7 +138,6 @@ SOURCES += \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \
 	../../src/VICUS_SupplySystem.cpp \
-	../../src/VICUS_SupplySystem.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/VICUS_SurfaceHeating.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
@@ -185,7 +183,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
-	../../src/ncg/ncg_VICUS_SupplySystem.cpp \
 	../../src/ncg/ncg_VICUS_SupplySystem.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceHeating.cpp \
