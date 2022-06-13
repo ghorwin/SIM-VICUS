@@ -678,7 +678,7 @@ bool Project::exportMappingTable(const IBK::Path &filepath, const std::vector<Ma
 }
 
 bool Project::exportAreaAndVolume() {
-
+	return true;
 }
 
 
