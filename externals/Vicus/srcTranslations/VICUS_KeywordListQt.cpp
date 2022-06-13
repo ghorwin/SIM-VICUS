@@ -65,13 +65,6 @@ KeywordListQt::KeywordListQt() {
 	tr("Eutrophication potential.");
 	tr("Total use of non-renewable primary energy resources.");
 	tr("Total use of renewable primary energy resources .");
-	tr("Stand-alone mode with given mass flux and suppply temperature");
-	tr("Supply FMU loaded from a database and parametrized by the user");
-	tr("User defined supply FMU");
-	tr("Maximum mass flux into the network, needed for pump control");
-	tr("Constant supply temeprature");
-	tr("Maximum mass flux towards the building.");
-	tr("Procuder heating power");
 	tr("Air change rate");
 	tr("Shielding coefficient for n50 value");
 	tr("normal");
@@ -230,6 +223,14 @@ KeywordListQt::KeywordListQt() {
 	tr("A window");
 	tr("A door");
 	tr("Some other component type");
+	tr("Stand-alone mode with given mass flux and suppply temperature");
+	tr("VIVUS sub network loaded from a database and parametrized by the user");
+	tr("Supply FMU loaded from a database and parametrized by the user");
+	tr("User defined supply FMU");
+	tr("Maximum mass flux into the network, needed for pump control");
+	tr("Constant supply temeprature");
+	tr("Maximum mass flux towards the building.");
+	tr("Procuder heating power");
 	tr("Heating limit");
 	tr("Cooling limit");
 	tr("Pipe spacing");

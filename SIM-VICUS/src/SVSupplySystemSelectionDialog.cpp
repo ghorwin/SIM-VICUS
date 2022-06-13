@@ -23,9 +23,9 @@
 	GNU General Public License for more details.
 */
 
-#include "SVExternalSupplySelectionDialog.h"
+#include "SVSupplySystemSelectionDialog.h"
 //#include "SVPropBuildingSurfaceHeatingWidget.h"
-#include "ui_SVExternalSupplySelectionDialog.h"
+#include "ui_SVSupplySystemSelectionDialog.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -35,16 +35,16 @@
 
 #include "SVProjectHandler.h"
 #include "SVStyle.h"
-#include "SVUndoModifyExternalSupply.h"
+#include "SVUndoModifySupplySystem.h"
 #include "SVUndoModifyProject.h"
 
 #include <VICUS_KeywordListQt.h>
 #include <VICUS_Project.h>
 
 
-SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent) :
+SVSupplySystemSelectionDialog::SVSupplySystemSelectionDialog(QWidget *parent) :
 	QDialog(parent),
-	m_ui(new Ui::SVExternalSupplySelectionDialog)
+	m_ui(new Ui::SVSupplySystemSelectionDialog)
 {
 	m_ui->setupUi(this);
 
@@ -52,23 +52,23 @@ SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent
 
 	// fill combo box
 	m_ui->comboBoxSupplyType->blockSignals(true);
-	for (unsigned int i=0; i < VICUS::ExternalSupply::NUM_ST; ++i)
+	for (unsigned int i=0; i < VICUS::SupplySystem::NUM_ST; ++i)
 		m_ui->comboBoxSupplyType->addItem(QString("%1 [%2]")
-								  .arg(VICUS::KeywordListQt::Description("ExternalSupply::supplyType_t", (int)i))
-								  .arg(VICUS::KeywordListQt::Keyword("ExternalSupply::supplyType_t", (int)i)), i);
+								  .arg(VICUS::KeywordListQt::Description("SupplySystem::supplyType_t", (int)i))
+								  .arg(VICUS::KeywordListQt::Keyword("SupplySystem::supplyType_t", (int)i)), i);
 	// set invalid supply type
-	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
 	m_ui->comboBoxSupplyType->blockSignals(false);
 	// and deactivate box
 	m_ui->comboBoxSupplyType->setEnabled(false);
 	// add all options to staggered widget: reorder
-	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_StandAlone, m_ui->pageStandAlone);
-	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_DatabaseFMU, m_ui->pageDatabaseFMU);
-	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::ST_UserDefinedFMU, m_ui->pageUserDefinedFMU);
-	m_ui->stackedWidgetSupply->insertWidget(VICUS::ExternalSupply::NUM_ST, m_ui->pageEmpty);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_StandAlone, m_ui->pageStandAlone);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_DatabaseFMU, m_ui->pageDatabaseFMU);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::ST_UserDefinedFMU, m_ui->pageUserDefinedFMU);
+	m_ui->stackedWidgetSupply->insertWidget(VICUS::SupplySystem::NUM_ST, m_ui->pageEmpty);
 
 	// simply deactivate staggered widget
-	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
+	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
 
 	// set all minimum and maximum value
 	m_ui->doubleSpinBoxMaxMassFlux->setMinimum(0.0);
@@ -81,11 +81,11 @@ SVExternalSupplySelectionDialog::SVExternalSupplySelectionDialog(QWidget *parent
 }
 
 
-SVExternalSupplySelectionDialog::~SVExternalSupplySelectionDialog() {
+SVSupplySystemSelectionDialog::~SVSupplySystemSelectionDialog() {
 	delete m_ui;
 }
 
-void SVExternalSupplySelectionDialog::updateUi()
+void SVSupplySystemSelectionDialog::updateUi()
 {
 	// block all signals
 	m_ui->buttonBox->button(QDialogButtonBox::Ok)->blockSignals(true);
@@ -97,25 +97,25 @@ void SVExternalSupplySelectionDialog::updateUi()
 	m_ui->listWidgetSupply->clear();
 
 	// select network
-	const std::vector<VICUS::ExternalSupply> &supplies = project().m_externalSupplies;
+	const std::vector<VICUS::SupplySystem> &supplies = project().m_embeddedDB.m_supplySystems;
 
 	// add all networks to dialog
-	for (const VICUS::ExternalSupply &supply : supplies) {
+	for (const VICUS::SupplySystem &supply : supplies) {
 		// add new network
 		QListWidgetItem * item = new QListWidgetItem;
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		item->setText(supply.m_displayName);
+		item->setText(QString::fromStdString(supply.m_displayName.string()));
 		item->setData(Qt::UserRole,supply.m_id);
 		m_ui->listWidgetSupply->addItem(item);
 	}
 
 	m_ui->listWidgetSupply->setSortingEnabled(true);
 	// set invalid supply type
-	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
+	m_ui->comboBoxSupplyType->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
 	// and activate supply type box
 	m_ui->comboBoxSupplyType->setEnabled(false);
 	// deactivate stacked widget
-	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::ExternalSupply::NUM_ST);
+	m_ui->stackedWidgetSupply->setCurrentIndex(VICUS::SupplySystem::NUM_ST);
 
 	// activate list widget for choice
 	m_ui->listWidgetSupply->blockSignals(false);
@@ -126,7 +126,7 @@ void SVExternalSupplySelectionDialog::updateUi()
 }
 
 
-void SVExternalSupplySelectionDialog::updateCurrent()
+void SVSupplySystemSelectionDialog::updateCurrent()
 {
 	Q_ASSERT(m_current != nullptr);
 
@@ -150,32 +150,32 @@ void SVExternalSupplySelectionDialog::updateCurrent()
 
 	// set all defined parameters (0 otherwise):
 	// maximum mass flux
-	if(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].name.empty()) {
+	if(m_current->m_para[VICUS::SupplySystem::P_MaximumMassFlux].name.empty()) {
 		m_ui->doubleSpinBoxMaxMassFlux->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFlux].get_value("kg/s"));
+		m_ui->doubleSpinBoxMaxMassFlux->setValue(m_current->m_para[VICUS::SupplySystem::P_MaximumMassFlux].get_value("kg/s"));
 	}
 	// supply temperature
-	if(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].name.empty()) {
+	if(m_current->m_para[VICUS::SupplySystem::P_SupplyTemperature].name.empty()) {
 		m_ui->doubleSpinBoxSupplyTemp->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxSupplyTemp->setValue(m_current->m_para[VICUS::ExternalSupply::P_SupplyTemperature].get_value("C"));
+		m_ui->doubleSpinBoxSupplyTemp->setValue(m_current->m_para[VICUS::SupplySystem::P_SupplyTemperature].get_value("C"));
 	}
 	// FMU maximum mass flux
-	if(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].name.empty()) {
+	if(m_current->m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU].name.empty()) {
 		m_ui->doubleSpinBoxMaxMassFluxFMU->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxMaxMassFluxFMU->setValue(m_current->m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].get_value("kg/s"));
+		m_ui->doubleSpinBoxMaxMassFluxFMU->setValue(m_current->m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU].get_value("kg/s"));
 	}
 	// FMU heating power
-	if(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].name.empty()) {
+	if(m_current->m_para[VICUS::SupplySystem::P_HeatingPowerFMU].name.empty()) {
 		m_ui->doubleSpinBoxHeatingPowerFMU->setValue(0.0);
 	}
 	else {
-		m_ui->doubleSpinBoxHeatingPowerFMU->setValue(m_current->m_para[VICUS::ExternalSupply::P_HeatingPowerFMU].get_value("kW"));
+		m_ui->doubleSpinBoxHeatingPowerFMU->setValue(m_current->m_para[VICUS::SupplySystem::P_HeatingPowerFMU].get_value("kW"));
 	}
 
 	// enable stagged widget
@@ -183,7 +183,7 @@ void SVExternalSupplySelectionDialog::updateCurrent()
 }
 
 
-unsigned int SVExternalSupplySelectionDialog::externalSupplyId()
+unsigned int SVSupplySystemSelectionDialog::SupplySystemId()
 {
 	if(m_current == nullptr)
 		return VICUS::INVALID_ID;
@@ -192,7 +192,7 @@ unsigned int SVExternalSupplySelectionDialog::externalSupplyId()
 }
 
 
-void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
+void SVSupplySystemSelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 {
 	// disable ok button if selection is empty
 	const QItemSelection &selection = m_ui->listWidgetSupply->selectionModel()->selection();
@@ -200,7 +200,7 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 	if (selection.isEmpty()) {
 		m_ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 		// set invalid supply type
-		on_comboBoxSupplyType_currentIndexChanged(VICUS::ExternalSupply::NUM_ST);
+		on_comboBoxSupplyType_currentIndexChanged(VICUS::SupplySystem::NUM_ST);
 		// deactivate supply type widget
 		m_ui->comboBoxSupplyType->setEnabled(false);
 		// set current null ptr
@@ -216,7 +216,7 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 		unsigned int idSupply = (unsigned int) m_ui->listWidgetSupply->item(index.row())->data(Qt::UserRole).toInt();
 		// find selected external supply object
 		m_current = nullptr;
-		for(const VICUS::ExternalSupply &supplyObj : project().m_externalSupplies) {
+		for(const VICUS::SupplySystem &supplyObj : project().m_embeddedDB.m_supplySystems) {
 			if(supplyObj.m_id == idSupply) {
 				m_current = &supplyObj;
 				break;
@@ -230,14 +230,14 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemSelectionChanged()
 }
 
 
-void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QListWidgetItem *item)
+void SVSupplySystemSelectionDialog::on_listWidgetSupply_itemDoubleClicked(QListWidgetItem *item)
 {
 	// store ID of selected network
 	unsigned int idSupply = (unsigned int) item->data(Qt::UserRole).toInt();
 
 	// find selected external supplöy object
 	m_current = nullptr;
-	for(const VICUS::ExternalSupply &supplyObj : project().m_externalSupplies) {
+	for(const VICUS::SupplySystem &supplyObj : project().m_embeddedDB.m_supplySystems) {
 		if(supplyObj.m_id == idSupply) {
 			m_current = &supplyObj;
 			break;
@@ -253,31 +253,31 @@ void SVExternalSupplySelectionDialog::on_listWidgetSupply_itemDoubleClicked(QLis
 
 
 
-void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
+void SVSupplySystemSelectionDialog::on_comboBoxSupplyType_currentIndexChanged(int index) {
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
 
 	// invalid type
-	if(index == VICUS::ExternalSupply::NUM_ST)
+	if(index == VICUS::SupplySystem::NUM_ST)
 		return;
 
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set supply type
-	supply.m_supplyType = (VICUS::ExternalSupply::supplyType_t) index;
+	supply.m_supplyType = (VICUS::SupplySystem::supplyType_t) index;
 
 	// find external supply index in project
 	unsigned int idx = 0;
-	for(; idx < project().m_externalSupplies.size(); ++idx) {
-		if(project().m_externalSupplies[idx].m_id == m_current->m_id)
+	for(; idx < project().m_embeddedDB.m_supplySystems.size(); ++idx) {
+		if(project().m_embeddedDB.m_supplySystems[idx].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(idx < project().m_externalSupplies.size());
+	Q_ASSERT(idx < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), idx, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed external supply"), idx, supply);
 	undo->push();
 
 	// update view
@@ -285,17 +285,17 @@ void SVExternalSupplySelectionDialog::on_comboBoxSupplyType_currentIndexChanged(
 }
 
 
-void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFlux_valueChanged(double val)
+void SVSupplySystemSelectionDialog::on_doubleSpinBoxMaxMassFlux_valueChanged(double val)
 {
 	Q_ASSERT(m_current != nullptr);
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set values
-	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFlux];
+	IBK::Parameter &para = supply.m_para[VICUS::SupplySystem::P_MaximumMassFlux];
 	IBK::Unit unit("kg/s");
 	if(para.name.empty()) {
 		std::string errmsg;
-		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFlux),
+		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_MaximumMassFlux),
 				 val, unit);
 	}
 	else {
@@ -304,30 +304,30 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFlux_valueChanged(d
 
 	// find external supply index in project
 	unsigned int index = 0;
-	for(; index < project().m_externalSupplies.size(); ++index) {
-		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+	for(; index < project().m_embeddedDB.m_supplySystems.size(); ++index) {
+		if(project().m_embeddedDB.m_supplySystems[index].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(index < project().m_externalSupplies.size());
+	Q_ASSERT(index < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed external supply"), index, supply);
 	undo->push();
 }
 
 
-void SVExternalSupplySelectionDialog::on_doubleSpinBoxSupplyTemp_valueChanged(double val)
+void SVSupplySystemSelectionDialog::on_doubleSpinBoxSupplyTemp_valueChanged(double val)
 {
 	Q_ASSERT(m_current != nullptr);
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set values
 	IBK::Unit unit("C");
 
-	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_SupplyTemperature];
+	IBK::Parameter &para = supply.m_para[VICUS::SupplySystem::P_SupplyTemperature];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_SupplyTemperature),
+		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_SupplyTemperature),
 				 val, unit);
 	}
 	else {
@@ -336,20 +336,20 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxSupplyTemp_valueChanged(do
 
 	// find external supply index in project
 	unsigned int index = 0;
-	for(; index < project().m_externalSupplies.size(); ++index) {
-		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+	for(; index < project().m_embeddedDB.m_supplySystems.size(); ++index) {
+		if(project().m_embeddedDB.m_supplySystems[index].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(index < project().m_externalSupplies.size());
+	Q_ASSERT(index < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed external supply"), index, supply);
 	undo->push();
 }
 
 
-void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
+void SVSupplySystemSelectionDialog::on_pushButtonFMUPath_clicked()
 {
 	Q_ASSERT(m_current != nullptr);
 	// move input focus away from any input fields (to allow editingFinished() events to fire)
@@ -377,21 +377,21 @@ void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
 	}
 
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set fmu path
 	supply.m_supplyFMUPath = filename;
 
 	// find external supply index in project
 	unsigned int index = 0;
-	for(; index < project().m_externalSupplies.size(); ++index) {
-		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+	for(; index < project().m_embeddedDB.m_supplySystems.size(); ++index) {
+		if(project().m_embeddedDB.m_supplySystems[index].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(index < project().m_externalSupplies.size());
+	Q_ASSERT(index < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed external supply"), index, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed external supply"), index, supply);
 	undo->push();
 
 	// udpate view:
@@ -401,17 +401,17 @@ void SVExternalSupplySelectionDialog::on_pushButtonFMUPath_clicked()
 }
 
 
-void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFluxFMU_valueChanged(double val)
+void SVSupplySystemSelectionDialog::on_doubleSpinBoxMaxMassFluxFMU_valueChanged(double val)
 {
 	Q_ASSERT(m_current != nullptr);
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set values
 	IBK::Unit unit("kg/s");
 
-	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU];
+	IBK::Parameter &para = supply.m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_MaximumMassFluxFMU),
+		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_MaximumMassFluxFMU),
 				 val, unit);
 	}
 	else {
@@ -420,30 +420,30 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxMaxMassFluxFMU_valueChange
 
 	// find external supply index in project
 	unsigned int index = 0;
-	for(; index < project().m_externalSupplies.size(); ++index) {
-		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+	for(; index < project().m_embeddedDB.m_supplySystems.size(); ++index) {
+		if(project().m_embeddedDB.m_supplySystems[index].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(index < project().m_externalSupplies.size());
+	Q_ASSERT(index < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed FMU maximum mass flux towards building"), index, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed FMU maximum mass flux towards building"), index, supply);
 	undo->push();
 }
 
 
-void SVExternalSupplySelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChanged(double val)
+void SVSupplySystemSelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChanged(double val)
 {
 	Q_ASSERT(m_current != nullptr);
 	// retrieve a copy of current data
-	VICUS::ExternalSupply supply = *m_current;
+	VICUS::SupplySystem supply = *m_current;
 	// set values
 	IBK::Unit unit("kW");
 
-	IBK::Parameter &para = supply.m_para[VICUS::ExternalSupply::P_HeatingPowerFMU];
+	IBK::Parameter &para = supply.m_para[VICUS::SupplySystem::P_HeatingPowerFMU];
 	if(para.name.empty()) {
-		para.set(VICUS::KeywordList::Keyword("ExternalSupply::para_t", VICUS::ExternalSupply::P_HeatingPowerFMU),
+		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_HeatingPowerFMU),
 				 val, unit);
 	}
 	else {
@@ -452,40 +452,40 @@ void SVExternalSupplySelectionDialog::on_doubleSpinBoxHeatingPowerFMU_valueChang
 
 	// find external supply index in project
 	unsigned int index = 0;
-	for(; index < project().m_externalSupplies.size(); ++index) {
-		if(project().m_externalSupplies[index].m_id == m_current->m_id)
+	for(; index < project().m_embeddedDB.m_supplySystems.size(); ++index) {
+		if(project().m_embeddedDB.m_supplySystems[index].m_id == m_current->m_id)
 			break;
 	}
 
-	Q_ASSERT(index < project().m_externalSupplies.size());
+	Q_ASSERT(index < project().m_embeddedDB.m_supplySystems.size());
 
 	// undo action
-	SVUndoModifyExternalSupply * undo = new SVUndoModifyExternalSupply(tr("Changed FMU heating power"), index, supply);
+	SVUndoModifySupplySystem * undo = new SVUndoModifySupplySystem(tr("Changed FMU heating power"), index, supply);
 	undo->push();
 }
 
 
-void SVExternalSupplySelectionDialog::on_pushButtonCreateNew_clicked()
+void SVSupplySystemSelectionDialog::on_pushButtonCreateNew_clicked()
 {
 	// add an external supply option
-	VICUS::ExternalSupply newSupply;
+	VICUS::SupplySystem newSupply;
 
 	QInputDialog dlg(this);
 	dlg.setLabelText("Enter name");
 	if(dlg.exec() == QDialog::Rejected)
 		return;
 
-	newSupply.m_displayName = dlg.textValue();
+	newSupply.m_displayName = IBK::MultiLanguageString(dlg.textValue().toStdString());
 	// set id
 	newSupply.m_id = project().nextUnusedID();
 	// set supply type to invalid
-	newSupply.m_supplyType = VICUS::ExternalSupply::NUM_ST;
+	newSupply.m_supplyType = VICUS::SupplySystem::NUM_ST;
 
 	// add supply to project copy
 	VICUS::Project prj = project();
 
 	// add supply at the beginning of list
-	prj.m_externalSupplies.insert(prj.m_externalSupplies.begin(), newSupply);
+	prj.m_embeddedDB.m_supplySystems.insert(prj.m_embeddedDB.m_supplySystems.begin(), newSupply);
 	SVUndoModifyProject * undo = new SVUndoModifyProject(tr("Added new external supply"), prj);
 	undo->push();
 
@@ -493,7 +493,7 @@ void SVExternalSupplySelectionDialog::on_pushButtonCreateNew_clicked()
 	updateUi();
 
 	// set selection to new supply element
-	m_current = &project().m_externalSupplies[0];
+	m_current = &project().m_embeddedDB.m_supplySystems[0];
 	m_ui->listWidgetSupply->setCurrentRow(0);
 
 	updateCurrent();

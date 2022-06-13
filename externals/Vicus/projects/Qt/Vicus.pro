@@ -48,7 +48,6 @@ HEADERS += \
 	../../src/VICUS_EPDCategroySet.h \
 	../../src/VICUS_EPDDataset.h \
 	../../src/VICUS_EmbeddedDatabase.h \
-	../../src/VICUS_ExternalSupply.h \
 	../../src/VICUS_GridPlane.h \
 	../../src/VICUS_Infiltration.h \
 	../../src/VICUS_InterfaceHeatConduction.h \
@@ -81,6 +80,8 @@ HEADERS += \
 	../../src/VICUS_SubSurface.h \
 	../../src/VICUS_SubSurfaceComponent.h \
 	../../src/VICUS_SubSurfaceComponentInstance.h \
+	../../src/VICUS_SupplySystem.h \
+	../../src/VICUS_SupplySystem.h \
 	../../src/VICUS_SurfaceHeating.h \
 	../../src/VICUS_Surface.h \
 	../../src/VICUS_VentilationNatural.h \
@@ -107,7 +108,6 @@ SOURCES += \
 	../../src/VICUS_DailyCycle.cpp \
 	../../src/VICUS_EPDCategroySet.cpp \
 	../../src/VICUS_EPDDataset.cpp \
-	../../src/VICUS_ExternalSupply.cpp \
 	../../src/VICUS_GridPlane.cpp \
 	../../src/VICUS_Infiltration.cpp \
 	../../src/VICUS_InterfaceHeatConduction.cpp \
@@ -138,6 +138,8 @@ SOURCES += \
 	../../src/VICUS_SubNetwork.cpp \
 	../../src/VICUS_SubSurface.cpp \
 	../../src/VICUS_SubSurfaceComponent.cpp \
+	../../src/VICUS_SupplySystem.cpp \
+	../../src/VICUS_SupplySystem.cpp \
 	../../src/VICUS_Surface.cpp \
 	../../src/VICUS_SurfaceHeating.cpp \
 	../../src/VICUS_VentilationNatural.cpp \
@@ -158,7 +160,6 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_DailyCycle.cpp \
 	../../src/ncg/ncg_VICUS_EPDDataset.cpp \
 	../../src/ncg/ncg_VICUS_EmbeddedDatabase.cpp \
-	../../src/ncg/ncg_VICUS_ExternalSupply.cpp \
 	../../src/ncg/ncg_VICUS_GridPlane.cpp \
 	../../src/ncg/ncg_VICUS_Infiltration.cpp \
 	../../src/ncg/ncg_VICUS_InterfaceHeatConduction.cpp \
@@ -184,6 +185,8 @@ SOURCES += \
 	../../src/ncg/ncg_VICUS_SubSurface.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponent.cpp \
 	../../src/ncg/ncg_VICUS_SubSurfaceComponentInstance.cpp \
+	../../src/ncg/ncg_VICUS_SupplySystem.cpp \
+	../../src/ncg/ncg_VICUS_SupplySystem.cpp \
 	../../src/ncg/ncg_VICUS_Surface.cpp \
 	../../src/ncg/ncg_VICUS_SurfaceHeating.cpp \
 	../../src/ncg/ncg_VICUS_VentilationNatural.cpp \

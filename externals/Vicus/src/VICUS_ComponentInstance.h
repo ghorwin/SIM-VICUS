@@ -33,7 +33,7 @@ namespace VICUS {
 
 class Surface;
 class Room;
-class ExternalSupply;
+class SupplySystem;
 
 /*! Defines a construction/component of the building.
 	It is basically just a connection data member and does not hold any
@@ -70,7 +70,7 @@ public:
 	/*! ID of zone containing thermostat for control of surface heating. */
 	unsigned int						m_idSurfaceHeatingControlZone	= INVALID_ID;	// XML:E
 	/*! ID of an external supply object. */
-	unsigned int						m_idExternalSupply	= INVALID_ID;				// XML:E
+	unsigned int						m_idSupplySystem	= INVALID_ID;				// XML:E
 
 
 	// *** RUNTIME VARIABLES ***
@@ -82,7 +82,7 @@ public:
 	VICUS::Surface			*m_sideBSurface					= nullptr;
 
 	VICUS::Room				*m_surfaceHeatingControlZone	= nullptr;
-	VICUS::ExternalSupply	*m_externalSupply				= nullptr;
+	VICUS::SupplySystem		*m_supplySystem					= nullptr;
 };
 
 } // namespace VICUS

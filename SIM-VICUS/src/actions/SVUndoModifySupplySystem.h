@@ -23,17 +23,17 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVUndoModifyExternalSupplyH
-#define SVUndoModifyExternalSupplyH
+#ifndef SVUndoModifySupplySystemH
+#define SVUndoModifySupplySystemH
 
-#include <VICUS_ExternalSupply.h>
+#include <VICUS_SupplySystem.h>
 
 #include "SVUndoCommandBase.h"
 
-class SVUndoModifyExternalSupply : public SVUndoCommandBase {
-	Q_DECLARE_TR_FUNCTIONS(SVUndoModifyExternalSupply)
+class SVUndoModifySupplySystem : public SVUndoCommandBase {
+	Q_DECLARE_TR_FUNCTIONS(SVUndoModifySupplySystem)
 public:
-	SVUndoModifyExternalSupply(const QString & label, unsigned int supplyIndex, const VICUS::ExternalSupply & supply);
+	SVUndoModifySupplySystem(const QString & label, unsigned int supplyIndex, const VICUS::SupplySystem & supply);
 
 	virtual void undo();
 	virtual void redo();
@@ -41,9 +41,9 @@ public:
 private:
 
 	/*! Index of modified external supply. */
-	unsigned int			m_externalSupplyIndex;
+	unsigned int			m_SupplySystemIndex;
 	/*! Cache for added external supply. */
-	VICUS::ExternalSupply	m_externalSupply;
+	VICUS::SupplySystem	m_SupplySystem;
 };
 
-#endif // SVUndoModifyExternalSupplyH
+#endif // SVUndoModifySupplySystemH

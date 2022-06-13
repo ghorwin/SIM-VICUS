@@ -19,7 +19,7 @@
 	Lesser General Public License for more details.
 */
 
-#include <VICUS_ExternalSupply.h>
+#include <VICUS_SupplySystem.h>
 #include <VICUS_KeywordList.h>
 
 #include <IBK_messages.h>
@@ -33,8 +33,8 @@
 
 namespace VICUS {
 
-void ExternalSupply::readXML(const TiXmlElement * element) {
-	FUNCID(ExternalSupply::readXML);
+void SupplySystem::readXML(const TiXmlElement * element) {
+	FUNCID(SupplySystem::readXML);
 
 	try {
 		// search for mandatory attributes
@@ -53,12 +53,10 @@ void ExternalSupply::readXML(const TiXmlElement * element) {
 			if (attribName == "id")
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
-				m_displayName = QString::fromStdString(attrib->ValueStr());
-			else if (attribName == "visible")
-				m_visible = NANDRAD::readPODAttributeValue<bool>(element, attrib);
+				m_displayName.setEncodedString(attrib->ValueStr());
 			else if (attribName == "supplyType")
 				try {
-					m_supplyType = (supplyType_t)KeywordList::Enumeration("ExternalSupply::supplyType_t", attrib->ValueStr());
+					m_supplyType = (supplyType_t)KeywordList::Enumeration("SupplySystem::supplyType_t", attrib->ValueStr());
 				}
 				catch (IBK::Exception & ex) {
 					throw IBK::Exception( ex, IBK::FormatString(XML_READ_ERROR).arg(element->Row()).arg(
@@ -80,7 +78,7 @@ void ExternalSupply::readXML(const TiXmlElement * element) {
 				bool success = false;
 				para_t ptype;
 				try {
-					ptype = (para_t)KeywordList::Enumeration("ExternalSupply::para_t", p.name);
+					ptype = (para_t)KeywordList::Enumeration("SupplySystem::para_t", p.name);
 					m_para[ptype] = p; success = true;
 				}
 				catch (...) { /* intentional fail */  }
@@ -98,26 +96,22 @@ void ExternalSupply::readXML(const TiXmlElement * element) {
 		}
 	}
 	catch (IBK::Exception & ex) {
-		throw IBK::Exception( ex, IBK::FormatString("Error reading 'ExternalSupply' element."), FUNC_ID);
+		throw IBK::Exception( ex, IBK::FormatString("Error reading 'SupplySystem' element."), FUNC_ID);
 	}
 	catch (std::exception & ex2) {
-		throw IBK::Exception( IBK::FormatString("%1\nError reading 'ExternalSupply' element.").arg(ex2.what()), FUNC_ID);
+		throw IBK::Exception( IBK::FormatString("%1\nError reading 'SupplySystem' element.").arg(ex2.what()), FUNC_ID);
 	}
 }
 
-TiXmlElement * ExternalSupply::writeXML(TiXmlElement * parent) const {
+TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 	if (m_id == VICUS::INVALID_ID)  return nullptr;
-	TiXmlElement * e = new TiXmlElement("ExternalSupply");
+	TiXmlElement * e = new TiXmlElement("SupplySystem");
 	parent->LinkEndChild(e);
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
-	if (!m_displayName.isEmpty())
-		e->SetAttribute("displayName", m_displayName.toStdString());
-	if (m_visible != ExternalSupply().m_visible)
-		e->SetAttribute("visible", IBK::val2string<bool>(m_visible));
 	if (m_supplyType != NUM_ST)
-		e->SetAttribute("supplyType", KeywordList::Keyword("ExternalSupply::supplyType_t",  m_supplyType));
+		e->SetAttribute("supplyType", KeywordList::Keyword("SupplySystem::supplyType_t",  m_supplyType));
 
 	for (unsigned int i=0; i<NUM_P; ++i) {
 		if (!m_para[i].name.empty()) {

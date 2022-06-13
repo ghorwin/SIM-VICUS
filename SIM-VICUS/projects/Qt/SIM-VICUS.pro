@@ -91,7 +91,7 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
-	../../src/SVExternalSupplySelectionDialog.cpp \
+	../../src/SVSupplySystemSelectionDialog.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
@@ -128,7 +128,6 @@ SOURCES += \
 	../../src/actions/SVUndoDeleteSelected.cpp \
 	../../src/actions/SVUndoModifyBuilding.cpp \
 	../../src/actions/SVUndoModifyBuildingLevel.cpp \
-	../../src/actions/SVUndoModifyExternalSupply.cpp \
 	../../src/actions/SVUndoModifyRoom.cpp \
 	../../src/actions/SVUndoModifyBuildingTopology.cpp \
 	../../src/actions/SVUndoModifyComponentInstances.cpp \
@@ -138,6 +137,7 @@ SOURCES += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.cpp \
+	../../src/actions/SVUndoModifySupplySystem.cpp \
 	../../src/actions/SVUndoModifySurfaceGeometry.cpp \
 	../../src/actions/SVUndoTreeNodeState.cpp \
 	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
@@ -261,7 +261,7 @@ SOURCES += \
 	../../src/SVViewState.cpp \
 	../../src/SVViewStateHandler.cpp \
 	../../src/SVWelcomeScreen.cpp \
-    ../../src/actions/SVUndoCopySubSurfaces.cpp
+	../../src/actions/SVUndoCopySubSurfaces.cpp
 
 HEADERS  += \
 	../../src/SVCoSimCO2VentilationDialog.h \
@@ -271,7 +271,7 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
-	../../src/SVExternalSupplySelectionDialog.h \
+	../../src/SVSupplySystemSelectionDialog.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
@@ -310,7 +310,6 @@ HEADERS  += \
 	../../src/actions/SVUndoDeleteSelected.h \
 	../../src/actions/SVUndoModifyBuilding.h \
 	../../src/actions/SVUndoModifyBuildingLevel.h \
-	../../src/actions/SVUndoModifyExternalSupply.h \
 	../../src/actions/SVUndoModifyRoom.h \
 	../../src/actions/SVUndoModifyBuildingTopology.h \
 	../../src/actions/SVUndoModifyComponentInstances.h \
@@ -320,6 +319,7 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 	../../src/actions/SVUndoModifySiteData.h \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.h \
+	../../src/actions/SVUndoModifySupplySystem.h \
 	../../src/actions/SVUndoModifySurfaceGeometry.h \
 	../../src/actions/SVUndoTreeNodeState.h \
 	../../src/core3D/Vic3DCamera.h \
@@ -449,7 +449,7 @@ HEADERS  += \
 	../../src/plugins/SVCommonPluginInterface.h \
 	../../src/plugins/SVDatabasePluginInterface.h \
 	../../src/plugins/SVImportPluginInterface.h \
-    ../../src/actions/SVUndoCopySubSurfaces.h
+	../../src/actions/SVUndoCopySubSurfaces.h
 
 FORMS    += \
 	../../src/SVAboutDialog.ui \
@@ -486,7 +486,6 @@ FORMS    += \
 	../../src/SVDBZoneTemplateEditDialog.ui \
 	../../src/SVDBZoneTemplateEditWidget.ui \
 	../../src/SVGeometryView.ui \
-	../../src/SVExternalSupplySelectionDialog.ui \
 	../../src/SVImportIDFDialog.ui \
 	../../src/SVLocalCoordinateView.ui \
 	../../src/SVLogFileDialog.ui \
@@ -528,6 +527,7 @@ FORMS    += \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
+	../../src/SVSupplySystemSelectionDialog.ui \
 	../../src/SVWelcomeScreen.ui \
 	../../src/SVZoneSelectionDialog.ui
 

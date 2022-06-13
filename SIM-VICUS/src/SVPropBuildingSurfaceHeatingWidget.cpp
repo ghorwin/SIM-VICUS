@@ -15,7 +15,7 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-#include "SVExternalSupplySelectionDialog.h"
+#include "SVSupplySystemSelectionDialog.h"
 #include "SVZoneSelectionDialog.h"
 
 SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *parent) :
@@ -196,13 +196,13 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		// column 5 - associated supply network
 		item = new QTableWidgetItem(surfaceNames);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (surfHeat == nullptr || ci.m_externalSupply == nullptr) {
+		if (surfHeat == nullptr || ci.m_supplySystem == nullptr) {
 			item->setText("---");
 			item->setData(Qt::UserRole, VICUS::INVALID_ID);
 		}
 		else {
-			item->setText(ci.m_externalSupply->m_displayName);
-			item->setData(Qt::UserRole, ci.m_idExternalSupply);
+			item->setText(QString::fromStdString(ci.m_supplySystem->m_displayName.string()));
+			item->setData(Qt::UserRole, ci.m_idSupplySystem);
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 5, item);
 	}
@@ -230,10 +230,7 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
 
-	if(project().m_externalSupplies.empty())
-		m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(false);
-	else
-		m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(true);
+	m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(true);
 }
 
 
@@ -255,7 +252,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_tableWidgetSurfaceHeating_itemChange
 				else if(item->column() == 3)
 					cis[i].m_idSurfaceHeatingControlZone = item->data(Qt::UserRole).toUInt();
 				else
-					cis[i].m_idExternalSupply = item->data(Qt::UserRole).toUInt();
+					cis[i].m_idSupplySystem = item->data(Qt::UserRole).toUInt();
 				break;
 			}
 		SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heating"), cis);
@@ -424,14 +421,14 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 	// popup dialog with network selection
 
 	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVExternalSupplySelectionDialog dlg(this);
+	SVSupplySystemSelectionDialog dlg(this);
 
 	// start dialog
 	int res = dlg.exec();
 	if (res != QDialog::Accepted)
 		return; // user canceled the dialog
 
-	unsigned int supplyId = dlg.externalSupplyId();
+	unsigned int supplyId = dlg.SupplySystemId();
 
 	// assign supply id to selected surface heatings
 
@@ -454,8 +451,8 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
 			continue;
 
-		ci.m_idExternalSupply = supplyId;
-		ci.m_externalSupply = dynamic_cast<VICUS::ExternalSupply*> (prj.objectById(supplyId));
+		ci.m_idSupplySystem = supplyId;
+		ci.m_supplySystem = dynamic_cast<VICUS::SupplySystem*> (prj.objectById(supplyId));
 	}
 	// perform an undo action in order to redo/revert current operation
 	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
@@ -469,7 +466,7 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonEditSurfaceHeatingNetworks
 	// popup dialog with network selection
 
 	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVExternalSupplySelectionDialog dlg(this);
+	SVSupplySystemSelectionDialog dlg(this);
 
 	// start dialog
 	int res = dlg.exec();

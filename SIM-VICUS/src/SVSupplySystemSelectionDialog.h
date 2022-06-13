@@ -23,17 +23,17 @@
 	GNU General Public License for more details.
 */
 
-#ifndef SVExternalSupplySelectionDialogH
-#define SVExternalSupplySelectionDialogH
+#ifndef SVSupplySystemSelectionDialogH
+#define SVSupplySystemSelectionDialogH
 
 #include <QDialog>
 
 namespace Ui {
-class SVExternalSupplySelectionDialog;
+	class SVSupplySystemSelectionDialog;
 }
 
 namespace VICUS {
-class ExternalSupply;
+class SupplySystem;
 }
 
 class QListWidgetItem;
@@ -42,12 +42,12 @@ class QListWidgetItem;
 	with optional filter functionality.
 	User selects a network and accepts the dialog.
 */
-class SVExternalSupplySelectionDialog : public QDialog {
+class SVSupplySystemSelectionDialog : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit SVExternalSupplySelectionDialog(QWidget *parent = nullptr);
-	~SVExternalSupplySelectionDialog();
+	explicit SVSupplySystemSelectionDialog(QWidget *parent = nullptr);
+	~SVSupplySystemSelectionDialog();
 
 	/*! Updates complete dialog. */
 	void updateUi();
@@ -56,7 +56,7 @@ public:
 	void updateCurrent();
 
 	/*! Returns external supply object id, if an object is chosen, INVALID_ID otherwise. */
-	unsigned int externalSupplyId();
+	unsigned int SupplySystemId();
 
 private slots:
 	void on_listWidgetSupply_itemSelectionChanged();
@@ -78,11 +78,11 @@ private slots:
 	void on_pushButtonCreateNew_clicked();
 
 private:
-	Ui::SVExternalSupplySelectionDialog	*m_ui;
+	Ui::SVSupplySystemSelectionDialog	*m_ui;
 
 	/*! Pointer to currently edited supply description stucture.
 	*/
-	const VICUS::ExternalSupply		*m_current = nullptr;
+	const VICUS::SupplySystem		*m_current = nullptr;
 };
 
-#endif // SVExternalSupplySelectionDialogH
+#endif // SVSupplySystemSelectionDialogH

@@ -1,13 +1,18 @@
-#ifndef ExternalSupply_H
-#define ExternalSupply_H
-
-#include "VICUS_Constants.h"
-#include "VICUS_CodeGenMacros.h"
-#include "VICUS_Object.h"
-
-#include <IBK_Parameter.h>
+#ifndef SupplySystem_H
+#define SupplySystem_H
 
 #include <QString>
+#include <QCoreApplication>
+
+#include <vector>
+
+#include <IBK_Parameter.h>
+#include <IBK_MultiLanguageString.h>
+
+#include "VICUS_AbstractDBElement.h"
+#include "VICUS_Constants.h"
+#include "VICUS_CodeGenMacros.h"
+
 
 namespace VICUS {
 
@@ -16,12 +21,14 @@ namespace VICUS {
 	all heatings by a hydraulically balanced network and support FMI-coupling
 	at a single demand network branch.
 */
-class ExternalSupply : public Object {
+class SupplySystem : public AbstractDBElement {
+	Q_DECLARE_TR_FUNCTIONS(SupplySystem)
 public:
 
 	/*! Supplier supported by the generic network model. */
 	enum supplyType_t {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
+		ST_SubNetwork,			// Keyword: SubNetwork					'VIVUS sub network loaded from a database and parametrized by the user'
 		ST_DatabaseFMU,			// Keyword: DatabaseFMU					'Supply FMU loaded from a database and parametrized by the user'
 		ST_UserDefinedFMU,		// Keyword: UserDefinedFMU				'User defined supply FMU'
 		NUM_ST
@@ -42,15 +49,15 @@ public:
 		NUM_SP
 	};
 
-	/*! Type-info string. */
-	const char * typeinfo() const override { return "ExternalSupply"; }
-
 	// *** PUBLIC MEMBER FUNCTIONS ***
-	VICUS_READWRITE
+	VICUS_READWRITE_OVERRIDE
 	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if the network definition is valid. */
 	bool isValid() const;
+
+	/*! Comparison operator */
+	ComparisonResult equal(const AbstractDBElement *other) const override;
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
@@ -73,4 +80,4 @@ public:
 } // Namespace VICUS
 
 
-#endif // ExternalSupply_H
+#endif // SupplySystem_H

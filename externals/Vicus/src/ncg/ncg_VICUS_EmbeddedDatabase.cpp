@@ -136,6 +136,18 @@ void EmbeddedDatabase::readXML(const TiXmlElement * element) {
 					c2 = c2->NextSiblingElement();
 				}
 			}
+			else if (cName == "SupplySystems") {
+				const TiXmlElement * c2 = c->FirstChildElement();
+				while (c2) {
+					const std::string & c2Name = c2->ValueStr();
+					if (c2Name != "SupplySystem")
+						IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(c2Name).arg(c2->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
+					VICUS::SupplySystem obj;
+					obj.readXML(c2);
+					m_supplySystems.push_back(obj);
+					c2 = c2->NextSiblingElement();
+				}
+			}
 			else if (cName == "Pipes") {
 				const TiXmlElement * c2 = c->FirstChildElement();
 				while (c2) {
@@ -425,6 +437,18 @@ TiXmlElement * EmbeddedDatabase::writeXML(TiXmlElement * parent) const {
 
 		for (std::vector<VICUS::SurfaceHeating>::const_iterator it = m_surfaceHeatings.begin();
 			it != m_surfaceHeatings.end(); ++it)
+		{
+			it->writeXML(child);
+		}
+	}
+
+
+	if (!m_supplySystems.empty()) {
+		TiXmlElement * child = new TiXmlElement("SupplySystems");
+		e->LinkEndChild(child);
+
+		for (std::vector<VICUS::SupplySystem>::const_iterator it = m_supplySystems.begin();
+			it != m_supplySystems.end(); ++it)
 		{
 			it->writeXML(child);
 		}

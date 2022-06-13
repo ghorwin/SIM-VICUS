@@ -40,7 +40,7 @@
 #include <NANDRAD_FMIDescription.h>
 
 #include "VICUS_CodeGenMacros.h"
-#include "VICUS_ExternalSupply.h"
+#include "VICUS_SupplySystem.h"
 #include "VICUS_Network.h"
 #include "VICUS_Building.h"
 #include "VICUS_ViewSettings.h"
@@ -263,8 +263,6 @@ public:
 	ViewSettings										m_viewSettings;				// XML:E
 
 	std::vector<Network>								m_geometricNetworks;		// XML:E
-
-	std::vector<ExternalSupply>							m_externalSupplies;			// XML:E
 
 	std::vector<Building>								m_buildings;				// XML:E
 

@@ -1,4 +1,4 @@
-#include "VICUS_ExternalSupply.h"
+#include "VICUS_SupplySystem.h"
 
 #include "VICUS_Project.h"
 #include "VICUS_utilities.h"
@@ -8,9 +8,9 @@
 
 namespace VICUS {
 
-bool ExternalSupply::isValid() const
+bool SupplySystem::isValid() const
 {
-	FUNCID(ExternalSupply::isValid);
+	FUNCID(SupplySystem::isValid);
 	try {
 
 		// check parameters for stand alone mode
@@ -65,6 +65,29 @@ bool ExternalSupply::isValid() const
 		ex.writeMsgStackToError();
 		return false;
 	}
+}
+
+
+AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement * other) const
+{
+	const SupplySystem * otherSupSys = dynamic_cast<const SupplySystem*>(other);
+	if (otherSupSys == nullptr)
+		return Different;
+
+	// check parameters
+
+	if (m_supplyType != otherSupSys->m_supplyType ||
+			m_para != otherSupSys->m_para ||
+			m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
+			m_supplyFMUId != otherSupSys->m_supplyFMUId)
+		return Different;
+
+	// check meta data
+
+	if (m_displayName != otherSupSys->m_displayName)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
 }
 
 

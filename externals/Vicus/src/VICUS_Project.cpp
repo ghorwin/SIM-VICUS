@@ -484,10 +484,10 @@ void Project::updatePointers() {
 						if (r.m_id == ci.m_idSurfaceHeatingControlZone)
 							ci.m_surfaceHeatingControlZone = &r;
 		}
-		if (ci.m_idExternalSupply != VICUS::INVALID_ID) {
-			for (VICUS::ExternalSupply & e : m_externalSupplies)
-				if (e.m_id == ci.m_idExternalSupply)
-					ci.m_externalSupply = &e;
+		if (ci.m_idSupplySystem != VICUS::INVALID_ID) {
+			for (VICUS::SupplySystem & s : m_embeddedDB.m_supplySystems)
+				if (s.m_id == ci.m_idSupplySystem)
+					ci.m_supplySystem = &s;
 		}
 	}
 
@@ -518,11 +518,6 @@ void Project::updatePointers() {
 			}
 		}
 
-	}
-
-	// external supplies
-	for (VICUS::ExternalSupply &e : m_externalSupplies) {
-		addAndCheckForUniqueness(&e);
 	}
 
 	// networks

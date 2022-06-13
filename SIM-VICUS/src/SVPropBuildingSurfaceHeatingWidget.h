@@ -13,7 +13,7 @@ namespace Ui {
 
 namespace VICUS {
 	class ComponentInstance;
-	class ExternalSupply;
+	class SupplySystem;
 }
 
 /*! A property widget to assign and edit surface heatings. */

@@ -217,14 +217,14 @@ public:
 		m_controlledZoneId(controlledZoneId),
 		m_nandradConstructionInstanceId(constructionInstanceId),
 		m_heatingSystemId(surfaceHeatingModelId),
-		m_externalSupplyId(externalSuppyId),
+		m_supplySystemId(externalSuppyId),
 		m_area(area)
 	{}
 
 	unsigned int					m_controlledZoneId;
 	unsigned int					m_nandradConstructionInstanceId;
 	unsigned int					m_heatingSystemId;
-	unsigned int					m_externalSupplyId = INVALID_ID;
+	unsigned int					m_supplySystemId = INVALID_ID;
 	double							m_area;
 
 	//key is surface heating model id
@@ -317,13 +317,13 @@ bool IdealSurfaceHeatingCoolingModelGenerator::calculateSupplyTemperature(const 
 	return true;
 }
 
-class ExternalSupplyNetworkModelGenerator : public ModelGeneratorBase{
+class SupplySystemNetworkModelGenerator : public ModelGeneratorBase{
 public:
-	ExternalSupplyNetworkModelGenerator(const VICUS::Project * pro) :
+	SupplySystemNetworkModelGenerator(const VICUS::Project * pro) :
 		ModelGeneratorBase(pro)
 	{}
 
-	void generate(const VICUS::ExternalSupply &supply,
+	void generate(const VICUS::SupplySystem &supply,
 				  const std::vector<DataSurfaceHeating> &dataSurfaceHeating,
 				  std::vector<unsigned int> &usedModelIds,
 				  QStringList &errorStack);
@@ -761,22 +761,22 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 	std::map<unsigned int, std::vector<DataSurfaceHeating> > supplyIdToSurfaceHeatings;
 
 	for(DataSurfaceHeating &surfHeat : constrInstaModelGenerator.m_surfaceHeatingData) {
-		if(surfHeat.m_externalSupplyId == INVALID_ID)
+		if(surfHeat.m_supplySystemId == INVALID_ID)
 			continue;
-		supplyIdToSurfaceHeatings[surfHeat.m_externalSupplyId].push_back(surfHeat);
+		supplyIdToSurfaceHeatings[surfHeat.m_supplySystemId].push_back(surfHeat);
 	}
 
 	// create networks for all used supplies
-	ExternalSupplyNetworkModelGenerator externalSupplyNetworkModelGenerator(this);
+	SupplySystemNetworkModelGenerator SupplySystemNetworkModelGenerator(this);
 
 	for(std::map<unsigned int, std::vector<DataSurfaceHeating> >::iterator
 		it = supplyIdToSurfaceHeatings.begin(); it != supplyIdToSurfaceHeatings.end(); ++it) {
 		// find supply component
-		const VICUS::ExternalSupply *supply = dynamic_cast<const VICUS::ExternalSupply*> (objectById(it->first));
+		const VICUS::SupplySystem *supply = dynamic_cast<const VICUS::SupplySystem*> (objectById(it->first));
 
-		externalSupplyNetworkModelGenerator.m_placeholders = p.m_placeholders;
+		SupplySystemNetworkModelGenerator.m_placeholders = p.m_placeholders;
 
-		externalSupplyNetworkModelGenerator.generate(*supply, it->second, usedModelIds, errorStack);
+		SupplySystemNetworkModelGenerator.generate(*supply, it->second, usedModelIds, errorStack);
 		if (!errorStack.isEmpty())	return;
 	}
 
@@ -846,21 +846,21 @@ void Project::generateBuildingProjectDataNeu(const QString &modelName, NANDRAD::
 
 	// *** Networks ... ***
 	p.m_hydraulicNetworks.insert(p.m_hydraulicNetworks.end(),
-								 externalSupplyNetworkModelGenerator.m_hydraulicNetworks.begin(),
-								 externalSupplyNetworkModelGenerator.m_hydraulicNetworks.end());
-	p.m_objectLists.insert(p.m_objectLists.end(), externalSupplyNetworkModelGenerator.m_objListLinearSpline.begin(), externalSupplyNetworkModelGenerator.m_objListLinearSpline.end());
-	p.m_schedules.m_scheduleGroups.insert(externalSupplyNetworkModelGenerator.m_objListNamesToNandradSchedules.begin(), externalSupplyNetworkModelGenerator.m_objListNamesToNandradSchedules.end());
+								 SupplySystemNetworkModelGenerator.m_hydraulicNetworks.begin(),
+								 SupplySystemNetworkModelGenerator.m_hydraulicNetworks.end());
+	p.m_objectLists.insert(p.m_objectLists.end(), SupplySystemNetworkModelGenerator.m_objListLinearSpline.begin(), SupplySystemNetworkModelGenerator.m_objListLinearSpline.end());
+	p.m_schedules.m_scheduleGroups.insert(SupplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.begin(), SupplySystemNetworkModelGenerator.m_objListNamesToNandradSchedules.end());
 
 	// *** FMI Descriptions ***
-	if(!externalSupplyNetworkModelGenerator.m_inputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+	if(!SupplySystemNetworkModelGenerator.m_inputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
 		if(p.m_fmiDescription.m_modelName.empty())
 			p.m_fmiDescription.m_modelName = modelName.toStdString();
-		p.m_fmiDescription.m_inputVariables.insert(p.m_fmiDescription.m_inputVariables.end(), externalSupplyNetworkModelGenerator.m_inputVariables.begin(), externalSupplyNetworkModelGenerator.m_inputVariables.end());
+		p.m_fmiDescription.m_inputVariables.insert(p.m_fmiDescription.m_inputVariables.end(), SupplySystemNetworkModelGenerator.m_inputVariables.begin(), SupplySystemNetworkModelGenerator.m_inputVariables.end());
 	}
-	if(!externalSupplyNetworkModelGenerator.m_outputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
+	if(!SupplySystemNetworkModelGenerator.m_outputVariables.empty() ) {		if(p.m_fmiDescription.m_modelName.empty())
 		if(p.m_fmiDescription.m_modelName.empty())
 			p.m_fmiDescription.m_modelName = modelName.toStdString();
-		p.m_fmiDescription.m_outputVariables.insert(p.m_fmiDescription.m_outputVariables.end(), externalSupplyNetworkModelGenerator.m_outputVariables.begin(), externalSupplyNetworkModelGenerator.m_outputVariables.end());
+		p.m_fmiDescription.m_outputVariables.insert(p.m_fmiDescription.m_outputVariables.end(), SupplySystemNetworkModelGenerator.m_outputVariables.begin(), SupplySystemNetworkModelGenerator.m_outputVariables.end());
 	}
 }
 
@@ -2190,7 +2190,7 @@ void ConstructionInstanceModelGenerator::generate(const std::vector<ComponentIns
 			}
 			m_surfaceHeatingData.push_back(DataSurfaceHeating(compInstaVicus.m_idSurfaceHeatingControlZone,
 															  compInstaVicus.m_idSurfaceHeating, constrInstNandrad.m_id,
-															  compInstaVicus.m_idExternalSupply,
+															  compInstaVicus.m_idSupplySystem,
 															  area));
 			activeLayerIdx = (int)comp->m_activeLayerIndex;
 		}
@@ -2473,7 +2473,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 			break;
 			case SurfaceHeating::T_PipeRegister:{
 
-				if(dsh.m_externalSupplyId == INVALID_ID) {
+				if(dsh.m_supplySystemId == INVALID_ID) {
 					//standard fluid model
 					NANDRAD::HydraulicFluid fluid;
 					fluid.defaultFluidWater();
@@ -2652,7 +2652,7 @@ void IdealSurfaceHeatingCoolingModelGenerator::generate(const std::vector<DataSu
 
 }
 
-void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply,
+void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 												   const std::vector<DataSurfaceHeating> & dataSurfaceHeating,
 												   std::vector<unsigned int> &usedModelIds,
 												   QStringList &errorStack)
@@ -2716,15 +2716,15 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	double maxMassFlux = 0.0;
 
 	switch (supply.m_supplyType) {
-		case VICUS::ExternalSupply::ST_StandAlone:
-			maxMassFlux = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFlux].value;
+		case VICUS::SupplySystem::ST_StandAlone:
+			maxMassFlux = supply.m_para[VICUS::SupplySystem::P_MaximumMassFlux].value;
 		break;
-		case VICUS::ExternalSupply::ST_UserDefinedFMU:
-			maxMassFlux = supply.m_para[VICUS::ExternalSupply::P_MaximumMassFluxFMU].value;
+		case VICUS::SupplySystem::ST_UserDefinedFMU:
+			maxMassFlux = supply.m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU].value;
 		break;
 		// not supported, yet
-		case VICUS::ExternalSupply::ST_DatabaseFMU: break;
-		case VICUS::ExternalSupply::NUM_ST: break;
+		case VICUS::SupplySystem::ST_DatabaseFMU: break;
+		case VICUS::SupplySystem::NUM_ST: break;
 	}
 
 	double defaultFluidTemperature = 20. + 273.15;
@@ -2843,7 +2843,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 	// create a pump object list
 	NANDRAD::ObjectList pumpObjectList;
-	pumpObjectList.m_name = std::string("Pump ") + supply.m_displayName.toStdString();
+	pumpObjectList.m_name = std::string("Pump ") + supply.m_displayName.string();
 	pumpObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	pumpObjectList.m_filterID.m_ids.insert(pumpElem.m_id);
 
@@ -2944,7 +2944,7 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 
 	// create a ideal heater object list
 	NANDRAD::ObjectList idealHeaterObjectList;
-	idealHeaterObjectList.m_name = std::string("Ideal heater ") + supply.m_displayName.toStdString();
+	idealHeaterObjectList.m_name = std::string("Ideal heater ") + supply.m_displayName.string();
 	idealHeaterObjectList.m_referenceType = NANDRAD::ModelInputReference::MRT_NETWORKELEMENT;
 	idealHeaterObjectList.m_filterID.m_ids.insert(idealHeaterElem.m_id);
 
@@ -3003,12 +3003,12 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	std::vector<double> maxMassFluxVals(1, 0.0);
 	std::vector<double> supplyTempVals(1, 20.);
 
-	if(supply.m_supplyType == VICUS::ExternalSupply::ST_StandAlone) {
-		maxMassFluxVals[0] = supply.m_para[ExternalSupply::P_MaximumMassFlux].value;
-		supplyTempVals[0] = supply.m_para[ExternalSupply::P_SupplyTemperature].get_value("C");
+	if(supply.m_supplyType == VICUS::SupplySystem::ST_StandAlone) {
+		maxMassFluxVals[0] = supply.m_para[SupplySystem::P_MaximumMassFlux].value;
+		supplyTempVals[0] = supply.m_para[SupplySystem::P_SupplyTemperature].get_value("C");
 	}
 	else {
-		maxMassFluxVals[0] = supply.m_para[ExternalSupply::P_MaximumMassFluxFMU].value;
+		maxMassFluxVals[0] = supply.m_para[SupplySystem::P_MaximumMassFluxFMU].value;
 	}
 
 	// create schedules
@@ -3039,8 +3039,8 @@ void ExternalSupplyNetworkModelGenerator::generate(const ExternalSupply & supply
 	// create FMI description
 
 	switch(supply.m_supplyType) {
-		case VICUS::ExternalSupply::ST_DatabaseFMU:
-		case VICUS::ExternalSupply::ST_UserDefinedFMU: {
+		case VICUS::SupplySystem::ST_DatabaseFMU:
+		case VICUS::SupplySystem::ST_UserDefinedFMU: {
 
 			unsigned int id = 3 * (m_hydraulicNetworks.size() - 1);
 

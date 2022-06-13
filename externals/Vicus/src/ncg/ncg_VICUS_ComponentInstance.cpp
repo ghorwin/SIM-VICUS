@@ -67,8 +67,8 @@ void ComponentInstance::readXML(const TiXmlElement * element) {
 				m_idSurfaceHeating = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else if (cName == "IdSurfaceHeatingControlZone")
 				m_idSurfaceHeatingControlZone = NANDRAD::readPODElement<unsigned int>(c, cName);
-			else if (cName == "IdExternalSupply")
-				m_idExternalSupply = NANDRAD::readPODElement<unsigned int>(c, cName);
+			else if (cName == "IdSupplySystem")
+				m_idSupplySystem = NANDRAD::readPODElement<unsigned int>(c, cName);
 			else {
 				IBK::IBK_Message(IBK::FormatString(XML_READ_UNKNOWN_ELEMENT).arg(cName).arg(c->Row()), IBK::MSG_WARNING, FUNC_ID, IBK::VL_STANDARD);
 			}
@@ -100,8 +100,8 @@ TiXmlElement * ComponentInstance::writeXML(TiXmlElement * parent) const {
 		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceHeating", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceHeating));
 	if (m_idSurfaceHeatingControlZone != VICUS::INVALID_ID)
 		TiXmlElement::appendSingleAttributeElement(e, "IdSurfaceHeatingControlZone", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSurfaceHeatingControlZone));
-	if (m_idExternalSupply != VICUS::INVALID_ID)
-		TiXmlElement::appendSingleAttributeElement(e, "IdExternalSupply", nullptr, std::string(), IBK::val2string<unsigned int>(m_idExternalSupply));
+	if (m_idSupplySystem != VICUS::INVALID_ID)
+		TiXmlElement::appendSingleAttributeElement(e, "IdSupplySystem", nullptr, std::string(), IBK::val2string<unsigned int>(m_idSupplySystem));
 	return e;
 }
 

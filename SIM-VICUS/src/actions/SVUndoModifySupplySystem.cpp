@@ -23,22 +23,22 @@
 	GNU General Public License for more details.
 */
 
-#include "SVUndoModifyExternalSupply.h"
+#include "SVUndoModifySupplySystem.h"
 #include "SVProjectHandler.h"
 
 #include "SVSettings.h"
 
-SVUndoModifyExternalSupply::SVUndoModifyExternalSupply(const QString &label, unsigned int supplyIndex, const VICUS::ExternalSupply & supply) :
-	m_externalSupplyIndex(supplyIndex),
-	m_externalSupply(supply)
+SVUndoModifySupplySystem::SVUndoModifySupplySystem(const QString &label, unsigned int supplyIndex, const VICUS::SupplySystem & supply) :
+	m_SupplySystemIndex(supplyIndex),
+	m_SupplySystem(supply)
 {
 	setText( label );
 }
 
 
-void SVUndoModifyExternalSupply::undo() {
-	IBK_ASSERT(m_externalSupplyIndex < project().m_externalSupplies.size());
-	std::swap(theProject().m_externalSupplies[m_externalSupplyIndex], m_externalSupply); // exchange supply in project with supply stored in this class
+void SVUndoModifySupplySystem::undo() {
+	IBK_ASSERT(m_SupplySystemIndex < project().m_embeddedDB.m_supplySystems.size());
+	std::swap(theProject().m_embeddedDB.m_supplySystems[m_SupplySystemIndex], m_SupplySystem); // exchange supply in project with supply stored in this class
 
 	// TODO: check signal
 	// tell project that the network has changed
@@ -46,6 +46,6 @@ void SVUndoModifyExternalSupply::undo() {
 }
 
 
-void SVUndoModifyExternalSupply::redo() {
+void SVUndoModifySupplySystem::redo() {
 	undo(); // same as undo
 }
