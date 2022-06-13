@@ -64,17 +64,15 @@ An der linken Seite ist eine Toolbar dargestellt. Dabei kann man über die Butto
 * Neues Projekt
 * Projekt öffnen
 * Projekt speichern
-* Geometrie-Modus
-* Parametrie-Modus
 * Aktion rückgängig
 * Aktion wiederholen
 
 [[NavigationWindow]]
 ### Navigationsfenster
 
-Direkt neben der Toolbar ist das Navigationsfenster angelegt. Darin werden die immer die "Site" angezeigt. An diese werden alle weiteren Objekte gebunden. Derzeit enthält die Site nur die Unterobjekte Gebäude und Obstacles in beliebiger Anzahl. Beim Start ist bereits ein Gebäude mit dem Name 'Building' angelegt. Ein Gebäude kann beliebig viele Geschoss beinhalten. Diese wiederum enthalten Räume. In diesen werden die Hüllflächen wie beispielsweise Wände, Decken und Böden zusammengefasst. Eine Hüllfläche kann derzeit Unterobjekte wie beispielsweise Fenster enthalten. Damit ergeben sich maximal vier Unterebenen von der 'Site'.
+Direkt neben der Toolbar ist das Navigationsfenster angelegt. Darin wird immer die "Site" (entspricht dem Plangebiet) angezeigt. An diese werden alle weiteren Objekte gebunden. Derzeit enthält die 'Site' nur die Unterobjekte Gebäude und Obstacles (statische Verschattungselemente) in beliebiger Anzahl. Beim Start ist bereits ein Gebäude mit dem Name 'Building' angelegt. Ein Gebäude kann beliebig viele Geschoss beinhalten. Diese wiederum enthalten Räume. In diesen werden die Hüllflächen wie beispielsweise Wände, Decken und Böden zusammengefasst. Eine Hüllfläche kann derzeit Unterobjekte wie beispielsweise Fenster enthalten. Damit ergeben sich maximal vier Unterebenen ausgehend von der 'Site'.
 
-Alle Objekte enthalten eine Checkbox und eine Lampe vor dem Name. Die Checkbox zeigt den Selektionsstatus der <<3D-Szene,Szene>> an. Leuchtet die Lampe so werden die Objekte in der Szene dargestellt. Anderenfalls werden diese unsichtbar geschalten. Der Name jedes Objekts, bis auf die Site, kann durch einen Doppelklick editiert werden.
+Alle Objekte enthalten eine Checkbox und eine Lampe vor dem Name. Die Checkbox zeigt den Selektionsstatus der <<3D-Szene,Szene>> an. Leuchtet die Lampe so werden die Objekte in der Szene dargestellt. Anderenfalls werden diese unsichtbar geschalten. Der Name eines jeden Objektes, bis auf die 'Site', kann durch einen Doppelklick editiert werden.
 
 #### Buttons des Navigationsfensters
 
@@ -104,18 +102,35 @@ In der 3D-Szene werden alle sichtbaren 3D-Objekte wie Hüllflächen dargestellt.
 * Mausbewegung:
 ** Translation: Durch Gedrückthalten des Mausrads und gleichzeitiges Verschieben der Maus wird die Kameraposition verschoben. Durch die Tasten *W*, *S*, *A*, *D*, *R*, *F* können ebenfalls Translationen durchgeführt werden.
 ** Rotation:
-*** Orbit-Rotation: Durch Gedrückthalten der rechten Maustaste und Bewegung der Maus wird die aktuelle Kamera und die derzeitige Kameraposition bewegt.
+*** Orbit-Rotation: Durch Gedrückthalten der rechten Maustaste und Bewegung der Maus wird die aktuelle Kamera um die derzeitige Kameraposition bewegt.
 *** Punkt-Rotation: Ein Drehpunkt wird in der Szene durch Gedrückthalten der linken Maustaste abgesetzt. Nach Bewegung der Maus wird um den gesetzten Drehpunkt die Kamera rotiert.
-* (De-)Selektion: Durch anklicken mit der Objekte mit der linken Maustaste werden unselektierte Objekte selektiert und selektierte Objekte deselektiert. Mit der *ESC* Taste werden alle selektierten Objekte deselektiert. Mit *Ctrl+A* werden alle Objekte selektiert. Weiterhin wird durch *Ctrl+li. Maus* das Elternobjekt und alle abhängigen Objekte vom Elternobjekt selektiert. Damit kann durch ein Klick auf eine Wand der gesamte Raum mit seinen Hüllflächen selektiert werden. Ebenso funktioniert die Deselektion.
+* (De-)Selektion: Durch Anklicken der Objekte mit der linken Maustaste werden unselektierte Objekte selektiert und selektierte Objekte deselektiert. Mit der *ESC* Taste werden alle selektierten Objekte deselektiert. Mit *Ctrl+A* werden alle Objekte selektiert. Weiterhin wird durch *Ctrl+li. Maus* das Elternobjekt und alle abhängigen Objekte vom Elternobjekt selektiert. Damit kann durch ein Klick auf eine Wand der gesamte Raum mit seinen Hüllflächen selektiert werden. Ebenso funktioniert die Deselektion.
 
 Am unteren Ende der Szene sind weitere Buttons vorhanden. Diese werden später erläutert.
 
 [CAUTION]
 ====
 
-Ein Raumname kann nur über das Navigationsfenster oder *Ctrl+li. Maus* selektiert werden. Der Raumname steht für die Abbildung der Raumluft und entspricht physikalisch deren Speichermasse. Gebäude und Geschoss können nur über das Navigationsfenster selektiert werden oder über *Ctrl+A*.
+Ein Raumname kann nur über das Navigationsfenster oder *Ctrl+li. Maus* selektiert werden. Der Raumname steht für die Abbildung der Raumluft und entspricht physikalisch dessen Speichermasse. Gebäude und Geschoss können nur über das Navigationsfenster selektiert werden oder über *Ctrl+A*.
 
 ====
+
+### Modelierungstoolbar
+
+In dieser Toolbar werden folgende Buttons dargestellt:
+
+// ToDo Geometriemodus muss raus
+
+* Geometriemodus
+* Parametrierungsmodus
+* Geometrie hinzufügen 
+* Translation
+* Rotation
+* Skalierung
+* sonstige Funktionalitäten
+* Objekte kopieren
+
+Alle Buttons haben direkte Auswirkung auf das <<ToolWidget,Tool-Widget>> indem sie die dortige notwendige Funktionalität einblenden.
 
 // ToDo Toolbuttons unterhalb der Szene erläutern
 
@@ -126,7 +141,7 @@ An der rechten Seite werden je nach Modus (Geometrie, Parametrierung) verschiede
 
 #### Geometrie-Modus
 
-Im Geometriemodus können Objekte erstellt und editiert werden. Der Erstellen-Modus wird durch aktiven Plus-Button dargestellt. Der Editier-Modus wird über den aktiven Buch-Button dargestellt.
+Im Geometriemodus können Objekte erstellt und editiert werden. Der Erstellen-Modus wird durch aktiven Plus-Button dargestellt. Der Editier-Modus durch das direkte Symbol wie beispielse Translation angesteuert.
 
 ##### Erstellen der Geometrie
 
@@ -142,7 +157,7 @@ Bei der Geometrieerstellung kann zwischen einer Fläche und eines Raumes untersc
 [[GeometricModeEdit]]
 ##### Editieren der Geometrie
 
-Die Flächen und den daraus entstehenden Volumenkörpern können editiert werden. Das sind folgende Aktionen möglich:
+Die Flächen und die daraus entstehenden Volumenkörper können editiert werden. Dabei sind folgende Aktionen möglich:
 
 * Translation (Verschieben) von Objekten
 * Skalierung von Objekten
@@ -166,6 +181,8 @@ Bei den Aktionen Translation, Skalierung und Rotation ist zu beachten, dass die 
 
 Bei der Skalierung werden die Skalierungsfaktoren in die dafür zuständigen Textboxen eingetragen. 
 
+// Bild
+
 [[ScalingDialog]]
 .Skalierungsdialog
 image::p14.png[align="center"]
@@ -181,7 +198,6 @@ Bei der Skalierung spielt die Position des lokalen Koordinatensystems eine Rolle
 ###### Kopieren von Objekten
 
 Wie <<GeometricModeEdit,oben>> bereits dargestellt unterteilt sich das Kopieren in verschiedenste Modi. Der Ablauf jedes Kopierens folgt aber den gleichen Bedingungen. Es werden die Objekte selektiert. Nach Eingabe der Translation in die Eingabefelder für x, y und z Verschiebung wird der gewünschte Kopier-Button betätigt. Das Objekt befindet sich als Duplikat an der gewünschten Stelle.
-
 
 
 #### Datenbanken
@@ -273,7 +289,7 @@ Die folgenden Parameter sind in einer <<SubSurfaceComponentDatabase,Sub Surface 
 
 * Name 
 * Farbe
-* Typ (derzeit nur Fenster möglich=
+* Typ (derzeit nur Fenster möglich)
 * U-Wert (berechnet mit den Übergangskoeffizienten der Randbedingungen)
 * <<Window,Fensterkonstruktion>> (Verlinkung)
 ** SHGC (g-Wert senkrecht, nur bei Fenstern vorhanden)
@@ -320,9 +336,9 @@ Das <<GalzingSystemDatabase,Verglasungssystem>> stellt das Scheibenpaket dar. Je
 
 * Name
 * Typ (derzeit nur 'simple' verfügbar)
-* U-Wert
+* Durchlasskoeffizient (Scheibe zu Scheibe)
 * SHGC (g-Wert senkrecht)
-* Kurve für die winkelabhängigkeit des SHGC-Wertes
+* Kurve für die Winkelabhängigkeit des SHGC-Wertes
 
 [[GalzingSystemDatabase]]
 .Verglasungssystemdatenbankdialog
@@ -331,7 +347,7 @@ image::p28.png[align="center"]
 [[BoundaryCondition]]
 ##### Randbedingungen
 
-Eine Randbedingung beschriebt die Modelle, dei an einer Oberfläche aktiv werden. Derzeit können verschieden Randbedingungen erstellt werden. Darunter zählen folgende Wärmeübergangsprozesse:
+Eine Randbedingung beschreibt die Modelle, die an einer Oberfläche aktiv werden. Derzeit können verschiedene Randbedingungen erstellt werden. Darunter zählen folgende Wärmeübergangsprozesse:
 
 * konvektive
 ** konstanter Wärmeübergangskoeffizient
@@ -342,7 +358,7 @@ Eine Randbedingung beschriebt die Modelle, dei an einer Oberfläche aktiv werden
 
 Der kombinierte Wärmeübergangskoeffizient beträgt nach DIN EN ISO 6946 für alle Bauteile, wo unklar ist in welcher Richtung der Wärmestrom geht 8 W/m^2^K auf der Innenseite. Auf der Außenseite beträgt der kombinierte Wert 25 W/m^2^K.
 
-Werden  Strahlungskoeffizienten angesetzt kann man den Wert außen auf 17 W/m^2^K und den Wert innen auf 2 W/m^2^K gesetzt werden. 
+Werden  Strahlungskoeffizienten angesetzt, kann man den Wert außen auf 17 W/m^2^K und den Wert innen auf 2 W/m^2^K setzen. 
 
 #### Parametrierungsmodus
 
@@ -363,7 +379,7 @@ Es wird in diesem Tutorial nur auf den Building-Modus eingegangen.
 Nach Aktivierung von 'Building' erscheint ein Auswahlbox mit 'Object properties'. Darin werden folgende Einstellungen unterschieden:
 
 * Component - Bauteile
-* Subs-Surfaces - Fenster
+* Sub-Surfaces - Fenster
 * <<ConstructionOrientation,Construction orientation>> - Bauteilausrichtung
 * <<ParametricModeBC,Boundary conditions>> - Randbedingungen
 * Surface connections/component instances - Flächenverknüpfungen
@@ -382,11 +398,11 @@ In jedem Modus wird im darunter liegendem Tabellenfeld die derzeit verfügbaren 
 .Hüllflächenverbindungen
 image::SurfaceConnections.png[align="center"]
 
-Die Bauteile Dach (rot), Außenwand (gelb) und Fußboden gegen Außenluft (lila) sind von den Bedingungen alle gleich. Dabei haben alle eine Innenrandbedingungen und eine Außenrandbedingungen. Diese können sich unterscheiden. Bei den Konstruktion gibt es meistens Unterschiede zwischen Dach, Fußboden und Wand. Nicht verknüpfte Bauteil haben automatische eine Verknüpfung zur Außenluft, außer es wird eine Temperaturrandbedingung in der außenliegenden Randbedingung definiert.
+Die Bauteile Dach (rot), Außenwand (gelb) und Fußboden gegen Außenluft (lila) sind von den Bedingungen alle gleich. Dabei haben alle eine Innenrandbedingung und eine Außenrandbedingung. Diese können sich unterscheiden. Bei den Konstruktionen gibt es meistens Unterschiede zwischen Dach, Fußboden und Wand. Nicht verknüpfte Bauteile haben automatisch eine Verknüpfung zur Außenluft, außer es wird eine Temperatur (konst. oder als Zeitplan) in der außenliegenden Randbedingung definiert.
 
-Das erdberührte Bauteil wird in braun dargestellt. Hier verhält es sich ähnlich wie zuvor es ist eine Innenrandbedingung und eine Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem Widerstand nahe 0 m2K/W definiert und einer Temperaturvorgabe die konstant oder zeitplangesteuert definiert werden kann. 
+Das erdberührte Bauteil wird in braun dargestellt. Hier verhält es sich ähnlich wie zuvor. Es ist eine Innenrandbedingung und eine Außenrandbedingung definiert. Die Außenrandbedingung wird mit einem Widerstand nahe 0 m2K/W definiert und einer Temperaturvorgabe, die konstant oder zeitplangesteuert definiert werden kann, definiert. 
 
-Die grünen Bauteile (Innenwände) und die hellroten (Bauteile Geschossdecken) haben auf beiden Seiten eine Innenrandbedingung. Zudem müssen für die physikalische Berechnung des Wärmedurchgangs die gegenüberliegenden Flächen miteinander verknüpft werden. Dies kann beim Zuweisen der Komponente vorgenommen werden. Dabei wird der 'Component' in der Auswahlbox 'Object properties' eingestellt. Anschließend werden die zwei gegenüberliegenden Flächen selektiert. Mit Bestätigung des Buttons 'Connect surfaces with component...' werden die Flächen verknüpft. Für symmetrische Innenwände spielt dabei die Konstruktionsausrichtung keine Rolle. Für eine Decke mit einem beispielhaften Aufbau von Beton, Dämmung, Estrich spielt es sehr wohl eine Rolle ob man auf Beton oder Estrich läuft. Da der Wärmestrom in Gebäudesimulationen nur eindimensional berechnet wird, können die Bauteile entstehen die keine gegenüberliegende Randbedingung haben. Im <<SurfaceConnections,Bild>> wird das durch die Kreise 'A' und 'B' dargestellt. Die ungestörte Konstruktion (hellrot) wird durch zwei Innenrandbedingungen aufgebaut. Die Konstruktion wird wie folgt definiert:
+Die grünen Bauteile (Innenwände) und die hellroten (Bauteile Geschossdecken) haben auf beiden Seiten eine Innenrandbedingungen. Zudem müssen für die physikalische Berechnung des Wärmedurchgangs die gegenüberliegenden Flächen miteinander verknüpft werden. Dies kann beim Zuweisen der Komponente vorgenommen werden. Dabei wird 'Component' in der Auswahlbox 'Object properties' eingestellt. Anschließend werden die zwei gegenüberliegenden Flächen selektiert. Mit Bestätigung des Buttons 'Connect surfaces with component...' werden die Flächen verknüpft. Für symmetrische Innenwände spielt dabei die Konstruktionsausrichtung keine Rolle. Für eine Decke mit einem beispielhaften Aufbau von Beton, Dämmung, Estrich spielt es sehr wohl eine Rolle, ob man auf Beton oder Estrich läuft. Da der Wärmestrom in Gebäudesimulationen nur eindimensional berechnet wird, können Bauteile entstehen, die keine gegenüberliegende Randbedingung haben. Im <<SurfaceConnections,Bild>> wird das durch die Kreise 'A' und 'B' dargestellt. Die ungestörte Konstruktion (hellrot) wird durch zwei Innenrandbedingungen aufgebaut. Die Konstruktion wird wie folgt definiert:
 
 * Seite A
 * Beton
@@ -394,17 +410,17 @@ Die grünen Bauteile (Innenwände) und die hellroten (Bauteile Geschossdecken) h
 * Estrich
 * Seite B
 
-Daher sollte beim hellroten Bauteil zwischen Raum 1 und 3 die Seite 'A' dem Raum 3 zugeordnet werden und die Seite 'B' dem Raum 1. Somit läuft man auf dem Estrich. Für das hellbraun markierte Stück mit dem roten Kreis 'A' gibt es auf der Seite B (oben) keine Randbedingung, da das Bauteil an ein anderes Bauteil grenzt. Durch die oben erfolgte Definition der eindimensionalen Wärmetransporte kann vom diesem Bauteil keine Wärme in ein anderes Bauteil übertragen werden. Daher hat das hellbraune Bauteil nur eine Randbedingung auf der Seite 'A', da der Beton an Raum 3 grenzt. Bei Raum 2 und dem Kreis 'B' stellt sich das anders herum dar. Man läuft auf dem Estrich und muss dem schwarzen Bauteil nur einen Innenrandbedingung an der Seite 'B' zuordnen. Würde dem hellroten oder schwarzen Bauteil eine gegenüberliegenden Randbedingung definiert, werden die Bauteile automatisch zu Außenbauteilen (siehe Definition oben).
+Daher sollte beim hellroten Bauteil zwischen Raum 1 und 3 die Seite 'A' dem Raum 3 zugeordnet werden und die Seite 'B' dem Raum 1. Somit läuft man auf dem Estrich. Für das hellbraun markierte Stück mit dem roten Kreis 'A' gibt es auf der Seite B (oben) keine Randbedingung, da das Bauteil an ein anderes Bauteil grenzt. Durch die oben erfolgte Definition der eindimensionalen Wärmetransporte kann vom diesem Bauteil keine Wärme in ein anderes Bauteil übertragen werden. Daher hat das hellbraune Bauteil nur eine Randbedingung auf der Seite 'A', da der Beton an Raum 3 grenzt. Bei Raum 2 und dem Kreis 'B' stellt sich das anders herum dar. Man läuft auf dem Estrich und muss dem schwarzen Bauteil nur einen Innenrandbedingung an der Seite 'B' zuordnen. Würde dem hellroten oder schwarzen Bauteil eine zusätzliche gegenüberliegende Randbedingung zugeordnet werden, würden die Bauteile automatisch zu Außenbauteilen (siehe Definition oben).
 
 [[ConstructionOrientation]]
 ##### Construction orientation
 
-Die Ausrichtung eines Bauteils ist sehr entscheidend. Zum einen sind die Randbedingungen in einer Komponente meistens richtungsabhängig zugewiesen wie beispielsweise bei einer Außenwand. Zum anderen ist es wichtig ob die Speichermasse direkt an die Raumluft grenzt. Dies wird beispielsweise interessant bei einer Konstruktion mit Mauerwerk und Dämmung, je nach Ausrichtung ist es einmal eine Innendämmung und einmal eine Außendämmung. In der Komponente gibt es daher eine Seite 'A' und eine Seite' B'. Dargestellt wird immer die Seite die man sehen würde wenn man im Raum steht und auf die Hüllfläche blickt.
+Die Ausrichtung eines Bauteils ist entscheidend. Zum Einen sind die Randbedingungen in einer Komponente meistens richtungsabhängig zugewiesen, wie beispielsweise bei einer Außenwand. Zum Anderen ist es wichtig, ob die Speichermasse direkt an die Raumluft grenzt. Dies wird beispielsweise interessant bei einer Konstruktion mit Mauerwerk und Dämmung, je nach Ausrichtung ist es einmal eine Innendämmung und einmal eine Außendämmung. In der Komponente gibt es daher eine Seite 'A' und eine Seite' B'. Dargestellt wird immer die Seite die man sehen würde, wenn man im Raum steht und auf die Hüllfläche blickt.
 
 [[ParametricModeBC]]
 ##### Boundary conditions
 
-Bei den Randbedingungen ist sehr ähnlich wie bei den <<ConstructionOrientation,Construction orientation>>. Da immer aus der Sicht des Betrachters im Raum geschaut wird, müssen am Ende nur Innenrandbedingungen sichtbar sein. Ansonsten ist die Randbedingung auf der falschen Seite.
+Bei den Randbedingungen ist sehr ähnlich wie bei der <<ConstructionOrientation,Construction orientation>>. Da immer aus der Sicht des Betrachters im Raum geschaut wird, müssen am Ende nur Innenrandbedingungen sichtbar sein. Ansonsten ist die Randbedingung auf der falschen Seite.
 
 
 
@@ -415,7 +431,7 @@ Bei den Randbedingungen ist sehr ähnlich wie bei den <<ConstructionOrientation,
 [[CoordSystem]]
 #### Koordinatensystem
 
-Das Koordinatensystem (KS) ist in farblich hervorgehoben. Die _rote_ Achse entspricht der X-Achse und zeig beim globalen Koordinatensystem nach Osten. Die _grüne_ Achse stellt die Y-Achse dar und zeigt im globalen Koordinatensystem nach Norden. Die Z-Achse wird _blau_ visualisiert. Das lokale KS kann vom globalen KS abweichen.
+Das Koordinatensystem (KS) ist farblich hervorgehoben. Die _rote_ Achse entspricht der X-Achse und zeig beim globalen Koordinatensystem nach Osten. Die _grüne_ Achse stellt die Y-Achse dar und zeigt im globalen Koordinatensystem nach Norden. Die Z-Achse wird _blau_ visualisiert. Das lokale KS kann vom globalen KS abweichen.
 
 #### Gitternetz
 
@@ -424,7 +440,7 @@ Das Gitternetz ist standardmäßig in 1 m Schritten dargestellt und hat alle 10 
 [[Snap]]
 #### Snap
 
-Ist der Snap-Modus aktiv können mit der Maus an beliebige Punkte gefangen werden. Der Shortcut zum Ein- und Ausschalten ist *F3*. Andererseits kann dies auch über das Magnetsymbol in der Toolbar unterhalb der Szene erfolgen.
+Ist der Snap-Modus aktiv, können mit der Maus beliebige Punkte gefangen werden. Der Shortcut zum Ein- und Ausschalten ist *F3*. Andererseits kann dies auch über das Magnetsymbol in der Toolbar unterhalb der Szene erfolgen.
 
 #### Messwerkzeug
 
@@ -432,14 +448,16 @@ Ist der Snap-Modus aktiv können mit der Maus an beliebige Punkte gefangen werde
 .Button für die Längenmessung
 image::symbolMeasure.png[align="center"]
 
-Mit dem <<ButtonMeasureLength,Button>> wird die Längenmessung aktiviert. Nach Aktivierung erscheint im Ursprung des lokalen Koordinatensystems eine gelbe Kugel. Zudem erscheint ein Dialog für die Messung. Durch abklicken von beliebigen Punkte wird eine Linie erzeugt, deren Länge im Dialog dargestellt wird. Im Messdialog werden die Längen entlang der globalen Achsen sowie die direkte Länge zwischen den zwei Punkten dargestellt.
+Mit dem <<ButtonMeasureLength,Button>> wird die Längenmessung aktiviert. Nach Aktivierung erscheint im Ursprung des lokalen Koordinatensystems eine gelbe Kugel. Zudem erscheint ein Dialog für die Messung. Durch Abklicken von beliebigen Punkte wird eine Linie erzeugt, deren Länge im Dialog angegeben wird. Im Messdialog werden die Längen entlang der globalen Achsen sowie die direkte Länge zwischen den zwei Punkten dargestellt (globales KS).
+
+// ToDo Stephan auf lokales KS umbauen 
 
 [[ToggleLocalCoordSys]]
 #### Positionierung des lokalen Koordinatensystems
 
 Nach Selektion von Objekten ist der Ursprung des Koordinatensystems immer im Flächenschwerpunkt. Zum Verschieben von Objekten oder bei anderen Aktionen ist das nicht immer sinnvoll. Daher kann das lokale Koordinatensystem versetzt werden. Hierfür dient der <<ButtonToggleModeLocalCoordinateSystems,Button>> oder der Shortcut *F4*.
 
-Nach drücken des Buttons oder des Shortcuts muss einfach das Koordinatensystem durch einen einfachen Linksklick neu positioniert werden.
+Nach Drücken des Buttons oder des Shortcuts muss das Koordinatensystem durch einen einfachen Linksklick neu positioniert werden.
 
 [[ButtonToggleModeLocalCoordinateSystems]]
 .Button für das Neusetzen des lokalen Koordinatensystems
@@ -449,22 +467,22 @@ image::symbolSetLocalCoord.png[align="center"]
 
 ## Erstellen eines Gebäudes
 
-Das Gebäude ist in Realität ein Mehrfamilienhaus. Es wird auf drei Raumzonen vereinfacht. Dabei bildet jedes Geschoss ein Raum ab. Daher werden das EG und das OG gleichartig gestaltet. Das Dachgeschoss ist ein Spitzdach ohne Kniestock. Zuerst wird das Erdgeschoss erstellt.
+Das Gebäude ist ein Mehrfamilienhaus. Es wird auf drei Raumzonen vereinfacht. Dabei bildet jedes Geschoss ein Raum ab. Daher werden das EG und das OG gleichartig gestaltet. Das Dachgeschoss ist ein Spitzdach ohne Kniestock. Zuerst wird das Erdgeschoss erstellt.
 
 [[GroundFloor]]
 ### Erstellen des Erdgeschosses
 
 // Eingabeparameter RaumEG Länge=21 Breite=9 Höhe=2.7
 
-Um den Raum zu erstellen wird der <<ToolbarLeftSide,Geometriemodus>> aktiv geschalten. Danach wird der Plus-Button im <<ToolWidget,Tool-Widget>> aktiviert. Anschließend wird der Button _Zone_ gedrückt. Jetzt ändert das Tool-Widget die Eigenschaften zur Eingabe der ersten Fläche. Von dieser Fläche wird der Raum anschließend extrudiert. In den meisten Fällen wird die Bodenfläche dazu verwendet. Der Raum soll eine Länge von 21 m und eine Breite von 9 m aufweisen. In der Szene ist jetzt an der Maus ein lokales Koordinatensystem angehängt. 
+Um den Raum zu erstellen wird der <<ToolbarLeftSide,Geometriemodus>> aktiv geschalten. Danach wird der Plus-Button im <<ToolWidget,Tool-Widget>> aktiviert. Anschließend wird der Button _Zone_ gedrückt. Jetzt ändert das Tool-Widget die Eigenschaften zur Eingabe der ersten Fläche. Von dieser Fläche wird der Raum anschließend extrudiert. In den meisten Fällen wird die Bodenfläche dazu verwendet. Der Raum soll eine Länge von 21 m und eine Breite von 9 m aufweisen. Dabei zeigen die Giebelflächen nach Norden und Süden. In der Szene ist jetzt an der Maus ein lokales Koordinatensystem angehängt. 
 
-Der <<firstPointRoom,erste Punkt>> wird mit der linken Maustaste auf den Schnittpunk der X und Y Achse gesetzt. Diese Schnittpunkt stellt den Punkt (0|0|0) dar. Nachdem der Punkt abgesetzt wurde, erfolgen zwei Aktionen. Ersten wird der Punkt in die Punktliste rechts mit den Koordinaten eingetragen. Weiterhin erschein eine blau Linie zum letzten abgesetzten Punkt zur Maus. Die Punkte in der Punktliste können über die Buttons _delete last_ und _delete selected_ gelöscht werden.
+Der <<firstPointRoom,erste Punkt>> wird mit der linken Maustaste auf den Schnittpunk der X und Y Achse gesetzt. Diese Schnittpunkt stellt den Punkt (0|0|0) dar. Nachdem der Punkt abgesetzt wurde, erfolgen zwei Aktionen. Ersten wird der Punkt in die Punktliste rechts mit den Koordinaten eingetragen. Weiterhin erscheint eine blau Linie vom letzten abgesetzten Punkt zur Maus. Die Punkte in der Punktliste können über die Buttons _delete last_ und _delete selected_ gelöscht werden.
 
 [[firstPointRoom]]
 .Erstellen einer Grundfläche für einen Raum
 image::p04.png[align="center"]
 
-Eine zweite Möglichkeit Punkte zu setzen biete die Eingabe von Koordinaten. Dies kann durch zwei Aktionen geschehen. Ersten können die relativen Abstände bezogen auf das lokale Koordinatensystem für den nächsten Punkt eingegeben werden. Werden die Abstände von Y und Z nicht eingegeben werden die mit null angenommen.
+Eine zweite Möglichkeit Punkte zu setzen, biete die Eingabe von Koordinaten. Dies kann durch zwei Aktionen geschehen. Ersten können die relativen Abstände bezogen auf das lokale Koordinatensystem für den nächsten Punkt eingegeben werden. Werden die Abstände von Y und Z nicht eingegeben, werden diese mit null angenommen.
 
 *Beispiele:*
     
@@ -490,13 +508,13 @@ Eine zweite Möglichkeit Punkte zu setzen biete die Eingabe von Koordinaten. Die
 
 Alle weiteren Punkte werden beliebig über Mausklick oder Punkteingabe abgesetzt, so dass ein Rechteck mit den Punkten P0 (0|0|0), P1 (9|0|0), P2 (9|21|0), P3 (0|21|0) entsteht. 
 
-Sobald mehr als drei Punkte, die nicht kolinear sind, abgesetzt sind, ergibt sich eine ausgefüllte <<threePointsRoom,rote Fläche>>.
+Sobald mehr als drei Punkte, die nicht kolinear sind, abgesetzt sind, ergibt sich eine ausgefüllte <<threePointsRoom,rote Fläche>> mit grüner Umrandung. Diese Darstellung visualiert, dass die Fläche valide ist.
 
 [[threePointsRoom]]
 .Grundfläche (rot) mit drei Punkten
 image::p05.png[align="center"]
 
-<<twistedPolygon,Verwundene Polygone>> sind nicht erlaubt und werden mit einer roten Umrandungslinie dargestellt. Weiterhin wird die Flächen dann nicht mehr rot ausgefüllt.
+<<twistedPolygon,Verwundene Polygone>> sind nicht erlaubt und werden mit einer roten Umrandungslinie dargestellt. Weiterhin wird die Fläche dann nicht mehr rot ausgefüllt.
 
 [[twistedPolygon]]
 .Invalides Polygon (Verwindung)
@@ -522,14 +540,14 @@ Im nächsten Schritt wird die Raumerstellung mit dem Button _Create zone_ abgesc
 .Nach Abschluss der Raumerstellung
 image::p09.png[align="center"]
 
-Im weiteren Verlauf werden nun die Fenster implementiert. Dabei sind folgende Fensterabmessung zu beachten:
+Im weiteren Verlauf werden nun die Fenster implementiert. Dabei sind folgende Fensterabmessungen zu beachten:
 
 * Fenster 1 (Höhe 1.4 m, Breite 1.5) - Abstand zur Außenkante 2.1 m - Brüstungshöhe 0.7 m
 * Fenster 2 (Höhe 2.1 m, Breite 1.9) - Abstand zur Außenkante 2.1 m - Brüstungshöhe 0.01 m
 * Fenster 3 (Höhe 1.4 m, Breite 0.7) - Abstand zur Außenkante 5.0 m - Brüstungshöhe 0.7 m
 * Fenster 4 (Höhe 1.4 m, Breite 1.2) - Abstand zum Fenster 3 bzw 4 0.7 m - Brüstungshöhe 0.7 m
 
-Bei der Erstellung von Fenstern gibt es zwei grundsätzliche Methoden zum einen über den Fensterflächenanteil zum anderen über genaue Abmaße und der Fensteranzahl. Bei der Fensterflächenmethode können problemlos mehrere Hüllflächen ausgewählt werden, die mit Fenster modelliert werden sollen. Bei der anderen Methode ist das auch möglich aber meist nur bedingt sinnvoll.
+Bei der Erstellung von Fenstern gibt es zwei grundsätzliche Methoden. Zum Einen über den Fensterflächenanteil, zum Anderen über genaue Abmaße und Fensteranzahl. Bei der Fensterflächenmethode können problemlos mehrere Hüllflächen ausgewählt werden, die mit Fenstern modelliert werden sollen. Bei der anderen Methode ist das auch möglich, aber meist nur bedingt sinnvoll.
 
 Zuerst werden Fenster in der Giebelwand eingebaut. Dazu wird die <<GableWall,Giebelfläche>> selektiert.
 
@@ -546,6 +564,8 @@ image::p12.png[align="center"]
 Es stehen vier priosierte Eingaben (Breite, Höhe, Brüstungshöhe und Abstand) zur Verfügung. Im Modus Fensterflächenanteil _Percentage distribution_ wird versucht diese Vorgaben zu erfüllen. Das Modell berechnet anhand des eingegebenen Fensterflächenanteils die Maße aber selbst. Im Modus _Geometric placement_ wird die Anzahl der Fenster vorgegeben. Die Maßen der priorisierten Eingaben werden dabei genau umgesetzt. Eine Anpassungsrechnung findet nicht statt. Zuerst werden die Fenstermaße eingegeben. Der Offset zur Wandkante beträgt 2.1 m. Die Fensteranzahl wird mit 2 angegeben.
 
 Nach Eingabe der Parameter wird die Aktion mit dem Button _Create_ bestätigt. Anschließend werden der <<GableWallWithTwoNewWindows,Wand zwei Fenster>> hinzugefügt. Diese sind auch im <<NavigationWindow,Navigationsfenster>> dargestellt.
+
+
 
 Da die Positionen und Größen teils nicht mit den Vorgaben übereinstimmen, werden diese im <<GeometricModeEdit,Editmodus>> nun verändert.
 
@@ -639,7 +659,7 @@ image::p20.png[align="center"]
 [[Attic]]
 ### Erstellen des Dachgeschosses
 
-Das Dachgeschoss wird wieder über das Hinzufügen hergestellt. Dazu wird der Button _Roof_ verwendet. Dazu werden bei der <<RoofPolygon,Grundfläche>> mindestens 3 Punkte vom Obergeschoss abgeklickt. Danach entsteht die grüne Linie. Das Grundflächenpolygon wird bestätigt. Das <<ToolWidget,Tool-Widget>> ändert die Parametrierung zum Dachbau.
+Das Dachgeschoss wird wieder über das Hinzufügen hergestellt. Dazu wird der Button _Roof_ verwendet. Es werden bei der <<RoofPolygon,Grundfläche>> mindestens 3 Punkte vom Obergeschoss abgeklickt. Danach entsteht die grüne Linie. Das Grundflächenpolygon wird bestätigt. Das <<ToolWidget,Tool-Widget>> ändert die Parametrierung zum Dachbau.
 
 [[RoofPolygon]]
 .Erstellen des Grundflächenpolygons für das Dach
@@ -663,40 +683,40 @@ Das Gebäude benötigt neben der Geometrie weitere Eigenschaften. Darunter zähl
 * Randbedingungen
 * Nutzungsprofile
 
-Zuerst werden die <<ProjectComponents,Bauteile>> angelegt. Dabei sollten die Farben der Komponenten möglichst unterschiedlich sein. Damit wird später eine besser Prüfbarkeit gewährleistet. 
+Zuerst werden die <<ProjectComponents,Bauteile>> angelegt. Dabei sollten die Farben der Komponenten möglichst unterschiedlich sein. Damit wird später eine bessere Prüfbarkeit gewährleistet. 
 
 [[ProjectComponents]]
 #### Bauteile
 
-Die <<OutsideWall,Wände>> sind als Mauerwerk ausgeführt. Die <<Ceiling,Decken>> werden mit Dielung und Sandschüttung als Kappendecke ausgeführt. Das <<Roof,Dach>> ist ein Kaltdach.
+Die <<OutsideWall,Wände>> sind als Mauerwerk ausgeführt. Die <<Ceiling,Decken>> bestehen aus Dielung und Sandschüttung. Das <<Roof,Dach>> ist ein Kaltdach.
 
 [[OutsideWall]]
 .Konstruktionsaufbau Außenwand von innen nach außen
-[width="100%",cols="<,^,^,^" options="header"]
+[width="100%",cols="<,^,^,^,^,^" options="header"]
 |====================
-| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
-| Innenputz | 1 | 0.7 | 0.014
-| Vollziegel | 30 | 0.79 | 0.380
-| Außenputz | 1 | 0.7 | 0.014
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Dichte [kg/m3] | spez. Wärmekapazität [J/kgK] | Widerstand [m2K/W]
+| Innenputz | 1 | 0.7 | 800 | 840 | 0.014
+| Vollziegel | 30 | 0.79 | 1300 | 840 |0.380
+| Außenputz | 1 | 0.7 | 800 | 840 | 0.014
 |====================
 
 [[Ceiling]]
 .Konstruktionsaufbau Decke von innen nach außen
-[width="100%",cols="<,^,^,^" options="header"]
+[width="100%",cols="<,^,^,^,^,^" options="header"]
 |====================
-| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
-| Dielung | 2.5 | 0.21 | 0.119
-| Sandschüttung | 6 | 0.58 | 0.103
-| Kappendecke aus Beton | 12 | 2.04 | 0.059
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Dichte [kg/m3] | spez. Wärmekapazität [J/kgK] | Widerstand [m2K/W]
+| Dielung | 2.5 | 0.21 | 500 | 1500 | 0.119
+| Sandschüttung | 6 | 0.58 | 1600 | 840 |  0.103
+| Kappendecke aus Beton | 12 | 2.04 | 2000 | 840 | 0.059
 |====================
 
 [[Roof]]
 .Konstruktionsaufbau Dach von innen nach außen
-[width="100%",cols="<,^,^,^" options="header"]
+[width="100%",cols="<,^,^,^,^,^" options="header"]
 |====================
-| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Widerstand [m2K/W]
-| Kalkputz | 1 | 0.7 | 0.014
-| Holzwolle-Leichtbauplatten | 2.5 | 0.09 | 0.278
+| Materialname | Schichtdicke [cm] | Wärmeleitfähigkeit [W/mK] | Dichte [kg/m3] | spez. Wärmekapazität [J/kgK] | Widerstand [m2K/W]
+| Kalkputz | 1 | 0.7 |  800 | 840 | 0.014
+| Holzwolle-Leichtbauplatten | 2.5 | 0.09 | 50 | 840 | 0.278
 |====================
 
 Die Konstruktion sowie die benötigten Materialien können mit den oben dargestellten Aufbauten modelliert werden. Zur Hilfe können die Abschnitte <<Construction, Konstruktion>> und <<Material,Material>> genutzt werden.
@@ -727,7 +747,7 @@ Es werden drei Randbedingungen <<OutsideBC,Außenrandbedingung>>, <<InsideBC,Inn
 | Temperatur des Kellerraumes [C] | 8
 |====================
 
-Die Außenwand bekommt die Prüffarbe gelb in der Bauteilkomponente. Das Dach wird mit der Prüffarbe rot definiert und die Geschossdecke (Innenbezug) wird die Prüffarbe grün zugewiesen. Für die Geschossdecke mit Bezug zur Kellerdecke wird die Prüffarbe braun definiert. 
+Die Außenwand bekommt die Prüffarbe _gelb_ in der Bauteilkomponente. Das Dach wird mit der Prüffarbe _rot_ definiert und die Geschossdecke (Innenbezug) wird die Prüffarbe _grün_ zugewiesen. Für die Geschossdecke mit Bezug zur Kellerdecke wird die Prüffarbe _braun_ definiert. 
 
 Für die Verknüpfung der Geschossdecken werden eine Bodenfläche und eine Deckenfläche von zwei Räumen angewählt. Anschließend wird der Button 'Connect surfaces with component...' genutzt. Das wird zwischen Erd- und Obergeschoss sowie zwischen Obergeschoss und Dachgeschoss durchgeführt.
 
@@ -749,9 +769,9 @@ image::p30.png[align="center"]
 [[ProjectZoneTemplates]]
 #### Nutzungsprofile
 
-Die Nutzung der Räume 'RaumEG' und 'RaumOG' wird als Wohnnutzung definiert. Dazu wird der Ansatz der DIN V 18599 gewählt. Diese definiert für Wohngebäude eine Raumheizsolltemperatur von 20 °C und eine Wärmelast durch Personen, Geräte und Licht von 90 Wh/m^2^d. Der Luftwechsel wird aufgrund der Baustandard mit 0.8 1/h angesetzt. Im Dachraum wird nur ein Luftwechsel von 2 1/h definiert.
+Die Nutzung der Räume 'RaumEG' und 'RaumOG' wird als Wohnnutzung definiert. Dazu wird der Ansatz der DIN V 18599 gewählt. Diese definiert für Wohngebäude eine Raumheizsolltemperatur von 20 °C und eine Wärmelast durch Personen, Geräte und Licht von 90 Wh/m^2^d. Der Luftwechsel wird aufgrund des Baustandards mit 0.8 1/h angesetzt. Im Dachraum wird ein Luftwechsel von 2 1/h definiert.
 
-Für die Raumluftsolltemperatur wird das Sub-Template Thermostat benötigt. Dort wird eine konstanter Sollwert von 20 °C (Zeitplan) für Heizen definiert. Die Steuerung erfolgt nach der Raumlufttemperatur. Der Kühlsollwert wird nicht gesetzt. Die Abweichung vom Sollwert darf 0.1  K nicht übersteigen. Damit die Heizung funktioniert muss noch ein 'Ideal Heating/Cooling'-System definiert werden. Dabei wird als maximale Heizleistung 300 W/m^2^ definiert.
+Für die Raumluftsolltemperatur wird das Sub-Template Thermostat benötigt. Darin wird eine konstanter Sollwert von 20 °C (Zeitplan) für Heizen definiert. Die Steuerung erfolgt nach der Raumlufttemperatur. Der Kühlsollwert wird nicht gesetzt. Die Abweichung vom Sollwert darf 0.1  K nicht übersteigen. Damit die Heizung funktioniert muss noch ein Heizungssystem ('Ideal Heating/Cooling'-System) definiert werden. Dabei wird als maximale Heizleistung 300 W/m^2^ definiert.
 
 Die inneren Lasten werden zusammengefasst und in 'Electric Equipment' definiert. Dabei wird die Methode auf Flächenbezug gesetzt. Die Flächenlast beträgt 3.75 W/m^2^. Der benötigte Zeitplan wird konstant mit dem Wert 1 beschrieben.
 
