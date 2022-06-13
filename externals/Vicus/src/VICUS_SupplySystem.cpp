@@ -8,6 +8,29 @@
 
 namespace VICUS {
 
+AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement * other) const
+{
+	const SupplySystem * otherSupSys = dynamic_cast<const SupplySystem*>(other);
+	if (otherSupSys == nullptr)
+		return Different;
+
+	// check parameters
+
+	if (m_supplyType != otherSupSys->m_supplyType ||
+			m_para != otherSupSys->m_para ||
+			m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
+			m_supplyFMUId != otherSupSys->m_supplyFMUId)
+		return Different;
+
+	// check meta data
+
+	if (m_displayName != otherSupSys->m_displayName)
+		return OnlyMetaDataDiffers;
+
+	return Equal;
+}
+
+
 bool SupplySystem::isValid() const
 {
 	FUNCID(SupplySystem::isValid);
@@ -67,28 +90,6 @@ bool SupplySystem::isValid() const
 	}
 }
 
-
-AbstractDBElement::ComparisonResult SupplySystem::equal(const AbstractDBElement * other) const
-{
-	const SupplySystem * otherSupSys = dynamic_cast<const SupplySystem*>(other);
-	if (otherSupSys == nullptr)
-		return Different;
-
-	// check parameters
-
-	if (m_supplyType != otherSupSys->m_supplyType ||
-			m_para != otherSupSys->m_para ||
-			m_supplyFMUPath != otherSupSys->m_supplyFMUPath ||
-			m_supplyFMUId != otherSupSys->m_supplyFMUId)
-		return Different;
-
-	// check meta data
-
-	if (m_displayName != otherSupSys->m_displayName)
-		return OnlyMetaDataDiffers;
-
-	return Equal;
-}
 
 
 } // namespace VICUS
