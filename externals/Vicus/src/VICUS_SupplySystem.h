@@ -23,8 +23,8 @@
 	GNU General Public License for more details.
 */
 
-#ifndef VICUS_SupplySystem_H
-#define VICUS_SupplySystem_H
+#ifndef VICUS_SupplySystemH
+#define VICUS_SupplySystemH
 
 #include <QString>
 #include <QCoreApplication>
@@ -50,6 +50,11 @@ class SupplySystem : public AbstractDBElement {
 	Q_DECLARE_TR_FUNCTIONS(SupplySystem)
 public:
 
+	// *** PUBLIC MEMBER FUNCTIONS ***
+
+	VICUS_READWRITE_OVERRIDE
+	VICUS_COMPARE_WITH_ID
+
 	/*! Supplier supported by the generic network model. */
 	enum supplyType_t {
 		ST_StandAlone,			// Keyword: StandAlone					'Stand-alone mode with given mass flux and suppply temperature'
@@ -74,9 +79,6 @@ public:
 		NUM_SP
 	};
 
-	// *** PUBLIC MEMBER FUNCTIONS ***
-	VICUS_READWRITE_OVERRIDE
-	VICUS_COMPARE_WITH_ID
 
 	/*! Checks if the network definition is valid. */
 	bool isValid() const;
@@ -86,9 +88,9 @@ public:
 
 	// *** PUBLIC MEMBER VARIABLES ***
 
-	//:inherited	unsigned int		m_id = INVALID_ID;			// XML:A:required
-	//:inherited	QString				m_displayName;				// XML:A
-	//:inherited	bool				m_visible = true;			// XML:A
+	//:inherited	unsigned int					m_id = INVALID_ID;		// XML:A:required
+	//:inherited	IBK::MultiLanguageString		m_displayName;			// XML:A
+	//:inherited	QColor							m_color;				// XML:A
 
 	/*! Network supply type. */
 	supplyType_t			m_supplyType = NUM_ST;				// XML:A:required
@@ -105,4 +107,4 @@ public:
 } // Namespace VICUS
 
 
-#endif // VICUS_SupplySystem_H
+#endif // VICUS_SupplySystemH

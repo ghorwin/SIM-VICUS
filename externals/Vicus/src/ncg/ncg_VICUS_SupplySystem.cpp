@@ -54,6 +54,8 @@ void SupplySystem::readXML(const TiXmlElement * element) {
 				m_id = NANDRAD::readPODAttributeValue<unsigned int>(element, attrib);
 			else if (attribName == "displayName")
 				m_displayName.setEncodedString(attrib->ValueStr());
+			else if (attribName == "color")
+				m_color.setNamedColor(QString::fromStdString(attrib->ValueStr()));
 			else if (attribName == "supplyType")
 				try {
 					m_supplyType = (supplyType_t)KeywordList::Enumeration("SupplySystem::supplyType_t", attrib->ValueStr());
@@ -110,6 +112,10 @@ TiXmlElement * SupplySystem::writeXML(TiXmlElement * parent) const {
 
 	if (m_id != VICUS::INVALID_ID)
 		e->SetAttribute("id", IBK::val2string<unsigned int>(m_id));
+	if (!m_displayName.empty())
+		e->SetAttribute("displayName", m_displayName.encodedString());
+	if (m_color.isValid())
+		e->SetAttribute("color", m_color.name().toStdString());
 	if (m_supplyType != NUM_ST)
 		e->SetAttribute("supplyType", KeywordList::Keyword("SupplySystem::supplyType_t",  m_supplyType));
 
