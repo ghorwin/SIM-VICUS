@@ -78,6 +78,7 @@ SVDatabase::SVDatabase() :
 	m_networkComponents(1105000),
 	m_networkControllers(1107500),
 	m_subNetworks(1110000),
+	m_supplySystems(1085000),
 //	m_EPDElements(USER_ID_SPACE_START),
 	m_schedules(1060000),
 	m_internalLoads(1065000),

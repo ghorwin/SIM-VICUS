@@ -15,7 +15,7 @@
 #include "SVUndoModifyNetwork.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
-#include "SVSupplySystemSelectionDialog.h"
+#include "SVDBSupplySystemEditWidget.h"
 #include "SVZoneSelectionDialog.h"
 
 SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *parent) :
@@ -216,7 +216,7 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->labelSelectedCIWithActiveLayer->setText(tr("None"));
 		m_ui->pushButtonAssignSurfaceHeating->setEnabled(false);
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(false);
-		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(false);
+		m_ui->pushButtonAssignSupplySystem->setEnabled(false);
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(false);
 	}
 	else {
@@ -226,11 +226,11 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		// other buttons are only active if a configured surface heating component instances is selected
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(!selectedSurfaceHeatingCI.empty());
 
-		m_ui->pushButtonAssignSurfaceHeatingNetwork->setEnabled(!selectedSurfaceHeatingCI.empty());
+		m_ui->pushButtonAssignSupplySystem->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
 
-	m_ui->pushButtonEditSurfaceHeatingNetworks->setEnabled(true);
+	m_ui->pushButtonAssignSupplySystem->setEnabled(true);
 }
 
 
@@ -416,24 +416,16 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 }
 
 
-void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwork_clicked()
+void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSupplySystem_clicked()
 {
-	// popup dialog with network selection
+	// popup supply system DB dialog and if user selects one, assign it to all selected component instances
+	unsigned int selectedID = SVMainWindow::instance().dbSupplySystemEditDialog()->select(VICUS::INVALID_ID);
+	if (selectedID == VICUS::INVALID_ID)
+		return;
 
-	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVSupplySystemSelectionDialog dlg(this);
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
 
-	// start dialog
-	int res = dlg.exec();
-	if (res != QDialog::Accepted)
-		return; // user canceled the dialog
-
-	unsigned int supplyId = dlg.SupplySystemId();
-
-	// assign supply id to selected surface heatings
-
-	VICUS::Project prj = project();
-	std::vector<VICUS::ComponentInstance> &cis = prj.m_componentInstances;
+	// process all selected components
 	for (VICUS::ComponentInstance & ci : cis) {
 		// check if current ci is in list of selected component instances
 		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
@@ -450,26 +442,18 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingNetwor
 		// check if no active layer is present
 		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
 			continue;
+		// check if no surface heating is assigned
+		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
+			continue;
 
-		ci.m_idSupplySystem = supplyId;
-		ci.m_supplySystem = dynamic_cast<VICUS::SupplySystem*> (prj.objectById(supplyId));
+		// if component instance does not have an active layer assigned, skip
+		VICUS::SupplySystem * supplySys = SVSettings::instance().m_db.m_supplySystems[selectedID];
+		if (supplySys == nullptr)
+			continue;
+
+		ci.m_idSupplySystem = selectedID;
+		ci.m_supplySystem = supplySys;
 	}
-	// perform an undo action in order to redo/revert current operation
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Changed surface heatings control zone"), cis);
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
 	undo->push();
-}
-
-
-
-void SVPropBuildingSurfaceHeatingWidget::on_pushButtonEditSurfaceHeatingNetworks_clicked()
-{
-	// popup dialog with network selection
-
-	// create dialog - only locally, this ensures that in constructor the zone is is updated
-	SVSupplySystemSelectionDialog dlg(this);
-
-	// start dialog
-	int res = dlg.exec();
-	if (res != QDialog::Accepted)
-		return; // user canceled the dialog
 }

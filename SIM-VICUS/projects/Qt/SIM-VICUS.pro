@@ -91,7 +91,9 @@ SOURCES += \
 	../../src/SVDBNetworkControllerTableModel.cpp \
 	../../src/SVDBSubNetworkEditWidget.cpp \
 	../../src/SVDBSubNetworkTableModel.cpp \
-	../../src/SVSupplySystemSelectionDialog.cpp \
+	../../src/SVDBSupplySystemEditWidget.cpp \
+	../../src/SVDBSupplySystemTableModel.cpp \
+	../../src/SVPropSupplySystemsWidget.cpp \
 	../../src/SVMeasurementWidget.cpp \
 	../../src/SVNotesDialog.cpp \
 	../../src/SVOutputGridEditDialog.cpp \
@@ -137,7 +139,6 @@ SOURCES += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.cpp \
 	../../src/actions/SVUndoModifySiteData.cpp \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.cpp \
-	../../src/actions/SVUndoModifySupplySystem.cpp \
 	../../src/actions/SVUndoModifySurfaceGeometry.cpp \
 	../../src/actions/SVUndoTreeNodeState.cpp \
 	../../src/core3D/Vic3DCoordinateSystemObject.cpp \
@@ -271,7 +272,9 @@ HEADERS  += \
 	../../src/SVDBNetworkControllerTableModel.h \
 	../../src/SVDBSubNetworkEditWidget.h \
 	../../src/SVDBSubNetworkTableModel.h \
-	../../src/SVSupplySystemSelectionDialog.h \
+	../../src/SVDBSupplySystemEditWidget.h \
+	../../src/SVDBSupplySystemTableModel.h \
+	../../src/SVPropSupplySystemsWidget.h \
 	../../src/SVMeasurementWidget.h \
 	../../src/SVNotesDialog.h \
 	../../src/SVOutputGridEditDialog.h \
@@ -319,7 +322,6 @@ HEADERS  += \
 	../../src/actions/SVUndoModifyRoomZoneTemplateAssociation.h \
 	../../src/actions/SVUndoModifySiteData.h \
 	../../src/actions/SVUndoModifySubSurfaceComponentInstances.h \
-	../../src/actions/SVUndoModifySupplySystem.h \
 	../../src/actions/SVUndoModifySurfaceGeometry.h \
 	../../src/actions/SVUndoTreeNodeState.h \
 	../../src/core3D/Vic3DCamera.h \
@@ -458,6 +460,7 @@ FORMS    += \
 	../../src/SVDBDuplicatesDialog.ui \
 	../../src/SVDBNetworkControllerEditWidget.ui \
 	../../src/SVDBSubNetworkEditWidget.ui \
+	../../src/SVDBSupplySystemEditWidget.ui \
 	../../src/SVDatabaseEditDialog.ui \
 	../../src/SVDBBoundaryConditionEditWidget.ui \
 	../../src/SVDBComponentEditWidget.ui \
@@ -516,6 +519,7 @@ FORMS    += \
 	../../src/SVPropModeSelectionWidget.ui \
 	../../src/SVPropNetworkEditWidget.ui \
 	../../src/SVPropSiteWidget.ui \
+	../../src/SVPropSupplySystemsWidget.ui \
 	../../src/SVPropVertexListWidget.ui \
 	../../src/SVScheduleHolidayWidget.ui \
 	../../src/SVSimulationLocationOptions.ui \
@@ -527,7 +531,6 @@ FORMS    += \
 	../../src/SVSimulationShadingOptions.ui \
 	../../src/SVSimulationStartNandrad.ui \
 	../../src/SVSmartSelectDialog.ui \
-	../../src/SVSupplySystemSelectionDialog.ui \
 	../../src/SVWelcomeScreen.ui \
 	../../src/SVZoneSelectionDialog.ui
 

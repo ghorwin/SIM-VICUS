@@ -134,6 +134,8 @@ public:
 	SVDatabaseEditDialog * dbWindowGlazingSystemEditDialog();
 	/*! Returns the pipe edit dialog. */
 	SVDatabaseEditDialog *dbPipeEditDialog();
+	/*! Returns the supply system condition edit dialog. */
+	SVDatabaseEditDialog * dbSupplySystemEditDialog();
 	/*! Returns the network component edit dialog. */
 	SVDatabaseEditDialog *dbNetworkComponentEditDialog();
 	/*! Returns the schedule edit dialog. */
@@ -483,6 +485,7 @@ private:
 	SVDatabaseEditDialog				*m_dbFluidEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkControllerEditDialog				= nullptr;
 	SVDatabaseEditDialog				*m_dbSubNetworkEditDialog						= nullptr;
+	SVDatabaseEditDialog				*m_dbSupplySystemEditDialog						= nullptr;
 	SVDatabaseEditDialog				*m_dbNetworkComponentEditDialog					= nullptr;
 	SVDatabaseEditDialog				*m_dbScheduleEditDialog							= nullptr;
 	SVDatabaseEditDialog				*m_dbInternalLoadsPersonEditDialog				= nullptr;

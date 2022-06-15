@@ -94,6 +94,9 @@
 #include "SVDBSubNetworkEditWidget.h"
 #include "SVDBSubNetworkTableModel.h"
 
+#include "SVDBSupplySystemEditWidget.h"
+#include "SVDBSupplySystemTableModel.h"
+
 #include "SVViewStateHandler.h"
 #include "SVGeometryView.h"
 
@@ -633,6 +636,17 @@ SVDatabaseEditDialog *SVDatabaseEditDialog::createSurfaceHeatingSystemEditDialog
 										  tr("Surface Heating/Cooling System Database"),
 														  tr("Surface Heating/Cooling System properties"), true
 										  );
+	dlg->resize(1400,800);
+	return dlg;
+}
+
+
+SVDatabaseEditDialog * SVDatabaseEditDialog::createSupplySystemsEditDialog(QWidget * parent) {
+	SVDatabaseEditDialog * dlg = new SVDatabaseEditDialog(parent,
+		new SVDBSupplySystemTableModel(parent, SVSettings::instance().m_db),
+		new SVDBSupplySystemEditWidget(parent),
+		tr("Supply System Database"), tr("Supply system properties"), true
+	);
 	dlg->resize(1400,800);
 	return dlg;
 }

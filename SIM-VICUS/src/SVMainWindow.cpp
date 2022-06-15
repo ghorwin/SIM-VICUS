@@ -280,6 +280,12 @@ SVDatabaseEditDialog * SVMainWindow::dbPipeEditDialog(){
 	return m_dbPipeEditDialog;
 }
 
+SVDatabaseEditDialog *SVMainWindow::dbSupplySystemEditDialog() {
+	if (m_dbSupplySystemEditDialog == nullptr)
+		m_dbSupplySystemEditDialog = SVDatabaseEditDialog::createSupplySystemsEditDialog(this);
+	return m_dbSupplySystemEditDialog;
+}
+
 SVDatabaseEditDialog *SVMainWindow::dbNetworkComponentEditDialog() {
 	if (m_dbNetworkComponentEditDialog == nullptr)
 		m_dbNetworkComponentEditDialog = SVDatabaseEditDialog::createNetworkComponentEditDialog(this);

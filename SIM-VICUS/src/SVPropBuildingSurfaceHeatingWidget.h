@@ -36,8 +36,7 @@ private slots:
 	void on_tableWidgetSurfaceHeating_itemSelectionChanged();
 	void on_pushButtonRemoveSelectedSurfaceHeating_clicked();
 	void on_pushButtonAssignSurfaceHeatingControlZone_clicked();
-	void on_pushButtonAssignSurfaceHeatingNetwork_clicked();
-	void on_pushButtonEditSurfaceHeatingNetworks_clicked();
+	void on_pushButtonAssignSupplySystem_clicked();
 
 private:
 	Ui::SVPropBuildingSurfaceHeatingWidget *m_ui;
