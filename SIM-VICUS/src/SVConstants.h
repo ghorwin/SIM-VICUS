@@ -99,7 +99,9 @@ enum BuildingPropertyTypes {
 	/*! Surface heating */
 	BT_SurfaceHeating,
 	/*! Zone property */
-	BT_ZoneProperty
+	BT_ZoneProperty,
+	/*! Supply system */
+	BT_SupplySystem
 };
 
 /*! \file SVConstants.h

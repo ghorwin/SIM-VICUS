@@ -17,7 +17,7 @@ SVPropSupplySystemsWidget::SVPropSupplySystemsWidget(QWidget *parent) :
 	m_ui->verticalLayout->setMargin(0);
 
 	m_ui->tableWidgetSupplySystems->setColumnCount(2);
-	m_ui->tableWidgetSupplySystems->setHorizontalHeaderLabels(QStringList() << QString() << tr("Boundary condition"));
+	m_ui->tableWidgetSupplySystems->setHorizontalHeaderLabels(QStringList() << QString() << tr("Supply systems"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSupplySystems);
 	m_ui->tableWidgetSupplySystems->setSortingEnabled(false);
 	m_ui->tableWidgetSupplySystems->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -45,7 +45,7 @@ void SVPropSupplySystemsWidget::updateUi() {
 		if (ci.m_idSupplySystem == VICUS::INVALID_ID)
 			continue; // no supply system, skip
 		// lookup supply system in DB
-		const VICUS::SupplySystem * supplySystem = SVSettings::instance().m_db.m_supplySystems[ci.m_idSurfaceHeating];
+		const VICUS::SupplySystem * supplySystem = db.m_supplySystems[ci.m_idSupplySystem];
 		// invalid heating ID?
 		if (supplySystem == nullptr)
 			continue; // no heating, skip

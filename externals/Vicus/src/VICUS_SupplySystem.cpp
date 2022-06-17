@@ -74,7 +74,7 @@ bool SupplySystem::isValid() const
 									 FUNC_ID);
 			}
 
-			m_para[P_MaximumMassFluxFMU].checkedValue("P_MaximumMassFluxFMU", "kg/s", "kg/s", 0.0, false,
+			m_para[P_MaximumMassFluxFMU].checkedValue("MaximumMassFluxFMU", "kg/s", "kg/s", 0.0, false,
 												   std::numeric_limits<double>::max(), false,
 												   "Maximum mass flux must be > 0");
 			m_para[P_HeatingPowerFMU].checkedValue("HeatingPowerFMU", "kW", "kW", 0.0, false,
