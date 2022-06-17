@@ -264,15 +264,19 @@ void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int i
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
 
-
 	// invalid type
-	if(index == VICUS::SupplySystem::NUM_ST)
-		return;
+//	if(index == VICUS::SupplySystem::NUM_ST)
+//		return;
 
 	if(index != m_current->m_supplyType) {
 
 		// set supply type
 		m_current->m_supplyType = (VICUS::SupplySystem::supplyType_t) index;
+		// set suitable staged widget
+		m_ui->stackedWidgetSupply->blockSignals(true);
+		// choose page in staggered widget for suitable parametrization
+		m_ui->stackedWidgetSupply->setCurrentIndex(index);
+		m_ui->stackedWidgetSupply->blockSignals(false);
 
 		// update view
 		modelModify();

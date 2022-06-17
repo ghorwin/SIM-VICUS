@@ -504,6 +504,10 @@ void SVMainWindow::on_actionDBSubNetworks_triggered() {
 	dbSubNetworkEditDialog()->edit();
 }
 
+void SVMainWindow::on_actionDBSupplySystems_triggered() {
+	dbSupplySystemEditDialog()->edit();
+}
+
 void SVMainWindow::on_actionDBRemoveDuplicates_triggered() {
 	if (m_dbDuplicatesDialog == nullptr)
 		m_dbDuplicatesDialog = new SVDBDuplicatesDialog(this);
@@ -2115,6 +2119,5 @@ static bool copyRecursively(const QString &srcFilePath,
 	}
 	return true;
 }
-
 
 

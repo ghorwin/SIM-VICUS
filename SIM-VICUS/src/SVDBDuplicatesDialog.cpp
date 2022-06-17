@@ -124,6 +124,7 @@ void SVDBDuplicatesDialog::onCurrentRowChanged(const QModelIndex & current, cons
 		case SVDatabase::DT_NetworkComponents:		dbItem(db.m_networkComponents, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_NetworkControllers:		dbItem(db.m_networkControllers, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_SubNetworks:			dbItem(db.m_subNetworks, leftID, rightID, dbElemLeft, dbElemRight); break;
+		case SVDatabase::DT_SupplySystems:			dbItem(db.m_supplySystems, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_Schedules:				dbItem(db.m_schedules, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_InternalLoads:			dbItem(db.m_internalLoads, leftID, rightID, dbElemLeft, dbElemRight); break;
 		case SVDatabase::DT_ZoneControlThermostat:	dbItem(db.m_zoneControlThermostat, leftID, rightID, dbElemLeft, dbElemRight); break;
@@ -434,6 +435,11 @@ void SVDBDuplicatesDialog::updateUi() {
 					item->setText(tr("SubNetworks"));
 					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subNetworks[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
 					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_subNetworks[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
+					break;
+				case SVDatabase::DT_SupplySystems:
+					item->setText(tr("SupplySystems"));
+					left = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_supplySystems[duplicates.m_idFirst]->m_displayName) ).arg(duplicates.m_idFirst);
+					right = tr("%1 [%2]").arg( QtExt::MultiLangString2QString(db.m_supplySystems[duplicates.m_idSecond]->m_displayName) ).arg(duplicates.m_idSecond);
 					break;
 				case SVDatabase::DT_Schedules:
 					item->setText(tr("Schedules"));

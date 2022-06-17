@@ -3269,6 +3269,8 @@ void Project::generateNetworkProjectData(NANDRAD::Project & p, QStringList &erro
 	// create Databases from embedded Databases
 	Database<SubNetwork> dbSubNetworks = Database<SubNetwork>(1);
 	dbSubNetworks.setData(m_embeddedDB.m_subNetworks);
+	Database<SupplySystem> dbSupplySystems = Database<SupplySystem>(1);
+	dbSupplySystems.setData(m_embeddedDB.m_supplySystems);
 	Database<NetworkComponent> dbNetworkComps = Database<NetworkComponent>(1); // we dont care
 	dbNetworkComps.setData(m_embeddedDB.m_networkComponents);
 	Database<NetworkController> dbNetworkCtrl = Database<NetworkController>(1); // we dont care

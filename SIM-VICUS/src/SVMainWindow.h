@@ -299,6 +299,7 @@ private slots:
 	void on_actionDBFluids_triggered();
 	void on_actionDBControllers_triggered();
 	void on_actionDBSubNetworks_triggered();
+	void on_actionDBSupplySystems_triggered();
 	void on_actionDBRemoveDuplicates_triggered();
 
 
@@ -335,6 +336,7 @@ private slots:
 	void on_actionHelpOnlineManual_triggered();
 	void on_actionHelpKeyboardAndMouseControls_triggered();
 	void on_actionHelpLinuxDesktopIntegration_triggered();
+
 
 
 private:

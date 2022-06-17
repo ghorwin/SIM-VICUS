@@ -52,6 +52,7 @@ public:
 		DT_NetworkComponents,
 		DT_NetworkControllers,
 		DT_SubNetworks,
+		DT_SupplySystems,
 		DT_Schedules,
 		DT_InternalLoads,
 		DT_ZoneControlThermostat,

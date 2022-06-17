@@ -87,7 +87,7 @@ public:
 	std::vector<VICUS::SurfaceHeating>					m_surfaceHeatings;					// XML:E
 
 	/*! Map of all database supply systems. */
-	std::vector<VICUS::SupplySystem>				m_supplySystems;				// XML:E
+	std::vector<VICUS::SupplySystem>					m_supplySystems;				// XML:E
 
 	/*! Map of all database pipes */
 	std::vector<VICUS::NetworkPipe>						m_pipes;							// XML:E

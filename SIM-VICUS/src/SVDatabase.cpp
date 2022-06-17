@@ -157,6 +157,8 @@ void SVDatabase::readDatabases(DatabaseTypes t) {
 		m_networkControllers.readXML(		userDbDir / "db_networkControllers.xml", "NetworkControllers", "NetworkController", false);
 	if (t == NUM_DT || t == DT_SubNetworks)
 		m_subNetworks.readXML(				userDbDir / "db_subNetworks.xml", "SubNetworks", "SubNetwork", false);
+	if (t == NUM_DT || t == DT_SupplySystems)
+		m_supplySystems.readXML(				userDbDir / "db_supplySystems.xml", "SupplySystems", "SupplySystems", false);
 	if (t == NUM_DT || t == DT_Schedules)
 		m_schedules.readXML(				userDbDir / "db_schedules.xml", "Schedules", "Schedule", false);
 	if (t == NUM_DT || t == DT_InternalLoads)
@@ -268,6 +270,7 @@ void SVDatabase::updateEmbeddedDatabase(VICUS::Project & p) {
 	storeVector(p.m_embeddedDB.m_networkComponents, m_networkComponents);
 	storeVector(p.m_embeddedDB.m_networkControllers, m_networkControllers);
 	storeVector(p.m_embeddedDB.m_subNetworks, m_subNetworks);
+	storeVector(p.m_embeddedDB.m_supplySystems, m_supplySystems);
 	storeVector(p.m_embeddedDB.m_schedules, m_schedules);
 	storeVector(p.m_embeddedDB.m_internalLoads, m_internalLoads);
 	storeVector(p.m_embeddedDB.m_zoneControlThermostats, m_zoneControlThermostat);
@@ -614,6 +617,7 @@ void SVDatabase::determineDuplicates(std::vector<std::vector<SVDatabase::Duplica
 	findDublicates(m_networkComponents, duplicatePairs[DT_NetworkComponents]);
 	findDublicates(m_networkControllers, duplicatePairs[DT_NetworkControllers]);
 	findDublicates(m_subNetworks, duplicatePairs[DT_SubNetworks]);
+	findDublicates(m_supplySystems, duplicatePairs[DT_SupplySystems]);
 	findDublicates(m_schedules, duplicatePairs[DT_Schedules]);
 	findDublicates(m_internalLoads, duplicatePairs[DT_InternalLoads]);
 	findDublicates(m_zoneControlThermostat, duplicatePairs[DT_ZoneControlThermostat]);
@@ -824,6 +828,15 @@ void SVDatabase::removeDBElement(SVDatabase::DatabaseTypes dbType, unsigned int 
 			m_subNetworks.m_modified = true;
 		} break;
 
+		case SVDatabase::DT_SupplySystems: {
+			for (const auto & p : m_supplySystems) {
+				VICUS::SupplySystem & c = const_cast<VICUS::SupplySystem &>(p.second); // const-cast is ok here
+				replaceID(elementID, replacementElementID, c.m_id, m_supplySystems);
+			}
+			m_supplySystems.remove(elementID);
+			m_supplySystems.m_modified = true;
+		} break;
+
 
 		case SVDatabase::DT_Schedules:
 			for (const auto & p : m_internalLoads) {
@@ -998,6 +1011,8 @@ void SVDatabase::removeNotReferencedLocalElements(SVDatabase::DatabaseTypes dbTy
 			m_fluids.removeNotReferencedLocalElements(); break;
 		case DT_SubNetworks:
 			m_subNetworks.removeNotReferencedLocalElements(); break;
+		case DT_SupplySystems:
+			m_supplySystems.removeNotReferencedLocalElements(); break;
 		case DT_NetworkControllers:
 			m_networkControllers.removeNotReferencedLocalElements();  break;
 		case DT_NetworkComponents:
@@ -1079,6 +1094,8 @@ void SVDatabase::findLocalChildren(DatabaseTypes dbType, unsigned int id,
 			m_fluids[id]->collectLocalChildren(localChildren); break;
 		case DT_SubNetworks:
 			m_subNetworks[id]->collectLocalChildren(localChildren); break;
+		case DT_SupplySystems:
+			m_supplySystems[id]->collectLocalChildren(localChildren); break;
 		case DT_NetworkControllers:
 			m_networkControllers[id]->collectLocalChildren(localChildren);  break;
 		case DT_NetworkComponents:

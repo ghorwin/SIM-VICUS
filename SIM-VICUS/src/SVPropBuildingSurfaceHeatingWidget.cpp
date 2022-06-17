@@ -26,7 +26,7 @@ SVPropBuildingSurfaceHeatingWidget::SVPropBuildingSurfaceHeatingWidget(QWidget *
 	m_ui->verticalLayout->setMargin(0);
 
 	m_ui->tableWidgetSurfaceHeating->setColumnCount(6);
-	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B") << tr("Network"));
+	m_ui->tableWidgetSurfaceHeating->setHorizontalHeaderLabels(QStringList() << QString() << QString() << tr("Heating") << tr("Control zone") << tr("Surfaces, side A/B") << tr("Supply system"));
 	SVStyle::formatDatabaseTableView(m_ui->tableWidgetSurfaceHeating);
 	m_ui->tableWidgetSurfaceHeating->setSortingEnabled(false);
 	m_ui->tableWidgetSurfaceHeating->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Fixed);
@@ -194,14 +194,18 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 4, item);
 
 		// column 5 - associated supply network
+		// look-up supply system
+		const VICUS::SupplySystem * supplySys = db.m_supplySystems[ci.m_idSupplySystem];
+
 		item = new QTableWidgetItem(surfaceNames);
 		item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-		if (surfHeat == nullptr || ci.m_supplySystem == nullptr) {
+
+		if (surfHeat == nullptr || supplySys == nullptr) {
 			item->setText("---");
 			item->setData(Qt::UserRole, VICUS::INVALID_ID);
 		}
 		else {
-			item->setText(QString::fromStdString(ci.m_supplySystem->m_displayName.string()));
+			item->setText(QtExt::MultiLangString2QString(supplySys->m_displayName));
 			item->setData(Qt::UserRole, ci.m_idSupplySystem);
 		}
 		m_ui->tableWidgetSurfaceHeating->setItem(row, 5, item);
@@ -229,8 +233,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->pushButtonAssignSupplySystem->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
-
-	m_ui->pushButtonAssignSupplySystem->setEnabled(true);
 }
 
 
@@ -454,6 +456,6 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSupplySystem_clicked
 		ci.m_idSupplySystem = selectedID;
 		ci.m_supplySystem = supplySys;
 	}
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned surface heatings"), cis);
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
 	undo->push();
 }
