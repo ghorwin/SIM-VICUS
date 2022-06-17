@@ -54,12 +54,15 @@
 #include "QtExt_Table.h"
 #include "QtExt_TextFrame.h"
 #include "QtExt_PainterSaver.h"
+#include "QtExt_ReportSettingsBase.h"
 
 namespace QtExt {
 
-Report::Report(const QString & fontFamily, int defaultFontSize) :
+Report::Report(ReportSettingsBase* reportSettings, int defaultFontSize) :
 		m_textDocument(new QTextDocument),
-		m_textProperties( fontFamily, defaultFontSize, m_textDocument),
+		m_reportSettings(reportSettings),
+		m_data(nullptr),
+		m_textProperties( reportSettings->m_fontFamily, defaultFontSize, m_textDocument),
 		m_scale(1.0),
 		m_pageCount(0),
 		m_showPageNumbers(false),
@@ -67,42 +70,41 @@ Report::Report(const QString & fontFamily, int defaultFontSize) :
 		m_innerTableFrameWidth(0.7),
 		m_headerFrame( this, m_textDocument),
 		m_footerFrame( this, m_textDocument),
-		m_fontFamily(fontFamily),
+		m_fontFamily(reportSettings->m_fontFamily),
 		m_demopix(":/Demo_quer.png")
 {
+	QTextOption topt = m_textDocument->defaultTextOption();
+	topt.setWrapMode(QTextOption::WordWrap);
+	m_textDocument->setDefaultTextOption(topt);
 }
 
 Report::~Report() {
 	cleanFrameList();
+	delete m_data;
 }
 
 
 void Report::setDocumentFont(QFont newFont){
 
-//	qDebug() << m_textDocument->defaultFont().family();
-//	qDebug() << m_textDocument->defaultFont().pointSizeF();
-
 	m_textDocument->setDefaultFont( newFont );
-#ifdef Q_OS_LINUX
+//#ifdef Q_OS_LINUX
 
-	QString css =
-			"body {"
-			"	font-family: Tahoma, Geneva, sans-serif;"
-			"	font-size: 11pt;"
-			"}"
-			"h1 { font-family:Times; font-weight:bold; font-size: large;}"
-			"h2 {"
-			"	font-size: 12pt;"
-			"	font-weight: bold;"
-			"}";
-#else
-	int fontSizePoints = newFont.pointSize();
-	QString css = QString("body { font-size:%1pt; }").arg(fontSizePoints);
-#endif
+//	QString css =
+//			"body {"
+//			"	font-family: Tahoma, Geneva, sans-serif;"
+//			"	font-size: 11pt;"
+//			"}"
+//			"h1 { font-family:Times; font-weight:bold; font-size: large;}"
+//			"h2 {"
+//			"	font-size: 12pt;"
+//			"	font-weight: bold;"
+//			"}";
+//#else
+//	int fontSizePoints = newFont.pointSize();
+//	QString css = QString("body { font-size:%1pt; }").arg(fontSizePoints);
+//#endif
 //	m_textDocument->setDefaultStyleSheet(css);
 
-//	qDebug() << m_textDocument->defaultFont().family();
-//	qDebug() << m_textDocument->defaultFont().pointSizeF();
 }
 
 
@@ -117,8 +119,26 @@ void Report::setHeaderFooterData(	const QString& registrationMessage,
 
 }
 
+std::set<int> Report::frameKinds() const {
+	std::set<int> res;
+	for(const auto& fr : m_reportFramesRegistered) {
+		res.insert(fr.first);
+	}
+	return res;
+}
+
+std::vector<ReportFrameBase*> Report::frameByKind(int kind) const {
+	std::vector<ReportFrameBase*> res;
+	for(auto it : m_reportFramesRegistered) {
+		if(it.first == kind)
+			res.push_back(it.second);
+	}
+	return res;
+}
+
 
 void Report::print(QPrinter * printer, QFont normalFont) {
+	updateVisibility();
 
 	// remember pointers to function parameters
 	m_textDocument->documentLayout()->setPaintDevice(printer);
@@ -141,7 +161,6 @@ void Report::print(QPrinter * printer, QFont normalFont) {
 	}
 
 	p.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform, true);
-
 	// Do the actual printing
 
 	// get print range from printer
@@ -176,6 +195,7 @@ void Report::print(QPrinter * printer, QFont normalFont) {
 	}
 
 	p.end();
+
 }
 
 void Report::printPage(QPaintDevice * paintDevice, unsigned int page, QFont normalFont) {
@@ -230,6 +250,9 @@ void Report::updateFrames(QPaintDevice* paintDevice) {
 	QRect currentFrame = mainFrame;
 	unsigned int currentPage = 1; // we start on page 1
 
+	// list must be created from this function
+	m_reportFramesInfos.clear();
+
 	// For every frame we follow these steps:
 	// 1. estimate required size (height) of frame
 	// 2. check if frame still fits into remaining space on current page
@@ -238,47 +261,95 @@ void Report::updateFrames(QPaintDevice* paintDevice) {
 
 	// to change the order of frames appearing in the report, change the order
 	// of the enumeration values in ReportFrame
-	for (unsigned int i=0; i<m_reports.size(); ++i) {
+	for (unsigned int i=0; i<m_reportFramesRegistered.size(); ++i) {
 
-		if (m_reports[i]->m_isHidden ){
-			m_frames[i] = QRect(0,0,0,0);
+
+		m_reportFramesInfos.push_back(m_reportFramesRegistered[i]);
+		QtExt::ReportFrameBase* frame = m_reportFramesRegistered[i].second;
+		if (frame->m_isHidden ){
 			continue;
 		}
 
-		m_reports[i]->update(paintDevice, m_effectivePageSize.width());
-		double h = m_reports[i]->wholeFrameRect().height();
 
-		if (currentFrame.height() < h || m_reports[i]->m_onNewPage) {
+		frame->update(paintDevice, m_effectivePageSize.width());
+		double h = frame->wholeFrameRect().height();
+
+		if(frame->m_onNewPage) {
 			++currentPage;
 			currentFrame = mainFrame; // reset frame to full content frame
 		}
-		int y = currentFrame.top();
-		m_frames[i] = QRect(0, y, m_effectivePageSize.width(), h);
-		currentFrame.setTop(y + h);
-		m_pageNumbers[i] = currentPage;
+
+		if (currentFrame.height() < h) {
+			unsigned int subFrameNumber = frame->numberOfSubFrames(paintDevice, currentFrame.height(), mainFrame.height());
+			// frame is not divisible
+			if(subFrameNumber == 1) {
+				if(currentFrame.height() < mainFrame.height()) {
+					++currentPage;
+					currentFrame = mainFrame; // reset frame to full content frame
+				}
+				else {
+					// frame is too high and not divisible - what to do?
+				}
+				setCurrentFrameInfo(m_reportFramesInfos.back(), currentFrame, currentPage);
+			}
+			// frame is divisible
+			else {
+				std::vector<ReportFrameBase*> subFrames = frame->subFrames(paintDevice, currentFrame.height(), mainFrame.height());
+				Q_ASSERT(!subFrames.empty());
+				for(auto subFrame : subFrames) {
+					subFrame->update(paintDevice, m_effectivePageSize.width());
+				}
+
+				m_reportFramesInfos.back().m_frame = subFrames.front();
+				setCurrentFrameInfo(m_reportFramesInfos.back(), currentFrame, currentPage);
+				for(size_t si=1; si<subFrames.size(); ++si) {
+					++currentPage;
+					currentFrame = mainFrame; // reset frame to full content frame
+					m_reportFramesInfos.push_back(FrameInfo());
+					m_reportFramesInfos.back().m_frame = subFrames[si];
+					m_reportFramesInfos.back().m_frameType = m_reportFramesRegistered[i].first;
+					setCurrentFrameInfo(m_reportFramesInfos.back(), currentFrame, currentPage);
+				}
+			}
+		}
+		else {
+			setCurrentFrameInfo(m_reportFramesInfos.back(), currentFrame, currentPage);
+		}
 
 		// notify others
 		emit progress(i+1);
+
 	}
 	m_pageCount = currentPage;
+
 }
 
-void Report::registerFrame( QtExt::ReportFrameBase* newFrame ){
+void Report::registerFrame( QtExt::ReportFrameBase* newFrame, int frameKind ){
+	Q_ASSERT(newFrame != nullptr);
 
 	// allocate memories for a new added frame
-	m_reports.push_back( newFrame );
-	m_pageNumbers.push_back( 0 );
-	m_frames.push_back( QRect() );
+	newFrame->m_isHidden = !m_reportSettings->hasFrameId(frameKind);
+	m_reportFramesRegistered.push_back( std::pair<int, QtExt::ReportFrameBase*>(frameKind, newFrame) );
+//	m_reportFramesInfos.push_back( FrameInfo() );
 
 }
 
-void Report::cleanFrameList() {
-	for(std::vector< ReportFrameBase* >::iterator it = m_reports.begin(); it!=m_reports.end(); ++it) {
-		delete *it;
+std::vector<QtExt::ReportFrameBase*> Report::framesbyType(int type) {
+	std::vector<QtExt::ReportFrameBase*> res;
+	for( const auto& ft : m_reportFramesRegistered) {
+		if(ft.first == type)
+			res.push_back(ft.second);
 	}
-	m_reports.clear();
-	m_pageNumbers.clear();
-	m_frames.clear();
+	return res;
+}
+
+
+void Report::cleanFrameList() {
+	for(auto it = m_reportFramesRegistered.begin(); it!=m_reportFramesRegistered.end(); ++it) {
+		delete it->second;
+	}
+	m_reportFramesRegistered.clear();
+	m_reportFramesInfos.clear();
 }
 
 
@@ -296,16 +367,16 @@ void Report::paintPage(QPainter * p, unsigned int page) {
 	}
 
 	// loop over all frames
-	for (size_t i=0, endI = m_reports.size(); i<endI; ++i) {
+	for (size_t i=0, endI = m_reportFramesInfos.size(); i<endI; ++i) {
 
 		// skip frames that are not on this page
-		if (m_pageNumbers[i] != page)
+		if (m_reportFramesInfos[i].m_pageNumber != page)
 			continue;
 
 //		Q_ASSERT_X( m_reports[i], FUNC_ID, "The frame must exist.");
 
 		// skip hidden frames
-		if (m_reports[i]->m_isHidden)
+		if (m_reportFramesInfos[i].m_frame->m_isHidden)
 			continue;
 
 #ifdef DRAW_DEBUG_FRAMES
@@ -316,9 +387,9 @@ void Report::paintPage(QPainter * p, unsigned int page) {
 		p->drawRect(m_frames[i]);
 #endif // DRAW_DEBUG_FRAMES
 
-		m_reports[i]->print(p, m_frames[i]);
+		m_reportFramesInfos[i].m_frame->print(p, m_reportFramesInfos[i].m_rect);
 
-		emit progress(i + m_reports.size() + 1);
+		emit progress(i + m_reportFramesInfos.size() + 1);
 	}
 
 #ifdef TYPE_DEMO
@@ -341,13 +412,68 @@ void Report::setFooterVisible(bool visible) {
 }
 
 void Report::setFrameVisibility(QtExt::ReportFrameBase* frame, bool visible) {
-	std::vector< ReportFrameBase* >::iterator fit = std::find(m_reports.begin(), m_reports.end(), frame);
-	if(fit != m_reports.end())
-		(*fit)->m_isHidden = !visible;
+	for(auto it=m_reportFramesRegistered.begin(); it!=m_reportFramesRegistered.end(); ++it) {
+		if(it->second == frame) {
+			it->second->m_isHidden = !visible;
+			break;
+		}
+	}
+}
+
+void Report::setFrameVisibility(const std::set<int>& frameKinds, bool visible) {
+	for(auto it = m_reportFramesRegistered.begin(); it!=m_reportFramesRegistered.end(); ++it) {
+		auto fit = frameKinds.find(it->first);
+		if(fit != frameKinds.end())
+			it->second->m_isHidden = !visible;
+	}
+}
+
+void Report::setFramesVisibility(int type) {
+	bool visible = m_reportSettings->hasFrameId(type);
+	bool mainVisible = visible;
+	std::vector<QtExt::ReportFrameBase*> vect = framesbyType(type);
+//	Q_ASSERT(!vect.empty());
+
+	if(vect.size() == 1) {
+		setFrameVisibility(vect.front(), visible);
+	}
+	else {
+		for(const auto& it : vect) {
+			visible = getSpecialVisibility(it, type, mainVisible);
+			setFrameVisibility(it, visible);
+			visible = mainVisible;
+		}
+	}
+}
+
+void Report::updateVisibility() {
+
+	setHeaderVisible(m_reportSettings->hasFrameId(ReportSettingsBase::ReportHeader));
+	setFooterVisible(m_reportSettings->hasFrameId(ReportSettingsBase::ReportFooter));
+	setShowPageNumbers(m_reportSettings->m_showPageNumbers);
+	int typeNumber = m_reportSettings->frameTypeNumber();
+	if(typeNumber > 0) {
+		for(int i=2; i<typeNumber+2; ++i)
+			setFramesVisibility(i);
+	}
+	else {
+		for(auto& fr : m_reportFramesRegistered) {
+			fr.second->m_isHidden = false;
+		}
+	}
 }
 
 void Report::setShowPageNumbers(bool enabled) {
 	m_showPageNumbers = enabled;
 }
+
+void Report::setCurrentFrameInfo(FrameInfo& frameInfo, QRect& currentFrame, int currentPage) {
+	int y = currentFrame.top();
+	int h = frameInfo.m_frame->wholeFrameRect().height();
+	frameInfo.m_rect = QRect(0, y, m_effectivePageSize.width(), h);
+	currentFrame.setTop(y + h);
+	frameInfo.m_pageNumber = currentPage;
+}
+
 
 } // namespace QtExt {

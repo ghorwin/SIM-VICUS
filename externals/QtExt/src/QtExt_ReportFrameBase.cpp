@@ -33,6 +33,8 @@
 	Programm erhalten haben. Wenn nicht, siehe <https://www.gnu.org/licenses/>.
 */
 
+#include <fstream>
+
 #include "QtExt_ReportFrameBase.h"
 
 #include "QtExt_Report.h"
@@ -48,11 +50,23 @@ ReportFrameBase::ReportFrameBase(	Report* report, QTextDocument* textDocument ) 
 {
 }
 
+ReportFrameBase::~ReportFrameBase() {
+	clearSubFrames();
+}
+
+void ReportFrameBase::clearSubFrames() {
+	for(ReportFrameBase* subFrame : m_currentSubFrames) {
+		delete subFrame;
+	}
+	m_currentSubFrames.clear();
+}
+
 void ReportFrameBase::update(QPaintDevice* , double width) {
 	qreal height = 0;
 	for(auto& item : m_items) {
-		if(item->isVisible())
+		if(item->isVisible()) {
 			height += item->rect().height();
+		}
 	}
 	m_wholeFrameRect = QRectF(0, 0, width, height);
 }

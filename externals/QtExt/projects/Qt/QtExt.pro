@@ -19,10 +19,11 @@ unix|mac {
 	VERSION = $${VER_MAJ}.$${VER_MIN}.$${VER_PAT}
 }
 
-LIBS += -lIBK
+LIBS += -lIBK -lIBKMK
 
 INCLUDEPATH += ../../src/ \
-		../../../IBK/src
+		../../../IBK/src \
+		../../../IBKMK/src
 
 DEPENDPATH = $${INCLUDEPATH}
 
@@ -40,7 +41,6 @@ FORMS += \
 	../../src/QtExt_MaterialDatabaseSelectionWidget.ui
 
 HEADERS += \
-	../../src/QtExt_ReportFrameItemConstructionView.h \
 	../../src/QtExt_ActiveLabel.h \
 	../../src/QtExt_AspectRatioBitmapLabel.h \
 	../../src/QtExt_AutoUpdateDialog.h \
@@ -95,6 +95,9 @@ HEADERS += \
 	../../src/QtExt_ReportFrameItemBase.h \
 	../../src/QtExt_ReportFrameItemTable.h \
 	../../src/QtExt_ReportFrameItemTextFrame.h \
+	../../src/QtExt_ReportFrameLongTable.h \
+	../../src/QtExt_ReportFrameTablePart.h \
+	../../src/QtExt_ReportSettingsBase.h \
 	../../src/QtExt_ReportUtilities.h \
 	../../src/QtExt_RichTextEditWidget.h \
 	../../src/QtExt_Settings.h \
@@ -119,7 +122,6 @@ HEADERS += \
 	../../src/QtExt_varianthelper.h
 
 SOURCES += \
-	../../src/QtExt_ReportFrameItemConstructionView.cpp \
 	../../src/QtExt_ActiveLabel.cpp \
 	../../src/QtExt_AspectRatioBitmapLabel.cpp \
 	../../src/QtExt_AutoUpdateDialog.cpp \
@@ -170,6 +172,9 @@ SOURCES += \
 	../../src/QtExt_ReportFrameItemBase.cpp \
 	../../src/QtExt_ReportFrameItemTable.cpp \
 	../../src/QtExt_ReportFrameItemTextFrame.cpp \
+	../../src/QtExt_ReportFrameLongTable.cpp \
+	../../src/QtExt_ReportFrameTablePart.cpp \
+	../../src/QtExt_ReportSettingsBase.cpp \
 	../../src/QtExt_ReportUtilities.cpp \
 	../../src/QtExt_RichTextEditWidget.cpp \
 	../../src/QtExt_Settings.cpp \

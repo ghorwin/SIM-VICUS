@@ -109,6 +109,9 @@ public:
 	/*! Sets the font color of the text in the frame.*/
 	void	setFontColor(const QColor& col);
 
+	/*! Clone the current text frame.*/
+	TextFrame* clone();
+
 signals:
 	/*! \todo check usage of signal -> when and where should the signal be emitted. */
 	void changed();

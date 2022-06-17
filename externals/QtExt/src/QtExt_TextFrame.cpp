@@ -119,6 +119,18 @@ void TextFrame::setFontColor(const QColor& col) {
 	m_fontColor = col;
 }
 
+TextFrame* TextFrame::clone() {
+	TextFrame* res = new TextFrame(m_textDocument, parent());
+	res->m_leftMargin = m_leftMargin;
+	res->m_rightMargin = m_rightMargin;
+	res->m_alignment = m_alignment;
+	res->m_text = m_text;
+	res->m_backgroundColor = m_backgroundColor;
+	res->m_fontColor = m_fontColor;
+	return res;
+}
+
+
 void TextFrame::drawFrame(QPainter* painter, const QPointF& pos, qreal width) {
 	QPaintDevice* device = painter->device();
 	if( !device)

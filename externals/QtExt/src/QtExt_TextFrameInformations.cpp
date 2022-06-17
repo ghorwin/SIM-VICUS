@@ -48,6 +48,8 @@
 
 namespace QtExt {
 
+int TextFrameInformations::m_pixelStep = 5;
+
 TextFrameInformations::TextFrameInformations() :
 		m_textDocument(0)
 {
@@ -138,20 +140,24 @@ void TextFrameInformations::set(QTextDocument* textDocument, const QString& text
 	qreal iwidth = m_textDocument->idealWidth();		// forces creating of layout and text lines
 	QSizeF textSize = totalTextSize(m_textDocument);
 	int linecount = m_textDocument->lineCount();
-	m_infoVect.push_back(TextFrameInfo(linecount, textSize.height(), textSize.width(), 1e10));
+	m_infoVect.emplace_back(TextFrameInfo(linecount, textSize.height(), textSize.width(), 1e10));
+
+//	return;
 
 	// now look for other widths
 	qreal currentHeight = textSize.height();
 	int i = textSize.width();
-	while( i>1) {
+	while( i>10) {
 		m_textDocument->setTextWidth(i - 1);
 		qreal lastiwidth = iwidth;
 		iwidth = m_textDocument->idealWidth();		// forces creating of layout and text lines
 		textSize = totalTextSize(m_textDocument);
 		if(currentHeight < textSize.height()) {
 			++linecount;
-			m_infoVect.push_back(TextFrameInfo(linecount, textSize.height(), textSize.width(), m_infoVect.back().m_minWidth - 1));
+			m_infoVect.emplace_back(TextFrameInfo(linecount, textSize.height(), textSize.width(), m_infoVect.back().m_minWidth - 1));
 			currentHeight = textSize.height();
+			if(linecount > 5)
+				break;
 		}
 		else {
 			m_infoVect.back().m_minWidth = textSize.width();
@@ -160,7 +166,7 @@ void TextFrameInformations::set(QTextDocument* textDocument, const QString& text
 			i = iwidth;
 		}
 		else {
-			--i;
+			i -= m_pixelStep;
 		}
 	}
 }
