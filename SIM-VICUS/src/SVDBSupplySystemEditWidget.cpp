@@ -47,6 +47,15 @@ SVDBSupplySystemEditWidget::SVDBSupplySystemEditWidget(QWidget *parent) :
 {
 	m_ui->setupUi(this);
 
+	// TODO: Anne
+//	// connect browse filename widget
+//	connect(m_ui->widgetBrowseFileNameTSVFile, SIGNAL(editingFinished()), this, SLOT(on_heatExchangeDataFile_editingFinished()));
+//	// and set up
+//	m_ui->widgetBrowseFileNameTSVFile->setup("", true, true, tr("Data files (*.tsv)"), SVSettings::instance().m_dontUseNativeDialogs);
+
+//	m_ui->widgetBrowseFileNameSupplyFMU->filename();
+
+
 	m_ui->lineEditName->initLanguages(QtExt::LanguageHandler::instance().langId().toStdString(), "fr", true);
 	m_ui->lineEditName->setDialog3Caption("Supply system name");
 
@@ -114,6 +123,7 @@ void SVDBSupplySystemEditWidget::updateInput(int id) {
 
 	VICUS::SupplySystem * supplySys = const_cast<VICUS::SupplySystem *>(m_db->m_supplySystems[(unsigned int)id]);
 	m_current = supplySys;
+	Q_ASSERT(m_current!=nullptr);
 
 	// now update the GUI controls
 	m_ui->lineEditName->setString(supplySys->m_displayName);
@@ -263,10 +273,6 @@ void SVDBSupplySystemEditWidget::on_lineEditHeatingPowerFMU_editingFinished() {
 void SVDBSupplySystemEditWidget::on_comboBoxSupplyType_currentIndexChanged(int index) {
 	// set supply type
 	Q_ASSERT(m_current != nullptr);
-
-	// invalid type
-//	if(index == VICUS::SupplySystem::NUM_ST)
-//		return;
 
 	if(index != m_current->m_supplyType) {
 
