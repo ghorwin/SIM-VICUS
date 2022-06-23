@@ -150,11 +150,11 @@ void SVDBSupplySystemEditWidget::updateInput(int id) {
 
 	// set FMU file path
 	if(m_current->m_supplyFMUPath.isEmpty()) {
-		m_ui->lineEditSupplyFMUName->clear();
+		m_ui->widgetBrowseFileNameSupplyFMU->setFilename(QString());
 	}
 	else {
 		QFileInfo supplyFMUInfo(m_current->m_supplyFMUPath);
-		m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
+		m_ui->widgetBrowseFileNameSupplyFMU->setFilename(supplyFMUInfo.fileName());
 	}
 
 	// set all defined parameters (0 otherwise):
@@ -323,7 +323,7 @@ void SVDBSupplySystemEditWidget::on_pushButtonFMUPath_clicked()
 	// update view:
 	// visualize FMU file name
 	QFileInfo supplyFMUInfo(filename);
-	m_ui->lineEditSupplyFMUName->setText(supplyFMUInfo.fileName());
+	m_ui->widgetBrowseFileNameSupplyFMU->setFilename(supplyFMUInfo.fileName());
 }
 
 
