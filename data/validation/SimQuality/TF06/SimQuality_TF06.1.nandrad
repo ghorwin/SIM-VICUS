@@ -15,7 +15,7 @@
 			<IBK:IntPara name="DiscMaxElementsPerLayer">30</IBK:IntPara>
 		</SolverParameter>
 		<Zones>
-			<Zone id="1" displayName="Var01" type="Active">
+			<Zone id="1000" displayName="Var01" type="Active">
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Volume" unit="m3">30</IBK:Parameter>
 			</Zone>
@@ -27,7 +27,7 @@
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
+				<InterfaceA id="10" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -49,7 +49,7 @@
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">90</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="12" zoneId="1">
+				<InterfaceA id="12" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -71,7 +71,7 @@
 				<IBK:Parameter name="Area" unit="m2">6</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">180</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="14" zoneId="1">
+				<InterfaceA id="14" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -93,7 +93,7 @@
 				<IBK:Parameter name="Area" unit="m2">15</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">270</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">90</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
+				<InterfaceA id="10" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -115,7 +115,7 @@
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">0</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
+				<InterfaceA id="10" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -137,7 +137,7 @@
 				<IBK:Parameter name="Area" unit="m2">10</IBK:Parameter>
 				<IBK:Parameter name="Orientation" unit="Deg">0</IBK:Parameter>
 				<IBK:Parameter name="Inclination" unit="Deg">180</IBK:Parameter>
-				<InterfaceA id="10" zoneId="1">
+				<InterfaceA id="10" zoneId="1000">
 					<!--Interface to 'Room'-->
 					<InterfaceHeatConduction modelType="Constant">
 						<IBK:Parameter name="HeatTransferCoefficient" unit="W/m2K">2.5</IBK:Parameter>
@@ -171,9 +171,9 @@
 			</Material>
 		</Materials>
 		<Models>
-			<NaturalVentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
+			<VentilationModel id="501" displayName="Zone vent" modelType="Scheduled">
 				<ZoneObjectList>All zones</ZoneObjectList>
-			</NaturalVentilationModel>
+			</VentilationModel>
 		</Models>
 		<Schedules>
 			<ScheduleGroups>
@@ -183,7 +183,7 @@
 						<DailyCycles>
 							<DailyCycle interpolation="Constant">
 								<TimePoints>0</TimePoints>
-								<Values>InfiltrationRateSchedule [1/h]:0</Values>
+								<Values>VentilationRateSchedule [1/h]:0</Values>
 							</DailyCycle>
 						</DailyCycles>
 					</Schedule>
@@ -227,7 +227,7 @@
 		</Outputs>
 		<ObjectLists>
 			<ObjectList name="Zone Var01">
-				<FilterID>1</FilterID>
+				<FilterID>1000</FilterID>
 				<ReferenceType>Zone</ReferenceType>
 			</ObjectList>
 			<ObjectList name="All zones">
