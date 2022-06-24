@@ -163,36 +163,23 @@
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <widget class="QPushButton" name="pushButtonAssignSurfaceHeating">
-         <property name="text">
-          <string>Assign surface heating...</string>
+       <item row="1" column="1">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
-         <property name="iconSize">
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
-        </widget>
+        </spacer>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="pushButtonAssignSurfaceHeatingControlZone">
          <property name="text">
           <string>Set control zone...</string>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>24</width>
-           <height>24</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="pushButtonAssignSupplySystem">
-         <property name="text">
-          <string>Assign supply system...</string>
          </property>
          <property name="iconSize">
           <size>
@@ -209,18 +196,18 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="pushButtonAssignSurfaceHeating">
+         <property name="text">
+          <string>Assign surface heating...</string>
          </property>
-         <property name="sizeHint" stdset="0">
+         <property name="iconSize">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
-        </spacer>
+        </widget>
        </item>
       </layout>
      </widget>

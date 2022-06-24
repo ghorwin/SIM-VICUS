@@ -1,4 +1,4 @@
-#include "SVPropSupplySystemsWidget.h"
+﻿#include "SVPropSupplySystemsWidget.h"
 
 #include <SV_Conversions.h>
 
@@ -7,6 +7,7 @@
 #include "SVDatabase.h"
 #include "SVMainWindow.h"
 #include "SVDatabaseEditDialog.h"
+#include "SVUndoModifyComponentInstances.h"
 #include "SVUndoTreeNodeState.h"
 
 SVPropSupplySystemsWidget::SVPropSupplySystemsWidget(QWidget *parent) :
@@ -32,6 +33,15 @@ SVPropSupplySystemsWidget::~SVPropSupplySystemsWidget() {
 
 
 void SVPropSupplySystemsWidget::updateUi() {
+	// get list of selected surfaces
+	std::vector<const VICUS::Surface*> surfs;
+	project().selectedSurfaces(surfs, VICUS::Project::SG_Building);
+
+	// insert all referenced component instances into set
+	m_selectedComponentInstances.clear();
+	for (const VICUS::Surface* s : surfs)
+		m_selectedComponentInstances.insert(s->m_componentInstance);
+
 	// get all visible "building" type objects in the scene
 	std::set<const VICUS::Object * > objs;
 	project().selectObjects(objs, VICUS::Project::SG_Building, false, true); // visible (selected and not selected)
@@ -82,7 +92,7 @@ void SVPropSupplySystemsWidget::updateUi() {
 			m_ui->tableWidgetSupplySystems->setItem(row, 0, item);
 
 			item = new QTableWidgetItem();
-			item->setText(tr("Invalid/missing boundary condition"));
+			item->setText(tr("Invalid/missing supply system"));
 			item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 			m_ui->tableWidgetSupplySystems->setItem(row, 1, item);
 		}
@@ -101,10 +111,48 @@ void SVPropSupplySystemsWidget::updateUi() {
 	m_ui->tableWidgetSupplySystems->blockSignals(false);
 	m_ui->tableWidgetSupplySystems->selectRow(std::min(currentRow, m_ui->tableWidgetSupplySystems->rowCount()-1));
 
+	// we will check vakidity of defiting and selecting here
 	on_tableWidgetSupplySystems_itemSelectionChanged();
+}
 
-	m_ui->pushButtonEditSupplySystem->setEnabled(m_ui->tableWidgetSupplySystems->currentRow() != -1);
-	m_ui->pushButtonSelectSupplySystem->setEnabled(m_ui->tableWidgetSupplySystems->currentRow() != -1);
+
+void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_itemSelectionChanged() {
+
+	bool selectingEnabled = m_ui->tableWidgetSupplySystems->currentRow() != -1;
+
+	// we need a valid surface choice
+	bool assigningEnabled = false;
+	// only activate if valid components are chosen
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, skip
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+		if (comp == nullptr)
+			continue;
+		// check if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+		// check if no surface heating is assigned
+		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
+			continue;
+
+		assigningEnabled = true;
+		break;
+	}
+
+	m_ui->pushButtonEditSupplySystem->setEnabled(selectingEnabled);
+	m_ui->pushButtonSelectSupplySystem->setEnabled(selectingEnabled);
+	m_ui->pushButtonAssignSupplySystem->setEnabled(assigningEnabled);
 }
 
 
@@ -122,21 +170,54 @@ void SVPropSupplySystemsWidget::on_pushButtonEditSupplySystem_clicked() {
 }
 
 
-void SVPropSupplySystemsWidget::on_tableWidgetSupplySystems_itemSelectionChanged() {
-	bool enabled = m_ui->tableWidgetSupplySystems->currentRow() != -1;
-	if (enabled) {
-		// if selected item is an invalid/missing BC, disable buttons
-		std::map<const VICUS::SupplySystem*, std::set<const VICUS::Surface *> >::const_iterator it = m_supplySysSurfacesMap.begin();
-		std::advance(it, m_ui->tableWidgetSupplySystems->currentRow());
-		if (it->first == nullptr)
-			enabled = false;
+void SVPropSupplySystemsWidget::on_pushButtonExchangeSupplySystem_clicked()
+{
+	int r = m_ui->tableWidgetSupplySystems->currentRow();
+	Q_ASSERT(r != -1);
+	std::map<const VICUS::SupplySystem*, std::set<const VICUS::Surface *> >::const_iterator sit = m_supplySysSurfacesMap.begin();
+	std::advance(sit, r);
+	Q_ASSERT(sit->first != nullptr);
+	unsigned int currentID = sit->first->m_id;
+
+	unsigned int selectedID = SVMainWindow::instance().dbSupplySystemEditDialog()->select(VICUS::INVALID_ID);
+	if (selectedID == VICUS::INVALID_ID)
+		return;
+	// nothing changed
+	if (selectedID == currentID)
+		return;
+
+	// if component instance does not have an active layer assigned, skip
+	VICUS::SupplySystem * supplySys = SVSettings::instance().m_db.m_supplySystems[selectedID];
+	if (supplySys == nullptr)
+		return;
+
+	// select component instances
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// if component instance does not have an active layer assigned, skip
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+		if (comp == nullptr)
+			continue;
+		// check if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+		// check if no surface heating is assigned
+		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
+			continue;
+		// filter component instance with old id
+		if(ci.m_idSupplySystem != currentID)
+			continue;
+
+		ci.m_idSupplySystem = selectedID;
+		ci.m_supplySystem = supplySys;
 	}
 
-
-	m_ui->pushButtonEditSupplySystem->setEnabled(enabled);
-	m_ui->pushButtonSelectSupplySystem->setEnabled(enabled);
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
+	undo->push();
 }
-
 
 void SVPropSupplySystemsWidget::on_pushButtonSelectSupplySystem_clicked() {
 	int r = m_ui->tableWidgetSupplySystems->currentRow();
@@ -146,9 +227,9 @@ void SVPropSupplySystemsWidget::on_pushButtonSelectSupplySystem_clicked() {
 	const VICUS::SupplySystem * supplySys = sit->first;
 	Q_ASSERT(m_supplySysSurfacesMap.find(supplySys) != m_supplySysSurfacesMap.end());
 
-	std::set<unsigned int> objs;
+	std::set<unsigned int> surfaceObjs;
 	for (const VICUS::Surface * s : sit->second)
-		objs.insert(s->m_id);
+		surfaceObjs.insert(s->m_id);
 
 	QString undoText;
 	if (supplySys != nullptr)
@@ -156,6 +237,50 @@ void SVPropSupplySystemsWidget::on_pushButtonSelectSupplySystem_clicked() {
 	else
 		undoText = tr("Select objects with invalid supply system");
 
-	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, objs, true);
+	SVUndoTreeNodeState * undo = new SVUndoTreeNodeState(undoText, SVUndoTreeNodeState::SelectedState, surfaceObjs, true);
 	undo->push();
 }
+
+
+void SVPropSupplySystemsWidget::on_pushButtonAssignSupplySystem_clicked() {
+	// popup supply system DB dialog and if user selects one, assign it to all selected component instances
+	unsigned int selectedID = SVMainWindow::instance().dbSupplySystemEditDialog()->select(VICUS::INVALID_ID);
+	if (selectedID == VICUS::INVALID_ID)
+		return;
+
+	// if component instance does not have an active layer assigned, skip
+	VICUS::SupplySystem * supplySys = SVSettings::instance().m_db.m_supplySystems[selectedID];
+	if (supplySys == nullptr)
+		return;
+
+	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
+
+	// process all selected components
+	for (VICUS::ComponentInstance & ci : cis) {
+		// check if current ci is in list of selected component instances
+		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
+		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
+			if ((*ciIt)->m_id == ci.m_id)
+				break;
+		}
+		if (ciIt == m_selectedComponentInstances.end())
+			continue;
+		// if component instance does not have an active layer assigned, skip
+		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
+		if (comp == nullptr)
+			continue;
+		// check if no active layer is present
+		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
+			continue;
+		// check if no surface heating is assigned
+		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
+			continue;
+
+		ci.m_idSupplySystem = selectedID;
+		ci.m_supplySystem = supplySys;
+	}
+
+	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
+	undo->push();
+}
+

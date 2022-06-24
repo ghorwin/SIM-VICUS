@@ -220,7 +220,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		m_ui->labelSelectedCIWithActiveLayer->setText(tr("None"));
 		m_ui->pushButtonAssignSurfaceHeating->setEnabled(false);
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(false);
-		m_ui->pushButtonAssignSupplySystem->setEnabled(false);
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(false);
 	}
 	else {
@@ -230,7 +229,6 @@ void SVPropBuildingSurfaceHeatingWidget::updateUi() {
 		// other buttons are only active if a configured surface heating component instances is selected
 		m_ui->pushButtonAssignSurfaceHeatingControlZone->setEnabled(!selectedSurfaceHeatingCI.empty());
 
-		m_ui->pushButtonAssignSupplySystem->setEnabled(!selectedSurfaceHeatingCI.empty());
 		m_ui->pushButtonRemoveSelectedSurfaceHeating->setEnabled(!selectedSurfaceHeatingCI.empty());
 	}
 }
@@ -418,44 +416,3 @@ void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSurfaceHeatingContro
 }
 
 
-void SVPropBuildingSurfaceHeatingWidget::on_pushButtonAssignSupplySystem_clicked()
-{
-	// popup supply system DB dialog and if user selects one, assign it to all selected component instances
-	unsigned int selectedID = SVMainWindow::instance().dbSupplySystemEditDialog()->select(VICUS::INVALID_ID);
-	if (selectedID == VICUS::INVALID_ID)
-		return;
-
-	std::vector<VICUS::ComponentInstance> cis = project().m_componentInstances;
-
-	// process all selected components
-	for (VICUS::ComponentInstance & ci : cis) {
-		// check if current ci is in list of selected component instances
-		std::set<const VICUS::ComponentInstance*>::const_iterator ciIt = m_selectedComponentInstances.begin();
-		for (; ciIt != m_selectedComponentInstances.end(); ++ciIt) {
-			if ((*ciIt)->m_id == ci.m_id)
-				break;
-		}
-		if (ciIt == m_selectedComponentInstances.end())
-			continue;
-		// if component instance does not have an active layer assigned, skip
-		const VICUS::Component * comp = SVSettings::instance().m_db.m_components[ci.m_idComponent];
-		if (comp == nullptr)
-			continue;
-		// check if no active layer is present
-		if (comp->m_activeLayerIndex == VICUS::INVALID_ID)
-			continue;
-		// check if no surface heating is assigned
-		if(ci.m_idSurfaceHeating == VICUS::INVALID_ID)
-			continue;
-
-		// if component instance does not have an active layer assigned, skip
-		VICUS::SupplySystem * supplySys = SVSettings::instance().m_db.m_supplySystems[selectedID];
-		if (supplySys == nullptr)
-			continue;
-
-		ci.m_idSupplySystem = selectedID;
-		ci.m_supplySystem = supplySys;
-	}
-	SVUndoModifyComponentInstances * undo = new SVUndoModifyComponentInstances(tr("Assigned supply systems"), cis);
-	undo->push();
-}

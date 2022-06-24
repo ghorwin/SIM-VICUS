@@ -243,7 +243,7 @@ void SVDBSupplySystemEditWidget::on_lineEditMaxMassFluxFMU_editingFinished() {
 	// update database but only if different from original
 	IBK::Parameter &para = m_current->m_para[VICUS::SupplySystem::P_MaximumMassFluxFMU];
 	IBK::Unit unit("kg/s");
-	if(para.name.empty() || val != para.get_value(unit)) {
+	if(para.name.empty() || !IBK::near_equal(val, para.get_value(unit)) ) {
 		std::string errmsg;
 		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_MaximumMassFluxFMU),
 				 val, unit);
@@ -260,7 +260,7 @@ void SVDBSupplySystemEditWidget::on_lineEditHeatingPowerFMU_editingFinished() {
 	// update database but only if different from original
 	IBK::Parameter &para = m_current->m_para[VICUS::SupplySystem::P_HeatingPowerFMU];
 	IBK::Unit unit("kW");
-	if(para.name.empty() || val != para.get_value(unit)) {
+	if(para.name.empty() || !IBK::near_equal(val, para.get_value(unit)) ) {
 		std::string errmsg;
 		para.set(VICUS::KeywordList::Keyword("SupplySystem::para_t", VICUS::SupplySystem::P_HeatingPowerFMU),
 				 val, unit);

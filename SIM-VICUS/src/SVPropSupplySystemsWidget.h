@@ -12,6 +12,7 @@
 //}
 
 namespace VICUS {
+	class ComponentInstance;
 	class SupplySystem;
 	class Surface;
 }
@@ -34,14 +35,19 @@ public:
 	void updateUi();
 
 private slots:
-	void on_pushButtonEditSupplySystem_clicked();
 	void on_tableWidgetSupplySystems_itemSelectionChanged();
 
+	void on_pushButtonEditSupplySystem_clicked();
+	void on_pushButtonExchangeSupplySystem_clicked();
 	void on_pushButtonSelectSupplySystem_clicked();
+
+	void on_pushButtonAssignSupplySystem_clicked();
 
 private:
 	Ui::SVPropSupplySystemsWidget *m_ui;
 
+	/*! Set of selected component instances in geometry view. */
+	std::set<const VICUS::ComponentInstance*>				m_selectedComponentInstances;
 	/*! Map that holds the list of used supply systems vs. visible surfaces. */
 	std::map<const VICUS::SupplySystem *, std::set<const VICUS::Surface *> >	m_supplySysSurfacesMap;
 };
