@@ -2809,7 +2809,7 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 		// calculate pipe pressure loss
 		double density = fluid.m_para[NANDRAD::HydraulicFluid::P_Density].value;
 		double diameter = pipe->diameterInside();
-		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter * numberPipes);
+		double maxVelocity = maxMassFlux/(density * IBK::PI/4. * diameter * diameter);
 		double viskosity = fluid.m_kinematicViscosity.m_values.value(defaultFluidTemperature);
 		double reynolds = std::abs(maxVelocity) * diameter / viskosity;
 		double roughness = pipe->m_para[VICUS::NetworkPipe::P_RoughnessWall].value;
@@ -2869,8 +2869,9 @@ void SupplySystemNetworkModelGenerator::generate(const SupplySystem & supply,
 	unsigned int nodeId = splitterNodeId;
 	//fill the map for quick work
 	for(unsigned int i=0; i<dataSurfaceHeating.size(); ++i) {
-		// calculte lenght of supply pipe for pressure equailzation
-		double lengthSupply = (maxPressureLoss - maxPressureLosses[i])/maxPressureLosses[i] * pipeLengths[i];
+		// calculte lenght of supply pipe for pressure equalization
+		double lengthSupply = (maxPressureLoss - maxPressureLosses[i])/maxPressureLosses[i] * pipeLengths[i]/
+				(double) numbersOfPipes[i];
 
 		// we need a supply pipe
 		bool hasSupplyPipe = false;
